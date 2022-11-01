@@ -13407,40 +13407,6 @@ go to the second most recent edit, etc.  Negative argument, @kbd{C-u -}, is
 used for reverse direction.")
     (license license:gpl2+)))
 
-(define-public emacs-janpath-evil-numbers
-  ;; XXX: Upstream did not tag latest release.  Use commit matching exact
-  ;; version bump.
-  (let ((commit "61dde4e3715fd1255df8f87a37d9c8022e909bf4"))
-    (package
-      (name "emacs-janpath-evil-numbers")
-      (version "0.7")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/juliapath/evil-numbers")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "006s8azhypp5n7jnvqkb4rmzqmnsdwj87c3r97zhjzgi2jq953gx"))))
-      (build-system emacs-build-system)
-      (arguments
-       (list
-        #:tests? #t
-        #:test-command #~(list "emacs" "--batch"
-                               "-l" "evil-numbers.el"
-                               "-l" "tests/evil-numbers-tests.el"
-                               "-f" "ert-run-tests-batch-and-exit")))
-      (native-inputs (list emacs-ert-runner))
-      (propagated-inputs (list emacs-evil))
-      (home-page "https://github.com/juliapath/evil-numbers")
-      (synopsis "Increment and decrement numeric literals")
-      (description
-       "This package provides functionality to search for a number up to the
-end of a line and increment or decrement it.")
-      (license license:gpl3+))))
-
 (define-public emacs-evil-owl
   (let ((commit "24c5f43df375194386344e69bc720ea3986c9510")
         (revision "3"))
@@ -28430,30 +28396,41 @@ functions (e.g. @code{webfeeder-title-function}).")
   (license license:gpl3+)))
 
 (define-public emacs-evil-numbers
-  (let ((commit "6ea1c8c3a9b37bed63d48f1128e9a4910e68187e"))
+  ;; XXX: Upstream did not tag latest release.  Use commit matching exact
+  ;; version bump.
+  (let ((commit "61dde4e3715fd1255df8f87a37d9c8022e909bf4"))
     (package
       (name "emacs-evil-numbers")
-      (version (git-version "0.4" "1" commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/dieggsy/evil-numbers")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1aq95hj8x13py0pwsnc6wvd8cc5yv5qin8ym9js42y5966vwj4np"))))
+      (version "0.7")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/juliapath/evil-numbers")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "006s8azhypp5n7jnvqkb4rmzqmnsdwj87c3r97zhjzgi2jq953gx"))))
       (build-system emacs-build-system)
-      (home-page "https://github.com/dieggsy/evil-numbers")
-      (synopsis "Increment and decrement numbers in Emacs")
-      (description "This package increments and decrements binary, octal,
-decimal and hex literals.  It works like C-a/C-x in Vim, i.e. searches for
-number up to EOL and then increments or decrements and keeps zero padding up
-(unlike in Vim).  When a region is active, as in Evil's visual mode, all the
-numbers within that region will be incremented/decremented (unlike in Vim).
-
-It is a fork of https://github.com/cofi/evil-numbers, which is unmaintained.")
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "evil-numbers.el"
+                               "-l" "tests/evil-numbers-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs (list emacs-ert-runner))
+      (propagated-inputs (list emacs-evil))
+      (home-page "https://github.com/juliapath/evil-numbers")
+      (synopsis "Increment and decrement numeric literals")
+      (description
+       "This package provides functionality to search for a number up to the
+end of a line and increment or decrement it.")
       (license license:gpl3+))))
+
+(define-public emacs-janpath-evil-numbers
+  (deprecated-package "emacs-janpath-evil-numbers" emacs-evil-numbers))
 
 (define-public emacs-rotate-text
   (package
