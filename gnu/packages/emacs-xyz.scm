@@ -13425,6 +13425,14 @@ used for reverse direction.")
           (base32
            "006s8azhypp5n7jnvqkb4rmzqmnsdwj87c3r97zhjzgi2jq953gx"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "evil-numbers.el"
+                               "-l" "tests/evil-numbers-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs (list emacs-ert-runner))
       (propagated-inputs (list emacs-evil))
       (home-page "https://github.com/juliapath/evil-numbers")
       (synopsis "Increment and decrement numeric literals")
