@@ -30,6 +30,7 @@
 ;;; Copyright © 2022 Attila Lendvai <attila@lendvai.name>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -658,7 +659,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
 (define-public ccls
   (package
     (name "ccls")
-    (version "0.20210330")
+    (version "0.20220729")
     (source
      (origin
        (method git-fetch)
@@ -666,7 +667,7 @@ tools (containers, algorithms) used by other QuantStack packages.")
              (url "https://github.com/MaskRay/ccls")
              (commit version)))
        (sha256
-        (base32 "0zzdn7c7a244djqwcsd7rvgclcdacyf9d0vkxpfspl83k2554alf"))
+        (base32 "0cp534n7afl0rrr778cc0bnd8w091qmyqdpp5k1jh4wxla9s09br"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
