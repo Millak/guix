@@ -1471,6 +1471,7 @@ connection alive.")
                       (libexec   (string-append out "/libexec"))
                       (coreutils (assoc-ref inputs "coreutils*"))
                       (inetutils (assoc-ref inputs "inetutils"))
+                      (grep      (assoc-ref inputs "grep*"))
                       (net-tools (assoc-ref inputs "net-tools"))
                       (sed       (assoc-ref inputs "sed*")))
                  (substitute* "client/scripts/linux"
@@ -1487,7 +1488,7 @@ connection alive.")
                      ,(map (lambda (dir)
                              (string-append dir "/bin:"
                                             dir "/sbin"))
-                           (list inetutils net-tools coreutils sed))))))))))
+                           (list inetutils net-tools coreutils grep sed))))))))))
 
       (native-inputs
        (list config perl file))
@@ -1511,6 +1512,7 @@ connection alive.")
                       "1zsszgxs9043dfpxb6xs1iwk9jg7nxkl5pbawj8dlshnxkkzp3hd"))))
 
                 ("coreutils*" ,coreutils)
+                ("grep*" ,grep)
                 ("sed*" ,sed)))
 
       (home-page "https://www.isc.org/dhcp/")
