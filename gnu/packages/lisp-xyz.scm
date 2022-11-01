@@ -84,6 +84,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
@@ -1867,6 +1868,47 @@ documentation system, explicit development support, etc.")
 
 (define-public ecl-hu.dwim.asdf
   (sbcl-package->ecl-package sbcl-hu.dwim.asdf))
+
+(define-public sbcl-hu.dwim.graphviz
+  (let ((commit "31522ca8b9a04d535b7cec20ef24d8bf3b26d52b")
+        (revision "1"))
+    (package
+      (name "sbcl-hu.dwim.graphviz")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hu-dwim/hu.dwim.graphviz")
+               (commit commit)))
+         (file-name (git-file-name "cl-hu.dwim.graphviz" version))
+         (sha256
+          (base32 "0cz5g7d6817ajypp876k9m65sxxlf42x4bg04ya73aqci5s1vjwy"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-graphviz-lib-path
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "source/package.lisp"
+                       (("libgvc.so")
+                        (search-input-file inputs "/lib/libgvc.so"))))))))
+      (native-inputs
+       (list sbcl-hu.dwim.common sbcl-hu.dwim.stefil))
+      (inputs
+       (list graphviz sbcl-cffi sbcl-metabang-bind))
+      (home-page "https://github.com/hu-dwim/hu.dwim.graphviz")
+      (synopsis "Graphviz layouting using CFFI bindings")
+      (description
+       "This package provides CFFI bindings to the Graphviz library in Common
+Lisp.")
+      (license license:public-domain))))
+
+(define-public cl-hu.dwim.graphviz
+  (sbcl-package->cl-source-package sbcl-hu.dwim.graphviz))
+
+(define-public ecl-hu.dwim.graphviz
+  (sbcl-package->ecl-package sbcl-hu.dwim.graphviz))
 
 (define-public sbcl-babel
   ;; No release since 2014.
