@@ -49,6 +49,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -326,29 +327,33 @@ do what is needed for client/server Kerberos authentication based on
 (define-public python-keyring
   (package
     (name "python-keyring")
-    (version "22.0.1")
+    (version "23.9.3")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "keyring" version))
-      (sha256
-       (base32
-        "1pvqc6may03did0iz98gasg7cy4h8ljzs4ibh927bfzda8a3xjws"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "keyring" version))
+       (sha256
+        (base32
+         "19f4jpsxng9sjfqi8ww5hgg196r2zh1zb8g71wjr1xa27kc1vc39"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "-c" "/dev/null" "tests")))))))
+     (list
+      #:test-flags '(list "-c" "/dev/null") ;avoid extra test dependencies
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'workaround-test-failure
+            (lambda _
+              ;; Workaround a failure in the test_entry_point test (see:
+              ;; https://github.com/jaraco/keyring/issues/526).
+              (delete-file-recursively "keyring.egg-info"))))))
     (native-inputs
      (list python-toml
            python-pytest
-           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-secretstorage))
+     (list python-importlib-metadata
+           python-jaraco-classes
+           python-secretstorage))
     (home-page "https://github.com/jaraco/keyring")
     (synopsis "Store and access your passwords safely")
     (description
