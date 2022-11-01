@@ -1404,8 +1404,8 @@ git config --local format.thread shallow
 git config --local sendemail.thread no
 @end example
 
-@unnumberedsubsec Sending a Patch Series
-@anchor{Sending a Patch Series}
+@node Sending a Patch Series
+@subsection Sending a Patch Series
 @cindex patch series
 @cindex @code{git send-email}
 @cindex @code{git format-patch}
@@ -1542,8 +1542,8 @@ If need be, you may use @option{--cover-letter -a} to send another cover
 letter, e.g. for explaining what's changed since the last revision, and
 these changes are necessary.
 
-@unnumberedsubsec Teams
-@anchor{Teams}
+@node Teams
+@subsection Teams
 @cindex teams
 
 There are several teams mentoring different parts of the Guix source
