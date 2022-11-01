@@ -476,7 +476,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.9")
+    (version "1.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -485,7 +485,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gm97sdz78s67rnyrs4ixg5dwv2haxdmb7s21yqb8axp624vvalp"))
+                "1v27s55l64xcl7q6p0iljv2fpibhfcl1wj319vlp4b8pcp1wny1p"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -537,6 +537,7 @@ playing your music.")
            chromaprint
            dbus
            fftw
+           gdk-pixbuf
            glib
            gnutls
            gstreamer
