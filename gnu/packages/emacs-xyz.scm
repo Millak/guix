@@ -13408,25 +13408,25 @@ used for reverse direction.")
     (license license:gpl2+)))
 
 (define-public emacs-janpath-evil-numbers
-  (let ((commit "d988041c1fe6e941dc8d591390750b237f71f524")
-        (version "0.5")
-        (revision "1"))
+  ;; XXX: Upstream did not tag latest release.  Use commit matching exact
+  ;; version bump.
+  (let ((commit "61dde4e3715fd1255df8f87a37d9c8022e909bf4"))
     (package
       (name "emacs-janpath-evil-numbers")
-      (version (git-version version revision commit))
+      (version "0.7")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://github.com/janpath/evil-numbers")
+               (url "https://github.com/juliapath/evil-numbers")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "16zixhxxcb83m82f2cfiardfn99j3w41v6vh1qk6j9pplrlfw70v"))))
+           "006s8azhypp5n7jnvqkb4rmzqmnsdwj87c3r97zhjzgi2jq953gx"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-evil))
-      (home-page "https://github.com/janpath/evil-numbers")
+      (home-page "https://github.com/juliapath/evil-numbers")
       (synopsis "Increment and decrement numeric literals")
       (description
        "This package provides functionality to search for a number up to the
