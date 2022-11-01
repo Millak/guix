@@ -2427,6 +2427,30 @@ internationalized messages within program source text.")
 defining data schemas.")
     (license license:zpl2.1)))
 
+(define-public python-zope-sqlalchemy
+  (package
+    (name "python-zope-sqlalchemy")
+    (version "1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "zope.sqlalchemy" version))
+              (sha256
+               (base32
+                "1azm2awl2ra10xl6wps3yvy14jk2rpzvsyfsb9cncm97aydbwlww"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-sqlalchemy
+           python-transaction
+           python-zope-interface))
+    (native-inputs (list python-zope-testing))
+    (home-page "https://github.com/zopefoundation/zope.sqlalchemy")
+    (synopsis "Minimal SQLAlchemy transaction integration for Zope")
+    (description "The aim of this package is to unify the plethora of existing
+packages integrating SQLAlchemy with Zope's transaction management.  As such,
+it only provides a data manager and makes no attempt to define a @i{zopeish}
+way to configure engines.")
+    (license license:zpl2.1)))
+
 (define-public python-zope-configuration
   (package
     (name "python-zope-configuration")
