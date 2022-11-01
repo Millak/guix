@@ -12358,7 +12358,7 @@ literals.")
      (list ghc-hunit))
     (home-page "https://hackage.haskell.org/package/string-qq")
     (synopsis
-     "QuasiQuoter for non-interpolated strings, texts and bytestrings.")
+     "QuasiQuoter for non-interpolated strings, texts and bytestrings")
     (description
      "This package provides a quasiquoter for non-interpolated strings, texts
 and bytestrings.")

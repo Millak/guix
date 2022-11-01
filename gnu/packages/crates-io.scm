@@ -4427,7 +4427,7 @@ asynchronous logging.")
         ("rust-syn" ,rust-syn-0.15))))
     (home-page "https://github.com/rustasync/runtime")
     (synopsis
-     "Proc Macro attributes for the async-log crate.")
+     "Proc Macro attributes for the async-log crate")
     (description
      "This package provides proc macro attributes for the @code{async-log}
 crate.")
@@ -4901,7 +4901,7 @@ methods.")
      `(#:cargo-inputs
        (("rust-critical-section" ,rust-critical-section-1))))
     (home-page "https://github.com/embassy-rs/atomic-polyfill")
-    (synopsis "Atomic polyfills, for targets where they're not available.")
+    (synopsis "Atomic polyfills, for targets where they're not available")
     (description "This package provides atomic polyfills, for targets where
 they're not available.")
     (license (list license:expat license:asl2.0))))
@@ -10734,7 +10734,7 @@ pitfalls in Rust.")
         ("rust-toml" ,rust-toml-0.4)
         ("rust-unicode-normalization" ,rust-unicode-normalization-0.1))))
     (home-page "https://github.com/rust-lang-nursery/rust-clippy")
-    (synopsis "A bunch of helpful lints to avoid common pitfalls in Rust")
+    (synopsis "helpful lints to avoid common pitfalls in Rust")
     (description
      "This package provides a bunch of helpful lints to avoid common pitfalls
 in Rust")
@@ -33238,7 +33238,7 @@ checking.")
     (build-system cargo-build-system)
     (home-page "https://github.com/reem/rust-modifier")
     (synopsis
-      "Chaining APIs for both self -> Self and &mut self methods.")
+      "Chaining APIs for both self -> Self and &mut self methods")
     (description
       "Chaining APIs for both self -> Self and &mut self methods.")
     (license license:expat)))
@@ -37176,7 +37176,7 @@ the default program configured on the system.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/sfackler/rust-openssl")
-    (synopsis "Internal macros used by the openssl crate.")
+    (synopsis "Internal macros used by the openssl crate")
     (description "This package provides internal macros used by the openssl
 crate.")
     (license (list license:expat license:asl2.0))))
@@ -52506,7 +52506,7 @@ diff output.")
         ("rust-paris" ,rust-paris-1)
         ("rust-termcolor" ,rust-termcolor-1))))
     (home-page "https://github.com/drakulix/simplelog.rs")
-    (synopsis "A simple and easy-to-use logging facility for Rust's log crate")
+    (synopsis "simple and easy-to-use logging facility for Rust's log crate")
     (description
      "This package provides a simple and easy-to-use logging facility for Rust's
 @code{log} crate.  It aims to be a maintainable, easy to integrate facility for
@@ -53968,7 +53968,7 @@ SPIR-V.")
     (arguments `(#:skip-build? #t #:cargo-inputs (("rust-der" ,rust-der-0.4))))
     (home-page "https://github.com/RustCrypto/formats/tree/master/spki")
     (synopsis
-     "X.509 Subject Public Key Info (RFC5280) describing public keys ")
+     "X.509 Subject Public Key Info (RFC5280) describing public keys")
     (description
      "This package provides X.509 Subject Public Key Info (RFC5280)
 describing public keys as well as their associated AlgorithmIdentifiers (i.e.
@@ -55927,7 +55927,7 @@ a syntax tree of Rust source code.")
         ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/taiki-e/syn-mid")
     (synopsis
-     "Provide the features between \"full\" and \"derive\" of syn.")
+     "Provide the features between \"full\" and \"derive\" of syn")
     (description
      "This package provides the features between \"full\" and \"derive\" of syn.")
     (license (list license:asl2.0 license:expat))))
@@ -60718,7 +60718,7 @@ serializing Rust structures.")
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
          ("rust-snapbox" ,rust-snapbox-0.2))))
     (home-page "https://github.com/ordian/toml_edit")
-    (synopsis "Yet another format-preserving TOML parser.")
+    (synopsis "Yet another format-preserving TOML parser")
     (description "This package provides yet another format-preserving TOML
 parser.")
     (license (list license:expat license:asl2.0))))
@@ -64080,7 +64080,7 @@ a part of rav1e.")
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/tokio-rs/valuable")
-    (synopsis "Macros for the valuable crate.")
+    (synopsis "Macros for the valuable crate")
     (description "This package provides macros for the @code{valuable}
 crate.")
     (license license:expat)))
@@ -68211,7 +68211,7 @@ Rust.")
     (build-system cargo-build-system)
     (home-page #f)
     (synopsis
-      "High performance inflection transformation library for changing properties of words like the case.")
+      "High performance inflection transformation library for changing properties of words like the case")
     (description
       "High performance inflection transformation library for changing properties of words like the case.")
     (license license:expat)))

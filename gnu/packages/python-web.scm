@@ -782,7 +782,7 @@ for resource properties and best practices.")
     (propagated-inputs (list python-attrs python-jsonpickle python-pbr))
     (native-inputs (list python-pytest))
     (home-page "https://github.com/microsoft/jschema-to-python")
-    (synopsis "Generate Python classes from a JSON schema.")
+    (synopsis "Generate Python classes from a JSON schema")
     (description "This package generates source code for Python classes from a
 @url{http://jschema.org,JSchema} JSON schema.")
     (license license:expat)))
@@ -801,7 +801,7 @@ for resource properties and best practices.")
     (propagated-inputs (list python-attrs))
     (native-inputs (list python-pbr))
     (home-page "https://github.com/microsoft/sarif-python-om")
-    (synopsis "Python implementation of the SARIF 2.1.0 object model.")
+    (synopsis "Python implementation of the SARIF 2.1.0 object model")
     (description "This module contains classes for the object model defined
 by the @url{https://sarifweb.azurewebsites.net,Static Analysis Results
 Interchange Format (SARIF)} file format.")
@@ -6645,7 +6645,7 @@ your code non-blocking and speedy.")
         (base32 "1b64j45w35jzhjhnq44bnyad9ydh1iyyd7a6j2c8phxmllyyp2zq"))))
     (build-system python-build-system)
     (home-page "https://github.com/sethmlarson/socksio")
-    (synopsis "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5.")
+    (synopsis "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5")
     (description "The @code{socksio} Python module is a client-side sans-I/O
 SOCKS proxy implementation.  It supports SOCKS4, SOCKS4A, and SOCKS5.
 @code{socksio} is a sans-I/O library similar to @code{h11} or @code{h2}; this
@@ -6696,7 +6696,7 @@ SOCKS protocols.  It can be paired with any I/O library.")
            python-pytest-asyncio
            python-pytest-trio))
     (home-page "https://github.com/Azure/msrest-for-python")
-    (synopsis "AutoRest swagger generator Python client runtime.")
+    (synopsis "AutoRest swagger generator Python client runtime")
     (description "This package provides the runtime library @code{msrest} for
 AutoRest-generated Python clients.")
     (license license:expat)))

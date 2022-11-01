@@ -3659,7 +3659,7 @@ managers for automatically closing connections.")
            python-asyncmy
            python-sqlalchemy))
     (home-page "https://github.com/encode/databases")
-    (synopsis "Async database support for Python.")
+    (synopsis "Async database support for Python")
     (description "This package implements async database support for Python.")
     (license license:bsd-3)))
 

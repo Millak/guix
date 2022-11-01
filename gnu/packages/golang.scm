@@ -6637,7 +6637,7 @@ create or replace a file or symbolic link.")
        '(#:import-path "golang.org/x/sync/errgroup"
          #:unpack-path "golang.org/x/sync"))
       (synopsis "Synchronization, error propagation, and Context cancellation
-for groups of goroutines working on subtasks of a common task.")
+for groups of goroutines working on subtasks of a common task")
       (description "This package provides synchronization, error propagation,
 and Context cancellation for groups of goroutines working on subtasks of a
 common task.")
@@ -6795,7 +6795,7 @@ data serialization format.")
      `(#:import-path "github.com/mattn/go-zglob"))
     (home-page "https://github.com/mattn/go-zglob")
     (synopsis "Glob library that descends into other directories")
-    (description " A glob library that implements descending into other
+    (description "A glob library that implements descending into other
 directories.  It is optimized for filewalking.")
     (license license:expat)))
 

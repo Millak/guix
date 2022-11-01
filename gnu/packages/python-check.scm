@@ -141,7 +141,7 @@ interfaces with pytest.")
     (build-system python-build-system)
     (propagated-inputs (list python-cram python-pytest))
     (home-page "https://github.com/tbekolay/pytest-cram")
-    (synopsis "Run cram tests with pytest.")
+    (synopsis "Run cram tests with pytest")
     (description "Cram tests command line applications; Pytest tests Python
 applications.  @code{pytest-cram} tests Python command line applications by
 letting you write your Python API tests with pytest, and your command line

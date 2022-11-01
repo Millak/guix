@@ -185,7 +185,7 @@ This package only provides a client to the Tor Network.")))
                (("getcap=.*")
                 (string-append "getcap=" (which "getcap") "\n"))))))))
     (home-page "https://www.torproject.org/")
-    (synopsis "Transparently route an application's traffic through Tor.")
+    (synopsis "Transparently route an application's traffic through Tor")
     (description
      "Torsocks allows you to use most applications in a safe way with Tor.  It
 ensures that DNS requests are handled safely and explicitly rejects UDP

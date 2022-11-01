@@ -29860,7 +29860,7 @@ sliding windows are to be created.")
     (build-system r-build-system)
     (propagated-inputs (list r-data-table r-jsonlite r-xml r-yaml))
     (home-page "https://renkun-ken.github.io/rlist/")
-    (synopsis "A Toolbox for Non-Tabular Data Manipulation")
+    (synopsis "Toolbox for Non-Tabular Data Manipulation")
     (description
      "This package provides a set of functions for data manipulation with
 list objects, including mapping, filtering, grouping, sorting, updating,

@@ -11121,7 +11121,7 @@ meant to be quick and fun.")
                    (string-append "CPPFLAGS=" "-I"
                                   #$(this-package-input "sdl-union")
                                   "/include/SDL"))))
-    (synopsis "Liquid War 6 is a unique multiplayer wargame.")
+    (synopsis "Liquid War 6 is a unique multiplayer wargame")
     (description
      "Liquid War 6 is a unique multiplayer war game.  Your army is a blob of
 liquid and you have to try and eat your opponents.  Rules are very simple yet

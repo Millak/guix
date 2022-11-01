@@ -22878,7 +22878,7 @@ place outside with-notes.
       (arguments
        '(#:asd-systems '("ctype" "ctype-tfun")))
       (home-page "https://github.com/s-expressionists/ctype")
-      (synopsis "Common Lisp type system implementation ")
+      (synopsis "Common Lisp type system implementation")
       (description
        "This system is an implementation of the Common Lisp type system;
 particularly @code{cl:typep} and @code{cl:subtypep}.")

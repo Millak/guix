@@ -1555,7 +1555,7 @@ introduces a more general approach for processing XML with Haskell.")
     (build-system haskell-build-system)
     (inputs (list ghc-hxt))
     (home-page "https://github.com/UweSchmidt/hxt")
-    (synopsis "The XPath modules for HXT.")
+    (synopsis "The XPath modules for HXT")
     (description
      "This extension for the Haskell XML Toolbox defines data types to
 represent XPath, navigation trees and primitives to select and edit subtrees

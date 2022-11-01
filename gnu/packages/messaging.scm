@@ -3461,7 +3461,7 @@ for notification of events.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-pillow python-requests python-esprima python-pygobject gobject-introspection gtk+))
-    (synopsis "Show CAPTCHA without running proprietary code.")
+    (synopsis "Show CAPTCHA without running proprietary code")
     (description "This package shows CAPTCHA without running proprietary code.")
     (home-page "https://github.com/taylordotfish/librecaptcha")
     (license license:gpl3+)))

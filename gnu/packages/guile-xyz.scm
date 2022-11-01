@@ -1639,7 +1639,7 @@ for MySQL.")
      (list autoconf automake pkg-config texinfo))
     (inputs (list guile-3.0))
     (synopsis
-     "Guile application configuration parsing library.")
+     "Guile application configuration parsing library")
     (description
      "Guile Config is a library providing a declarative approach to
 application configuration specification.  The library provides clean

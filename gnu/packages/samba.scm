@@ -543,7 +543,7 @@ and IPV6 and the protocols layered above them, such as TCP and UDP.")
        '(("src/wsdd.py" "bin/wsdd")
          ("man/wsdd.1" "share/man/man1/"))))
     (home-page "https://github.com/christgau/wsdd")
-    (synopsis "A Web Service Discovery host daemon")
+    (synopsis "Web Service Discovery host daemon")
     (description "This daemon allows (Samba) hosts to be found by Web
 Service Dicovery Clients.  It also implements the client side of the
 discovery protocol which searches for devices implementing

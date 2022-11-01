@@ -3357,7 +3357,7 @@ of Hidden Markov Models.")
     (native-inputs
      (list python-cython python-pytest))
     (home-page "https://github.com/gatagat/lap")
-    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD).")
+    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD)")
     (description "Lap is a linear assignment problem solver using Jonker-Volgenant
 algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
     (license license:bsd-2)))
@@ -3410,7 +3410,7 @@ and Numpy.")
            python-sphinx
            python-sphinx-rtd-theme))
     (home-page "https://github.com/pyro-ppl/pyro-api")
-    (synopsis "Generic API for dispatch to Pyro backends.")
+    (synopsis "Generic API for dispatch to Pyro backends")
     (description "This package provides a generic API for dispatch to Pyro backends.")
     (license license:asl2.0)))
 

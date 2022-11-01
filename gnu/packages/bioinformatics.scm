@@ -16525,7 +16525,7 @@ assembly (small or mammalian size) and single-cell assembly.")
     (inputs
      (list zlib xz))
     (home-page "https://github.com/OceanGenomics/mudskipper")
-    (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files.")
+    (synopsis "Convert genomic alignments to transcriptomic BAM/RAD files")
     (description "Mudskipper is a tool for projecting genomic alignments to
 transcriptomic coordinates.")
     (license license:bsd-3)))

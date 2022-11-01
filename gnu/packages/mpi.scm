@@ -359,7 +359,7 @@ software vendors, application developers and computer science researchers.")
      (substitute-keyword-arguments (package-arguments openmpi)
        ((#:configure-flags flags)
         `(cons "--enable-mpi-thread-multiple" ,flags))))
-    (description " This version of Open@tie{}MPI has an implementation of
+    (description "This version of Open@tie{}MPI has an implementation of
 @code{MPI_Init_thread} that provides @code{MPI_THREAD_MULTIPLE}.  This won't
 work correctly with all transports (such as @code{openib}), and the
 performance is generally worse than the vanilla @code{openmpi} package, which
