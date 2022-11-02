@@ -949,7 +949,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.8")
+    (version "6.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -957,7 +957,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0f5iriahskzflgfzahbjihiff7m7nbdmp3ip8dx69xa28b9012w9"))
+                "1fr02jcy09v14d3k8ril0zhwnzhcqcf77wfj5b3bkrh6r8xraqhs"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1042,7 +1042,8 @@ Emacs).")
                   python-wrapper
                   gtk+
                   wxwidgets
-                  python-wxpython))
+                  python-wxpython
+                  gdk-pixbuf))
     (home-page "https://www.kicad.org/")
     (synopsis "Electronics Design Automation Suite")
     (description
@@ -1064,7 +1065,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11irf3cgm6a9aii3cf3fpjkl5sincqran4mpsp0qbs253hvj9rbb"))))
+                "04idpdzz2rfp8v1a37if01l5dfjnjg6jxp90gkgyadjzqkp6kcv3"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1098,7 +1099,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1nxz8r3h3j62fs3s77lj27333fsj5c4i01n05lv0gqx36h28hqxk"))))
+                "0y5mjjmmln37hkp9wmydinlfgrn8im8rn20145g9xgdpj8j38d48"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1127,7 +1128,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19di37hi80rzlwd468w3b6bq5kzxbslp3daskv8xb4y4f7pk3n00"))))
+                "02j445i0kcf87fhj9y6pwfcwq3arppxbrv77lbizm8kcpkpcfldl"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
