@@ -25348,14 +25348,25 @@ scripts to load entry points more quickly.")
     (name "python-funcparserlib")
     (version "1.0.0")
     (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "funcparserlib" version))
-       (sha256
-        (base32 "0swbqf53x7lfnczvi566s1g3nkf5mfrxz7sbpyymricz57a3vlvx"))))
-    (build-system python-build-system)
+      (origin
+        ;; Source tarball on PyPi lacks tests.
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/vlasovskikh/funcparserlib")
+              (commit version)))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "00pswdys5c4hpqpvfcy5zqv30gyjvjvagi12811jizw57hxrm1cs"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f))              ; no tests in PyPI and no setup.py in GitHub
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover" "-v")))))))
+    ;; ModuleNotFoundError: No module named 'poetry'
+    (native-inputs (list python-poetry-core))
     (home-page "https://github.com/vlasovskikh/funcparserlib")
     (synopsis
      "Recursive descent parsing library based on functional combinators")
