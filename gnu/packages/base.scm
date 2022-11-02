@@ -415,7 +415,13 @@ used to apply commands with arbitrarily long arguments.")
                      ,@(if (hurd-target?)
                            '((substitute* "Makefile.in"
                                ;; this test hangs
-                               (("^ *tests/misc/timeout-group.sh.*") "")))
+                               (("^ *tests/misc/timeout-group.sh.*") ""))
+                             (substitute* "gnulib-tests/Makefile.in"
+                               ;; This test sometimes fails and sometimes
+                               ;; passes, but it does this consistently, so
+                               ;; there might be some environmental factor
+                               ;; here
+                               ((" test-tls\\$\\(EXEEXT\\) ") " ")))
                            '())
                      (substitute* "Makefile.in"
                        ;; fails on filesystems where inotify cannot be used,
