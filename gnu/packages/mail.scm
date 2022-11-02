@@ -4533,7 +4533,7 @@ undelete email messages from Outlook Express .dbx files.")
     (native-inputs
      (list pkg-config))
     (home-page "https://www.five-ten-sg.com/libpst/")
-    (synopsis "")
+    (synopsis "Tools to process Outlook email archives")
     (description "The Libpst utilities include @code{readpst} which can
 convert email messages to both mbox and MH mailbox formats, @code{pst2ldif}
 which can convert the contacts to @code{.ldif} format for import into LDAP

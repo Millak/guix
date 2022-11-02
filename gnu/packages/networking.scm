@@ -273,7 +273,7 @@ protocols.")
     (description
      "C library implementation of RaptorQ Forward Error Correction for
 Librecast.  RFC6330 (IETF) describes the RaptorQ proposed standard, which LCRQ
-more-or-less follows. The primary focus has been on building a fast, simple
+more-or-less follows.  The primary focus has been on building a fast, simple
 and dependency-free FEC implementation for use with Librecast, and not on
 strict standards compliance.  The code does, however, fairly closely follow
 the RFC.")
@@ -524,7 +524,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                       (delete-file "./test/0000-0039.c")
                       (delete-file "./test/0000-0040.c"))))))
     (inputs (list libsodium lcrq))
-    (synopsis "librecast IPv6 multicast library")
+    (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
 networking.")
     (home-page "https://librecast.net/librecast.html")

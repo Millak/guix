@@ -5214,7 +5214,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
     (native-inputs
      `(("linux-pam" ,linux-pam)
        ("scdoc" ,scdoc)))
-    (synopsis "minimal and flexible login manager daemon")
+    (synopsis "Minimal and flexible login manager daemon")
     (description
      "greetd is a minimal and flexible login manager daemon
 that makes no assumptions about what you want to launch.
@@ -5242,7 +5242,7 @@ then it can be a greeter.")
                   "#define CONFIGFILE \"/etc/security/greetd_pam_mount.conf.xml\"\n")
                  (("pam_mount_config") "greetd_pam_mount_config")
                  (("pam_mount_system_authtok") "greetd_pam_mount_system_authtok"))))))))
-    (synopsis "pam-mount specifically compiled for use with greetd")
+    (synopsis "PAM module to mount volumes for a user session (greetd variant)")
     (description
      "Pam-mount is a PAM module that can mount volumes when a user logs in.
 It supports mounting local filesystems of any kind the normal mount utility
@@ -5250,7 +5250,7 @@ supports.  It can also mount encrypted LUKS volumes using the password
 supplied by the user when logging in.
 
 This package inherits pam-mount in the way that it is compiled specifically
-for use with greetd daemon. It uses different configuration location and
+for use with greetd daemon.  It uses different configuration location and
 name space for storing data in PAM.
 
 greetd-pam-mount is used in configuration of greetd to provide

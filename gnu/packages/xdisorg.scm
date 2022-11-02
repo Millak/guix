@@ -3163,7 +3163,7 @@ MouseKeys-acceleration management.")
     (synopsis "Day/night gamma adjustments for Wayland compositors")
     (home-page "https://sr.ht/~kennylevinsen/wlsunset/")
     (description
-     "wlunset adjusts gamma based on day-night cycles on Wayland compositors
+     "Wlsunset adjusts gamma based on day-night cycles on Wayland compositors
 that support @samp{wlr-gamma-control-unstable-v1}.  It is also known as a blue
 light filter or night light.")
     (license license:expat)))
