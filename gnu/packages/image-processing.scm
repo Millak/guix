@@ -54,6 +54,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
@@ -86,6 +87,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tbb)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages video)
@@ -867,6 +869,99 @@ the VIPS image processing library.  It's a little like a spreadsheet: you
 create a set of formula connecting your objects together, and on a change nip2
 recalculates.")
     (license license:gpl2+)))
+
+;; This package bundles and extends VTK.  It also reuses the VTK build system
+;; to some degree.  Sadly, it does not seem to be possible to build with an
+;; external VTK, despite the CMake option PARAVIEW_USE_EXTERNAL_VTK.
+(define-public paraview-5.9
+  (package
+    (name "paraview")
+    (version "5.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://www.paraview.org/files/v"
+                           (version-major+minor version)
+                           "/ParaView-v" version ".tar.xz"))
+       (sha256
+        (base32 "13aczmfshzia324h9r2m675yyrklz2308rf98n444ppmzfv6qj0d"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:build-type "Release"        ;Build without debug symbols to save space
+      #:configure-flags
+      '(list "-DPARAVIEW_BUILD_WITH_EXTERNAL=ON"
+             "-DPARAVIEW_BUILD_SHARED_LIBS=ON"
+             "-DPARAVIEW_BUILD_DEVELOPER_DOCUMENTATION=OFF"
+             "-DPARAVIEW_USE_PYTHON=ON"
+             "-DPARAVIEW_ENABLE_FFMPEG=ON"
+             "-DPARAVIEW_ENABLE_GDAL=ON"
+             "-DPARAVIEW_ENABLE_WEB=OFF"
+
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_doubleconversion=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_eigen=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_expat=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_freetype=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_gl2ps=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_glew=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_hdf5=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_jpeg=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_libxml2=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_lz4=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_lzma=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_netcdf=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_png=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_theora=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_tiff=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_utf8=ON"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_zlib=ON"
+
+             "-DVTK_MODULE_USE_EXTERNAL_ParaView_vtkcatalyst=OFF"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_cgns=OFF"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_exprtk=OFF"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_fmt=OFF"
+             "-DVTK_MODULE_USE_EXTERNAL_VTK_ioss=OFF")))
+    (inputs
+     (list ;; XXX: We can't simply #:use-module due to a cycle somewhere.
+           (module-ref
+            (resolve-interface '(gnu packages engineering))
+            'cgns)
+           cli11
+           double-conversion
+           eigen
+           expat
+           ffmpeg
+           freetype
+           gdal
+           gl2ps
+           glew
+           hdf5
+           jsoncpp
+           libharu
+           libjpeg-turbo
+           libpng
+           libtheora
+           libtiff
+           libxml2
+           lz4
+           mesa
+           netcdf
+           protobuf
+           pugixml
+           python
+           qtbase-5
+           qtsvg-5
+           qttools-5
+           qtxmlpatterns
+           utfcpp
+           zlib))
+    (home-page "https://www.paraview.org/")
+    (synopsis "Data analysis and visualization application")
+    (description "ParaView is a data analysis and visualization application.
+Users can quickly build visualizations to analyze their data using qualitative
+and quantitative techniques.  The data exploration can be done interactively
+in 3D or programmatically using ParaView’s batch processing capabilities.")
+    (license license:bsd-3)))
 
 (define-public vxl
   (package
