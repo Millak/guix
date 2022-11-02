@@ -10855,6 +10855,32 @@ file (e.g. @file{PKG-INFO}).")
 cyclomatic complexity of Python source code.")
     (license license:expat)))
 
+(define-public python-autoflake8
+  (package
+    (name "python-autoflake8")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/fsouza/autoflake8")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jx7bkslbhr24yvq60pl39faz2r6g93f1zm1gygswl0rzr5zmgnh"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-aiofiles
+           python-poetry-core
+           python-pytest
+           python-pytest-xdist))
+    (propagated-inputs (list python-pyflakes))
+    (home-page "https://github.com/fsouza/autoflake8")
+    (synopsis "Automatically fix issues reported by flake8")
+    (description "Tool to automatically fix some issues reported by
+@command{flake8}.")
+    (license license:expat)))
+
 (define-public python-flake8
   (package
     (name "python-flake8")
