@@ -1512,7 +1512,15 @@ that may return a colorized version of its argument."
                                    (sort packages package<?))) " ")))
       (split-lines list (string-length "dependencies: "))))
 
-  (define (output->recutils package output)
+  (define %default-output-synopses
+    `(("bin" . ,(G_ "executable programs and scripts"))
+      ("debug" . ,(G_ "debug information"))
+      ("lib" . ,(G_ "shared libraries"))
+      ("static" . ,(G_ "static libraries"))
+      ("out" . ,(G_ "everything else"))))
+
+  (define* (output->recutils package output #:optional
+                             (default-synopses %default-output-synopses))
     (string-append
      "+ " output ": "
      (or
@@ -1522,12 +1530,7 @@ that may return a colorized version of its argument."
           (and (string=? key output) (P_ synopsis)))
          (_ #f))
        (package-properties package))
-      (assoc-ref `(("bin" . ,(G_ "executable programs and scripts"))
-                   ("debug" . ,(G_ "debug information"))
-                   ("lib" . ,(G_ "shared libraries"))
-                   ("static" . ,(G_ "static libraries"))
-                   ("out" . ,(G_ "everything else")))
-                 output)
+      (assoc-ref default-synopses output)
       (G_ "see Appendix H"))))
 
   (define (package-outputs/out-last package)
@@ -1546,8 +1549,16 @@ that may return a colorized version of its argument."
   ;; Note: Don't i18n field names so that people can post-process it.
   (format port "name: ~a~%" (highlight (package-name p) port*))
   (format port "version: ~a~%" (highlight (package-version p) port*))
-  (format port "outputs:~%~{~a~%~}"
-          (map (cut output->recutils p <>) (package-outputs/out-last p)))
+  (match (package-outputs/out-last p)
+    (("out")                            ; one output has everything
+     (format port "outputs:~%~a~%"
+             (output->recutils p "out"
+                               (alist-cons "out" (G_ "everything")
+                                           %default-output-synopses))))
+    (outputs                            ; multiple outputs
+     (format port "outputs:~%~{~a~%~}"
+             (map (cut output->recutils p <>) (package-outputs/out-last p)))))
+
   (format port "systems: ~a~%"
           (split-lines (string-join (package-transitive-supported-systems p))
                        (string-length "systems: ")))
