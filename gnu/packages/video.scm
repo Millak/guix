@@ -977,6 +977,27 @@ H.264 (MPEG-4 AVC) video streams.")
                       "file://extras/cl.h"
                       "See extras/cl.h in the distribution."))))))
 
+;;; TODO: Merge into libx264 on staging.
+(define-public libx264-next
+  ;; There are no tags in the repository, so we take the version number from
+  ;; the X264_BUILD variable defined in x264.h.
+  (let ((version "164")
+        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
+        (revision "0"))
+    (package
+      (inherit libx264)
+      (name "libx264")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://code.videolan.org/videolan/x264.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq")))))))
+
 (define-public mkvtoolnix
   (package
     (name "mkvtoolnix")
