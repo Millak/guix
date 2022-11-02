@@ -1515,6 +1515,7 @@ that may return a colorized version of its argument."
   (define %default-output-synopses
     `(("bin" . ,(G_ "executable programs and scripts"))
       ("debug" . ,(G_ "debug information"))
+      ("doc" . ,(G_ "documentation"))
       ("lib" . ,(G_ "shared libraries"))
       ("static" . ,(G_ "static libraries"))
       ("out" . ,(G_ "everything else"))))
