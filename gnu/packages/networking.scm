@@ -2766,7 +2766,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.0.0")
+    (version "3.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2774,7 +2774,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "17hr7x9iahhmskp70pv59v4bsn86r2jmbaw37vs03jsz3k1a57gs"))))
+                "0s5xbcchnfqlgrabjs76bwd5d6qhvjx352r274r5p7wis0b1g8g4"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
