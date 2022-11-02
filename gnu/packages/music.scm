@@ -2793,7 +2793,7 @@ export.")
 (define-public pd
   (package
     (name "pd")
-    (version "0.52-2")
+    (version "0.53-1")
     (source (origin
               (method url-fetch)
               (uri
@@ -2801,7 +2801,7 @@ export.")
                               version ".src.tar.gz"))
               (sha256
                (base32
-                "04fcsfgnv2r7g7p8vk9s9n3wba1bx4xgqw5mhwv09xbw9s3gapg9"))))
+                "0g0ks2h55p0kwz2cc5n7d6vcl6crg299zfwwwwnzc6fibclaqksl"))))
     (build-system gnu-build-system)
     (arguments
      (let ((wish (string-append "wish" (version-major+minor
@@ -2810,7 +2810,9 @@ export.")
         #:tests? #f                     ; no "check" target
         #:configure-flags
         #~(list
+           "--disable-oss"
            "--enable-jack"
+           "--without-local-portaudio"
            (string-append "--with-wish="
                           (search-input-file %build-inputs
                                              (string-append "/bin/" #$wish))))
@@ -2824,7 +2826,7 @@ export.")
     (native-inputs
      (list autoconf automake libtool gettext-minimal pkg-config))
     (inputs
-     (list tk alsa-lib jack-1))
+     (list tk alsa-lib jack-1 portaudio))
     (home-page "https://puredata.info")
     (synopsis "Visual programming language for artistic performances")
     (description
