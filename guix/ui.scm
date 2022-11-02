@@ -1531,7 +1531,7 @@ that may return a colorized version of its argument."
          (_ #f))
        (package-properties package))
       (assoc-ref default-synopses output)
-      (G_ "see Appendix H"))))
+      (G_ "[description missing]"))))
 
   (define (package-outputs/out-last package)
     ((compose append partition)
