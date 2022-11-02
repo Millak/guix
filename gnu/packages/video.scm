@@ -2406,6 +2406,22 @@ To load this plugin, specify the following option when starting mpv:
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
 
+;;; TODO: Merge into libvpx on staging.
+(define-public libvpx-next
+  (package
+    (inherit libvpx)
+    (name "libvpx")
+    (version "1.12.0")
+    (source (origin
+              (inherit (package-source libvpx))
+              (uri (git-reference
+                    (url "https://chromium.googlesource.com/webm/libvpx")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))))))
+
 (define-public youtube-dl
   (package
     (name "youtube-dl")
