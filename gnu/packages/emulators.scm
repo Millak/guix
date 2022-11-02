@@ -2494,3 +2494,47 @@ on a Commodore C64, C128 etc.")
     (description "This package provides a development environment for 6502 systems, including macro assembler, C compiler, linker, librarian and several other tools.")
     (home-page "https://cc65.github.io/")
     (license license:zlib)))
+
+(define-public uxn
+  (let ((commit "1b2049e238df96f32335edf1c6db35bd09f8b42d")
+        (revision "1"))
+    (package
+      (name "uxn")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~rabbits/uxn")
+                      (commit commit)))
+                (file-name (string-append name "-" version))
+                (sha256
+                 (base32
+                  "0d3hy1db1mfk2l7q7wdxvp1z0vkmyyb9pdp81d9zm58ylpxaq2cp"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure)
+                          (replace 'build
+                            (lambda _
+                              (setenv "CC" #$(cc-for-target))
+                              (invoke "./build.sh" "--no-run")))
+                          (replace 'install
+                            (lambda _
+                              (let ((bin (string-append #$output "/bin"))
+                                    (share (string-append #$output
+                                                          "/share/uxn")))
+                                (with-directory-excursion "bin"
+                                  (for-each (lambda (x)
+                                              (install-file x bin))
+                                            '("uxnasm" "uxncli" "uxnemu"))
+                                  (for-each (lambda (x)
+                                              (install-file x share))
+                                            '("asma.rom" "launcher.rom")))))))))
+      (inputs (list sdl2))
+      (home-page "https://100r.co/site/uxn.html")
+      (synopsis "Assembler and emulator for the Uxn stack-machine")
+      (description
+       "This package provides an assembler and emulator for the Uxn
+stack-machine, written in ANSI C.  Graphical output is implemented using SDL2.")
+      (license license:expat))))
