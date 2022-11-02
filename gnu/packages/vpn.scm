@@ -50,6 +50,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system linux-module)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix utils)
@@ -709,17 +710,19 @@ and probably others.")
 (define-public openconnect-sso
   (package
     (name "openconnect-sso")
-    (version "0.7.3")
+    (version "0.8.0")
     (source
       (origin
-        (method url-fetch)
-        (uri (pypi-uri "openconnect-sso" version))
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/vlaci/openconnect-sso")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
-         (base32 "065s5c8q80jh0psdw7694nlabwpra7aw6yc4jlgsc9vxx8rx2na1"))))
-    (build-system python-build-system)
+         (base32 "0l214qxhxx214628mcg6rmbzbzna7mxj5l7rah9q4vvcd88ymp39"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f  ; Tests not included, building from git requires poetry.
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-openconnect
            (lambda* (#:key inputs #:allow-other-keys)
@@ -728,11 +731,7 @@ and probably others.")
                 (string-append "\""
                                (search-input-file inputs "/sbin/openconnect")
                                "\"")))))
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-v"))))
-         (add-after 'install 'wrap-qt-process-path
+         (add-after 'check 'wrap-qt-process-path
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (bin (string-append out "/bin/openconnect-sso"))
@@ -744,6 +743,7 @@ and probably others.")
                  `("QTWEBENGINEPROCESS_PATH" = (,qt-process-path)))))))))
     (inputs
      (list openconnect
+           poetry
            python-attrs
            python-colorama
            python-keyring
@@ -758,7 +758,9 @@ and probably others.")
            python-toml
            qtwebengine-5))
     (native-inputs
-     (list python-pytest python-setuptools-scm))
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-httpserver))
     (home-page "https://github.com/vlaci/openconnect-sso")
     (synopsis "OpenConnect wrapper script supporting Azure AD (SAMLv2)")
     (description
