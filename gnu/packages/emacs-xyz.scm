@@ -28615,11 +28615,12 @@ programming in Emacs Lisp easy and fun.")
     (license license:gpl3+)))
 
 (define-public emacs-evil-traces
-  (let ((commit "1931e3ea2c64b4aec393a9c25063c330deff55e3")
-        (revision "2"))
+  ;; XXX: Upstream does not tag releases.  Use commit matching exact version
+  ;; bump.
+  (let ((commit "05e201cd63b549e3c88b5c3fc9b264bd6fe5a42c"))
     (package
       (name "emacs-evil-traces")
-      (version (git-version "0.0.1" revision commit))
+      (version "0.2.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -28628,25 +28629,25 @@ programming in Emacs Lisp easy and fun.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "12p9lfxscs182vbd4dy0m5gacs3d4kyprbz5yndpwvl8g2qsqplz"))))
+                  "0vadpy2whcgx08blyb4vw6wq3nrxdl03zv85lp37pf3mdk9kwmga"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "make" "test")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-shell
+              ;; Setting the SHELL environment variable is required for the
+              ;; tests to find sh.
+              (lambda _
+                (setenv "SHELL" (which "sh")))))))
       (propagated-inputs
        (list emacs-evil))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'set-shell
-             ;; Setting the SHELL environment variable is required for the tests
-             ;; to find sh.
-             (lambda _
-               (setenv "SHELL" (which "sh"))
-               #t)))
-         #:tests? #t
-         #:test-command '("make" "test")))
       (home-page "https://github.com/mamapanda/evil-traces")
-      (synopsis "Visual hints for @code{evil-ex}")
-      (description "This package adds visual hints to certain @code{ex}
-commands in @code{evil-mode}.")
+      (synopsis "Visual hints for Emacs' Evil Ex commands")
+      (description "This package adds visual hints to certain Ex commands in
+Evil mode.")
       (license license:gpl3+))))
 
 (define-public emacs-evil-tmux-navigator
