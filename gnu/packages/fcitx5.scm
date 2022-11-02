@@ -268,7 +268,9 @@ IM module for GTK+3 applications.
       #:configure-flags
       #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
                              #$(this-package-input "fcitx5-gtk")
-                             "/include/Fcitx5/GClient")
+                             "/include/Fcitx5/GClient"
+                             " -I" #$(this-package-input "glib")
+                             "/include/gio-unix-2.0")
               "-DENABLE_GTK2_IM_MODULE=OFF"
               "-DENABLE_GTK3_IM_MODULE=OFF")
       #:phases
