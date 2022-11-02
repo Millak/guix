@@ -113,7 +113,8 @@ data in motion, or as a file format for data at rest.")
     (arguments
      (list
       ;; TODO: Add the BUILD_SHARED_LIBS flag to cmake-build-system.
-      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                "-Dprotobuf_USE_EXTERNAL_GTEST=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'disable-broken-tests
@@ -154,6 +155,7 @@ data in motion, or as a file format for data at rest.")
                             (install-file file slib)
                             (delete-file file))
                           (find-files lib "\\.a$"))))))))
+    (native-inputs (list googletest))
     (inputs (list zlib))
     (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
