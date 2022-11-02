@@ -536,8 +536,7 @@ algorithm.")
     (inputs
      (list boost gsl libxml2 zlib))
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ("gfortran:lib" ,gfortran "lib")))
+     (list gfortran-7 (list gfortran-7 "lib")))
     ;; Non-portable assembly instructions are used so building fails on
     ;; platforms other than x86_64 or i686.
     (supported-systems '("x86_64-linux" "i686-linux"))
