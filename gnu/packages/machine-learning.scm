@@ -510,6 +510,7 @@ algorithm.")
        (uri (string-append
              "https://www.imbs.uni-luebeck.de/fileadmin/files/Software"
              "/randomjungle/randomjungle-" version ".tar_.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (patches (search-patches "randomjungle-disable-static-build.patch"))
        (sha256
         (base32
