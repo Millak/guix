@@ -171,3 +171,24 @@ written in C, C++, Ada, Objective-C, Pascal and more.")
     (name "gdb-minimal")
     (inputs (fold alist-delete (package-inputs gdb)
                   '("libxml2" "ncurses" "python-wrapper" "source-highlight")))))
+
+(define-public avr-gdb
+  (package/inherit gdb-12
+    (name "avr-gdb")
+    (arguments
+     `(#:configure-flags
+       (list "--target=avr"
+             "--disable-nls"
+             "--enable-languages=c,c++"
+             "--with-system-readline"
+             "--enable-source-highlight")
+       ,@(package-arguments gdb-12)))
+    (synopsis "The GNU Debugger for AVR")
+    (description
+     "GDB is the GNU debugger.  With it, you can monitor what a program is
+doing while it runs or what it was doing just before a crash.  It allows you
+to specify the runtime conditions, to define breakpoints, and to change how
+the program is running to try to fix bugs.
+
+This variant of GDB can be used to debug programs written for the AVR
+microcontroller architecture.")))
