@@ -37,6 +37,7 @@
   #:use-module (guix build-system ruby)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
@@ -48,7 +49,8 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
-  #:use-module (gnu packages ruby))
+  #:use-module (gnu packages ruby)
+  #:use-module (srfi srfi-1))
 
 (define-public fstrm
   (package
@@ -91,55 +93,69 @@ data in motion, or as a file format for data at rest.")
 (define-public protobuf
   (package
     (name "protobuf")
-    (version "3.17.3")
+    (version "3.21.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/google/protobuf/releases/"
-                                  "download/v" version "/protobuf-cpp-"
-                                  version ".tar.gz"))
+              (uri (string-append
+                    "https://github.com/protocolbuffers/"
+                    "protobuf/releases/download/v"
+                    (string-join (drop (string-split version #\.) 1) ".")
+                    "/protobuf-cpp-" version ".tar.gz"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third_party"))
               (sha256
                (base32
-                "1jzqrklhj9grs6xbddyb5dyxfbgbgbyhl5zig8ml50wb22gwkkji"))))
-    (build-system gnu-build-system)
-    (inputs (list zlib))
+                "01cl4l0rnnzjbhjjs2gyg2pk13505gh86ikh22jqjp54dp8mvp5x"))
+              (patches (search-patches "protobuf-fix-build-on-32bit.patch"))))
     (outputs (list "out"
                    "static"))           ; ~12 MiB of .a files
+    (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           ;; The following tests fail on 32 bit architectures such as
-           ;; i686-linux.
-           (lambda _
-             (let-syntax ((disable-tests
-                           (syntax-rules ()
-                             ((_ file test ...)
-                              (substitute* file
-                                ((test name)
-                                 (string-append "DISABLED_" name)) ...)))))
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8460.
-               (disable-tests "src/google/protobuf/any_test.cc"
-                              "TestPackFromSerializationExceedsSizeLimit")
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8459.
-               (disable-tests "src/google/protobuf/arena_unittest.cc"
-                              "SpaceAllocated_and_Used"
-                              "BlockSizeSmallerThanAllocation")
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8082.
-               (disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
-                              "LargeOutput"))))
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move static libraries to the "static" output.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (lib    (string-append out "/lib"))
-                    (static (assoc-ref outputs "static"))
-                    (slib   (string-append static "/lib")))
-               (mkdir-p slib)
-               (for-each (lambda (file)
-                           (install-file file slib)
-                           (delete-file file))
-                         (find-files lib "\\.a$"))))))))
-    (home-page "https://github.com/google/protobuf")
+     (list
+      ;; TODO: Add the BUILD_SHARED_LIBS flag to cmake-build-system.
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            ;; The following tests fail on 32 bit architectures such as
+            ;; i686-linux.
+            (lambda _
+              (let-syntax ((disable-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 ((test name)
+                                  (string-append "DISABLED_" name)) ...)))))
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8460.
+                (disable-tests "src/google/protobuf/any_test.cc"
+                               "TestPackFromSerializationExceedsSizeLimit")
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8459.
+                (disable-tests "src/google/protobuf/arena_unittest.cc"
+                               "SpaceAllocated_and_Used"
+                               "BlockSizeSmallerThanAllocation")
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8082.
+                (disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
+                               "LargeOutput"))))
+          (add-before 'configure 'set-c++-standard
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; The 32bit patch requires C++14.
+                ;; TODO: Remove after next release.
+                (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 14"))))
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move static libraries to the "static" output.
+              (let* ((out    (assoc-ref outputs "out"))
+                     (lib    (string-append out "/lib"))
+                     (static (assoc-ref outputs "static"))
+                     (slib   (string-append static "/lib")))
+                (mkdir-p slib)
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files lib "\\.a$"))))))))
+    (inputs (list zlib))
+    (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
     (description
      "Protocol Buffers are a way of encoding structured data in an efficient
@@ -159,7 +175,14 @@ internal RPC protocols and file formats.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))))
+                "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))
+    (build-system gnu-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+                 ((#:configure-flags _ #f)
+                  #~(list))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (delete 'set-c++-standard)))))))
 
 ;; The 3.5 series are the last versions that do not require C++ 11.
 (define-public protobuf-3.5
