@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
 ;;; Copyright © 2016, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
@@ -2584,6 +2584,36 @@ computation of nodal connectivity of sub-elements (faces and edges),
 arithmetic operations on fields, entity location functionalities, and
 interpolation toolkit.")
     (license license:gpl3+)))
+
+(define-public cgns
+  (package
+    (name "cgns")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGNS/CGNS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jig1y7lv9qk1ri2gqws7ffpajmhxnank7gbyna9hfaghsxdlnvd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "-DCGNS_ENABLE_TESTS=ON"
+                  "-DCGNS_ENABLE_FORTRAN=ON")))
+    (inputs (list hdf5 gfortran))
+    (home-page "https://cgns.org/")
+    (synopsis "Read and write computational fluid dynamics analysis data")
+    (description "This package provides software that reads, writes, and
+modifies data in the @dfn{CFD General Notation System} (CGNS) format.  The
+format is meant for recording and recovering computer data associated with the
+numerical solution of fluid dynamics equations.  The format is a conceptual
+entity established by the documentation; the software is a physical product
+supplied to enable developers to access and produce data recorded in that
+format.")
+    (license license:zlib)))
 
 (define-public libarea
   (let ((revision "1")
