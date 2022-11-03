@@ -15392,6 +15392,40 @@ display messages in the user's native language.")
 (define-public cl-system-locale
   (sbcl-package->cl-source-package sbcl-system-locale))
 
+(define-public sbcl-cluster
+  (let ((commit "b040e97578f3027d7d8c7652c74917726574c43e")
+        (revision "0"))
+    (package
+      (name "sbcl-cluster")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/robert-strandh/Cluster")
+               (commit commit)))
+         (file-name (git-file-name "cl-cluster" commit))
+         (sha256
+          (base32 "0ixbr3wm7d3m8mgzasd95rxvs9kip6ngr5s1zk7j3604mcfssqyi"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-acclimation
+             sbcl-split-sequence))
+      (home-page "https://github.com/robert-strandh/Cluster")
+      (synopsis "Assembler with input in the form of standard instances")
+      (description
+       "Cluster is an assembler (initially for x86 and x86-64) with a difference.
+To avoid the issue of defining a syntax, the input to Cluster is a list
+of standard objects (i.e., instances of the class STANDARD-OBJECT),
+as opposed to a character file or S-expressions.")
+      (license license:bsd-2))))
+
+(define-public ecl-cluster
+  (sbcl-package->ecl-package sbcl-cluster))
+
+(define-public cl-cluster
+  (sbcl-package->cl-source-package sbcl-cluster))
+
 (define-public sbcl-language-codes
   (let ((commit "e7aa0e37cb97a3d37d6bc7316b479d01bff8f42e"))
     (package
