@@ -37,6 +37,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages readline)
@@ -433,7 +434,7 @@ a hardware description and verification language.")
 (define-public nvc
   (package
     (name "nvc")
-    (version "1.5.3")
+    (version "1.7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -442,10 +443,11 @@ a hardware description and verification language.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1gjpwblp8isplyad3b6fl7cb5qv1rn3lf9qgf4l139y97cp2mm4s"))))
+                "01b0yhr0fw59nxwi4pz04mp9b71mg6s7zaysp0r8h0m2nd5pbpgc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:out-of-source? #t
+       #:configure-flags
        '("--enable-vhpi")
        #:phases
        (modify-phases %standard-phases
@@ -462,10 +464,11 @@ a hardware description and verification language.")
            which
            check)) ; for the tests
     (inputs
-     (list llvm-9))
+     (list elfutils
+           llvm-9))
     (synopsis "VHDL compiler and simulator")
     (description "This package provides a VHDL compiler and simulator.")
-    (home-page "https://github.com/nickg/nvc")
+    (home-page "https://www.nickg.me.uk/nvc/")
     (license license:gpl3+)))
 
 (define-public systemc
