@@ -453,6 +453,42 @@ It's intended as a simpler alternative to parser generators.")
 (define-public ecl-meta
   (sbcl-package->ecl-package sbcl-meta))
 
+(define-public sbcl-cl-inotify
+  (let ((commit "66f29e01ec28355ebba8292411b4de90eebd76a3")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-inotify")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Ferada/cl-inotify")
+               (commit commit)))
+         (file-name (git-file-name "cl-inotify" version))
+         (sha256
+          (base32 "0d3bvp5lqnddzhk1w9yyli03njbkhc8d129a058g0j49kgd47c7v"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs (list sbcl-fiveam))
+     (inputs
+       (list libfixposix
+             sbcl-binary-types
+             sbcl-cffi
+             sbcl-osicat
+             sbcl-trivial-utf-8))
+     (synopsis "Common Lisp interface to the Linux inotify API")
+     (description
+      "@code{cl-inotify} uses @code{cl-cffi} to provide a Common Lisp
+interface to the Linux inotify API.")
+     (home-page "https://github.com/Ferada/cl-inotify/")
+     (license license:bsd-2))))
+
+(define-public cl-inotify
+  (sbcl-package->cl-source-package sbcl-cl-inotify))
+
+(define-public ecl-cl-inotify
+  (sbcl-package->ecl-package sbcl-cl-inotify))
+
 (define-public sbcl-bodge-queue
   (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
         (revision "0"))
