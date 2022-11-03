@@ -60,6 +60,7 @@
             storage-pci-device?
             network-pci-device?
             display-pci-device?
+            load-pci-device-database
 
             current-module-debugging-port
 
@@ -487,6 +488,79 @@ key such as 'MAJOR or 'DEVTYPE and each cdr is the corresponding value."
                             (assq-ref properties 'MODALIAS)))
               (find-files "/sys/bus/pci/devices"
                           #:stat lstat)))
+
+(define (read-pci-device-database port)
+  "Parse the 'pci.ids' database that ships with the pciutils package and is
+maintained at <https://pci-ids.ucw.cz/>."
+  (define (comment? str)
+    (string-prefix? "#" (string-trim str)))
+  (define (blank? str)
+    (string-null? (string-trim-both str)))
+  (define (device? str)
+    (eqv? #\tab (string-ref str 0)))
+  (define (subvendor? str)
+    (string-prefix? "\t\t" str))
+  (define (class? str)
+    (string-prefix? "C " str))
+  (define (parse-id-line str)
+    (let* ((str   (string-trim-both str))
+           (space (string-index str char-set:whitespace)))
+      (values (string->number (string-take str space) 16)
+              (string-trim (string-drop str (+ 1 space))))))
+  (define (finish vendor vendor-id devices table)
+    (fold (lambda (device table)
+            (match device
+              ((device-id . name)
+               (vhash-consv (logior (ash vendor-id 16) device-id)
+                            (cons vendor name)
+                            table))))
+          table
+          devices))
+
+  (let loop ((table vlist-null)
+             (vendor-id #f)
+             (vendor #f)
+             (devices '()))
+    (match (read-line port)
+      ((? eof-object?)
+       (let ((table (if (and vendor vendor-id)
+                        (finish vendor vendor-id devices table)
+                        table)))
+         (lambda (vendor device)
+           (match (vhash-assv (logior (ash vendor 16) device) table)
+             (#f
+              (values #f #f))
+             ((_ . (vendor . name))
+              (values vendor name))))))
+      ((? comment?)
+       (loop table vendor-id vendor devices))
+      ((? blank?)
+       (loop table vendor-id vendor devices))
+      ((? subvendor?)                             ;currently ignored
+       (loop table vendor-id vendor devices))
+      ((? class?)                                 ;currently ignored
+       (loop table vendor-id vendor devices))
+      ((? device? line)
+       (let-values (((id name) (parse-id-line line)))
+         (loop table vendor-id vendor
+               (if (and vendor-id vendor)         ;class or device?
+                   (alist-cons id name devices)
+                   devices))))
+      (line
+       (let ((table (if (and vendor vendor-id)
+                        (finish vendor vendor-id devices table)
+                        table)))
+         (let-values (((vendor-id vendor) (parse-id-line line)))
+           (loop table vendor-id vendor '())))))))
+
+(define (load-pci-device-database file)
+  "Read the 'pci.ids' database at FILE (get it from the pciutils package or
+from <https://pci-ids.ucw.cz/>) and return a lookup procedure that takes a PCI
+vendor ID and a device ID (two integers) and returns the vendor name and
+device name as two values."
+  (let ((port (open-file file "r0")))
+    (call-with-gzip-input-port port
+      read-pci-device-database)))
 
 (define (device-module-aliases device)
   "Return the list of module aliases required by DEVICE, a /dev file name, as
