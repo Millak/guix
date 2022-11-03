@@ -1251,7 +1251,7 @@ with strong support for multi-part, multi-channel use cases.")
      (list pkg-config))
     (inputs
      `(("boost" ,boost)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-8)
        ("libheif" ,libheif)
        ("libpng" ,libpng)
        ("libjpeg" ,libjpeg-turbo)

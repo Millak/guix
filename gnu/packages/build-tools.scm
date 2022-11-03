@@ -135,7 +135,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
                         (invoke "ctest")))))))
     (inputs
      `(("c-ares" ,c-ares)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-8)
        ("grpc" ,grpc)
        ("json-modern-cxx" ,json-modern-cxx)
        ("protobuf" ,protobuf)

@@ -3649,7 +3649,7 @@ communication over HTTP.")
            pcre2
            sobjectizer))
     (propagated-inputs
-     (list asio fmt http-parser))
+     (list asio fmt-8 http-parser))
     (arguments
      `(#:configure-flags '("-DRESTINIO_INSTALL=on")
        #:tests? #f ; TODO: The tests are called from the root CMakelist, need RESTINIO_TEST=on.
@@ -3737,7 +3737,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (chmod dhtcluster #o555)
                 (wrap-program dhtcluster
                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
-    (inputs (list bash-minimal fmt readline))
+    (inputs (list bash-minimal fmt-8 readline))
     (propagated-inputs
      (list msgpack                      ;included in several installed headers
            restinio                     ;included in opendht/http.h

@@ -1734,7 +1734,7 @@ display a clock or apply image manipulation techniques to the background image."
         (base32 "15fy21cipih80amv78g7g4k2gylf107phbv0fjacn3w3n0i3cf2k"))))
     (build-system meson-build-system)
     (inputs (list date
-                  fmt
+                  fmt-8
                   gtk-layer-shell
                   gtkmm-3
                   jsoncpp

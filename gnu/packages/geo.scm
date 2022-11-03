@@ -1384,7 +1384,7 @@ based on the Osmium library.")
      (list boost
            bzip2
            expat
-           fmt
+           fmt-8
            libosmium
            lua
            postgresql

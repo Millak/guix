@@ -1029,7 +1029,7 @@ H.264 (MPEG-4 AVC) video streams.")
            libebml
            file
            flac
-           fmt
+           fmt-8
            libdvdread
            libmatroska
            libogg

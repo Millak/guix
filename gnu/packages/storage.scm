@@ -201,7 +201,7 @@
        ("cryptsetup" ,cryptsetup)
        ("expat" ,expat)
        ("fcgi" ,fcgi)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-8)
        ("fuse" ,fuse)
        ("icu4c" ,icu4c)
        ("jemalloc" ,jemalloc)
