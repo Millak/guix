@@ -2319,7 +2319,6 @@ reporting or the build process.")))
        #:modules
        ((guix build ant-build-system)
         (guix build java-utils)
-        (guix build syscalls)
         (guix build utils))
        #:phases
        (modify-phases %standard-phases
@@ -2328,7 +2327,7 @@ reporting or the build process.")))
              ;; The model has almost not changed, but the newer version is
              ;; needed to prevent an error in the newer modello we have
              (let ((source (assoc-ref inputs "maven-source"))
-                   (dir (mkdtemp! "maven-source-XXXXXXXX")))
+                   (dir (mkdtemp "maven-source-XXXXXXXX")))
                (with-directory-excursion dir
                  (invoke "tar" "xf" source)
                  (copy-file (car (find-files "." "maven.mdo"))
