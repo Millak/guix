@@ -2562,7 +2562,7 @@ lets the client choose the concrete timeline.")
 (define-public ocaml-ssl
   (package
     (name "ocaml-ssl")
-    (version "0.5.12")
+    (version "0.5.13")
     (source
       (origin
         (method git-fetch)
@@ -2571,7 +2571,7 @@ lets the client choose the concrete timeline.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256 (base32
-                  "1dr7yghbv0wncvggd2105bj097msgrdzxd9wjkw1xxf2vvp0j1bi"))))
+                  "1bg5vagklq6yfxsvcnj2i76xis8hb59088hkic82smyrxdjd1kjs"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
