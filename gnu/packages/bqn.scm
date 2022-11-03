@@ -55,7 +55,6 @@
       (arguments
        (list
         #:imported-modules `(,@%gnu-build-system-modules
-                             (guix build syscalls)
                              (guix build ant-build-system))
         #:modules `((guix build gnu-build-system)
                     ((guix build ant-build-system)
