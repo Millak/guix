@@ -18565,6 +18565,30 @@ datum transformations.")
     ;; Either of these licenses
     (license (list license:gpl2 license:expat))))
 
+(define-public r-sftime
+  (package
+    (name "r-sftime")
+    (version "0.2-0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "sftime" version))
+              (sha256
+               (base32
+                "1ymi60ag8kqb3293bdcvb83zwsgrz000ylifjvlpzzmh1xsisanq"))))
+    (properties `((upstream-name . "sftime")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-sf))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=sftime")
+    (synopsis "Simple feature objects that have a time column")
+    (description
+     "This package provides classes and methods for spatial objects
+that have a registered time column, in particular for irregular
+spatiotemporal data.  The @code{time} column can be of any type, but
+needs to be ordinal.  Regularly laid out spatiotemporal data (vector
+or raster data cubes) are handled by package stars'.")
+    (license license:asl2.0)))
+
 (define-public r-spdep
   (package
     (name "r-spdep")
