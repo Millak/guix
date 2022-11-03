@@ -31233,6 +31233,25 @@ platform using the ActivityPub protocol.")
 and abstract ELF, PE and MachO formats.")
     (license license:asl2.0)))
 
+(define-public python-eris
+  (package
+    (name "python-eris")
+    (version "0.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "eris" version))
+              (sha256
+               (base32
+                "16wbmahmfzdzrsjbn8jzi79vhghrzvvlcgnym20q0v3p3i4x47pq"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pycryptodome))
+    (home-page "https://codeberg.org/eris/python-eris")
+    (synopsis "Python implementation of ERIS")
+    (description
+"Python implementation of the @acronym{ERIS, Encoding for Robust Immutable
+Storage}.")
+    (license license:lgpl3+)))
+
 (define-public shrinkwrap
   (package
     (name "shrinkwrap")
