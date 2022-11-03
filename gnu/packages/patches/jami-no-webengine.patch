@@ -1,0 +1,243 @@
+From 1f73d3c88e94f2d932c59cab8a02c72a325ccc20 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=A9bastien=20Blin?=
+ <sebastien.blin@savoirfairelinux.com>
+Date: Fri, 11 Nov 2022 16:19:11 -0500
+Subject: [PATCH] misc: fix build without webengine
+
+Change-Id: I2511cd89e1ce7f60424f69ab6576d7fb992dd58c
+GitLab: #881
+---
+ .../components/DocumentsScrollview.qml        |  1 -
+ src/app/mainview/components/FilePreview.qml   |  1 -
+ src/app/mainview/components/MediaPreview.qml  | 57 ++--------------
+ .../mainview/components/SwarmDetailsPanel.qml |  1 -
+ src/app/nowebengine/VideoPreview.qml          | 24 +++++++
+ src/app/webengine/VideoPreview.qml            | 68 +++++++++++++++++++
+ 6 files changed, 99 insertions(+), 53 deletions(-)
+ create mode 100644 src/app/nowebengine/VideoPreview.qml
+ create mode 100644 src/app/webengine/VideoPreview.qml
+
+diff --git a/client-qt/src/app/mainview/components/DocumentsScrollview.qml b/client-qt/src/app/mainview/components/DocumentsScrollview.qml
+index df516961..3338536a 100644
+--- a/client-qt/src/app/mainview/components/DocumentsScrollview.qml
++++ b/client-qt/src/app/mainview/components/DocumentsScrollview.qml
+@@ -20,7 +20,6 @@ import QtQuick.Controls
+ import QtQuick.Layouts
+ import Qt.labs.platform
+ import Qt5Compat.GraphicalEffects
+-import QtWebEngine
+ 
+ import net.jami.Models 1.1
+ import net.jami.Adapters 1.1
+diff --git a/client-qt/src/app/mainview/components/FilePreview.qml b/client-qt/src/app/mainview/components/FilePreview.qml
+index 57b1ec8b..fe8f3fd9 100644
+--- a/client-qt/src/app/mainview/components/FilePreview.qml
++++ b/client-qt/src/app/mainview/components/FilePreview.qml
+@@ -19,7 +19,6 @@ import QtQuick.Controls
+ import QtQuick.Layouts
+ import Qt.labs.platform
+ import Qt5Compat.GraphicalEffects
+-import QtWebEngine
+ 
+ import net.jami.Models 1.1
+ import net.jami.Adapters 1.1
+diff --git a/client-qt/src/app/mainview/components/MediaPreview.qml b/client-qt/src/app/mainview/components/MediaPreview.qml
+index 0c33bf3e..965f9343 100644
+--- a/client-qt/src/app/mainview/components/MediaPreview.qml
++++ b/client-qt/src/app/mainview/components/MediaPreview.qml
+@@ -19,7 +19,6 @@ import QtQuick.Controls
+ import QtQuick.Layouts
+ import Qt.labs.platform
+ import Qt5Compat.GraphicalEffects
+-import QtWebEngine
+ 
+ import net.jami.Models 1.1
+ import net.jami.Adapters 1.1
+@@ -92,59 +91,17 @@ Component {
+                         }
+                         Component {
+                             id: avMediaComp
+-
+                             Loader {
+-                                property real msgRadius: 20
+-
+-                                Rectangle {
+-                                    id: videoAudioRect
+-                                    color: JamiTheme.secondaryBackgroundColor
+-                                    anchors.fill: parent
+-
+-                                    WebEngineView {
+-                                        id: wev
+-
+-                                        property bool isVideo: mediaInfo.isVideo
+-                                        property string html: mediaInfo.html
+-
+-                                        anchors.fill: parent
+-                                        anchors.verticalCenter: videoAudioRect.verticalCenter
+-                                        backgroundColor: JamiTheme.secondaryBackgroundColor
+-                                        anchors.topMargin: isVideo? 0 :  wev.implicitHeight / 2
+-                                        settings.fullScreenSupportEnabled: isVideo
+-                                        settings.javascriptCanOpenWindows: false
+-                                        Component.onCompleted: loadHtml(html, 'file://')
+-                                        onFullScreenRequested: function(request) {
+-                                            if (request.toggleOn) {
+-                                                layoutManager.pushFullScreenItem(
+-                                                            this,
+-                                                            videoAudioRect,
+-                                                            null,
+-                                                            function() { wev.fullScreenCancelled() })
+-                                            } else if (!request.toggleOn) {
+-                                                layoutManager.removeFullScreenItem(this)
+-                                            }
+-                                            request.accept()
+-                                        }
+-                                    }
+-
+-                                    layer.enabled: true
+-                                    layer.effect: OpacityMask {
+-                                        maskSource: Item {
+-                                            width: videoAudioRect.width
+-                                            height: videoAudioRect.height
+-                                            Rectangle {
+-                                                anchors.centerIn: parent
+-                                                width:  videoAudioRect.width
+-                                                height: videoAudioRect.height
+-                                                radius: JamiTheme.swarmDetailsPageDocumentsMediaRadius
+-                                            }
+-                                        }
+-                                    }
++                                Component.onCompleted: {
++                                    var qml = WITH_WEBENGINE ?
++                                                "qrc:/webengine/VideoPreview.qml" :
++                                                "qrc:/nowebengine/VideoPreview.qml"
++                                    setSource( qml, { isVideo: mediaInfo.isVideo, html:mediaInfo.html } )
+                                 }
++
++                                property real msgRadius: 20
+                             }
+                         }
+-
+                         Component {
+                             id: imageMediaComp
+ 
+diff --git a/client-qt/src/app/mainview/components/SwarmDetailsPanel.qml b/client-qt/src/app/mainview/components/SwarmDetailsPanel.qml
+index 0dd93bc2..7625a76e 100644
+--- a/client-qt/src/app/mainview/components/SwarmDetailsPanel.qml
++++ b/client-qt/src/app/mainview/components/SwarmDetailsPanel.qml
+@@ -21,7 +21,6 @@ import QtQuick.Controls
+ import QtQuick.Layouts
+ import Qt.labs.platform
+ import Qt5Compat.GraphicalEffects
+-import QtWebEngine
+ 
+ import net.jami.Models 1.1
+ import net.jami.Adapters 1.1
+diff --git a/client-qt/src/app/nowebengine/VideoPreview.qml b/client-qt/src/app/nowebengine/VideoPreview.qml
+new file mode 100644
+index 00000000..8c2e8a4f
+--- /dev/null
++++ b/client-qt/src/app/nowebengine/VideoPreview.qml
+@@ -0,0 +1,24 @@
++/*
++ * Copyright (C) 2022 Savoir-faire Linux Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
++ */
++
++import QtQuick
++import QtQuick.Controls
++import QtQuick.Layouts
++
++Rectangle {
++    property var mediaInfo: undefined
++}
+\ No newline at end of file
+diff --git a/client-qt/src/app/webengine/VideoPreview.qml b/client-qt/src/app/webengine/VideoPreview.qml
+new file mode 100644
+index 00000000..edc03599
+--- /dev/null
++++ b/client-qt/src/app/webengine/VideoPreview.qml
+@@ -0,0 +1,68 @@
++/*
++ * Copyright (C) 2022 Savoir-faire Linux Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
++ */
++
++import QtQuick
++import QtWebEngine
++import Qt5Compat.GraphicalEffects
++
++import net.jami.Constants 1.1
++
++Rectangle {
++    id: root
++    color: JamiTheme.secondaryBackgroundColor
++    anchors.fill: parent
++    property bool isVideo: false
++    property string html: ""
++
++    WebEngineView {
++        id: wev
++
++        anchors.fill: parent
++        anchors.verticalCenter: root.verticalCenter
++        backgroundColor: JamiTheme.secondaryBackgroundColor
++        anchors.topMargin: root.isVideo? 0 :  wev.implicitHeight / 2
++        settings.fullScreenSupportEnabled: root.isVideo
++        settings.javascriptCanOpenWindows: false
++        Component.onCompleted: loadHtml(root.html, 'file://')
++        onFullScreenRequested: function(request) {
++            if (request.toggleOn) {
++                layoutManager.pushFullScreenItem(
++                            this,
++                            root,
++                            null,
++                            function() { wev.fullScreenCancelled() })
++            } else if (!request.toggleOn) {
++                layoutManager.removeFullScreenItem(this)
++            }
++            request.accept()
++        }
++    }
++
++    layer.enabled: true
++    layer.effect: OpacityMask {
++        maskSource: Item {
++            width: root.width
++            height: root.height
++            Rectangle {
++                anchors.centerIn: parent
++                width:  root.width
++                height: root.height
++                radius: JamiTheme.swarmDetailsPageDocumentsMediaRadius
++            }
++        }
++    }
++}
+\ No newline at end of file
+-- 
+2.37.3
+

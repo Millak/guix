@@ -1341,7 +1341,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/irrlicht-link-against-needed-libs.patch	\
   %D%/packages/patches/isl-0.11.1-aarch64-support.patch	\
   %D%/packages/patches/itk-snap-alt-glibc-compat.patch		\
-  %D%/packages/patches/jami-fix-crash-on-block-contact.patch	\
+  %D%/packages/patches/jami-disable-integration-tests.patch	\
+  %D%/packages/patches/jami-no-webengine.patch			\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
   %D%/packages/patches/jamvm-1.5.1-armv7-support.patch	\
   %D%/packages/patches/jamvm-2.0.0-aarch64-support.patch	\
