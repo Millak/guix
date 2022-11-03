@@ -1954,7 +1954,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/unzip-zipbomb-part2.patch		\
   %D%/packages/patches/unzip-zipbomb-part3.patch		\
   %D%/packages/patches/unzip-32bit-zipbomb-fix.patch    \
-  %D%/packages/patches/upx-CVE-2021-20285.patch		\
   %D%/packages/patches/ustr-fix-build-with-gcc-5.patch		\
   %D%/packages/patches/util-linux-tests.patch			\
   %D%/packages/patches/util-linux-CVE-2021-3995.patch		\

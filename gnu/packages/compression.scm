@@ -35,6 +35,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2308,40 +2309,16 @@ decompression is a little bit slower.")
 (define-public upx
   (package
     (name "upx")
-    (version "3.96")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/upx/upx/releases/download/v"
-                                 version "/upx-" version "-src.tar.xz"))
-             (sha256
-              (base32
-               "051pk5jk8fcfg5mpgzj43z5p4cn7jy5jbyshyn78dwjqr7slsxs7"))
-             (patches (search-patches "upx-CVE-2021-20285.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl))
-    (inputs
-     (list ucl zlib))
-    (arguments
-     `(#:make-flags
-       (list "all")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (delete 'check)                ; no test suite
-         (add-before 'build 'patch-exec-bin-sh
-           (lambda _
-             (substitute* (list "Makefile"
-                                "src/Makefile")
-               (("/bin/sh") (which "sh")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (copy-file "src/upx.out" (string-append bin "/upx")))
-             #t)))))
+    (version "4.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/upx/upx/releases/download/v"
+                           version "/upx-" version "-src.tar.xz"))
+       (sha256
+        (base32
+         "1sinky0rq40q2qqzly99c5hdd6ilz2bxlbqla9lg0rafhbw3iyga"))))
+    (build-system cmake-build-system)
     (home-page "https://upx.github.io/")
     (synopsis "Compression tool for executables")
     (description
