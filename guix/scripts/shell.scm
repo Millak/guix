@@ -143,16 +143,7 @@ interactive shell in that environment.\n"))
 
               (option '(#\F "emulate-fhs") #f #f
                       (lambda (opt name arg result)
-                        (let ((result
-                               ;; For an FHS-container, add the (hidden)
-                               ;; package glibc-for-fhs which uses the global
-                               ;; cache at /etc/ld.so.cache.
-                               (alist-cons
-                                'expression
-                                '(ad-hoc-package
-                                  "(@@ (gnu packages base) glibc-for-fhs)")
-                                result)))
-                         (alist-cons 'emulate-fhs? #t result)))))
+                        (alist-cons 'emulate-fhs? #t result))))
         (filter-map (lambda (opt)
                       (and (not (any (lambda (name)
                                        (member name to-remove))
@@ -173,8 +164,18 @@ interactive shell in that environment.\n"))
   ;; The '--' token is used to separate the command to run from the rest of
   ;; the operands.
   (let ((args command (break (cut string=? "--" <>) args)))
-    (let ((opts (parse-command-line args %options (list %default-options)
-                                    #:argument-handler handle-argument)))
+    (let* ((args-parsed (parse-command-line args %options (list %default-options)
+                                            #:argument-handler handle-argument))
+           ;; For an FHS-container, add the (hidden) package glibc-for-fhs
+           ;; which uses the global cache at /etc/ld.so.cache.  We handle
+           ;; adding this package here to ensure it will always appear in the
+           ;; container as it is the first package in OPTS.
+           (opts (if (assoc-ref args-parsed 'emulate-fhs?)
+                     (alist-cons 'expression
+                                 '(ad-hoc-package
+                                   "(@@ (gnu packages base) glibc-for-fhs)")
+                                 args-parsed)
+                     args-parsed)))
       (options-with-caching
        (auto-detect-manifest
         (match command

@@ -1,5 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2015 David Thompson <davet@gnu.org>
+# Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -231,3 +232,12 @@ guix shell -C --emulate-fhs --bootstrap guile-bootstrap \
 # Test that the ld cache was generated and can be successfully read.
 guix shell -CF --bootstrap guile-bootstrap \
      -- guile -c '(execlp "ldconfig" "ldconfig" "-p")'
+
+# Test that the package glibc-for-fhs is in the container even if there is the
+# regular glibc package from another source.  See
+# <https://issues.guix.gnu.org/58861>.
+guix shell -CF --bootstrap guile-bootstrap glibc \
+     -- guile -c '(exit (if (string-contains (readlink "/lib/libc.so")
+                            "glibc-for-fhs")
+                           0
+                           1))'
