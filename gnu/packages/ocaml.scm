@@ -3191,7 +3191,7 @@ This package includes:
 (define-public ocaml-ocp-index
   (package
     (name "ocaml-ocp-index")
-    (version "1.3.3")
+    (version "1.3.4")
     (source
       (origin
         (method git-fetch)
@@ -3201,7 +3201,7 @@ This package includes:
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1gbigw5s2cafkr82n9vkxbb892qfkykj0adj0hrdkrkw8j6rfl0j"))))
+          "031b3s8ppqkpw1n6h87h6jzjkmny6yig9wfimmgwnljafcc83d3b"))))
     (build-system dune-build-system)
     (arguments
      `(#:package "ocp-index"))
