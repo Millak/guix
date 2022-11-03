@@ -98,8 +98,6 @@
                   (srfi srfi-26)
                   (ice-9 match)
                   (ice-9 regex))
-       #:imported-modules ((guix build syscalls)
-                           ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
@@ -232,7 +230,6 @@ runtime.")
                   (sxml xpath)
                   (sxml transform))
        #:imported-modules ((guix build ant-build-system)
-                           (guix build syscalls)
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
@@ -390,7 +387,6 @@ patcher application.")))
                   (sxml xpath)
                   (sxml transform))
        #:imported-modules ((guix build ant-build-system)
-                           (guix build syscalls)
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
