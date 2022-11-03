@@ -15331,6 +15331,36 @@ objects themselves.")
 (define-public cl-jsown
   (sbcl-package->cl-source-package sbcl-jsown))
 
+(define-public sbcl-clostrum
+  (let ((commit "c85d38bde9d093f1f132574e9b98b8d64683cd51")
+        (revision "0"))
+    (package
+      (name "sbcl-clostrum")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/Clostrum")
+               (commit commit)))
+         (file-name (git-file-name "cl-clostrum" commit))
+         (sha256
+          (base32 "10alsdnpzbgic75xghwjp414sqwg4npvp69zn0r4l8ms0ki9zr1x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (home-page "https://github.com/s-expressionists/Clostrum")
+      (synopsis "First Class Global Environments")
+      (description
+       "This package provides first-class global environments for
+Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public ecl-clostrum
+  (sbcl-package->ecl-package sbcl-clostrum))
+
+(define-public cl-clostrum
+  (sbcl-package->cl-source-package sbcl-clostrum))
+
 (define-public sbcl-system-locale
   (let ((commit "4b334bc2fa45651bcaa28ae7d9331095d6bf0a17"))
     (package
