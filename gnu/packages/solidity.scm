@@ -58,7 +58,7 @@
                 (("include\\(jsoncpp\\)")
                  "find_package(jsoncpp)")))))))
     (inputs
-     (list boost-static fmt-for-solidity jsoncpp range-v3 z3))
+     (list boost-static fmt-8.0 jsoncpp range-v3 z3))
     (native-inputs
      (list python ncurses findutils))
     (home-page "https://solidity.readthedocs.io")

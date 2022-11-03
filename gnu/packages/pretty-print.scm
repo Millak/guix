@@ -188,10 +188,9 @@ to @code{IOStreams}.")
     ;; The library is bsd-2, but documentation and tests include other licenses.
     (license (list bsd-2 bsd-3 psfl))))
 
-(define-public fmt-for-solidity
+(define-public fmt-8.0
   (package
     (inherit fmt)
-    (name "fmt-for-solidity")
     (version "8.0.1")
     (source
      (origin
@@ -202,7 +201,8 @@ to @code{IOStreams}.")
         (base32 "1gqmsk4r93x65cqs8w7zhfiv70w5fv8279nrblggqm4mmdpaa9x6"))))))
 
 (define-public fmt-7
-  (package (inherit fmt)
+  (package
+    (inherit fmt)
     (version "7.1.3")
     (source
      (origin
@@ -212,10 +212,9 @@ to @code{IOStreams}.")
        (sha256
         (base32 "17sc10hfg087z0s774lnn05wwy3bfzmcv7j448p92pr0s02cb62x"))))))
 
-(define-public fmt-for-irods
+(define-public fmt-6
   (package
     (inherit fmt)
-    (name "fmt-for-irods")
     (version "6.1.2")
     (source
      (origin
@@ -226,7 +225,7 @@ to @code{IOStreams}.")
         (base32 "1s1hxaby5byb07rgmrk4a0q11fxhz7b42khch7sp2qx974y0yrb3"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; TODO: posix-mock-test segfaults
+     '(#:tests? #f                      ; TODO: posix-mock-test segfaults
        #:configure-flags
        '("-DBUILD_SHARED_LIBS=ON"
          "-DCMAKE_CXX_COMPILER=clang++"
