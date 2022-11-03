@@ -4186,13 +4186,13 @@ the SQL language using a syntax that reflects the resulting query.")
          (add-before 'configure 'enter-source-directory
            (lambda _ (chdir "cpp")))
          (add-after 'unpack 'set-env
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "cpp/cmake_modules/ThirdpartyToolchain.cmake"
                (("set\\(xsimd_SOURCE.*") ""))
-             (setenv "BOOST_ROOT" (assoc-ref %build-inputs "boost"))
-             (setenv "BROTLI_HOME" (assoc-ref %build-inputs "brotli"))
-             (setenv "FLATBUFFERS_HOME" (assoc-ref %build-inputs "flatbuffers"))
-             (setenv "RAPIDJSON_HOME" (assoc-ref %build-inputs "rapidjson")))))
+             (setenv "BOOST_ROOT" (assoc-ref inputs "boost"))
+             (setenv "BROTLI_HOME" (assoc-ref inputs "brotli"))
+             (setenv "FLATBUFFERS_HOME" (assoc-ref inputs "flatbuffers"))
+             (setenv "RAPIDJSON_HOME" (assoc-ref inputs "rapidjson")))))
        #:build-type "Release"
        #:configure-flags
        (list "-DARROW_PYTHON=ON"
