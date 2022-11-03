@@ -8687,7 +8687,7 @@ constant-time to avoid timing-attack with crypto stuff.")
 (define-public ocaml-digestif
   (package
     (name "ocaml-digestif")
-    (version "1.1.2")
+    (version "1.1.3")
     (home-page "https://github.com/mirage/digestif")
     (source
      (origin
@@ -8698,7 +8698,7 @@ constant-time to avoid timing-attack with crypto stuff.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0mc233d63y04jznsn3bxncgv7fkvyngbv6hcka412iq0y3x4qsmq"))))
+         "0x5iskavqkclr5mk2q6jvh5h1v81krqi4v353rj4xsmdqb33s0f1"))))
     (build-system dune-build-system)
     (propagated-inputs (list ocaml-eqaf))
     (native-inputs
