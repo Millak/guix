@@ -24420,6 +24420,42 @@ Zombie Raptor game engine project.")
 (define-public ecl-draw-cons-tree
   (sbcl-package->ecl-package sbcl-draw-cons-tree))
 
+(define-public sbcl-triads
+  (let ((commit "840b025bf3d65cc5eaead4542a02a3ca6d77c2b6")
+        (revision "0"))
+    (package
+      (name "sbcl-triads")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/charJe/triads")
+               (commit commit)))
+         (file-name (git-file-name "cl-triads" version))
+         (sha256
+          (base32 "146mwshynhdw82m2nxrcjvf1nk0z3fn6ywcd2vqxkly5qricc53w"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("charje.triads")))
+      (inputs
+       (list sbcl-cl-str
+             sbcl-serapeum
+             sbcl-trivia))
+      (home-page "https://github.com/charJe/triads")
+      (synopsis "Music composition tool to convert roman numerals into triads")
+      (description "Triads is a simple command line tool that reads roman
+numeral notation from standard input (or a file) and an musical key and outputs
+the roman numeral in addition to the notes of the triad associated with that
+roman numeral given in the key.")
+      (license license:gpl3))))
+
+(define-public cl-triads
+  (sbcl-package->cl-source-package sbcl-triads))
+
+(define-public ecl-triads
+  (sbcl-package->ecl-package sbcl-triads))
+
 (define-public sbcl-cl-morse
   (package
     (name "sbcl-cl-morse")
