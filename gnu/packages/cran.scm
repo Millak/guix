@@ -213,6 +213,26 @@ functions always read and write UTF-8 (8-bit Unicode Transformation Format)
 files and provide more explicit control over line endings.")
     (license license:expat)))
 
+(define-public r-ca
+  (package
+    (name "r-ca")
+    (version "0.71.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ca" version))
+              (sha256
+               (base32
+                "095lk7p2b9835hc3a03c4019wg0baf0dhz6c2vqpaq1m9k4jy304"))))
+    (properties `((upstream-name . "ca")))
+    (build-system r-build-system)
+    (home-page "http://www.carme-n.org/")
+    (synopsis "Simple, multiple and joint correspondence analysis")
+    (description
+     "This is a package for computation and visualization of simple,
+multiple and joint correspondence analysis.")
+    ;; Any version of the GPL
+    (license license:gpl3+)))
+
 (define-public r-cachem
   (package
     (name "r-cachem")
