@@ -103,7 +103,6 @@
                     (guix build clojure-utils)
                     (guix build java-utils)
                     (guix build utils)
-                    (guix build syscalls)
                     (ice-9 match)
                     (ice-9 regex)
                     (srfi srfi-26))
