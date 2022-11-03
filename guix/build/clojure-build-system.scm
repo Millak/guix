@@ -22,7 +22,6 @@
                           ant-build))
   #:use-module (guix build clojure-utils)
   #:use-module (guix build java-utils)
-  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
@@ -129,7 +128,7 @@ and repack them.  This is necessary to ensure that archives are reproducible."
     ;; Note: .class files need to be strictly newer than source files,
     ;; otherwise the Clojure compiler will recompile sources.
     (let* ((early-1980 315619200) ; 1980-01-02 UTC
-           (dir (mkdtemp! "jar-contents.XXXXXX"))
+           (dir (mkdtemp "jar-contents.XXXXXX"))
            (manifest (string-append dir "/META-INF/MANIFEST.MF")))
       (with-directory-excursion dir
         (invoke "jar" "xf" jar))
