@@ -4167,7 +4167,7 @@ the SQL language using a syntax that reflects the resulting query.")
 (define-public apache-arrow
   (package
     (name "apache-arrow")
-    (version "9.0.0")
+    (version "10.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4177,7 +4177,7 @@ the SQL language using a syntax that reflects the resulting query.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1l76q7944jyx22vjkk12hxb3nadgiivc3x8ml4mg619v9xxagc2v"))))
+         "1mx2siffbggz26c8j2xma7cwa65khj8nswy04ajczgwvj32rg1ah"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f
@@ -4432,40 +4432,23 @@ algorithm implementations.")
          (add-after 'unpack 'make-git-checkout-writable
            (lambda _
              (for-each make-file-writable (find-files "."))))
-         (add-before 'install 'patch-cmake-variables
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Replace cmake locations with hardcoded guix links for the
-             ;; underlying C++ library and headers.  This is a pretty awful
-             ;; hack.
-             (substitute* "cmake_modules/FindParquet.cmake"
-               (("# Licensed to the Apache Software Foundation" m)
-                (string-append "set(PARQUET_INCLUDE_DIR \""
-                               (assoc-ref inputs "apache-arrow:include")
-                               "/share/include\")\n" m))
-               (("find_package_handle_standard_args" m)
-                (string-append "set(PARQUET_LIB_DIR \""
-                               (assoc-ref inputs "apache-arrow:lib")
-                               "/lib\")\n" m)))))
-         (add-before 'install 'patch-parquet-library
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("parquet_shared") "parquet"))))
          (add-before 'install 'set-PYARROW_WITH_PARQUET
            (lambda _
+             (setenv "PYARROW_BUNDLE_ARROW_CPP_HEADERS" "0")
              (setenv "PYARROW_WITH_PARQUET" "1"))))))
     (propagated-inputs
-     `(("apache-arrow:lib" ,apache-arrow "lib")
-       ("apache-arrow:include" ,apache-arrow "include")
-       ("python-numpy" ,python-numpy)
-       ("python-pandas" ,python-pandas)
-       ("python-six" ,python-six)))
+     (list (list apache-arrow "lib")
+           (list apache-arrow "include")
+           python-numpy
+           python-pandas
+           python-six))
     (native-inputs
-     `(("cmake" ,cmake-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python-cython" ,python-cython)
-       ("python-pytest" ,python-pytest)
-       ("python-pytest-runner" ,python-pytest-runner)
-       ("python-setuptools-scm" ,python-setuptools-scm)))
+     (list cmake-minimal
+           pkg-config
+           python-cython
+           python-pytest
+           python-pytest-runner
+           python-setuptools-scm))
     (outputs '("out"))
     (home-page "https://arrow.apache.org/docs/python/")
     (synopsis "Python bindings for Apache Arrow")
