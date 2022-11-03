@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -96,7 +97,7 @@
 (define-public vis
   (package
     (name "vis")
-    (version "0.7")                     ; also update the vis-test input
+    (version "0.8")                     ; also update the vis-test input
     (source
      (origin
        (method git-fetch)
@@ -104,7 +105,7 @@
              (url "https://git.sr.ht/~martanne/vis")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1g05ncsnk57kcqm9wsv6sz8b24kyzj8r5rfpa1wfwj8qkjzx3vji"))
+        (base32 "0ija192c9i13gbikm707jynf6my212i040ls0f8pgkbiyvls7xay"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -139,14 +140,8 @@
                (substitute* "test/core/ccan-config.c"
                  (("\"cc\"")
                   (format #f "\"~a\"" ,(cc-for-target))))
-
                ;; Use the ‘vis’ executable that we wrapped above.
-               (install-file (string-append out "/bin/vis") ".")
-
-               ;; XXX Delete 2 failing tests.  TODO: make them not fail. :-)
-               (for-each delete-file
-                         (find-files "test/vis/selections" "^complement"))
-               #t))))))
+               (install-file (string-append out "/bin/vis") ".")))))))
     (native-inputs
      `(("vis-test"
         ,(origin
