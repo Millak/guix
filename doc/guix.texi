@@ -2234,6 +2234,9 @@ Linux-libre driver.  Free firmware exists for both and is available
 out-of-the-box on Guix System, as part of @code{%base-firmware}
 (@pxref{operating-system Reference, @code{firmware}}).
 
+The installer warns you early on if it detects devices that are known
+@emph{not} to work due to the lack of free firmware or free drivers.
+
 @cindex RYF, Respects Your Freedom
 The @uref{https://www.fsf.org/, Free Software Foundation} runs
 @uref{https://www.fsf.org/ryf, @dfn{Respects Your Freedom}} (RYF), a

@@ -172,8 +172,8 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
 (define (timezone-page zonetab)
   (run-timezone-page zonetab))
 
-(define (welcome-page logo)
-  (run-welcome-page logo))
+(define* (welcome-page logo #:key pci-database)
+  (run-welcome-page logo #:pci-database pci-database))
 
 (define (menu-page steps)
   (run-menu-page steps))

@@ -30,6 +30,7 @@ guix/import/pypi.scm
 guix/import/texlive.scm
 gnu/installer.scm
 gnu/installer/connman.scm
+gnu/installer/hardware.scm
 gnu/installer/hostname.scm
 gnu/installer/keymap.scm
 gnu/installer/locale.scm

@@ -19,8 +19,10 @@
 
 (define-module (gnu installer newt welcome)
   #:use-module ((gnu build linux-modules)
-                #:select (modules-loaded))
+                #:select (modules-loaded
+                          pci-devices))
   #:use-module (gnu installer dump)
+  #:use-module (gnu installer hardware)
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt page)
@@ -30,6 +32,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 receive)
   #:use-module (newt)
@@ -121,7 +125,7 @@ we want this page to occupy all the screen space available."
         (lambda ()
           (destroy-form-and-pop form))))))
 
-(define (check-hardware-support)
+(define (check-hardware-support pci-database)
   "Warn about unsupported devices."
   (when (member "uvesafb" (modules-loaded))
     (run-error-page (G_ "\
@@ -129,9 +133,28 @@ This may be a false alarm, but possibly your graphics hardware does not
 work well with only free software.  Expect trouble.  If after installation,
 the system does not boot, perhaps you will need to add nomodeset to the
 kernel arguments and need to configure the uvesafb kernel module.")
-                    (G_ "Pre-install warning"))))
+                    (G_ "Pre-install warning")))
 
-(define (run-welcome-page logo)
+  (let ((devices (pci-devices)))
+    (match (filter unsupported-pci-device? devices)
+      (()                                         ;no unsupported device
+       #t)
+      (unsupported
+       (run-error-page (format #f (G_ "\
+Devices not supported by free software were found on your computer:
+
+~{  - ~a~%~}
+Unfortunately, it means those devices will not be usable.
+
+To address it, we recommend choosing hardware that respects your freedom as a \
+user--hardware for which free drivers and firmware exist.  See \"Hardware \
+Considerations\" in the manual for more information.")
+                               (map (pci-device-description pci-database)
+                                    unsupported))
+                       (G_ "Hardware support warning")
+                       #:width 76)))))
+
+(define* (run-welcome-page logo #:key pci-database)
   "Run a welcome page with the given textual LOGO displayed at the center of
 the page. Ask the user to choose between manual installation, graphical
 installation and reboot."
@@ -161,15 +184,16 @@ Documentation is accessible at any time by pressing Ctrl-Alt-F2.")
    #:listbox-items
    `((,(G_ "Graphical install using a terminal based interface")
       .
-      ,check-hardware-support)
+      ,(lambda ()
+         (check-hardware-support pci-database)))
      (,(G_ "Install using the shell based process")
       .
       ,(lambda ()
-         (check-hardware-support)
+         (check-hardware-support pci-database)
          ;; Switch to TTY3, where a root shell is available for shell based
          ;; install. The other root TTY's would have been ok too.
          (system* "chvt" "3")
-         (run-welcome-page logo)))
+         (run-welcome-page logo #:pci-database pci-database)))
      (,(G_ "Reboot")
       .
       ,(lambda ()

@@ -787,6 +787,7 @@ INSTALLER_MODULES =                             \
   %D%/installer/connman.scm			\
   %D%/installer/dump.scm			\
   %D%/installer/final.scm			\
+  %D%/installer/hardware.scm			\
   %D%/installer/hostname.scm			\
   %D%/installer/keymap.scm			\
   %D%/installer/locale.scm			\

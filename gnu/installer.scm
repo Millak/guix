@@ -46,6 +46,7 @@
   #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xorg)
   #:use-module (gnu system locale)
@@ -226,7 +227,9 @@ selected keymap."
           (id 'welcome)
           (compute (lambda _
                      ((installer-welcome-page current-installer)
-                      #$(local-file "installer/aux-files/logo.txt")))))
+                      #$(local-file "installer/aux-files/logo.txt")
+                      #:pci-database
+                      #$(file-append pciutils "/share/hwdata/pci.ids.gz")))))
 
          ;; Ask the user to select a timezone under glibc format.
          (installer-step
@@ -358,6 +361,7 @@ selected keymap."
     (with-extensions (list guile-gcrypt guile-newt
                            guile-parted guile-bytestructures
                            guile-json-3 guile-git guile-webutils
+                           guile-zlib           ;for (gnu build linux-modules)
                            (current-guix) gnutls)
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
