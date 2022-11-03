@@ -6240,19 +6240,19 @@ inspired by Ruby's @code{fakeweb}.")
 (define-public jo
   (package
     (name "jo")
-    (version "1.7")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jpmens/jo/releases/download/"
                            version "/jo-" version ".tar.gz"))
        (sha256
-        (base32 "0ml6ismigsflaa2dqg44ccljcl8f4jiipxvyq5lszfsh0qph7hvl"))))
+        (base32 "17y73657z5v792ik3plcvk9f5g5h2yawv6afahhkq42159pwv581"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/jpmens/jo")
     (synopsis "Output JSON from a shell")
-    (description "jo is a command-line utility to create JSON objects or
-arrays.  It creates a JSON string on stdout from words provided as
+    (description "@command{jo} is a command-line utility to create JSON objects
+or arrays.  It creates a JSON string on stdout from words provided as
 command-line arguments or read from stdin.")
     (license (list license:gpl2+
                    license:expat)))) ; json.c, json.h
