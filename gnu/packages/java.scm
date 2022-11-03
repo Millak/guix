@@ -252,12 +252,9 @@ JNI.")
                 "1cg0lga887qz5iizh6mlkxp01lciymrhmp7wzxpl6zpnldxmzrjx"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:imported-modules ((guix build syscalls)
-                           ,@%gnu-build-system-modules)
-       #:modules ((srfi srfi-1)
+     `(#:modules ((srfi srfi-1)
                   (guix build gnu-build-system)
-                  (guix build utils)
-                  (guix build syscalls))
+                  (guix build utils))
        #:tests? #f ; no "check" target
        #:phases
        (modify-phases %standard-phases
@@ -302,7 +299,7 @@ JNI.")
          (add-after 'build 'strip-jar-timestamps ;based on ant-build-system
            (lambda* (#:key outputs #:allow-other-keys)
              (define (repack-archive jar)
-               (let* ((dir (mkdtemp! "jar-contents.XXXXXX"))
+               (let* ((dir (mkdtemp "jar-contents.XXXXXX"))
                       (manifest (string-append dir "/META-INF/MANIFESTS.MF")))
                  (with-directory-excursion dir
                    (invoke "unzip" jar))
@@ -1375,7 +1372,6 @@ IcedTea build harness.")
       (arguments
        `(#:imported-modules
          ((guix build ant-build-system)
-          (guix build syscalls)
           ,@%gnu-build-system-modules)
 
          #:disallowed-references ,(list (gexp-input icedtea-7 "jdk"))
@@ -1538,10 +1534,6 @@ new Date();"))
     (arguments
      `(#:tests? #f; require jtreg
        #:make-flags '("all")
-       #:imported-modules
-       ((guix build syscalls)
-        ,@%gnu-build-system-modules)
-
        #:disallowed-references ,(list (gexp-input icedtea-8)
                                       (gexp-input icedtea-8 "jdk"))
 
@@ -1655,9 +1647,8 @@ new Date();"))
              #t))
          (add-after 'install 'strip-zip-timestamps
            (lambda* (#:key outputs #:allow-other-keys)
-             (use-modules (guix build syscalls))
              (for-each (lambda (zip)
-                         (let ((dir (mkdtemp! "zip-contents.XXXXXX")))
+                         (let ((dir (mkdtemp "zip-contents.XXXXXX")))
                            (with-directory-excursion dir
                              (invoke "unzip" zip))
                            (delete-file zip)
@@ -1786,8 +1777,6 @@ new Date();"))
     (outputs '("out" "jdk" "doc"))
     (arguments
      (list
-      #:imported-modules `((guix build syscalls)
-                           ,@%gnu-build-system-modules)
       #:modules `((guix build gnu-build-system)
                   (guix build utils)
                   (ice-9 match)
@@ -1918,9 +1907,8 @@ new Date();"))
                          (string-append lib-out "/libjvm.so")))))
           (add-after 'install 'strip-character-data-timestamps
             (lambda _
-              (use-modules (guix build syscalls))
               (let ((archive (string-append #$output:jdk "/lib/src.zip"))
-                    (dir (mkdtemp! "zip-contents.XXXXXX")))
+                    (dir (mkdtemp "zip-contents.XXXXXX")))
                 (with-directory-excursion dir
                   (invoke "unzip" archive))
                 (delete-file archive)
@@ -1952,12 +1940,11 @@ new Date();"))
                                          outputs)))))
           (add-after 'remove-diz-file 'strip-archive-timestamps
             (lambda _
-              (use-modules (guix build syscalls)
-                           (ice-9 binary-ports)
+              (use-modules (ice-9 binary-ports)
                            (rnrs bytevectors))
               (letrec ((repack-archive
                         (lambda (archive)
-                          (let ((dir (mkdtemp! "zip-contents.XXXXXX")))
+                          (let ((dir (mkdtemp "zip-contents.XXXXXX")))
                             (with-directory-excursion dir
                               (invoke "unzip" archive))
                             (delete-file archive)
@@ -8171,7 +8158,6 @@ discards all logging messages.")
     (arguments
      `(#:tests? #f ; no test target
        #:imported-modules ((guix build ant-build-system)
-                           (guix build syscalls)
                            ,@%gnu-build-system-modules)
        #:modules (((guix build ant-build-system) #:prefix ant:)
                   (guix build gnu-build-system)
