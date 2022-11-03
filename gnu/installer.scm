@@ -358,7 +358,7 @@ selected keymap."
     (with-extensions (list guile-gcrypt guile-newt
                            guile-parted guile-bytestructures
                            guile-json-3 guile-git guile-webutils
-                           guix gnutls)
+                           (current-guix) gnutls)
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
                                     (gnu services herd)
