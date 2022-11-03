@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2016, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2016, 2018, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym@scratchpost.org>
 ;;;
@@ -28,6 +28,7 @@
   #:use-module (rnrs io ports)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9 gnu)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 ftw)
@@ -49,6 +50,16 @@
             module-loaded?
             load-linux-module*
             load-linux-modules-from-directory
+
+            pci-devices
+            pci-device?
+            pci-device-vendor
+            pci-device-id
+            pci-device-class
+            pci-device-module-alias
+            storage-pci-device?
+            network-pci-device?
+            display-pci-device?
 
             current-module-debugging-port
 
@@ -428,6 +439,54 @@ key such as 'MAJOR or 'DEVTYPE and each cdr is the corresponding value."
        (reverse result))
       (line
        (loop (cons (key=value->pair line) result))))))
+
+;; PCI device known to the Linux kernel.
+(define-immutable-record-type <pci-device>
+  (pci-device vendor device class module-alias)
+  pci-device?
+  (vendor       pci-device-vendor)                ;integer
+  (device       pci-device-id)                    ;integer
+  (class        pci-device-class)                 ;integer
+  (module-alias pci-device-module-alias))         ;string | #f
+
+(define (pci-device-class-predicate mask bits)
+  (lambda (device)
+    "Return true if DEVICE has the chosen class."
+    (= (logand mask (pci-device-class device)) bits)))
+
+(define storage-pci-device?                   ;"Mass storage controller" class
+  (pci-device-class-predicate #xff0000 #x010000))
+(define network-pci-device?                       ;"Network controller" class
+  (pci-device-class-predicate #xff0000 #x020000))
+(define display-pci-device?                       ;"Display controller" class
+  (pci-device-class-predicate #xff0000 #x030000))
+
+(define (pci-devices)
+  "Return the list of PCI devices of the system (<pci-device> records)."
+  (define (read-hex port)
+    (let ((line (read-line port)))
+      (and (string? line)
+           (string-prefix? "0x" line)
+           (string->number (string-drop line 2) 16))))
+
+  (filter-map (lambda (directory)
+                (define properties
+                  (call-with-input-file (string-append directory "/uevent")
+                    read-uevent))
+                (define vendor
+                  (call-with-input-file (string-append directory "/vendor")
+                    read-hex))
+                (define device
+                  (call-with-input-file (string-append directory "/device")
+                    read-hex))
+                (define class
+                  (call-with-input-file (string-append directory "/class")
+                    read-hex))
+
+                (pci-device vendor device class
+                            (assq-ref properties 'MODALIAS)))
+              (find-files "/sys/bus/pci/devices"
+                          #:stat lstat)))
 
 (define (device-module-aliases device)
   "Return the list of module aliases required by DEVICE, a /dev file name, as
