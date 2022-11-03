@@ -4721,38 +4721,6 @@ rules.  This system is not designed to develop proofs, but to check proofs
 developed in other systems.  In particular, it enjoys a minimalistic syntax.")
     (license license:cecill-c)))
 
-(define-public emacs-dedukti-mode
-  (let ((commit "d7c3505a1046187de3c3aeb144455078d514594e"))
-    (package
-      (name "emacs-dedukti-mode")
-      (version (git-version "0" "0" commit))
-      (home-page "https://github.com/rafoo/dedukti-mode")
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url home-page)
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "1842wikq24c8rg0ac84vb1qby9ng1nssxswyyni4kq85lng5lcrp"))
-                (file-name (git-file-name name version))))
-      (inputs
-       (list dedukti))
-      (build-system emacs-build-system)
-      (arguments
-       '(#:phases
-         (modify-phases %standard-phases
-           (add-before 'install 'patch-dkpath
-             (lambda _
-               (let ((dkcheck-path (which "dkcheck")))
-                 (substitute* "dedukti-mode.el"
-                   (("dedukti-path \"(.*)\"")
-                    (string-append "dedukti-path \"" dkcheck-path "\"")))))))))
-      (synopsis "Emacs major mode for Dedukti files")
-      (description "This package provides an Emacs major mode for editing
-Dedukti files.")
-      (license license:cecill-b))))
-
 (define-public ocaml-jst-config
   (package
     (name "ocaml-jst-config")
