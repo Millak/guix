@@ -552,11 +552,6 @@ an interpreter, a compiler, a debugger, and much more.")
                  (("\\(deftest grent\\.[12]" all)
                   (string-append "#+nil ;disabled by Guix\n" all))))
              #t))
-         (add-before 'build 'fix-shared-library-makefile
-           (lambda _
-             (substitute* '("src/runtime/GNUmakefile")
-               (("	cc") "	$(CC)"))
-             #t))
          (add-before 'build 'fix-contrib-library-path
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((gmp (assoc-ref inputs "gmp"))
