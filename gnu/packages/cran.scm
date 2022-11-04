@@ -19405,14 +19405,14 @@ the XKCD web comic.")
 (define-public r-babelgene
   (package
     (name "r-babelgene")
-    (version "22.3")
+    (version "22.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "babelgene" version))
        (sha256
         (base32
-         "1735h4s2vahv55pmq65zkgxq8d5x71i1is03rf17dric8yynjjhg"))))
+         "1ql5r1chl5ajzy9ppcnk755ia3m2a8n08m837dnm2ll3nzf02rnf"))))
     (properties `((upstream-name . "babelgene")))
     (build-system r-build-system)
     (propagated-inputs
