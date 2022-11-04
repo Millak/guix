@@ -2550,13 +2550,13 @@ informative error messages when it's not available.")
 (define-public r-devtools
   (package
     (name "r-devtools")
-    (version "2.4.4")
+    (version "2.4.5")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "devtools" version))
               (sha256
                (base32
-                "0kckjr12qi8nw498x3iw648pllz63j5p6fhpv8z8jc4z4sfpbmmc"))))
+                "0jwh14clyj5flygpmifk01avs7mbnj2s1686pxzfrkcshfyhw5iq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
