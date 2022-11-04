@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -553,6 +554,37 @@ functions, class methods, and stl containers.
 container which uses the order in which keys were inserted to the container
 as ordering relation.")
     (license license:expat)))
+
+(define-public json-dto
+  (package
+    (name "json-dto")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Stiffstream/json_dto")
+                    (commit (string-append "v." version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wr1srp08fr2mv4fmnqr626pwiw60svn6wkvy2xg7j080mgwb3ml"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list "-DJSON_DTO_INSTALL_SAMPLES=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs (list catch2))
+    (propagated-inputs (list rapidjson))    ;#include'd
+    (home-page "https://github.com/Stiffstream/json_dto")
+    (synopsis "JSON to C++ structures conversion library")
+    (description "@code{json_dto} library is a small header-only helper for
+converting data between JSON representation and C++ structs.  DTO stands for
+data transfer object.")
+    (license license:bsd-3)))
 
 (define-public json-modern-cxx
   (package
