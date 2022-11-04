@@ -652,6 +652,8 @@ output file."
                shared-network?)
               (list boot-program)))
          (substitutable? (image-substitutable? image))
+         (image-target (or (%current-target-system)
+                           (nix-system->gnu-triplet)))
          (register-closures? (has-guix-service-type? os))
          (schema (and register-closures?
                       (local-file (search-path %load-path
@@ -705,6 +707,7 @@ output file."
                  #:entry-point '(#$boot-program #$os)
                  #:compressor '(#+(file-append gzip "/bin/gzip") "-9n")
                  #:creation-time (make-time time-utc 0 1)
+                 #:system #$image-target
                  #:transformations `((,image-root -> ""))))))))
 
     (computed-file name builder
