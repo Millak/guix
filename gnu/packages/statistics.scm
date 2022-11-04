@@ -2633,13 +2633,13 @@ time-of-day values, based on the @code{difftime} class.")
 (define-public r-readr
   (package
     (name "r-readr")
-    (version "2.1.2")
+    (version "2.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "readr" version))
               (sha256
                (base32
-                "06qcw57yz0fhh3ni41d5w68cbmwmb6zkp47chllwzax43wxd1bwl"))))
+                "0qw2c51421zzfwpy1nkmxs9ai1r9m4yxrz0ig0wg2z78h1gda3fp"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
