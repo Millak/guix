@@ -12010,14 +12010,14 @@ including:
 (define-public r-dyngen
   (package
     (name "r-dyngen")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dyngen" version))
        (sha256
         (base32
-         "1qmqy0dyiz30zpf3ii4h2ip6hg2449ghb474sjzrqa1yk9mdpy4i"))))
+         "095jqn1rd83qm3ayca9hmv6bhlaa2c338020l46vniq8n38kbnra"))))
     (properties `((upstream-name . "dyngen")))
     (build-system r-build-system)
     (propagated-inputs
