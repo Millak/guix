@@ -6905,14 +6905,14 @@ plots in @code{ggplot2}.")
 (define-public r-cli
   (package
     (name "r-cli")
-    (version "3.4.0")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cli" version))
        (sha256
         (base32
-         "0mxsls49g8m5vrak64b9mpsgw3mh8hnb1xxn56skbn4qb1hppbff"))))
+         "0kklv5zy9rhly8fr7fdl3dlm3hr81yvbqd5cdz38b1lbzpxmwn0w"))))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/cli#readme")
     (synopsis "Helpers for developing command line interfaces")
