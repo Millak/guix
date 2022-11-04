@@ -29716,14 +29716,14 @@ more.")
 (define-public r-workflows
   (package
     (name "r-workflows")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflows" version))
        (sha256
         (base32
-         "0bsizgqin5cya0xibs1nqzadrrxcph8n4bh5vlcfbqqzzkv7cx1b"))))
+         "0l5v5qmgj1qv2bk50kv59k2nydh1r97hmqffyxkfpkh2121b2qaq"))))
     (properties `((upstream-name . "workflows")))
     (build-system r-build-system)
     (propagated-inputs
