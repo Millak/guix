@@ -9479,6 +9479,67 @@ version of the HDAPS driver.  The underlying hardware interfaces are
 access to the embedded controller.")
     (license license:gpl2+)))
 
+(define-public modprobed-db
+  (package
+    (name "modprobed-db")
+    (version "2.46")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/graysky2/modprobed-db")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "017w9czm31f5c7wjyrl5fy6cw7ji681jjc7s913nbc0r43j080qr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   "INITDIR_SYSTEMD=no-thanks")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'install 'fix-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (string-append #$output "/bin/modprobed-db")
+                     (("/usr") #$output)
+                     (((string-append "(" (string-join (list "awk"
+                                                             "cp"
+                                                             "cut"
+                                                             "getent"
+                                                             "grep"
+                                                             "logname"
+                                                             "md5sum"
+                                                             "mkdir"
+                                                             "mv"
+                                                             "sed"
+                                                             "sort"
+                                                             "uniq"
+                                                             "wc")
+                                                       "|") ")") m)
+                      (search-input-file inputs (string-append "/bin/" m)))
+                     (("modprobe ")
+                      (string-append
+                       (search-input-file inputs "/bin/modprobe") " "))))))))
+    (inputs (list coreutils kmod gawk glibc grep sed))
+    (home-page "https://wiki.archlinux.org/title/Modprobed-db")
+    (synopsis "Keep track of Linux modules that have been probed")
+    (description
+     "Modprobed-db is a useful utility for users wishing to build a minimal
+kernel via a @code{make localmodconfig}.  In a nutshell, this @command{make}
+target creates a config based on the current config and a list of modules you
+define (that @command{modprobed-db} keeps for you).  It then disables any
+module option that is not needed thus not building extraneous modules.  This
+results in a system-specific, streamlined kernel package and footprint as well
+as reduced compilation times.
+
+Modprobed-db simply logs every module ever probed on the target system to a
+text-based database (@file{$XDG_CONFIG_HOME/modprobed-db}), which can be read
+directly by @code{make localmodconfig} as described above.")
+    (license license:expat)))
+
 (define-public kconfig-hardened-check
   (package
     (name "kconfig-hardened-check")
