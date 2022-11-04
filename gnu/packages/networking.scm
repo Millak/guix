@@ -3629,7 +3629,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.6.15")
+    (version "0.6.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3638,7 +3638,7 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f8d5nfm8jqhspzsslwb1b7j4glipz31i9vszrcnkx3clc39nj2n"))))
+                "1jpvfa2sjkihbkcc1q6c9zb1vry9mkkhbz2jrl831bqslpq9la3p"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3665,7 +3665,7 @@ communication over HTTP.")
     (propagated-inputs
      ;; These are all #include'd by restinio's .hpp header files.
      (list asio
-           fmt-8
+           fmt
            http-parser
            pcre
            pcre2
