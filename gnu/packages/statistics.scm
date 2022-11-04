@@ -2341,13 +2341,13 @@ SLURM and Sun Grid Engine.  Multicore and SSH systems are also supported.")
 (define-public r-brew
   (package
     (name "r-brew")
-    (version "1.0-7")
+    (version "1.0-8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "brew" version))
               (sha256
                (base32
-                "0vp7d628j6zzxhh6xfw5jlkv7wh6z2l3snbwjgv7jd56vk0mkf1q"))))
+                "09kq14nbaw0mmpb2vbfklz786q6lyizzkyg5bg64bmj2f1d2sr8i"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/brew")
     (synopsis "Templating framework for report generation")
