@@ -21302,18 +21302,19 @@ results and plots in a unified style using the @code{ggplot2} package.")
 (define-public r-refmanager
   (package
     (name "r-refmanager")
-    (version "1.3.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RefManageR" version))
        (sha256
         (base32
-         "1spzdp5ni52dybcaxqnhwdphh27wjyrsfy4hsxsplpg9rqwfqfps"))))
+         "1kjd66gp2z9fzrnyr1bqfd9p58q0bin3a187z9b56hiqmdjhyc78"))))
     (properties `((upstream-name . "RefManageR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-httr
+     (list r-bibtex
+           r-httr
            r-jsonlite
            r-lubridate
            r-plyr
