@@ -5762,14 +5762,14 @@ normals.")
 (define-public r-mnormt
   (package
     (name "r-mnormt")
-    (version "2.1.0")
+    (version "2.1.1")
     (source
      (origin
        (method url-fetch)
         (uri (cran-uri "mnormt" version))
         (sha256
           (base32
-           "1f07ngi89px437az030anbh8afmf6n635ax1akxak2idwc2qaj9d"))))
+           "020ka48jsxm9l109ksvy2l17xcpm51avm0l971dgs2mgg01sgz4m"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
