@@ -14229,13 +14229,13 @@ netCDF files.")
 (define-public r-biocmanager
   (package
     (name "r-biocmanager")
-    (version "1.30.18")
+    (version "1.30.19")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BiocManager" version))
        (sha256
-        (base32 "0dawbd546rznllpw5wq282r0viga4cck398d4s1inkk18mmi4qzp"))))
+        (base32 "1qhq1k1sr23bi2kmnd99mjs3ns0c2p20pmr2iq8a6bxbb0fap5v8"))))
     (properties `((upstream-name . "BiocManager")))
     (build-system r-build-system)
     (native-inputs
