@@ -8932,7 +8932,7 @@ as plain TeX.")
                "1vbdjmm9bi9ngzz2z1b8jnf6nzf9xsaj5pvyswg13y4dr00mnz6n")
               #:trivial? #t))
     (home-page "https://www.ctan.org/pkg/pdfescape")
-    (synopsis "pdfTeX's escape features for plain TeX")
+    (synopsis "Use escape features from pdfTeX with plain TeX")
     (description
      "This package implements pdfTeX's escape features (@code{\\pdfescapehex},
 @code{\\pdfunescapehex}, @code{\\pdfescapename}, @code{\\pdfescapestring})
