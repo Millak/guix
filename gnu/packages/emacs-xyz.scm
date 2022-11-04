@@ -8370,7 +8370,7 @@ windows Emacs produces, while still keeping them within arm’s reach.")
 (define-public emacs-python-black
   (package
     (name "emacs-python-black")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -8379,8 +8379,7 @@ windows Emacs produces, while still keeping them within arm’s reach.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1cmzc0fa3jj7ajxbqhbsc8jx47k6g223sfd42c4lrqdnmh95760m"))))
+        (base32 "1x6b67cs7kn8711fxr3fq8y9wcpf9g71asf9wiqfrk2mrfzli6a3"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-reformatter python-black-macchiato))
