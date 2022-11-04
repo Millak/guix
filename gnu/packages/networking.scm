@@ -3640,24 +3640,36 @@ communication over HTTP.")
                (base32
                 "1f8d5nfm8jqhspzsslwb1b7j4glipz31i9vszrcnkx3clc39nj2n"))))
     (build-system cmake-build-system)
-    (inputs                             ; TODO: Need to force-keep references on some inputs, e.g. boost.
-     (list zlib
-           catch2
-           openssl
-           boost
-           pcre
-           pcre2
+    (arguments
+     (list
+      ;; Multiple tests fail to run in the build container due to host name
+      ;; resolution (see: https://github.com/Stiffstream/restinio/issues/172).
+      #:tests? #f
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs
+     (list catch2
+           clara
+           json-dto))
+    (inputs
+     (list openssl
            sobjectizer))
     (propagated-inputs
-     (list asio fmt-8 http-parser))
-    (arguments
-     `(#:configure-flags '("-DRESTINIO_INSTALL=on")
-       #:tests? #f ; TODO: The tests are called from the root CMakelist, need RESTINIO_TEST=on.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory
-           (lambda _
-             (chdir "dev/restinio"))))))
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt-8
+           http-parser
+           pcre
+           pcre2
+           zlib))
     (home-page "https://stiffstream.com/en/products/restinio.html")
     (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
     (description "RESTinio is a header-only C++14 library that gives you an embedded
