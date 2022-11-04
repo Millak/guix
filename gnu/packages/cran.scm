@@ -18912,14 +18912,14 @@ examples in the vignette.")
 (define-public r-bqtl
   (package
     (name "r-bqtl")
-    (version "1.0-33")
+    (version "1.0-34")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bqtl" version))
        (sha256
         (base32
-         "1sbzpi9z94f010lw2y1gmifjrvpmiqs4m26za7vr1xz72azrqvs9"))))
+         "1xlkgyhlgrwqfzph4sbhh49pjzfnw5zdr3y4786rsnr3faksnxns"))))
     (build-system r-build-system)
     (native-inputs (list gfortran))
     (home-page "http://famprevmed.ucsd.edu/faculty/cberry/bqtl/")
