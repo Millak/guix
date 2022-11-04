@@ -9746,16 +9746,16 @@ Python to R they are converted back to R types.")
 (define-public r-bibtex
   (package
     (name "r-bibtex")
-    (version "0.4.2.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bibtex" version))
        (sha256
         (base32
-         "0vdwx6808r73pk15263f33bkqbfmb08d8jkmr4d7h4ml414ikbbv"))))
+         "0rwinwj0kw2872q2whhk03ianl9lcgs6dlhqzm513wj3bgpb90gc"))))
     (build-system r-build-system)
-    (propagated-inputs (list r-stringr))
+    (propagated-inputs (list r-backports))
     (home-page "https://github.com/romainfrancois/bibtex")
     (synopsis "Bibtex parser")
     (description "This package provides a utility for R to parse a bibtex
