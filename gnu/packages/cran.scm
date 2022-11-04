@@ -17239,13 +17239,13 @@ effects from the jQuery UI library.")
 (define-public r-shinymanager
   (package
     (name "r-shinymanager")
-    (version "1.0.400")
+    (version "1.0.410")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "shinymanager" version))
        (sha256
-        (base32 "1np2yp5pn8g9i4jhysfgprmdn13cpw4vaaagrd72rnk2r4hpmyx4"))))
+        (base32 "0nl672dgwj34wm4i3pxk28lv6qw9xsgg3hm0h78q3zdgk8a33kdn"))))
     (properties `((upstream-name . "shinymanager")))
     (build-system r-build-system)
     (propagated-inputs
