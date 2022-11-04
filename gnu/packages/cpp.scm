@@ -2198,3 +2198,42 @@ parsing with only a single memory allocation.")
 command line options.  It supports the short and long option formats of
 getopt(), getopt_long() and getopt_long_only().")
     (license license:expat)))
+
+(define-public safeint
+  (package
+    (name "safeint")
+    (version "3.0.27")
+    (home-page "https://github.com/dcleblanc/SafeInt")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01d2dpdhyw3lghmamknb6g39w2gg0sv53pgxlrs2la8h694z6x7s"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'install
+                          (lambda _
+                            (let ((include-dir (string-append #$output
+                                                              "/include")))
+                              (with-directory-excursion "../source"
+                                (install-file "SafeInt.hpp" include-dir)
+                                (install-file "safe_math.h" include-dir)
+                                (install-file "safe_math_impl.h" include-dir)))))
+                        (add-after 'install 'install-doc
+                          (lambda _
+                            (let ((doc-dir (string-append #$output
+                                                          "/share/doc/safeint")))
+                              (with-directory-excursion "../source"
+                                (install-file "helpfile.md" doc-dir))))))))
+    (synopsis "C and C++ library for managing integer overflows")
+    (description
+     "SafeInt is a class library for C++ that manages integer overflows.  It
+also includes a C library that checks casting, multiplication, division,
+addition and subtraction for all combinations of signed and unsigned 32-bit and
+64-bit integers.")
+    (license license:expat)))
