@@ -32837,14 +32837,14 @@ indicator, a quantitative variable or a survival time.")
 (define-public r-gsalib
   (package
     (name "r-gsalib")
-    (version "2.1")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gsalib" version))
        (sha256
         (base32
-         "1k3zjdydzb0dfh1ihih08d4cw6rdamgb97cdqna9mf0qdjc3pcp1"))))
+         "145zyc2sqa0acn9crilpw5njms7w7ca3jgl499lhsahlb6ws98rx"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/gsalib")
     (synopsis "Utility functions for GATK")
