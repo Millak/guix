@@ -5517,6 +5517,36 @@ detecting specific uses of Ruby, e.g. when using rails, and using a
 appropriate console.")
     (license license:gpl3+)))
 
+(define-public emacs-zig-mode
+  (let ((commit "dbc648f5bca8f3b9ca2cc7827f326f5530115144")
+        (revision "0"))
+    (package
+      (name "emacs-zig-mode")
+      (version (git-version "0.0.8" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ziglang/zig-mode")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0hwkkwhc5b2pzyqa2h0xw8wxijsrp1fk70fhyv8hx19shzlc4la3"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:emacs emacs
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "zig-mode.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (home-page "https://github.com/ziglang/zig-mode/")
+      (synopsis "Zig mode for Emacs")
+      (description
+       "This package provides syntax highlighting and automatic indentation
+for the Zig programming language in Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-znc
   (package
     (name "emacs-znc")
