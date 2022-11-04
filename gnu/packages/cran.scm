@@ -34979,13 +34979,13 @@ for rendering equations in the HTML help files.")
 (define-public r-spacefillr
   (package
     (name "r-spacefillr")
-    (version "0.3.0")
+    (version "0.3.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "spacefillr" version))
               (sha256
                (base32
-                "0c4yasc1zizjmhd2ciyz86lg76fsrxvl19yjkb2fmkda9rmnc0bf"))))
+                "0raaw9ib8b2dzkh4w28wpxcgxs7ky328yaayb64lc39syf7g19dv"))))
     (properties `((upstream-name . "spacefillr")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
