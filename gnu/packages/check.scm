@@ -249,6 +249,34 @@ source code editors and IDEs.")
               (base32
                "0d22h8xshmbpl9hba9ch3xj8vb9ybm5akpsbbh7yj07fic4h2hj6"))))))
 
+(define-public clara
+  (package
+    (name "clara")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/catchorg/Clara")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08mlm9ax5d7wkmsihm1xnlgp7rfgff0bfl4ly4850xmrdaxmmkl3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file (string-append #$source "/single_include/clara.hpp")
+                            (string-append #$output "/include")))))))
+    (home-page "https://github.com/catchorg/Clara")
+    (synopsis "Simple command line parser for C++")
+    (description "Clara is a simple to use, composable, command line parser
+for C++ 11 and beyond implemented as a single-header library.")
+    (license license:boost1.0)))
+
 (define-public clitest
   (package
     (name "clitest")
