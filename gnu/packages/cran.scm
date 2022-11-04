@@ -6509,13 +6509,13 @@ and density estimation")
 (define-public r-smurf
   (package
     (name "r-smurf")
-    (version "1.1.2")
+    (version "1.1.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "smurf" version))
               (sha256
                (base32
-                "00q54pg42anilhcshhjvv277mkszbpzpkf1g7srs7cjd5skjvsaf"))))
+                "0n99dzsb17r0a6d8nkijfg6rdvvc2g4pard2dnmyjq0p69j3f3gb"))))
     (properties `((upstream-name . "smurf")))
     (build-system r-build-system)
     (propagated-inputs
