@@ -269,7 +269,7 @@ protocols.")
                                            (assoc-ref %outputs "out"))))
        #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
-    (synopsis "librecast RaptorQ library")
+    (synopsis "Librecast RaptorQ library")
     (description
      "C library implementation of RaptorQ Forward Error Correction for
 Librecast.  RFC6330 (IETF) describes the RaptorQ proposed standard, which LCRQ
@@ -331,7 +331,7 @@ the RFC.")
     (inputs (list librecast libsodium))
     (native-inputs (list simde))
     (home-page "https://librecast.net/lcsync.html")
-    (synopsis "librecast file and data syncing tool")
+    (synopsis "Librecast file and data syncing tool")
     (description
      "lcsync is a tool to sync files over IPv6 multicast or the
 local filesystem.  It splits the file into blocks, hashes them, and compares

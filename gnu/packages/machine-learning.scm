@@ -3195,7 +3195,7 @@ Note: currently this package does not provide GPU support.")
     (native-inputs
      (list which python-pytest))
     (home-page "https://pytorch.org/vision/stable/index.html")
-    (synopsis " Datasets, transforms and models specific to computer vision")
+    (synopsis "Datasets, transforms and models specific to computer vision")
     (description
      "The torchvision package consists of popular datasets, model architectures,
 and common image transformations for computer vision.")

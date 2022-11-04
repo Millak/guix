@@ -11492,7 +11492,7 @@ serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
            (lambda* (#:key inputs #:allow-other-keys)
              (invoke "patch" "-p1" "--batch" "-i"
                      (assoc-ref inputs "test-patch")))))))
-    (synopsis "framework-agnostic way to render logic-free views")
+    (synopsis "Framework-agnostic way to render logic-free views")
     (description
      "Mustache is a framework-agnostic way to render logic-free views.
 Think of Mustache as a replacement for your views.  Instead of views

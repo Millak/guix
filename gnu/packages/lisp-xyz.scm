@@ -13766,7 +13766,7 @@ and comparison operations when used heavily in numeric code.")
     (native-inputs
      (list sbcl-fiveam))
     (home-page "https://github.com/alex-gutev/cl-form-types")
-    (synopsis "determining the types of Common Lisp forms")
+    (synopsis "Determine the types of Common Lisp forms")
     (description "This library provides functions for determining the value
 types of Common Lisp forms, based on type information contained in the
 environment.

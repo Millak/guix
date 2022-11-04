@@ -259,7 +259,7 @@ generator library for C++.")
     (native-inputs
      (list ghostscript ; ps2pdf
            groff libtool which))
-    (synopsis "fuzzy comparison of strings")
+    (synopsis "Fuzzy comparison of strings")
     (description
      "The fstrcmp project provides a library that is used to make fuzzy
 comparisons of strings and byte arrays, including multi-byte character strings.
