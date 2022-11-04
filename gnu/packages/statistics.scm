@@ -5163,14 +5163,14 @@ models, generalized linear models and model-based clustering.")
 (define-public r-mclust
   (package
     (name "r-mclust")
-    (version "5.4.10")
+    (version "6.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mclust" version))
        (sha256
         (base32
-         "0wh6nsbma4b0wsmqm2ynbznl2wlwdly4vg583f6z0zd1qkrvn6ra"))))
+         "0ahj5161lmid0gxyw6vidd4ig50l1374iisn9970zvx1rdp30z6y"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran r-knitr))
