@@ -1155,7 +1155,7 @@ of a loop structure or other iterative computation.")
 (define-public python-glymur
   (package
     (name "python-glymur")
-    (version "0.10.1")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)   ; no tests data in PyPi package
@@ -1164,8 +1164,8 @@ of a loop structure or other iterative computation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cq9r8vzwvds1kasy5gc2rxw034jh9l43rraps1n739072pfz6qg"))))
-    (build-system python-build-system)
+        (base32 "03nny8k42yxdyw7sjv43szmg23x3rqplbaf7m0a0lpvwla1dl78i"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
@@ -1186,29 +1186,14 @@ of a loop structure or other iterative computation.")
                   "    elif libname == \"c\":\n"
                   "        path = \""
                   (search-input-file inputs "/lib/libc.so.6") "\"\n")))))
-          ;; TODO: implement as a feature of python-build-system (PEP-621,
-          ;; PEP-631, PEP-660)
-          (replace 'build
+          (add-before 'check 'disable-failing-tests
             (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                ;; Failing test due to inability of
-                ;; ctypes.util.find_library() to determine library path,
-                ;; which is patched above.
-                (delete-file "tests/test_config.py")
-                (invoke "python" "-m" "pytest" "-vv" "tests")))))))
+              ;; Failing test due to inability of
+              ;; ctypes.util.find_library() to determine library path,
+              ;; which is patched above.
+              (delete-file "tests/test_config.py"))))))
     (native-inputs
-     (list python-pypa-build python-pytest))
+     (list python-pytest))
     (inputs
      (list openjpeg  ; glymur/lib/openjp2.py
            libtiff)) ; glymur/lib/tiff.py
