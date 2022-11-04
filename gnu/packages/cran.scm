@@ -26459,18 +26459,18 @@ output in R.")
 (define-public r-bdgraph
   (package
     (name "r-bdgraph")
-    (version "2.68")
+    (version "2.70")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BDgraph" version))
        (sha256
         (base32
-         "1mixzkk8shcbyrxydhchq483j2jh2icgmdshmrl79a8vsnz9mmrm"))))
+         "1s148fvvg1c0n4swsvcinlwckj86jys5nvwp4wlyzh3aw9siyqz7"))))
     (properties `((upstream-name . "BDgraph")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-igraph))
+     (list r-ggplot2 r-igraph r-proc))
     (native-inputs
      (list r-knitr))
     (home-page "https://www.uva.nl/profile/a.mohammadi")
