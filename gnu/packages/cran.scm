@@ -32186,14 +32186,14 @@ text but not always easily handled by analysis algorithms.  The
 (define-public r-ndjson
   (package
     (name "r-ndjson")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "ndjson" version))
         (sha256
           (base32
-            "0lvzbgfi1sg4kya1mvv67z14qk3vz9q57x22qh57xq8ampdkg812"))
+            "18j5bibranvbv84hvbsg6glmvhfancdsf2w6j99n3nw53bcgb12d"))
         (modules '((guix build utils)))
         (snippet
          '(begin
