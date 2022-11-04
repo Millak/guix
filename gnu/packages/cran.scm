@@ -29689,14 +29689,14 @@ model.")
 (define-public r-igraph
   (package
     (name "r-igraph")
-    (version "1.3.4")
+    (version "1.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "igraph" version))
        (sha256
         (base32
-         "1kyic5xmwgw5lm30rsvsf1x3m0yxysdlrnw63xn4fh8j4vcc66ms"))))
+         "1m4vbc1v2wvjn9df7w9ax0zpr3ys566bqazcakx7vddmnrkmsqcy"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
