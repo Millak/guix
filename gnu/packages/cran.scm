@@ -15288,14 +15288,14 @@ handle.")
 (define-public r-tfmpvalue
   (package
     (name "r-tfmpvalue")
-    (version "0.0.8")
+    (version "0.0.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "TFMPvalue" version))
        (sha256
         (base32
-         "0h9qkl15k8v17v3g9bdnfwvh2s04ywjgg5y0xn2077dmywlja1bd"))))
+         "1rsxqvq1nkyhwmhm7mf7rd02rvh7xinnhqbqic6q9vicbvkmdnxr"))))
     (properties `((upstream-name . "TFMPvalue")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
