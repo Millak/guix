@@ -27303,14 +27303,14 @@ Encyclopedia of Integer Sequences} (OEIS) in the function help page.")
 (define-public r-isoband
   (package
     (name "r-isoband")
-    (version "0.2.5")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "isoband" version))
        (sha256
         (base32
-         "19bbi0n0kz33xdgmdprcmc6raphd1hcm1w1brc16z5phcsh3zxa6"))))
+         "18s3mdzl9y8v5fpvdy6iyqp3j57kw8bwhgan94373xjkaya61r17"))))
     (properties `((upstream-name . "isoband")))
     (build-system r-build-system)
     (native-inputs
