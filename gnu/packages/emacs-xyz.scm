@@ -19687,66 +19687,68 @@ tables of contents.")
     (license license:gpl3+)))
 
 (define-public emacs-ts
-  (package
-    (name "emacs-ts")
-    (version "0.2.2")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/alphapapa/ts.el")
-             (commit version)))
-       (sha256
-        (base32 "0l35gz1hpada2kzascbyqgawa5d3sdyg67gzvak84p9zx62jppn8"))
-       (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-s emacs-dash))
-    (arguments
-     ;; XXX: Three tests are failing because of a timezone-related issue
-     ;; with how they're written.  On my machine, all the failing test
-     ;; results are 18000 seconds (5 hours) off.
+  ;; XXX: Upstream did not tag last release.  Use commit matching version
+  ;; bump.
+  (let ((commit "552936017cfdec89f7fc20c254ae6b37c3f22c5b"))
+    (package
+      (name "emacs-ts")
+      (version "0.3")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphapapa/ts.el")
+               (commit commit)))
+         (sha256
+          (base32 "18lif159zndl19ddz9rfq12l90770858yasfns21ryl1yrq3aifr"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       ;; XXX: Three tests are failing because of a timezone-related issue
+       ;; with how they're written.  On my machine, all the failing test
+       ;; results are 18000 seconds (5 hours) off.
 
-     ;; The ts-parse-org function accepts a string without any timezone
-     ;; info, not assumed to be in Unix time, and converts it to a so-called
-     ;; ts struct.  The ts-unix function (accessor) accepts a ts struct,
-     ;; then seems to assume the struct's corresponding time is in terms of
-     ;; the user's current time zone, before returning a Unix time in
-     ;; seconds.
+       ;; The ts-parse-org function accepts a string without any timezone
+       ;; info, not assumed to be in Unix time, and converts it to a so-called
+       ;; ts struct.  The ts-unix function (accessor) accepts a ts struct,
+       ;; then seems to assume the struct's corresponding time is in terms of
+       ;; the user's current time zone, before returning a Unix time in
+       ;; seconds.
 
-     ;; The failing tests all have similar problems, but nothing else about
-     ;; the library seems particularly off.
-
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "test/test.el"
-                        "-f" "ert-run-tests-batch-and-exit")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'make-tests-writable
-           (lambda _
-             (make-file-writable "test/test.el")
-             #t))
-         (add-before 'check 'delete-failing-tests
-           (lambda _
-             (emacs-batch-edit-file "test/test.el"
-               `(progn (progn
-                        (goto-char (point-min))
-                        (dolist (test-regexp
-                                 '("ert-deftest ts-format"
-                                   "ert-deftest ts-parse-org\\_>"
-                                   "ert-deftest ts-parse-org-element"
-                                   "ert-deftest ts-update"))
-                                (re-search-forward test-regexp)
-                                (beginning-of-line)
-                                (kill-sexp)))
-                       (basic-save-buffer)))
-             #t)))))
-    (home-page "https://github.com/alphapapa/ts.el")
-    (synopsis "Timestamp and date/time library")
-    (description "This package facilitates manipulating dates, times, and
+       ;; The failing tests all have similar problems, but nothing else about
+       ;; the library seems particularly off.
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "test/test.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'make-tests-writable
+              (lambda _
+                (make-file-writable "test/test.el")))
+            (add-before 'check 'delete-failing-tests
+              (lambda _
+                (emacs-batch-edit-file "test/test.el"
+                  `(progn
+                    (goto-char (point-min))
+                    (dolist (test-regexp
+                             '("ert-deftest ts-fill"
+                               "ert-deftest ts-format"
+                               "ert-deftest ts-parse-org\\_>"
+                               "ert-deftest ts-parse-org-element"))
+                            (re-search-forward test-regexp)
+                            (beginning-of-line)
+                            (kill-sexp)
+                            (goto-char (point-min)))
+                    (basic-save-buffer))))))))
+      (propagated-inputs
+       (list emacs-dash emacs-s))
+      (home-page "https://github.com/alphapapa/ts.el")
+      (synopsis "Timestamp and date/time library")
+      (description "This package facilitates manipulating dates, times, and
 timestamps by providing a @code{ts} struct.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-circadian
   (package
