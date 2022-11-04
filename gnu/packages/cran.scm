@@ -6795,14 +6795,14 @@ phylogenies and ancestral character states.")
 (define-public r-dtw
   (package
     (name "r-dtw")
-    (version "1.22-3")
+    (version "1.23-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dtw" version))
        (sha256
         (base32
-         "004gm4mzgdzdj807j3bwqsv5lizmnmz5jq514bdjshhkysnzjz6z"))))
+         "0vc2is1hf1g0sw92kzl8mddck264qwiqgm5q2wkcwwz65fss7mkf"))))
     (build-system r-build-system)
     (propagated-inputs (list r-proxy))
     (home-page "http://dtw.r-forge.r-project.org/")
