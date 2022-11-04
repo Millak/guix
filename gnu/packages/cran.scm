@@ -3979,13 +3979,13 @@ including functions for geolocation and routing.")
 (define-public r-amap
   (package
     (name "r-amap")
-    (version "0.8-18")
+    (version "0.8-19")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "amap" version))
               (sha256
                (base32
-                "0zpcb73w413na23f6giml9311jh0j0y766w2fh9i40d2h7bbvyvs"))))
+                "000r5705lq2mc15skin07dfxjf5816nbfy4gqkya1sv99dlfljbk"))))
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
