@@ -2000,14 +2000,14 @@ These functions draw text grob with background shadow.")
 (define-public r-sys
   (package
     (name "r-sys")
-    (version "3.4")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sys" version))
        (sha256
         (base32
-         "11q4zmx62w44p1j34frwmrsp23mc7l4n354i0zyziw92yax8zy0p"))))
+         "0lng3ri17jxq06c6hhhmvsb65lazkiqpp1h4pii4w9jqvs7nskij"))))
     (build-system r-build-system)
     (home-page "https://github.com/jeroen/sys")
     (synopsis "Powerful and reliable tools for running system commands in R")
