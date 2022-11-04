@@ -5255,14 +5255,14 @@ regression methodology including model selections and multivariate statistics.")
 (define-public r-pcapp
   (package
     (name "r-pcapp")
-    (version "2.0-2")
+    (version "2.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pcaPP" version))
        (sha256
         (base32
-         "0jxm1cl48bzfi0s0f2b0y0r5nq7x0iypgkasa3v5myhb9sbnd2x1"))))
+         "00ynanxpngzsvq5fsyalyzqz6axqcryy94300afvylwp0d7mbb0s"))))
     (properties `((upstream-name . "pcaPP")))
     (build-system r-build-system)
     (propagated-inputs
