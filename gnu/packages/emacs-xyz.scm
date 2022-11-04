@@ -33737,6 +33737,42 @@ using mypy.")
 process via its IPC interface.")
       (license license:gpl3+))))
 
+(define-public emacs-waveform
+  ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.
+  (let ((commit "ee52c6a72b3e9890743e3a6e2fc1f3195f5687b2")
+        (revision "0"))
+    (package
+      (name "emacs-waveform")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sachac/waveform-el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "082ls7khd22fjwnk7h1zxrmqqcmxqh2wx2vljlxhjh9bcp1y2pyr"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;there are no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'set-waveform-el-version 'patch-exec-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "waveform.el"
+                  ("waveform-ffmpeg-executable"
+                   (search-input-file inputs "/bin/ffmpeg"))))))))
+      (inputs (list ffmpeg))
+      (propagated-inputs (list emacs-mpv))
+      (home-page "https://github.com/sachac/waveform-el/")
+      (synopsis "Display a waveform and use it to navigate")
+      (description
+       "This package displays a waveform of a sound file. You can then play or
+navigate through it.")
+      (license license:gpl3+))))
+
 (define-public emacs-project-x
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
