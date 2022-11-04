@@ -24702,14 +24702,14 @@ done.")
 (define-public r-adagio
   (package
     (name "r-adagio")
-    (version "0.8.4")
+    (version "0.8.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "adagio" version))
        (sha256
         (base32
-         "0ihv05402iq003m0338f85pnqnlnrmx0pf1mg8cz9sgi5h98mbnl"))))
+         "0icwr3cark67jyg9zzqwyv9q4fs0j0xgb5i7nkwv9s7y5dlldl0b"))))
     (properties `((upstream-name . "adagio")))
     (build-system r-build-system)
     (propagated-inputs
