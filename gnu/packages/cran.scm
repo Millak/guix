@@ -20844,14 +20844,14 @@ code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
 (define-public r-sctransform
   (package
     (name "r-sctransform")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sctransform" version))
        (sha256
         (base32
-         "1nhmsbkrww74a55avln5zhd77g92f15p885j5q0khajw35iqnv0g"))))
+         "02vfgv6v3knmn5nxadjyjkzqmni1sgaf3f9ywm7d0knn0pgmd3n0"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
