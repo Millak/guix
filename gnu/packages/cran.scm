@@ -22066,18 +22066,18 @@ atmospheric physics.")
 (define-public r-lifecycle
   (package
     (name "r-lifecycle")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lifecycle" version))
        (sha256
         (base32
-         "0qssl9lmfn94kmvcg1xpd4md17jx31i3sdbb77dwas60z673qgvv"))))
+         "1hk9mblhap429fk77qpgc4hv0j91q5wpahi0y76w118m471zsnb4"))))
     (properties `((upstream-name . "lifecycle")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-glue r-rlang))
+     (list r-cli r-glue r-rlang))
     (native-inputs
      (list r-knitr)) ; for vignettes
     (home-page "https://github.com/r-lib/lifecycle")
