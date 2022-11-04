@@ -29123,18 +29123,23 @@ model.")
 (define-public r-clusterr
   (package
     (name "r-clusterr")
-    (version "1.2.6")
+    (version "1.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ClusterR" version))
        (sha256
         (base32
-         "00mha8madcba83ix4fc04rb7sagfm0lxlh1wvs7dvjdrngps41jr"))))
+         "1sl218scrf5s02v54bmmk2sz1vrnlq16c14c0lcg1n7x8d76sgk6"))))
     (properties `((upstream-name . "ClusterR")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-gmp r-gtools r-rcpp r-rcpparmadillo))
+     (list r-ggplot2
+           r-gmp
+           r-gtools
+           r-lifecycle
+           r-rcpp
+           r-rcpparmadillo))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/mlampros/ClusterR")
     (synopsis "Clustering")
