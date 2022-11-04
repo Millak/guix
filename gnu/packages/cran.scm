@@ -6860,17 +6860,17 @@ plotting.  a three dimensional point cloud.")
 (define-public r-ggridges
   (package
     (name "r-ggridges")
-    (version "0.5.3")
+    (version "0.5.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggridges" version))
        (sha256
         (base32
-         "0bmlqy1p6rac90af97ffpdi6php7dblx66l2hcm8ljidgyqzmspm"))))
+         "0lfqx21g09s3fp74mld47qfx1nnav18xqj37griyqk406hh1rxrb"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-plyr r-scales r-withr))
+     (list r-ggplot2 r-scales r-withr))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/clauswilke/ggridges")
