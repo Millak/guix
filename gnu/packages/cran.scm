@@ -7382,14 +7382,14 @@ features:
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.17.2")
+    (version "1.18.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "1xrhzbci7ls4h05skdlirxl49jsvmylrqivz2kd6i33wh2ca324m"))))
+         "0nyf8i94lnqm4gfjz1szbwvl4c438xg3rjdkqr18fz68fh0v3x2r"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-statnet-common r-tibble))
