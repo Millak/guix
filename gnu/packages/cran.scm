@@ -19310,14 +19310,14 @@ interaction search in high-dimensional data.")
 (define-public r-rttf2pt1
   (package
     (name "r-rttf2pt1")
-    (version "1.3.10")
+    (version "1.3.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rttf2pt1" version))
        (sha256
         (base32
-         "1fp1y0kxa5xg8w0dplm12wfm8h78az4k6ql1758wwhb3d17np241"))))
+         "1fbls9hy4s0hdszg449bpapx2mhknwiasvr15djf9f1hm0b2908p"))))
     (properties `((upstream-name . "Rttf2pt1")))
     (build-system r-build-system)
     (home-page "https://github.com/wch/Rttf2pt1")
