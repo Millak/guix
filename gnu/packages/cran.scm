@@ -20880,14 +20880,14 @@ batch correction, and data correction.")
 (define-public r-styler
   (package
     (name "r-styler")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "styler" version))
        (sha256
         (base32
-         "1ki260ga0jrmayhdlx2sl788yp5kkmi4wyl32nmvvyb55sng6j9y"))))
+         "1iw4nj68aj4psysrpyy7s6g3r3vhpfk8s05n6d20m2qmmk0p92sg"))))
     (build-system r-build-system)
     ;; This is needed by R.cache.
     (arguments
@@ -20900,10 +20900,9 @@ batch correction, and data correction.")
            r-magrittr
            r-purrr
            r-r-cache
-           r-rematch2
            r-rlang
            r-rprojroot
-           r-tibble
+           r-vctrs
            r-withr))
     (native-inputs
      (list r-knitr))
