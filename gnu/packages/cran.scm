@@ -20116,14 +20116,14 @@ in-memory raw vectors.")
 (define-public r-ggcorrplot
   (package
     (name "r-ggcorrplot")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggcorrplot" version))
        (sha256
         (base32
-         "0hi9lz121ya1l2lbm7rqlxg6fs6bvxck396dngnidrhl5fvqb41b"))))
+         "186a0mpdpipp24fjbd52l1gdgpqm6vl83ff8069d8nngyqbrx0jr"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-reshape2))
