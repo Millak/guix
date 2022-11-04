@@ -2967,13 +2967,13 @@ engine (version 3.8.8.2) is included.")
 (define-public r-rcurl
   (package
     (name "r-rcurl")
-    (version "1.98-1.8")
+    (version "1.98-1.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RCurl" version))
               (sha256
                (base32
-                "0a4gr264ycy6am4849y79h3vc9vg7cgpizb88v4xw076pyn52fqy"))))
+                "1iff8cbfrz94mp1m82ai448zhipm8xv6zlxmbysd5hsycxqli3gj"))))
     (properties `((upstream-name . "RCurl")))
     (build-system r-build-system)
     (arguments
