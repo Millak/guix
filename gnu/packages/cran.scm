@@ -9607,26 +9607,32 @@ reproducible.")
 (define-public r-learnr
   (package
     (name "r-learnr")
-    (version "0.10.1")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "learnr" version))
        (sha256
         (base32
-         "08xwmms6x58y3dsfbl9c6d03145hb4ij97nqr1cc9dxxilmr6x31"))))
+         "1p3943hv3ybmbcyfbxidd55dripi0570pf5l51hwz9r3635cx3zs"))))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (propagated-inputs
      (list r-checkmate
+           r-curl
+           r-digest
            r-ellipsis
            r-evaluate
            r-htmltools
            r-htmlwidgets
            r-jsonlite
            r-knitr
+           r-lifecycle
            r-markdown
+           r-promises
            r-rappdirs
            r-renv
+           r-rlang
            r-rmarkdown
            r-rprojroot
            r-shiny
