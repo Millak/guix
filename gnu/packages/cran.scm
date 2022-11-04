@@ -18378,14 +18378,14 @@ classes.")
 (define-public r-classint
   (package
     (name "r-classint")
-    (version "0.4-7")
+    (version "0.4-8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "classInt" version))
        (sha256
         (base32
-         "0vk06k10mxcm6wn4b74njzc1kc1ividsn03ii523j4yfhy4kl3m3"))))
+         "1csrrb93lzy1pajs91qd0vyvl218jyskcksa43xfrfvibdzn3sba"))))
     (properties `((upstream-name . "classInt")))
     (build-system r-build-system)
     (propagated-inputs
