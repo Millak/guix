@@ -3767,14 +3767,14 @@ data store designed for maximum speed.")
 (define-public r-maps
   (package
     (name "r-maps")
-    (version "3.4.0")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "maps" version))
        (sha256
         (base32
-         "0ispkx1szgwxhr0zzhdzgqqwcgc6psg7vry4sj4rb89w76rcq63r"))))
+         "0034114pdakxcx480b45qy9j4vq1v5ss961ssy92w4nqiqhsb4z6"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/maps")
     (synopsis "Draw geographical maps")
