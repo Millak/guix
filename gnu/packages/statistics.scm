@@ -4251,14 +4251,14 @@ It uses and relies on grid graphics and formal (S4) classes and methods.")
 (define-public r-purrr
   (package
     (name "r-purrr")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "purrr" version))
        (sha256
         (base32
-         "1cj091rsjdj2xz16qhynyw72gh5cyhznifcfbrbygndfr4xwksr3"))))
+         "1vzwajjw9h6jg5l82j7nkf3iraqmzwzh40s7q6wkq14awzbnqf52"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-rlang))
