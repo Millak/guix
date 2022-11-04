@@ -20811,14 +20811,14 @@ provides tools to compute this metric.")
 (define-public r-lintr
   (package
     (name "r-lintr")
-    (version "3.0.1")
+    (version "3.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lintr" version))
        (sha256
         (base32
-         "18prww284sil98ck3gmkmfs6b4disn9nyfb00kfwwiwg7ay1df6g"))))
+         "1j9l5lsa88hl5b3lw1789868pm0m2sbahyqayj9213d7zspp0slz"))))
     (properties `((upstream-name . "lintr")))
     (build-system r-build-system)
     (propagated-inputs
