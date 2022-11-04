@@ -33635,14 +33635,14 @@ to archive and assign DOIs to data, software, figures, and more.")
 (define-public r-dismo
   (package
     (name "r-dismo")
-    (version "1.3-8")
+    (version "1.3-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dismo" version))
        (sha256
         (base32
-         "17dwk4fv9l903fp38ab9arc4dfyrj1sbllfxlybkdwm9lpsn1qv6"))))
+         "1vmyjch2nv7x80kj453bjbzfsdyhcmf9hw68lh2b05kpnqfm491r"))))
     (properties `((upstream-name . "dismo")))
     (build-system r-build-system)
     (propagated-inputs
