@@ -19690,17 +19690,18 @@ sets of URLs.")
 (define-public r-ggforce
   (package
     (name "r-ggforce")
-    (version "0.3.4")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggforce" version))
        (sha256
         (base32
-         "0lshvdb5kx0k5w36pc7fy653cs98w17spbw8f0jw36xb80sipiv2"))))
+         "0wqq8l7lq96k4w0vq12jcg7clvgia8s35jjbqq1s0py4cgxijhml"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2
+     (list r-cli
+           r-ggplot2
            r-gtable
            r-lifecycle
            r-mass
@@ -19709,8 +19710,10 @@ sets of URLs.")
            r-rcppeigen
            r-rlang
            r-scales
+           r-systemfonts
            r-tidyselect
            r-tweenr
+           r-vctrs
            r-withr))
     (home-page "https://ggforce.data-imaginist.com")
     (synopsis "Accelerating ggplot2")
