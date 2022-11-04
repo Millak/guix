@@ -13219,17 +13219,17 @@ effects models and Bayesian models.")
 (define-public r-ggeffects
   (package
     (name "r-ggeffects")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggeffects" version))
        (sha256
         (base32
-         "1h60s10b1b5ciqg125mfnhq7nf2paq9svs2lfgwpwdvs4f8l4aq7"))))
+         "1j3l5v00f3xx2pwwfg1z9y31h8qja88nx7lycwj1y55ry5i6drr1"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-insight r-mass r-sjlabelled))
+     (list r-insight))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/strengejacke/ggeffects")
