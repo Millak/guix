@@ -30550,14 +30550,14 @@ this variability problem can be overcome.")
 (define-public r-mlecens
   (package
     (name "r-mlecens")
-    (version "0.1-5")
+    (version "0.1-7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "MLEcens" version))
        (sha256
         (base32
-         "0cdl0y44clds4sg8hikhk354a5xrfbyfg8lxrbh1bfg410rkj186"))))
+         "1kdnm5ilfn5fclry3f1d518761hykrqgjhv69kc881r2fpcfa1lv"))))
     (properties `((upstream-name . "MLEcens")))
     (build-system r-build-system)
     (home-page "http://stat.ethz.ch/~maathuis/")
