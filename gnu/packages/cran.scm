@@ -32319,13 +32319,13 @@ data you need the @code{pdftools} package.")
 (define-public r-pbdmpi
   (package
     (name "r-pbdmpi")
-    (version "0.4-4")
+    (version "0.4-6")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pbdMPI" version))
               (sha256
                (base32
-                "006pm2yn4mdrpwhfflqcybzv41lz7zssrjrcpq5g98zf60p9c07a"))))
+                "0r6kbrvc0z4mb2dhrz1iqdyx0c03f682b5xfi1igp7z3rszd1va1"))))
     (properties `((upstream-name . "pbdMPI")))
     (build-system r-build-system)
     (arguments
