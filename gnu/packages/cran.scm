@@ -33135,13 +33135,13 @@ using either @code{httpuv} or @code{Rhttpd}.")
 (define-public r-protolite
   (package
     (name "r-protolite")
-    (version "2.1.1")
+    (version "2.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "protolite" version))
        (sha256
-        (base32 "0g1r3lzmvx1w44qzqzdvxfn21zmz11srlp6cr76kd7pd5wzjv82p"))))
+        (base32 "1sr56hrd5n79igy3168993cxzqkzizhal4s1g22pd0rgdixm27ch"))))
     (properties `((upstream-name . "protolite")))
     (build-system r-build-system)
     (inputs
