@@ -976,11 +976,11 @@ It has been modified to remove all non-free binary blobs.")
                        "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
                      #:configuration-file kernel-config))
 
-(define-public linux-libre-version         linux-libre-5.19-version)
-(define-public linux-libre-gnu-revision    linux-libre-5.19-gnu-revision)
-(define-public linux-libre-pristine-source linux-libre-5.19-pristine-source)
-(define-public linux-libre-source          linux-libre-5.19-source)
-(define-public linux-libre                 linux-libre-5.19)
+(define-public linux-libre-version         linux-libre-6.0-version)
+(define-public linux-libre-gnu-revision    linux-libre-6.0-gnu-revision)
+(define-public linux-libre-pristine-source linux-libre-6.0-pristine-source)
+(define-public linux-libre-source          linux-libre-6.0-source)
+(define-public linux-libre                 linux-libre-6.0)
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1210,9 +1210,9 @@ It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-5.19-version
-          linux-libre-5.19-gnu-revision
-          linux-libre-5.19-source
+          linux-libre-6.0-version
+          linux-libre-6.0-gnu-revision
+          linux-libre-6.0-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
