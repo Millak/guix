@@ -18193,16 +18193,17 @@ partition functions are also given.")
 (define-public r-brobdingnag
   (package
     (name "r-brobdingnag")
-    (version "1.2-7")
+    (version "1.2-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Brobdingnag" version))
        (sha256
         (base32
-         "0hnp5nrpnscykvgrrbgp7987660hcbv92zc2q8lmpnin4ws399vk"))))
+         "07p9416rdzfyiigbglxjpbcg7pfly9nw19yn2mwg98621cjjs0gr"))))
     (properties `((upstream-name . "Brobdingnag")))
     (build-system r-build-system)
+    (propagated-inputs (list r-matrix))
     (home-page "https://github.com/RobinHankin/Brobdingnag.git")
     (synopsis "Very large numbers in R")
     (description
