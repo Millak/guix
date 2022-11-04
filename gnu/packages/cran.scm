@@ -8862,13 +8862,13 @@ contain lags, diffs and missing values.")
 (define-public r-dynutils
   (package
     (name "r-dynutils")
-    (version "1.0.9")
+    (version "1.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dynutils" version))
        (sha256
-        (base32 "1pcj4igaw1g898xb42kcpzfmqy80xai5ki5bpnkf8hg738wm00qz"))))
+        (base32 "06an2bm1d131v28m240vii2wisbz3zs32wbamm2w7r8rl3yrxkh9"))))
     (properties `((upstream-name . "dynutils")))
     (build-system r-build-system)
     (propagated-inputs
