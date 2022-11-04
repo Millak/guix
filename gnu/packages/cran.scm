@@ -22202,12 +22202,12 @@ to ODEs by numerical differencing.")
 (define-public r-pracma
   (package
     (name "r-pracma")
-    (version "2.3.8")
+    (version "2.4.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "pracma" version))
               (sha256
-               (base32 "0r17siivm37k4gp253v9mlg5m7cwqp85h9kk2hbp2wkf81ad80i3"))))
+               (base32 "05lwx2yx7f45cr5amzbjv3b2p6ibspjxl0aglq2dga6rvxzk6l0x"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/pracma/")
     (synopsis "Practical numerical math functions")
