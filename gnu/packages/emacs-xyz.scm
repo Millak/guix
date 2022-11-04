@@ -33702,6 +33702,41 @@ into the current buffer.")
 using mypy.")
       (license license:bsd-2))))
 
+(define-public emacs-mpv
+  ;; No release since Dec 28, 2021.
+  (let ((commit "2e0234bc21a3dcdf12d94d3285475e7f6769d3e8")
+        (revision "0"))
+    (package
+      (name "emacs-mpv")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kljohann/mpv.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mvzg2wqpycny2dmiyp8jm0fflvll7ay6scvsb9rxgfwimr2vbw5"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;there are no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'set-mpv-el-version 'patch-exec-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "mpv.el"
+                  ("mpv-executable"
+                   (search-input-file inputs "/bin/mpv"))))))))
+      (inputs (list mpv))
+      (home-page "https://github.com/kljohann/mpv.el/")
+      (synopsis "Control MPV for easy note taking")
+      (description
+       "This package is a potpourri of helper functions to control a MPV
+process via its IPC interface.")
+      (license license:gpl3+))))
+
 (define-public emacs-project-x
   ;; There is no proper release.
   ;; The base version is extracted from the README.org.
