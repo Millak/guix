@@ -23254,18 +23254,19 @@ to maximise an approximation to the expectation of the utility function.")
 (define-public r-acet
   (package
     (name "r-acet")
-    (version "1.8.1")
+    (version "1.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ACEt" version))
        (sha256
         (base32
-         "0b5lfpnppyk0237phr2aybhx29nhm8ngwk2qa1y4lshrvsw97wg4"))))
+         "0583c9dg2yf01zf5p0bf24zipkm8yp7rwhn1dxyw2d0v881bbli6"))))
     (properties `((upstream-name . "ACEt")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-mass r-rcpp r-rcpparmadillo))
+    (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/ACEt/")
     (synopsis "Estimating dynamic heritability and twin model comparison")
     (description
