@@ -9871,14 +9871,14 @@ movies, and TV shows.")
 (define-public r-ggsignif
   (package
     (name "r-ggsignif")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggsignif" version))
        (sha256
         (base32
-         "1ad774c7s7y4i00xd89lfigr9aybl94q98ch598k3rchanr4b1fa"))))
+         "02mjailzyqkdnzky60dgampw2sq6mnn7s66fk0lhy32s8apm280i"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
