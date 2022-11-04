@@ -19003,14 +19003,14 @@ exact test for Hardy-Weinberg equilibrium.")
 (define-public r-tdthap
   (package
     (name "r-tdthap")
-    (version "1.1-11")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tdthap" version))
        (sha256
         (base32
-         "15qlj2bivvz3pizd8dq34wczbkbxhzqh3cqp1ixkdkprlyvcxj5k"))))
+         "0x67k50vly92b9n5hpqp4hy87kh8r6nzadsj8xzz4lvcmb4vb6mq"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/tdthap/")
     (synopsis "TDT tests for extended haplotypes")
