@@ -8191,14 +8191,14 @@ creation and manipulation of WAVE audio files.")
 (define-public r-np
   (package
     (name "r-np")
-    (version "0.60-14")
+    (version "0.60-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "np" version))
        (sha256
         (base32
-         "0v6mhcwdnqj5kjxwrzcqlff021ih2jdarwmikdm5bvjfwi8pyarl"))))
+         "1c01drwvh2jj0s40q19ghdf429s6px07akg6d0yfanah3706gydy"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot r-cubature r-quadprog r-quantreg))
