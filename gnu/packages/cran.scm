@@ -25833,16 +25833,17 @@ programming} (OOP) using R Reference Class.")
 (define-public r-proxyc
   (package
     (name "r-proxyc")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "proxyC" version))
        (sha256
         (base32
-         "1nfl6nrzw2h7argn6mh3cyl1s9ynf6516fx4vgqrjvychnd98mkb"))))
+         "00p3604ny6qax5rr1865c27hfp90v2vga0xcrp3bb81xcfadl99y"))))
     (properties `((upstream-name . "proxyC")))
     (build-system r-build-system)
+    (native-inputs (list r-knitr))
     (propagated-inputs
      (list r-matrix r-rcpp r-rcpparmadillo r-rcppparallel))
     (home-page "https://cran.r-project.org/package=proxyC")
