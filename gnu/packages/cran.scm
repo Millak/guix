@@ -17496,14 +17496,14 @@ to easily call your own custom JavaScript functions from R.")
 (define-public r-colourpicker
   (package
     (name "r-colourpicker")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "colourpicker" version))
        (sha256
         (base32
-         "1q1wi3g403fbzp4ys3gsjbwdc86x770cx323qgi47ca8n219kl50"))))
+         "12k3m2s49pc1p2hzd4zqqzzdf94q7hhqz7zgp8w908a6w3p80b5w"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
@@ -17539,10 +17539,10 @@ to easily call your own custom JavaScript functions from R.")
        ("js-jquery"
         ,(origin
            (method url-fetch)
-           (uri "https://code.jquery.com/jquery-1.11.3.js")
+           (uri "https://code.jquery.com/jquery-3.6.1.js")
            (sha256
             (base32
-             "1v956yf5spw0156rni5z77hzqwmby7ajwdcd6mkhb6zvl36awr90"))))
+             "1lm4zcpvqdi7qi2s7bgci2z74wazq0z0bdvjmlrqbhmfrpk42ffz"))))
        ("js-salvattore"
         ,(origin
            (method url-fetch)
