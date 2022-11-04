@@ -1428,13 +1428,13 @@ for template use among CRAN packages.")
 (define-public r-evaluate
   (package
     (name "r-evaluate")
-    (version "0.16")
+    (version "0.17")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "evaluate" version))
               (sha256
                (base32
-                "009861l805z4c10cz0pyym5qd2b2wsiignjkz74vl25718k0mz0h"))))
+                "0qx9dgwcz0xmf4k8hy45p50dhb3nldhmhmg5y0d92rxr9k4l7is9"))))
     (build-system r-build-system)
     (home-page "https://github.com/hadley/evaluate")
     (synopsis "Parsing and evaluation tools for R")
