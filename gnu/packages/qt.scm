@@ -2794,7 +2794,7 @@ linux/libcurl_wrapper.h"
       #:configure-flags
       ;; Use the CMake ninja generator, otherwise the build fails (see:
       ;; https://bugreports.qt.io/browse/QTBUG-96897).
-      #~(list "-GNinja"                 ;
+      #~(list "-GNinja"
               ;; Manually add the NSS library prefix to the linker
               ;; search path, otherwise it fails to be linked (see:
               ;; https://bugreports.qt.io/browse/QTBUG-105053).
@@ -2875,9 +2875,9 @@ linux/libcurl_wrapper.h"
     (native-inputs
      (modify-inputs (package-native-inputs qtwebengine-5)
        (delete "python2" "python2-six")
+       (replace "node" node-lts)
        (append clang-14
                lld-as-ld-wrapper
-               node-lts
                python-wrapper
                python-html5lib)))
     (inputs
