@@ -21513,13 +21513,13 @@ path of values for the regularization parameter.")
 (define-public r-gldex
   (package
     (name "r-gldex")
-    (version "2.0.0.9")
+    (version "2.0.0.9.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "GLDEX" version))
               (sha256
                (base32
-                "1g0wg6z4ba1n6p2nw3kr734wlgmq0aw1a4spr6xw6djj7idsfi61"))))
+                "0pikq5aywky77sbbkga7s0ww3ywlarx336rgpyiigr72fmjvb289"))))
     (properties `((upstream-name . "GLDEX")))
     (build-system r-build-system)
     (propagated-inputs (list r-cluster r-spacefillr))
