@@ -25106,13 +25106,13 @@ statistical shape analysis and archetypal analysis.")
 (define-public r-anndata
   (package
     (name "r-anndata")
-    (version "0.7.5.4")
+    (version "0.7.5.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "anndata" version))
        (sha256
-        (base32 "0vn64b0rpnwbznn0h03b810mp8hcqxjzw69nzyjmndwa8r9ial2y"))))
+        (base32 "1ync82qp0v6zszibz8bwhlyknf99v3iki8cwq4n4vwmg9z7hrb54"))))
     (properties `((upstream-name . "anndata")))
     (build-system r-build-system)
     (propagated-inputs (list r-assertthat r-matrix r-r6 r-reticulate))
