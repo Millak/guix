@@ -3,6 +3,7 @@
 ;;; Copyright © 2016, 2017 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021, 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,25 +27,23 @@
   #:use-module (guix download)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages compression))
+  #:use-module (gnu packages ruby))
 
 (define-public ccache
   (package
     (name "ccache")
-    (version "4.6.3")
+    (version "4.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ccache/ccache/releases/download/v"
                            version "/ccache-" version ".tar.xz"))
        (sha256
-        (base32 "08lbzlcb4clc298nsjcqcnhw69p53xk7hni5p19jaqqjn4djafhy"))))
+        (base32 "1bsf27dii1bm6bamvs6gi6vm5pjrd0956vf8597ix76lfyjpbjhp"))))
     (build-system cmake-build-system)
-    (native-inputs (list perl ; for test/run
-                         (@ (gnu packages base) which)))
-    (inputs (list zlib
-                  `(,zstd "lib")))
     (arguments
      (list #:configure-flags
            ;; The backend must be explicitly disabled to build without Redis.
@@ -63,6 +62,8 @@
                  ;; Tests require a writable HOME.
                  (lambda _
                    (setenv "HOME" (getenv "TMPDIR")))))))
+    (native-inputs (list perl ruby-asciidoctor which))
+    (inputs (list zlib `(,zstd "lib")))
     (home-page "https://ccache.dev/")
     (synopsis "Compiler cache")
     (description
