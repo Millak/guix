@@ -30,7 +30,8 @@
         (title
          (en "New build system for Python packages")
          (de "Neues Erstellungssystem für Python-Pakete")
-         (fr "Nouveau système de construction pour les paquets Python"))
+         (fr "Nouveau système de construction pour les paquets Python")
+         (pt "Novo sistema de compilação para pacotes Python"))
         (body
          (en "A new @var{pyproject-build-system} has been added.  This
 is a redesign of @var{python-build-system} with support for @dfn{PEP 517}
@@ -79,7 +80,22 @@ Les canaux tiers devraient attendre que l'API se stabilise (voir le manuel de
 Guix pour les mises en garde).
 
 Contrairement à ce qu'indique son nom, @var{pyproject-build-system} fonctionne
-aussi avec « l'ancien » format @file{setup.py}.")))
+aussi avec « l'ancien » format @file{setup.py}.")
+         (pt "Um novo sistema de compilação chamado @var{pyproject-build-system}
+foi adicionado.  É um redesign do @var{python-build-system} com suporte à
+@dfn{PEP 517} e a arquivos @file{pyproject.toml}.  Ele também inclui suporte a
+vários frameworks de teste tais como @command{pytest} e @code{nosetests}.
+
+Há um pacote complementar @code{python-toolchain} que contém versões
+atualizadas do @command{pip}, @command{setuptools} e outros.
+
+O sistema de compilação será eventualmente incorporado ao
+@var{python-build-system}, mas encorajamos você a usá-lo para pacotes no canal
+@code{guix}.  Canais de terceiros podem querer esperar até a API se
+estabilizar (veja o manual do Guix para ressalvas).
+
+Apesar do nome, o @var{pyproject-build-system} também funciona com o formato
+“legado” do @file{setup.py}.")))
 
  (entry (commit "c7ba5f38b80433b040d3946b8fc0b1e8621ba30a")
         (title
