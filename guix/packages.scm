@@ -1176,9 +1176,9 @@ inputs of Coreutils and adds libcap:
 
   (modify-inputs (package-inputs coreutils)
     (delete \"gmp\" \"acl\")
-    (append libcap))
+    (prepend libcap))
 
-Other types of clauses include 'prepend' and 'replace'.
+Other types of clauses include 'append' and 'replace'.
 
 The first argument must be a labeled input list; the result is also a labeled
 input list."

@@ -8080,20 +8080,20 @@ following forms:
 @item (delete @var{name}@dots{})
 Delete from the inputs packages with the given @var{name}s (strings).
 
-@item (append @var{package}@dots{})
-Add @var{package}s to the end of the input list.
-
 @item (prepend @var{package}@dots{})
 Add @var{package}s to the front of the input list.
+
+@item (append @var{package}@dots{})
+Add @var{package}s to the end of the input list.
 @end table
 
 The example below removes the GMP and ACL inputs of Coreutils and adds
-libcap to the back of the input list:
+libcap to the front of the input list:
 
 @lisp
 (modify-inputs (package-inputs coreutils)
   (delete "gmp" "acl")
-  (append libcap))
+  (prepend libcap))
 @end lisp
 
 The example below replaces the @code{guile} package from the inputs of
@@ -8104,7 +8104,7 @@ The example below replaces the @code{guile} package from the inputs of
   (replace "guile" guile-2.2))
 @end lisp
 
-The last type of clause is @code{prepend}, to add inputs to the front of
+The last type of clause is @code{append}, to add inputs at the back of
 the list.
 @end deffn
 
