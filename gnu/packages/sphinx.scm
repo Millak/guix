@@ -735,6 +735,54 @@ and several other projects.")
     (description "This package provides a Matplotlib theme for Sphinx.")
     (license license:bsd-3)))
 
+(define-public python-myst-parser
+  (package
+    (name "python-myst-parser")
+    (version "0.18.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/executablebooks/MyST-Parser")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lcz9vvy8hbp6cjmbslrlxn3pinf98jykiq8nx5lw5y0lz0mj162"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; There are 3 test failures, seemingly due to expecting a slightly
+     ;; different output from Sphinx (see:
+     ;; https://github.com/executablebooks/MyST-Parser/issues/645).
+     (list #:test-flags #~(list "-k" (string-append
+                                      "not test_basic "
+                                      "and not test_gettext_html "
+                                      "and not test_fieldlist_extension"))))
+    (native-inputs
+     (list python-beautifulsoup4
+           python-docutils
+           python-flit-core
+           python-pytest
+           python-pytest-param-files
+           python-pytest-regressions
+           python-sphinx
+           python-sphinx-pytest))
+    (propagated-inputs
+     (list python-docutils
+           python-jinja2
+           python-linkify-it-py
+           python-markdown-it-py
+           python-linkify-it-py
+           python-mdit-py-plugins
+           python-pyyaml
+           python-sphinx
+           python-typing-extensions))
+    (home-page "https://myst-parser.readthedocs.io/en/latest/")
+    (synopsis "Sphinx and Docutils extension to parse MyST")
+    (description "This package provides a Sphinx and Docutils extension to parse
+MyST, a rich and extensible flavour of Markdown for authoring technical and
+scientific documentation.")
+    (license license:expat)))
+
 (define-public python-sphinx-rtd-theme
   (package
     (name "python-sphinx-rtd-theme")
