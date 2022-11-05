@@ -37,7 +37,7 @@
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020 Noisytoot <noisytoot@gmail.com>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
@@ -2059,22 +2059,17 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.11.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Hypercorn" version))
-       (sha256
-        (base32 "16kai5d12f05jr89mj611zslxqri4cd7ixcgd6yhl211qlcyg8av"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+    (version "0.14.3")
+    (source (origin
+              (method git-fetch) ;PyPI does not have tests
+              (uri (git-reference
+                    (url "https://github.com/pgjones/hypercorn")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hkph0sdr94hxmrq1grnh842snm561sw4az5q6a3ba9hqnrl890h"))))
+    (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
      (list python-h11
@@ -2086,6 +2081,7 @@ RFC6455, regardless of your programming paradigm.")
     (native-inputs
      (list python-hypothesis
            python-mock
+           python-poetry-core
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
@@ -2096,8 +2092,8 @@ RFC6455, regardless of your programming paradigm.")
     (description
      "Hypercorn is an ASGI web server based on the sans-io hyper, h11, h2, and
 wsproto libraries and inspired by Gunicorn.  It supports HTTP/1, HTTP/2,
-WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It can
-utilise asyncio, uvloop, or trio worker types.")
+WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It
+can utilise asyncio, uvloop, or trio worker types.")
     (license license:expat)))
 
 (define-public python-hypercorn
