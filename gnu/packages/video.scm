@@ -5391,7 +5391,7 @@ can also directly record to WebM or MP4 if you prefer.")
 (define-public wf-recorder
   (package
     (name "wf-recorder")
-    (version "0.2.1")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5400,7 +5400,7 @@ can also directly record to WebM or MP4 if you prefer.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cw6kpcbl33wh95pvy32xrsrm6kkk1awccr3phyh885xjs3b3iim"))))
+                "18csvix8fdqir52q729rgcy355xy2ngvmr05l1abflpbvsklbn52"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
