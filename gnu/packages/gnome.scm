@@ -10410,6 +10410,7 @@ desktop.  It supports multiple calendars, month, week and year view.")
               (uri (git-reference
                     (url "https://gitlab.gnome.org/World/Endeavour")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0gbqmwl1xv5526vlh1mxx9h5mpfnnwikrpr5fk8hxmy9x71r6q6n"))))
