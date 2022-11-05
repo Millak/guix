@@ -24435,6 +24435,47 @@ processing named definitions.")
 (define-public ecl-definitions-systems
   (sbcl-package->ecl-package sbcl-definitions-systems))
 
+(define-public sbcl-numerical-utilities
+  (let ((commit "44f45ba952b35675640630e40cf90df6f8279746")
+        (revision "0"))
+    (package
+      (name "sbcl-numerical-utilities")
+      (version (git-version "1.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/numerical-utilities")
+               (commit commit)))
+         (file-name (git-file-name "cl-numerical-utilities" version))
+         (sha256
+          (base32 "1dwz8zxhqzi31qp863zj1cn1lgljny14snycb9nk871qs121kmsd"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-systems '("num-utils" "num-utils/tests")))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-alexandria-plus
+             sbcl-anaphora
+             sbcl-array-operations
+             sbcl-let-plus
+             sbcl-select))
+      (native-inputs
+       (list sbcl-fiveam))
+      (home-page "https://lisp-stat.github.io/numerical-utilities")
+      (synopsis "Utilities for numerical programming")
+      (description
+       "@code{cl-numerical-utilities} is a collection of packages useful in
+numerical applications, each big enough to be its own package, but too small
+to split out into a separate ASDF system.")
+      (license license:ms-pl))))
+
+(define-public cl-numerical-utilities
+  (sbcl-package->cl-source-package sbcl-numerical-utilities))
+
+(define-public ecl-numerical-utilities
+  (sbcl-package->ecl-package sbcl-numerical-utilities))
+
 (define-public sbcl-zr-utils
   (let ((commit "e7eaffcb71811f6e1ab85fb15a079bcac4038eeb")
         (revision "0"))
