@@ -4203,6 +4203,34 @@ work on your part.")
 for linkify-it-py projects.")
     (license license:expat)))
 
+(define-public python-linkify-it-py
+  (package
+    (name "python-linkify-it-py")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/tsutsu3/linkify-it-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0fg0a1lc8xbb62y9krxcp708ll58dxcwm8i7rrwpkd5sh2229f6x"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-uc-micro-py))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tsutsu3/linkify-it-py")
+    (synopsis "Links recognition library with full Unicode support")
+    (description "This is Python port of
+@url{https://github.com/markdown-it/linkify-it, linkify-it}, which is a links
+recognition library with full Unicode support.  It has features like:
+@itemize
+@item Full unicode support, with @i{astral} characters
+@item International domains support
+@item Allows rules extension and custom normalizers.
+@end itemize")
+    (license license:expat)))
+
 (define-public python-markdown-it-py
   (package
     (name "python-markdown-it-py")
