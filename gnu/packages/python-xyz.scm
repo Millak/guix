@@ -27127,31 +27127,37 @@ It adds a simple and readable way to print stuff during development.")
 (define-public python-dateparser
   (package
     (name "python-dateparser")
-    (version "0.7.6")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dateparser" version))
        (sha256
         (base32
-         "1ypbyqxlk7n6zibk90js3ybz37xmin3kk0i35g8c51bwqpcfyxg8"))))
-    (build-system python-build-system)
+         "19fbgq1zrwx10kljmdbs3p0y2m2xsgww20pqzw4kv6161zipsymf"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
      (list python-dateutil python-pytz python-regex python-ruamel.yaml
            python-tzlocal))
     (native-inputs
-     (list python-mock python-parameterized tzdata-for-tests))
+     (list python-flake8 python-pytest python-parameterized tzdata-for-tests))
     (arguments
-     `(;; TODO: Of 23320 tests, 6 fail and 53 error.
-       #:tests? #f
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-check-environment
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "TZ" "UTC")
              (setenv "TZDIR"
                      (search-input-directory inputs
-                                             "share/zoneinfo")))))))
+                                             "share/zoneinfo"))))
+         (add-before 'check 'delete-failing-tests
+           (lambda _
+             (with-directory-excursion "tests"
+               (for-each delete-file
+                         '("test_dateparser_data_integrity.py"
+                           "test_hijri.py"
+                           "test_jalali.py"
+                           "test_language_detect.py"))))))))
     (home-page "https://github.com/scrapinghub/dateparser")
     (synopsis
      "Date parsing library designed to parse dates from HTML pages")
