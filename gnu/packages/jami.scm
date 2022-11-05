@@ -45,8 +45,10 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages telephony)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages upnp)
   #:use-module (gnu packages version-control)
@@ -58,6 +60,7 @@
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system qt)
   #:use-module (guix download)
@@ -575,3 +578,49 @@ P2P-DHT.")
 ;;; Remove when 2023 comes.
 (define-public jami-qt
   (deprecated-package "jami-qt" jami))
+
+(define-public jami-docs
+  ;; There aren't any tags, so use the latest commit.
+  (let ((revision "0")
+        (commit "b00574bcc46538c4b405b5edb3b43bf5404ff511"))
+    (package
+      (name "jami-docs")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.jami.net/savoirfairelinux/jami-docs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0iayi6yrb6djk0l2dwdxzlsga9c18ra8adplh8dad3zjdi75wnsq"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'build
+              (lambda _
+                (invoke "make" "info" "html" "man" "LANGS="
+                        "-j" (number->string
+                              (parallel-job-count))))))
+        #:install-plan
+        ;; TODO: Install localized info manuals and HTML.
+        ''(("_build/out/texinfo/jami.info" "share/info/")
+           ("_build/out/html" "share/doc/jami/")
+           ("_build/out/man/jami.1" "share/man/man1/"))))
+      (native-inputs
+       (list python
+             python-myst-parser
+             python-sphinx
+             python-sphinx-rtd-theme
+             texinfo))
+      (home-page "https://git.jami.net/")
+      (synopsis "Documentation for Jami")
+      (description "This package contains the documentation of Jami.  Jami is
+a secure and distributed voice, video and chat communication platform that
+requires no centralized server and leaves the power of privacy in the hands of
+the user.  It supports the SIP and IAX protocols, as well as decentralized
+calling using P2P-DHT.")
+      (license license:fdl1.3+))))
