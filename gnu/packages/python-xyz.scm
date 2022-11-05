@@ -4182,6 +4182,27 @@ modules.  It creates a special virtual environment such that @command{pip} or
 work on your part.")
     (license license:expat)))
 
+(define-public python-uc-micro-py
+  (package
+    (name "python-uc-micro-py")
+    (version "1.0.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/tsutsu3/uc.micro-py")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17f55gi55rg47nm88fn3f8851ph03dgykdp011lxr3j6hk18lyfv"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/tsutsu3/uc.micro-py")
+    (synopsis "Unicode data files for linkify-it-py projects")
+    (description "This package contains a micro subset of Unicode data files
+for linkify-it-py projects.")
+    (license license:expat)))
+
 (define-public python-markdown-it-py
   (package
     (name "python-markdown-it-py")
