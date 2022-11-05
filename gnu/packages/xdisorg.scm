@@ -2922,7 +2922,7 @@ using @command{dmenu}.")
 (define-public wofi
   (package
     (name "wofi")
-    (version "1.2.4")
+    (version "1.3")
     (source (origin
               (method hg-fetch)
               (uri (hg-reference
@@ -2931,15 +2931,14 @@ using @command{dmenu}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1bnf078fg1kwslzwm1mjxwcqqq3bhk1dzymwfw9gk3brqbxrl75c"))))
+                "1k6b46n0vwdqrr6rfps0n8hghcgivnc42gc7z61phhjgf08j64qv"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t))
+     (list #:glib-or-gtk? #t))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("gtk3" ,gtk+)
-       ("wayland" ,wayland)))
+     (list gtk+ wayland))
     (synopsis "Launcher/menu program for wayland")
     (description
      "Wofi is a launcher/menu program for wlroots based wayland compositors
