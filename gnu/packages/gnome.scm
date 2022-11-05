@@ -10404,15 +10404,15 @@ desktop.  It supports multiple calendars, month, week and year view.")
 (define-public endeavour
   (package
     (name "endeavour")
-    (version "42.0")
+    (version "43.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://gitlab.gnome.org/World/Endeavour")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (sha256
                (base32
-                "0d6by7aq8db35zavzvckcxxxcdi6qnv0mkjndhb0syc8ih15dpak"))))
+                "0gbqmwl1xv5526vlh1mxx9h5mpfnnwikrpr5fk8hxmy9x71r6q6n"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -10421,8 +10421,9 @@ desktop.  It supports multiple calendars, month, week and year view.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'skip-gtk-update-icon-cache
             (lambda _
-              (substitute* "build-aux/meson/meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false"))))
           (delete 'check)
           (add-after 'install 'check
             (assoc-ref %standard-phases
