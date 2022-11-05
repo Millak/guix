@@ -42,6 +42,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
@@ -896,6 +897,26 @@ enabled web server.")
     (synopsis "Type hints for the Sphinx autodoc extension")
     (description "This extension allows you to use Python 3 annotations for
 documenting acceptable argument types and return value types of functions.")
+    (license license:expat)))
+
+(define-public python-sphinx-pytest
+  (package
+    (name "python-sphinx-pytest")
+    (version "0.0.5")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "sphinx_pytest" version))
+              (sha256
+               (base32
+                "13d3psm5vyb8rdj0mhnpn5m09k8xdaszcxdpng52fpz9sw8pngk7"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-pytest python-sphinx))
+    (home-page "https://github.com/chrisjsewell/sphinx-pytest")
+    (synopsis "Pytest fixtures for Sphinx extensions")
+    (description "This Pytest extension mainly provides some Pytest fixtures
+to simulate converting some source text to Docutils @acronym{AST, Abstract
+Syntax Tree} at different stages: before transforms, after transforms, etc.")
     (license license:expat)))
 
 (define-public python-nbsphinx
