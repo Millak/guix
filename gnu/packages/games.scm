@@ -1662,7 +1662,7 @@ shadow mimic them to reach blocks you couldn't reach alone.")
 (define-public opensurge
   (package
     (name "opensurge")
-    (version "0.5.2.1")
+    (version "0.6.0.3")
     (source
      (origin
        (method git-fetch)
@@ -1671,40 +1671,37 @@ shadow mimic them to reach blocks you couldn't reach alone.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13g5izss7dmgigc8iif8hid3z6i066b0z29rbql2b9qjmdj1dp41"))))
+        (base32 "0yia2qcva741a64qpls8a59lvnx5vynqkk2i3arkflw6f1m1vb55"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;there are no tests
-       #:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
-              (share (string-append out "/share")))
-         (list (string-append "-DCMAKE_INSTALL_PREFIX=" out)
-               (string-append "-DGAME_BINDIR=" out "/bin") ; not /bin/games
-               (string-append "-DGAME_DATADIR=" share "/" ,name)
-               (string-append "-DDESKTOP_ENTRY_PATH=" share "/applications")
-               (string-append "-DDESKTOP_ICON_PATH=" share "/pixmaps")
-               (string-append "-DDESKTOP_METAINFO_PATH=" share "/metainfo")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-xdg-open-path
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Look for xdg-open in the store.
-             (substitute* "src/core/web.c"
-               (("/usr(/bin/xdg-open)" _ bin)
-                (search-input-file inputs bin)))))
-         (add-after 'unpack 'unbundle-fonts
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Replace bundled Roboto fonts with links to the store.
-             (with-directory-excursion "fonts"
-               (let ((roboto-dir (string-append
-                                  (assoc-ref inputs "font-google-roboto")
-                                  "/share/fonts/truetype/")))
-                 (for-each
-                  (lambda (font)
-                    (delete-file font)
-                    (symlink (string-append roboto-dir font) font))
-                  '("Roboto-Black.ttf" "Roboto-Bold.ttf" "Roboto-Medium.ttf")))
-               #t))))))
+     (list #:tests? #f ; there are no tests
+           #:configure-flags
+           #~(list (string-append "-DCMAKE_INSTALL_PREFIX=" #$output)
+                   (string-append "-DGAME_BINDIR=" #$output "/bin") ; not games
+                   (string-append "-DGAME_DATADIR=" #$output "/share/" #$name)
+                   (string-append "-DDESKTOP_ENTRY_PATH=" #$output "/share/applications")
+                   (string-append "-DDESKTOP_ICON_PATH=" #$output "/share/pixmaps")
+                   (string-append "-DDESKTOP_METAINFO_PATH=" #$output "/share/metainfo"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-xdg-open-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Look for xdg-open in the store.
+                   (substitute* "src/core/web.c"
+                     (("/usr/(bin/xdg-open)" _ bin)
+                      (search-input-file inputs bin)))))
+               (add-after 'unpack 'unbundle-fonts
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Replace bundled fonts with links to the store.
+                   (with-directory-excursion "fonts"
+                     (for-each (lambda (font)
+                                 (let ((file (string-append "share/fonts/truetype/"
+                                                            font)))
+                                   (delete-file font)
+                                   (symlink (search-input-file inputs file) font)))
+                               '("Roboto-Black.ttf"
+                                 "Roboto-Bold.ttf"
+                                 "Roboto-Medium.ttf"))))))))
     (inputs
      (list allegro font-google-roboto surgescript xdg-utils))
     (home-page "https://opensurge2d.org")
