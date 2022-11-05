@@ -15227,6 +15227,38 @@ the concrete syntax tree library.")
 (define-public cl-eclector
   (sbcl-package->cl-source-package sbcl-eclector))
 
+(define-public sbcl-incless
+  (let ((commit "395accf484ffdff70f20b941f322e8329c585ca7")
+        (revision "0"))
+    (package
+      (name "sbcl-incless")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/s-expressionists/Incless")
+               (commit commit)))
+         (file-name (git-file-name "cl-incless" commit))
+         (sha256
+          (base32 "14bkb5zx8xq6wv6dsqi041dwq9scvw3kdjlnkfs2ndazj0rb2a1k"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-alexandria))
+      ;; See https://github.com/s-expressionists/Incless/issues/6
+      (arguments '(#:asd-systems '("incless")))
+      (home-page "https://github.com/s-expressionists/incless")
+      (synopsis "Implements print-object methods for many standard classes")
+      (description
+       "@code{cl-incless} implements print-object methods for many standard
+classes.")
+      (license license:bsd-2))))
+
+(define-public ecl-incless
+  (sbcl-package->ecl-package sbcl-incless))
+
+(define-public cl-incless
+  (sbcl-package->cl-source-package sbcl-incless))
+
 (define-public sbcl-jsown
   (let ((commit "744c4407bef58dfa876d9da0b5c0205d869e7977"))
     (package
