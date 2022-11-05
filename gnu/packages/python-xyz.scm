@@ -744,27 +744,30 @@ that best match text queries.")
 (define-public python-mdit-py-plugins
   (package
     (name "python-mdit-py-plugins")
-    (version "0.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "mdit-py-plugins" version))
-       (sha256
-        (base32
-         "0l4pwsn2q30j160zjg79qa8v2brc4zl295rgrkpbfspcxr8lzhpc"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-markdown-it-py))
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/executablebooks/mdit-py-plugins")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00ybbfb6dzn9q5qnvnm8bmhd84s215ik7pcdb4r35zhwiv2ikizz"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-markdown-it-py
+           python-attrs))
     (native-inputs
      (list python-coverage
+           python-flit-core
            python-pytest
            python-pytest-cov
            python-pytest-regressions))
     (home-page "https://github.com/executablebooks/mdit-py-plugins")
     (synopsis "Collection of plugins for markdown-it-py")
-    (description
-     "This package contains a collection of plugins for @code{markdown-it-py}
-like:
-
+    (description "This package contains a collection of plugins for
+@code{markdown-it-py} like:
 @enumerate
 @item amsmath,
 @item attrs,
@@ -775,8 +778,7 @@ like:
 @item footnote,
 @item textmath, and
 @item wordcount.
-@end enumerate
-")
+@end enumerate")
     (license license:expat)))
 
 (define-public python-mdurl
