@@ -780,7 +780,7 @@ sounds from presets such as \"explosion\" or \"powerup\".")
 (define-public surgescript
   (package
     (name "surgescript")
-    (version "0.5.5")
+    (version "0.5.6.1")
     (source
      (origin
        (method git-fetch)
@@ -789,15 +789,10 @@ sounds from presets such as \"explosion\" or \"powerup\".")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xwd4g7n0b0rxkpbyshkzyl472h1y606ghyvf8gv034n3jz2g4jk"))))
+        (base32 "1p1pxb4iixzq7z14bpy32dx3dhfaaf6mcz4y3g3g09bkdmm1ys6j"))))
      (build-system cmake-build-system)
      (arguments
-      '(#:configure-flags
-        (let ((share (string-append (assoc-ref %outputs "out") "/share")))
-          (list "-DWANT_STATIC=NO"
-                (string-append "-DICON_PATH=" share "/pixmaps")
-                (string-append "-DMETAINFO_PATH=" share "/metainfo")))
-        #:tests? #f))
+      (list #:tests? #f)) ; there are no tests
      (home-page "https://docs.opensurge2d.org")
      (synopsis "Scripting language for games")
      (description "@code{SurgeScript} is a dynamically typed object-oriented
