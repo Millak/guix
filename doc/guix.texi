@@ -4563,7 +4563,7 @@ the distribution currently available on your local machine.  To update
 that distribution, along with the Guix tools, you must run @command{guix
 pull}: the command downloads the latest Guix source code and package
 descriptions, and deploys it.  Source code is downloaded from a
-@uref{https://git-scm.com, Git} repository, by default the official
+@uref{https://git-scm.com/book/en/, Git} repository, by default the official
 GNU@tie{}Guix repository, though this can be customized.  @command{guix
 pull} ensures that the code it downloads is @emph{authentic} by
 verifying that commits are signed by Guix developers.
