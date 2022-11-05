@@ -3542,6 +3542,34 @@ in C using Gtk+-3 and WebKitGtk.")
 perform geometrical transforms on JPEG images.")
       (license license:gpl3+))))
 
+(define-public guile-png
+  (package
+    (name "guile-png")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/artyom-poptsov/guile-png")
+                    (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0ig58zjw60jg4bb4fzm22dqr5zksqpzimpfa8wcarv8gjp861cw5"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+    (native-inputs (list autoconf automake pkg-config texinfo))
+    (inputs (list bash-minimal guile-3.0 guile-lib guile-zlib))
+    (propagated-inputs (list guile-smc))
+    (home-page "https://github.com/artyom-poptsov/guile-png")
+    (synopsis "PNG file parsing library for Guile")
+    (description
+     "@code{guile-png} is a GNU Guile library for working with the
+@url{https://en.wikipedia.org/wiki/PNG, PNG format}.  This library provides
+API for reading and writing PNG data, as well as some basic image processing
+filters.")
+    (license license:gpl3+)))
+
 (define-public nomad
   (package
     (name "nomad")
