@@ -90,6 +90,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (srfi srfi-1))
@@ -1244,6 +1245,25 @@ supports coverage of subprocesses.")
     (synopsis "HTTP server for pytest")
     (description "Pytest plugin library to test http clients without
 contacting the real http server.")
+    (license license:expat)))
+
+(define-public python-pytest-param-files
+  (package
+    (name "python-pytest-param-files")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest_param_files" version))
+              (sha256
+               (base32
+                "0gc9nsqizrjapjnbcs1bdxfcl69dpmwbpd9sssjidgcikm7k433c"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/chrisjsewell/pytest-param-files")
+    (synopsis "Pytest plugin to parameterize tests from external files")
+    (description "This Pytest plugin enables creating Pytest parametrize
+decorators from external files.")
     (license license:expat)))
 
 (define-public python-pytest-random-order
