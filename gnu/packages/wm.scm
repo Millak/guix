@@ -1633,7 +1633,7 @@ modules for building a Wayland compositor.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1642,7 +1642,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ziya8d5pvvxg16jhy4i04pvq11bdvj68gz5q654ar4dldil17nn"))))
+        (base32 "06iq12p4438d6bv3jlqsf01wjaxrzlnj1bnicn41kad563aq41xl"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
