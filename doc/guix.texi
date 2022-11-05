@@ -164,8 +164,9 @@ package management tool written for the GNU system.
 This manual is also available in Simplified Chinese (@pxref{Top,,, guix.zh_CN,
 GNU Guix参考手册}), French (@pxref{Top,,, guix.fr, Manuel de référence de GNU
 Guix}), German (@pxref{Top,,, guix.de, Referenzhandbuch zu GNU Guix}),
-Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}), and
-Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you
+Spanish (@pxref{Top,,, guix.es, Manual de referencia de GNU Guix}),
+Brazilian Portuguese (@pxref{Top,,, guix.pt_BR, Manual de referência do
+GNU Guix}), and Russian (@pxref{Top,,, guix.ru, Руководство GNU Guix}).  If you
 would like to translate it in your native language, consider joining
 @uref{https://translate.fedoraproject.org/projects/guix/documentation-manual,
 Weblate} (@pxref{Translating Guix}).
