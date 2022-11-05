@@ -96,6 +96,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fontutils)
@@ -2930,6 +2931,42 @@ is to find @file{.desktop} files and offer you a menu to start an application
 using @command{dmenu}.")
     (home-page "https://github.com/enkore/j4-dmenu-desktop")
     (license license:gpl3+)))
+
+(define-public fuzzel
+  (package
+    (name "fuzzel")
+    (version "1.8.2")
+    (home-page "https://codeberg.org/dnkl/fuzzel")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page) (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1d6xy4q5s8p5ckvd9wy3zzj9gh7nh9v1qhn3938b1wfhfzjdzrg6"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:build-type "release"
+           #:configure-flags #~(list "-Denable-cairo=enabled"
+                                     "-Dpng-backend=libpng"
+                                     "-Dsvg-backend=librsvg")))
+    (native-inputs (list pkg-config scdoc tllist))
+    (inputs (list cairo
+                  fcft
+                  fontconfig
+                  libpng
+                  libxkbcommon
+                  librsvg ;if librsvg is not used, bundled nanosvg is used
+                  pixman
+                  wayland
+                  wayland-protocols))
+    (synopsis "Wayland-native application launcher")
+    (description
+     "@command{foot} is a Wayland-native application launcher, similar to
+rofi's drun mode.  It has Emacs key bindings and remembers frequently launched
+applications.  The font and colors can be configured.")
+    (license (list license:expat ;fuzzel
+                   license:zlib)))) ;; bundled nanosvg
 
 (define-public wofi
   (package
