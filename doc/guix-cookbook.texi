@@ -101,6 +101,7 @@ System Configuration
 * Setting up a bind mount::         Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor::    Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua::       Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
 
 @end detailmenu
 @end menu
@@ -1385,6 +1386,7 @@ reference.
 * Setting up a bind mount:: Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
 @end menu
 
 @node Auto-Login to a Specific TTY
@@ -2461,6 +2463,195 @@ ngx.say(stdout)
                                   (body (list #~(format #f "content_by_lua_file ~s;"
                                                         #$(local-file "index.lua"))))))))))))))
 @end lisp
+
+@node Music Server with Bluetooth Audio
+@section Music Server with Bluetooth Audio
+@cindex mpd
+@cindex music server, headless
+@cindex bluetooth, ALSA configuration
+
+MPD, the Music Player Daemon, is a flexible server-side application for
+playing music.  Client programs on different machines on the network ---
+a mobile phone, a laptop, a desktop workstation --- can connect to it to
+control the playback of audio files from your local music collection.
+MPD decodes the audio files and plays them back on one or many outputs.
+
+By default MPD will play to the default audio device.  In the example
+below we make things a little more interesting by setting up a headless
+music server.  There will be no graphical user interface, no Pulseaudio
+daemon, and no local audio output.  Instead we will configure MPD with
+two outputs: a bluetooth speaker and a web server to serve audio streams
+to any streaming media player.
+
+Bluetooth is often rather frustrating to set up.  You will have to pair
+your Bluetooth device and make sure that the device is automatically
+connected as soon as it powers on.  The Bluetooth system service
+returned by the @code{bluetooth-service} procedure provides the
+infrastructure needed to set this up.
+
+Reconfigure your system with at least the following services and
+packages:
+
+@lisp
+(operating-system
+  ;; …
+  (packages (cons* bluez bluez-alsa
+                   %base-packages))
+  (services
+   ;; …
+   (dbus-service #:services (list bluez-alsa))
+   (bluetooth-service #:auto-enable? #t)))
+@end lisp
+
+Start the @code{bluetooth} service and then use @command{bluetoothctl}
+to scan for Bluetooth devices.  Try to identify your Bluetooth speaker
+and pick out its device ID from the resulting list of devices that is
+indubitably dominated by a baffling smorgasbord of your neighbors' home
+automation gizmos.  This only needs to be done once:
+
+@example
+$ bluetoothctl 
+[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]
+
+[bluetooth]# power on
+[bluetooth]# Changing power on succeeded
+
+[bluetooth]# agent on
+[bluetooth]# Agent registered
+
+[bluetooth]# default-agent
+[bluetooth]# Default agent request successful
+
+[bluetooth]# scan on
+[bluetooth]# Discovery started
+[CHG] Controller 00:11:22:33:95:7F Discovering: yes
+[NEW] Device AA:BB:CC:A4:AA:CD My Bluetooth Speaker
+[NEW] Device 44:44:FF:2A:20:DC My Neighbor's TV
+@dots{}
+
+[bluetooth]# pair AA:BB:CC:A4:AA:CD
+Attempting to pair with AA:BB:CC:A4:AA:CD
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes
+
+[My Bluetooth Speaker]# [CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110b-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110c-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110e-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD Paired: yes
+Pairing successful
+
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: no
+
+[bluetooth]# 
+[bluetooth]# trust AA:BB:CC:A4:AA:CD
+[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes
+Changing AA:BB:CC:A4:AA:CD trust succeeded
+
+[bluetooth]# 
+[bluetooth]# connect AA:BB:CC:A4:AA:CD
+Attempting to connect to AA:BB:CC:A4:AA:CD
+[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes
+Connection successful
+
+[My Bluetooth Speaker]# scan off
+[CHG] Device AA:BB:CC:A4:AA:CD RSSI is nil
+Discovery stopped
+[CHG] Controller 00:11:22:33:95:7F Discovering: no
+@end example
+
+Congratulations, you can now automatically connect to your Bluetooth
+speaker!
+
+It is now time to configure ALSA to use the @emph{bluealsa} Bluetooth
+module, so that you can define an ALSA pcm device corresponding to your
+Bluetooth speaker.  For a headless server using @emph{bluealsa} with a
+fixed Bluetooth device is likely simpler than configuring Pulseaudio and
+its stream switching behavior.  We configure ALSA by crafting a custom
+@code{alsa-configuration} for the @code{alsa-service-type}.  The
+configuration will declare a @code{pcm} type @code{bluealsa} from the
+@code{bluealsa} module provided by the @code{bluez-alsa} package, and
+then define a @code{pcm} device of that type for your Bluetooth speaker.
+
+All that is left then is to make MPD send audio data to this ALSA
+device.  We also add a secondary MPD output that makes the currently
+played audio files available as a stream through a web server on port
+8080.  When enabled a device on the network could listen to the audio
+stream by connecting any capable media player to the HTTP server on port
+8080, independent of the status of the Bluetooth speaker.
+
+What follows is the outline of an @code{operating-system} declaration
+that should accomplish the above-mentioned tasks:
+
+@lisp
+(use-modules (gnu))
+(use-service-modules audio dbus sound #;… etc)
+(use-package-modules audio linux #;… etc)
+(operating-system
+  ;; …
+  (packages (cons* bluez bluez-alsa
+                   %base-packages))
+  (services
+   ;; …
+   (service mpd-service-type
+            (mpd-configuration
+             (user "your-username")
+             (music-dir "/path/to/your/music")
+             (address "192.168.178.20")
+             (outputs (list (mpd-output
+                             (type "alsa")
+                             (name "MPD")
+                             (extra-options
+                              ;; Use the same name as in the ALSA
+                              ;; configuration below.
+                              '((device . "pcm.btspeaker"))))
+                            (mpd-output
+                             (type "httpd")
+                             (name "streaming")
+                             (enabled? #false)
+                             (always-on? #true)
+                             (tags? #true)
+                             (mixer-type 'null)
+                             (extra-options
+                              '((encoder . "vorbis")
+                                (port    . "8080")
+                                (bind-to-address . "192.168.178.20")
+                                (max-clients . "0") ;no limit
+                                (quality . "5.0")
+                                (format  . "44100:16:1"))))))))
+   (dbus-service #:services (list bluez-alsa))
+   (bluetooth-service #:auto-enable? #t)
+   (service alsa-service-type
+            (alsa-configuration
+             (pulseaudio? #false) ;we don't need it
+             (extra-options
+              #~(string-append "\
+# Declare Bluetooth audio device type \"bluealsa\" from bluealsa module
+pcm_type.bluealsa @{
+    lib \"" #$(file-append bluez-alsa "/lib/alsa-lib/libasound_module_pcm_bluealsa.so") "\"
+@}
+
+# Declare control device type \"bluealsa\" from the same module
+ctl_type.bluealsa @{
+    lib \"" #$(file-append bluez-alsa "/lib/alsa-lib/libasound_module_ctl_bluealsa.so") "\"
+@}
+
+# Define the actual Bluetooth audio device.
+pcm.btspeaker @{
+    type bluealsa
+    device \"AA:BB:CC:A4:AA:CD\" # unique device identifier
+    profile \"a2dp\"
+@}
+
+# Define an associated controller.
+ctl.btspeaker @{
+    type bluealsa
+@}
+"))))))
+@end lisp
+
+Enjoy the music with the MPD client of your choice or a media player
+capable of streaming via HTTP!
+
 
 @c *********************************************************************
 @node Containers
