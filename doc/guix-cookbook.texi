@@ -92,8 +92,15 @@ Packaging
 
 System Configuration
 
-* Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
-* Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
+* Auto-Login to a Specific TTY::    Automatically Login a User to a Specific TTY
+* Customizing the Kernel::          Creating and using a custom Linux kernel on Guix System.
+* Guix System Image API::           Customizing images to target specific platforms.
+* Connecting to Wireguard VPN::     Connecting to a Wireguard VPN.
+* Customizing a Window Manager::    Handle customization of a Window manager on Guix System.
+* Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server
+* Setting up a bind mount::         Setting up a bind mount in the file-systems definition.
+* Getting substitutes from Tor::    Configuring Guix daemon to get substitutes through Tor.
+* Setting up NGINX with Lua::       Configuring NGINX web-server to load Lua modules.
 
 @end detailmenu
 @end menu
