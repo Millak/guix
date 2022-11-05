@@ -1321,17 +1321,17 @@ PDF Arranger was formerly known as PDF-Shuffler.")
 (define-public pdfposter
   (package
     (name "pdfposter")
-    (version "0.8.1")
+    (version "0.7.post1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pdftools.pdfposter" version))
               (sha256
                (base32
-                "0bf5dlgjvh8xmq2ssfc1jw28l7bhgk5r6lhrflw6n0aa0lg6sqf9"))))
+                "0c1avpbr9q53yzq5ar2x485rmp9d0l3z27aham32bg7gplzd7w0j"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))  ; test-suite not included in source archive
-    (propagated-inputs
+    (inputs
      (list python-pypdf2))
     (home-page "https://pythonhosted.org/pdftools.pdfposter/")
     (synopsis "Scale and tile PDF images/pages to print on multiple pages")
