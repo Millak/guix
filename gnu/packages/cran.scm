@@ -8054,6 +8054,28 @@ multivariate distributions.")
 chaotic time series analysis.")
     (license license:gpl2)))
 
+(define-public r-fresh
+  (package
+    (name "r-fresh")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "fresh" version))
+              (sha256
+               (base32
+                "1787mm6w2s5x9scxy7r9cb77rgpmy4ngwkn4z8g3gs48mrab4bd9"))))
+    (properties `((upstream-name . "fresh")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-htmltools r-rstudioapi r-sass r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/dreamRs/fresh")
+    (synopsis "Create custom Bootstrap themes to use in Shiny")
+    (description
+     "Customize Bootstrap and Bootswatch themes, like colors, fonts,
+grid layout, to use in Shiny applications, rmarkdown documents and
+flexdashboard.")
+    (license license:gpl3)))
+
 (define-public r-urca
   (package
     (name "r-urca")
