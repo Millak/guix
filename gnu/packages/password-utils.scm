@@ -157,8 +157,13 @@ human.")
       #:imported-modules `(,@%cmake-build-system-modules
                            (guix build qt-utils))
       #:configure-flags
-      #~(list "-DWITH_XC_ALL=YES"
-              "-DWITH_XC_UPDATECHECK=NO")
+      #~(append
+          (list "-DWITH_XC_ALL=YES"
+                "-DWITH_XC_UPDATECHECK=NO")
+          #$(if (member (%current-system)
+                        (package-transitive-supported-systems ruby-asciidoctor))
+              #~'()
+              #~(list "-DWITH_XC_DOCS=NO")))
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -172,7 +177,12 @@ human.")
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-qt-program "keepassxc" #:output #$output #:inputs inputs))))))
     (native-inputs
-     (list qttools-5 ruby-asciidoctor))
+     (append
+       (list qttools-5)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems ruby-asciidoctor))
+         (list ruby-asciidoctor)
+         '())))
     (inputs
      (list argon2
            botan
