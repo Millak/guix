@@ -26,6 +26,13 @@
 (channel-news
  (version 0)
 
+ (entry (commit "82a0a395d7051eab7b9f15ec4740d58c86413604")
+        (title
+          (en "Linux-libre kernel updated to 6.0"))
+        (body
+          (en "The default version of the linux-libre kernel has been
+              updated to the 6.0 release series.")))
+
  (entry (commit "400a7a4c80efbde1905ae98a298bbb5882d46a0d")
         (title
          (en "New build system for Python packages")
