@@ -23861,44 +23861,41 @@ accept and reject GitHub pull requests.")
       (license license:gpl3+))))
 
 (define-public emacs-deadgrep
-  ;; Latest release is not tagged.
-  (let ((commit "aebaf72e35546fd235b4861399791814e4e4c7d8")
-        (revision "1"))
-    (package
-      (name "emacs-deadgrep")
-      (version (git-version "0.11" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Wilfred/deadgrep")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1qd60winrrpxmrjsx77i24921p6dad9halz5l5s6biwa421zcgr3"))))
-      (build-system emacs-build-system)
-      (inputs (list ripgrep))
-      (propagated-inputs
-       (list emacs-dash emacs-s emacs-spinner))
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((ripgrep (assoc-ref inputs "ripgrep")))
-                 ;; .el is read-only in git.
-                 (make-file-writable "deadgrep.el")
-                 ;; Specify the absolute file names of rg so that everything
-                 ;; works out-of-the-box.
-                 (emacs-substitute-variables "deadgrep.el"
-                   ("deadgrep-executable"
-                    (string-append ripgrep "/bin/rg")))))))))
-      (home-page "https://github.com/Wilfred/deadgrep")
-      (synopsis "Frontend for @code{ripgrep}")
-      (description "This package provides an Emacs interface for performing
+  (package
+    (name "emacs-deadgrep")
+    (version "0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Wilfred/deadgrep")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0bwf8gsqw7hsmacqd34piwgv066ijfclmxaigkvhvpac0lpsmi79"))))
+    (build-system emacs-build-system)
+    (inputs (list ripgrep))
+    (propagated-inputs
+     (list emacs-dash emacs-s emacs-spinner))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'configure
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((ripgrep (assoc-ref inputs "ripgrep")))
+               ;; .el is read-only in git.
+               (make-file-writable "deadgrep.el")
+               ;; Specify the absolute file names of rg so that everything
+               ;; works out-of-the-box.
+               (emacs-substitute-variables "deadgrep.el"
+                 ("deadgrep-executable"
+                  (string-append ripgrep "/bin/rg")))))))))
+    (home-page "https://github.com/Wilfred/deadgrep")
+    (synopsis "Frontend for @code{ripgrep}")
+    (description "This package provides an Emacs interface for performing
 searches with @code{ripgrep}.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-focus
   (package
