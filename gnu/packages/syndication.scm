@@ -238,7 +238,10 @@ cards.")
        ("openssl" ,openssl)
        ("pkg-config" ,pkg-config)
        ;; For building documentation.
-       ("asciidoctor" ,ruby-asciidoctor)))
+       ,@(if (member (%current-system)
+                     (package-transitive-supported-systems ruby-asciidoctor))
+           `(("asciidoctor" ,ruby-asciidoctor))
+           `())))
     (inputs
      (list curl
            json-c
@@ -277,6 +280,15 @@ cards.")
         ("rust-section-testing" ,rust-section-testing-0.0))
        #:phases
        (modify-phases %standard-phases
+         ,@(if (not (assoc-ref inputs "asciidoctor"))
+             `((add-after 'unpack 'dont-use-asciidoctor
+                 (lambda _
+                   (substitute* "config.sh"
+                     ((".*asciidoctor.*") ""))
+                   (substitute* "Makefile"
+                     (("^doc:.*") "doc:\n")
+                     (("install-podboat install-docs") "install-podboat")))))
+             '())
          (add-after 'configure 'dont-vendor-self
            (lambda* (#:key vendor-dir #:allow-other-keys)
              ;; Don't keep the whole tarball in the vendor directory
