@@ -231,10 +231,9 @@
                                              "/lib',\n"))))
                          config2)))))))
     (inputs
-     (append (list coreutils-minimal)
-             (if (%current-target-system)
-                 (list bash-minimal)
-                 '())))
+     (if (%current-target-system)
+       (list bash-minimal coreutils-minimal)
+       '()))
     (native-inputs
      (if (%current-target-system)
          `(("perl-cross"
