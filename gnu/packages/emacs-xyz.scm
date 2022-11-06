@@ -14822,7 +14822,7 @@ which is shipped with Emacs.")
          "1kkzm881fxhc5hb83x0j12lv22b72nzw45qrypbl1jf2siispz9l"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-async emacs-xml-rpc))
+     (list emacs-async emacs-url-scgi emacs-xml-rpc))
     (home-page "https://elpa.nongnu.org/nongnu/mentor.html")
     (synopsis "Emacs front-end for the rTorrent bittorrent client")
     (description
