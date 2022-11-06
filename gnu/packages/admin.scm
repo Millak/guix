@@ -368,9 +368,12 @@ interface and is based on GNU Guile.")
                                       (this-package-input "guile-fibers")
                                       "/lib/guile/3.0/site-ccache"))))))
                         #~%standard-phases)))
-    (native-inputs (list pkg-config guile-3.0
+
+    ;; Note: Use 'guile-3.0-latest' to address the continuation-related memory
+    ;; leak reported at <https://issues.guix.gnu.org/58631>.
+    (native-inputs (list pkg-config guile-3.0-latest
                          guile-fibers-1.1))       ;for cross-compilation
-    (inputs (list guile-3.0 guile-fibers-1.1))))
+    (inputs (list guile-3.0-latest guile-fibers-1.1))))
 
 (define-public guile2.2-shepherd
   (package
