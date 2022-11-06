@@ -14789,6 +14789,25 @@ automatically using existing List-ID headers in your mu database.  Just press
 automatically discovered and presented in recency order.")
       (license license:gpl3+))))
 
+(define-public emacs-url-scgi
+  (package
+    (name "emacs-url-scgi")
+    (version "0.8")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/"
+                                  "url-scgi-" version ".tar"))
+              (sha256
+               (base32
+                "1837vyamwk5mp2nf3k477hyr5pq1xy6p7br7kl6h2k8jmxqy3mlj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/skangas/url-scgi/")
+    (synopsis "SCGI support for url.el")
+    (description
+     "This library add support for SCGI URLs to Emacs.  It is based on url.el,
+which is shipped with Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-mentor
   (package
     (name "emacs-mentor")
