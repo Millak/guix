@@ -210,6 +210,7 @@
           (tests? #f)
           (phases '%standard-phases)
           (system (%current-system))
+          (source-directory ".")
           (substitutable? #t)
           (imported-modules
            %linux-module-build-system-modules)
@@ -229,6 +230,7 @@
 
           (linux-module-build #:name #$name
                               #:source #+source
+                              #:source-directory #$source-directory
                               #:system #$system
                               #:target #$target
                               #:arch #$(system->arch (or target system))
