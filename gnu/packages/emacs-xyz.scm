@@ -23877,6 +23877,8 @@ accept and reject GitHub pull requests.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #t
+      #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'configure
@@ -23886,6 +23888,8 @@ accept and reject GitHub pull requests.")
                 ;; works out-of-the-box.
                 (emacs-substitute-variables "deadgrep.el"
                   ("deadgrep-executable" ripgrep))))))))
+    (native-inputs
+     (list emacs-ert-runner emacs-undercover))
     (inputs
      (list ripgrep))
     (propagated-inputs
