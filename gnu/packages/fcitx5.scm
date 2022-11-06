@@ -188,7 +188,7 @@ editors.")
 (define-public fcitx5-gtk
   (package
     (name "fcitx5-gtk")
-    (version "5.0.9")
+    (version "5.0.19")
     (source
      (origin
        (method url-fetch)
@@ -196,7 +196,7 @@ editors.")
                            "/fcitx5-gtk/fcitx5-gtk-"
                            version ".tar.xz"))
        (sha256
-        (base32 "07ip4sxf3q895pp7mivv2bdwcmqjnwrmv9pg99jk73cw9bgyq00n"))))
+        (base32 "007ls91jfbs3anvcfbza1pjbbsi7q5nrw7f3nzdbyngsl3nj6k37"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -275,6 +275,11 @@ IM module for GTK+3 applications.
               "-DENABLE_GTK3_IM_MODULE=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-fcitxtheme-path
+            (lambda _
+              (substitute* "gtk4/gtk4inputwindow.cpp"
+                (("<gtk3/fcitxtheme.h>")
+                 "\"fcitxtheme.h\""))))
           (add-before 'configure 'fix-gclient
             (lambda* (#:key inputs #:allow-other-keys)
               (define gclient
