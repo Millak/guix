@@ -2,6 +2,7 @@
 ;;; Copyright © 2020, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
@@ -532,3 +534,42 @@ for Fcitx 5 with following color variants:
 @item DeepPurple
 @end itemize\n")
     (license license:asl2.0)))
+
+(define-public fcitx5-rime
+  (package
+    (name "fcitx5-rime")
+    (version "5.0.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.fcitx-im.org/fcitx5"
+                                  "/fcitx5-rime/fcitx5-rime-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "1i8wb7pbjifz48j4c18lp07ms1a2wc3p9d9g13dgimgf9yi64brm"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ;no tests
+       #:configure-flags (list (string-append "-DRIME_DATA_DIR="
+                                              (assoc-ref %build-inputs
+                                                         "rime-data")
+                                              "/share/rime-data"))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-source
+                    (lambda _
+                      (substitute* "data/CMakeLists.txt"
+                        (("DESTINATION....RIME_DATA_DIR..")
+                         "DESTINATION \"${CMAKE_INSTALL_DATADIR}/rime-data\""))
+                      #t)))))
+    (inputs (list fcitx5 librime rime-data))
+    (native-inputs (list gettext-minimal extra-cmake-modules pkg-config))
+    (home-page "https://github.com/fcitx/fcitx5-rime")
+    (synopsis "Rime Input Method Engine for Fcitx 5")
+    (description
+     "@dfn{fcitx5-rime} provides the Rime input method engine for fcitx5.
+Rime is a lightweight, extensible input method engine supporting various input
+schemas including glyph-based input methods, romanization-based input methods
+as well as those for Chinese dialects.  It has the ability to compose phrases
+and sentences intelligently and provide very accurate traditional Chinese
+output.")
+    (license license:lgpl2.1+)))
