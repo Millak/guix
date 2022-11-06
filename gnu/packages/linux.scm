@@ -9512,3 +9512,35 @@ version of the HDAPS driver.  The underlying hardware interfaces are
 @acronym{SMAPI, System Management Application Program Interface} and direct
 access to the embedded controller.")
     (license license:gpl2+)))
+
+(define-public kconfig-hardened-check
+  (package
+    (name "kconfig-hardened-check")
+    (version "0.5.17")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/a13xp0p0v/kconfig-hardened-check")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p9pywfxwyk4yfgaf7bhqrf72ywc6w6k77dbi7lldynha886ih4a"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/a13xp0p0v/kconfig-hardened-check")
+    (synopsis
+     "Tool for checking the security hardening options of the Linux kernel")
+    (description
+     "@code{kconfig-hardened-check} is a tool for checking the security
+hardening options of the Linux kernel.  Provided preferences are based on
+suggestions from various sources, including:
+
+@itemize
+@item KSPP recommended settings
+@item CLIP OS kernel configuration
+@item Last public grsecurity patch (options which they disable)
+@item SECURITY_LOCKDOWN_LSM patchset
+@item Direct feedback from the Linux kernel maintainers
+@end itemize\n
+This tool supports checking Kconfig options and kernel cmdline parameters.")
+    (license license:gpl3)))
