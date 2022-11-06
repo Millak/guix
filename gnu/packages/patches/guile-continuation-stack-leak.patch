@@ -1,0 +1,27 @@
+This patch fixes a memory leak when capturing and resuming delimited
+continuations intensively, as is the case with the Shepherd 0.9+:
+
+  https://issues.guix.gnu.org/59021
+
+diff --git a/libguile/vm.c b/libguile/vm.c
+index 6fd5c554f..516bae773 100644
+--- a/libguile/vm.c
++++ b/libguile/vm.c
+@@ -165,11 +165,13 @@ capture_stack (union scm_vm_stack_element *stack_top,
+                scm_t_dynstack *dynstack, uint32_t flags)
+ {
+   struct scm_vm_cont *p;
++  size_t stack_size;
+ 
+-  p = scm_gc_malloc (sizeof (*p), "capture_vm_cont");
+-  p->stack_size = stack_top - sp;
+-  p->stack_bottom = scm_gc_malloc (p->stack_size * sizeof (*p->stack_bottom),
+-                                   "capture_vm_cont");
++  stack_size = stack_top - sp;
++  p = scm_gc_malloc (sizeof (*p) + stack_size * sizeof (*p->stack_bottom),
++                     "capture_vm_cont");
++  p->stack_size = stack_size;
++  p->stack_bottom = (void *) ((char *) p + sizeof (*p));
+   p->vra = vra;
+   p->mra = mra;
+   p->fp_offset = stack_top - fp;

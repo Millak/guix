@@ -399,7 +399,8 @@ without requiring the source code to be rewritten.")
               (sha256
                (base32
                 "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))
-              (patches (search-patches "guile-cross-compilation.patch"))))
+              (patches (search-patches "guile-cross-compilation.patch"
+                                       "guile-continuation-stack-leak.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments guile-3.0)
        ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
