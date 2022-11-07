@@ -2094,6 +2094,28 @@ coordinates tags.  Users should not need to install this directly; instead,
 install an implementation package such as asdf-astropy.")
     (license license:bsd-3)))
 
+(define python-asdf-unit-schemas
+  (package
+    (name "python-asdf-unit-schemas")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_unit_schemas" version))
+       (sha256
+        (base32
+         "16grpx3a9h0v1wirp0zqrfsxm867v5c0xyr98pylzziy45kqvds2"))))
+    (build-system pyproject-build-system)
+    (arguments
+     ;; Dependency cycle with python-asdf
+     (list #:tests? #f))
+    (native-inputs (list python-setuptools-scm))
+    (propagated-inputs (list python-asdf-standard python-importlib-resources))
+    (home-page "https://asdf-unit-schemas.readthedocs.io/")
+    (synopsis "ASDF serialization schemas for the units defined by @code{astropy.units}")
+    (description "This package provides ASDF schemas for validating unit tags.")
+    (license license:bsd-3)))
+
 (define-public python-asdf-astropy
   (package
     (name "python-asdf-astropy")
