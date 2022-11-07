@@ -28,7 +28,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
-  #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ncurses)
@@ -86,7 +85,7 @@
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs
-     (list expat glibc ld-wrapper ncurses zlib))
+     (list expat glibc ncurses zlib))
     (native-inputs
      ;; FPC is built with FPC, so we need bootstrap binaries.
      `(("fpc-binary" ,(match (or (%current-target-system)
