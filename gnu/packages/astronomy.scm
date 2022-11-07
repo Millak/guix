@@ -58,6 +58,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-compression)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-science)
   #:use-module (gnu packages python-web)
@@ -1958,26 +1959,37 @@ datetime object.")
 (define-public python-asdf
   (package
     (name "python-asdf")
-    (version "2.8.3")
+    (version "2.13.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asdf" version))
        (sha256
-        (base32 "0i4vq1hsympjgb1yvn4ql0gm8j1mki9ggmj03533kmg0nbzp03yy"))))
-    (build-system python-build-system)
+        (base32 "1zixzv4n2fryaszsfchqh2nvp0gzvarhz03fc721yw6iafdadqij"))))
+    (build-system pyproject-build-system)
     (arguments
      ;; NOTE: (Sharlatan-20211229T201059+0000): Tests depend on astropy and
      ;; gwcs, astropy gwcs depend on asdf.  Disable circular dependence.
      `(#:tests? #f))
     (native-inputs
-     (list python-setuptools-scm
+     (list python-astropy
+           python-packaging
+           python-psutil
+           python-pytest
+           python-pytest-doctestplus
+           python-pytest-openfiles
+           python-pytest-remotedata
            python-semantic-version
-           python-packaging))
+           python-setuptools-scm))
     (propagated-inputs
-     (list python-importlib-resources
-           python-jsonschema
+     (list python-asdf-standard
+           python-asdf-transform-schemas
+           python-asdf-unit-schemas
+           python-importlib-metadata
+           python-importlib-resources
            python-jmespath
+           python-jsonschema-next
+           python-lz4
            python-numpy
            python-pyyaml))
     (home-page "https://github.com/asdf-format/asdf")
