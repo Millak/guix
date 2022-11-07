@@ -204,4 +204,6 @@ by APL.")
     (native-inputs (list dbqn
                          bqn-sources
                          libffi
-                         linux-libre-headers))))
+                         linux-libre-headers))
+    (properties
+     `((tunable? . #t)))))
