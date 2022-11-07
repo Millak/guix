@@ -4773,8 +4773,6 @@ Stack Overflow, Super User, and other StackExchange sites.")
         (base32
          "0xsr6819qaad0y8rhfrf555c9w7cmgbgkf1a2svgbp7rhhnywl0a"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-parent-mode))
     (home-page "https://github.com/xFA25E/skempo")
     (synopsis "Enhancements for skeleton/tempo + abbrev")
     (description
