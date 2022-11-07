@@ -1723,7 +1723,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.13")
+    (version "0.9.15")
     (source
      (origin
        (method git-fetch)
@@ -1732,10 +1732,10 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15fy21cipih80amv78g7g4k2gylf107phbv0fjacn3w3n0i3cf2k"))))
+        (base32 "0mvwsd3krrlniga0fq13b0qvsf1fj22mk9nzsfgz49r55lqw8sdv"))))
     (build-system meson-build-system)
     (inputs (list date
-                  fmt-8
+                  fmt
                   gtk-layer-shell
                   gtkmm-3
                   jsoncpp
