@@ -28,7 +28,6 @@
 ;;; Copyright © 2022 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
