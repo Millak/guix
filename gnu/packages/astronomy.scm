@@ -1968,8 +1968,11 @@ datetime object.")
         (base32 "1zixzv4n2fryaszsfchqh2nvp0gzvarhz03fc721yw6iafdadqij"))))
     (build-system pyproject-build-system)
     (arguments
-     ;; NOTE: (Sharlatan-20211229T201059+0000): Tests depend on astropy and
-     ;; gwcs, astropy gwcs depend on asdf.  Disable circular dependence.
+     ;; FIXME: Tests fail a lot with
+     ;;
+     ;; ERROR  - _pytest.pathlib.ImportPathMismatchError:
+     ;; ('asdf.conftest', '/gnu/sto...
+     ;;
      `(#:tests? #f))
     (native-inputs
      (list python-astropy
