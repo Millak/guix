@@ -12405,11 +12405,11 @@ these services on the Guix System.")
                       (setenv "DISPLAY" ":1"))))))
     (inputs
      (list enchant
-           folks
+           folks-with-libsoup2
            gcr
            glib
            gmime
-           gnome-online-accounts
+           gnome-online-accounts-3.44
            gsettings-desktop-schemas
            gspell
            gsound
