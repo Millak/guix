@@ -8211,46 +8211,64 @@ develop documents with LaTeX, in a single application.")
     (license license:gpl2+)))
 
 (define-public teximpatient
-  (package
-    (name "teximpatient")
-    (version "2.4")
-    (source (origin
-              (method url-fetch/tarbomb)
-              (uri (string-append "mirror://gnu/" name "/" name "-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0h56w22d99dh4fgld4ssik8ggnmhmrrbnrn1lnxi1zr0miphn1sd"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-packaging-error
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; This file should have been part of the tarball.
-             (install-file (car
-                            (find-files
-                             (assoc-ref inputs "automake")
-                             "^install-sh$"))
-                           ".")
-             ;; Remove generated file.
-             (delete-file "book.pdf")
-             #t)))))
-    (native-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-amsfonts
-                                        texlive-palatino
-                                        texlive-zapfding
-                                        texlive-knuth-lib
-                                        texlive-mflogo-font
-                                        texlive-pdftex)))
-       ("automake" ,automake)))
-    (home-page "https://www.gnu.org/software/teximpatient/")
-    (synopsis "Book on TeX, plain TeX and Eplain")
-    (description "@i{TeX for the Impatient} is a ~350 page book on TeX,
+  ;; The homepage seems to be distributing this version which is currently the
+  ;; most recent commit
+  (let ((commit "e3666abff186832fd9c467ceda3958058f30bac2")
+        (revision "0"))
+    (package
+      (name "teximpatient")
+      (version (git-version "2.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://git.savannah.gnu.org/git/teximpatient.git/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0r30383nmly7w29il6v3vmilnnyrzak0x0qmabjvnpaga9ansjmi"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;there are none
+         #:allowed-references ("out")
+         #:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'fix-build
+                      (lambda* (#:key inputs #:allow-other-keys)
+                        (chdir "teximpatient")
+
+                        ;; Remove generated files
+                        (for-each delete-file
+                                  '("book.pdf"
+                                    "book.aux"
+                                    "book.ccs"
+                                    "book.log"
+                                    "book.idx"
+                                    "config.log"
+                                    "config.status"
+                                    "configure"
+                                    "Makefile"))
+                        (delete-file-recursively "autom4te.cache")
+
+                        ;; make build reproducible
+                        (substitute* "eplain.tex"
+                          (("timestamp.*%")
+                           (string-append "timestamp{"
+                                          ,version "}"))))))))
+      (native-inputs (list autoconf automake
+                           (texlive-updmap.cfg (list texlive-amsfonts
+                                                     texlive-palatino
+                                                     texlive-zapfding
+                                                     texlive-knuth-lib
+                                                     texlive-mflogo-font
+                                                     texlive-pdftex))))
+      (home-page "https://www.gnu.org/software/teximpatient/")
+      (synopsis "Book on TeX, plain TeX and Eplain")
+      (description
+       "@i{TeX for the Impatient} is a ~350 page book on TeX,
 plain TeX, and Eplain, originally written by Paul Abrahams, Kathryn Hargreaves,
 and Karl Berry.")
-    (license license:fdl1.3+)))
+      (license license:fdl1.3+))))
 
 (define-public lyx
   (package
