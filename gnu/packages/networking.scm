@@ -3750,7 +3750,10 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (chmod dhtcluster #o555)
                 (wrap-program dhtcluster
                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
-    (inputs (list bash-minimal fmt-8 readline))
+    (inputs
+     (list bash-minimal
+           fmt
+           readline))
     (propagated-inputs
      (list msgpack                      ;included in several installed headers
            restinio                     ;included in opendht/http.h
