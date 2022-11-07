@@ -146,7 +146,7 @@ client.")
 (define-public fcitx5-lua
   (package
     (name "fcitx5-lua")
-    (version "5.0.5")
+    (version "5.0.10")
     (source
      (origin
        (method url-fetch)
@@ -154,8 +154,12 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5-lua/fcitx5-lua-"
              version ".tar.xz"))
        (sha256
-        (base32 "0f3raxzkq0nwdfpc9hxvg65vga09gznjjgy9dr6jlkamzx8zlyw9"))))
+        (base32 "13vh6i7pap3h9jrjri3cfi7pcjwhlkw9g24ibfh0aykdhd8d7p99"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_DLOPEN=OFF")))
     (inputs
      (list fcitx5 lua gettext-minimal libpthread-stubs))
     (native-inputs
