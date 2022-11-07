@@ -2094,6 +2094,41 @@ coordinates tags.  Users should not need to install this directly; instead,
 install an implementation package such as asdf-astropy.")
     (license license:bsd-3)))
 
+(define python-asdf-fits-schemas
+  ;; TODO: No release, change to tag when it's ready.
+  (let ((commit "572bb370d777f3a325b25c1af9d76e1b7d27dcea")
+        (revision "0"))
+    (package
+      (name "python-asdf-fits-schemas")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/asdf-format/asdf-fits-schemas")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1yqnzd0gcrdfl0jqm8m8kz5fd36i8lgh7xkglmp1chsi1cc6mkz2"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; Dependency cycle with python-asdf
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+      (native-inputs (list python-setuptools-scm))
+      (propagated-inputs (list python-asdf-standard python-importlib-resources))
+      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+      (synopsis "ASDF schemas to support the FITS format")
+      (description
+       "This package provides ASDF schemas for validating FITS tags.")
+      (license license:bsd-3))))
+
 (define python-asdf-unit-schemas
   (package
     (name "python-asdf-unit-schemas")
