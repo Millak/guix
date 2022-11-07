@@ -445,9 +445,14 @@ If an error occurs while creating the binding, defer the error report until
 the returned procedure is called."
   (catch #t
     (lambda ()
+      ;; Note: When #:library is set, try it first and fall back to libc
+      ;; proper.  This is because libraries like libutil.so have been subsumed
+      ;; by libc.so with glibc >= 2.34.
       (let ((ptr (dynamic-func name
                                (if library
-                                   (dynamic-link library)
+                                   (or (false-if-exception
+                                        (dynamic-link library))
+                                       (dynamic-link))
                                    (dynamic-link)))))
         ;; The #:return-errno? facility was introduced in Guile 2.0.12.
         (pointer->procedure return-type ptr argument-types
