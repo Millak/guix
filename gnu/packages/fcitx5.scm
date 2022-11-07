@@ -472,7 +472,7 @@ to manage different input methods in Fcitx 5.")
 (define-public fcitx5-material-color-theme
   (package
     (name "fcitx5-material-color-theme")
-    (version "0.1")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -481,7 +481,7 @@ to manage different input methods in Fcitx 5.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mgc722521jmfx0xc3ibmiycd3q2w7xg2956xcpc07kz90gcdjaa"))))
+        (base32 "0drdypjf1njl7flkb5d581vchwlp4gaqyws3cp0v874wkwh4gllb"))))
     (build-system copy-build-system)
     (arguments
      `(#:phases
@@ -497,7 +497,6 @@ to manage different input methods in Fcitx 5.")
 
                (define (install-theme-variant variant target)
                  (let ((dir (string-append themes-prefix "/" target))
-                       (png (string-append "panel-" variant ".png"))
                        (conf (string-append "theme-" variant ".conf")))
                    (format #t "install: Installing color variant \"~a\" to ~a~%"
                            variant dir)
@@ -505,13 +504,15 @@ to manage different input methods in Fcitx 5.")
                      (("^Name=.*")
                       (string-append "Name=" target "\n")))
                    (mkdir-p dir)
-                   (install-file png dir)
                    (copy-file conf (string-append dir "/theme.conf"))
                    (symlink (string-append assets-dir "/arrow.png")
-                            (string-append dir "/arrow.png"))))
+                            (string-append dir "/arrow.png"))
+                   (symlink (string-append assets-dir "/radio.png")
+                            (string-append dir "/radio.png"))))
 
                (mkdir-p assets-dir)
                (install-file "arrow.png" assets-dir)
+               (install-file "radio.png" assets-dir)
                (for-each
                 (lambda (x)
                   (install-theme-variant
@@ -520,7 +521,9 @@ to manage different input methods in Fcitx 5.")
                   "orange" "pink" "red" "teal"))
 
                (install-theme-variant
-                "deepPurple" "Material-Color-DeepPurple")))))))
+                "deepPurple" "Material-Color-DeepPurple")
+               (install-theme-variant
+                "sakuraPink" "Material-Color-SakuraPink")))))))
     (home-page "https://github.com/hosxy/Fcitx5-Material-Color")
     (synopsis "Material Design for Fcitx 5")
     (description "Fcitx5-material-color-theme is a Material Design theme
