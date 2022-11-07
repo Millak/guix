@@ -2129,6 +2129,43 @@ install an implementation package such as asdf-astropy.")
        "This package provides ASDF schemas for validating FITS tags.")
       (license license:bsd-3))))
 
+(define python-asdf-time-schemas
+  ;; TODO: No release, change to tag when it's ready.
+  (let ((commit "e9174083d9cfd3c6f7ded9eeb360d99ccb8d9d18")
+        (revision "2"))
+    (package
+      (name "python-asdf-time-schemas")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/asdf-format/asdf-time-schemas")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1i40hcxp8sds2zq939fwczjlshfqb9r9pnzy3a44c3wqdbwhcbdb"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        ;; Dependency cycle with python-asdf
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'build 'set-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" "0.0.1"))))))
+      (native-inputs (list python-setuptools-scm))
+      (propagated-inputs (list python-asdf-standard
+                               python-asdf-unit-schemas
+                               python-importlib-resources))
+      (home-page "https://github.com/asdf-format/asdf-fits-schemas")
+      (synopsis "Schemas for storing time in ASDF")
+      (description
+       "This package provides ASDF schemas for validating time tags.")
+      (license license:bsd-3))))
+
 (define python-asdf-unit-schemas
   (package
     (name "python-asdf-unit-schemas")
