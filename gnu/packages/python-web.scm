@@ -84,6 +84,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
@@ -8003,4 +8004,60 @@ list, create, update, or delete resources (e.g. Order, Product, Collection).")
      "python-grid5000 is a python package wrapping the Grid5000 REST API.
 You can use it as a library in your python project or you can explore the
 Grid5000 resources interactively using the embedded shell.")
+    (license license:gpl3+)))
+
+(define-public python-enoslib
+  (package
+    (name "python-enoslib")
+    (version "8.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.inria.fr/discovery/enoslib")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               "0vs6b0bnlv95mzv0rjbxqwrhzkgjkn91gqipgwdf7y4ffpz8nybg")))
+    (build-system python-build-system)
+    (native-inputs (list python-wheel python-pytest python-ddt
+                         python-freezegun))
+    (propagated-inputs (list ansible
+                             python-cryptography
+                             python-grid5000
+                             python-jsonschema
+                             python-netaddr
+                             python-packaging
+                             python-requests
+                             python-rich
+                             python-sshtunnel
+                             python-pytz))
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        ;; Otherwise Ansible fails to create its config directory.
+                        (setenv "HOME" "/tmp")
+                        ;; Ignoring the tests requiring an extra dependency (iotlabcli)
+                        (invoke "pytest" "enoslib/tests/unit"
+                                "--ignore"
+                                "enoslib/tests/unit/infra/test_utils.py"
+                                "--ignore-glob"
+                                "enoslib/tests/unit/infra/enos_iotlab/*"))))
+                  ;; Disable the sanity check, which fails with the following error:
+                  ;;
+                  ;; ContextualVersionConflict(rich 12.4.1
+                  ;; (/gnu/store/...-python-rich-12.4.1/lib/python3.9/site-packages),
+                  ;; Requirement.parse('rich[jupyter]~=12.0.0'), {'enoslib'})
+                  ;;
+                  ;; The optional jupyter dependency of rich isn't critical for
+                  ;; EnOSlib to work
+                  (delete 'sanity-check))))
+
+    (home-page "https://discovery.gitlabpages.inria.fr/enoslib/index.html")
+    (synopsis "Deploy distributed testbeds on a variety of platforms")
+    (description
+     "EnOSlib is a library to build experimental frameworks on various
+scientific testbeds.  It lets you deploy networks of machines on actual
+hardware on Grid'5000 or via OpenStack, to Vagrant, Chameleon, and more.")
     (license license:gpl3+)))
