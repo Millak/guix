@@ -2021,7 +2021,7 @@ virtual machines.")
 (define-public bubblewrap
   (package
     (name "bubblewrap")
-    (version "0.6.1")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/containers/bubblewrap/"
@@ -2029,7 +2029,7 @@ virtual machines.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "10ij62jg7p2scwdx0pm141ss7p2gjdkbbymb56y8miib2vfcf2cn"))
+                "1p59hawgpf16mc01ybf6dfb2b96pk7h65ls0si9yldyh1c8bfjkn"))
                (patches (search-patches "bubblewrap-fix-locale-in-tests.patch"))))
     (build-system gnu-build-system)
     (arguments
