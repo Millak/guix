@@ -29,6 +29,7 @@
 ;;; Copyright © 2022 Evgenii Lepikhin <e.lepikhin@corp.mail.ru>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26047,6 +26048,31 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
     (home-page "https://github.com/samtools/htslib.git")
     (synopsis "Rust bindings to HTSlib")
     (description "This library provides Rust bindings to HTSlib.")
+    (license license:expat)))
+
+(define-public rust-kuchiki-0.8
+  (package
+    (name "rust-kuchiki")
+    (version "0.8.1")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "kuchiki" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0n53hhscgf4az58nnbjfxlqz9k96h3f02c7fhbzpqdriw33fka0y"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:skip-build? #t
+        #:cargo-inputs
+        (("rust-cssparser" ,rust-cssparser-0.27)
+         ("rust-html5ever" ,rust-html5ever-0.25)
+         ("rust-matches" ,rust-matches-0.1)
+         ("rust-selectors" ,rust-selectors-0.22))))
+    (home-page "https://github.com/SimonSapin/kuchiki")
+    (synopsis "HTML/XML tree manipulation library")
+    (description "A library for parsing and serializing HTML and XML documents
+and traversing, manipulating, and querying the document tree.")
     (license license:expat)))
 
 (define-public rust-http-0.2
