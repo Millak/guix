@@ -245,6 +245,20 @@ library.")
     ;; "include/spdlog/fmt/bundled" is under BSD 2 clause license.
     (license (list license:expat license:bsd-2))))
 
+(define-public spdlog-1.10
+  (package
+    (inherit spdlog)
+    (version "1.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gabime/spdlog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "spdlog" version))
+       (sha256
+        (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))))
+
 (define-public rsyslog
   (package
     (name "rsyslog")
