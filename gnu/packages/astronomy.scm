@@ -78,6 +78,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -1985,6 +1986,47 @@ datetime object.")
      "The Advanced Scientific Data Format (ASDF) is a next-generation
 interchange format for scientific data.  This package contains the Python
 implementation of the ASDF Standard.")
+    (license license:bsd-3)))
+
+(define-public python-asdf-standard
+  (package
+    (name "python-asdf-standard")
+    (version "1.0.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "asdf_standard" version))
+       (sha256
+        (base32
+         "0i7xdjwn5prg2hcnf1zhw57mszc68jjr5sv4rimpzcg7f2dgzn5g"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-before 'check 'remove-blocking-tests
+                          (lambda _
+                            ;; Remove tests require python-asdf where
+                            ;; python-asdf require python-asdf-standard,
+                            ;; break circular dependencies.
+                            (for-each delete-file
+                                      (list "tests/test_manifests.py"
+                                            "tests/test_integration.py")))))))
+    (native-inputs (list python-astropy
+                         python-jsonschema-next
+                         python-pypa-build
+                         python-pytest-7.1
+                         python-packaging
+                         python-setuptools-scm))
+    (propagated-inputs (list python-importlib-resources))
+    (home-page "https://asdf-standard.readthedocs.io/")
+    (synopsis "ASDF standard schemas")
+    (description
+     "This package provides Python implementation of @acronym{ASDF, Advanced
+Scientific Data Format} - a proposed next generation interchange format for
+scientific data.  ASDF aims to exist in the same middle ground that made FITS
+so successful, by being a hybrid text and binary format: containing human
+editable metadata for interchange, and raw binary data that is fast to load
+and use.  Unlike FITS, the metadata is highly structured and is designed
+up-front for extensibility.")
     (license license:bsd-3)))
 
 (define python-asdf-transform-schemas
