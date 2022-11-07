@@ -141,7 +141,7 @@ makes a few sacrifices to acquire fast full and incremental build times.")
        ("protobuf" ,protobuf)
        ("python" ,python-wrapper)
        ("re2" ,re2)
-       ("spdlog" ,spdlog)))
+       ("spdlog" ,spdlog-1.10)))
     (native-inputs
      `(("abseil-cpp" ,abseil-cpp)
        ("googletest" ,googletest)
