@@ -24801,7 +24801,7 @@ backends, including the @command{wordnet} offline backend.")
 (define-public emacs-editorconfig
   (package
     (name "emacs-editorconfig")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -24811,7 +24811,7 @@ backends, including the @command{wordnet} offline backend.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0k1dnws3xz0xynplaar0f5dwpvdmsnqi0bnavjmvcm98jrczmk8y"))))
+         "1v8x649r9b0ihnhddkkfb8ck21z2hr3swgczwgzwdk0ys6pl89my"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/editorconfig/editorconfig-emacs")
     (synopsis "Define and maintain consistent coding styles between different
