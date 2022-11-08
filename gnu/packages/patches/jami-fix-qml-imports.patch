@@ -1,0 +1,78 @@
+From 9c4d065093d18b5495d3193028457b7393daea4b Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@savoirfairelinux.com>
+Date: Mon, 7 Nov 2022 16:26:50 -0500
+Subject: [PATCH] tests: Fix broken QML import directives.
+
+Fixes
+<https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883>.
+
+Automated via:
+  $ find tests -name '*.qml'  | xargs sed -i 's,qrc:/src,../../../src,'
+
+Change-Id: Ic1a2f419e3e328e8bf861e7fdf370f15da66675f
+---
+Upstream status: https://review.jami.net/c/jami-client-qt/+/22990
+
+ tests/qml/src/tst_ChatViewFooter.qml       | 2 +-
+ tests/qml/src/tst_FilesToSendContainer.qml | 2 +-
+ tests/qml/src/tst_PresenceIndicator.qml    | 2 +-
+ tests/qml/src/tst_WizardView.qml           | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/client-qt/tests/qml/src/tst_ChatViewFooter.qml b/client-qt/tests/qml/src/tst_ChatViewFooter.qml
+index 84316d78..b0cffe1a 100644
+--- a/client-qt/tests/qml/src/tst_ChatViewFooter.qml
++++ b/client-qt/tests/qml/src/tst_ChatViewFooter.qml
+@@ -25,7 +25,7 @@ import QtTest
+ import net.jami.Models 1.1
+ import net.jami.Constants 1.1
+ 
+-import "qrc:/src/app/mainview/components"
++import "../../../src/app/mainview/components"
+ 
+ ColumnLayout {
+     id: root
+diff --git a/client-qt/tests/qml/src/tst_FilesToSendContainer.qml b/client-qt/tests/qml/src/tst_FilesToSendContainer.qml
+index b7f4810a..9432a44d 100644
+--- a/client-qt/tests/qml/src/tst_FilesToSendContainer.qml
++++ b/client-qt/tests/qml/src/tst_FilesToSendContainer.qml
+@@ -25,7 +25,7 @@ import QtTest
+ import net.jami.Models 1.1
+ import net.jami.Constants 1.1
+ 
+-import "qrc:/src/app/mainview/components"
++import "../../../src/app/mainview/components"
+ 
+ ColumnLayout {
+     id: root
+diff --git a/client-qt/tests/qml/src/tst_PresenceIndicator.qml b/client-qt/tests/qml/src/tst_PresenceIndicator.qml
+index 0eda9169..46c048e8 100644
+--- a/client-qt/tests/qml/src/tst_PresenceIndicator.qml
++++ b/client-qt/tests/qml/src/tst_PresenceIndicator.qml
+@@ -22,7 +22,7 @@ import QtTest
+ import net.jami.Models 1.1
+ import net.jami.Constants 1.1
+ 
+-import "qrc:/src/app/commoncomponents"
++import "../../../src/app/commoncomponents"
+ 
+ PresenceIndicator {
+     id: uut
+diff --git a/client-qt/tests/qml/src/tst_WizardView.qml b/client-qt/tests/qml/src/tst_WizardView.qml
+index 08698b7a..6a4f971d 100644
+--- a/client-qt/tests/qml/src/tst_WizardView.qml
++++ b/client-qt/tests/qml/src/tst_WizardView.qml
+@@ -24,8 +24,8 @@ import net.jami.Models 1.1
+ import net.jami.Constants 1.1
+ import net.jami.Enums 1.1
+ 
+-import "qrc:/src/app/wizardview"
+-import "qrc:/src/app/commoncomponents"
++import "../../../src/app/wizardview"
++import "../../../src/app/commoncomponents"
+ 
+ WizardView {
+     id: uut
+-- 
+2.37.3
+

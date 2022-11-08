@@ -1,0 +1,109 @@
+From 1168aba6181e30ee4c322e5f437bde22bece5698 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@savoirfairelinux.com>
+Date: Sat, 5 Nov 2022 23:18:13 -0400
+Subject: [PATCH 1/3] cmake: Simplify lookup logic for libjami headers.
+
+* extras/build/cmake/modules/FindLibJami.cmake: Rename
+LIBJAMI_INCLUDE_DIRS to LIBJAMI_INCLUDE_DIR.  Use find_path to search
+for jami.h directory.
+* CMakeLists.txt: Adjust accordingly.
+* src/libclient/CMakeLists.txt: Likewise.
+* src/libclient/qtwrapper/CMakeLists.txt: Likewise.
+
+Change-Id: I494358f9bfafb41f000daeec4196747b2c184401
+---
+Upstream status: https://review.jami.net/c/jami-client-qt/+/22973
+
+ CMakeLists.txt                               |  2 +-
+ extras/build/cmake/modules/FindLibJami.cmake | 21 ++++++--------------
+ src/libclient/CMakeLists.txt                 |  2 +-
+ src/libclient/qtwrapper/CMakeLists.txt       |  2 +-
+ 4 files changed, 9 insertions(+), 18 deletions(-)
+
+diff --git a/client-qt/CMakeLists.txt b/CMakeLists.txt
+index d0a8fd70..94ac6074 100644
+--- a/client-qt/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -118,7 +118,7 @@ set(CMAKE_MODULE_PATH
+   ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
+ find_package(LibJami REQUIRED)
+ if(LIBJAMI_FOUND)
+-  include_directories(${LIBJAMI_INCLUDE_DIRS})
++  include_directories(${LIBJAMI_INCLUDE_DIR})
+ endif()
+ 
+ include(FindPython3)
+diff --git a/client-qt/extras/build/cmake/modules/FindLibJami.cmake b/extras/build/cmake/modules/FindLibJami.cmake
+index ddb05319..9ad20d2b 100644
+--- a/client-qt/extras/build/cmake/modules/FindLibJami.cmake
++++ b/extras/build/cmake/modules/FindLibJami.cmake
+@@ -20,28 +20,19 @@
+ 
+ # Once done, this find module will set:
+ #
+-#   LIBJAMI_INCLUDE_DIRS - libjami include directories
++#   LIBJAMI_INCLUDE_DIR - libjami include directories
+ #   LIBJAMI_FOUND - whether it was able to find the include directories
+ #   LIBJAMI_LIB - path to libjami or libring library
+ 
+ set(LIBJAMI_FOUND true)
+ 
+ if(WITH_DAEMON_SUBMODULE)
+-  set(LIBJAMI_INCLUDE_DIRS ${DAEMON_DIR}/src/jami)
++  set(LIBJAMI_INCLUDE_DIR ${DAEMON_DIR}/src/jami)
+ else()
+-  if(EXISTS ${LIBJAMI_INCLUDE_DIR}/jami.h)
+-    set(LIBJAMI_INCLUDE_DIRS ${LIBJAMI_INCLUDE_DIR})
+-  elseif(EXISTS ${LIBJAMI_BUILD_DIR}/jami/jami.h)
+-    set(LIBJAMI_INCLUDE_DIRS ${LIBJAMI_BUILD_DIR}/jami)
+-  elseif(EXISTS ${RING_INCLUDE_DIR}/jami.h)
+-    set(LIBJAMI_INCLUDE_DIRS ${RING_INCLUDE_DIR})
+-  elseif(EXISTS ${RING_BUILD_DIR}/jami/jami.h)
+-    set(LIBJAMI_INCLUDE_DIRS ${RING_BUILD_DIR}/jami)
+-  elseif(EXISTS ${CMAKE_INSTALL_PREFIX}/include/jami/jami.h)
+-    set(LIBJAMI_INCLUDE_DIRS ${CMAKE_INSTALL_PREFIX}/include/jami)
+-  else()
++  find_path(LIBJAMI_INCLUDE_DIR jami.h PATH_SUFFIXES jami)
++  if(NOT LIBJAMI_INCLUDE_DIR)
+     message(STATUS "Jami daemon headers not found!
+-Set -DLIBJAMI_BUILD_DIR or -DCMAKE_INSTALL_PREFIX")
++Set -DCMAKE_INSTALL_PREFIX or use -DWITH_DAEMON_SUBMODULE")
+     set(LIBJAMI_FOUND false)
+   endif()
+ endif()
+@@ -102,5 +93,5 @@ endif()
+ # Restore the original value of CMAKE_FIND_LIBRARY_SUFFIXES.
+ set(CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES_orig})
+ 
+-message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIRS})
++message(STATUS "Jami daemon headers are in " ${LIBJAMI_INCLUDE_DIR})
+ message(STATUS "Jami daemon library is at " ${LIBJAMI_LIB})
+diff --git a/client-qt/src/libclient/CMakeLists.txt b/src/libclient/CMakeLists.txt
+index 2676c9c4..ac58ea2b 100644
+--- a/client-qt/src/libclient/CMakeLists.txt
++++ b/src/libclient/CMakeLists.txt
+@@ -62,7 +62,7 @@ set(CMAKE_MODULE_PATH
+   ${CMAKE_MODULE_PATH} "${EXTRAS_DIR}/build/cmake/modules")
+ find_package(LibJami REQUIRED)
+ if(LIBJAMI_FOUND)
+-  include_directories(${LIBJAMI_INCLUDE_DIRS})
++  include_directories(${LIBJAMI_INCLUDE_DIR})
+ endif()
+ 
+ string(SUBSTRING ${CMAKE_GENERATOR} 0 14 CMAKE_GENERATOR_SHORT)
+diff --git a/client-qt/src/libclient/qtwrapper/CMakeLists.txt b/src/libclient/qtwrapper/CMakeLists.txt
+index acee0d0c..ba68aac4 100644
+--- a/client-qt/src/libclient/qtwrapper/CMakeLists.txt
++++ b/client-qt/src/libclient/qtwrapper/CMakeLists.txt
+@@ -46,7 +46,7 @@ else()
+ endif()
+ 
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+-include_directories(${LIBJAMI_INCLUDE_DIRS})
++include_directories(${LIBJAMI_INCLUDE_DIR})
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../)
+ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../dbus)
+ 
+-- 
+2.37.3
+

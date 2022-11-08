@@ -1,0 +1,48 @@
+From c1e6d664601b35a466f4e02e86a2c8181fdcca12 Mon Sep 17 00:00:00 2001
+From: Antoine Noreau <antoine.noreau@savoirfairelinux.com>
+Date: Thu, 3 Nov 2022 15:35:40 -0400
+Subject: [PATCH] sip: ensure correct unregister upon closure
+
+Ensure SIP connections are gracefully terminated:
+Removed duplicated register calls to SIP server
+
+Change-Id: I330e67cf9534504f92517996eb7b693b43d359d3
+Gitlab: #786
+---
+ src/upnp/upnp_context.cpp | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/daemon/src/upnp/upnp_context.cpp b/daemon/src/upnp/upnp_context.cpp
+index a447e2d75..c68fe502c 100644
+--- a/daemon/src/upnp/upnp_context.cpp
++++ b/daemon/src/upnp/upnp_context.cpp
+@@ -143,7 +143,7 @@ void
+ UPnPContext::stopUpnp(bool forceRelease)
+ {
+     if (not isValidThread()) {
+-        runOnUpnpContextQueue([this] { stopUpnp(); });
++        runOnUpnpContextQueue([this, forceRelease] { stopUpnp(forceRelease); });
+         return;
+     }
+ 
+@@ -168,10 +168,15 @@ UPnPContext::stopUpnp(bool forceRelease)
+         preferredIgd_.reset();
+         validIgdList_.clear();
+     }
+-
+     for (auto const& map : toRemoveList) {
+         requestRemoveMapping(map);
+-        updateMappingState(map, MappingState::FAILED);
++
++        /* Notify is not needed in updateMappingState when
++        shutting down (hence set it to false). NotifyCallback
++        would trigger a new SIP registration and create a
++        false registered state upon program close.  */
++
++        updateMappingState(map, MappingState::FAILED, false);
+         // We dont remove mappings with auto-update enabled,
+         // unless forceRelease is true.
+         if (not map->getAutoUpdate() or forceRelease) {
+-- 
+2.37.3
+

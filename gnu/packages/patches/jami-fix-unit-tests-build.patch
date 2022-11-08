@@ -1,0 +1,139 @@
+From 82ecd786a29344d57e6dd95ef0800bef9dd44542 Mon Sep 17 00:00:00 2001
+From: Maxim Cournoyer <maxim.cournoyer@savoirfairelinux.com>
+Date: Sun, 6 Nov 2022 00:16:34 -0400
+Subject: [PATCH 3/3] tests: Fix various compilation failures.
+
+Fixes <https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/882>.
+
+* tests/CMakeLists.txt: Add "Widgets" Qt module to find_package call.
+(QML_TEST_LIBS): Add Qt::Widgets.
+* tests/CMakeLists.txt: Rename QML_LIBS to QT_LIBS, a regression
+introduced in d82e3820706214d15d7cb7462978b7a43b798355.  Remove the
+dependency on on the Widgets module, now provided via QT_LIBS.
+* tests/qml/main.cpp [WITH_WEBENGINE]: Include QtWebEngine modules
+conditionally.
+(main) [WITH_WEBENGINE]: Initialize webengine conditionally.
+* tests/CMakeLists.txt: Link test objects with ${LIBCLIENT_NAME}.
+* src/app/qmlregister.h (registerTypes): Change parent type from
+MainApplication* to QObject*
+* src/app/qmlregister.cpp (registerTypes): Likewise.
+* tests/unittests/account_unittest.cpp (globalEnv): Remove variable.
+* tests/unittests/contact_unittest.cpp: Likewise.
+---
+Upstream status: https://review.jami.net/c/jami-client-qt/+/22984/1
+
+ src/app/qmlregister.cpp              | 2 +-
+ src/app/qmlregister.h                | 2 +-
+ tests/CMakeLists.txt                 | 6 +++---
+ tests/qml/main.cpp                   | 7 ++++---
+ tests/unittests/account_unittest.cpp | 2 --
+ tests/unittests/contact_unittest.cpp | 2 --
+ 6 files changed, 9 insertions(+), 12 deletions(-)
+
+diff --git a/client-qt/client-qt/src/app/qmlregister.cpp b/client-qt/src/app/qmlregister.cpp
+index 285f7814..67222eb5 100644
+--- a/client-qt/client-qt/src/app/qmlregister.cpp
++++ b/client-qt/src/app/qmlregister.cpp
+@@ -105,7 +105,7 @@ registerTypes(QQmlEngine* engine,
+               AppSettingsManager* settingsManager,
+               PreviewEngine* previewEngine,
+               ScreenInfo* screenInfo,
+-              MainApplication* parent)
++              QObject* parent)
+ {
+     // setup the adapters (their lifetimes are that of MainApplication)
+     auto callAdapter = new CallAdapter(systemTray, lrcInstance, parent);
+diff --git a/client-qt/client-qt/src/app/qmlregister.h b/client-qt/src/app/qmlregister.h
+index 38bfd091..aac0a887 100644
+--- a/client-qt/client-qt/src/app/qmlregister.h
++++ b/client-qt/src/app/qmlregister.h
+@@ -67,5 +67,5 @@ void registerTypes(QQmlEngine* engine,
+                    AppSettingsManager* appSettingsManager,
+                    PreviewEngine* previewEngine,
+                    ScreenInfo* screenInfo,
+-                   MainApplication* parent);
++                   QObject* parent);
+ }
+diff --git a/client-qt/client-qt/tests/CMakeLists.txt b/client-qt/tests/CMakeLists.txt
+index 8904d5ec..4e42b307 100644
+--- a/client-qt/client-qt/tests/CMakeLists.txt
++++ b/client-qt/tests/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED QuickTest Test)
++find_package(Qt${QT_VERSION_MAJOR} CONFIG REQUIRED QuickTest Test Widgets)
+ 
+ if(MSVC)
+     # Download and unpack googletest for windows
+@@ -15,7 +15,7 @@ else()
+ endif()
+ 
+ enable_testing(true)
+-set(QML_TEST_LIBS ${QML_LIBS} Qt::QuickTest Qt::Test)
++set(QML_TEST_LIBS ${QT_LIBS} ${LIBCLIENT_NAME} Qt::QuickTest Qt::Test Qt::Widgets)
+ set(TESTS_INCLUDES
+     ${CMAKE_SOURCE_DIR}/src
+     ${CMAKE_SOURCE_DIR}/tests/qml
+@@ -192,4 +192,4 @@ else()
+                                ${LRC}/include)
+ 
+     add_test(NAME UnitTests COMMAND unittests)
+-endif()
+\ No newline at end of file
++endif()
+diff --git a/client-qt/client-qt/tests/qml/main.cpp b/client-qt/tests/qml/main.cpp
+index 09c02f3e..4c42027c 100644
+--- a/client-qt/client-qt/tests/qml/main.cpp
++++ b/client-qt/tests/qml/main.cpp
+@@ -31,9 +31,10 @@
+ #include <QQmlEngine>
+ #include <QQmlContext>
+ #include <QFontDatabase>
++#ifdef WITH_WEBENGINE
+ #include <QtWebEngineCore>
+ #include <QtWebEngineQuick>
+-
++#endif
+ #ifdef Q_OS_WIN
+ #include <windows.h>
+ #endif
+@@ -155,9 +156,9 @@ main(int argc, char** argv)
+         // Adjust the argument count.
+         argc = std::distance(argv, end);
+     }
+-
++#ifdef WITH_WEBENGINE
+     QtWebEngineQuick::initialize();
+-
++#endif
+     QTEST_SET_MAIN_SOURCE_PATH
+     Setup setup(muteDring);
+     return quick_test_main_with_setup(argc, argv, "qml_test", nullptr, &setup);
+diff --git a/client-qt/client-qt/tests/unittests/account_unittest.cpp b/client-qt/tests/unittests/account_unittest.cpp
+index aa98453e..5af2ad6e 100644
+--- a/client-qt/client-qt/tests/unittests/account_unittest.cpp
++++ b/client-qt/tests/unittests/account_unittest.cpp
+@@ -19,8 +19,6 @@
+ 
+ #include "globaltestenvironment.h"
+ 
+-TestEnvironment globalEnv;
+-
+ /*!
+  * Test fixture for AccountAdapter testing
+  */
+diff --git a/client-qt/client-qt/tests/unittests/contact_unittest.cpp b/client-qt/tests/unittests/contact_unittest.cpp
+index af8a9a22..b05cc856 100644
+--- a/client-qt/client-qt/tests/unittests/contact_unittest.cpp
++++ b/client-qt/tests/unittests/contact_unittest.cpp
+@@ -18,8 +18,6 @@
+ 
+ #include "globaltestenvironment.h"
+ 
+-TestEnvironment globalEnv;
+-
+ /*!
+  * Test fixture for AccountAdapter testing
+  */
+-- 
+2.37.3
+

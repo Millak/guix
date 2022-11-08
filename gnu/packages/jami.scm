@@ -95,7 +95,12 @@
      (base32
       "0hbsjjs61n7268lyjnjb9lzfpkkd65fmz76l1bg4awlz1f3cyywm"))
     (patches (search-patches "jami-disable-integration-tests.patch"
-                             "jami-no-webengine.patch"))))
+                             "jami-libjami-headers-search.patch"
+                             "jami-fix-unit-tests-build.patch"
+                             "jami-fix-qml-imports.patch"
+                             "jami-no-webengine.patch"
+                             "jami-sip-unregister.patch"
+                             "jami-xcb-link.patch"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.
@@ -504,19 +509,14 @@ protocols, as well as decentralized calling using P2P-DHT.")
     (arguments
      (list
       #:qtbase qtbase
-      ;; The test suite fails to build (see:
-      ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/882).
-      #:tests? #f
       #:configure-flags
-      #~(list "-DENABLE_TESTS=OFF"
+      #~(list "-DENABLE_TESTS=ON"
               ;; Disable the webengine since it grows the closure size by
               ;; about 450 MiB and requires more resources.
               "-DWITH_WEBENGINE=OFF"
               ;; Use libwrap to link directly to libjami instead of
               ;; communicating via D-Bus to jamid, the Jami daemon.
-              "-DENABLE_LIBWRAP=ON"
-              (string-append "-DLIBJAMI_INCLUDE_DIR="
-                             #$(this-package-input "libjami") "/include/jami"))
+              "-DENABLE_LIBWRAP=ON")
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'change-directory/maybe
@@ -531,7 +531,32 @@ protocols, as well as decentralized calling using P2P-DHT.")
                 (("// clang-format on.*" anchor)
                  (string-append "const char VERSION_STRING[] = \""
                                 #$version "\";\n"
-                                anchor))))))))
+                                anchor)))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "QT_QPA_PLATFORM" "offscreen")
+                (setenv "QT_QUICK_BACKEND" "software")
+                ;; The tests require a writable HOME.
+                (setenv "HOME" "/tmp")
+
+                (display "Running unittests...\n")
+                (invoke "tests/unittests" "-mutejamid")
+
+                ;; XXX: There are currently multiple failures with the
+                ;; functional tests (see:
+                ;; https://git.jami.net/savoirfairelinux/jami-client-qt/-/issues/883),
+                ;; so the code below is disabled for now.
+                ;;
+                ;; (display "Running functional tests...\n")
+                ;; ;; This is to allow building from the source tarball or
+                ;; ;; directly from the git repository.
+                ;; (let  ((tests-qml (if (file-exists? "../client-qt/tests")
+                ;;                       "../client-qt/tests/qml"
+                ;;                       "../tests/qml")))
+                ;;   (invoke "tests/qml_tests" "-mutejamid"
+                ;;           "-input" tests-qml))
+                ))))))
     (native-inputs
      (list googletest
            pkg-config
@@ -539,11 +564,14 @@ protocols, as well as decentralized calling using P2P-DHT.")
            qttools
            doxygen
            graphviz
+           gsettings-desktop-schemas    ;for tests
            vulkan-headers))
     (inputs
      (list ffmpeg-jami
+           glib                         ;for integration with GNOME
            libjami
            libnotify
+           libxcb
            libxkbcommon
            network-manager
            qrencode
