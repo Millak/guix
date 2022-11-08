@@ -708,7 +708,7 @@ console.")
 (define-public btop
   (package
     (name "btop")
-    (version "1.2.9")
+    (version "1.2.13")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -716,7 +716,7 @@ console.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0cb5q7hrb9y378i98km9s6jbi5c50i7wra8m8jik5hf4m4s3930g"))))
+                "00hfja154i5kmsgh1ja8aifcqj12jy7p8chdmlslqmij4iwc93b6"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
