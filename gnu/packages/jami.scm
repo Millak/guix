@@ -136,7 +136,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1vzfpiwhd96a9ibk398z922a60j18xd7mblsmi6355r7ccj2aw7p"))))
+                  "0n9hyqr57hhbmq35iqq5ihavj22gxzsspv0f8i6ajxwd4029nmcl"))))
       (arguments
        (substitute-keyword-arguments (package-arguments pjproject)
          ((#:phases phases '%standard-phases)
