@@ -11241,10 +11241,9 @@ and unsafe rides.  Which path will you take?")
       (native-inputs (list pkg-config fpc autoconf automake))
       (synopsis "Karaoke game")
       (description
-       "UltraStar Deluxe (USDX) is a free and open source karaoke game.  It
-allows up to six players to sing along with music using microphones
-in order to score points, depending on the pitch of the voice and the
-rhythm of singing.")
+       "UltraStar Deluxe (USDX) is a karaoke game.  It allows up to six players
+to sing along with music using microphones in order to score points, depending
+on the pitch of the voice and the rhythm of singing.")
       (home-page "https://usdx.eu/")
       (license license:gpl2+))))
 
