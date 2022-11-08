@@ -10,6 +10,7 @@
 # Copyright © 2021 Jakub Kądziołka <kuba@kadziolka.net>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -535,9 +536,6 @@ GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
 export GUIX_LOCPATH
 
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
-
-# set XDG_DATA_DIRS to include Guix installations
-export XDG_DATA_DIRS="$GUIX_PROFILE/share:$XDG_DATA_DIRS"
 EOF
 }
 
