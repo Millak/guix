@@ -21457,11 +21457,11 @@ them as strings.")
   (sbcl-package->ecl-package sbcl-simple-date-time))
 
 (define-public sbcl-april
-  (let ((commit "963e2d8e5575a7d430c1fba7adedd15cb23c4ce8")
-        (revision "1"))
+  (let ((commit "93b10042206475b9cce649d76ffaf00dcdbe498f")
+        (revision "2"))
     (package
       (name "sbcl-april")
-      (version (git-version "0.9.3" revision commit))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21470,7 +21470,7 @@ them as strings.")
                (commit commit)))
          (file-name (git-file-name "cl-april" version))
          (sha256
-          (base32 "0v27fpss1ayca2r47k0zpqa9a423a86pv8s2mlgc3g5s48lgcmj3"))
+          (base32 "16az6cs13hxqn7sa2cxask077kvzp8prnrvnqm5igqq92y174n8g"))
          (modules '((guix build utils)))
          (snippet '(begin
                      ;; Remove bundled Apache-relicensed MaxPC.
@@ -21482,15 +21482,16 @@ them as strings.")
       (inputs
        (list sbcl-alexandria
              sbcl-array-operations
-             sbcl-maxpc
              sbcl-cl-ppcre
-             sbcl-symbol-munger
-             sbcl-prove
-             sbcl-parse-number
+             sbcl-cl-unicode
              sbcl-lparallel
+             sbcl-maxpc
+             sbcl-parse-number
+             sbcl-prove
              sbcl-random-state
-             sbcl-decimals
+             sbcl-serapeum
              sbcl-simple-date-time
+             sbcl-symbol-munger
              sbcl-trivia))
       (home-page "https://github.com/phantomics/april")
       (synopsis "Array Programming Re-Imagined in Lisp")
