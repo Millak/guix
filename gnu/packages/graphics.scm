@@ -979,7 +979,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public mangohud
   (package
     (name "mangohud")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method git-fetch)
@@ -988,7 +988,7 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n2x6agv2j8nd6h1998dqsphb7k57zx8vsayv47dqix28kg5kixz"))))
+        (base32 "19dp8l5njzl9xah0bhwlkl39vc8w2rnpvpdrhgaz3hnhz8b0r5df"))))
     (build-system meson-build-system)
     (arguments
      (list
