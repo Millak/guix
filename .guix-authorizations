@@ -35,10 +35,8 @@
   (;; primary: "295A F991 6F46 F8A1 34B0  29DA 8086 3842 F0FE D83B"
    "76CE C6B1 7274 B465 C02D  B3D9 E71A 3554 2C30 BAA5"
    (name "dannym"))
-  ("B3C0 DB4D AD73 BA5D 285E  19AE 5143 0234 CEFD 87C3"
-   (name "davexunit"))
-  ("8CCB A7F5 52B9 CBEA E1FB  2915 8328 C747 0FF1 D807" ;FIXME: to be confirmed!
-   (name "davexunit (2nd)"))
+  ("8CCB A7F5 52B9 CBEA E1FB  2915 8328 C747 0FF1 D807"
+   (name "dthompson"))
   ("A28B F40C 3E55 1372 662D  14F7 41AA E7DC CA3D 8351"
    (name "efraim"))
   (;; primary: "2453 02B1 BAB1 F867 FDCA  96BC 8F3F 861F 82EB 7A9A"
