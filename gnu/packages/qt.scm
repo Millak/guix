@@ -64,15 +64,18 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages enchant)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -4600,6 +4603,132 @@ understand Qt semantics.  It can emit more than fifty (50) Qt-related compiler
 warnings, ranging from unneeded memory allocations to misuses of the API,
 including @i{fix-its} for automatic refactoring.")
     (license license:lgpl2.0+)))
+
+(define-public qt-creator
+  (package
+    (name "qt-creator")
+    (version "9.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://download.qt.io/official_releases/qtcreator/"
+                    (version-major+minor version) "/" version
+                    "/qt-creator-opensource-src-" version ".tar.gz"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          (for-each
+                           delete-file-recursively
+                           ;; Remove bundled libraries, where supported.
+                           ;; TODO: package and unbundle litehtml
+                           '("src/libs/3rdparty/yaml-cpp"
+                             "src/shared/qbs/src/shared/qtscript/src/3rdparty"
+                             "tests/unit/unittest/3rdparty"
+                             ;; Marketplace recommends nonfree extensions;
+                             ;; remove it.
+                             "src/plugins/marketplace"))
+                          (substitute* "src/plugins/CMakeLists.txt"
+                            (("add_subdirectory\\(marketplace).*") ""))
+                          (substitute* "src/plugins/plugins.qbs"
+                            ((".*marketplace/marketplace.qbs.*") ""))))
+              (sha256
+               (base32
+                "1adyxs0cnqx14gwzkvh909c52449ia6y87n1r4qf6wwydhch43cs"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:qtbase qtbase
+      #:configure-flags
+      #~(list "-DWITH_DOCS=ON"
+              "-DBUILD_DEVELOPER_DOCS=ON"
+              "-DCMAKE_VERBOSE_MAKEFILE=ON"
+              "-DWITH_TESTS=ON"
+              ;; Extend the RUNPATH with lib/qtcreator, which contains
+              ;; multiple shared objects.
+              (string-append "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,-rpath="
+                             #$output "/lib/qtcreator"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-tests-build
+            (lambda _
+              ;; Add a missing link directive (see:
+              ;; https://bugreports.qt.io/browse/QTCREATORBUG-28434).
+              (substitute* "src/libs/tracing/CMakeLists.txt"
+                (("DEPENDS Utils Qt5::Qml Qt5::Quick")
+                 "DEPENDS Utils Qt5::Quick")
+                (("PUBLIC_DEPENDS Qt5::Widgets")
+                 "PUBLIC_DEPENDS Qt5::Widgets Qt5::Qml"))))
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("src/libs/utils/commandline.cpp"
+                             "src/libs/utils/deviceshell.cpp")
+                (("/bin/sh")
+                 (search-input-file inputs "bin/sh")))
+              (substitute* "src/libs/utils/qtcprocess.cpp"
+                (("/usr/bin/env")
+                 (search-input-file inputs "bin/env")))
+              (substitute* "tests/auto/utils/qtcprocess/tst_qtcprocess.cpp"
+                (("/bin/sh")
+                 (which "sh")))))
+          (add-before 'build 'build-doc
+            (lambda _
+              (invoke "cmake" "--build" "." "--target=docs" "-v")))
+          (add-after 'build-doc 'install-doc
+            (lambda _
+              (invoke "cmake" "--install" "." "--prefix" #$output
+                      "--component=qch_docs")
+              (invoke "cmake" "--install" "." "--prefix" #$output
+                      "--component=html_docs")))
+          (replace 'check
+            ;; Loosely based on .github/workflows/build_cmake.yml.
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                (invoke "xvfb-run"      ;for the 'renderpass' tests
+                        "ctest" "-j" (if parallel-tests?
+                                         (number->string (parallel-job-count))
+                                         "1")
+                        "--label-exclude" "exclude_from_precheck"
+                        "--exclude-regex" "tst_perfdata"))))
+          (add-after 'qt-wrap 'wrap-bin
+            ;; Make a few well-integrated tools readily available.
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/qtcreator")
+                `("PATH" suffix ,(map (lambda (c)
+                                        (dirname (search-input-file inputs c)))
+                                      '("bin/clang-tidy"
+                                        "bin/clazy-standalone"
+                                        "bin/gdb"
+                                        "bin/valgrind")))))))))
+    (native-inputs
+     (list googletest
+           pkg-config
+           python
+           qttools
+           qttranslations
+           vulkan-headers
+           xvfb-run))
+    (inputs
+     (list bash-minimal
+           coreutils-minimal
+           clang
+           clazy
+           elfutils
+           gdb
+           libxkbcommon
+           llvm
+           qt5compat
+           qtdeclarative
+           qtshadertools
+           qtsvg
+           yaml-cpp
+           valgrind
+           vulkan-loader
+           `(,zstd "lib")))
+    (home-page "https://www.qt.io/")
+    (synopsis "Integrated development environment (IDE) for Qt")
+    (description "Qt Creator is an IDE tailored to the needs of Qt developers.
+It includes features such as an advanced code editor, a visual debugger and a
+@acronym{GUI, Graphical User Interface} designer.")
+    (license license:gpl3+)))           ;with the Qt Company GPL Exception 1.0
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
