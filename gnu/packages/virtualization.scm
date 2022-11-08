@@ -64,6 +64,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages debian)
@@ -902,7 +903,7 @@ commodity hardware.")
 (define-public ganeti-instance-guix
   (package
     (name "ganeti-instance-guix")
-    (version "0.7")
+    (version "0.8")
     (home-page "https://github.com/mbakke/ganeti-instance-guix")
     (source (origin
               (method git-fetch)
@@ -910,14 +911,15 @@ commodity hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13wp1g1sdamv63rj5gqllx173rrjc1cr6fv929pim7hqqfqxqni1"))))
+                "0sw9ks3j3y33apdcghjxxjf09ld592z9skaa7bgn9d2lhplzjihr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--sysconfdir=/etc" "--localstatedir=/var")))
     (native-inputs
-     (list autoconf automake))
+     (list autoconf automake jq))
     (inputs
      (list btrfs-progs
+           cryptsetup
            e2fsprogs
            f2fs-tools
            lvm2
