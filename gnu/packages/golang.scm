@@ -10448,7 +10448,7 @@ using shell-style rules for quoting and commenting.")
                           (lambda* (#:key inputs import-path
                                     #:allow-other-keys)
                             (invoke "tar" "xf"
-                                    #$notmuch-fixtures "-C"
+                                    #+notmuch-fixtures "-C"
                                     (string-append "src/" import-path
                                                    "/fixtures")))))))
     (inputs (list notmuch))
