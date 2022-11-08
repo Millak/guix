@@ -872,19 +872,19 @@ editors.")
            qtsvg-5
            sqlite))
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-icon-directory
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "packages/linux/icons.sh"
-                 (("/usr/share")
-                  (string-append out "/share"))))))
-         (add-before 'configure 'gzip-flags
-           (lambda _
-             (substitute* "Makefile.in"
-               (("^GZIP = gzip -f") "GZIP = gzip -f -n")))))))
+     (list
+      #:tests? #f                       ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-icon-directory
+            (lambda _
+              (substitute* "packages/linux/icons.sh"
+                (("/usr/share")
+                 (string-append #$output "/share")))))
+          (add-before 'configure 'gzip-flags
+            (lambda _
+              (substitute* "Makefile.in"
+                (("^GZIP = gzip -f") "GZIP = gzip -f -n")))))))
     (synopsis "Editing platform with special features for scientists")
     (description
      "GNU TeXmacs is a text editing platform which is specialized for
