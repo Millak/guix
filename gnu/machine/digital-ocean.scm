@@ -22,6 +22,7 @@
   #:use-module (gnu machine ssh)
   #:use-module (gnu machine)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services networking)
   #:use-module (gnu system)
   #:use-module (gnu system pam)
@@ -188,11 +189,24 @@ an environment type of 'digital-ocean-environment-type'."
 ;;; System deployment.
 ;;;
 
+;; XXX Copied from (gnu services base)
+(define* (ip+netmask->cidr ip netmask #:optional (family AF_INET))
+  "Return the CIDR notation (a string) for @var{ip} and @var{netmask}, two
+@var{family} address strings, where @var{family} is @code{AF_INET} or
+@code{AF_INET6}."
+  (let* ((netmask (inet-pton family netmask))
+         (bits    (logcount netmask)))
+    (string-append ip "/" (number->string bits))))
+
 ;; The following script was adapted from the guide available at
 ;; <https://wiki.pantherx.org/Installation-digital-ocean/>.
 (define (guix-infect network)
   "Given NETWORK, an alist describing the Droplet's public IPv4 network
 interface, return a Bash script that will install the Guix system."
+  (define cidr
+    (ip+netmask->cidr
+     (assoc-ref network "ip_address")
+     (assoc-ref network "netmask")))
   (format #f "#!/bin/bash
 
 apt-get update
@@ -229,7 +243,7 @@ export GUIX_LOCPATH=\"$HOME/.guix-profile/lib/locale\"
 guix package -i openssl
 cat > /etc/bootstrap-config.scm << EOF
 (use-modules (gnu))
-(use-service-modules networking ssh)
+(use-service-modules base networking ssh)
 
 (operating-system
   (host-name \"gnu-bootstrap\")
@@ -244,10 +258,17 @@ cat > /etc/bootstrap-config.scm << EOF
                         (type \"ext4\"))
                       %base-file-systems))
   (services
-   (append (list (static-networking-service \"eth0\" \"~a\"
-                    #:netmask \"~a\"
-                    #:gateway \"~a\"
-                    #:name-servers '(\"84.200.69.80\" \"84.200.70.40\"))
+   (append (list (service static-networking-service-type
+                          (list (static-networking
+                                 (addresses
+                                  (list (network-address
+                                         (device \"eth0\")
+                                         (value \"~a\"))))
+                                 (routes
+                                  (list (network-route
+                                         (destination \"default\")
+                                         (gateway \"~a\"))))
+                                 (name-servers '(\"84.200.69.80\" \"84.200.70.40\")))))
                  (simple-service 'guile-load-path-in-global-env
                   session-environment-service-type
                   \\`((\"GUILE_LOAD_PATH\"
@@ -268,8 +289,7 @@ mv /etc /old-etc
 mkdir /etc
 cp -r /old-etc/{passwd,group,shadow,gshadow,mtab,guix,bootstrap-config.scm} /etc/
 guix system reconfigure /etc/bootstrap-config.scm"
-          (assoc-ref network "ip_address")
-          (assoc-ref network "netmask")
+          cidr
           (assoc-ref network "gateway")))
 
 (define (machine-wait-until-available machine)
@@ -301,11 +321,19 @@ named DROPLET-NAME."
 configuration for the public IPv4 network described by the alist NETWORK."
   (operating-system
     (inherit (machine-operating-system target))
-    (services (cons* (static-networking-service "eth0"
-                        (assoc-ref network "ip_address")
-                        #:netmask (assoc-ref network "netmask")
-                        #:gateway (assoc-ref network "gateway")
-                        #:name-servers '("84.200.69.80" "84.200.70.40"))
+    (services (cons* (service static-networking-service-type
+                              (list (static-networking
+                                     (addresses
+                                      (list (network-address
+                                             (device "eth0")
+                                             (value (ip+netmask->cidr
+                                                     (assoc-ref network "ip_address")
+                                                     (assoc-ref network "netmask"))))))
+                                     (routes
+                                      (list (network-route
+                                             (destination "default")
+                                             (gateway (assoc-ref network "gateway")))))
+                                     (name-servers '("84.200.69.80" "84.200.70.40")))))
                     (simple-service 'guile-load-path-in-global-env
                                     session-environment-service-type
                                     `(("GUILE_LOAD_PATH"
