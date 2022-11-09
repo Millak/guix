@@ -283,14 +283,14 @@ propagated by default) such as @code{gst-plugins-good} and
   (package
     (inherit webkitgtk)
     (name "webkitgtk")
-    (version "2.38.0")                  ;webkit2gtk5
+    (version "2.38.2")                  ;webkit2gtk5
     (source (origin
               (inherit (package-source webkitgtk))
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "1g8gpi1scbmbcywkfjr2srxdq9r63s94d7v01fdk5qdnldsn7kpr"))))
+               (base32 "0gpy17lwsv5x0xl7p7nf1xqsg8c4yxmd3b4wv6s87xaijs4q5szk"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
