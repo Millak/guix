@@ -4153,6 +4153,33 @@ inspired by Python's Literal String Interpolation (PEP-0498) and
 Docstrings (PEP-0257) and Julia's Triple-Quoted String Literals.")
     (license license:expat)))
 
+(define-public r-glmnetutils
+  (package
+    (name "r-glmnetutils")
+    (version "1.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "glmnetUtils" version))
+              (sha256
+               (base32
+                "1k8ivzjgpkm2a948qxx3wmkhlppbk31qc76spv2pscmp24x0lxyn"))))
+    (properties `((upstream-name . "glmnetUtils")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-glmnet
+           r-matrix))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/hongooi73/glmnetUtils")
+    (synopsis
+     "Streamline the process of fitting elastic net models with glmnet")
+    (description
+     "This package provides a collection of tools to streamline the
+process of fitting elastic net models with @code{glmnet}.  In addition
+to providing a formula interface, it also features a function
+@code{cva.glmnet} to do crossvalidation for both α and λ, as well as
+some utility functions.")
+    (license license:gpl2)))
+
 (define-public r-paletteer
   (package
     (name "r-paletteer")
