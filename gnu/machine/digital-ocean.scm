@@ -197,9 +197,9 @@ interface, return a Bash script that will install the Guix system."
 
 apt-get update
 apt-get install xz-utils -y
-wget https://ftp.gnu.org/gnu/guix/guix-binary-1.0.1.x86_64-linux.tar.xz
+wget -nv https://ci.guix.gnu.org/search/latest/archive?query=spec:tarball+status:success+system:x86_64-linux+guix-binary.tar.xz -O guix-binary-nightly.x86_64-linux.tar.xz
 cd /tmp
-tar --warning=no-timestamp -xf ~~/guix-binary-1.0.1.x86_64-linux.tar.xz
+tar --warning=no-timestamp -xf ~~/guix-binary-nightly.x86_64-linux.tar.xz
 mv var/guix /var/ && mv gnu /
 mkdir -p ~~root/.config/guix
 ln -sf /var/guix/profiles/per-user/root/current-guix ~~root/.config/guix/current
