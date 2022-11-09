@@ -7600,6 +7600,55 @@ tasks.")
 Pore-C concatemers.")
       (license license:gpl3))))
 
+(define-public r-pando
+  (package
+    (name "r-pando")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/quadbiolab/Pando")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0c83anzdrbvg47p9xns2bxpjlx5z328can3jmzilw6rygwp7hyii"))))
+    (properties `((upstream-name . "Pando")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bayestestr
+           r-brms
+           r-foreach
+           r-genomicranges
+           r-ggplot2
+           r-ggpointdensity
+           r-ggraph
+           r-glmnetutils
+           r-iranges
+           r-irlba
+           r-matrix
+           r-motifmatchr
+           r-pals
+           r-patchwork
+           r-seurat
+           r-signac
+           r-sparsematrixstats
+           r-tfbstools
+           r-tidygraph
+           r-tidyverse
+           r-uwot
+           r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/quadbiolab/Pando")
+    (synopsis "Infer regulomes from multi-modal single-cell genomics data")
+    (description
+     "Pando leverages multi-modal single-cell measurements to infer gene
+regulatory networks using a flexible linear model-based framework.  By
+modeling the relationship between TF-binding site pairs with the expression of
+target genes, Pando simultaneously infers gene modules and sets of regulatory
+regions for each transcription factor.")
+    (license license:expat)))
+
 (define-public r-presto
   (let ((commit "052085db9c88aa70a28d11cc58ebc807999bf0ad")
         (revision "0"))
