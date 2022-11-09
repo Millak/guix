@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -272,10 +273,10 @@ cat > /etc/bootstrap-config.scm << EOF
                  (simple-service 'guile-load-path-in-global-env
                   session-environment-service-type
                   \\`((\"GUILE_LOAD_PATH\"
-                     . \"/run/current-system/profile/share/guile/site/2.2\")
+                     . \"/run/current-system/profile/share/guile/site/3.0\")
                     (\"GUILE_LOAD_COMPILED_PATH\"
-                     . ,(string-append \"/run/current-system/profile/lib/guile/2.2/site-ccache:\"
-                                       \"/run/current-system/profile/share/guile/site/2.2\"))))
+                     . ,(string-append \"/run/current-system/profile/lib/guile/3.0/site-ccache:\"
+                                       \"/run/current-system/profile/share/guile/site/3.0\"))))
                  (service openssh-service-type
                           (openssh-configuration
                            (log-level 'debug)
@@ -337,10 +338,10 @@ configuration for the public IPv4 network described by the alist NETWORK."
                     (simple-service 'guile-load-path-in-global-env
                                     session-environment-service-type
                                     `(("GUILE_LOAD_PATH"
-                                       . "/run/current-system/profile/share/guile/site/2.2")
+                                       . "/run/current-system/profile/share/guile/site/3.0")
                                       ("GUILE_LOAD_COMPILED_PATH"
-                                       . ,(string-append "/run/current-system/profile/lib/guile/2.2/site-ccache:"
-                                                         "/run/current-system/profile/share/guile/site/2.2"))))
+                                       . ,(string-append "/run/current-system/profile/lib/guile/3.0/site-ccache:"
+                                                         "/run/current-system/profile/share/guile/site/3.0"))))
                     (operating-system-user-services
                      (machine-operating-system target))))))
 
