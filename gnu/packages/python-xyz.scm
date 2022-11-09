@@ -677,16 +677,14 @@ git integration, command-line support, and a curses-based TUI.")
     (version "0.5.4")
     (source
      (origin
-       (method url-fetch)
-       (uri
-        (pypi-uri "colorful" version))
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/timofurrer/colorful")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "1sh7g2cn1fyz2hzmzs933razdxi2bna9i1lxa790r9pdwba8m146"))))
-    (build-system python-build-system)
-    ;; FIXME: tests cannot be computed:
-    ;; "Can't perform this operation for unregistered loader type"
-    (arguments
-     `(#:tests? #f))
+        (base32 "1fcz5v8b318a3dsdha4c874jsf3wmcw3f25bv2csixclyzacli98"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-coverage python-flake8 python-pytest))
     (propagated-inputs
