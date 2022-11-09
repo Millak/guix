@@ -117,10 +117,13 @@
       #:test-target "utest"
       #:make-flags #~(list
                       (string-append "PREFIX=" #$output)
+                      "PARALLEL=1"
+                      "PARALLEL_NJOBS=1"
                       "OPENBLAS=1"
                       "SCALAPACK=1"
                       (string-append "BLAS_BASE=" #$(this-package-input "openblas"))
                       (string-append "FFTW_BASE=" #$(this-package-input "fftw")))
+      #:parallel-build? #false ;leads to non-deterministic output
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
