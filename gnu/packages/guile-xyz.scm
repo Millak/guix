@@ -661,7 +661,8 @@ Unix-style DSV format and RFC 4180 format.")
                 "0ll63d7202clapg1k4bilbnlmfa4qvpjnsd7chbkka4kxf5klilc"))
               (patches
                (search-patches "guile-fibers-wait-for-io-readiness.patch"
-                               "guile-fibers-epoll-instance-is-dead.patch"))))
+                               "guile-fibers-epoll-instance-is-dead.patch"
+                               "guile-fibers-fd-finalizer-leak.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
