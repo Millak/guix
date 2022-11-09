@@ -4563,6 +4563,31 @@ authentication on behalf of its clients.")
      "This plugin for the Accounts-SSO SignOn daemon handles the OAuth
 1.0 and 2.0 authentication protocols.")
     (license license:lgpl2.1+)))
+
+(define-public clazy
+  (package
+    (name "clazy")
+    (version "1.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/KDE/clazy")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1y0n1jknq566z1rifkgdm1yqb0mw564lp51jidfz7q9w91spijci"))))
+    (build-system cmake-build-system)
+    (native-inputs (list python))
+    (inputs (list clang llvm))
+    (home-page "https://github.com/KDE/clazy/")
+    (synopsis "Qt-oriented static code analyzer")
+    (description "clazy is a compiler plugin which allows @command{clang} to
+understand Qt semantics.  It can emit more than fifty (50) Qt-related compiler
+warnings, ranging from unneeded memory allocations to misuses of the API,
+including @i{fix-its} for automatic refactoring.")
+    (license license:lgpl2.0+)))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
