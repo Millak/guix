@@ -9510,3 +9510,27 @@ suggestions from various sources, including:
 @end itemize\n
 This tool supports checking Kconfig options and kernel cmdline parameters.")
     (license license:gpl3)))
+
+(define-public edac-utils
+  (package
+    (name "edac-utils")
+    (version "0.18")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/grondo/edac-utils.git")
+                     (commit version)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "04j686m58wsnyy5di7rz0sw9jahlm4ziwxjmgs31pjb87vzw3xgp"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list perl))
+    (inputs
+     (list sysfsutils))
+    (synopsis "Memory error detection and correction userspace helpers")
+    (description "This package provides userspace helpers for memory
+error detection and correction (EDAC).")
+    (home-page "https://github.com/grondo/edac-utils")
+    (license license:gpl2+)))
