@@ -8583,6 +8583,40 @@ functions for arrays and vectors.  Originally from Plump.")
 (define-public ecl-array-utils
   (sbcl-package->ecl-package sbcl-array-utils))
 
+(define-public sbcl-lass
+  (let ((commit "a7a4452f6a670b8fb01a73d3007030d16bd1ec2c")
+        (revision "0"))
+    (package
+      (name "sbcl-lass")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/Shinmera/LASS")
+           (commit commit)))
+         (file-name (git-file-name "cl-lass" version))
+         (sha256
+          (base32 "06wds1qzj8s862pmmza1427n7gdpplqplxqnxyqkrr0hgxdl4xbf"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cl-base64 sbcl-trivial-indent sbcl-trivial-mimes))
+      (synopsis "LASS (Lisp Augmented Style Sheets) compiles Lisp to CSS")
+      (description
+       "With lispy syntax, shortcuts, and improvements, LASS aims to help you
+out in writing CSS quick and easy.  LASS was largely inspired by SASS.  LASS
+supports two modes, one being directly in your lisp code, the other in pure
+LASS files.")
+      (home-page "https://shinmera.github.io/LASS/")
+      (license license:zlib))))
+
+(define-public cl-lass
+  (sbcl-package->cl-source-package sbcl-lass))
+
+(define-public ecl-lass
+  (sbcl-package->ecl-package sbcl-lass))
+
 (define-public sbcl-plump
   (let ((commit "3584275f0be9d06c0c51b5c08f89005deafc4ada")
         (revision "2"))
