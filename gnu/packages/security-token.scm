@@ -904,17 +904,16 @@ phone is required.")
     (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append
-               "-DPKG_CONFIG_EXECUTABLE="
-               (search-input-file %build-inputs
-                                  (string-append
-                                   "/bin/" ,(pkg-config-for-target))))
-             (string-append "-DUDEV_RULES_DIR=" %output "/lib/udev/rules.d"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; regress tests enabled only for debug builds
-         (delete 'check))))
+     (list
+       #:configure-flags
+       #~(list (string-append
+                 "-DPKG_CONFIG_EXECUTABLE="
+                 (search-input-file %build-inputs
+                                    (string-append
+                                      "/bin/" #$(pkg-config-for-target))))
+               (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))
+       ;; regress tests enabled only for debug builds
+       #:tests? #f))
     (synopsis "Library functionality and command-line tools for FIDO devices")
     (description "libfido2 provides library functionality and command-line
 tools to communicate with a FIDO device over USB, and to verify attestation
