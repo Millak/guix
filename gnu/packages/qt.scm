@@ -1878,6 +1878,27 @@ that helps in Qt development.")
     ;; LICENSES/Qt-GPL-exception-1.0.txt).
     (license (list license:gpl3))))
 
+(define-public qttranslations
+  (package
+    (name "qttranslations")
+    (version "6.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (qt-urls name version))
+              (sha256
+               (base32
+                "15yvvxw1vngnjlly6cady05ljamg01qiaqn2vh0xkph855gdbgfp"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f))
+    (native-inputs (list qtbase qttools))
+    (home-page (package-home-page qtbase))
+    (synopsis "Qt translation catalogs")
+    (description "This package contains the translations for Qt contributed by
+the Qt community.")
+    ;; GPL 3 only with Qt GPL exception 1.0 (see:
+    ;; LICENSES/Qt-GPL-exception-1.0.txt).
+    (license (list license:gpl3))))
+
 (define-public qtscript
   (package (inherit qtsvg-5)
     (name "qtscript")
