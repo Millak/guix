@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -391,7 +392,7 @@ automatically.")
 (define-public scdoc
   (package
    (name "scdoc")
-   (version "1.10.1")
+   (version "1.11.2")
    (source
     (origin
      (method git-fetch)
@@ -400,7 +401,7 @@ automatically.")
            (commit version)))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1xmh6fnp378xmiycslg4migs1vx7yly4i1cf2vbbnwim9c9g0aw7"))))
+      (base32 "07c2vmdgqifbynm19zjnrk7h102pzrriv73izmx8pmd7b3xl5mfq"))))
    (build-system gnu-build-system)
    (arguments
     `(#:make-flags
