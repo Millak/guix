@@ -101,16 +101,16 @@
 (define-public bart
   (package
     (name "bart")
-    (version "0.7.00")
+    (version "0.8.00")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/mrirecon/bart")
-             (commit "d1b0e576c3f759089915565d5bf57832acf7b03e")))
+             (commit "eacc67b95cf128487ecc48f0e6541ea4dca08818")))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "159rj3agr9pb9lg38b56rnw3d8wcbkmb2n718z26zpy4c6a6d9rn"))))
+        (base32 "05lcf7c3g7ms5h82bw1mi4kzkdv5wpqi1zrfhqfkgbcpd3irj6aq"))))
     (build-system gnu-build-system)
     (arguments
      (list
