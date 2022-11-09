@@ -1455,3 +1455,43 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public xkcdpass
+  (package
+    (name "xkcdpass")
+    (version "1.19.3")
+    (home-page "https://github.com/redacted/XKCD-password-generator")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "xkcdpass-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xfrmx9k2vinlagv476rfcfdp41aix1ldy6qnzzx26n985gcyk7p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-manpage
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file
+              "xkcdpass.1"
+              (string-append (assoc-ref outputs "out") "/share/man/man1")))))))
+    (synopsis
+     "Generate secure multiword passwords/passphrases, inspired by XKCD")
+    (description
+     "This package provides a flexible and scriptable password generator which
+generates strong passphrases, inspired by
+@url{https://xkcd.com/936/,XKCD 936}.")
+    (license (list license:bsd-3 ;code
+                   license:cc0 ;spanish, eff_large_de, french word lists
+                   license:cc-by-sa3.0 ;finnish, italian word list
+                   license:cc-by-sa4.0 ;norwegian word list
+                   license:eupl1.1 ;finnish word list
+                   license:gpl2 ;portuguese word list
+                   license:gpl3 ;ger-anix word list
+                   license:lgpl2.0 ;finnish word list
+                   license:lgpl2.1 ;portuguese word list
+                   license:mpl1.1)))) ;portuguese word list
