@@ -783,28 +783,17 @@ that best match text queries.")
   (package
     (name "python-mdurl")
     (version "0.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "mdurl" version))
-              (sha256
-               (base32
-                "1fn1hy35h9grggwqax90zcb52inlfxrxsm27vlqqz8zfyllkshdv"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:tests? #f                       ;pypi source does not contain tests
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _ (invoke "flit" "build")))
-          (replace 'install
-            (lambda _
-              (for-each
-               (lambda (wheel)
-                 (invoke "python" "-m" "pip" "install"
-                         wheel (string-append "--prefix=" #$output)))
-               (find-files "dist" "\\.whl$")))))))
-    (native-inputs (list python-flit))
+    (source
+     (origin
+       (method git-fetch)   ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/executablebooks/mdurl")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0csc777q42jzv4zgdzxmwp8xqlb92ws1jvj09m2smh4klw67q5f3"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit python-pytest))
     (home-page "https://github.com/executablebooks/mdurl")
     (synopsis "Markdown URL utilities")
     (description
