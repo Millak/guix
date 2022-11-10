@@ -406,6 +406,12 @@ from protobuf specification files.")
         (base32
          "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
     (build-system python-build-system)
+    (inputs (list protobuf))
+    (arguments
+     `(;; Favor C++ implementation from protobuf over the native Python
+       ;; implementation. The additional dependency yields significant
+       ;; performance improvements for some workloads.
+       #:configure-flags '("--cpp_implementation")))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
