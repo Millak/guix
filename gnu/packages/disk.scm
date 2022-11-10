@@ -267,6 +267,7 @@ tmpfs/ramfs filesystems.")
            perl
            python-wrapper
            util-linux))
+    (outputs '("out" "debug"))
     (home-page "https://www.gnu.org/software/parted/")
     (synopsis "Disk partition editor")
     (description
