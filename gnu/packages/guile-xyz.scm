@@ -1458,7 +1458,7 @@ microblogging service.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "8a9913843170dc7e46bbb1c93d7c41241fa6d649"))
+                "1h9q5plmnc1zd5ikz2x538v4a8lmriai6yyfv53bk5vjls7mrf3r"))
               (modules '((guix build utils)))))
     (build-system gnu-build-system)
     (arguments
