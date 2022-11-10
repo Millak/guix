@@ -21,6 +21,7 @@
   #:use-module (guix store)
   #:use-module (guix monads)
   #:use-module (guix gexp)
+  #:use-module ((guix grafts) #:select (%graft-with-utf8-locale?))
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (guix build-system trivial)
@@ -48,6 +49,9 @@
 
 ;; Globally disable grafts because they can trigger early builds.
 (%graft? #f)
+
+;; When grafting, do not add dependency on 'glibc-utf8-locales'.
+(%graft-with-utf8-locale? #f)
 
 ;; For white-box testing.
 (define (gexp-inputs x)

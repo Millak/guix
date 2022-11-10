@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -34,6 +34,9 @@
 
 (define %store
   (open-connection-for-tests))
+
+;; When grafting, do not add dependency on 'glibc-utf8-locales'.
+(%graft-with-utf8-locale? #f)
 
 (define (bootstrap-binary name)
   (let ((bin (search-bootstrap-binary name (%current-system))))

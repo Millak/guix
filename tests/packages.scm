@@ -75,6 +75,9 @@
 ;; can trigger builds early.)
 (%graft? #f)
 
+;; When grafting, do not add dependency on 'glibc-utf8-locales'.
+(%graft-with-utf8-locale? #f)
+
 
 (test-begin "packages")
 
