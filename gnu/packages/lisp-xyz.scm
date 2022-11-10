@@ -22637,6 +22637,55 @@ JSON handling.  Load the parser backend you prefer!
 (define-public ecl-nactivitypub
   (sbcl-package->ecl-package sbcl-nactivitypub))
 
+(define-public sbcl-nsymbols
+  (package
+   (name "sbcl-nsymbols")
+   (version "0.2.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/atlas-engineer/nsymbols")
+           (commit version)))
+     (file-name (git-file-name "cl-nsymbols" version))
+     (sha256
+      (base32 "1nks5v2l6vf0kwiyv3r2lickp3xhyi0ck33y1l08crmwhn097hpd"))))
+   (build-system asdf-build-system/sbcl)
+   (native-inputs (list sbcl-lisp-unit2))
+   (synopsis
+    "Functions to search, filter, and group symbols in chosen packages")
+   (home-page "https://github.com/atlas-engineer/nsymbols")
+   (description "Nsymbols extends the regular package API of ANSI CL with more
+operations, allowing one to list:
+
+@itemize
+@item @code{package-symbols}.
+@item @code{package-variables}.
+@item @code{package-functions}.
+@item @code{package-generic-functions}.
+@item @code{package-macros}.
+@item @code{package-classes}.
+@item @code{package-structures}.
+@item And other symbol types, given @code{define-symbol-type} for those.
+@end itemize
+
+Nsymbols can also find symbols by their name/matching symbol with
+@code{resolve-symbol}.  All these operations are aware of symbol
+visibility in the given packages, due to a @code{symbol-visibility}
+function.
+
+An additional @code{nsymbols/star} system has a set of functions
+mirroring the regular Nsymbols ones, but using @code{closer-mop} to
+provide better results and returning structured data instead of
+symbols.")
+   (license license:bsd-3)))
+
+(define-public cl-nsymbols
+  (sbcl-package->cl-source-package sbcl-nsymbols))
+
+(define-public ecl-nsymbols
+  (sbcl-package->ecl-package sbcl-nsymbols))
+
 (define-public sbcl-utils-kt
   (let ((commit "4adfe2889036ab5ffdd3cc2182ca2cc692bf11ff"))
     (package
