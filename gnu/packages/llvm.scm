@@ -674,6 +674,29 @@ of programming tools as well as libraries with equivalent functionality.")
      `(("python" ,python-wrapper)
        ("perl"   ,perl)))))
 
+(define-public clang-runtime-15
+  (let ((template (clang-runtime-from-llvm llvm-15)))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:phases phases '(@ (guix build cmake-build-system) %standard-phases))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'change-directory
+                (lambda _
+                  (chdir "compiler-rt")))
+              (add-after 'install 'delete-static-libraries
+                ;; Reduce size from 33 MiB to 7.4 MiB.
+                (lambda _
+                  (for-each delete-file
+                            (find-files #$output "\\.a(\\.syms)?$"))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs template)
+         (prepend gcc-12)))             ;libfuzzer fails to build with GCC 11
+      (inputs
+       (modify-inputs (package-inputs template)
+         (append libffi))))))
+
 (define-public clang-runtime-14
   (let ((template (clang-runtime-from-llvm llvm-14)))
     (package
