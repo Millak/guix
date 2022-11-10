@@ -1866,9 +1866,22 @@ that helps in Qt development.")))
      (list
       ;; The build system attempts to fetch online resources and fails when
       ;; building the test suite.
-      #:configure-flags #~(list "-DQT_BUILD_TESTS=OFF")))
+      #:configure-flags #~(list "-DQT_BUILD_TESTS=OFF")
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'install 'sanity-check
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       ;; This validation exists to validate that the dynamic
+                       ;; library for Clang works as intended; there was
+                       ;; originally problems due to left-overs patching the
+                       ;; value of BUILD_SHARED_LIBS in CLANG-FROM-LLVM that
+                       ;; would cause the following error: "CommandLine Error:
+                       ;; Option 'filter' registered more than once!"
+                       (invoke/quiet (search-input-file outputs "bin/qdoc")
+                                     "--help"))))))
     (native-inputs (list perl qtdeclarative vulkan-headers))
-    (inputs (list libxkbcommon mesa qtbase))
+    ;; Use clang-15, which is built using as a single shared library, which is
+    ;; what the build system of qttools expects.
+    (inputs (list clang-15 libxkbcommon mesa qtbase))
     (home-page (package-home-page qtbase))
     (synopsis "Qt Tools and Designer modules")
     (description "The Qt Tools module provides a set of applications to browse
