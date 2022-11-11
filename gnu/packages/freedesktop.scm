@@ -2234,14 +2234,7 @@ Its features include:
     (arguments
      (list
       #:configure-flags
-      '(list (string-append "--with-logo="
-                            "/etc/plymouth/logo.png")
-             (string-append "--with-background-color="
-                            "0x00ff00")
-             (string-append "--with-background-start-color-stop="
-                            "0xff0000")
-             (string-append "--with-background-end-color-stop="
-                            "0x0000ff")
+      '(list "--with-logo=/var/run/plymouth/logo.png"
              "--localstatedir=/var"
              "--with-boot-tty=/dev/console"
              "--without-system-root-install"
