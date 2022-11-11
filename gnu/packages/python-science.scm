@@ -348,6 +348,26 @@ manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
 
+(define-public python-tspex
+  (package
+    (name "python-tspex")
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tspex" version))
+              (sha256
+               (base32
+                "0x64ki1nzhms2nb8xpng92bzh5chs850dvapr93pkg05rk22m6mv"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas python-xlrd))
+    (home-page "https://apcamargo.github.io/tspex/")
+    (synopsis "Calculate tissue-specificity metrics for gene expression")
+    (description
+     "This package provides a Python package for calculating
+tissue-specificity metrics for gene expression.")
+    (license license:gpl3+)))
+
 (define-public python-pandas
   (package
     (name "python-pandas")
