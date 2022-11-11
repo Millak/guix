@@ -78,6 +78,7 @@
             lookup-updater
 
             download-tarball
+            package-archive-type
             package-latest-release
             package-latest-release*
             package-update
@@ -430,6 +431,19 @@ values: the item from LST1 and the item from LST2 that match PRED."
       (()
        (values #f #f)))))
 
+(define (package-archive-type package)
+  "If PACKAGE's source is a tarball or zip archive, return its archive type--a
+string such as \"xz\".  Otherwise return #f."
+  (match (and=> (package-source package) origin-actual-file-name)
+    (#f #f)
+    (file
+     (let ((extension (file-extension file)))
+       ;; FILE might be "example-1.2-checkout", in which case we want to
+       ;; ignore the extension.
+       (and (or (string-contains extension "z")
+                (string-contains extension "tar"))
+            extension)))))
+
 (define* (package-update/url-fetch store package source
                                    #:key key-download)
   "Return the version, tarball, and SOURCE, to update PACKAGE to
@@ -437,17 +451,7 @@ SOURCE, an <upstream-source>."
   (match source
     (($ <upstream-source> _ version urls signature-urls)
      (let*-values (((archive-type)
-                    (match (and=> (package-source package) origin-uri)
-                      ((? string? uri)
-                       (let ((type (or (file-extension (basename uri)) "")))
-                         ;; Sometimes we have URLs such as
-                         ;; "https://github.com/…/tarball/v0.1", in which case
-                         ;; we must not consider "1" as the extension.
-                         (and (or (string-contains type "z")
-                                  (string=? type "tar"))
-                              type)))
-                      (_
-                       "gz")))
+                    (package-archive-type package))
                    ((url signature-url)
                     ;; Try to find a URL that matches ARCHIVE-TYPE.
                     (find2 (lambda (url sig-url)
