@@ -16700,6 +16700,15 @@ running tests easier.")
        (sha256
         (base32 "0pjk6686ss50s9ws014if9mnixsf9m53z1d7bvkbx09lq3jqa7ry"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "--batch"
+                             "-l" "org-transclusion.el"
+                             "-l" "test/unit-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs
+     (list emacs-ert-runner))
     (home-page "https://nobiot.github.io/org-transclusion/")
     (synopsis "Enable transclusion with Org Mode")
     (description "Org-transclusion lets you insert a copy of text content via
