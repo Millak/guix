@@ -2232,8 +2232,9 @@ Its features include:
          "11nfgw8yzmdbnbmyd1zfvhj4qh19w1nw0nraai08628x6mzjbbpc"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-logo="
+     (list
+      #:configure-flags
+      '(list (string-append "--with-logo="
                             "/etc/plymouth/logo.png")
              (string-append "--with-background-color="
                             "0x00ff00")
@@ -2250,23 +2251,23 @@ Its features include:
              ;; Disable GTK to dramatically reduce the closure
              ;; size from ~800 MiB to a little more than 200 MiB
              "--disable-gtk")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             (substitute* "src/main.c"
-               (("__DATE__") "\"guix\""))))
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "docs/Makefile.in"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             (setenv "XML_CATALOG_FILES"
-                     (string-append (assoc-ref inputs "docbook-xml")
-                                    "/xml/dtd/docbook/catalog.xml")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              (substitute* "src/main.c"
+                (("__DATE__") "\"guix\""))))
+          (add-before 'configure 'fix-docbook
+            (lambda _
+              (substitute* "docs/Makefile.in"
+                (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
+                 (string-append #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version (this-package-native-input "docbook-xsl"))
+                                "/manpages/docbook.xsl")))
+              (setenv "XML_CATALOG_FILES"
+                      (string-append #$(this-package-native-input "docbook-xml")
+                                     "/xml/dtd/docbook/catalog.xml")))))))
     (inputs
      (list glib pango libdrm libpng eudev))
     (native-inputs
