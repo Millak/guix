@@ -39999,6 +39999,39 @@ This, as you can see, is a fairly sophisticated way to say hello.
 info on actions.
 @end deftp
 
+@cindex configuration file, of Shepherd services
+@deffn {Scheme Procedure} shepherd-configuration-action
+Return a @code{configuration} action to display @var{file}, which should
+be the name of the service's configuration file.
+
+It can be useful to equip services with that action.  For example, the
+service for the Tor anonymous router (@pxref{Networking Services,
+@code{tor-service-type}}) is defined roughly like this:
+
+@lisp
+(let ((torrc (plain-file "torrc" @dots{})))
+  (shepherd-service
+    (provision '(tor))
+    (requirement '(user-processes loopback syslogd))
+
+    (start #~(make-forkexec-constructor
+              (list #$(file-append tor "/bin/tor") "-f" #$torrc)
+              #:user "tor" #:group "tor"))
+    (stop #~(make-kill-destructor))
+    (actions (list (shepherd-configuration-action torrc)))
+    (documentation "Run the Tor anonymous network overlay.")))
+@end lisp
+
+Thanks to this action, administrators can inspect the configuration file
+passed to @command{tor} with this shell command:
+
+@example
+cat $(herd configuration tor)
+@end example
+
+This can come in as a handy debugging tool!
+@end deffn
+
 @defvr {Scheme Variable} shepherd-root-service-type
 The service type for the Shepherd ``root service''---i.e., PID@tie{}1.
 
