@@ -403,7 +403,7 @@ training, HMM clustering, HMM mixtures.")
      (list clang-11
            llvm-11
            pkg-config
-           protobuf-c
+           protobuf-c-for-aiscm
            autoconf
            automake
            gettext-minimal
