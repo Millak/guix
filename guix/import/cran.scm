@@ -408,6 +408,7 @@ empty list when the FIELD cannot be found."
     ("java" "openjdk")
     ("fftw3" "fftw")
     ("tcl/tk" "tcl")
+    ("booktabs" "texlive-booktabs")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
