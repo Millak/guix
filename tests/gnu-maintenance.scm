@@ -47,7 +47,8 @@
                 ("guile" "guile-2.0.11.tar.gz.sig")
                 ("mit-scheme" "mit-scheme-9.2-i386.tar.gz")
                 ("mit-scheme" "mit-scheme-9.2-doc-pdf.tar.gz")
-                ("gnutls" "gnutls-3.2.18-w32.zip")))))
+                ("gnutls" "gnutls-3.2.18-w32.zip")
+                ("valgrind" "valgrind-3.20.0.RC1.tar.bz2")))))
 
 (test-assert "tarball->version"
   (let ((tarball->version (@@ (guix gnu-maintenance) tarball->version)))
