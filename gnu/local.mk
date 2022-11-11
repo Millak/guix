@@ -55,6 +55,7 @@
 # Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 # Copyright © 2022 Alex Griffin <a@ajgrf.com>
 # Copyright © 2022 ( <paren@disroot.org>
+# Copyright © 2022 jgart <jgart@dismail.de>
 #
 # This file is part of GNU Guix.
 #
@@ -1895,7 +1896,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/texlive-hyph-utf8-no-byebug.patch	\
   %D%/packages/patches/thefuck-test-environ.patch		\
   %D%/packages/patches/tidy-CVE-2015-5522+5523.patch		\
-  %D%/packages/patches/timescaledb-flaky-test.patch		\
   %D%/packages/patches/tinyxml-use-stl.patch			\
   %D%/packages/patches/tipp10-disable-downloader.patch		\
   %D%/packages/patches/tipp10-fix-compiling.patch		\
