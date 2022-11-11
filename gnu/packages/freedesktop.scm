@@ -2271,11 +2271,11 @@ Its features include:
     (inputs
      (list glib pango libdrm libpng eudev))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("libxslt" ,libxslt)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)))
+     (list gettext-minimal
+           pkg-config
+           libxslt
+           docbook-xsl
+           docbook-xml))
     (synopsis "Graphical boot animation (splash) and logger")
     (home-page "https://www.freedesktop.org/wiki/Software/Plymouth/")
     (description
