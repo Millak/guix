@@ -2221,7 +2221,7 @@ Its features include:
 (define-public plymouth
   (package
     (name "plymouth")
-    (version "0.9.5")
+    (version "22.02.122")
     (source
      (origin
        (method url-fetch)
@@ -2229,7 +2229,7 @@ Its features include:
                            "plymouth/releases/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "11nfgw8yzmdbnbmyd1zfvhj4qh19w1nw0nraai08628x6mzjbbpc"))))
+         "1sysx8s7w870iawk5qlaq44x4cfqfinasiy4d3l3q0r14925218h"))))
     (build-system gnu-build-system)
     (arguments
      (list
