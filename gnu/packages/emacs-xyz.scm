@@ -17100,6 +17100,27 @@ available key bindings that follow C-x (or as many as space allows given your
 settings).")
     (license license:gpl3+)))
 
+(define-public emacs-free-keys
+  (package
+    (name "emacs-free-keys")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/Fuco1/free-keys")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0xgifa7s9n882f9ymyyz9gc11xfbj3vfpnxiq1fqfm5hmwx9pwbc"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/Fuco1/free-keys")
+    (synopsis "Show free keybindings for modkeys or prefixes in Emacs.")
+    (description
+     "Free-keys shows available key bindings in the current Emacs buffer.")
+    (license license:gpl3+)))
+
 (define-public emacs-hercules
   (package
     (name "emacs-hercules")
