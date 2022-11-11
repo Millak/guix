@@ -25584,6 +25584,17 @@ also be usable with other GSSAPI mechanisms.")
     (build-system python-build-system)
     (native-inputs
      (list python-mock git))
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         ;; Tests use git submodule commands over the file transport, which
+         ;; has been disabled in git, see CVE-2022-39253. Enable these
+         ;; commands to allow checks to succeed.
+         (add-before 'check 'allow-git-submodule-add
+           (lambda _
+             (setenv "HOME" "/tmp")
+             (invoke "git" "config" "--global"
+                     "protocol.file.allow" "always"))))))
     (home-page "https://github.com/mgedmin/check-manifest")
     (synopsis "Check MANIFEST.in in a Python source package for completeness")
     (description "Python package can include a MANIFEST.in file to help with
