@@ -149,10 +149,10 @@ also use Valgrind to build new tools.")
                       1))))))))))
    (properties '())))
 
-(define-public valgrind-3.18
+(define-public valgrind-3.20
   (package
     (inherit valgrind/interactive)
-    (version "3.18.1")
+    (version "3.20.0")
     (source (origin
               (inherit (package-source valgrind/interactive))
               (uri (list (string-append "https://sourceware.org/pub/valgrind"
@@ -161,4 +161,6 @@ also use Valgrind to build new tools.")
                                         "/valgrind-" version ".tar.bz2")))
               (sha256
                (base32
-                "1xgph509i6adv9w2glviw3xrmlz0dssg8992hbvxsbkp7ahrm180"))))))
+                "1ipkp6yi202pml2r0qwflysmq86dkqd8iyi1y51d6y70vcqw0dl5"))
+              (patches (search-patches
+                        "valgrind-fix-default-debuginfo-path.patch"))))))
