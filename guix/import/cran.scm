@@ -390,9 +390,12 @@ empty list when the FIELD cannot be found."
 ;; The field for system dependencies is often abused to specify non-package
 ;; dependencies (such as c++11).  This list is used to ignore them.
 (define invalid-packages
-  (list "c++11"
+  (list "c++"
+        "c++11"
         "c++14"
+        "c++17"
         "getopt::long"
+        "posix.1-2001"
         "linux"
         "none"
         "windows"
