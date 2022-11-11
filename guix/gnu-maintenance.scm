@@ -596,6 +596,12 @@ ftp.gnu.org.
 
 This method does not rely on FTP access at all; instead, it browses the file
 list available from %GNU-FILE-LIST-URI over HTTP(S)."
+  (define archive-type
+    (package-archive-type package))
+
+  (define (better-tarball? tarball1 tarball2)
+    (string=? (file-extension tarball1) archive-type))
+
   (let-values (((server directory)
                 (ftp-server/directory package))
                ((name)
@@ -626,7 +632,9 @@ list available from %GNU-FILE-LIST-URI over HTTP(S)."
                          (string-append "mirror://gnu/"
                                         (string-drop file
                                                      (string-length "/gnu/"))))
-                       tarballs))
+                       ;; Sort so that the tarball with the same compression
+                       ;; format as currently used in PACKAGE comes first.
+                       (sort tarballs better-tarball?)))
             (signature-urls (map (cut string-append <> ".sig") urls)))))
         (()
          #f)))))
