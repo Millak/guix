@@ -17654,6 +17654,17 @@ Service xorg-server has been stopped.
 Service xorg-server has been started.
 @end example
 
+@cindex configuration, action for shepherd services
+@cindex configuration file, of a shepherd service
+For some services, @command{herd configuration} returns the name of the
+service's configuration file, which can be handy to inspect its
+configuration:
+
+@example
+# herd configuration sshd
+/gnu/store/@dots{}-sshd_config
+@end example
+
 The following sections document the available services, starting with
 the core services, that may be used in an @code{operating-system}
 declaration.

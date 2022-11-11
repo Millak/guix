@@ -652,7 +652,8 @@ will keep the system clock synchronized with that of the given servers.")
                      ;; while running, leading shepherd to disable it.  To
                      ;; prevent spamming stderr, redirect output to logfile.
                      #:log-file "/var/log/ntpd.log"))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action ntpd.conf)))))))
 
 (define (openntpd-service-activation config)
   "Return the activation gexp for CONFIG."
@@ -1032,6 +1033,7 @@ HiddenServicePort ~a ~a~%"
                           (list #$tor "-f" #$torrc)
                           #:user "tor" #:group "tor"))
                 (stop #~(make-kill-destructor))
+                (actions (list (shepherd-configuration-action torrc)))
                 (documentation "Run the Tor anonymous network overlay."))))))))
 
 (define (tor-activation config)

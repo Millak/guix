@@ -273,7 +273,8 @@
                      #:environment-variables
                      (list (string-append "UPOWER_CONF_FILE_NAME="
                                           #$config))))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action config)))))))
 
 (define upower-service-type
   (let ((upower-package (compose list upower-configuration-upower)))
@@ -1168,6 +1169,9 @@ seats.)"
 
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
+  (define config-file
+    (elogind-configuration-file config))
+
   (list (shepherd-service
          (requirement '(dbus-system))
          (provision '(elogind))
@@ -1176,9 +1180,9 @@ seats.)"
                                         "/libexec/elogind/elogind"))
                    #:environment-variables
                    (list (string-append "ELOGIND_CONF_FILE="
-                                        #$(elogind-configuration-file
-                                           config)))))
-         (stop #~(make-kill-destructor)))))
+                                        #$config-file))))
+         (stop #~(make-kill-destructor))
+         (actions (list (shepherd-configuration-action config-file))))))
 
 (define elogind-service-type
   (service-type (name 'elogind)

@@ -1327,10 +1327,11 @@ the tty to run, among other things."
              (loop)))))))
 
 (define (nscd-actions nscd config)
-  "Return Shepherd actions for NSCD."
+  "Return Shepherd actions for NSCD using CONFIG its config file."
   ;; Make this functionality available as actions because that's a simple way
   ;; to run the right 'nscd' binary with the right config file.
-  (list (shepherd-action
+  (list (shepherd-configuration-action config)
+        (shepherd-action
          (name 'statistics)
          (documentation "Display statistics about nscd usage.")
          (procedure (nscd-action-procedure nscd config "--statistics")))

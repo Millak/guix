@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2018, 2019 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -1083,6 +1083,9 @@ argument.")))
                      (gdm-configuration-allow-empty-passwords? config))))
 
 (define (gdm-shepherd-service config)
+  (define config-file
+    (gdm-configuration-file config))
+
   (list (shepherd-service
          (documentation "Xorg display server (GDM)")
          (provision '(xorg-server))
@@ -1095,9 +1098,7 @@ argument.")))
                      (list #$@(if (gdm-configuration-auto-suspend? config)
                                   #~()
                                   #~("DCONF_PROFILE=/etc/dconf/profile/gdm"))
-                           (string-append
-                            "GDM_CUSTOM_CONF="
-                            #$(gdm-configuration-file config))
+                           (string-append "GDM_CUSTOM_CONF=" #$config-file)
                            (string-append
                             "GDM_DBUS_DAEMON="
                             #$(gdm-configuration-dbus-daemon config))
@@ -1129,6 +1130,7 @@ argument.")))
                             "GDM_WAYLAND_SESSION="
                             #$(gdm-configuration-wayland-session config))))))
          (stop #~(make-kill-destructor))
+         (actions (list (shepherd-configuration-action config-file)))
          (respawn? #t))))
 
 (define gdm-polkit-rules

@@ -182,7 +182,8 @@ database {
            (stop #~(if (and (defined? 'make-inetd-destructor)
                             #$(= 1 (length interfaces))) ;XXX
                        (make-inetd-destructor)
-                       (make-kill-destructor)))))))
+                       (make-kill-destructor)))
+           (actions (list (shepherd-configuration-action dicod.conf)))))))
 
 (define dicod-service-type
   (service-type

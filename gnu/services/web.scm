@@ -790,13 +790,11 @@ of index files."
                 (nginx file run-directory shepherd-requirement)
    (let* ((nginx-binary (file-append nginx "/sbin/nginx"))
           (pid-file (in-vicinity run-directory "pid"))
+          (config-file (or file (default-nginx-config config)))
           (nginx-action
            (lambda args
              #~(lambda _
-                 (invoke #$nginx-binary "-c"
-                         #$(or file
-                               (default-nginx-config config))
-                         #$@args)
+                 (invoke #$nginx-binary "-c" #$config-file #$@args)
                  (match '#$args
                    (("-s" . _) #f)
                    (_
@@ -817,6 +815,7 @@ of index files."
             (stop (nginx-action "-s" "stop"))
             (actions
               (list
+               (shepherd-configuration-action config-file)
                (shepherd-action
                  (name 'reload)
                  (documentation "Reload nginx configuration file and restart worker processes.

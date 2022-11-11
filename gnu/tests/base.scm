@@ -424,6 +424,12 @@ info --version")
               (x
                (pk 'failure x #f))))
 
+          (test-assert "nscd configuration action"
+            (marionette-eval '(with-shepherd-action 'nscd ('configuration)
+                                                    results
+                                (file-exists? (car results)))
+                             marionette))
+
           (test-equal "nscd invalidate action"
             '(#t)                                 ;one value, #t
             (marionette-eval '(with-shepherd-action 'nscd ('invalidate "hosts")
