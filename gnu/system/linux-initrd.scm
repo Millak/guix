@@ -172,6 +172,7 @@ MODULES and taken from LINUX."
                       #:key
                       (linux linux-libre)
                       (linux-modules '())
+                      (pre-mount #t)
                       (mapped-devices '())
                       (keyboard-layout #f)
                       (helper-packages '())
@@ -183,7 +184,8 @@ modules taken from LINUX.  FILE-SYSTEMS is a list of file-systems to be
 mounted by the initrd, possibly in addition to the root file system specified
 on the kernel command line via 'root'.  LINUX-MODULES is a list of kernel
 modules to be loaded at boot time. MAPPED-DEVICES is a list of device
-mappings to realize before FILE-SYSTEMS are mounted.
+mappings to realize before FILE-SYSTEMS are mounted. PRE-MOUNT is a
+G-expression to evaluate before realizing MAPPED-DEVICES.
 HELPER-PACKAGES is a list of packages to be copied in the initrd. It may include
 e2fsck/static or other packages needed by the initrd to check root partition.
 
@@ -255,7 +257,8 @@ upon error."
                         (map spec->file-system
                              '#$(map file-system->spec file-systems))
                         #:pre-mount (lambda ()
-                                      (and #$@device-mapping-commands
+                                      (and #$pre-mount
+                                           #$@device-mapping-commands
                                            #$@file-system-scan-commands))
                         #:linux-modules '#$linux-modules
                         #:linux-module-directory '#$kodir
