@@ -179,19 +179,31 @@ sub_commands_mans =				\
   $(srcdir)/%D%/guix-archive.1			\
   $(srcdir)/%D%/guix-build.1			\
   $(srcdir)/%D%/guix-challenge.1		\
+  $(srcdir)/%D%/guix-container.1		\
+  $(srcdir)/%D%/guix-copy.1			\
   $(srcdir)/%D%/guix-deploy.1			\
+  $(srcdir)/%D%/guix-describe.1			\
   $(srcdir)/%D%/guix-download.1			\
   $(srcdir)/%D%/guix-edit.1			\
   $(srcdir)/%D%/guix-environment.1		\
   $(srcdir)/%D%/guix-gc.1			\
+  $(srcdir)/%D%/guix-git.1			\
+  $(srcdir)/%D%/guix-graph.1			\
   $(srcdir)/%D%/guix-hash.1			\
+  $(srcdir)/%D%/guix-home.1			\
   $(srcdir)/%D%/guix-import.1			\
   $(srcdir)/%D%/guix-lint.1			\
+  $(srcdir)/%D%/guix-offload.1			\
+  $(srcdir)/%D%/guix-pack.1			\
   $(srcdir)/%D%/guix-package.1			\
+  $(srcdir)/%D%/guix-processes.1		\
   $(srcdir)/%D%/guix-publish.1			\
   $(srcdir)/%D%/guix-pull.1			\
   $(srcdir)/%D%/guix-refresh.1			\
+  $(srcdir)/%D%/guix-repl.1			\
+  $(srcdir)/%D%/guix-shell.1			\
   $(srcdir)/%D%/guix-size.1			\
+  $(srcdir)/%D%/guix-style.1			\
   $(srcdir)/%D%/guix-system.1			\
   $(srcdir)/%D%/guix-time-machine.1		\
   $(srcdir)/%D%/guix-weather.1
