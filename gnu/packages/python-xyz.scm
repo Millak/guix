@@ -13965,8 +13965,8 @@ Jupyter kernels such as IJulia and IRKernel.")
                (("def test_other_output") "def _test_other_output")))))))
     (propagated-inputs
      (list python-ipykernel python-ipython-genutils python-jupyter-client
-           python-jupyter-core python-pygments python-pyqt python-pyzmq
-           python-qtpy python-traitlets))
+           python-jupyter-core python-pygments python-pyqt-without-qtwebkit
+           python-pyzmq python-qtpy python-traitlets))
     (native-inputs
      (list python-flaky python-pytest python-pytest-qt))
     (home-page "https://jupyter.org")
