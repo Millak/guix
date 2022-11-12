@@ -6085,6 +6085,7 @@ Bluetooth audio output devices like headphones or loudspeakers.")
       #~(list "--sysconfdir=/etc"
               "--localstatedir=/var"
               "--enable-library"
+              "--enable-wiimote"
               "--disable-systemd"
               ;; TODO: is this needed?  Not installed by default since 5.55.
               "--enable-hid2hci"
