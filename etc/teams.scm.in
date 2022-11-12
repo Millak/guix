@@ -488,6 +488,10 @@ importer."
                        "zimon.toutoune@gmail.com")
   julia core mentors)
 
+(define-member (person "Raghav Gururajan"
+                       "rg@raghavgururajan.name")
+  mentors)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
