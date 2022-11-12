@@ -4950,6 +4950,15 @@ time strings.")
 processor.")
     (license license:expat)))
 
+(define-public gojq
+  (package
+    (inherit go-github-com-itchyny-gojq)
+    (name "gojq")
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments go-github-com-itchyny-gojq)
+      (list #:install-source? #f)))))
+
 (define-public pup
   (let ((revision "1")
         (commit "681d7bb639334bf485476f5872c5bdab10931f9a"))
