@@ -15594,8 +15594,8 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
   (sbcl-package->cl-source-package sbcl-common-lisp-jupyter))
 
 (define-public sbcl-radiance
-  (let ((commit "5ffbe1f157edd17a13194495099efd81e052df85")
-        (revision "1"))
+  (let ((commit "a7237831970edfd330dddd5b347d3d1277853bf0")
+        (revision "2"))
     (package
       (name "sbcl-radiance")
       (version (git-version "2.1.2" revision commit))
@@ -15607,7 +15607,7 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
                (commit commit)))
          (file-name (git-file-name "radiance" version))
          (sha256
-          (base32 "0hbkcnmnlj1cqzbv18zmla2iwbl65kxilz9764hndf8x8as1539c"))))
+          (base32 "1q4x9mswiizwgr7acl5zi6lkssfg2zajqbdq7xhw1kq6xfnq37j2"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:tests? #f  ; TODO: The tests require some configuration.
@@ -15624,26 +15624,26 @@ building Jupyter kernels, based on Maxima-Jupyter which was based on
                    all)
                   (string-append "#+quicklisp " all))))))))
       (native-inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("dexador" ,sbcl-dexador)
-         ("parachute" ,sbcl-parachute)
-         ("verbose" ,sbcl-verbose)))
+       (list sbcl-alexandria
+             sbcl-dexador
+             sbcl-parachute
+             sbcl-verbose))
       (inputs
-       `(("babel" ,sbcl-babel)
-         ("bordeaux-threads" ,sbcl-bordeaux-threads)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("closer-mop" ,sbcl-closer-mop)
-         ("documentation-utils" ,sbcl-documentation-utils)
-         ("deploy" ,sbcl-deploy)
-         ("form-fiddle" ,sbcl-form-fiddle)
-         ("lambda-fiddle" ,sbcl-lambda-fiddle)
-         ("local-time" ,sbcl-local-time)
-         ("modularize-hooks" ,sbcl-modularize-hooks)
-         ("modularize-interfaces" ,sbcl-modularize-interfaces)
-         ("puri" ,sbcl-puri)
-         ("trivial-indent" ,sbcl-trivial-indent)
-         ("trivial-mimes" ,sbcl-trivial-mimes)
-         ("ubiquitous-concurrent" ,sbcl-ubiquitous)))
+       (list sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl-ppcre
+             sbcl-closer-mop
+             sbcl-documentation-utils
+             sbcl-deploy
+             sbcl-form-fiddle
+             sbcl-lambda-fiddle
+             sbcl-local-time
+             sbcl-modularize-hooks
+             sbcl-modularize-interfaces
+             sbcl-puri
+             sbcl-trivial-indent
+             sbcl-trivial-mimes
+             sbcl-ubiquitous))
       (home-page "https://shirakumo.github.io/radiance/")
       (synopsis "Common Lisp web application environment")
       (description
