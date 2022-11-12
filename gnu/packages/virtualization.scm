@@ -1454,7 +1454,7 @@ virtualization library.")
 (define-public virt-manager
   (package
     (name "virt-manager")
-    (version "3.2.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://virt-manager.org/download/sources"
@@ -1462,7 +1462,7 @@ virtualization library.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "11kvpzcmyir91qz0dsnk7748jbb4wr8mrc744w117qc91pcy6vrb"))))
+                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))))
     (build-system python-build-system)
     (arguments
      `(#:use-setuptools? #f          ; uses custom distutils 'install' command
