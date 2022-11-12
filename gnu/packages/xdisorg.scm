@@ -111,6 +111,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
@@ -358,7 +359,7 @@ with X11 or Wayland, or in a text terminal with ncurses.")
 (define-public copyq
 (package
   (name "copyq")
-  (version "3.9.3")
+  (version "6.3.2")
   (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -367,13 +368,23 @@ with X11 or Wayland, or in a text terminal with ncurses.")
             (file-name (git-file-name name version))
             (sha256
              (base32
-              "0wlwq9xg8rzsbj0b29z358k4mbrqy04iraa8x0p26pa95yskgcma"))))
+              "0qdf7lr6bdmsnz1k5nnzmbv4h0xj8jqg92x6089qdaz5s87x7vqr"))))
   (build-system cmake-build-system)
   (arguments
-   `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
-     #:tests? #f)) ; Test suite is a rather manual process.
+   (list
+    #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+    #:tests? #f)) ; Test suite is a rather manual process.
   (inputs
-   (list qtbase-5 qtscript qtsvg-5 qtx11extras))
+   (list qtbase-5
+         qtscript
+         qtsvg-5
+         qtx11extras
+         qtdeclarative-5
+         qtwayland-5
+         wayland
+         knotifications))
+  (native-inputs
+   (list extra-cmake-modules qttools-5))
   (synopsis "Clipboard manager with advanced features")
   (description "CopyQ is clipboard manager with editing and scripting
 features.  CopyQ monitors system clipboard and saves its content in customized
