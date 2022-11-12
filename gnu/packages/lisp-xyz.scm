@@ -24236,6 +24236,37 @@ using advisors.")
 (define-public ecl-simple-guess
   (sbcl-package->ecl-package sbcl-simple-guess))
 
+(define-public sbcl-wild-package-inferred-system
+  (let ((commit "800b5f89b61cc4a0a9cf14706fd3f7e7fcd3e539")
+        (revision "0"))
+    (package
+      (name "sbcl-wild-package-inferred-system")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/privet-kitty/wild-package-inferred-system")
+               (commit commit)))
+         (file-name (git-file-name "cl-wild-package-inferred-system" version))
+         (sha256
+          (base32 "0sp3j3i83aqyq9bl3djs490nilryi9sh1wjbcqd9z94d9wfbfz80"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (home-page "https://github.com/privet-kitty/wild-package-inferred-system/")
+      (synopsis "Wildcard for ASDF package-inferred-system")
+      (description
+       "@code{wild-package-inferred-system} is an extension of ASDF
+package-inferred-system that interprets star * and globstar ** in package
+or system names.")
+      (license license:expat))))
+
+(define-public cl-wild-package-inferred-system
+  (sbcl-package->cl-source-package sbcl-wild-package-inferred-system))
+
+(define-public ecl-wild-package-inferred-system
+  (sbcl-package->ecl-package sbcl-wild-package-inferred-system))
+
 (define-public sbcl-fakenil
   (package
     (name "sbcl-fakenil")
