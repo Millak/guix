@@ -1158,8 +1158,8 @@ convenient nested tree operations.")
     (license license:gpl3+)))
 
 (define-public guile-simple-zmq
-  (let ((commit "b2ea97e5a0e7417ce718b27b6fd55a3146364b82")
-        (revision "9"))
+  (let ((commit "ff0b39aec9312517fb48681564e261bd000aaf63")
+        (revision "10"))
     (package
       (name "guile-simple-zmq")
       (version (git-version "0.0.0" revision commit))
@@ -1171,7 +1171,7 @@ convenient nested tree operations.")
                (commit commit)))
          (sha256
           (base32
-           "08qvcxx0njz9545xa0lq3wpf55v9cl9nbb640ry1lig11wpymqxb"))
+           "0qfnljap1cxkfsydadarvhcw4p6cgayxzbhqr6r1y0as0m8250q3"))
          (file-name (git-file-name name version))))
       (build-system gnu-build-system)
       (arguments
