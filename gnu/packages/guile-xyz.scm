@@ -4225,34 +4225,29 @@ Relay Chat} (IRC).")
       (license license:lgpl2.1+))))
 
 (define-public guile-websocket
-  (let ((commit "d17878f6c12c10a49196bb08f737f36b11e61c31")
-        (revision "1"))
-    (package
-      (name "guile-websocket")
-      (version (git-version "0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.dthompson.us/guile-websocket.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0kcmhjyb6amm4b9k4ng0r5s38m041mvh5jgmjbz6ichz39k255v7"))))
-      (build-system gnu-build-system)
-      (arguments
-       '(#:make-flags
-         '("GUILE_AUTO_COMPILE=0")))
-      (native-inputs
-       (list autoconf automake pkg-config))
-      (inputs
-       (list guile-3.0))
-      (synopsis "Websocket server/client for Guile")
-      (description "Guile-websocket provides an implementation of the
+  (package
+    (name "guile-websocket")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://files.dthompson.us/guile-websocket/"
+                                  "guile-websocket-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0x2hw188kcg6zd6480dqfynfvzjgfp50kji4y4ql69mnf1jd6h94"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:make-flags
+       '("GUILE_AUTO_COMPILE=0")))
+    (native-inputs
+     (list autoconf automake pkg-config))
+    (inputs
+     (list guile-3.0))
+    (synopsis "Websocket server/client for Guile")
+    (description "Guile-websocket provides an implementation of the
 WebSocket protocol as defined by RFC 6455.")
-      (home-page "https://git.dthompson.us/guile-websocket.git")
-      (license license:lgpl3+))))
+    (home-page "https://dthompson.us/projects/guile-websocket.html")
+    (license license:lgpl3+)))
 
 (define-public guile-rdf
   (package
