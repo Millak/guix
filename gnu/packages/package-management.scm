@@ -1310,18 +1310,26 @@ allow for great power and flexibility.
 (define-public gwl
   (package
     (name "gwl")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gwl/gwl-" version ".tar.gz"))
               (sha256
                (base32
-                "09r22gqgaj2mxvlwvfach5j1n66y3yggmzc6d2gxq7lyywbcvjvs"))))
+                "08h76ib7hmqyj354aazxqyz0galhywz4093f8hc4py7hbg0rcm27"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-build? #false ; for reproducibility
        #:make-flags
-       '("GUILE_AUTO_COMPILE=0" "GWL_SKIP_INTEGRATION_TESTS=1")))
+       '("GUILE_AUTO_COMPILE=0" "GWL_SKIP_INTEGRATION_TESTS=1")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'disable-test
+           (lambda _
+             ;; This test loads a workflow, which requires a working Guix installation.
+             (substitute* "tests/cache.scm"
+               (("\\(test-assert \"workflows with same file name have different cache prefixes\"" m)
+                (string-append "#;" m))))))))
     (native-inputs
      (list autoconf automake pkg-config texinfo graphviz))
     (inputs
