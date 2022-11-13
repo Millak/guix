@@ -145,7 +145,8 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-26))
+  #:use-module (srfi srfi-26)
+  #:use-module (ice-9 match))
 
 (define-public opensles
   (package
@@ -613,6 +614,55 @@ signals.  Its features include segmenting a sound file before each of its
 attacks, performing pitch detection, tapping the beat and producing MIDI
 streams from live audio.")
     (license license:gpl3+)))
+
+(define-public qm-dsp
+  (package
+    (name "qm-dsp")
+    (version "1.7.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/c4dm/qm-dsp")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1vkb1xr2hjcaw88gig7rknlwsx01lm0w94d2z0rk5vz9ih4fslvv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list #$(string-append "-f" "build/"
+                               (match (or (%current-target-system)
+                                          (%current-system))
+                                 ("x86_64-linux" "linux/Makefile.linux64")
+                                 ("i686-linux"   "linux/Makefile.linux32")
+                                 (target
+                                  (if (string-suffix? "-mingw32" target)
+                                      "mingw32/Makefile.mingw32"
+                                      "general/Makefile.inc"))))
+              (string-append "CC=" #$(cc-for-target)))
+       #:phases
+       #~(modify-phases %standard-phases
+           (delete 'configure)          ;no configure script
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((lib (string-append #$output "/lib"))
+                      (include (string-append #$output "/include")))
+                 (install-file "libqm-dsp.a" lib)
+                 (mkdir-p include)
+                 (for-each (lambda (file)
+                             (unless (or (string-prefix? "./build" file)
+                                         (string-prefix? "./include" file))
+                               (install-file file (string-append include "/"
+                                                                 (dirname file)))))
+                           (find-files "." "\\.h$"))))))
+       #:test-target "tests"))
+    (home-page "https://code.soundsoftware.ac.uk/projects/qm-dsp")
+    (synopsis "C++ library of functions for DSP and Music Informatics purposes")
+    (description
+     "QM-DSP is a C++ library of functions for DSP and Music Informatics
+purposes developed at Queen Mary, University of London.")
+    (license license:gpl2+)))
 
 (define (ardour-rpath-phase major-version)
   `(lambda* (#:key outputs #:allow-other-keys)
