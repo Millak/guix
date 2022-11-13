@@ -877,6 +877,7 @@ PostUp = ~a set %i private-key ~a
           (service-extension activation-service-type
                              wireguard-activation)
           (service-extension profile-service-type
-                             (const wireguard-tools))))
+                             (compose list
+                                      wireguard-configuration-wireguard))))
    (description "Set up Wireguard @acronym{VPN, Virtual Private Network}
 tunnels.")))
