@@ -2962,7 +2962,7 @@ using @command{dmenu}.")
                   wayland-protocols))
     (synopsis "Wayland-native application launcher")
     (description
-     "@command{foot} is a Wayland-native application launcher, similar to
+     "@command{fuzzel} is a Wayland-native application launcher, similar to
 rofi's drun mode.  It has Emacs key bindings and remembers frequently launched
 applications.  The font and colors can be configured.")
     (license (list license:expat ;fuzzel
