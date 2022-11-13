@@ -19019,33 +19019,20 @@ words, it is possible to define services that provide additional mcron
 jobs to run.
 @end defvr
 
-@c Generated via (generate-documentation) at the bottom of (gnu services
-@c mcron).
-@c %start of fragment
 @deftp {Data Type} mcron-configuration
-Available @code{mcron-configuration} fields are:
+Data type representing the configuration of mcron.
 
 @table @asis
-@item @code{mcron} (default: @code{mcron}) (type: file-like)
+@item @code{mcron} (default: @var{mcron})
 The mcron package to use.
 
-@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
+@item @code{jobs}
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
-specifications,, mcron,GNU@tie{}mcron}).
-
-@item @code{log?} (default: @code{#t}) (type: boolean)
-Log messages to standard output.
-
-@item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
-@code{(ice-9 format)} format string for log messages.  The default value
-produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
-(@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
-is also prefixed by a timestamp by GNU Shepherd.
-
+specifications,, mcron, GNU@tie{}mcron}).
 @end table
 @end deftp
-@c %end of fragment
+
 
 @node Log Rotation
 @subsection Log Rotation
@@ -41081,32 +41068,18 @@ jobs to run.
 @end defvr
 
 @deftp {Data Type} home-mcron-configuration
-Available @code{home-mcron-configuration} fields are:
+Data type representing the configuration of mcron.
 
-@c Auto-generated with (gnu home services mcron)'s
-@c generate-documentation procedure.
-@c %start of fragment
 @table @asis
-@item @code{mcron} (default: @code{mcron}) (type: file-like)
+@item @code{mcron} (default: @var{mcron})
 The mcron package to use.
 
-@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
+@item @code{jobs}
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
-specifications,, mcron,GNU@tie{}mcron}).
-
-@item @code{log?} (default: @code{#t}) (type: boolean)
-Log messages to standard output.
-
-@item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
-@code{(ice-9 format)} format string for log messages.  The default value
-produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
-(@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
-is also prefixed by a timestamp by GNU Shepherd.
-
+specifications,, mcron, GNU@tie{}mcron}).
 @end table
 @end deftp
-@c %end of fragment
 
 @node Power Management Home Services
 @subsection Power Management Home Services

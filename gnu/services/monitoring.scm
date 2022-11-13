@@ -622,8 +622,8 @@ create it manually.")
 
 (define (zabbix-front-end-config config)
   (match-record config <zabbix-front-end-configuration>
-    (db-host db-port db-name db-user db-password db-secret-file
-             zabbix-host zabbix-port %location)
+    (%location db-host db-port db-name db-user db-password db-secret-file
+               zabbix-host zabbix-port)
     (mixed-text-file "zabbix.conf.php"
                      "\
 <?php
