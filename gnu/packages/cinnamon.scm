@@ -42,6 +42,7 @@
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
 (define-public libxapp
@@ -163,3 +164,66 @@ cross-DE solutions.")
 as well as some desktop-wide documents.")
     (license (list license:gpl2+ license:lgpl2.0+
                    license:expat)))) ;display-name.c , edid-parse.c
+
+(define-public nemo
+  (package
+    (name "nemo")
+    (version "5.6.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/linuxmint/nemo")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "15032jzi1x3dr292wbx6sdydybrs5n3lim2sq2i0lb9xa7cxxl0x"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:tests? #false                   ;tests stall
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'adjust-prefix
+            (lambda _
+              (substitute* "meson.build"
+                (("'data_dir")
+                 (string-append "'" #$output "/share")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              (setenv "HOME" "/tmp")    ;some tests require a writable HOME
+              (setenv "XDG_DATA_DIRS"
+                      (string-append (getenv "XDG_DATA_DIRS")
+                                     ":" #$output "/share")))))))
+    (native-inputs
+     (list gettext-minimal
+           (list glib "bin")
+           gobject-introspection
+           (list gtk+ "bin")
+           intltool
+           pkg-config
+           xorg-server-for-tests))
+    (inputs
+     (list atk
+           cinnamon-desktop
+           exempi
+           gsettings-desktop-schemas
+           gtk+
+           libexif
+           libgnomekbd
+           libgsf
+           libnotify
+           libx11
+           libxapp
+           libxkbfile
+           libxml2
+           xkeyboard-config))
+    (home-page "https://github.com/linuxmint/nemo")
+    (synopsis "File browser for Cinnamon")
+    (description
+     "Nemo is the file manager for the Cinnamon desktop environment.")
+    (license license:expat)))
