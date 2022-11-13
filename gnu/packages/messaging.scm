@@ -1575,7 +1575,8 @@ Qt-based XMPP library QXmpp.")
                              `("PATH" ":" prefix ,path)))
                          (find-files bin ".*"))))))))
     (inputs
-     (list icu4c
+     (list bash-minimal
+           icu4c
            libidn
            openssl
            lua-5.2
