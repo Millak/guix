@@ -1167,6 +1167,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
              ("ppc64"       => "ppc64")
              ("ppc"         => "ppc")
              ("s390x"       => "s390x")
+             ("riscv64"     => "riscv64")
              ("sparc64"     => "sparcv9"))))
 
 (define-public ck
