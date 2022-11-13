@@ -1,0 +1,244 @@
+From 340b08737e552c3c186863d76d123808d853a159 Mon Sep 17 00:00:00 2001
+From: Hilton Chain <hako@ultrarare.space>
+Date: Sat, 12 Nov 2022 22:45:24 +0800
+Subject: [PATCH] Replace fwdb downloader with a local file option.
+
+Also warn about non-free software.
+---
+ spectre-meltdown-checker.sh | 180 +++---------------------------------
+ 1 file changed, 15 insertions(+), 165 deletions(-)
+
+diff --git a/spectre-meltdown-checker.sh b/spectre-meltdown-checker.sh
+index 30f760c..ce46970 100755
+--- a/spectre-meltdown-checker.sh
++++ b/spectre-meltdown-checker.sh
+@@ -22,8 +22,6 @@ exit_cleanup()
+ 	[ -n "${dumped_config:-}" ] && [ -f "$dumped_config" ] && rm -f "$dumped_config"
+ 	[ -n "${kerneltmp:-}"     ] && [ -f "$kerneltmp"     ] && rm -f "$kerneltmp"
+ 	[ -n "${kerneltmp2:-}"    ] && [ -f "$kerneltmp2"    ] && rm -f "$kerneltmp2"
+-	[ -n "${mcedb_tmp:-}"     ] && [ -f "$mcedb_tmp"     ] && rm -f "$mcedb_tmp"
+-	[ -n "${intel_tmp:-}"     ] && [ -d "$intel_tmp"     ] && rm -rf "$intel_tmp"
+ 	[ "${mounted_debugfs:-}" = 1 ] && umount /sys/kernel/debug 2>/dev/null
+ 	[ "${mounted_procfs:-}"  = 1 ] && umount "$procfs" 2>/dev/null
+ 	[ "${insmod_cpuid:-}"    = 1 ] && rmmod cpuid 2>/dev/null
+@@ -93,9 +91,9 @@ show_usage()
+ 		--vmm [auto,yes,no]	override the detection of the presence of a hypervisor, default: auto
+ 		--allow-msr-write	allow probing for write-only MSRs, this might produce kernel logs or be blocked by your system
+ 		--cpu [#,all]		interact with CPUID and MSR of CPU core number #, or all (default: CPU core 0)
+-		--update-fwdb		update our local copy of the CPU microcodes versions database (using the awesome
+-					MCExtractor project and the Intel firmwares GitHub repository)
+-		--update-builtin-fwdb	same as --update-fwdb but update builtin DB inside the script itself
++		--with-fwdb FILE	read CPU microcode version information from FILE
++		                        Note that most CPU microcode is distributed as binaries without source -- relying on
++		                        such non-free firmware as sole protection against security vulnerabilities is ill-advised.
+ 		--dump-mock-data	used to mimick a CPU on an other system, mainly used to help debugging this script
+ 
+ 	Return codes:
+@@ -837,147 +833,6 @@ show_header()
+ 	_info
+ }
+ 
+-[ -z "$HOME" ] && HOME="$(getent passwd "$(whoami)" | cut -d: -f6)"
+-mcedb_cache="$HOME/.mcedb"
+-update_fwdb()
+-{
+-	show_header
+-
+-	set -e
+-
+-	if [ -r "$mcedb_cache" ]; then
+-		previous_dbversion=$(awk '/^# %%% MCEDB / { print $4 }' "$mcedb_cache")
+-	fi
+-
+-	# first, download the MCE.db from the excellent platomav's MCExtractor project
+-	mcedb_tmp="$(mktemp -t smc-mcedb-XXXXXX)"
+-	mcedb_url='https://github.com/platomav/MCExtractor/raw/master/MCE.db'
+-	_info_nol "Fetching MCE.db from the MCExtractor project... "
+-	if command -v wget >/dev/null 2>&1; then
+-		wget -q "$mcedb_url" -O "$mcedb_tmp"; ret=$?
+-	elif command -v curl >/dev/null 2>&1; then
+-		curl -sL "$mcedb_url" -o "$mcedb_tmp"; ret=$?
+-	elif command -v fetch >/dev/null 2>&1; then
+-		fetch -q "$mcedb_url" -o "$mcedb_tmp"; ret=$?
+-	else
+-		echo ERROR "please install one of \`wget\`, \`curl\` of \`fetch\` programs"
+-		return 1
+-	fi
+-	if [ "$ret" != 0 ]; then
+-		echo ERROR "error $ret while downloading MCE.db"
+-		return $ret
+-	fi
+-	echo DONE
+-
+-	# second, get the Intel firmwares from GitHub
+-	intel_tmp="$(mktemp -d -t smc-intelfw-XXXXXX)"
+-	intel_url="https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files/archive/main.zip"
+-	_info_nol "Fetching Intel firmwares... "
+-	## https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files.git
+-	if command -v wget >/dev/null 2>&1; then
+-		wget -q "$intel_url" -O "$intel_tmp/fw.zip"; ret=$?
+-	elif command -v curl >/dev/null 2>&1; then
+-		curl -sL "$intel_url" -o "$intel_tmp/fw.zip"; ret=$?
+-	elif command -v fetch >/dev/null 2>&1; then
+-		fetch -q "$intel_url" -o "$intel_tmp/fw.zip"; ret=$?
+-	else
+-		echo ERROR "please install one of \`wget\`, \`curl\` of \`fetch\` programs"
+-		return 1
+-	fi
+-	if [ "$ret" != 0 ]; then
+-		echo ERROR "error $ret while downloading Intel firmwares"
+-		return $ret
+-	fi
+-	echo DONE
+-
+-	# now extract MCEdb contents using sqlite
+-	_info_nol "Extracting MCEdb data... "
+-	if ! command -v sqlite3 >/dev/null 2>&1; then
+-		echo ERROR "please install the \`sqlite3\` program"
+-		return 1
+-	fi
+-	mcedb_revision=$(sqlite3 "$mcedb_tmp" "select revision from MCE")
+-	if [ -z "$mcedb_revision" ]; then
+-		echo ERROR "downloaded file seems invalid"
+-		return 1
+-	fi
+-	sqlite3 "$mcedb_tmp" "alter table Intel add column origin text"
+-	sqlite3 "$mcedb_tmp" "update Intel set origin='mce'"
+-
+-	echo OK "MCExtractor database revision $mcedb_revision"
+-
+-	# parse Intel firmwares to get their versions
+-	_info_nol "Integrating Intel firmwares data to db... "
+-	if ! command -v unzip >/dev/null 2>&1; then
+-		echo ERROR "please install the \`unzip\` program"
+-		return 1
+-	fi
+-	( cd "$intel_tmp" && unzip fw.zip >/dev/null; )
+-	if ! [ -d "$intel_tmp/Intel-Linux-Processor-Microcode-Data-Files-main/intel-ucode" ]; then
+-		echo ERROR "expected the 'intel-ucode' folder in the downloaded zip file"
+-		return 1
+-	fi
+-
+-	if ! command -v iucode_tool >/dev/null 2>&1; then
+-		if ! command -v iucode-tool >/dev/null 2>&1; then
+-			echo ERROR "please install the \`iucode-tool\` program"
+-			return 1
+-		else
+-			iucode_tool="iucode-tool"
+-		fi
+-	else
+-		iucode_tool="iucode_tool"
+-	fi
+-	#  079/001: sig 0x000106c2, pf_mask 0x01, 2009-04-10, rev 0x0217, size 5120
+-	#  078/004: sig 0x000106ca, pf_mask 0x10, 2009-08-25, rev 0x0107, size 5120
+-	$iucode_tool -l "$intel_tmp/Intel-Linux-Processor-Microcode-Data-Files-main/intel-ucode" | grep -wF sig | while read -r _line
+-	do
+-		_line=$(   echo "$_line" | tr -d ',')
+-		_cpuid=$(  echo "$_line" | awk '{print $3}')
+-		_cpuid=$(( _cpuid ))
+-		_cpuid=$(printf "0x%08X" "$_cpuid")
+-		_date=$(   echo "$_line" | awk '{print $6}' | tr -d '-')
+-		_version=$(echo "$_line" | awk '{print $8}')
+-		_version=$(( _version ))
+-		_version=$(printf "0x%08X" "$_version")
+-		_sqlstm="$(printf "INSERT INTO Intel (origin,cpuid,version,yyyymmdd) VALUES (\"%s\",\"%s\",\"%s\",\"%s\");" "intel" "$(printf "%08X" "$_cpuid")" "$(printf "%08X" "$_version")" "$_date")"
+-		sqlite3 "$mcedb_tmp" "$_sqlstm"
+-	done
+-	_intel_timestamp=$(stat -c %Y "$intel_tmp/Intel-Linux-Processor-Microcode-Data-Files-main/license" 2>/dev/null)
+-	if [ -n "$_intel_timestamp" ]; then
+-		# use this date, it matches the last commit date
+-		_intel_latest_date=$(date +%Y%m%d -d @"$_intel_timestamp")
+-	else
+-		echo "Falling back to the latest microcode date"
+-		_intel_latest_date=$(sqlite3 "$mcedb_tmp" "SELECT yyyymmdd from Intel WHERE origin = 'intel' ORDER BY yyyymmdd DESC LIMIT 1;")
+-	fi
+-	echo DONE "(version $_intel_latest_date)"
+-
+-	dbversion="$mcedb_revision+i$_intel_latest_date"
+-
+-	if [ "$1" != builtin ] && [ -n "$previous_dbversion" ] && [ "$previous_dbversion" = "v$dbversion" ]; then
+-		echo "We already have this version locally, no update needed"
+-		return 0
+-	fi
+-
+-	_info_nol "Building local database... "
+-	{
+-		echo "# Spectre & Meltdown Checker";
+-		echo "# %%% MCEDB v$dbversion";
+-		sqlite3 "$mcedb_tmp" "SELECT '# I,0x'||t1.cpuid||',0x'||MAX(t1.version)||','||t1.yyyymmdd FROM Intel AS t1 LEFT OUTER JOIN Intel AS t2 ON t2.cpuid=t1.cpuid AND t2.yyyymmdd > t1.yyyymmdd WHERE t2.yyyymmdd IS NULL GROUP BY t1.cpuid ORDER BY t1.cpuid ASC;" | grep -v '^# .,0x00000000,';
+-		sqlite3 "$mcedb_tmp" "SELECT '# A,0x'||t1.cpuid||',0x'||MAX(t1.version)||','||t1.yyyymmdd FROM AMD   AS t1 LEFT OUTER JOIN AMD   AS t2 ON t2.cpuid=t1.cpuid AND t2.yyyymmdd > t1.yyyymmdd WHERE t2.yyyymmdd IS NULL GROUP BY t1.cpuid ORDER BY t1.cpuid ASC;" | grep -v '^# .,0x00000000,';
+-	} > "$mcedb_cache"
+-	echo DONE "(version $dbversion)"
+-
+-	if [ "$1" = builtin ]; then
+-		newfile=$(mktemp -t smc-builtin-XXXXXX)
+-		awk '/^# %%% MCEDB / { exit }; { print }' "$0" > "$newfile"
+-		awk '{ if (NR>1) { print } }' "$mcedb_cache" >> "$newfile"
+-		cat "$newfile" > "$0"
+-		rm -f "$newfile"
+-	fi
+-}
+-
+ parse_opt_file()
+ {
+ 	# parse_opt_file option_name option_value
+@@ -1067,12 +922,15 @@ while [ -n "${1:-}" ]; do
+ 		# deprecated, kept for compatibility
+ 		opt_explain=0
+ 		shift
+-	elif [ "$1" = "--update-fwdb" ] || [ "$1" = "--update-mcedb" ]; then
+-		update_fwdb
+-		exit $?
+-	elif [ "$1" = "--update-builtin-fwdb" ] || [ "$1" = "--update-builtin-mcedb" ]; then
+-		update_fwdb builtin
+-		exit $?
++	elif [ "$1" = "--with-fwdb" ] || [ "$1" = "--with-mcedb" ]; then
++	        opt_fwdb=$2
++		if [ -f "$opt_fwdb" ]; then
++		        mcedb_cache=$2
++		else
++		        echo "$0: error: --with-fwdb should be a file, got '$opt_fwdb'" >&2
++		        exit 255
++		fi
++		shift 2
+ 	elif [ "$1" = "--dump-mock-data" ]; then
+ 		opt_mock=1
+ 		shift
+@@ -2033,21 +1891,11 @@ is_xen_domU()
+ 	fi
+ }
+ 
+-builtin_dbversion=$(awk '/^# %%% MCEDB / { print $4 }' "$0")
+ if [ -r "$mcedb_cache" ]; then
+ 	# we have a local cache file, but it might be older than the builtin version we have
+ 	local_dbversion=$(  awk '/^# %%% MCEDB / { print $4 }' "$mcedb_cache")
+-	# sort -V sorts by version number
+-	older_dbversion=$(printf "%b\n%b" "$local_dbversion" "$builtin_dbversion" | sort -V | head -n1)
+-	if [ "$older_dbversion" = "$builtin_dbversion" ]; then
+-		mcedb_source="$mcedb_cache"
+-		mcedb_info="local firmwares DB $local_dbversion"
+-	fi
+-fi
+-# if mcedb_source is not set, either we don't have a local cached db, or it is older than the builtin db
+-if [ -z "${mcedb_source:-}" ]; then
+-	mcedb_source="$0"
+-	mcedb_info="builtin firmwares DB $builtin_dbversion"
++	mcedb_source="$mcedb_cache"
++	mcedb_info="local firmwares DB $local_dbversion"
+ fi
+ read_mcedb()
+ {
+@@ -2063,7 +1911,9 @@ is_latest_known_ucode()
+ 		return 2
+ 	fi
+ 	ucode_latest="latest microcode version for your CPU model is unknown"
+-	if is_intel; then
++	if [ -z "$mcedb_source" ]; then
++	        return 2
++	elif is_intel; then
+ 		cpu_brand_prefix=I
+ 	elif is_amd; then
+ 		cpu_brand_prefix=A
+-- 
+2.38.1
+

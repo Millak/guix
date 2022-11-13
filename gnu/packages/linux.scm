@@ -66,7 +66,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
-
+;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9595,3 +9595,99 @@ This tool supports checking Kconfig options and kernel cmdline parameters.")
 error detection and correction (EDAC).")
     (home-page "https://github.com/grondo/edac-utils")
     (license license:gpl2+)))
+
+(define-public spectre-meltdown-checker
+  (package
+    (name "spectre-meltdown-checker")
+    (version "0.45")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/speed47/spectre-meltdown-checker")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches
+               (search-patches
+                "spectre-meltdown-checker-externalize-fwdb.patch"
+                "spectre-meltdown-checker-find-kernel.patch"))
+              ;; Remove builtin firmware database.
+              (modules '((guix build utils)))
+              (snippet '(substitute* "spectre-meltdown-checker.sh"
+                          (("^# [AI],.*") "")))
+              (sha256
+               (base32
+                "1xx8h5791lhc2xw0dcbzjkklzvlxwxkjzh8di4g8divfy24fqsn8"))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("spectre-meltdown-checker.sh" "bin/spectre-meltdown-checker"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fixpath
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define* (find-command inputs cmd #:optional (bin "bin"))
+                (search-input-file inputs (string-append bin "/" cmd)))
+              (substitute* "spectre-meltdown-checker.sh"
+                ;; ${opt_arch_prefix}CMD
+                (("\\$\\{opt_arch_prefix\\}\\<(nm|objdump|readelf|strings)\\>"
+                  all cmd)
+                 (find-command inputs cmd))
+
+                ;; Commands safe to substitute directly.
+                (("\\<(awk|(base|dir)name|bunzip|g(un)?zip|lz4)\\>" all cmd)
+                 (find-command inputs cmd))
+                (("\\<(modprobe|pgrep|rmmod|umount|unlzma)\\>" all cmd)
+                 (find-command inputs cmd))
+                (("\\<(unxz|unzstd|uuencode)\\>" all cmd)
+                 (find-command inputs cmd))
+
+                ;; Commands which should only be substituted based on their
+                ;; surroundings: First up, dd.
+                (("\\<(dd)\\> if=" all cmd)
+                 (string-append
+                  (find-command inputs cmd)
+                  " if="))
+
+                ;; Another special case: sysctl is in sbin.
+                (("(if |\\$\\( *)\\<(sysctl)\\>" all pre cmd)
+                 (string-append pre (find-command inputs cmd "sbin")))
+
+                ;; Meow
+                (("cat (<<EOF|\"\\$)" all what)
+                 (string-append (find-command inputs "cat") " " what))
+                (("'cat'")
+                 (string-append "'" (find-command inputs "cat") "'"))
+                (("\"cat\"")
+                 (string-append "\"" (find-command inputs "cat") "\""))
+
+                ;; ${COMMAND} -
+                ;; ${COMMAND} ^
+                (("\\<(base64|cut|grep|head|id|mount)\\> ([-^])" all cmd suffix)
+                 (string-append (find-command inputs cmd) " " suffix))
+                (("\\<(od|perl|rm|uname|xargs)\\> ([-^])" all cmd suffix)
+                 (string-append (find-command inputs cmd) " " suffix))
+
+                ;; ${COMMAND} |
+                (("\\<(dmesg)\\> \\|" all cmd)
+                 (string-append (find-command inputs cmd) " |"))
+                ;; | ${COMMAND}
+                (("\\| \\<(grep|sed|sort|stat|tr)\\>" all cmd)
+                 (string-append "| " (find-command inputs cmd)))
+
+                ;; Command in sub-shell, i.e. $($COMMAND ...)
+                (("\\$\\( *(\\<cat|find|grep|mount|nproc|stat|tr\\>)"
+                  all cmd)
+                 (string-append "$(" (find-command inputs cmd)))
+
+                ;; command -v
+                (("command -v \"*\\<(base64|nproc|perl|printf)\\>\"*" all cmd)
+                 (string-append "command -v " (find-command inputs cmd)))))))))
+    (inputs (list kmod lz4 lzop perl procps sharutils util-linux zstd))
+    (home-page "https://github.com/speed47/spectre-meltdown-checker")
+    (synopsis "CPU vulnerability / mitigation checker")
+    (description
+     "This package provides a shell script to assess your system's resilience
+against the several transient execution CVEs that were published since early
+2018, and gives guidance as to how to mitigate them.")
+    (license license:gpl3)))
