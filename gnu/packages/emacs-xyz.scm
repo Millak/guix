@@ -117,6 +117,7 @@
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1031,7 +1032,11 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                   ("magit-version" #$version))))
             (add-after 'set-magit-version 'patch-exec-paths
               (lambda* (#:key inputs #:allow-other-keys)
-                (make-file-writable "lisp/magit-sequence.el")
+                (for-each make-file-writable
+                          (list "lisp/magit-git.el" "lisp/magit-sequence.el"))
+                (emacs-substitute-variables "lisp/magit-git.el"
+                  ("magit-git-executable"
+                   (search-input-file inputs "/bin/git")))
                 (emacs-substitute-variables "lisp/magit-sequence.el"
                   ("magit-perl-executable"
                    (search-input-file inputs "/bin/perl")))))
