@@ -137,6 +137,7 @@ Display information about the channels currently in use.\n"))
 
   (format port "name: ~a~%" (channel-name channel))
   (format port "url: ~a~%" (channel-url channel))
+  (format port "branch: ~a~%" (channel-branch channel))
   (format port "commit: ~a~%" (channel-commit channel))
   (when intro
     (format port "introductioncommit: ~a~%"
