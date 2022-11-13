@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
-;;; Copyright © 2017, 2018, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2018, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
@@ -1507,14 +1507,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.11.10")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "1q84s9cq7cgzd295qxa2iy0r3vd3v3chbck62bdx3pd6skk19my6"))))
+                "1rch9gzp9ksnniv6r1vskifvfv5wbp8wcfjr0lc2b9013zjbpv57"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -1575,7 +1575,8 @@ Qt-based XMPP library QXmpp.")
                              `("PATH" ":" prefix ,path)))
                          (find-files bin ".*"))))))))
     (inputs
-     (list libidn
+     (list icu4c
+           libidn
            openssl
            lua-5.2
            lua5.2-bitop
