@@ -1873,6 +1873,30 @@ applications you regularly use and also allows you to search for an application
 by name.")
     (license license:expat)))
 
+(define-public rofi-wayland
+  (let ((base rofi))
+    (package
+      (inherit rofi)
+      (name "rofi-wayland")
+      (version "1.7.5+wayland1")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://github.com/lbonn/rofi"
+                                    "/releases/download/" version
+                                    "/rofi-" version ".tar.xz"))
+                (sha256
+                 (base32
+                  "09n71wv3nxpzpjmvqmxlxk0zfln3x2l8admfq571781p9hw0w6wp"))))
+      (build-system meson-build-system)
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append wayland wayland-protocols)))
+      (description
+       (string-append
+        (package-description base)
+        "  This package, @code{rofi-wayland}, provides additional wayland
+support.")))))
+
 (define-public rofi-calc
   (package
     (name "rofi-calc")
