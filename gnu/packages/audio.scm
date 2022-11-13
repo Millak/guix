@@ -677,8 +677,7 @@ purposes developed at Queen Mary, University of London.")
                          libdir "/engines" ":"
                          libdir "/panners" ":"
                          libdir "/surfaces" ":"
-                         libdir "/vamp" "\"]"))))
-     #t))
+                         libdir "/vamp" "\"]"))))))
 
 (define-public ardour
   (package
@@ -697,8 +696,7 @@ purposes developed at Queen Mary, University of London.")
                     "libs/ardour/revision.cc"
                   (lambda (port)
                     (format port ,(string-append "#include \"ardour/revision.h\"
-namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }"))
-                    #t)))
+namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
                 "1xzgcd2d8zzgx3s9sr3kcxl3vz3vfr5l1xs9qpjplmk22dfj8b08"))
@@ -735,8 +733,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                              (string-append share "/applications/"))
                (install-file (string-append "build/gtk2_ardour/ardour"
                                             ver ".appdata.xml")
-                             (string-append share "/appdata/")))
-             #t))
+                             (string-append share "/appdata/")))))
          (add-after 'install 'install-man-page
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "ardour.1" (string-append (assoc-ref outputs "out")
