@@ -97,7 +97,7 @@
        "http://hackage.haskell.org/")
       (savannah           ; http://download0.savannah.gnu.org/mirmon/savannah/
        "https://download.savannah.gnu.org/releases/"
-       "https://nongnu.freemirror.org/nongnu/"
+       "https://de.freedif.org/savannah/"
        "https://ftp.cc.uoc.gr/mirrors/nongnu.org/"
        "http://ftp.twaren.net/Unix/NonGNU/" ; https appears unsupported
        "https://mirror.csclub.uwaterloo.ca/nongnu/"
