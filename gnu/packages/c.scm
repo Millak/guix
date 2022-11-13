@@ -41,6 +41,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
@@ -67,6 +68,45 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
+
+(define-public c-intro-and-ref
+  (let ((revision "0")
+        (commit "f88559678feeb1391a0e9c7cf060c4429ef22ffc"))
+    (package
+      (name "c-intro-and-ref")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/c-intro-and-ref.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0c08h8k7wkn5lw0jqnnaayx55d3vf1q11pgsixfw31i58rnwa5y2"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'build
+                            (lambda* (#:key parallel-build? #:allow-other-keys)
+                              (substitute* "Makefile"
+                                (("makeinfo c.texi")
+                                 "makeinfo --no-split c.texi"))
+                              (invoke "make" "c.info" "c.html"
+                                      "-j" (number->string
+                                            (if parallel-build?
+                                                (parallel-job-count)
+                                                1))))))
+             #:install-plan ''(("c.info" "share/info/")
+                               ("c.html" "share/doc/"))))
+      (native-inputs (list texinfo))
+      (home-page "https://www.gnu.org/")
+      (synopsis "GNU C Language Intro and Reference")
+      (description "This manual explains the C language for use with the GNU
+Compiler Collection (GCC) on the GNU/Linux system and other systems.  We refer
+to this dialect as GNU C.  If you already know C, you can use this as a
+reference manual.")
+      (license license:fdl1.3+))))
 
 (define-public cproc
   (let ((commit "70fe9ef1810cc6c05bde9eb0970363c35fa7e802")
