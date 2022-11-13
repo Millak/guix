@@ -736,7 +736,11 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
                (install-file (string-append "build/gtk2_ardour/ardour"
                                             ver ".appdata.xml")
                              (string-append share "/appdata/")))
-             #t)))
+             #t))
+         (add-after 'install 'install-man-page
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "ardour.1" (string-append (assoc-ref outputs "out")
+                                                     "/share/man/man1")))))
        #:test-target "test"))
     (inputs
      (list alsa-lib
