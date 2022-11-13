@@ -788,11 +788,11 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            taglib
            vamp))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("gettext" ,gettext-minimal)
-       ("itstool" ,itstool)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)))
+     (list cppunit
+           gettext-minimal
+           itstool
+           perl
+           pkg-config))
     (home-page "https://ardour.org")
     (synopsis "Digital audio workstation")
     (description
