@@ -705,11 +705,12 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
-     `(#:configure-flags '("--cxx11"          ; required by gtkmm
+     `(#:configure-flags '("--cxx11"              ; required by gtkmm
                            "--optimize"
-                           "--no-phone-home"  ; don't contact ardour.org
-                           "--freedesktop"    ; build .desktop file
-                           "--test")          ; build unit tests
+                           "--no-phone-home"      ; don't contact ardour.org
+                           "--freedesktop"        ; build .desktop file
+                           "--test"               ; build unit tests
+                           "--use-external-libs") ; use system libraries
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'set-rpath-in-LDFLAGS
@@ -749,14 +750,17 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            fftw
            fftwf
            flac
+           fluidsynth
            glibmm
            gtkmm-2
            hicolor-icon-theme
+           hidapi
            jack-1
            libarchive
            libart-lgpl
            libgnomecanvasmm
            liblo
+           libltc
            libogg
            libsamplerate
            libsndfile
@@ -771,6 +775,7 @@ namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \
            pangomm
            python-rdflib
            pulseaudio
+           qm-dsp
            readline
            redland
            rubberband
