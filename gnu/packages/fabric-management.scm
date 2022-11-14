@@ -95,18 +95,18 @@ running the opensm daemon.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://github.com/linux-rdma/infiniband-diags/archive/"
-                           version ".tar.gz"))
-       (file-name (string-append name "-" version ".tar.gz"))
+       (uri (string-append "https://github.com/linux-rdma/infiniband-diags/releases"
+                           "/download/" version
+                           "/infiniband-diags-" version ".tar.gz"))
        (sha256
-        (base32 "1ns9sjwvxnklhi47d6k5x8kxdk1n7f5362y45xwxqmr7gwfvpmwa"))))
+        (base32 "11dbdnsx5hcvg6jh4ipm5j9wg420avpxw1jbsaj3zf4kwc5hw9id"))))
     (build-system gnu-build-system)
     (inputs
      (list rdma-core opensm glib))
     (outputs '("out" "lib"))
     (native-inputs
      ;; FIXME: needs rst2man for man pages
-     (list autoconf automake libtool perl pkg-config))
+     (list perl pkg-config))
     (arguments
      '(#:configure-flags
        (list (string-append "CPPFLAGS=-I" (assoc-ref %build-inputs "opensm")
