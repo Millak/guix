@@ -28350,6 +28350,7 @@ number of words, syllables, and sentences.")
               (uri (git-reference
                     (url "https://github.com/buriy/python-readability")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "13nfy2v0pbbf62jn9qwgi489gg97hbb22q6w3f78mnvjxd2m19rh"))
