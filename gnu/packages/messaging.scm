@@ -729,7 +729,7 @@ identi.ca and status.net).")
   ;; Version 0.4.3 of bitlbee-discord was prepared to work for
   ;; glib@2.68. However, version 2.69 of glib introduced a breaking change
   ;; causing bitlbee-discord to throw:
-  ;; 
+  ;;
   ;; discord - Login error: Failed to switch to websocket mode
   ;;
   ;; This makes the plugin unable to connect and therefore unusable:
@@ -2699,6 +2699,7 @@ support for high performance Telegram Bot creation.")
               (uri (git-reference
                     (url "https://github.com/tdlib/td")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name "tdlib" version))
               (sha256
                (base32
                 "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))))))
