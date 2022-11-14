@@ -710,13 +710,14 @@ console.")
     (name "btop")
     (version "1.2.13")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/aristocratos/btop/archive/refs/tags/v"
-                    version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/aristocratos/btop")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "00hfja154i5kmsgh1ja8aifcqj12jy7p8chdmlslqmij4iwc93b6"))))
+                "0aggzlxyfp213rknpbhkn8wbgzcnz181dyh9m2awz72w705axy8p"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f ;no test suite
