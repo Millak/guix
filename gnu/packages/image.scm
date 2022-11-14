@@ -2269,8 +2269,6 @@ Format) file format decoder and encoder.")
      (list freeglut
            gflags
            giflib
-           google-brotli
-           google-highway
            imath
            ;; lcms ; requires lcms@2.13
            libavif
@@ -2278,6 +2276,9 @@ Format) file format decoder and encoder.")
            libpng
            libwebp
            openexr))
+    ;; These are in Requires.private of libjxl.pc.
+    (propagated-inputs
+     (list google-brotli google-highway))
     (home-page "https://github.com/libjxl/libjxl")
     (synopsis "JPEG XL image format reference implementation")
     (description "This package contains a reference implementation of JPEG XL
