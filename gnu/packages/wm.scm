@@ -383,6 +383,7 @@ many programming languages.")
               (uri (git-reference
                     (url "https://github.com/Airblader/i3")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
