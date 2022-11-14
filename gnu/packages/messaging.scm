@@ -1538,6 +1538,15 @@ Qt-based XMPP library QXmpp.")
                (("^INSTALLEDCONFIG =.*") "INSTALLEDCONFIG = /etc/prosody\n")
                ;; prosodyctl needs a place to put auto-generated certificates.
                (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))))
+         (add-after 'unpack 'invoke-prosody-wrapper
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Invoke the prosody wrapper script instead of invoking lua on
+             ;; the actual executable.
+             (substitute* "util/prosodyctl.lua"
+               (("os.execute\\(lua[^;]*")
+                (string-append "os.execute(\""
+                               (assoc-ref outputs "out")
+                               "/bin/prosody -D\")")))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure all executables in "bin" find the required Lua
