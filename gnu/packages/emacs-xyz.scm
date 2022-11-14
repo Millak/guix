@@ -829,13 +829,13 @@ information in the mode line.")
 (define-public emacs-project
   (package
     (name "emacs-project")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/project-" version ".tar"))
        (sha256
-        (base32 "1l5yxw6xqml176vskd5fz2y2dbjh8925g3kyimda4gdprz4y7aci"))))
+        (base32 "15x6nbvyy592fwn36syxi9719sknvrm4bwnpyc16z9jn2xm62q3p"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xref))
     (home-page "https://elpa.gnu.org/packages/project.html")
