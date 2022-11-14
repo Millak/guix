@@ -5945,6 +5945,7 @@ boxes, and more.")
          (uri (git-reference
                (url "https://github.com/Chobbes/org-chef")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "0xdfaf3shl3iij7nnshb5ryccqq70rpk0zm0d3fdwdbfa8rf7fkp"))))
       (build-system emacs-build-system)
