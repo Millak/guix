@@ -2393,6 +2393,7 @@ or unexpected behavior inside an elisp configuration file (typically
               (uri (git-reference
                     (url "https://github.com/emacs-w3m/emacs-w3m.git")
                     (commit "bbcebbe20ebfa807a3e4beaadf40ce6f4be213e7")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0y892n8jaxzyxi1fgyklc7zfh57ibp4yyywmif69dm28hykj6lmz"))))
