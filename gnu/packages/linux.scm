@@ -5203,7 +5203,7 @@ arrays when needed.")
      (list
       #:test-target "test"
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
-                           (string-append "DESTDIR=" #$output)
+                           (string-append "prefix=" #$output)
                            ;; Install Udev rules below this directory, relative
                            ;; to the prefix.
                            "SYSTEMDPATH=lib")
@@ -5218,6 +5218,8 @@ arrays when needed.")
                 (substitute* "Makefile.inc"
                   (("/bin/echo") "echo")
                   (("\\$\\(prefix\\)/usr") "$(prefix)")
+                  (("configdir.*:= \\$\\(prefix\\)/etc/multipath/conf.d")
+                   "configdir := /etc/multipath/conf.d")
                   ;; Do not save timestamp to avoid gzip "timestamp
                   ;; out-of-range" warnings.
                   (("gzip -9") "gzip -9n"))
