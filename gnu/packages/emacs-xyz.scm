@@ -9536,6 +9536,7 @@ may export to Markdown so that it can be used for a web based CV.")
               (uri (git-reference
                     (url "https://github.com/larstvei/ox-gfm")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0drdypmgxk3238hmkqw9s3cw9wv94cyfqar5ar0bv0k69s92pxj8"))))
