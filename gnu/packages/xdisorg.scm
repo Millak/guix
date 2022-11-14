@@ -1915,6 +1915,7 @@ natural language input and provide results.")
               (uri (git-reference
                     (url (string-append "https://gitlab.com/o9000/" name "/"))
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "123apmgs6x2zfv1q57dyl4mwqf0vsw5ndh5jsg6p3fvhr66l1aja"))))
