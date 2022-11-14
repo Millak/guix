@@ -624,6 +624,7 @@ streams from live audio.")
               (uri (git-reference
                     (url "https://github.com/c4dm/qm-dsp")
                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1vkb1xr2hjcaw88gig7rknlwsx01lm0w94d2z0rk5vz9ih4fslvv"))))
