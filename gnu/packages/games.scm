@@ -3663,6 +3663,7 @@ for common mesh file formats, and collision detection.")
        (uri (git-reference
              (url "https://github.com/minetest/irrlicht")
              (commit version)))
+       (file-name (git-file-name name version))
        (sha256
         (base32
          "1646pj40dqkzbbc2lxzbmq2pjyrkgggbi2lah6pa5mv420p402kg"))))
