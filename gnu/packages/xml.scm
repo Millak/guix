@@ -5,7 +5,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2018, 2020-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -120,7 +120,7 @@ the entire document.")
 (define-public expat
   (package
     (name "expat")
-    (version "2.4.8")
+    (version "2.5.0")
     (source (let ((dot->underscore (lambda (c) (if (char=? #\. c) #\_ c))))
               (origin
                 (method url-fetch)
@@ -132,7 +132,7 @@ the entire document.")
                             "/expat-" version ".tar.xz")))
                 (sha256
                  (base32
-                  "09dgviwz939pms4v1syl68p5pia9hb7xxsmg406kx7kl9f88z6zp")))))
+                  "1gnwihpfz4x18rwd6cbrdggmfqjzwsdfh1gpmc0ph21c4gq2097g")))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
