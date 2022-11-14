@@ -160,6 +160,7 @@ for configuration, scripting, and rapid prototyping.")
                 (uri (git-reference
                       (url "https://luajit.org/git/luajit.git")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "1a002yh8v1i1q9w09494q0b8vsbmw3amn9jgfs5qnz7ba54jij0q"))))
