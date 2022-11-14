@@ -5180,7 +5180,7 @@ arrays when needed.")
 (define-public multipath-tools
   (package
     (name "multipath-tools")
-    (version "0.9.0")
+    (version "0.9.3")
     (home-page "https://github.com/opensvc/multipath-tools")
     (source (origin
               (method git-fetch)
@@ -5188,14 +5188,14 @@ arrays when needed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09m3vs798qb3xk0v7s3hy0nhw0dznkxjb56671kqj961h7zhg47b"))
+                "0zcnr1135znizbnfqhqv3by9i2qwn5vg6kgmj6ma3yy1x1krx0d4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
                   ;; Drop bundled valgrind headers.
                   (delete-file-recursively "third-party")
                   (substitute* '("multipathd/main.c"
-                                 "libmultipath/debug.c")
+                                 "libmpathutil/debug.c")
                     (("#include \"../third-party/")
                      "#include \""))))))
     (build-system gnu-build-system)
