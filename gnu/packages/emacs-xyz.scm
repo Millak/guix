@@ -6382,6 +6382,7 @@ configuration.")
        (uri (git-reference
              (url "https://github.com/TeMPOraL/nyan-mode/")
              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32 "0d0hdjliad8afz4br38gwidph9zhmm5s09y45n95kqlazq62jfsx"))))
     (build-system emacs-build-system)
