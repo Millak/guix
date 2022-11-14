@@ -33341,6 +33341,7 @@ audio volume via amixer.")
          (uri (git-reference
                (url "https://git.sr.ht/~technomancy/fennel-mode")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "1yib626wi7xiairzqkk96s99p1q7mmr2y5v78bv01h5d7h12sdgq"))))
       (build-system emacs-build-system)
