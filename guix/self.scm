@@ -1090,6 +1090,12 @@ itself."
   (scheme-file "config.scm"
                #~(;; The following expressions get spliced.
                    (#$defmod (guix config)
+
+                     ;; Mark it as non-declarative to prevent cross-module
+                     ;; inlining that could lead to inlining %GUIX-VERSION in
+                     ;; (guix ui).
+                     #:declarative? #f
+
                      #:export (%guix-package-name
                                %guix-version
                                %guix-bug-report-address
