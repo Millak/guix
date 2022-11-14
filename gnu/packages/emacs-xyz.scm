@@ -9840,6 +9840,7 @@ list of candidates.")
                 (uri (git-reference
                       (url "https://github.com/mohkale/consult-bibtex")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "0jxjvpg3j8zk77sfhyy27fd1zbj2zz7xayavan3hhj4853q92kwq"))))
