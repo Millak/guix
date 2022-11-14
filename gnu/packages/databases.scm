@@ -992,7 +992,7 @@ Language.")
              `((add-after 'unpack 'apply-libatomics-patch
                  (lambda* (#:key inputs #:allow-other-keys)
                    (let ((patch-file
-                           (assoc-ref inputs 
+                           (assoc-ref inputs
                                                "mariadb-link-libatomic.patch")))
                      (invoke "patch" "-p1" "-i" patch-file)))))
              '())
@@ -3043,12 +3043,13 @@ with relational data.")
     (version "3.4.2")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/sqlcipher/" name
-                           "/archive/v" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/sqlcipher/sqlcipher")
+             (commit (string-append "v" version))))
        (sha256
-        (base32 "1nxarwbci8jx99f1d0y1ivxcv25s78l1p7q6qy28lkpkcx8pm2b9"))
-       (file-name (string-append name "-" version ".tar.gz"))))
+        (base32 "168wb6fvyap7y8j86fb3xl5rd4wmhiq0dxvx9wxwi5kwm1j4vn1a"))
+       (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (inputs
      `(("libcrypto" ,openssl)
