@@ -31723,6 +31723,7 @@ snippets for Emacs.")
          (uri (git-reference
                (url "https://github.com/abo-abo/orca")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "00a363vkqvryw5s7pj0kh8pqq5vvbf1pmbzz0b1z1fckwr49sv0f"))))
       (build-system emacs-build-system)
