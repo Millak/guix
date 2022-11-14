@@ -9916,6 +9916,7 @@ and present results either as single emails or full trees.")
          (uri (git-reference
                (url "https://github.com/jgru/consult-org-roam")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
            "0c2hjd2gw77h77487fzdqfybg0ricsvlnwwfxai9baawz37bcn7q"))))
