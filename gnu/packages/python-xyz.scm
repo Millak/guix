@@ -14779,7 +14779,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -14788,7 +14788,7 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s458ymd9g3s8k2ccc300jr4w66c7q3vhmhs9z3d3a4qg0xdhs9y"))))
+        (base32 "1am6z9m0s9svysj0wrfz069rpvbqqimphqll3912q4bvdlz6vrjp"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
