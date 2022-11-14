@@ -4241,6 +4241,7 @@ server.")
               (method git-fetch)
               (uri (git-reference (url home-page)
                                   (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "0zj7qpknvlhrh4fsp5sx4fwyx3sp41ynclka992zympm3xym9zyq"))))
