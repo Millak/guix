@@ -100,7 +100,7 @@
 (define-public zlib
   (package
     (name "zlib")
-    (version "1.2.12")
+    (version "1.2.13")
     (source
      (origin
        (method url-fetch)
@@ -108,11 +108,9 @@
                                  version ".tar.gz")
                   (string-append "mirror://sourceforge/libpng/zlib/"
                                  version "/zlib-" version ".tar.gz")))
-       (patches (search-patches "zlib-cc.patch"
-                                "zlib-correct-crc32-inputs.patch"))
        (sha256
         (base32
-         "1n9na4fq4wagw1nzsfjr6wyly960jfa94460ncbf6p1fac44i14i"))))
+         "0c5b8vw40dy178xlpddw65q9gf1h2186jcc3p4swinwggbllv8mk"))))
     (build-system gnu-build-system)
     (outputs '("out" "static"))
     (arguments
