@@ -30821,6 +30821,7 @@ data format @code{edn}.  See @url{https://github.com/edn-format/edn}.")
          (uri (git-reference
                (url "https://github.com/sinic/ednc")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "1gsx2qgv5xm9r0i0axd4hf31g2rq2m4a1hvnif48g4xb0llss73c"))))
       (build-system emacs-build-system)
