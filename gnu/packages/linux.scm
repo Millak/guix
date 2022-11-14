@@ -1442,19 +1442,22 @@ emulate optical devices such as DVD and CD-ROM drives.")
 (define-public bbswitch-module
   ;; Use "develop" branch since stable release does not build on Linux >= 5.6.
   ;; See https://github.com/Bumblebee-Project/bbswitch/issues/205.
-  (let ((commit "ddbd243638c7bc2baecf43a78aff46cdc12e9b2e"))
+  (let ((commit "19f60204596a6463b162fc7ca11f4946f5c20cea"))
     (package
       (name "bbswitch-module")
-      (version (git-version "0.8" "1" commit))
+      (version (git-version "0.8" "2" commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/Bumblebee-Project/bbswitch")
+                      ;; Use fork until
+                      ;; https://github.com/Bumblebee-Project/bbswitch/pull/219
+                      ;; is merged.
+                      (url "https://github.com/madchic/bbswitch")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1pgldnza7mzd0flrxg4q69dwbq1fhl58m5c62ary5drb0xyf3lqb"))))
+                  "1pv41y02c9xg9k1bg4i4ll3w7hxxzdr651i08f092b9q5hr57mqn"))))
       (build-system linux-module-build-system)
       (arguments
        (list #:tests? #f))              ; no test suite
