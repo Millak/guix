@@ -12,7 +12,7 @@
 ;;; Copyright © 2016 Raymond Nicholson <rain1@openmailbox.org>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2016, 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
@@ -5202,7 +5202,6 @@ arrays when needed.")
     (arguments
      (list
       #:test-target "test"
-      #:parallel-build? #f              ;XXX: broken since 0.8.4
       #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
                            (string-append "DESTDIR=" #$output)
                            ;; Install Udev rules below this directory, relative
