@@ -479,6 +479,7 @@ This package provides the Emacs mode.")
                 (uri (git-reference
                       (url "https://github.com/narendraj9/hledger-mode")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "0xmcfpr3rxli1adwypg18npl8hb8ak5rg6a6i26inzzqja6vr897"))))
