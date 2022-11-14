@@ -4149,6 +4149,7 @@ restore the saved place.")
          (uri (git-reference
                (url "https://github.com/jeremy-compostella/pdfgrep")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32 "17yqvvgkgxmcl8nc0mb9yaz884zcdnz7dwvfi4mxjzp1l05fvwjk"))))
       (build-system emacs-build-system)
