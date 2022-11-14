@@ -1220,14 +1220,14 @@ extension.")
     (name "tegola")
     (version "0.7.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                     "https://github.com/go-spatial/tegola/archive/v"
-                     version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/go-spatial/tegola")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "09vnzxfn0r70kmd776kcdfqxhzdj11syxa0b27z4ci1k367v7viw"))))
+                "0agqj1b7l41m0imvxjriw44jcpa99mhq1z1vbsfzjhcr94zhwmfr"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-spatial/tegola/cmd/tegola"
