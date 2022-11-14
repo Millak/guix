@@ -543,6 +543,7 @@ parser.  It is \"not fit for use at this point\", but gfeeds uses it anyway.")
               (uri (git-reference
                     (url "https://gitlab.gnome.org/World/gfeeds")
                     (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1lkvhff7pl1y4brqsix6sar5yl8flyhfp3w96fx0klhk3586bvhg"))))
