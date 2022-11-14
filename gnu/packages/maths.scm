@@ -733,6 +733,7 @@ integer programming problems and computes Markov bases for statistics.")
       (uri (git-reference
             (url "https://github.com/cddlib/cddlib")
             (commit version)))
+      (file-name (git-file-name name version))
       (sha256
        (base32
         "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
@@ -3815,7 +3816,7 @@ FC            = mpifort
 FL            = mpifort
 INCPAR        =
 LIBPAR        = $(SCALAP) $(LAPACK)
-LIBSEQNEEDED  = 
+LIBSEQNEEDED  =
 INCS          = $(INCPAR)
 LIBS          = $(LIBPAR)~]
 AR            = ar vr # rules require trailing space, ugh...
