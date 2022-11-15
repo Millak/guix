@@ -26,6 +26,22 @@
 (channel-news
  (version 0)
 
+ (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
+        (title
+         (en "New @option{--symlink} option for @command{guix shell}")
+         (fr "Nouvelle option @option{--symlink} pour @command{guix shell}"))
+        (body
+         (en "The @command{guix shell} command has a new
+@option{--symlink} (or @option{-S}) option, to be used in conjunction with the
+@option{--container} (or @option{-C}) option to create a symbolic link inside
+the container.  Run @command{info \"(guix) Invoking guix shell\"} for more
+information.")
+         (fr "La commande @command{guix shell} dispose d'une nouvelle option,
+@option{--symlink} (ou @option{-S}), qui doit être utilisée en conjonction
+avec l'option @option{--container} (ou @option{-C}) pour créer un lien
+symbolique dans le conteneur.  Lancer @command{info \"(guix.fr) Invoquer guix
+shell\"} pour plus d'informations.")))
+
  (entry (commit "82a0a395d7051eab7b9f15ec4740d58c86413604")
         (title
          (en "Linux-libre kernel updated to 6.0")
