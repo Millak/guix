@@ -420,12 +420,19 @@ shader compilation.")
     (native-inputs (list pkg-config python spirv-headers vulkan-headers))
     (arguments
      (list #:tests? #f ;no tests
-           #:configure-flags #~(list "-DUSE_ROBIN_HOOD_HASHING=OFF"
-                                     (string-append "-DGLSLANG_INSTALL_DIR="
-                                                    #$glslang)
-                                     (string-append
-                                      "-DSPIRV_HEADERS_INSTALL_DIR="
-                                      #$spirv-headers) "-Wno-dev")
+           #:configure-flags
+           #~(list "-DUSE_ROBIN_HOOD_HASHING=OFF"
+                   (string-append "-DGLSLANG_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/glslang"))))
+                   (string-append "-DSPIRV_HEADERS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/spirv"))))
+                   "-Wno-dev")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'install 'set-layer-path-in-manifest
                           (lambda _
