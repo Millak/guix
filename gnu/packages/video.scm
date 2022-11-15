@@ -5606,3 +5606,27 @@ VCS, by default, makes screenshots the same size as the video, see the manual
 for details on how to change this.")
    (home-page "http://p.outlyer.net/vcs/")
    (license license:lgpl2.1+)))
+
+(define-public svtplay-dl
+  (package
+    (name "svtplay-dl")
+    (version "4.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/spaam/svtplay-dl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wdrdszalvhv80m5jizbvjz4jc08acmbpxcsslyfb5cwh842in8m"))))
+    (build-system python-build-system)
+    (inputs (list ffmpeg python-pyaml python-requests python-pysocks
+                  python-cryptography))
+    (home-page "https://svtplay-dl.se/")
+    (synopsis "Download or stream SVT Play's (and others) TV programmes")
+    (description
+     "@code{svtplay-dl} allows downloading TV programmes from various Swedish
+broadcasters including SVT Play, Sveriges Radio, TV4 Play, along with many
+others.")
+    (license license:expat)))
