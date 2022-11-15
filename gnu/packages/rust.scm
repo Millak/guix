@@ -637,6 +637,10 @@ safety and thread safety guarantees.")
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
 
+(define rust-1.65
+  (rust-bootstrapped-package
+   rust-1.64 "1.65.0" "0f005kc0vl7qyy298f443i78ibz71hmmh820726bzskpyrkvna2q"))
+
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
