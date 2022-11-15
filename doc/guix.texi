@@ -31064,7 +31064,8 @@ following configuration:
 @end defvar
 
 @lisp
-(service xvnc-service-type (xvnc-configuration (display-number 10)
+(service xvnc-service-type
+         (xvnc-configuration (display-number 10)))
 @end lisp
 
 As a demonstration, the @command{xclock} command could then be started
@@ -41484,7 +41485,7 @@ A typical extension for adding a channel might look like this:
                 (list
                  (channel
                   (name 'variant-packages)
-                  (url "https://example.org/variant-packages.git")))
+                  (url "https://example.org/variant-packages.git"))))
 @end lisp
 @end defvr
 
