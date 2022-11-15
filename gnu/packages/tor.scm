@@ -190,7 +190,9 @@ This package only provides a client to the Tor Network.")))
      "Torsocks allows you to use most applications in a safe way with Tor.  It
 ensures that DNS requests are handled safely and explicitly rejects UDP
 traffic from the application you're using.")
-
+    (properties
+     '((release-monitoring-url
+         . "https://gitlab.torproject.org/tpo/core/torsocks/-/tags")))
     ;; All the files explicitly say "version 2 only".
     (license license:gpl2)))
 
