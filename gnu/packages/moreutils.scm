@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2016, 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -69,4 +69,6 @@
     (description
      "Moreutils is a collection of general-purpose command-line tools to
 augment the traditional Unix toolbox.")
+    (properties
+     '((release-monitoring-url . "https://git.joeyh.name/index.cgi/moreutils.git/")))
     (license l:gpl2+)))
