@@ -31,10 +31,12 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages vim))
 
 (define-public avr-binutils
@@ -148,7 +150,7 @@ C++.")
 (define-public microscheme
   (package
     (name "microscheme")
-    (version "0.9.3")
+    (version "0.9.4")
     (source
      (origin
        (method git-fetch)
@@ -156,7 +158,7 @@ C++.")
              (url "https://github.com/ryansuchocki/microscheme")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1r3ng4pw1s9yy1h5rafra1rq19d3vmb5pzbpcz1913wz22qdd976"))
+        (base32 "1bflwirpcd58bngbs6hgjfwxl894ni2gpdd4pj10pm2mjhyj5dgw"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -168,7 +170,7 @@ C++.")
        #:make-flags
        (list (string-append "PREFIX=" (assoc-ref %outputs "out")))))
     (native-inputs
-     (list unzip xxd))
+     (list clang cppcheck unzip xxd))
     (home-page "https://github.com/ryansuchocki/microscheme/")
     (synopsis "Scheme subset for Atmel microcontrollers")
     (description
