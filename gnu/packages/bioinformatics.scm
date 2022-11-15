@@ -12101,6 +12101,46 @@ including:
     ;; the GPL, but the license headers include the "or later" clause.
     (license license:gpl3+)))
 
+(define-public r-disgenet2r
+  (let ((commit "8d8ce37da7384004038b25e784b9f7cfe2353de1")
+        (revision "1"))
+    (package
+      (name "r-disgenet2r")
+      (version (git-version "0.99.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://bitbucket.org/ibi_group/disgenet2r")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dvk75s6wqssdyfn5iczldb8krvrz2s0dslxns4571cb2pr09b84"))))
+      (properties `((upstream-name . "disgenet2r")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-data-table
+                               r-ggplot2
+                               r-gtable
+                               r-httr
+                               r-igraph
+                               r-jsonlite
+                               r-purrr
+                               r-reshape
+                               r-reshape2
+                               r-sparql
+                               r-stringr
+                               r-tidyr
+                               r-tidyverse
+                               r-venndiagram))
+      (native-inputs (list r-knitr))
+      (home-page "https://bitbucket.org/ibi_group/disgenet2r")
+      (synopsis "Query, visualize, and expand DisGeNET data")
+      (description
+       "This is an R package to query and expand DisGeNET data, and to
+visualize the results within R framework.  The disgenet2r package is designed
+to retrieve data from DisGeNET v6.0 (Jan, 2019).")
+      (license license:expat))))
+
 (define-public r-dyngen
   (package
     (name "r-dyngen")
