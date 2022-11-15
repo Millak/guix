@@ -13064,32 +13064,30 @@ sly-quickload command that prompts the user for a package to install.")
       (license license:gpl3+))))
 
 (define-public emacs-sly-asdf
-  (let ((commit "3180921efdc19a2195960e1d601b2a6f31a6feea")
-        (revision "5"))
-    (package
-      (name "emacs-sly-asdf")
-      (version (git-version "0.1.0" revision commit))
-      (home-page "https://github.com/mmgeorge/sly-asdf")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0gncp8xv33s4wx594bgd35vr1455bcggv1bg28qv75mhv41nzw97"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-sly emacs-popup))
-      (arguments
-       '(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)))
-      (synopsis "ASDF contrib for SLY")
-      (description
-       "@command{sly-asdf} is an external contrib for SLY that provides
+  (package
+    (name "emacs-sly-asdf")
+    (version "0.2.0")
+    (home-page "https://github.com/mmgeorge/sly-asdf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0gncp8xv33s4wx594bgd35vr1455bcggv1bg28qv75mhv41nzw97"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-sly emacs-popup))
+    (arguments
+     '(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)))
+    (synopsis "ASDF contrib for SLY")
+    (description
+     "@command{sly-asdf} is an external contrib for SLY that provides
 additional support for working with ASDF projects.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-sly-named-readtables
   (let ((commit "a5a42674ccffa97ccd5e4e9742beaf3ea719931f")
