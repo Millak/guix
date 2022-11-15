@@ -560,7 +560,7 @@ aliasing facilities to work just as they would on normal mail.")
 (define-public mutt
   (package
     (name "mutt")
-    (version "2.2.8")
+    (version "2.2.9")
     (source (origin
              (method url-fetch)
              (uri (list
@@ -570,7 +570,7 @@ aliasing facilities to work just as they would on normal mail.")
                                    version ".tar.gz")))
              (sha256
               (base32
-               "0lqabpwbn8083w1adzpf8mqcyjbvy6jwj5v46cb1sapfl8vx5wq3"))
+               "1yyg49sgghi7pgw7xr3cnzgypa9yd0kdc3nsrqq1zzjq3liinlzs"))
              (patches (search-patches "mutt-store-references.patch"))))
     (build-system gnu-build-system)
     (inputs
