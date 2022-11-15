@@ -153,19 +153,17 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public glslang
   (package
     (name "glslang")
-    (version "10-11.0.0")
+    (version "11.9.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/glslang")
-             ;; Tag "10-11.0.0" was moved to "11.0.0".
-             ;; FIXME: Use (commit version) on next update.
-             (commit "11.0.0")))
+             (commit version)))
        (sha256
         (base32
-         "14mn2awswl022ls75mfpsnpsl0ai0jgfbqj3sxcsqawyj5f432py"))
-       (file-name (string-append name "-" version "-checkout"))))
+         "1q6gjlx2y6g0hfvahnw063anb4yb4ky82hfh3b7nbsm43crzzfb0"))
+       (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;FIXME: requires bundled SPIRV-Tools
