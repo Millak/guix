@@ -46,7 +46,7 @@
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.2.198.0")
+    (version "1.3.231.1")
     (source
      (origin
        (method git-fetch)
@@ -55,7 +55,7 @@
              (commit (string-append "sdk-" version))))
        (sha256
         (base32
-         "0v6ycgfxh9d2gzhxrnxgrn5gyg2cshg55767qdg46px8412j5lbi"))
+         "0z8b485hryya2g0jxv7amwg3fjj7pchbgnsa5ldf5fwgh5js0icm"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
