@@ -24751,6 +24751,45 @@ roman numeral given in the key.")
 (define-public ecl-triads
   (sbcl-package->ecl-package sbcl-triads))
 
+(define-public sbcl-closure-template
+  ;; There are no releases since 2015.
+  (let ((commit "f1983aa525045691e128027d2a2d74831c873d6e")
+        (revision "0"))
+    (package
+      (name "sbcl-closure-template")
+      (version (git-version "0.2.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/archimag/cl-closure-template")
+               (commit commit)))
+         (file-name (git-file-name "cl-closure-template" version))
+         (sha256
+          (base32 "16h0fs6bjjd4n9pbkwcprpgyj26vsw2akk3q08m7xmsmqi05dppv"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-lift))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-closer-mop
+             sbcl-esrap
+             sbcl-iterate
+             sbcl-parse-number
+             sbcl-split-sequence))
+      (synopsis "Lisp implementation of Google Closure Templates")
+      (description
+       "This package provides a Common Lisp implementation of Google
+Closure Templates.")
+      (home-page "https://github.com/archimag/cl-closure-template/")
+      (license license:llgpl))))
+
+(define-public cl-closure-template
+  (sbcl-package->cl-source-package sbcl-closure-template))
+
+(define-public ecl-closure-template
+  (sbcl-package->ecl-package sbcl-closure-template))
+
 (define-public sbcl-cl-morse
   (package
     (name "sbcl-cl-morse")
