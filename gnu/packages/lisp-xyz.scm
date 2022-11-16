@@ -20549,6 +20549,38 @@ command in Common Lisp.")
 (define-public ecl-which
   (sbcl-package->ecl-package sbcl-which))
 
+(define-public sbcl-wu-decimal
+  (let ((commit "5b348bdb32a0f83e80e17aa68cd51787ae8c8a45")
+        (revision "0"))
+    (package
+      (name "sbcl-wu-decimal")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Wukix/wu-decimal")
+               (commit commit)))
+         (file-name (git-file-name "cl-wu-decimal" version))
+         (sha256
+          (base32 "1p7na4hic7297amwm4idfwkyx664ny8cdssncyra37pmv4wzp8dm"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/Wukix/wu-decimal")
+      (synopsis "Arbitrary-precision decimal arithmetic")
+      (description
+       "Wu-Decimal enables convenient, arbitrary-precision decimal arithmetic
+through a reader macro, @code{#$}, and an update to the @code{pprint} dispatch
+table.  Wu-Decimal uses the CL rational type to store decimals, which enables
+numeric functions such as @code{+}, @code{-}, etc., to operate on decimal
+numbers in a natural way.")
+      (license license:bsd-2))))
+
+(define-public cl-wu-decimal
+  (sbcl-package->cl-source-package sbcl-wu-decimal))
+
+(define-public ecl-wu-decimal
+  (sbcl-package->ecl-package sbcl-wu-decimal))
+
 (define-public sbcl-cl-num-utils
   (let ((commit "97a88cd34540acf52e872a82ebfef3da0a34fa12")
         (revision "1"))
