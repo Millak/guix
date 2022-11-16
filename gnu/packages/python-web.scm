@@ -953,14 +953,14 @@ other HTTP libraries.")
 (define-public httpie
   (package
     (name "httpie")
-    (version "3.1.0")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "httpie" version))
        (sha256
         (base32
-         "1npyfvrq0l56bil8rnpj78mav378mxx4zcqzq1jjx4aap1020jif"))))
+         "1v736y2h7lcyrnxs9y5sf4xwzgll7pc2s6r3ny929mm8lcn07h69"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run them.
@@ -973,6 +973,7 @@ other HTTP libraries.")
            python-pysocks
            python-charset-normalizer
            python-defusedxml
+           python-rich
            python-multidict))
     (home-page "https://httpie.io")
     (synopsis "cURL-like tool for humans")
