@@ -17327,6 +17327,42 @@ implementation, for example drawing calls of GUI applications.")
 (define-public cl-trivial-main-thread
   (sbcl-package->cl-source-package sbcl-trivial-main-thread))
 
+(define-public sbcl-moira
+  (let ((commit "21f1cfd5942fcaea2ed2e4f6055b2a5a39ac4c6e")
+        (revision "0"))
+    (package
+      (name "sbcl-moira")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ruricolist/moira")
+               (commit commit)))
+         (file-name (git-file-name "cl-moira" version))
+         (sha256
+          (base32 "0r6hvq8j04y1i85f8jwhhafylgfrkg8c1z5746nsbv0v0348sf5h"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-osicat
+             sbcl-serapeum
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/ruricolist/moira")
+      (synopsis "Monitor and restart background threads")
+      (description
+       "Moira is a library for monitoring and, if necessary, restarting
+long-running threads.  In principle, it is like an in-Lisp process supervisor.")
+      (license license:expat))))
+
+(define-public cl-moira
+  (sbcl-package->cl-source-package sbcl-moira))
+
+(define-public ecl-moira
+  (sbcl-package->ecl-package sbcl-moira))
+
 (define-public sbcl-cl-package-locks
   (let ((commit "96a358ede7cef416d61d2f699e724fe1d9de602c")
         (revision "1"))
