@@ -369,7 +369,7 @@ between various shells or commands.")
 (define-public trash-cli
   (package
     (name "trash-cli")
-    (version "0.21.10.24")
+    (version "0.22.10.20")
     (source
      (origin
        (method git-fetch)
@@ -379,7 +379,7 @@ between various shells or commands.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01is32lk6prwhajvlmgn3xs4fcpmiqivizcqkj9k80jx6mqjifzs"))))
+         "0hkn0hmwrag56g447ddqapib0s399a6b4a9wlliif6zmirxlww9n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -410,6 +410,8 @@ between various shells or commands.")
                (invoke "pytest")))))))
     (native-inputs
      (list python-pytest
+           python-parameterized
+           python-flexmock
            python-mock
            python-six))
     (inputs (list coreutils))
