@@ -382,32 +382,31 @@ between various shells or commands.")
          "0hkn0hmwrag56g447ddqapib0s399a6b4a9wlliif6zmirxlww9n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-path-constants
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc (assoc-ref inputs "libc"))
-                   (coreutils (assoc-ref inputs "coreutils")))
-               (substitute* "trashcli/list_mount_points.py"
-                 (("\"/lib/libc.so.6\".*")
-                  (string-append "\"" libc "/lib/libc.so.6\"\n"))
-                 (("\"df\"")
-                  (string-append "\"" coreutils "/bin/df\""))))))
-         (add-before 'build 'fix-setup.py
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (substitute* "setup.py"
-                 (("add_script\\('")
-                  (string-append "add_script('" bin "/" ))))))
-         ;; Whenever setup.py is invoked, scripts in out/bin/ are
-         ;; replaced. Thus we cannot invoke setup.py for testing.
-         ;; Upstream also uses pytest.
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-path-constants
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (search-input-file inputs "lib/libc.so.6"))
+                         (df #$(file-append coreutils "/bin/df")))
+                     (substitute* "trashcli/list_mount_points.py"
+                       (("\"/lib/libc.so.6\".*")
+                        (string-append "\"" libc "\"\n"))
+                       (("\"df\"")
+                        (string-append "\"" df "\""))))))
+               (add-before 'build 'fix-setup.py
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (substitute* "setup.py"
+                       (("add_script\\('")
+                        (string-append "add_script('" bin "/" ))))))
+               ;; Whenever setup.py is invoked, scripts in out/bin/ are
+               ;; replaced. Thus we cannot invoke setup.py for testing.
+               ;; Upstream also uses pytest.
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest")))))))
     (native-inputs
      (list python-pytest
            python-parameterized
