@@ -8934,8 +8934,8 @@ doesn't support them.")
   (sbcl-package->ecl-package sbcl-cl-interpol))
 
 (define-public sbcl-symbol-munger
-  (let ((commit "97598d4c3c53fd5da72ab78908fbd5d8c7a13416")
-        (revision "1"))
+  (let ((commit "e96558e8315b8eef3822be713354787b2348b25e")
+        (revision "2"))
     (package
       (name "sbcl-symbol-munger")
       (version (git-version "0.0.1" revision commit))
@@ -8945,10 +8945,10 @@ doesn't support them.")
          (uri (git-reference
                (url "https://github.com/AccelerationNet/symbol-munger")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-symbol-munger" version))
          (sha256
           (base32
-           "0y8jywjy0ldyhp7bxf16fdvdd2qgqnd7nlhlqfpfnzxcqk4xy1km"))))
+           "16fshnxp9212503z1vjlmx5pafv14bzpihn486x1ljakqjigfnfz"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
