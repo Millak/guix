@@ -790,6 +790,9 @@ Library.")
                   (upstream-name . "openmp")))
     (license license:expat)))
 
+(define-public clang-toolchain-15
+  (make-clang-toolchain clang-15 libomp-15))
+
 (define-public libomp-14
   (package
     (inherit libomp-15)
