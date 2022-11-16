@@ -709,6 +709,33 @@ allows transformation of geographic coordinates from one projection and/or
 datum to another.")
     (license license:gpl2)))
 
+(define-public r-rorcid
+  (package
+    (name "r-rorcid")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rorcid" version))
+              (sha256
+               (base32
+                "1d0s5w48ksyj152nc4xq5w0nsimab8jc5fgspdwnbas2g8a52igr"))))
+    (properties `((upstream-name . "rorcid")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-crul
+                             r-data-table
+                             r-fauxpas
+                             r-httr
+                             r-jsonlite
+                             r-tibble
+                             r-xml2))
+    (home-page "https://github.com/ropensci/rorcid")
+    (synopsis "Interface to the @url{Orcid.org, https://orcid.org} API")
+    (description
+     "This package provides an API for @url{Orcid.org, https://orcid.org}.
+Functions include searching for people, searching by DOI, or searching by
+Orcid ID.")
+    (license license:expat)))
+
 (define-public r-waldo
   (package
     (name "r-waldo")
