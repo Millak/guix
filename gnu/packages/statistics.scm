@@ -1236,25 +1236,28 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.3.6")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "1aa377jdfajj8ld2fh159y8havlibsr4pjisf6mkzk8g5awlxjxz"))))
+        (base32 "0gj7n2y8msnmhk3x4r481biknvn2dqhahwazfqwr8f3lz599wbx8"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-digest
+     (list r-cli
+           r-digest
            r-glue
            r-gtable
            r-isoband
+           r-lifecycle
            r-mass
            r-mgcv
            r-tibble
            r-rlang
            r-scales
            r-svglite ; Needed for 'ggsave'
+           r-vctrs
            r-withr))
     (native-inputs
      (list r-knitr))
