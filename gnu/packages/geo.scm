@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +115,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sdl)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
@@ -2770,3 +2773,106 @@ using third-party geocoders and other data sources.")
 reconstructions of geological and paleogeographic features through geological
 time.  Interactively visualize vector, raster and volume data.")
     (license license:gpl2+)))
+
+(define-public navit
+  (package
+    (name "navit")
+    (version "0.5.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/navit-gps/navit")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1jhlif0sc5m8wqb5j985g1xba2ki7b7mm14pkvzdghjd0q0gf15s"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; There are no tests
+      #:tests? #f
+      ;; With -DSAMPLE_MAP=TRUE (the default), it tries to download a
+      ;; map during the build process.
+      #:configure-flags #~(list "-DSAMPLE_MAP=FALSE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after
+              'unpack 'patch-navit-config
+            (lambda _
+              ;; For now this package only supports SDL, so if we keep
+              ;; the configuration as-is, Navit doesn't start.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (("<graphics type=\"gtk_drawing_area\"/>")
+                 "<graphics type=\"sdl\"/>"))
+              ;; Users are expected to be able to add XML files inside
+              ;; $NAVIT_SHAREDIR, however that directory is in the store.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (("<xi:include href=\"\\$NAVIT_SHAREDIR/maps/\\*\\.xml\"/>")
+                 "<xi:include href=\"$NAVIT_USER_DATADIR/maps/*.xml\"/>"))
+              ;; Navit also works without GPS but in that case there is
+              ;; no automatic zooming, so we need zoom buttons to be able
+              ;; to manually zoom in or out.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (((string-append
+                   "<osd enabled=\"no\" type=\"button\" x=\"-96\" y=\"-96\" "
+                   "command=\"zoom_in()"))
+                 (string-append
+                  "<osd enabled=\"yes\" type=\"button\" x=\"-96\" y=\"-96\" "
+                  "command=\"zoom_in()"))
+                (((string-append
+                   "<osd enabled=\"no\" type=\"button\" x=\"0\" y=\"-96\" "
+                   "command=\"zoom_out()"))
+                 (string-append
+                  "<osd enabled=\"yes\" type=\"button\" x=\"0\" y=\"-96\" "
+                  "command=\"zoom_out()\" src=\"zoom_out.png\"/>")))))
+          (add-before
+              'build 'set-cache
+            ;; During the build, svg icons are converted in different
+            ;; formats, and this needs XDG_CACHE_HOME to work.
+            (lambda _
+              (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache"))))))
+    (inputs (list dbus-glib
+                  espeak
+                  freeglut
+                  freeimage
+                  freetype
+                  glib
+                  gettext-minimal
+                  gpsd
+                  gdk-pixbuf
+                  imlib2
+                  python
+                  sdl
+                  sdl-image))
+    (native-inputs (list fontconfig
+                         (librsvg-for-system)
+                         pkg-config))
+    (home-page "https://www.navit-project.org")
+    (synopsis "Car navigation system with routing engine that uses vector maps data")
+    (description "Navit is a car navigation system with a routing engine.
+
+It is meant to work with touchscreen devices, but it also works
+without a touchscreen.  It also supports text to speech.
+
+It can be configured extensively through its own configuration file
+format.  For instance we can configure the graphical interface, and
+which map data is to be displayed at which zoom level.
+
+It supports different routing profiles: bike, car, car_avoid_toll,
+car_pedantic, car_shortest, horse, pedestrian, truck.
+
+It can use gpsd or NMEA GPS directly to get position data.  It also
+works without GPS: in this case users can also enter position data
+directly.
+
+It can also be used to log GPS data to files using the GPX or NMEA
+formats, or to replay NMEA data.
+
+For maps, it can uses its own \"binfile\" map format, or Garmin map
+file format, and data from OpenStreetMap, Garmin maps, Marco Polo
+Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
+    (license license:gpl2)))
