@@ -633,7 +633,7 @@ main()
     _msg "${INF}system is ${ARCH_OS}"
 
     umask 0022
-    tmp_path="$(mktemp -t -d guix.XXX)"
+    tmp_path="$(mktemp -t -d guix.XXXXXX)"
 
     if [ -z "${GUIX_BINARY_FILE_NAME}" ]; then
         guix_get_bin_list "${GNU_URL}"
