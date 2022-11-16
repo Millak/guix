@@ -615,6 +615,50 @@ attacks, performing pitch detection, tapping the beat and producing MIDI
 streams from live audio.")
     (license license:gpl3+)))
 
+(define-public dsp
+  (package
+    (name "dsp")
+    (version "1.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/bmc0/dsp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0iksmianwig7w78hqip2a8yy6r63sv8cv9pis8qxny6w1xap6njb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;no tests
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              (invoke "sh" "configure"
+                      (string-append "--prefix=" #$output)
+                      "--disable-pulse"))))))
+    (inputs
+     (list alsa-lib
+           ao
+           ffmpeg
+           ladspa
+           libmad
+           libsndfile
+           fftw
+           fftwf
+           zita-convolver))
+    (native-inputs
+     (list libtool pkg-config))
+    (home-page "https://github.com/bmc0/dsp")
+    (synopsis "Audio processing program with an interactive mode")
+    (description
+     "dsp is an audio processing program with an interactive mode.")
+    (license license:isc)))
+
 (define-public qm-dsp
   (package
     (name "qm-dsp")
