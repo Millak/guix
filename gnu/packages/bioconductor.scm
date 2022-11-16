@@ -506,6 +506,31 @@ ID and species.  It is used by functions in the GenomeInfoDb package.")
 information about the latest version of the Gene Ontologies.")
     (license license:artistic2.0)))
 
+(define-public r-hdo-db
+  (package
+    (name "r-hdo-db")
+    (version "0.99.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "HDO.db" version 'annotation))
+              (sha256
+               (base32
+                "14ngyxailmxrbxqqi9m7mchqcvchmbg7zm34i8a927b20s6z4z61"))))
+    (properties `((upstream-name . "HDO.db")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-annotationdbi))
+    (native-inputs
+     (list r-knitr))
+    (home-page "https://bioconductor.org/packages/HDO.db")
+    (synopsis "Annotation maps describing the entire Human Disease Ontology")
+    (description
+     "This package provides a set of annotation maps describing the entire
+Human Disease Ontology.  The annotation data comes from
+@url{Humam Disease Ontology repository,
+https://github.com/DiseaseOntology/HumanDiseaseOntology/tree/main/src/ontology}.")
+    (license license:artistic2.0)))
+
 (define-public r-homo-sapiens
   (package
     (name "r-homo-sapiens")
