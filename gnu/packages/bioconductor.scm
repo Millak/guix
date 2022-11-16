@@ -14848,6 +14848,28 @@ enrichment analysis and several functions for visualization.")
 microarray data.")
     (license license:gpl2+)))
 
+(define-public r-biocbaseutils
+  (package
+    (name "r-biocbaseutils")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "BiocBaseUtils" version))
+              (sha256
+               (base32
+                "0p6siidrx8q6qr36fc67hzi091m2zwik3zngj27yllbfz6sn5k69"))))
+    (properties `((upstream-name . "BiocBaseUtils")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/BiocBaseUtils")
+    (synopsis "General utility functions for developing Bioconductor packages")
+    (description
+     "The package provides utility functions related to package development.
+These include functions that replace slots, and selectors for show methods.
+It aims to coalesce the various helper functions often re-used throughout the
+Bioconductor ecosystem.")
+    (license license:artistic2.0)))
+
 (define-public r-bioccasestudies
   (package
     (name "r-bioccasestudies")
