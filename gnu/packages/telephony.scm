@@ -979,3 +979,54 @@ TURN (Traversal Using Relays around NAT) server protocols.")
 @end itemize")
     (home-page "https://osmocom.org/projects/libosmocore/wiki/Libosmocore")
     (license license:gpl2+)))
+
+(define-public xgoldmon
+  ;; There are no releases nor tags.
+  (let ((revision "1")
+        (commit "f2d5372acee4e492f31f6ba8b850cfb48fbbe478"))
+    (package
+      (name "xgoldmon")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/2b-as/xgoldmon")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dvgagqsbwq1sd5qjzk0hd9rxnv2vnmhazvv5mz4pj7v467amgdz"))))
+      (arguments
+       (list #:tests? #f ;no tests
+             #:make-flags #~(list (string-append "CC="
+                                                 #$(cc-for-target)))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure)
+                          (replace 'install
+                            (lambda _
+                              (let ((bin (string-append #$output "/bin"))
+                                    (doc (string-append #$output "/share/doc")))
+                                (install-file "xgoldmon" bin)
+                                (install-file "README" doc)
+                                (install-file
+                                 "screenshot-mtsms-while-in-a-call.png" doc)))))))
+      (inputs (list libosmocore lksctp-tools talloc))
+      (native-inputs (list pkg-config))
+      (build-system gnu-build-system)
+      (synopsis "Displays cellular network protocol traces in Wireshark")
+      (description
+       "xgoldmon is an utility that converts the USB logging mode
+messages that various Intel/Infineon XGold modems send to the USB port to
+gsmtap.  It then then sends them to a given IP address to enable users
+to view cellular network protocol traces in Wireshark.
+
+It supports the following smartphones:
+@itemize
+@item Samsung Galaxy S4, GT-I9500 variant
+@item Samsung Galaxy SIII, GT-I9300 variant
+@item Samsung Galaxy Nexus, GT-I9250 variant
+@item Samsung Galaxy SII, GT-I9100 variant
+@item Samsung Galaxy Note II, GT-N7100 variant
+@end itemize")
+      (home-page "https://github.com/2b-as/xgoldmon")
+      (license license:gpl2+))))
