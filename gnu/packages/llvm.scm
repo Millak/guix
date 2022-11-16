@@ -755,10 +755,44 @@ of programming tools as well as libraries with equivalent functionality.")
       (base32
        "0rhq4wkmvr369nkk059skzzw7jx6qhzqhmiwmqg4sp66avzviwvw")))))
 
+(define-public libomp-15
+  (package
+    (name "libomp")
+    (version (package-version llvm-15))
+    (source (llvm-monorepo version))
+    (build-system cmake-build-system)
+    ;; XXX: Note this gets built with GCC because building with Clang itself
+    ;; fails (missing <atomic>, even when libcxx is added as an input.)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DLIBOMP_USE_HWLOC=ON"
+              "-DOPENMP_TEST_C_COMPILER=clang"
+              "-DOPENMP_TEST_CXX_COMPILER=clang++")
+      #:test-target "check-libomp"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir-to-source-and-install-license
+            (lambda _
+              (chdir "openmp")
+              (install-file "LICENSE.TXT"
+                            (string-append #$output "/share/doc")))))))
+    (native-inputs (list clang-15 llvm-15 perl pkg-config python))
+    (inputs (list `(,hwloc "lib")))
+    (home-page "https://openmp.llvm.org")
+    (synopsis "OpenMP run-time support library")
+    (description "This package provides the run-time support library developed
+by the LLVM project for the OpenMP multi-theaded programming extension.  This
+package notably provides @file{libgomp.so}, which is has a binary interface
+compatible with that of libgomp, the GNU Offloading and Multi Processing
+Library.")
+    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)
+                  (upstream-name . "openmp")))
+    (license license:expat)))
 
 (define-public libomp-14
   (package
-    (name "libomp")
+    (inherit libomp-15)
     (version (package-version llvm-14))
     (source (origin
               (method url-fetch)
@@ -767,36 +801,19 @@ of programming tools as well as libraries with equivalent functionality.")
                (base32
                 "07zby3gwy5c8jssabrhjk3nsxlwipnm6sk4dsvck1l5d0br1ywsg"))
               (file-name (string-append "libomp-" version ".tar.xz"))))
-    (build-system cmake-build-system)
-    ;; XXX: Note this gets built with GCC because building with Clang itself
-    ;; fails (missing <atomic>, even when libcxx is added as an input.)
     (arguments
-     (list
-       #:configure-flags #~(list "-DLIBOMP_USE_HWLOC=ON"
-                                 "-DOPENMP_TEST_C_COMPILER=clang"
-                                 "-DOPENMP_TEST_CXX_COMPILER=clang++")
-       #:test-target "check-libomp"
-       #:phases
-       #~(modify-phases %standard-phases
-         (add-after 'unpack 'chdir-to-source-and-install-license
-           (lambda _
-             (chdir #$(string-append "../openmp-" version ".src"))
-             (install-file "LICENSE.TXT"
-                           (string-append #$output "/share/doc")))))))
+     (substitute-keyword-arguments (package-arguments libomp-15)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'chdir-to-source-and-install-license
+              (lambda _
+                (chdir #$(string-append "../openmp-" version ".src"))
+                (install-file "LICENSE.TXT"
+                              (string-append #$output "/share/doc"))))))))
     (native-inputs
-     (list clang-14 llvm-14 perl pkg-config python))
-    (inputs
-     (list `(,hwloc "lib")))
-    (home-page "https://openmp.llvm.org")
-    (synopsis "OpenMP run-time support library")
-    (description
-     "This package provides the run-time support library developed by the LLVM
-project for the OpenMP multi-theaded programming extension.  This package
-notably provides @file{libgomp.so}, which is has a binary interface compatible
-with that of libgomp, the GNU Offloading and Multi Processing Library.")
-    (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)
-                  (upstream-name . "openmp")))
-    (license license:expat)))
+     (modify-inputs (package-native-inputs libomp-15)
+       (replace "clang" clang-14)
+       (replace "llvm" llvm-14)))))
 
 (define-public clang-toolchain-14
   (make-clang-toolchain clang-14 libomp-14))
