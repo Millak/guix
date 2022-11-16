@@ -67,6 +67,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages libusb)
   #:use-module (gnu packages linphone)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages multiprecision)
@@ -79,6 +80,8 @@
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages samba)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
   #:use-module (gnu packages tls)
@@ -926,3 +929,53 @@ gateway.  It implements the STUN (Session Traversal Utilities for NAT) and
 TURN (Traversal Using Relays around NAT) server protocols.")
     (home-page "https://github.com/coturn/coturn")
     (license license:bsd-3)))
+
+(define-public libosmocore
+  (package
+    (name "libosmocore")
+    (version "1.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitea.osmocom.org/osmocom/libosmocore.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "147ld3xwb9k6vb56hk8q8jkcb5ahxl66v87vdhazb6rxj3frsjqf"))))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-bin-sh
+                          (lambda _
+                            (substitute* '("git-version-gen" "src/exec.c")
+                              (("/bin/sh")
+                               (which "sh"))))))))
+    (inputs (list gnutls
+                  libmnl
+                  libusb
+                  lksctp-tools
+                  pcsc-lite
+                  talloc))
+    (native-inputs (list autoconf
+                         automake
+                         coreutils
+                         doxygen
+                         libtool
+                         pkg-config
+                         python))
+    (build-system gnu-build-system)
+    (synopsis "Libraries for sharing common code between osmocom projects")
+    (description
+     "Libosmocore includes several libraries:
+@itemize
+@item libosmocore: general-purpose functions
+@item libosmovty: interactive VTY command-line interface
+@item libosmogsm: definitions and helper code related to GSM protocols
+@item libosmoctrl: shared implementation of the Osmocom control interface
+@item libosmogb: implementation of the Gb interface with its NS/BSSGP protocols
+@item libosmocodec: implementation of GSM voice codecs
+@item libosmocoding: implementation of GSM 05.03 burst transcoding functions
+@item libosmosim: infrastructure to interface with SIM/UICC/USIM cards
+@end itemize")
+    (home-page "https://osmocom.org/projects/libosmocore/wiki/Libosmocore")
+    (license license:gpl2+)))
