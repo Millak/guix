@@ -29,6 +29,7 @@
  (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
         (title
          (en "New @option{--symlink} option for @command{guix shell}")
+         (de "Neue Option @option{--symlink} für @command{guix shell}")
          (fr "Nouvelle option @option{--symlink} pour @command{guix shell}"))
         (body
          (en "The @command{guix shell} command has a new
@@ -36,6 +37,11 @@
 @option{--container} (or @option{-C}) option to create a symbolic link inside
 the container.  Run @command{info \"(guix) Invoking guix shell\"} for more
 information.")
+         (de "Der Befehl @command{guix shell} verfügt jetzt über eine neue
+Befehlszeilenoption @option{--symlink} (oder @option{-S}), die zusammen mit der
+Option @option{--container} (oder @option{-C}) benutzt werden kann, um eine
+symbolische Verknüpfung im Container anzulegen.  Führen Sie
+@command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr zu erfahren.")
          (fr "La commande @command{guix shell} dispose d'une nouvelle option,
 @option{--symlink} (ou @option{-S}), qui doit être utilisée en conjonction
 avec l'option @option{--container} (ou @option{-C}) pour créer un lien
