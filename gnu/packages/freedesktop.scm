@@ -2161,14 +2161,14 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
 (define-public udiskie
   (package
     (name "udiskie")
-    (version "2.3.3")
+    (version "2.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "udiskie" version))
        (sha256
         (base32
-         "0sagdmsc5km32h3jvgj843p8bicrrgfz26qhl04ibxmas6725zr0"))))
+         "0z0gk8l6rv4np29kfdalmy4q3900005sxhjg0jz1aa8irdcsp1qz"))))
     (build-system python-build-system)
     (native-inputs
      `(("asciidoc" ,asciidoc)
@@ -2195,8 +2195,7 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
              (let ((out (assoc-ref outputs "out"))
                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append out "/bin/udiskie")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (home-page "https://github.com/coldfix/udiskie")
     (synopsis "Automounter for removable media")
     (description
