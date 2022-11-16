@@ -20581,6 +20581,37 @@ numbers in a natural way.")
 (define-public ecl-wu-decimal
   (sbcl-package->ecl-package sbcl-wu-decimal))
 
+(define-public sbcl-infix-math
+  (let ((commit "f5155ae9709e518061ace79887d78f8e79c61cac")
+        (revision "0"))
+    (package
+      (name "sbcl-infix-math")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ruricolist/infix-math")
+               (commit commit)))
+         (file-name (git-file-name "cl-infix-math" version))
+         (sha256
+          (base32 "1h6p254xl793wfq3qla5y95k6zimy477f8brblx6ran3rg3bydbg"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria sbcl-parse-number sbcl-serapeum sbcl-wu-decimal))
+      (home-page "https://github.com/ruricolist/infix-math")
+      (synopsis "Extensible infix syntax for math in Common Lisp")
+      (description
+       "Infix-Math is a library that provides a special-purpose syntax for
+transcribing mathematical formulas into Lisp.")
+      (license license:expat))))
+
+(define-public cl-infix-math
+  (sbcl-package->cl-source-package sbcl-infix-math))
+
+(define-public ecl-infix-math
+  (sbcl-package->ecl-package sbcl-infix-math))
+
 (define-public sbcl-cl-num-utils
   (let ((commit "97a88cd34540acf52e872a82ebfef3da0a34fa12")
         (revision "1"))
