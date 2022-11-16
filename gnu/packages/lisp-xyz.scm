@@ -20795,6 +20795,42 @@ density, distribution and quantiles for these distributions.")
 (define-public ecl-cl-random
   (sbcl-package->ecl-package sbcl-cl-random))
 
+(define-public sbcl-random-sample
+  (let ((commit "46b70374ed796b84ea003e83c1db97b0caf97e22")
+        (revision "0"))
+    (package
+      (name "sbcl-random-sample")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ruricolist/random-sample")
+               (commit commit)))
+         (file-name (git-file-name "cl-random-sample" version))
+         (sha256
+          (base32 "0nhgca6wf754wbg91h40gx7xq22rawg2pn6l7h02wv1jxac4q6nh"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-infix-math
+             sbcl-named-readtables
+             sbcl-serapeum))
+      (home-page "https://github.com/ruricolist/random-sample")
+      (synopsis "Take a random sample from a sequence")
+      (description
+       "Random-Sample is a library for reliably taking a random sample from a
+sequence.")
+      (license license:expat))))
+
+(define-public cl-random-sample
+  (sbcl-package->cl-source-package sbcl-random-sample))
+
+(define-public ecl-random-sample
+  (sbcl-package->ecl-package sbcl-random-sample))
+
 (define-public sbcl-mgl-gpr
   (let ((commit "cb6ce51e2f87bf1d589f3703c13eea6e25780afe")
         (revision "1"))
