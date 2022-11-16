@@ -32,6 +32,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** ‘guix graph’ has a new ‘--max-depth’ option
 *** ‘guix deploy’ has a new ‘--execute’ option
 *** ‘guix shell’ has a new ‘--emulate-fhs’ option
+*** ‘guix shell’ has a new ‘--symlink’ option
 *** ‘--with-commit’ option now accepts strings returned by ‘git describe’
 *** Align tabular data output by commands like ‘guix package --list-available’
 *** Improved ‘guix import go’ importer via a new PEG parser
@@ -76,6 +77,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** The GNU Shepherd was upgraded to 0.9.2
 *** The init RAM disk honors more arguments—e.g. ‘root’ and ‘rootflags’
 *** ‘guix system image’ can now generate WSL images
+*** The mcron task scheduler logs now contain the jobs exit statuses
 ** Programming interfaces
 *** Package input fields can now plain package lists
 *** G-expressions can now be used in build phases
