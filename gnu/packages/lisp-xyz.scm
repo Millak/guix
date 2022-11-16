@@ -14717,6 +14717,37 @@ for debugging and profiling real world applications.")
 (define-public ecl-supertrace
   (sbcl-package->ecl-package sbcl-supertrace))
 
+(define-public sbcl-flamegraph
+  (let ((commit "1ed7a718eae88bd35e1649a1c716d46c59dc0a24")
+        (revision "0"))
+    (package
+      (name "sbcl-flamegraph")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               ;; This is a fork with fixes for latest SBCL.
+               (url "https://github.com/ruricolist/cl-flamegraph")
+               (commit commit)))
+         (file-name (git-file-name "cl-flamegraph" version))
+         (sha256
+          (base32 "1aj7hhvav9j9c66ssy11ry3p6xqb912yafi91g6sin6pdx84c2lw"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria))
+      (home-page "https://github.com/40ants/cl-flamegraph")
+      (synopsis "Generate flamegraphs of Common Lisp code")
+      (description
+       "@code{cl-flamegraph} is a wrapper around SBCL's statistical profiler.
+It saves stack traces of profiled code in a form suitable for processing by
+the @command{flamegraph.pl} script, which is available in the Guix package
+@code{flamegraph}.")
+      (license license:bsd-3))))
+
+(define-public cl-flamegraph
+  (sbcl-package->cl-source-package sbcl-flamegraph))
+
 (define-public sbcl-trivial-benchmark
   (let ((commit "42d76733dd2e873471c6f1e27d39113293f7dd5c"))
     (package
