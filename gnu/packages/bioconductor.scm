@@ -7991,14 +7991,14 @@ large datasets, including support for on-disk data representation.")
 (define-public r-multtest
   (package
     (name "r-multtest")
-    (version "2.52.0")
+    (version "2.54.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "multtest" version))
        (sha256
         (base32
-         "037wcmwk1wvhjxgmlvnk289pkwishi1753ajkmy9x14xlmldix82"))))
+         "0ciz0fl0pzm4hjqw8af32s540lwjbkwvwnzgbfwadax40hgjs0g7"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-survival r-biocgenerics r-biobase r-mass))
