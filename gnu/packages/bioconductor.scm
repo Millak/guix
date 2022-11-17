@@ -17228,14 +17228,14 @@ regions or annotations of your choice from BigWig files.")
 (define-public r-beclear
   (package
     (name "r-beclear")
-    (version "2.12.0")
+    (version "2.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BEclear" version))
        (sha256
         (base32
-         "0x43yfnmb2d782g3g52nqdfs90i3zrrlqz8qy3ybmgv5f8n92p15"))))
+         "05znaj2fialxi937mhj2dlrm3v4j2wgqafcy78qrkz7xxn13pr01"))))
     (properties `((upstream-name . "BEclear")))
     (build-system r-build-system)
     (propagated-inputs
@@ -17244,6 +17244,7 @@ regions or annotations of your choice from BigWig files.")
            r-data-table
            r-dixontest
            r-futile-logger
+           r-ids
            r-matrix
            r-rcpp
            r-rdpack))
