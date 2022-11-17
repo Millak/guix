@@ -2278,7 +2278,7 @@ Format) file format decoder and encoder.")
            openexr))
     ;; These are in Requires.private of libjxl.pc.
     (propagated-inputs
-     (list google-brotli google-highway))
+     (list brotli google-highway))
     (home-page "https://github.com/libjxl/libjxl")
     (synopsis "JPEG XL image format reference implementation")
     (description "This package contains a reference implementation of JPEG XL

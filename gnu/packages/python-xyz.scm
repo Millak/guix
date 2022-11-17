@@ -439,7 +439,7 @@ easy logging and rotating to a console or a file.")
                (invoke "pytest" "--cov=logbook" "-r" "s" "tests")))))))
     (native-inputs
      (list python-cython python-mock python-pytest python-pytest-cov
-           python-google-brotli))
+           python-brotli))
     (home-page "https://github.com/getlogbook/logbook")
     (synopsis "Logbook is a logging replacement for Python")
     (description
