@@ -12247,14 +12247,14 @@ alignment tool.")
 (define-public r-sgseq
   (package
     (name "r-sgseq")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "SGSeq" version))
        (sha256
         (base32
-         "0hz45367i70wl97silnimicdvs3g41zyf8syc6igz6471wbwkxwp"))))
+         "03ddz0mpgqqb52r7wa46bcr1ybf40126pg0n0n0pv6fnbq0ifwyc"))))
     (properties `((upstream-name . "SGSeq")))
     (build-system r-build-system)
     (propagated-inputs
