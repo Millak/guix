@@ -14804,14 +14804,14 @@ symbols).")
 (define-public r-reactomepa
   (package
     (name "r-reactomepa")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ReactomePA" version))
        (sha256
         (base32
-         "1fd72m2afxbbvbgwy8knp6fiq1h561plmsh4r8a08w21ngmkz2s5"))))
+         "06994hk9nrzlgz8sby61656rdbf1r954v71djl1i7141dgw5rif2"))))
     (properties `((upstream-name . "ReactomePA")))
     (build-system r-build-system)
     (propagated-inputs
@@ -14821,6 +14821,7 @@ symbols).")
            r-ggplot2
            r-ggraph
            r-graphite
+           r-gson
            r-igraph
            r-reactome-db))
     (native-inputs
