@@ -5677,13 +5677,13 @@ of other R packages who wish to make use of HTSlib.")
 (define-public r-impute
   (package
     (name "r-impute")
-    (version "1.70.0")
+    (version "1.72.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "impute" version))
               (sha256
                (base32
-                "11b0z7py0im6y43k55xpzz5jnvc0ram9rk3n1n4mwhvs0vhy39r2"))))
+                "0862mpbmznizcq5bgnp85dl9q0bip76jkga45gssdrv90wsi2192"))))
     (native-inputs
      (list gfortran))
     (build-system r-build-system)
