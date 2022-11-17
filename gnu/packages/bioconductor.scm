@@ -6858,13 +6858,13 @@ different experiment.")
 (define-public r-scry
   (package
     (name "r-scry")
-    (version "1.8.0")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "scry" version))
               (sha256
                (base32
-                "16mj21r91jy8ircdz8rfrdli9gjy0hrx90kf6ghs305d3d4dl193"))))
+                "0vx6fi8hnxms6d3hm3qxkrdx1qpyd7vhwdk7ds98ads070miqr21"))))
     (properties `((upstream-name . "scry")))
     (build-system r-build-system)
     (propagated-inputs
