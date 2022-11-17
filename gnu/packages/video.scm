@@ -849,7 +849,7 @@ television and DVD.  It is also known as AC-3.")
 (define-public libaom
   (package
     (name "libaom")
-    (version "3.3.0")
+    (version "3.5.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -858,7 +858,7 @@ television and DVD.  It is also known as AC-3.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "024vhsx7bw9kajk65hhh5vmqrja0h33rmlcpngsj3yg4p8l29943"))))
+                "0arn8a88jz4mj69n8cs4qmrdjwhbvzsqgnx20wr9mq01b06kqich"))))
     (build-system cmake-build-system)
     (native-inputs
      (list perl pkg-config python)) ; to detect the version
@@ -866,7 +866,6 @@ television and DVD.  It is also known as AC-3.")
      `(#:tests? #f                      ; downloads many video clips
        #:configure-flags
        (list "-DBUILD_SHARED_LIBS=YES"
-             "-DENABLE_PIC=TRUE"
              "-DAOM_TARGET_CPU=generic"
              (string-append "-DCMAKE_INSTALL_PREFIX="
                             (assoc-ref %outputs "out")))
