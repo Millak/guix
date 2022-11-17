@@ -15471,47 +15471,50 @@ abbreviation of the mode line displays (lighters) of minor modes.")
       (license license:gpl3+))))
 
 (define-public emacs-use-package
-  (package
-    (name "emacs-use-package")
-    (version "2.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jwiegley/use-package")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "088kl3bml0rs5bkfymgzr15ram9qvy66h1kaisrbkynh0yxvf8g9"))))
-    (build-system emacs-build-system)
-    (native-inputs
-     (list texinfo))
-    (propagated-inputs
-     (list emacs-diminish))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "use-package-tests.el"
-                        "-f" "ert-run-tests-batch-and-exit")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'install-manual
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (info-dir (string-append out "/share/info")))
-               (mkdir-p info-dir)
-               (install-file "use-package.info" info-dir)
-               #t)))
-         (add-before 'install-manual 'build-manual
-           (lambda _
-             (invoke "makeinfo" "use-package.texi")
-             #t)))))
-    (home-page "https://github.com/jwiegley/use-package")
-    (synopsis "Declaration for simplifying your .emacs")
-    (description "The use-package macro allows you to isolate package
+  ;; XXX: Upstream did not tag latest release.  Using commit matching exact
+  ;; version bump.
+  (let ((commit "942617d26e11d80d879ff23d2a8b477bd074a734"))
+    (package
+      (name "emacs-use-package")
+      (version "2.4.4")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jwiegley/use-package")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zpf9xv65jg813k90x8g9k4lja896nqfh48pjinicmz1rn0rf51a"))))
+      (build-system emacs-build-system)
+      (native-inputs
+       (list texinfo))
+      (propagated-inputs
+       (list emacs-diminish))
+      (arguments
+       `(#:tests? #t
+         #:test-command '("emacs" "--batch"
+                          "-l" "use-package-tests.el"
+                          "-f" "ert-run-tests-batch-and-exit")
+         #:phases
+         (modify-phases %standard-phases
+           (add-before 'install 'install-manual
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (info-dir (string-append out "/share/info")))
+                 (mkdir-p info-dir)
+                 (install-file "use-package.info" info-dir)
+                 #t)))
+           (add-before 'install-manual 'build-manual
+             (lambda _
+               (invoke "makeinfo" "use-package.texi")
+               #t)))))
+      (home-page "https://github.com/jwiegley/use-package")
+      (synopsis "Declaration for simplifying your .emacs")
+      (description "The use-package macro allows you to isolate package
 configuration in your @file{.emacs} file in a way that is both
 performance-oriented and tidy.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-leaf
   (package
