@@ -52,8 +52,9 @@
       ;; Specify the absolute location of xterm, as the user experience sucks
       ;; when no terminal is available (can't consult help with 'C-t ?', for
       ;; example).
-      #:configure-flags #~(list (string-append "--with-xterm="
-                                               #$(this-package-input "xterm")))
+      #:configure-flags
+      #~(list (string-append "--with-xterm="
+                             (search-input-file %build-inputs "bin/xterm")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-xsession
