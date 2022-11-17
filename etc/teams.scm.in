@@ -40,6 +40,23 @@
              (guix ui)
              (git))
 
+(define-record-type <regexp*>
+  (%make-regexp* pat flag rx)
+  regexp*?
+  (pat regexp*-pattern)
+  (flag regexp*-flag)
+  (rx regexp*-rx))
+
+;;; Work around regexp implementation.
+;;; This record allows to track the regexp pattern and then display it.
+(define* (make-regexp* pat #:optional (flag regexp/extended))
+  "Alternative to `make-regexp' producing annotated <regexp*> objects."
+  (%make-regexp* pat flag (make-regexp pat flag)))
+
+(define (regexp-exec* rx* str)
+  "Execute the RX* regexp, a <regexp*> object."
+  (regexp-exec (regexp*-rx rx*) str))
+
 (define-record-type <team>
   (make-team id name description members scope)
   team?
@@ -100,7 +117,7 @@
         (list "gnu/packages/django.scm"
               "gnu/packages/jupyter.scm"
               ;; Match haskell.scm and haskell-*.scm.
-              (make-regexp "^gnu/packages/python(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
               "gnu/packages/tryton.scm"
               "guix/build/pyproject-build-system.scm"
@@ -120,7 +137,7 @@ the haskell-build-system."
         #:scope
         (list "gnu/packages/dhall.scm"
               ;; Match haskell.scm and haskell-*.scm.
-              (make-regexp "^gnu/packages/haskell(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/haskell(-.+|)\\.scm$")
               "gnu/packages/purescript.scm"
               "guix/build/haskell-build-system.scm"
               "guix/build-system/haskell.scm"
@@ -187,7 +204,7 @@ the \"texlive\" importer."
         #:name "Julia team"
         #:description
         "The Julia language, Julia packages, and the julia-build-system."
-        #:scope (list (make-regexp "^gnu/packages/julia(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/julia(-.+|)\\.scm$")
                       "guix/build/julia-build-system.scm"
                       "guix/build-system/julia.scm")))
 
@@ -216,14 +233,14 @@ importer, and the ocaml-build-system."
 and the maven-build-system."
         #:scope
         (list ;; Match java.scm and java-*.scm.
-              (make-regexp "^gnu/packages/java(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/java(-.+|)\\.scm$")
               ;; Match maven.scm and maven-*.scm
-              (make-regexp "^gnu/packages/maven(-.+|)\\.scm$")
+              (make-regexp* "^gnu/packages/maven(-.+|)\\.scm$")
               "guix/build/ant-build-system.scm"
               "guix/build/java-utils.scm"
               "guix/build/maven-build-system.scm"
               ;; The maven directory
-              (make-regexp "^guix/build/maven/")
+              (make-regexp* "^guix/build/maven/")
               "guix/build-system/ant.scm"
               "guix/build-system/maven.scm")))
 
@@ -244,7 +261,7 @@ packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
         #:description "The extensible, customizable text editor and its
 ecosystem."
         #:scope (list "gnu/packages/aux-files/emacs/guix-emacs.el"
-                      (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
+                      (make-regexp* "^gnu/packages/emacs(-.+|)\\.scm$")
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
                       "guix/build-system/emacs.scm"
@@ -258,7 +275,7 @@ ecosystem."
         #:description
         "Common Lisp and similar languages, Common Lisp packages and the
 asdf-build-system."
-        #:scope (list (make-regexp "^gnu/packages/lisp(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/lisp(-.+|)\\.scm$")
                       "guix/build/asdf-build-system.scm"
                       "guix/build/lisp-utils.scm"
                       "guix/build-system/asdf.scm")))
@@ -297,7 +314,7 @@ asdf-build-system."
 (define-team rust
   (team 'rust
         #:name "Rust"
-        #:scope (list (make-regexp "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+        #:scope (list (make-regexp* "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
                       "gnu/packages/sequoia.scm"
                       "guix/build/cargo-build-system.scm"
                       "guix/build/cargo-utils.scm"
@@ -396,9 +413,9 @@ asdf-build-system."
               "guix/upstream.scm"
               "guix/utils.scm"
               "guix/workers.scm"
-              (make-regexp "^guix/platforms/")
-              (make-regexp "^guix/scripts/")
-              (make-regexp "^guix/store/"))))
+              (make-regexp* "^guix/platforms/")
+              (make-regexp* "^guix/scripts/")
+              (make-regexp* "^guix/store/"))))
 
 (define-team games
   (team 'games
@@ -426,17 +443,17 @@ asdf-build-system."
   (team 'translations
         #:name "Translations"
         #:scope (list "etc/news.scm"
-                      (make-regexp "^po/"))))
+                      (make-regexp* "^po/"))))
 
 (define-team installer
   (team 'installer
         #:name "Installer script and system installer"
-        #:scope (list (make-regexp "^gnu/installer(\\.scm$|/)"))))
+        #:scope (list (make-regexp* "^gnu/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
         #:name "Team for \"Guix Home\""
-        #:scope (list (make-regexp "^(gnu|guix/scripts)/home(\\.scm$|/)")
+        #:scope (list (make-regexp* "^(gnu|guix/scripts)/home(\\.scm$|/)")
                       "tests/guix-home.sh"
                       "tests/home-import.scm"
                       "tests/home-services.scm")))
@@ -692,7 +709,13 @@ description: ~a
               "<none>")
           (match (team-scope team)
             (() "")
-            (scope (format #f "scope:~%~{+ ~a~^~%~}~%" scope))))
+            (scope (format #f "scope:~%~{+ ~a~^~%~}~%"
+                           (sort (map (match-lambda
+                                        ((? regexp*? rx)
+                                         (regexp*-pattern rx))
+                                        (item item))
+                                      scope)
+                                 string<?)))))
   (list-members team #:prefix "+ ")
   (newline))
 
