@@ -15781,14 +15781,14 @@ provided.")
 (define-public r-hdf5array
   (package
     (name "r-hdf5array")
-    (version "1.24.2")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HDF5Array" version))
        (sha256
         (base32
-         "1dzx5463ig3ag72a47slc4jbq5id11w77cj0zgzr85h0dbxklrr9"))))
+         "1y25mlsqf2inij6w2825xxl30bdba971az6rjf7j9bnya3gpvi6h"))))
     (properties `((upstream-name . "HDF5Array")))
     (build-system r-build-system)
     (inputs
