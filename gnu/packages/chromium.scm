@@ -758,13 +758,6 @@
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
 
-                ;; Disable compiler flags that require Clang 15.
-                (substitute* "build/config/compiler/BUILD.gn"
-                  (("\"-Wno-unqualified-std-cast-call\"")
-                   "")
-                  (("\"-Wno-deprecated-builtins\",")
-                   ""))
-
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")
 
@@ -888,10 +881,10 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-14
+           clang-15
            gn
            gperf
-           lld-as-ld-wrapper
+           lld-as-ld-wrapper-15
            ninja
            node-lts
            pkg-config
