@@ -9989,14 +9989,14 @@ and Infinium HD arrays are also included.")
 (define-public r-lumi
   (package
     (name "r-lumi")
-    (version "2.48.0")
+    (version "2.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "lumi" version))
        (sha256
         (base32
-         "06zmll5j1yymsm3byarhllrz4q1w5mzv267a9g6visn73wan8y9d"))))
+         "1091458is69dxnjrcd11czqy55c68sdnkrmpvlm6hw2cbghs2bjq"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-affy
