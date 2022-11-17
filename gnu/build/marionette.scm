@@ -28,6 +28,7 @@
   #:use-module (ice-9 popen)
   #:use-module (ice-9 regex)
   #:export (marionette?
+            marionette-pid
             make-marionette
             marionette-eval
             wait-for-file
