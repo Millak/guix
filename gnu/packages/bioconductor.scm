@@ -2629,13 +2629,13 @@ variant.")
 (define-public r-atena
   (package
     (name "r-atena")
-    (version "1.2.2")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "atena" version))
               (sha256
                (base32
-                "0b89wb7cc44c8jd6868dn8pwgid768bprkncsi87qkdz0abbhzhp"))))
+                "1a3qv66caz2pg67ff9c5424pygsgqnfx67ybzc3zkzaw4fj8cp54"))))
     (properties `((upstream-name . "atena")))
     (build-system r-build-system)
     (propagated-inputs
