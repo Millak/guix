@@ -1028,7 +1028,8 @@ testing.")
            (call-with-output-file exe
              (lambda (port)
                (format port "#!~a
-exec ~a --enable-features=UseOzonePlatform --ozone-platform=wayland $@"
+exec ~a --enable-features=UseOzonePlatform --ozone-platform=wayland \
+--enable-features=WebRTCPipeWireCapturer $@"
                        (string-append bash "/bin/bash")
                        (string-append chromium "/bin/chromium"))))
            (chmod exe #o555)
