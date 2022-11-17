@@ -10028,14 +10028,14 @@ especially Illumina Infinium methylation microarrays.")
 (define-public r-linnorm
   (package
     (name "r-linnorm")
-    (version "2.20.0")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Linnorm" version))
        (sha256
         (base32
-         "1002lllgns5klv3q2wsikkbypa2bafpka7a8mri0y5bfxncfr2zb"))))
+         "0ndhvdd9gkqyayxqgj5320sgj15di7ji945lpdi3rj5lwldh7na0"))))
     (properties `((upstream-name . "Linnorm")))
     (build-system r-build-system)
     (propagated-inputs
