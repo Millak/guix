@@ -33,8 +33,10 @@
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
+  #:autoload   (guix scripts pack) (symlink-spec-option-parser)
   #:use-module (guix transformations)
   #:autoload   (ice-9 ftw) (scandir)
+  #:use-module (gnu build install)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces
                                             user-namespace-supported?
                                             unprivileged-user-namespace-supported?
@@ -120,6 +122,9 @@ shell'."
       --expose=SPEC      for containers, expose read-only host file system
                          according to SPEC"))
   (display (G_ "
+  -S, --symlink=SPEC     for containers, add symlinks to the profile according
+                         to SPEC, e.g. \"/usr/bin/env=bin/env\"."))
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
       --bootstrap        use bootstrap binaries to build the environment")))
@@ -157,6 +162,7 @@ COMMAND or an interactive shell in that environment.\n"))
 (define %default-options
   `((system . ,(%current-system))
     (substitutes? . #t)
+    (symlinks . ())
     (offload? . #t)
     (graft? . #t)
     (print-build-trace? . #t)
@@ -256,6 +262,7 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
+         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -672,7 +679,7 @@ regexps in WHITE-LIST."
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
                                        map-cwd? emulate-fhs? (setup-hook #f)
-                                       (white-list '()))
+                                       (symlinks '()) (white-list '()))
   "Run COMMAND within a container that features the software in PROFILE.
 Environment variables are set according to the search paths of MANIFEST.  The
 global shell is BASH, a file name for a GNU Bash binary in the store.  When
@@ -689,6 +696,9 @@ with the EMULATE-FHS? option.
 
 LINK-PROFILE? creates a symbolic link from ~/.guix-profile to the
 environment profile.
+
+SYMLINKS must be a list of (SOURCE -> TARGET) tuples denoting symlinks to be
+added to the container.
 
 Preserve environment variables whose name matches the one of the regexps in
 WHILE-LIST."
@@ -796,6 +806,15 @@ WHILE-LIST."
             ;; Create a dummy home directory.
             (mkdir-p home-dir)
             (setenv "HOME" home-dir)
+
+            ;; Create symlinks.
+            (let ((symlink->directives
+                   (match-lambda
+                     ((source '-> target)
+                      `((directory ,(dirname source))
+                        (,source -> ,(string-append profile "/" target)))))))
+              (for-each (cut evaluate-populate-directive <> ".")
+                        (append-map symlink->directives symlinks)))
 
             ;; Call an additional setup procedure, if provided.
             (when setup-hook
@@ -961,154 +980,158 @@ message if any test fails."
   (category development)
   (synopsis "spawn one-off software environments (deprecated)")
 
-  (guix-environment* (parse-args args)))
+  (with-error-handling
+    (guix-environment* (parse-args args))))
 
 (define (guix-environment* opts)
   "Run the 'guix environment' command on OPTS, an alist resulting for
 command-line option processing with 'parse-command-line'."
-  (with-error-handling
-    (let* ((pure?        (assoc-ref opts 'pure))
-           (container?   (assoc-ref opts 'container?))
-           (link-prof?   (assoc-ref opts 'link-profile?))
-           (network?     (assoc-ref opts 'network?))
-           (no-cwd?      (assoc-ref opts 'no-cwd?))
-           (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
-           (user         (assoc-ref opts 'user))
-           (bootstrap?   (assoc-ref opts 'bootstrap?))
-           (system       (assoc-ref opts 'system))
-           (profile      (assoc-ref opts 'profile))
-           (command  (or (assoc-ref opts 'exec)
-                           ;; Spawn a shell if the user didn't specify
-                           ;; anything in particular.
-                           (if container?
-                               ;; The user's shell is likely not available
-                               ;; within the container.
-                               '("/bin/sh")
-                               (list %default-shell))))
-           (mappings   (pick-all opts 'file-system-mapping))
-           (white-list (pick-all opts 'inherit-regexp)))
+  (let* ((pure?        (assoc-ref opts 'pure))
+         (container?   (assoc-ref opts 'container?))
+         (link-prof?   (assoc-ref opts 'link-profile?))
+         (symlinks     (assoc-ref opts 'symlinks))
+         (network?     (assoc-ref opts 'network?))
+         (no-cwd?      (assoc-ref opts 'no-cwd?))
+         (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
+         (user         (assoc-ref opts 'user))
+         (bootstrap?   (assoc-ref opts 'bootstrap?))
+         (system       (assoc-ref opts 'system))
+         (profile      (assoc-ref opts 'profile))
+         (command  (or (assoc-ref opts 'exec)
+                       ;; Spawn a shell if the user didn't specify
+                       ;; anything in particular.
+                       (if container?
+                           ;; The user's shell is likely not available
+                           ;; within the container.
+                           '("/bin/sh")
+                           (list %default-shell))))
+         (mappings   (pick-all opts 'file-system-mapping))
+         (white-list (pick-all opts 'inherit-regexp)))
 
-      (define store-needed?
-        ;; Whether connecting to the daemon is needed.
-        (or container? (not profile)))
+    (define store-needed?
+      ;; Whether connecting to the daemon is needed.
+      (or container? (not profile)))
 
-      (define-syntax-rule (with-store/maybe store exp ...)
-        ;; Evaluate EXP... with STORE bound to a connection, unless
-        ;; STORE-NEEDED? is false, in which case STORE is bound to #f.
-        (let ((proc (lambda (store) exp ...)))
-          (if store-needed?
-              (with-store s
-                (set-build-options-from-command-line s opts)
-                (with-build-handler (build-notifier #:use-substitutes?
-                                                    (assoc-ref opts 'substitutes?)
-                                                    #:verbosity
-                                                    (assoc-ref opts 'verbosity)
-                                                    #:dry-run?
-                                                    (assoc-ref opts 'dry-run?))
-                  (proc s)))
-              (proc #f))))
+    (define-syntax-rule (with-store/maybe store exp ...)
+      ;; Evaluate EXP... with STORE bound to a connection, unless
+      ;; STORE-NEEDED? is false, in which case STORE is bound to #f.
+      (let ((proc (lambda (store) exp ...)))
+        (if store-needed?
+            (with-store s
+              (set-build-options-from-command-line s opts)
+              (with-build-handler (build-notifier #:use-substitutes?
+                                                  (assoc-ref opts 'substitutes?)
+                                                  #:verbosity
+                                                  (assoc-ref opts 'verbosity)
+                                                  #:dry-run?
+                                                  (assoc-ref opts 'dry-run?))
+                (proc s)))
+            (proc #f))))
 
-      (when container? (assert-container-features))
+    (when container? (assert-container-features))
 
-      (when (and (not container?) link-prof?)
+    (when (not container?)
+      (when link-prof?
         (leave (G_ "'--link-profile' cannot be used without '--container'~%")))
-      (when (and (not container?) user)
+      (when user
         (leave (G_ "'--user' cannot be used without '--container'~%")))
-      (when (and (not container?) no-cwd?)
+      (when no-cwd?
         (leave (G_ "--no-cwd cannot be used without '--container'~%")))
-      (when (and (not container?) emulate-fhs?)
+      (when emulate-fhs?
         (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
+      (when (pair? symlinks)
+        (leave (G_ "'--symlink' cannot be used without '--container~%'"))))
 
+    (with-store/maybe store
+      (with-status-verbosity (assoc-ref opts 'verbosity)
+        (define manifest-from-opts
+          (options/resolve-packages store opts))
 
-      (with-store/maybe store
-        (with-status-verbosity (assoc-ref opts 'verbosity)
-          (define manifest-from-opts
-            (options/resolve-packages store opts))
+        (define manifest
+          (if profile
+              (profile-manifest profile)
+              manifest-from-opts))
 
-          (define manifest
-            (if profile
-                (profile-manifest profile)
-                manifest-from-opts))
+        (when (and profile
+                   (> (length (manifest-entries manifest-from-opts)) 0))
+          (leave (G_ "'--profile' cannot be used with package options~%")))
 
-          (when (and profile
-                     (> (length (manifest-entries manifest-from-opts)) 0))
-            (leave (G_ "'--profile' cannot be used with package options~%")))
+        (when (null? (manifest-entries manifest))
+          (warning (G_ "no packages specified; creating an empty environment~%")))
 
-          (when (null? (manifest-entries manifest))
-            (warning (G_ "no packages specified; creating an empty environment~%")))
+        ;; Use the bootstrap Guile when requested.
+        (parameterize ((%graft? (assoc-ref opts 'graft?))
+                       (%guile-for-build
+                        (and store-needed?
+                             (package-derivation
+                              store
+                              (if bootstrap?
+                                  %bootstrap-guile
+                                  (default-guile))))))
+          (run-with-store store
+            ;; Containers need a Bourne shell at /bin/sh.
+            (mlet* %store-monad ((bash       (environment-bash container?
+                                                               bootstrap?
+                                                               system))
+                                 (prof-drv   (if profile
+                                                 (return #f)
+                                                 (manifest->derivation
+                                                  manifest system bootstrap?)))
+                                 (profile -> (if profile
+                                                 (readlink* profile)
+                                                 (derivation->output-path prof-drv)))
+                                 (gc-root -> (assoc-ref opts 'gc-root)))
 
-          ;; Use the bootstrap Guile when requested.
-          (parameterize ((%graft? (assoc-ref opts 'graft?))
-                         (%guile-for-build
-                          (and store-needed?
-                               (package-derivation
-                                store
-                                (if bootstrap?
-                                    %bootstrap-guile
-                                    (default-guile))))))
-            (run-with-store store
-              ;; Containers need a Bourne shell at /bin/sh.
-              (mlet* %store-monad ((bash       (environment-bash container?
-                                                                 bootstrap?
-                                                                 system))
-                                   (prof-drv   (if profile
-                                                   (return #f)
-                                                   (manifest->derivation
-                                                    manifest system bootstrap?)))
-                                   (profile -> (if profile
-                                                   (readlink* profile)
-                                                   (derivation->output-path prof-drv)))
-                                   (gc-root -> (assoc-ref opts 'gc-root)))
+              ;; First build the inputs.  This is necessary even for
+              ;; --search-paths.  Additionally, we might need to build bash for
+              ;; a container.
+              (mbegin %store-monad
+                (mwhen store-needed?
+                  (built-derivations (append
+                                      (if prof-drv (list prof-drv) '())
+                                      (if (derivation? bash) (list bash) '()))))
+                (mwhen gc-root
+                  (register-gc-root profile gc-root))
 
-                ;; First build the inputs.  This is necessary even for
-                ;; --search-paths.  Additionally, we might need to build bash for
-                ;; a container.
-                (mbegin %store-monad
-                  (mwhen store-needed?
-                    (built-derivations (append
-                                           (if prof-drv (list prof-drv) '())
-                                           (if (derivation? bash) (list bash) '()))))
-                  (mwhen gc-root
-                    (register-gc-root profile gc-root))
-
-                  (mwhen (assoc-ref opts 'check?)
-                    (return
-                     (if container?
-                         (warning (G_ "'--check' is unnecessary \
+                (mwhen (assoc-ref opts 'check?)
+                  (return
+                   (if container?
+                       (warning (G_ "'--check' is unnecessary \
 when using '--container'; doing nothing~%"))
-                         (validate-child-shell-environment profile manifest))))
+                       (validate-child-shell-environment profile manifest))))
 
-                  (cond
-                   ((assoc-ref opts 'search-paths)
-                    (show-search-paths profile manifest #:pure? pure?)
-                    (return #t))
-                   (container?
-                    (let ((bash-binary
-                           (if bootstrap?
-                               (derivation->output-path bash)
-                               (string-append (derivation->output-path bash)
-                                              "/bin/sh"))))
-                      (launch-environment/container #:command command
-                                                    #:bash bash-binary
-                                                    #:user user
-                                                    #:user-mappings mappings
-                                                    #:profile profile
-                                                    #:manifest manifest
-                                                    #:white-list white-list
-                                                    #:link-profile? link-prof?
-                                                    #:network? network?
-                                                    #:map-cwd? (not no-cwd?)
-                                                    #:emulate-fhs? emulate-fhs?
-                                                    #:setup-hook
-                                                    (and emulate-fhs?
-                                                         setup-fhs))))
+                (cond
+                 ((assoc-ref opts 'search-paths)
+                  (show-search-paths profile manifest #:pure? pure?)
+                  (return #t))
+                 (container?
+                  (let ((bash-binary
+                         (if bootstrap?
+                             (derivation->output-path bash)
+                             (string-append (derivation->output-path bash)
+                                            "/bin/sh"))))
+                    (launch-environment/container #:command command
+                                                  #:bash bash-binary
+                                                  #:user user
+                                                  #:user-mappings mappings
+                                                  #:profile profile
+                                                  #:manifest manifest
+                                                  #:white-list white-list
+                                                  #:link-profile? link-prof?
+                                                  #:network? network?
+                                                  #:map-cwd? (not no-cwd?)
+                                                  #:emulate-fhs? emulate-fhs?
+                                                  #:symlinks symlinks
+                                                  #:setup-hook
+                                                  (and emulate-fhs?
+                                                       setup-fhs))))
 
-                   (else
-                    (return
-                     (exit/status
-                      (launch-environment/fork command profile manifest
-                                               #:white-list white-list
-                                               #:pure? pure?))))))))))))))
+                 (else
+                  (return
+                   (exit/status
+                    (launch-environment/fork command profile manifest
+                                             #:white-list white-list
+                                             #:pure? pure?)))))))))))))
 
 ;;; Local Variables:
 ;;; eval: (put 'with-store/maybe 'scheme-indent-function 1)

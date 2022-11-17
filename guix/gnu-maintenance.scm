@@ -687,9 +687,9 @@ GNOME packages; EMMS is included though, because its releases are on gnu.org."
 
 (define %savannah-base
   ;; One of the Savannah mirrors listed at
-  ;; <http://download0.savannah.gnu.org/mirmon/savannah/> that serves valid
+  ;; <https://download.savannah.gnu.org/mirmon/savannah/> that serves valid
   ;; HTML (unlike <https://download.savannah.nongnu.org/releases>.)
-  "https://nongnu.freemirror.org/nongnu")
+  "https://de.freedif.org/savannah/")
 
 (define (latest-savannah-release package)
   "Return the latest release of PACKAGE."

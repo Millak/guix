@@ -621,8 +621,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "102.4.0-guix0-preview1")
-(define %icecat-build-id "20221019000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "102.5.0-guix0-preview1")
+(define %icecat-build-id "20221115000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -644,11 +644,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "0klh3lbm0zdmv90kmmpkzgn15pfjibr7zsjy3kvbzpql97fhv7z7"))))
+              "1n2pq165fxmvgcr5mv3hhaid2vn7lh3jg03lf13kz4c5295x8z81"))))
 
-         (upstream-icecat-base-version "102.4.0") ; maybe older than base-version
+         (upstream-icecat-base-version "102.5.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "8f1aa117ddca6e8cd0114265fb4ca9b5a927565a")
+         (gnuzilla-commit "a8848cb35e4e47a344d40596f72d82d57bf5a6f1")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -660,7 +660,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "0ryrn8ivm763swd0qbqhlgdwc2dj4xjd81d9i2r6hb7bsb4ky3y5"))))
+              "0d0brzi7wmg70kvi9p3g24cyya17bvg2djgjn64g14hpnalg8icw"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -1242,8 +1242,8 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-(define %icedove-build-id "20221104000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "102.4.2")
+(define %icedove-build-id "20221115000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.5.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
@@ -1252,11 +1252,11 @@ standards of the IceCat project.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr102")
-          (changeset "bece6c033f6b24b9c126598da7c6eb5bc2a48b14")))
+          (changeset "b6e9b5a1d1b53d26cfb7032ef2ff02203ab0486b")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "1fsn5lg0c89rnsnljd48gq1z751sxf6zv2rv7wgnhifc45w4s80j"))))
+      "0i2w1ibaip8rlghrk5iaih14xnz5n19ag64qcdgjxic78mhnmm04"))))
 
 (define-public icedove
   (package

@@ -103,7 +103,7 @@ fi
 guix pack --dry-run --bootstrap -f docker guile-bootstrap
 
 # Build a Docker image with a symlink.
-guix pack --dry-run --bootstrap -f docker -S /opt/gnu=/ guile-bootstrap
+guix pack --dry-run --bootstrap -f docker -S /opt/gnu= guile-bootstrap
 
 # Build a tarball pack of cross-compiled software.  Use coreutils because
 # guile-bootstrap is not intended to be cross-compiled.

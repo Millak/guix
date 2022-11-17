@@ -1976,13 +1976,7 @@ std::wstring, etc).")
                                       "-DCRC32C_BUILD_TESTS="
                                       ;; TODO: perhaps infer #:tests?
                                       (if #$(%current-target-system)
-                                          "OFF" "ON")))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'make-reproducible
-                 (lambda _
-                   (substitute* "CMakeLists.txt"
-                     (("if\\(HAVE_SSE42\\)") "if(FALSE)")))))))
+                                          "OFF" "ON")))))
     (native-inputs (list googletest))
     (home-page "https://github.com/google/crc32c")
     (synopsis "Cyclic redundancy check")

@@ -26,20 +26,42 @@
 (channel-news
  (version 0)
 
+ (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
+        (title
+         (en "New @option{--symlink} option for @command{guix shell}")
+         (de "Neue Option @option{--symlink} für @command{guix shell}")
+         (fr "Nouvelle option @option{--symlink} pour @command{guix shell}"))
+        (body
+         (en "The @command{guix shell} command has a new
+@option{--symlink} (or @option{-S}) option, to be used in conjunction with the
+@option{--container} (or @option{-C}) option to create a symbolic link inside
+the container.  Run @command{info \"(guix) Invoking guix shell\"} for more
+information.")
+         (de "Der Befehl @command{guix shell} verfügt jetzt über eine neue
+Befehlszeilenoption @option{--symlink} (oder @option{-S}), die zusammen mit der
+Option @option{--container} (oder @option{-C}) benutzt werden kann, um eine
+symbolische Verknüpfung im Container anzulegen.  Führen Sie
+@command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr zu erfahren.")
+         (fr "La commande @command{guix shell} dispose d'une nouvelle option,
+@option{--symlink} (ou @option{-S}), qui doit être utilisée en conjonction
+avec l'option @option{--container} (ou @option{-C}) pour créer un lien
+symbolique dans le conteneur.  Lancer @command{info \"(guix.fr) Invoquer guix
+shell\"} pour plus d'informations.")))
+
  (entry (commit "82a0a395d7051eab7b9f15ec4740d58c86413604")
         (title
-          (en "Linux-libre kernel updated to 6.0")
-          (de "Linux-libre-Kernel wird auf 6.0 aktualisiert")
-          (fr "Le noyau linux-libre est mis à jour vers la 6.0")
-          (pt "Kernel linux-libre atualizado para 6.0"))
+         (en "Linux-libre kernel updated to 6.0")
+         (de "Linux-libre-Kernel wird auf 6.0 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.0")
+         (pt "Kernel linux-libre atualizado para 6.0"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 6.0 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
               jetzt auf der 6.0-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 6.0.")
-          (pt "A versão padrão do kernel linux-libre foi atualizada para a
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
               série do kernel 6.0.")))
 
  (entry (commit "400a7a4c80efbde1905ae98a298bbb5882d46a0d")
@@ -338,18 +360,18 @@ uma transformação, como por exemplo
 
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
-          (en "Linux-libre kernel updated to 5.19")
-          (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
-          (fr "Le noyau linux-libre est mis à jour vers la 5.19")
-          (pt "Kernel linux-libre atualizado para 5.19"))
+         (en "Linux-libre kernel updated to 5.19")
+         (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 5.19")
+         (pt "Kernel linux-libre atualizado para 5.19"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.19 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
               jetzt auf der 5.19-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.19.")
-          (pt "A versão padrão do kernel linux-libre foi atualizada para a
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
               série do kernel 5.19.")))
 
  (entry (commit "a15542d26df42dabdb5e2f76d150ae200230c3b0")
@@ -391,15 +413,15 @@ Execute @command{info \"(guix) Invoking guix style\"} para mais informações.")
 
  (entry (commit "2ec7ab2610eb67e26dab52b671eb29e46f64ea0f")
         (title
-          (en "Linux-libre kernel updated to 5.18")
-          (de "Linux-libre-Kernel wird auf 5.18 aktualisiert")
-          (fr "Le noyau linux-libre est mis à jour vers la 5.18"))
+         (en "Linux-libre kernel updated to 5.18")
+         (de "Linux-libre-Kernel wird auf 5.18 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 5.18"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.18 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
 jetzt auf der 5.18-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.18.")))
 
  (entry (commit "bdf422176739b473add66eb8cac9fdd8c654f794")
@@ -531,11 +553,11 @@ Cela vient avec un nouveau système de construction pour paquets Elm---lancer
                (de "Linux-libre-Kernel wird auf 5.17 aktualisiert")
                (fr "Le noyau linux-libre est mis à jour vers la 5.17"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.17 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
 jetzt auf der 5.17-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.17.")))
 
  (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")

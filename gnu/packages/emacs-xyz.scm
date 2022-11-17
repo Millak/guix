@@ -4773,8 +4773,6 @@ Stack Overflow, Super User, and other StackExchange sites.")
         (base32
          "0xsr6819qaad0y8rhfrf555c9w7cmgbgkf1a2svgbp7rhhnywl0a"))))
     (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-parent-mode))
     (home-page "https://github.com/xFA25E/skempo")
     (synopsis "Enhancements for skeleton/tempo + abbrev")
     (description
@@ -5170,6 +5168,29 @@ Expectations, but it can be used in other contexts.")
      "This package provides Ecukes, a Cucumber-inspired integration testing
 tool for Emacs.  Ecukes is not a complete clone of Cucumber and is not
 intended to be.")
+    (license license:gpl3+)))
+
+(define-public emacs-ef-themes
+  (package
+    (name "emacs-ef-themes")
+    (version "0.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~protesilaos/ef-themes")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1h1xlcbcay8wlmhzv7b5h6vrvwdwkzc171aa0rfja2xds4ry9k0m"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~protesilaos/ef-themes")
+    (synopsis "Colorful and legible themes")
+    (description
+     "The Ef themes are a collection of light and dark themes for GNU Emacs
+whose goal is to provide colorful yet legible options for users who want
+something with a bit more flair than the Modus themes.")
     (license license:gpl3+)))
 
 (define-public emacs-espuds
@@ -7076,14 +7097,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.19")
+    (version "1.0.21")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "1wgicb0lvnghhr3a1xndkaxhs1c9gc1ac5xwvxcsc9zpgzrlmcda"))))
+                "0l4xv56ab31li9l77x68jnpcn47xgj0gqjfs5diklr665vjmfqim"))))
     (arguments
      (list
       #:tests? #t
@@ -13064,32 +13085,30 @@ sly-quickload command that prompts the user for a package to install.")
       (license license:gpl3+))))
 
 (define-public emacs-sly-asdf
-  (let ((commit "3180921efdc19a2195960e1d601b2a6f31a6feea")
-        (revision "5"))
-    (package
-      (name "emacs-sly-asdf")
-      (version (git-version "0.1.0" revision commit))
-      (home-page "https://github.com/mmgeorge/sly-asdf")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url home-page)
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0gncp8xv33s4wx594bgd35vr1455bcggv1bg28qv75mhv41nzw97"))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-sly emacs-popup))
-      (arguments
-       '(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)))
-      (synopsis "ASDF contrib for SLY")
-      (description
-       "@command{sly-asdf} is an external contrib for SLY that provides
+  (package
+    (name "emacs-sly-asdf")
+    (version "0.2.0")
+    (home-page "https://github.com/mmgeorge/sly-asdf")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0gncp8xv33s4wx594bgd35vr1455bcggv1bg28qv75mhv41nzw97"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-sly emacs-popup))
+    (arguments
+     '(#:include (cons* "\\.lisp$" "\\.asd$" %default-include)))
+    (synopsis "ASDF contrib for SLY")
+    (description
+     "@command{sly-asdf} is an external contrib for SLY that provides
 additional support for working with ASDF projects.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-sly-named-readtables
   (let ((commit "a5a42674ccffa97ccd5e4e9742beaf3ea719931f")
@@ -15471,47 +15490,47 @@ abbreviation of the mode line displays (lighters) of minor modes.")
       (license license:gpl3+))))
 
 (define-public emacs-use-package
-  (package
-    (name "emacs-use-package")
-    (version "2.4.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/jwiegley/use-package")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "088kl3bml0rs5bkfymgzr15ram9qvy66h1kaisrbkynh0yxvf8g9"))))
-    (build-system emacs-build-system)
-    (native-inputs
-     (list texinfo))
-    (propagated-inputs
-     (list emacs-diminish))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("emacs" "--batch"
-                        "-l" "use-package-tests.el"
-                        "-f" "ert-run-tests-batch-and-exit")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'install-manual
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (info-dir (string-append out "/share/info")))
-               (mkdir-p info-dir)
-               (install-file "use-package.info" info-dir)
-               #t)))
-         (add-before 'install-manual 'build-manual
-           (lambda _
-             (invoke "makeinfo" "use-package.texi")
-             #t)))))
-    (home-page "https://github.com/jwiegley/use-package")
-    (synopsis "Declaration for simplifying your .emacs")
-    (description "The use-package macro allows you to isolate package
+  ;; XXX: Upstream did not tag latest release.  Using commit matching exact
+  ;; version bump.
+  (let ((commit "942617d26e11d80d879ff23d2a8b477bd074a734"))
+    (package
+      (name "emacs-use-package")
+      (version "2.4.4")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jwiegley/use-package")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1zpf9xv65jg813k90x8g9k4lja896nqfh48pjinicmz1rn0rf51a"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "use-package-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'install-manual
+              (lambda _
+                (let ((info-dir (string-append #$output "/share/info")))
+                  (install-file "use-package.info" info-dir))))
+            (add-before 'install-manual 'build-manual
+              (lambda _
+                (invoke "makeinfo" "use-package.texi"))))))
+      (native-inputs
+       (list texinfo))
+      (propagated-inputs
+       (list emacs-diminish))
+      (home-page "https://github.com/jwiegley/use-package")
+      (synopsis "Declaration for simplifying your .emacs")
+      (description "The use-package macro allows you to isolate package
 configuration in your @file{.emacs} file in a way that is both
 performance-oriented and tidy.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-leaf
   (package
@@ -20734,8 +20753,8 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
 (define-public emacs-crdt
   ;; XXX: Upstream does not always tag new releases.  The commit below
   ;; corresponds exactly to latest version bump.
-  (let ((commit "480f60fdda9e40848920fa460b59dfba23fa06e5")
-        (version "0.3.3"))
+  (let ((commit "92a7c93a3b4cb4b40f133acd22c89a5fda5cdd30")
+        (version "0.3.4"))
     (package
       (name "emacs-crdt")
       (version version)
@@ -20747,7 +20766,7 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "10hb2xwv8ylkm4cla2q5l11r1m1s1j4ywiwvy9x5884gxvbpbbph"))))
+          (base32 "1vh4d15g62crm4vimc7lgr11ws68g25ylipnvqlrrkvl6qrz3fhj"))))
       (build-system emacs-build-system)
       (home-page "https://code.librehq.com/qhong/crdt.el")
       (synopsis "Real-time collaborative editing environment")
@@ -33612,8 +33631,8 @@ by leveraging @code{emacs-consult} APIs.")
 (define-public emacs-purs-mode
   ;; XXX: Upstream set no tag nor any Version keyword.  Using 0 as the base
   ;; version.
-  (let ((commit "d29f1021787a90d0fd3eb0af625958abb7f7506b")
-        (revision "0"))
+  (let ((commit "16553383915cf453747a491715ed0427c107cc9e")
+        (revision "1"))
     (package
       (name "emacs-purs-mode")
       (version (git-version "0" revision commit))
@@ -33626,7 +33645,7 @@ by leveraging @code{emacs-consult} APIs.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r7219ysf3hsjnan30hidf8jamcqsz36pkcmnhknff0c6dpwbnpx"))))
+          (base32 "0174p0g38jd34jwpww7zgh48i3lkhqrnrxz8ca09idz4adri38z7"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/PureFunctor/purs-mode/")
       (synopsis "PureScript major mode for Emacs")

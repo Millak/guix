@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,19 +57,24 @@ that the fonts, background images, etc. referred to by BOOTCFG are not GC'd."
 (define* (evaluate-populate-directive directive target
                                       #:key
                                       (default-gid 0)
-                                      (default-uid 0))
+                                      (default-uid 0)
+                                      (error-on-dangling-symlink? #t))
   "Evaluate DIRECTIVE, an sexp describing a file or directory to create under
 directory TARGET.  DEFAULT-UID and DEFAULT-GID are the default UID and GID in
 the context of the caller.  If the directive matches those defaults then,
-'chown' won't be run."
+'chown' won't be run.  When ERROR-ON-DANGLING-SYMLINK? is true, abort with an
+error when a dangling symlink would be created."
+  (define target* (if (string-suffix? "/" target)
+                      target
+                      (string-append target "/")))
   (let loop ((directive directive))
     (catch 'system-error
       (lambda ()
         (match directive
           (('directory name)
-           (mkdir-p (string-append target name)))
+           (mkdir-p (string-append target* name)))
           (('directory name uid gid)
-           (let ((dir (string-append target name)))
+           (let ((dir (string-append target* name)))
              (mkdir-p dir)
              ;; If called from a context without "root" permissions, "chown"
              ;; to root will fail.  In that case, do not try to run "chown"
@@ -78,27 +84,38 @@ the context of the caller.  If the directive matches those defaults then,
                  (chown dir uid gid))))
           (('directory name uid gid mode)
            (loop `(directory ,name ,uid ,gid))
-           (chmod (string-append target name) mode))
+           (chmod (string-append target* name) mode))
           (('file name)
-           (call-with-output-file (string-append target name)
+           (call-with-output-file (string-append target* name)
              (const #t)))
           (('file name (? string? content))
-           (call-with-output-file (string-append target name)
+           (call-with-output-file (string-append target* name)
              (lambda (port)
                (display content port))))
           ((new '-> old)
-           (let try ()
-             (catch 'system-error
-               (lambda ()
-                 (symlink old (string-append target new)))
-               (lambda args
-                 ;; When doing 'guix system init' on the current '/', some
-                 ;; symlinks may already exists.  Override them.
-                 (if (= EEXIST (system-error-errno args))
-                     (begin
-                       (delete-file (string-append target new))
-                       (try))
-                     (apply throw args))))))))
+           (let ((new* (string-append target* new)))
+             (let try ()
+               (catch 'system-error
+                 (lambda ()
+                   (when error-on-dangling-symlink?
+                     ;; When the symbolic link points to a relative path,
+                     ;; checking if its target exists must be done relatively
+                     ;; to the link location.
+                     (unless (if (string-prefix? "/" old)
+                                 (file-exists? old)
+                                 (with-directory-excursion (dirname new*)
+                                   (file-exists? old)))
+                       (error (format #f "symlink `~a' points to nonexistent \
+file `~a'" new* old))))
+                   (symlink old new*))
+                 (lambda args
+                   ;; When doing 'guix system init' on the current '/', some
+                   ;; symlinks may already exists.  Override them.
+                   (if (= EEXIST (system-error-errno args))
+                       (begin
+                         (delete-file new*)
+                         (try))
+                       (apply throw args)))))))))
       (lambda args
         ;; Usually we can only get here when installing to an existing root,
         ;; as with 'guix system init foo.scm /'.
@@ -142,7 +159,10 @@ STORE."
 includes /etc, /var, /run, /bin/sh, etc., and all the symlinks to SYSTEM.
 EXTRAS is a list of directives appended to the built-in directives to populate
 TARGET."
-  (for-each (cut evaluate-populate-directive <> target)
+  ;; It's expected that some symbolic link targets do not exist yet, so do not
+  ;; error on dangling links.
+  (for-each (cut evaluate-populate-directive <> target
+                 #:error-on-dangling-symlink? #f)
             (append (directives (%store-directory)) extras))
 
   ;; Add system generation 1.

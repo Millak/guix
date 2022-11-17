@@ -695,7 +695,13 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
 
             ;; Halt the system.
             (marionette-eval '(system* "/run/current-system/profile/sbin/halt")
-                             marionette))
+                             marionette)
+
+            (display "waiting for marionette to complete...")
+            (force-output)
+            (false-if-exception (waitpid (marionette-pid marionette)))
+            (display " done\n")
+            (force-output))
 
           ;; Remove the sockets used by the marionette above to avoid
           ;; EADDRINUSE.

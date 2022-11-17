@@ -330,25 +330,14 @@ interface and is based on GNU Guile.")
 (define-public shepherd-0.9
   (package
     (inherit shepherd)
-    (version "0.9.2")
+    (version "0.9.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/shepherd/shepherd-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0mcby3ygh3bpns44rb1vnk8bz2km4nlw092nrcgkm3nkqfmbp4p1"))
-              (modules '((guix build utils)))
-              (snippet
-               ;; Avoid continuation barriers so (@ (fibers) sleep) can be
-               ;; called from a service's 'stop' method
-               '(substitute* "modules/shepherd/service.scm"
-                  (("call-with-blocked-asyncs")   ;in 'stop' method
-                   "(lambda (thunk) (thunk))")
-                  (("\\(for-each-service\n")      ;in 'shutdown-services'
-                   "((lambda (proc)
-                       (for-each proc
-                                 (fold-services cons '())))\n")))))
+                "0qy2yq13xhf05an5ilz7grighdxicx56211yaarqq5qigiiybc32"))))
     (arguments
      (list #:configure-flags #~'("--localstatedir=/var")
            #:make-flags #~'("GUILE_AUTO_COMPILE=0")

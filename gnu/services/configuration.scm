@@ -242,17 +242,17 @@ does not have a default value" field kind)))
                stem
                #,(id #'stem #'make- #'stem)
                #,(id #'stem #'stem #'?)
-               (%location #,(id #'stem #'stem #'-location)
-                          (default (and=> (current-source-location)
-                                          source-properties->location))
-                          (innate))
                #,@(map (lambda (name getter def)
                          #`(#,name #,getter (default #,def)
                                    (sanitize
                                     #,(id #'stem #'validate- #'stem #'- name))))
                        #'(field ...)
                        #'(field-getter ...)
-                       #'(field-default ...)))
+                       #'(field-default ...))
+               (%location #,(id #'stem #'stem #'-location)
+                          (default (and=> (current-source-location)
+                                          source-properties->location))
+                          (innate)))
 
              (define #,(id #'stem #'stem #'-fields)
                (list (configuration-field

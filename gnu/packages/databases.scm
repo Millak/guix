@@ -4390,7 +4390,7 @@ algorithm implementations.")
              "-DARROW_BUILD_STATIC=OFF")))
     (inputs
      `(("boost" ,boost)
-       ("brotli" ,google-brotli)
+       ("brotli" ,brotli)
        ("double-conversion" ,double-conversion)
        ("snappy" ,snappy)
        ("gflags" ,gflags)

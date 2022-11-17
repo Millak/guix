@@ -313,7 +313,7 @@ access to exported repositories under @file{/srv/git}."
     (($ <gitolite-configuration> package user group home-directory
                                  rc-file admin-pubkey)
      ;; User group and account to run Gitolite.
-     (list (user-group (name user) (system? #t))
+     (list (user-group (name group) (system? #t))
            (user-account
             (name user)
             (group group)

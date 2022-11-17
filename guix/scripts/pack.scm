@@ -42,6 +42,7 @@
   #:use-module (guix profiles)
   #:use-module (guix describe)
   #:use-module (guix derivations)
+  #:use-module (guix diagnostics)
   #:use-module (guix search-paths)
   #:use-module (guix build-system gnu)
   #:use-module (guix scripts build)
@@ -59,9 +60,12 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
   #:use-module (ice-9 match)
-  #:export (self-contained-tarball
+  #:export (symlink-spec-option-parser
+
+            self-contained-tarball
             debian-archive
             docker-image
             squashfs-image
@@ -160,6 +164,36 @@ its source property."
           ((_) str)
           ((names ... _) (loop names))))))
 
+(define (symlink-spec-option-parser opt name arg result)
+  "A SRFI-37 option parser for the --symlink option.  The symlink spec accepts
+the link file name as its left-hand side value and its target as its
+right-hand side value.  The target must be a relative link."
+  ;; Note: Using 'string-split' allows us to handle empty
+  ;; TARGET (as in "/opt/guile=", meaning that /opt/guile is
+  ;; a symlink to the profile) correctly.
+  (match (string-split arg #\=)
+    ((source target)
+     (when (string-prefix? "/" target)
+       (raise-exception
+        (make-compound-condition
+         (formatted-message (G_ "symlink target is absolute: '~a'~%") target)
+         (condition
+          (&fix-hint (hint (format #f (G_ "The target of the symlink must be
+relative rather than absolute, as it is relative to the profile created.
+Perhaps the source and target components of the symlink spec were inverted?
+Below is a valid example, where the @file{/usr/bin/env} symbolic link is to
+target the profile's @file{bin/env} file:
+@example
+--symlink=/usr/bin/env=bin/env
+@end example"))))))))
+     (let ((symlinks (assoc-ref result 'symlinks)))
+       (alist-cons 'symlinks
+                   `((,source -> ,target) ,@symlinks)
+                   (alist-delete 'symlinks result eq?))))
+    (x
+     (leave (G_ "~a: invalid symlink specification~%")
+            arg))))
+
 
 ;;;
 ;;; Tarball format.
@@ -226,8 +260,9 @@ its source property."
                `(,@(if (string=? parent "/")
                        '()
                        `((directory ,parent)))
-                 (,source
-                  -> ,(relative-file-name parent target)))))))
+                 ;; Use a relative file name for compatibility with
+                 ;; relocatable packs.
+                 (,source -> ,(relative-file-name parent target)))))))
 
         (define directives
           ;; Fully-qualified symlinks.
@@ -1208,20 +1243,7 @@ last resort for relocation."
                  (lambda (opt name arg result)
                    (alist-cons 'compressor (lookup-compressor arg)
                                result)))
-         (option '(#\S "symlink") #t #f
-                 (lambda (opt name arg result)
-                   ;; Note: Using 'string-split' allows us to handle empty
-                   ;; TARGET (as in "/opt/guile=", meaning that /opt/guile is
-                   ;; a symlink to the profile) correctly.
-                   (match (string-split arg (char-set #\=))
-                     ((source target)
-                      (let ((symlinks (assoc-ref result 'symlinks)))
-                        (alist-cons 'symlinks
-                                    `((,source -> ,target) ,@symlinks)
-                                    (alist-delete 'symlinks result eq?))))
-                     (x
-                      (leave (G_ "~a: invalid symlink specification~%")
-                             arg)))))
+         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
          (option '("save-provenance") #f #f
                  (lambda (opt name arg result)
                    (alist-cons 'save-provenance? #t result)))
@@ -1321,74 +1343,74 @@ Create a bundle of PACKAGE.\n"))
   (category development)
   (synopsis "create application bundles")
 
-  (define opts
-    (parse-command-line args %options (list %default-options)))
-
-  (define maybe-package-argument
-    ;; Given an option pair, return a package, a package/output tuple, or #f.
-    (match-lambda
-      (('argument . spec)
-       (call-with-values
-           (lambda ()
-             (specification->package+output spec))
-         list))
-      (('expression . exp)
-       (read/eval-package-expression exp))
-      (x #f)))
-
-  (define (manifest-from-args store opts)
-    (let* ((transform     (options->transformation opts))
-           (packages      (map (match-lambda
-                                 (((? package? package) output)
-                                  (list (transform package) output))
-                                 ((? package? package)
-                                  (list (transform package) "out")))
-                               (reverse
-                                (filter-map maybe-package-argument opts))))
-           (manifests     (filter-map (match-lambda
-                                        (('manifest . file) file)
-                                        (_ #f))
-                                      opts)))
-      (define with-provenance
-        (if (assoc-ref opts 'save-provenance?)
-            (lambda (manifest)
-              (map-manifest-entries
-               (lambda (entry)
-                 (let ((entry (manifest-entry-with-provenance entry)))
-                   (unless (assq 'provenance (manifest-entry-properties entry))
-                     (warning (G_ "could not determine provenance of package ~a~%")
-                              (manifest-entry-name entry)))
-                   entry))
-               manifest))
-            identity))
-
-      (with-provenance
-       (cond
-        ((and (not (null? manifests)) (not (null? packages)))
-         (leave (G_ "both a manifest and a package list were given~%")))
-        ((not (null? manifests))
-         (concatenate-manifests
-          (map (lambda (file)
-                 (let ((user-module (make-user-module
-                                     '((guix profiles) (gnu)))))
-                   (load* file user-module)))
-               manifests)))
-        (else
-         (packages->manifest packages))))))
-
-  (define (process-file-arg opts name)
-    ;; Validate that the file exists and return it as a <local-file> object,
-    ;; else #f.
-    (let ((value (assoc-ref opts name)))
-      (match value
-        ((and (? string?) (not (? file-exists?)))
-         (leave (G_ "file provided with option ~a does not exist: ~a~%")
-                (string-append "--" (symbol->string name)) value))
-        ((? string?)
-         (local-file value))
-        (#f #f))))
-
   (with-error-handling
+    (define opts
+      (parse-command-line args %options (list %default-options)))
+
+    (define maybe-package-argument
+      ;; Given an option pair, return a package, a package/output tuple, or #f.
+      (match-lambda
+        (('argument . spec)
+         (call-with-values
+             (lambda ()
+               (specification->package+output spec))
+           list))
+        (('expression . exp)
+         (read/eval-package-expression exp))
+        (x #f)))
+
+    (define (manifest-from-args store opts)
+      (let* ((transform     (options->transformation opts))
+             (packages      (map (match-lambda
+                                   (((? package? package) output)
+                                    (list (transform package) output))
+                                   ((? package? package)
+                                    (list (transform package) "out")))
+                                 (reverse
+                                  (filter-map maybe-package-argument opts))))
+             (manifests     (filter-map (match-lambda
+                                          (('manifest . file) file)
+                                          (_ #f))
+                                        opts)))
+        (define with-provenance
+          (if (assoc-ref opts 'save-provenance?)
+              (lambda (manifest)
+                (map-manifest-entries
+                 (lambda (entry)
+                   (let ((entry (manifest-entry-with-provenance entry)))
+                     (unless (assq 'provenance (manifest-entry-properties entry))
+                       (warning (G_ "could not determine provenance of package ~a~%")
+                                (manifest-entry-name entry)))
+                     entry))
+                 manifest))
+              identity))
+
+        (with-provenance
+         (cond
+          ((and (not (null? manifests)) (not (null? packages)))
+           (leave (G_ "both a manifest and a package list were given~%")))
+          ((not (null? manifests))
+           (concatenate-manifests
+            (map (lambda (file)
+                   (let ((user-module (make-user-module
+                                       '((guix profiles) (gnu)))))
+                     (load* file user-module)))
+                 manifests)))
+          (else
+           (packages->manifest packages))))))
+
+    (define (process-file-arg opts name)
+      ;; Validate that the file exists and return it as a <local-file> object,
+      ;; else #f.
+      (let ((value (assoc-ref opts name)))
+        (match value
+          ((and (? string?) (not (? file-exists?)))
+           (leave (G_ "file provided with option ~a does not exist: ~a~%")
+                  (string-append "--" (symbol->string name)) value))
+          ((? string?)
+           (local-file value))
+          (#f #f))))
+
     (with-store store
       (with-status-verbosity (assoc-ref opts 'verbosity)
         ;; Set the build options before we do anything else.

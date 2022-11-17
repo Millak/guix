@@ -49,7 +49,7 @@ Copyright @copyright{} 2017 humanitiesNerd@*
 Copyright @copyright{} 2017, 2021 Christine Lemmer-Webber@*
 Copyright @copyright{} 2017, 2018, 2019, 2020, 2021, 2022 Marius Bakke@*
 Copyright @copyright{} 2017, 2019, 2020, 2022 Hartmut Goebel@*
-Copyright @copyright{} 2017, 2019, 2020, 2021 Maxim Cournoyer@*
+Copyright @copyright{} 2017, 2019, 2020, 2021, 2022 Maxim Cournoyer@*
 Copyright @copyright{} 2017–2022 Tobias Geerinckx-Rice@*
 Copyright @copyright{} 2017 George Clemmer@*
 Copyright @copyright{} 2017 Andy Wingo@*
@@ -6246,6 +6246,12 @@ directory:
 guix shell --container --expose=$HOME=/exchange guile -- guile
 @end example
 
+@cindex symbolic links, guix shell
+@item --symlink=@var{spec}
+@itemx -S @var{spec}
+For containers, create the symbolic links specified by @var{spec}, as
+documented in @ref{pack-symlink-option}.
+
 @cindex file system hierarchy standard (FHS)
 @cindex FHS (file system hierarchy standard)
 @item --emulate-fhs
@@ -7038,6 +7044,7 @@ Compress the resulting tarball using @var{tool}---one of @code{gzip},
 @code{zstd}, @code{bzip2}, @code{xz}, @code{lzip}, or @code{none} for no
 compression.
 
+@anchor{pack-symlink-option}
 @item --symlink=@var{spec}
 @itemx -S @var{spec}
 Add the symlinks specified by @var{spec} to the pack.  This option can
@@ -19012,20 +19019,33 @@ words, it is possible to define services that provide additional mcron
 jobs to run.
 @end defvr
 
+@c Generated via (generate-documentation) at the bottom of (gnu services
+@c mcron).
+@c %start of fragment
 @deftp {Data Type} mcron-configuration
-Data type representing the configuration of mcron.
+Available @code{mcron-configuration} fields are:
 
 @table @asis
-@item @code{mcron} (default: @var{mcron})
+@item @code{mcron} (default: @code{mcron}) (type: file-like)
 The mcron package to use.
 
-@item @code{jobs}
+@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
-specifications,, mcron, GNU@tie{}mcron}).
+specifications,, mcron,GNU@tie{}mcron}).
+
+@item @code{log?} (default: @code{#t}) (type: boolean)
+Log messages to standard output.
+
+@item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
+@code{(ice-9 format)} format string for log messages.  The default value
+produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
+(@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
+is also prefixed by a timestamp by GNU Shepherd.
+
 @end table
 @end deftp
-
+@c %end of fragment
 
 @node Log Rotation
 @subsection Log Rotation
@@ -41061,18 +41081,32 @@ jobs to run.
 @end defvr
 
 @deftp {Data Type} home-mcron-configuration
-Data type representing the configuration of mcron.
+Available @code{home-mcron-configuration} fields are:
 
+@c Auto-generated with (gnu home services mcron)'s
+@c generate-documentation procedure.
+@c %start of fragment
 @table @asis
-@item @code{mcron} (default: @var{mcron})
+@item @code{mcron} (default: @code{mcron}) (type: file-like)
 The mcron package to use.
 
-@item @code{jobs}
+@item @code{jobs} (default: @code{()}) (type: list-of-gexps)
 This is a list of gexps (@pxref{G-Expressions}), where each gexp
 corresponds to an mcron job specification (@pxref{Syntax, mcron job
-specifications,, mcron, GNU@tie{}mcron}).
+specifications,, mcron,GNU@tie{}mcron}).
+
+@item @code{log?} (default: @code{#t}) (type: boolean)
+Log messages to standard output.
+
+@item @code{log-format} (default: @code{"~1@@*~a ~a: ~a~%"}) (type: string)
+@code{(ice-9 format)} format string for log messages.  The default value
+produces messages like "@samp{@var{pid} @var{name}: @var{message}"}
+(@pxref{Invoking mcron, Invoking,, mcron,GNU@tie{}mcron}).  Each message
+is also prefixed by a timestamp by GNU Shepherd.
+
 @end table
 @end deftp
+@c %end of fragment
 
 @node Power Management Home Services
 @subsection Power Management Home Services

@@ -1007,7 +1007,7 @@ extracting, creating, and converting between formats.")
 (define-public conda
   (package
     (name "conda")
-    (version "4.10.3")
+    (version "22.9.0")
     (source
      (origin
        (method git-fetch)
@@ -1017,17 +1017,16 @@ extracting, creating, and converting between formats.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1w4yy62bsvkybjvcm5fspck4ns5j16nplzpbx6bxv7zhx69pcp4n"))))
+         "16vz4vx311ry9w35mi5wna8p8n3abd6wdqrpqzjfdlwv7hcr44s4"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-permissions
+         ;; The default version of pytest does not support these options.
+         (add-after 'unpack 'use-older-pytest
            (lambda _
-             ;; This file is no longer writable after downloading with
-             ;; 'git-fetch'
-             (make-file-writable
-              "tests/conda_env/support/saved-env/environment.yml")))
+             (substitute* "setup.cfg"
+               (("--xdoctest-.*") ""))))
          (add-after 'unpack 'fix-ruamel-yaml-dependency
            (lambda _
              (substitute* "setup.py"
@@ -1042,8 +1041,7 @@ extracting, creating, and converting between formats.")
                (substitute* "conda/core/initialize.py"
                  (("python_exe = join")
                   (format #f "python_exe = \"~a/bin/python\" #"
-                          python))))
-             #t))
+                          python))))))
          (add-after 'unpack 'do-not-use-python-root-as-prefix
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1066,45 +1064,50 @@ extracting, creating, and converting between formats.")
                  (("os.path.join\\(sys.prefix, bin_dir, exe\\)")
                   (format #f "\"~a/bin/conda\"" out))
                  (("'CONDA_EXE', sys.executable")
-                  (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))
-             #t))
+                  (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))))
          (add-before 'build 'create-version-file
            (lambda _
              (with-output-to-file "conda/.version"
-               (lambda () (display ,version)))
-             #t))
+               (lambda () (display ,version)))))
          (replace 'check
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (invoke "py.test" "-vv"
-                     "-k"
-                     (string-append
-                      "not integration"
-                      ;; This one reports a newer version of conda than
-                      ;; expected.
-                      " and not test_auto_update_conda"
-                      ;; This fails because the output directory is not a
-                      ;; Conda environment.
-                      " and not test_list"
-                      ;; This fails because we patched the default root
-                      ;; prefix.
-                      " and not test_default_target_is_root_prefix"
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; These tests all require network access.
+             (for-each delete-file '("tests/cli/test_main_clean.py"
+                                     "tests/cli/test_main_rename.py"))
+             (when tests?
+               (setenv "HOME" "/tmp")
+               (invoke "py.test" "-vv"
+                       "-k"
+                       (string-append
+                        "not integration"
+                        ;; This one reports a newer version of conda than
+                        ;; expected; conda-1.5.2-py27_0 instead of
+                        ;; conda-1.3.5-py27_0.
+                        " and not test_auto_update_conda"
+                        ;; This fails because the output directory is not a
+                        ;; Conda environment.
+                        " and not test_list"
+                        ;; This fails because we patched the default root
+                        ;; prefix.
+                        " and not test_default_target_is_root_prefix"
+                        ;; This fails because of missing features in python-flaky.
+                        " and not test_no_features"
+                        ;; These fail because they require network access
+                        " and not test_no_ssl"
+                        " and not test_run_readonly_env"
+                        " and not test_run_returns_int"
+                        " and not test_run_returns_nonzero_errorlevel"
+                        " and not test_run_returns_zero_errorlevel"
+                        " and not test_run_uncaptured"
 
-                      ;; These fail because ...
-                      ;; TODO: conda patches its own shebang to
-                      ;; $conda-prefix/bin/python, which is obviously wrong.
-                      " and not test_run_returns_int"
-                      " and not test_run_returns_zero_errorlevel"
-                      " and not test_run_returns_nonzero_errorlevel"
-
-                      ;; TODO: I don't understand what this failure means
-                      " and not test_PrefixData_return_value_contract"
-                      ;; TODO: same here
-                      " and not test_install_1"
-                      ;; Not sure if this is really wrong.  This fails because
-                      ;; /gnu/store/...python-conda-4.8.3/bin/python
-                      ;; is not /gnu/store/...python-wrapper-3.8.2/bin/python
-                      " and not test_make_entry_point"))))
+                        ;; TODO: I don't understand what this failure means
+                        " and not test_PrefixData_return_value_contract"
+                        ;; TODO: same here
+                        " and not test_install_1"
+                        ;; Not sure if this is really wrong.  This fails because
+                        ;; /gnu/store/...conda-22.9.0/bin/python
+                        ;; is not /gnu/store/...python-wrapper-3.9.9/bin/python
+                        " and not test_make_entry_point")))))
          (add-after 'install 'init
            ;; This writes a whole bunch of shell initialization files to the
            ;; prefix directory.  Many features of conda can only be used after
@@ -1119,8 +1122,10 @@ extracting, creating, and converting between formats.")
      (list python-wrapper))
     (propagated-inputs
      (list python-anaconda-client
+           python-boto3
            python-conda-package-handling
            python-cytoolz
+           python-pluggy
            python-pycosat
            python-pytest
            python-pyyaml
@@ -1131,7 +1136,10 @@ extracting, creating, and converting between formats.")
            ;; XXX: This is dragged in by libarchive and is needed at runtime.
            zstd))
     (native-inputs
-     (list python-pytest-timeout))
+     (list python-coverage
+           python-flaky
+           python-pytest-timeout
+           python-pytest-xprocess))
     (home-page "https://github.com/conda/conda")
     (synopsis "Cross-platform, OS-agnostic, system-level binary package manager")
     (description

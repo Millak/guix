@@ -23244,7 +23244,7 @@ getters and setters on fields.")
 (define-public rust-gfa-0.10
   (package
     (name "rust-gfa")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
       (origin
         (method url-fetch)
@@ -23253,7 +23253,7 @@ getters and setters on fields.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1hadm6vfjwyqw41bqci18wb4wv80rydmrag7a5c02pdp1gid14fw"))))
+          "1x996rpfnflgi2j4dgaj5sdxdbf24zfm9d2ha0zy8aid0cd60cln"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
