@@ -4179,14 +4179,14 @@ problems in CEL-level data to help evaluate performance of quality metrics.")
 (define-public r-affycoretools
   (package
     (name "r-affycoretools")
-    (version "1.68.1")
+    (version "1.70.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "affycoretools" version))
        (sha256
         (base32
-         "05x64hy5jpmg973biwq4q9gzy1n0iqc0pxrix1f6bri1w6vil3ww"))))
+         "17slls8dihjnpm6bynic8cm2fbnfl5iqwimz0wz7c9x44d1bxi4l"))))
     (properties `((upstream-name . "affycoretools")))
     (build-system r-build-system)
     (propagated-inputs
