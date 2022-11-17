@@ -29627,7 +29627,7 @@ development, testing, production]};
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
                         (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-pytest-mock))
+    (native-inputs (list python-pytest python-pytest-mock python-numpy))
     (propagated-inputs (list python-jedi python-pygments python-urwid
                              python-urwid-readline))
     (home-page "https://documen.tician.de/pudb/")
