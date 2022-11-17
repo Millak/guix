@@ -1634,7 +1634,7 @@ misuse of libraries outside of the store.")))
 (define-public lldb
   (package
     (name "lldb")
-    (version "14.0.6")
+    (version (package-version llvm-15))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
@@ -1648,8 +1648,8 @@ misuse of libraries outside of the store.")))
     (native-inputs
      (list pkg-config swig))
     (inputs
-     (list clang-14
-           llvm-14
+     (list clang-15
+           llvm-15
            ;; Optional (but recommended) inputs.
            ncurses
            libedit
