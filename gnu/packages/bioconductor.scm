@@ -3273,13 +3273,13 @@ set analyses, and can deal with repeated or longitudinal data.")
 (define-public r-debcam
   (package
     (name "r-debcam")
-    (version "1.14.0")
+    (version "1.16.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "debCAM" version))
               (sha256
                (base32
-                "1ynz57kkxl8nx80zhh1vhhydqb5n6r9d7p69f0k9nj8rp4hdgng7"))))
+                "09dm861adbxdy3ncfdxq46wjr4hpn56c66n64xm9gwzkzsrxyc2a"))))
     (properties `((upstream-name . "debCAM")))
     (build-system r-build-system)
     (inputs (list openjdk))
