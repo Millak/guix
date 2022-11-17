@@ -12300,24 +12300,26 @@ interaction inference from scRNA-seq data.")
 (define-public r-circus
   (package
     (name "r-circus")
-    (version "0.1.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/BIMSBbioinfo/ciRcus")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0jhjn3ilb057hbf6yzrihj13ifxxs32y7nkby8l3lkm28dg4p97h"))))
+    (version "0.1.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BIMSBbioinfo/ciRcus")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d1jz7r81zbcy1gkppggkjmgjxyjhva69s3cdb01m3f0790m4fv0"))))
+    (properties `((upstream-name . "ciRcus")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
            r-annotationhub
+           r-biocgenerics
            r-biomart
            r-data-table
            r-dbi
+           r-genomeinfodb
            r-genomicfeatures
            r-genomicranges
            r-ggplot2
@@ -12325,6 +12327,7 @@ interaction inference from scRNA-seq data.")
            r-iranges
            r-rcolorbrewer
            r-rmysql
+           r-rtracklayer
            r-s4vectors
            r-stringr
            r-summarizedexperiment))
