@@ -10431,22 +10431,22 @@ presence of additional sites within the allowed window size.")
 (define-public r-fgsea
   (package
     (name "r-fgsea")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "fgsea" version))
        (sha256
         (base32
-         "0innyggai6l4fpl4qrblzdc52vqw9jaszmip0yr1lv7rzwyl6mpg"))))
+         "1frl5mchbrgqyxxdlw76qqq5i8vv2fdmy8xl8h8c8cvvmlz393qk"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh
            r-biocparallel
+           r-cowplot
            r-data-table
            r-fastmatch
            r-ggplot2
-           r-gridextra
            r-matrix
            r-rcpp))
     (native-inputs
