@@ -17262,14 +17262,14 @@ real numbers.")
 (define-public r-bgeecall
   (package
     (name "r-bgeecall")
-    (version "1.12.2")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BgeeCall" version))
        (sha256
         (base32
-         "0l6smwy55mm4clb71l4bpch3bayyyf87nq1asbrv6s6fd22mmwil"))))
+         "05w6b10vc4mmwdqnkcj7vnfigk03f03n776vqhlb38k0lx8k4hk3"))))
     (properties `((upstream-name . "BgeeCall")))
     (build-system r-build-system)
     (propagated-inputs
