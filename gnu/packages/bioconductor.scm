@@ -5213,14 +5213,14 @@ CAGE.")
 (define-public r-ensembldb
   (package
     (name "r-ensembldb")
-    (version "2.20.2")
+    (version "2.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ensembldb" version))
        (sha256
         (base32
-         "12n21dcimdhgyjzk33m6xbv0m9ihgyzcf66vr1jr5ycv3rq2s7xc"))))
+         "1v1in3imqbwak3v9w99l6hq8kihai5xvpgxvg7imna7jn1w8kmji"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
