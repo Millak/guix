@@ -8947,14 +8947,14 @@ maps.")
 (define-public r-savr
   (package
     (name "r-savr")
-    (version "1.34.0")
+    (version "1.36.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "savR" version))
        (sha256
         (base32
-         "04zlf3lyr6vnpj80m6fd2is2f7302sxwih8nzzjnc4ss972jid2k"))))
+         "1b7kjgj2r6lgkdnrq91wcwvwb5an0gfdsbyp7j0pvn2byfm4lply"))))
     (properties `((upstream-name . "savR")))
     (build-system r-build-system)
     (propagated-inputs
