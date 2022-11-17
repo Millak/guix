@@ -2110,13 +2110,13 @@ objects are used so that other packages could be used as well.")
 (define-public r-airpart
   (package
     (name "r-airpart")
-    (version "1.4.0")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "airpart" version))
               (sha256
                (base32
-                "0ljankgvgf8rby4z340wxx8v7acs9yz955p3a40jl6y8rz1svc06"))))
+                "07zxv0sjhlajaw4gxpjni14qyyqn70ar8ph5cpibzcky1lx6pmkl"))))
     (properties `((upstream-name . "airpart")))
     (build-system r-build-system)
     (propagated-inputs
