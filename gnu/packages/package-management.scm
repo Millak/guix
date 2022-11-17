@@ -1042,8 +1042,7 @@ extracting, creating, and converting between formats.")
                (substitute* "conda/core/initialize.py"
                  (("python_exe = join")
                   (format #f "python_exe = \"~a/bin/python\" #"
-                          python))))
-             #t))
+                          python))))))
          (add-after 'unpack 'do-not-use-python-root-as-prefix
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
@@ -1066,13 +1065,11 @@ extracting, creating, and converting between formats.")
                  (("os.path.join\\(sys.prefix, bin_dir, exe\\)")
                   (format #f "\"~a/bin/conda\"" out))
                  (("'CONDA_EXE', sys.executable")
-                  (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))
-             #t))
+                  (format #f "'CONDA_EXE', \"~a/bin/conda\"" out))))))
          (add-before 'build 'create-version-file
            (lambda _
              (with-output-to-file "conda/.version"
-               (lambda () (display ,version)))
-             #t))
+               (lambda () (display ,version)))))
          (replace 'check
            (lambda _
              (setenv "HOME" "/tmp")
