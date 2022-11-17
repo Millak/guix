@@ -2525,13 +2525,13 @@ model as latent variables.")
 (define-public r-aspli
   (package
     (name "r-aspli")
-    (version "2.6.0")
+    (version "2.8.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASpli" version))
               (sha256
                (base32
-                "1frlcwa8m4imfx6ncav8r8yskyaf4ibha177mfnp9y84w6mphynz"))))
+                "0gwp5ijpxjy6hd1090cmwbfrfac1qqrzxc06n1j89c0va7wm9l4k"))))
     (properties `((upstream-name . "ASpli")))
     (build-system r-build-system)
     (propagated-inputs
