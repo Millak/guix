@@ -11087,14 +11087,14 @@ type and symbol colors.")
 (define-public r-genomicscores
   (package
     (name "r-genomicscores")
-    (version "2.8.2")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "GenomicScores" version))
        (sha256
         (base32
-         "12rcxw69an1d5q7ar58xy8s871l47imw2nm08j054ivxslx8597j"))))
+         "1sz0gmwc5iam83pxnc702pd5h6nsa46kb0wsqs8ysb1ximbkfh5h"))))
     (properties `((upstream-name . "GenomicScores")))
     (build-system r-build-system)
     (propagated-inputs
