@@ -17332,14 +17332,14 @@ anatomical terms, mapped to genes by expression patterns.")
 (define-public r-biobtreer
   (package
     (name "r-biobtreer")
-    (version "1.8.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biobtreeR" version))
        (sha256
         (base32
-         "0cx46hdqqm6mbj0vp4y86axv0qccd4sgk2jwwjvnqp5pynq9bbqa"))))
+         "1j6w19k124x46gj2p8f1z0i2c03yhiiy1w0fqf504b2r7wy90jxc"))))
     (properties `((upstream-name . "biobtreeR")))
     (build-system r-build-system)
     (propagated-inputs
