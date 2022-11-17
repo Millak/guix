@@ -3658,13 +3658,13 @@ array-like objects like @code{DataFrame} objects (typically with Rle columns),
 (define-public r-derfinderhelper
   (package
     (name "r-derfinderhelper")
-    (version "1.30.0")
+    (version "1.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "derfinderHelper" version))
        (sha256
-        (base32 "0r7zbx5bfmh5cjs12y8d9qwz53nz340gdy3sx7zcn4rzn7rpslp5"))))
+        (base32 "118rjmqy53viczdwj70kaszkpg2r2zbq60k49jg7fqb81prdwy04"))))
     (properties `((upstream-name . "derfinderHelper")))
     (build-system r-build-system)
     (propagated-inputs
