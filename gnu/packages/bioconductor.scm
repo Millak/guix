@@ -14058,14 +14058,14 @@ measures.")
 (define-public r-htqpcr
   (package
     (name "r-htqpcr")
-    (version "1.50.0")
+    (version "1.52.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "HTqPCR" version))
        (sha256
         (base32
-         "0am98rzwpi3kybq1l27c5qn3n1pg5aqwmh6jq9q0lzbjjin3haqc"))))
+         "1kclvh8f2sf534cjw07ry9nx74n6p7r0vmc3mk2nr37yvpf26b3q"))))
     (properties `((upstream-name . "HTqPCR")))
     (build-system r-build-system)
     (propagated-inputs
