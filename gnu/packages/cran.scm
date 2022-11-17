@@ -1273,13 +1273,13 @@ variables.")
 (define-public r-ggprism
   (package
     (name "r-ggprism")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggprism" version))
               (sha256
                (base32
-                "09dh0r8r5s61i5dbk6rswajc2vm7k8wvlqyvzq8wr160676lycjp"))))
+                "0ycklp7764cw65hqh9r61im8vqfd7sjayyw1gvprxzg7k217gnl3"))))
     (properties `((upstream-name . "ggprism")))
     (build-system r-build-system)
     (propagated-inputs
