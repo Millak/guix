@@ -2263,13 +2263,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-aldex2
   (package
     (name "r-aldex2")
-    (version "1.28.1")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ALDEx2" version))
               (sha256
                (base32
-                "0xppx52sllbz4pli174422i4kkf37v0yl844088nbj3j9r6pfbj9"))))
+                "0585s5pb8zr9il1vhxw9vjzzajmdcjmf9zz3zlc5vpczd3fnzfkf"))))
     (properties `((upstream-name . "ALDEx2")))
     (build-system r-build-system)
     (propagated-inputs
