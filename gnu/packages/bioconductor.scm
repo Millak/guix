@@ -4589,13 +4589,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.30.3")
+    (version "1.32.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1rs3wmasl9mx7f399iclvm0bnvggvjj2a88zbi294r5m8wxqlc92"))))
+                "1fkfbs0n0sdssli7ibrswkfag080kgv8n1zf6ssxx729g1fz3m3h"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -4607,18 +4607,16 @@ only one command.")
              ;; Remove generated documentation.
              (for-each delete-file
                        '("inst/doc/BiocParallel_BatchtoolsParam.pdf"
-                         "inst/doc/Introduction_To_BiocParallel.pdf"
                          "inst/doc/Errors_Logs_And_Debugging.pdf"
                          "inst/doc/BiocParallel_BatchtoolsParam.R"
                          "inst/doc/Introduction_To_BiocParallel.R"
-                         "inst/doc/Errors_Logs_And_Debugging.R"))
+                         "inst/doc/Errors_Logs_And_Debugging.R"
+                         "inst/doc/Random_Numbers.R"))
 
              ;; Remove time-dependent macro
              (substitute* '("inst/doc/BiocParallel_BatchtoolsParam.Rnw"
-                            "inst/doc/Introduction_To_BiocParallel.Rnw"
                             "inst/doc/Errors_Logs_And_Debugging.Rnw"
                             "vignettes/BiocParallel_BatchtoolsParam.Rnw"
-                            "vignettes/Introduction_To_BiocParallel.Rnw"
                             "vignettes/Errors_Logs_And_Debugging.Rnw")
                (("\\today") "later"))
 
@@ -4628,7 +4626,7 @@ only one command.")
                 (string-append
                  m "; if (!is.na(Sys.getenv(\"SOURCE_DATE_EPOCH\"))) {set.seed(100)}\n"))))))))
     (propagated-inputs
-     (list r-bh r-codetools r-futile-logger r-snow))
+     (list r-bh r-cpp11 r-codetools r-futile-logger r-snow))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/BiocParallel")
