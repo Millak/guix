@@ -14516,14 +14516,14 @@ manipulating hypergraphs.")
 (define-public r-hyperdraw
   (package
     (name "r-hyperdraw")
-    (version "1.48.0")
+    (version "1.50.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "hyperdraw" version))
        (sha256
         (base32
-         "0ndw4y6b15jy4w86vfkahmdc81d3ycjsvqy1mxi55dwvd8xq0ap6"))))
+         "1fl4ia2jskvmbwk0y1wd0x4dgqph0av7bx2zffrvd1a5ppcjmsra"))))
     (properties `((upstream-name . "hyperdraw")))
     (build-system r-build-system)
     (inputs (list graphviz))
