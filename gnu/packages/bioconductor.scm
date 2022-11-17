@@ -2475,13 +2475,13 @@ tumor samples from healthy controls.")
 (define-public r-aseb
   (package
     (name "r-aseb")
-    (version "1.40.0")
+    (version "1.42.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ASEB" version))
               (sha256
                (base32
-                "1i0r4vimk6is4j4rr14ajp8papznpmmr0bhwd96s8w53cqdqph7p"))))
+                "1kr6l2ma7wzy8i9dn86zx927yvx1l4bnkxhv97ra3sh5vr6m8ywa"))))
     (properties `((upstream-name . "ASEB")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/ASEB")
