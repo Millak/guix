@@ -480,7 +480,7 @@ with text blocks from other extensions and the base service."))
 
 (define (home-bash-extensions original-config extension-configs)
   (match original-config
-    (($ <home-bash-configuration> _ _ _ environment-variables aliases
+    (($ <home-bash-configuration> _ _ environment-variables aliases
                                   bash-profile bashrc bash-logout)
      (home-bash-configuration
       (inherit original-config)

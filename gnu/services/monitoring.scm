@@ -576,7 +576,7 @@ fastcgi_param PHP_VALUE \"post_max_size = 16M
 
 (define (zabbix-front-end-nginx-extension config)
   (match config
-    (($ <zabbix-front-end-configuration> _ server nginx)
+    (($ <zabbix-front-end-configuration> server nginx)
      (if (null? nginx)
          (list
           (nginx-server-configuration
