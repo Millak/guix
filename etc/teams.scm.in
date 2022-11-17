@@ -6,6 +6,7 @@
 ;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -702,11 +703,13 @@ description: ~a
           (string<? (symbol->string (team-id team1))
                     (symbol->string (team-id team2))))))
 
-(define* (list-teams)
+(define* (list-teams #:optional team-names)
   "Print all teams, their scope and their members."
   (for-each print-team
-            (sort-teams (hash-map->list
-                         (lambda (_ value) value) %teams))))
+            (sort-teams
+             (if team-names
+                 (map find-team team-names)
+                 (hash-map->list (lambda (_ value) value) %teams)))))
 
 
 (define (diff-revisions rev-start rev-end)
@@ -786,6 +789,8 @@ and REV-END, two git revision strings."
       (lambda (team-name)
         (list-members (find-team team-name)))
       team-names))
+    (("show" . team-names)
+     (list-teams team-names))
     (anything
      (format (current-error-port)
              "Usage: etc/teams.scm <command> [<args>]
@@ -804,6 +809,8 @@ Commands:
   list-members <team-name>
       list members belonging to <team-name>
   get-maintainer <patch>
-      compatibility mode with Linux get_maintainer.pl~%"))))
+      compatibility mode with Linux get_maintainer.pl
+  show <team-name>
+      display <team-name> properties~%"))))
 
 (apply main (cdr (command-line)))
