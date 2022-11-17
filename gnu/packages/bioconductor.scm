@@ -8801,19 +8801,20 @@ platform for merging tree with associated data and converting file formats.")
 (define-public r-ggtree
   (package
     (name "r-ggtree")
-    (version "3.4.4")
+    (version "3.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ggtree" version))
        (sha256
         (base32
-         "0h1qlhn4rj7jgd9vrja7lykaglyfvnzwkghvsqj1mvp4niwli7y5"))))
+         "177nq6arhxp0x6zsf2c6cn3xxwfk65dihbpni6mb9ifgnmfqdjmx"))))
     (properties `((upstream-name . "ggtree")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
            r-aplot
+           r-cli
            r-dplyr
            r-ggfun
            r-ggplot2
