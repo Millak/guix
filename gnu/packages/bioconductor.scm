@@ -3832,13 +3832,13 @@ over-abundant or less-abundant as compared to that of normal cells.")
 (define-public r-iranges
   (package
     (name "r-iranges")
-    (version "2.30.1")
+    (version "2.32.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "IRanges" version))
               (sha256
                (base32
-                "1r01c9lczkchgd9hbxxd6wrd5avhy52mfqjck7l9avjq1jimvzv3"))))
+                "0jvavhl6p2di0n5176gg7shfmpg79rngl2gaw423icswdf8kay89"))))
     (properties
      `((upstream-name . "IRanges")))
     (build-system r-build-system)
