@@ -6240,14 +6240,14 @@ the fact that each of these packages implements a select methods.")
 (define-public r-pcaexplorer
   (package
     (name "r-pcaexplorer")
-    (version "2.22.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "pcaExplorer" version))
        (sha256
         (base32
-         "0xkafpi6y5n8hljdaj183hd5z4ik7lpbklg2cbx1hwfz4n4hh1bl"))))
+         "0gs4az4h5mwnr3s8fq7im5p3mm4mhc0x5amjr2badqkw1fih3jp7"))))
     (properties `((upstream-name . "pcaExplorer")))
     (build-system r-build-system)
     (propagated-inputs
