@@ -2345,13 +2345,13 @@ data.")
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
-    (version "1.24.0")
+    (version "1.26.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "AneuFinder" version))
               (sha256
                (base32
-                "1acsp987jv2x4qwbgy3y7ff4r2qz7680b0nbr37m4lmncqfgh8yl"))))
+                "154cg63n7h9h5jkj00aqf0hzbmmjg16bzvvk50fyixwq0a4q1j00"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
