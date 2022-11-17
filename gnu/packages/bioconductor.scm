@@ -6936,14 +6936,14 @@ reference point and sorted by a user defined feature.")
 (define-public r-shortread
   (package
     (name "r-shortread")
-    (version "1.54.0")
+    (version "1.56.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ShortRead" version))
        (sha256
         (base32
-         "0303198b4v2wjah9kc829kn01030996l6di4jpf8q5ccd212rjhq"))))
+         "0z700mjll3zv3451rd6p5195w0g3rmw17xddc5qwflwm8dnhdmll"))))
     (properties `((upstream-name . "ShortRead")))
     (build-system r-build-system)
     (inputs
