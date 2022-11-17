@@ -14932,14 +14932,14 @@ checks on R packages that are to be submitted to the Bioconductor repository.")
 (define-public r-biocgraph
   (package
     (name "r-biocgraph")
-    (version "1.58.0")
+    (version "1.60.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biocGraph" version))
        (sha256
         (base32
-         "1y59a7c4ahhn1g2wz2hkx83izfn8i85mmxxp63jdd0rg7zwhr6nn"))))
+         "0ysdmv2hyl8jnmr42lkyvgfqb0z89f5p649ahx0ygs6fw0z226xa"))))
     (properties `((upstream-name . "biocGraph")))
     (build-system r-build-system)
     (propagated-inputs
