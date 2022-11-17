@@ -18297,13 +18297,13 @@ reproducibility.")
 (define-public r-phyloseq
   (package
     (name "r-phyloseq")
-    (version "1.40.0")
+    (version "1.42.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "phyloseq" version))
        (sha256
-        (base32 "0hcyv4ziyaw74mc9vf7bad3q9izi9p0whg3hspbs6w8b3hp34y2k"))))
+        (base32 "07zi059v6zwrm31qwc7fmg35fwqlqfb6c30wwj9q4m2y67srnskk"))))
     (properties `((upstream-name . "phyloseq")))
     (build-system r-build-system)
     (propagated-inputs
