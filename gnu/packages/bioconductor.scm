@@ -8715,14 +8715,14 @@ samples.")
 (define-public r-biocneighbors
   (package
     (name "r-biocneighbors")
-    (version "1.14.0")
+    (version "1.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocNeighbors" version))
        (sha256
         (base32
-         "1a43hzmcpxviqa9723hkafr6gm358amfpqj9d56imclkkfkdz95x"))))
+         "09f00rf5gwwlxxaycsciq4l53gjg5kjayx8xzhns2yf1fv297j9p"))))
     (properties `((upstream-name . "BiocNeighbors")))
     (build-system r-build-system)
     (propagated-inputs
