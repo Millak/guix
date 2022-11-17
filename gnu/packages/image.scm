@@ -2155,7 +2155,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
 (define-public libavif
   (package
     (name "libavif")
-    (version "0.9.2")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2164,7 +2164,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yxmgjlxm1srm98zyj79bj8r8vmg67daqnq0ggcvxknq54plkznk"))))
+                "02zmb62g0yx6rfz4w1isyzfrckv5i7dzyz26rp2mspbx9w6v8j4r"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
@@ -2176,23 +2176,25 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                            "-DAVIF_BUILD_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./aviftest" "../source/tests/data")))
          (add-after 'install 'install-readme
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (doc (string-append out "/share/doc/libavif-" ,version)))
                (install-file "../source/README.md" doc)))))))
+    (native-inputs (list googletest))
     (inputs
-     `(("dav1d" ,dav1d)
-       ("libaom" ,libaom)
+     (append
+      (list dav1d
+            libaom
+            libjpeg-turbo
+            libpng
+            zlib)
        ;; XXX: rav1e depends on rust, which currently only works on x86_64.
        ;; See also the related configure flag when changing this.
-       ,@(if (string-prefix? "x86_64" (or (%current-target-system)
-                                          (%current-system)))
-             `(("rav1e" ,rav1e))
-             '())))
+       (if (string-prefix? "x86_64" (or (%current-target-system)
+                                        (%current-system)))
+           (list rav1e)
+           '())))
     (synopsis "Encode and decode AVIF files")
     (description "Libavif is a C implementation of @acronym{AVIF, the AV1 Image
 File Format}.  It can encode and decode all YUV formats and bit depths supported
