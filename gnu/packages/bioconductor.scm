@@ -5104,13 +5104,13 @@ originally made available by Holmes, Harris, and Quince, 2012, PLoS ONE 7(2):
 (define-public r-dittoseq
   (package
     (name "r-dittoseq")
-    (version "1.8.1")
+    (version "1.10.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "dittoSeq" version))
               (sha256
                (base32
-                "0vi0hcyffaxp6yxsrq95bdlrhr85dvbqm9c7rg6a6blkfgwhlzb4"))))
+                "0sxpwg2cjw70pzdxbdw68nic521w65ryn83mj0pb2m1ncpimin4b"))))
     (properties `((upstream-name . "dittoSeq")))
     (build-system r-build-system)
     (propagated-inputs
