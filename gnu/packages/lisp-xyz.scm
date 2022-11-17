@@ -20066,6 +20066,44 @@ libyaml.")
 (define-public ecl-cl-yaml
   (sbcl-package->ecl-package sbcl-cl-yaml))
 
+(define-public sbcl-clop
+  (let ((commit "c0c3fe7efa5ac95ba1644febfb2c2acab757fcda")
+        (revision "0"))
+    (package
+      (name "sbcl-clop")
+      ;; ASD file indicates 0.1.0, but changelog 1.0.1.
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sheepduke/clop")
+               (commit commit)))
+         (file-name (git-file-name "cl-clop" version))
+         (sha256
+          (base32 "1q7rlizr8gcbfz4a9660gdbw7d2zbld18akjpibg54j7jh5kb8gc"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-str
+             sbcl-esrap
+             sbcl-local-time
+             sbcl-parse-number))
+      (home-page "https://github.com/sheepduke/clop")
+      (synopsis "TOML parser for Common Lisp")
+      (description
+       "Clop is a Common Lisp library for parsing strings in the TOML
+configuration file format.")
+      (license license:expat))))
+
+(define-public cl-clop
+  (sbcl-package->cl-source-package sbcl-clop))
+
+(define-public ecl-clop
+  (sbcl-package->ecl-package sbcl-clop))
+
 (define-public sbcl-linedit
   (let ((commit "0561c97dfca2f5854fcc66558a567a9875ddcb8f")
         (revision "1"))
