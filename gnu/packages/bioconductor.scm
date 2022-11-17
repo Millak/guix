@@ -5463,13 +5463,13 @@ alignments.")
 (define-public r-genomicfeatures
   (package
     (name "r-genomicfeatures")
-    (version "1.48.4")
+    (version "1.50.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomicFeatures" version))
               (sha256
                (base32
-                "15kn5lmdqp7rsh2zlixj7ashsqnv50bs36hapw36qbaz9vgvim4v"))))
+                "10w15j107hy9qb0lh6jmyw7rinfvy3ca34xsskxw3wf25mh6vhzz"))))
     (properties
      `((upstream-name . "GenomicFeatures")))
     (build-system r-build-system)
