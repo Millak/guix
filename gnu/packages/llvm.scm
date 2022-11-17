@@ -1519,14 +1519,14 @@ Library.")
     (properties `((release-monitoring-url . ,%llvm-release-monitoring-url)))
     (license license:asl2.0)))          ;with LLVM exceptions
 
-(define-public lld-14
+(define-public lld-15
   (package
     (name "lld")
-    (version "14.0.6")
+    (version "15.0.4")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (inputs
-     (list llvm-14))
+     (list llvm-15))
     (arguments
      '(#:build-type "Release"
        ;; TODO: Tests require the lit tool, which isn't installed by the LLVM
@@ -1541,6 +1541,14 @@ Library.")
     (description "LLD is a high-performance linker, built as a set of reusable
 components which highly leverage existing libraries in the larger LLVM Project.")
     (license license:asl2.0))) ; With LLVM exception
+
+(define-public lld-14
+  (package
+    (inherit lld-15)
+    (version "14.0.6")
+    (source (llvm-monorepo version))
+    (inputs
+     (list llvm-14))))
 
 (define-public lld-13
   (package
