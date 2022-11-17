@@ -2167,20 +2167,21 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                 "02zmb62g0yx6rfz4w1isyzfrckv5i7dzyz26rp2mspbx9w6v8j4r"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
-                           ,@(if (string-prefix? "x86_64"
-                                                 (or (%current-target-system)
-                                                     (%current-system)))
-                                 '("-DAVIF_CODEC_RAV1E=ON")
-                                 '())
-                           "-DAVIF_BUILD_TESTS=ON")
+     (list #:configure-flags
+           #~'("-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
+               #$@(if (string-prefix? "x86_64"
+                                      (or (%current-target-system)
+                                          (%current-system)))
+                      '("-DAVIF_CODEC_RAV1E=ON")
+                      '())
+               "-DAVIF_BUILD_TESTS=ON")
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-readme
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/libavif-" ,version)))
-               (install-file "../source/README.md" doc)))))))
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-readme
+             (lambda _
+               (let ((doc (string-append #$output "/share/doc/libavif-"
+                                         #$(package-version this-package))))
+                 (install-file "../source/README.md" doc)))))))
     (native-inputs (list googletest))
     (inputs
      (append
