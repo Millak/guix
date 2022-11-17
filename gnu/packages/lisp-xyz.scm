@@ -17997,6 +17997,41 @@ running into parallelism problems when having to change directory.")
 (define-public cl-simple-inferiors
   (sbcl-package->cl-source-package sbcl-simple-inferiors))
 
+(define-public sbcl-metacopy
+  (let ((commit "1b5bf443206cc1dea7801ae23d1167bd02122d30")
+        (revision "1"))
+    (package
+      (name "sbcl-metacopy")
+      (version (git-version "0.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gwkkwg/metacopy")
+               (commit commit)))
+         (file-name (git-file-name "cl-metacopy" version))
+         (sha256
+          (base32 "1rzp112djgw5n76s6hy2aq92bc43p0zd5bgzvqwvgvws4pls42s9"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-asdf-system-connections sbcl-lift))
+      (inputs
+       (list sbcl-contextl sbcl-moptilities))
+      (home-page "https://github.com/gwkkwg/metacopy")
+      (synopsis "Flexible Common Lisp shallow/deep copy mechanism")
+      (description
+       "This package provides a flexible shallow/deep copy mechanism for
+Common Lisp.")
+      (license license:expat))))
+
+;; NOTE: (Sharlatan-20221112T214131+0000): There is no ecl-moptilities variable
+;; required for tests.
+;;
+;; ecl-metacopy
+
+(define-public cl-metacopy
+  (sbcl-package->cl-source-package sbcl-metacopy))
+
 (define-public sbcl-legit
   (let ((commit "5f8a2d4c4f5fb8e53340eeef600433ee20e03fbe")
         (revision "2"))
