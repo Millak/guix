@@ -7020,13 +7020,13 @@ and comparing the clusterings.")
 (define-public r-transcriptr
   (package
     (name "r-transcriptr")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "transcriptR" version))
        (sha256
-        (base32 "1zc6aasd5nzwl9jxr0rdriiq85adqdbfi5b9m3jyf69pa71sgy03"))))
+        (base32 "03v8xn777vyma82ma5dzk07i1g7406cvsybdz4bf6hj8bgx5ynw7"))))
     (properties `((upstream-name . "transcriptR")))
     (build-system r-build-system)
     (propagated-inputs
