@@ -682,19 +682,19 @@ name: ~a
 description: ~a
 ~amembers:
 "
-            (team-id team)
-            (team-name team)
-            (or (and=> (team-description team)
-                       (lambda (text)
-                         (string->recutils
-                          (fill-paragraph text (%text-width)
-                                          (string-length "description: ")))))
-                "<none>")
-            (match (team-scope team)
-              (() "")
-              (scope (format #f "scope: ~{~s ~}~%" scope))))
-    (list-members team #:prefix "+ ")
-    (newline)))
+          (team-id team)
+          (team-name team)
+          (or (and=> (team-description team)
+                     (lambda (text)
+                       (string->recutils
+                        (fill-paragraph text (%text-width)
+                                        (string-length "description: ")))))
+              "<none>")
+          (match (team-scope team)
+            (() "")
+            (scope (format #f "scope:~%~{+ ~a~^~%~}~%" scope))))
+  (list-members team #:prefix "+ ")
+  (newline))
 
 (define (sort-teams teams)
   "Sort TEAMS, a list of <team> record objects."
