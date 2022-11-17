@@ -9364,14 +9364,14 @@ the numbers of cells across batches.")
 (define-public r-mast
   (package
     (name "r-mast")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MAST" version))
        (sha256
         (base32
-         "1kmrqxcfzzcs8l33n9qn0vahc6wxq6ks3cjx95vg96maf2qzhzzi"))))
+         "133ijkw5sd0gl38dfr7qfqvvp2df7lg6j8vkvy54zlpamkg6l2x1"))))
     (properties `((upstream-name . "MAST")))
     (build-system r-build-system)
     (propagated-inputs
