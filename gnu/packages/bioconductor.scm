@@ -15362,18 +15362,40 @@ dimensional mass cytometry data.")
 (define-public r-rgreat
   (package
     (name "r-rgreat")
-    (version "1.28.0")
+    (version "2.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "rGREAT" version))
        (sha256
         (base32
-         "0px72r8mjimf5mxfwb9qz46kqpgjw5gaqq41hy0212ymjd8whaky"))))
+         "1s1xx15ilamcyd8f7cnsgdc3r3izhx9wxmb8amamrmr9bzijjvhi"))))
     (properties `((upstream-name . "rGREAT")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-genomicranges r-getoptlong r-iranges r-rcurl r-rjson))
+     (list r-annotationdbi
+           r-circlize
+           r-digest
+           r-doparallel
+           r-dt
+           r-foreach
+           r-genomeinfodb
+           r-genomicfeatures
+           r-genomicranges
+           r-getoptlong
+           r-globaloptions
+           r-go-db
+           r-iranges
+           r-org-hs-eg-db
+           r-progress
+           r-rcolorbrewer
+           r-rcurl
+           r-rcpp
+           r-rjson
+           r-s4vectors
+           r-shiny
+           r-txdb-hsapiens-ucsc-hg19-knowngene
+           r-txdb-hsapiens-ucsc-hg38-knowngene))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/jokergoo/rGREAT")
     (synopsis "Client for GREAT analysis")
