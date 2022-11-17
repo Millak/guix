@@ -6364,14 +6364,14 @@ chromosome.  Both tumor-normal paired and tumor-only analyses are supported.")
 (define-public r-protgenerics
   (package
     (name "r-protgenerics")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ProtGenerics" version))
        (sha256
         (base32
-         "04hcgj4q8dbzp1a29rbww2bxxrg679pgys3m09p0ydkpsx76rq05"))))
+         "1k5pg0zbhz9mjsl5i3j33p7qv2adax2lf7yqv6qz229fxxaxs5li"))))
     (properties `((upstream-name . "ProtGenerics")))
     (build-system r-build-system)
     (home-page "https://github.com/lgatto/ProtGenerics")
