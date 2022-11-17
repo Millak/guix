@@ -6169,14 +6169,14 @@ previously been used in XCMS.")
 (define-public r-organism-dplyr
   (package
     (name "r-organism-dplyr")
-    (version "1.24.0")
+    (version "1.26.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "Organism.dplyr" version))
        (sha256
         (base32
-         "0j29f85d66c45ww3417xx376vpz0mmvga5n7h2cl1sd4h70b55as"))))
+         "1hawn8pp63kal5ml0sm3h1j1wnkq02z64sliyaf6apv7vl60ja9g"))))
     (properties `((upstream-name . "Organism.dplyr")))
     (build-system r-build-system)
     (propagated-inputs
