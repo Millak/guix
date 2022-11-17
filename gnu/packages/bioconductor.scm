@@ -12580,14 +12580,14 @@ datasets.")
 (define-public r-annotatr
   (package
     (name "r-annotatr")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "annotatr" version))
        (sha256
         (base32
-         "1fbax9v3d486c8lwf3yfjbf4w7zf53wmdpxk2clwm8ngm7w0pqm0"))))
+         "08f3xikgb0z1j7n8i04yn1dlfj8rxc76nmf5b7i5ljcp0jqiv07n"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
