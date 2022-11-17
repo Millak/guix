@@ -15067,20 +15067,22 @@ access.")
 (define-public r-multiassayexperiment
   (package
     (name "r-multiassayexperiment")
-    (version "1.22.0")
+    (version "1.24.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MultiAssayExperiment" version))
        (sha256
         (base32
-         "1wnp52l9vifxn1wzqgndzp9b6ih0s1cflxx1fhw32k32d05cw9q1"))))
+         "00lhnqa4yz3lm5kl79bghad93iijihnassy2caf87czc540why09"))))
     (properties
      `((upstream-name . "MultiAssayExperiment")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
+           r-biocbaseutils
            r-biocgenerics
+           r-delayedarray
            r-genomicranges
            r-iranges
            r-s4vectors
