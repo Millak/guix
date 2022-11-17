@@ -599,6 +599,27 @@ Google.  @code{googleVis} makes use of the internal R HTTP server to display
 the output locally.")
     (license license:gpl2+)))
 
+(define-public r-gson
+  (package
+    (name "r-gson")
+    (version "0.0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gson" version))
+              (sha256
+               (base32
+                "065ify3i7zqwi7h5jzr7kdgr358kwgw6xrkvvmrznbl7s9f7d57n"))))
+    (properties `((upstream-name . "gson")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite r-rlang r-tidyr))
+    (home-page "https://cran.r-project.org/package=gson")
+    (synopsis "Base Class and Methods for 'gson' Format")
+    (description
+     "This packages proposes a new file format named @code{gson} for storing
+gene set and related information, and provides read, write and other utilities
+to process this file format.")
+    (license license:artistic2.0)))
+
 (define-public r-guix-install
   (package
     (name "r-guix-install")
