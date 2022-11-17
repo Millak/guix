@@ -15918,13 +15918,13 @@ matrices.")
 (define-public r-cner
   (package
     (name "r-cner")
-    (version "1.32.0")
+    (version "1.34.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "CNEr" version))
        (sha256
-        (base32 "05zvr5fv8nprxqh2wvvrlf737dq242i20p1rpyqjaxihl6xl62kq"))))
+        (base32 "15y27ca14fdhn2prqgkyikff7p7490xn0bp2c7cnwhw173mm1syw"))))
     (properties `((upstream-name . "CNEr")))
     (build-system r-build-system)
     (inputs (list zlib))
