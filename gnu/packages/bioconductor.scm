@@ -6118,14 +6118,14 @@ specific parser.")
 (define-public r-mzr
   (package
     (name "r-mzr")
-    (version "2.30.0")
+    (version "2.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "mzR" version))
        (sha256
         (base32
-         "1dqa03hb42kbqfg15ksijdkyf9pr54gcl3in4mzjkld5sdi8ncds"))
+         "0p7mkvvaf25si95lpwpr65jm3dzxmgs9i0wilyb2mbxkdcz9vm71"))
        (modules '((guix build utils)))
        (snippet
         '(delete-file-recursively "src/boost"))))
