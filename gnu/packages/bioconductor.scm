@@ -7772,14 +7772,14 @@ Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
 (define-public r-qvalue
   (package
     (name "r-qvalue")
-    (version "2.28.0")
+    (version "2.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "qvalue" version))
        (sha256
         (base32
-         "0cvhm5cldcnnxwa293dig1pj9lvj2hnz9zh4gfr25sw0xlcjzmyw"))))
+         "1dsia1c9ir989aqrgl5j5v4bysm3pyw9225yrcajiwgl8fxymph4"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2 r-reshape2))
