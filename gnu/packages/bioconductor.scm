@@ -3336,13 +3336,13 @@ biological sequences.")
 (define-public r-deco
   (package
     (name "r-deco")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "deco" version))
               (sha256
                (base32
-                "18n5zgln33c79jbjzjlivs8ihyg8zci6minfqlvagxgzcpa67k0m"))))
+                "0d4abif3v62cbas6hl7pfw8q8jihh7nsra76k9cm6kz54qw4fbnw"))))
     (properties `((upstream-name . "deco")))
     (build-system r-build-system)
     (propagated-inputs
