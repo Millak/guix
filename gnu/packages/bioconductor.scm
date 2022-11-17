@@ -12503,19 +12503,21 @@ packages.")
 (define-public r-ropls
   (package
     (name "r-ropls")
-    (version "1.28.2")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "ropls" version))
        (sha256
         (base32
-         "07gpx15r8c3wljiwxnff2zp7wxbhzz9r7njk8zg8hpy2q5qm3i6c"))))
+         "0vjwci0z83b56q1wi1k00926f0vh3220a44m0zzfxg2cm5j3fwxb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
+           r-ggplot2
            r-multiassayexperiment
            r-multidataset
+           r-plotly
            r-summarizedexperiment))
     (native-inputs
      (list r-knitr)) ; for vignettes
