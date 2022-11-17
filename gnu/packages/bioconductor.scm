@@ -16395,13 +16395,13 @@ within the R for Mass Spectrometry packages.")
 (define-public r-msfeatures
   (package
     (name "r-msfeatures")
-    (version "1.4.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MsFeatures" version))
        (sha256
-        (base32 "111iqcq4q315pb4j8z427shin9b00p179m2s9h6dd7imvbd68yq3"))))
+        (base32 "1q1224w31wdaagfv8ysc1w0d0n34y547c0jzkff1vxri9pb0w1j1"))))
     (properties `((upstream-name . "MsFeatures")))
     (build-system r-build-system)
     (propagated-inputs
