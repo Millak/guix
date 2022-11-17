@@ -17046,14 +17046,14 @@ large-scale and fully automated analysis.")
 (define-public r-snpstats
   (package
     (name "r-snpstats")
-    (version "1.46.0")
+    (version "1.48.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "snpStats" version))
        (sha256
         (base32
-         "0a5b5nqc7n965jk45ijwkzbn416ib4gfhp8xl39z8f2bdskip4a2"))))
+         "14rkrav4iydc85194skdy33sk365pjmmvxxvzaxxh0k9ds009qwx"))))
     (properties `((upstream-name . "snpStats")))
     (build-system r-build-system)
     (inputs (list zlib))
