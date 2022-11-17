@@ -222,13 +222,13 @@ reusable library for parsing, manipulating, and generating URIs.")
 (define-public python-praw
   (package
     (name "python-praw")
-    (version "7.5.0")
+    (version "7.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "praw" version))
        (sha256
-        (base32 "1nqcwz8r8xp4rfpy2i11x2fjga8fmmf6zw94xjk1h1yxgn1gq6zr"))))
+        (base32 "17pvdlcasr08p5hb1x7shjh8yvn621lzm0bvnwd3b1r1qpzrbz07"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
