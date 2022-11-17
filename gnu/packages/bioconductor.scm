@@ -3378,13 +3378,13 @@ higher deregulation levels.")
 (define-public r-decomplexdisease
   (package
     (name "r-decomplexdisease")
-    (version "1.16.0")
+    (version "1.18.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "DEComplexDisease" version))
               (sha256
                (base32
-                "09a967x1rnv7byjwh29ngjhs67rgg27zblmlzx6pyqlwy5jsp89d"))))
+                "12gw9b0gdwyih51j2gzay6vxhycgc52n8svd0slv6wsbw5rc19lh"))))
     (properties `((upstream-name . "DEComplexDisease")))
     (build-system r-build-system)
     (propagated-inputs
