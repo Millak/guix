@@ -6734,13 +6734,13 @@ differential expression analysis, RNAseq data and related problems.")
 (define-public r-scannotatr
   (package
     (name "r-scannotatr")
-    (version "1.2.0")
+    (version "1.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scAnnotatR" version))
        (sha256
-        (base32 "067q57kabhqd1z8l3d91fw74aaw89nb48gm6fll4hv00nqza3n5b"))))
+        (base32 "0rc035kzbzrxvlcpphzg0yg7q82jvlxpi9xjq8q59hvbpyg1sz93"))))
     (properties `((upstream-name . "scAnnotatR")))
     (build-system r-build-system)
     (propagated-inputs
