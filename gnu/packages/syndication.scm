@@ -195,25 +195,25 @@ cards.")
                  `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH") ,lib))
                  `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("glib:bin" ,glib "bin")
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk:bin" ,gtk "bin")
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal
+           (list glib "bin")
+           gobject-introspection
+           (list gtk "bin")
+           pkg-config))
     (inputs
-     `(("blueprint-compiler" ,blueprint-compiler)
-       ("glib" ,glib)
-       ("gtk" ,gtk)
-       ("gtksourceview" ,gtksourceview)
-       ("libadwaita" ,libadwaita)
-       ("python" ,python)
-       ("python-beautifulsoup" ,python-beautifulsoup4)
-       ("python-dateutil" ,python-dateutil)
-       ("python-mistune" ,python-mistune-next)
-       ("python-pillow" ,python-pillow)
-       ("python-praw" ,python-praw)
-       ("python-pygobject" ,python-pygobject)
-       ("python-requests" ,python-requests)))
+     (list blueprint-compiler
+           glib
+           gtk
+           gtksourceview
+           libadwaita
+           python
+           python-beautifulsoup4
+           python-dateutil
+           python-mistune-next
+           python-pillow
+           python-praw
+           python-pygobject
+           python-requests))
     (propagated-inputs
      (list dconf))
     (synopsis "Client for Reddit")
