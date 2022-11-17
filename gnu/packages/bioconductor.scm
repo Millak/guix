@@ -4452,14 +4452,14 @@ classes.")
 (define-public r-bamsignals
   (package
     (name "r-bamsignals")
-    (version "1.28.0")
+    (version "1.30.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bamsignals" version))
        (sha256
         (base32
-         "0ywbxq829hclhr5bb6p77rspxvfs580zlwd2f5kr3an6rdgyx9ky"))))
+         "059pkm5pg9ssd0l8xrm13d0hscqnmlqcb4qb5p4fbzgx6088zg05"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biocgenerics
