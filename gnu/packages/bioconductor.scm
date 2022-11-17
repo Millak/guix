@@ -10463,23 +10463,23 @@ to multiple hypothesis correction.")
 (define-public r-dose
   (package
     (name "r-dose")
-    (version "3.22.1")
+    (version "3.24.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DOSE" version))
        (sha256
         (base32
-         "1mch26kddrhhzgi4bssnyy7bvdhprrncmvxl6zn1cq7g07p5765i"))))
+         "1ai42pnd8s8ws6y9nlq5d858w2rp8gfw2vpndslspj4q8gc4dbb1"))))
     (properties `((upstream-name . "DOSE")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-annotationdbi
            r-biocparallel
-           r-do-db
            r-fgsea
            r-ggplot2
            r-gosemsim
+           r-hdo-db
            r-qvalue
            r-reshape2))
     (native-inputs
