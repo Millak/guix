@@ -16509,6 +16509,38 @@ immediately loaded.")
 (define-public cl-bodge-math
   (sbcl-package->cl-source-package sbcl-bodge-math))
 
+(define-public sbcl-cl-mathstats
+  (let ((commit "4df38ea1b9de069cf939919253565a9ca9538eca")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-mathstats")
+      (version (git-version "0.8.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gwkkwg/cl-mathstats")
+               (commit commit)))
+         (file-name (git-file-name "cl-mathstats" version))
+         (sha256
+          (base32 "0gsjvmkmnxc4hp5z9mkm5vsllywqyg7kx8jgz88vnx47yj3va1s8"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-lift))
+      (inputs
+       (list sbcl-cl-containers sbcl-metatilities-base))
+      (home-page "https://github.com/gwkkwg/cl-mathstats")
+      (synopsis "Common Lisp collection of mathematical routines")
+      (description
+       "This package provides Common Lisp math and statistics routines.")
+      (license license:expat))))
+
+(define-public ecl-cl-mathstats
+  (sbcl-package->ecl-package sbcl-cl-mathstats))
+
+(define-public cl-mathstats
+  (sbcl-package->cl-source-package sbcl-cl-mathstats))
+
 (define-public sbcl-bodge-blobs-support
   (let ((commit "c5034ca5f4fc3a44dbadeba215a09afd59a404b0")
         (revision "1"))
