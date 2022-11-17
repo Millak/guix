@@ -164,7 +164,7 @@ cards.")
 (define-public giara
   (package
     (name "giara")
-    (version "0.3")
+    (version "1.0.1")
     (source
      (origin
        (method git-fetch)
@@ -172,15 +172,17 @@ cards.")
              (url "https://gitlab.gnome.org/World/giara")
              (commit version)))
        (file-name (git-file-name name version))
-       ;; To fix authentication while adding accounts.
-       (patches (search-patches "giara-fix-login.patch"))
        (sha256
-        (base32 "004qmkfrgd37axv0b6hfh6v7nx4pvy987k5yv4bmlmkj9sbqm6f9"))))
+        (base32 "00vmfghp9g8yzn2d1xjawz5a8bdwn1jl1k24mjaf4vlvdy4sg9l4"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'skip-icon-cache
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") "true"))))
          (add-after 'glib-or-gtk-wrap 'wrap-paths
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -196,28 +198,26 @@ cards.")
      `(("gettext" ,gettext-minimal)
        ("glib:bin" ,glib "bin")
        ("gobject-introspection" ,gobject-introspection)
-       ("gtk+:bin" ,gtk+ "bin")
-       ("pkg-config" ,pkg-config)
-       ("xmllint" ,libxml2)))
+       ("gtk:bin" ,gtk "bin")
+       ("pkg-config" ,pkg-config)))
     (inputs
-     `(("glib" ,glib)
-       ("gtk+" ,gtk+)
+     `(("blueprint-compiler" ,blueprint-compiler)
+       ("glib" ,glib)
+       ("gtk" ,gtk)
        ("gtksourceview" ,gtksourceview)
-       ("libhandy" ,libhandy)
+       ("libadwaita" ,libadwaita)
        ("python" ,python)
        ("python-beautifulsoup" ,python-beautifulsoup4)
        ("python-dateutil" ,python-dateutil)
-       ("python-mistune" ,python-mistune)
+       ("python-mistune" ,python-mistune-next)
        ("python-pillow" ,python-pillow)
        ("python-praw" ,python-praw)
-       ("python-pycairo" ,python-pycairo)
        ("python-pygobject" ,python-pygobject)
-       ("python-requests" ,python-requests)
-       ("webkitgtk" ,webkitgtk-with-libsoup2)))
+       ("python-requests" ,python-requests)))
     (propagated-inputs
      (list dconf))
     (synopsis "Client for Reddit")
-    (description "Giara is a reddit app, built with Python, GTK and Handy.")
+    (description "Giara is a reddit app, built with Python, GTK4 and libadwaita.")
     (home-page "https://giara.gabmus.org/")
     (license license:gpl3+)))
 
