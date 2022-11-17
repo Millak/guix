@@ -5786,13 +5786,13 @@ different technologies, including microarrays, RNA-seq, and quantitative PCR.")
 (define-public r-made4
   (package
     (name "r-made4")
-    (version "1.70.0")
+    (version "1.72.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "made4" version))
               (sha256
                (base32
-                "1wrv9d2mp799qzy1bsaj4w7wx12gdhfv9qvklz7z41vfz59d6bq5"))))
+                "0ylcigzbahic99afqk1q29d4wczmsqmp2hasvihcykybb440a6f2"))))
     (properties `((upstream-name . "made4")))
     (build-system r-build-system)
     (propagated-inputs
