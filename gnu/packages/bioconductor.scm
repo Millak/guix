@@ -2848,13 +2848,13 @@ rich environment of statistical and data analysis tools.")
 (define-public r-bac
   (package
     (name "r-bac")
-    (version "1.56.0")
+    (version "1.58.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BAC" version))
               (sha256
                (base32
-                "0dkw7438d2sf6nb577dnzija54qs0nhlr47lb73li60fhlnvqmh2"))))
+                "00dkhns9n1x4wmlxjcw75h7iwwk37zlv1c2fi0g1mmsw1xvdjzp6"))))
     (properties `((upstream-name . "BAC")))
     (build-system r-build-system)
     (home-page "https://bioconductor.org/packages/BAC")
