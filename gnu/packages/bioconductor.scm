@@ -2923,13 +2923,13 @@ Various visual and textual types of output are available.")
 (define-public r-bambu
   (package
     (name "r-bambu")
-    (version "2.2.0")
+    (version "3.0.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "bambu" version))
               (sha256
                (base32
-                "0dc2hpnykr575jbrq9whmdabknl70s2hcs6gkmkl4kpv7xfqdq6w"))))
+                "08vh0vbmjn1kzp10yrinn0p0ab2cjhgiagx1vhci5sf4s6p20vy4"))))
     (properties `((upstream-name . "bambu")))
     (build-system r-build-system)
     (propagated-inputs
