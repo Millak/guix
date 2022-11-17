@@ -6816,13 +6816,13 @@ comprehensive scDblFinder method.")
 (define-public r-scmap
   (package
     (name "r-scmap")
-    (version "1.18.0")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "scmap" version))
        (sha256
-        (base32 "0pfwaa9pgml11b84rpf7afdkmg8kxb4srgpc56571vaz388xrv7l"))))
+        (base32 "14vyjvfs2n4h0xsy25xg4zdmc8dqbg5vyl3qns6f0rh4bsshqdlm"))))
     (properties `((upstream-name . "scmap")))
     (build-system r-build-system)
     (propagated-inputs
