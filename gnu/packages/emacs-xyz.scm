@@ -33610,8 +33610,8 @@ by leveraging @code{emacs-consult} APIs.")
 (define-public emacs-purs-mode
   ;; XXX: Upstream set no tag nor any Version keyword.  Using 0 as the base
   ;; version.
-  (let ((commit "d29f1021787a90d0fd3eb0af625958abb7f7506b")
-        (revision "0"))
+  (let ((commit "16553383915cf453747a491715ed0427c107cc9e")
+        (revision "1"))
     (package
       (name "emacs-purs-mode")
       (version (git-version "0" revision commit))
@@ -33624,7 +33624,7 @@ by leveraging @code{emacs-consult} APIs.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0r7219ysf3hsjnan30hidf8jamcqsz36pkcmnhknff0c6dpwbnpx"))))
+          (base32 "0174p0g38jd34jwpww7zgh48i3lkhqrnrxz8ca09idz4adri38z7"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/PureFunctor/purs-mode/")
       (synopsis "PureScript major mode for Emacs")
