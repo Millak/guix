@@ -1684,13 +1684,13 @@ and @code{Sailfish}.  Alevin example output is also included.")
 (define-public r-abarray
   (package
     (name "r-abarray")
-    (version "1.64.0")
+    (version "1.66.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ABarray" version))
               (sha256
                (base32
-                "0kjq00i2mb21xyjjs3jy09ps80f11cy37wywzjvmxyjxzbsk4d7r"))))
+                "02rjxzbrzphl28z8zpgw3gavzlzlx71n5ld8sb3im6xpn81ykvfh"))))
     (properties `((upstream-name . "ABarray")))
     (build-system r-build-system)
     (propagated-inputs (list r-biobase r-multtest))
