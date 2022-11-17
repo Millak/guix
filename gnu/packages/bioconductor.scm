@@ -12739,14 +12739,14 @@ of the analyses while minimizing technical noise.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.8.0")
+    (version "2.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "18b532sicca5l8sn334prrm7g1z1cakiwydccz4i833168pnsjyg"))))
+         "1y06x7z3p938kfvjx6zqab9hh1xzlrlhdxczyprx7lsd34ylz46n"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
     (native-inputs
