@@ -16330,14 +16330,14 @@ data in the column sparse format.")
 (define-public r-delayedmatrixstats
   (package
     (name "r-delayedmatrixstats")
-    (version "1.18.1")
+    (version "1.20.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DelayedMatrixStats" version))
        (sha256
         (base32
-         "1kq643fmfzq1qjvpj3kc092ahc3qamqgx53layqsyvz5mil55jjv"))))
+         "0qcn7rlq0bsj11sc31wzks2xv900fpmbsblxp9cng5lj5cn2djk3"))))
     (properties
      `((upstream-name . "DelayedMatrixStats")))
     (build-system r-build-system)
