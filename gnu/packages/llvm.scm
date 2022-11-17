@@ -1668,7 +1668,7 @@ which highly leverage existing libraries in the larger LLVM project.")
 (define-public libcxx
   (package
     (name "libcxx")
-    (version "14.0.6")
+    (version (package-version llvm-15))
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (arguments
