@@ -5628,14 +5628,14 @@ Enrichment Analysis} (GSEA).")
 (define-public r-hpar
   (package
     (name "r-hpar")
-    (version "1.38.0")
+    (version "1.40.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "hpar" version))
        (sha256
         (base32
-         "07c6r703d5xp7y9bqmqalxgna2qrbk1h5s0d992m7360k259mgrj"))))
+         "1dls59d2ysk8ngk5c6nx7xqgc2iygbdlzf88gccf2wm8zhy8m3f4"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
