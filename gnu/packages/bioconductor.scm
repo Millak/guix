@@ -14602,14 +14602,14 @@ a file-backed matrix with factor properties.")
 (define-public r-bigpint
   (package
     (name "r-bigpint")
-    (version "1.12.0")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "bigPint" version))
        (sha256
         (base32
-         "1hp69j2qcidrxqs3dxjjngb09nbzp5x2yy4jz1rjmv6ghif9ccfj"))))
+         "1smf3w5a60jc0bpip5131ad9ykmnrcd33qi3pc3m50g6kn023wz2"))))
     (properties `((upstream-name . "bigPint")))
     (build-system r-build-system)
     (propagated-inputs
