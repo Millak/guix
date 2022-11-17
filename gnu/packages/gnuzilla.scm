@@ -1242,8 +1242,8 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
-(define %icedove-build-id "20221104000000") ;must be of the form YYYYMMDDhhmmss
-(define %icedove-version "102.4.2")
+(define %icedove-build-id "20221115000000") ;must be of the form YYYYMMDDhhmmss
+(define %icedove-version "102.5.0")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
@@ -1252,11 +1252,11 @@ standards of the IceCat project.")
     (method hg-fetch)
     (uri (hg-reference
           (url "https://hg.mozilla.org/releases/comm-esr102")
-          (changeset "bece6c033f6b24b9c126598da7c6eb5bc2a48b14")))
+          (changeset "b6e9b5a1d1b53d26cfb7032ef2ff02203ab0486b")))
     (file-name (string-append "thunderbird-" %icedove-version "-checkout"))
     (sha256
      (base32
-      "1fsn5lg0c89rnsnljd48gq1z751sxf6zv2rv7wgnhifc45w4s80j"))))
+      "0i2w1ibaip8rlghrk5iaih14xnz5n19ag64qcdgjxic78mhnmm04"))))
 
 (define-public icedove
   (package
