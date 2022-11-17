@@ -14978,13 +14978,13 @@ functionality.")
 (define-public r-biocviews
   (package
     (name "r-biocviews")
-    (version "1.64.1")
+    (version "1.66.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biocViews" version))
               (sha256
                (base32
-                "0ixcx9qqpmwmnhml3klk5z075km8g2l4q0iqc1dbniga87qgyl38"))))
+                "1rgn0agw5m4y8838lxzq1r658h1pblaidmm444yfimjffa8znj23"))))
     (properties
      `((upstream-name . "biocViews")))
     (build-system r-build-system)
