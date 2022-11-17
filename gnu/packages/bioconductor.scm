@@ -6384,14 +6384,14 @@ proteomics packages.")
 (define-public r-rbgl
   (package
     (name "r-rbgl")
-    (version "1.72.0")
+    (version "1.74.0")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "RBGL" version))
        (sha256
         (base32
-         "0ph089vxla49sng0pdwiyh9rpk9i96cbsx5q2jn46jj4x51ijc7y"))))
+         "0dccxsynfnhjzjk22hr5kg068zbg33g6kyhlhlhqh78582181j9m"))))
     (properties `((upstream-name . "RBGL")))
     (build-system r-build-system)
     (propagated-inputs
