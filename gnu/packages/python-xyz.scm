@@ -11284,14 +11284,22 @@ Python.")
   (package
     (inherit python-mistune)
     (name "python-mistune-next")
-    (version "2.0.0rc1")
+    (version "2.0.4")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "mistune" version))
               (sha256
                (base32
-                "1nd7iav1ixh9hlj4hxn6lmpava88d86ys8rqm30wgvr7gjlxnas5"))))
-    (native-inputs (list python-nose))))
+                "024q9l6mgd37wa25w7dhskv1m3zsj5lf0w9cfyx7l9p2adhadq4y"))))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "pytest" "-vv")))))))
+    (native-inputs (list python-pytest))))
 
 (define-public python-markdown
   (package
