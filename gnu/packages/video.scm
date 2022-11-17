@@ -4936,7 +4936,7 @@ and audio capture, network stream playback, and many more.")
 (define-public dav1d
   (package
     (name "dav1d")
-    (version "0.9.2")
+    (version "1.0.0")
     (source
       (origin
         (method git-fetch)
@@ -4945,7 +4945,7 @@ and audio capture, network stream playback, and many more.")
                (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0bkps488h9s15ylvkm4fmfywgrpbw570glawpnv6khpq9n223dzl"))))
+         (base32 "0jkvb5as7danpalzlwd0w1dc9i2vijvmf39z0j6fwqvialsgnnj5"))))
     (build-system meson-build-system)
     (native-inputs (list nasm))
     (home-page "https://code.videolan.org/videolan/dav1d")
