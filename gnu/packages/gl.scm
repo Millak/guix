@@ -557,8 +557,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
            (lambda* (#:key outputs #:allow-other-keys)
              (copy-recursively "include" (string-append
                                           (assoc-ref outputs "out")
-                                          "/include"))
-             #t)))))))
+                                          "/include")))))))))
 
 ;;; The mesa-demos distribution contains non-free files, many files with no
 ;;; clear license information, and many demos that aren't useful for most
