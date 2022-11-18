@@ -1363,6 +1363,34 @@ jsoniter and variable type declarations (if any).  jsoniter interfaces gives
 router.")
     (license license:bsd-3)))
 
+(define-public go-github-com-makeworld-the-better-one-go-gemini
+  (package
+    (name "go-github-com-makeworld-the-better-one-go-gemini")
+    (version "0.13.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/makew0rld/go-gemini")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "196rxfg7w8s3zn87gra1mxh1l8iav6kdmg909gkbnc9cxip65zc0"))))
+    (build-system go-build-system)
+    (propagated-inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (arguments
+     (list
+      #:import-path "github.com/makeworld-the-better-one/go-gemini"))
+    (home-page "https://github.com/makew0rld/go-gemini")
+    (synopsis "Client/server library for the Gemini protocol, in Go")
+    (description
+     "@code{go-gemini} is a library that provides an easy interface to create
+clients that speak the Gemini protocol.")
+    (license license:isc)))
+
 (define-public go-github-com-microcosm-cc-bluemonday
   (package
     (name "go-github-com-microcosm-cc-bluemonday")
