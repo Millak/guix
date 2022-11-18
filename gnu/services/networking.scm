@@ -1011,30 +1011,24 @@ HiddenServicePort ~a ~a~%"
                                       (source torrc)
                                       (target source)))
                     #:namespaces (delq 'net %namespaces))))
-       (with-imported-modules (source-module-closure
-                               '((gnu build shepherd)
-                                 (gnu system file-systems)))
-         (list (shepherd-service
-                (provision '(tor))
+       (list (shepherd-service
+              (provision '(tor))
 
-                ;; Tor needs at least one network interface to be up, hence the
-                ;; dependency on 'loopback'.
-                (requirement '(user-processes loopback syslogd))
+              ;; Tor needs at least one network interface to be up, hence the
+              ;; dependency on 'loopback'.
+              (requirement '(user-processes loopback syslogd))
 
-                (modules '((gnu build shepherd)
-                           (gnu system file-systems)))
-
-                ;; XXX: #:pid-file won't work because the wrapped 'tor'
-                ;; program would print its PID within the user namespace
-                ;; instead of its actual PID outside.  There's no inetd or
-                ;; systemd socket activation support either (there's
-                ;; 'sd_notify' though), so we're stuck with that.
-                (start #~(make-forkexec-constructor
-                          (list #$tor "-f" #$torrc)
-                          #:user "tor" #:group "tor"))
-                (stop #~(make-kill-destructor))
-                (actions (list (shepherd-configuration-action torrc)))
-                (documentation "Run the Tor anonymous network overlay."))))))))
+              ;; XXX: #:pid-file won't work because the wrapped 'tor'
+              ;; program would print its PID within the user namespace
+              ;; instead of its actual PID outside.  There's no inetd or
+              ;; systemd socket activation support either (there's
+              ;; 'sd_notify' though), so we're stuck with that.
+              (start #~(make-forkexec-constructor
+                        (list #$tor "-f" #$torrc)
+                        #:user "tor" #:group "tor"))
+              (stop #~(make-kill-destructor))
+              (actions (list (shepherd-configuration-action torrc)))
+              (documentation "Run the Tor anonymous network overlay.")))))))
 
 (define (tor-activation config)
   "Set up directories for Tor and its hidden services, if any."
