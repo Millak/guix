@@ -20252,19 +20252,6 @@ while only declaring the test-specific fields.")
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
 
-;; TODO(staging): merge with python-packaging-bootstrap.
-(define-public python-packaging-next
-  (package
-    (inherit python-packaging)
-    (version "21.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "packaging" version))
-       (sha256
-        (base32
-         "1sygirdrqgv4f1ckh9nhpcw1yfidrh3qjl86wq8vk6nq4wlw8iyx"))))))
-
 (define-public python-relatorio
   (package
     (name "python-relatorio")
