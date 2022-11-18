@@ -912,8 +912,8 @@ shared library and encoder and decoder command-line executables.")
 (define-public libx264
   ;; There are no tags in the repository, so we take the version number from
   ;; the X264_BUILD variable defined in x264.h.
-  (let ((version "161")
-        (commit "4c2aafd864dd201832ec2be0fef4484925146650")
+  (let ((version "164")
+        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
         (revision "0"))
     (package
       (name "libx264")
@@ -926,7 +926,7 @@ shared library and encoder and decoder command-line executables.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i6v9h3xx9pi0zmlj3anwwjxqa63sbhy9crrif8dphipwfn9hyg5"))))
+                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq"))))
       (build-system gnu-build-system)
       (native-inputs
        (list pkg-config nasm))
@@ -975,27 +975,6 @@ H.264 (MPEG-4 AVC) video streams.")
                      (license:non-copyleft ;extras/cl*.h
                       "file://extras/cl.h"
                       "See extras/cl.h in the distribution."))))))
-
-;;; TODO: Merge into libx264 on staging.
-(define-public libx264-next
-  ;; There are no tags in the repository, so we take the version number from
-  ;; the X264_BUILD variable defined in x264.h.
-  (let ((version "164")
-        (commit "b093bbe7d9bc642c8f24067cbdcc73bb43562eab")
-        (revision "0"))
-    (package
-      (inherit libx264)
-      (name "libx264")
-      (version (git-version version revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://code.videolan.org/videolan/x264.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "095pv8y6fqjg8mdvsfk12d0jqgyhip536a6vxhzm7qz8hfp96qhq")))))))
 
 (define-public mkvtoolnix
   (package

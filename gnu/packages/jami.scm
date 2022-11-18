@@ -424,8 +424,7 @@
                    "mov ismv")
                   (("fate-lavf-mov_rtphint:.*") ""))))))))
     (inputs (modify-inputs (package-inputs ffmpeg-5)
-              (replace "libvpx" libvpx-next)
-              (replace "libx264" libx264-next)))))
+              (replace "libvpx" libvpx-next)))))
 
 (define-public libjami
   (package
