@@ -345,7 +345,7 @@ applications.")
 (define-public pango
   (package
     (name "pango")
-    (version "1.50.8")
+    (version "1.50.10")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/pango/"
@@ -354,7 +354,7 @@ applications.")
               (patches (search-patches "pango-skip-libthai-test.patch"))
               (sha256
                (base32
-                "1yjm28qnq4v3dm8nj59cmhjiszv6x4h4j0y4fhqh4v0lvmcnyqng"))))
+                "0rj9sszflckk8gj47ppirpndpp3mzsx97l64lalj8kc580g2ypby"))))
     (build-system meson-build-system)
     (arguments
      '(#:glib-or-gtk? #t             ; To wrap binaries and/or compile schemas
@@ -382,7 +382,8 @@ applications.")
            libxft
            libxrender))
     (inputs
-     (list bash-minimal zlib))
+     (list bash-minimal
+           zlib))
     (native-inputs
      (list `(,glib "bin")               ;glib-mkenums, etc.
            gobject-introspection        ;g-ir-compiler, etc.
