@@ -67,7 +67,7 @@
 (define-public graphviz
   (package
     (name "graphviz")
-    (version "5.0.0")
+    (version "7.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://gitlab.com/api/v4/projects/4207231"
@@ -75,7 +75,7 @@
                                   version "/graphviz-" version ".tar.xz"))
               (sha256
                (base32
-                "0nkc90c3cvhvjy7z08f56l0fagkyaq63g6zszrr02bbsfxb7796s"))))
+                "1b6x3g03j7q77lzyvdp34hkzld5sg1l1ippc6sh1qxnmm59xs3ly"))))
     (build-system gnu-build-system)
     (arguments
      ;; FIXME: rtest/rtest.sh is a ksh script (!).  Add ksh as an input.
@@ -84,8 +84,7 @@
            #~(modify-phases %standard-phases
                (add-after 'install 'move-guile-bindings
                  (lambda* (#:key outputs #:allow-other-keys)
-                   (let* ((out (assoc-ref outputs "out"))
-                          (lib (string-append out "/lib"))
+                   (let* ((lib (string-append #$output "/lib"))
                           (extdir (string-append lib "/guile/"
                                                  #$(version-major+minor
                                                     (package-version
@@ -111,8 +110,10 @@
            libjpeg-turbo
            libpng))
     (native-inputs
-     (list bison swig pkg-config))
-    (outputs '("out" "doc"))                      ; 5 MiB of html + pdfs
+     (list bison
+           pkg-config
+           swig))
+    (outputs '("out" "doc"))            ;5 MiB of html + pdfs
     (home-page "https://www.graphviz.org/")
     (synopsis "Graph visualization software")
     (description
