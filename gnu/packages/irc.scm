@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,7 +152,7 @@ irssi, but graphical.")
 (define-public irssi
   (package
     (name "irssi")
-    (version "1.4.1")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/irssi/irssi/"
@@ -159,7 +160,7 @@ irssi, but graphical.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00bmwkpzhqqnsajakk7dviap1i8s89375kwpdyxg65ms3ds94xka"))))
+                "0d04bam0lrk66wi7ygd5si5y6adf2ajhh6mn89zyc8m34d972gxr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
