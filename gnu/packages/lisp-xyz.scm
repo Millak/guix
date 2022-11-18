@@ -7683,8 +7683,8 @@ extension-points via the concept of hooks.")
 
 (define-public sbcl-s-sysdeps
   ;; No release since 2013.
-  (let ((commit "9aa23bbdceb24bcdbe0e7c39fa1901858f823106")
-        (revision "2"))
+  (let ((commit "7f8de283b7fbd8b038fdf08493063a736db36ce7")
+        (revision "3"))
     (package
       (name "sbcl-s-sysdeps")
       (build-system asdf-build-system/sbcl)
@@ -7699,7 +7699,7 @@ extension-points via the concept of hooks.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1fh8r7kf8s3hvqdg6b71b8p7w3v2kkga9bw8j3qqdxhzr6anpm0b"))))
+           "0rp81iq0rgl48qdwbmfy89glga81hmry2lp8adjbr5h5ybr92b4n"))))
       (inputs
        (list sbcl-bordeaux-threads sbcl-usocket))
       (synopsis "Common Lisp abstraction layer over platform dependent functionality")
