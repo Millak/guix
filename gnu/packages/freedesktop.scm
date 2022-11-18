@@ -391,79 +391,51 @@ inappropriate content.")
     (name "xdg-utils")
     (version "1.1.3")
     (source
-      (origin
-        (method url-fetch)
-          (uri (string-append
-                 "https://portland.freedesktop.org/download/xdg-utils-"
-                 version ".tar.gz"))
-          (sha256
-            (base32
-             "1nai806smz3zcb2l5iny4x7li0fak0rzmjg6vlyhdqm8z25b166p"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://portland.freedesktop.org/download/xdg-utils-"
+             version ".tar.gz"))
+       (sha256
+        (base32
+         "1nai806smz3zcb2l5iny4x7li0fak0rzmjg6vlyhdqm8z25b166p"))))
     (build-system gnu-build-system)
     (native-inputs
      (list docbook-xsl docbook-xml-4.1.2 libxslt w3m xmlto))
     (inputs
-     `(("awk" ,gawk)
-       ;; TODO(staging): Make this unconditional, to avoid canonical packages,
-       ;; see <https://lists.gnu.org/archive/html/guix-devel/2020-02/msg00148.html>.
-       ,@(if (%current-target-system)
-             `(("bash-minimal" ,bash-minimal)) ; for 'wrap-program'
-             '())
-       ("coreutils" ,coreutils)
-       ,@(if (%current-target-system)
-             `(("file" ,file))
-             '())
-       ("grep" ,grep)
-       ("inetutils" ,inetutils) ; xdg-screensaver uses `hostname'
-       ("perl-file-mimeinfo" ,perl-file-mimeinfo) ; for mimeopen fallback
-       ("sed" ,sed)
-       ("xprop" ,xprop) ; for Xfce detecting
-       ("xset" ,xset))) ; for xdg-screensaver
+     (list bash-minimal                 ;for 'wrap-program'
+           coreutils
+           file
+           gawk
+           grep
+           inetutils                    ;xdg-screensaver uses `hostname'
+           perl-file-mimeinfo           ;for mimeopen fallback
+           sed
+           xprop                        ;for Xfce detecting
+           xset))                       ;for xdg-screensaver
     (arguments
-     `(#:tests? #f   ; no check target
+     `(#:tests? #f                      ;no check target
        #:modules ((srfi srfi-26)
                   ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-hardcoded-paths
-           ;; TODO(staging): make unconditional
-           (,@(if (%current-target-system)
-                 '(lambda* (#:key inputs #:allow-other-keys))
-                 '(lambda _))
-            (substitute* "scripts/xdg-mime.in"
-              (("/usr/bin/file")
-               (,@(if (%current-target-system)
-                      '(search-input-file inputs "bin/file")
-                      '(which "file")))))
-            (substitute* "scripts/xdg-open.in"
-              (("/usr/bin/printf")
-               (,@(if (%current-target-system)
-                      '(search-input-file inputs "bin/printf")
-                      '(which "printf")))))
-            #t))
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "scripts/xdg-mime.in"
+               (("/usr/bin/file")
+                (search-input-file inputs "bin/file")))
+             (substitute* "scripts/xdg-open.in"
+               (("/usr/bin/printf")
+                (search-input-file inputs "bin/printf")))))
          (add-before 'build 'locate-catalog-files
-           ;; TODO(staging): Make unconditional for simplicity.
-           (lambda* (#:key inputs ,@(if (%current-target-system)
-                                        '(native-inputs)
-                                        '()) #:allow-other-keys)
-             ;; TODO(staging): Make unconditional for simplicity and
-             ;; to avoid depending on input labels.
-             (let ,(if (%current-target-system)
-                       `((native-inputs (or native-inputs inputs))
-                         (xmldoc (search-input-directory native-inputs
-                                                         "xml/dtd/docbook"))
-                         (xsldoc
-                          (search-input-directory
-                           native-inputs
-                           (string-append "xml/xsl/docbook-xsl-"
-                                          ,(package-version docbook-xsl)))))
-                       `((xmldoc
-                          (string-append (assoc-ref inputs "docbook-xml")
-                                         "/xml/dtd/docbook"))
-                         (xsldoc
-                          (string-append (assoc-ref inputs "docbook-xsl")
-                                         "/xml/xsl/docbook-xsl-"
-                                         ,(package-version docbook-xsl)))))
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (let* ((native (or native-inputs inputs))
+                    (xmldoc (search-input-directory native
+                                                    "xml/dtd/docbook"))
+                    (xsldoc (search-input-directory
+                             native
+                             (string-append "xml/xsl/docbook-xsl-"
+                                            ,(package-version docbook-xsl)))))
                (for-each (lambda (file)
                            (substitute* file
                              (("http://.*/docbookx\\.dtd")
@@ -478,25 +450,21 @@ inappropriate content.")
                   (string-append "$(XMLTO) -x " xsldoc
                                  "/manpages/docbook.xsl man")))
                (setenv "STYLESHEET"
-                       (string-append xsldoc "/html/docbook.xsl"))
-               ;; TODO(staging): Might as well remove the #t while we are at
-               ;; it.
-               #t)))
+                       (string-append xsldoc "/html/docbook.xsl")))))
          (add-after 'install 'wrap-executables
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
+             (let* ((out (assoc-ref outputs "out"))
+                    (dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
+                                    "sed" "xprop" "xset"))
+                    (pkgs (map (lambda (cmd)
+                                 (search-input-file inputs
+                                                    (string-append "bin/" cmd)))
+                               dependencies))
+                    (bindirs (map dirname pkgs)))
                (with-directory-excursion (string-append out "/bin")
-                 (let ((path-ext
-                        (map (cute string-append <> "/bin")
-                             (cons out
-                                   (map (cute assoc-ref inputs <>)
-                                        '("awk" "coreutils" "grep" "inetutils"
-                                          "perl-file-mimeinfo" "sed" "xprop"
-                                          "xset"))))))
-                   (for-each (cute wrap-program <>
-                                   `("PATH" ":" prefix ,path-ext))
-                             (find-files "."))))
-               #t))))))
+                 (for-each (cute wrap-program <>
+                                 `("PATH" ":" prefix ,bindirs))
+                           (find-files ".")))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/xdg-utils/")
     (synopsis "Freedesktop.org scripts for desktop integration")
     (description "The xdg-utils package is a set of simple scripts that
