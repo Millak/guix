@@ -1097,9 +1097,9 @@ fullscreen) or other display servers.")
     (version "1.29")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://wayland.freedesktop.org/releases/"
-                    "wayland-protocols-" version ".tar.xz"))
+              (uri (string-append "https://gitlab.freedesktop.org/wayland/"
+                                  name "/-/releases/" version "/downloads/"
+                                  name "-" version ".tar.xz"))
               (sha256
                (base32
                 "1n4yzyjbp5fng8pvckandymvwc47mkwyi4pyvr6p0dn7bavrlpp2"))))
