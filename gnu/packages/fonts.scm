@@ -2552,7 +2552,7 @@ and heavily inspired by Creep.")
 (define-public font-montserrat
   (package
     (name "font-montserrat")
-    (version "7.210")
+    (version "7.222")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2561,14 +2561,15 @@ and heavily inspired by Creep.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0jn1yvfamq5xazw85sfnxgriji60g7mkss9mkf8d0117vdk838bn"))))
+                "03cfk45r5g694dqp2gjgg0qwra8w78nl6hc6p56qwd5dcfgr2l3r"))))
     (build-system font-build-system)
     (home-page "https://github.com/JulietaUla/Montserrat")
     (synopsis "The Montserrat font")
-    (description "The old posters and signs in the traditional Montserrat
-neighborhood of Buenos Aires inspired Julieta Ulanovsky to design this
-typeface and rescue the beauty of urban typography that emerged in the first
-half of the twentieth century.")
+    (description
+     "The old posters and signs in the traditional Montserrat neighborhood of
+Buenos Aires inspired Julieta Ulanovsky to design this typeface and rescue the
+beauty of urban typography that emerged in the first half of the twentieth
+century.")
     (license license:silofl1.1)))
 
 (define-public font-overpass
