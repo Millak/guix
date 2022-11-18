@@ -1976,6 +1976,53 @@ Lisp.")
 (define-public ecl-hu.dwim.graphviz
   (sbcl-package->ecl-package sbcl-hu.dwim.graphviz))
 
+(define-public sbcl-cl-graph
+  (let ((commit "3cb786797b24883d784b7350e7372e8b1e743508")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-graph")
+      (version (git-version "0.10.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gwkkwg/cl-graph")
+               (commit commit)))
+         (file-name (git-file-name "cl-graph" version))
+         (sha256
+          (base32 "1748rj52f2jmd5jvsy9jwhn0zf73sjzjhwhnljvq6yi2kdqr30kl"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; TODO: (Sharlatan-20221118T215839+0000): Tests failed
+       ;;
+       ;; https://github.com/gwkkwg/cl-graph/issues/17
+       ;;
+       `(#:tests? #f
+         #:asd-systems '("cl-graph" "cl-graph+hu.dwim.graphviz")))
+      (native-inputs
+       (list sbcl-lift sbcl-moptilities))
+      (inputs
+       (list sbcl-cl-containers
+             sbcl-cl-mathstats
+             sbcl-dynamic-classes
+             sbcl-hu.dwim.graphviz
+             sbcl-metabang-bind
+             sbcl-metacopy
+             sbcl-metatilities-base))
+      (home-page "https://github.com/gwkkwg/cl-graph")
+      (synopsis "Graph manipulation utilities for Common Lisp")
+      (description
+       "This package provides a Common Lisp library for manipulating graphs
+and running graph algorithms.")
+      (license license:expat))))
+
+;; NOTE: (Sharlatan-20221118T214734+0000): No ECL supoort
+;;
+;; ecl-cl-graph
+
+(define-public cl-cl-graph
+  (sbcl-package->cl-source-package sbcl-cl-graph))
+
 (define-public sbcl-babel
   ;; No release since 2014.
   (let ((commit "f892d0587c7f3a1e6c0899425921b48008c29ee3")
