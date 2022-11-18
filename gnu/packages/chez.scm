@@ -104,7 +104,7 @@ Scheme machine types, or '#f' if none is defined."
    ((target-ppc32? system)
     "ppc32")
    ((target-riscv64? system)
-    #f)
+    "rv64")
    (else
     #f)))
 
@@ -170,6 +170,7 @@ in Chez Scheme machine types, or '#f' if none is defined."
      ("a6" threads bootstrap-bootfiles)
      ("arm32" bootstrap-bootfiles)
      ("arm64" . #f)
+     ("rv64" . #f)
      ("ppc32" threads))
     ;; Hurd
     ("gnu"
