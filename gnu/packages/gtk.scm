@@ -1648,7 +1648,7 @@ library.")
 (define-public pangomm
   (package
     (name "pangomm")
-    (version "2.50.0")
+    (version "2.50.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -1656,38 +1656,38 @@ library.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0nrvvf1fyzlimh7rvxcblnrvn2l9rz8mpn2iwzlzr6kv05zafym2"))))
+                "054jglmnbig14fs99qqi5y174z9j90r6dprpyszw42742cs95jfc"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
-     '(#:glib-or-gtk? #t
-       #:configure-flags '("-Dbuild-documentation=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (assoc-ref outputs "doc")))
-               (mkdir-p (string-append doc "/share"))
-               (rename-file
-                (string-append out "/share/doc")
-                (string-append doc "/share/doc"))))))))
+     (list
+      #:glib-or-gtk? #t              ; To wrap binaries and/or compile schemas
+      #:configure-flags #~(list "-Dbuild-documentation=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-doc
+            (lambda _
+              (mkdir-p (string-append #$output:doc "/share"))
+              (rename-file (string-append #$output "/share/doc")
+                           (string-append #$output:doc "/share/doc")))))))
     (native-inputs
-     (list doxygen
-           graphviz                     ;for 'dot'
-           libxslt                      ;for 'xsltproc'
+     (list graphviz
+           doxygen
            m4
            mm-common
            perl
            pkg-config
-           python))
+           python
+           libxslt))
     (propagated-inputs
-     (list cairo cairomm glibmm pango))
+     (list cairo
+           cairomm
+           glibmm
+           pango))
     (home-page "https://pango.gnome.org//")
     (synopsis "C++ interface to the Pango text rendering library")
-    (description
-     "Pangomm provides a C++ programming interface to the Pango text rendering
-library.")
+    (description "Pangomm provides a C++ programming interface to the Pango
+text rendering library.")
     (license license:lgpl2.1+)))
 
 (define-public pangomm-2.46
