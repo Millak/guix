@@ -439,14 +439,12 @@ collector, 3M (``Moving Memory Manager'').")
      (let ((native-inputs (package-native-inputs racket-vm-cgc)))
        (modify-inputs (if (%current-target-system)
                           (modify-inputs native-inputs
+                            (prepend this-package)
                             (delete "racket-vm-cgc"))
                           native-inputs)
          (delete "libtool")
          (prepend chez-scheme-for-racket
-                  chez-nanopass-bootstrap
-                  (if (%current-target-system)
-                      racket-vm-cs
-                      racket-vm-bc)))))
+                  chez-nanopass-bootstrap))))
     (arguments
      (substitute-keyword-arguments (package-arguments racket-vm-cgc)
        ((#:phases those-phases #~%standard-phases)
