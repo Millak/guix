@@ -414,57 +414,59 @@ inappropriate content.")
            xprop                        ;for Xfce detecting
            xset))                       ;for xdg-screensaver
     (arguments
-     `(#:tests? #f                      ;no check target
-       #:modules ((srfi srfi-26)
+     (list
+      #:tests? #f                       ;no check target
+      #:modules `((srfi srfi-26)
                   ,@%gnu-build-system-modules)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-hardcoded-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "scripts/xdg-mime.in"
-               (("/usr/bin/file")
-                (search-input-file inputs "bin/file")))
-             (substitute* "scripts/xdg-open.in"
-               (("/usr/bin/printf")
-                (search-input-file inputs "bin/printf")))))
-         (add-before 'build 'locate-catalog-files
-           (lambda* (#:key native-inputs inputs #:allow-other-keys)
-             (let* ((native (or native-inputs inputs))
-                    (xmldoc (search-input-directory native
-                                                    "xml/dtd/docbook"))
-                    (xsldoc (search-input-directory
-                             native
-                             (string-append "xml/xsl/docbook-xsl-"
-                                            ,(package-version docbook-xsl)))))
-               (for-each (lambda (file)
-                           (substitute* file
-                             (("http://.*/docbookx\\.dtd")
-                              (string-append xmldoc "/docbookx.dtd"))))
-                         (find-files "scripts/desc" "\\.xml$"))
-               (substitute* "scripts/Makefile"
-                 ;; Apparently `xmlto' does not bother to looks up the stylesheets
-                 ;; specified in the XML, unlike the above substitition. Instead it
-                 ;; uses a hard-coded URL. Work around it here, but if this is
-                 ;; common perhaps we should hardcode this path in xmlto itself.
-                 (("\\$\\(XMLTO\\) man")
-                  (string-append "$(XMLTO) -x " xsldoc
-                                 "/manpages/docbook.xsl man")))
-               (setenv "STYLESHEET"
-                       (string-append xsldoc "/html/docbook.xsl")))))
-         (add-after 'install 'wrap-executables
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
-                                    "sed" "xprop" "xset"))
-                    (pkgs (map (lambda (cmd)
-                                 (search-input-file inputs
-                                                    (string-append "bin/" cmd)))
-                               dependencies))
-                    (bindirs (map dirname pkgs)))
-               (with-directory-excursion (string-append out "/bin")
-                 (for-each (cute wrap-program <>
-                                 `("PATH" ":" prefix ,bindirs))
-                           (find-files ".")))))))))
+      #:phases
+      #~(modify-phases %standard-phases
+        (add-after 'unpack 'patch-hardcoded-paths
+          (lambda* (#:key inputs #:allow-other-keys)
+            (substitute* "scripts/xdg-mime.in"
+              (("/usr/bin/file")
+               (search-input-file inputs "bin/file")))
+            (substitute* "scripts/xdg-open.in"
+              (("/usr/bin/printf")
+               (search-input-file inputs "bin/printf")))))
+        (add-before 'build 'locate-catalog-files
+          (lambda* (#:key native-inputs inputs #:allow-other-keys)
+            (let* ((native (or native-inputs inputs))
+                   (xmldoc (search-input-directory native
+                                                   "xml/dtd/docbook"))
+                   (xsldoc (search-input-directory
+                            native
+                            (string-append "xml/xsl/docbook-xsl-"
+                                           #$(package-version
+                                              (this-package-native-input
+                                               "docbook-xsl"))))))
+              (for-each (lambda (file)
+                          (substitute* file
+                            (("http://.*/docbookx\\.dtd")
+                             (string-append xmldoc "/docbookx.dtd"))))
+                        (find-files "scripts/desc" "\\.xml$"))
+              (substitute* "scripts/Makefile"
+                ;; Apparently `xmlto' does not bother to looks up the stylesheets
+                ;; specified in the XML, unlike the above substitition. Instead it
+                ;; uses a hard-coded URL. Work around it here, but if this is
+                ;; common perhaps we should hardcode this path in xmlto itself.
+                (("\\$\\(XMLTO\\) man")
+                 (string-append "$(XMLTO) -x " xsldoc
+                                "/manpages/docbook.xsl man")))
+              (setenv "STYLESHEET"
+                      (string-append xsldoc "/html/docbook.xsl")))))
+        (add-after 'install 'wrap-executables
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (let* ((dependencies '("awk" "grep" "hostname" "ls" "mimeopen"
+                                   "sed" "xprop" "xset"))
+                   (pkgs (map (lambda (cmd)
+                                (search-input-file inputs
+                                                   (string-append "bin/" cmd)))
+                              dependencies))
+                   (bindirs (map dirname pkgs)))
+              (with-directory-excursion (string-append #$output "/bin")
+                (for-each (cute wrap-program <>
+                                `("PATH" ":" prefix ,bindirs))
+                          (find-files ".")))))))))
     (home-page "https://www.freedesktop.org/wiki/Software/xdg-utils/")
     (synopsis "Freedesktop.org scripts for desktop integration")
     (description "The xdg-utils package is a set of simple scripts that
