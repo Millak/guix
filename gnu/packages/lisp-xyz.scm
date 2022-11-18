@@ -7604,7 +7604,7 @@ which implements a set of utilities.")
          (uri (git-reference
                (url "https://github.com/gwkkwg/cl-containers")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-containers" version))
          (sha256
           (base32
            "18s6jfq11n8nv9k4biz32pm1s7y9zl054ry1gmdbcf39nisy377y"))))
@@ -7612,9 +7612,14 @@ which implements a set of utilities.")
       (native-inputs
        (list sbcl-lift))
       (inputs
-       `(("metatilities-base" ,sbcl-metatilities-base)))
+       (list sbcl-asdf-system-connections
+             sbcl-metatilities-base
+             sbcl-moptilities))
       (arguments
-       '(#:phases
+       '(#:asd-systems '("cl-containers"
+                         "cl-containers/with-moptilities"
+                         "cl-containers/with-utilities")
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'relax-version-checks
              (lambda _
