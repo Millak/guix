@@ -316,7 +316,7 @@ many popular formats.")
 (define-public vtk
   (package
     (name "vtk")
-    (version "9.0.1")
+    (version "9.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://vtk.org/files/release/"
@@ -324,9 +324,7 @@ many popular formats.")
                                   "/VTK-" version ".tar.gz"))
               (sha256
                (base32
-                "1ir2lq9i45ls374lcmjzw0nrm5l5hnm1w47lg8g8d0n2j7hsaf8v"))
-              (patches
-               (search-patches "vtk-fix-freetypetools-build-failure.patch"))
+                "0x8h2bwxq2870067j7wqd0qym87pa3inkbri93zrdb0zwwmhlnqw"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -375,14 +373,6 @@ many popular formats.")
                            "-DVTK_WRAP_PYTHON=ON"
                            "-DVTK_PYTHON_VERSION:STRING=3"
                            )
-       #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-sources
-             (lambda _
-               (substitute* "Common/Core/vtkFloatingPointExceptions.cxx"
-                 (("<fenv.h>") "<cfenv>"))
-               (substitute* "Common/Core/CMakeLists.txt"
-                 (("fenv.h") "cfenv")))))
        #:tests? #f))        ;XXX: test data not included
     (inputs
      (list double-conversion
