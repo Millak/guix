@@ -110,3 +110,69 @@ model by providing mandatory access control (MAC).  It has been included in
 the mainline Linux kernel since version 2.6.36 and its development has been
 supported by Canonical since 2009.")
     (license license:lgpl2.1)))
+
+(define-public apparmor
+  (let ((base libapparmor))
+    (package
+      (inherit base)
+      (name "apparmor")
+      (arguments
+       (append
+        (list #:make-flags
+              #~(list (string-append "CC=" #$(cc-for-target))
+                      (string-append "DESTDIR=" #$output)
+                      "USE_SYSTEM=1"
+                      ;; No need to run the linter
+                      "PYFLAKES=true"))
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (delete 'configure)
+               ;; apparmor-binutils
+               (replace 'change-directory
+                 (lambda _
+                   (chdir "binutils")))
+
+               ;; apparmor-parser
+               (add-after 'install 'chdir-parser
+                 (lambda _
+                   (chdir "../parser")))
+               (add-after 'chdir-parser 'patch-source-shebangs-parser
+                 (assoc-ref %standard-phases 'patch-source-shebangs))
+               (add-after 'patch-source-shebangs-parser 'build-parser
+                 (assoc-ref %standard-phases 'build))
+               (add-after 'build-parser 'check-parser
+                 (assoc-ref %standard-phases 'check))
+               (add-after 'check-parser 'install-parser
+                 (assoc-ref %standard-phases 'install))
+
+               ;; apparmor-utils
+               ;; FIXME: Tests required Python library from this package
+               ;; (itself).
+               (add-after 'install-parser 'chdir-utils
+                 (lambda _
+                   (chdir "../utils")
+                   ;; Fix paths to installed policygroups and templates for
+                   ;; easyprof.
+                   (substitute* "easyprof/easyprof.conf"
+                     (("/usr") #$output))))
+               (add-after 'chdir-utils 'build-utils
+                 (assoc-ref %standard-phases 'build))
+               (add-after 'build-utils 'install-utils
+                 (assoc-ref %standard-phases 'install))
+
+               ;; apparmor-profiles
+               ;; FIXME: Tests need an AppArmor-enabled system.
+               (add-after 'install-utils 'chdir-profiles
+                 (lambda _
+                   (chdir "../profiles")))
+               (add-after 'chdir-profiles 'build-profiles
+                 (assoc-ref %standard-phases 'build))
+               (add-after 'check-build 'install-profiles
+                 (assoc-ref %standard-phases 'install)))))))
+      (propagated-inputs
+       (list libapparmor))
+      ;; Python module `readline' needed
+      (native-inputs
+       (list bison flex gettext-minimal perl python which))
+      (license license:gpl2))))
