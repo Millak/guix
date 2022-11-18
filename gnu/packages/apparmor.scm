@@ -176,3 +176,24 @@ supported by Canonical since 2009.")
       (native-inputs
        (list bison flex gettext-minimal perl python which))
       (license license:gpl2))))
+
+(define-public pam-apparmor
+  (let ((base apparmor))
+    (package
+      (inherit base)
+      (name "pam-apparmor")
+      (arguments
+       (append
+        (list #:tests? #f)              ;no tests
+        (substitute-keyword-arguments (package-arguments base)
+          ((#:phases phases)
+           #~(modify-phases #$phases
+               (delete 'chdir-parser)
+               (delete 'chdir-utils)
+               (delete 'chdir-profiles)
+               (replace 'change-directory
+                 (lambda _
+                   (chdir "changehat/pam_apparmor"))))))))
+      (native-inputs (list pkg-config perl which))
+      (inputs (list libapparmor linux-pam))
+      (license license:bsd-3))))
