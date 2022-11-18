@@ -18646,11 +18646,11 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
       (license license:gpl3+))))
 
 (define-public emacs-org-tree-slide
-  (let ((commit "036a36eec1cf712d3db155572aed325daa372eb5")
-        (revision "2"))
+  (let ((commit "d6529bc2df727d09014e0e56abf4f15a8e8fc20f")
+        (revision "0"))
     (package
       (name "emacs-org-tree-slide")
-      (version (git-version "2.8.4" revision commit))
+      (version (git-version "2.8.18" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18658,15 +18658,15 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1r8ncx25xmxicgciyv5przp68y8qgy40fm10ba55awvql4xcm0yk"))
+                  "1br32mpwarmrn158y2pkkmfl2ssv8q8spzknkg2avr16fil0j1pz"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/takaxp/org-tree-slide")
-      (synopsis "Presentation tool for org-mode")
+      (synopsis "Presentation tool for Org mode")
       (description
-       "Org-tree-slide provides a slideshow mode to view org-mode files.  Use
-@code{org-tree-slide-mode} to enter the slideshow mode, and then @kbd{C->} and
-@kbd{C-<} to jump to the next and previous slide.")
+       "Org Tree Slide is a minor mode for using an Org document in
+presentations by progressively revealing individual subtrees of the
+document.")
       (license license:gpl3+))))
 
 (define-public emacs-scratch-el
