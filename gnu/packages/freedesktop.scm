@@ -1029,14 +1029,15 @@ Python.")
 (define-public wayland
   (package
     (name "wayland")
-    (version "1.20.0")
+    (version "1.21.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://wayland.freedesktop.org/releases/"
+              (uri (string-append "https://gitlab.freedesktop.org/" name
+                                  "/" name  "/-/releases/" version "/downloads/"
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "09c7rpbwavjg4y16mrfa57gk5ix6rnzpvlnv1wp7fnbh9hak985q"))))
+                "1b0ixya9bfw5c9jx8mzlr7yqnlyvd3jv5z8wln9scdv8q5zlvikd"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
