@@ -422,9 +422,7 @@
                 (substitute* "tests/fate/lavf-container.mak"
                   (("mov mov_rtphint ismv")
                    "mov ismv")
-                  (("fate-lavf-mov_rtphint:.*") ""))))))))
-    (inputs (modify-inputs (package-inputs ffmpeg-5)
-              (replace "libvpx" libvpx-next)))))
+                  (("fate-lavf-mov_rtphint:.*") ""))))))))))
 
 (define-public libjami
   (package

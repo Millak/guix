@@ -2367,7 +2367,7 @@ To load this plugin, specify the following option when starting mpv:
 (define-public libvpx
   (package
     (name "libvpx")
-    (version "1.11.0")
+    (version "1.12.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2376,7 +2376,7 @@ To load this plugin, specify the following option when starting mpv:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00f1jrclai2b6ys78dpsg6r1mvcyxlna93vxcz8zjyia24c2pjsb"))
+                "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))
               (patches (search-patches "libvpx-CVE-2016-2818.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -2405,22 +2405,6 @@ To load this plugin, specify the following option when starting mpv:
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
-
-;;; TODO: Merge into libvpx on staging.
-(define-public libvpx-next
-  (package
-    (inherit libvpx)
-    (name "libvpx")
-    (version "1.12.0")
-    (source (origin
-              (inherit (package-source libvpx))
-              (uri (git-reference
-                    (url "https://chromium.googlesource.com/webm/libvpx")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))))))
 
 (define-public youtube-dl
   (package
