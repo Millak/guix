@@ -116,6 +116,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/anthy.scm			\
   %D%/packages/antivirus.scm			\
   %D%/packages/apl.scm				\
+  %D%/packages/apparmor.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
   %D%/packages/aspell.scm			\
