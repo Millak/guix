@@ -1798,7 +1798,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ripperx-missing-file.patch		\
   %D%/packages/patches/rpcbind-CVE-2017-8779.patch		\
   %D%/packages/patches/rtags-separate-rct.patch			\
-  %D%/packages/patches/racket-backport-8.6-zuo.patch		\
+  %D%/packages/patches/racket-backport-8.7-pkg-strip.patch	\
   %D%/packages/patches/racket-chez-scheme-bin-sh.patch		\
   %D%/packages/patches/racket-rktio-bin-sh.patch		\
   %D%/packages/patches/racket-zuo-bin-sh.patch			\

@@ -466,8 +466,8 @@ and 32-bit PowerPC architectures.")
   (package
     (inherit chez-scheme)
     (name "chez-scheme-for-racket")
-    (version "9.5.9.2")
-    ;; The version should match `(scheme-fork-version-number)`.
+    (version "9.5.9.8")
+    ;; The version should match `scheme-version`.
     ;; See racket/src/ChezScheme/s/cmacros.ss c. line 360.
     ;; It will always be different than the upstream version!
     ;; When updating, remember to also update %racket-version in racket.scm.
@@ -492,12 +492,6 @@ and 32-bit PowerPC architectures.")
      (substitute-keyword-arguments (package-arguments chez-scheme)
        ((#:out-of-source? _ #f)
         #t)
-       ((#:tests? _ #t)
-        ;; FIXME: There have been some flaky test failures. Some have been
-        ;; fixed upstream post-release but have proven non-trivial to
-        ;; backport; at least one issue remains. Re-enable tests once
-        ;; https://github.com/racket/racket/issues/4359 is fixed.
-        #f)
        ((#:configure-flags cfg-flags #~'())
         #~`("--disable-x11"
             "--threads" ;; ok to potentially duplicate
@@ -590,7 +584,7 @@ supported by upstream Chez Scheme.
 Main additions to Chez Scheme in the Racket variant:
 @itemize @bullet
 @item
-AArch64 code generation
+AArch64 and RV64G (RISC-V) code generation
 @item
 Portable bytecode (@code{pb}) mode, which is mainly useful for bootstrapping a
 build on any platform, but can also be used on platforms without native-code
@@ -603,7 +597,7 @@ Faster multiplication and division for large exact numbers
 @item
 Type reconstruction during optimization (especially for safe code)
 @item
-Continuation attachments
+Continuation marks
 @item
 Parallel garbage collection, in-place garbage collection for old-generation
 objects (instead of always copying), and reachability-based memory
@@ -611,6 +605,8 @@ accounting
 @item
 Ordered finalization, immobile (but collectable) objects, weak/ephemeron
 generic hash tables, and reference bytevectors
+@item
+Easier bootstrapping via old versions of Chez Scheme
 @end itemize")
     (license asl2.0)))
 
@@ -695,7 +691,7 @@ source.")))
                       #~(invoke
                          (search-input-file (or native-inputs inputs)
                                             "/opt/racket-vm/bin/racket")
-                         "rktboot/main.rkt"
+                         "../rktboot/main.rkt"
                          #$@(if (racket-cs-native-supported-system?)
                                 #~()
                                 (let ((m (nix-system->pbarch-machine-type)))
