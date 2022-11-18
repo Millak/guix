@@ -1979,6 +1979,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/vinagre-newer-rdp-parameters.patch      \
   %D%/packages/patches/virglrenderer-CVE-2017-6386.patch 	\
   %D%/packages/patches/virtuoso-ose-remove-pre-built-jar-files.patch	\
+  %D%/packages/patches/vlc-dav1d-compat.patch			\
   %D%/packages/patches/vsearch-unbundle-cityhash.patch		\
   %D%/packages/patches/vte-CVE-2012-2738-pt1.patch			\
   %D%/packages/patches/vte-CVE-2012-2738-pt2.patch			\
