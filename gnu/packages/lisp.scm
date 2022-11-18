@@ -435,7 +435,13 @@ an interpreter, a compiler, a debugger, and much more.")
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
        (sha256
-        (base32 "1ahyrc3p9cf7y5zbgzvb9yxa8a480ccis4ksijlajck3z8n1dk24"))))
+        (base32 "1ahyrc3p9cf7y5zbgzvb9yxa8a480ccis4ksijlajck3z8n1dk24"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Don't force ARMv5.
+           (substitute* "src/runtime/Config.arm-linux"
+             (("-march=armv5") ""))))))
     (build-system gnu-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -481,13 +487,6 @@ an interpreter, a compiler, a debugger, and much more.")
                   (srfi srfi-1))
        #:phases
        (modify-phases %standard-phases
-         ,@(if (target-arm32?)
-             ;; TODO: Move to snippet in staging.
-             `((add-after 'unpack 'dont-force-armv5
-                 (lambda _
-                   (substitute* "src/runtime/Config.arm-linux"
-                     (("-march=armv5") "")))))
-             '())
          (delete 'configure)
          (add-after 'unpack 'fix-build-id
            ;; One of the build scripts makes a build id using the current date.
