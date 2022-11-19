@@ -1023,64 +1023,63 @@ application suites.")
            xorg-server-for-tests
            libxslt))
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
+     (list
+      #:imported-modules `((guix build glib-or-gtk-build-system)
                            ,@%gnu-build-system-modules)
-       #:modules ((guix build utils)
+      #:modules '((guix build utils)
                   (guix build gnu-build-system)
                   ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:))
-       #:disallowed-references (,xorg-server-for-tests)
-       ;; 47 MiB goes to "out" (24 of which is locale data!), and 26 MiB goes
-       ;; to "doc".
-       #:configure-flags (list (string-append "--with-html-dir="
-                                              (assoc-ref %outputs "doc")
-                                              "/share/gtk-doc/html")
-                               "--enable-cloudproviders"
-                               ;; The header file <gdk/gdkwayland.h> is required
-                               ;; by gnome-control-center
-                               "--enable-wayland-backend"
-                               ;; This is necessary to build both backends.
-                               "--enable-x11-backend"
-                               ;; This enables the HTML5 websocket backend.
-                               "--enable-broadway-backend")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
-           (assoc-ref glib-or-gtk:%standard-phases
-                      'generate-gdk-pixbuf-loaders-cache-file))
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "testsuite/gtk/Makefile.in"
-               (("builderparser cellarea check-icon-names check-cursor-names")
-                "builderparser cellarea check-cursor-names")
-               (("notify no-gtk-init object objects-finalize papersize rbtree")
-                "no-gtk-init papersize rbtree")
-               (("stylecontext templates textbuffer textiter treemodel treepath")
-                "stylecontext textbuffer textiter treemodel treepath"))
-             (substitute* "testsuite/a11y/Makefile.in"
-               (("accessibility-dump tree-performance text children derive")
-                "tree-performance text children derive"))
-             (substitute* "testsuite/reftests/Makefile.in"
-               (("TEST_PROGS = gtk-reftest")
-                "TEST_PROGS = "))))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")))
-         (add-after 'install 'move-desktop-files
-           ;; Move desktop files into 'bin' to avoid cycle references.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (bin (assoc-ref outputs "bin")))
-               (mkdir-p (string-append bin "/share"))
-               (rename-file (string-append out "/share/applications")
-                            (string-append bin "/share/applications"))))))))
+      #:disallowed-references (list xorg-server-for-tests)
+      ;; 47 MiB goes to "out" (24 of which is locale data!), and 26 MiB goes
+      ;; to "doc".
+      #:configure-flags #~(list (string-append "--with-html-dir="
+                                               #$output "/share/gtk-doc/html")
+                                "--enable-cloudproviders"
+                                ;; The header file <gdk/gdkwayland.h> is required
+                                ;; by gnome-control-center
+                                "--enable-wayland-backend"
+                                ;; This is necessary to build both backends.
+                                "--enable-x11-backend"
+                                ;; This enables the HTML5 websocket backend.
+                                "--enable-broadway-backend")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+            (assoc-ref glib-or-gtk:%standard-phases
+                       'generate-gdk-pixbuf-loaders-cache-file))
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "testsuite/gtk/Makefile.in"
+                (("builderparser cellarea check-icon-names check-cursor-names")
+                 "builderparser cellarea check-cursor-names")
+                (("notify no-gtk-init object objects-finalize papersize rbtree")
+                 "no-gtk-init papersize rbtree")
+                (("stylecontext templates textbuffer textiter treemodel treepath")
+                 "stylecontext textbuffer textiter treemodel treepath"))
+              (substitute* "testsuite/a11y/Makefile.in"
+                (("accessibility-dump tree-performance text children derive")
+                 "tree-performance text children derive"))
+              (substitute* "testsuite/reftests/Makefile.in"
+                (("TEST_PROGS = gtk-reftest")
+                 "TEST_PROGS = "))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")))
+          (add-after 'install 'move-desktop-files
+            ;; Move desktop files into 'bin' to avoid cycle references.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (mkdir-p (string-append #$output:bin "/share"))
+              (rename-file (string-append #$output "/share/applications")
+                           (string-append #$output:bin
+                                          "/share/applications")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_GTK3_PATH")
