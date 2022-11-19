@@ -878,11 +878,11 @@ is part of the GNOME accessibility project.")
     (build-system gnu-build-system)
     (outputs '("out" "bin" "doc" "debug"))
     (propagated-inputs
-     (list atk cairo
-           (if (target-x86-64?)
-             librsvg
-             librsvg-2.40)
-           glib pango))
+     (list atk
+           cairo
+           glib
+           (librsvg-for-system)
+           pango))
     (inputs
      (list cups
            libx11
