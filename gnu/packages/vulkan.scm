@@ -473,3 +473,32 @@ shader compilation.")
 can assist development by enabling developers to verify their applications correctly
 use the Vulkan API.")
     (license license:asl2.0)))
+
+(define-public volk
+  (package
+    (name "volk")
+    (version %vulkan-sdk-version)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/zeux/volk")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xaw3kg754mknx8lfj1p74a9npjfvdvlpicvn0hla4495zpc10rq"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f                      ;no test
+       #:configure-flags '("-DVOLK_INSTALL=ON" "-DVOLK_PULL_IN_VULKAN=ON")))
+    (inputs (list vulkan-headers))
+    (synopsis "Meta loader for Vulkan API")
+    (description
+     "Volk is a meta-loader for Vulkan.  It allows you to dynamically load
+entrypoints required to use Vulkan without linking the Vulkan loader.
+Additionally, volk simplifies the use of Vulkan extensions by automatically
+loading all associated entrypoints.  Finally, volk enables loading Vulkan
+entrypoints directly from the driver which can increase performance by
+skipping loader dispatch overhead.")
+    (home-page "https://github.com/zeux/volk")
+    (license license:expat)))
