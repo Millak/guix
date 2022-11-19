@@ -4,10 +4,14 @@ gnu.scm
 gnu/packages.scm
 gnu/services.scm
 gnu/system.scm
+gnu/services/base.scm
+gnu/services/certbot.scm
 gnu/services/configuration.scm
+gnu/services/file-sharing.scm
 gnu/services/networking.scm
 gnu/services/shepherd.scm
 gnu/services/samba.scm
+gnu/services/version-control.scm
 gnu/home/services.scm
 gnu/home/services/ssh.scm
 gnu/home/services/symlink-manager.scm
