@@ -906,47 +906,43 @@ is part of the GNOME accessibility project.")
            python-wrapper
            xorg-server-for-tests))
     (arguments
-     `(#:parallel-tests? #f
-       #:configure-flags
-       (list "--with-xinput=yes"
-             (string-append "--with-html-dir="
-                            (assoc-ref %outputs "doc")
-                            "/share/gtk-doc/html"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-failing-tests
-           (lambda _
-             (substitute* "gtk/Makefile.in"
-               (("aliasfilescheck\\.sh") ""))
-             (substitute* "gtk/tests/recentmanager.c"
-               (("g_test_add_func \\(\"/recent-manager.*;") ""))
-             (substitute* "gtk/tests/defaultvalue.c"
-               (("return g_test_run\\(\\);") ""))
-             ;; These require XPM support in Gdk-Pixbuf which is obsolete.
-             (substitute* "gtk/tests/textbuffer.c"
-               (("g_test_add_func.*test_fill_empty\\);")
-                "")
-               (("g_test_add_func.*test_tag\\);")
-                ""))
-             #t))
-         (add-before 'check 'pre-check
-           (lambda _
-             ;; Tests require a running X server.
-             (system "Xvfb :1 +extension GLX &")
-             (setenv "DISPLAY" ":1")
-             ;; Tests write to $HOME.
-             (setenv "HOME" (getcwd))
-             ;; Tests look for $XDG_RUNTIME_DIR.
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             ;; For missing '/etc/machine-id'.
-             (setenv "DBUS_FATAL_WARNINGS" "0")
-             #t))
-         (add-after 'install 'remove-cache
-           (lambda* (#:key outputs #:allow-other-keys)
-	     (for-each
-	      delete-file
-	      (find-files (assoc-ref outputs "out") "immodules.cache"))
-             #t)))))
+     (list
+      #:parallel-tests? #f
+      #:configure-flags
+      #~(list "--with-xinput=yes"
+              (string-append "--with-html-dir=" #$output
+                             "/share/gtk-doc/html"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-failing-tests
+            (lambda _
+              (substitute* "gtk/Makefile.in"
+                (("aliasfilescheck\\.sh") ""))
+              (substitute* "gtk/tests/recentmanager.c"
+                (("g_test_add_func \\(\"/recent-manager.*;") ""))
+              (substitute* "gtk/tests/defaultvalue.c"
+                (("return g_test_run\\(\\);") ""))
+              ;; These require XPM support in Gdk-Pixbuf which is obsolete.
+              (substitute* "gtk/tests/textbuffer.c"
+                (("g_test_add_func.*test_fill_empty\\);")
+                 "")
+                (("g_test_add_func.*test_tag\\);")
+                 ""))))
+          (add-before 'check 'pre-check
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1")
+              ;; Tests write to $HOME.
+              (setenv "HOME" (getcwd))
+              ;; Tests look for $XDG_RUNTIME_DIR.
+              (setenv "XDG_RUNTIME_DIR" (getcwd))
+              ;; For missing '/etc/machine-id'.
+              (setenv "DBUS_FATAL_WARNINGS" "0")))
+          (add-after 'install 'remove-cache
+            (lambda _
+	      (for-each delete-file
+	                (find-files #$output "immodules.cache")))))))
     (native-search-paths
      (list (search-path-specification
             (variable "GUIX_GTK2_PATH")
