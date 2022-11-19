@@ -411,17 +411,17 @@ shader compilation.")
 (define-public vulkan-validationlayers
   (package
     (name "vulkan-validationlayers")
-    (version "1.2.201")
+    (version %vulkan-sdk-version)
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url
                      "https://github.com/KhronosGroup/Vulkan-ValidationLayers")
-                    (commit (string-append "v" version))))
+                    (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jnz9cmy5d5g6jh9p4wr0qrlqlpfp07b3cizq37i5p1bcabdgmrz"))))
+                "07djrk6yym4vl2b52wr09r8y649v5lark5hnr5rwvlxwxdmd9g75"))))
     (build-system cmake-build-system)
     (inputs (list glslang
                   libxrandr
@@ -445,6 +445,16 @@ shader compilation.")
                                             (search-input-directory
                                              %build-inputs
                                              "include/spirv"))))
+                   (string-append "-DSPIRV_TOOLS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/spirv-tools"))))
+                   (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
+                                  (dirname (dirname
+                                            (search-input-directory
+                                             %build-inputs
+                                             "include/vulkan"))))
                    "-Wno-dev")
            #:phases #~(modify-phases %standard-phases
                         (add-after 'install 'set-layer-path-in-manifest
