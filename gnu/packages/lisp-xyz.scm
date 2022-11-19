@@ -3887,6 +3887,44 @@ the Common Lisp programming language.")
 (define-public ecl-trivial-garbage
   (sbcl-package->ecl-package sbcl-trivial-garbage))
 
+(define-public sbcl-ucons
+  (let ((commit "d976810ef2b12a2caaf55bd0f258272e9b79f3be")
+        (revision "0"))
+    (package
+      (name "sbcl-ucons")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/ucons")
+               (commit commit)))
+         (file-name (git-file-name "cl-ucons" version))
+         (sha256
+          (base32 "17aj47pdjiywnf33hl46p27za2q0pq5ar3fpqxaqskggxrfxmijl"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-atomics
+             sbcl-bordeaux-threads
+             sbcl-named-readtables
+             sbcl-trivia))
+      (home-page "https://github.com/marcoheisig/ucons")
+      (synopsis "Unique conses for Common Lisp")
+      (description "UCONS is a Common Lisp library providing unique conses.
+Unique conses are different from regular conses in that, in addition to their
+@code{car} and @code{cdr}, they maintain a table of past users.  Also, the
+@code{cdr} of each ucons is restricted to other uconses or @code{nil}.
+Uconses are meant for those situations where even reusing regular conses (to
+avoid consing) is too computationally expensive.")
+      (license license:expat))))
+
+(define-public cl-ucons
+  (sbcl-package->cl-source-package sbcl-ucons))
+
+(define-public ecl-ucons
+  (sbcl-package->ecl-package sbcl-ucons))
+
 (define-public sbcl-closer-mop
   (let ((commit "19c9d33f576e10715fd79cc1d4f688dab0f241d6"))
     (package
