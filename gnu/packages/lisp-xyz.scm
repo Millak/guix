@@ -7057,6 +7057,42 @@ the return type of a function.")
      ;; The tests get stuck indefinitly
      '(#:tests? #f))))
 
+(define-public sbcl-typo
+  (let ((commit "0e883490f81edf2a1be4e5b101d1caec78d7853b")
+        (revision "0"))
+    (package
+      (name "sbcl-typo")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/Typo")
+               (commit commit)))
+         (file-name (git-file-name "cl-typo" version))
+         (sha256
+          (base32 "08cmkjl3f77rfhxbjyd6f3kinhzak30mdfphnpf73sh1vw4v0vym"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-introspect-environment
+             sbcl-trivia
+             sbcl-trivial-arguments
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/marcoheisig/Typo")
+      (synopsis "Portable type inference library for Common Lisp")
+      (description
+       "Typo is a portable library for Common Lisp that does approximate
+reasoning about types, but without consing.")
+      (license license:expat))))
+
+(define-public cl-typo
+  (sbcl-package->cl-source-package sbcl-typo))
+
+(define-public ecl-typo
+  (sbcl-package->ecl-package sbcl-typo))
+
 (define-public sbcl-optima
   (let ((commit "373b245b928c1a5cce91a6cb5bfe5dd77eb36195")
         (revision "1"))
