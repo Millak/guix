@@ -60,7 +60,7 @@ Copyright @copyright{} 2018, 2021 Oleg Pykhalov@*
 Copyright @copyright{} 2018 Mike Gerwitz@*
 Copyright @copyright{} 2018 Pierre-Antoine Rouby@*
 Copyright @copyright{} 2018, 2019 Gábor Boskovits@*
-Copyright @copyright{} 2018, 2019, 2020 Florian Pelz@*
+Copyright @copyright{} 2018, 2019, 2020, 2022 Florian Pelz@*
 Copyright @copyright{} 2018 Laura Lazzati@*
 Copyright @copyright{} 2018 Alex Vong@*
 Copyright @copyright{} 2019 Josh Holland@*
@@ -4833,6 +4833,15 @@ traveling back to the 1980's.}!  The first @command{guix time-machine}
 invocation can be expensive: it may have to download or even build a
 large number of packages; the result is cached though and subsequent
 commands targeting the same commit are almost instantaneous.
+
+@quotation Note
+The history of Guix is immutable and @command{guix time-machine}
+provides the exact same software as they are in a specific Guix
+revision.  Naturally, no security fixes are provided for old versions
+of Guix or its channels.  A careless use of @command{guix time-machine}
+opens the door to security vulnerabilities.  @xref{Invoking guix pull,
+@option{--allow-downgrades}}.
+@end quotation
 
 The general syntax is:
 
