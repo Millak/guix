@@ -40,7 +40,6 @@
   #:use-module (guix records)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
-  #:use-module (oop goops)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:export (lightdm-seat-configuration
@@ -177,17 +176,18 @@ Provider Interface (AT-SPI).")
    "Extra configuration values to append to the LightDM GTK Greeter
 configuration file."))
 
-(define (strip-class-name-brackets name)
-  "Remove the '<<' and '>>' brackets from NAME, a symbol."
-  (let ((name* (symbol->string name)))
-    (if (and (string-prefix? "<<" name*)
-             (string-suffix? ">>" name*))
-        (string->symbol (string-drop (string-drop-right name* 2) 2))
-        (error "unexpected class name" name*))))
+(define (strip-record-type-name-brackets name)
+  "Remove the '<' and '>' brackets from NAME, a symbol."
+  (let ((name (symbol->string name)))
+    (if (and (string-prefix? "<" name)
+             (string-suffix? ">" name))
+        (string->symbol (string-drop (string-drop-right name 1) 1))
+        (error "unexpected record type name" name))))
 
 (define (config->name config)
   "Return the constructor name (a symbol) from CONFIG."
-  (strip-class-name-brackets (class-name (class-of config))))
+  (strip-record-type-name-brackets
+   (record-type-name (struct-vtable config))))
 
 (define (greeter-configuration->greeter-fields config)
   "Return the fields of CONFIG, a greeter configuration."
@@ -323,7 +323,7 @@ a symbol."
 (define (list-of-greeter-configurations? greeter-configs)
   (and ((list-of greeter-configuration?) greeter-configs)
        ;; Greeter configurations must also not be provided more than once.
-       (let* ((types (map (cut (compose class-name class-of) <>)
+       (let* ((types (map (compose record-type-name struct-vtable)
                           greeter-configs))
               (dupes (filter (lambda (type)
                                (< 1 (count (cut eq? type <>) types)))
