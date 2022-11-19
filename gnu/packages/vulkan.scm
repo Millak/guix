@@ -264,20 +264,20 @@ and the ICD.")
 (define-public vulkan-tools
   (package
     (name "vulkan-tools")
-    (version "1.2.201")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Tools")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1ik90d7pygaw2pq81brqmcjiczag3biqvgpqp3cpws07glf29lf9"))))
+         "0jzwjfx4c7y15wkwfhhc64rzljpi47bxrm5jw5blfsqjh8zsd27a"))))
     (build-system cmake-build-system)
     (inputs
-     (list glslang libxrandr vulkan-loader wayland))
+     (list glslang libxrandr vulkan-loader wayland wayland-protocols))
     (native-inputs
      (list pkg-config python vulkan-headers))
     (arguments
