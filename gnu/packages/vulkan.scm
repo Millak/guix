@@ -296,7 +296,8 @@ API.")
 (define-public shaderc
   (package
     (name "shaderc")
-    (version "2021.3")
+    ;; shaderc doesn't follow the versioning scheme of vulkan sdk
+    (version "2022.3")
     (source
      (origin
        (method git-fetch)
@@ -306,7 +307,7 @@ API.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0qjwixcx74dvx68jl51x2mp2q1346hvhwxr8w3wk36nzla62k2s6"))))
+         "0sdbfi66zmqj0c5q5yv2zvcvry7557yzgxk2mwflyjgqh7kdhb8d"))))
     (build-system cmake-build-system)
     (arguments
      `(;; FIXME: Skip most of the tests, because enabling system gtest breaks
@@ -338,7 +339,16 @@ API.")
                          ,version
                          ,(package-version spirv-tools)
                          ,(package-version glslang))))
-             #t)))))
+             #t))
+         ;; see: https://github.com/google/shaderc/pull/1276
+         (add-after 'do-not-look-for-bundled-sources 'drop-additional-glslang-deps
+           (lambda _
+             (substitute* "glslc/CMakeLists.txt"
+               (("OSDependent OGLCompiler") ""))
+             (substitute* "libshaderc/CMakeLists.txt"
+               (("OSDependent OGLCompiler") ""))
+             (substitute* "libshaderc_util/CMakeLists.txt"
+               (("OSDependent OGLCompiler") "")))))))
     (inputs
      (list glslang python spirv-headers spirv-tools))
     (native-inputs
