@@ -43,16 +43,18 @@
   #:use-module (gnu packages wine)
   #:use-module (gnu packages xorg))
 
+(define %vulkan-sdk-version "sdk-1.3.231.1")
+
 (define-public spirv-headers
   (package
     (name "spirv-headers")
-    (version "1.3.231.1")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/SPIRV-Headers")
-             (commit (string-append "sdk-" version))))
+             (commit version)))
        (sha256
         (base32
          "0z8b485hryya2g0jxv7amwg3fjj7pchbgnsa5ldf5fwgh5js0icm"))
