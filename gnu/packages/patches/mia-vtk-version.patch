@@ -1,0 +1,15 @@
+The VTK_MAJOR_VERSION macro is not available by default in newer versions.
+This is a hack to expose it without changing all imports.
+
+diff --git a/addons/vtk/CMakeLists.txt b/addons/vtk/CMakeLists.txt
+--- a/addons/vtk/CMakeLists.txt
++++ b/addons/vtk/CMakeLists.txt
+@@ -36,6 +36,8 @@ IF(WITH_VTKIO)
+     ELSE()
+       SET(SELECTED_VTK_LIBS ${VTK_MODULES_REQUESTED})
+     ENDIF()
++
++   add_compile_definitions(VTK_MAJOR_VERSION=${VTK_VERSION_MAJOR})
+     
+     SET(VTK_LINK_LIBS_MESH ${SELECTED_VTK_LIBS} miamesh)
+     SET(VTK_LINK_LIBS_3D ${SELECTED_VTK_LIBS} mia3d)

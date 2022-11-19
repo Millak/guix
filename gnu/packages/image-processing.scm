@@ -201,7 +201,9 @@ licences similar to the Modified BSD licence."))))
                (base32
                 "0qpcd3n26q52dpyibm11f5l6cgscdr54p2jish39gc3p1f5h3ws1"))
               (patches (search-patches "mia-fix-boost-headers.patch"
-                                       "mia-vtk9.patch"))))
+                                       "mia-vtk9.patch"
+                                       "mia-vtk92.patch"
+                                       "mia-vtk-version.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
