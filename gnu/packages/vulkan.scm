@@ -155,7 +155,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
 (define-public glslang
   (package
     (name "glslang")
-    (version "11.9.0")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
@@ -164,7 +164,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
              (commit version)))
        (sha256
         (base32
-         "1q6gjlx2y6g0hfvahnw063anb4yb4ky82hfh3b7nbsm43crzzfb0"))
+         "12a1zl8qxa28nbf6m67260c0lwdw3bqbj0jz1382wgm5px1fpqw6"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
