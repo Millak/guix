@@ -11519,6 +11519,15 @@ MOP easier to use.")
 (define-public cl-moptilities
   (sbcl-package->cl-source-package sbcl-moptilities))
 
+(define-public ecl-moptilities
+  (let ((pkg (sbcl-package->ecl-package sbcl-moptilities)))
+    (package
+      (inherit pkg)
+      (arguments
+       ;; Tests fail with "The function LIFT::GET-BACKTRACE-AS-STRING is
+       ;; undefined" on ECL.
+       '(#:tests? #f)))))
+
 (define-public sbcl-osicat
   (let ((commit "a45eb3b5826e9175f7c94ba97a00d6b4932f3163")
         (revision "3"))
