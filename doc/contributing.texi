@@ -1089,11 +1089,16 @@ and then to browse them ``by hand'' using @code{car}, @code{cdr},
 notably the fact that it is hard to read, error-prone, and a hindrance
 to proper type error reports.
 
+@findex define-record-type*
+@findex match-record
+@cindex pattern matching
 Guix code should define appropriate data types (for instance, using
 @code{define-record-type*}) rather than abuse lists.  In addition, it
 should use pattern matching, via Guile’s @code{(ice-9 match)} module,
 especially when matching lists (@pxref{Pattern Matching,,, guile, GNU
-Guile Reference Manual}).
+Guile Reference Manual}); pattern matching for records is better done
+using @code{match-record} from @code{(guix records)}, which, unlike
+@code{match}, verifies field names at macro-expansion time.
 
 @node Formatting Code
 @subsection Formatting Code
