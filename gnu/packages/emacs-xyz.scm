@@ -14515,40 +14515,43 @@ such files while providing facilities to link between them.")
     (license license:gpl3+)))
 
 (define-public emacs-logos
-  (package
-    (name "emacs-logos")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/logos")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1s1bm8hipipxkcz558h7i21z19g5jsbpqaza8nr4mx03jdp4nsxf"))))
-    (native-inputs (list texinfo))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'makeinfo
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "emacs"
-                      "--batch"
-                      "--eval=(require 'ox-texinfo)"
-                      "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "logos.info" (string-append #$output "/share/info")))))))
-    (home-page "https://protesilaos.com/emacs/logos")
-    (synopsis "Simple focus mode for Emacs")
-    (description "This package provides a simple focus mode which can be
+  ;; XXX: Upstream did not tag latest release.  Use the commit matching
+  ;; version bump.
+  (let ((commit "d8f18f74591ffcac6466409ac7cd29f90838b2fe"))
+    (package
+      (name "emacs-logos")
+      (version "1.0.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~protesilaos/logos")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0g3jxzwv99wkxlb36j2nyjibayvwjpy7qc2mz9lfd2945q6apj3z"))))
+      (native-inputs (list texinfo))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda* (#:key outputs #:allow-other-keys)
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"README.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (install-file "logos.info" (string-append #$output "/share/info")))))))
+      (home-page "https://protesilaos.com/emacs/logos")
+      (synopsis "Simple focus mode for Emacs")
+      (description "This package provides a simple focus mode which can be
 applied to any buffer for reading, writing, or even doing a presentation.  The
 buffer can be divided in pages using the @code{page-delimiter}, outline
 structure, or any other pattern.")
-    (license (list license:gpl3+
-                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+      (license (list license:gpl3+
+                     license:fdl1.3+))))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-tmr
   (package
