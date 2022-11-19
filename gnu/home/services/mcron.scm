@@ -77,35 +77,35 @@ Each message is also prefixed by a timestamp by GNU Shepherd."))
 (define shepherd-schedule-action
   (@@ (gnu services mcron) shepherd-schedule-action))
 
-(define home-mcron-shepherd-services
-  (match-lambda
-    (($ <home-mcron-configuration> mcron '()) ; no jobs to run
-     '())
-    (($ <home-mcron-configuration> mcron jobs  log? log-format)
-     (let ((files (job-files mcron jobs)))
-       (list (shepherd-service
-              (documentation "User cron jobs.")
-              (provision '(mcron))
-              (modules `((srfi srfi-1)
-                         (srfi srfi-26)
-                         (ice-9 popen)  ; for the 'schedule' action
-                         (ice-9 rdelim)
-                         (ice-9 match)
-                         ,@%default-modules))
-              (start #~(make-forkexec-constructor
-                        (list (string-append #$mcron "/bin/mcron")
-                              #$@(if log?
-                                     #~("--log" "--log-format" #$log-format)
-                                     #~())
-                              #$@files)
-                        #:log-file (string-append
-                                    (or (getenv "XDG_LOG_HOME")
-                                        (format #f "~a/.local/var/log"
-                                                (getenv "HOME")))
-                                    "/mcron.log")))
-              (stop #~(make-kill-destructor))
-              (actions
-               (list (shepherd-schedule-action mcron files)))))))))
+(define (home-mcron-shepherd-services config)
+  (match-record config <home-mcron-configuration>
+    (mcron jobs log? log-format)
+    (if (null? jobs)
+        '()                                       ;no jobs to run
+        (let ((files (job-files mcron jobs)))
+          (list (shepherd-service
+                 (documentation "User cron jobs.")
+                 (provision '(mcron))
+                 (modules `((srfi srfi-1)
+                            (srfi srfi-26)
+                            (ice-9 popen)         ;for the 'schedule' action
+                            (ice-9 rdelim)
+                            (ice-9 match)
+                            ,@%default-modules))
+                 (start #~(make-forkexec-constructor
+                           (list (string-append #$mcron "/bin/mcron")
+                                 #$@(if log?
+                                        #~("--log" "--log-format" #$log-format)
+                                        #~())
+                                 #$@files)
+                           #:log-file (string-append
+                                       (or (getenv "XDG_LOG_HOME")
+                                           (format #f "~a/.local/var/log"
+                                                   (getenv "HOME")))
+                                       "/mcron.log")))
+                 (stop #~(make-kill-destructor))
+                 (actions
+                  (list (shepherd-schedule-action mcron files)))))))))
 
 (define home-mcron-profile (compose list home-mcron-configuration-mcron))
 

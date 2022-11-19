@@ -383,25 +383,25 @@ configuration."
   (define (serialize-alist config)
     (generic-serialize-alist append format-config config))
 
-  (define (serialize-xdg-desktop-action action)
-    (match action
-      (($ <xdg-desktop-action> action name config)
-       `(,(format #f "[Desktop Action ~a]\n"
-                  (string-capitalize (maybe-object->string action)))
-         ,(format #f "Name=~a\n" name)
-         ,@(serialize-alist config)))))
+  (define (serialize-xdg-desktop-action desktop-action)
+    (match-record desktop-action <xdg-desktop-action>
+      (action name config)
+      `(,(format #f "[Desktop Action ~a]\n"
+                 (string-capitalize (maybe-object->string action)))
+        ,(format #f "Name=~a\n" name)
+        ,@(serialize-alist config))))
 
-  (match entry
-    (($ <xdg-desktop-entry> file name type config actions)
-     (list (if (string-suffix? file ".desktop")
-               file
-               (string-append file ".desktop"))
-           `("[Desktop Entry]\n"
-             ,(format #f "Name=~a\n" name)
-             ,(format #f "Type=~a\n"
-                      (string-capitalize (symbol->string type)))
-             ,@(serialize-alist config)
-             ,@(append-map serialize-xdg-desktop-action actions))))))
+  (match-record entry <xdg-desktop-entry>
+    (file name type config actions)
+    (list (if (string-suffix? file ".desktop")
+              file
+              (string-append file ".desktop"))
+          `("[Desktop Entry]\n"
+            ,(format #f "Name=~a\n" name)
+            ,(format #f "Type=~a\n"
+                     (string-capitalize (symbol->string type)))
+            ,@(serialize-alist config)
+            ,@(append-map serialize-xdg-desktop-action actions)))))
 
 (define-configuration home-xdg-mime-applications-configuration
   (added
