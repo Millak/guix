@@ -4234,7 +4234,7 @@ data.")
     (native-inputs
       (list pkg-config cmake))
     (inputs
-      (list qtbase-5 coin3D-4))
+      (list qtbase-5 coin3D))
     (home-page "https://github.com/coin3d/soqt")
     (synopsis "Qt GUI component toolkit library for Coin")
     (description "SoQt is a Qt GUI component toolkit library for Coin.  It is

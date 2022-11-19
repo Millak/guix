@@ -134,6 +134,7 @@
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix utils))
 
 (define-public mmm
@@ -1799,102 +1800,57 @@ or by subtracting one shape from the other.")
       (license license:gpl2))))
 
 (define-public coin3D
-  ;; The ‘4.0.0’ zip archive isn't stable, nor in fact a release.  See:
-  ;; https://bitbucket.org/Coin3D/coin/issues/179/coin-400-srczip-has-been-modified
-  (let ((revision 1)
-        (changeset "ab8d0e47a4de3230a8137feb39c142d6ba45f97d"))
-    (package
-      (name "coin3D")
-      (version
-       (simple-format #f "3.1.3-~A-~A" revision (string-take changeset 7)))
-      (source
-       (origin
-         (method hg-fetch)
-         (uri (hg-reference
-               (url "https://bitbucket.org/Coin3D/coin")
-               (changeset changeset)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ff44jz6lg4rylljvy69n1hcjh9y6achbv9jpn1cv2sf8cxn3r2j"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (for-each delete-file
-                       '("cfg/csubst.exe"
-                         "cfg/wrapmsvc.exe"))
-             #t))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list doxygen graphviz))
-      (inputs
-       (list boost freeglut glew))
-      (arguments
-       `(#:configure-flags
-         (list
-          "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-          (string-append "-DBOOST_ROOT="
-                         (assoc-ref %build-inputs "boost")))))
-      (home-page "https://bitbucket.org/Coin3D/coin/wiki/Home")
-      (synopsis
-       "High-level 3D visualization library with Open Inventor 2.1 API")
-      (description
-       "Coin is a 3D graphics library with an Application Programming Interface
-based on the Open Inventor 2.1 API.  For those who are not familiar with
-Open Inventor, it is a scene-graph based retain-mode rendering and model
-interaction library, written in C++, which has become the de facto
-standard graphics library for 3D visualization and visual simulation
-software in the scientific and engineering community.")
-      (license license:bsd-3))))
-
-(define-public coin3D-4
-    (package
+  (package
     (name "coin3D")
     (version "4.0.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/coin3d/coin")
-               (commit (string-append "Coin-" version))
-               (recursive? #t)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
-        (modules '((guix build utils)))
-        (snippet
-          '(begin
-             ;; Delete binaries
-             (for-each delete-file
-                       '("cfg/csubst.exe"
-                         "cfg/wrapmsvc.exe"))
-             ;; Delete references to packaging tool cpack. Otherwise the build
-             ;; fails with "add_subdirectory given source "cpack.d" which is not
-             ;; an existing directory."
-             (substitute* "CMakeLists.txt"
-               ((".*cpack.d.*") ""))
-             #t))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coin3d/coin")
+             (commit (string-append "Coin-" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete binaries
+           (for-each delete-file
+                     '("cfg/csubst.exe"
+                       "cfg/wrapmsvc.exe"))
+           ;; Delete references to packaging tool cpack. Otherwise the build
+           ;; fails with "add_subdirectory given source "cpack.d" which is not
+           ;; an existing directory."
+           (substitute* "CMakeLists.txt"
+             ((".*cpack.d.*") ""))
+           #t))))
     (build-system cmake-build-system)
     (native-inputs
-      (list doxygen graphviz))
+     (list doxygen graphviz))
     (inputs
-      (list boost freeglut glew))
+     (list boost freeglut glew))
     (arguments
-      `(#:configure-flags
-        (list
-          "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-          (string-append "-DBOOST_ROOT="
-                         (assoc-ref %build-inputs "boost")))))
+     `(#:configure-flags
+       (list
+        "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+        (string-append "-DBOOST_ROOT="
+                       (assoc-ref %build-inputs "boost")))))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
-      "High-level 3D visualization library with Open Inventor 2.1 API")
+     "High-level 3D visualization library with Open Inventor 2.1 API")
     (description
-      "Coin is a 3D graphics library with an Application Programming Interface
+     "Coin is a 3D graphics library with an Application Programming Interface
 based on the Open Inventor 2.1 API.  For those who are not familiar with Open
 Inventor, it is a scene-graph based retain-mode rendering and model interaction
 library, written in C++, which has become the de facto standard graphics
 library for 3D visualization and visual simulation software in the scientific
 and engineering community.")
-      (license license:bsd-3)))
+    (license license:bsd-3)))
+
+(define-deprecated coin3D-4 coin3D)
+(export coin3D-4)
 
 (define-public skia
   ;; Releases follow those of Chromium, about every 6 weeks.  The release

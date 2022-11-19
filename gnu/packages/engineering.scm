@@ -2463,7 +2463,7 @@ comments.")))
            swig))
     (inputs
      (list boost
-           coin3D-4
+           coin3D
            double-conversion
            eigen
            fontconfig

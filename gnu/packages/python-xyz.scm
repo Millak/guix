@@ -28118,7 +28118,7 @@ used to retry a function a given number of times.")
             libice
             soqt
             glew
-            coin3D-4))
+            coin3D))
     (home-page "https://github.com/coin3d/pivy")
     (synopsis "Python bindings to Coin3D")
     (description
