@@ -19164,6 +19164,72 @@ fit together as required by any particular game.")
 (define-public cl-trial
   (sbcl-package->cl-source-package sbcl-trial))
 
+(define-public sbcl-virality
+  (package
+    (name "sbcl-virality")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bufferswap/ViralityEngine")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-virality" version))
+       (sha256
+        (base32 "0hvjcvyd628jh4if6swk1wrfb9qdlnpk9ax1y3jarr8ms7ghfcdb"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     `(#:asd-systems '("virality"
+                       "vorigin"
+                       "vorigin.test"
+                       "vshadow"
+                       "vumbra"
+                       "vutils")))
+    (inputs
+     (list sbcl-3b-bmfont
+           sbcl-babel
+           sbcl-cl-cpus
+           sbcl-cl-graph
+           sbcl-cl-opengl
+           sbcl-cl-ppcre
+           sbcl-cl-slug
+           sbcl-closer-mop
+           sbcl-fast-io
+           sbcl-global-vars
+           sbcl-glsl-packing
+           sbcl-jsown
+           sbcl-lparallel
+           sbcl-pngload
+           sbcl-printv
+           sbcl-queues
+           sbcl-sdl2
+           sbcl-serapeum
+           sbcl-split-sequence
+           sbcl-static-vectors
+           sbcl-trivial-features
+           sbcl-varjo))
+    (home-page "https://github.com/bufferswap/ViralityEngine")
+    (synopsis "Component-based game engine written in Common Lisp")
+    (description
+     "Virality Engine provides a system and workflow that helps describe the
+elements needed to write 2D or 3D games.  It was designed with several domain
+specific languages that make it easier to describe, manipulate, and use assets
+commonly found in game making.  Such assets include (but are not limited to)
+textures, materials, shader programs, and scene trees of actors that are
+available for instantiation.  Virality Engine also knows how to accept input
+from keyboards and most joysticks and gamepads.
+
+The component system is a hybrid model between an ECS and an object model.  The
+components are defined similar to CLOS defclass, and regular generic methods
+can be used with them.  Components are added to Actors which represent game
+concepts like players, scenery, effects, etc.  We define a component protocol
+invoked by Virality Engine to move your components to the next state and
+render them each frame.")
+    (license license:expat)))
+
+(define-public cl-virality
+  (sbcl-package->cl-source-package sbcl-virality))
+
 (define-public sbcl-cl-liballegro
   (let ((commit "49f632ce97fc4f835bf5d450588793234b980a64")
         (revision "1"))
