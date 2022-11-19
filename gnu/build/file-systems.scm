@@ -1127,7 +1127,7 @@ corresponds to the symbols listed in FLAGS."
       (('read-only rest ...)
        (logior MS_RDONLY (loop rest)))
       (('bind-mount rest ...)
-       (logior MS_BIND (loop rest)))
+       (logior MS_REC (logior MS_BIND (loop rest))))
       (('no-suid rest ...)
        (logior MS_NOSUID (loop rest)))
       (('no-dev rest ...)
