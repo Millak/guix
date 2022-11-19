@@ -211,17 +211,17 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version "1.2.202")
+    (version %vulkan-sdk-version)
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Loader")
-             (commit (string-append "v" version))))
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1vsaa16clncz19lihgj39rdg4dspkxjay1ii6pkf6fpl1vkw1dh2"))))
+         "0jx3hbmk0rlmh8mrwhn3l6ph6by3035pbndvm5ppikpljkf9lrhx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
