@@ -2242,6 +2242,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
            libxext
            libxkbcommon
            libxinerama
+           libxpresent
            libxrandr
            libxscrnsaver
            libxv
