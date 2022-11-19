@@ -25560,17 +25560,20 @@ also be usable with other GSSAPI mechanisms.")
 (define-public python-check-manifest
   (package
     (name "python-check-manifest")
-    (version "0.37")
+    (version "0.48")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "check-manifest" version))
         (sha256
          (base32
-          "0lk45ifdv2cpkl6ayfyix7jwmnxa1rha7xvb0ih5999k115wzqs4"))))
-    (build-system python-build-system)
+          "0my6ammldi8mddrbq798qxbl90qr8nlk7gzliq3v7gp7mlfmymrv"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(;; This test requires setting up a venv which does not work
+       ;; properly in the build environment.
+       #:test-flags '("-k" "not test_build_sdist_pep517_isolated")
+       #:phases
        (modify-phases %standard-phases
          ;; Tests use git submodule commands over the file transport, which
          ;; has been disabled in git, see CVE-2022-39253. Enable these
@@ -25581,7 +25584,9 @@ also be usable with other GSSAPI mechanisms.")
              (invoke "git" "config" "--global"
                      "protocol.file.allow" "always"))))))
     (native-inputs
-     (list python-mock git-minimal/fixed))
+     (list git-minimal/fixed python-pytest))
+    (propagated-inputs
+     (list python-pypa-build python-setuptools python-tomli))
     (home-page "https://github.com/mgedmin/check-manifest")
     (synopsis "Check MANIFEST.in in a Python source package for completeness")
     (description "Python package can include a MANIFEST.in file to help with
