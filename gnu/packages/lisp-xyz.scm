@@ -1976,6 +1976,35 @@ Lisp.")
 (define-public ecl-hu.dwim.graphviz
   (sbcl-package->ecl-package sbcl-hu.dwim.graphviz))
 
+(define-public sbcl-cl-dot
+  (let ((commit "73dfbb6e015a28ebed873266e4e8190e509b43de")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-dot")
+      (version (git-version "0.9.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/michaelw/cl-dot")
+               (commit commit)))
+         (file-name (git-file-name "cl-dot" version))
+         (sha256
+          (base32 "0mcvzqfcg5rzr8rz8aa2yr2jl3ifflaksvps08zj71hbhiacqpxa"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/michaelw/cl-dot")
+      (synopsis "Generate Graphviz dot output from arbitrary Lisp data")
+      (description
+       "CL-DOT is a Common Lisp library for generating Graphviz dot output from
+arbitrary Lisp data.")
+      (license license:expat))))
+
+(define-public cl-dot
+  (sbcl-package->cl-source-package sbcl-cl-dot))
+
+(define-public ecl-cl-dot
+  (sbcl-package->ecl-package sbcl-cl-dot))
+
 (define-public sbcl-cl-graph
   (let ((commit "3cb786797b24883d784b7350e7372e8b1e743508")
         (revision "1"))
