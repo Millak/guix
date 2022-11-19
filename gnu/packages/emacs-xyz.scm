@@ -33049,12 +33049,12 @@ to the @url{https://multitran.com} online dictionary.")
     (license license:gpl3)))
 
 (define-public emacs-code-cells
-  ;; No tagged release upstream
-  (let ((commit "8660bdeedee360e5eb632f1eb1356eb09d7dfbee")
-        (revision "0"))
+  ;; XXX: Upstream does not tag releases.  The commit below matches version
+  ;; bump.
+  (let ((commit "fd68a33eb43b3cbd44fed767f48e230382903592"))
     (package
       (name "emacs-code-cells")
-      (version (git-version "0.2" revision commit))
+      (version "0.3")
       (source
        (origin
          (method git-fetch)
@@ -33063,7 +33063,7 @@ to the @url{https://multitran.com} online dictionary.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0mvfsdlhc3znc0d2p8vm7apkbpvbs688wmwvd0sms33qly53f546"))))
+          (base32 "072d5vldjfg9mj4a86bw8xmxl3hmywsnx4f2k6nayqy4whry5fmq"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/astoff/code-cells.el")
       (synopsis "Emacs utilities for code split into cells, including Jupyter
