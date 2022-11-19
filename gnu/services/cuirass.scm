@@ -125,7 +125,7 @@
   (let ((cuirass          (cuirass-configuration-cuirass config))
         (cache-directory  (cuirass-configuration-cache-directory config))
         (web-log-file     (cuirass-configuration-web-log-file config))
-        (log-file         (cuirass-configuration-log-file config))
+        (main-log-file    (cuirass-configuration-log-file config))
         (user             (cuirass-configuration-user config))
         (group            (cuirass-configuration-group config))
         (interval         (cuirass-configuration-interval config))
@@ -169,7 +169,7 @@
 
                   #:user #$user
                   #:group #$group
-                  #:log-file #$log-file))
+                  #:log-file #$main-log-file))
         (stop #~(make-kill-destructor)))
       ,(shepherd-service
         (documentation "Run Cuirass web interface.")
