@@ -25569,8 +25569,6 @@ also be usable with other GSSAPI mechanisms.")
          (base32
           "0lk45ifdv2cpkl6ayfyix7jwmnxa1rha7xvb0ih5999k115wzqs4"))))
     (build-system python-build-system)
-    (native-inputs
-     (list python-mock git))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -25582,6 +25580,8 @@ also be usable with other GSSAPI mechanisms.")
              (setenv "HOME" "/tmp")
              (invoke "git" "config" "--global"
                      "protocol.file.allow" "always"))))))
+    (native-inputs
+     (list python-mock git-minimal/fixed))
     (home-page "https://github.com/mgedmin/check-manifest")
     (synopsis "Check MANIFEST.in in a Python source package for completeness")
     (description "Python package can include a MANIFEST.in file to help with
