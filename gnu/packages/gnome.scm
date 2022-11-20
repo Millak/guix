@@ -9671,7 +9671,9 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))))
+                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))
+              (patches
+               (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9685,27 +9687,6 @@ shared object databases, search tools and indexing.")
               (substitute* "test/automated/displayless/meson.build"
                 (("^foreach t: tracker_tests" all)
                  (string-append "tracker_tests = []\n" all)))))
-          (add-after 'unpack 'make-extensible
-            (lambda _
-              (substitute* "src/nautilus-module.c"
-                (("static gboolean initialized = FALSE;" all)
-                 (string-append all "
-const char *extension_path;
-char **extension_dirs, **d;
-")
-                 )
-                (("load_module_dir \\(NAUTILUS_EXTENSIONDIR\\);" all)
-                 (string-append all
-                                "
-extension_path = g_getenv (\"NAUTILUS_EXTENSION_PATH\");
-if (extension_path)
-{
-    extension_dirs = g_strsplit (extension_path, \":\", -1);
-    for (d = extension_dirs; d != NULL && *d != NULL; d++)
-        load_module_dir(*d);
-    g_strfreev(extension_dirs);
-}
-")))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _
