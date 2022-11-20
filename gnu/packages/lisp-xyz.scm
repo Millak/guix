@@ -23666,6 +23666,38 @@ objects to be mixed and updated without manually defining many permutations.")
 (define-public ecl-dynamic-mixins
   (sbcl-package->ecl-package sbcl-dynamic-mixins))
 
+(define-public sbcl-stealth-mixin
+  (let ((commit "2f853fcead554221d4be3b10522b502ea729e944")
+        (revision "0"))
+    (package
+      (name "sbcl-stealth-mixin")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/robert-strandh/Stealth-mixin")
+               (commit commit)))
+         (file-name (git-file-name "cl-stealth-mixin" version))
+         (sha256
+          (base32 "0ar9cdmbmdnqz1ywpw34n47hlh0vqmb6pl76f5vbfgip3c81xwyi"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-closer-mop))
+      (home-page "https://github.com/robert-strandh/Stealth-mixin")
+      (synopsis "Create stealth mixin classes")
+      (description
+       "Stealth-mixin is a Common Lisp library for creating stealth mixin
+classes.  These are classes that are dynamically mixed into other classes
+without the latter being aware of it.")
+      (license license:bsd-2))))
+
+(define-public cl-stealth-mixin
+  (sbcl-package->cl-source-package sbcl-stealth-mixin))
+
+(define-public ecl-stealth-mixin
+  (sbcl-package->ecl-package sbcl-stealth-mixin))
+
 (define-public sbcl-sealable-metaobjects
   (let ((commit "e09ec97252e0844528f61abdc0c7ee256875f8ee"))
     (package
