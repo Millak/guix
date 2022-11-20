@@ -1050,14 +1050,14 @@ spell-checking library.")
 (define-public mythes
   (package
     (name "mythes")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
       (method url-fetch)
-      (uri (string-append "mirror://sourceforge/hunspell/MyThes/" version "/"
-                          name "-" version ".tar.gz"))
-      (sha256 (base32
-               "0prh19wy1c74kmzkkavm9qslk99gz8h8wmjvwzjc6lf8v2az708y"))))
+      (uri (string-append "https://github.com/hunspell/mythes/releases/"
+                          "download/v" version "/mythes-" version ".tar.xz"))
+      (sha256
+       (base32 "07ajdyyif19k445dqffkm32c1kl8z0cw6bczc7x5zgkvf1q9y9qr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
