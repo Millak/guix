@@ -3741,35 +3741,32 @@ a binding language:
 @end itemize\n")
     (license license:lgpl3)))                    ;version 3 only (+ exception)
 
-;; There have been no public releases yet.
 (define-public qtcolorwidgets
-  (let ((commit "a95f72e935fe9e046061a1d1c3930cbfbcb533e0")
-        (revision "1"))
-    (package
-      (name "qtcolorwidgets")
-      (version (git-version "0" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0dkiwlqh2gwhlp78c1fmchj3shl4p9inspcl96ya5aa8mn6kydy8"))))
-      (build-system cmake-build-system)
-      (arguments `(#:tests? #f)) ; There are no tests
-      (native-inputs
-       (list qttools-5))
-      (inputs
-       (list qtbase-5))
-      (home-page "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
-      (synopsis "Color management widgets")
-      (description "QtColorWidgets provides a Qt color dialog that is more
+  (package
+    (name "qtcolorwidgets")
+    (version "2.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fp7sr5a56bjp2abc6ng331q0bwvk6mf2nxdga81aj6cd9afs22q"))))
+    (build-system cmake-build-system)
+    (arguments '(#:tests? #f))          ;there are no tests
+    (native-inputs
+     (list qttools-5))
+    (inputs
+     (list qtbase-5))
+    (home-page "https://gitlab.com/mattia.basaglia/Qt-Color-Widgets")
+    (synopsis "Color management widgets")
+    (description "QtColorWidgets provides a Qt color dialog that is more
 user-friendly than the default @code{QColorDialog} and several other
 color-related widgets.")
-      ;; Includes a license exception for combining with GPL2 code.
-      (license license:lgpl3+))))
+    ;; Includes a license exception for combining with GPL2 code.
+    (license license:lgpl3+)))
 
 (define-public qcustomplot
   (package

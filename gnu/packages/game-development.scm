@@ -380,9 +380,10 @@ PCM data.")
                       (substitute* (find-files "." "^Makefile\\.in$")
                         (("-Werror") ""))
                       #t)))))
-    (native-inputs `(("pkgconfig" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (inputs (list bdb
                   glib
+                  gmp
                   guile-3.0
                   libmicrohttpd
                   ncurses
@@ -2444,12 +2445,20 @@ computer games, 3D authoring tools and simulation tools.")
              (commit (string-append "Chipmunk-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qmkn01g06p3rnhmbyffmjns6wj5vhgf9cscigk3wzxcpwv1hyxb"))))
+        (base32 "1qmkn01g06p3rnhmbyffmjns6wj5vhgf9cscigk3wzxcpwv1hyxb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; This is fixed in the upstream repository but the fix
+            ;; has not been released.
+            (substitute* "src/cpHastySpace.c"
+              (("#include <sys/sysctl.h>") ""))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags '("-DBUILD_STATIC=OFF"
-                           "-DBUILD_DEMOS=OFF")))
+     (list #:tests? #f                      ;no test
+           #:configure-flags
+           #~(list "-DBUILD_STATIC=OFF"
+                   "-DBUILD_DEMOS=OFF")))
     (inputs
      (list freeglut libxmu libxrandr))
     (home-page "https://chipmunk-physics.net/")

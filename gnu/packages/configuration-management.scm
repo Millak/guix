@@ -76,7 +76,7 @@
            go-github-com-muesli-reflow-padding
            go-github-com-muesli-termenv
            go-github-com-google-goterm
-           go-golang-org-colorful
+           go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
            go-github.com-mattn-go-runewidth
            go-github-com-olekukonko-tablewriter

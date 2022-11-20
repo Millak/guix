@@ -19274,8 +19274,6 @@ from the header, as well as section details and data available.")
          (replace 'check
            (lambda _
              (invoke "python" "test/test_pbkdf2.py"))))))
-    (propagated-inputs
-     (list python-pycrypto))  ; optional
     (home-page "https://www.dlitz.net/software/python-pbkdf2/")
     (synopsis "Password-based key derivation")
     (description "This module implements the password-based key derivation

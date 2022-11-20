@@ -333,31 +333,38 @@
       (documentation "Guix Build Coordinator")
       (provision '(guix-build-coordinator))
       (requirement '(networking))
-      (start #~(make-forkexec-constructor
-                (list #$(make-guix-build-coordinator-start-script
-                         database-uri-string
-                         allocation-strategy
-                         "/var/run/guix-build-coordinator/pid"
-                         package
-                         #:agent-communication-uri-string
-                         agent-communication-uri-string
-                         #:client-communication-uri-string
-                         client-communication-uri-string
-                         #:hooks hooks
-                         #:parallel-hooks parallel-hooks
-                         #:guile guile))
-                #:user #$user
-                #:group #$group
-                #:pid-file "/var/run/guix-build-coordinator/pid"
-                ;; Allow time for migrations to run
-                #:pid-file-timeout 60
-                #:environment-variables
-                `(,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
-                  "LC_ALL=en_US.utf8"
-                  "PATH=/run/current-system/profile/bin") ; for hooks
-                #:log-file "/var/log/guix-build-coordinator/coordinator.log"))
-      (stop #~(make-kill-destructor))))))
+      (start #~(lambda args
+                 (parameterize ((%current-logfile-date-format ""))
+                   (apply
+                    make-forkexec-constructor
+                    (list #$(make-guix-build-coordinator-start-script
+                             database-uri-string
+                             allocation-strategy
+                             "/var/run/guix-build-coordinator/pid"
+                             package
+                             #:agent-communication-uri-string
+                             agent-communication-uri-string
+                             #:client-communication-uri-string
+                             client-communication-uri-string
+                             #:hooks hooks
+                             #:parallel-hooks parallel-hooks
+                             #:guile guile))
+                    #:user #$user
+                    #:group #$group
+                    #:pid-file "/var/run/guix-build-coordinator/pid"
+                    ;; Allow time for migrations to run
+                    #:pid-file-timeout 60
+                    #:environment-variables
+                    `(,(string-append
+                        "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                      "LC_ALL=en_US.utf8"
+                      "PATH=/run/current-system/profile/bin") ; for hooks
+                    #:log-file "/var/log/guix-build-coordinator/coordinator.log"
+                    args))))
+      (stop #~(make-kill-destructor))
+      (modules
+       `((shepherd comm)
+         ,@%default-modules))))))
 
 (define (guix-build-coordinator-activation config)
   #~(begin
@@ -419,61 +426,67 @@
       (documentation "Guix Build Coordinator Agent")
       (provision '(guix-build-coordinator-agent))
       (requirement '(networking))
-      (start #~(make-forkexec-constructor
-                (list #$(file-append package "/bin/guix-build-coordinator-agent")
-                      #$(string-append "--coordinator=" coordinator)
-                      #$@(match authentication
-                           (($ <guix-build-coordinator-agent-password-auth>
-                               uuid password)
-                            #~(#$(string-append "--uuid=" uuid)
-                               #$(string-append "--password=" password)))
-                           (($ <guix-build-coordinator-agent-password-file-auth>
-                               uuid password-file)
-                            #~(#$(string-append "--uuid=" uuid)
-                               #$(string-append "--password-file="
-                                                password-file)))
-                           (($ <guix-build-coordinator-agent-dynamic-auth>
-                               agent-name token)
-                            #~(#$(string-append "--name=" agent-name)
-                               #$(string-append "--dynamic-auth-token=" token)))
-                           (($
-                             <guix-build-coordinator-agent-dynamic-auth-with-file>
-                             agent-name token-file)
-                            #~(#$(string-append "--name=" agent-name)
-                               #$(string-append "--dynamic-auth-token-file="
-                                                token-file))))
-                      #$(simple-format #f "--max-parallel-builds=~A"
-                                       max-parallel-builds)
-                      #$@(if max-allocated-builds
-                             #~(#$(simple-format #f "--max-allocated-builds=~A"
-                                                 max-allocated-builds))
-                             #~())
-                      #$@(if max-1min-load-average
-                             #~(#$(simple-format #f "--max-1min-load-average=~A"
-                                                 max-1min-load-average))
-                             #~())
-                      #$@(if derivation-substitute-urls
-                             #~(#$(string-append
-                                   "--derivation-substitute-urls="
+      (start
+       #~(lambda _
+           (parameterize ((%current-logfile-date-format ""))
+             (fork+exec-command
+              (list #$(file-append package "/bin/guix-build-coordinator-agent")
+                    #$(string-append "--coordinator=" coordinator)
+                    #$@(match authentication
+                         (($ <guix-build-coordinator-agent-password-auth>
+                             uuid password)
+                          #~(#$(string-append "--uuid=" uuid)
+                             #$(string-append "--password=" password)))
+                         (($ <guix-build-coordinator-agent-password-file-auth>
+                             uuid password-file)
+                          #~(#$(string-append "--uuid=" uuid)
+                             #$(string-append "--password-file="
+                                              password-file)))
+                         (($ <guix-build-coordinator-agent-dynamic-auth>
+                             agent-name token)
+                          #~(#$(string-append "--name=" agent-name)
+                             #$(string-append "--dynamic-auth-token=" token)))
+                         (($
+                           <guix-build-coordinator-agent-dynamic-auth-with-file>
+                           agent-name token-file)
+                          #~(#$(string-append "--name=" agent-name)
+                             #$(string-append "--dynamic-auth-token-file="
+                                              token-file))))
+                    #$(simple-format #f "--max-parallel-builds=~A"
+                                     max-parallel-builds)
+                    #$@(if max-allocated-builds
+                           #~(#$(simple-format #f "--max-allocated-builds=~A"
+                                               max-allocated-builds))
+                           #~())
+                    #$@(if max-1min-load-average
+                           #~(#$(simple-format #f "--max-1min-load-average=~A"
+                                               max-1min-load-average))
+                           #~())
+                    #$@(if derivation-substitute-urls
+                           #~(#$(string-append
+                                 "--derivation-substitute-urls="
                                  (string-join derivation-substitute-urls " ")))
-                             #~())
-                      #$@(if non-derivation-substitute-urls
-                             #~(#$(string-append
-                                   "--non-derivation-substitute-urls="
-                                   (string-join non-derivation-substitute-urls " ")))
-                             #~())
-                      #$@(map (lambda (system)
-                                (string-append "--system=" system))
-                              (or systems '())))
-                #:user #$user
-                #:environment-variables
-                `(,(string-append
-                    "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
-                  ;; XDG_CACHE_HOME is used by Guix when caching narinfo files
-                  "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
-                  "LC_ALL=en_US.utf8")
-                #:log-file "/var/log/guix-build-coordinator/agent.log"))
-      (stop #~(make-kill-destructor))))))
+                           #~())
+                    #$@(if non-derivation-substitute-urls
+                           #~(#$(string-append
+                                 "--non-derivation-substitute-urls="
+                                 (string-join non-derivation-substitute-urls " ")))
+                           #~())
+                    #$@(map (lambda (system)
+                              (string-append "--system=" system))
+                            (or systems '())))
+              #:user #$user
+              #:environment-variables
+              `(,(string-append
+                  "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                ;; XDG_CACHE_HOME is used by Guix when caching narinfo files
+                "XDG_CACHE_HOME=/var/cache/guix-build-coordinator-agent"
+                "LC_ALL=en_US.utf8")
+              #:log-file "/var/log/guix-build-coordinator/agent.log"))))
+      (stop #~(make-kill-destructor))
+      (modules
+       `((shepherd comm)
+         ,@%default-modules))))))
 
 (define (guix-build-coordinator-agent-activation config)
   #~(begin
@@ -526,39 +539,44 @@
       (provision '(guix-build-coordinator-queue-builds))
       (requirement '(networking))
       (start
-       #~(make-forkexec-constructor
-          (list
-           #$(file-append
-              package
-              "/bin/guix-build-coordinator-queue-builds-from-guix-data-service")
-           #$(string-append "--coordinator=" coordinator)
-           #$@(map (lambda (system)
-                     (string-append "--system=" system))
-                   (or systems '()))
-           #$@(map (match-lambda
-                     ((system . target)
-                      (string-append "--system-and-target=" system "=" target)))
-                   (or systems-and-targets '()))
-           #$@(if guix-data-service
-                  #~(#$(string-append "--guix-data-service=" guix-data-service))
-                  #~())
-           #$@(if guix-data-service-build-server-id
-                  #~(#$(simple-format
-                        #f
-                        "--guix-data-service-build-server-id=~A"
-                        guix-data-service-build-server-id))
-                  #~())
-           #$@(if processed-commits-file
-                  #~(#$(string-append "--processed-commits-file="
-                                      processed-commits-file))
-                  #~()))
-          #:user #$user
-          #:environment-variables
-          `(,(string-append
-              "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
-            "LC_ALL=en_US.utf8")
-          #:log-file "/var/log/guix-build-coordinator/queue-builds.log"))
-      (stop #~(make-kill-destructor))))))
+       #~(lambda _
+           (parameterize ((%current-logfile-date-format ""))
+             (fork+exec-command
+              (list
+               #$(file-append
+                  package
+                  "/bin/guix-build-coordinator-queue-builds-from-guix-data-service")
+               #$(string-append "--coordinator=" coordinator)
+               #$@(map (lambda (system)
+                         (string-append "--system=" system))
+                       (or systems '()))
+               #$@(map (match-lambda
+                         ((system . target)
+                          (string-append "--system-and-target=" system "=" target)))
+                       (or systems-and-targets '()))
+               #$@(if guix-data-service
+                      #~(#$(string-append "--guix-data-service=" guix-data-service))
+                      #~())
+               #$@(if guix-data-service-build-server-id
+                      #~(#$(simple-format
+                            #f
+                            "--guix-data-service-build-server-id=~A"
+                            guix-data-service-build-server-id))
+                      #~())
+               #$@(if processed-commits-file
+                      #~(#$(string-append "--processed-commits-file="
+                                          processed-commits-file))
+                      #~()))
+              #:user #$user
+              #:environment-variables
+              `(,(string-append
+                  "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                "LC_ALL=en_US.utf8")
+              #:log-file "/var/log/guix-build-coordinator/queue-builds.log"))))
+      (stop #~(make-kill-destructor))
+      (modules
+       `((shepherd comm)
+         ,@%default-modules))))))
 
 (define (guix-build-coordinator-queue-builds-activation config)
   #~(begin

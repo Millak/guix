@@ -127,7 +127,7 @@ procedure that may return a colorized version of its argument."
                (parameterize ((%text-width width*))
                  (texi->plain-text
                   (string-append "description: "
-                                 (or (and=> (service-type-description type) P_)
+                                 (or (and=> (service-type-description type) G_)
                                      ""))))
                #\newline)))))
 
@@ -144,7 +144,7 @@ procedure that may return a colorized version of its argument."
 (define (service-type-description-string type)
   "Return the rendered and localised description of TYPE, a service type."
   (and=> (service-type-description type)
-         (compose texi->plain-text P_)))
+         (compose texi->plain-text G_)))
 
 (define %service-type-metrics
   ;; Metrics used to estimate the relevance of a search result.

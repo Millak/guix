@@ -386,34 +386,35 @@ accessing and converting various ebook file formats.")
   (package
     (name "inkbox")
     (version "1.7")
+    (home-page "https://github.com/Kobo-InkBox/inkbox")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://alpinekobox.ddns.net/InkBox/inkbox/")
+         (url home-page)
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32 "126cqn0ixcn608lv2hd9f7zmzj4g448bnpxc7wv9cvg83qqajh5n"))))
     (build-system qt-build-system)
     (arguments
-     '(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "PREFIX="
-                            (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                      ; no test suite
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'prefix-opt
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (substitute* "inkbox.pro"
-               (("/opt/\\$\\$\\{TARGET\\}") (string-append (assoc-ref outputs "out"))))))
+               (("/opt/\\$\\$\\{TARGET\\}")
+                #$output))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke (cons "qmake" make-flags)))))))
     (native-inputs
      (list qtbase-5))
-    (home-page "https://alpinekobox.ddns.net/InkBox/inkbox/")
     (synopsis "EBook reader")
     (description "This package provides InkBox eBook reader.")
     (license license:gpl3)))

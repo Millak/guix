@@ -3111,6 +3111,8 @@ including air absorption, occlusion, and environmental reverb, are available
 through the EFX extension.  It also facilitates streaming audio, multi-channel
 buffers, and audio capture.")
     (home-page "https://openal-soft.org/")
+    (properties
+     '((upstream-name . "openal-soft")))
     (license license:lgpl2.0+)))
 
 (define-public freealut

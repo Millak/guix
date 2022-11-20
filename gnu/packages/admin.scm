@@ -2872,7 +2872,7 @@ sys.argv[0] = re.sub(r'\\.([^/]*)-real$', r'\\1', sys.argv[0])
      (list openssh
            openssl
            python-mock
-           python-pycrypto
+           python-pycryptodome
            python-pytest
            python-pytest-forked
            python-pytest-mock

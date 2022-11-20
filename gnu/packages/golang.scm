@@ -5894,9 +5894,9 @@ without requiring a real database connection.")
 golang's database/sql package.")
     (license license:mpl2.0)))
 
-(define-public go-golang-org-colorful
+(define-public go-github-com-lucasb-eyer-go-colorful
   (package
-    (name "go-golang-org-colorful")
+    (name "go-github-com-lucasb-eyer-go-colorful")
     (version "1.2.0")
     (source (origin
               (method git-fetch)
@@ -5908,16 +5908,19 @@ golang's database/sql package.")
                (base32
                 "08c3fkf27r16izjjd4w94xd1z7w1r4mdalbl53ms2ka2j465s3qs"))))
     (build-system go-build-system)
+    (propagated-inputs (list go-golang-org-x-image))
     (arguments
-     '(#:import-path "github.com/lucasb-eyer/go-colorful"))
-    (native-inputs
-     (list go-golang-org-sql-mock))
-    (synopsis "Convert between colorspaces and generate colors")
-    (description "This package implements Go's @code{color.Color} interface
-and provides a means of converting colors stored as RGB to various
-colorspaces.")
+     (list #:import-path "github.com/lucasb-eyer/go-colorful"))
     (home-page "https://github.com/lucasb-eyer/go-colorful")
+    (synopsis "Library for playing with colors in Go")
+    (description
+     "The colorful package provides a library for using colors in Go.
+It stores colors in RGB and provides methods for converting these to
+various color spaces.")
     (license license:expat)))
+
+(define-public go-golang-org-colorful
+  (deprecated-package "go-golang-org-colorful" go-github-com-lucasb-eyer-go-colorful))
 
 (define-public go-github-com-gdamore-encoding
   (package
@@ -5966,8 +5969,10 @@ non-UTF-friendly sources.")
       (arguments
        `(#:import-path "github.com/gdamore/tcell"))
       (inputs
-       (list go-github.com-mattn-go-runewidth go-golang-org-colorful
-             go-golang-org-x-text go-github-com-gdamore-encoding))
+       (list go-github.com-mattn-go-runewidth
+             go-github-com-lucasb-eyer-go-colorful
+             go-golang-org-x-text
+             go-github-com-gdamore-encoding))
       (home-page "https://github.com/gdamore/tcell")
       (synopsis "Provide a cell-based view for text terminals")
       (description "This package includes a full parser and expander for
@@ -6005,6 +6010,36 @@ systems.")
       (propagated-inputs
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
+
+(define-public go-github-com-rivo-tview
+  (package
+    (name "go-github-com-rivo-tview")
+    (version "0.0.0-20220703182358-a13d901d3386")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rivo/tview")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gf1m3ndbc3kgxpv0ryq9a1ahijg6m896sc9k7dvwfjd8vy0q0yd"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/rivo/tview"))
+    (propagated-inputs (list go-golang-org-x-term
+                             go-golang-org-x-sys
+                             go-github-com-rivo-uniseg
+                             go-github-com-mattn-go-runewidth
+                             go-github-com-lucasb-eyer-go-colorful
+                             go-github-com-gdamore-tcell-v2))
+    (home-page "https://github.com/rivo/tview")
+    (synopsis "Rich Interactive Widgets for Terminal UIs")
+    (description
+     "The tview package implements rich widgets for terminal based user
+interfaces.  The widgets provided with this package are useful for data
+exploration and data entry.")
+    (license license:expat)))
 
 (define-public go-github-com-xo-terminfo
   (package
@@ -7716,8 +7751,10 @@ io.Writers helping you to transform blocks of text.")
     (arguments
      `(#:import-path "github.com/muesli/termenv"))
     (native-inputs
-     (list go-github-com-google-goterm go-golang-org-colorful
-           go-github-com-mattn-go-isatty go-github.com-mattn-go-runewidth))
+     (list go-github-com-google-goterm
+           go-github-com-lucasb-eyer-go-colorful
+           go-github-com-mattn-go-isatty
+           go-github.com-mattn-go-runewidth))
     (home-page "https://github.com/muesli/termenv/")
     (synopsis "Advanced styling options on the terminal")
     (description "termenv lets you safely use advanced styling options on the
@@ -7846,7 +7883,7 @@ which produce colorized output using github.com/fatih/color.")
            go-github.com-mattn-go-runewidth
            go-github-com-muesli-termenv
            go-github-com-google-goterm
-           go-golang-org-colorful
+           go-github-com-lucasb-eyer-go-colorful
            go-github-com-mattn-go-isatty
            go-github-com-olekukonko-tablewriter
            go-github-com-yuin-goldmark
@@ -9693,7 +9730,7 @@ string.")
        ("github.com/mattn/go-runewidth" ,go-github.com-mattn-go-runewidth)
        ("go-github-com-muesli-reflow-indent" ,go-github-com-muesli-reflow-indent)
        ("go-github-com-muesli-reflow-ansi" ,go-github-com-muesli-reflow-ansi)
-       ("go-golang-org-colorful" ,go-golang-org-colorful)
+       ("go-github-com-lucasb-eyer-go-colorful" ,go-github-com-lucasb-eyer-go-colorful)
        ("github.com/containerd/console" ,go-github-com-containerd-console)
        ("go-github-com-muesli-reflow-truncate" ,go-github-com-muesli-reflow-truncate)
        ("go-golang-org-x-crypto" ,go-golang-org-x-crypto)
@@ -10044,6 +10081,27 @@ pcredential store, Pass, Secret Service, KDE Wallet, Encrypted File.")
      "This package provides INI file read and write functionality in Go.")
     (home-page "https://gopkg.in/ini.v1")
     (license license:asl2.0)))
+
+;;; XXX: Since commit bfb61065f05a6eac0cf63b16db43d0c3e864c658, the
+;;; canonical name of the ini package is `go-github-com-go-ini-ini`,
+;;; not `go-gopkg-in-ini`.
+(define-public go-github-com-go-ini-ini
+  (package
+    (inherit go-gopkg-in-ini)
+    (name "go-github-com-go-ini-ini")
+    (version "1.66.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-ini/ini")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0kqg13606hnw8f75cb59fsy1m85kiqf3csi2g7q2512avdmaphc9"))))
+    (arguments
+     (list #:import-path "github.com/go-ini/ini"))
+    (propagated-inputs (list go-github-com-stretchr-testify))))
 
 (define-public go-github-com-skratchdot-open-golang
   (let ((commit "79abb63cd66e41cb1473e26d11ebdcd68b04c8e5")
@@ -10448,7 +10506,7 @@ using shell-style rules for quoting and commenting.")
                           (lambda* (#:key inputs import-path
                                     #:allow-other-keys)
                             (invoke "tar" "xf"
-                                    #$notmuch-fixtures "-C"
+                                    #+notmuch-fixtures "-C"
                                     (string-append "src/" import-path
                                                    "/fixtures")))))))
     (inputs (list notmuch))
@@ -10458,6 +10516,34 @@ using shell-style rules for quoting and commenting.")
      "The notmuch package provides a Go language binding to the notmuch
 email library.")
     (license license:gpl3+)))
+
+(define-public go-github-com-jaytaylor-html2text
+  (package
+    (name "go-github-com-jaytaylor-html2text")
+    (version "0.0.0-20211105163654-bc68cce691ba")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jaytaylor/html2text")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12ckgkp8xqgp0fh6019nwp4ssg2k1rv1a67cpk37ian4q5zrvppm"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jaytaylor/html2text"
+           ;; Tests are broken: <https://github.com/jaytaylor/html2text/issues/53>
+           #:tests? #f))
+    (propagated-inputs (list go-golang-org-x-net
+                             go-github-com-olekukonko-tablewriter
+                             go-github-com-ssor-bom))
+    (home-page "https://github.com/jaytaylor/html2text")
+    (synopsis "Convert HTML emails to text")
+    (description
+     "The html2text package converts HTML emails to plain text, allowing
+text-only mail clients to display them.")
+    (license license:expat)))
 
 (define-public go-github-com-creack-pty
   (package
@@ -10554,6 +10640,52 @@ of the current user.")
      "The xdg package provides lightweight helper functions in Go to get
 config, data and cache directories according to the XDG Base Directory
 Specification.")
+    (license license:expat)))
+
+(define-public go-github-com-ssor-bom
+  (package
+    (name "go-github-com-ssor-bom")
+    (version "0.0.0-20170718123548-6386211fdfcf")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ssor/bom")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09g5496ifwqxqclh2iw58plcwcz0sczlnxwqxzwmnl4shdl371ld"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/ssor/bom"))
+    (home-page "https://github.com/ssor/bom")
+    (synopsis "Cleaning BOMs in Go")
+    (description
+     "The bom package provides small tools for cleaning BOMs from a byte
+array or reader.")
+    (license license:expat)))
+
+(define-public go-github-com-gogs-chardet
+  (package
+    (name "go-github-com-gogs-chardet")
+    (version "0.0.0-20211120154057-b7413eaefb8f")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gogs/chardet")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12j8q5wc9m4n51v2j2m40nahqdl9bh3hzpdp26clzq91kc2amiz0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/gogs/chardet"))
+    (home-page "https://github.com/gogs/chardet")
+    (synopsis "Character set detection for Go")
+    (description
+     "The chardet package ports character set detection from
+ICU to Go.")
     (license license:expat)))
 
 ;;;

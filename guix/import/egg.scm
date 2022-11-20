@@ -67,7 +67,7 @@
 ;;;
 ;;; * Support for CHICKEN 4?
 ;;;
-;;; * Some packages will specify a specific version of a depencency in the
+;;; * Some packages will specify a specific version of a dependency in the
 ;;;   PACKAGE.egg file, how should we handle this?
 ;;;
 ;;; Code:

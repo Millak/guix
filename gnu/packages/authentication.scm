@@ -43,6 +43,7 @@
        (method url-fetch)
        (uri (string-append "https://download.savannah.nongnu.org/releases/"
                            name "/" name "-" version ".tar.gz"))
+       (patches (search-patches "oath-toolkit-xmlsec-compat.patch"))
        (sha256
         (base32 "1aa620k05lsw3l3slkp2mzma40q3p9wginspn9zk8digiz7dzv9n"))))
     (build-system gnu-build-system)

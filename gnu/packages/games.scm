@@ -828,7 +828,7 @@ possible, while battling many vicious aliens.")
     (home-page "https://github.com/vattam/BSDGames")
     (synopsis "Collection of the old text-based games and amusements")
     (description
-     "These are the BSD games.  See the fortune-mod package for fortunes.
+     "These are the BSD games.
 
 Action: atc (keep the airplanes safe), hack (explore the dangerous Dungeon),
 hunt (kill the others for the Pair of Boots, multi-player only), robots (avoid

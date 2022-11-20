@@ -5558,13 +5558,12 @@ discard bad quality ones.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtmultimedia-5" "qtsvg-5")))
+                         '("qtbase" "qtmultimedia" "qtsvg")))
                  `("QML2_IMPORT_PATH" ":" prefix
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/qml"))
-                         '("qtmultimedia-5"))))
-               #t))))))
+                         '("qtmultimedia"))))))))))
     (inputs
      (list alsa-lib
            fftw
@@ -5574,10 +5573,7 @@ discard bad quality ones.
            qtmultimedia-5
            qtsvg-5))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("itstool" ,itstool)
-       ("qttools-5" ,qttools-5)))
+     (list gettext-minimal hicolor-icon-theme itstool qttools-5))
     (synopsis "Musical instrument tuner")
     (description "FMIT is a graphical utility for tuning musical instruments,
 with error and volume history, and advanced features.")

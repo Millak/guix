@@ -3881,7 +3881,7 @@ pretty printer and a tree visitor.")
              (substitute* "flask_restful/__init__.py"
                (("flask\\.helpers") "flask.scaffold")))))))
     (propagated-inputs
-      (list python-aniso8601 python-flask python-pycrypto python-pytz))
+      (list python-aniso8601 python-flask python-pytz))
     (native-inputs
       (list ;; Optional dependency of Flask. Tests need it.
             python-blinker python-mock ; For tests

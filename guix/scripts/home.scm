@@ -705,7 +705,7 @@ deploy the home environment described by these files.\n")
 (define (service-type-description-string type)
   "Return the rendered and localised description of TYPE, a service type."
   (and=> (service-type-description type)
-         (compose texi->plain-text P_)))
+         (compose texi->plain-text G_)))
 
 (define %service-type-metrics
   ;; Metrics used to estimate the relevance of a search result.
