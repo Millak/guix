@@ -1184,12 +1184,10 @@ Libxml2).")
   (package/inherit xmlsec
     (name "xmlsec-nss")
     (native-inputs
-     ;; For tests.
-     `(("nss:bin" ,nss "bin")           ; for certutil
-       ,@(package-native-inputs xmlsec)))
+     (modify-inputs (package-native-inputs xmlsec)
+       (prepend `(,nss "bin"))))        ;certutil, for tests
     (inputs
-     `(("nss" ,nss)
-       ("libltdl" ,libltdl)))
+     (list nss libltdl))
     (arguments
      ;; NSS no longer supports MD5 since 3.59, don't attempt to use it.
      '(#:configure-flags '("--disable-md5")))
