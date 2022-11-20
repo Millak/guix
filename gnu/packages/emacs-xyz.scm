@@ -33909,6 +33909,32 @@ using mypy.")
 process via its IPC interface.")
       (license license:gpl3+))))
 
+(define-public emacs-apel-lb
+  ;; No release since Jun 15, 2010.
+  (let ((version "10.8")                ;tag chise-base-0_25
+        (revision "81")
+        (commit "82eb2325bd149dc57b43a9ce9402c6c6183e4052"))
+    (package
+      (name "emacs-apel-lb")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/apel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qiw19pn1cs8y571irw7bjdygkvwan9ch2i1dg139dri4b6q1il6"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Library for making portable Emacs Lisp programs")
+      (description
+       "A Portable Emacs Library (APEL) is a library for making portable Emacs
+Lisp programs.  APEL-LB is a variant of APEL, which features supports to
+latest Emacs.")
+      (license license:gpl2+))))
+
 (define-public emacs-waveform
   ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.
   (let ((commit "ee52c6a72b3e9890743e3a6e2fc1f3195f5687b2")
