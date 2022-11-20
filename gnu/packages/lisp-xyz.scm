@@ -1049,6 +1049,59 @@ compatible with ANSI-compliant Common Lisp implementations.")
 (define-public ecl-cl-ppcre
   (sbcl-package->ecl-package sbcl-cl-ppcre))
 
+(define-public sbcl-one-more-re-nightmare
+  (let ((commit "09c33feed35797512bf123ccca053cf8ba42bfbd")
+        (revision "0"))
+    (package
+      (name "sbcl-one-more-re-nightmare")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/telekons/one-more-re-nightmare")
+               (commit commit)))
+         (file-name (git-file-name "cl-one-more-re-nightmare" version))
+         (sha256
+          (base32 "0vc0lxvn3anjb63hr26r1l18aw5nbj80w9ja3a32fip6nbwfsrfv"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:asd-test-systems '("one-more-re-nightmare-tests")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-tests
+             (lambda _
+               (substitute* "Tests/one-more-re-nightmare-tests.asd"
+                 ((":depends-on")
+                  (string-append
+                   ":perform (test-op (o c) (symbol-call :one-more-re-nightmare-tests '#:run-tests))"
+                   "\n  :depends-on"))))))))
+      (native-inputs
+       (list sbcl-lparallel sbcl-parachute))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-dynamic-mixins
+             sbcl-esrap
+             sbcl-stealth-mixin
+             sbcl-trivia
+             sbcl-trivial-indent))
+      (home-page "https://github.com/telekons/one-more-re-nightmare")
+      (synopsis "Regular expression compiler in Common Lisp")
+      (description "@code{one-more-re-nightmare} is a regular expression engine
+that uses the technique presented in Regular-expression derivatives
+re-examined (Owens, Reppy and Turon, 2009;
+@url{doi:10.1017/S0956796808007090}) to interpret and compile regular
+expressions.")
+      (license license:bsd-2))))
+
+(define-public cl-one-more-re-nightmare
+  (sbcl-package->cl-source-package sbcl-one-more-re-nightmare))
+
+(define-public ecl-one-more-re-nightmare
+  (sbcl-package->ecl-package sbcl-one-more-re-nightmare))
+
 (define-public sbcl-parse
   (let ((commit "2351ee78acac065fcf10b8713d3f404e2e910786")
         (revision "1"))
