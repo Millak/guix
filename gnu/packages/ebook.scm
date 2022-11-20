@@ -386,12 +386,13 @@ accessing and converting various ebook file formats.")
   (package
     (name "inkbox")
     (version "1.7")
+    (home-page "https://github.com/Kobo-InkBox/inkbox")
     (source
      (origin
        (method git-fetch)
        (uri
         (git-reference
-         (url "https://alpinekobox.ddns.net/InkBox/inkbox/")
+         (url home-page)
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
@@ -413,7 +414,6 @@ accessing and converting various ebook file formats.")
              (apply invoke (cons "qmake" make-flags)))))))
     (native-inputs
      (list qtbase-5))
-    (home-page "https://alpinekobox.ddns.net/InkBox/inkbox/")
     (synopsis "EBook reader")
     (description "This package provides InkBox eBook reader.")
     (license license:gpl3)))
