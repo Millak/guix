@@ -4189,7 +4189,7 @@ models and also supports a rich set of boolean query operators.")
            perl
            pkg-config))
     (propagated-inputs
-     (list guile-gcrypt))
+     (list guile2.2-gcrypt))
     (home-page "https://github.com/o-nly/torrent")
     (synopsis "Torrent library for GNU Guile")
     (description "This package provides facilities for working with
