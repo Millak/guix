@@ -3179,9 +3179,8 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
                  ;; These programs are only needed to calibrate, so using
                  ;; relative file names avoids adding extra inputs.  When they
                  ;; are missing powertop gracefully handles it.
-                 (("/usr/bin/hcitool") "hcitool")
-                 (("/usr/bin/xset") "xset")
-                 (("/usr/sbin/hciconfig") "hciconfig"))))))))
+                 (("/usr/s?bin/(hciconfig|hcitool|xset)" _ command)
+                  command))))))))
     (native-inputs
      (list autoconf
            autoconf-archive
