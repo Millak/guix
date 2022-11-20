@@ -2454,9 +2454,10 @@ computer games, 3D authoring tools and simulation tools.")
               (("#include <sys/sysctl.h>") ""))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags '("-DBUILD_STATIC=OFF"
-                           "-DBUILD_DEMOS=OFF")))
+     (list #:tests? #f                      ;no test
+           #:configure-flags
+           #~(list "-DBUILD_STATIC=OFF"
+                   "-DBUILD_DEMOS=OFF")))
     (inputs
      (list freeglut libxmu libxrandr))
     (home-page "https://chipmunk-physics.net/")
