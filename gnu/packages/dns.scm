@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.2.2")
+    (version "3.2.3")
     (source
      (origin
        (method git-fetch)
@@ -880,7 +880,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1x1waa2cb91zhsqkx4mkiqy00kq1f1pavjfhlz7wknlnll48iayd"))
+        (base32 "117q8jllaakd6gv0mfkq45sigy5c8j8jbyxiwna3wan0mjx81fhv"))
        (modules '((guix build utils)))
        (snippet
         '(begin
