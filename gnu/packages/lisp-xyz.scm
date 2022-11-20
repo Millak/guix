@@ -7095,6 +7095,46 @@ the return type of a function.")
      ;; The tests get stuck indefinitly
      '(#:tests? #f))))
 
+(define-public sbcl-simplified-types
+  (let ((commit "8fd0727a70a9de76289ac62c1567b8d278e7434e")
+        (revision "0"))
+    (package
+      (name "sbcl-simplified-types")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/simplified-types")
+               (commit commit)))
+         (file-name (git-file-name "cl-simplified-types" version))
+         (sha256
+          (base32 "1hdwmn5lz717aj6qdqmfmr3cbjl8l3giwn0fb5ca9pj83cx7fg8y"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-introspect-environment
+             sbcl-trivia))
+      (home-page "https://github.com/marcoheisig/simplified-types")
+      (synopsis "Simplify Common Lisp type specifiers")
+      (description
+       "Simplified-Types is a library that provides functions for simplifying
+Common Lisp type specifiers.  The API consists of two functions:
+
+@itemize
+@item @code{simplify-type} takes a type specifier and, optionally, an
+environment, and returns the corresponding simplified type.
+@item @code{simplified-type-of} takes an object and returns the simplified
+type of that object.
+@end itemize")
+      (license license:expat))))
+
+(define-public cl-simplified-types
+  (sbcl-package->cl-source-package sbcl-simplified-types))
+
+(define-public ecl-simplified-types
+  (sbcl-package->ecl-package sbcl-simplified-types))
+
 (define-public sbcl-typo
   (let ((commit "0e883490f81edf2a1be4e5b101d1caec78d7853b")
         (revision "0"))
