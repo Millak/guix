@@ -3423,18 +3423,24 @@ The @var{options} can be among the following:
 @itemx -i @var{package} @dots{}
 Install the specified @var{package}s.
 
-Each @var{package} may specify either a simple package name, such as
-@code{guile}, or a package name followed by an at-sign and version number,
-such as @code{guile@@1.8.8} or simply @code{guile@@1.8} (in the latter
-case, the newest version prefixed by @code{1.8} is selected).
+Each @var{package} may specify a simple package name, such as
+@code{guile}, optionally followed by an at-sign and version number,
+such as @code{guile@@3.0.7} or simply @code{guile@@3.0}.  In the latter
+case, the newest version prefixed by @code{3.0} is selected.
 
-If no version number is specified, the
-newest available version will be selected.  In addition, @var{package}
+If no version number is specified, the newest available version will be
+selected.  In addition, such a @var{package} specification
 may contain a colon, followed by the name of one of the outputs of the
 package, as in @code{gcc:doc} or @code{binutils@@2.22:lib}
-(@pxref{Packages with Multiple Outputs}).  Packages with a corresponding
+(@pxref{Packages with Multiple Outputs}).
+
+Packages with a corresponding
 name (and optionally version) are searched for among the GNU
 distribution modules (@pxref{Package Modules}).
+
+Alternatively, a @var{package} can directly specify a store file name
+such as @file{/gnu/store/...-guile-3.0.7}, as produced by, e.g.,
+@code{guix build}.
 
 @cindex propagated inputs
 Sometimes packages have @dfn{propagated inputs}: these are dependencies
