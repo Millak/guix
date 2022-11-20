@@ -212,10 +212,9 @@ internal RPC protocols and file formats.")
               (sha256
                (base32
                 "040rcs9fpv4bslhiy43v7dcrzakz4vwwpyqg4jp8bn24sl95ci7f"))))
-    (arguments (substitute-keyword-arguments (package-arguments protobuf)
-                 ((#:phases phases)
-                  #~(modify-phases #$phases
-                      (delete 'disable-broken-tests)))))))
+    (build-system gnu-build-system)
+    (arguments '())
+    (outputs '("out"))))
 
 (define-public protobuf-c
   (package
