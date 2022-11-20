@@ -19224,7 +19224,12 @@ fit together as required by any particular game.")
                        "vorigin.test"
                        "vshadow"
                        "vumbra"
-                       "vutils")))
+                       "vutils")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'delete-examples
+                    (lambda _
+                      ;; Don't install the big "examples" directory.
+                      (delete-file-recursively "examples"))))))
     (inputs
      (list sbcl-3b-bmfont
            sbcl-babel
