@@ -44,6 +44,7 @@
   #:use-module (gnu packages wine)
   #:use-module (gnu packages xorg))
 
+;; Note: Remember to change vulkan-loader version when bumping this.
 (define %vulkan-sdk-version "sdk-1.3.231.1")
 
 (define-public spirv-headers
@@ -212,17 +213,19 @@ interpretation of the specifications for these languages.")
 (define-public vulkan-loader
   (package
     (name "vulkan-loader")
-    (version %vulkan-sdk-version)
+    ;; XXX: Take a slightly newer commit to fix a test failure on i686:
+    ;; https://github.com/KhronosGroup/Vulkan-Loader/pull/1036
+    (version "sdk-1.3.232")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/KhronosGroup/Vulkan-Loader")
-             (commit version)))
+             (commit "v1.3.232")))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0jx3hbmk0rlmh8mrwhn3l6ph6by3035pbndvm5ppikpljkf9lrhx"))))
+         "0w69sh669sx9pwlvv2rv92ds2hm2rbzsa6qqcmd8kcad0qfq7dz2"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
