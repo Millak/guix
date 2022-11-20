@@ -20430,6 +20430,46 @@ configuration file format.")
 (define-public ecl-clop
   (sbcl-package->ecl-package sbcl-clop))
 
+(define-public sbcl-pp-toml
+  (let ((commit "54f7d08c939d18b24363342c98c19b6812d7afb9")
+        (revision "0"))
+    (package
+      (name "sbcl-pp-toml")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pnathan/pp-toml")
+               (commit commit)))
+         (file-name (git-file-name "cl-pp-toml" version))
+         (sha256
+          (base32 "136d7jzz7l2ck9wwld0ac46jmpm94lvja6m50sy73s232slka2hg"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-esrap
+             sbcl-generic-comparability
+             sbcl-local-time
+             sbcl-parse-number
+             sbcl-split-sequence))
+      (home-page "https://github.com/pnathan/pp-toml")
+      (synopsis "TOML parser for Common Lisp")
+      (description
+       "PP-TOML is a Common Lisp library for parsing strings in the TOML
+configuration file format.  It implements only the 0.1.0 specification of
+TOML.")
+      (license license:llgpl))))
+
+(define-public cl-pp-toml
+  (sbcl-package->cl-source-package sbcl-pp-toml))
+
+(define-public ecl-pp-toml
+  (sbcl-package->ecl-package sbcl-pp-toml))
+
 (define-public sbcl-linedit
   (let ((commit "0561c97dfca2f5854fcc66558a567a9875ddcb8f")
         (revision "1"))
