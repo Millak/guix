@@ -228,26 +228,29 @@ interpretation of the specifications for these languages.")
          "0w69sh669sx9pwlvv2rv92ds2hm2rbzsa6qqcmd8kcad0qfq7dz2"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       ,#~(list
-           (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
-                          #$(this-package-input "vulkan-headers"))
-           (string-append "-DGOOGLETEST_INSTALL_DIR="
-                          (getcwd) "/source/external/googletest")
-           "-DBUILD_TESTS=ON")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'unpack-googletest
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((gtest (assoc-ref inputs "googletest:source")))
-                        (when gtest
-                          (copy-recursively gtest "external/googletest"))
-                        #t))))))
+     (list
+      #:configure-flags
+      #~(list (string-append "-DVULKAN_HEADERS_INSTALL_DIR="
+                             (dirname (dirname
+                                       (search-input-directory
+                                        %build-inputs "include/vulkan"))))
+              (string-append "-DGOOGLETEST_INSTALL_DIR="
+                             (getcwd) "/source/external/googletest")
+              "-DBUILD_TESTS=ON")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'unpack-googletest
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (let ((gtest (search-input-directory (or native-inputs inputs)
+                                                    "googletest")))
+                 (copy-recursively (dirname gtest)
+                                   "external/googletest")))))))
     (native-inputs
-     `(("googletest:source" ,(package-source googletest))
-       ("libxrandr" ,libxrandr)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("wayland" ,wayland)))
+     (list (package-source googletest)
+           libxrandr
+           pkg-config
+           python
+           wayland))
     (inputs
      (list vulkan-headers))
     (home-page
