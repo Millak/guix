@@ -335,13 +335,15 @@ PACKAGE."
 
 (define* (format-whole-file file #:rest rest)
   "Reformat all of FILE."
-  (let ((lst (call-with-input-file file read-with-comments/sequence)))
-    (with-atomic-file-output file
-      (lambda (port)
-        (apply pretty-print-with-comments/splice port lst
-               #:format-comment canonicalize-comment
-               #:format-vertical-space canonicalize-vertical-space
-               rest)))))
+  (with-fluids ((%default-port-encoding "UTF-8"))
+    (let ((lst (call-with-input-file file read-with-comments/sequence
+                                     #:guess-encoding #t)))
+      (with-atomic-file-output file
+        (lambda (port)
+          (apply pretty-print-with-comments/splice port lst
+                 #:format-comment canonicalize-comment
+                 #:format-vertical-space canonicalize-vertical-space
+                 rest))))))
 
 
 ;;;
