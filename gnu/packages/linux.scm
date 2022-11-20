@@ -3183,14 +3183,10 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
                  (("/usr/bin/xset") "xset")
                  (("/usr/sbin/hciconfig") "hciconfig"))
                #t))))))
+    (native-inputs
+     (list autoconf automake gettext-minimal libtool pkg-config))
     (inputs
      (list kmod libnl ncurses pciutils zlib))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
     (home-page "https://01.org/powertop/")
     (synopsis "Analyze power consumption on Intel-based laptops")
     (description
