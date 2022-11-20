@@ -33990,6 +33990,106 @@ user interface.  SEMI-EPG is a variant of SEMI, which features supports to
 EasyPG and latest Emacs.")
       (license license:gpl2+))))
 
+(define-public emacs-wanderlust
+  ;; No release since Jan 15, 2010.
+  ;; FIXME: Building with emacs-next-pgtk would yield a void variable related
+  ;; macro-expansion failure at runtime, so don't rewrite emacs input of this
+  ;; package.
+  (let ((version "2.15.9")
+        (revision "779")
+        (commit "f5cb2f0cf5e2c893acf2e669fd549836828dfdfc"))
+    (package
+      (name "emacs-wanderlust")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/wanderlust")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin (substitute* "WL-CFG"
+                           ((".*WL_PREFIX.*")
+                            (string-append "(setq wl-install-utils t)" "\n"
+                                           "(setq WL_PREFIX \"\")" "\n"
+                                           "(setq ELMO_PREFIX \"\")" "\n")))
+                         (substitute* "Makefile"
+                           (("package-user-dir") "NONE"))))
+                (sha256
+                 (base32
+                  "1ijs57wv1vrh33vn311hgkp42vlmjyi998nc4qdrqi7yy9j8hl1h"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'expand-load-path 'chdir-elmo
+                   (lambda _
+                     (chdir "elmo")))
+                 (add-after 'chdir-elmo 'expand-load-path-elmo
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-elmo 'chdir-utils
+                   (lambda _
+                     (chdir "../utils")))
+                 (add-after 'chdir-utils 'expand-load-path-utils
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-utils 'chdir-wl
+                   (lambda _
+                     (chdir "../wl")))
+                 (add-after 'chdir-wl 'expand-load-path-wl
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-wl 'change-directory
+                   (lambda _
+                     (chdir "..")))
+                 (add-after 'install 'install-via-makefile
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((emacs (search-input-file inputs "/bin/emacs"))
+                           (lispdir (elpa-directory #$output))
+                           (infodir (string-append #$output "/share/info")))
+                       (for-each mkdir-p (list lispdir infodir))
+                       (substitute* "Makefile"
+                         (("(EMACS\t= )emacs" all m)
+                          (string-append m emacs))
+                         (("(LISPDIR = )NONE" all m)
+                          (string-append m lispdir))
+                         (("(PIXMAPDIR = )NONE" all m)
+                          (string-append m lispdir "/icons"))
+                         (("(INFODIR = )NONE" all m)
+                          (string-append m infodir))))
+                     (invoke "make" "install")
+                     (invoke "make" "install-info"))))))
+      (propagated-inputs (list emacs-semi-epg))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Yet Another Message Interface on Emacsen")
+      (description
+       "Wanderlust is an mail/news management system on Emacsen.  It supports
+IMAP4rev1(RFC2060), NNTP, POP and local message files.
+
+The main features of Wanderlust:
+
+@itemize
+@item Pure elisp implementation.
+@item Supports IMAP4rev1, NNTP, POP(POP3/APOP), MH and Maildir format.
+@item Unified access method to messages based on Mew-like Folder Specification.
+@item Mew-like Key-bind and mark handling.
+@item Manages unread messages.
+@item Interactive thread display.
+@item Folder Mode shows the list of subscribed folders.
+@item Message Cache, Disconnected Operation.
+@item MH-like FCC (Fcc: %Backup and Fcc: $Backup is allowed).
+@item MIME compliant (by SEMI).
+@item Transmission of news and mail are unified by Message transmitting draft.
+@item Graphical list of folders.
+@item View a part of message without retrieving the whole message (IMAP4).
+@item Server-side message look up (IMAP4), multi-byte characters are allowed.
+@item Virtual Folders.
+@item Supports compressed folder using common archiving utilities.
+@item Old articles in folders are automatically removed/archived (Expiration).
+@item Automatic re-file.
+@item Template function makes it convenient to send fixed form messages.
+@end itemize\n")
+      (license license:gpl2+))))
+
 (define-public emacs-waveform
   ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.
   (let ((commit "ee52c6a72b3e9890743e3a6e2fc1f3195f5687b2")
