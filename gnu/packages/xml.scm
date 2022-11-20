@@ -1175,6 +1175,8 @@ XSL-T processor.  It also performs any necessary post-processing.")
 supports XML security standards such as XML Signature, XML Encryption,
 Canonical XML (part of Libxml2) and Exclusive Canonical XML (part of
 Libxml2).")
+    (properties
+     '((upstream-name . "xmlsec1")))
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))))
 
