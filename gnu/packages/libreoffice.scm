@@ -992,7 +992,7 @@ spell-checking library.")
     (build-system gnu-build-system)
     (inputs
      (list perl))
-    (home-page "http://hunspell.sourceforge.net/")
+    (home-page "https://hunspell.github.io/")
     (synopsis "Hyphenation library")
     (description "Hyphen is a hyphenation library using TeX hyphenation
 patterns, which are pre-processed by a perl script.")
@@ -1063,7 +1063,7 @@ spell-checking library.")
      (list pkg-config))
     (inputs
      (list hunspell perl))
-    (home-page "http://hunspell.sourceforge.net/")
+    (home-page "https://hunspell.github.io/")
     (synopsis "Thesaurus")
     (description "MyThes is a simple thesaurus that uses a structured text
 data file and an index file with binary search to look up words and phrases
