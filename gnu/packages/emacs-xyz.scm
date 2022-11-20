@@ -2841,6 +2841,34 @@ like.  It can be linked with various Emacs mail clients (Message and Mail
 mode, Rmail, Gnus, MH-E, and VM).  BBDB is fully customizable.")
     (license license:gpl3+)))
 
+(define-public emacs-bbdb-vcard
+  ;; No release since Dec 1, 2013.
+  (let ((version "0.4.1") ;3d79fdb4200a64a043e203a3baac95c936095b52, not tagged
+        (revision "88")
+        (commit "113c66115ce68316e209f51ebce56de8dded3606"))
+    (package
+      (name "emacs-bbdb-vcard")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tohojo/bbdb-vcard")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sr5kd2gvw1b4hl147yb60cgx6j730vdnpyr09p7vmpw65hzwlwm"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-bbdb))
+      (home-page "https://github.com/tohojo/bbdb-vcard")
+      (synopsis
+       "vCard Import and Export for The Insidious Big Brother Database (BBDB)")
+      (description
+       "@code{bbdb-vcard.el} imports and exports vCards (version 3.0) as
+defined in RFC 2425 and RFC 2426 to/from The Insidious Big Brother Database
+(BBDB).  Version 2.1 vCards are converted into version 3.0 on import.")
+      (license license:gpl2+))))
+
 (define-public emacs-beacon
   (package
     (name "emacs-beacon")
