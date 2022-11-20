@@ -17103,6 +17103,42 @@ additions:
 or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
     (license license:gpl3+)))
 
+(define-public emacs-dirvish
+  (package
+    (name "emacs-dirvish")
+    (version "2.0.53")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alexluigit/dirvish")
+                    (commit "c535e2147171be5506f4ff34e862bacbfb3de768")))
+              (sha256
+               (base32
+                "1nmp5ci4dvcpih6phfhk66s98lf8b49qd35ymy29kqkf5v4cnwga"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-transient))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Move the extensions source files to the top level, which
+          ;; is included in the EMACSLOADPATH.
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./extensions" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f (basename f)))
+                          el-files)))))))
+    (home-page "https://github.com/alexluigit/dirvish")
+    (synopsis "Improved version of the Emacs package Dired")
+    (description
+     "Dirvish is an improved version of the Emacs inbuilt package Dired.  It
+not only gives Dired an appealing and highly customizable user interface, but
+also comes together with almost all possible parts required for full usability
+as a modern file manager.")
+    (license license:gpl3+)))
+
 (define-public emacs-which-key
   (package
     (name "emacs-which-key")
