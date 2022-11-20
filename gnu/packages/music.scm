@@ -5558,13 +5558,12 @@ discard bad quality ones.
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/plugins"))
-                         '("qtbase" "qtmultimedia-5" "qtsvg-5")))
+                         '("qtbase" "qtmultimedia" "qtsvg")))
                  `("QML2_IMPORT_PATH" ":" prefix
                    ,(map (lambda (label)
                            (string-append (assoc-ref inputs label)
                                           "/lib/qt5/qml"))
-                         '("qtmultimedia-5"))))
-               #t))))))
+                         '("qtmultimedia"))))))))))
     (inputs
      (list alsa-lib
            fftw
