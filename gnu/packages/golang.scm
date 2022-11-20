@@ -2511,6 +2511,32 @@ web framework
 sunset times from geographical coordinates and a date.")
       (license license:expat))))
 
+(define-public go-github-com-hebcal-gematriya
+  (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-gematriya")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/gematriya")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0xmnb2i80dy380yv8c4pd04bbyqgbc7c40p8hz1vqj2lhbm6jabf"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/gematriya"))
+      (home-page "https://github.com/hebcal/gematriya")
+      (synopsis "Print numbers as Hebrew letters in Go")
+      (description
+       "This package provides a Go library for printing numbers as
+Hebrew letters.")
+      (license license:bsd-2))))
+
 (define-public go-github-com-aws-sdk
   (package
     (name "go-github-com-aws-sdk")
