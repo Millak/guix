@@ -1197,8 +1197,7 @@ Libxml2).")
   (package/inherit xmlsec
     (name "xmlsec-openssl")
     (inputs
-     `(("openssl" ,openssl)
-       ("libltdl" ,libltdl)))
+     (list openssl libltdl))
     (synopsis "XML Security Library (using OpenSSL instead of GnuTLS)")))
 
 (define-public minixml
