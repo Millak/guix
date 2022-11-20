@@ -54,6 +54,7 @@
 ;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -718,6 +719,51 @@ console.")
     (description "Btop++ provides unified monitoring of CPU, memory, network
 and processes.")
     (license license:asl2.0)))
+
+(define-public smem
+  (package
+    (name "smem")
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://selenic.com/repo/smem/archive/"
+                                  version ".tar.bz2"))
+              (file-name
+               (string-append name "-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "19ibv1byxf2b68186ysrgrhy5shkc5mc69abark1h18yigp3j34m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ; There is no test suite.
+           #:make-flags #~(list "smemcap")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'build
+                 (lambda _
+                   (let* ((system #$(cond ((target-x86?) "X86")
+                                          ((target-arm?) "ARM")
+                                          ((target-powerpc?) "POWER")
+                                          (else "CROSS_FINGERS"))))
+                     (format #t "Building for ~a~%" system)
+                     (invoke #$(cc-for-target) "-o" "smemcap" "smemcap.c"
+                             "-g" "-Wall" "-D" system))))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin"))
+                         (man1 (string-append #$output "/share/man/man8")))
+                     (install-file "smemcap" bin)
+                     (install-file "smem" bin)
+                     (mkdir-p man1)
+                     (copy-file "smem.8" (string-append man1 "/smem.8"))))))))
+    (native-inputs (list python-minimal-wrapper))
+    (home-page "https://www.selenic.com/smem/")
+    (synopsis "Memory reporting tool")
+    (description
+     "This package provides a command line tool that can give numerous reports
+on memory usage on GNU/Linux systems.")
+    (license license:gpl2+)))
 
 (define-public htop
   (package

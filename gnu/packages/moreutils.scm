@@ -2,6 +2,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2016, 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -19,34 +20,30 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages moreutils)
-  #:use-module (guix gexp)
-  #:use-module ((guix licenses) #:prefix l:)
-  #:use-module (guix packages)
-  #:use-module (guix download)
-  #:use-module (guix build-system gnu)
-  #:use-module (guix utils)
+  #:use-module (gnu packages docbook)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages docbook))
+  #:use-module (guix build-system gnu)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public moreutils
   (package
     (name "moreutils")
     (version "0.67")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://git.joeyh.name/index.cgi/moreutils.git/snapshot/"
-             name "-" version ".tar.gz"))
-       (sha256
-        (base32 "045d2dfvsd4sxxr2i2qvkpgvi912qj9vc4gpc8fb4hr9q912z1q3"))))
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://git.joeyh.name/index.cgi/moreutils.git/snapshot/"
+                    name "-" version ".tar.gz"))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "045d2dfvsd4sxxr2i2qvkpgvi912qj9vc4gpc8fb4hr9q912z1q3"))))
     (build-system gnu-build-system)
-    ;; For building the manual pages.
-    (native-inputs
-     (list docbook-xml-4.4 docbook-xsl libxml2 libxslt))
-    (inputs
-     (list perl perl-timedate perl-time-duration))
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -64,6 +61,16 @@
                                   #$(package-version (this-package-native-input
                                                       "docbook-xsl")))
                    (string-append "CC=" #$(cc-for-target)))))
+    (inputs
+     (list perl
+           perl-timedate
+           perl-time-duration))
+    ;; For building the manual pages.
+    (native-inputs
+     (list docbook-xml-4.4
+           docbook-xsl-next     ;without -next, man pages are corrupted
+           libxml2
+           libxslt))
     (home-page "https://joeyh.name/code/moreutils/")
     (synopsis "Miscellaneous general-purpose command-line tools")
     (description
@@ -71,4 +78,4 @@
 augment the traditional Unix toolbox.")
     (properties
      '((release-monitoring-url . "https://git.joeyh.name/index.cgi/moreutils.git/")))
-    (license l:gpl2+)))
+    (license license:gpl2+)))

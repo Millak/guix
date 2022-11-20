@@ -34,6 +34,7 @@
   #:use-module (gnu services xorg)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
+  #:use-module (gnu system keyboard)
   #:use-module (gnu system shadow)
   #:use-module (gnu system vm)
   #:use-module (gnu tests)
@@ -56,7 +57,11 @@
     (inherit %simple-os)
     (packages (cons* ocrad ratpoison xterm %base-packages))
     (services
-     (cons* (service lightdm-service-type
+     (cons* (set-xorg-configuration (xorg-configuration
+                                     (keyboard-layout (keyboard-layout "us")))
+                                    lightdm-service-type)
+
+            (service lightdm-service-type
                      (lightdm-configuration
                       (allow-empty-passwords? #t)
                       (debug? #t)

@@ -32,7 +32,7 @@
 (define-public tbb
   (package
     (name "tbb")
-    (version "2021.5.0")
+    (version "2021.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41,12 +41,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z0pqzfx63zrmyqdvvkk8vl5dc0i0n5cimdkrypd50ig4d4yi7sc"))
-              (patches
-                ;; Backport an upstream commit that prevents the
-                ;; "test_eh_thread" test failing on AArch64.
-                (search-patches "tbb-fix-test-on-aarch64.patch"
-                                "tbb-other-arches.patch"))))
+                "039v4jmnkkxs7haxrfmk9j57vfbrwlhjynlm5byfaqddv4cbsy0p"))
+              (patches (search-patches "tbb-other-arches.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DTBB_STRICT=OFF"))) ;; Don't fail on warnings

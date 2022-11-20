@@ -3431,6 +3431,11 @@ BOM creation and has a lot of extra features.")
        #:configure-flags '("-DBUILD_EXAMPLES=OFF")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-protobuf-compatibility
+           (lambda _
+             (substitute* "src/Socket_p.h"
+               (("stream\\.SetTotalBytesLimit\\(message_size_maximum,.*\\);")
+                "stream.SetTotalBytesLimit(message_size_maximum);"))))
          (add-before 'configure 'fix-python-sitearch
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "cmake/FindSIP.cmake"

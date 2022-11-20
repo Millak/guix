@@ -1,0 +1,27 @@
+From 944f53fb00794f4bc96700dd14df1e88b6cd5623 Mon Sep 17 00:00:00 2001
+From: Christophe Rhodes <csr21@cantab.net>
+Date: Thu, 17 Nov 2022 22:29:26 +0000
+Subject: [PATCH] Fix build on arm64 with clisp as host
+
+Make sure the offset constants are defined while compiling vm.lisp.
+---
+ src/compiler/arm64/vm.lisp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/compiler/arm64/vm.lisp b/src/compiler/arm64/vm.lisp
+index ae6d7c7fa..2a151be58 100644
+--- a/src/compiler/arm64/vm.lisp
++++ b/src/compiler/arm64/vm.lisp
+@@ -23,7 +23,8 @@
+ (macrolet ((defreg (name offset)
+              (let ((offset-sym (symbolicate name "-OFFSET")))
+                `(progn
+-                  (defconstant ,offset-sym ,offset)
++                  (eval-when (:compile-toplevel :load-toplevel :execute)
++                    (defconstant ,offset-sym ,offset))
+                   (setf (svref *register-names* ,offset-sym) ,(symbol-name name)))))
+ 
+            (defregset (name &rest regs)
+-- 
+2.30.2
+

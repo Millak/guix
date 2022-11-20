@@ -16395,6 +16395,15 @@ the same purpose: to provide Python bindings for libmagic.")
        (sha256
         (base32 "0rdgwwmmp8mdxc84bxq6k9a7v7z2qgc3df47djzs2b84gw81dglx"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'hide-wrapping
+                 (lambda _
+                   (substitute* "S3/MultiPart.py"
+                     (("sys\\.argv\\[0\\]") "\"s3cmd\""))
+                   (substitute* "s3cmd"
+                     (("optparser\\.get_prog_name\\(\\)") "\"s3cmd\"")))))))
     (inputs
      (list python-dateutil
            python-magic))
@@ -20242,19 +20251,6 @@ while only declaring the test-specific fields.")
     ;; Contributions to this software is made under the terms of *both* these
     ;; licenses.
     (license (list license:asl2.0 license:bsd-2))))
-
-;; TODO(staging): merge with python-packaging-bootstrap.
-(define-public python-packaging-next
-  (package
-    (inherit python-packaging)
-    (version "21.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "packaging" version))
-       (sha256
-        (base32
-         "1sygirdrqgv4f1ckh9nhpcw1yfidrh3qjl86wq8vk6nq4wlw8iyx"))))))
 
 (define-public python-relatorio
   (package
@@ -25564,17 +25560,33 @@ also be usable with other GSSAPI mechanisms.")
 (define-public python-check-manifest
   (package
     (name "python-check-manifest")
-    (version "0.37")
+    (version "0.48")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "check-manifest" version))
         (sha256
          (base32
-          "0lk45ifdv2cpkl6ayfyix7jwmnxa1rha7xvb0ih5999k115wzqs4"))))
-    (build-system python-build-system)
+          "0my6ammldi8mddrbq798qxbl90qr8nlk7gzliq3v7gp7mlfmymrv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     '(;; This test requires setting up a venv which does not work
+       ;; properly in the build environment.
+       #:test-flags '("-k" "not test_build_sdist_pep517_isolated")
+       #:phases
+       (modify-phases %standard-phases
+         ;; Tests use git submodule commands over the file transport, which
+         ;; has been disabled in git, see CVE-2022-39253. Enable these
+         ;; commands to allow checks to succeed.
+         (add-before 'check 'allow-git-submodule-add
+           (lambda _
+             (setenv "HOME" "/tmp")
+             (invoke "git" "config" "--global"
+                     "protocol.file.allow" "always"))))))
     (native-inputs
-     (list python-mock git))
+     (list git-minimal/fixed python-pytest))
+    (propagated-inputs
+     (list python-pypa-build python-setuptools python-tomli))
     (home-page "https://github.com/mgedmin/check-manifest")
     (synopsis "Check MANIFEST.in in a Python source package for completeness")
     (description "Python package can include a MANIFEST.in file to help with
@@ -28106,7 +28118,7 @@ used to retry a function a given number of times.")
             libice
             soqt
             glew
-            coin3D-4))
+            coin3D))
     (home-page "https://github.com/coin3d/pivy")
     (synopsis "Python bindings to Coin3D")
     (description

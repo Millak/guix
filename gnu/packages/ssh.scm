@@ -461,13 +461,13 @@ with optional @acronym{TLS, Transport-Level Security} to protect credentials.")
 (define-public mosh
   (package
     (name "mosh")
-    (version "1.3.2")
+    (version "1.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://mosh.org/mosh-" version ".tar.gz"))
               (sha256
                (base32
-                "05hjhlp6lk8yjcy59zywpf0r6s0h0b9zxq0lw66dh9x8vxrhaq6s"))))
+                "1pax8sqlvcc7ammsxd9r53yx4m2hg1827wfz6f4rrwjx9q9lnbl7"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases

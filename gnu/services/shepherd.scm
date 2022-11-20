@@ -66,6 +66,8 @@
             shepherd-action-documentation
             shepherd-action-procedure
 
+            shepherd-configuration-action
+
             %default-modules
 
             shepherd-service-file
@@ -332,6 +334,16 @@ and return the resulting '.go' file. SHEPHERD is used as shepherd package."
                      ;; It's faster to build locally than to download.
                      #:options '(#:local-build? #t
                                  #:substitutable? #f)))))
+
+(define (shepherd-configuration-action file)
+  "Return a 'configuration' action to display FILE, which should be the name
+of the service's configuration file."
+  (shepherd-action
+   (name 'configuration)
+   (documentation "Display the name of this service's configuration file.")
+   (procedure #~(lambda (_)
+                  (format #t "~a~%" #$file)
+                  #$file))))
 
 (define (shepherd-configuration-file services shepherd)
   "Return the shepherd configuration file for SERVICES.  SHEPHERD is used

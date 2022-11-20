@@ -3148,14 +3148,14 @@ as a library for other Emacs packages.")
 (define-public emacs-auctex
   (package
     (name "emacs-auctex")
-    (version "13.1.5")
+    (version "13.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "auctex-" version ".tar"))
        (sha256
-        (base32 "00g6js6089637w8alch4dvk140chjkyirsa8inh9ai6a6kkfvc3p"))))
+        (base32 "0pdinnhkv7vqib01a6vxq1iixs7sw72r0sxzryv78c9hxn2k4552"))))
     (build-system emacs-build-system)
     ;; We use 'emacs' because AUCTeX requires dbus at compile time
     ;; ('emacs-minimal' does not provide dbus).
@@ -6923,39 +6923,38 @@ files which are intended to be packages.")
     (license license:gpl3+)))
 
 (define-public emacs-flymake-proselint
-  (let ((commit "6a99865c7ac6474b8c5d1f9a1ae2384667f06d36")
-        (revision "0"))
-   (package
-     (name "emacs-flymake-proselint")
-     (version (git-version "0.2.3" revision commit))
-     (source (origin
-               (method git-fetch)
-               (uri (git-reference
-                     (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
-                     (commit commit)))
-               (file-name (git-file-name name version))
-               (sha256
-                (base32
-                 "028ilp9h22rlawlh5ydiykvi8pryyknwi019sjyxkk2h0fza9jan"))))
-     (build-system emacs-build-system)
-     (arguments
-      (list
-       #:phases
-       #~(modify-phases %standard-phases
-           (add-after 'unpack 'patch-exec-paths
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "flymake-proselint.el"
-                 (("\"proselint\"")
-                  (string-append
-                   "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
-     (propagated-inputs
-      (list emacs-flycheck))
-     (inputs
-      (list python-proselint))
-     (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
-     (synopsis "Flymake backend for @code{proselint}")
-     (description "This package adds support for @code{proselint} in Flymake.")
-     (license license:gpl3+))))
+  (let ((commit "9c68ee881f18f554f0ab5bbf5bee1a4b753d792b"))
+    (package
+      (name "emacs-flymake-proselint")
+      (version "0.3.0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1n8i17il2nfazw3d9kza2r7py61dgdr7kqmg0s1vhrk86qq39669"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-exec-paths
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "flymake-proselint.el"
+                  (("\"proselint\"")
+                   (string-append
+                    "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
+      (propagated-inputs
+       (list emacs-flycheck))
+      (inputs
+       (list python-proselint))
+      (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+      (synopsis "Flymake backend for @code{proselint}")
+      (description "This package adds support for @code{proselint} in Flymake.")
+      (license license:gpl3+))))
 
 (define-public emacs-elisp-demos
   (package
@@ -7097,14 +7096,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.21")
+    (version "1.0.24")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "0l4xv56ab31li9l77x68jnpcn47xgj0gqjfs5diklr665vjmfqim"))))
+                "1x9w858pgyhd7hlvn85h379f8sfvf8ly3a9596q4jkqbcp9riymq"))))
     (arguments
      (list
       #:tests? #t
@@ -14516,40 +14515,43 @@ such files while providing facilities to link between them.")
     (license license:gpl3+)))
 
 (define-public emacs-logos
-  (package
-    (name "emacs-logos")
-    (version "1.0.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~protesilaos/logos")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1s1bm8hipipxkcz558h7i21z19g5jsbpqaza8nr4mx03jdp4nsxf"))))
-    (native-inputs (list texinfo))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'makeinfo
-            (lambda* (#:key outputs #:allow-other-keys)
-              (invoke "emacs"
-                      "--batch"
-                      "--eval=(require 'ox-texinfo)"
-                      "--eval=(find-file \"README.org\")"
-                      "--eval=(org-texinfo-export-to-info)")
-              (install-file "logos.info" (string-append #$output "/share/info")))))))
-    (home-page "https://protesilaos.com/emacs/logos")
-    (synopsis "Simple focus mode for Emacs")
-    (description "This package provides a simple focus mode which can be
+  ;; XXX: Upstream did not tag latest release.  Use the commit matching
+  ;; version bump.
+  (let ((commit "d8f18f74591ffcac6466409ac7cd29f90838b2fe"))
+    (package
+      (name "emacs-logos")
+      (version "1.0.1")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~protesilaos/logos")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0g3jxzwv99wkxlb36j2nyjibayvwjpy7qc2mz9lfd2945q6apj3z"))))
+      (native-inputs (list texinfo))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda* (#:key outputs #:allow-other-keys)
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"README.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (install-file "logos.info" (string-append #$output "/share/info")))))))
+      (home-page "https://protesilaos.com/emacs/logos")
+      (synopsis "Simple focus mode for Emacs")
+      (description "This package provides a simple focus mode which can be
 applied to any buffer for reading, writing, or even doing a presentation.  The
 buffer can be divided in pages using the @code{page-delimiter}, outline
 structure, or any other pattern.")
-    (license (list license:gpl3+
-                   license:fdl1.3+)))) ; GFDLv1.3+ for the manual
+      (license (list license:gpl3+
+                     license:fdl1.3+))))) ; GFDLv1.3+ for the manual
 
 (define-public emacs-tmr
   (package
@@ -16032,14 +16034,14 @@ the center of the screen and not at the bottom.")
 (define-public emacs-posframe
   (package
     (name "emacs-posframe")
-    (version "1.1.8")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "posframe-" version ".tar"))
        (sha256
-        (base32 "0560f05c2rh6jkdba4yq9qbazfz6qbdrymqm5zcihvz7cy019dzm"))))
+        (base32 "06xk6z3b5mqgcskjiwkl9viccvzriflr8y51aclyfdamh5qb6kqb"))))
     (build-system emacs-build-system)
     ;; emacs-minimal does not include the function font-info.
     (arguments
@@ -18644,11 +18646,11 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
       (license license:gpl3+))))
 
 (define-public emacs-org-tree-slide
-  (let ((commit "036a36eec1cf712d3db155572aed325daa372eb5")
-        (revision "2"))
+  (let ((commit "d6529bc2df727d09014e0e56abf4f15a8e8fc20f")
+        (revision "0"))
     (package
       (name "emacs-org-tree-slide")
-      (version (git-version "2.8.4" revision commit))
+      (version (git-version "2.8.18" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -18656,15 +18658,15 @@ from @code{groovy-mode} for editing Jenkins declarative pipeline files.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1r8ncx25xmxicgciyv5przp68y8qgy40fm10ba55awvql4xcm0yk"))
+                  "1br32mpwarmrn158y2pkkmfl2ssv8q8spzknkg2avr16fil0j1pz"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/takaxp/org-tree-slide")
-      (synopsis "Presentation tool for org-mode")
+      (synopsis "Presentation tool for Org mode")
       (description
-       "Org-tree-slide provides a slideshow mode to view org-mode files.  Use
-@code{org-tree-slide-mode} to enter the slideshow mode, and then @kbd{C->} and
-@kbd{C-<} to jump to the next and previous slide.")
+       "Org Tree Slide is a minor mode for using an Org document in
+presentations by progressively revealing individual subtrees of the
+document.")
       (license license:gpl3+))))
 
 (define-public emacs-scratch-el
@@ -33049,12 +33051,12 @@ to the @url{https://multitran.com} online dictionary.")
     (license license:gpl3)))
 
 (define-public emacs-code-cells
-  ;; No tagged release upstream
-  (let ((commit "8660bdeedee360e5eb632f1eb1356eb09d7dfbee")
-        (revision "0"))
+  ;; XXX: Upstream does not tag releases.  The commit below matches version
+  ;; bump.
+  (let ((commit "fd68a33eb43b3cbd44fed767f48e230382903592"))
     (package
       (name "emacs-code-cells")
-      (version (git-version "0.2" revision commit))
+      (version "0.3")
       (source
        (origin
          (method git-fetch)
@@ -33063,7 +33065,7 @@ to the @url{https://multitran.com} online dictionary.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0mvfsdlhc3znc0d2p8vm7apkbpvbs688wmwvd0sms33qly53f546"))))
+          (base32 "072d5vldjfg9mj4a86bw8xmxl3hmywsnx4f2k6nayqy4whry5fmq"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/astoff/code-cells.el")
       (synopsis "Emacs utilities for code split into cells, including Jupyter

@@ -3549,7 +3549,7 @@ perform geometrical transforms on JPEG images.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3558,7 +3558,7 @@ perform geometrical transforms on JPEG images.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0ig58zjw60jg4bb4fzm22dqr5zksqpzimpfa8wcarv8gjp861cw5"))))
+                "1nk81z2cf9fsyppq5ly0yjw7yvdk5qraf71in7ayzdkngphhfgfx"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings

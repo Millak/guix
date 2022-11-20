@@ -235,4 +235,9 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
          (equal? (package-upstream-name pkg) "hello-upstream")
          (hidden-package? pkg))))
 
+(test-equal "spdx-string->license"
+  '(license:gpl3+ license:agpl3 license:gpl2+)
+  (map spdx-string->license
+       '("GPL-3.0-oR-LaTeR" "AGPL-3.0" "GPL-2.0+")))
+
 (test-end "import-utils")
