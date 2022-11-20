@@ -399,16 +399,17 @@ accessing and converting various ebook file formats.")
         (base32 "126cqn0ixcn608lv2hd9f7zmzj4g448bnpxc7wv9cvg83qqajh5n"))))
     (build-system qt-build-system)
     (arguments
-     '(#:tests? #f                      ; no test suite
-       #:make-flags
-       (list (string-append "PREFIX="
-                            (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                      ; no test suite
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
          (add-after 'unpack 'prefix-opt
-           (lambda* (#:key outputs #:allow-other-keys)
+           (lambda _
              (substitute* "inkbox.pro"
-               (("/opt/\\$\\$\\{TARGET\\}") (string-append (assoc-ref outputs "out"))))))
+               (("/opt/\\$\\$\\{TARGET\\}")
+                #$output))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke (cons "qmake" make-flags)))))))
