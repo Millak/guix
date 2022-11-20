@@ -159,25 +159,32 @@
          (base     (if desktop?
                        '%desktop-services
                        '%base-services))
-         (heading  (list (vertical-space 1)
-                         (comment (G_ "\
+         (service-heading (list (vertical-space 1)
+                                (comment (G_ "\
 ;; Below is the list of system services.  To search for available
-;; services, run 'guix system search KEYWORD' in a terminal.\n")))))
+;; services, run 'guix system search KEYWORD' in a terminal.\n"))))
+         (package-heading (list (vertical-space 1)
+                                (comment (G_ "\
+;; Packages installed system-wide.  Users can also install packages
+;; under their own account: use 'guix search KEYWORD' to search
+;; for packages and 'guix install PACKAGE' to install a package.\n")))))
 
     (if (null? snippets)
         `(,@(if (null? packages)
                 '()
-                `((packages (append (list ,@packages)
+                `(,@package-heading
+                  (packages (append (list ,@packages)
                                     %base-packages))))
 
-          ,@heading
+          ,@service-heading
           (services ,base))
         `(,@(if (null? packages)
                 '()
-                `((packages (append (list ,@packages)
+                `(,@package-heading
+                  (packages (append (list ,@packages)
                                     %base-packages))))
 
-          ,@heading
+          ,@service-heading
           (services (append (list ,@snippets
 
                                   ,@(if desktop?
