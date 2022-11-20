@@ -2537,6 +2537,49 @@ sunset times from geographical coordinates and a date.")
 Hebrew letters.")
       (license license:bsd-2))))
 
+(define-public go-github-com-hebcal-hebcal-go
+  (let ((commit "d42e881860cfc9e8249fc79f268091c3c4d36b0d")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-hebcal-go")
+      (version (git-version "0.9.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/hebcal-go")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m9akb8pwxchpaci05gambshrzw626gsrfhl25f36vjl7mq5292n"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/hebcal-go"
+             ;; Source-only package
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Source-only package
+                 (delete 'build))))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-hebcal-gematriya
+             go-github-com-nathan-osman-go-sunrise))
+      (home-page "https://github.com/hebcal/hebcal-go")
+      (synopsis "Go library for the Hebcal perpetual Jewish calendar")
+      (description
+       "This package provides a library for conversion between Hebrew
+and Gregorian dates, and generation of lists of Jewish holidays for
+a given year.  Shabbat and holiday candle lighting and havdalah times
+are approximated based on location.
+
+Torah readings, Daf Yomi, and counting of the Omer can also be
+specified.  Algorithms are included to calculate yahrzeits, birthdays,
+and anniversaries.")
+      (license license:gpl2+))))
+
 (define-public go-github-com-aws-sdk
   (package
     (name "go-github-com-aws-sdk")
