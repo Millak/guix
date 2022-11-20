@@ -15097,6 +15097,46 @@ even by adding additional statistical @code{compute}ations.")
 (define-public ecl-trivial-benchmark
   (sbcl-package->ecl-package sbcl-trivial-benchmark))
 
+(define-public sbcl-the-cost-of-nothing
+  (let ((commit "f364029fbbf37ae5786f2f9ddf6185dd204a7185")
+        (revision "0"))
+    (package
+      (name "sbcl-the-cost-of-nothing")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/marcoheisig/the-cost-of-nothing")
+               (commit commit)))
+         (file-name (git-file-name "cl-the-cost-of-nothing" version))
+         (sha256
+          (base32 "1ccrglyr1wnnfp218w1qj7yfl4yzlxkki3hqaifi5axgbi5dmmh8"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; The test operation benchmarks the Common Lisp implementation; it
+       ;; doesn't test the package.
+       (list #:tests? #f))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-closer-mop
+             sbcl-local-time
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/marcoheisig/the-cost-of-nothing")
+      (synopsis "Measure the run time of Common Lisp code")
+      (description
+       "THE-COST-OF-NOTHING is a library for measuring the run time of Common
+Lisp code.  It provides macros and functions for accurate benchmarking and
+lightweight monitoring.  Furthermore, it provides predefined benchmarks to
+determine the cost of certain actions on a given platform and implementation.")
+      (license license:expat))))
+
+(define-public cl-the-cost-of-nothing
+  (sbcl-package->cl-source-package sbcl-the-cost-of-nothing))
+
+(define-public ecl-the-cost-of-nothing
+  (sbcl-package->ecl-package sbcl-the-cost-of-nothing))
+
 (define-public sbcl-glyphs
   (let ((commit "1ff5714e8c1dca327bc604dfe3e3d1f4b7755373"))
     (package
