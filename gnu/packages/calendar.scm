@@ -34,6 +34,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system python)
   #:use-module (gnu packages admin)
@@ -45,6 +46,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages perl)
@@ -426,3 +428,38 @@ written in C++ using GTK.  Launched once, it pops up a small calendar applet,
 launched again it closes the running instance.  It can additionally be
 configured to show the current time in different timezones.")
       (license license:bsd-3))))
+
+(define-public hebcal
+  (let ((commit "2384bb88dc1a41a4a5ae57a29fb58b2dd49a475d")
+        (revision "0"))
+    (package
+      (name "hebcal")
+      (version (git-version "5.3.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hebcal/hebcal")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "12rv3b51jb7wcjwmmizz9jkw7gh37yklys4xncvpzgxdkkfgmmjx"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/hebcal"))
+      (inputs
+       (list go-github-com-hebcal-hebcal-go
+             go-github-com-pborman-getopt))
+      (synopsis "Perpetual Jewish Calendar program")
+      (description
+       "Hebcal is a program for converting between Hebrew and Gregorian
+dates, and generating lists of Jewish holidays for a given year.
+Shabbat, holiday candle lighting, and havdalah times are approximated
+using your location.
+
+It can also show daily prayer times, the weekly Torah reading, and
+the daily leaf of Talmud.  The program can help with counting of the
+Omer or with calculation of Hebrew yahrzeits, birthdays, or
+anniversaries.")
+      (home-page "https://github.com/hebcal/hebcal")
+      (license license:gpl2+))))
