@@ -650,6 +650,13 @@ the freedesktop.org XDG Base Directory specification.")
              (substitute* "meson.build"
                (("join_paths\\(bindir, 'pkttyagent'\\)")
                 "'\"/run/current-system/profile/bin/pkttyagent\"'"))))
+         (add-after 'unpack 'use-global-hook-directory
+           ;; XXX There is no run-time setting to set this per-process, only a
+           ;; build-time, hard-coded list of global directories.
+           (lambda _
+             (substitute* (list "src/login/elogind-dbus.c"
+                                "src/sleep/sleep.c")
+               (("PKGSYSCONFDIR") "\"/etc/elogind\""))))
          (add-after 'unpack 'adjust-tests
            (lambda _
              ;; Skip the following test, which depends on users such as 'root'
