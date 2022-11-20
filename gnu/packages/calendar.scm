@@ -119,7 +119,7 @@ the <tz.h> library for handling time zones and leap seconds.")
 (define-public libical
   (package
     (name "libical")
-    (version "3.0.14")
+    (version "3.0.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -127,7 +127,7 @@ the <tz.h> library for handling time zones and leap seconds.")
                     version "/libical-" version ".tar.gz"))
               (sha256
                (base32
-                "13ycghsi4iv8mnm0xv97bs0x6qvfhdxkw20n3yhcc7bg6n0bg122"))))
+                "0cqc1wpalxmxjx8dmcaga9w8kd5l7944hqmidz43hifaf7fhaixl"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; test suite appears broken
