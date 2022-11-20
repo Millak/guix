@@ -617,14 +617,14 @@ glxgears, glxheads, and glxinfo.")
 (define-public glew
   (package
     (name "glew")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/glew/glew/" version
                                   "/glew-" version ".tgz"))
               (sha256
                (base32
-                "159wk5dc0ykjbxvag5i1m2mhp23zkk6ra04l26y3jc3nwvkr3ph4"))
+                "1qak8f7g1iswgswrgkzc7idk7jmqgwrs58fhg2ai007v7j4q5z6l"))
               (modules '((guix build utils)))
               (snippet
                '(begin
