@@ -5573,10 +5573,7 @@ discard bad quality ones.
            qtmultimedia-5
            qtsvg-5))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("hicolor-icon-theme" ,hicolor-icon-theme)
-       ("itstool" ,itstool)
-       ("qttools-5" ,qttools-5)))
+     (list gettext-minimal hicolor-icon-theme itstool qttools-5))
     (synopsis "Musical instrument tuner")
     (description "FMIT is a graphical utility for tuning musical instruments,
 with error and volume history, and advanced features.")
