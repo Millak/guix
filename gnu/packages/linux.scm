@@ -3151,7 +3151,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
 (define-public powertop
   (package
     (name "powertop")
-    (version "2.14")
+    (version "2.15")
     (source
      (origin
        (method git-fetch)
@@ -3160,7 +3160,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zkr2y5nb1nr22nq8a3zli87iyfasfq6489p7h1k428pv8k45w4f"))))
+        (base32 "10vbk4vplmzp3p1mhwnhj81g6i5xvam9pdvmiy6cmd0xvnmdyy77"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -3181,10 +3181,14 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
                  ;; are missing powertop gracefully handles it.
                  (("/usr/bin/hcitool") "hcitool")
                  (("/usr/bin/xset") "xset")
-                 (("/usr/sbin/hciconfig") "hciconfig"))
-               #t))))))
+                 (("/usr/sbin/hciconfig") "hciconfig"))))))))
     (native-inputs
-     (list autoconf automake gettext-minimal libtool pkg-config))
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           libtool
+           pkg-config))
     (inputs
      (list kmod libnl ncurses pciutils zlib))
     (home-page "https://01.org/powertop/")
