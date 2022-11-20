@@ -22617,6 +22617,29 @@ It replaces the standard completions buffer with Ido prompt.")
 using user-provided rules.")
     (license license:gpl3+)))
 
+(define-public emacs-on
+  (let ((commit "83baed07a105c135190d49d7ec77f95e8f38fa54")
+        (revision "0"))
+    (package
+      (name "emacs-on")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ajgrf/on.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14ly3w89hf4jgd8wacirxgd8vrgj7vc0hpfn911w5wa4k2a6nzpp"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/ajgrf/on.el")
+      (synopsis "Hooks for faster Emacs startup")
+      (description
+       "This package exposes a number of utility hooks and functions ported
+from Doom Emacs.")
+      (license license:expat))))
+
 (define-public emacs-on-screen
   (package
     (name "emacs-on-screen")
