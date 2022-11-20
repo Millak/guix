@@ -111,7 +111,7 @@ as ASCII text.")
 (define-public freeglut
   (package
     (name "freeglut")
-    (version "3.2.2")
+    (version "3.4.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -119,7 +119,7 @@ as ASCII text.")
                     "/download/v" version "/freeglut-" version ".tar.gz"))
               (sha256
                (base32
-                "0l3s57zw51fy3mn5qfdm4z775kfhflgxppanaxmskfzh5l44m565"))))
+                "1v7ayg3a03mv8b6lsr1qm21lbr8xg8dh3gdfxnbhl64vbn8wn2rw"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ;no test target
