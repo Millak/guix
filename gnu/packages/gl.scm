@@ -634,12 +634,15 @@ glxgears, glxheads, and glxinfo.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases (delete 'configure))
-       #:make-flags (list (string-append "GLEW_PREFIX="
-                                         (assoc-ref %outputs "out"))
-                          (string-append "GLEW_DEST="
-                                         (assoc-ref %outputs "out")))
-       #:tests? #f))                              ;no 'check' target
+     (list #:make-flags #~(list (string-append "GLEW_PREFIX=" #$output)
+                                (string-append "GLEW_DEST=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'install 'delete-static
+                 (lambda _
+                   (delete-file (string-append #$output "/lib/libGLEW.a")))))
+           #:tests? #f))                ;no 'check' target
     (inputs
      (list libxi libxmu libx11 mesa))
 
