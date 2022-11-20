@@ -33935,6 +33935,34 @@ Lisp programs.  APEL-LB is a variant of APEL, which features supports to
 latest Emacs.")
       (license license:gpl2+))))
 
+(define-public emacs-flim-lb
+  ;; No release since Nov 28, 2007.
+  (let ((version "1.14.9")
+        (revision "133")
+        (commit "57c6b868aa314717f40a520daed7249665e8d992"))
+    (package
+      (name "emacs-flim-lb")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/flim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mf8r5mf3bd0719fnhifb6lfvl7n4m552crcdhkbkkif8srrl6df"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-apel-lb emacs-oauth2))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis
+       "Library for basic features about message representation or encoding")
+      (description
+       "FLIM is a library to provide basic features about message representation
+or encoding.  FLIM-LB is a variant of FLIM, which features supports to latest
+Emacs.")
+      (license license:gpl2+))))
+
 (define-public emacs-waveform
   ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.
   (let ((commit "ee52c6a72b3e9890743e3a6e2fc1f3195f5687b2")
