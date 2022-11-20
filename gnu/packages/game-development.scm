@@ -380,9 +380,10 @@ PCM data.")
                       (substitute* (find-files "." "^Makefile\\.in$")
                         (("-Werror") ""))
                       #t)))))
-    (native-inputs `(("pkgconfig" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (inputs (list bdb
                   glib
+                  gmp
                   guile-3.0
                   libmicrohttpd
                   ncurses
