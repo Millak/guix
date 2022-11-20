@@ -33963,6 +33963,33 @@ or encoding.  FLIM-LB is a variant of FLIM, which features supports to latest
 Emacs.")
       (license license:gpl2+))))
 
+(define-public emacs-semi-epg
+  ;; No release since Dec 24, 2003.
+  (let ((version "1.14.6")
+        (revision "241")
+        (commit "ac3e726ca94ed245c25881ec8d7177d0d834ea6a"))
+    (package
+      (name "emacs-semi-epg")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/semi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bg07y6svvg1mmlr455x3j1anjp3wbv27s6b2inp294rbwprm41n"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-bbdb-vcard emacs-flim-lb))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Library to provide MIME feature for GNU Emacs")
+      (description
+       "SEMI is a package for GNU Emacs to provide features related with MIME
+user interface.  SEMI-EPG is a variant of SEMI, which features supports to
+EasyPG and latest Emacs.")
+      (license license:gpl2+))))
+
 (define-public emacs-waveform
   ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.
   (let ((commit "ee52c6a72b3e9890743e3a6e2fc1f3195f5687b2")
