@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -501,4 +502,33 @@ loading all associated entrypoints.  Finally, volk enables loading Vulkan
 entrypoints directly from the driver which can increase performance by
 skipping loader dispatch overhead.")
     (home-page "https://github.com/zeux/volk")
+    (license license:expat)))
+
+(define-public vulkan-memory-allocator
+  (package
+    (name "vulkan-memory-allocator")
+    (version "3.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator")
+         (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1hpzjwl5bgqv9hmf1fdldihfllcbdg515f391a200klg0rnixdds"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; no test
+     `(#:tests? #f))
+    (inputs (list vulkan-loader vulkan-headers))
+    (synopsis "Vulkan memory allocation library")
+    (description
+     "The Vulkan Memory Allocator (VMA) library provides a simple and easy to
+integrate API to help users allocate memory for Vulkan buffer and image
+storage.")
+    (home-page
+     "https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator")
     (license license:expat)))
