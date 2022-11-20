@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -132,14 +133,14 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
 (define-public lightning
   (package
     (name "lightning")
-    (version "2.1.3")
+    (version "2.2.0")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/lightning/lightning-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1jgxbq2cm51dzi3zhz38mmgwdcgs328mfl8iviw8dxn6dn36p1gd"))))
+               "03kwvn00qggys203vpzb2kq2asy0ql7x84ajk05a62yg3kzq8faf"))))
     (build-system gnu-build-system)
     (native-inputs (list zlib))
     (arguments
