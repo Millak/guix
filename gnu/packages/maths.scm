@@ -2937,7 +2937,7 @@ Open CASCADE library.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.6.0")
+    (version "7.6.2")
     (source
       (origin
         (method git-fetch)
@@ -2949,7 +2949,7 @@ Open CASCADE library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1rcwm9fkx0j4wrsyikb6g7qd611kpry7dand5dzdjvs5vzd13zvd"))
+         (base32 "07z5d83vm9f50an7vhimzl7gbmri1dn6p2g999l5fgyaj5sg5f02"))
         (modules '((guix build utils)))
         (snippet
          '(begin
