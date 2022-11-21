@@ -3313,14 +3313,13 @@ from the command line.")
            libvorbis
            lilv
            lv2
-           qtbase-5
-           qtsvg-5
-           qtx11extras
+           qtbase
+           qtsvg
            rubberband
            suil
            zlib))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (home-page "https://qtractor.org/")
     (synopsis "Audio/MIDI multi-track sequencer")
     (description
