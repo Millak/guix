@@ -31995,6 +31995,31 @@ ASCII UML sequence diagrams in Emacs, which can be embedded in source code,
 comments or emails.")
       (license license:gpl3+))))
 
+(define-public emacs-ukrainian-holidays
+  ;; There is no proper release.
+  ;; The base version is extracted from the source code.
+  (let ((revision "0")
+        (commit  "e52b0c92843e9f4d0415a7ba3b8559785497d23d"))
+    (package
+      (name "emacs-ukrainian-holidays")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/abo-abo/ukrainian-holidays")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "033v4ck979lhkpwblci5clacfc1xnkq03p5d1m566wff8dp5flwz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/abo-abo/ukrainian-holidays")
+      (synopsis "Ukrainian holidays for Emacs calendar")
+      (description
+       "This package provides Ukrainian holidays for Emacs calendar.")
+      (license license:gpl3+))))
+
 (define-public emacs-trashed
   (package
     (name "emacs-trashed")
