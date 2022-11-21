@@ -2366,10 +2366,10 @@ effects.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5
-           qtsvg-5))
+           qtbase
+           qtsvg))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (home-page "https://samplv1.sourceforge.io")
     (synopsis "Polyphonic sampler synthesizer with stereo effects")
     (description
