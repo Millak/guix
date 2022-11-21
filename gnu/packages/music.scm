@@ -2399,10 +2399,10 @@ effects.")
            new-session-manager
            liblo
            fftwf
-           qtbase-5
-           qtsvg-5))
+           qtbase
+           qtsvg))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (home-page "https://padthv1.sourceforge.io")
     (synopsis "Polyphonic additive synthesizer")
     (description
