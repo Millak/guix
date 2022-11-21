@@ -175,7 +175,7 @@ used as a drop-in substitute for @code{libfec}.")
 (define-public liquid-dsp
   (package
     (name "liquid-dsp")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -183,21 +183,25 @@ used as a drop-in substitute for @code{libfec}.")
                    (commit (string-append "v" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0mr86z37yycrqwbrmsiayi1vqrgpjq0pn1c3p1qrngipkw45jnn0"))))
+              (base32 "0m0bhj80rs9yhfwnrlx960lii1cqijz1wr8q93i7m2z91h3v3w0j"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
     (inputs
      (list fftwf libfec))
     (arguments
-     `(;; For reproducibility, disable use of SSE3, SSE4.1, etc.
-       #:configure-flags '("--enable-simdoverride")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libliquid.a")))))))
+     (list
+      ;; For reproducibility, disable use of SSE3, SSE4.1, etc.
+      #:configure-flags #~(list "--enable-simdoverride")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-static-library
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((version #$(version-major+minor
+                                (package-version this-package))))
+                (delete-file (string-append #$output
+                                            "/lib/libliquid.a."
+                                            version))))))))
     (home-page "https://liquidsdr.org")
     (synopsis "Signal processing library for software-defined radios")
     (description
