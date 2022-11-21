@@ -37,7 +37,6 @@
   #:use-module (gnu packages authentication)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
-  #:use-module (gnu packages elf) ; patchelf
   #:use-module (gnu packages display-managers)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages fontutils)
@@ -149,32 +148,17 @@ Breeze is the default theme for the KDE Plasma desktop.")
                 "01vdi66c7v60db25p0qi0q73wgqw6dy2kirbk34bvhld41gpxhhv"))))
     (build-system qt-build-system)
     (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'install 'fix-so
-                          (lambda* _
-                            (invoke "patchelf" "--replace-needed"
-                                    "libDiscoverCommon.so"
-                                    (string-append #$output
-                                     "/lib/plasma-discover/libDiscoverCommon.so")
-                                    (string-append #$output
-                                     "/lib/qt5/plugins/discover/fwupd-backend.so"))
-                            (invoke "patchelf" "--replace-needed"
-                                    "libDiscoverCommon.so"
-                                    (string-append #$output
-                                     "/lib/plasma-discover/libDiscoverCommon.so")
-                                    (string-append #$output
-                                     "/lib/qt5/plugins/discover/packagekit-backend.so"))
-                            (invoke "patchelf" "--replace-needed"
-                                    "libDiscoverCommon.so"
-                                    (string-append #$output
-                                     "/lib/plasma-discover/libDiscoverCommon.so")
-                                    (string-append #$output
-                                     "/lib/qt5/plugins/discover/kns-backend.so"))))
-                        (replace 'check
-                          (lambda* (#:key tests? #:allow-other-keys)
-                            (when tests?
-                              (invoke "ctest" "-E" "knsbackendtest")))))))
-    (native-inputs (list extra-cmake-modules patchelf pkg-config))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-LDFLAGS
+                 (lambda _
+                   (setenv "LDFLAGS" (string-append "-Wl,-rpath=" #$output
+                                                    "/lib/plasma-discover"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "ctest" "-E" "knsbackendtest")))))))
+    (native-inputs (list extra-cmake-modules pkg-config))
     (inputs (list appstream-qt
                   attica
                   fwupd ; optional
