@@ -2594,6 +2594,11 @@ GNOME Desktop.")
            python-wrapper))             ;for tests
     (propagated-inputs
      (list gcr))
+
+    ;; XXX: There are concerning test failures on i686-linux and other 32-bit
+    ;; platforms: <https://gitlab.gnome.org/GNOME/gnome-keyring/-/issues/124>.
+    (supported-systems %64bit-supported-systems)
+
     (home-page "https://www.gnome.org")
     (synopsis "Daemon to store passwords and encryption keys")
     (description
