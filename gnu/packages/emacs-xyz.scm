@@ -6133,10 +6133,10 @@ blocks with @code{org-babel} in @code{org-mode}.")
       (license license:gpl3+))))
 
 (define-public emacs-ob-restclient
-  (let ((commit "f7449b2068498fe9d8ab9589e0a638148861533f"))
+  (let ((commit "1b021ce1c67c97fa1aa4d2c0816edb7add129e48"))
     (package
       (name "emacs-ob-restclient")
-      (version (git-version "0.02" "2" commit))
+      (version (git-version "0.02" "3" commit))
       (source
        (origin
          (method git-fetch)
@@ -6145,7 +6145,7 @@ blocks with @code{org-babel} in @code{org-mode}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0s3931w9ab3yfml2pmq71rw21yf6hpg7m3vihxyy3vs6zli1cvmq"))))
+          (base32 "1bcjj01q5n9w2cch6brbz8pzwnwsmdlgaa4sf5s97b9frmqb2ffg"))))
       (propagated-inputs
        (list emacs-restclient))
       (build-system emacs-build-system)
