@@ -13353,6 +13353,30 @@ Lua programming language}.")
 news items, openrc and runscripts.")
     (license license:gpl2+)))
 
+(define-public emacs-ebuku
+  ;; Upstream has no tagged release.
+  (let ((revision "0")
+        (commit "5b8bf34b8ea5d05f0b8dfc12bfea825f9cffbeda"))
+    (package
+      (name "emacs-ebuku")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/flexibeast/ebuku")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "04733lqa6z3kmdjcgdi58q3wrqan2qib43rvjw51qc739fwmwb5y"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/flexibeast/ebuku")
+      (synopsis "Emacs interface to the buku Web bookmark manager")
+      (description
+       "Ebuku provides a basic interface to the @code{buku} Web bookmark
+manager.")
+      (license license:gpl3+))))
+
 (define-public emacs-evil
   ;; Commit message claims this is 1.15.0, but there's no tag for it, so we
   ;; use full git-version instead
