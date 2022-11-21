@@ -2300,10 +2300,10 @@ perform creative live mixes with digital music files.")
            alsa-lib
            new-session-manager
            liblo
-           qtbase-5
-           qtsvg-5))
+           qtbase
+           qtsvg))
     (native-inputs
-     (list pkg-config qttools-5))
+     (list pkg-config qttools))
     (home-page "https://synthv1.sourceforge.io")
     (synopsis "Polyphonic subtractive synthesizer")
     (description
