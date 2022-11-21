@@ -539,7 +539,7 @@ wayland-server API.")
                   libxkbcommon
                   wayland
                   qtbase-5
-                  qtwayland))
+                  qtwayland-5))
     (synopsis "KWayland runtime integration plugins")
     (description "This package provides Wayland integration plugins for various
 KDE Frameworks components.")
