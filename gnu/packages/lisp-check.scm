@@ -634,11 +634,11 @@ by Chris Riesbeck.")
   (sbcl-package->cl-source-package sbcl-nst))
 
 (define-public sbcl-parachute
-  (let ((commit "86563473dc23fb1277d35a3ad2c911a6c8e5b0da")
-        (revision "1"))
+  (let ((commit "8bc3e1b5a1808341967aeb89516f9fab23cd1d9e")
+        (revision "0"))
     (package
       (name "sbcl-parachute")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.5.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -646,13 +646,14 @@ by Chris Riesbeck.")
           (git-reference
            (url "https://github.com/Shinmera/parachute")
            (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-parachute" version))
          (sha256
-          (base32
-           "026crl465xqh3fnskfd4c1sxa9c33dfy702cf3l5apbjyj1dg20n"))))
+          (base32 "0cppp1sp9xqkgxgkwidhqzlsj03ywnar7z9mzwcliww8y0kv5555"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-documentation-utils sbcl-form-fiddle))
+       (list sbcl-documentation-utils
+             sbcl-form-fiddle
+             sbcl-trivial-custom-debugger))
       (synopsis "Extensible and cross-compatible testing framework for Common Lisp")
       (description
        "Parachute is a simple-to-use and extensible testing framework.

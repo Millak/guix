@@ -24610,8 +24610,12 @@ between Lisp objects and some binary (i.e. octet-based) representation.")
          (sha256
           (base32 "1iri5wsp9sc1f5q934cj87zd79r5dc8fda0gl7x1pz95v0wx28yk"))))
       (build-system asdf-build-system/sbcl)
-      (native-inputs
-       (list sbcl-parachute))
+      (arguments
+       '(;; FIXME: Tests disabled because of a circular dependency between
+         ;; trivial-custom-debugger and parachute.
+         #:tests? #f))
+      ;;(native-inputs
+      ;; (list sbcl-parachute))
       (home-page "https://github.com/phoe/trivial-custom-debugger/")
       (synopsis "Allow arbitrary functions as the standard Lisp debugger")
       (description
