@@ -7724,8 +7724,8 @@ number of other projects.
   (sbcl-package->ecl-package sbcl-s-sysdeps))
 
 (define-public sbcl-cl-prevalence
-  (let ((commit "5a76be036092ed6c18cb695a9e03bce87e21b840")
-        (revision "4"))
+  (let ((commit "f22105d9728949a8e0c733801cad589f06447e25")
+        (revision "5"))
     (package
       (name "sbcl-cl-prevalence")
       (build-system asdf-build-system/sbcl)
@@ -7740,11 +7740,11 @@ number of other projects.
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "050h6hwv8f16b5v6fzba8zmih92hgaaq27i2x9wv1iib41gbia3r"))))
+           "11iqrgpzzyn2xsqyryh5jc5x93s23djsvrzsqyjhcy3zkzrxfkha"))))
       (inputs
-       (list sbcl-s-sysdeps sbcl-s-xml))
+       (list sbcl-moptilities sbcl-s-sysdeps sbcl-s-xml))
       (native-inputs
-       (list sbcl-fiveam))
+       (list sbcl-fiveam sbcl-find-port))
       (synopsis "Implementation of object prevalence for Common Lisp")
       (description "This Common Lisp library implements object prevalence (see
 @url{https://en.wikipedia.org/wiki/System_prevalence}).  It allows
