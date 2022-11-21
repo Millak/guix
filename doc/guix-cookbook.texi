@@ -21,6 +21,7 @@ Copyright @copyright{} 2020 Brice Waegeneire@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
+Copyright @copyright{} 2022 Maxim Cournoyer*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -95,6 +96,7 @@ System Configuration
 * Auto-Login to a Specific TTY::    Automatically Login a User to a Specific TTY
 * Customizing the Kernel::          Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::           Customizing images to target specific platforms.
+* Using security keys::             How to use security keys with Guix System.
 * Connecting to Wireguard VPN::     Connecting to a Wireguard VPN.
 * Customizing a Window Manager::    Handle customization of a Window manager on Guix System.
 * Running Guix on a Linode Server:: Running Guix on a Linode Server.  Running Guix on a Linode Server
@@ -1380,6 +1382,7 @@ reference.
 * Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
 * Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::        Customizing images to target specific platforms.
+* Using security keys::          How to use security keys with Guix System.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager:: Handle customization of a Window manager on Guix System.
 * Running Guix on a Linode Server:: Running Guix on a Linode Server
@@ -1882,6 +1885,65 @@ guix system image --image-type=hurd-qcow2 my-hurd-os.scm
 @end example
 
 will instead produce a Hurd QEMU image.
+
+@node Using security keys
+@section Using security keys
+@cindex 2FA, two-factor authentication
+@cindex U2F, Universal 2nd Factor
+@cindex security key, configuration
+
+The use of security keys can improve your security by providing a second
+authentication source that cannot be easily stolen or copied, at least
+for a remote adversary (something that you have), to the main secret (a
+passphrase -- something that you know), reducing the risk of
+impersonation.
+
+The example configuration detailed below showcases what minimal
+configuration needs to be made on your Guix System to allow the use of a
+Yubico security key.  It is hoped the configuration can be useful for
+other security keys as well, with minor adjustments.
+
+@subsection Configuration for use as a two-factor authenticator (2FA)
+
+To be usable, the udev rules of the system should be extended with
+key-specific rules.  The following shows how to extend your udev rules
+with the @file{lib/udev/rules.d/70-u2f.rules} udev rule file provided by
+the @code{libfido2} package from the @code{(gnu packages
+security-token)} module and add your user to the @samp{"plugdev"} group
+it uses:
+
+@lisp
+(use-package-modules ... security-token ...)
+...
+(operating-system
+ ...
+ (users (cons* (user-account
+               (name "your-user")
+               (group "users")
+               (supplementary-groups
+		'("wheel" "netdev" "audio" "video"
+                  "plugdev"))           ;<- added system group
+               (home-directory "/home/your-user"))
+              %base-user-accounts))
+ ...
+ (services
+  (cons*
+   ...
+   (udev-rules-service 'fido2 libfido2 #:groups '("plugdev")))))
+@end lisp
+
+After re-configuring your system and re-logging in your graphical
+session so that the new group is in effect for your user, you can verify
+that your key is usable by launching:
+
+@example
+guix shell ungoogled-chromium -- chromium chrome://settings/securityKeys
+@end example
+
+and validating that the security key can be reset via the ``Reset your
+security key'' menu.  If it works, congratulations, your security key is
+ready to be used with applications supporting two-factor authentication
+(2FA).
 
 @node Connecting to Wireguard VPN
 @section Connecting to Wireguard VPN
