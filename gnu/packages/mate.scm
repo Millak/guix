@@ -1490,48 +1490,48 @@ used to bring up authentication dialogs.")
     (native-inputs (list desktop-file-utils))
     (inputs
      ;; TODO: Add more packages
-     `(("at-spi2-core"              ,at-spi2-core)
-       ("atril"                     ,atril)
-       ("caja"                      ,caja)
-       ("dbus"                      ,dbus)
-       ("dconf"                     ,dconf)
-       ("engrampa"                  ,engrampa)
-       ("eom"                       ,eom)
-       ("font-abattis-cantarell"            ,font-abattis-cantarell)
-       ("glib-networking"           ,glib-networking)
-       ("gnome-keyring"             ,gnome-keyring)
-       ("gvfs"                      ,gvfs)
-       ("hicolor-icon-theme"        ,hicolor-icon-theme)
-       ("libmatekbd"                ,libmatekbd)
-       ("libmateweather"            ,libmateweather)
-       ("libmatemixer"              ,libmatemixer)
-       ("marco"                     ,marco)
-       ("mate-session-manager"      ,mate-session-manager)
-       ("mate-settings-daemon"      ,mate-settings-daemon)
-       ("mate-desktop"              ,mate-desktop)
-       ("mate-terminal"             ,mate-terminal)
-       ("mate-themes"               ,mate-themes)
-       ("mate-icon-theme"           ,mate-icon-theme)
-       ("mate-power-manager"        ,mate-power-manager)
-       ("mate-menu"                 ,mate-menus)
-       ("mate-panel"                ,mate-panel)
-       ("mate-control-center"       ,mate-control-center)
-       ("mate-media"                ,mate-media)
-       ("mate-applets"              ,mate-applets)
-       ("mate-user-guide"           ,mate-user-guide)
-       ("mate-calc"                 ,mate-calc)
-       ("mate-backgrounds"          ,mate-backgrounds)
-       ("mate-netbook"              ,mate-netbook)
-       ("mate-utils"                ,mate-utils)
-       ("mate-polkit"               ,mate-polkit)
-       ("mate-system-monitor"       ,mate-system-monitor)
-       ("mate-utils"                ,mate-utils)
-       ("pluma"                     ,pluma)
-       ("pinentry-gnome3"           ,pinentry-gnome3)
-       ("pulseaudio"                ,pulseaudio)
-       ("shared-mime-info"          ,shared-mime-info)
-       ("yelp"                      ,yelp)
-       ("zenity"                    ,zenity)))
+     (list at-spi2-core
+           atril
+           caja
+           dbus
+           dconf
+           engrampa
+           eom
+           font-abattis-cantarell
+           glib-networking
+           gnome-keyring
+           gvfs
+           hicolor-icon-theme
+           libmatekbd
+           libmateweather
+           libmatemixer
+           marco
+           mate-session-manager
+           mate-settings-daemon
+           mate-desktop
+           mate-terminal
+           mate-themes
+           mate-icon-theme
+           mate-power-manager
+           mate-menus
+           mate-panel
+           mate-control-center
+           mate-media
+           mate-applets
+           mate-user-guide
+           mate-calc
+           mate-backgrounds
+           mate-netbook
+           mate-utils
+           mate-polkit
+           mate-system-monitor
+           mate-utils
+           pluma
+           pinentry-gnome3
+           pulseaudio
+           shared-mime-info
+           yelp
+           zenity))
     (propagated-inputs
      ;; Default font that applications such as IceCat require.
      (list font-dejavu))
