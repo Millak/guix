@@ -1538,22 +1538,14 @@ Ethernet devices.")
 (define-public ifstatus
   (package
     (name "ifstatus")
-    (version "1.1.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/ifstatus/ifstatus/"
-                                  "ifstatus%20v" version "/ifstatus-v"
-                                  version ".tar.gz"))
+                                  "ifstatus-v" version ".tar.gz"))
               (sha256
                (base32
-                "045cbsq9ps32j24v8y5hpyqxnqn9mpaf3mgvirlhgpqyb9jsia0c"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Main.h"
-                    (("#include <stdio.h>")
-                     "#include <stdio.h>\n#include <stdlib.h>"))
-                  #t))))
+                "0n622f2m3x901hcmad4ns52r2x75csy4nqraagzb8h9fn0j62jkv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                                ; no "check" target
