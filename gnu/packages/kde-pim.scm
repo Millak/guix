@@ -1196,7 +1196,7 @@ and retrieving certificates from LDAP servers.")
            akonadi-mime
            akonadi-search
            boost
-           gpgme
+           gpgme-1.18
            grantlee
            grantleetheme
            kbookmarks
@@ -1243,7 +1243,7 @@ and retrieving certificates from LDAP servers.")
            libkleo
            libksieve
            breeze-icons ; default icon set, required for tests
-           qgpgme
+           qgpgme-1.18
            qtbase-5
            qtdeclarative-5
            qtkeychain
