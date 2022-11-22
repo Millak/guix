@@ -8972,8 +8972,8 @@ LASS files.")
   (sbcl-package->ecl-package sbcl-lass))
 
 (define-public sbcl-plump
-  (let ((commit "3584275f0be9d06c0c51b5c08f89005deafc4ada")
-        (revision "2"))
+  (let ((commit "0c3e0b57b43b6e0c5794b6a902f1cf5bee2a2927")
+        (revision "3"))
     (package
       (name "sbcl-plump")
       (version (git-version "2.0.0" revision commit))
@@ -8984,10 +8984,9 @@ LASS files.")
           (git-reference
            (url "https://github.com/Shinmera/plump")
            (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-plump" version))
          (sha256
-          (base32
-           "1w4wz7f6dc2ckdq9wq9r5014bg2nxjifj9yz1zzn41r8h1h5xfcd"))))
+          (base32 "1fyb66pqvr1iy31ah9638ihs8cax17zkxk0zq14jy7x5l9rq1qlf"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-array-utils sbcl-documentation-utils))
