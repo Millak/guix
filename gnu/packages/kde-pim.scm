@@ -1139,7 +1139,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            kdoctools))
     (inputs
      (list boost
-           gpgme
+           gpgme-1.18
            kcmutils
            kcodecs
            kconfig
@@ -1159,7 +1159,7 @@ protocol for querying and modifying directory services running over TCP/IP.")
            libassuan
            libkleo
            breeze-icons ;; default icon set
-           qgpgme
+           qgpgme-1.18
            qtbase-5))
     (arguments
      `(#:phases
