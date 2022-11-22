@@ -1101,7 +1101,7 @@ to access online Astronomical data.  Each web service has its own sub-package.")
 (define-public python-cdflib
   (package
     (name "python-cdflib")
-    (version "0.4.4")
+    (version "0.4.9")
     (source
      (origin
        (method git-fetch)   ; no tests in pypi archive
@@ -1110,16 +1110,14 @@ to access online Astronomical data.  Each web service has its own sub-package.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1h7750xvr6qbhnl2w3bhccs3pwp3hci3624pvvxym0yjinmskjlz"))))
-    (build-system python-build-system)
+        (base32 "1k557najk7ln293zwyghnhw48ays3nqf9s94kibsc7r70c2q7p08"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (setenv "HOME" (getcwd))
-                     (invoke "pytest" "-vv" "tests")))))))
+               (add-before 'check 'set-home-env
+                 (lambda _
+                   (setenv "HOME" (getcwd)))))))
     (propagated-inputs
      (list python-attrs python-numpy))
     (native-inputs
@@ -1131,7 +1129,8 @@ to access online Astronomical data.  Each web service has its own sub-package.")
            python-xarray))
     (home-page "https://github.com/MAVENSDC/cdflib")
     (synopsis "Python library to deal with NASA's CDF astronmical data format")
-    (description "This package provides a Python CDF reader toolkit
+    (description "This package provides a Python @acronym{CDF, Computable
+Document Format} reader toolkit.
 It provides the following functionality:
 @itemize
 @item Ability to read variables and attributes from CDF files
@@ -1140,7 +1139,7 @@ It provides the following functionality:
 time formats
 @item Can convert CDF files into XArray Dataset objects and vice versa,
 attempting to maintain ISTP compliance
-@end itemize\n")
+@end itemize")
     (license license:expat)))
 
 (define-public python-ephem
