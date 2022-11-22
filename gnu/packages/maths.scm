@@ -894,20 +894,6 @@ large scale eigenvalue problems.")
     (license (license:non-copyleft "file://COPYING"
                                 "See COPYING in the distribution."))))
 
-(define-public arpack-ng-3.3.0
-  (package
-    (inherit arpack-ng)
-    (version "3.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url (package-home-page arpack-ng))
-                           (commit version)))
-       (file-name (git-file-name (package-name arpack-ng) version))
-       (sha256
-        (base32
-         "00h6bjvxjq7bv0b8pwnc0gw33ns6brlqv00xx2rh3w9b5n205918"))))))
-
 (define-public arpack-ng-openmpi
   (package (inherit arpack-ng)
     (name "arpack-ng-openmpi")
