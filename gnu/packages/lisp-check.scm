@@ -841,6 +841,32 @@ take.")
 (define-public ecl-should-test
   (sbcl-package->ecl-package sbcl-should-test))
 
+(define-public sbcl-simplet
+  (package
+    (name "sbcl-simplet")
+    (version  "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noloop/simplet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "simplet" version))
+       (sha256
+        (base32 "1iwp3a43mns885k2arr7gbmyv5rsrjfvgarxickj7r2bfgwp1cnn"))))
+    (build-system asdf-build-system/sbcl)
+    (home-page "https://github.com/noloop/simplet")
+    (synopsis "Simple test runner in Common Lisp")
+    (description "This package provides a Common Lisp test runner system
+SIMPLET.")
+    (license license:gpl3)))
+
+(define-public ecl-simplet
+  (sbcl-package->ecl-package sbcl-simplet))
+
+(define-public cl-simplet
+  (sbcl-package->cl-source-package sbcl-simplet))
+
 (define-public sbcl-stefil
   (let ((commit "0398548ec95dceb50fc2c2c03e5fb0ce49b86c7a")
         (revision "0"))
