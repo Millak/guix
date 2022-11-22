@@ -576,6 +576,28 @@ Emacs, whose initial working directories are determined in relation to the
 current buffer.")
     (license license:gpl3+)))
 
+(define-public emacs-treeview
+  (let ((commit "d9c10feddf3b959e7b33ce83103e1f0a61162723")
+        (revision "0"))
+    (package
+      (name "emacs-treeview")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/tilmanrassy/emacs-treeview")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "14s0b6zbapsvgyxki59lglwb3s8wjsjwkgj5r66af9nj2bgz5ms9"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/tilmanrassy/emacs-treeview/")
+      (synopsis "Emacs Lisp framework for tree navigation")
+      (description
+       "Abstract Emacs Lisp framework for tree navigation.")
+      (license license:gpl3+))))
+
 (define-public emacs-hgignore-mode
   ;; From 2021-03-14.
   ;; No releases available.
