@@ -6811,7 +6811,7 @@ assemble global function spaces on finite-element grids.")
                   "doc/dune-grid/grids/gridfactory/testgrids"))
                #t))
            (add-after 'build 'build-tests
-             (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (lambda* (#:key inputs make-flags parallel-build? #:allow-other-keys)
                (setenv "CPLUS_INCLUDE_PATH"
                        (string-append (assoc-ref inputs "dune-grid") "/share"))
                (apply invoke "make" "build_tests"
