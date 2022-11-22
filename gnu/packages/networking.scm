@@ -593,7 +593,7 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
 (define-public slurm-monitor
   (package
     (name "slurm-monitor")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -603,9 +603,10 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
          (commit (string-append "upstream/" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n6pgrcs8gwrcq5fch1q3yk3jipjwrf21s9a13fbjrl903g5zzv9"))))
-    (build-system cmake-build-system)
+        (base32 "07q8895bxsajkwip8dgrrwr1m8a10xnl4p0g6wqcrd2wf4hx5gn3"))))
+    (build-system meson-build-system)
     (arguments `(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
     (inputs (list ncurses))
     (synopsis "Network load monitor")
     (description
