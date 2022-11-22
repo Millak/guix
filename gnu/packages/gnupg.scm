@@ -431,6 +431,19 @@ and every application benefits from this.")
     (properties '((ftp-server . "ftp.gnupg.org")
                   (ftp-directory . "/gcrypt/gpgme")))))
 
+;; TODO: Merge with gpgme in the next rebuild cycle.
+(define-public gpgme-1.18
+  (package
+    (inherit gpgme)
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnupg/gpgme/gpgme-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "17hfigfnq6xz45b5xrp299f68b5mwx0aysd51sx5v4nf8yp4w79n"))))))
+
 (define-public qgpgme
   (package
     (inherit gpgme)
@@ -458,6 +471,16 @@ and every application benefits from this.")
 QGpgME was originally developed as part of libkleo and incorporated into
 gpgpme starting with version 1.7.")
     (license license:gpl2+))) ;; Note: this differs from gpgme
+
+;; TODO: Merge with qgpgme in the next rebuild cycle.
+(define-public qgpgme-1.18
+  (package
+    (inherit qgpgme)
+    (version (package-version gpgme-1.18))
+    (source (package-source gpgme-1.18))
+    (inputs
+     (modify-inputs (package-inputs qgpgme)
+       (replace "gpgme" gpgme-1.18)))))
 
 (define-public guile-gcrypt
   (package
