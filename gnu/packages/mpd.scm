@@ -48,6 +48,7 @@
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake) ;for MPD
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -72,6 +73,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages video)
@@ -380,7 +382,7 @@ MPD servers, search and multimedia key support.")
 (define-public ashuffle
   (package
     (name "ashuffle")
-    (version "2.0.2")
+    (version "3.13.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -389,10 +391,20 @@ MPD servers, search and multimedia key support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11aa95cg0yca2m2d00sar6wr14g3lc7cfm9bin1h7lk7asdm8azp"))))
+                "09dvar0aglyy2h9y115ymgryd8l6npc2y2ccdzij0b70f47ncqmf"))))
     (native-inputs (list pkg-config))
-    (inputs (list libmpdclient))
+    (inputs
+     (list abseil-cpp-cxxstd17
+           googletest
+           libmpdclient
+           yaml-cpp))
     (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags
+           #~'("-Dtests=enabled"
+               "-Dunsupported_use_system_absl=true"
+               "-Dunsupported_use_system_gtest=true"
+               "-Dunsupported_use_system_yamlcpp=true")))
     (home-page "https://github.com/joshkunz/ashuffle")
     (synopsis "Automatic library-wide shuffle for mpd")
     (description "ashuffle is an application for automatically shuffling your
