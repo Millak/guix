@@ -149,6 +149,35 @@ minimal dependencies on DISSECT.")
 (define-public cl-assert-p
   (sbcl-package->cl-source-package sbcl-assert-p))
 
+(define-public sbcl-cacau
+  (package
+    (name "sbcl-cacau")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noloop/cacau")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cacau" version))
+       (sha256
+        (base32 "0m8v1xw68cr5ldv045rxgvnhigr4iahh7v6v32z6xlq2sj6r55x0"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-assert-p))
+    (inputs (list sbcl-assertion-error sbcl-eventbus))
+    (home-page "https://github.com/noloop/cacau")
+    (synopsis "Comon Lisp test runner")
+    (description
+     "This package provides a Common Lisp testing framework system CACAU which was
+built to be independent of assertions systems.")
+    (license license:gpl3)))
+
+(define-public ecl-cacau
+  (sbcl-package->ecl-package sbcl-cacau))
+
+(define-public cl-cacau
+  (sbcl-package->cl-source-package sbcl-cacau))
+
 (define-public sbcl-check-it
   (let ((commit "b79c9103665be3976915b56b570038f03486e62f"))
     (package
