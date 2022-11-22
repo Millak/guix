@@ -27595,6 +27595,8 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
          "1mzk4yabxj6r149fswhis18hd8dnag5sj8i4wb06450zq3pi8dh7"))))
     (native-inputs
      (list unzip))
+    (propagated-inputs
+     (list python-six))
     (build-system python-build-system)
     (arguments '(#:tests? #f))  ; No test suite.
     (home-page "https://www.parallelpython.com")
