@@ -27410,14 +27410,14 @@ and pandoc-citeproc.")
 (define-public python-rnc2rng
   (package
     (name "python-rnc2rng")
-    (version "2.6.4")
+    (version "2.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rnc2rng" version))
        (sha256
         (base32
-         "1kmp3iwxxyzjsd47j2sprd47ihhkwhb3yydih3af5bbfq0ibh1w8"))))
+         "1wbqvz2bhq2f5kqi7q2q3m9y5vs9rj970zhnjh502pvvhmbx20as"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-rply))
