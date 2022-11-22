@@ -7066,6 +7066,8 @@ as the original project seems to have been abandoned circa 2007.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                  ; Tests try to access the network.
+    (propagated-inputs
+     (list python-six))
     (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
     (synopsis "Python SOCKS module with chained proxies support")
     (description
