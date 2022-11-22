@@ -578,27 +578,6 @@ object, without whitespace.")
 RPC system.  Think JSON, except binary.  Or think Protocol Buffers, except faster.")
     (license license:expat)))
 
-(define-public libbson
-  (package
-    (name "libbson")
-    (version "1.6.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/mongodb/libbson/releases/"
-                             "download/" version "/libbson-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1fj4554msq0rrz14snbj908dzqj46gh7jg9w9j0akn2b7q911m5a"))))
-    (build-system gnu-build-system)
-    (native-inputs (list perl))
-    (home-page "http://mongoc.org/libbson/current/index.html")
-    (synopsis "C BSON library")
-    (description "Libbson can create and parse BSON documents.  It can also
-convert JSON documents to BSON and the opposite.  BSON stands for Binary JSON,
-it is comparable to protobuf.")
-    (license license:asl2.0)))
-
 (define-public python-ruamel.yaml
   (package
     (name "python-ruamel.yaml")
