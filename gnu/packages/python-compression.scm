@@ -127,21 +127,20 @@ and decompression by implementing Python bindings for the ISA-L library.")
 (define-public python-ppmd-cffi
   (package
     (name "python-ppmd-cffi")
-    (version "0.3.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ppmd-cffi" version))
        (sha256
         (base32
-         "01wcd9l6pp6hivdmd275qh9dhcwficjqfl67hxix5n07vvq7jzz0"))))
+         "0vprpl29fkflqx0m6anfpx7q7i4cw0d0qxcdm91k4pl82dcad81g"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-cffi))
     (native-inputs
-     (list python-setuptools
+     (list python-hypothesis
            python-setuptools-scm
-           python-pep517
            python-coverage
            python-pytest
            python-pytest-cov))
