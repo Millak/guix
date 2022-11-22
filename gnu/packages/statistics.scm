@@ -463,7 +463,8 @@ available, greatly increasing its breadth and scope.")
                           (assoc-ref inputs "xz")
                           "|"
                           (format #false
-                                  "/gnu/store/[^-]+-(~{~a~^|~})-[^/]+"
+                                  "~a/[^-]+-(~{~a~^|~})-[^/]+"
+                                  (%store-directory)
                                   '("glibc-utf8-locales"
                                     "libselinux"
                                     "libsepol"
@@ -472,7 +473,8 @@ available, greatly increasing its breadth and scope.")
                                     "util-macros"
                                     "graphite2"))
                           "|"
-                          "/gnu/store/[^-]+-glibc-[^-]+-static"
+                          (format #false "~a/[^-]+-glibc-[^-]+-static"
+                                  (%store-directory))
                           ")/lib")) ""))))))))))))
 
 (define-public rmath-standalone
