@@ -3140,25 +3140,6 @@ system is highly configurable via command line options and embedded
 commands.")
     (license license:lgpl2.1+)))
 
-(define-public python-enum34
-  (package
-    (name "python-enum34")
-    (version "1.1.6")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "enum34" version))
-      (sha256
-       (base32
-        "1cgm5ng2gcfrkrm3hc22brl6chdmv67b9zvva9sfs7gn7dwc9n4a"))))
-    (build-system python-build-system)
-    (home-page "https://pypi.org/project/enum34/")
-    (synopsis "Backported Python 3.4 Enum")
-    (description
-     "Enum34 is the new Python stdlib enum module available in Python 3.4
-backported for previous versions of Python from 2.4 to 3.3.")
-    (license license:bsd-3)))
-
 (define-public python-parse-type
   (package
     (name "python-parse-type")
