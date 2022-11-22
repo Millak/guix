@@ -366,48 +366,48 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
     ;; As the JDK is a rather large input with only very limited effects on R,
     ;; we decided to drop it.
     (native-inputs
-     `(("bzip2" ,bzip2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo) ; for building HTML manuals
-       ("texlive" ,(texlive-updmap.cfg (list texlive-ae
-                                        texlive-inconsolata
-                                        texlive-fonts-ec
-                                        texlive-grfext
-                                        texlive-amsfonts
-                                        texlive-latex-base
-                                        texlive-latex-fancyvrb
-                                        texlive-latex-graphics
-                                        texlive-hyperref
-                                        texlive-oberdiek
-                                        texlive-latex-tools
-                                        texlive-latex-upquote
-                                        texlive-url
-                                        texlive-latex-xkeyval)))
-       ("tzdata" ,tzdata-for-tests)
-       ("xz" ,xz)))
+     (list bzip2
+           perl
+           pkg-config
+           texinfo                      ; for building HTML manuals
+           (texlive-updmap.cfg (list texlive-ae
+                                     texlive-inconsolata
+                                     texlive-fonts-ec
+                                     texlive-grfext
+                                     texlive-amsfonts
+                                     texlive-latex-base
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-graphics
+                                     texlive-hyperref
+                                     texlive-oberdiek
+                                     texlive-latex-tools
+                                     texlive-latex-upquote
+                                     texlive-url
+                                     texlive-latex-xkeyval))
+           tzdata-for-tests
+           xz))
     (inputs
-     `(;; We need not only cairo here, but pango to ensure that tests for the
-       ;; "cairo" bitmapType plotting backend succeed.
-       ("pango" ,pango)
-       ("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("openblas" ,openblas)
-       ("gfortran" ,gfortran)
-       ("icu4c" ,icu4c)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxt" ,libxt)
-       ("pcre2" ,pcre2)
-       ("readline" ,readline)
-       ;; This avoids a reference to the ungraftable static bash.  R uses the
-       ;; detected shell for the "system" procedure.
-       ("bash" ,bash-minimal)
-       ("tcl" ,tcl)
-       ("tk" ,tk)
-       ("which" ,which)
-       ("zlib" ,zlib)))
+     (list coreutils
+           curl
+           openblas
+           gfortran
+           icu4c
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxt
+           ;; We need not only cairo here, but pango to ensure that tests for the
+           ;; "cairo" bitmapType plotting backend succeed.
+           pango
+           pcre2
+           readline
+           tcl
+           tk
+           which
+           zlib
+           ;; This avoids a reference to the ungraftable static bash.  R uses the
+           ;; detected shell for the "system" procedure.
+           bash-minimal))
     (native-search-paths
      (list (search-path-specification
             (variable "R_LIBS_SITE")
@@ -451,8 +451,6 @@ available, greatly increasing its breadth and scope.")
                           (assoc-ref inputs "bzip2")
                           "|"
                           (assoc-ref inputs "perl")
-                          "|"
-                          (assoc-ref inputs "texlive")
                           "|"
                           (assoc-ref inputs "texlive-bin")
                           "|"
