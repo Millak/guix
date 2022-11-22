@@ -17633,8 +17633,10 @@ It supports TSIG authenticated messages and EDNS0.")
            (lambda _
              (substitute* "setup.py"
                (("import DNS") "")
-               (("DNS.__version__") (string-append "\"" ,version "\"")))
-             #t)))
+               (("DNS.__version__") (string-append "\"" ,version "\"")))))
+         ;; For the same reason, drop the sanity check because the library
+         ;; fails to load without /etc/resolv.conf.
+         (delete 'sanity-check))
        #:tests? #f)) ; Also skip the tests.
     (home-page "https://launchpad.net/py3dns")
     (synopsis "Python 3 DNS library")
