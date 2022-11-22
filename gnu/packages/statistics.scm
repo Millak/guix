@@ -206,7 +206,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.2.1")
+    (version "4.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -214,7 +214,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gv4di1x835i4nsy21vqw66c0blmmmvyjkixc5a8x117dm4dnljd"))))
+                "1x9xjl6fyzs8r72zigirp905ki50wzyw9rxf7iqsbbsixi12pxhg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -310,7 +310,11 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
                (("\\(2008\\)\n") "(2008) ")
                (("  ``Software") "``Software")
                (("Data Analysis:.") "Data Analysis:\n")
-               (("Programming with R") "  Programming with R"))))
+               (("Programming with R") "  Programming with R"))
+             (substitute* "src/library/tools/DESCRIPTION.in"
+               (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
+                "codetools, methods, xml2, curl, commonmark,
+    knitr, xfun, mathjaxr"))))
          (add-before 'build 'set-locales
            (lambda _
              (setlocale LC_ALL "C")
