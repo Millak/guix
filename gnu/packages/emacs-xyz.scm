@@ -6958,7 +6958,7 @@ files which are intended to be packages.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+                      (url "https://git.sr.ht/~manuel-uberti/flymake-proselint")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
@@ -6975,11 +6975,9 @@ files which are intended to be packages.")
                   (("\"proselint\"")
                    (string-append
                     "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
-      (propagated-inputs
-       (list emacs-flycheck))
       (inputs
        (list python-proselint))
-      (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+      (home-page "https://git.sr.ht/~manuel-uberti/flymake-proselint")
       (synopsis "Flymake backend for @code{proselint}")
       (description "This package adds support for @code{proselint} in Flymake.")
       (license license:gpl3+))))
