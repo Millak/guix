@@ -554,6 +554,30 @@ optional baked-in Evil support, antialiased separators, and an easy
 configuration language which makes it trivial to write your own themes.")
       (license license:gpl3+))))
 
+(define-public emacs-inspector
+  (let ((commit "0e89d28558f57db4519f154bb72ce617a8c6265d")
+        (revision "0"))
+    (package
+      (name "emacs-inspector")
+      (version (git-version "0.3" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/mmontone/emacs-inspector")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0n72sqn29b5sya686cicgp40mkk5x5821b7bw4zs6dcl82cyij5n"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-treeview))
+      (home-page "https://github.com/mmontone/emacs-inspector")
+      (synopsis "Inspection tool for Emacs Lisp objects")
+      (description
+       "This package provides an introspection tool similar to those found in
+Common Lisp or Smalltalk, but for Emacs Lisp.")
+      (license license:gpl3+))))
+
 (define-public emacs-terminal-here
   (package
     (name "emacs-terminal-here")
