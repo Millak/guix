@@ -16045,6 +16045,20 @@ way.")
               (sha256
                (base32
                 "00yvj8bxmhhhhd74v7j0x673is7vizmxwgb3dd5xmnkr74ybyi7w"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-test
+           (lambda _
+             ;; See https://github.com/bmc/munkres/issues/40
+             (substitute* "test/test_munkres.py"
+               (("^def test_profit_float" m)
+                (string-append "\
+import platform
+@pytest.mark.skipif(platform.architecture()[0] == \"32bit\",
+  reason=\"Fails on 32 bit architectures\")
+" m))))))))
     (build-system python-build-system)
     (native-inputs (list python-pytest-6))
     (home-page "https://software.clapper.org/munkres/")
