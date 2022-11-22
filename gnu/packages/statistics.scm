@@ -452,26 +452,20 @@ available, greatly increasing its breadth and scope.")
                      (substitute* (string-append out "/lib/R/bin/libtool")
                        (((string-append
                           "(-L)?("
-                          (assoc-ref inputs "bzip2")
-                          "|"
-                          (assoc-ref inputs "perl")
-                          "|"
-                          (assoc-ref inputs "texlive-bin")
-                          "|"
-                          (assoc-ref inputs "texinfo")
-                          "|"
-                          (assoc-ref inputs "xz")
-                          "|"
                           (format #false
                                   "~a/[^-]+-(~{~a~^|~})-[^/]+"
                                   (%store-directory)
-                                  '("glibc-utf8-locales"
+                                  '("bzip2"
+                                    "file"
+                                    "glibc-utf8-locales"
+                                    "graphite2"
                                     "libselinux"
                                     "libsepol"
-                                    "file"
+                                    "perl"
+                                    "texinfo"
                                     "texlive-bin"
                                     "util-macros"
-                                    "graphite2"))
+                                    "xz"))
                           "|"
                           (format #false "~a/[^-]+-glibc-[^-]+-static"
                                   (%store-directory))
