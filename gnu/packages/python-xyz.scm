@@ -10291,16 +10291,18 @@ more advanced mathematics.")
 (define-public python-bigfloat
   (package
     (name "python-bigfloat")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bigfloat" version))
        (sha256
-        (base32 "0xd7q4l7v0f463diznjv4k9wlaks80pn9drdqmfifi7zx8qvybi6"))))
+        (base32 "1f0c1hdr39bbl5rds5r1waa1papjmjiyp0ixs64mkjiahzg6pfaq"))))
     (build-system python-build-system)
     (inputs
      (list mpfr))
+    (propagated-inputs
+     (list python-six))
     (home-page "https://github.com/mdickinson/bigfloat")
     (synopsis "Arbitrary precision floating-point arithmetic for Python")
     (description
