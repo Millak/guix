@@ -3651,13 +3651,13 @@ annotation data to keep updated.")
 (define-public r-ggtern
   (package
     (name "r-ggtern")
-    (version "3.3.5")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtern" version))
        (sha256
-        (base32 "15hhn8msy0l8zbq8ms0zvg1iajn1c28gd77v3hp6dvwwsla8zzbd"))))
+        (base32 "01j1rvff3vz72vwqsy3bh81aav7gfymg4sbvc267vg0r3a16ywcg"))))
     (properties `((upstream-name . "ggtern")))
     (build-system r-build-system)
     (propagated-inputs
