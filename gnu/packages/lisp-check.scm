@@ -94,6 +94,35 @@ consists of: @code{test}, @code{is}, @code{signals}, @code{finishes},
 (define-public ecl-2am
   (sbcl-package->ecl-package sbcl-2am))
 
+(define-public sbcl-assertion-error
+  (let ((commit "8eab692a990d4caa193a46bae99af3e13e717b86")
+        (revision "1"))
+    (package
+      (name "sbcl-assertion-error")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/noloop/assertion-error")
+               (commit commit)))
+         (file-name (git-file-name "assertion-error" version))
+         (sha256
+          (base32 "0ix23kkakmf4nwx852zsssb831jvajr3qyppqfyks7y1ls617svn"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-dissect))
+      (home-page "https://github.com/noloop/assertion-error")
+      (synopsis "Error pattern for assertion libraries in Common Lisp")
+      (description "This package provides a Common Lisp assertion system with
+minimal dependencies on DISSECT.")
+      (license license:gpl3))))
+
+(define-public ecl-assertion-error
+  (sbcl-package->ecl-package sbcl-assertion-error))
+
+(define-public cl-assertion-error
+  (sbcl-package->cl-source-package sbcl-assertion-error))
+
 (define-public sbcl-check-it
   (let ((commit "b79c9103665be3976915b56b570038f03486e62f"))
     (package
