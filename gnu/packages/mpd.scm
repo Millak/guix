@@ -56,6 +56,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages libusb)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
@@ -67,6 +68,7 @@
   #:use-module (gnu packages music)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
@@ -76,7 +78,9 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xiph))
 
 (define-public libmpdclient
@@ -572,4 +576,28 @@ album-experience.")
 which is focused on playing local music without the need of managing playlists.
 Instead of maintaining a client side database of your music library,
 mpdevil loads all tags and covers on demand.")
+    (license license:gpl3+)))
+
+(define-public mympd
+  (package
+    (name "mympd")
+    (version "10.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jcorporation/myMPD")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cqq09j7mi7dz5y6l7i0sa6vi2n5zrndnrxnqsi4vcg99fc2vwv8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ; no test target
+    (native-inputs (list jq perl))
+    (inputs (list flac libid3tag lua openssl pcre2))
+    (home-page "https://jcorporation.github.io/")
+    (synopsis "Web-based MPD client")
+    (description "MyMPD is a mobile-friendly web client for the MPD music
+player daemon.")
     (license license:gpl3+)))
