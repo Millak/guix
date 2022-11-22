@@ -4557,7 +4557,7 @@ databases, and other tools to process Outlook email archives.")
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
-       #:make-flags `((string-append "CC=" ,(cc-for-target)))
+       #:make-flags (list (string-append "CC=" ,(cc-for-target)))
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)            ;no configure script
