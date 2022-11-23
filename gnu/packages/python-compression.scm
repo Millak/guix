@@ -72,6 +72,36 @@ file-object abstraction, making it possible to use multiple files as if they
 were a single file.")
     (license license:lgpl2.1+)))
 
+(define-public python-pybcj
+  (package
+    (name "python-pybcj")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pybcj" version))
+              (sha256
+               (base32
+                "1hvm3c3mb20z25kmbzyyn6pr5inx50z0ignl8b0bggxaik82ws4b"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-setuptools-scm))
+    (home-page "https://codeberg.org/miurahr/pybcj")
+    (synopsis "BCJ filter library")
+    (description "In data compression, BCJ, short for Branch-Call-Jump, refers
+to a technique that improves the compression of machine code of executable
+binaries by replacing relative branch addresses with absolute ones. This
+allows a LZMA compressor to identify duplicate targets and archive higher
+compression rate.  BCJ is used in the 7-zip compression utility as the default
+filter for executable binaries.
+
+pybcj provides Python bindings to a BCJ implementation in C.")
+    (license license:lgpl2.1+)))
+
 (define-public python-bcj-cffi
   (package
     (name "python-bcj-cffi")
