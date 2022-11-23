@@ -113,6 +113,7 @@ caching facility provided by the library.")
              (method url-fetch)
              (uri (string-append "mirror://gnu/libcdio/libcdio-"
                                  version ".tar.bz2"))
+             (patches (search-patches "libcdio-glibc-compat.patch"))
              (sha256
               (base32
                "0avi6apv5ydjy6b9c3z9a46rvp5i57qyr09vr7x4nndxkmcfjl45"))))
