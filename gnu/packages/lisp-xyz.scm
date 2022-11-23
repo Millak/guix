@@ -9575,6 +9575,54 @@ entries, and also includes filesystem integration, see @code{cl-tar}.")
 (define-public ecl-tar-file
   (sbcl-package->ecl-package sbcl-tar-file))
 
+(define-public sbcl-tar
+  (let ((commit "7c6e07a10c93d9e311f087b5f6328cddd481669a")
+        (revision "0"))
+    (package
+      (name "sbcl-tar")
+      (version (git-version "0.2.3" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/cl-tar/cl-tar")
+               (commit commit)))
+         (file-name (git-file-name "cl-tar" version))
+         (sha256
+          (base32 "0wp23cs3i6a89dibifiz6559la5nk58d1n17xvbxq4nrl8cqsllf"))))
+      (build-system asdf-build-system/sbcl)
+      ;; TODO: Build the tar program with 'build-program' when the
+      ;; 'asdf-release-ops' library is added to Guix.
+      (arguments
+       '(#:asd-systems '("tar"
+                         "tar/common-extract"
+                         "tar/create"
+                         "tar/docs"
+                         "tar/extract"
+                         "tar/simple-extract")))
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-40ants-doc
+             sbcl-alexandria
+             sbcl-babel
+             sbcl-local-time
+             sbcl-osicat
+             sbcl-split-sequence
+             sbcl-tar-file))
+      (home-page "https://gitlab.common-lisp.net/cl-tar/cl-tar")
+      (synopsis "High-level interface for tar files")
+      (description
+       "@code{cl-tar} is a Common Lisp library providing a high-level interface
+for interacting with tar archives.")
+      (license license:expat))))
+
+(define-public cl-tar
+  (sbcl-package->cl-source-package sbcl-tar))
+
+(define-public ecl-tar
+  (sbcl-package->ecl-package sbcl-tar))
+
 (define-public sbcl-misc-extensions
   (let ((commit "101c05112bf2f1e1bbf527396822d2f50ca6327a")
         (revision "1"))
