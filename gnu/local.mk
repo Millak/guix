@@ -1481,6 +1481,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/lierolibre-newer-libconfig.patch		\
   %D%/packages/patches/lierolibre-remove-arch-warning.patch	\
   %D%/packages/patches/lierolibre-try-building-other-arch.patch	\
+  %D%/packages/patches/libcdio-glibc-compat.patch		\
   %D%/packages/patches/linbox-fix-pkgconfig.patch		\
   %D%/packages/patches/linphone-desktop-without-sdk.patch           \
   %D%/packages/patches/linux-libre-support-for-Pinebook-Pro.patch \
