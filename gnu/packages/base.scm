@@ -130,7 +130,19 @@ command-line arguments, multiple languages, and so on.")
               (substitute* (list (string-append bin "/egrep")
                                  (string-append bin "/fgrep"))
                 (("^exec grep")
-                 (string-append "exec " bin "/grep")))))))
+                 (string-append "exec " bin "/grep"))))))
+        ,@(if (hurd-target?)
+              '((add-before 'check 'skip-triple-backref-test
+                  (lambda _
+                    ;; This test is marked as malfunctioning on glibc systems
+                    ;; due to
+                    ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=11053>
+                    ;; and it triggers a segfault with glibc 2.33 on GNU/Hurd.
+                    ;; Skip it.
+                    (substitute* "tests/triple-backref"
+                      (("^warn_" all)
+                       (string-append "exit 77\n" all))))))
+              '()))
       #:make-flags ,(if (hurd-target?)
                         ''("XFAIL_TESTS=test-perror2 equiv-classes") ;XXX
                         ''())))
