@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -31,6 +31,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages compression)
@@ -123,6 +124,33 @@ Jump conversion filter by CFFI for Python.")
      "This package aims to provide faster zlib and gzip compatible compression
 and decompression by implementing Python bindings for the ISA-L library.")
     (license license:expat)))
+
+(define-public python-pyppmd
+  (package
+    (name "python-pyppmd")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyppmd" version))
+              (sha256
+               (base32
+                "03w4x26mar0ha73c3v39psn1i0k6xrzwmaxfsxysic73jz99np07"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools-scm))
+    (home-page "https://github.com/miurahr/pyppmd")
+    (synopsis "PPMd compression/decompression library")
+    (description "Pyppmd provides classes and functions for compressing and
+decompressing text data, using the @dfn{Prediction by partial matching} (PPM)
+compression algorithm variation H and I.2.  It provides an API similar to
+Python's zlib/bz2/lzma modules.")
+    (license license:lgpl2.1+)))
 
 (define-public python-ppmd-cffi
   (package
