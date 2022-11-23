@@ -3,7 +3,7 @@
 ;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
@@ -134,9 +134,21 @@ Jump conversion filter by CFFI for Python.")
               (uri (pypi-uri "brotlicffi" version))
               (sha256
                (base32
-                "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))))
+                "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "libbrotli")))))
     (build-system pyproject-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'use-shared-brotli
+             (lambda _
+               (setenv "USE_SHARED_BROTLI" "1"))))))
     (propagated-inputs (list python-cffi))
+    (inputs (list brotli))
     (home-page "https://github.com/python-hyper/brotlicffi")
     (synopsis "Python CFFI bindings to the Brotli library")
     (description "This package provides Python CFFI bindings to the Brotli
