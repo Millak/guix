@@ -96,6 +96,24 @@ were a single file.")
 Jump conversion filter by CFFI for Python.")
     (license license:lgpl2.1+)))
 
+(define-public python-brotlicffi
+  (package
+    (name "python-brotlicffi")
+    (version "1.0.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "brotlicffi" version))
+              (sha256
+               (base32
+                "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi))
+    (home-page "https://github.com/python-hyper/brotlicffi")
+    (synopsis "Python CFFI bindings to the Brotli library")
+    (description "This package provides Python CFFI bindings to the Brotli
+library.")
+    (license license:expat)))
+
 (define-public python-isal
   (package
     (name "python-isal")
