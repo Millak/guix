@@ -28680,8 +28680,7 @@ between \"frame-width\" and \"frame-height\", between \"public\",
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/ediprolog-"
-             version
-             ".el"))
+             version ".tar"))
        (sha256
         (base32 "021jm5zdxrjg7xcja18vgc2v52rk17xi1k7xxw8q802nmixhy0js"))))
     (build-system emacs-build-system)
