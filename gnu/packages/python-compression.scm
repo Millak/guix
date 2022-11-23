@@ -113,6 +113,29 @@ Jump conversion filter by CFFI for Python.")
 library.")
     (license license:expat)))
 
+(define-public python-inflate64
+  (package
+    (name "python-inflate64")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "inflate64" version))
+              (sha256
+               (base32
+                "0767j35gkwaykl1iq9qn8rc25j1ggv56x3d1vzjpk89bzpzdhbdm"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata))
+    (native-inputs
+     (list python-pyannotate
+           python-pytest
+           python-setuptools-scm))
+    (home-page "https://pypi.org/project/inflate64/")
+    (synopsis "deflate64 compression/decompression library")
+    (description "The @code{inflate64} package provides @code{Deflater} and
+@code{Inflater} classes to compress and decompress with the Enhanced Deflate
+compression algorithm.")
+    (license license:lgpl2.1+)))
+
 (define-public python-isal
   (package
     (name "python-isal")
