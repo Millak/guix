@@ -1409,7 +1409,7 @@ when transferring files to and from build machines.
 File name of the Unix-domain socket @command{guix-daemon} is listening
 to on that machine.
 
-@item @code{overload-threshold} (default: @code{0.6})
+@item @code{overload-threshold} (default: @code{0.8})
 The load threshold above which a potential offload machine is
 disregarded by the offload scheduler.  The value roughly translates to
 the total processor usage of the build machine, ranging from 0.0 (0%) to

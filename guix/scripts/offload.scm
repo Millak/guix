@@ -112,7 +112,7 @@
   ;; A #f value tells the offload scheduler to disregard the load of the build
   ;; machine when selecting the best offload machine.
   (overload-threshold build-machine-overload-threshold ; inexact real between
-                      (default 0.6))                   ; 0.0 and 1.0 | #f
+                      (default 0.8))                   ; 0.0 and 1.0 | #f
   (parallel-builds build-machine-parallel-builds  ; number
                    (default 1))
   (speed           build-machine-speed            ; inexact real
