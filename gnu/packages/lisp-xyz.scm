@@ -3054,6 +3054,89 @@ pretty, documentation is code.")
 (define-public ecl-mgl-pax
   (sbcl-package->ecl-package sbcl-mgl-pax))
 
+(define-public sbcl-40ants-doc
+  (let ((commit "7725ff67a380e9ebfc6155e14d91e650f256711b")
+        (revision "0"))
+    (package
+      (name "sbcl-40ants-doc")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/40ants/doc")
+               (commit commit)))
+         (sha256
+          (base32 "1v6gnhrk02vsixmprzk4wvvj7vh11vp5waxyih0qz2ih8d38r5pg"))
+         (file-name (git-file-name "cl-40ants-doc" version))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       ;; TODO: Add remaining dependencies of 40ants-doc-full and
+       ;; 40ants-doc-test missing from Guix.
+       '(#:asd-systems '("40ants-doc"
+                         ;;"40ants-doc-full"
+                         )
+         #:tests? #f))
+      ;;(native-inputs
+      ;; (list sbcl-rove))
+      (inputs
+       (list sbcl-named-readtables
+             sbcl-pythonic-string-reader
+             ;; For 40ants-doc-full:
+             ;;sbcl-3bmd
+             ;;sbcl-alexandria
+             ;;sbcl-babel
+             ;;sbcl-cl-cookie
+             ;;sbcl-cl-fad
+             ;;sbcl-cl-ppcre
+             ;;sbcl-common-doc         ; Missing from Guix
+             ;;sbcl-common-html        ; Missing from Guix
+             ;;sbcl-commondoc-markdown ; Missing from Guix
+             ;;sbcl-dexador
+             ;;sbcl-docs-builder       ; Missing from Guix
+             ;;sbcl-fare-utils
+             ;;sbcl-jonathan
+             ;;sbcl-lass
+             ;;sbcl-local-time
+             ;;sbcl-log4cl
+             ;;sbcl-slime-swank
+             ;;sbcl-slynk
+             ;;sbcl-spinneret
+             ;;sbcl-stem ; Missing from Guix; also, license is unconfirmed
+             ;;sbcl-str
+             ;;sbcl-tmpdir          ; Missing from Guix
+             ;;sbcl-trivial-extract ; Missing from Guix
+             ;;sbcl-xml-emitter
+             ))
+      (home-page "https://40ants.com/doc/")
+      (synopsis "Exploratory programming environment and documentation generator")
+      (description
+       "@code{40ants-doc} provides a rudimentary explorable programming
+environment.  The narrative primarily lives in so-called sections that mix
+Markdown docstrings with references to functions, variables, etc., all of
+which should probably have their own docstrings.
+
+The primary focus is on making code easily explorable by using SLIME's
+@kbd{M-.} (@code{slime-edit-definition}).  Generating documentation in
+Markdown or HTML format from sections and all the referenced items is also
+implemented.
+
+With the simplistic tools provided, one may obtain results similar to literate
+programming, but documentation is generated from code, not the other way
+around, and there is no support for chunking.  Code comes first, code must
+look pretty, documentation is code.
+
+@code{40ants-doc} is a fork of MGL-PAX with fewer dependencies (only
+@code{named-readtables} and @code{pythonic-string-reader}) for the core
+system, and additional features in the full system.")
+      (license license:expat))))
+
+(define-public cl-40ants-doc
+  (sbcl-package->cl-source-package sbcl-40ants-doc))
+
+(define-public ecl-40ants-doc
+  (sbcl-package->ecl-package sbcl-40ants-doc))
+
 (define-public sbcl-mssql
   (let ((commit "045602a19a32254108f2b75871049293f49731eb")
         (revision "1"))
