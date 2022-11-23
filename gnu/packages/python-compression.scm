@@ -428,14 +428,16 @@ wrapper.  It provides a backport of the @code{Path} object.")
 (define-public python-zstandard
   (package
     (name "python-zstandard")
-    (version "0.15.2")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zstandard" version))
        (sha256
-        (base32 "0by9z7nxnkzhmza075q6q91rs8lnpf91129k8ppv7kymbwshipjj"))))
+        (base32 "0qvqhs121spk7yc1l20samflxx47waxv3xm55ksxpn1djk6jzl9i"))))
     (build-system python-build-system)
+    (propagated-inputs
+     (list python-cffi))
     (native-inputs
      (list python-hypothesis))
     (home-page "https://github.com/indygreg/python-zstandard")
