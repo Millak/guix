@@ -252,23 +252,27 @@ several possible methods.")
 (define-public python-py7zr
   (package
     (name "python-py7zr")
-    (version "0.14.1")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py7zr" version))
        (sha256
         (base32
-         "1zmgp7yax328fj8yj8pj4l7yh78hp727j6wk12vfi6nmi82wl32i"))))
-    (build-system python-build-system)
+         "0lwniinfr3rb10n0c203a09vz06vxnnj637yqn8ipdlml89gj7kr"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-bcj-cffi
+     (list python-brotli
+           python-brotlicffi
+           python-importlib-metadata
+           python-inflate64
            python-multivolumefile
-           python-ppmd-cffi
-           python-pycryptodome
+           python-psutil
+           python-pybcj
+           python-pycryptodomex
+           python-pyppmd
            python-pyzstd
-           python-texttable
-           python-zstandard))
+           python-texttable))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm
