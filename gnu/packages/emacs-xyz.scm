@@ -16673,6 +16673,26 @@ for the current file, using the major mode as a hint.  It prompts you to enter
 one if it fails.")
     (license license:gpl3+)))
 
+(define-public emacs-jarchive
+  (package
+    (name "emacs-jarchive")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~dannyfreeman/jarchive")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fi3y5kmy7ginyqg12q797bma638xmam7lrk74x6yhx84xgzb4fq"))))
+    (build-system emacs-build-system)
+    (home-page "https://sr.ht/~dannyfreeman/jarchive")
+    (synopsis "Jarchive teaches Emacs how to navigate to files inside JARs")
+    (description "Jarchive makes Emacs handle Java and LSP URIs pointing to
+ source inside JARs.")
+    (license license:gpl3+)))
+
 (define-public emacs-eldoc
   (package
     (name "emacs-eldoc")
