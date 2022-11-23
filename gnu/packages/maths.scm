@@ -2542,7 +2542,7 @@ between aspif and smodels format or to a human-readable text format.")
 (define-public clasp
   (package
     (name "clasp")
-    (version "3.3.6")
+    (version "3.3.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2551,7 +2551,7 @@ between aspif and smodels format or to a human-readable text format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rahqiq530jckvx717858h1q5p8znp1kb6sjm95p8blkr4n3pvmj"))))
+                "163ps9zq7xppqy9hj5qnw6z5lcjnm4xf5fwjsavpia5ynm3hngcw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCLASP_BUILD_TESTS=on"
