@@ -48,21 +48,20 @@
 (define-public python-multivolumefile
   (package
     (name "python-multivolumefile")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multivolumefile" version))
        (sha256
         (base32
-         "0j46wab4b09s3favjzp3zs1cn2sn8pr7qyngs5wn31hpqqxbbz76"))))
-    (build-system python-build-system)
+         "1mh9sz50s1p8ik83a455pqd57syprad7xhfmk28yb5mwmw58sr50"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pep517
-           python-setuptools
-           python-setuptools-scm
+     (list python-setuptools-scm
            python-coverage
            python-coveralls
+           python-hypothesis
            python-pyannotate
            python-pytest
            python-pytest-cov))
