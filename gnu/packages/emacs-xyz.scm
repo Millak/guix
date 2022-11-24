@@ -570,6 +570,28 @@ configuration language which makes it trivial to write your own themes.")
           (base32 "0n72sqn29b5sya686cicgp40mkk5x5821b7bw4zs6dcl82cyij5n"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-L" "."
+                               "-l" "inspector-tests.el"
+                               "-l" "tree-inspector-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'preserve-emacs-28-compatibility
+              ;; XXX: `cl-constantly' function is defined in "cl-lib" starting
+              ;; from Emacs 29+.  For now, replace it with its definition.
+              (lambda _
+                (substitute* "tree-inspector.el"
+                  (("cl-constantly") "lambda (_)"))))
+            (add-before 'check 'skip-failing-test
+              (lambda _
+                (substitute* "tree-inspector-tests.el"
+                  (("\\(ert-deftest inspector-tests--inspect-struct-test.*" all)
+                   (string-append all " (skip-unless nil)"))))))))
+      (native-inputs (list emacs-ert-runner))
       (propagated-inputs (list emacs-treeview))
       (home-page "https://github.com/mmontone/emacs-inspector")
       (synopsis "Inspection tool for Emacs Lisp objects")
