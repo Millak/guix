@@ -656,18 +656,19 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
         (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
         (base32
-         "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))))
+         "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Remove binary blobs which do not contain source or proper license.
+            (for-each (lambda (file)
+                        (delete-file file))
+                      (find-files "." "\\.bin$"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (delete 'configure) ; no configure script
-         ;; Remove binary blobs which do not contain source or proper license.
-         (add-after 'unpack 'remove-binary-blobs
-           (lambda _
-             (for-each (lambda (file)
-                         (delete-file file))
-                       (find-files "." "\\.bin$"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
