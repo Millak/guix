@@ -11835,7 +11835,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
 (define-public emacs-projectile
   (package
     (name "emacs-projectile")
-    (version "2.6.0")
+    (version "2.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://raw.githubusercontent.com/bbatsov"
@@ -11843,7 +11843,7 @@ like @code{org-edit-src-code} but for arbitrary regions.")
               (file-name (string-append "projectile-" version ".el"))
               (sha256
                (base32
-                "12crymgri4sg7fvnh692f96cm0krmmcnz6x3ypxgq8da84rl34p4"))))
+                "1jd1csrvafy49dcfag0ccpqbdn5my183h325bv6j4x4c3a6qbp98"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-dash emacs-pkg-info))
