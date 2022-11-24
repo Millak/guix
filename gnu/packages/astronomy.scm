@@ -1202,6 +1202,27 @@ for a table giving the position of a planet, asteroid, or comet for a series
 of dates.")
     (license license:expat)))
 
+(define-public python-hvpy
+  (package
+    (name "python-hvpy")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "hvpy" version))
+       (sha256
+        (base32 "0r0asyflz2sw9zn5vgs138nh81m0rbwbakmrncbc1ghdr3g6jahv"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:tests? #f)) ; Requires HTTP(S) access to api.beta.helioviewer.org
+    (propagated-inputs (list python-pydantic python-requests))
+    (native-inputs (list python-pytest python-pytest-astropy))
+    (home-page "https://helioviewer.org/")
+    (synopsis "Helioviewer Python API Wrapper")
+    (description "@code{hvpy} is a Python API wrapper around the formal
+@url{Helioviewer API, https://api.helioviewer.org/docs/v2/}.")
+    (license license:bsd-2)))
+
 (define-public python-mpl-animators
   (package
     (name "python-mpl-animators")
