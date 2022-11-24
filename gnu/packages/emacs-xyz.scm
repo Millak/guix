@@ -34026,16 +34026,16 @@ into the current buffer.")
         (revision "0"))
     (package
       (name "emacs-flymake-mypy")
-      (version (git-version "0.2.0" revision commit))
+      (version "0.3.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/com4/flymake-mypy")
-                      (commit commit)))
+                      (commit version)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "124pfa1kwrapwylbrvkzg3jwcmlsvfklg33ms9ki32khvglmff5h"))))
+                  "1zaa2kljsmm13layqmb7dwd7l2x3a5ymzzmzjjhykc67kbyjvvkk"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/com4/flymake-mypy")
       (synopsis "Flymake checker for mypy")
