@@ -559,7 +559,7 @@ configuration language which makes it trivial to write your own themes.")
         (revision "0"))
     (package
       (name "emacs-inspector")
-      (version (git-version "0.3" revision commit))
+      (version (git-version "0.8" revision commit))
       (source
        (origin
          (uri (git-reference
