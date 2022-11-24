@@ -11836,15 +11836,29 @@ like @code{org-edit-src-code} but for arbitrary regions.")
   (package
     (name "emacs-projectile")
     (version "2.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://raw.githubusercontent.com/bbatsov"
-                                  "/projectile/v" version "/projectile.el"))
-              (file-name (string-append "projectile-" version ".el"))
-              (sha256
-               (base32
-                "1jd1csrvafy49dcfag0ccpqbdn5my183h325bv6j4x4c3a6qbp98"))))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bbatsov/projectile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ybd41iss8vd56qv6czpxqq7a99s4h7i3a2r4khy4rf5blj5zdqi"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "buttercup" "-L" ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-failing-test
+            (lambda _
+              (substitute* "test/projectile-test.el"
+                (("user-emacs-directory") "\".\"")))))))
+    (native-inputs
+     (list emacs-buttercup))
     (propagated-inputs
      (list emacs-dash emacs-pkg-info))
     (home-page "https://github.com/bbatsov/projectile")
