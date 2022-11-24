@@ -1202,6 +1202,32 @@ for a table giving the position of a planet, asteroid, or comet for a series
 of dates.")
     (license license:expat)))
 
+(define-public python-mpl-animators
+  (package
+    (name "python-mpl-animators")
+    (version "1.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "mpl_animators" version))
+       (sha256
+        (base32 "12kjmj7rn3pk9ly82h5s5hn0kl3kxkr7bgkz9zr9k59pir8z1r8b"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-mpl
+           python-setuptools-scm))
+    (propagated-inputs
+     (list python-astropy
+           python-matplotlib
+           python-numpy))
+    (home-page "https://sunpy.org")
+    (synopsis "Interactive animations with matplotlib")
+    (description
+     "The @code{mpl_animators} package provides a set of classes which allow
+the easy construction of interactive matplotlib widget based animations.")
+    (license license:bsd-3)))
+
 (define-public python-photutils
   (package
     (name "python-photutils")
