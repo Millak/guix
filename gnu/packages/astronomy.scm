@@ -1355,6 +1355,62 @@ Virtual observatory (VO) using Python.")
     (description "Regions is an Astropy package for region handling.")
     (license license:bsd-3)))
 
+(define-public python-reproject
+  (package
+    (name "python-reproject")
+    (version "0.9.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "reproject" version))
+       (sha256
+        (base32 "1msysqbhkfi3bmw29wipk250a008bnng7din56md9ipbwiar8x55"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; FIXME: Failing tests
+      ;;
+      ;; reproject/adaptive/core.py:7: in <module>
+      ;; from .deforest import map_coordinates
+      ;; E   ModuleNotFoundError: No module named 'reproject.adaptive.deforest'
+      ;;
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'writable-compiler
+            (lambda _
+              (make-file-writable "reproject/_compiler.c")))
+          (add-before 'check 'writable-compiler
+            (lambda _
+              (make-file-writable "reproject/_compiler.c")))
+          (add-before 'check 'writable-home
+            (lambda _
+              (setenv "HOME" (getcwd)))))))
+    (propagated-inputs
+     (list python-astropy
+           python-astropy-healpix
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-asdf
+           python-cython
+           python-extension-helpers
+           python-gwcs
+           python-pytest-astropy
+           python-pyvo
+           python-semantic-version
+           python-pytest
+           python-setuptools-scm
+           python-shapely))
+    (home-page "https://reproject.readthedocs.io")
+    (synopsis "Astronomical image reprojection in Python")
+    (description
+     "This package provides a functionality to reproject astronomical images using
+various techniques via a uniform interface, where reprojection is the
+re-gridding of images from one world coordinate system to another e.g.
+changing the pixel resolution, orientation, coordinate system.")
+    (license license:bsd-3)))
+
 (define-public python-astral
   (package
     (name "python-astral")
