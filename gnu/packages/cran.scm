@@ -1922,6 +1922,30 @@ excellent candidate for labeling of a polygon.")
 @code{dplyr} and the wider @code{tidyverse} using only @code{base}.")
     (license license:expat)))
 
+(define-public r-ecosolver
+  (package
+    (name "r-ecosolver")
+    (version "0.5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ECOSolveR" version))
+              (sha256
+               (base32
+                "0973m346vakgddp92dzqlky0wa196hj341r9y7rz67bc2zl8jx2x"))))
+    (properties `((upstream-name . "ECOSolveR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bnaras.github.io/ECOSolveR/")
+    (synopsis "Embedded conic solver in R")
+    (description
+     "This package provides an R interface to the @dfn{Embedded COnic
+Solver} (ECOS), an efficient and robust C library for convex problems.
+Conic and equality constraints can be specified in addition to integer
+and boolean variable constraints for mixed-integer problems.  This R
+interface is inspired by the Python interface and has similar calling
+conventions.")
+    (license license:gpl3+)))
+
 (define-public r-ecp
   (package
     (name "r-ecp")
