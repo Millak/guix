@@ -2287,33 +2287,40 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "1.6.1")
+    (version "2.0.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "1p9yryv85qk7m3hbflmpdffd3azpsifcw54x1rp8sb67yjmq3whq"))))
+                "1bwzvi6j3s66dcll1lb4xy25j4nfn1ln6mc3flh0wgy13l26x8m6"))))
     (properties `((upstream-name . "ANCOMBC")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-desctools
+     (list r-cvxr
+           r-desctools
            r-doparallel
            r-dorng
            r-dplyr
+           r-emmeans
            r-energy
            r-foreach
            r-hmisc
+           r-lme4
+           r-lmertest
            r-magrittr
            r-mass
-           r-microbiome
-           r-nlme
+           r-mia
            r-nloptr
-           r-phyloseq
            r-rdpack
            r-rlang
+           r-rngtools
+           r-s4vectors
+           r-singlecellexperiment
+           r-summarizedexperiment
            r-tibble
-           r-tidyr))
+           r-tidyr
+           r-treesummarizedexperiment))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/FrederickHuangLin/ANCOMBC")
     (synopsis "Analysis of compositions of microbiomes with bias correction")
