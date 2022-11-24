@@ -5711,6 +5711,43 @@ testing framework of Wald are generic and can therefore also be used in other
 contexts.")
     (license license:gpl2+)))
 
+(define-public r-cvxr
+  (package
+    (name "r-cvxr")
+    (version "1.0-11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "CVXR" version))
+              (sha256
+               (base32
+                "0alp1g4bszxqcrjbn54bz1zswg8y10372fwwlbi0jjazycw9cap9"))))
+    (properties `((upstream-name . "CVXR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bit64
+           r-ecosolver
+           r-gmp
+           r-matrix
+           r-osqp
+           r-r6
+           r-rcpp
+           r-rcppeigen
+           r-rmpfr
+           r-scs))
+    (native-inputs (list r-knitr))
+    (home-page "https://cvxr.rbind.io")
+    (synopsis "Disciplined convex optimization")
+    (description
+     "This package provides an object-oriented modeling language for
+@dfn{disciplined convex programming} (DCP) as described in Fu,
+Narasimhan, and Boyd (2020, <doi:10.18637/jss.v094.i14>).  It allows
+the user to formulate convex optimization problems in a natural way
+following mathematical convention and DCP rules.  The system analyzes
+the problem, verifies its convexity, converts it into a canonical
+form, and hands it off to an appropriate solver to obtain the
+solution.  Interfaces to solvers on CRAN and elsewhere are provided.")
+    (license license:asl2.0)))
+
 (define-public r-squarem
   (package
     (name "r-squarem")
