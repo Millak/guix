@@ -21017,6 +21017,30 @@ errors and possible semantic issues.  It supports on the fly checking of R
 code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
     (license license:expat)))
 
+(define-public r-scs
+  (package
+    (name "r-scs")
+    (version "3.0-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "scs" version))
+              (sha256
+               (base32
+                "04srf33zw4dxv22b1h5qwjch5yg7hrvk4iq8yvxqnbr8qzp1x26n"))))
+    (properties `((upstream-name . "scs")))
+    (build-system r-build-system)
+    (home-page "https://github.com/FlorianSchwendinger/scs")
+    (synopsis "Splitting conic solver")
+    (description
+     "This package solves convex cone programs via operator splitting.
+It can solve: linear programs, second-order cone programs,
+semidefinite programs, exponential cone programs, and power cone
+programs, or problems with any combination of those cones.  SCS uses
+AMD (a set of routines for permuting sparse matrices prior to
+factorization) and LDL (a sparse LDL factorization and solve package)
+from SuiteSparse.")
+    (license license:gpl3)))
+
 (define-public r-sctransform
   (package
     (name "r-sctransform")
