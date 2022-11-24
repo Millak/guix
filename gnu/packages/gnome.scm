@@ -4961,6 +4961,57 @@ GLibproxyResolver, and a GNOME GProxyResolver that uses the proxy information
 from the GSettings schemas in gsettings-desktop-schemas.")
     (license license:lgpl2.1+)))
 
+(define-public raider
+  (package
+    (name "raider")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ADBeveridge/raider/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ll9220d6qf9m7wdi5xhq69p8h8whs7l5h5nzdhlbn99qh5388bz"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.63
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "data/com.github.ADBeveridge.Raider.gschema.xml"
+                     (("/usr/bin/shred")
+                      (which "shred")))))
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (string-append (assoc-ref outputs "out")
+                                                "/bin/raider")
+                     `("GSETTINGS_SCHEMA_DIR" =
+                       (,(string-append (assoc-ref outputs "out")
+                                        "/share/glib-2.0/schemas")))))))))
+    (native-inputs
+     (list gettext-minimal
+           pkg-config
+           cmake
+           `(,glib "bin")
+           desktop-file-utils
+           itstool
+           gobject-introspection
+           blueprint-compiler
+           `(,gtk "bin")))
+    (inputs
+     (list libadwaita
+           gtk))
+    (home-page "https://github.com/ADBeveridge/raider")
+    (synopsis "Securely delete your files")
+    (description
+     "Raider is a simple shredding program built for GNOME.  Also known as
+File Shredder, it uses the GNU Core Utility called shred to securely delete
+files.")
+    (license license:gpl3+)))
+
 (define-public rest
   (package
     (name "rest")
