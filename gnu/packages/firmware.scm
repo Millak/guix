@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -645,7 +645,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
 (define* (make-arm-trusted-firmware platform #:optional (arch "aarch64"))
   (package
     (name (string-append "arm-trusted-firmware-" platform))
-    (version "2.6")
+    (version "2.8")
     (source
       (origin
         (method git-fetch)
@@ -656,7 +656,7 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
         (file-name (git-file-name "arm-trusted-firmware" version))
        (sha256
         (base32
-         "1j0rn33pwgmksqliwf2npm2px84qmbyma9iq8zpllwfc7dsl6gx9"))))
+         "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -667,16 +667,15 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
            (lambda _
              (for-each (lambda (file)
                          (delete-file file))
-                       (find-files "." ".*\\.bin$"))))
+                       (find-files "." "\\.bin$"))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
-                   (bin (find-files "." ".*\\.(bin|elf)$")))
+                   (bin (find-files "." "\\.(bin|elf)$")))
                (for-each
                  (lambda (file)
                    (install-file file out))
-                 bin))
-             #t)))
+                 bin)))))
        #:make-flags (list (string-append "PLAT=" ,platform)
                           ,@(if (and (not (string-prefix? "aarch64"
                                                           (%current-system)))
