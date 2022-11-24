@@ -26262,7 +26262,7 @@ according to their use.")
 (define-public emacs-detached
   (package
     (name "emacs-detached")
-    (version "0.9.2")
+    (version "0.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26271,7 +26271,7 @@ according to their use.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bcrqqim6is75d4zadswxp162m9gd34xmb2wxsx9rhvkwq0ln35k"))))
+                "13vssywna281dr4r0hqp85xdi3xnajmdahqy7kf147jvgazkqbmd"))))
     (arguments
      (list
       #:tests? #t
