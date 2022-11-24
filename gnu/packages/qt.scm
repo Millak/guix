@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -187,6 +188,49 @@ settings (such as icons, themes, and fonts) in desktop environments or
 window managers, that don't provide Qt integration by themselves.")
     (home-page "https://qt5ct.sourceforge.io/")
     (license license:bsd-2)))
+
+(define-public kvantum
+  (package
+    (name "kvantum")
+    (version "1.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/tsujan/Kvantum/releases/download/V"
+                    version "/Kvantum-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0zwxswbgd3wc7al3fhrl5qc0fmmb6mkygywjh1spbqpl7s8jw5s3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "Kvantum")))
+          (add-after 'chdir 'patch-style-dir
+            (lambda _
+              (substitute* "style/CMakeLists.txt"
+                (("\\$\\{KVANTUM_STYLE_DIR\\}")
+                 (string-append #$output
+                                "/lib/qt5/plugins/styles"))))))))
+    (native-inputs (list qttools-5))
+    (inputs (list
+             kwindowsystem
+             libx11
+             libxext
+             qtbase-5
+             qtsvg-5
+             qtx11extras))
+    (synopsis "SVG-based theme engine for Qt")
+    (description
+     "Kvantum is an SVG-based theme engine for Qt,
+tuned to KDE and LXQt, with an emphasis on elegance, usability and
+practicality.")
+    (home-page "https://github.com/tsujan/Kvantum")
+    (license license:gpl3+)))
 
 (define-public materialdecoration
   (let ((commit "6a5de23f2e5162fbee39d16f938473ff970a2ec0")
