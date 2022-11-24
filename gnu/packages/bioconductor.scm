@@ -2304,13 +2304,13 @@ paired or unpaired study designs.")
 (define-public r-alevinqc
   (package
     (name "r-alevinqc")
-    (version "1.12.1")
+    (version "1.14.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "alevinQC" version))
               (sha256
                (base32
-                "0g75qnz7ah0widdjn99lhvnacz38vgl9j86n65wyswsf413hz3bb"))))
+                "0rd64j4hkdk2d6mlld6qkv2m96lqc93807xjdf05xm8qkyx8g8y2"))))
     (properties `((upstream-name . "alevinQC")))
     (build-system r-build-system)
     (propagated-inputs
