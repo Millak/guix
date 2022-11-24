@@ -19251,6 +19251,28 @@ authoring books and technical documents with R Markdown.")
 that accept short and long options.")
     (license license:gpl2+)))
 
+(define-public r-osqp
+  (package
+    (name "r-osqp")
+    (version "0.6.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "osqp" version))
+              (sha256
+               (base32
+                "00w2hr0pagnvpsk84z99c7alhv7xvs9wpcmkzbcg3qs14g888rgf"))))
+    (properties `((upstream-name . "osqp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-r6 r-rcpp))
+    (home-page "https://osqp.org")
+    (synopsis "Quadratic Programming Solver using the OSQP Library")
+    (description
+     "This package provides bindings to the OSQP solver.  The OSQP
+solver is a numerical optimization package or solving convex quadratic
+programs written in C and based on the alternating direction method of
+multipliers.  See <arXiv:1711.08013> for details.")
+    (license (list license:asl2.0))))
+
 (define-public r-kernlab
   (package
     (name "r-kernlab")
