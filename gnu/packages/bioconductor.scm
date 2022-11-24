@@ -10027,6 +10027,54 @@ to identify differentially methylated regions in epigenetic epidemiology
 studies.")
     (license license:artistic2.0)))
 
+(define-public r-mia
+  (package
+    (name "r-mia")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "mia" version))
+              (sha256
+               (base32
+                "0yz88ggv6d5rccdwzixwg9y1bc4xysazlmv1ph88wxs8r6fcmync"))))
+    (properties `((upstream-name . "mia")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ape
+           r-biocgenerics
+           r-biocparallel
+           r-biostrings
+           r-decipher
+           r-decontam
+           r-delayedarray
+           r-delayedmatrixstats
+           r-dirichletmultinomial
+           r-dplyr
+           r-iranges
+           r-mass
+           r-multiassayexperiment
+           r-rlang
+           r-s4vectors
+           r-scater
+           r-scuttle
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr
+           r-treesummarizedexperiment
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/microbiome/mia")
+    (synopsis "Microbiome analysis")
+    (description
+     "The mia package implements tools for microbiome analysis based on the
+@code{SummarizedExperiment}, @code{SingleCellExperiment} and
+@code{TreeSummarizedExperiment} infrastructure.  Data wrangling and analysis
+in the context of taxonomic data is the main scope.  Additional functions for
+common task are implemented such as community indices calculation and
+summarization.")
+    (license license:artistic2.0)))
+
 (define-public r-microbiome
   (package
     (name "r-microbiome")
