@@ -8989,6 +8989,39 @@ heterogeneous associated data to a single tree file and can be served as a
 platform for merging tree with associated data and converting file formats.")
     (license license:artistic2.0)))
 
+(define-public r-treesummarizedexperiment
+  (package
+    (name "r-treesummarizedexperiment")
+    (version "2.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "TreeSummarizedExperiment" version))
+              (sha256
+               (base32
+                "136zgpn1l059i64gj6iappr6nz42z4wbxlg3zpc5npwkqrz3val2"))))
+    (properties `((upstream-name . "TreeSummarizedExperiment")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ape
+           r-biocgenerics
+           r-biocparallel
+           r-biostrings
+           r-dplyr
+           r-iranges
+           r-rlang
+           r-s4vectors
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-treeio))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/TreeSummarizedExperiment")
+    (synopsis "S4 class for data with tree structures")
+    (description
+     "@code{TreeSummarizedExperiment} extends @code{SingleCellExperiment} to
+include hierarchical information on the rows or columns of the rectangular
+data.")
+    (license license:gpl2+)))
+
 (define-public r-ggtree
   (package
     (name "r-ggtree")
