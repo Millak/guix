@@ -707,6 +707,25 @@ is not available for Guile 2.0.")
     (properties '((upstream-name . "fibers")))
     (license license:lgpl3+)))
 
+(define-public guile-fibers-next
+  (let ((commit "0fa712ecd85c65d7d11ce0c897f068fba4e6ef3f")
+        (revision "0"))
+    (package
+      (inherit guile-fibers-1.1)
+      (name "guile-fibers-next")
+      (version (git-version (package-version guile-fibers-1.1)
+                            revision
+                            commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wingo/fibers")
+                      (commit commit)))
+                (file-name (git-file-name "guile-fibers" version))
+                (sha256
+                 (base32
+                  "0vfq4dkdq2szi5f99ywm856vll397c1x42a55rpxya61rrws8s9r")))))))
+
 (define-public guile-fibers
   (package
     (inherit guile-fibers-1.1)
