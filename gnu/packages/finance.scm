@@ -129,10 +129,10 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-0.21
+(define-public bitcoin-core-23.0
   (package
     (name "bitcoin-core")
-    (version "0.21.2")
+    (version "23.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -140,7 +140,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "17nvir1yc6mf4wr1fn4xsabw49cd5p9vig8wj77vv4anzi8zfij1"))))
+                "01fcb90pqip3v77kljykx51cmg7jdg2cmp7ys0a40svdkps8nx16"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -207,23 +207,10 @@ of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
 
-(define-public bitcoin-core-0.20
-  (package
-    (inherit bitcoin-core-0.21)
-    (version "0.20.2")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://bitcoincore.org/bin/bitcoin-core-"
-                              version "/bitcoin-" version ".tar.gz"))
-              (sha256
-               (base32
-                "14smp5vmh7baabl856wlg7w7y5910jhx6c02mlkm4hkywf3yylky"))))))
-
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
 
-(define-public bitcoin-core bitcoin-core-0.21)
+(define-public bitcoin-core bitcoin-core-23.0)
 
 (define-public hledger
   (package
