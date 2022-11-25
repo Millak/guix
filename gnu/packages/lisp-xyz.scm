@@ -16966,6 +16966,35 @@ return the CPU count of the current system.")
 (define-public cl-cpus
   (sbcl-package->cl-source-package sbcl-cl-cpus))
 
+(define-public sbcl-system-load
+  (let ((commit "3ff1a40be55866cc5316ac7a530d872b12510294")
+        (revision "0"))
+    (package
+      (name "sbcl-system-load")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/system-load")
+               (commit commit)))
+         (file-name (git-file-name "cl-system-load" version))
+         (sha256
+          (base32 "08d8kr8j5l2m8p69f47iklxhna394vx9mrys0sgplf5f2bqb7xcv"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/Shinmera/system-load")
+      (synopsis "Access system's CPU and memory usage from Common Lisp")
+      (description
+       "System-Load is a Common Lisp library for accessing the system's CPU and
+memory usage.")
+      (license license:zlib))))
+
+(define-public cl-system-load
+  (sbcl-package->cl-source-package sbcl-system-load))
+
+(define-public ecl-system-load
+  (sbcl-package->ecl-package sbcl-system-load))
+
 (define-public sbcl-fof
   (let ((commit "522879e7da110ecf2e841998b197b34062c54b29")
         (revision "1"))
