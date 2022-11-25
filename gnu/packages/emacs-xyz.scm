@@ -11130,8 +11130,8 @@ the C/C++ function at point.")
 
 (define-public emacs-lpy
   ;; There is no proper release/tag.
-  (let ((commit "ce78a4613458790cc785c1687af7eed8f0d8d66c")
-        (revision "5"))
+  (let ((commit "fa95b11e1023704510cc7dd2897bf8bcc3027cbb")
+        (revision "6"))
     (package
       (name "emacs-lpy")
       (version (git-version "0.1.0" revision commit))
@@ -11141,13 +11141,13 @@ the C/C++ function at point.")
          (uri (git-reference
                (url "https://github.com/abo-abo/lpy")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
-           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))
-         (file-name (git-file-name name version))))
-      (propagated-inputs
-       (list emacs-zoutline emacs-lispy))
+           "1j92ll2afvcp891fxra3sawxg000cs3ra01wxksiil2dg5zpzzkn"))))
       (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-function-args emacs-lispy emacs-zoutline))
       (home-page "https://github.com/abo-abo/lpy")
       (synopsis "Modal editing for Python")
       (description
