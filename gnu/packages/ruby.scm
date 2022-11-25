@@ -208,7 +208,7 @@ a focus on simplicity and productivity.")
 (define-public ruby-3.0
   (package
     (inherit ruby-2.7)
-    (version "3.0.4")
+    (version "3.0.5")
     (source
      (origin
        (method url-fetch)
@@ -217,7 +217,7 @@ a focus on simplicity and productivity.")
                            "/ruby-" version ".tar.xz"))
        (sha256
         (base32
-         "1w7jpq3flnm007z5kj8kixgm8l4smb80w8ak4993a12j0irzq8lf"))))
+         "1pnxbdkkh2miq9nqfq2qscvh76nprzg0r620d9ckdzih42xbaz6g"))))
     (inputs
      (modify-inputs (package-inputs ruby-2.7)
        (replace "openssl" openssl)))))
