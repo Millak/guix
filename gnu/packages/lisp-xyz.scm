@@ -13061,6 +13061,44 @@ than a few Kb.")
 (define-public ecl-mmap
   (sbcl-package->ecl-package sbcl-mmap))
 
+(define-public sbcl-marray
+  (let ((commit "0352f316b6830f0b119088ba9be836e4726bd7d8")
+        (revision "0"))
+    (package
+      (name "sbcl-marray")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/death/marray")
+               (commit commit)))
+         (file-name (git-file-name "cl-marray" version))
+         (sha256
+          (base32 "0l4kvzpiw14vqhlsaflp3c7y51vznjjgbdi0q3axqk1wxvzy1zlx"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-dependencies
+             (lambda _
+               (substitute* "marray.asd"
+                 ((":components")
+                  ":depends-on (#+sbcl \"sb-posix\")\n  :components")))))))
+      (home-page "https://github.com/death/marray")
+      (synopsis "Memory-mapped files as Common Lisp arrays")
+      (description
+       "MARRAY is a library which provides access to memory-mapped files
+through Common Lisp arrays.")
+      (license license:expat))))
+
+(define-public cl-marray
+  (sbcl-package->cl-source-package sbcl-marray))
+
+;; ECL support not implemented yet.
+;; (define-public ecl-marray
+;;   (sbcl-package->ecl-package sbcl-marray))
+
 (define-public sbcl-3bz
   (let ((commit "569614c40408f3aefc77ba233e0e4bd66d3850ad")
         (revision "1"))
