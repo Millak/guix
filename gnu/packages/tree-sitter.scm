@@ -19,7 +19,10 @@
 
 (define-module (gnu packages tree-sitter)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages crates-graphics)
+  #:use-module (gnu packages crates-io)
   #:use-module (gnu packages icu4c)
+  #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
@@ -71,4 +74,80 @@ can be embedded in any application
 @end itemize
 
 This package includes the @code{libtree-sitter} runtime library.")
+    (license license:expat)))
+
+(define-public tree-sitter-cli
+  (package (inherit tree-sitter)
+    (name "tree-sitter-cli")
+    (source (origin
+              (inherit (package-source tree-sitter))
+              (snippet
+               #~(begin
+                   ;; Remove the runtime library code and dynamically link to
+                   ;; it instead.
+                   (delete-file-recursively "lib/src")
+                   (delete-file "lib/binding_rust/build.rs")
+                   (with-output-to-file "lib/binding_rust/build.rs"
+                     (lambda _
+                       (format #t "fn main() {~@
+                              println!(\"cargo:rustc-link-lib=tree-sitter\");~@
+                              }~%")))))))
+    (build-system cargo-build-system)
+    (inputs (list tree-sitter))
+    (arguments
+     (list
+      ;; Running test requires downloading fixtures, see the
+      ;; script/fetch-fixtures script, which fetches grammars.  Maybe it make
+      ;; sence to run tests in the grammar's packages?
+      #:tests? #f
+      ;; We're only packaging the CLI program so we do not need to install
+      ;; sources.
+      #:install-source? #f
+      #:cargo-inputs
+      `(("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-anyhow" ,rust-anyhow-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-difference" ,rust-difference-2)
+        ("rust-dirs" ,rust-dirs-3)
+        ("rust-html-escape" ,rust-html-escape-0.2)
+        ("rust-libloading" ,rust-libloading-0.7)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-smallbitvec" ,rust-smallbitvec-2)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tiny-http" ,rust-tiny-http-0.8)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-webbrowser" ,rust-webbrowser-0.5)
+        ("rust-which" ,rust-which-4))
+      #:cargo-development-inputs
+      `(("rust-pretty-assertions" ,rust-pretty-assertions-0.7))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-cargo-lock
+            (lambda _
+              (delete-file "Cargo.lock")))
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin")))
+                (mkdir-p bin)
+                (install-file "target/release/tree-sitter" bin)))))))
+    (description "Tree-sitter is a parser generator tool and an incremental
+parsing library.  It can build a concrete syntax tree for a source file and
+efficiently update the syntax tree as the source file is edited.
+
+Tree-sitter aims to be:
+
+@enumerate
+@item General enough to parse any programming language.
+@item Fast enough to parse on every keystroke in a text editor.
+@item Robust enough to provide useful results even in the presence of syntax
+errors.
+@item Dependency-free so that the runtime library (which is written in pure C)
+can be embedded in any application.
+@end enumerate
+
+This package includes the @command{tree-sitter} command-line tool.")
     (license license:expat)))
