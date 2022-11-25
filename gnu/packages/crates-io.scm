@@ -26033,6 +26033,30 @@ Hash-based Message Authentication Code algorithm} for SHA1.")
      "This package provides a library for HTML entity encoding and decoding.")
     (license (list license:asl2.0 license:expat license:mpl2.0))))
 
+(define-public rust-html-escape-0.2
+  (package
+    (name "rust-html-escape")
+    (version "0.2.12")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "html-escape" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "01f2v3c6j2rk5h2lhdbh62j07cm1fvzqw4vplj2sms83jpx5qc8m"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-utf8-width" ,rust-utf8-width-0.1))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1))))
+    (home-page "https://magiclen.org/html-escape")
+    (synopsis "Library for encoding and escaping special characters in HTML")
+    (description
+     "This package provides a library for encoding and escaping special
+characters in HTML, decoding and unescaping HTML entities as well.")
+    (license license:expat)))
+
 (define-public rust-hts-sys-2
   (package
     (name "rust-hts-sys")
