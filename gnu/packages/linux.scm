@@ -8550,6 +8550,20 @@ file systems.")
     ;; licensed under lgpl2.1. the other stuff is licensed under gpl2.
     (license (list license:gpl2 license:lgpl2.1))))
 
+(define-public xfsprogs-5.9
+  (package
+    (inherit xfsprogs)
+    (name "xfsprogs")
+    (version "5.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kernel.org/linux/utils/fs/xfs/xfsprogs/"
+                    "xfsprogs-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))))
+
 (define-public xfsprogs/static
   (package
     (inherit xfsprogs)
