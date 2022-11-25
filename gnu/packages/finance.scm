@@ -2134,7 +2134,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.18.0")
+    (version "6.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2142,7 +2142,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1ncnfjpjwjdv29plyiam2nh01bfni49sgfi3qkijygi1450w71dx"))
+       (sha256 (base32 "0f0kly374pkgnpnx60hac0bg9297a5zhycss6p37iavayn28jg39"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
