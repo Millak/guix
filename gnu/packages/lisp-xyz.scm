@@ -14232,6 +14232,39 @@ directly.")
 (define-public ecl-custom-hash-table
   (sbcl-package->ecl-package sbcl-custom-hash-table))
 
+(define-public sbcl-concurrent-hash-tables
+  (let ((commit "1b9f0b5da54fece4f42296e1bdacfcec0c370a5a")
+        (revision "0"))
+    (package
+      (name "sbcl-concurrent-hash-tables")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/no-defun-allowed/concurrent-hash-tables")
+               (commit commit)))
+         (file-name (git-file-name "cl-concurrent-hash-tables" version))
+         (sha256
+          (base32 "03g24ycr1ngzg8bv10iwp1bmnldz5bxbfdqrzhfxhicpibh49r96"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-atomics sbcl-bordeaux-threads))
+      (home-page "https://github.com/no-defun-allowed/concurrent-hash-tables")
+      (synopsis "Portability library for concurrent hash tables in Common Lisp")
+      (description "@code{concurrent-hash-tables} is a Common Lisp portability
+library wrapping some implementations of concurrent hash tables which do not
+have to be entirely locked in their operation, including
+@code{42nd-at-threadmill}, @code{luckless}, and a fallback, segmented hash
+table.")
+      (license license:bsd-2))))
+
+(define-public cl-concurrent-hash-tables
+  (sbcl-package->cl-source-package sbcl-concurrent-hash-tables))
+
+(define-public ecl-concurrent-hash-tables
+  (sbcl-package->ecl-package sbcl-concurrent-hash-tables))
+
 (define-public sbcl-collectors
   (let ((commit "13acef25d8422d1d82e067b1861e513587c166ee"))
     (package
