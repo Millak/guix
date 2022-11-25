@@ -79,7 +79,7 @@ Copyright @copyright{} 2020 Jack Hill@*
 Copyright @copyright{} 2020 Naga Malleswari@*
 Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
-Copyright @copyright{} 2020, 2021 Pierre Langlois@*
+Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*
@@ -9755,6 +9755,25 @@ Which Node.js package is used to interpret the @code{npm} commands can
 be specified with the @code{#:node} parameter which defaults to
 @code{node}.
 @end defvar
+
+@defvr {Scheme Variable} tree-sitter-build-system
+
+This variable is exported by @code{(guix build-system tree-sitter)}.  It
+implements procedures to compile grammars for the
+@url{https://tree-sitter.github.io/tree-sitter/, Tree-sitter} parsing
+library.  It essentially runs @code{tree-sitter generate} to translate
+@code{grammar.js} grammars to JSON and then to C.  Which it then
+compiles to native code.
+
+Tree-sitter packages may support multiple grammars, so this build system
+supports a @code{#:grammar-directories} keyword to specify a list of
+locations where a @code{grammar.js} file may be found.
+
+Grammars sometimes depend on each other, such as C++ depending on C and
+TypeScript depending on JavaScript.  You may use inputs to declare such
+dependencies.
+
+@end defvr
 
 Lastly, for packages that do not need anything as sophisticated, a
 ``trivial'' build system is provided.  It is trivial in the sense that

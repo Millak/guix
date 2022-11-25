@@ -178,6 +178,7 @@ MODULES =					\
   guix/build-system/ruby.scm			\
   guix/build-system/scons.scm			\
   guix/build-system/texlive.scm			\
+  guix/build-system/tree-sitter.scm		\
   guix/build-system/trivial.scm			\
   guix/ftp-client.scm				\
   guix/http-client.scm				\
@@ -234,6 +235,7 @@ MODULES =					\
   guix/build/ruby-build-system.scm		\
   guix/build/scons-build-system.scm		\
   guix/build/texlive-build-system.scm		\
+  guix/build/tree-sitter-build-system.scm	\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
