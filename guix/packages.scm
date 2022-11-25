@@ -423,7 +423,7 @@ from forcing GEXP-PROMISE."
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
-  '("i586-gnu" "i686-gnu"))
+  '("i586-gnu"))
 
 (define %cuirass-supported-systems
   ;; This is the list of system types for which build machines are available.
