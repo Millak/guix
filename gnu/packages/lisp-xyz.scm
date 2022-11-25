@@ -15376,6 +15376,40 @@ determine the cost of certain actions on a given platform and implementation.")
 (define-public ecl-the-cost-of-nothing
   (sbcl-package->ecl-package sbcl-the-cost-of-nothing))
 
+(define-public sbcl-atomichron
+  (let ((commit "5b3578bbad8c37ab559e56924d98c373efe11de5")
+        (revision "0"))
+    (package
+      (name "sbcl-atomichron")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/no-defun-allowed/atomichron")
+               (commit commit)))
+         (file-name (git-file-name "cl-atomichron" version))
+         (sha256
+          (base32 "1fmmhb3pbv7j4d1cc02zv24bpd0kd2agfjjcj46w3gmv1bb0hva1"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-atomics sbcl-bordeaux-threads))
+      (home-page "https://github.com/no-defun-allowed/atomichron")
+      (synopsis "Atomic metering library for Common Lisp")
+      (description
+       "@code{atomichron} is a Common Lisp library which implements a time
+meter which tracks how many times a form is evaluated, and how long evaluation
+takes.  It uses atomic instructions so that meters will present correct
+results in the presence of multiple threads, while trying to minimize
+synchronization latency.")
+      (license license:bsd-2))))
+
+(define-public cl-atomichron
+  (sbcl-package->cl-source-package sbcl-atomichron))
+
+(define-public ecl-atomichron
+  (sbcl-package->ecl-package sbcl-atomichron))
+
 (define-public sbcl-glyphs
   (let ((commit "1ff5714e8c1dca327bc604dfe3e3d1f4b7755373"))
     (package
