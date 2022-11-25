@@ -1159,7 +1159,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
               (for-each (lambda (file)
                           (invoke "ziptime" file))
                         ;; So many different extensions for .zip files.
-                        (find-files #$output "\\.(bau|dat|otp|ott|zip)$"))))
+                        (find-files #$output "\\.(bau|dat|otg|otp|ott|zip)$"))))
           (add-after 'install 'bin-and-desktop-install
             ;; Create 'soffice' and 'libreoffice' symlinks to the executable
             ;; script.
