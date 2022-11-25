@@ -13429,8 +13429,8 @@ news items, openrc and runscripts.")
 
 (define-public emacs-ebuku
   ;; Upstream has no tagged release.
-  (let ((revision "0")
-        (commit "5b8bf34b8ea5d05f0b8dfc12bfea825f9cffbeda"))
+  (let ((revision "1")
+        (commit "0c6cf404a49bd68800221446df186fffa0139325"))
     (package
       (name "emacs-ebuku")
       (version (git-version "0" revision commit))
@@ -13442,7 +13442,7 @@ news items, openrc and runscripts.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "04733lqa6z3kmdjcgdi58q3wrqan2qib43rvjw51qc739fwmwb5y"))))
+                  "09fkzmcvzdbdjaa167wiybj0kir7y12pcq2varjywshvq2l7niz4"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/flexibeast/ebuku")
       (synopsis "Emacs interface to the buku Web bookmark manager")
