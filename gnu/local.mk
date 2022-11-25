@@ -606,6 +606,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/tmux.scm				\
   %D%/packages/toolkits.scm			\
   %D%/packages/tor.scm				\
+  %D%/packages/tree-sitter.scm			\
   %D%/packages/tv.scm				\
   %D%/packages/uglifyjs.scm			\
   %D%/packages/uml.scm				\

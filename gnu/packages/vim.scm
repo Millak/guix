@@ -72,6 +72,7 @@
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages terminals)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg))
 
