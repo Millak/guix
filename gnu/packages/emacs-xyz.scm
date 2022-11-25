@@ -33664,8 +33664,8 @@ headlines, keywords, tables and source blocks.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
 (define-public emacs-straight-el
-  (let ((commit "fed215348076ba9182f634e0770a175220474b5a")
-        (revision "0"))
+  (let ((commit "f21103d97d180fba0b6e2e86ebb0b6269219ef2c")
+        (revision "1"))
     (package
       (name "emacs-straight-el")
       (version (git-version "0" revision commit))
@@ -33678,7 +33678,7 @@ headlines, keywords, tables and source blocks.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0z0j670s18mp1bhrsnng0mybcbnlywarhlz7zmrf9399rr513z1x"))))
+          (base32 "1dqhb7kx4hr3cm4gj6qdk9aav05vc016y4nks2dj1sy88wia6wsv"))))
       (build-system emacs-build-system)
       (arguments
        (list
