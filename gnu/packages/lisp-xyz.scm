@@ -490,6 +490,39 @@ interface to the Linux inotify API.")
 (define-public ecl-cl-inotify
   (sbcl-package->ecl-package sbcl-cl-inotify))
 
+(define-public sbcl-file-notify
+  (let ((commit "f12dc2f2aae5fee13355cd93a8cae0c4c412b76d")
+        (revision "0"))
+    (package
+      (name "sbcl-file-notify")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/file-notify")
+               (commit commit)))
+         (file-name (git-file-name "cl-file-notify" version))
+         (sha256
+          (base32 "0788d98rqm1krl8nbfh8qshvyf6g336i9bqrdhkx06cfvbh0wcny"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi
+             sbcl-documentation-utils
+             sbcl-trivial-features))
+      (home-page "https://github.com/Shinmera/file-notify")
+      (synopsis "Get notifications for file accesses and changes")
+      (description
+       "File-Notify is a Common Lisp library for getting notifications for file
+accesses and changes.")
+      (license license:zlib))))
+
+(define-public cl-file-notify
+  (sbcl-package->cl-source-package sbcl-file-notify))
+
+(define-public ecl-file-notify
+  (sbcl-package->ecl-package sbcl-file-notify))
+
 (define-public sbcl-bodge-queue
   (let ((commit "948c9a501dcd412689952d09eb7453ec2722336a")
         (revision "0"))
