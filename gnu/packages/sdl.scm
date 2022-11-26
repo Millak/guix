@@ -517,7 +517,8 @@ directory.")
     (native-inputs
      `(("pkgconfig" ,pkg-config))) ; Needed to find the opus library.
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-mixer))))
+     (propagated-inputs-with-sdl2 sdl-mixer))
+    (properties '((upstream-name . "SDL2_mixer")))))
 
 (define-public sdl2-net
   (package (inherit sdl-net)
