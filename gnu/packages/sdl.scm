@@ -555,7 +555,8 @@ directory.")
               (base32
                "0cyd48dipc0m399qy8s03lci8b0bpiy8xlkvrm2ia7wcv0dfpv59"))))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-ttf))))
+     (propagated-inputs-with-sdl2 sdl-ttf))
+    (properties '((upstream-name . "SDL2_ttf")))))
 
 (define-public guile-sdl
   (package
