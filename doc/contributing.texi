@@ -1467,9 +1467,15 @@ address and the @option{-v} flag with @command{git send-email}.
 
 @example
 $ git commit -a
-$ git send-email -1 -a --base=auto -v @var{REVISION} \
+$ git send-email -1 -a --base=auto -v@var{REVISION} \
       --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
 @end example
+
+@quotation Note
+Due to an apparent bug in @command{git send-email},
+@option{-v @var{REVISION}} (with the space) will not work; you
+@emph{must} use @option{-v@var{REVISION}}.
+@end quotation
 
 You can find out @var{ISSUE_NUMBER} either by searching on the mumi
 interface at @url{issues.guix.gnu.org} for the name of your patch or
