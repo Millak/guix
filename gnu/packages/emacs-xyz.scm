@@ -6100,6 +6100,30 @@ allrecipes.com.")
 inline PDF preview in Org buffers by using pdf2svg.")
     (license license:gpl3+)))
 
+(define-public emacs-org-rainbow-tags
+  ;; Upstream didn't tag version.
+  (let ((commit "c6040d228c5e8c5c6d33c7f81fc09d935ad1bcbd"))
+    (package
+      (name "emacs-org-rainbow-tags")
+      (version "0.1-pre")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/KaratasFurkan/org-rainbow-tags")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "006nx01sby8k0fc9lf63ldf0sl94ihldyrvqr9r18fb1gpzvivl6"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/KaratasFurkan/org-rainbow-tags")
+      (synopsis "Colorize Org tags automatically")
+      (description
+       "This package adds random colors to your Org tags.  In order to make
+colors random but consistent between same tags, colors are generated from the
+hash of the tag names.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-rich-yank
   (package
     (name "emacs-org-rich-yank")
