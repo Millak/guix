@@ -1634,10 +1634,17 @@ types are supported, as is encryption.")
      (list
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-program-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "rec-mode.el"
+                ("rec-recfix" (search-input-file inputs "bin/recfix"))
+                ("rec-recinf" (search-input-file inputs "bin/recinf"))
+                ("rec-recsel" (search-input-file inputs "bin/recsel")))))
           (add-before 'install 'make-info
             (lambda _
               (invoke "makeinfo" "--no-split"
                       "-o" "rec-mode.info" "rec-mode.texi"))))))
+    (inputs (list recutils))
     (native-inputs (list texinfo))
     (home-page "https://www.gnu.org/software/recutils/")
     (synopsis "Emacs mode for working with recutils database files")
