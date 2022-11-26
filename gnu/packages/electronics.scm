@@ -252,7 +252,7 @@ supported devices, as well as input/output file format support.")
 (define-public openboardview
   (package
     (name "openboardview")
-    (version "8.95.2")
+    (version "9.0.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -270,11 +270,10 @@ supported devices, as well as input/output file format support.")
                                 (delete-file-recursively f)))
                             (scandir "." (negate (cut member <> keep))))))
               (patches
-               (search-patches "openboardview-use-system-imgui.patch"
-                               "openboardview-use-system-utf8.patch"))
+               (search-patches "openboardview-use-system-imgui.patch"))
               (sha256
                (base32
-                "1n2yfi8wpky0y231kq2zdgwn7f7kff8m53m904hxi5ppmwhx1d6q"))))
+                "0wmplzgi3rpkcajdrnkxvqhgxrn6qdxa6vwgd24bm10ryyhiqw54"))))
     (build-system cmake-build-system)
     (arguments
      (list
