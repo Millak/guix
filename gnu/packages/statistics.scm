@@ -206,7 +206,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
 (define r-with-tests
   (package
     (name "r-with-tests")
-    (version "4.2.1")
+    (version "4.2.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://cran/src/base/R-"
@@ -214,7 +214,7 @@ This package also provides @command{xls2csv} to export Excel files to CSV.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0gv4di1x835i4nsy21vqw66c0blmmmvyjkixc5a8x117dm4dnljd"))))
+                "1x9xjl6fyzs8r72zigirp905ki50wzyw9rxf7iqsbbsixi12pxhg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:disallowed-references (,tzdata-for-tests)
@@ -310,7 +310,11 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
                (("\\(2008\\)\n") "(2008) ")
                (("  ``Software") "``Software")
                (("Data Analysis:.") "Data Analysis:\n")
-               (("Programming with R") "  Programming with R"))))
+               (("Programming with R") "  Programming with R"))
+             (substitute* "src/library/tools/DESCRIPTION.in"
+               (("codetools, methods, xml2, curl, commonmark, knitr, xfun, mathjaxr")
+                "codetools, methods, xml2, curl, commonmark,
+    knitr, xfun, mathjaxr"))))
          (add-before 'build 'set-locales
            (lambda _
              (setlocale LC_ALL "C")
@@ -366,48 +370,48 @@ as.POSIXct(if (\"\" != Sys.getenv(\"SOURCE_DATE_EPOCH\")) {\
     ;; As the JDK is a rather large input with only very limited effects on R,
     ;; we decided to drop it.
     (native-inputs
-     `(("bzip2" ,bzip2)
-       ("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("texinfo" ,texinfo) ; for building HTML manuals
-       ("texlive" ,(texlive-updmap.cfg (list texlive-ae
-                                        texlive-inconsolata
-                                        texlive-fonts-ec
-                                        texlive-grfext
-                                        texlive-amsfonts
-                                        texlive-latex-base
-                                        texlive-latex-fancyvrb
-                                        texlive-latex-graphics
-                                        texlive-hyperref
-                                        texlive-oberdiek
-                                        texlive-latex-tools
-                                        texlive-latex-upquote
-                                        texlive-url
-                                        texlive-latex-xkeyval)))
-       ("tzdata" ,tzdata-for-tests)
-       ("xz" ,xz)))
+     (list bzip2
+           perl
+           pkg-config
+           texinfo                      ; for building HTML manuals
+           (texlive-updmap.cfg (list texlive-ae
+                                     texlive-inconsolata
+                                     texlive-fonts-ec
+                                     texlive-grfext
+                                     texlive-amsfonts
+                                     texlive-latex-base
+                                     texlive-latex-fancyvrb
+                                     texlive-latex-graphics
+                                     texlive-hyperref
+                                     texlive-oberdiek
+                                     texlive-latex-tools
+                                     texlive-latex-upquote
+                                     texlive-url
+                                     texlive-latex-xkeyval))
+           tzdata-for-tests
+           xz))
     (inputs
-     `(;; We need not only cairo here, but pango to ensure that tests for the
-       ;; "cairo" bitmapType plotting backend succeed.
-       ("pango" ,pango)
-       ("coreutils" ,coreutils)
-       ("curl" ,curl)
-       ("openblas" ,openblas)
-       ("gfortran" ,gfortran)
-       ("icu4c" ,icu4c)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libxt" ,libxt)
-       ("pcre2" ,pcre2)
-       ("readline" ,readline)
-       ;; This avoids a reference to the ungraftable static bash.  R uses the
-       ;; detected shell for the "system" procedure.
-       ("bash" ,bash-minimal)
-       ("tcl" ,tcl)
-       ("tk" ,tk)
-       ("which" ,which)
-       ("zlib" ,zlib)))
+     (list coreutils
+           curl
+           openblas
+           gfortran
+           icu4c
+           libjpeg-turbo
+           libpng
+           libtiff
+           libxt
+           ;; We need not only cairo here, but pango to ensure that tests for the
+           ;; "cairo" bitmapType plotting backend succeed.
+           pango
+           pcre2
+           readline
+           tcl
+           tk
+           which
+           zlib
+           ;; This avoids a reference to the ungraftable static bash.  R uses the
+           ;; detected shell for the "system" procedure.
+           bash-minimal))
     (native-search-paths
      (list (search-path-specification
             (variable "R_LIBS_SITE")
@@ -448,29 +452,23 @@ available, greatly increasing its breadth and scope.")
                      (substitute* (string-append out "/lib/R/bin/libtool")
                        (((string-append
                           "(-L)?("
-                          (assoc-ref inputs "bzip2")
-                          "|"
-                          (assoc-ref inputs "perl")
-                          "|"
-                          (assoc-ref inputs "texlive")
-                          "|"
-                          (assoc-ref inputs "texlive-bin")
-                          "|"
-                          (assoc-ref inputs "texinfo")
-                          "|"
-                          (assoc-ref inputs "xz")
-                          "|"
                           (format #false
-                                  "/gnu/store/[^-]+-(~{~a~^|~})-[^/]+"
-                                  '("glibc-utf8-locales"
+                                  "~a/[^-]+-(~{~a~^|~})-[^/]+"
+                                  (%store-directory)
+                                  '("bzip2"
+                                    "file"
+                                    "glibc-utf8-locales"
+                                    "graphite2"
                                     "libselinux"
                                     "libsepol"
-                                    "file"
+                                    "perl"
+                                    "texinfo"
                                     "texlive-bin"
                                     "util-macros"
-                                    "graphite2"))
+                                    "xz"))
                           "|"
-                          "/gnu/store/[^-]+-glibc-[^-]+-static"
+                          (format #false "~a/[^-]+-glibc-[^-]+-static"
+                                  (%store-directory))
                           ")/lib")) ""))))))))))))
 
 (define-public rmath-standalone
@@ -1236,25 +1234,28 @@ using just two functions: melt and dcast (or acast).")
 (define-public r-ggplot2
   (package
     (name "r-ggplot2")
-    (version "3.3.6")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggplot2" version))
        (sha256
-        (base32 "1aa377jdfajj8ld2fh159y8havlibsr4pjisf6mkzk8g5awlxjxz"))))
+        (base32 "0gj7n2y8msnmhk3x4r481biknvn2dqhahwazfqwr8f3lz599wbx8"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-digest
+     (list r-cli
+           r-digest
            r-glue
            r-gtable
            r-isoband
+           r-lifecycle
            r-mass
            r-mgcv
            r-tibble
            r-rlang
            r-scales
            r-svglite ; Needed for 'ggsave'
+           r-vctrs
            r-withr))
     (native-inputs
      (list r-knitr))

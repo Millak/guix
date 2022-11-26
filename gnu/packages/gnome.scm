@@ -2594,6 +2594,11 @@ GNOME Desktop.")
            python-wrapper))             ;for tests
     (propagated-inputs
      (list gcr))
+
+    ;; XXX: There are concerning test failures on i686-linux and other 32-bit
+    ;; platforms: <https://gitlab.gnome.org/GNOME/gnome-keyring/-/issues/124>.
+    (supported-systems %64bit-supported-systems)
+
     (home-page "https://www.gnome.org")
     (synopsis "Daemon to store passwords and encryption keys")
     (description
@@ -4955,6 +4960,57 @@ GTlsBackend, a libproxy-based implementation of GProxyResolver,
 GLibproxyResolver, and a GNOME GProxyResolver that uses the proxy information
 from the GSettings schemas in gsettings-desktop-schemas.")
     (license license:lgpl2.1+)))
+
+(define-public raider
+  (package
+    (name "raider")
+    (version "1.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ADBeveridge/raider/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ll9220d6qf9m7wdi5xhq69p8h8whs7l5h5nzdhlbn99qh5388bz"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.63
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "data/com.github.ADBeveridge.Raider.gschema.xml"
+                     (("/usr/bin/shred")
+                      (which "shred")))))
+               (add-after 'install 'wrap-program
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (string-append (assoc-ref outputs "out")
+                                                "/bin/raider")
+                     `("GSETTINGS_SCHEMA_DIR" =
+                       (,(string-append (assoc-ref outputs "out")
+                                        "/share/glib-2.0/schemas")))))))))
+    (native-inputs
+     (list gettext-minimal
+           pkg-config
+           cmake
+           `(,glib "bin")
+           desktop-file-utils
+           itstool
+           gobject-introspection
+           blueprint-compiler
+           `(,gtk "bin")))
+    (inputs
+     (list libadwaita
+           gtk))
+    (home-page "https://github.com/ADBeveridge/raider")
+    (synopsis "Securely delete your files")
+    (description
+     "Raider is a simple shredding program built for GNOME.  Also known as
+File Shredder, it uses the GNU Core Utility called shred to securely delete
+files.")
+    (license license:gpl3+)))
 
 (define-public rest
   (package
@@ -9671,7 +9727,9 @@ shared object databases, search tools and indexing.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))))
+                "1cncyiyh79w1id6a6s2f0rxmgwl65lp4ml4afa0z35jrnwp2s8cr"))
+              (patches
+               (search-patches "nautilus-extension-search-path.patch"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9685,27 +9743,6 @@ shared object databases, search tools and indexing.")
               (substitute* "test/automated/displayless/meson.build"
                 (("^foreach t: tracker_tests" all)
                  (string-append "tracker_tests = []\n" all)))))
-          (add-after 'unpack 'make-extensible
-            (lambda _
-              (substitute* "src/nautilus-module.c"
-                (("static gboolean initialized = FALSE;" all)
-                 (string-append all "
-const char *extension_path;
-char **extension_dirs, **d;
-")
-                 )
-                (("load_module_dir \\(NAUTILUS_EXTENSIONDIR\\);" all)
-                 (string-append all
-                                "
-extension_path = g_getenv (\"NAUTILUS_EXTENSION_PATH\");
-if (extension_path)
-{
-    extension_dirs = g_strsplit (extension_path, \":\", -1);
-    for (d = extension_dirs; d != NULL && *d != NULL; d++)
-        load_module_dir(*d);
-    g_strfreev(extension_dirs);
-}
-")))))
           (add-after 'unpack 'skip-gtk-update-icon-cache
             ;; Don't create 'icon-theme.cache'.
             (lambda _

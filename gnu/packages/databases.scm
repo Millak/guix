@@ -1580,17 +1580,24 @@ types are supported, as is encryption.")
               (sha256
                (base32
                 "1w1q6kh567fd8xismq9i6wr1y893lypd30l452yvydi1qjiq1n6x"))
-              (snippet '(begin (delete-file "rec-mode.info")))))
+              (snippet #~(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'make-info
-           (lambda _
-             (invoke "makeinfo" "--no-split"
-                     "-o" "rec-mode.info" "rec-mode.texi"))))))
-    (native-inputs
-     (list texinfo))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-program-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "rec-mode.el"
+                ("rec-recfix" (search-input-file inputs "bin/recfix"))
+                ("rec-recinf" (search-input-file inputs "bin/recinf"))
+                ("rec-recsel" (search-input-file inputs "bin/recsel")))))
+          (add-before 'install 'make-info
+            (lambda _
+              (invoke "makeinfo" "--no-split"
+                      "-o" "rec-mode.info" "rec-mode.texi"))))))
+    (inputs (list recutils))
+    (native-inputs (list texinfo))
     (home-page "https://www.gnu.org/software/recutils/")
     (synopsis "Emacs mode for working with recutils database files")
     (description "This package provides an Emacs major mode @code{rec-mode}

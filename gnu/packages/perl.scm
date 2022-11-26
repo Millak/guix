@@ -1899,14 +1899,14 @@ as defined by two typical specimens of Perl coders.")
 (define-public perl-conf-libconfig
   (package
     (name "perl-conf-libconfig")
-    (version "0.100")
+    (version "0.101")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/C/CN/CNANGEL/"
                            "Conf-Libconfig-" version ".tar.gz"))
        (sha256
-        (base32 "0qdypqd7mx96bwdjlv13fn6p96bs4w0yv94yv94xa7z5lqkdj4rg"))))
+        (base32 "11dd3kb0k45gqahnnwz50x3b4b25c5jgykkwgf74rcyr0dsy0n5a"))))
     (build-system perl-build-system)
     (native-inputs
      (list perl-extutils-pkgconfig perl-test-deep perl-test-exception

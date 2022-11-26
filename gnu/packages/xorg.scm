@@ -1217,7 +1217,7 @@ hit when running single-threaded.")
             "1p0flwb67xawyv6yhri9w17m1i4lji5qnd0gq8v1vsfb8zw7rw15"))))
     (build-system gnu-build-system)
     (inputs
-      (list xorgproto libxext libx11))
+      (list xorgproto libxext libx11 windowswmproto))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")

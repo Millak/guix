@@ -880,14 +880,14 @@ Quizzes: arithmetic and quiz.")
 (define-public bzflag
   (package
     (name "bzflag")
-    (version "2.4.24")
+    (version "2.4.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.bzflag.org/bzflag/source/"
                            version "/bzflag-" version ".tar.bz2"))
        (sha256
-        (base32 "1i73ijlnxsz52fhqgkj2qcvibfgav3byq1is68gab2zwnyz330az"))))
+        (base32 "050h933lmcdf4bw9z3c6g3k8c9sch9f6kq57jp2ivb96zw2h90q1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6239,7 +6239,7 @@ emerges from a sewer hole and pulls her below ground.")
 (define-public cdogs-sdl
   (package
     (name "cdogs-sdl")
-    (version "0.8.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -6248,7 +6248,7 @@ emerges from a sewer hole and pulls her below ground.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vx37zb2iw7sfw5a2bs97ydlmb301nvy485ybdm8g46c5hn9s13c"))))
+        (base32 "1505z8rli59i1ych4rzwbf4dvhv72icdj22n1xarb8xfyz0wyp3b"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -10451,14 +10451,14 @@ get high scores.")
 (define-public burgerspace
   (package
     (name "burgerspace")
-    (version "1.9.4")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://perso.b2b2c.ca/~sarrazip/dev/"
                            "burgerspace-" version ".tar.gz"))
        (sha256
-        (base32 "1xb4immzmd419aa08lgkzf7ibxa6ax238zb2l5iw9nkgvzlh1v6l"))))
+        (base32 "1r2albqv2ygs58rwcldsx1mp2vy96j7k4yw5jjmvwgnxjmddq7wr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

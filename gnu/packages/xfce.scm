@@ -681,7 +681,7 @@ allows you to shut down the computer from Xfce.")
 (define-public xfce4-settings
   (package
     (name "xfce4-settings")
-    (version "4.16.4")
+    (version "4.16.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -689,7 +689,7 @@ allows you to shut down the computer from Xfce.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1vd3l20myjfbq53x8sywy989zd557adyv3bb2y0nhh2is8ps9aqq"))
+                "13nj80mshkz3czrp8l1yxj6qmz0kkfhzv94z3ixfgmw64j078kvs"))
               (patches (search-patches "xfce4-settings-defaults.patch"))))
     (build-system gnu-build-system)
     (arguments
@@ -1335,7 +1335,7 @@ of data to either CD/DVD/BD.")
 (define-public xfce4-screenshooter
   (package
    (name "xfce4-screenshooter")
-   (version "1.9.11")
+   (version "1.10.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1345,7 +1345,7 @@ of data to either CD/DVD/BD.")
                                 version ".tar.bz2"))
             (sha256
              (base32
-              "1d7qyc2w4962crmkz5n0mma2qmyp9hhq455karyzacjbb6z0cgg7"))))
+              "0lvv6iam348n7l3md94lanxyyn87xmrivzdvfi0fa3vgjfk88j56"))))
    (build-system gnu-build-system)
    (native-inputs
     (list pkg-config intltool

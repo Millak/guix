@@ -667,7 +667,6 @@ language and very flexible regarding to new or unknown keyboard layouts.")
            ki18n
            kiconthemes
            kitemviews
-           kqtquickcharts
            ktextwidgets
            kwidgetsaddons
            kwindowsystem

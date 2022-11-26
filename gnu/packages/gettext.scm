@@ -120,13 +120,19 @@
                                                "coreutils-gnulib-tests.patch")))))
                               '())
 
+                       #$@(if (hurd-target?)
+                              #~((substitute*
+                                     "gettext-tools/gnulib-tests/Makefile.in"
+                                   ;; See 'coreutils' for the rationale.
+                                   ((" test-tls\\$\\(EXEEXT\\) ") " ")))
+                              '())
+
                        #t)))))
 
        ;; When tests fail, we want to know the details.
        #:make-flags #~'("VERBOSE=yes"
                         #$@(if (hurd-target?)
-                               ;; Linking to libgettextlib.so makes test-raise fail
-                               '("XFAIL_TESTS=test-raise")
+                               '("XFAIL_TESTS=test-perror2")
                                '()))))
     (home-page "https://www.gnu.org/software/gettext/")
     (synopsis

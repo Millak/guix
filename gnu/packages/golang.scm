@@ -2485,6 +2485,101 @@ web framework
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-nathan-osman-go-sunrise
+  (let ((commit "c8f9f1eb869135f07378e7e3c5ec7a005f806c73")
+        (revision "0"))
+    (package
+      (name "go-github-com-nathan-osman-go-sunrise")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nathan-osman/go-sunrise")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "017zwzx05r5spxcs07dp6bnh7waknzsd819k7aqd8kr819v3x9in"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/nathan-osman/go-sunrise"))
+      (home-page "https://github.com/nathan-osman/go-sunrise")
+      (synopsis "Calculate sunrise and sunset times in Go")
+      (description
+       "This package provides a Go library for calculating sunrise and
+sunset times from geographical coordinates and a date.")
+      (license license:expat))))
+
+(define-public go-github-com-hebcal-gematriya
+  (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-gematriya")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/gematriya")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0xmnb2i80dy380yv8c4pd04bbyqgbc7c40p8hz1vqj2lhbm6jabf"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/gematriya"))
+      (home-page "https://github.com/hebcal/gematriya")
+      (synopsis "Print numbers as Hebrew letters in Go")
+      (description
+       "This package provides a Go library for printing numbers as
+Hebrew letters.")
+      (license license:bsd-2))))
+
+(define-public go-github-com-hebcal-hebcal-go
+  (let ((commit "d42e881860cfc9e8249fc79f268091c3c4d36b0d")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-hebcal-go")
+      (version (git-version "0.9.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/hebcal-go")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m9akb8pwxchpaci05gambshrzw626gsrfhl25f36vjl7mq5292n"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/hebcal-go"
+             ;; Source-only package
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Source-only package
+                 (delete 'build))))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-hebcal-gematriya
+             go-github-com-nathan-osman-go-sunrise))
+      (home-page "https://github.com/hebcal/hebcal-go")
+      (synopsis "Go library for the Hebcal perpetual Jewish calendar")
+      (description
+       "This package provides a library for conversion between Hebrew
+and Gregorian dates, and generation of lists of Jewish holidays for
+a given year.  Shabbat and holiday candle lighting and havdalah times
+are approximated based on location.
+
+Torah readings, Daf Yomi, and counting of the Omer can also be
+specified.  Algorithms are included to calculate yahrzeits, birthdays,
+and anniversaries.")
+      (license license:gpl2+))))
+
 (define-public go-github-com-aws-sdk
   (package
     (name "go-github-com-aws-sdk")

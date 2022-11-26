@@ -104,7 +104,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2021 Franck Pérignon <franck.perignon@univ-grenoble-alpes.fr>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2021, 2022 Pradana Aumars <paumars@courrier.dev>
@@ -3075,6 +3075,41 @@ applications. dogtail scripts are written in Python and executed like any
 other Python program.")
     (license license:gpl2+)))
 
+(define-public python-doxyqml
+  (package
+    (name "python-doxyqml")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doxyqml" version))
+              (sha256
+               (base32
+                "1f0jjqvamly4hn7f1palvq27z6yr694rfzyxrb6g0ysbbawxkvq9"))))
+    (build-system python-build-system)
+    (home-page "http://agateau.com/projects/doxyqml")
+    (synopsis "Doxygen input filter for QML files")
+    (description
+     "This package provides a Doxygen input filter for QML files.")
+    (license license:bsd-3)))
+
+(define-public python-doxypypy
+  (package
+    (name "python-doxypypy")
+    (version "0.8.8.6")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doxypypy" version))
+              (sha256
+               (base32
+                "06z0vbh975g42z5szbfvn9i3bif3xwr5pncqd4fvjzjkbi2p2xb2"))))
+    (build-system python-build-system)
+    (arguments '(#:tests? #f))          ;no test suite
+    (home-page "https://github.com/Feneric/doxypypy")
+    (synopsis "Doxygen filter for Python")
+    (description
+     "This package provides a Doxygen filter for Python.")
+    (license license:gpl2+)))
+
 (define-public python-empy
   (package
     (name "python-empy")
@@ -3104,25 +3139,6 @@ recording and playback via diversions, and dynamic, chainable filters.  The
 system is highly configurable via command line options and embedded
 commands.")
     (license license:lgpl2.1+)))
-
-(define-public python-enum34
-  (package
-    (name "python-enum34")
-    (version "1.1.6")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "enum34" version))
-      (sha256
-       (base32
-        "1cgm5ng2gcfrkrm3hc22brl6chdmv67b9zvva9sfs7gn7dwc9n4a"))))
-    (build-system python-build-system)
-    (home-page "https://pypi.org/project/enum34/")
-    (synopsis "Backported Python 3.4 Enum")
-    (description
-     "Enum34 is the new Python stdlib enum module available in Python 3.4
-backported for previous versions of Python from 2.4 to 3.3.")
-    (license license:bsd-3)))
 
 (define-public python-parse-type
   (package
@@ -7031,6 +7047,8 @@ as the original project seems to have been abandoned circa 2007.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                  ; Tests try to access the network.
+    (propagated-inputs
+     (list python-six))
     (home-page "http://pagekite.net/wiki/Floss/PySocksipyChain/")
     (synopsis "Python SOCKS module with chained proxies support")
     (description
@@ -10254,16 +10272,18 @@ more advanced mathematics.")
 (define-public python-bigfloat
   (package
     (name "python-bigfloat")
-    (version "0.3.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "bigfloat" version))
        (sha256
-        (base32 "0xd7q4l7v0f463diznjv4k9wlaks80pn9drdqmfifi7zx8qvybi6"))))
+        (base32 "1f0c1hdr39bbl5rds5r1waa1papjmjiyp0ixs64mkjiahzg6pfaq"))))
     (build-system python-build-system)
     (inputs
      (list mpfr))
+    (propagated-inputs
+     (list python-six))
     (home-page "https://github.com/mdickinson/bigfloat")
     (synopsis "Arbitrary precision floating-point arithmetic for Python")
     (description
@@ -16025,6 +16045,20 @@ way.")
               (sha256
                (base32
                 "00yvj8bxmhhhhd74v7j0x673is7vizmxwgb3dd5xmnkr74ybyi7w"))))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-test
+           (lambda _
+             ;; See https://github.com/bmc/munkres/issues/40
+             (substitute* "test/test_munkres.py"
+               (("^def test_profit_float" m)
+                (string-append "\
+import platform
+@pytest.mark.skipif(platform.architecture()[0] == \"32bit\",
+  reason=\"Fails on 32 bit architectures\")
+" m))))))))
     (build-system python-build-system)
     (native-inputs (list python-pytest-6))
     (home-page "https://software.clapper.org/munkres/")
@@ -17613,8 +17647,10 @@ It supports TSIG authenticated messages and EDNS0.")
            (lambda _
              (substitute* "setup.py"
                (("import DNS") "")
-               (("DNS.__version__") (string-append "\"" ,version "\"")))
-             #t)))
+               (("DNS.__version__") (string-append "\"" ,version "\"")))))
+         ;; For the same reason, drop the sanity check because the library
+         ;; fails to load without /etc/resolv.conf.
+         (delete 'sanity-check))
        #:tests? #f)) ; Also skip the tests.
     (home-page "https://launchpad.net/py3dns")
     (synopsis "Python 3 DNS library")
@@ -27371,14 +27407,14 @@ and pandoc-citeproc.")
 (define-public python-rnc2rng
   (package
     (name "python-rnc2rng")
-    (version "2.6.4")
+    (version "2.6.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "rnc2rng" version))
        (sha256
         (base32
-         "1kmp3iwxxyzjsd47j2sprd47ihhkwhb3yydih3af5bbfq0ibh1w8"))))
+         "1wbqvz2bhq2f5kqi7q2q3m9y5vs9rj970zhnjh502pvvhmbx20as"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-rply))
@@ -27575,6 +27611,8 @@ module patches @code{asyncio} to allow nested use of @code{asyncio.run} and
          "1mzk4yabxj6r149fswhis18hd8dnag5sj8i4wb06450zq3pi8dh7"))))
     (native-inputs
      (list unzip))
+    (propagated-inputs
+     (list python-six))
     (build-system python-build-system)
     (arguments '(#:tests? #f))  ; No test suite.
     (home-page "https://www.parallelpython.com")
@@ -29603,7 +29641,7 @@ development, testing, production]};
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
                         (invoke "pytest" "-vv")))))))
-    (native-inputs (list python-pytest python-pytest-mock))
+    (native-inputs (list python-pytest python-pytest-mock python-numpy))
     (propagated-inputs (list python-jedi python-pygments python-urwid
                              python-urwid-readline))
     (home-page "https://documen.tician.de/pudb/")

@@ -554,6 +554,52 @@ optional baked-in Evil support, antialiased separators, and an easy
 configuration language which makes it trivial to write your own themes.")
       (license license:gpl3+))))
 
+(define-public emacs-inspector
+  (let ((commit "0e89d28558f57db4519f154bb72ce617a8c6265d")
+        (revision "0"))
+    (package
+      (name "emacs-inspector")
+      (version (git-version "0.8" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/mmontone/emacs-inspector")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0n72sqn29b5sya686cicgp40mkk5x5821b7bw4zs6dcl82cyij5n"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-L" "."
+                               "-l" "inspector-tests.el"
+                               "-l" "tree-inspector-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'preserve-emacs-28-compatibility
+              ;; XXX: `cl-constantly' function is defined in "cl-lib" starting
+              ;; from Emacs 29+.  For now, replace it with its definition.
+              (lambda _
+                (substitute* "tree-inspector.el"
+                  (("cl-constantly") "lambda (_)"))))
+            (add-before 'check 'skip-failing-test
+              (lambda _
+                (substitute* "tree-inspector-tests.el"
+                  (("\\(ert-deftest inspector-tests--inspect-struct-test.*" all)
+                   (string-append all " (skip-unless nil)"))))))))
+      (native-inputs (list emacs-ert-runner))
+      (propagated-inputs (list emacs-treeview))
+      (home-page "https://github.com/mmontone/emacs-inspector")
+      (synopsis "Inspection tool for Emacs Lisp objects")
+      (description
+       "This package provides an introspection tool similar to those found in
+Common Lisp or Smalltalk, but for Emacs Lisp.")
+      (license license:gpl3+))))
+
 (define-public emacs-terminal-here
   (package
     (name "emacs-terminal-here")
@@ -575,6 +621,28 @@ configuration language which makes it trivial to write your own themes.")
 Emacs, whose initial working directories are determined in relation to the
 current buffer.")
     (license license:gpl3+)))
+
+(define-public emacs-treeview
+  (let ((commit "d9c10feddf3b959e7b33ce83103e1f0a61162723")
+        (revision "0"))
+    (package
+      (name "emacs-treeview")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/tilmanrassy/emacs-treeview")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "14s0b6zbapsvgyxki59lglwb3s8wjsjwkgj5r66af9nj2bgz5ms9"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/tilmanrassy/emacs-treeview/")
+      (synopsis "Emacs Lisp framework for tree navigation")
+      (description
+       "Abstract Emacs Lisp framework for tree navigation.")
+      (license license:gpl3+))))
 
 (define-public emacs-hgignore-mode
   ;; From 2021-03-14.
@@ -741,36 +809,31 @@ Emacs package archive}.")
     (license license:gpl3+)))
 
 (define-public emacs-paredit
-  ;; The last tagged release is from 2014; use the latest commit, which
-  ;; includes many fixes such as honoring the 'fill-paragraph-function'
-  ;; variable.
-  (let ((commit "d0b1a2f42fb47efc8392763d6487fd027e3a2955")
-        (revision "1"))
-    (package
-      (name "emacs-paredit")
-      (version (git-version "24" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://mumble.net/~campbell/git/paredit.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1x91xxvwb3r3h61ff1kknlaakxm1a40r7zg2lck9j52yiza4f191"))))
-      (build-system emacs-build-system)
-      (home-page "http://mumble.net/~campbell/emacs/paredit/")
-      (synopsis "Emacs minor mode for editing parentheses")
-      (description
-       "ParEdit (paredit.el) is a minor mode for performing structured editing
+  (package
+    (name "emacs-paredit")
+    (version "25")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://mumble.net/~campbell/git/paredit.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gc6lnk5xqxzl9s2m99hfi07wp4zfhh1k64c1bdrjfalv55nl998"))))
+    (build-system emacs-build-system)
+    (home-page "http://mumble.net/~campbell/emacs/paredit/")
+    (synopsis "Emacs minor mode for editing parentheses")
+    (description
+     "ParEdit (paredit.el) is a minor mode for performing structured editing
 of S-expression data.  The typical example of this would be Lisp or Scheme
 source code.
 
-ParEdit helps **keep parentheses balanced** and adds many keys for moving
+ParEdit helps keep parentheses balanced and adds many keys for moving
 S-expressions and moving around in S-expressions.  Its behavior can be jarring
 for those who may want transient periods of unbalanced parentheses, such as
 when typing parentheses directly or commenting out code line by line.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-puni
   ;; No tagged release upstream
@@ -2841,6 +2904,34 @@ like.  It can be linked with various Emacs mail clients (Message and Mail
 mode, Rmail, Gnus, MH-E, and VM).  BBDB is fully customizable.")
     (license license:gpl3+)))
 
+(define-public emacs-bbdb-vcard
+  ;; No release since Dec 1, 2013.
+  (let ((version "0.4.1") ;3d79fdb4200a64a043e203a3baac95c936095b52, not tagged
+        (revision "88")
+        (commit "113c66115ce68316e209f51ebce56de8dded3606"))
+    (package
+      (name "emacs-bbdb-vcard")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tohojo/bbdb-vcard")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sr5kd2gvw1b4hl147yb60cgx6j730vdnpyr09p7vmpw65hzwlwm"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-bbdb))
+      (home-page "https://github.com/tohojo/bbdb-vcard")
+      (synopsis
+       "vCard Import and Export for The Insidious Big Brother Database (BBDB)")
+      (description
+       "@code{bbdb-vcard.el} imports and exports vCards (version 3.0) as
+defined in RFC 2425 and RFC 2426 to/from The Insidious Big Brother Database
+(BBDB).  Version 2.1 vCards are converted into version 3.0 on import.")
+      (license license:gpl2+))))
+
 (define-public emacs-beacon
   (package
     (name "emacs-beacon")
@@ -3439,7 +3530,7 @@ of bibliographic references.")
 (define-public emacs-corfu
   (package
     (name "emacs-corfu")
-    (version "0.28")
+    (version "0.33")
     (source
      (origin
        (method git-fetch)
@@ -3448,7 +3539,7 @@ of bibliographic references.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lmjmaijanhhimkd006y5g1pvpllqgm30wj2y3wf3h4sl7h23rcz"))))
+        (base32 "0c353k6f4i96gajfw1zvidhlwr2brnhhdr39503hpa5wnp69wak7"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -3496,7 +3587,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.10")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
@@ -3505,7 +3596,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kcnyzksj8yglk67g1130wxzscgipm7cz2hs8mvdqpcbz4i38jny"))))
+        (base32 "0z6ixw7gsx1g7x2xpj5ilslrjrlp6x2ynzh731hs3yf3n281715b"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
@@ -4626,7 +4717,6 @@ which is restored where possible when the file is loaded again.")
     (build-system emacs-build-system)
     (arguments
      `(#:tests? #t
-       #:emacs ,emacs                   ; FIXME: tests fail with emacs-minimal
        #:test-command '("./run-tests.sh")))
     (home-page "https://github.com/magnars/s.el")
     (synopsis "Emacs string manipulation library")
@@ -6105,10 +6195,10 @@ blocks with @code{org-babel} in @code{org-mode}.")
       (license license:gpl3+))))
 
 (define-public emacs-ob-restclient
-  (let ((commit "f7449b2068498fe9d8ab9589e0a638148861533f"))
+  (let ((commit "1b021ce1c67c97fa1aa4d2c0816edb7add129e48"))
     (package
       (name "emacs-ob-restclient")
-      (version (git-version "0.02" "2" commit))
+      (version (git-version "0.02" "3" commit))
       (source
        (origin
          (method git-fetch)
@@ -6117,7 +6207,7 @@ blocks with @code{org-babel} in @code{org-mode}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0s3931w9ab3yfml2pmq71rw21yf6hpg7m3vihxyy3vs6zli1cvmq"))))
+          (base32 "1bcjj01q5n9w2cch6brbz8pzwnwsmdlgaa4sf5s97b9frmqb2ffg"))))
       (propagated-inputs
        (list emacs-restclient))
       (build-system emacs-build-system)
@@ -6930,7 +7020,7 @@ files which are intended to be packages.")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+                      (url "https://git.sr.ht/~manuel-uberti/flymake-proselint")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
@@ -6947,11 +7037,9 @@ files which are intended to be packages.")
                   (("\"proselint\"")
                    (string-append
                     "\"" (search-input-file inputs "/bin/proselint") "\""))))))))
-      (propagated-inputs
-       (list emacs-flycheck))
       (inputs
        (list python-proselint))
-      (home-page "https://git.sr.ht/~manuel-uberti/flycheck-proselint")
+      (home-page "https://git.sr.ht/~manuel-uberti/flymake-proselint")
       (synopsis "Flymake backend for @code{proselint}")
       (description "This package adds support for @code{proselint} in Flymake.")
       (license license:gpl3+))))
@@ -11763,26 +11851,40 @@ like @code{org-edit-src-code} but for arbitrary regions.")
 (define-public emacs-projectile
   (package
     (name "emacs-projectile")
-    (version "2.6.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://raw.githubusercontent.com/bbatsov"
-                                  "/projectile/v" version "/projectile.el"))
-              (file-name (string-append "projectile-" version ".el"))
-              (sha256
-               (base32
-                "12crymgri4sg7fvnh692f96cm0krmmcnz6x3ypxgq8da84rl34p4"))))
+    (version "2.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/bbatsov/projectile")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0ybd41iss8vd56qv6czpxqq7a99s4h7i3a2r4khy4rf5blj5zdqi"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "buttercup" "-L" ".")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'fix-failing-test
+            (lambda _
+              (substitute* "test/projectile-test.el"
+                (("user-emacs-directory") "\".\"")))))))
+    (native-inputs
+     (list emacs-buttercup))
     (propagated-inputs
      (list emacs-dash emacs-pkg-info))
     (home-page "https://github.com/bbatsov/projectile")
     (synopsis "Manage and navigate projects in Emacs easily")
     (description
      "This library provides easy project management and navigation.  The
-concept of a project is pretty basic - just a folder containing special file.
-Currently git, mercurial and bazaar repos are considered projects by default.
-If you want to mark a folder manually as a project just create an empty
-.projectile file in it.")
+concept of a project is pretty basic: just a folder containing special file.
+Currently Git, Mercurial and Bazaar repositories are considered projects by
+default.  If you want to mark a folder manually as a project just create an
+empty @file{.projectile} file in it.")
     (license license:gpl3+)))
 
 (define-public emacs-skeletor
@@ -13324,6 +13426,30 @@ Lua programming language}.")
      "This Emacs package provides modes for ebuild, eclass, eblit, GLEP42
 news items, openrc and runscripts.")
     (license license:gpl2+)))
+
+(define-public emacs-ebuku
+  ;; Upstream has no tagged release.
+  (let ((revision "1")
+        (commit "0c6cf404a49bd68800221446df186fffa0139325"))
+    (package
+      (name "emacs-ebuku")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/flexibeast/ebuku")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09fkzmcvzdbdjaa167wiybj0kir7y12pcq2varjywshvq2l7niz4"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/flexibeast/ebuku")
+      (synopsis "Emacs interface to the buku Web bookmark manager")
+      (description
+       "Ebuku provides a basic interface to the @code{buku} Web bookmark
+manager.")
+      (license license:gpl3+))))
 
 (define-public emacs-evil
   ;; Commit message claims this is 1.15.0, but there's no tag for it, so we
@@ -16623,6 +16749,26 @@ for the current file, using the major mode as a hint.  It prompts you to enter
 one if it fails.")
     (license license:gpl3+)))
 
+(define-public emacs-jarchive
+  (package
+    (name "emacs-jarchive")
+    (version "0.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~dannyfreeman/jarchive")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fi3y5kmy7ginyqg12q797bma638xmam7lrk74x6yhx84xgzb4fq"))))
+    (build-system emacs-build-system)
+    (home-page "https://sr.ht/~dannyfreeman/jarchive")
+    (synopsis "Jarchive teaches Emacs how to navigate to files inside JARs")
+    (description "Jarchive makes Emacs handle Java and LSP URIs pointing to
+ source inside JARs.")
+    (license license:gpl3+)))
+
 (define-public emacs-eldoc
   (package
     (name "emacs-eldoc")
@@ -16929,9 +17075,9 @@ formatting, and utility methods for jsonnet files.")
     (license license:gpl3+)))
 
 (define-public emacs-restclient
-  (let ((commit "ac8aad6c6b9e9d918062fa3c89c22c2f4ec48bc3")
+  (let ((commit "1fb570643b08ba66eb70831b6f874f52546917f1")
         (version "0")
-        (revision "3"))               ;Guix package revision,
+        (revision "4"))               ;Guix package revision,
                                         ;upstream doesn't have official releases
     (package
       (name "emacs-restclient")
@@ -16943,7 +17089,7 @@ formatting, and utility methods for jsonnet files.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1a2c7xzy7rsan1zcdskia6m7n6j29xacfkqjlfdhzk6rr1bpzkwk"))
+                  "0npij1p1yw4p1f1yrx6bl8q18nav5p2xvbp7qhzhn7lb2fdn5jqv"))
                 (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (propagated-inputs
@@ -17101,6 +17247,42 @@ additions:
     (description
      "This package provides a sidebar for Emacs similar to @code{NeoTree}
 or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
+    (license license:gpl3+)))
+
+(define-public emacs-dirvish
+  (package
+    (name "emacs-dirvish")
+    (version "2.0.53")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/alexluigit/dirvish")
+                    (commit "c535e2147171be5506f4ff34e862bacbfb3de768")))
+              (sha256
+               (base32
+                "1nmp5ci4dvcpih6phfhk66s98lf8b49qd35ymy29kqkf5v4cnwga"))
+              (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-transient))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Move the extensions source files to the top level, which
+          ;; is included in the EMACSLOADPATH.
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (let ((el-files (find-files "./extensions" ".*\\.el$")))
+                (for-each (lambda (f)
+                            (rename-file f (basename f)))
+                          el-files)))))))
+    (home-page "https://github.com/alexluigit/dirvish")
+    (synopsis "Improved version of the Emacs package Dired")
+    (description
+     "Dirvish is an improved version of the Emacs inbuilt package Dired.  It
+not only gives Dired an appealing and highly customizable user interface, but
+also comes together with almost all possible parts required for full usability
+as a modern file manager.")
     (license license:gpl3+)))
 
 (define-public emacs-which-key
@@ -19300,7 +19482,7 @@ match and total match information in the mode-line in various search modes.")
 (define-public emacs-pg
   (package
     (name "emacs-pg")
-    (version "0.16")
+    (version "0.19")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/emarsden/pg-el")
@@ -19308,7 +19490,7 @@ match and total match information in the mode-line in various search modes.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jdnslpgdm16klaga02p33g7c8bjzg164kxz3jd7gs5v9gqa6ppz"))))
+                "13fkkpimhxh91hmsp551wzrdcic5ws7wj7vjwnh8l83hsrxmxz0y"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emarsden/pg-el")
     (synopsis "Emacs Lisp interface for PostgreSQL")
@@ -19904,7 +20086,7 @@ according to a parsing expression grammar.")
 (define-public emacs-eldev
   (package
     (name "emacs-eldev")
-    (version "1.2.2")
+    (version "1.3")
     (source
      (origin
        (method git-fetch)
@@ -19913,7 +20095,7 @@ according to a parsing expression grammar.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d6wbfim0q81sm5m45fjc6n0v6nk32qrgas5nzrs0vslym4bfxna"))))
+        (base32 "112jv9rz6brglffwsablnhafhhnfnq89k9vh8xzbbi6i4xz2l1ak"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -20755,8 +20937,8 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
 (define-public emacs-crdt
   ;; XXX: Upstream does not always tag new releases.  The commit below
   ;; corresponds exactly to latest version bump.
-  (let ((commit "92a7c93a3b4cb4b40f133acd22c89a5fda5cdd30")
-        (version "0.3.4"))
+  (let ((commit "e6d42f42c5dedb73560048f4bf6263c63ffa21bb")
+        (version "0.3.5"))
     (package
       (name "emacs-crdt")
       (version version)
@@ -20768,7 +20950,7 @@ never confused by comments or @code{foo-bar} matching @code{foo}.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1vh4d15g62crm4vimc7lgr11ws68g25ylipnvqlrrkvl6qrz3fhj"))))
+          (base32 "16dpg0d8p4fqjl2nir290iim9bb7f87rwnxs16lx67dasvbfawph"))))
       (build-system emacs-build-system)
       (home-page "https://code.librehq.com/qhong/crdt.el")
       (synopsis "Real-time collaborative editing environment")
@@ -20985,22 +21167,22 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.1.7")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
                            version ".tar"))
        (sha256
-        (base32 "02imi2qj329yrqvs23d4z7fv8bbaz0fvya6zdswb38blpdri4cn1"))))
+        (base32 "0phssrcpmcidzlwy1577f3f02qwjs6hpavb416302y0n8kkhwvli"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")
     (synopsis "Completion kind icons in Emacs")
-    (description "Kind-icon mode adds a colorful icon or text prefix based
-on :company-kind for compatible completion UIs.  The \"kind\" prefix is
-typically used for differentiating completion candidates such as variables,
-functions, etc.")
+    (description "Kind-icon mode adds a colorful icon or text prefix based on
+@code{:company-kind} for compatible completion UIs.  The ``kind'' prefix is
+typically used for differentiating completion candidates such as variables or
+functions.")
     (license license:gpl3+)))
 
 (define-public emacs-svg-icon
@@ -22552,6 +22734,29 @@ It replaces the standard completions buffer with Ido prompt.")
     (description "This package provides functions to generate random words
 using user-provided rules.")
     (license license:gpl3+)))
+
+(define-public emacs-on
+  (let ((commit "83baed07a105c135190d49d7ec77f95e8f38fa54")
+        (revision "0"))
+    (package
+      (name "emacs-on")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/ajgrf/on.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14ly3w89hf4jgd8wacirxgd8vrgj7vc0hpfn911w5wa4k2a6nzpp"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/ajgrf/on.el")
+      (synopsis "Hooks for faster Emacs startup")
+      (description
+       "This package exposes a number of utility hooks and functions ported
+from Doom Emacs.")
+      (license license:expat))))
 
 (define-public emacs-on-screen
   (package
@@ -26087,7 +26292,7 @@ according to their use.")
 (define-public emacs-detached
   (package
     (name "emacs-detached")
-    (version "0.9.2")
+    (version "0.10.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26096,7 +26301,7 @@ according to their use.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0bcrqqim6is75d4zadswxp162m9gd34xmb2wxsx9rhvkwq0ln35k"))))
+                "0dvvyqc0nw9has54vps10f5iv831cb29vqvbvx0m2djv9pacqp17"))))
     (arguments
      (list
       #:tests? #t
@@ -28571,8 +28776,7 @@ between \"frame-width\" and \"frame-height\", between \"public\",
        (method url-fetch)
        (uri (string-append
              "https://elpa.gnu.org/packages/ediprolog-"
-             version
-             ".el"))
+             version ".tar"))
        (sha256
         (base32 "021jm5zdxrjg7xcja18vgc2v52rk17xi1k7xxw8q802nmixhy0js"))))
     (build-system emacs-build-system)
@@ -31908,6 +32112,31 @@ ASCII UML sequence diagrams in Emacs, which can be embedded in source code,
 comments or emails.")
       (license license:gpl3+))))
 
+(define-public emacs-ukrainian-holidays
+  ;; There is no proper release.
+  ;; The base version is extracted from the source code.
+  (let ((revision "0")
+        (commit  "e52b0c92843e9f4d0415a7ba3b8559785497d23d"))
+    (package
+      (name "emacs-ukrainian-holidays")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/abo-abo/ukrainian-holidays")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "033v4ck979lhkpwblci5clacfc1xnkq03p5d1m566wff8dp5flwz"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/abo-abo/ukrainian-holidays")
+      (synopsis "Ukrainian holidays for Emacs calendar")
+      (description
+       "This package provides Ukrainian holidays for Emacs calendar.")
+      (license license:gpl3+))))
+
 (define-public emacs-trashed
   (package
     (name "emacs-trashed")
@@ -32687,14 +32916,14 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 (define-public emacs-xref
   (package
     (name "emacs-xref")
-    (version "1.5.1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xref-"
                            version ".tar"))
        (sha256
-        (base32 "131jxsc1sl8q3r9drhylwyfig9qjjkj3hilv3npidp868pr7xdna"))))
+        (base32 "0vqs2l4gypdx475yi0yic0mnsg1f9nm698gi90kh7xfcpmkfcgb4"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
@@ -32874,7 +33103,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "0.28")
+    (version "0.29")
     (source
      (origin
        (method git-fetch)
@@ -32883,7 +33112,7 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0yybwj32k74c5c4rzlpmkq540b8ax0ihn5v7krnri83wn50hr272"))))
+        (base32 "0gqfq7yni470yys9blarmsinjgf1025azlr09g1842w20hwrs7hc"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
@@ -33378,7 +33607,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.5")
+   (version "0.6")
    (source
      (origin
        (method git-fetch)
@@ -33386,7 +33615,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "1gny2p3w6ck5sarv6vap2y1lj6h9qaxbh7r7bzszb9qj8rhapk6q"))
+        (base32 "03zpwb475rpbhq1s6101clj0j9mcxdg033clvvybp0p7hm4inwaz"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (home-page "https://github.com/minad/org-modern")
@@ -33435,8 +33664,8 @@ headlines, keywords, tables and source blocks.")
       (license license:gpl3+)))) ; License is in pyimport.el
 
 (define-public emacs-straight-el
-  (let ((commit "fed215348076ba9182f634e0770a175220474b5a")
-        (revision "0"))
+  (let ((commit "f21103d97d180fba0b6e2e86ebb0b6269219ef2c")
+        (revision "1"))
     (package
       (name "emacs-straight-el")
       (version (git-version "0" revision commit))
@@ -33449,7 +33678,7 @@ headlines, keywords, tables and source blocks.")
            (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0z0j670s18mp1bhrsnng0mybcbnlywarhlz7zmrf9399rr513z1x"))))
+          (base32 "1dqhb7kx4hr3cm4gj6qdk9aav05vc016y4nks2dj1sy88wia6wsv"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -33586,7 +33815,7 @@ with popups, which also work in the terminal.")
 (define-public emacs-popon
   (package
     (name "emacs-popon")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -33596,7 +33825,7 @@ with popups, which also work in the terminal.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14hf1n9d7rqfzr58kjsvjq63v3iamk3szvcn6zms7ry8x70v3lmv"))))
+        (base32 "0wkydg326ql8cvvmibq1nf6y40d1b0ax0p892pwncmi7awnf20gr"))))
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/akib/emacs-popon/")
     (synopsis "Pop floating text on a window")
@@ -33792,16 +34021,16 @@ into the current buffer.")
         (revision "0"))
     (package
       (name "emacs-flymake-mypy")
-      (version (git-version "0.2.0" revision commit))
+      (version "0.3.0")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
                       (url "https://github.com/com4/flymake-mypy")
-                      (commit commit)))
+                      (commit version)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "124pfa1kwrapwylbrvkzg3jwcmlsvfklg33ms9ki32khvglmff5h"))))
+                  "1zaa2kljsmm13layqmb7dwd7l2x3a5ymzzmzjjhykc67kbyjvvkk"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/com4/flymake-mypy")
       (synopsis "Flymake checker for mypy")
@@ -33844,6 +34073,187 @@ using mypy.")
        "This package is a potpourri of helper functions to control a MPV
 process via its IPC interface.")
       (license license:gpl3+))))
+
+(define-public emacs-apel-lb
+  ;; No release since Jun 15, 2010.
+  (let ((version "10.8")                ;tag chise-base-0_25
+        (revision "81")
+        (commit "82eb2325bd149dc57b43a9ce9402c6c6183e4052"))
+    (package
+      (name "emacs-apel-lb")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/apel")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qiw19pn1cs8y571irw7bjdygkvwan9ch2i1dg139dri4b6q1il6"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Library for making portable Emacs Lisp programs")
+      (description
+       "A Portable Emacs Library (APEL) is a library for making portable Emacs
+Lisp programs.  APEL-LB is a variant of APEL, which features supports to
+latest Emacs.")
+      (license license:gpl2+))))
+
+(define-public emacs-flim-lb
+  ;; No release since Nov 28, 2007.
+  (let ((version "1.14.9")
+        (revision "133")
+        (commit "57c6b868aa314717f40a520daed7249665e8d992"))
+    (package
+      (name "emacs-flim-lb")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/flim")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1mf8r5mf3bd0719fnhifb6lfvl7n4m552crcdhkbkkif8srrl6df"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-apel-lb emacs-oauth2))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis
+       "Library for basic features about message representation or encoding")
+      (description
+       "FLIM is a library to provide basic features about message representation
+or encoding.  FLIM-LB is a variant of FLIM, which features supports to latest
+Emacs.")
+      (license license:gpl2+))))
+
+(define-public emacs-semi-epg
+  ;; No release since Dec 24, 2003.
+  (let ((version "1.14.6")
+        (revision "241")
+        (commit "ac3e726ca94ed245c25881ec8d7177d0d834ea6a"))
+    (package
+      (name "emacs-semi-epg")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/semi")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1bg07y6svvg1mmlr455x3j1anjp3wbv27s6b2inp294rbwprm41n"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-bbdb-vcard emacs-flim-lb))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Library to provide MIME feature for GNU Emacs")
+      (description
+       "SEMI is a package for GNU Emacs to provide features related with MIME
+user interface.  SEMI-EPG is a variant of SEMI, which features supports to
+EasyPG and latest Emacs.")
+      (license license:gpl2+))))
+
+(define-public emacs-wanderlust
+  ;; No release since Jan 15, 2010.
+  ;; FIXME: Building with emacs-next-pgtk would yield a void variable related
+  ;; macro-expansion failure at runtime, so don't rewrite emacs input of this
+  ;; package.
+  (let ((version "2.15.9")
+        (revision "779")
+        (commit "f5cb2f0cf5e2c893acf2e669fd549836828dfdfc"))
+    (package
+      (name "emacs-wanderlust")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wanderlust/wanderlust")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 '(begin (substitute* "WL-CFG"
+                           ((".*WL_PREFIX.*")
+                            (string-append "(setq wl-install-utils t)" "\n"
+                                           "(setq WL_PREFIX \"\")" "\n"
+                                           "(setq ELMO_PREFIX \"\")" "\n")))
+                         (substitute* "Makefile"
+                           (("package-user-dir") "NONE"))))
+                (sha256
+                 (base32
+                  "1ijs57wv1vrh33vn311hgkp42vlmjyi998nc4qdrqi7yy9j8hl1h"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'expand-load-path 'chdir-elmo
+                   (lambda _
+                     (chdir "elmo")))
+                 (add-after 'chdir-elmo 'expand-load-path-elmo
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-elmo 'chdir-utils
+                   (lambda _
+                     (chdir "../utils")))
+                 (add-after 'chdir-utils 'expand-load-path-utils
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-utils 'chdir-wl
+                   (lambda _
+                     (chdir "../wl")))
+                 (add-after 'chdir-wl 'expand-load-path-wl
+                   (assoc-ref %standard-phases 'expand-load-path))
+                 (add-after 'expand-load-path-wl 'change-directory
+                   (lambda _
+                     (chdir "..")))
+                 (add-after 'install 'install-via-makefile
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (let ((emacs (search-input-file inputs "/bin/emacs"))
+                           (lispdir (elpa-directory #$output))
+                           (infodir (string-append #$output "/share/info")))
+                       (for-each mkdir-p (list lispdir infodir))
+                       (substitute* "Makefile"
+                         (("(EMACS\t= )emacs" all m)
+                          (string-append m emacs))
+                         (("(LISPDIR = )NONE" all m)
+                          (string-append m lispdir))
+                         (("(PIXMAPDIR = )NONE" all m)
+                          (string-append m lispdir "/icons"))
+                         (("(INFODIR = )NONE" all m)
+                          (string-append m infodir))))
+                     (invoke "make" "install")
+                     (invoke "make" "install-info"))))))
+      (propagated-inputs (list emacs-semi-epg))
+      (home-page "https://www.emacswiki.org/emacs/WanderLust")
+      (synopsis "Yet Another Message Interface on Emacsen")
+      (description
+       "Wanderlust is an mail/news management system on Emacsen.  It supports
+IMAP4rev1(RFC2060), NNTP, POP and local message files.
+
+The main features of Wanderlust:
+
+@itemize
+@item Pure elisp implementation.
+@item Supports IMAP4rev1, NNTP, POP(POP3/APOP), MH and Maildir format.
+@item Unified access method to messages based on Mew-like Folder Specification.
+@item Mew-like Key-bind and mark handling.
+@item Manages unread messages.
+@item Interactive thread display.
+@item Folder Mode shows the list of subscribed folders.
+@item Message Cache, Disconnected Operation.
+@item MH-like FCC (Fcc: %Backup and Fcc: $Backup is allowed).
+@item MIME compliant (by SEMI).
+@item Transmission of news and mail are unified by Message transmitting draft.
+@item Graphical list of folders.
+@item View a part of message without retrieving the whole message (IMAP4).
+@item Server-side message look up (IMAP4), multi-byte characters are allowed.
+@item Virtual Folders.
+@item Supports compressed folder using common archiving utilities.
+@item Old articles in folders are automatically removed/archived (Expiration).
+@item Automatic re-file.
+@item Template function makes it convenient to send fixed form messages.
+@end itemize\n")
+      (license license:gpl2+))))
 
 (define-public emacs-waveform
   ;; XXX: Upstream provides no Version keyword.  Using 0 as base version.

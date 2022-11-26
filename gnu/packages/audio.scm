@@ -3707,7 +3707,8 @@ analysis plugins or audio feature extraction plugins.")
             (symlink
              (search-input-file inputs
                                 (string-append "/share/automake-"
-                                               ,(package-version automake)
+                                               ,(version-major+minor
+                                                 (package-version automake))
                                                "/ar-lib"))
              "ar-lib")
             #t)))))

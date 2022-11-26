@@ -172,6 +172,7 @@ done
     (build-system trivial-build-system)
     (arguments
      `(#:modules ((guix build utils)
+                  (guix build syscalls)
                   (guix cpio))
        #:builder (begin
                    (use-modules (guix build utils)

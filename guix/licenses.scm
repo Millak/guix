@@ -57,6 +57,7 @@
             edl1.0
             epl1.0
             epl2.0
+            eupl1.1
             eupl1.2
             expat expat-0
             freetype
@@ -343,6 +344,11 @@ at URI, which may be a file:// URI pointing the package's tree."
   (license "EPL 2.0"
            "https://www.eclipse.org/legal/epl-2.0/"
            "https://www.gnu.org/licenses/license-list#EPL2"))
+
+(define eupl1.1
+  (license "EUPL 1.1"
+           "https://directory.fsf.org/wiki/License:EUPL-1.1"
+           "https://www.gnu.org/licenses/license-list#EUPL-1.1"))
 
 (define eupl1.2
   (license "EUPL 1.2"

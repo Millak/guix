@@ -17,6 +17,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Arthur Margerit <ruhtra.mar@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
@@ -76,6 +78,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
@@ -757,6 +760,59 @@ translated.")
      "GLib bindings for D-Bus.  The package is obsolete and superseded
 by GDBus included in Glib.")
     (license license:gpl2)))                     ; or Academic Free License 2.1
+
+(define-public libaccounts-glib
+  (package
+    (name "libaccounts-glib")
+    (version "1.25")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/accounts-sso/libaccounts-glib")
+                    (commit (string-append "VERSION_" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19rhk9f97m736d5ia26vfcbjp5kgi454558yhf9mrwm4iw5d9pk4"))))
+    (build-system meson-build-system)
+    (native-inputs (list dbus
+                         `(,glib "bin")
+                         gobject-introspection
+                         gtk-doc
+                         pkg-config
+                         vala))
+    (inputs (list check python python-pygobject))
+    (propagated-inputs (list glib libxml2 sqlite))
+    (arguments
+     (list #:tests? #f                  ;one test fails.
+           #:imported-modules `((guix build python-build-system)
+                                ,@%meson-build-system-modules)
+           #:modules '(((guix build python-build-system)
+                        #:select (python-version))
+                       (guix build meson-build-system)
+                       (guix build utils))
+           ;; don't try installing to python store path.
+           #:configure-flags
+           #~(list (string-append "-Dpy-overrides-dir="
+                                  #$output "/lib/python"
+                                  (python-version #$(this-package-input
+                                                     "python"))
+                                  "/site-packages/gi/overrides"))
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-run-session" "--" "meson" "test"
+                                      "--print-errorlogs")))))))
+    (home-page "https://accounts-sso.gitlab.io/")
+    (synopsis "Accounts SSO (Single Sign-On) management library for GLib
+applications")
+    (description
+     "Accounts SSO is a framework for application developers who
+wish to acquire, use and store web account details and credentials.  It
+handles the authentication process of an account and securely stores the
+credentials and service-specific settings.")
+    (license license:lgpl2.1+)))
 
 (define libsigc++
   (package

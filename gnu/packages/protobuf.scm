@@ -189,7 +189,7 @@ internal RPC protocols and file formats.")
 ;; The 3.5 series are the last versions that do not require C++ 11.
 (define-public protobuf-3.5
   (package
-    (inherit protobuf)
+    (inherit protobuf-3.6)
    (version "3.5.1")
    (source (origin
               (method url-fetch)

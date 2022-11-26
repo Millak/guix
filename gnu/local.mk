@@ -1044,9 +1044,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/dstat-skip-devices-without-io.patch	\
   %D%/packages/patches/dvd+rw-tools-add-include.patch 		\
   %D%/packages/patches/dynaconf-unvendor-deps.patch		\
-  %D%/packages/patches/ecl-16-format-directive-limit.patch	\
-  %D%/packages/patches/ecl-16-ignore-stderr-write-error.patch	\
-  %D%/packages/patches/ecl-16-libffi.patch			\
   %D%/packages/patches/efibootmgr-remove-extra-decl.patch	\
   %D%/packages/patches/efivar-211.patch			\
   %D%/packages/patches/eigen-fix-strict-aliasing-bug.patch	\
@@ -1387,6 +1384,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/lightdm-vncserver-check.patch		\
   %D%/packages/patches/lightdm-vnc-color-depth.patch		\
   %D%/packages/patches/localed-xorg-keyboard.patch		\
+  %D%/packages/patches/kcontacts-incorrect-country-name.patch	\
+  %D%/packages/patches/kde-cli-tools-delay-mime-db.patch	\
   %D%/packages/patches/kdiagram-Fix-missing-link-libraries.patch \
   %D%/packages/patches/kiki-level-selection-crash.patch		\
   %D%/packages/patches/kiki-makefile.patch			\
@@ -1440,6 +1439,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/libofa-ftbfs-2.diff		\
   %D%/packages/patches/libotr-test-auth-fix.patch		\
   %D%/packages/patches/libksieve-Fix-missing-link-libraries.patch \
+  %D%/packages/patches/libksysguard-qdiriterator-follow-symlinks.patch \
   %D%/packages/patches/libmad-armv7-thumb-pt1.patch		\
   %D%/packages/patches/libmad-armv7-thumb-pt2.patch		\
   %D%/packages/patches/libmad-length-check.patch		\
@@ -1483,7 +1483,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/lierolibre-try-building-other-arch.patch	\
   %D%/packages/patches/libcdio-glibc-compat.patch		\
   %D%/packages/patches/linbox-fix-pkgconfig.patch		\
-  %D%/packages/patches/linphone-desktop-without-sdk.patch           \
+  %D%/packages/patches/linphone-desktop-without-sdk.patch	\
+  %D%/packages/patches/linux-libre-infodocs-target.patch	\
   %D%/packages/patches/linux-libre-support-for-Pinebook-Pro.patch \
   %D%/packages/patches/linux-pam-no-setfsuid.patch		\
   %D%/packages/patches/linuxdcpp-openssl-1.1.patch		\
@@ -1561,6 +1562,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/musl-cross-locale.patch			\
   %D%/packages/patches/mutt-store-references.patch		\
   %D%/packages/patches/m4-gnulib-libio.patch			\
+  %D%/packages/patches/nautilus-extension-search-path.patch	\
   %D%/packages/patches/ncompress-fix-softlinks.patch		\
   %D%/packages/patches/ncftp-reproducible.patch			\
   %D%/packages/patches/netcdf-date-time.patch			\
@@ -1988,6 +1990,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/vtk-7-gcc-10-compat.patch		\
   %D%/packages/patches/vtk-7-hdf5-compat.patch			\
   %D%/packages/patches/vtk-7-python-compat.patch		\
+  %D%/packages/patches/wacomtablet-add-missing-includes.patch	\
+  %D%/packages/patches/wacomtablet-qt5.15.patch			\
   %D%/packages/patches/warsow-qfusion-fix-bool-return-type.patch	\
   %D%/packages/patches/webkitgtk-adjust-bubblewrap-paths.patch	\
   %D%/packages/patches/webrtc-audio-processing-big-endian.patch	\

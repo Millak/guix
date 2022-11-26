@@ -593,7 +593,7 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
 (define-public slurm-monitor
   (package
     (name "slurm-monitor")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -603,9 +603,10 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
          (commit (string-append "upstream/" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n6pgrcs8gwrcq5fch1q3yk3jipjwrf21s9a13fbjrl903g5zzv9"))))
-    (build-system cmake-build-system)
+        (base32 "07q8895bxsajkwip8dgrrwr1m8a10xnl4p0g6wqcrd2wf4hx5gn3"))))
+    (build-system meson-build-system)
     (arguments `(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
     (inputs (list ncurses))
     (synopsis "Network load monitor")
     (description
@@ -1538,22 +1539,14 @@ Ethernet devices.")
 (define-public ifstatus
   (package
     (name "ifstatus")
-    (version "1.1.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/ifstatus/ifstatus/"
-                                  "ifstatus%20v" version "/ifstatus-v"
-                                  version ".tar.gz"))
+                                  "ifstatus-v" version ".tar.gz"))
               (sha256
                (base32
-                "045cbsq9ps32j24v8y5hpyqxnqn9mpaf3mgvirlhgpqyb9jsia0c"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Main.h"
-                    (("#include <stdio.h>")
-                     "#include <stdio.h>\n#include <stdlib.h>"))
-                  #t))))
+                "0n622f2m3x901hcmad4ns52r2x75csy4nqraagzb8h9fn0j62jkv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                                ; no "check" target

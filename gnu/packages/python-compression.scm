@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2017, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2018, 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
@@ -31,6 +31,7 @@
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages compression)
@@ -47,21 +48,20 @@
 (define-public python-multivolumefile
   (package
     (name "python-multivolumefile")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "multivolumefile" version))
        (sha256
         (base32
-         "0j46wab4b09s3favjzp3zs1cn2sn8pr7qyngs5wn31hpqqxbbz76"))))
-    (build-system python-build-system)
+         "1mh9sz50s1p8ik83a455pqd57syprad7xhfmk28yb5mwmw58sr50"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pep517
-           python-setuptools
-           python-setuptools-scm
+     (list python-setuptools-scm
            python-coverage
            python-coveralls
+           python-hypothesis
            python-pyannotate
            python-pytest
            python-pytest-cov))
@@ -70,6 +70,36 @@
     (description "MultiVolumefile is a Python library that provides a
 file-object abstraction, making it possible to use multiple files as if they
 were a single file.")
+    (license license:lgpl2.1+)))
+
+(define-public python-pybcj
+  (package
+    (name "python-pybcj")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pybcj" version))
+              (sha256
+               (base32
+                "1hvm3c3mb20z25kmbzyyn6pr5inx50z0ignl8b0bggxaik82ws4b"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata))
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-pytest
+           python-pytest-cov
+           python-setuptools-scm))
+    (home-page "https://codeberg.org/miurahr/pybcj")
+    (synopsis "BCJ filter library")
+    (description "In data compression, BCJ, short for Branch-Call-Jump, refers
+to a technique that improves the compression of machine code of executable
+binaries by replacing relative branch addresses with absolute ones. This
+allows a LZMA compressor to identify duplicate targets and archive higher
+compression rate.  BCJ is used in the 7-zip compression utility as the default
+filter for executable binaries.
+
+pybcj provides Python bindings to a BCJ implementation in C.")
     (license license:lgpl2.1+)))
 
 (define-public python-bcj-cffi
@@ -93,6 +123,59 @@ were a single file.")
     (synopsis "Branch / Call /Jump CFFI library in Python")
     (description "This package provides an implementation of the Branch / Call /
 Jump conversion filter by CFFI for Python.")
+    (license license:lgpl2.1+)))
+
+(define-public python-brotlicffi
+  (package
+    (name "python-brotlicffi")
+    (version "1.0.9.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "brotlicffi" version))
+              (sha256
+               (base32
+                "15kxgdiqcg0cm6h5xq3vkbhw7674673hcx3n2yicd3wx29l8l90c"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   (delete-file-recursively "libbrotli")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'use-shared-brotli
+             (lambda _
+               (setenv "USE_SHARED_BROTLI" "1"))))))
+    (propagated-inputs (list python-cffi))
+    (inputs (list brotli))
+    (home-page "https://github.com/python-hyper/brotlicffi")
+    (synopsis "Python CFFI bindings to the Brotli library")
+    (description "This package provides Python CFFI bindings to the Brotli
+library.")
+    (license license:expat)))
+
+(define-public python-inflate64
+  (package
+    (name "python-inflate64")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "inflate64" version))
+              (sha256
+               (base32
+                "0767j35gkwaykl1iq9qn8rc25j1ggv56x3d1vzjpk89bzpzdhbdm"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-importlib-metadata))
+    (native-inputs
+     (list python-pyannotate
+           python-pytest
+           python-setuptools-scm))
+    (home-page "https://pypi.org/project/inflate64/")
+    (synopsis "deflate64 compression/decompression library")
+    (description "The @code{inflate64} package provides @code{Deflater} and
+@code{Inflater} classes to compress and decompress with the Enhanced Deflate
+compression algorithm.")
     (license license:lgpl2.1+)))
 
 (define-public python-isal
@@ -124,24 +207,50 @@ Jump conversion filter by CFFI for Python.")
 and decompression by implementing Python bindings for the ISA-L library.")
     (license license:expat)))
 
+(define-public python-pyppmd
+  (package
+    (name "python-pyppmd")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyppmd" version))
+              (sha256
+               (base32
+                "03w4x26mar0ha73c3v39psn1i0k6xrzwmaxfsxysic73jz99np07"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-coverage
+           python-hypothesis
+           python-pytest
+           python-pytest-benchmark
+           python-pytest-cov
+           python-pytest-timeout
+           python-setuptools-scm))
+    (home-page "https://github.com/miurahr/pyppmd")
+    (synopsis "PPMd compression/decompression library")
+    (description "Pyppmd provides classes and functions for compressing and
+decompressing text data, using the @dfn{Prediction by partial matching} (PPM)
+compression algorithm variation H and I.2.  It provides an API similar to
+Python's zlib/bz2/lzma modules.")
+    (license license:lgpl2.1+)))
+
 (define-public python-ppmd-cffi
   (package
     (name "python-ppmd-cffi")
-    (version "0.3.3")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "ppmd-cffi" version))
        (sha256
         (base32
-         "01wcd9l6pp6hivdmd275qh9dhcwficjqfl67hxix5n07vvq7jzz0"))))
+         "0vprpl29fkflqx0m6anfpx7q7i4cw0d0qxcdm91k4pl82dcad81g"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-cffi))
     (native-inputs
-     (list python-setuptools
+     (list python-hypothesis
            python-setuptools-scm
-           python-pep517
            python-coverage
            python-pytest
            python-pytest-cov))
@@ -155,23 +264,27 @@ several possible methods.")
 (define-public python-py7zr
   (package
     (name "python-py7zr")
-    (version "0.14.1")
+    (version "0.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "py7zr" version))
        (sha256
         (base32
-         "1zmgp7yax328fj8yj8pj4l7yh78hp727j6wk12vfi6nmi82wl32i"))))
-    (build-system python-build-system)
+         "0lwniinfr3rb10n0c203a09vz06vxnnj637yqn8ipdlml89gj7kr"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-bcj-cffi
+     (list python-brotli
+           python-brotlicffi
+           python-importlib-metadata
+           python-inflate64
            python-multivolumefile
-           python-ppmd-cffi
-           python-pycryptodome
+           python-psutil
+           python-pybcj
+           python-pycryptodomex
+           python-pyppmd
            python-pyzstd
-           python-texttable
-           python-zstandard))
+           python-texttable))
     (native-inputs
      (list python-setuptools
            python-setuptools-scm
@@ -429,14 +542,16 @@ wrapper.  It provides a backport of the @code{Path} object.")
 (define-public python-zstandard
   (package
     (name "python-zstandard")
-    (version "0.15.2")
+    (version "0.19.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zstandard" version))
        (sha256
-        (base32 "0by9z7nxnkzhmza075q6q91rs8lnpf91129k8ppv7kymbwshipjj"))))
+        (base32 "0qvqhs121spk7yc1l20samflxx47waxv3xm55ksxpn1djk6jzl9i"))))
     (build-system python-build-system)
+    (propagated-inputs
+     (list python-cffi))
     (native-inputs
      (list python-hypothesis))
     (home-page "https://github.com/indygreg/python-zstandard")
@@ -449,17 +564,18 @@ provided.")
 (define-public python-pyzstd
   (package
     (name "python-pyzstd")
-    (version "0.14.3")
+    (version "0.15.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyzstd" version))
        (sha256
         (base32
-         "1d3mngs45w2p490vrq5ymd2wz4lp15phmks1ilcx4k7amgibml3d"))))
+         "0wkli2i4my79l43b996bdga0fac8s8nfd1zjyzl46lwmsfsxlkmc"))))
     (build-system python-build-system)
     (home-page "https://github.com/animalize/pyzstd")
     (synopsis "Zstandard bindings for Python")
-    (description "This package provides Python bindings to the Zstandard (zstd)
+    (description "This package provides Python bindings to the
+Zstandard (zstd)
 compression library.  The API is similar to Python's bz2/lzma/zlib module.")
     (license license:bsd-3)))

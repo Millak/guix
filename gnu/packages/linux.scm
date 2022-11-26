@@ -33,7 +33,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
-;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Stefan Stefanović <stefanx2ovic@gmail.com>
 ;;; Copyright © 2019-2022 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -108,8 +108,9 @@
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages elf)
-  #:use-module (gnu packages flex)
   #:use-module (gnu packages file)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
@@ -119,6 +120,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
@@ -418,7 +420,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.265")
+(define-public linux-libre-4.19-version "4.19.266")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -428,7 +430,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "1l5cdpgng1gci1p1gdr2jzqw486h3w56gpyc7fbq74hlc6nnwh1p")))
+        (hash (base32 "0qfgvdzf8mwx0vhz6v6vkdch3hilh6qrl24gmy5z1vpwbxjvc4kv")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
@@ -494,17 +496,20 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 (define-public linux-libre-6.0-source
   (source-with-patches linux-libre-6.0-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch "linux-libre-infodocs-target.patch"))))
 
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch "linux-libre-infodocs-target.patch"))))
 
 (define-public linux-libre-5.10-source
   (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch "linux-libre-infodocs-target.patch"))))
 
 (define-public linux-libre-5.4-source
   (source-with-patches linux-libre-5.4-pristine-source
@@ -759,6 +764,11 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
 ;;; Kernel package utilities.
 ;;;
 
+(define (doc-supported? version)
+  ;; Versions older than 5.10 have different enough build scripts that the
+  ;; infodocs patch doesn't apply.
+  (version>=? version "5.10"))
+
 (define* (make-linux-libre version gnu-revision hash-string supported-systems
                            #:key
                            (extra-version #f)
@@ -767,7 +777,13 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                            (configuration-file #f)
                            (defconfig "defconfig")
                            (extra-options %default-extra-linux-options)
-                           (patches (list %boot-logo-patch)))
+                           (build-doc? (doc-supported? version))
+                           (patches
+                            `(,%boot-logo-patch
+                              ,@(if build-doc?
+                                    (list (search-patch
+                                           "linux-libre-infodocs-target.patch"))
+                                    '()))))
   (make-linux-libre* version gnu-revision
                      (origin
                        (method url-fetch)
@@ -778,7 +794,8 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                      #:extra-version extra-version
                      #:configuration-file configuration-file
                      #:defconfig defconfig
-                     #:extra-options extra-options))
+                     #:extra-options extra-options
+                     #:build-doc? build-doc?))
 
 (define* (make-linux-libre* version gnu-revision source supported-systems
                             #:key
@@ -787,7 +804,10 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                             ;; See kernel-config for an example.
                             (configuration-file #f)
                             (defconfig "defconfig")
-                            (extra-options %default-extra-linux-options))
+                            (extra-options %default-extra-linux-options)
+                            (build-doc? (doc-supported? version)))
+  (when (and build-doc? (not (doc-supported? version)))
+    (error "unsupported 'build-doc?' for kernels <5.10"))
   (package
     (name (if extra-version
               (string-append "linux-libre-" extra-version)
@@ -796,11 +816,127 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
     (source source)
     (supported-systems supported-systems)
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (srfi srfi-1)
+                  (srfi srfi-26)
+                  (ice-9 ftw)
+                  (ice-9 match))
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-/bin/pwd
+            (lambda _
+              (substitute* (find-files
+                            "." "^Makefile(\\.include)?$")
+                (("/bin/pwd") "pwd"))))
+          #$@(if build-doc?
+                 #~((add-before 'configure 'build-doc
+                      (lambda _
+                        (substitute* "Documentation/Makefile"
+                          ;; Remove problematic environment check script.
+                          ((".*scripts/sphinx-pre-install.*") ""))
+                        (invoke "make" "infodocs")))
+                    (add-after 'build-doc 'install-doc
+                      (lambda _
+                        (with-directory-excursion "Documentation/output"
+                          (invoke "make" "-C" "texinfo" "install-info"
+                                  (string-append "infodir=" #$output
+                                                 "/share/info"))))))
+                 #~())
+          (replace 'configure
+            (lambda* (#:key inputs target #:allow-other-keys)
+              ;; Avoid introducing timestamps.
+              (setenv "KCONFIG_NOTIMESTAMP" "1")
+              (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
+
+              ;; Other variables useful for reproducibility.
+              (setenv "KBUILD_BUILD_USER" "guix")
+              (setenv "KBUILD_BUILD_HOST" "guix")
+
+              ;; Set ARCH and CROSS_COMPILE.
+              (let ((arch #$(platform-linux-architecture
+                             (lookup-platform-by-target-or-system
+                              (or (%current-target-system)
+                                  (%current-system))))))
+                (setenv "ARCH" arch)
+                (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
+
+                (when target
+                  (setenv "CROSS_COMPILE" (string-append target "-"))
+                  (format #t "`CROSS_COMPILE' set to `~a'~%"
+                          (getenv "CROSS_COMPILE"))))
+
+              (setenv "EXTRAVERSION"
+                      #$(and extra-version
+                             (string-append "-" extra-version)))
+
+              (let ((config (assoc-ref inputs "kconfig")))
+
+                ;; Use a custom kernel configuration file or a default
+                ;; configuration file.
+                (if config
+                    (begin
+                      (copy-file config ".config")
+                      (chmod ".config" #o666))
+                    (invoke "make" #$defconfig))
+
+                ;; Appending works even when the option wasn't in the
+                ;; file.  The last one prevails if duplicated.
+                (let ((port (open-file ".config" "a"))
+                      (extra-configuration #$(config->string extra-options)))
+                  (display extra-configuration port)
+                  (close-port port))
+
+                (invoke "make" "oldconfig"))))
+          (replace 'install
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((moddir (string-append #$output "/lib/modules"))
+                    (dtbdir (string-append #$output "/lib/dtbs")))
+                ;; Install kernel image, kernel configuration and link map.
+                (for-each (lambda (file) (install-file file #$output))
+                          (find-files "." "^(\\.config|bzImage|zImage|Image\
+|vmlinuz|System\\.map|Module\\.symvers)$"))
+                ;; Install device tree files
+                (unless (null? (find-files "." "\\.dtb$"))
+                  (mkdir-p dtbdir)
+                  (invoke "make" (string-append "INSTALL_DTBS_PATH=" dtbdir)
+                          "dtbs_install"))
+                ;; Install kernel modules
+                (mkdir-p moddir)
+                (invoke "make"
+                        ;; Disable depmod because the Guix system's
+                        ;; module directory is an union of potentially
+                        ;; multiple packages.  It is not possible to use
+                        ;; depmod to usefully calculate a dependency
+                        ;; graph while building only one of them.
+                        "DEPMOD=true"
+                        (string-append "MODULE_DIR=" moddir)
+                        (string-append "INSTALL_PATH=" #$output)
+                        (string-append "INSTALL_MOD_PATH=" #$output)
+                        "INSTALL_MOD_STRIP=1"
+                        "modules_install")
+                (let* ((versions (filter (lambda (name)
+                                           (not (string-prefix? "." name)))
+                                         (scandir moddir)))
+                       (version (match versions
+                                  ((x) x))))
+                  ;; There are symlinks to the build and source directory.
+                  ;; Both will point to target /tmp/guix-build* and thus
+                  ;; not be useful in a profile.  Delete the symlinks.
+                  (false-if-file-not-found
+                   (delete-file
+                    (string-append moddir "/" version "/build")))
+                  (false-if-file-not-found
+                   (delete-file
+                    (string-append moddir "/" version "/source"))))))))))
     (native-inputs
      `(("perl" ,perl)
        ("bc" ,bc)
        ("openssl" ,openssl)
-       ("elfutils" ,elfutils)  ; Needed to enable CONFIG_STACK_VALIDATION
+       ("elfutils" ,elfutils)        ;needed to enable CONFIG_STACK_VALIDATION
        ("flex" ,flex)
        ("bison" ,bison)
 
@@ -808,6 +944,18 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
        ("gmp" ,gmp)
        ("mpfr" ,mpfr)
        ("mpc" ,mpc)
+
+       ;; For generating the documentation.
+       ,@(if build-doc?
+             ;; TODO: remove fontconfig after the 5.10 kernel is dropped.
+             ;; Also replace python-wrapper by python at that time.
+             `(("fontconfig" ,fontconfig)
+               ("graphviz" ,graphviz)
+               ("python" ,python-wrapper)
+               ("python-sphinx" ,python-sphinx)
+               ("texinfo" ,texinfo)
+               ("which" ,which))
+             '())
 
        ,@(match (let ((arch (platform-linux-architecture
                              (lookup-platform-by-target-or-system
@@ -817,115 +965,14 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                        (configuration-file
                         arch
                         #:variant (version-major+minor version))))
-           (#f                                    ;no config for this platform
+           (#f                          ;no config for this platform
             '())
            ((? string? config)
             `(("kconfig" ,config))))))
-    (arguments
-     (list #:modules '((guix build gnu-build-system)
-                       (guix build utils)
-                       (srfi srfi-1)
-                       (srfi srfi-26)
-                       (ice-9 ftw)
-                       (ice-9 match))
-           #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'unpack 'patch-/bin/pwd
-                 (lambda _
-                   (substitute* (find-files "." "^Makefile(\\.include)?$")
-                     (("/bin/pwd") "pwd"))))
-               (replace 'configure
-                 (lambda* (#:key inputs target #:allow-other-keys)
-                   ;; Avoid introducing timestamps.
-                   (setenv "KCONFIG_NOTIMESTAMP" "1")
-                   (setenv "KBUILD_BUILD_TIMESTAMP"
-                           (getenv "SOURCE_DATE_EPOCH"))
-
-                   ;; Other variables useful for reproducibility.
-                   (setenv "KBUILD_BUILD_USER" "guix")
-                   (setenv "KBUILD_BUILD_HOST" "guix")
-
-                   ;; Set ARCH and CROSS_COMPILE.
-                   (let ((arch #$(platform-linux-architecture
-                                  (lookup-platform-by-target-or-system
-                                   (or (%current-target-system)
-                                       (%current-system))))))
-                     (setenv "ARCH" arch)
-                     (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
-
-                     (when target
-                       (setenv "CROSS_COMPILE" (string-append target "-"))
-                       (format #t "`CROSS_COMPILE' set to `~a'~%"
-                               (getenv "CROSS_COMPILE"))))
-
-                   (setenv "EXTRAVERSION"
-                           #$(and extra-version
-                                  (string-append "-" extra-version)))
-
-                   (let ((config (assoc-ref inputs "kconfig")))
-
-                     ;; Use a custom kernel configuration file or a default
-                     ;; configuration file.
-                     (if config
-                         (begin
-                           (copy-file config ".config")
-                           (chmod ".config" #o666))
-                         (invoke "make" #$defconfig))
-
-                     ;; Appending works even when the option wasn't in the
-                     ;; file.  The last one prevails if duplicated.
-                     (let ((port (open-file ".config" "a"))
-                           (extra-configuration #$(config->string extra-options)))
-                       (display extra-configuration port)
-                       (close-port port))
-
-                     (invoke "make" "oldconfig"))))
-               (replace 'install
-                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
-                   (let ((moddir (string-append #$output "/lib/modules"))
-                         (dtbdir (string-append #$output "/lib/dtbs")))
-                     ;; Install kernel image, kernel configuration and link map.
-                     (for-each (lambda (file) (install-file file #$output))
-                               (find-files "." "^(\\.config|bzImage|zImage|Image|vmlinuz|System\\.map|Module\\.symvers)$"))
-                     ;; Install device tree files
-                     (unless (null? (find-files "." "\\.dtb$"))
-                       (mkdir-p dtbdir)
-                       (invoke "make" (string-append "INSTALL_DTBS_PATH=" dtbdir)
-                               "dtbs_install"))
-                     ;; Install kernel modules
-                     (mkdir-p moddir)
-                     (invoke "make"
-                             ;; Disable depmod because the Guix system's
-                             ;; module directory is an union of potentially
-                             ;; multiple packages.  It is not possible to use
-                             ;; depmod to usefully calculate a dependency
-                             ;; graph while building only one of them.
-                             "DEPMOD=true"
-                             (string-append "MODULE_DIR=" moddir)
-                             (string-append "INSTALL_PATH=" #$output)
-                             (string-append "INSTALL_MOD_PATH=" #$output)
-                             "INSTALL_MOD_STRIP=1"
-                             "modules_install")
-                     (let* ((versions (filter (lambda (name)
-                                                (not (string-prefix? "." name)))
-                                              (scandir moddir)))
-                            (version (match versions
-                                       ((x) x))))
-                       ;; There are symlinks to the build and source directory.
-                       ;; Both will point to target /tmp/guix-build* and thus
-                       ;; not be useful in a profile.  Delete the symlinks.
-                       (false-if-file-not-found
-                        (delete-file
-                         (string-append moddir "/" version "/build")))
-                       (false-if-file-not-found
-                        (delete-file
-                         (string-append moddir "/" version "/source"))))))))
-           #:tests? #f))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "100% free redistribution of a cleaned Linux kernel")
-    (description
-     "GNU Linux-Libre is a free (as in freedom) variant of the Linux kernel.
-It has been modified to remove all non-free binary blobs.")
+    (description "GNU Linux-Libre is a free (as in freedom) variant of the
+Linux kernel.  It has been modified to remove all non-free binary blobs.")
     (license license:gpl2)
     (properties '((max-silent-time . 3600))))) ;don't timeout on blob scan.
 
@@ -5555,7 +5602,7 @@ and copy/paste text in the console and in xterm.")
 (define-public btrfs-progs
   (package
     (name "btrfs-progs")
-    (version "5.18.1")
+    (version "6.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://kernel.org/linux/kernel/"
@@ -5563,7 +5610,7 @@ and copy/paste text in the console and in xterm.")
                                   "btrfs-progs-v" version ".tar.xz"))
               (sha256
                (base32
-                "0mbj3j2fpjds9i9gm8kk8a20yjacc562ibd1v9a96bpmrxfag63f"))))
+                "0j0w400fg0lbzljmcwq553cv0awixc4k35v7l39jl7l13pznycdm"))))
     (build-system gnu-build-system)
     (outputs '("out"
                "static"))      ; static versions of the binaries in "out"
@@ -8456,7 +8503,7 @@ compatible with Python's ConfigParser style of .INI files, including RFC
 (define-public xfsprogs
   (package
     (name "xfsprogs")
-    (version "5.14.2")
+    (version "6.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -8464,7 +8511,7 @@ compatible with Python's ConfigParser style of .INI files, including RFC
                     "xfsprogs-" version ".tar.gz"))
               (sha256
                (base32
-                "0368dacdjq55ip38yizs9spdyl7b0b1c0vz3gr1gvcb9rw3a6dnp"))))
+                "14hc61nfc73nqwhyasc4haj5g7046im1dwz61bx338f86mjj5n5y"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
@@ -8502,6 +8549,20 @@ file systems.")
     ;; The library "libhandle" and the headers in "xfslibs-dev" are
     ;; licensed under lgpl2.1. the other stuff is licensed under gpl2.
     (license (list license:gpl2 license:lgpl2.1))))
+
+(define-public xfsprogs-5.9
+  (package
+    (inherit xfsprogs)
+    (name "xfsprogs")
+    (version "5.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://kernel.org/linux/utils/fs/xfs/xfsprogs/"
+                    "xfsprogs-" version ".tar.gz"))
+              (sha256
+               (base32
+                "13xkn9jpmwp4fm9r68vhgznkmxhnv83n2b39mhy2qdaph90w2a1l"))))))
 
 (define-public xfsprogs/static
   (package
