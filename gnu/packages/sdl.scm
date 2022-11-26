@@ -544,7 +544,7 @@ directory.")
 (define-public sdl2-ttf
   (package (inherit sdl-ttf)
     (name "sdl2-ttf")
-    (version "2.0.15")
+    (version "2.20.1")
     (source (origin
              (method url-fetch)
              (uri
@@ -557,7 +557,7 @@ directory.")
                         #t))
              (sha256
               (base32
-               "0cyd48dipc0m399qy8s03lci8b0bpiy8xlkvrm2ia7wcv0dfpv59"))))
+               "0mqcgpcvzp927xv1gs51f2wqly9k9f8nxfxi69lxlfncyd8svkbq"))))
     (propagated-inputs
      (propagated-inputs-with-sdl2 sdl-ttf))
     (properties '((upstream-name . "SDL2_ttf")))))
