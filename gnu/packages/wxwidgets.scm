@@ -67,19 +67,19 @@
         (base32 "01y89999jw5q7njrhxajincx7lydls6yq37ikazjryssrxrnw3s4"))))
     (build-system glib-or-gtk-build-system)
     (inputs
-     `(("glu" ,glu)
-       ;; XXX gstreamer-0.10 builds fail
-       ;; ("gstreamer" ,gstreamer-0.10)
-       ("gtk" ,gtk+)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmspack" ,libmspack)
-       ("libsm" ,libsm)
-       ("libtiff" ,libtiff)
-       ("mesa" ,mesa)
-       ("webkitgtk" ,webkitgtk)
-       ("sdl" ,sdl)
-       ("shared-mime-info" ,shared-mime-info)
-       ("xdg-utils" ,xdg-utils)))
+     (list glu
+           ;; XXX gstreamer-0.10 builds fail
+           ;; ("gstreamer" ,gstreamer-0.10)
+           gtk+
+           libjpeg-turbo
+           libmspack
+           libsm
+           libtiff
+           mesa
+           webkitgtk
+           sdl
+           shared-mime-info
+           xdg-utils))
     (native-inputs
      (list pkg-config))
     (arguments
@@ -102,10 +102,11 @@
        (modify-phases %standard-phases
          (add-after 'unpack 'refer-to-inputs
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((mime (search-input-directory inputs "/share/mime")))
+             (let ((mime (search-input-directory inputs "share/mime"))
+                   (xdg-open (search-input-file inputs "bin/xdg-open")))
                (substitute* "src/unix/utilsx11.cpp"
                  (("wxExecute\\(xdg_open \\+")
-                  (string-append "wxExecute(\"" (which "xdg-open") "\"")))
+                  (string-append "wxExecute(\"" xdg-open "\"")))
                (substitute* "src/unix/mimetype.cpp"
                  (("/usr(/local)?/share/mime") mime))
                #t))))))
@@ -154,11 +155,10 @@ and many other languages.")
 
 (define-public wxwidgets-gtk2
   (package/inherit wxwidgets
-           (inputs `(("gtk+" ,gtk+-2)
-                     ,@(alist-delete
-                        "gtk+"
-                        (package-inputs wxwidgets))))
-           (name "wxwidgets-gtk2")))
+    (name "wxwidgets-gtk2")
+    (inputs (modify-inputs (package-inputs wxwidgets)
+              (delete "gtk+")
+              (prepend gtk+-2)))))
 
 ;; Development version of wxWidgets, required to build against gstreamer-1.x.
 ;; This can be removed when wxWidgets is updated to the next stable version.
