@@ -2516,7 +2516,7 @@ clause if no operation becomes available within a set amount of time.
 Calispel is a message-passing library, and as such leaves the role of
 threading abstractions and utilities left to be filled by complementary
 libraries such as Bordeaux-Threads and Eager Future.")
-      (home-page "https://www.thoughtcrime.us/software/jpl-queues/")
+      (home-page "https://www.thoughtcrime.us/software/calispel/")
       (license license:isc))))
 
 (define-public cl-calispel
