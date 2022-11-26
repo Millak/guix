@@ -484,7 +484,7 @@ directory.")
 (define-public sdl2-mixer
   (package (inherit sdl-mixer)
     (name "sdl2-mixer")
-    (version "2.0.4")
+    (version "2.6.2")
     (source
      (origin
        (method url-fetch)
@@ -497,27 +497,31 @@ directory.")
                    (delete-file-recursively "external")
                    #t))
        (sha256
-        (base32 "0694vsz5bjkcdgfdra6x9fq8vpzrl8m6q96gh58df7065hw5mkxl"))))
+        (base32 "0wd35a9fcj1bv534k9cr4jdk076dpiqq0ayk6cybmv3d6q8aiplc"))))
     (arguments
-      (substitute-keyword-arguments (package-arguments sdl-mixer)
-         ((#:configure-flags flags)
-          `(cons*
-            "--disable-music-opus-shared"
-            ;; These options were renamed in SDL2 mixer. Keeping the inherited
-            ;; variants produces a harmless warning.
-            "--disable-music-mod-modplug-shared"
-            "--disable-music-midi-fluidsynth-shared"
-            ,flags))))
-    (inputs
-     (modify-inputs (package-inputs sdl-mixer)
-       (delete "libmikmod")
-       (prepend opusfile
-                ;; The default MOD library changed in SDL2 mixer.
-                libmodplug)))
+     (list #:tests? #f                     ;no tests
+           #:configure-flags
+           #~'(;; Prefer system libraries to bundled codecs.
+               "--enable-music-flac-libflac"
+               "--enable-music-midi-fluidsynth"
+               "--enable-music-mod-modplug"
+               "--enable-music-mp3-mpg123"
+               "--enable-music-ogg-vorbis"
+               "--enable-music-opus"
+               ;; Link the libraries instead of dlopening them.
+               "--enable-music-flac-libflac-shared=no"
+               "--enable-music-midi-fluidsynth-shared=no"
+               "--enable-music-mod-modplug-shared=no"
+               "--enable-music-mp3-mpg123-shared=no"
+               "--enable-music-ogg-vorbis-shared=no"
+               "--enable-music-opus-shared=no")))
     (native-inputs
-     `(("pkgconfig" ,pkg-config))) ; Needed to find the opus library.
+     (list pkg-config))
+    (inputs '())
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-mixer))
+     (modify-inputs (propagated-inputs-with-sdl2 sdl-mixer)
+       ;; In Requires.private of SDL2_mixer.pc.
+       (append flac fluidsynth libmodplug libvorbis mpg123 opusfile)))
     (properties '((upstream-name . "SDL2_mixer")))))
 
 (define-public sdl2-net
