@@ -21167,22 +21167,22 @@ or expressions with SVG rounded box labels that are fully customizable.")
 (define-public emacs-kind-icon
   (package
     (name "emacs-kind-icon")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/kind-icon-"
                            version ".tar"))
        (sha256
-        (base32 "0m0jpgk3iv0p8fzmx1nyfd1l7i803lm4mzlpp47kn7v0z09pxaph"))))
+        (base32 "0phssrcpmcidzlwy1577f3f02qwjs6hpavb416302y0n8kkhwvli"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-svg-lib))
     (home-page "https://github.com/jdtsmith/kind-icon")
     (synopsis "Completion kind icons in Emacs")
-    (description "Kind-icon mode adds a colorful icon or text prefix based
-on :company-kind for compatible completion UIs.  The \"kind\" prefix is
-typically used for differentiating completion candidates such as variables,
-functions, etc.")
+    (description "Kind-icon mode adds a colorful icon or text prefix based on
+@code{:company-kind} for compatible completion UIs.  The ``kind'' prefix is
+typically used for differentiating completion candidates such as variables or
+functions.")
     (license license:gpl3+)))
 
 (define-public emacs-svg-icon
