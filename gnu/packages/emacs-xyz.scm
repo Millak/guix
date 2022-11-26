@@ -11102,6 +11102,32 @@ keybinding style.  The provided commands allow for editing Lisp in normal
 state and will work even without lispy being enabled.")
       (license license:gpl3+))))
 
+(define-public emacs-function-args
+  ;; The latest release is from August 21, 2017.
+  (let ((commit "beba049751fed78666c87bd146a6f1cf149bb819")
+        (revision "0"))
+    (package
+      (name "emacs-function-args")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/abo-abo/function-args")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-ivy))
+      (home-page "https://github.com/abo-abo/function-args")
+      (synopsis "C/C++ completion for GNU Emacs")
+      (description
+       "This package provides a way of showing an inline arguments hint for
+the C/C++ function at point.")
+      (license license:gpl3+))))
+
 (define-public emacs-lpy
   ;; There is no proper release/tag.
   (let ((commit "ce78a4613458790cc785c1687af7eed8f0d8d66c")
