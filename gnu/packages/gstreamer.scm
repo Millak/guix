@@ -734,6 +734,17 @@ model to base your own plug-in on, here it is.")
     (home-page "https://gstreamer.freedesktop.org/")
     (license license:lgpl2.0+)))
 
+(define-public gst-plugins-good-qt
+  (package
+    (inherit gst-plugins-good)
+    (name "gst-plugins-good-qt")
+    (inputs
+     (modify-inputs (package-inputs gst-plugins-good)
+       (prepend qtbase-5
+                qtdeclarative-5
+                qtwayland-5
+                qtx11extras)))))
+
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
