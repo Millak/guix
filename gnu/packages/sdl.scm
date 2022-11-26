@@ -534,7 +534,8 @@ directory.")
         (base32
          "08cxc1bicmyk89kiks7izw1rlx5ng5n6xpy8fy0zxni3b9z8mkhm"))))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-net))))
+     (propagated-inputs-with-sdl2 sdl-net))
+    (properties '((upstream-name . "SDL2_net")))))
 
 (define-public sdl2-ttf
   (package (inherit sdl-ttf)
