@@ -811,7 +811,7 @@ Emacs package archive}.")
 (define-public emacs-paredit
   (package
     (name "emacs-paredit")
-    (version "25")
+    (version "26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -820,7 +820,7 @@ Emacs package archive}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gc6lnk5xqxzl9s2m99hfi07wp4zfhh1k64c1bdrjfalv55nl998"))))
+                "1hwl2jhv1fhsdrspfhprq77n763i4zsj350q024ajy0m2kaql6ws"))))
     (build-system emacs-build-system)
     (home-page "http://mumble.net/~campbell/emacs/paredit/")
     (synopsis "Emacs minor mode for editing parentheses")
