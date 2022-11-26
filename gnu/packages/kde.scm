@@ -221,7 +221,7 @@ browser for easy news reading.")
 (define-public kdenlive
   (package
     (name "kdenlive")
-    (version "22.08.1")
+    (version "22.08.3")
     (source
      (origin
        (method git-fetch)
@@ -230,7 +230,7 @@ browser for easy news reading.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xnasi8s8zxh2s4vnn51pc8ni58q8pk70bwh9dfxp1wdmpv3zsrx"))))
+        (base32 "1016mwgrf4dwb945pc2kqm2j8vq86r01s19miq0h4wdgbfxa496c"))))
     (build-system qt-build-system)
     (arguments
      ;; XXX: there is a single test that spawns other tests and
