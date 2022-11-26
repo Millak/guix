@@ -1235,6 +1235,10 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
          ;; when our default compiler is >=GCC 6.
          "--disable-pdfium"
          "--without-doxygen"
+         ;; Avoid linker errors about non-virtual thunks on i686-linux.
+         "--enable-lto"
+         ;; Avoid errors rebuilding the Gtk icon cache, at least on i686-linux.
+         "--without-galleries"
          "--enable-build-opensymbol")))
     (native-inputs
      (list bison
