@@ -6239,7 +6239,7 @@ emerges from a sewer hole and pulls her below ground.")
 (define-public cdogs-sdl
   (package
     (name "cdogs-sdl")
-    (version "0.8.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -6248,7 +6248,7 @@ emerges from a sewer hole and pulls her below ground.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vx37zb2iw7sfw5a2bs97ydlmb301nvy485ybdm8g46c5hn9s13c"))))
+        (base32 "1505z8rli59i1ych4rzwbf4dvhv72icdj22n1xarb8xfyz0wyp3b"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
