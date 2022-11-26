@@ -18124,6 +18124,35 @@ long-running threads.  In principle, it is like an in-Lisp process supervisor.")
 (define-public ecl-moira
   (sbcl-package->ecl-package sbcl-moira))
 
+(define-public sbcl-with-user-abort
+  (let ((commit "60693b4a1354faf17107ad6003b0b870cca37081")
+        (revision "0"))
+    (package
+      (name "sbcl-with-user-abort")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/compufox/with-user-abort")
+               (commit commit)))
+         (file-name (git-file-name "cl-with-user-abort" version))
+         (sha256
+          (base32 "0k1xxfvncdw4fx8nncis1ma128bqq05zky1mrzak5rjbivzjm8j1"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/compufox/with-user-abort")
+      (synopsis "Portability library for catching SIGINT from Common Lisp")
+      (description
+       "@code{with-user-abort} is a Common Lisp portability library providing a
+like-named macro that catches the SIGINT signal.")
+      (license license:bsd-3))))
+
+(define-public cl-with-user-abort
+  (sbcl-package->cl-source-package sbcl-with-user-abort))
+
+(define-public ecl-with-user-abort
+  (sbcl-package->ecl-package sbcl-with-user-abort))
+
 (define-public sbcl-cl-package-locks
   (let ((commit "96a358ede7cef416d61d2f699e724fe1d9de602c")
         (revision "1"))
