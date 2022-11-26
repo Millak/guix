@@ -527,7 +527,7 @@ directory.")
 (define-public sdl2-net
   (package (inherit sdl-net)
     (name "sdl2-net")
-    (version "2.0.1")
+    (version "2.2.0")
     (source
      (origin
        (method url-fetch)
@@ -536,7 +536,7 @@ directory.")
                        "SDL2_net-" version ".tar.gz"))
        (sha256
         (base32
-         "08cxc1bicmyk89kiks7izw1rlx5ng5n6xpy8fy0zxni3b9z8mkhm"))))
+         "1svzhpf7k48jfga8ph127l99lwpgs5g5isgl9ybp2qiii0cqjjjf"))))
     (propagated-inputs
      (propagated-inputs-with-sdl2 sdl-net))
     (properties '((upstream-name . "SDL2_net")))))
