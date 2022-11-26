@@ -551,15 +551,19 @@ directory.")
               (string-append "https://www.libsdl.org/projects/SDL_ttf/release/SDL2_ttf-"
                              version ".tar.gz"))
              (modules '((guix build utils)))
-             (snippet (begin
-                        ;; Remove bundled libraries.
-                        '(delete-file-recursively "external")
-                        #t))
+             (snippet
+              ;; Remove bundled libraries.
+              '(delete-file-recursively "external"))
              (sha256
               (base32
                "0mqcgpcvzp927xv1gs51f2wqly9k9f8nxfxi69lxlfncyd8svkbq"))))
+    (arguments
+     (list #:configure-flags #~'("--enable-freetype-builtin=no"
+                                 "--enable-harfbuzz-builtin=no")))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-ttf))
+     (modify-inputs (propagated-inputs-with-sdl2 sdl-ttf)
+       ;; In Requires.private of SDL2_ttf.pc.
+       (prepend harfbuzz freetype)))
     (properties '((upstream-name . "SDL2_ttf")))))
 
 (define-public guile-sdl
