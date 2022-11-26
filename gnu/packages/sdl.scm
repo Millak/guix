@@ -9,7 +9,7 @@
 ;;; Copyright © 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2019, 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
@@ -115,7 +115,7 @@ joystick, and graphics hardware.")
   (package
     (inherit sdl)
     (name "sdl2")
-    (version "2.24.0")
+    (version "2.26.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -123,7 +123,7 @@ joystick, and graphics hardware.")
                               version ".tar.gz"))
               (sha256
                (base32
-                "15vd9najhjh6s9z9hhx7zp51iby690a1g3h7kcwjvyb82x5w7r4i"))))
+                "15djpp1bkf5d9mfh3xv9zlr925zq65k3gpvb9g497kpbkwbdf040"))))
     (arguments
      (substitute-keyword-arguments (package-arguments sdl)
        ((#:configure-flags flags)
