@@ -478,7 +478,8 @@ directory.")
        (sha256
         (base32 "1l0864kas9cwpp2d32yxl81g98lx40dhbdp03dz7sbv84vhgdmdx"))))
     (propagated-inputs
-     (propagated-inputs-with-sdl2 sdl-image))))
+     (propagated-inputs-with-sdl2 sdl-image))
+    (properties '((upstream-name . "SDL2_image")))))
 
 (define-public sdl2-mixer
   (package (inherit sdl-mixer)
