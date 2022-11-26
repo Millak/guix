@@ -809,36 +809,31 @@ Emacs package archive}.")
     (license license:gpl3+)))
 
 (define-public emacs-paredit
-  ;; The last tagged release is from 2014; use the latest commit, which
-  ;; includes many fixes such as honoring the 'fill-paragraph-function'
-  ;; variable.
-  (let ((commit "d0b1a2f42fb47efc8392763d6487fd027e3a2955")
-        (revision "1"))
-    (package
-      (name "emacs-paredit")
-      (version (git-version "24" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://mumble.net/~campbell/git/paredit.git")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1x91xxvwb3r3h61ff1kknlaakxm1a40r7zg2lck9j52yiza4f191"))))
-      (build-system emacs-build-system)
-      (home-page "http://mumble.net/~campbell/emacs/paredit/")
-      (synopsis "Emacs minor mode for editing parentheses")
-      (description
-       "ParEdit (paredit.el) is a minor mode for performing structured editing
+  (package
+    (name "emacs-paredit")
+    (version "25")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://mumble.net/~campbell/git/paredit.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gc6lnk5xqxzl9s2m99hfi07wp4zfhh1k64c1bdrjfalv55nl998"))))
+    (build-system emacs-build-system)
+    (home-page "http://mumble.net/~campbell/emacs/paredit/")
+    (synopsis "Emacs minor mode for editing parentheses")
+    (description
+     "ParEdit (paredit.el) is a minor mode for performing structured editing
 of S-expression data.  The typical example of this would be Lisp or Scheme
 source code.
 
-ParEdit helps **keep parentheses balanced** and adds many keys for moving
+ParEdit helps keep parentheses balanced and adds many keys for moving
 S-expressions and moving around in S-expressions.  Its behavior can be jarring
 for those who may want transient periods of unbalanced parentheses, such as
 when typing parentheses directly or commenting out code line by line.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-puni
   ;; No tagged release upstream
