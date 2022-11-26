@@ -6151,7 +6151,7 @@ starting a decryption sequence to reveal the original plaintext characters.")
            libvorbis
            lua
            sdl2
-           wxwidgets))
+           wxwidgets-3.0))
     (native-inputs
      (list cppunit pkg-config))
     (arguments

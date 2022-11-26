@@ -515,7 +515,7 @@ capacity is user-selectable.")
              #t)))
        #:tests? #f)) ; No tests.
     (inputs ; TODO package bundled wxvillalib
-     `(("wxwidgets" ,wxwidgets-3.1)
+     `(("wxwidgets" ,wxwidgets)
        ("wssvg" ,wxsvg)
        ("dbus" ,dbus)
        ("cdrtools" ,cdrtools)

@@ -964,6 +964,7 @@ Emacs).")
                                #$(this-package-input "opencascade-occt")
                                "/include/opencascade")
                 "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+                "-DKICAD_USE_EGL=ON"    ;because wxWidgets uses EGL
                 "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
        #:phases
        (modify-phases %standard-phases

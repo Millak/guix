@@ -4040,7 +4040,7 @@ with a number of bugfixes and changes to improve IT playback.")
     (inputs
      (list jack-1
            alsa-lib
-           wxwidgets-gtk2
+           wxwidgets-gtk2-3.0
            libsndfile
            libsamplerate
            liblo

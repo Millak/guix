@@ -1925,7 +1925,7 @@ It can be used to calculate the trajectory of satellites.")
     (native-inputs
      (list boost pkg-config))
     (inputs
-     (list cfitsio freeimage glew wxwidgets))
+     (list cfitsio freeimage glew wxwidgets-3.0))
     (home-page "https://github.com/GreatAttractor/imppg")
     (synopsis "Astronomical Image Post-Proccessor (ImPPG)")
     (description
