@@ -4310,7 +4310,7 @@ function that follows the prototype of POSIX's wcwidth.")
 (define-public ocaml-zed
   (package
     (name "ocaml-zed")
-    (version "3.2.0")
+    (version "3.2.1")
     (home-page "https://github.com/ocaml-community/zed")
     (source
      (origin
@@ -4320,7 +4320,7 @@ function that follows the prototype of POSIX's wcwidth.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g171kk5wxnk66d4vwz2crh5i19vhqghp78iybl5am17gl9qf8pb"))))
+        (base32 "17zdbm422y0qznc659civ9bmahhrbffxa50f8dnykiaq8v2ci91l"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-react
