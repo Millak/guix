@@ -40,6 +40,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
+  #:use-module ((gnu packages hurd) #:select (hurd-target?))
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages readline))
@@ -71,7 +72,10 @@
                     (("env -i")
                      "env "))
                   #t)))
-            %standard-phases)))
+            %standard-phases)
+
+       ;; XXX: Work around <https://issues.guix.gnu.org/59616>.
+       #:tests? ,(not (hurd-target?))))
     (inputs (list ncurses perl))
     ;; When cross-compiling, texinfo will build some of its own binaries with
     ;; the native compiler. This means ncurses is needed both in both inputs
