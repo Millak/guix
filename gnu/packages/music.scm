@@ -3990,7 +3990,7 @@ with a number of bugfixes and changes to improve IT playback.")
        ("ncurses" ,ncurses)))
     (native-inputs
      (list pkg-config))
-    (home-page "http://essej.net/sooperlooper/")
+    (home-page "https://sonosaurus.com/sooperlooper/")
     (synopsis "Live looping sampler")
     (description
      "SooperLooper is a live looping sampler capable of immediate loop
