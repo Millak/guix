@@ -6137,21 +6137,21 @@ starting a decryption sequence to reveal the original plaintext characters.")
          "1ffck3ii1wp5k3nn5p0ga06jgp7pzk4zw0xln3xim2w7qrxzdzh9"))))
     (build-system cmake-build-system)
     (inputs
-     `(("curl" ,curl)
-       ("fontconfig" ,fontconfig)
-       ("ftgl" ,ftgl)
-       ("glew" ,glew)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("megaglest-data" ,megaglest-data)
-       ("mesa" ,mesa)
-       ("miniupnpc" ,miniupnpc)
-       ("openal" ,openal)
-       ("libircclient" ,libircclient)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("lua" ,lua)
-       ("sdl2" ,sdl2)
-       ("wxwidgets" ,wxwidgets)))
+     (list curl
+           fontconfig
+           ftgl
+           glew
+           libjpeg-turbo
+           megaglest-data
+           mesa
+           miniupnpc
+           openal
+           libircclient
+           libpng
+           libvorbis
+           lua
+           sdl2
+           wxwidgets))
     (native-inputs
      (list cppunit pkg-config))
     (arguments
@@ -6159,8 +6159,8 @@ starting a decryption sequence to reveal the original plaintext characters.")
        (list "-DCMAKE_CXX_FLAGS=-fcommon"
              "-DCMAKE_C_FLAGS=-fcommon"
              (string-append "-DCUSTOM_DATA_INSTALL_PATH="
-                            (assoc-ref %build-inputs "megaglest-data")
-                            "/share/megaglest")
+                            (search-input-directory %build-inputs
+                                                    "share/megaglest"))
              "-DBUILD_MEGAGLEST_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
