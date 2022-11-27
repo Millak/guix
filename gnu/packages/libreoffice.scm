@@ -1118,6 +1118,21 @@ of decimal representation of the input floating-point number, the procedure
 commonly called @code{ftoa} or @code{dtoa}.")
     (license license:asl2.0)))
 
+(define-public dragonbox-for-libreoffice
+  (package
+    (inherit dragonbox)
+    (name "dragonbox")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jk-jeon/dragonbox")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11h9xhpzp61rfyh1nnca5shzi40skgpdql080k5cb6cfy672s1qz"))))))
+
 (define dtoa
   (origin
     (method url-fetch)
