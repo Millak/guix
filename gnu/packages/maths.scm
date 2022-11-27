@@ -2415,6 +2415,43 @@ and quadratic objectives using the Simplex algorithm.")
 systems and applications.  It provides a modular and extensible solver.")
     (license license:expat)))
 
+(define-public libfixmath
+  (let ((commit "1416c9979635c69f344d3c1de84b3246001a6540")
+        (revision "1"))
+    (package
+      (name "libfixmath")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/PetteriAimonen/libfixmath")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vnpycw30rq3xwqyvj20l7pnw74dc4f27304i0918igsrdsjw501"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (let ((includes (string-append #$output "/include/libfixmath"))
+                      (lib (string-append #$output "/lib")))
+                  (mkdir-p includes)
+                  (for-each (lambda (file)
+                              (install-file file includes))
+                            (find-files "../source" "\\.h(pp)?$"))
+                  (for-each (lambda (file)
+                              (install-file file lib))
+                            (find-files "." "\\.a$"))))))))
+      (home-page "https://code.google.com/archive/p/libfixmath/")
+      (synopsis "Cross platform fixed point maths library")
+      (description "This library implements the @file{math.h} functions in
+fixed point (16.16) format.")
+      (license license:expat))))
+
 (define-public libflame
   (package
     (name "libflame")
