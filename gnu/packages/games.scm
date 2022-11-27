@@ -1427,7 +1427,7 @@ real-time combat.")
 (define-public golly
   (package
     (name "golly")
-    (version "3.3")
+    (version "4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/golly/golly/golly-"
@@ -1435,7 +1435,7 @@ real-time combat.")
                                   "-src.tar.gz"))
               (sha256
                (base32
-                "1j3ksnar4rdam4xiyspgyrs1pifbvxfxkrn65brkwxpx39mpgzc8"))))
+                "0pg9cp83nxc354lizgza5bqdy7z5wh36863203zw6r6s4flji4an"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags (list "CC=gcc"
@@ -1445,17 +1445,7 @@ real-time combat.")
        #:tests? #f ; no check target
        #:phases
        (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; For some reason, setting the PYTHON_SHLIB make flag doesn't
-             ;; properly set the path to the Python shared library. This
-             ;; substitution acheives the same end by different means.
-             (substitute* "gui-wx/wxprefs.cpp"
-               (("pythonlib = wxT\\(STRINGIFY\\(PYTHON_SHLIB\\)\\)")
-                (string-append "pythonlib = \""
-                               (assoc-ref inputs "python")
-                               "/lib/libpython-2.7.so\"")))
-             #t))
+         (delete 'configure)
          (replace 'build
            (lambda* (#:key make-flags outputs #:allow-other-keys)
              (with-directory-excursion "gui-wx"
@@ -1485,11 +1475,7 @@ real-time combat.")
     (native-inputs
      (list lua))
     (inputs
-     `(("glu" ,glu)
-       ("mesa" ,mesa)
-       ("python" ,python-2)
-       ("wxwidgets" ,wxwidgets-gtk2)
-       ("zlib" ,zlib)))
+     (list glu mesa python sdl2 wxwidgets zlib))
     (home-page "http://golly.sourceforge.net/")
     (synopsis "Software for exploring cellular automata")
     (description
