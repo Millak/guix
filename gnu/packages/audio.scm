@@ -898,7 +898,6 @@ engineers, musicians, soundtrack editors and composers.")
            jack-1
            expat
            lame
-           linux-libre-headers
            flac
            ffmpeg
            libid3tag
