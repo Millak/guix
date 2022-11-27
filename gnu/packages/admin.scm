@@ -882,15 +882,15 @@ hostname.")
 (define-public shadow
   (package
     (name "shadow")
-    (version "4.9")
+    (version "4.13")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://github.com/shadow-maint/shadow/releases/"
-                    "download/v" version "/shadow-" version ".tar.xz"))
+                    "download/" version "/shadow-" version ".tar.xz"))
               (sha256
                (base32
-                "0i4iijbshnwnsrskxzrh18xgmzff0hdpsnnkmyc2gdn1x4n1zv7y"))))
+                "0b6xz415b4y3y5nk3pw9xibv05kln4cjbmhybyncmrx2g5fj9zls"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Assume System V `setpgrp (void)', which is the default on GNU
