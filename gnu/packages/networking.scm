@@ -2998,6 +2998,40 @@ updates to the zebra daemon.")
     (home-page "https://www.nongnu.org/quagga/")
     (license license:gpl2+)))
 
+(define-public bgpq3
+  (package
+    (name "bgpq3")
+    (version "0.1.36.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snar/bgpq3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0768hihx7idmn2dk8ii21m0dm052amlnfpqq53vsfaapb60n1smc"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f))                    ; no test suite
+    (native-inputs (list python-markdown))
+    (home-page "http://snar.spb.ru/prog/bgpq3/")
+    (synopsis
+     "Generate BGP filters from the @acronym{IRR, Internet Routing Registry}")
+    (description
+     "This program helps automate the creation and maintenance of @acronym{BGP,
+Border Gateway Protocol} routing filters used for peering trough Internet
+exchanges.
+
+It generates prefix lists, (extended) access lists, policy-statement terms, and
+AS paths from data in the @acronym{IRR, Internet Routing Registry}, including
+the @acronym{RADB, Routing Assets Database} operated by the Merit Network at the
+University of Michigan.
+
+The filters can be aggregated and exported in the most common formats.")
+    (license (list license:bsd-3        ; strlcpy.c, sys_queue.h
+                   license:bsd-2))))    ; everything else, but missing headers
+
 (define-public thc-ipv6
   (let ((revision "0")
         (commit "4bb72573e0950ce6f8ca2800a10748477020029e"))
