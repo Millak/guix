@@ -46,7 +46,7 @@
               (string-append "libreoffice-" version))))
        (file-name (git-file-name "libreoffice-dictionaries" version))
        (sha256
-        (base32 "1qyn56kcn2scdlssjgi5b33hnsh20mmnd60w78z0gp7bs0mv0wcs"))))
+        (base32 "115p29ywyn7ncq664gxmcrrz55v23s34asd2hmrg4ahjp7ycrnmy"))))
     (build-system trivial-build-system)
     (native-inputs
      `(("source" ,source)))

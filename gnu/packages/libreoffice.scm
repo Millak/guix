@@ -67,6 +67,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
@@ -1145,7 +1146,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.3.5.2")
+    (version "7.4.3.2")
     (source
      (origin
        (method url-fetch)
@@ -1154,7 +1155,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "14g9873x8m5yakpq7v9f7lhc5fkxh6yhjhgh0pm30cqmxsqhsglv"))))
+        (base32 "0fyvd4ydh72lmn005h190xa563d4h376pi1fx9lfr5i25qcbpg7z"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1187,13 +1188,18 @@ commonly called @code{ftoa} or @code{dtoa}.")
                 (("GPGMEPP_CFLAGS=-I/usr/include/gpgme\\+\\+")
                  (string-append "GPGMEPP_CFLAGS=-I"
                                 (search-input-directory inputs
-                                                        "include/gpgme++"))))
+                                                        "include/gpgme++")))
+                (("DRAGONBOX_CFLAGS=-I/usr/include/dragonbox-1.0.0")
+                 (string-append "DRAGONBOX_CFLAGS=-I"
+                                (search-input-directory inputs
+                                                        "include/dragonbox-1.0.0"))))
 
               ;; /usr/bin/xdg-open doesn't exist on Guix System.
               (substitute* '("shell/source/unix/exec/shellexec.cxx"
                              "shell/source/unix/misc/senddoc.sh")
                 (("/usr/bin/xdg-open")
-                 (search-input-file inputs "/bin/xdg-open")))))
+                 (search-input-file inputs "/bin/xdg-open")))
+              (setenv "CPPFLAGS" "-std=c++17")))
           (add-after 'install 'reset-zip-timestamps
             (lambda _
               (for-each (lambda (file)
@@ -1295,6 +1301,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            clucene
            cups
            dbus-glib
+           dragonbox-for-libreoffice
            firebird
            fontconfig
            fontforge
@@ -1315,6 +1322,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
            libcdr
            libcmis
            libcuckoo
+           libfixmath
            libjpeg-turbo
            libe-book
            libepubgen
@@ -1331,7 +1339,9 @@ commonly called @code{ftoa} or @code{dtoa}.")
            libpagemaker
            libqxp
            libstaroffice
+           libtiff
            libvisio
+           libwebp
            libwpg
            libwps
            libxrandr
