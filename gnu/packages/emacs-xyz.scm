@@ -889,6 +889,29 @@ of the segments available in that package using icons from
 information in the mode line.")
     (license license:expat)))
 
+(define-public emacs-spongebob
+  (let ((commit "ae8ae6ba0dc57b7357ba87ff0609d27c4a0a5f51")
+        (revision "0"))
+     (package
+      (name "emacs-spongebob")
+      (version (git-version "0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+               (url "https://gitlab.com/dustyweb/spongebob.el")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+          (base32 "1agqpp078ij2irn0kb8bgqk0nd47fi20yfd9szn8kbqypfqalvgc"))))
+       (build-system emacs-build-system)
+      (home-page "https://gitlab.com/dustyweb/gauche")
+      (synopsis "Memetically mock a region of text")
+      (description "This package transforms text using @code{studlify-region}
+and inserts a SpongeBob SquarePants ASCII art figure in the current
+buffer.")
+      (license license:gpl3+))))
+
 (define-public emacs-project
   (package
     (name "emacs-project")
