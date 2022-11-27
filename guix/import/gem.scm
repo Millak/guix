@@ -124,7 +124,8 @@ VERSION, HASH, HOME-PAGE, DESCRIPTION, DEPENDENCIES, and LICENSES."
                  ((license) (license->symbol license))
                  (_ `(list ,@(map license->symbol licenses)))))))
 
-(define* (gem->guix-package package-name #:key (repo 'rubygems) version)
+(define* (gem->guix-package package-name #:key (repo 'rubygems) version
+                            #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from rubygems.org, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 Optionally include a VERSION string to fetch a specific version gem."

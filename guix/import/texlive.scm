@@ -303,9 +303,9 @@ of those files are returned that are unexpectedly installed."
 (define texlive->guix-package
   (memoize
    (lambda* (name #:key
-                  repo
                   (version (number->string %texlive-revision))
-                  (package-database tlpdb))
+                  (package-database tlpdb)
+                  #:allow-other-keys)
      "Find the metadata for NAME in the tlpdb and return the `package'
 s-expression corresponding to that package, or #f on failure."
      (tlpdb->package name version (package-database)))))

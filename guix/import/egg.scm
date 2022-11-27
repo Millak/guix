@@ -171,7 +171,8 @@ FILE is specified, return the package metadata in FILE."
 ;;; Egg importer.
 ;;;
 
-(define* (egg->guix-package name version #:key (file #f) (source #f))
+(define* (egg->guix-package name version #:key (file #f) (source #f)
+                            #:allow-other-keys)
   "Import a CHICKEN egg called NAME from either the given .egg FILE, or from the
 latest NAME metadata downloaded from the official repository if FILE is #f.
 Return a <package> record or #f on failure.  If VERSION is specified, import

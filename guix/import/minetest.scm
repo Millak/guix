@@ -441,7 +441,8 @@ DEPENDENCIES as a list of AUTHOR/NAME strings."
                #f)))))
    dependency-list))
 
-(define* (%minetest->guix-package author/name #:key (sort %default-sort-key))
+(define* (%minetest->guix-package author/name #:key (sort %default-sort-key)
+                                  #:allow-other-keys)
   "Fetch the metadata for AUTHOR/NAME from https://content.minetest.net, and
 return the 'package' S-expression corresponding to that package, or raise an
 exception on failure.  On success, also return the upstream dependencies as a
@@ -477,7 +478,7 @@ list of AUTHOR/NAME strings."
   (memoize %minetest->guix-package))
 
 (define* (minetest-recursive-import author/name #:key (sort %default-sort-key))
-  (define* (minetest->guix-package* author/name #:key repo version)
+  (define* (minetest->guix-package* author/name #:key version #:allow-other-keys)
     (minetest->guix-package author/name #:sort sort))
   (recursive-import author/name
                     #:repo->guix-package minetest->guix-package*

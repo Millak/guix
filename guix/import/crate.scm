@@ -217,7 +217,8 @@ and LICENSE."
                          'unknown-license!)))
               (string-split string (string->char-set " /"))))
 
-(define* (crate->guix-package crate-name #:key version include-dev-deps? repo)
+(define* (crate->guix-package crate-name #:key version include-dev-deps?
+                              #:allow-other-keys)
   "Fetch the metadata for CRATE-NAME from crates.io, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 When VERSION is specified, convert it into a semver range and attempt to fetch

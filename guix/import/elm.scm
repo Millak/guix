@@ -190,7 +190,7 @@ given NAME and VERSION, and a list of Elm packages it depends on."
 
 (define elm->guix-package
   (memoize
-   (lambda* (package-name #:key repo version)
+   (lambda* (package-name #:key version #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME, an Elm package registered at
 package.elm.org, and return two values: the `package' s-expression
 corresponding to that package (or #f on failure) and a list of Elm
