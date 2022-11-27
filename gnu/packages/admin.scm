@@ -932,7 +932,13 @@ hostname.")
                (substitute* "lib/nscd.c"
                  (("/usr/sbin/nscd")
                   (string-append libc "/sbin/nscd"))))))
-         (add-after 'install 'remove-groups
+         (add-after 'install 'install-man-pages
+           (lambda _
+             ;; The top-level Makefile.am wrongfully has "SUBDIRS += man"
+             ;; under "if ENABLE_REGENERATE_MAN", even though prebuilt man
+             ;; pages are available.  Thus, install them manually.
+             (invoke "make" "-C" "man" "install")))
+         (add-after 'install-man-pages 'remove-groups
            (lambda* (#:key outputs #:allow-other-keys)
              ;; Remove `groups', which is already provided by Coreutils.
              (let* ((out (assoc-ref outputs "out"))
@@ -953,26 +959,9 @@ hostname.")
      "Shadow provides a number of authentication-related tools, including:
 login, passwd, su, groupadd, and useradd.")
 
-    (properties '((hidden? . #t)))                ;see below
-
     ;; The `vipw' program is GPLv2+.
     ;; libmisc/salt.c is public domain.
     (license license:bsd-3)))
-
-(define-public shadow-with-man-pages
-  ;; TODO: Merge with 'shadow' on the next core-updates cycle.
-  (package/inherit shadow
-    (properties '())                              ;not hidden
-    (arguments
-     (substitute-keyword-arguments (package-arguments shadow)
-       ((#:phases phases '%standard-phases)
-        `(modify-phases ,phases
-           (add-after 'install 'install-man-pages
-             (lambda _
-               ;; The top-level Makefile.am wrongfully has "SUBDIRS += man"
-               ;; under "if ENABLE_REGENERATE_MAN", even though prebuilt man
-               ;; pages are available.  Thus, install them manually.
-               (invoke "make" "-C" "man" "install")))))))))
 
 (define-public mingetty
   (package

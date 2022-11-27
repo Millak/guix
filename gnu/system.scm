@@ -846,7 +846,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
 (define %base-packages-utils
   ;; Default set of  utilities packages.
  (cons* procps psmisc which
-        (@ (gnu packages admin) shadow-with-man-pages) ;for 'passwd'
+        shadow                          ;for 'passwd'
 
         guile-3.0-latest
 
