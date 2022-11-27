@@ -266,14 +266,14 @@ and many other languages.")
 (define-public python-wxpython
   (package
     (name "python-wxpython")
-    (version "4.0.7.post1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wxPython" version))
        (sha256
         (base32
-         "1jppcr3n428m8pgwb9q3g0iiqydxd451ncri4njk8b53xsiflhys"))
+         "1iw6xp76b3fmdqwbqmsx9i1razzpfki5z1hq6l8mszlxa32fng36"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -309,7 +309,7 @@ and many other languages.")
     (native-inputs
      (list pkg-config python-waf))
     (propagated-inputs
-     (list python-numpy python-pillow python-six))
+     (list python-attrdict python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
     (synopsis "Cross platform GUI toolkit for Python")
     (description "wxPython is a cross-platform GUI toolkit for the Python
