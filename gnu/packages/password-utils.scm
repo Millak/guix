@@ -218,7 +218,7 @@ algorithms AES or Twofish.")
 (define-public pwsafe
   (package
     (name "pwsafe")
-    (version "3.54.1")
+    (version "3.60.0")
     (home-page "https://www.pwsafe.org/")
     (source
      (origin
@@ -227,7 +227,7 @@ algorithms AES or Twofish.")
              (url "https://github.com/pwsafe/pwsafe")
              (commit version)))
        (sha256
-        (base32 "0d51dlw98mv23nwb0b5jyji8gnb9f5cnig6kivfljl97lmr6lhvf"))
+        (base32 "064y78sqr8h9mq922spi4r13ga0a1j09mfh4kc4pn7j697nl6b5y"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
