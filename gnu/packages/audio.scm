@@ -919,13 +919,13 @@ engineers, musicians, soundtrack editors and composers.")
            portmidi
            wavpack))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)     ;for msgfmt
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           gettext-minimal              ;for msgfmt
+           libtool
+           pkg-config
+           python
+           which))
     (arguments
      `(#:configure-flags
        (list
