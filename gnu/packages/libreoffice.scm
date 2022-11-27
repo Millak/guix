@@ -30,6 +30,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libreoffice)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -1092,6 +1093,30 @@ and to return information on pronunciations, meanings and synonyms.")
     (description "libqxp is a library and a set of tools for reading and
 converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
     (license license:mpl2.0)))
+
+(define-public dragonbox
+  (package
+    (name "dragonbox")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jk-jeon/dragonbox")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qxx94s2kfgnlnyl1gwmbxkksr3dipvb99zdyi5skw3z2bq563sa"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;no test target
+    (home-page "https://github.com/jk-jeon/dragonbox")
+    (synopsis "Float-to-string conversion algorithm")
+    (description "Dragonbox generates a pair of integers from a floating-point
+number: the decimal significand and the decimal exponent of the input
+floating-point number.  These integers can then be used for string generation
+of decimal representation of the input floating-point number, the procedure
+commonly called @code{ftoa} or @code{dtoa}.")
+    (license license:asl2.0)))
 
 (define dtoa
   (origin
