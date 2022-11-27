@@ -127,6 +127,9 @@ set."
 
 (define (translated? file-name)
   "Return true if a translator is installed on FILE-NAME."
+  ;; On GNU/Hurd, 'getxattr' in glibc opens the file without O_NOTRANS, and
+  ;; then, for "gnu.translator", it calls 'file_get_translator', resulting in
+  ;; EOPNOTSUPP (conversely, 'showtrans' opens the file with O_NOTRANS).
   (if (string-contains %host-type "linux-gnu")
       (passive-translator-xattr? file-name)
       (passive-translator-installed? file-name)))
