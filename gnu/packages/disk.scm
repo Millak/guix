@@ -1142,6 +1142,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
+    ;; When updating, remove go-github-com-gdamore-tcell-v2-2.3 from golang.scm.
     (version "27")
     (source (origin
               (method git-fetch)
@@ -1155,7 +1156,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
     (build-system go-build-system)
     (native-inputs
      (list go-github.com-mattn-go-runewidth go-golang-org-x-term
-           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2))
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")
