@@ -5089,6 +5089,28 @@ at the current line number or active region.  @code{git-link-commit} returns
 the URL for a commit.  URLs are added to the kill ring.")
     (license license:gpl3+)))
 
+(define-public emacs-frowny
+  (package
+    (name "emacs-frowny")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckwork/frowny.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01ss3js71as1jpqcf0x9hfvapiyyhj9ni4y1n6wvqsghv5dcaiy0"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/duckwork/frowny.el")
+    (synopsis "Insert frownies in Emacs :(")
+    (description "This package ships @code{frowny-mode}, which makes it so that
+inserting a single @code{(} when after a @code{:} will not automatically close
+the parenthesis, meaning that only @code{:(} is inserted.  Works with
+@code{electric-pair-mode}, @code{paredit-mode}, and others.")
+    (license license:public-domain)))
+
 (define-public emacs-apache-mode
   (package
     (name "emacs-apache-mode")
