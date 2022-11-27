@@ -8456,7 +8456,7 @@ libraries.")
 (define-public js-of-ocaml
   (package
     (name "js-of-ocaml")
-    (version "4.0.0")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -8465,7 +8465,7 @@ libraries.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0iyhl9z57j53j2jvyqcwmxhbvy23l6g80aa0abmlgwam14yskspf"))))
+        (base32 "14ig69iyc9yzniclfsc6cz9g9zqp96bs66y6dy4rzrm78s81w6i1"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f ;tests assume ocaml 4.13
