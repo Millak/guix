@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -217,23 +217,21 @@ set."
       ("dev/tty3"    ("/hurd/term"     "/dev/tty3" "hurdio" "/dev/vcs/3/console")
                                                             #o666)
 
-      ("dev/ptyp0"   ("/hurd/term"     "/dev/ptyp0" "pty-master" "/dev/ttyp0")
-                                                            #o666)
-      ("dev/ptyp1"   ("/hurd/term"     "/dev/ptyp1" "pty-master" "/dev/ttyp1")
-                                                            #o666)
-      ("dev/ptyp2"   ("/hurd/term"     "/dev/ptyp2" "pty-master" "/dev/ttyp2")
-                                                            #o666)
+      ,@(append-map (lambda (n)
+                      (let ((n (number->string n)))
+                        `((,(string-append "dev/ptyp" n)
+                           ("/hurd/term" ,(string-append "/dev/ptyp" n)
+                            "pty-master" ,(string-append "/dev/ttyp" n))
+                           #o666)
 
-      ("dev/ttyp0"   ("/hurd/term"     "/dev/ttyp0" "pty-slave" "/dev/ptyp0")
-                                                            #o666)
-      ("dev/ttyp1"   ("/hurd/term"     "/dev/ttyp1" "pty-slave" "/dev/ptyp1")
-                                                            #o666)
-      ("dev/ttyp2"   ("/hurd/term"     "/dev/ttyp2" "pty-slave" "/dev/ptyp2")
-                                                            #o666)))
+                          (,(string-append "dev/ttyp" n)
+                           ("/hurd/term" ,(string-append "/dev/ttyp" n)
+                            "pty-slave" ,(string-append "/dev/ptyp" n))
+                           #o666))))
+                    (iota 10 0))))
 
   (for-each scope-set-translator servers)
   (mkdir* "dev/vcs/1")
-  (mkdir* "dev/vcs/2")
   (mkdir* "dev/vcs/2")
   (rename-file (scope "dev/console") (scope "dev/console-"))
   (for-each scope-set-translator devices)
