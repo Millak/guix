@@ -231,19 +231,16 @@ algorithms AES or Twofish.")
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gtest" ,googletest)
-       ("perl" ,perl)
-       ("zip" ,zip)))
-    (inputs `(("curl" ,curl)
-              ("file" ,file)
-              ("libuuid" ,util-linux "lib")
-              ("libxt" ,libxt)
-              ("libxtst" ,libxtst)
-              ("openssl" ,openssl)
-              ("qrencode" ,qrencode)
-              ("wxwidgets" ,wxwidgets)
-              ("xerces-c" ,xerces-c)))
+     (list gettext-minimal googletest perl zip))
+    (inputs (list curl
+                  file
+                  `(,util-linux "lib")
+                  libxt
+                  libxtst
+                  openssl
+                  qrencode
+                  wxwidgets
+                  xerces-c))
     (arguments '(#:configure-flags (list "-DNO_GTEST=YES")
                  #:phases (modify-phases %standard-phases
                             (add-after 'unpack 'add-gtest
