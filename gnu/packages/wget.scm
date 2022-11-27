@@ -77,7 +77,7 @@ in downloaded documents to relative links.")
 (define-public wgetpaste
   (package
     (name "wgetpaste")
-    (version "2.32")
+    (version "2.33")
     (source
       (origin
         (method git-fetch)
@@ -86,7 +86,7 @@ in downloaded documents to relative links.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "13zdqfnbpymwz2f04icw92flj50227n5r0dcms84qxswfxrarnas"))))
+         (base32 "0gx5y3f0qf3hrah1z0q243hyldshaq6mvbg1lnjzciviv1vc8zx0"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
