@@ -440,27 +440,11 @@ empty list when the FIELD cannot be found."
 
 (define cran-guix-name (cut guix-name "r-" <>))
 
-(define (tarball-needs-fortran? tarball)
-  "Check if the TARBALL contains Fortran source files."
-  (define (check pattern)
-    (parameterize ((current-error-port (%make-void-port "rw+"))
-                   (current-output-port (%make-void-port "rw+")))
-      (zero? (system* "tar" "--wildcards" "--list" pattern "-f" tarball))))
-  (or (check "*.f90")
-      (check "*.f95")
-      (check "*.f")))
-
 (define (directory-needs-fortran? dir)
   "Check if the directory DIR contains Fortran source files."
   (match (find-files dir "\\.f(90|95)$")
     (() #f)
     (_ #t)))
-
-(define (needs-fortran? thing tarball?)
-  "Check if the THING contains Fortran source files."
-  (if tarball?
-      (tarball-needs-fortran? thing)
-      (directory-needs-fortran? thing)))
 
 (define (files-match-pattern? directory regexp . file-patterns)
   "Return #T if any of the files matching FILE-PATTERNS in the DIRECTORY match
@@ -477,34 +461,10 @@ the given REGEXP."
                     (else (loop))))))))
          (apply find-files directory file-patterns))))
 
-(define (tarball-files-match-pattern? tarball regexp . file-patterns)
-  "Return #T if any of the files represented by FILE-PATTERNS in the TARBALL
-match the given REGEXP."
-  (call-with-temporary-directory
-   (lambda (dir)
-     (parameterize ((current-error-port (%make-void-port "rw+")))
-       (apply system* "tar"
-              "xf" tarball "-C" dir
-              `("--wildcards" ,@file-patterns)))
-     (files-match-pattern? dir regexp))))
-
 (define (directory-needs-zlib? dir)
   "Return #T if any of the Makevars files in the src directory DIR contain a
 zlib linker flag."
   (files-match-pattern? dir "-lz" "(Makevars.*|configure.*)"))
-
-(define (tarball-needs-zlib? tarball)
-  "Return #T if any of the Makevars files in the src directory of the TARBALL
-contain a zlib linker flag."
-  (tarball-files-match-pattern?
-   tarball "-lz"
-   "*/src/Makevars*" "*/src/configure*" "*/configure*"))
-
-(define (needs-zlib? thing tarball?)
-  "Check if the THING contains files indicating a dependency on zlib."
-  (if tarball?
-      (tarball-needs-zlib? thing)
-      (directory-needs-zlib? thing)))
 
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
@@ -512,18 +472,25 @@ the pkg-config tool."
   (files-match-pattern? dir "pkg-config"
                         "(Makevars.*|configure.*)"))
 
-(define (tarball-needs-pkg-config? tarball)
-  "Return #T if any of the Makevars files in the src directory of the TARBALL
-reference the pkg-config tool."
-  (tarball-files-match-pattern?
-   tarball "pkg-config"
-   "*/src/Makevars*" "*/src/configure*" "*/configure*"))
+(define (source-dir->dependencies dir)
+  "Guess dependencies of R package source in DIR and return (INPUTS
+NATIVE-INPUTS)."
+  (list
+    (if (directory-needs-zlib? dir) '("zlib") '())
+    (append
+      (if (directory-needs-pkg-config? dir) '("pkg-config") '())
+      (if (directory-needs-fortran? dir) '("gfortran") '()))))
 
-(define (needs-pkg-config? thing tarball?)
-  "Check if the THING contains files indicating a dependency on pkg-config."
+(define (source->dependencies source tarball?)
+  "SOURCE-DIR->DEPENDENCIES, but for directories and tarballs as indicated
+by TARBALL?"
   (if tarball?
-      (tarball-needs-pkg-config? thing)
-      (directory-needs-pkg-config? thing)))
+    (call-with-temporary-directory
+     (lambda (dir)
+       (parameterize ((current-error-port (%make-void-port "rw+")))
+         (system* "tar" "xf" source "-C" dir))
+       (source-dir->dependencies dir)))
+    (source-dir->dependencies source)))
 
 (define (needs-knitr? meta)
   (member "knitr" (listify meta "VignetteBuilder")))
@@ -575,8 +542,12 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                                                            (git? 'git)
                                                            (hg? 'hg)
                                                            (else #f))))
+         (tarball?   (not (or git? hg?)))
+         (source-inputs-all (source->dependencies source tarball?))
+         (source-inputs (car source-inputs-all))
+         (source-native-inputs (cadr source-inputs-all))
          (sysdepends (append
-                      (if (needs-zlib? source (not (or git? hg?))) '("zlib") '())
+                      source-inputs
                       (filter (lambda (name)
                                 (not (member name invalid-packages)))
                               (map string-downcase (listify meta "SystemRequirements")))))
@@ -636,10 +607,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
               ,@(maybe-inputs (map transform-sysname sysdepends))
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
-                 `(,@(if (needs-fortran? source (not (or git? hg?)))
-                         '("gfortran") '())
-                   ,@(if (needs-pkg-config? source (not (or git? hg?)))
-                         '("pkg-config") '())
+                 `(,@source-native-inputs
                    ,@(if (needs-knitr? meta)
                          '("r-knitr") '()))
                  'native-inputs)
