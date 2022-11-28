@@ -38,6 +38,7 @@
   #:use-module (guix gexp)
   #:use-module (guix records)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix derivations)
   #:use-module (guix profiles)
   #:use-module ((guix utils) #:select (substitute-keyword-arguments))
@@ -49,9 +50,6 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cross-base)
-  #:use-module (gnu packages cryptsetup)
-  #:use-module (gnu packages disk)
-  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages firmware)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages guile)
@@ -896,20 +894,7 @@ of PROVENANCE-SERVICE-TYPE to its services."
         ;; many people are familiar with, so keep it around.
         iw wireless-tools))
 
-(define %base-packages-disk-utilities
-  ;; A well-rounded set of packages for interacting with disks,
-  ;; partitions and filesystems, included with the Guix installation
-  ;; image.
-  (list parted gptfdisk ddrescue
-        ;; We used to provide fdisk from GNU fdisk, but as of version 2.0.0a
-        ;; it pulls Guile 1.8, which takes unreasonable space; furthermore
-        ;; util-linux's fdisk is already available, in %base-packages-linux.
-        cryptsetup mdadm
-        dosfstools
-        btrfs-progs
-        f2fs-tools
-        jfsutils
-        xfsprogs))
+(define-deprecated %base-packages-disk-utilities #f '())
 
 (define %base-packages
   ;; Default set of packages globally visible.  It should include anything
