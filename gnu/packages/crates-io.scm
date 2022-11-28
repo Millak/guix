@@ -68276,32 +68276,6 @@ Rust.")
       "High performance inflection transformation library for changing properties of words like the case.")
     (license license:expat)))
 
-(define-public rust-rt-format-0.3
-  (package
-    (name "rust-rt-format")
-    (version "0.3.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "rt-format" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1qjjwh9ny95xck1kp99gi6hfm9glrx54jx8npnj6yccxc7p7q225"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1))))
-    (home-page "https://github.com/vstojkovic/rt-format")
-    (synopsis "Runtime equivalent of the Rust format! macro")
-    (description "This package provides a runtime equivalent of the Rust
-format! macro. It allows formatting strings like the format! macro, with the
-formatting string and the arguments provided at runtime.  This crate supports
-all the formatting features of the format! macro, except for the fill
-character.")
-    (license license:asl2.0)))
-
 (define-public rust-rustc-workspace-hack-1
   (package
     (name "rust-rustc-workspace-hack")
