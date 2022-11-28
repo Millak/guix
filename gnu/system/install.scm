@@ -48,6 +48,9 @@
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages certs)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages disk)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages guile)
@@ -458,6 +461,20 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 \x1b[1;33mUse Alt-F2 for documentation.\x1b[0m
 ")
 
+(define %installer-disk-utilities
+  ;; A well-rounded set of packages for interacting with disks, partitions and
+  ;; file systems, included with the Guix installation image.
+  (list parted gptfdisk ddrescue
+        ;; We used to provide fdisk from GNU fdisk, but as of version 2.0.0a
+        ;; it pulls Guile 1.8, which takes unreasonable space; furthermore
+        ;; util-linux's fdisk is already available, in %base-packages-linux.
+        cryptsetup mdadm
+        dosfstools
+        btrfs-progs
+        f2fs-tools
+        jfsutils
+        xfsprogs))
+
 (define installation-os
   ;; The operating system used on installation images for USB sticks etc.
   (operating-system
@@ -530,7 +547,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                       font-dejavu font-gnu-unifont
                       grub          ; mostly so xrefs to its manual work
                       nss-certs)    ; To access HTTPS, use git, etc.
-                %base-packages-disk-utilities
+                %installer-disk-utilities
                 %base-packages))))
 
 (define* (os-with-u-boot os board #:key (bootloader-target "/dev/mmcblk0")
