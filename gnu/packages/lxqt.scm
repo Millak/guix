@@ -873,14 +873,14 @@ manager Compton.")
 (define-public lximage-qt
   (package
     (name "lximage-qt")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0nal8n7nmkafapdbcs9c8rk313md2fak4xjl9m56n10dxcjpi2wb"))))
+        (base32 "0qz40vlps82nzz62w7d9ar43gmzvlk9wqzm8lwga90vip8gb2zkm"))))
     (build-system cmake-build-system)
     (inputs
      (list libexif libfm-qt qtbase-5 qtsvg-5 qtx11extras))
