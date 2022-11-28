@@ -8765,6 +8765,41 @@ representations of analysis results in order to provide additional
 information.")
     (license license:lgpl3)))
 
+(define-public r-glmgampoi
+  (package
+    (name "r-glmgampoi")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "glmGamPoi" version))
+              (sha256
+               (base32
+                "12jbqigg4k2ngrk2anbrrxrwkp57bbzdz492lg8lc6w1gygp5yip"))))
+    (properties `((upstream-name . "glmGamPoi")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beachmat
+           r-biocgenerics
+           r-delayedarray
+           r-delayedmatrixstats
+           r-hdf5array
+           r-matrixgenerics
+           r-matrixstats
+           r-rcpp
+           r-rcpparmadillo
+           r-rlang
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/const-ae/glmGamPoi")
+    (synopsis "Fit a Gamma-Poisson Generalized Linear Model")
+    (description
+     "Fit linear models to overdispersed count data.  The package can estimate
+the overdispersion and fit repeated models for matrix input.  It is designed
+to handle large input datasets as they typically occur in single cell RNA-seq
+experiments.")
+    (license license:gpl3)))
+
 (define-public r-rots
   (package
     (name "r-rots")
