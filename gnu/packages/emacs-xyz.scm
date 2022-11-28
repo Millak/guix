@@ -811,7 +811,7 @@ Emacs package archive}.")
 (define-public emacs-paredit
   (package
     (name "emacs-paredit")
-    (version "25")
+    (version "26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -820,7 +820,7 @@ Emacs package archive}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gc6lnk5xqxzl9s2m99hfi07wp4zfhh1k64c1bdrjfalv55nl998"))))
+                "1hwl2jhv1fhsdrspfhprq77n763i4zsj350q024ajy0m2kaql6ws"))))
     (build-system emacs-build-system)
     (home-page "http://mumble.net/~campbell/emacs/paredit/")
     (synopsis "Emacs minor mode for editing parentheses")
@@ -6100,6 +6100,30 @@ allrecipes.com.")
 inline PDF preview in Org buffers by using pdf2svg.")
     (license license:gpl3+)))
 
+(define-public emacs-org-rainbow-tags
+  ;; Upstream didn't tag version.
+  (let ((commit "c6040d228c5e8c5c6d33c7f81fc09d935ad1bcbd"))
+    (package
+      (name "emacs-org-rainbow-tags")
+      (version "0.1-pre")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/KaratasFurkan/org-rainbow-tags")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "006nx01sby8k0fc9lf63ldf0sl94ihldyrvqr9r18fb1gpzvivl6"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/KaratasFurkan/org-rainbow-tags")
+      (synopsis "Colorize Org tags automatically")
+      (description
+       "This package adds random colors to your Org tags.  In order to make
+colors random but consistent between same tags, colors are generated from the
+hash of the tag names.")
+      (license license:gpl3+))))
+
 (define-public emacs-org-rich-yank
   (package
     (name "emacs-org-rich-yank")
@@ -11078,10 +11102,36 @@ keybinding style.  The provided commands allow for editing Lisp in normal
 state and will work even without lispy being enabled.")
       (license license:gpl3+))))
 
+(define-public emacs-function-args
+  ;; The latest release is from August 21, 2017.
+  (let ((commit "beba049751fed78666c87bd146a6f1cf149bb819")
+        (revision "0"))
+    (package
+      (name "emacs-function-args")
+      (version (git-version "0.6.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/abo-abo/function-args")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-ivy))
+      (home-page "https://github.com/abo-abo/function-args")
+      (synopsis "C/C++ completion for GNU Emacs")
+      (description
+       "This package provides a way of showing an inline arguments hint for
+the C/C++ function at point.")
+      (license license:gpl3+))))
+
 (define-public emacs-lpy
   ;; There is no proper release/tag.
-  (let ((commit "ce78a4613458790cc785c1687af7eed8f0d8d66c")
-        (revision "5"))
+  (let ((commit "fa95b11e1023704510cc7dd2897bf8bcc3027cbb")
+        (revision "6"))
     (package
       (name "emacs-lpy")
       (version (git-version "0.1.0" revision commit))
@@ -11091,13 +11141,13 @@ state and will work even without lispy being enabled.")
          (uri (git-reference
                (url "https://github.com/abo-abo/lpy")
                (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
-           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))
-         (file-name (git-file-name name version))))
-      (propagated-inputs
-       (list emacs-zoutline emacs-lispy))
+           "1j92ll2afvcp891fxra3sawxg000cs3ra01wxksiil2dg5zpzzkn"))))
       (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-function-args emacs-lispy emacs-zoutline))
       (home-page "https://github.com/abo-abo/lpy")
       (synopsis "Modal editing for Python")
       (description

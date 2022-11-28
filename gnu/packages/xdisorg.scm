@@ -516,7 +516,12 @@ avoiding password prompts when X11 forwarding has already been setup.")
            wayland-protocols
            xkeyboard-config))
     (native-inputs
-     (list bison doxygen pkg-config python))
+     (append (list bison doxygen pkg-config python)
+             (if (%current-target-system)
+                 ;; wayland-scanner is required at build time.
+                 ;; TODO: Remove this conditional on core-updates.
+                 (list pkg-config-for-build wayland)
+                 '())))
     (arguments
      `(#:configure-flags
        (list (string-append "-Dxkb-config-root="

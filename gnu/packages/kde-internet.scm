@@ -417,7 +417,7 @@ This package is part of the KDE networking module.")
            phonon
            qtbase-5
            qtscript
-           qtwebkit
+           qtwebengine-5
            solid
            syndication
            taglib))

@@ -1845,7 +1845,7 @@ It can be used to calculate the trajectory of satellites.")
 (define-public imppg
   (package
     (name "imppg")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method git-fetch)
@@ -1854,7 +1854,7 @@ It can be used to calculate the trajectory of satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "04synbmyz0hkipl1cdc26nr42r57v494yjw8pi4jx0jrxrawgj9h"))))
+        (base32 "0a6wb1a9adwd01dmy0r03xxp8iz9y7mvh30088ajilhj4lf90vxa"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test provided

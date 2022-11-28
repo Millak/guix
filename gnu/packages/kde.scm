@@ -345,7 +345,7 @@ projects.")
                   qtdeclarative-5
                   qtquickcontrols-5 ;; not checked as requirement
                   qtquickcontrols2-5 ;; not checked as requirement
-                  qtwebkit
+                  qtwebengine-5
                   threadweaver
                   ;; recommendes
                   astyle

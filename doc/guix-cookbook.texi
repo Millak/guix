@@ -3503,8 +3503,8 @@ to reproduce the exact same profile:
 GUIX_EXTRA_PROFILES=$HOME/.guix-extra-profiles
 GUIX_EXTRA=$HOME/.guix-extra
 
-mkdir "$GUIX_EXTRA"/my-project
-guix pull --channels=channel-specs.scm --profile "$GUIX_EXTRA/my-project/guix"
+mkdir -p "$GUIX_EXTRA"/my-project
+guix pull --channels=channel-specs.scm --profile="$GUIX_EXTRA/my-project/guix"
 
 mkdir -p "$GUIX_EXTRA_PROFILES/my-project"
 "$GUIX_EXTRA"/my-project/guix/bin/guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project

@@ -19665,6 +19665,27 @@ from the header, as well as section details and data available.")
      and bit flag values.")
     (license license:expat)))
 
+(define-public python-attrdict
+  (package
+    (name "python-attrdict")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "attrdict" version))
+              (sha256
+               (base32
+                "0w3vsz64j9npxfgh83hghsh161wwkrx1fxqi1533js2wnnc0dj9m"))))
+    (build-system python-build-system)
+    ;; The package is no longer maintained and tests need some work.
+    (arguments '(#:tests? #f))
+    (propagated-inputs (list python-six))
+    (home-page "https://github.com/bcj/AttrDict")
+    (synopsis "Attribute-style access dictionaries")
+    (description
+     "This package provides mapping objects whose elements can be accessed
+both as keys and as attributes.")
+    (license license:expat)))
+
 (define-public python-attrs
   (package
     (name "python-attrs")

@@ -33,7 +33,6 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages compression))
 
 (define-public dbqn
@@ -202,7 +201,6 @@ by APL.")
                   (install-file "libcbqn.so" lib))))))))
     (native-inputs (list dbqn
                          bqn-sources
-                         libffi
-                         linux-libre-headers))
+                         libffi))
     (properties
      `((tunable? . #t)))))

@@ -3931,27 +3931,27 @@ with a number of bugfixes and changes to improve IT playback.")
 (define-public sooperlooper
   (package
     (name "sooperlooper")
-    (version "1.7.6")
+    (version "1.7.8")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://essej.net/sooperlooper/sooperlooper-"
-                           version ".tar.gz"))
+       (uri (string-append "https://sonosaurus.com/sooperlooper"
+                           "/sooperlooper-" version ".tar.gz"))
        (sha256
-        (base32 "0kbb1pj62rl32c88j6p7dg823kvs0gb5s42qy3bl6yg0wn10dksj"))))
+        (base32 "0dd2kryizwrzndbwafpbddf9w2ghw9gfmb8nyss5hll70b1dx59f"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'add-sigc++-includes
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((sig (assoc-ref inputs "libsigc++"))
-                   (xml (assoc-ref inputs "libxml2"))
+             (let ((sig (search-input-directory inputs "include/sigc++-2.0"))
+                   (xml (search-input-directory inputs "include/libxml2"))
                    (cwd (getcwd)))
                (setenv "CPATH"
-                       (string-append sig "/include/sigc++-2.0:"
-                                      sig "/lib/sigc++-2.0/include:"
-                                      xml "/include/libxml2/:"
+                       (string-append sig ":"
+                                      sig "../../lib/sigc++-2.0/include:"
+                                      xml ":"
                                       cwd "/libs/pbd:"
                                       cwd "/libs/midi++:"
                                       (or (getenv "CPATH") ""))))
@@ -3978,19 +3978,19 @@ with a number of bugfixes and changes to improve IT playback.")
                (("static char") "static const char"))
              #t)))))
     (inputs
-     `(("jack" ,jack-1)
-       ("alsa-lib" ,alsa-lib)
-       ("wxwidgets" ,wxwidgets-gtk2)
-       ("libsndfile" ,libsndfile)
-       ("libsamplerate" ,libsamplerate)
-       ("liblo" ,liblo)
-       ("rubberband" ,rubberband)
-       ("libxml2" ,libxml2)
-       ("libsigc++" ,libsigc++-2)
-       ("ncurses" ,ncurses)))
+     (list jack-1
+           alsa-lib
+           wxwidgets-gtk2
+           libsndfile
+           libsamplerate
+           liblo
+           rubberband
+           libxml2
+           libsigc++-2
+           ncurses))
     (native-inputs
      (list pkg-config))
-    (home-page "http://essej.net/sooperlooper/")
+    (home-page "https://sonosaurus.com/sooperlooper/")
     (synopsis "Live looping sampler")
     (description
      "SooperLooper is a live looping sampler capable of immediate loop

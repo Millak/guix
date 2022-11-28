@@ -2579,16 +2579,16 @@ using the Enchant spell-checking library.")
            pciutils
            protobuf
            pulseaudio
-           qtbase-5
-           qtdeclarative-5
            qtmultimedia-5
-           qtwebchannel-5
            re2
            snappy
            eudev
            valgrind
            vulkan-headers
            xcb-util))
+    (propagated-inputs
+     ;; Required by Qt5WebEngineCoreConfig.cmake.
+     (list qtbase-5 qtdeclarative-5 qtwebchannel-5))
     (arguments
      (substitute-keyword-arguments (package-arguments qtsvg-5)
        ((#:modules modules '())
@@ -2983,11 +2983,13 @@ linux/libcurl_wrapper.h"
                python-html5lib)))
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
+       (replace "qtmultimedia" qtmultimedia)
+       (append libxkbfile xkeyboard-config)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs qtwebengine-5)
        (replace "qtbase" qtbase)
        (replace "qtdeclarative" qtdeclarative)
-       (replace "qtmultimedia" qtmultimedia)
-       (replace "qtwebchannel" qtwebchannel)
-       (append libxkbfile xkeyboard-config)))
+       (replace "qtwebchannel" qtwebchannel)))
     (native-search-paths
      (list (search-path-specification
             (file-type 'regular)

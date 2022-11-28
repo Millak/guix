@@ -9,7 +9,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;; Copyright © 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2020 Marcin Karpezo <sirmacik@wioo.waw.pl>
@@ -30,6 +30,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages libreoffice)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
@@ -66,6 +67,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
@@ -696,14 +698,14 @@ text documents, vector drawings, presentations and spreadsheets.")
 (define-public libmwaw
   (package
     (name "libmwaw")
-    (version "0.3.19")
+    (version "0.3.21")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/libmwaw/libmwaw/libmwaw-"
                           version "/libmwaw-" version ".tar.xz"))
       (sha256
-       (base32 "1bx5xnw8sk5h26x2z7hfac7hfbm68zqg0jilp15qr0pwxqsf4wmj"))))
+       (base32 "07629xwvlkqj08j13aj9lsq0pwm7r0v7g2zprr1vjqcdlwih2xg8"))))
     (build-system gnu-build-system)
     (native-inputs
      (list doxygen pkg-config))
@@ -1093,6 +1095,45 @@ and to return information on pronunciations, meanings and synonyms.")
 converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
     (license license:mpl2.0)))
 
+(define-public dragonbox
+  (package
+    (name "dragonbox")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jk-jeon/dragonbox")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0qxx94s2kfgnlnyl1gwmbxkksr3dipvb99zdyi5skw3z2bq563sa"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #false)) ;no test target
+    (home-page "https://github.com/jk-jeon/dragonbox")
+    (synopsis "Float-to-string conversion algorithm")
+    (description "Dragonbox generates a pair of integers from a floating-point
+number: the decimal significand and the decimal exponent of the input
+floating-point number.  These integers can then be used for string generation
+of decimal representation of the input floating-point number, the procedure
+commonly called @code{ftoa} or @code{dtoa}.")
+    (license license:asl2.0)))
+
+(define-public dragonbox-for-libreoffice
+  (package
+    (inherit dragonbox)
+    (name "dragonbox")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jk-jeon/dragonbox")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11h9xhpzp61rfyh1nnca5shzi40skgpdql080k5cb6cfy672s1qz"))))))
+
 (define dtoa
   (origin
     (method url-fetch)
@@ -1105,7 +1146,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.3.5.2")
+    (version "7.4.3.2")
     (source
      (origin
        (method url-fetch)
@@ -1114,7 +1155,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "14g9873x8m5yakpq7v9f7lhc5fkxh6yhjhgh0pm30cqmxsqhsglv"))))
+        (base32 "0fyvd4ydh72lmn005h190xa563d4h376pi1fx9lfr5i25qcbpg7z"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
@@ -1147,19 +1188,24 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
                 (("GPGMEPP_CFLAGS=-I/usr/include/gpgme\\+\\+")
                  (string-append "GPGMEPP_CFLAGS=-I"
                                 (search-input-directory inputs
-                                                        "include/gpgme++"))))
+                                                        "include/gpgme++")))
+                (("DRAGONBOX_CFLAGS=-I/usr/include/dragonbox-1.0.0")
+                 (string-append "DRAGONBOX_CFLAGS=-I"
+                                (search-input-directory inputs
+                                                        "include/dragonbox-1.0.0"))))
 
               ;; /usr/bin/xdg-open doesn't exist on Guix System.
               (substitute* '("shell/source/unix/exec/shellexec.cxx"
                              "shell/source/unix/misc/senddoc.sh")
                 (("/usr/bin/xdg-open")
-                 (search-input-file inputs "/bin/xdg-open")))))
+                 (search-input-file inputs "/bin/xdg-open")))
+              (setenv "CPPFLAGS" "-std=c++17")))
           (add-after 'install 'reset-zip-timestamps
             (lambda _
               (for-each (lambda (file)
                           (invoke "ziptime" file))
                         ;; So many different extensions for .zip files.
-                        (find-files #$output "\\.(bau|dat|otp|ott|zip)$"))))
+                        (find-files #$output "\\.(bau|dat|otg|otp|ott|zip)$"))))
           (add-after 'install 'bin-and-desktop-install
             ;; Create 'soffice' and 'libreoffice' symlinks to the executable
             ;; script.
@@ -1235,6 +1281,10 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
          ;; when our default compiler is >=GCC 6.
          "--disable-pdfium"
          "--without-doxygen"
+         ;; Avoid linker errors about non-virtual thunks on i686-linux.
+         "--enable-lto"
+         ;; Avoid errors rebuilding the Gtk icon cache, at least on i686-linux.
+         "--without-galleries"
          "--enable-build-opensymbol")))
     (native-inputs
      (list bison
@@ -1251,6 +1301,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
            clucene
            cups
            dbus-glib
+           dragonbox-for-libreoffice
            firebird
            fontconfig
            fontforge
@@ -1271,6 +1322,7 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
            libcdr
            libcmis
            libcuckoo
+           libfixmath
            libjpeg-turbo
            libe-book
            libepubgen
@@ -1287,7 +1339,9 @@ converting QuarkXPress file format.  It supports versions 3.1 to 4.1.")
            libpagemaker
            libqxp
            libstaroffice
+           libtiff
            libvisio
+           libwebp
            libwpg
            libwps
            libxrandr

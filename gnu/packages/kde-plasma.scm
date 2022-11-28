@@ -993,7 +993,6 @@ basic needs and easy to configure for those who want special setups.")
            qtscript
            qtwebchannel-5
            qtwebengine-5
-           qtwebkit
            qtx11extras
            zlib))
     (build-system qt-build-system)
