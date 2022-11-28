@@ -451,14 +451,14 @@ according to the Desktop Notifications Specification.")
 (define-public lxqt-openssh-askpass
   (package
     (name "lxqt-openssh-askpass")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "1hxix513z2sanmygfzq1fgx30kaxw5rjmmklbyyzl8bv1xzjcwk7"))))
+        (base32 "0w662issh8cagmza881wdrxbngn33w8shp0jvzna1f8pf9g9f7bj"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
