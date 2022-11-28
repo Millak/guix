@@ -262,8 +262,7 @@ programs and other files depend.")
                         (let ((out (assoc-ref outputs "out")))
                           (install-file "out/gn" (string-append out "/bin"))))))))
       (native-inputs
-       `(("ninja" ,ninja)
-         ("python" ,python-wrapper)))
+       (list ninja python-wrapper))
       (synopsis "Generate Ninja build files")
       (description
        "GN is a tool that collects information about a project from @file{.gn}
