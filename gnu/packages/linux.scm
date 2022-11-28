@@ -68,6 +68,7 @@
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
+;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1530,6 +1531,33 @@ on Purism Librem laptop computers.  It allows user-space control over the
 battery charging thresholds, keyboard backlight, fans and thermal monitors,
 and the notification, WiFi, and Bluetooth LED.")
     (license license:gpl2)))
+
+(define-public tuxedo-keyboard
+  (package
+    (name "tuxedo-keyboard")
+    (version "3.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tuxedocomputers/tuxedo-keyboard.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "17n14yh55yrxx4qbx4ph9drbzx2ll4kdsfmlngrdgizhyzk7z7zv"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:tests? #f))                ; no test suite
+    (home-page "https://github.com/tuxedocomputers/tuxedo-keyboard")
+    (synopsis "Linux kernel modules to control keyboard on most Tuxedo computers")
+    (description
+     "This package provides the @code{tuxedo_keyboard}, @code{tuxedo_io},
+@code{clevo_wmi} @acronym{WMI, Windows Management Engine} and the
+@code{clevo_acpi} @acronym{ACPI, Advanced Configuration and Power Interface}
+kernel modules to control the keyboard on most Tuxedo computers. Only white
+backlight only models are currently not supported. The @code{tuxedo_io} module
+is also needed for the @code{tuxedo-control-center} (short tcc) package.")
+    (license license:gpl3+)))
 
 (define-public ec
   (package
