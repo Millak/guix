@@ -471,6 +471,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
         cryptsetup mdadm
         dosfstools
         btrfs-progs
+        e2fsprogs
         f2fs-tools
         jfsutils
         xfsprogs))
