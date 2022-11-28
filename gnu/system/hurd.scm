@@ -75,28 +75,30 @@
         info-reader))
 
 (define %base-services/hurd
-  (list (service hurd-console-service-type
-                 (hurd-console-configuration (hurd hurd)))
-        (service hurd-getty-service-type (hurd-getty-configuration
-                                          (tty "tty1")))
-        (service hurd-getty-service-type (hurd-getty-configuration
-                                          (tty "tty2")))
-        (service static-networking-service-type
-                 (list %loopback-static-networking
+  (append (list (service hurd-console-service-type
+                         (hurd-console-configuration (hurd hurd)))
+                (service static-networking-service-type
+                         (list %loopback-static-networking
 
-                       ;; QEMU user-mode networking.  To get "eth0", you need
-                       ;; QEMU to emulate a device for which Mach has an
-                       ;; in-kernel driver, for instance with:
-                       ;; --device rtl8139,netdev=net0 --netdev user,id=net0
-                       %qemu-static-networking))
-        (syslog-service)
-        (service guix-service-type
-                 (guix-configuration
-                  (extra-options '("--disable-chroot"
-                                   "--disable-deduplication"))))
-        (service special-files-service-type
-                 `(("/bin/sh" ,(file-append bash "/bin/sh"))
-                   ("/usr/bin/env" ,(file-append coreutils "/bin/env"))))))
+                               ;; QEMU user-mode networking.  To get "eth0", you need
+                               ;; QEMU to emulate a device for which Mach has an
+                               ;; in-kernel driver, for instance with:
+                               ;; --device rtl8139,netdev=net0 --netdev user,id=net0
+                               %qemu-static-networking))
+                (service guix-service-type
+                         (guix-configuration
+                          (extra-options '("--disable-chroot"
+                                           "--disable-deduplication"))))
+                (service special-files-service-type
+                         `(("/bin/sh" ,(file-append bash "/bin/sh"))
+                           ("/usr/bin/env" ,(file-append coreutils
+                                                         "/bin/env"))))
+                (syslog-service))
+          (map (lambda (n)
+                 (service hurd-getty-service-type
+                          (hurd-getty-configuration
+                           (tty (string-append "tty" (number->string n))))))
+               (iota 6 1))))
 
 (define %setuid-programs/hurd
   ;; Default set of setuid-root programs.

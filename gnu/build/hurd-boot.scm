@@ -213,12 +213,17 @@ set."
       ;; 'fd_to_filename' in libc expects it.
       ("dev/fd"      ("/hurd/magic"    "--directory" "fd")  #o555)
 
-      ("dev/tty1"    ("/hurd/term"     "/dev/tty1" "hurdio" "/dev/vcs/1/console")
-                                                            #o666)
-      ("dev/tty2"    ("/hurd/term"     "/dev/tty2" "hurdio" "/dev/vcs/2/console")
-                                                            #o666)
-      ("dev/tty3"    ("/hurd/term"     "/dev/tty3" "hurdio" "/dev/vcs/3/console")
-                                                            #o666)
+      ;; Create a number of ttys; syslogd writes to tty12 by default.
+      ;; FIXME: Creating /dev/tty12 leads the console client to switch to
+      ;; tty12 when syslogd starts, which is confusing for users.  Thus, do
+      ;; not create tty12.
+      ,@(map (lambda (n)
+               (let ((n (number->string n)))
+                 `(,(string-append "dev/tty" n)
+                   ("/hurd/term" ,(string-append "/dev/tty" n)
+                    "hurdio" ,(string-append "/dev/vcs/" n "/console"))
+                   #o666)))
+             (iota 11 1))
 
       ,@(append-map (lambda (n)
                       (let ((n (number->string n)))
