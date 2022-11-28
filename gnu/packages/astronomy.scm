@@ -1464,6 +1464,35 @@ re-gridding of images from one world coordinate system to another e.g.
 changing the pixel resolution, orientation, coordinate system.")
     (license license:bsd-3)))
 
+(define-public python-sgp4
+  (package
+    (name "python-sgp4")
+    (version "2.21")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "sgp4" version))
+       (sha256
+        (base32 "1vzcrlrlzmhbycdz16m8v241l8zx49vsy81wcd0yjxs80isvhyb1"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy))
+    (home-page "https://github.com/brandon-rhodes/python-sgp4")
+    (synopsis "Track earth satellite TLE orbits using SGP4")
+    (description
+     "This package provides a Python implementation for computations of the
+position and velocity of an earth-orbiting satellite, given the satellite’s
+@acronym{TLE, Two-line element set} orbital elements from a source like
+@url{CelesTrak, https://celestrak.org/}.
+
+It implements the most recent version of @acronym{SGP4, Simplified General
+Perturbation models}, and is regularly run against the SGP4 test suite to make
+sure that its satellite position predictions agree to within 0.1 mm with the
+predictions of the standard distribution of the algorithm.  This error is far
+less than the 1–3 km/day by which satellites themselves deviate from the ideal
+orbits described in TLE files.")
+    (license license:expat)))
+
 (define-public python-sunpy
   (package
     (name "python-sunpy")
