@@ -343,14 +343,14 @@ the operating system LXQt is running on.")
 (define-public lxqt-config
   (package
     (name "lxqt-config")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0f0x82qma86kjdvn08qlg0ydxh9fnqikijfhnicynxdqfnp50ia5"))))
+        (base32 "0h0n5an1pp3k50g4p2dxymy0lsnsh7m46gb22ndam69hdkflw71y"))))
     (build-system cmake-build-system)
     (inputs
      (list eudev
