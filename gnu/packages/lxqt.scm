@@ -1128,7 +1128,7 @@ desktop.")
 (define-public lxqt
   (package
     (name "lxqt")
-    (version "17.0")
+    (version (package-version liblxqt))
     (source #f)
     (build-system trivial-build-system)
     (arguments '(#:builder (begin (mkdir %output) #t)))
