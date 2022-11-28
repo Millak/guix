@@ -423,14 +423,14 @@ as a whole and are not limited to distinct applications.")
 (define-public lxqt-notificationd
   (package
     (name "lxqt-notificationd")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "0bz3qdvv591zvpkxqzqqmh1yq5icc3iinmjr13qzws3ajlj19z44"))))
+        (base32 "1qlvk12ldqwxskxy283h6yqhn8rp29vynqs1lhwn8byli792nb7y"))))
     (build-system cmake-build-system)
     (inputs
      (list kwindowsystem
