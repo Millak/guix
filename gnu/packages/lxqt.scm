@@ -479,14 +479,14 @@ of other programs.")
 (define-public lxqt-panel
   (package
     (name "lxqt-panel")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/lxqt/" name "/releases/download/"
                            version "/" name "-" version ".tar.xz"))
        (sha256
-        (base32 "11dg18ac6kj8qkkrg940bzpykjih6nnw8y3hfww3wiyg6dka9gd7"))))
+        (base32 "1m0mm07ydmdlyyi6s4q1cwpxp609kcyc3gcmwbmyf0smadan3yd8"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
