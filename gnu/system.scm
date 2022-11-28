@@ -856,6 +856,8 @@ of PROVENANCE-SERVICE-TYPE to its services."
  (cons* procps psmisc which
         (@ (gnu packages admin) shadow-with-man-pages) ;for 'passwd'
 
+        e2fsprogs                 ;for lsattr, chattr, etc.
+
         guile-3.0-latest
 
         ;; The packages below are also in %FINAL-INPUTS, so take them from
