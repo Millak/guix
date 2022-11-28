@@ -218,7 +218,7 @@ algorithms AES or Twofish.")
 (define-public pwsafe
   (package
     (name "pwsafe")
-    (version "3.54.1")
+    (version "3.60.0")
     (home-page "https://www.pwsafe.org/")
     (source
      (origin
@@ -227,23 +227,20 @@ algorithms AES or Twofish.")
              (url "https://github.com/pwsafe/pwsafe")
              (commit version)))
        (sha256
-        (base32 "0d51dlw98mv23nwb0b5jyji8gnb9f5cnig6kivfljl97lmr6lhvf"))
+        (base32 "064y78sqr8h9mq922spi4r13ga0a1j09mfh4kc4pn7j697nl6b5y"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("gtest" ,googletest)
-       ("perl" ,perl)
-       ("zip" ,zip)))
-    (inputs `(("curl" ,curl)
-              ("file" ,file)
-              ("libuuid" ,util-linux "lib")
-              ("libxt" ,libxt)
-              ("libxtst" ,libxtst)
-              ("openssl" ,openssl)
-              ("qrencode" ,qrencode)
-              ("wxwidgets" ,wxwidgets)
-              ("xerces-c" ,xerces-c)))
+     (list gettext-minimal googletest perl zip))
+    (inputs (list curl
+                  file
+                  `(,util-linux "lib")
+                  libxt
+                  libxtst
+                  openssl
+                  qrencode
+                  wxwidgets
+                  xerces-c))
     (arguments '(#:configure-flags (list "-DNO_GTEST=YES")
                  #:phases (modify-phases %standard-phases
                             (add-after 'unpack 'add-gtest
@@ -1455,3 +1452,43 @@ are not using it.  It uses the same GPG key to encrypt passwords and tomb,
 therefore you don't need to manage more key or secret.  Moreover, you can ask
 pass-tomb to automatically close your store after a given time.")
     (license license:gpl3+)))
+
+(define-public xkcdpass
+  (package
+    (name "xkcdpass")
+    (version "1.19.3")
+    (home-page "https://github.com/redacted/XKCD-password-generator")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "xkcdpass-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xfrmx9k2vinlagv476rfcfdp41aix1ldy6qnzzx26n985gcyk7p"))))
+    (build-system python-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-manpage
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file
+              "xkcdpass.1"
+              (string-append (assoc-ref outputs "out") "/share/man/man1")))))))
+    (synopsis
+     "Generate secure multiword passwords/passphrases, inspired by XKCD")
+    (description
+     "This package provides a flexible and scriptable password generator which
+generates strong passphrases, inspired by
+@url{https://xkcd.com/936/,XKCD 936}.")
+    (license (list license:bsd-3 ;code
+                   license:cc0 ;spanish, eff_large_de, french word lists
+                   license:cc-by-sa3.0 ;finnish, italian word list
+                   license:cc-by-sa4.0 ;norwegian word list
+                   license:eupl1.1 ;finnish word list
+                   license:gpl2 ;portuguese word list
+                   license:gpl3 ;ger-anix word list
+                   license:lgpl2.0 ;finnish word list
+                   license:lgpl2.1 ;portuguese word list
+                   license:mpl1.1)))) ;portuguese word list

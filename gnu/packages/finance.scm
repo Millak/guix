@@ -129,10 +129,10 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-0.21
+(define-public bitcoin-core-23.0
   (package
     (name "bitcoin-core")
-    (version "0.21.2")
+    (version "23.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -140,7 +140,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "17nvir1yc6mf4wr1fn4xsabw49cd5p9vig8wj77vv4anzi8zfij1"))))
+                "01fcb90pqip3v77kljykx51cmg7jdg2cmp7ys0a40svdkps8nx16"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -207,23 +207,10 @@ of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
 
-(define-public bitcoin-core-0.20
-  (package
-    (inherit bitcoin-core-0.21)
-    (version "0.20.2")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://bitcoincore.org/bin/bitcoin-core-"
-                              version "/bitcoin-" version ".tar.gz"))
-              (sha256
-               (base32
-                "14smp5vmh7baabl856wlg7w7y5910jhx6c02mlkm4hkywf3yylky"))))))
-
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
 
-(define-public bitcoin-core bitcoin-core-0.21)
+(define-public bitcoin-core bitcoin-core-23.0)
 
 (define-public hledger
   (package
@@ -553,7 +540,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.2.1")
+    (version "4.3.2")
     (source
      (origin
        (method url-fetch)
@@ -561,7 +548,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0w41411zq07kx0351wxkmpn0wr42wd2nx0m6v0iwvpsggx654b6r"))
+        (base32 "1kbyinm9fnxpx9chkyd11yr9rxvcxvw3ml7kzvxcfa8v7jnl0dmx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -628,7 +615,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.11")
+    (version "4.2.12")
     (source
      (origin
        (method git-fetch)
@@ -637,7 +624,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g0xnb63c52l379zrqkfhxlkg1d2hf2dgjs2swspa0vah845r282"))))
+        (base32 "1bfnfpdyi3q5zq0zj07dq82aj3cihnr7j82gy4ch97182lsl6nms"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -2134,7 +2121,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.18.0")
+    (version "6.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2142,7 +2129,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1ncnfjpjwjdv29plyiam2nh01bfni49sgfi3qkijygi1450w71dx"))
+       (sha256 (base32 "0f0kly374pkgnpnx60hac0bg9297a5zhycss6p37iavayn28jg39"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2190,7 +2177,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "2.2.1")
+    (version "2.5")
     (source
      (origin
        (method git-fetch)
@@ -2199,7 +2186,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "19pn7axj96yvza2x7678rs79c2vgmhl8d7f9ki72v2n6l2630fw8"))
+       (sha256 (base32 "1kdsxh6f24zp7h7bwkrin2mc81ysfny5wprzgy41h2bc6dpq067w"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

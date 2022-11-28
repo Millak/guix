@@ -587,30 +587,29 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (source (mesa-demos-source version))
     (build-system gnu-build-system)
     (inputs
-     `(("mesa" ,mesa)
-       ("glut" ,freeglut)
-       ("glew" ,glew)))
+     (list mesa freeglut glew))
     (native-inputs
      (list pkg-config))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (mkdir-p (string-append out "/bin"))
-              (for-each
-               (lambda (file)
-                 (copy-file file (string-append out "/bin/" (basename file))))
-               '("src/xdemos/glxdemo" "src/xdemos/glxgears"
-                 "src/xdemos/glxinfo" "src/xdemos/glxheads"))
-              #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out #$output))
+                (mkdir-p (string-append out "/bin"))
+                (for-each (lambda (file)
+                            (copy-file file
+                                       (string-append out "/bin/"
+                                                      (basename file))))
+                          '("src/xdemos/glxdemo" "src/xdemos/glxgears"
+                            "src/egl/opengl/eglinfo"
+                            "src/xdemos/glxinfo" "src/xdemos/glxheads"))))))))
     (home-page "https://mesa3d.org/")
     (synopsis "Utility tools for Mesa")
     (description
-     "The mesa-utils package contains several utility tools for Mesa: glxdemo,
-glxgears, glxheads, and glxinfo.")
+     "The mesa-utils package contains several utility tools for Mesa: eglinfo,
+glxdemo, glxgears, glxheads, and glxinfo.")
     ;; glxdemo is public domain; others expat.
     (license (list license:expat license:public-domain))))
 

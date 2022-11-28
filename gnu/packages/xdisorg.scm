@@ -516,7 +516,12 @@ avoiding password prompts when X11 forwarding has already been setup.")
            wayland-protocols
            xkeyboard-config))
     (native-inputs
-     (list bison doxygen pkg-config python))
+     (append (list bison doxygen pkg-config python)
+             (if (%current-target-system)
+                 ;; wayland-scanner is required at build time.
+                 ;; TODO: Remove this conditional on core-updates.
+                 (list pkg-config-for-build wayland)
+                 '())))
     (arguments
      `(#:configure-flags
        (list (string-append "-Dxkb-config-root="
@@ -1140,19 +1145,19 @@ transparent text on your screen.")
 (define-public wob
   (package
     (name "wob")
-    (version "0.13")
+    (version "0.14.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/francma/wob/releases/download/"
                            version "/wob-" version ".tar.gz"))
        (sha256
-        (base32 "0i8y6kq37qcgdq85ll4rapisjl7zw6aa11yx2f2xw2d3j93kdxh8"))))
+        (base32 "12s9pc0dhqgawq6jiqhamj1zq9753kgpswny1rcsdx1lkpzrgaq1"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config scdoc))
     (inputs
-     (list libseccomp wayland wayland-protocols))
+     (list libinih libseccomp wayland wayland-protocols))
     (home-page "https://github.com/francma/wob")
     (synopsis "Lightweight overlay bar for Wayland")
     (description

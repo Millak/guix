@@ -1692,7 +1692,7 @@ robust and compatible with many systems and operating systems.")
 (define-public mygui
   (package
     (name "mygui")
-    (version "3.2.2")
+    (version "3.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1702,7 +1702,7 @@ robust and compatible with many systems and operating systems.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wk7jmwm55rhlqqcyvqsxdmwvl70bysl9azh4kd9n57qlmgk3zmw"))))
+         "1gyd4bzm6qqpqw6is065qs5c729gl6rp989bnkygha6q4s371vz6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; No test target
@@ -1734,10 +1734,8 @@ of use.")
 
 (define-public mygui-gl
   ;; Closure size is reduced by some 800 MiB.
-  (package
-    (inherit mygui)
+  (package/inherit mygui
     (name "mygui-gl")
-    (version "3.2.2")
     (arguments
      (substitute-keyword-arguments (package-arguments mygui)
        ((#:configure-flags _)

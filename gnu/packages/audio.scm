@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018 Brett Gilio <brettg@gnu.org>
-;;; Copyright © 2018, 2019 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2021 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
@@ -727,7 +727,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.0")
+    (version "7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -744,7 +744,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "1xzgcd2d8zzgx3s9sr3kcxl3vz3vfr5l1xs9qpjplmk22dfj8b08"))
+                "11ca9xpzmzafl8xl0r0w32lxjqwy532hfd2bzb0d73bdpngpvcbq"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -849,19 +849,26 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.1.3")
+    (version "3.2.1")
     (source
      (origin
        ;; If built from the release tag, Audacity will describe itself
        ;; as an "Alpha test version" and suggest to users that they use
        ;; the "latest stable released version".
-       (method url-fetch)
-       (uri (string-append "https://github.com/audacity/audacity/releases/download/"
-                           "Audacity-" version "/audacity-" version
-                           "-source.tar.gz"))
+       ;; XXX: For 3.2.1 we rebelliously use a git tag anyway because the only
+       ;; "processed" download is a .zip containing a .tar.gz which does not
+       ;; fare well with the patch and snippet machinery:
+       ;;   https://github.com/audacity/audacity/issues/3811
+       ;; TODO: Find a way to control the "alpha" status even when using git
+       ;; so we're not reliant on preprocessed source code.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/audacity/audacity")
+             (commit (string-append "Audacity-" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "189agx11361k9j958s6q5bngnnfx0rwaf0dwbjxy6fwvsb1wv3px"))
+         "00mal30jxbcacs1ka4yb5s8xq81zm7mv3y8l5hvg77abkyvfvdzf"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -891,14 +898,13 @@ engineers, musicians, soundtrack editors and composers.")
            jack-1
            expat
            lame
-           linux-libre-headers
            flac
            ffmpeg
            libid3tag
            libjpeg-turbo
-           libmad
            ;;("libsbsms" ,libsbsms)         ;bundled version is modified
            libsndfile
+           mpg123
            soundtouch
            soxr ;replaces libsamplerate
            sqlite
@@ -909,20 +915,24 @@ engineers, musicians, soundtrack editors and composers.")
            lilv ;for lv2
            suil ;for lv2
            portaudio
-           portmidi))
+           portmidi
+           wavpack))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)     ;for msgfmt
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("which" ,which)))
+     (list autoconf
+           automake
+           gettext-minimal              ;for msgfmt
+           libtool
+           pkg-config
+           python
+           which))
     (arguments
      `(#:configure-flags
        (list
         "-Daudacity_conan_enabled=off"
         "-Daudacity_lib_preference=system"
+        ;; Disable support for VST 3 SDK, which is not yet in Guix (and has
+        ;; a dubious licensing agreement despite GPL code).
+        "-Daudacity_has_vst3=off"
         ;; TODO: enable this flag once we've packaged all dependencies
         ;; "-Daudacity_obey_system_dependencies=on"
         ;; disable crash reports, updates, ..., anything that phones home
@@ -944,24 +954,20 @@ engineers, musicians, soundtrack editors and composers.")
                 "CMAKE_BUILD_WITH_INSTALL_RPATH TRUE")
                (("CMAKE_INSTALL_RPATH_USE_LINK_PATH [A-Z]*")
                 "CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE"))
+             (substitute* "libraries/image-compiler/CMakeLists.txt"
+               (("PROPERTIES")
+                ;; This scripts needs to run during build, make sure it finds
+                ;; the required libraries.
+                "PROPERTIES BUILD_WITH_INSTALL_RPATH FALSE"))
              (substitute* "src/CMakeLists.txt"
+               ;; Despite the name, this script breaks rpath.  Don't run it.
+               (("install.*linux/fix_rpath\\.cmake.*")
+                "")
                (("-Wl,--disable-new-dtags") "-Wl,--enable-new-dtags"))))
-         (add-after 'unpack 'comment-out-revision-ident
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               (("file\\( TOUCH \".*RevisionIdent\\.h\" \\)" directive)
-                (string-append "# " directive)))
-             (substitute* "src/AboutDialog.cpp"
-               (("(.*RevisionIdent\\.h.*)" include-line)
-                (string-append "// " include-line)))))
          (add-after 'unpack 'use-upstream-headers
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("libraries/lib-files/FileNames.cpp")
                (("\"/usr/include/linux/magic.h\"") "<linux/magic.h>"))))
-         (add-after 'install 'delete-gratuitous-script
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/audacity"))))
          (add-after 'wrap-program 'glib-or-gtk-wrap
            (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap)))
        ;; The test suite is not "well exercised" according to the developers,
@@ -3707,7 +3713,8 @@ analysis plugins or audio feature extraction plugins.")
             (symlink
              (search-input-file inputs
                                 (string-append "/share/automake-"
-                                               ,(package-version automake)
+                                               ,(version-major+minor
+                                                 (package-version automake))
                                                "/ar-lib"))
              "ar-lib")
             #t)))))

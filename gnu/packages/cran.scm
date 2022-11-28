@@ -599,6 +599,27 @@ Google.  @code{googleVis} makes use of the internal R HTTP server to display
 the output locally.")
     (license license:gpl2+)))
 
+(define-public r-gson
+  (package
+    (name "r-gson")
+    (version "0.0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gson" version))
+              (sha256
+               (base32
+                "065ify3i7zqwi7h5jzr7kdgr358kwgw6xrkvvmrznbl7s9f7d57n"))))
+    (properties `((upstream-name . "gson")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-jsonlite r-rlang r-tidyr))
+    (home-page "https://cran.r-project.org/package=gson")
+    (synopsis "Base Class and Methods for 'gson' Format")
+    (description
+     "This packages proposes a new file format named @code{gson} for storing
+gene set and related information, and provides read, write and other utilities
+to process this file format.")
+    (license license:artistic2.0)))
+
 (define-public r-guix-install
   (package
     (name "r-guix-install")
@@ -708,6 +729,33 @@ datum transformation of the PROJ.4 cartographic projections library.  It
 allows transformation of geographic coordinates from one projection and/or
 datum to another.")
     (license license:gpl2)))
+
+(define-public r-rorcid
+  (package
+    (name "r-rorcid")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rorcid" version))
+              (sha256
+               (base32
+                "1d0s5w48ksyj152nc4xq5w0nsimab8jc5fgspdwnbas2g8a52igr"))))
+    (properties `((upstream-name . "rorcid")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-crul
+                             r-data-table
+                             r-fauxpas
+                             r-httr
+                             r-jsonlite
+                             r-tibble
+                             r-xml2))
+    (home-page "https://github.com/ropensci/rorcid")
+    (synopsis "Interface to the @url{Orcid.org, https://orcid.org} API")
+    (description
+     "This package provides an API for @url{Orcid.org, https://orcid.org}.
+Functions include searching for people, searching by DOI, or searching by
+Orcid ID.")
+    (license license:expat)))
 
 (define-public r-waldo
   (package
@@ -1273,13 +1321,13 @@ variables.")
 (define-public r-ggprism
   (package
     (name "r-ggprism")
-    (version "1.0.3")
+    (version "1.0.4")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggprism" version))
               (sha256
                (base32
-                "09dh0r8r5s61i5dbk6rswajc2vm7k8wvlqyvzq8wr160676lycjp"))))
+                "0ycklp7764cw65hqh9r61im8vqfd7sjayyw1gvprxzg7k217gnl3"))))
     (properties `((upstream-name . "ggprism")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1873,6 +1921,30 @@ excellent candidate for labeling of a polygon.")
      "This package provides a replication of key functionality from
 @code{dplyr} and the wider @code{tidyverse} using only @code{base}.")
     (license license:expat)))
+
+(define-public r-ecosolver
+  (package
+    (name "r-ecosolver")
+    (version "0.5.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ECOSolveR" version))
+              (sha256
+               (base32
+                "0973m346vakgddp92dzqlky0wa196hj341r9y7rz67bc2zl8jx2x"))))
+    (properties `((upstream-name . "ECOSolveR")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://bnaras.github.io/ECOSolveR/")
+    (synopsis "Embedded conic solver in R")
+    (description
+     "This package provides an R interface to the @dfn{Embedded COnic
+Solver} (ECOS), an efficient and robust C library for convex problems.
+Conic and equality constraints can be specified in addition to integer
+and boolean variable constraints for mixed-integer problems.  This R
+interface is inspired by the Python interface and has similar calling
+conventions.")
+    (license license:gpl3+)))
 
 (define-public r-ecp
   (package
@@ -3603,13 +3675,13 @@ annotation data to keep updated.")
 (define-public r-ggtern
   (package
     (name "r-ggtern")
-    (version "3.3.5")
+    (version "3.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggtern" version))
        (sha256
-        (base32 "15hhn8msy0l8zbq8ms0zvg1iajn1c28gd77v3hp6dvwwsla8zzbd"))))
+        (base32 "01j1rvff3vz72vwqsy3bh81aav7gfymg4sbvc267vg0r3a16ywcg"))))
     (properties `((upstream-name . "ggtern")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5638,6 +5710,43 @@ implementations of the Cochran's Q test with permutations and the sequential
 testing framework of Wald are generic and can therefore also be used in other
 contexts.")
     (license license:gpl2+)))
+
+(define-public r-cvxr
+  (package
+    (name "r-cvxr")
+    (version "1.0-11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "CVXR" version))
+              (sha256
+               (base32
+                "0alp1g4bszxqcrjbn54bz1zswg8y10372fwwlbi0jjazycw9cap9"))))
+    (properties `((upstream-name . "CVXR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bit64
+           r-ecosolver
+           r-gmp
+           r-matrix
+           r-osqp
+           r-r6
+           r-rcpp
+           r-rcppeigen
+           r-rmpfr
+           r-scs))
+    (native-inputs (list r-knitr))
+    (home-page "https://cvxr.rbind.io")
+    (synopsis "Disciplined convex optimization")
+    (description
+     "This package provides an object-oriented modeling language for
+@dfn{disciplined convex programming} (DCP) as described in Fu,
+Narasimhan, and Boyd (2020, <doi:10.18637/jss.v094.i14>).  It allows
+the user to formulate convex optimization problems in a natural way
+following mathematical convention and DCP rules.  The system analyzes
+the problem, verifies its convexity, converts it into a canonical
+form, and hands it off to an appropriate solver to obtain the
+solution.  Interfaces to solvers on CRAN and elsewhere are provided.")
+    (license license:asl2.0)))
 
 (define-public r-squarem
   (package
@@ -19203,6 +19312,28 @@ authoring books and technical documents with R Markdown.")
 that accept short and long options.")
     (license license:gpl2+)))
 
+(define-public r-osqp
+  (package
+    (name "r-osqp")
+    (version "0.6.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "osqp" version))
+              (sha256
+               (base32
+                "00w2hr0pagnvpsk84z99c7alhv7xvs9wpcmkzbcg3qs14g888rgf"))))
+    (properties `((upstream-name . "osqp")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-r6 r-rcpp))
+    (home-page "https://osqp.org")
+    (synopsis "Quadratic Programming Solver using the OSQP Library")
+    (description
+     "This package provides bindings to the OSQP solver.  The OSQP
+solver is a numerical optimization package or solving convex quadratic
+programs written in C and based on the alternating direction method of
+multipliers.  See <arXiv:1711.08013> for details.")
+    (license (list license:asl2.0))))
+
 (define-public r-kernlab
   (package
     (name "r-kernlab")
@@ -20946,6 +21077,30 @@ provides tools to compute this metric.")
 errors and possible semantic issues.  It supports on the fly checking of R
 code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
     (license license:expat)))
+
+(define-public r-scs
+  (package
+    (name "r-scs")
+    (version "3.0-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "scs" version))
+              (sha256
+               (base32
+                "04srf33zw4dxv22b1h5qwjch5yg7hrvk4iq8yvxqnbr8qzp1x26n"))))
+    (properties `((upstream-name . "scs")))
+    (build-system r-build-system)
+    (home-page "https://github.com/FlorianSchwendinger/scs")
+    (synopsis "Splitting conic solver")
+    (description
+     "This package solves convex cone programs via operator splitting.
+It can solve: linear programs, second-order cone programs,
+semidefinite programs, exponential cone programs, and power cone
+programs, or problems with any combination of those cones.  SCS uses
+AMD (a set of routines for permuting sparse matrices prior to
+factorization) and LDL (a sparse LDL factorization and solve package)
+from SuiteSparse.")
+    (license license:gpl3)))
 
 (define-public r-sctransform
   (package

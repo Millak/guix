@@ -49,6 +49,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
   #:use-module (gnu packages aspell)
@@ -59,6 +60,7 @@
   #:use-module (gnu packages code)
   #:use-module (gnu packages cpp)
   #:use-module (gnu packages crates-io)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
@@ -494,7 +496,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
 (define-public mg
   (package
     (name "mg")
-    (version "20220614")
+    (version "20221112")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -503,7 +505,7 @@ Wordstar-, EMACS-, Pico, Nedit or vi-like key bindings.  e3 can be used on
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "145qk4bzys4igv98645vikswv9hqym46chh6xb9d82ihsvjq1wjk"))
+                "1wsib91f277xsx3qi8zmjcd9r9cm078rcf8hii0rwipyn04vxy83"))
               (modules '((guix build utils)))
               (snippet '(begin
                           (substitute* "GNUmakefile"
@@ -894,6 +896,39 @@ can also act as an interface to external mathematical programs such as R and
 Octave.  TeXmacs is completely extensible via Guile.")
     (license license:gpl3+)
     (home-page "https://www.texmacs.org/tmweb/home/welcome.en.html")))
+
+(define-public mogan
+  (package
+    (inherit texmacs)
+    (name "mogan")
+    (version "1.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/XmacsLabs/mogan")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "04wz6xmimjv2l6baxgzm8vyq5grg102m3l4wq8i6bglv529yp4ff"))))
+    (build-system qt-build-system)
+    (inputs
+     (modify-inputs (package-inputs texmacs)
+       ;; Replaced by S7 scheme
+       ;; TODO: Maybe unbundle S7
+       (delete "guile")
+       (prepend curl)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments texmacs)
+       ((#:phases orig)
+        #~(modify-phases #$orig
+            ;; The non-deterministic compression issue is solved in Mogan.
+            (delete 'gzip-flags)))))
+    (home-page "https://github.com/XmacsLabs/mogan")
+    (synopsis "Scientific structural text editor")
+    (description
+     "Mogan is a scientific structural text editor, a fork of GNU TeXmacs.")
+    (license license:gpl3+)))
 
 (define-public textpieces
   (package

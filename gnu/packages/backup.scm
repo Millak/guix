@@ -1036,7 +1036,7 @@ precious backup space.
     (arguments
      `(#:tests? #f))                    ;no test
     (inputs
-     (list lzo libressl protobuf xz zlib))
+     (list lzo libressl protobuf-3.6 xz zlib))
     (home-page "http://zbackup.org")
     (synopsis "Versatile deduplicating backup tool")
     (description

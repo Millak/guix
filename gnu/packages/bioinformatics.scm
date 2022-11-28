@@ -23,6 +23,7 @@
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -534,6 +535,42 @@ BED, GFF/GTF, VCF.")
        "The pbcopper library provides a suite of data structures, algorithms,
 and utilities for PacBio C++ applications.")
       (license license:bsd-3))))
+
+(define-public r-btools
+  (let ((commit "fa21d4ca01d37ea4d98b45582453f3bf95cbc2b5")
+        (revision "1"))
+    (package
+      (name "r-btools")
+      (version (git-version "0.0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/twbattaglia/btools")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0bca593dnxz6xdywpdi0ipli0paln2b3bfxxj0csnmj55ryrz428"))))
+      (properties `((upstream-name . "btools")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-biomformat
+             r-coin
+             r-deseq2
+             r-dplyr
+             r-genefilter
+             r-phyloseq
+             r-picante
+             r-plotly
+             r-reshape2
+             r-stringr
+             r-vegan))
+      (home-page "https://github.com/twbattaglia/btools")
+      (synopsis "R functions for microbial diversity analyses")
+      (description
+       "This package provides an assortment of R functions that is suitable
+for all types of microbial diversity analyses.")
+      (license license:expat))))
 
 (define-public pbbam
   (package

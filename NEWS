@@ -74,10 +74,11 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** The installer now has a crash dump upload mechanism
 *** Emacs now supports native compilation
 *** GRUB bootloader now supports chain-loading
-*** The GNU Shepherd was upgraded to 0.9.2
+*** The GNU Shepherd was upgraded to 0.9.3
 *** The init RAM disk honors more arguments—e.g. ‘root’ and ‘rootflags’
 *** ‘guix system image’ can now generate WSL images
 *** The mcron task scheduler logs now contain the jobs exit statuses
+
 ** Programming interfaces
 *** Package input fields can now plain package lists
 *** G-expressions can now be used in build phases

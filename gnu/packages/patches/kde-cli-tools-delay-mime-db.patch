@@ -1,0 +1,26 @@
+From f8cfb96a1540fc3256af95adf8003b75c305183c Mon Sep 17 00:00:00 2001
+From: Petr Hodina <phodina@protonmail.com>
+Date: Fri, 30 Sep 2022 21:55:55 +0200
+Subject: [PATCH] Add delay to update the mime db in testCreateMimeType test
+ function.
+
+
+diff --git a/keditfiletype/tests/filetypestest.cpp b/keditfiletype/tests/filetypestest.cpp
+index e58e6f2..a41d4ad 100644
+--- a/keditfiletype/tests/filetypestest.cpp
++++ b/keditfiletype/tests/filetypestest.cpp
+@@ -315,6 +315,9 @@ private Q_SLOTS:
+         QVERIFY(data.isDirty());
+         QVERIFY(data.sync());
+         MimeTypeWriter::runUpdateMimeDatabase();
++        // QMimeDatabase doesn't even try to update the cache if less than
++        // 5000 ms have passed (can't use qmime_secondsBetweenChecks)
++        QTest::qSleep(5000);
+         QMimeType mime = db.mimeTypeForName(mimeTypeName);
+         QVERIFY(mime.isValid());
+         QCOMPARE(mime.comment(), fakeComment);
+
+base-commit: b5911cda17521156b22429436e19b508aa442a57
+-- 
+2.37.2
+

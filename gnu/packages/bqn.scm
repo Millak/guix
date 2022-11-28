@@ -33,7 +33,6 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages linux)
   #:use-module (gnu packages compression))
 
 (define-public dbqn
@@ -113,7 +112,7 @@ the same author.")
   ;; Aside from dbqn above, the main bqn repository is used by other
   ;; implementations as a "known good" set of sources. CBQN uses dbqn to
   ;; generate an intermediate bytecode for its own compilation.
-    (let ((commit "e219af48401473a7bac49bdd8b89d69082cf5dd8"))
+    (let ((commit "71ce36141aaacfa714edca2e408ca522a3bc5554"))
       (origin
         (method git-fetch)
         (uri (git-reference
@@ -121,11 +120,11 @@ the same author.")
               (commit commit)))
         (file-name (git-file-name "bqn-sources" commit))
         (sha256
-         (base32 "0r6pa9lscl2395g4xlvmg90vpdsjzhin4f1r0s7brymmpvmns2yc")))))
+         (base32 "060a3r5m7hynzxj4iz1av2kj5jf8w3j8yswzzx9wkx31rdrsiv2c")))))
 
 (define cbqn-bootstrap
-  (let* ((revision "1")
-         (commit "9c1cbdc99863b1da0116df61cd832137b196dc5c"))
+  (let* ((revision "2")
+         (commit "66584ce1491d300746963b8ed17170348b2a03e6"))
     (package
       (name "cbqn-bootstrap")
       (version (git-version "0" revision commit))
@@ -137,7 +136,7 @@ the same author.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0w38fhwf20drkyijy6nfnhmc5g5gw0zmzgmy1q605x57znlj85a2"))))
+                  "13gg96aa56b8k08bjvv8i0f5nxrah2sij7g6pg7i21fdv08rd9iv"))))
       (build-system gnu-build-system)
       (arguments
        (list
@@ -202,7 +201,6 @@ by APL.")
                   (install-file "libcbqn.so" lib))))))))
     (native-inputs (list dbqn
                          bqn-sources
-                         libffi
-                         linux-libre-headers))
+                         libffi))
     (properties
      `((tunable? . #t)))))

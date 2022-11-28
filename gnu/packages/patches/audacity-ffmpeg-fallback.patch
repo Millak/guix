@@ -8,13 +8,11 @@ it.  This dynamic loading mechanism fails to properly locate libraries outside
 of LD_LIBRARY_PATH.
 
 See <https://issues.guix.gnu.org/53591>.
----
- libraries/lib-ffmpeg-support/CMakeLists.txt      |  8 ++++++++
- libraries/lib-ffmpeg-support/FFmpegFunctions.cpp | 12 ++++++++++++
- 2 files changed, 20 insertions(+)
+
+Bugs-added-by: Marius Bakke <marius@gnu.org>
 
 diff --git a/libraries/lib-ffmpeg-support/CMakeLists.txt b/libraries/lib-ffmpeg-support/CMakeLists.txt
-index 8c5f06d7c..00810e4d0 100644
+index b8803a1f5..f86559cca 100644
 --- a/libraries/lib-ffmpeg-support/CMakeLists.txt
 +++ b/libraries/lib-ffmpeg-support/CMakeLists.txt
 @@ -1,5 +1,7 @@
@@ -25,7 +23,7 @@ index 8c5f06d7c..00810e4d0 100644
     set( SOURCES
        FFmpegTypes.h
  
-@@ -100,6 +102,12 @@ if (${_OPT}use_ffmpeg)
+@@ -107,6 +109,12 @@ if (${_OPT}use_ffmpeg)
        list(APPEND DEFINITIONS PRIVATE _DARWIN_C_SOURCE )
     endif()
  
@@ -39,10 +37,10 @@ index 8c5f06d7c..00810e4d0 100644
        "${DEFINITIONS}" ""
     )
 diff --git a/libraries/lib-ffmpeg-support/FFmpegFunctions.cpp b/libraries/lib-ffmpeg-support/FFmpegFunctions.cpp
-index 66d085a0b..4eeb4aed3 100644
+index 55d6f676b..46640ef83 100644
 --- a/libraries/lib-ffmpeg-support/FFmpegFunctions.cpp
 +++ b/libraries/lib-ffmpeg-support/FFmpegFunctions.cpp
-@@ -238,6 +238,18 @@ struct FFmpegFunctions::Private final
+@@ -246,6 +246,18 @@ struct FFmpegFunctions::Private final
        if (library->IsLoaded())
           return library;
  
@@ -58,9 +56,6 @@ index 66d085a0b..4eeb4aed3 100644
 +      }
 +#endif
 +
-       // Loading has failed.
-       // wxLogSysError doesn't report errors correctly on *NIX
- #if defined(_WIN32)
--- 
-2.34.0
-
+       return {};
+    }
+ };

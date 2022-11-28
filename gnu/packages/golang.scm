@@ -2107,6 +2107,29 @@ writers can be supplied for alternate environments.")
      "The datacounter package provides counters for Go readers and writers.")
     (license license:expat)))
 
+(define-public go-github-com-emersion-go-textwrapper
+  (package
+    (name "go-github-com-emersion-go-textwrapper")
+    (version "0.0.0-20200911093747-65d896831594")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-textwrapper")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lh9d7zvj6gm1rr6sv5xlagklgx9d666hq5srd37a4sdcjkbiqmq"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-textwrapper"))
+    (home-page "https://github.com/emersion/go-textwrapper")
+    (synopsis "Text-wrapping writer for Go")
+    (description
+     "The textwrapper package provides a writer that wraps long text lines to
+a specified length.")
+    (license license:expat)))
+
 (define-public go-github-com-aki237-nscjar
   (let ((commit "e2df936ddd6050d30dd90c7214c02b5019c42f06")
         (revision "0"))
@@ -2485,6 +2508,101 @@ web framework
 @end itemize")
     (license license:expat)))
 
+(define-public go-github-com-nathan-osman-go-sunrise
+  (let ((commit "c8f9f1eb869135f07378e7e3c5ec7a005f806c73")
+        (revision "0"))
+    (package
+      (name "go-github-com-nathan-osman-go-sunrise")
+      (version (git-version "1.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nathan-osman/go-sunrise")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "017zwzx05r5spxcs07dp6bnh7waknzsd819k7aqd8kr819v3x9in"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/nathan-osman/go-sunrise"))
+      (home-page "https://github.com/nathan-osman/go-sunrise")
+      (synopsis "Calculate sunrise and sunset times in Go")
+      (description
+       "This package provides a Go library for calculating sunrise and
+sunset times from geographical coordinates and a date.")
+      (license license:expat))))
+
+(define-public go-github-com-hebcal-gematriya
+  (let ((commit "fe3043f73e415eb82727701d10f2fb40f87675e9")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-gematriya")
+      (version (git-version "1.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/gematriya")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0xmnb2i80dy380yv8c4pd04bbyqgbc7c40p8hz1vqj2lhbm6jabf"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/gematriya"))
+      (home-page "https://github.com/hebcal/gematriya")
+      (synopsis "Print numbers as Hebrew letters in Go")
+      (description
+       "This package provides a Go library for printing numbers as
+Hebrew letters.")
+      (license license:bsd-2))))
+
+(define-public go-github-com-hebcal-hebcal-go
+  (let ((commit "d42e881860cfc9e8249fc79f268091c3c4d36b0d")
+        (revision "0"))
+    (package
+      (name "go-github-com-hebcal-hebcal-go")
+      (version (git-version "0.9.11" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hebcal/hebcal-go")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m9akb8pwxchpaci05gambshrzw626gsrfhl25f36vjl7mq5292n"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/hebcal/hebcal-go"
+             ;; Source-only package
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 ;; Source-only package
+                 (delete 'build))))
+      (native-inputs
+       (list go-github-com-stretchr-testify))
+      (propagated-inputs
+       (list go-github-com-hebcal-gematriya
+             go-github-com-nathan-osman-go-sunrise))
+      (home-page "https://github.com/hebcal/hebcal-go")
+      (synopsis "Go library for the Hebcal perpetual Jewish calendar")
+      (description
+       "This package provides a library for conversion between Hebrew
+and Gregorian dates, and generation of lists of Jewish holidays for
+a given year.  Shabbat and holiday candle lighting and havdalah times
+are approximated based on location.
+
+Torah readings, Daf Yomi, and counting of the Omer can also be
+specified.  Algorithms are included to calculate yahrzeits, birthdays,
+and anniversaries.")
+      (license license:gpl2+))))
+
 (define-public go-github-com-aws-sdk
   (package
     (name "go-github-com-aws-sdk")
@@ -2546,6 +2664,32 @@ web framework
 termination.")
       (home-page "https://gopkg.in/tomb.v2")
       (license license:bsd-3))))
+
+(define-public go-gopkg-in-tomb-v1
+  (package
+    (inherit go-gopkg.in-tomb.v2)
+    (name "go-gopkg-in-tomb-v1")
+    (version "1.0.0-20141024135613-dd632973f1e7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gopkg.in/tomb.v1")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lqmq1ag7s4b3gc3ddvr792c5xb5k6sfn0cchr3i2s7f1c231zjv"))))
+    (arguments
+     (list #:import-path "gopkg.in/tomb.v1"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-test
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (substitute* (string-append "src/" import-path
+                                               "/tomb_test.go")
+                     (("t.Fatalf\\(`Killf\\(\"BO%s")
+                      "t.Fatalf(`Killf(\"BO%%s")))))))
+    (home-page "https://gopkg.in/tomb.v1")))
 
 (define-public go-gopkg-in-natefinch-lumberjack.v2
   (package
@@ -2774,6 +2918,37 @@ Go programming language.")
 for the Go language.")
       (home-page "https://go.googlesource.com/crypto/")
       (license license:bsd-3))))
+
+(define-public go-github-com-protonmail-go-crypto
+  (package
+    (name "go-github-com-protonmail-go-crypto")
+    (version "0.0.0-20220623141421-5afb4c282135")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ProtonMail/go-crypto")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05qxdbn8wdk901z5kw2r3jdrag58nxlcsy0p8xd6rq0d71sw94wy"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/ProtonMail/go-crypto"
+           #:tests? #f ; Source-only package.
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Source-only package.
+               (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-crypto))
+    (home-page "https://github.com/ProtonMail/go-crypto")
+    (synopsis "Fork of x/crypto with up-to-date OpenPGP implementation")
+    (description
+     "This package provides cryptography for Go.  This version of the
+package is a fork that adds a more up-to-date OpenPGP implementation.
+It is completely backwards compatible with @code{golang.org/x/crypto},
+the official package.")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-net
   (let ((commit "ba9fcec4b297b415637633c5a6e8fa592e4a16c3")
@@ -3895,6 +4070,30 @@ application's http.Handlers.")
     (synopsis "File system notifications for Go")
     (description "File system notifications for Go")
     (license license:bsd-3)))
+
+(define-public go-github-com-nxadm-tail
+  (package
+    (name "go-github-com-nxadm-tail")
+    (version "1.4.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nxadm/tail")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j2gi485fhwdpmyzn42wk62103fclwbfywg42p275z1qv2bsz1rc"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/nxadm/tail"))
+    (propagated-inputs (list go-gopkg-in-tomb-v1
+                             go-github-com-fsnotify-fsnotify))
+    (home-page "https://github.com/nxadm/tail")
+    (synopsis "Go implementation of the functionality of @command{tail -f}")
+    (description
+     "This package provides a Go library for reading from continuously
+updating files, like @command{tail -f}.")
+    (license license:expat)))
 
 (define-public go-github-com-magiconair-properties
   (package
@@ -5894,6 +6093,33 @@ without requiring a real database connection.")
 golang's database/sql package.")
     (license license:mpl2.0)))
 
+(define-public go-github-com-syndtr-goleveldb-leveldb
+  (package
+    (name "go-github-com-syndtr-goleveldb-leveldb")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/syndtr/goleveldb")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "042k0gbzs5waqpxmd7nv5h93mlva861s66c3s9gfg1fym5dx4vmd"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/syndtr/goleveldb/leveldb"
+           #:unpack-path "github.com/syndtr/goleveldb"))
+    (propagated-inputs (list go-github-com-onsi-gomega
+                             go-github-com-onsi-ginkgo
+                             go-github-com-golang-snappy))
+    (home-page "https://github.com/syndtr/goleveldb")
+    (synopsis "LevelDB implementation in Go")
+    (description
+     "This package provides a Go implementation of the LevelDB key/value
+storage system.")
+    (license license:bsd-2)))
+
 (define-public go-github-com-lucasb-eyer-go-colorful
   (package
     (name "go-github-com-lucasb-eyer-go-colorful")
@@ -5948,6 +6174,30 @@ standard @code{Text} package, including some for dealing with I/O streams from
 non-UTF-friendly sources.")
     (license license:expat)))
 
+(define-public go-github-com-cention-sany-utf7
+  (package
+    (name "go-github-com-cention-sany-utf7")
+    (version "0.0.0-20170124080048-26cad61bd60a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cention-sany/utf7")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jy15ryfcln1iwchrksqyrnyfy41gisymm4f9sr1d73ja029bznm"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/cention-sany/utf7"))
+    (propagated-inputs (list go-golang-org-x-text))
+    (home-page "https://github.com/cention-sany/utf7")
+    (synopsis "UTF-7 for Go")
+    (description
+     "The utf7 package provides support for the obsolete UTF-7 text
+encoding in Go.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-gdamore-tcell
   (let ((commit "aaadc574a6ed8dc3abe56036ca130dcee1ee6b6e")
         (version "1.1.2")
@@ -5985,31 +6235,61 @@ systems.")
     (package
       (inherit go-github-com-gdamore-tcell)
       (name "go-github-com-gdamore-tcell")
-      (version "2.3.1")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/gdamore/tcell")
-               (commit (string-append "v" version))))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0ypbl5080q9sd3irad8mv7zlg4242i8pmg5xyhbyq95kymwibaid"))))
+      (version "2.5.3")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/gdamore/tcell")
+                      (commit (string-append "v" version))))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pvs0gigqxpifc7y7cx82cg95pgqmy8qzxynja3zidplrx2075j3"))))
       (arguments
-       `(#:import-path "github.com/gdamore/tcell/v2"
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'reset-gzip-timestamps 'make-files-writable
-             (lambda* (#:key outputs #:allow-other-keys)
-               ;; Make sure .gz files are writable so that the
-               ;; 'reset-gzip-timestamps' phase can do its work.
-               (let ((out (assoc-ref outputs "out")))
-                 (for-each make-file-writable
-                           (find-files out "\\.gz$"))))))))
+       (list #:import-path "github.com/gdamore/tcell/v2"
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'reset-gzip-timestamps 'make-files-writable
+                   (lambda _
+                     ;; Make sure .gz files are writable so that the
+                     ;; 'reset-gzip-timestamps' phase can do its work.
+                     (for-each make-file-writable
+                               (find-files #$output "\\.gz$")))))))
       (propagated-inputs
        (modify-inputs (package-inputs go-github-com-gdamore-tcell)
          (prepend go-golang-org-x-term go-golang-org-x-sys)))))
+
+(define-public go-git-sr-ht-rockorager-tcell-term
+  (package
+    (name "go-git-sr-ht-rockorager-tcell-term")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~rockorager/tcell-term")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13nfb2mq59846j531j7p2nm8mi0kjw5p90pa89l3fwc0sljkn5p8"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~rockorager/tcell-term"))
+    (propagated-inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-gopkg-in-check-v1
+           go-github-com-mattn-go-runewidth
+           go-github-com-davecgh-go-spew
+           go-github-com-stretchr-testify
+           go-github-com-gdamore-tcell-v2
+           go-github-com-creack-pty))
+    (home-page "https://git.sr.ht/~rockorager/tcell-term")
+    (synopsis "Terminal widget for @code{tcell}")
+    (description
+     "This package provides a virtual terminal widget for the @code{tcell}
+Go library.")
+    (license license:expat)))
 
 (define-public go-github-com-rivo-tview
   (package
@@ -6447,31 +6727,82 @@ fnmatch gist (https://gist.github.com/kballard/272720).")
 (define-public go-github-com-emersion-go-imap
   (package
     (name "go-github-com-emersion-go-imap")
-    (version "1.0.0")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/emersion/go-imap")
-              (commit (string-append "v" version))))
-        (sha256
-         (base32
-          "1id8j2d0rn9sj8y62xhyygqpk5ygrcl9jlfx92sm1jsvxsm3kywq"))
-        (file-name (git-file-name name version))))
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-imap")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ak2ysvfcc9w0g1070msis8x9sh6gzvf0nd65ks594siwbmqddw8"))))
     (build-system go-build-system)
     (arguments
-     '(#:import-path "github.com/emersion/go-imap"))
-    (native-inputs
-     (list go-golang-org-x-text))
+     (list #:import-path "github.com/emersion/go-imap"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-github-com-emersion-go-sasl
+                             go-github-com-emersion-go-message))
     (home-page "https://github.com/emersion/go-imap")
     (synopsis "IMAP4rev1 library written in Go")
-    (description "This package provides an IMAP4rev1 library written in Go.  It
-can be used to build a client and/or a server.")
+    (description
+     "This package provides an IMAP4rev1 library written in Go.  It
+can be used to build IMAP clients and servers.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-imap-sortthread
+  (package
+    (name "go-github-com-emersion-go-imap-sortthread")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-imap-sortthread")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1cfbgz1l5angnj52v9pxwggai2shx0h78ffcp7j4r4lr7lzflnwz"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-imap-sortthread"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-github-com-emersion-go-sasl
+                             go-github-com-emersion-go-imap))
+    (home-page "https://github.com/emersion/go-imap-sortthread")
+    (synopsis "Sorting and threading of messages for the imap package")
+    (description
+     "The sortthread package implements message sorting and threading for
+@code{go-github-com-emersion-go-imap}.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-smtp
+  (package
+    (name "go-github-com-emersion-go-smtp")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-smtp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vhc0vpjd4yhxk6wrh01sdpi7nprjn98s46yy82xwlkm0cskl0h7"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-smtp"))
+    (propagated-inputs (list go-github-com-emersion-go-sasl))
+    (home-page "https://github.com/emersion/go-smtp")
+    (synopsis "SMTP implementation for Go")
+    (description
+     "This package implements the Simple Mail Transfer Protocol as
+defined by RFC 5321.")
     (license license:expat)))
 
 (define-public go-github-com-emersion-go-sasl
-  (let ((commit "240c8404624e076f633766c16adbe96c7ac516b7")
-        (revision "0"))
+  (let ((commit "0b9dcfb154ac3d7515b08bc2691a0332800edfe9")
+        (revision "1"))
     (package
       (name "go-github-com-emersion-go-sasl")
       (version (git-version "0.0.0" revision commit))
@@ -6481,13 +6812,13 @@ can be used to build a client and/or a server.")
           (uri (git-reference
                 (url "https://github.com/emersion/go-sasl")
                 (commit commit)))
+          (file-name (git-file-name name version))
           (sha256
            (base32
-            "1py18p3clp474xhx6ypyp0bgv6n1dfm24m95cyyqb0k3vibar6ih"))
-          (file-name (git-file-name name version))))
+            "1cbf86wkqrdinfydndgdlnayg4a5mg3d4vqra377j2sfkg7wj0hs"))))
       (build-system go-build-system)
       (arguments
-       '(#:import-path "github.com/emersion/go-sasl"))
+       (list #:import-path "github.com/emersion/go-sasl"))
       (home-page "https://github.com/emersion/go-sasl")
       (synopsis "SASL library written in Go")
       (description "This package provides a SASL library written in Go.")
@@ -6519,6 +6850,106 @@ can be used to build a client and/or a server.")
       (synopsis "IDLE extension for go-imap")
       (description "This package provides an IDLE extension for go-imap.")
       (license license:expat))))
+
+(define-public go-github-com-emersion-go-maildir
+  (package
+    (name "go-github-com-emersion-go-maildir")
+    (version "0.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-maildir")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rs9kbacjpcza25pmdkbm7sdm7r6gq4g44nihi9asyrvspx96zf2"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-maildir"))
+    (home-page "https://github.com/emersion/go-maildir")
+    (synopsis "Maildir interface for Go")
+    (description
+     "This package provides an interface to mailboxes in the Maildir
+format.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-milter
+  (package
+    (name "go-github-com-emersion-go-milter")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-milter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10vpry5gjz2bh9qchcx4p59zm7cc6cb6bfkii2n6vsn4svb950sa"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-milter"))
+    (propagated-inputs (list go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-milter")
+    (synopsis "Milter mail filters in Go")
+    (description
+     "This package provides an interface for implementing milter mail
+filters for Go.")
+    (license license:bsd-2)))
+
+(define-public go-github-com-emersion-go-msgauth
+  (package
+    (name "go-github-com-emersion-go-msgauth")
+    (version "0.6.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-msgauth")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ds8yr4cm9wigcxg1sxc2m0wmy4z9n6gws3mj50dmf2ayij69z9j"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-msgauth"
+           #:tests? #f ; Source-only package.
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Source-only package.
+               (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-crypto
+                             go-github-com-emersion-go-milter
+                             go-github-com-emersion-go-message))
+    (home-page "https://github.com/emersion/go-msgauth")
+    (synopsis "Email authentication for Go")
+    (description
+     "This package provides a Go library for authenticating emails.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-mbox
+  (package
+    (name "go-github-com-emersion-go-mbox")
+    (version "1.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-mbox")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vnadh2khx7sxn0irrd8gz8ra02x7ij0q8zglq3rqffqil06nliv"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-mbox"))
+    (home-page "https://github.com/emersion/go-mbox")
+    (synopsis "Go library for handling @code{mbox} files")
+    (description
+     "This package provides a library for parsing and formatting
+@code{mbox} files.")
+    (license license:expat)))
 
 (define-public go-github-com-fatih-color
   (package
@@ -7329,6 +7760,34 @@ maps (because they are not addressable using Go reflection).")
     (description "Sprig is a library that provides more than 100 commonly used
 template functions.")
     (license license:expat)))
+
+(define-public go-github-com-go-task-slim-sprig
+  (let ((commit "afa1e2071829e4db655eb448d6c7c16eb0bc5766")
+        (revision "0"))
+    (package
+      (name "go-github-com-go-task-slim-sprig")
+      (version (git-version "2.20.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/go-task/slim-sprig")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1185y8qygv8gb3wpghx5d945wq68j4dbaiffq3h0dh453g4h1w7a"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "github.com/go-task/slim-sprig"
+             ;; Tests try to access the network.
+             #:tests? #f))
+      (home-page "https://github.com/go-task/slim-sprig")
+      (synopsis "Various useful template functions for Go")
+      (description
+       "Sprig provides over 100 functions that extend the Go template system.
+Slim-Sprig is a fork of Sprig that removes all external dependencies to make
+the library more lightweight.")
+      (license license:expat))))
 
 (define-public go-github-com-bmatcuk-doublestar
   (package
@@ -9125,6 +9584,30 @@ or capture raw audio.")
 programs that use traditional command lines.")
     (license license:bsd-3)))
 
+(define-public go-git-sr-ht-sircmpwn-getopt
+  (package
+    (name "go-git-sr-ht-sircmpwn-getopt")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~sircmpwn/getopt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f9rammnmhaz21qkmz7qf76r8jlzi323g05ps3j7gwrxlw7442a6"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~sircmpwn/getopt"))
+    (propagated-inputs (list go-github-com-stretchr-testify))
+    (home-page "https://git.sr.ht/~sircmpwn/getopt")
+    (synopsis "POSIX getopt for Go")
+    (description
+     "This package provides a POSIX-compatible implementation of
+@code{getopt} for Go.")
+    (license license:bsd-3)))
+
 (define-public go-go-uber-org-atomic
   (package
     (name "go-go-uber-org-atomic")
@@ -10517,6 +11000,31 @@ using shell-style rules for quoting and commenting.")
 email library.")
     (license license:gpl3+)))
 
+(define-public go-github-com-emersion-go-message
+  (package
+    (name "go-github-com-emersion-go-message")
+    (version "0.16.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-message")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j5qdhsna28xcs843zsiccw700rld5hin466dl0n3a0ax1w13ay0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/emersion/go-message"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-github-com-emersion-go-textwrapper))
+    (home-page "https://github.com/emersion/go-message")
+    (synopsis "Internet messages and MIME for Go")
+    (description
+     "The message package implements the Internet Message Format and Multipurpose
+Internet Mail Extensions in Go.")
+    (license license:expat)))
+
 (define-public go-github-com-jaytaylor-html2text
   (package
     (name "go-github-com-jaytaylor-html2text")
@@ -10544,6 +11052,97 @@ email library.")
      "The html2text package converts HTML emails to plain text, allowing
 text-only mail clients to display them.")
     (license license:expat)))
+
+(define-public go-github-com-jhillyerd-enmime
+  (package
+    (name "go-github-com-jhillyerd-enmime")
+    (version "0.9.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jhillyerd/enmime")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "124dqm598phbmalyx2gmxk201z9kq4ckvvdq8rc0akjlp24nxqbb"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/jhillyerd/enmime"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-golang-org-x-net
+                             go-github-com-stretchr-testify
+                             go-github-com-ssor-bom
+                             go-github-com-rivo-uniseg
+                             go-github-com-pkg-errors
+                             go-github-com-olekukonko-tablewriter
+                             go-github-com-mattn-go-runewidth
+                             go-github-com-gogs-chardet
+                             go-github-com-jaytaylor-html2text
+                             go-github-com-go-test-deep
+                             go-github-com-cention-sany-utf7))
+    (home-page "https://github.com/jhillyerd/enmime")
+    (synopsis "MIME encoder and decoder for Go")
+    (description
+     "The enmime package implements a MIME encoding and decoding
+library geared towards parsing MIME encoded emails.")
+    (license license:expat)))
+
+(define-public go-github-com-emersion-go-pgpmail
+  (package
+    (name "go-github-com-emersion-go-pgpmail")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/go-pgpmail")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ar26b0apw5bxn58qfn1a79cxigbmrqm1irh1rb7x57fydihc7wm"))))
+    (build-system go-build-system)
+    (arguments
+     (list ;; tests don't support our version of protonmail/go-crypto; see
+           ;; <https://github.com/emersion/go-pgpmail/issues/12>
+           #:tests? #f
+           #:import-path "github.com/emersion/go-pgpmail"))
+    (propagated-inputs (list go-golang-org-x-text
+                             go-golang-org-x-crypto
+                             go-github-com-emersion-go-message
+                             go-github-com-protonmail-go-crypto))
+    (home-page "https://github.com/emersion/go-pgpmail")
+    (synopsis "PGP mail encryption for Go")
+    (description
+     "The pgpmail package implements PGP encryption for e-mail messages.")
+    (license license:expat)))
+
+(define-public go-github-com-gatherstars-com-jwz
+  (package
+    (name "go-github-com-gatherstars-com-jwz")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gatherstars-com/jwz")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h37h5w139d3rhvp1n7kz2jm5zhk4pjzf3sip04v48nphkika60c"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/gatherstars-com/jwz"))
+    (propagated-inputs (list go-github-com-rivo-tview
+                             go-github-com-jhillyerd-enmime
+                             go-github-com-gdamore-tcell-v2))
+    (home-page "https://github.com/gatherstars-com/jwz")
+    (synopsis "Implementation in Go of the email threading algorithm
+originally invented for Netscape Mail")
+    (description
+     "The jwz package provides an implementation of the email threading
+algorithm originally designed for use in Netscape Mail 2.0 for Go.")
+    (license license:asl2.0)))
 
 (define-public go-github-com-creack-pty
   (package
@@ -10686,6 +11285,180 @@ array or reader.")
     (description
      "The chardet package ports character set detection from
 ICU to Go.")
+    (license license:expat)))
+
+(define-public go-github-com-go-test-deep
+  (package
+    (name "go-github-com-go-test-deep")
+    (version "1.0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/go-test/deep")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mmw2w3by7y24jjpjwmf2gfl08c65jihn3si9m0sswmagmdsk8q0"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-test/deep"))
+    (home-page "https://github.com/go-test/deep")
+    (synopsis "Human-friendly deep variable equality in Go")
+    (description
+     "The deep package provides the deep.Equal function which is like
+reflect.DeepEqual but returns a list of differences.  This is helpful
+when comparing complex types like structures and maps.")
+    (license license:expat)))
+
+(define-public go-github-com-niemeyer-pretty
+  (package
+    (name "go-github-com-niemeyer-pretty")
+    (version "0.0.0-20200227124842-a10e7caefd8e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/niemeyer/pretty")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jmazh4xzaa3v6g46hz60q2z7nmqs9l9cxdzmmscn3kbcs2znq4v"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/niemeyer/pretty"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'int-to-string-with-rune
+                 (lambda* (#:key import-path #:allow-other-keys)
+                   (with-directory-excursion (string-append "src/" import-path)
+                     (substitute* "formatter.go"
+                       (("s \\+= string\\(i\\)")
+                        "s += string(rune(i))"))))))))
+    (propagated-inputs (list go-github-com-kr-text))
+    (home-page "https://github.com/niemeyer/pretty")
+    (synopsis "Pretty-print Go values")
+    (description
+     "The pretty package provides pretty-printing for Go values.  This is
+useful during debugging, to avoid wrapping long output lines in the
+terminal.")
+    (license license:expat)))
+
+(define-public go-github-com-arran4-golang-ical
+  (package
+    (name "go-github-com-arran4-golang-ical")
+    (version "0.0.0-20220517104411-fd89fefb0182")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arran4/golang-ical")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bxs0b5yg26liiifc0cc41l307r0wc93hp8iygv8dgpc60yzncaw"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/arran4/golang-ical"))
+    (propagated-inputs (list go-gopkg-in-yaml-v3
+                             go-gopkg-in-check-v1
+                             go-github-com-stretchr-testify
+                             go-github-com-niemeyer-pretty
+                             go-github-com-kr-text
+                             go-github-com-davecgh-go-spew))
+    (home-page "https://github.com/arran4/golang-ical")
+    (synopsis "Handle iCalenders in Go")
+    (description
+     "The @code{ical} package provides an ICS/iCalender parser and
+serialiser for Go.")
+    (license license:asl2.0)))
+
+(define-public go-github-com-lithammer-fuzzysearch
+  (package
+    (name "go-github-com-lithammer-fuzzysearch")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lithammer/fuzzysearch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b036sm42cf64diwlqhx24vxy6g5afrmfbdfyqhpg8zrii3lpwns"))))
+    (build-system go-build-system)
+    (propagated-inputs (list go-golang-org-x-text))
+    (arguments
+     (list #:import-path "github.com/lithammer/fuzzysearch"
+           #:tests? #f ; Source-only package.
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; Source-only package.
+               (delete 'build))))
+    (home-page "https://github.com/lithammer/fuzzysearch")
+    (synopsis "Tiny and fast fuzzy search in Go")
+    (description
+     "A speedy fuzzy matching package for Go inspired by the JavaScript
+library bevacqua/fuzzysearch.")
+    (license license:expat)))
+
+(define-public go-github-com-onsi-gomega
+  (package
+    (name "go-github-com-onsi-gomega")
+    (version "1.19.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onsi/gomega")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "092phwk97sk4sv0nbx5pfhqs6x3x1lnrjwyda1m6b6zwrfmq5c6i"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/onsi/gomega"
+           ;; Unless we disable the tests, we have a circular dependency on
+           ;; ginkgo/v2.
+           #:tests? #f))
+    (propagated-inputs (list go-github-com-golang-protobuf-proto
+                             go-golang-org-x-net
+                             go-golang-org-x-sys
+                             go-golang-org-x-text
+                             go-google-golang-org-protobuf
+                             go-gopkg-in-yaml-v2))
+    (home-page "https://github.com/onsi/gomega")
+    (synopsis "Matcher library for Ginkgo")
+    (description
+     "Gomega is the preferred matcher library for the Ginkgo test framework.")
+    (license license:expat)))
+
+(define-public go-github-com-onsi-ginkgo
+  (package
+    (name "go-github-com-onsi-ginkgo")
+    (version "1.16.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/onsi/ginkgo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hh6n7q92y0ai8k6rj2yzw6wwxikhyiyk4j92zgvf1zad0gmqqmz"))))
+    (build-system go-build-system)
+    (arguments (list #:import-path "github.com/onsi/ginkgo"))
+    (propagated-inputs (list go-golang-org-x-sys
+                             go-golang-org-x-tools
+                             go-github-com-go-task-slim-sprig
+                             go-github-com-nxadm-tail
+                             go-github-com-onsi-gomega))
+    (home-page "https://github.com/onsi/ginkgo")
+    (synopsis "BDD-style testing framework for Go")
+    (description
+     "Ginkgo is a Behaviour-Driven Development testing framework for Go.  It
+builds on top of Go's builtin @code{testing} library and is complemented by the
+Gomega matcher library.")
     (license license:expat)))
 
 ;;;

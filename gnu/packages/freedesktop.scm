@@ -61,6 +61,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
@@ -73,11 +74,13 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fcitx)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
@@ -91,9 +94,12 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
@@ -385,6 +391,81 @@ inappropriate content.")
      (list
       license:gpl2+
       license:lgpl2.1+))))
+
+(define-public maliit-framework
+  (package
+    (name "maliit-framework")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maliit/framework")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dkjxvfxg56hfy70j6ibfklfyv57jiha4vgc3ggl60r5kjx65s5b"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules
+                         wayland-protocols
+                         pkg-config
+                         doxygen
+                         graphviz
+                         `(,glib "bin"))) ;for gdbus-codegen))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  qtwayland-5
+                  wayland
+                  libxkbcommon
+                  dbus
+                  eudev
+                  glib))
+    (home-page "https://github.com/maliit/framework")
+    (synopsis "Core libraries of Maliit")
+    (description "This package provides Maliit provides a flexible input
+method framework.")
+    (license license:lgpl2.1+)))
+
+(define-public maliit-keyboard
+  (package
+    (name "maliit-keyboard")
+    (version "2.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maliit/keyboard")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g89lckl4wzwamc89hs8871fbiyrsjwzk5b6ic4vhc4d1clyqzaw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-schemas
+                          (lambda* (#:key source outputs #:allow-other-keys)
+                            (with-directory-excursion (string-append #$output
+                                                       "/share/glib-2.0/schemas")
+                              (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs (list extra-cmake-modules pkg-config gettext-minimal
+                         `(,glib "bin")))
+    (inputs (list hunspell
+                  glib
+                  libchewing
+                  libpinyin
+                  maliit-framework
+                  presage
+                  qtbase-5
+                  qtdeclarative-5
+                  qtmultimedia-5
+                  qtquickcontrols2-5))
+    (home-page "https://github.com/maliit/keyboard")
+    (synopsis "Maliit Keyboard")
+    (description
+     "This package provides virtual keyboard for Wayland and X11
+display servers.  It supports many different languages and emoji.")
+    (license license:gpl3+)))
 
 (define-public xdg-utils
   (package
@@ -904,32 +985,37 @@ with localed.  This package is extracted from the broader systemd package.")
 (define-public packagekit
   (package
     (name "packagekit")
-    (version "1.1.13")
+    (version "1.2.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://www.freedesktop.org/software/"
-                   "PackageKit/releases/"
-                   "PackageKit-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1dr1laic65ld95abp2yxbwvijnngh0dwyb1x49x4wjm5rhq43dl8"))))
-    (build-system gnu-build-system)
+              (method url-fetch)
+              (uri (string-append "https://www.freedesktop.org/software/"
+                                  "PackageKit/releases/" "PackageKit-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "09md23m4fw87x264mls1f5isrswk6iw7y9g4hr1nib008wbbk370"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "BASH_COMPLETIONS_DIR="
-                                         %output "/etc/bash_completion.d"))
-       #:configure-flags
-       '("--disable-systemd")))
+     (list #:tests? #f
+           #:configure-flags #~'("-Dsystemd=false" "-Doffline_update=false")))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("glib:bin" ,glib "bin")))
+     (list bash-completion
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           pkg-config
+           python-wrapper
+           vala))
     (inputs
-     (list glib bash-completion polkit))
-    (propagated-inputs
-     (list sqlite))
+     (list glib
+           gstreamer
+           gst-plugins-base
+           gtk+
+           polkit))
+    (propagated-inputs (list sqlite))
     (home-page "https://www.freedesktop.org/software/PackageKit/")
     (synopsis "API for package management, through D-Bus")
     (description
@@ -1134,6 +1220,29 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
               (sha256
                (base32
                 "04vgllmpmrv14x3x64ns01vgwx4hriljayjkz9idgbv83i63hly5"))))))
+
+(define-public wayland-utils
+  (package
+    (name "wayland-utils")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wayland/wayland-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04k1yhyh7h4xawbhpz9pf6cpfmmp1l862fdgsvvnyp4hg9n3j9aj"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libdrm wayland wayland-protocols-next))
+    (home-page "https://wayland.freedesktop.org/")
+    (synopsis "Display information about the Wayland protocols")
+    (description "This package provides @code{wayland-info} tool that can be
+used to check which Wayland protocols and versions are advertised by the Wayland
+compositor.")
+    (license license:expat)))
 
 (define-public waylandpp
   (package
@@ -2580,6 +2689,42 @@ which uses GTK+ and various pieces of GNOME infrastructure, such as the
 @code{org.gnome.Shell.Screenshot} or @code{org.gnome.SessionManager} D-Bus
 interfaces.")
     (license license:lgpl2.1+)))
+
+(define-public xdg-desktop-portal-kde
+  (package
+    (name "xdg-desktop-portal-kde")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0l3lmwihxyl65y0mkyg3afk1k6gc0ldjw2vg92g7yydbgmn39q7k"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list cups
+                  kcoreaddons
+                  kconfig
+                  ki18n
+                  kdeclarative
+                  kio
+                  kirigami
+                  knotifications
+                  plasma-framework
+                  plasma-wayland-protocols
+                  kwayland
+                  kwidgetsaddons
+                  kwindowsystem
+                  kiconthemes
+                  qtdeclarative-5
+                  qtwayland-5
+                  wayland))
+    (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
+    (description "This package provides a backend implementation
+for xdg-desktop-portal that is using Qt/KF5.")
+    (home-page "https://invent.kde.org/plasma/xdg-desktop-portal-kde")
+    (license license:lgpl2.0+)))
 
 (define-public xdg-desktop-portal-wlr
   (package

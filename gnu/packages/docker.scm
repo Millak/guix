@@ -580,7 +580,7 @@ runcexecutor/executor.go"
            util-linux
            lvm2
            tini
-           xfsprogs
+           xfsprogs-5.9
            xz))
     (native-inputs
      (list eudev ; TODO: Should be propagated by lvm2 (.pc -> .pc)

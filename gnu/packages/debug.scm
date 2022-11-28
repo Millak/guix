@@ -597,7 +597,7 @@ the position of the variable and allows you to modify its value.")
 (define-public remake
   (package (inherit gnu-make)
     (name "remake")
-    (version "4.3-1.5")
+    (version "4.3-1.6")
     (source (origin
               (method url-fetch)
               (uri (let ((upstream-version
@@ -609,7 +609,7 @@ the position of the variable and allows you to modify its value.")
               (file-name (string-append "remake-" version ".tar.gz"))
               (sha256
                (base32
-                "0xlx2485y0israv2pfghmv74lxcv9i5y65agy69mif76yc4vfvif"))
+                "11vvch8bi0yhjfz7gn92b3xmmm0cgi3qfiyhbnnj89frkhbwd87n"))
               (patches (search-patches "remake-impure-dirs.patch"))))
     (inputs
      (modify-inputs (package-inputs gnu-make)

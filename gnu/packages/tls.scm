@@ -995,47 +995,6 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-(define-public acme-client
-  (package
-    (name "acme-client")
-    (version "0.1.16")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://kristaps.bsd.lv/" name "/"
-                                  "snapshots/" name "-portable-"
-                                  version ".tgz"))
-              (sha256
-               (base32
-                "00q05b3b1dfnfp7sr1nbd212n0mqrycl3cr9lbs51m7ncaihbrz9"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f ; no test suite
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pem (search-input-file inputs "/etc/ssl/cert.pem")))
-               (substitute* "http.c"
-                 (("/etc/ssl/cert.pem") pem))
-               #t)))
-         (delete 'configure)))) ; no './configure' script
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libbsd libressl))
-    (synopsis "Let's Encrypt client by the OpenBSD project")
-    (description "acme-client is a Let's Encrypt client implemented in C.  It
-uses a modular design, and attempts to secure itself by dropping privileges and
-operating in a chroot where possible.  acme-client is developed on OpenBSD and
-then ported to the GNU / Linux environment.")
-    (home-page "https://kristaps.bsd.lv/acme-client/")
-    ;; acme-client is distributed under the ISC license, but the files 'jsmn.h'
-    ;; and 'jsmn.c' are distributed under the Expat license.
-    (license (list license:isc license:expat))))
-
 ;; The "-apache" variant is the upstreamed prefered variant. A "-gpl"
 ;; variant exists in addition to the "-apache" one.
 (define-public mbedtls-apache

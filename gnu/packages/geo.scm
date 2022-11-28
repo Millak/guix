@@ -2123,7 +2123,7 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.6.0")
+    (version "5.6.2")
     (source
      (origin
        (method git-fetch)
@@ -2132,11 +2132,10 @@ exchanged form one Spatial DBMS and the other.")
              (commit (string-append "Release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g5x45wv3djfjmigk6kgs0i63yp8rs1fbmm4pb15wb3z6dml624y"))))
+        (base32 "16hb0ycp0kbx2h8fx08rqkgrlz48kaym0d6wqvpjrcfa2r4myss8"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list alsa-utils
            bzip2

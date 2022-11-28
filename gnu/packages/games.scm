@@ -880,14 +880,14 @@ Quizzes: arithmetic and quiz.")
 (define-public bzflag
   (package
     (name "bzflag")
-    (version "2.4.24")
+    (version "2.4.26")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.bzflag.org/bzflag/source/"
                            version "/bzflag-" version ".tar.bz2"))
        (sha256
-        (base32 "1i73ijlnxsz52fhqgkj2qcvibfgav3byq1is68gab2zwnyz330az"))))
+        (base32 "050h933lmcdf4bw9z3c6g3k8c9sch9f6kq57jp2ivb96zw2h90q1"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6137,21 +6137,21 @@ starting a decryption sequence to reveal the original plaintext characters.")
          "1ffck3ii1wp5k3nn5p0ga06jgp7pzk4zw0xln3xim2w7qrxzdzh9"))))
     (build-system cmake-build-system)
     (inputs
-     `(("curl" ,curl)
-       ("fontconfig" ,fontconfig)
-       ("ftgl" ,ftgl)
-       ("glew" ,glew)
-       ("libjpeg-turbo" ,libjpeg-turbo)
-       ("megaglest-data" ,megaglest-data)
-       ("mesa" ,mesa)
-       ("miniupnpc" ,miniupnpc)
-       ("openal" ,openal)
-       ("libircclient" ,libircclient)
-       ("libpng" ,libpng)
-       ("libvorbis" ,libvorbis)
-       ("lua" ,lua)
-       ("sdl2" ,sdl2)
-       ("wxwidgets" ,wxwidgets)))
+     (list curl
+           fontconfig
+           ftgl
+           glew
+           libjpeg-turbo
+           megaglest-data
+           mesa
+           miniupnpc
+           openal
+           libircclient
+           libpng
+           libvorbis
+           lua
+           sdl2
+           wxwidgets))
     (native-inputs
      (list cppunit pkg-config))
     (arguments
@@ -6159,8 +6159,8 @@ starting a decryption sequence to reveal the original plaintext characters.")
        (list "-DCMAKE_CXX_FLAGS=-fcommon"
              "-DCMAKE_C_FLAGS=-fcommon"
              (string-append "-DCUSTOM_DATA_INSTALL_PATH="
-                            (assoc-ref %build-inputs "megaglest-data")
-                            "/share/megaglest")
+                            (search-input-directory %build-inputs
+                                                    "share/megaglest"))
              "-DBUILD_MEGAGLEST_TESTS=ON")
        #:phases
        (modify-phases %standard-phases
@@ -6239,7 +6239,7 @@ emerges from a sewer hole and pulls her below ground.")
 (define-public cdogs-sdl
   (package
     (name "cdogs-sdl")
-    (version "0.8.0")
+    (version "1.4.0")
     (source
      (origin
        (method git-fetch)
@@ -6248,7 +6248,7 @@ emerges from a sewer hole and pulls her below ground.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0vx37zb2iw7sfw5a2bs97ydlmb301nvy485ybdm8g46c5hn9s13c"))))
+        (base32 "1505z8rli59i1ych4rzwbf4dvhv72icdj22n1xarb8xfyz0wyp3b"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -10451,14 +10451,14 @@ get high scores.")
 (define-public burgerspace
   (package
     (name "burgerspace")
-    (version "1.9.4")
+    (version "1.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://perso.b2b2c.ca/~sarrazip/dev/"
                            "burgerspace-" version ".tar.gz"))
        (sha256
-        (base32 "1xb4immzmd419aa08lgkzf7ibxa6ax238zb2l5iw9nkgvzlh1v6l"))))
+        (base32 "1r2albqv2ygs58rwcldsx1mp2vy96j7k4yw5jjmvwgnxjmddq7wr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

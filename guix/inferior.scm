@@ -69,6 +69,8 @@
             inferior-exception-arguments
             inferior-exception-inferior
             inferior-exception-stack
+            inferior-protocol-error?
+            inferior-protocol-error-inferior
             read-repl-response
 
             inferior-packages
@@ -314,6 +316,10 @@ equivalent.  Return #f if the inferior could not be launched."
   (inferior   inferior-exception-inferior)        ;<inferior> | #f
   (stack      inferior-exception-stack))          ;list of (FILE COLUMN LINE)
 
+(define-condition-type &inferior-protocol-error &error
+  inferior-protocol-error?
+  (inferior  inferior-protocol-error-inferior))   ;<inferior>
+
 (define* (read-repl-response port #:optional inferior)
   "Read a (guix repl) response from PORT and return it as a Scheme object.
 Raise '&inferior-exception' when an exception is read from PORT."
@@ -339,7 +345,11 @@ Raise '&inferior-exception' when an exception is read from PORT."
      (raise (condition (&inferior-exception
                         (arguments (cons key (map sexp->object objects)))
                         (inferior inferior)
-                        (stack '())))))))
+                        (stack '())))))
+    (_
+     ;; Protocol error.
+     (raise (condition (&inferior-protocol-error
+                        (inferior inferior)))))))
 
 (define (read-inferior-response inferior)
   (read-repl-response (inferior-socket inferior)
