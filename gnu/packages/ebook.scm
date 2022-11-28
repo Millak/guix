@@ -197,6 +197,7 @@ with Microsoft Compiled HTML (CHM) files")
            python-psutil
            python-py7zr
            python-pychm
+           python-pycryptodome
            python-pygments
            python-pyqt-without-qtwebkit
            python-pyqtwebengine
