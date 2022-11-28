@@ -11,7 +11,7 @@
 ;;; Copyright © 2018, 2020, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Mike Rosset <mike.rosset@gmail.com>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -2280,6 +2280,67 @@ using the Enchant spell-checking library.")
     ;; COPYING file specify GPL3, but source code files all refer to GPL2+.
     (license license:gpl2+)))
 
+(define remove-third-party-files
+  #~(begin
+      (define preserved-club
+        ;; Prefix exceptions with ./ for comparison with ftw.
+        (map (lambda (member)
+               (string-append "./" member))
+             preserved-third-party-files))
+      (define protected (make-regexp "\\.(gn|gyp)i?$"))
+      (define (empty? dir)
+        (equal? (scandir dir) '("." "..")))
+      (define (third-party? file)
+        (string-contains file "/third_party/"))
+      (define (useless? file)
+        (any (cute string-suffix? <> file)
+             '(".zip" ".so" ".dll" ".exe" ".jar")))
+      (define (parents child)
+        ;; Return all parent directories of CHILD up to and including
+        ;; the closest "third_party".
+        (let* ((dirs (match (string-split child #\/)
+                       ((dirs ... last) dirs)))
+               (closest (list-index (lambda (dir)
+                                      (string=? "third_party" dir))
+                                    (reverse dirs)))
+               (delim (- (length dirs) closest)))
+          (fold (lambda (dir prev)
+                  (cons (string-append (car prev) "/" dir)
+                        prev))
+                (list (string-join (list-head dirs delim) "/"))
+                (list-tail dirs delim))))
+      (define (remove-loudly file)
+        (format #t "deleting ~a...~%" file)
+        (force-output)
+        (delete-file file))
+      (define (delete-unwanted-files child stat flag base level)
+        (match flag
+          ((or 'regular 'symlink 'stale-symlink)
+           (when (third-party? child)
+             (unless (or (member child preserved-club)
+                         (any (cute member <> preserved-club)
+                              (parents child))
+                         (regexp-exec protected child))
+               (remove-loudly child)))
+           (when (and (useless? child) (file-exists? child))
+             (remove-loudly child))
+           #t)
+          ('directory-processed
+           (when (empty? child)
+             (rmdir child))
+           #t)
+          (_ #t)))
+
+      (nftw "." delete-unwanted-files 'depth 'physical)
+
+      ;; Assert that each preserved item is present to catch
+      ;; removals.
+      (for-each (lambda (third-party)
+                  (unless (file-exists? third-party)
+                    (error (format #f "~s does not exist!~%"
+                                   third-party))))
+                preserved-club)))
+
 (define-public qtwebengine-5
   (package
     (inherit qtsvg-5)
@@ -2298,7 +2359,7 @@ using the Enchant spell-checking library.")
                   (srfi srfi-26)
                   (guix build utils)))
        (snippet
-        '(begin
+        #~(begin
            (let ((preserved-third-party-files
                   '("base/third_party/double_conversion"
                     "base/third_party/cityhash"
@@ -2434,54 +2495,7 @@ using the Enchant spell-checking library.")
                     "v8/src/third_party/valgrind"
                     "v8/src/third_party/siphash"
                     "v8/third_party/v8/builtins"
-                    "v8/third_party/inspector_protocol"))
-                 (protected (make-regexp "\\.(gn|gyp)i?$")))
-             (define preserved-club
-               (map (lambda (member)
-                      (string-append "./" member))
-                    preserved-third-party-files))
-             (define (empty? dir)
-               (equal? (scandir dir) '("." "..")))
-             (define (third-party? file)
-               (string-contains file "third_party/"))
-             (define (useless? file)
-               (any (cute string-suffix? <> file)
-                    '(".zip" ".so" ".dll" ".exe" ".jar")))
-             (define (parents child)
-               ;; Return all parent directories of CHILD up to and including
-               ;; the closest "third_party".
-               (let* ((dirs (match (string-split child #\/)
-                              ((dirs ... last) dirs)))
-                      (closest (list-index (lambda (dir)
-                                             (string=? "third_party" dir))
-                                           (reverse dirs)))
-                      (delim (- (length dirs) closest)))
-                 (fold (lambda (dir prev)
-                         (cons (string-append (car prev) "/" dir)
-                               prev))
-                       (list (string-join (list-head dirs delim) "/"))
-                       (list-tail dirs delim))))
-             (define (remove-loudly file)
-               (format #t "deleting ~a...~%" file)
-               (force-output)
-               (delete-file file))
-             (define (delete-unwanted-files child stat flag base level)
-               (match flag
-                 ((or 'regular 'symlink 'stale-symlink)
-                  (when (third-party? child)
-                    (unless (or (member child preserved-club)
-                                (any (cute member <> preserved-club)
-                                     (parents child))
-                                (regexp-exec protected child))
-                      (remove-loudly child)))
-                  (when (and (useless? child) (file-exists? child))
-                    (remove-loudly child))
-                  #t)
-                 ('directory-processed
-                  (when (empty? child)
-                    (rmdir child))
-                  #t)
-                 (_ #t)))
+                    "v8/third_party/inspector_protocol")))
 
              (with-directory-excursion "src/3rdparty"
                ;; TODO: Try removing "gn" too for future versions of qtwebengine-5.
@@ -2490,13 +2504,7 @@ using the Enchant spell-checking library.")
                (with-directory-excursion "chromium"
                  ;; Delete bundled software and binaries that were not explicitly
                  ;; preserved above.
-                 (nftw "." delete-unwanted-files 'depth 'physical)
-
-                 ;; Assert that each preserved item is present to catch removals.
-                 (for-each (lambda (third-party)
-                             (unless (file-exists? third-party)
-                               (error (format #f "~s does not exist!~%" third-party))))
-                           preserved-club)
+                 #$remove-third-party-files
 
                  ;; Use relative header locations instead of hard coded ones.
                  (substitute*
@@ -2676,7 +2684,7 @@ and binaries removed, and adds modular support for using system libraries.")
                   (srfi srfi-26)
                   (guix build utils)))
        (snippet
-        '(begin
+        #~(begin
            (let ((preserved-third-party-files
                   '("base/third_party/double_conversion"
                     "base/third_party/cityhash"
@@ -2698,12 +2706,25 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/angle/src/common/third_party/base"
                     "third_party/angle/src/common/third_party/smhasher"
                     "third_party/angle/src/common/third_party/xxhash"
+                    "third_party/angle/src/third_party/trace_event"
+                    "third_party/angle/src/third_party/volk"
                     "third_party/axe-core"
                     "third_party/blink"
                     "third_party/boringssl"
                     "third_party/boringssl/src/third_party/fiat"
                     "third_party/breakpad"
                     "third_party/brotli"
+                    "third_party/catapult"
+                    "third_party/catapult/common/py_vulcanize/third_party/rcssmin"
+                    "third_party/catapult/common/py_vulcanize/third_party/rjsmin"
+                    "third_party/catapult/third_party/polymer"
+                    "third_party/catapult/tracing/third_party/d3/d3.min.js"
+                    "third_party/catapult/tracing/third_party/gl-matrix/dist/gl-matrix-min.js"
+                    "third_party/catapult/tracing/third_party/jpeg-js/jpeg-js-decoder.js"
+                    "third_party/catapult/tracing/third_party/jszip/jszip.min.js"
+                    "third_party/catapult/tracing/third_party/mannwhitneyu/mannwhitneyu.js"
+                    "third_party/catapult/tracing/third_party/oboe/dist"
+                    "third_party/catapult/tracing/third_party/pako/pako.min.js"
                     "third_party/ced"
                     "third_party/cld_3"
                     "third_party/closure_compiler"
@@ -2713,13 +2734,28 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/crc32c"
                     "third_party/dav1d"
                     "third_party/dawn"
+                    "third_party/dawn/third_party/tint"
                     "third_party/devtools-frontend"
+                    "third_party/devtools-frontend/src/front_end/third_party/i18n"
+                    "third_party/devtools-frontend/src/front_end/third_party/acorn"
+                    "third_party/devtools-frontend/src/front_end/third_party/acorn-loose"
+                    "third_party/devtools-frontend/src/front_end/third_party/axe-core"
+                    "third_party/devtools-frontend/src/front_end/third_party/chromium"
+                    "third_party/devtools-frontend/src/front_end/third_party/codemirror"
+                    "third_party/devtools-frontend/src/front_end/third_party/diff"
+                    "third_party/devtools-frontend/src/front_end/third_party/intl-messageformat"
                     "third_party/devtools-frontend/src/front_end/third_party/lighthouse"
+                    "third_party/devtools-frontend/src/front_end/third_party/lit-html"
+                    "third_party/devtools-frontend/src/front_end/third_party/marked"
                     "third_party/devtools-frontend/src/front_end/third_party/wasmparser"
+                    "third_party/devtools-frontend/src/third_party/typescript"
                     "third_party/emoji-segmenter"
+                    "third_party/fdlibm"
                     "third_party/ffmpeg"
+                    "third_party/freetype"
                     "third_party/googletest"
-                    "third_party/harfbuzz-ng/utils"
+                    "third_party/harfbuzz-ng"
+                    "third_party/highway"
                     "third_party/hunspell"
                     "third_party/iccjpeg"
                     "third_party/icu"
@@ -2730,19 +2766,30 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/khronos"
                     "third_party/leveldatabase"
                     "third_party/libaddressinput"
+                    "third_party/libaom"
+                    "third_party/libaom/source/libaom/third_party/fastfeat"
+                    "third_party/libaom/source/libaom/third_party/vector"
+                    "third_party/libaom/source/libaom/third_party/x86inc"
+                    "third_party/libavif"
+                    "third_party/libgav1"
                     "third_party/libgifcodec"
                     "third_party/libjingle_xmpp"
                     "third_party/libjpeg_turbo"
+                    "third_party/libjxl"
                     "third_party/libpng"
                     "third_party/libsrtp"
                     "third_party/libsync"
                     "third_party/libudev"
+                    "third_party/liburlpattern"
                     "third_party/libvpx"
                     "third_party/libwebm"
                     "third_party/libwebp"
+                    "third_party/libx11"
+                    "third_party/libxcb-keysyms"
                     "third_party/libxml"
                     "third_party/libxslt"
                     "third_party/libyuv"
+                    "third_party/lottie"
                     "third_party/lss"
                     "third_party/mako"
                     "third_party/markupsafe"
@@ -2750,18 +2797,23 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/metrics_proto"
                     "third_party/modp_b64"
                     "third_party/nasm"
+                    "third_party/node"
                     "third_party/one_euro_filter"
-                    "third_party/openh264/src/codec/api/svc"
+                    "third_party/openh264"
                     "third_party/opus"
                     "third_party/ots"
                     "third_party/pdfium"
                     "third_party/pdfium/third_party/agg23"
                     "third_party/pdfium/third_party/base"
+                    "third_party/pdfium/third_party/bigint"
                     "third_party/pdfium/third_party/freetype"
                     "third_party/pdfium/third_party/lcms"
                     "third_party/pdfium/third_party/libopenjpeg20"
+                    "third_party/pdfium/third_party/libpng16"
+                    "third_party/pdfium/third_party/libtiff"
                     "third_party/pdfium/third_party/skia_shared"
                     "third_party/perfetto"
+                    "third_party/perfetto/protos/third_party/chromium"
                     "third_party/pffft"
                     "third_party/ply"
                     "third_party/polymer"
@@ -2777,9 +2829,18 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/skia/third_party/vulkanmemoryallocator"
                     "third_party/smhasher"
                     "third_party/snappy"
+                    "third_party/speech-dispatcher"
                     "third_party/sqlite"
                     "third_party/usb_ids"
                     "third_party/usrsctp"
+                    "third_party/vulkan-deps/glslang"
+                    "third_party/vulkan-deps/spirv-headers"
+                    "third_party/vulkan-deps/spirv-tools"
+                    "third_party/vulkan-deps/vulkan-headers"
+                    "third_party/vulkan-deps/vulkan-loader"
+                    "third_party/vulkan-deps/vulkan-tools"
+                    "third_party/vulkan-deps/vulkan-validation-layers"
+                    "third_party/vulkan_memory_allocator"
                     "third_party/web-animations-js"
                     "third_party/webrtc"
                     "third_party/webrtc/common_audio/third_party/ooura"
@@ -2793,58 +2854,15 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/widevine/cdm/widevine_cdm_common.h"
                     "third_party/widevine/cdm/widevine_cdm_version.h"
                     "third_party/woff2"
+                    "third_party/wuffs"
+                    "third_party/x11proto"
                     "third_party/zlib"
                     "url/third_party/mozilla"
                     "v8/src/third_party/utf8-decoder"
                     "v8/src/third_party/valgrind"
                     "v8/src/third_party/siphash"
                     "v8/third_party/v8/builtins"
-                    "v8/third_party/inspector_protocol"))
-                 (protected (make-regexp "\\.(gn|gyp)i?$")))
-             (define preserved-club
-               (map (lambda (member)
-                      (string-append "./" member))
-                    preserved-third-party-files))
-             (define (empty? dir)
-               (equal? (scandir dir) '("." "..")))
-             (define (third-party? file)
-               (string-contains file "third_party/"))
-             (define (useless? file)
-               (any (cute string-suffix? <> file)
-                    '(".zip" ".so" ".dll" ".exe" ".jar")))
-             (define (parents child)
-               ;; Return all parent directories of CHILD up to and including
-               ;; the closest "third_party".
-               (let* ((dirs (match (string-split child #\/)
-                              ((dirs ... last) dirs)))
-                      (closest (list-index (lambda (dir)
-                                             (string=? "third_party" dir))
-                                           (reverse dirs)))
-                      (delim (- (length dirs) closest)))
-                 (fold (lambda (dir prev)
-                         (cons (string-append (car prev) "/" dir)
-                               prev))
-                       (list (string-join (list-head dirs delim) "/"))
-                       (list-tail dirs delim))))
-             (define (remove-loudly file)
-               (format #t "deleting ~a...~%" file)
-               (force-output)
-               (delete-file file))
-             (define (delete-unwanted-files child stat flag base level)
-               (match flag
-                 ((or 'regular 'symlink 'stale-symlink)
-                  (when (third-party? child)
-                    (unless (or (member child preserved-club)
-                                (any (cute member <> preserved-club)
-                                     (parents child))
-                                (regexp-exec protected child))
-                      (remove-loudly child)))
-                  (when (and (useless? child) (file-exists? child))
-                    (remove-loudly child)))
-                 ('directory-processed
-                  (when (empty? child)
-                    (rmdir child)))
-                 (_ #t)))
+                    "v8/third_party/inspector_protocol")))
 
              (with-directory-excursion "src/3rdparty"
                (delete-file-recursively "ninja")
@@ -2852,15 +2870,7 @@ and binaries removed, and adds modular support for using system libraries.")
                (with-directory-excursion "chromium"
                  ;; Delete bundled software and binaries that were not
                  ;; explicitly preserved above.
-                 (nftw "." delete-unwanted-files 'depth 'physical)
-
-                 ;; Assert that each preserved item is present to catch
-                 ;; removals.
-                 (for-each (lambda (third-party)
-                             (unless (file-exists? third-party)
-                               (error (format #f "~s does not exist!~%"
-                                              third-party))))
-                           preserved-club)
+                 #$remove-third-party-files
 
                  ;; Use relative header locations instead of hard coded ones.
                  (substitute*
@@ -2980,6 +2990,7 @@ linux/libcurl_wrapper.h"
        (append clang-14
                lld-as-ld-wrapper
                python-wrapper
+               python-beautifulsoup4
                python-html5lib)))
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
