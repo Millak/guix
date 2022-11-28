@@ -293,13 +293,13 @@ genetic variation data.")
 (define-public python-sgp4
   (package
     (name "python-sgp4")
-    (version "2.12")
+    (version "2.21")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sgp4" version))
        (sha256
-        (base32 "0dncp9i5b6afkg7f8mj9j0qzsp008b8v73yc0qkmizhpns7mvwvx"))))
+        (base32 "1vzcrlrlzmhbycdz16m8v241l8zx49vsy81wcd0yjxs80isvhyb1"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-numpy))
