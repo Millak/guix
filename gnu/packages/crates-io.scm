@@ -58424,28 +58424,30 @@ unstable language features.")
     (description "This package provides a newtypes for text offsets")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-textwrap-0.15
+(define-public rust-textwrap-0.16
   (package
     (name "rust-textwrap")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "textwrap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yw513k61lfiwgqrfvsjw1a5wpvm0azhpjr2kr0jhnq9c56is55i"))))
+        (base32 "0gbwkjf15l6p3x2rkr75fa4cpcs1ly4c8pmlfx5bl6zybcm24ai2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-hyphenation" ,rust-hyphenation-0.8)
-        ("rust-smawk" ,rust-smawk-0.3)
-        ("rust-terminal-size" ,rust-terminal-size-0.1)
-        ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
-    (home-page
-     "https://github.com/mgeisler/textwrap")
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-hyphenation" ,rust-hyphenation-0.8)
+             ("rust-smawk" ,rust-smawk-0.3)
+             ("rust-terminal-size" ,rust-terminal-size-0.2)
+             ("rust-termion" ,rust-termion-2)
+             ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9)
+             ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
+             ("rust-unicode-width" ,rust-unicode-width-0.1)
+             ("rust-version-sync" ,rust-version-sync-0.9))))
+    (home-page "https://github.com/mgeisler/textwrap")
     (synopsis "Library for word wrapping, indenting, and dedenting strings")
     (description
      "Textwrap is a small library for word wrapping, indenting, and dedenting
@@ -58454,26 +58456,45 @@ for display in commandline applications.  It is designed to be efficient and
 handle Unicode characters correctly.")
     (license license:expat)))
 
+(define-public rust-textwrap-0.15
+  (package
+    (inherit rust-textwrap-0.16)
+    (name "rust-textwrap")
+    (version "0.15.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "textwrap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yw513k61lfiwgqrfvsjw1a5wpvm0azhpjr2kr0jhnq9c56is55i"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-hyphenation" ,rust-hyphenation-0.8)
+             ("rust-smawk" ,rust-smawk-0.3)
+             ("rust-terminal-size" ,rust-terminal-size-0.1)
+             ("rust-unicode-linebreak" ,rust-unicode-linebreak-0.1)
+             ("rust-unicode-width" ,rust-unicode-width-0.1))))))
+
 (define-public rust-textwrap-0.12
   (package
     (inherit rust-textwrap-0.15)
     (name "rust-textwrap")
     (version "0.12.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "textwrap" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "12978qmkl5gcp94lxndpvp9qxq8mxp7hm9xbrw3422dgikchhc10"))))
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "textwrap" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "12978qmkl5gcp94lxndpvp9qxq8mxp7hm9xbrw3422dgikchhc10"))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-hyphenation" ,rust-hyphenation-0.8)
-        ("rust-terminal-size" ,rust-terminal-size-0.1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-hyphenation" ,rust-hyphenation-0.8)
+             ("rust-terminal-size" ,rust-terminal-size-0.1)
+             ("rust-unicode-width" ,rust-unicode-width-0.1))))))
 
 (define-public rust-textwrap-0.11
   (package
