@@ -18940,9 +18940,8 @@ gexps to introduce job definitions that are passed to mcron
   ;; job's action as a Scheme procedure.
   #~(job '(next-hour '(3))
          (lambda ()
-           (execl (string-append #$findutils "/bin/updatedb")
-                  "updatedb"
-                  "--prunepaths=/tmp /var/tmp /gnu/store"))
+           (system* (string-append #$findutils "/bin/updatedb")
+                    "--prunepaths=/tmp /var/tmp /gnu/store"))
          "updatedb"))
 
 (define garbage-collector-job
@@ -18978,6 +18977,12 @@ should provide an explicit name for the job via the optional 3rd
 argument as done in the @code{updatedb-job} example above.  Otherwise,
 the job would appear as ``Lambda function'' in the output of
 @command{herd schedule mcron}, which is not nearly descriptive enough!
+@end quotation
+
+@quotation Tip
+Avoid calling the Guile procedures @code{execl}, @code{execle} or
+@code{execlp} inside a job specification, else mcron won't be able to
+output the completion status of the job.
 @end quotation
 
 For more complex jobs defined in Scheme where you need control over the top
