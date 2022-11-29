@@ -1078,13 +1078,13 @@ in which the whole-plots or split-plots or both can be freely exchangeable.")
 (define-public r-plyr
   (package
     (name "r-plyr")
-    (version "1.8.7")
+    (version "1.8.8")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "plyr" version))
        (sha256
-        (base32 "0zz88q055c38b9xqzfg1mwm7ikxzlyx3pnk16sfa8dbh2pqxm7vx"))))
+        (base32 "030706kwgqa2s5jd93ck271iqb0pj3fshrj9frg4wgp1pfs12cm7"))))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
     (home-page "http://had.co.nz/plyr")
