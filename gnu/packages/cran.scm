@@ -35571,13 +35571,13 @@ calculate a dimension's unknown value from other dimensions' measurements.")
 (define-public r-sungeo
   (package
     (name "r-sungeo")
-    (version "0.2.288")
+    (version "0.2.292")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "SUNGEO" version))
               (sha256
                (base32
-                "0c8y0ngx1020rw2v00rxmq8syd72f41ckik5sg7gigg7d80gi31w"))
+                "1xav5by7sl21cwfg9m1ij1lz1kvdlqkkp2ah67rnj9vp4vk7nkfg"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Fortunately, the package does not actually use
@@ -35588,28 +35588,28 @@ calculate a dimension's unknown value from other dimensions' measurements.")
                             (("rmapshaper,") ""))
                           (substitute* "NAMESPACE"
                             (("importFrom\\(rmapshaper,ms_dissolve\\)
-") ""))
-                          #t))))
+") ""))))))
     (properties `((upstream-name . "SUNGEO")))
     (build-system r-build-system)
-    (propagated-inputs (list r-automap
-                             r-cartogram
-                             r-data-table
-                             r-dplyr
-                             r-fasterize
-                             r-httr
-                             r-jsonlite
-                             r-measurements
-                             r-packcircles
-                             r-purrr
-                             r-rann
-                             r-raster
-                             r-rcpp
-                             r-rcurl
-                             r-rlang
-                             r-sf
-                             r-sp
-                             r-spdep))
+    (propagated-inputs
+     (list r-automap
+           r-cartogram
+           r-data-table
+           r-dplyr
+           r-fasterize
+           r-httr
+           r-jsonlite
+           r-measurements
+           r-packcircles
+           r-purrr
+           r-rann
+           r-raster
+           r-rcpp
+           r-rcurl
+           r-rlang
+           r-sf
+           r-sp
+           r-spdep))
     (home-page "https://github.com/zhukovyuri/SUNGEO/")
     (synopsis "Sub-National Geospatial Data Archive: Geoprocessing Toolkit")
     (description
