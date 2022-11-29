@@ -3879,14 +3879,14 @@ files).  It currently supports linked brushing and filtering.")
 (define-public r-rook
   (package
     (name "r-rook")
-    (version "1.1-1")
+    (version "1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Rook" version))
        (sha256
         (base32
-         "00s9a0kr9rwxvlq433daxjk4ji8m0w60hjdprf502msw9kxfrx00"))))
+         "0qjziszrrwsp1mbykps3yf5r98q83cyd4jzpgi7gvbsd2ssy96n7"))))
     (properties `((upstream-name . "Rook")))
     (build-system r-build-system)
     (propagated-inputs (list r-brew))
