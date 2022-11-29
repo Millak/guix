@@ -29313,22 +29313,23 @@ user-level code from spatstat, except for the code for linear networks.")
 (define-public r-spatstat-linnet
   (package
     (name "r-spatstat-linnet")
-    (version "2.3-2")
+    (version "3.0-3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatstat.linnet" version))
        (sha256
         (base32
-         "0y1py6x0xbw4ad3pjwcspi4ysgfh61f5fd79787zzgyyh2va8y4w"))))
+         "1y9crkj9sa1hnfsfkyyq8zv6fgafv07b8w0y01qps1rd6virnns0"))))
     (properties
      `((upstream-name . "spatstat.linnet")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix
-           r-spatstat-core
            r-spatstat-data
+           r-spatstat-explore
            r-spatstat-geom
+           r-spatstat-model
            r-spatstat-random
            r-spatstat-sparse
            r-spatstat-utils))
