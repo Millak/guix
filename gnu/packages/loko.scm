@@ -18,6 +18,7 @@
 
 (define-module (gnu packages loko)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
@@ -29,7 +30,7 @@
 (define-public loko-scheme
   (package
     (name "loko-scheme")
-    (version "0.7.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -37,7 +38,7 @@
              (url "https://gitlab.com/weinholt/loko")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1441aarw3vy14zdxyab495ag2fch04v4j89krhbqnqfkz6mdi0vy"))
+        (base32 "12xp82z91qkp9q8lfp46s4sda8qgs472jic3js1kbykn4jzy7399"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -46,9 +47,7 @@
       #:tests? #f
       #:strip-binaries? #f
       #:make-flags
-      #~(list
-         (string-append "PREFIX=" #$output)
-         (string-append "GDB_AUTOLOAD_PATH=" #$output "/share/gdb/auto-load"))
+      #~(list (string-append "PREFIX=" #$output))
       #:phases
       #~(modify-phases %standard-phases
           (delete 'configure)
