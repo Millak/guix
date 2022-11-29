@@ -3907,13 +3907,13 @@ computation, bagged clustering, naive Bayes classifier, and more.")
 (define-public r-bigmemory-sri
   (package
     (name "r-bigmemory-sri")
-    (version "0.1.3")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bigmemory.sri" version))
        (sha256
-        (base32 "0mg14ilwdkd64q2ri9jdwnk7mp55dqim7xfifrs65sdsv1934h2m"))))
+        (base32 "03468ak0lgd9m0f7synxms2zzr8f7n2nm1gmhcraj3nfcv4nmyiv"))))
     (properties
      `((upstream-name . "bigmemory.sri")))
     (build-system r-build-system)
