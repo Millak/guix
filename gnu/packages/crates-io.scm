@@ -29514,18 +29514,18 @@ parser in Rust.")
 (define-public rust-libc-0.2
   (package
     (name "rust-libc")
-    (version "0.2.112")
+    (version "0.2.137")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "libc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09bik7pcck869kfr5i9hjhnck0mzpd9v0ijxbqnh8fja6rzx20qv"))))
+        (base32 "12dz2lk4a7lm03k079n2rkm1l6cpdhvy6nrngbfprzrv19icqzzw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+     (list #:cargo-inputs
+           `(("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
     (home-page "https://github.com/rust-lang/libc")
     (synopsis "Raw FFI bindings to platform libraries like libc")
     (description
