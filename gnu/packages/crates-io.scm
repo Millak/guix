@@ -58110,8 +58110,31 @@ writing colored text to a terminal.")
        #:cargo-inputs
        (("rust-wincolor" ,rust-wincolor-0.1))))))
 
+(define-public rust-terminal-size-0.2
+  (package
+    (name "rust-terminal-size")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "terminal-size" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0yhza8sc6jkka6j0nq5sl749ckx1jagvxp3b38yhh4px6k291jj0"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f          ;tests require /dev/stderr
+           #:cargo-inputs
+           `(("rust-rustix" ,rust-rustix-0.35))))
+    (home-page "https://github.com/eminence/terminal-size")
+    (synopsis "Gets the size of your Linux or Windows terminal")
+    (description
+     "This package gets the size of your Linux or Windows terminal.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-terminal-size-0.1
   (package
+    (inherit rust-terminal-size-0.2)
     (name "rust-terminal-size")
     (version "0.1.17")
     (source
@@ -58121,17 +58144,11 @@ writing colored text to a terminal.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1pq60ng1a7fjp597ifk1cqlz8fv9raz9xihddld1m1pfdia1lg33"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f          ; Tests require /dev/stderr
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/eminence/terminal-size")
-    (synopsis "Gets the size of your Linux or Windows terminal")
-    (description
-     "This package gets the size of your Linux or Windows terminal.")
-    (license (list license:expat license:asl2.0))))
+     (list #:tests? #f          ;tests require /dev/stderr
+           #:cargo-inputs
+           `(("rust-libc" ,rust-libc-0.2)
+             ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-terminfo-0.7
   (package
