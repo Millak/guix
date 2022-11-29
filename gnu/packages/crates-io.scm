@@ -48157,6 +48157,51 @@ rustc compiler.")
         `(("rust-failure" ,rust-failure-0.1)
           ,@(alist-delete "rust-anyhow" cargo-inputs)))))))
 
+(define-public rust-rustix-0.35
+  (package
+    (name "rust-rustix")
+    (version "0.35.13")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustix" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yfmkj5nwghxd3nha5ywf1cj6zqh44qwm0cavwifr1ppcmnilykj"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-cc" ,rust-cc-1)
+             ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+             ("rust-errno" ,rust-errno-0.2)
+             ("rust-io-lifetimes" ,rust-io-lifetimes-0.7)
+             ("rust-itoa" ,rust-itoa-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-linux-raw-sys" ,rust-linux-raw-sys-0.0.46)
+             ("rust-once-cell" ,rust-once-cell-1)
+             ("rust-rustc-std-workspace-alloc"
+              ,rust-rustc-std-workspace-alloc-1)
+             ("rust-rustc-std-workspace-core"
+              ,rust-rustc-std-workspace-core-1)
+             ("rust-windows-sys" ,rust-windows-sys-0.42))
+           #:cargo-development-inputs
+           `(("rust-criterion" ,rust-criterion-0.3)
+             ("rust-ctor" ,rust-ctor-0.1)
+             ("rust-errno" ,rust-errno-0.2)
+             ("rust-io-lifetimes" ,rust-io-lifetimes-0.7)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-memoffset" ,rust-memoffset-0.6)
+             ("rust-serial-test" ,rust-serial-test-0.6)
+             ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/bytecodealliance/rustix")
+    (synopsis "Safe Rust bindings to POSIX syscalls")
+    (description
+     "This package provides safe Rust bindings to POSIX syscalls.")
+    ;; Apache 2.0, Apache 2.0 with LLVM exception, or Expat.
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-rustls-0.20
   (package
     (name "rust-rustls")
