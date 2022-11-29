@@ -30800,14 +30800,14 @@ analysis using @code{dplyr}, @code{ggplot2}, and other Tidy tools.")
 (define-public r-parsnip
   (package
     (name "r-parsnip")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "parsnip" version))
        (sha256
         (base32
-         "171crglp6ncy41iyb60gj6xp7zn2vnbffgbgpszrahf6j2hhxvw4"))))
+         "1s1d5zjwag5a13y67l7sz4zj1w0dv0k7vpb6inz4x87d5rgchfi1"))))
     (properties `((upstream-name . "parsnip")))
     (build-system r-build-system)
     (propagated-inputs
