@@ -5466,14 +5466,14 @@ VGLMs can be loosely thought of as multivariate generalised linear models.")
 (define-public r-pbapply
   (package
     (name "r-pbapply")
-    (version "1.5-0")
+    (version "1.6-0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "pbapply" version))
        (sha256
         (base32
-         "0m8a0ygwl98cs0vcha5gs9f7z8whcplwxhravhs9bfp5hvigxzgg"))))
+         "0qbzqgxz3lm97y0k9v2radqblzb4r5zkfrjw5wj1a91dvxz3xhg8"))))
     (build-system r-build-system)
     (home-page "https://github.com/psolymos/pbapply")
     (synopsis "Adding progress bar to apply functions")
