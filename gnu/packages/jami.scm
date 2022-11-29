@@ -99,6 +99,7 @@
                              "jami-fix-unit-tests-build.patch"
                              "jami-fix-qml-imports.patch"
                              "jami-no-webengine.patch"
+                             "jami-sip-contacts.patch"
                              "jami-sip-unregister.patch"
                              "jami-xcb-link.patch"))))
 
