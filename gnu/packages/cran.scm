@@ -30162,14 +30162,14 @@ more.")
 (define-public r-workflows
   (package
     (name "r-workflows")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "workflows" version))
        (sha256
         (base32
-         "0l5v5qmgj1qv2bk50kv59k2nydh1r97hmqffyxkfpkh2121b2qaq"))))
+         "1wlgx7gl4h9szw9lr6ck9mnkrflah0wfbs56fialbl7wd5jv6hcg"))))
     (properties `((upstream-name . "workflows")))
     (build-system r-build-system)
     (propagated-inputs
@@ -30178,6 +30178,7 @@ more.")
            r-glue
            r-hardhat
            r-lifecycle
+           r-modelenv
            r-parsnip
            r-rlang
            r-tidyselect
