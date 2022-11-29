@@ -3619,31 +3619,49 @@ extracted from Askama.")
              ("rust-syn" ,rust-syn-1)
              ("rust-toml" ,rust-toml-0.5))))))
 
-(define-public rust-askama-derive-0.10
+(define-public rust-askama-derive-0.11
   (package
     (name "rust-askama-derive")
-    (version "0.10.5")
+    (version "0.11.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "askama_derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "08jmqb4lq5cvfjjcq7kjk5q4589zlsvc3ld35yfjyf4hqb22aafa"))))
+        (base32 "0wbb5l1x1bx8x8vvz4ayw196l9y64mi3vrmxm7pn8wmlx3k8ggw7"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-askama-shared" ,rust-askama-shared-0.11)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-syn" ,rust-syn-1))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-shared" ,rust-askama-shared-0.12)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/djc/askama")
     (synopsis "Procedural macro package for Askama")
     (description
-     "This package provide procedural macro package for Askama.")
+     "This package provide the procedural macro package for
+Askama.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-askama-derive-0.10
+  (package
+    (inherit rust-askama-derive-0.11)
+    (name "rust-askama-derive")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "askama_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "08jmqb4lq5cvfjjcq7kjk5q4589zlsvc3ld35yfjyf4hqb22aafa"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-shared" ,rust-askama-shared-0.11)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-askama-0.10
   (package
