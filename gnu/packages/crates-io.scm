@@ -34894,26 +34894,25 @@ nitrokey crate and others using it.")
 nitrokey-test crate.")
     (license license:gpl3+)))
 
-(define-public rust-nix-0.23
+(define-public rust-nix-0.24
   (package
     (name "rust-nix")
-    (version "0.23.1")
+    (version "0.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "nix" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1iimixk7y2qk0jswqich4mkd8kqyzdghcgy6203j8fmxmhbn71lz"))))
+        (base32 "1z35n1bhzslr7zawy2c0fl90jjy9l5b3lnsidls3908vfk0xnp0r"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-cc" ,rust-cc-1)
-        ("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-memoffset" ,rust-memoffset-0.6))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-cfg-if" ,rust-cfg-if-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-memoffset" ,rust-memoffset-0.6))))
     (home-page "https://github.com/nix-rust/nix")
     (synopsis "Rust friendly bindings to *nix APIs")
     (description
@@ -34921,6 +34920,27 @@ nitrokey-test crate.")
 The goal is to not provide a 100% unified interface, but to unify what can be
 while still providing platform specific APIs.")
     (license license:expat)))
+
+(define-public rust-nix-0.23
+  (package
+    (inherit rust-nix-0.24)
+    (name "rust-nix")
+    (version "0.23.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nix" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1iimixk7y2qk0jswqich4mkd8kqyzdghcgy6203j8fmxmhbn71lz"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-bitflags" ,rust-bitflags-1)
+             ("rust-cc" ,rust-cc-1)
+             ("rust-cfg-if" ,rust-cfg-if-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-memoffset" ,rust-memoffset-0.6))))))
 
 (define-public rust-nix-0.22
   (package
