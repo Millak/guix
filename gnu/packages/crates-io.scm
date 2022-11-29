@@ -63698,22 +63698,24 @@ Standard Annex #31.")
 (define-public rust-unicode-linebreak-0.1
   (package
     (name "rust-unicode-linebreak")
-    (version "0.1.2")
+    (version "0.1.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unicode-linebreak" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0grq6bsn967q4vpifld53s7a140nlmpq5vy8ghgr73f4n2mdqlis"))))
+         (base32 "0drixqb16bzmabd5d8ldvar5760rxy6nxzszhlsqnasl3bisvyn5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-regex" ,rust-regex-1))))
+     (list #:cargo-inputs
+           `(("rust-hashbrown" ,rust-hashbrown-0.12)
+             ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/axelf4/unicode-linebreak")
-    (synopsis "Implementation of the Unicode Line Breaking Algorithm")
-    (description "This package provides an Implementation of the Unicode Line
-Breaking Algorithm in Rust.")
+    (synopsis "Implementation of the Unicode line breaking algorithm")
+    (description
+     "This package provides an implementation of the Unicode line
+breaking algorithm in Rust.")
     (license license:asl2.0)))
 
 (define-public rust-unicode-normalization-0.1
