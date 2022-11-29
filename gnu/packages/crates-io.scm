@@ -38362,27 +38362,24 @@ unparking.")
        (sha256
         (base32 "0z6q9rxm98vrp3fimw8b5syzwgf8l0pnn6y0cqm4lbblf7r01cvc"))))))
 
-(define-public rust-parking-lot-0.11
+(define-public rust-parking-lot-0.12
   (package
     (name "rust-parking-lot")
-    (version "0.11.2")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "parking_lot" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16gzf41bxmm10x82bla8d6wfppy9ym3fxsmdjyvn61m66s0bf5vx"))))
+        (base32 "13r2xk7mnxfc5g0g6dkdxqdqad99j7s7z8zhzz4npw5r0g0v4hip"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-instant" ,rust-instant-0.1)
-        ("rust-lock-api" ,rust-lock-api-0.4)
-        ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))
-       #:cargo-development-inputs
-       (("rust-bincode" ,rust-bincode-1)
-        ("rust-rand" ,rust-rand-0.8))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-instant" ,rust-instant-0.1)
+             ("rust-lock-api" ,rust-lock-api-0.4)
+             ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis
      "Efficient implementations of the standard synchronization primitives")
@@ -38390,6 +38387,25 @@ unparking.")
      "This package provides more compact and efficient implementations
 of the standard synchronization primitives.")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-parking-lot-0.11
+  (package
+    (inherit rust-parking-lot-0.12)
+    (name "rust-parking-lot")
+    (version "0.11.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "parking_lot" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16gzf41bxmm10x82bla8d6wfppy9ym3fxsmdjyvn61m66s0bf5vx"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-instant" ,rust-instant-0.1)
+             ("rust-lock-api" ,rust-lock-api-0.4)
+             ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))))))
 
 (define-public rust-parking-lot-0.10
   (package
