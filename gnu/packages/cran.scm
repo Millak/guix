@@ -9816,14 +9816,14 @@ Python's @url{https://github.com/ActiveState/appdirs,Appdirs} to R.")
 (define-public r-rastervis
   (package
     (name "r-rastervis")
-    (version "0.51.2")
+    (version "0.51.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rasterVis" version))
        (sha256
         (base32
-         "0kgg6cm7xjqya2d46w0i1i1wjpkb8f99lyqy7rgwa7l9xmwzj5n1"))))
+         "1z4vwjmx8n01jc2ypqs1pmx70rc3pjaz3ahk8j8zcif40v0qgy6i"))))
     (properties `((upstream-name . "rasterVis")))
     (build-system r-build-system)
     (propagated-inputs
