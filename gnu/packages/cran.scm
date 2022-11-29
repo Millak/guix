@@ -31240,14 +31240,14 @@ data to rasters.  It speeds up plotting of data with millions of points.")
 (define-public r-seuratobject
   (package
     (name "r-seuratobject")
-    (version "4.1.2")
+    (version "4.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "SeuratObject" version))
        (sha256
         (base32
-         "03bd4fazcafaf5mp37cf9w6bxm9zwrlxkrqm9bjdnwxm07slanba"))))
+         "1lw6v5mwq0sngjr33j99r5h42kaxlbq271a51xzkcnhnyra2fpaq"))))
     (properties `((upstream-name . "SeuratObject")))
     (build-system r-build-system)
     (propagated-inputs
@@ -31257,7 +31257,6 @@ data to rasters.  It speeds up plotting of data with millions of points.")
            r-progressr
            r-rcpp
            r-rcppeigen
-           r-rgeos
            r-rlang
            r-sp))
     (home-page "https://satijalab.org/seurat")
