@@ -10780,14 +10780,14 @@ or missing responses.")
 (define-public r-acdm
   (package
     (name "r-acdm")
-    (version "1.0.4.1")
+    (version "1.0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ACDm" version))
        (sha256
         (base32
-         "129ykw0j8z30mr4c01qzx6qy6h4bl87zxvmps0vkh8cqb7akninq"))))
+         "00i33b76gqllyc6ywwwrgyjvxfspqb3jf52b9sjaazlfwgn5xyjf"))))
     (properties `((upstream-name . "ACDm")))
     (build-system r-build-system)
     (propagated-inputs
