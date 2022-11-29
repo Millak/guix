@@ -39182,23 +39182,25 @@ path.Clean.")
 (define-public rust-pathdiff-0.2
   (package
     (name "rust-pathdiff")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pathdiff" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0d2aqgrqhdn5kxlnd5dxv7d6pgsgf92r6r9gqm6bdh0mvsrk0xl7"))))
+        (base32 "1pa4dcmb7lwir4himg1mnl97a05b2z0svczg62l8940pbim12dc8"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-camino" ,rust-camino-1))))
     (home-page "https://github.com/Manishearth/pathdiff")
     (synopsis "Library for diffing paths to obtain relative paths")
     (description
-     "Use diff_paths to construct a relative path from a provided base
-directory path to the provided path.")
+     "This package provides a Rust library for constructing a
+relative path from a provided base directory path to the provided
+path.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-pbkdf2-0.10
