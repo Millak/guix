@@ -10658,6 +10658,31 @@ Command Line Argument Parser.")
 for programs written with Clap.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-clap-complete-fig-3
+  (package
+    (name "rust-clap-complete-fig")
+    (version "3.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-complete-fig" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1fb4965w8wyrcwq35ywgx4mzfsv2cqba73mdlvmp6ii1q70b8dzd"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-clap" ,rust-clap-3)
+             ("rust-clap-complete" ,rust-clap-complete-3))
+           #:cargo-development-inputs
+           `(("rust-snapbox" ,rust-snapbox-0.2))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete_fig")
+    (synopsis "Generate Fig completion scripts for Clap CLIs")
+    (description
+     "This package provides a generator library for Rust used
+with Clap to generate Fig completion scripts.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-lex-0.2
   (package
     (name "rust-clap-lex")
