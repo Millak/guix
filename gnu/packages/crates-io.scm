@@ -10625,6 +10625,39 @@ Command Line Argument Parser.")
         ("rust-version-sync" ,rust-version-sync-0.8))))
     (license license:expat)))
 
+(define-public rust-clap-complete-3
+  (package
+    (name "rust-clap-complete")
+    (version "3.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "clap-complete" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1n3whjkznszrxif1hzvql7hav7agq85j456fmwjwwi9cjq52wyiz"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-clap" ,rust-clap-3)
+             ("rust-clap-lex" ,rust-clap-lex-0.2)
+             ("rust-is-executable" ,rust-is-executable-1)
+             ("rust-os-str-bytes" ,rust-os-str-bytes-6)
+             ("rust-pathdiff" ,rust-pathdiff-0.2)
+             ("rust-shlex" ,rust-shlex-1)
+             ("rust-unicode-xid" ,rust-unicode-xid-0.2))
+           #:cargo-development-inputs
+           `(("rust-clap" ,rust-clap-3)
+             ("rust-pretty-assertions" ,rust-pretty-assertions-1)
+             ("rust-snapbox" ,rust-snapbox-0.2)
+             ("rust-trycmd" ,rust-trycmd-0.13))))
+    (home-page "https://github.com/clap-rs/clap/tree/master/clap_complete")
+    (synopsis "Generate shell completion scripts for Clap CLIs")
+    (description
+     "This package provides generation of shell completion scripts
+for programs written with Clap.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-lex-0.2
   (package
     (name "rust-clap-lex")
