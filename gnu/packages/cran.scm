@@ -35317,14 +35317,14 @@ smaller collection of stats, geoms and axis guides.")
 (define-public r-gghalves
   (package
     (name "r-gghalves")
-    (version "0.1.3")
+    (version "0.1.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gghalves" version))
        (sha256
         (base32
-         "1lj4c38fzxwg8gy57ymf00lqjdplb7v2a0lnd262c1d5cavqiws4"))))
+         "1qsxq2zbz4zcpqc7949apznn9f2c959jwwx010bl4gf2p6vchfx7"))))
     (properties `((upstream-name . "gghalves")))
     (build-system r-build-system)
     (propagated-inputs
