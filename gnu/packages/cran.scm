@@ -18189,14 +18189,14 @@ running IRkernel session.")
 (define-public r-irkernel
   (package
     (name "r-irkernel")
-    (version "1.3")
+    (version "1.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "IRkernel" version))
        (sha256
         (base32
-         "00qrmsywpzw2hfp88020zjaijma7q4hqm9h2cz53rywdjzywnzss"))))
+         "03343ds7sprql1c6h41dibk40rc3225mzxca452ns967fyhy71ii"))))
     (properties `((upstream-name . "IRkernel")))
     (build-system r-build-system)
     (arguments
