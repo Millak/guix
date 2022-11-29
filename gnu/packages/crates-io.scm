@@ -47037,6 +47037,32 @@ and table-based tests.")
 @code{rstest}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-reuse-0.4
+  (package
+    (name "rust-rstest-reuse")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rstest-reuse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05zcs22fbvv7q50p2xs6w13lqbcklddnj2dm1mz1wi2pak9sxdgr"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-quote" ,rust-quote-1)
+             ("rust-rustc-version" ,rust-rustc-version-0.4)
+             ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Reuse rstest attributes")
+    (description
+     "This package provides a Rust library for reusing rstest
+attributes by creating a set of tests and applying it to every
+scenario you want to test.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rug-1
   (package
     (name "rust-rug")
