@@ -32900,14 +32900,14 @@ and formatted text files with additional meta-data, such including @code{.csv},
 (define-public r-packcircles
   (package
     (name "r-packcircles")
-    (version "0.3.4")
+    (version "0.3.5")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "packcircles" version))
         (sha256
           (base32
-            "05pv5c4k4njkr0xw6i6ksiy34hcyx2lbiqpv5gxw81yrkm0rxfyk"))))
+            "0m8ivgc5y1f9ramqw6sxb02ri6aqxz3av0l5csl32mdldrb126nc"))))
     (properties `((upstream-name . "packcircles")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
