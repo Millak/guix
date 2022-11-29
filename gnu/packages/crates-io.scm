@@ -11513,7 +11513,7 @@ literals.")
 (define-public rust-compiler-builtins-0.1
   (package
     (name "rust-compiler-builtins")
-    (version "0.1.26")
+    (version "0.1.84")
     (source
       (origin
         (method url-fetch)
@@ -11521,13 +11521,14 @@ literals.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1rhj6ccmfkh9gcxnxgjq4fg257yi4f9325nfzsphbmxwkrg06sq3"))))
+          "040bzrhwyqm75yp94vdyfyljg3d25y3d3lb9vipx02p9lqf2r6wq"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-cc" ,rust-cc-1))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-rustc-std-workspace-core"
+              ,rust-rustc-std-workspace-core-1)
+             ("rust-cc" ,rust-cc-1))))
     (home-page "https://github.com/rust-lang/compiler-builtins")
     (synopsis "Compiler intrinsics used by the Rust compiler")
     (description
