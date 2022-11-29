@@ -63867,22 +63867,26 @@ boundaries according to Unicode Standard Annex #29 rules.")
 (define-public rust-unicode-xid-0.2
   (package
     (name "rust-unicode-xid")
-    (version "0.2.1")
+    (version "0.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "unicode-xid" version))
-        (file-name
-          (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "0r6mknipyy9vpz8mwmxvkx65ff2ha1n2pxqjj6f46lcn8yrhpzpp"))))
+         (base32 "131dfzf7d8fsr1ivch34x42c2d1ik5ig3g78brxncnn0r1sdyqpr"))))
     (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-development-inputs
+           `(("rust-criterion" ,rust-criterion-0.3))))
     (home-page "https://github.com/unicode-rs/unicode-xid")
     (synopsis "Determine Unicode XID related properties")
-    (description "Determine whether characters have the XID_Start
-or XID_Continue properties according to Unicode Standard Annex #31.")
-    (license (list license:asl2.0 license:expat))))
+    (description
+     "This package provides a Rust library to determine whether
+characters have the XID_Start or XID_Continue properties according
+to Unicode Standard Annex #31.")
+    (license (list license:asl2.0
+                   license:expat))))
 
 (define-public rust-unicode-xid-0.1
   (package
