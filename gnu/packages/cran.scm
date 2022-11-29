@@ -14627,13 +14627,13 @@ isosurfaces.")
 (define-public r-ks
   (package
     (name "r-ks")
-    (version "1.13.5")
+    (version "1.14.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ks" version))
        (sha256
-        (base32 "05bqrjkbx2kn5aax0hy3xd6pf7nxka9bm1sp8ll1cc2gf1nx1i6i"))))
+        (base32 "14a3pcxxcsfkqz5j6n2wlxkp0gsdp5mzdq7ipcjb65q2gdmwbf9d"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-fnn
