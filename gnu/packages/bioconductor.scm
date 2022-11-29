@@ -4216,18 +4216,19 @@ mapping.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.24.0")
+    (version "0.25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "14yxra6in5c1md5nr75y8cdmh9pg0lxqabqflvlhgg1vbg9i2628"))))
+         "0kdl7yz4v7pms6y2lff4x5w7pwkx54488qx0v539qmvcbxv1if98"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
+           r-codetools
            r-biobase
            r-biocmanager
            r-bigmemory ; suggested
@@ -4238,7 +4239,6 @@ mapping.")
            r-foreach
            r-ggplot2
            r-gridbase
-           r-pkgmaker
            r-rcolorbrewer
            r-registry
            r-reshape2
