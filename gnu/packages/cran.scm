@@ -27803,13 +27803,13 @@ rendered as text, axis labels, etc. throughout R's plotting system.")
 (define-public r-oai
   (package
     (name "r-oai")
-    (version "0.3.2")
+    (version "0.4.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "oai" version))
               (sha256
                (base32
-                "1zcbcxhw692s0y6izvwazyzhgx0iwsxsbcan2nk0mb7n11p7bypb"))))
+                "0czf8f2qcjl9lh48svicpis09d3iwz9cndfm7hq8wlz5dl3dwh7m"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xml2 r-httr r-plyr r-stringr r-tibble))
