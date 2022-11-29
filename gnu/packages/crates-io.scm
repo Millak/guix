@@ -5060,22 +5060,19 @@ they're not available.")
 (define-public rust-autocfg-1
   (package
     (name "rust-autocfg")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "autocfg" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0jj6i9zn4gjl03kjvziqdji6rwx8ykz8zk2ngpc331z2g3fk3c6d"))))
+        (base32 "1ylp3cb47ylzabimazvbz9ms6ap784zhb6syaz6c1jqpmcmq0s6l"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/cuviper/autocfg")
-    (synopsis
-     "Automatic cfg for Rust compiler features")
+    (synopsis "Automatic configuration for Rust compiler features")
     (description
-     "Automatic cfg for Rust compiler features.")
+     "This package utomatically configures Rust compiler features.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-autocfg-0.1
