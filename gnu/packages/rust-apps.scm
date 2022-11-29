@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,11 +38,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rust-apps)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix deprecation)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -2066,32 +2068,54 @@ It will then write @code{fixup!} commits for each of those changes.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.6.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ih01l3xp8plicxhmyxjkq12ncpdb8954jcj3dh3lwvkhvw29nkk"))))
+        (base32 "0y5v2vgl9f3n0n0w4b3iddbfyxv0hls0vw5406ry0hcvnnjyy2l3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-askama" ,rust-askama-0.10)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-dunce" ,rust-dunce-1)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-ordered-float" ,rust-ordered-float-2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-seq-macro" ,rust-seq-macro-0.2))))
+     (list #:cargo-inputs
+           `(("rust-anyhow" ,rust-anyhow-1)
+             ("rust-askama" ,rust-askama-0.11)
+             ("rust-bincode" ,rust-bincode-1)
+             ("rust-clap" ,rust-clap-3)
+             ("rust-clap-complete" ,rust-clap-complete-3)
+             ("rust-clap-complete-fig" ,rust-clap-complete-fig-3)
+             ("rust-dirs" ,rust-dirs-4)
+             ("rust-dunce" ,rust-dunce-1)
+             ("rust-fastrand" ,rust-fastrand-1)
+             ("rust-glob" ,rust-glob-0.3)
+             ("rust-nix" ,rust-nix-0.24)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-which" ,rust-which-4))
+           #:cargo-development-inputs
+           `(("rust-assert-cmd" ,rust-assert-cmd-2)
+             ("rust-rstest" ,rust-rstest-0.15)
+             ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+             ("rust-tempfile" ,rust-tempfile-3))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-older-rust
+                 (lambda _
+                   (setenv "RUSTC_BOOTSTRAP" "1")
+                   (substitute* "Cargo.toml"
+                     (("^rust-version = .*$")
+                      (string-append
+                       "rust-version = \""
+                       #$(package-version rust)
+                       "\"\n")))
+                   (substitute* "src/main.rs"
+                     (("#!\\[allow\\(clippy::single_component_path_imports)]")
+                      "#![feature(total_cmp)]"))
+                   (substitute* "src/cmd/query.rs"
+                     (("let handle = &mut io::stdout\\()\\.lock\\();")
+                      "\
+let _stdout = io::stdout();
+let handle = &mut _stdout.lock();")))))))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description
