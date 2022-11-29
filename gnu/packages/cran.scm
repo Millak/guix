@@ -35284,14 +35284,14 @@ be efficient and easy to use.")
 (define-public r-ggh4x
   (package
     (name "r-ggh4x")
-    (version "0.2.2")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggh4x" version))
        (sha256
         (base32
-         "11mskrby3gyjhkvnkcwl2ar1bdh4h45y48dfnm4kzgc7nwvdl3ia"))))
+         "0da5r8zfx1ixhk266byspfm2aifhm0jrvbk264xya712pxayiw4a"))))
     (properties `((upstream-name . "ggh4x")))
     (build-system r-build-system)
     (propagated-inputs
