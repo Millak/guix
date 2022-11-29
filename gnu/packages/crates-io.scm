@@ -3663,34 +3663,51 @@ Askama.")
              ("rust-proc-macro2" ,rust-proc-macro2-1)
              ("rust-syn" ,rust-syn-1))))))
 
-(define-public rust-askama-0.10
+(define-public rust-askama-0.11
   (package
     (name "rust-askama")
-    (version "0.10.5")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "askama" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0d1iwywdgw3nba2iphayw8sfm3s8m9izwnhfar707qa7ds5p766j"))))
+        (base32 "0f81mzccdadryzaf2dbad1araq4nadp9mssyvdvv31hj6w7z367v"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-askama-derive" ,rust-askama-derive-0.10)
-        ("rust-askama-escape" ,rust-askama-escape-0.10)
-        ("rust-askama-shared" ,rust-askama-shared-0.11)
-        ("rust-mime" ,rust-mime-0.3)
-        ("rust-mime-guess" ,rust-mime-guess-2))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-derive" ,rust-askama-derive-0.11)
+             ("rust-askama-escape" ,rust-askama-escape-0.10)
+             ("rust-askama-shared" ,rust-askama-shared-0.12))))
     (home-page "https://github.com/djc/askama")
-    (synopsis
-     "Type-safe, compiled Jinja-like templates for Rust")
+    (synopsis "Type-safe, compiled Jinja-like templates for Rust")
     (description
-     "This package provides a type-safe, compiled Jinja-like templates for Rust.")
+     "This package provides a type-safe, compiled Jinja-like template
+library for Rust.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-askama-0.10
+  (package
+    (inherit rust-askama-0.11)
+    (name "rust-askama")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "askama" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0d1iwywdgw3nba2iphayw8sfm3s8m9izwnhfar707qa7ds5p766j"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-askama-derive" ,rust-askama-derive-0.10)
+             ("rust-askama-escape" ,rust-askama-escape-0.10)
+             ("rust-askama-shared" ,rust-askama-shared-0.11)
+             ("rust-mime" ,rust-mime-0.3)
+             ("rust-mime-guess" ,rust-mime-guess-2))))))
 
 (define-public rust-asn1-derive-0.8
   (package
