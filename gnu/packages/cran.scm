@@ -2538,6 +2538,29 @@ supported for the trees and a test for parameter heterogeneity is provided for
 the personalised models.")
     (license license:gpl2+)))
 
+(define-public r-modelenv
+  (package
+    (name "r-modelenv")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "modelenv" version))
+              (sha256
+               (base32
+                "18wgl3hslvwq4z8ab91514p5nhzxzb727s61ccawvx3ixfjfrid4"))))
+    (properties `((upstream-name . "modelenv")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glue r-rlang r-tibble r-vctrs))
+    (home-page "https://github.com/tidymodels/modelenv")
+    (synopsis "Tools for registering models for use in tidymodels")
+    (description
+     "This is a developer-focused, low dependency package in
+@code{tidymodels} that provides functions to register how models are
+to be used.  Functions to register models are complimented with
+accessor functions to retrieve registered model information to aid in
+model fitting and error handling.")
+    (license license:expat)))
+
 (define-public r-modelr
   (package
     (name "r-modelr")
