@@ -6010,6 +6010,42 @@ reduction (between group analysis) and joint dimension reduction of two
 datasets (coinertia analysis).")
     (license license:artistic2.0)))
 
+(define-public r-metaneighbor
+  (package
+    (name "r-metaneighbor")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "MetaNeighbor" version))
+              (sha256
+               (base32
+                "1gjjp5qlmv26sd3fvrd8cgv3invckxr8ldjpizpqm4mxjzifxwpm"))))
+    (properties `((upstream-name . "MetaNeighbor")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beanplot
+           r-dplyr
+           r-ggplot2
+           r-gplots
+           r-igraph
+           r-matrix
+           r-matrixstats
+           r-rcolorbrewer
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/MetaNeighbor")
+    (synopsis "Single cell replicability analysis")
+    (description
+     "This package implements a method to rapidly assess cell type identity using
+both functional and random gene sets and it allows users to quantify cell type
+replicability across datasets using neighbor voting.  @code{MetaNeighbor} works
+on the basis that cells of the same type should have more similar gene expression
+profiles than cells of different types.")
+    (license license:expat)))
+
 (define-public r-methylkit
   (package
     (name "r-methylkit")
