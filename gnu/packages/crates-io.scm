@@ -65099,32 +65099,45 @@ result.")
     (description "Warp is a composable, web server framework.")
     (license license:expat)))
 
-(define-public rust-wasi-0.9
+(define-public rust-wasi-0.11
   (package
     (name "rust-wasi")
-    (version "0.9.0+wasi-snapshot-preview1")
+    (version "0.11.0+wasi-snapshot-preview1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "wasi" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "06g5v3vrdapfzvfq662cij7v8a1flwr2my45nnncdv2galrdzkfc"))))
+        (base32 "08z4hxwkpdpalxjps1ai9y7ihin26y9f476i53dv98v45gkqg3cw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+             ("rust-rustc-std-workspace-alloc"
+              ,rust-rustc-std-workspace-alloc-1)
+             ("rust-rustc-std-workspace-core"
+              ,rust-rustc-std-workspace-core-1))))
     (home-page "https://github.com/bytecodealliance/wasi")
     (synopsis "Experimental WASI API bindings for Rust")
     (description
-     "This package provides an experimental WASI API bindings for Rust.")
+     "This package provides experimental WASI API bindings for Rust.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-wasi-0.9
+  (package
+    (inherit rust-wasi-0.11)
+    (name "rust-wasi")
+    (version "0.9.0+wasi-snapshot-preview1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "wasi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06g5v3vrdapfzvfq662cij7v8a1flwr2my45nnncdv2galrdzkfc"))))))
 
 (define-public rust-wasm-bindgen-0.2
   (package
