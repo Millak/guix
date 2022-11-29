@@ -21516,6 +21516,30 @@ values to other threads.")
 duplication.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-fs-err-2
+  (package
+    (name "rust-fs-err")
+    (version "2.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "fs-err" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ha5ysh5jz2hxlhmydc82pjcycps6ips4jyni41jy8cr48jzli88"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-tokio" ,rust-tokio-1))
+           #:cargo-development-inputs
+           `(("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/andrewhickman/fs-err")
+    (synopsis "@code{std::fs} with more helpful errors")
+    (description
+     "This package provides an alternative to @code{std::fs} with
+more helpful error messages.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-fs-extra-1
   (package
     (name "rust-fs-extra")
