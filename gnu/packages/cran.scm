@@ -28309,14 +28309,14 @@ here.")
 (define-public r-projpred
   (package
     (name "r-projpred")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "projpred" version))
        (sha256
         (base32
-         "1bbjrjaj6zzb1ph69x16i40fj2j6cg8vzmmw2rchsn0ygphaq9b8"))))
+         "0fycjmaqbcr3vp5708003flvi9ny4z04acgbcfly1ird0kcw9s3v"))))
     (properties `((upstream-name . "projpred")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28326,6 +28326,7 @@ here.")
            r-lme4
            r-loo
            r-magrittr
+           r-mass
            r-mgcv
            r-mvtnorm
            r-rcpp
