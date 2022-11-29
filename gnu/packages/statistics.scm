@@ -5964,17 +5964,17 @@ is supported.")
 (define-public r-lubridate
   (package
     (name "r-lubridate")
-    (version "1.8.0")
+    (version "1.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lubridate" version))
        (sha256
         (base32
-         "199b00cql07gf3rf4hh5ba34amnk0ai40zhx73dq1mpkn7ynxml7"))))
+         "0flh3arja7al9xznj5jvicadvq1kb2s63zyg63wlx2bii8gh8dmr"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-generics r-cpp11))
+     (list r-generics r-timechange))
     (native-inputs
      (list r-knitr))
     (home-page "https://cran.r-project.org/web/packages/lubridate/")
