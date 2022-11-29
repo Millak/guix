@@ -1076,6 +1076,32 @@ size and can be easily tested locally before being sent to a remote.")
 the system clipboards.")
     (license license:gpl3)))
 
+(define-public r-clock
+  (package
+    (name "r-clock")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "clock" version))
+              (sha256
+               (base32
+                "00hp7k24d599dzkzhhb6xky2pj6xaggdfwgviyb3i592v1gkh37q"))))
+    (properties `((upstream-name . "clock")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cpp11 r-rlang r-tzdb r-vctrs))
+    (native-inputs (list r-knitr))
+    (home-page "https://clock.r-lib.org")
+    (synopsis "Date-Time types and tools")
+    (description
+     "This package provides a comprehensive library for date-time
+manipulations using a new family of orthogonal date-time
+classes (durations, time points, zoned-times, and calendars) that
+partition responsibilities so that the complexities of time zones are
+only considered when they are really needed.  Capabilities include:
+date-time parsing, formatting, arithmetic, extraction and updating of
+components, and rounding.")
+    (license license:expat)))
+
 (define-public r-clvalid
   (package
     (name "r-clvalid")
