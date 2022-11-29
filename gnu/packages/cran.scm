@@ -15705,14 +15705,14 @@ and compatibility with @code{ape} objects.")
 (define-public r-rnifti
   (package
     (name "r-rnifti")
-    (version "1.4.2")
+    (version "1.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "RNifti" version))
        (sha256
         (base32
-         "1zr9g102zhb1h6a06p141g1jq0ik94kah8r3z3q2zharj30y2waz"))))
+         "1w627brzag9laxsfrr1kxh07glycl8l1n5xf5frn8m0jzvrn3d50"))))
     (properties `((upstream-name . "RNifti")))
     (build-system r-build-system)
     (inputs (list zlib))
