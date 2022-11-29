@@ -3536,24 +3536,21 @@ the web.")
 (define-public rust-askama-escape-0.10
   (package
     (name "rust-askama-escape")
-    (version "0.10.1")
+    (version "0.10.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "askama_escape" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1ys6wcrkpzygk6r93zd0rhinhy89rraarl0m4afwi023m70hihch"))))
+        (base32 "0hg3rz0cma5f6385z7qmqw3jbir76jndwd5s7dqfk92v9gil75v1"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments (list #:skip-build? #t))
     (home-page "https://github.com/djc/askama")
-    (synopsis
-     "Optimized HTML escaping code, extracted from Askama")
+    (synopsis "HTML escaping extracted from Askama")
     (description
-     "This package provides a optimized HTML escaping code, extracted from
-Askama.")
+     "This package provides an optimized HTML escaping library,
+extracted from Askama.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-askama-shared-0.11
