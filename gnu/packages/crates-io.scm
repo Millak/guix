@@ -46824,6 +46824,33 @@ table-based tests.")
 table-based tests.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-macros-0.14
+  (package
+    (name "rust-rstest-macros")
+    (version "0.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rstest-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0rlwp3r1dg3fl4f100wjd3ya7dhs23vpyqgf7vg5mac50s5fc5ah"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-cfg-if" ,rust-cfg-if-1)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-rustc-version" ,rust-rustc-version-0.4)
+             ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/la10736/rstest")
+    (synopsis "Procedural macros for @code{rstest}.")
+    (description
+     "This package provides the procedural macro crate for
+@code{rstest}.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-rug-1
   (package
     (name "rust-rug")
