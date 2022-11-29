@@ -2564,14 +2564,14 @@ model fitting and error handling.")
 (define-public r-modelr
   (package
     (name "r-modelr")
-    (version "0.1.9")
+    (version "0.1.10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "modelr" version))
        (sha256
         (base32
-         "1jd9vxirj5ii4ac0ka07g0rcq1c8yqv06jg27nmvp5a6kvlgvs8h"))))
+         "0qqgdb7gpb1h9lf5zijg51gd0qmbzj8f37aykhv1w633cglacick"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-broom
