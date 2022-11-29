@@ -53858,21 +53858,19 @@ benchmarking.")
 (define-public rust-socket2-0.4
   (package
     (name "rust-socket2")
-    (version "0.4.0")
+    (version "0.4.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "socket2" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "18ny6m1gnf6cwp5ax0b5hr36w6yg16z7faj76b31aq2jghhgqgcy"))))
+         (base32 "1gaf57dc16s1lfyv388w9vdl9qay15xds78jcwakml9kj3dx5qh2"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+     (list #:cargo-inputs
+           `(("rust-libc" ,rust-libc-0.2)
+             ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/rust-lang/socket2")
     (synopsis "Networking sockets in Rust")
     (description
