@@ -42268,6 +42268,30 @@ status.")
 progress-bars for Rust.")
     (license license:asl2.0)))
 
+(define-public rust-propfuzz-0.0.1
+  (package
+    (name "rust-propfuzz")
+    (version "0.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "propfuzz" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xadkjqsnnazfksaywxkdgv0fjkclj2p7x36r044jbj9g395nxyg"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-propfuzz-macro" ,rust-propfuzz-macro-0.0.1)
+             ("rust-proptest" ,rust-proptest-0.10))))
+    (home-page "https://github.com/facebookincubator/propfuzz")
+    (synopsis "Property-based testing and fuzzing")
+    (description
+     "This package provides a Rust library that combines
+property-based testing and fuzzing.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-propfuzz-macro-0.0.1
   (package
     (name "rust-propfuzz-macro")
