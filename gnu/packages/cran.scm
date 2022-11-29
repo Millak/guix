@@ -20793,14 +20793,14 @@ external dependencies.  This package has is implemented purely in R.")
 (define-public r-aplot
   (package
     (name "r-aplot")
-    (version "0.1.8")
+    (version "0.1.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "aplot" version))
        (sha256
         (base32
-         "17256cdn46cii97s0h2zmah9vs116ybnih78734lpkn7kmvdfcfr"))))
+         "04mv2jhkk47sqmm69dbcmy84han2k19sv6vnmk572xbm19i661xg"))))
     (properties `((upstream-name . "aplot")))
     (build-system r-build-system)
     (propagated-inputs
