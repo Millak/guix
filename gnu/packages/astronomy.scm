@@ -1891,12 +1891,12 @@ provide you with detailed information about each pass.")
     (license license:gpl2+)))
 
 (define-public sgp4
-  ;; No tagged releases, use commit directly.
-  (let ((commit "ca9d4d97af4ee62461de6f13e0c85d1dc6000040")
-        (revision "1"))
+  ;; Version tag v1.0 is dated to <2021-01-11>, use the lates commit instead.
+  (let ((commit "6a448b4850e5fbf8c1ca03bb5f6013a9fdc1fd91")
+        (revision "2"))
     (package
       (name "sgp4")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -1905,17 +1905,20 @@ provide you with detailed information about each pass.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1xwfa6papmd2qz5w0hwzvijmzvp9np8dlw3q3qz4bmsippzjv8p7"))))
+          (base32 "15q8sain87cbppmzq66y6gp6bvm3kdd1bcchrl59rcvjp0w51wl1"))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda _
-               ;; Tests fails, probably because of a few "(e <= -0.001)" errors.
-               ;; Or maybe this is not the right way to run the tests?
-               ;; (invoke "runtest/runtest")
-               #t)))))
+       (list
+        ;; FIXME: Tests evaluated via runtest binary, but it's failing even
+        ;; when SGP4-VER.TLE file was copied next to it during install phase.
+        ;;
+        ;; There are 2 more binaries are created after build phase -
+        ;; passpredict and sattrack which are failing to execute after
+        ;; install, strace output:
+        ;;
+        ;; strace: exec: Exec format error
+        ;;
+        #:tests? #f))
       (home-page "https://github.com/dnwrnr/sgp4")
       (synopsis "Simplified perturbations models library")
       (description
