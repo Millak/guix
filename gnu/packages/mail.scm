@@ -410,6 +410,9 @@ completely independent from the extension API.")
            #~(list "--sysconfdir=/etc"
                    "--disable-static"
 
+                   ;; Specify path to sendmail setuid binary, which otherwise
+                   ;; defaults to /usr/sbin/sendmail
+                   "CFLAGS=-DPATH_SENDMAIL=\\\"/run/setuid-programs/sendmail\\\""
                    ;; Add "/X.Y" to the installation directory.
                    (string-append "--with-guile-site-dir="
                                   (assoc-ref %outputs "out")
