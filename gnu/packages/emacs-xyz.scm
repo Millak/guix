@@ -9974,14 +9974,14 @@ interface.")
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'makeinfo
-             (lambda* (#:key outputs #:allow-other-keys)
-               (invoke "makeinfo" "orderless.texi")
-               (install-file "orderless.info"
-                             (string-append (assoc-ref outputs "out")
-                                            "/share/info")))))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda _
+                (invoke "makeinfo" "orderless.texi")
+                (install-file "orderless.info"
+                              (string-append #$output "/share/info")))))))
       (native-inputs
        (list texinfo))
       (home-page "https://github.com/oantolin/orderless")
