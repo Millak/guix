@@ -67990,8 +67990,39 @@ crate.")
 crate.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-windows-sys-0.42
+  (package
+    (name "rust-windows-sys")
+    (version "0.42.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19waf8aryvyq9pzk0gamgfwjycgzk4gnrazpfvv171cby0h1hgjs"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-windows-aarch64-gnullvm" ,rust-windows-aarch64-gnullvm-0.42)
+             ("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.42)
+             ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.42)
+             ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.42)
+             ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.42)
+             ("rust-windows-x86-64-gnullvm" ,rust-windows-x86-64-gnullvm-0.42)
+             ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.42))))
+    (home-page "https://github.com/microsoft/windows-rs")
+    (synopsis "Rust for Windows")
+    (description "The windows crate lets you call any Windows API past,
+present, and future using code generated on the fly directly from the metadata
+describing the API and right into your Rust package where you can call them as
+if they were just another Rust module.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-windows-sys-0.36
   (package
+    (inherit rust-windows-sys-0.42)
     (name "rust-windows-sys")
     (version "0.36.1")
     (source (origin
@@ -68001,25 +68032,18 @@ crate.")
               (sha256
                (base32
                 "1lmqangv0zg1l46xiq7rfnqwsx8f8m52mqbgg2mrx7x52rd1a17a"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.36)
-        ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.36)
-        ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.36)
-        ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.36)
-        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.36))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.36)
+             ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.36)
+             ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.36)
+             ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.36)
+             ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.36))))))
 
 (define-public rust-windows-sys-0.28
   (package
+    (inherit rust-windows-sys-0.36)
     (name "rust-windows-sys")
     (version "0.28.0")
     (source
@@ -68029,22 +68053,14 @@ if they were just another Rust module.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1xkghf343nll9i1yvha1a4spf53mnb5knzmnqj9adgsw5mh3kjl2"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.28)
-        ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.28)
-        ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.28)
-        ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.28)
-        ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.28))))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Rust for Windows")
-    (description "The windows crate lets you call any Windows API past,
-present, and future using code generated on the fly directly from the metadata
-describing the API and right into your Rust package where you can call them as
-if they were just another Rust module.")
-    (license (list license:expat license:asl2.0))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-windows-aarch64-msvc" ,rust-windows-aarch64-msvc-0.28)
+             ("rust-windows-i686-gnu" ,rust-windows-i686-gnu-0.28)
+             ("rust-windows-i686-msvc" ,rust-windows-i686-msvc-0.28)
+             ("rust-windows-x86-64-gnu" ,rust-windows-x86-64-gnu-0.28)
+             ("rust-windows-x86-64-msvc" ,rust-windows-x86-64-msvc-0.28))))))
 
 (define-public rust-windows-gen-0.9
   (package
