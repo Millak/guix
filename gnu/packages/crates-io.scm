@@ -66304,27 +66304,28 @@ using @code{bindgen}.")
 (define-public rust-which-4
   (package
     (name "rust-which")
-    (version "4.2.2")
+    (version "4.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "which" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nbsy9f5sn206jzby28if4m4s0m21n97mhk8qd703g3rya77l67a"))))
+        (base32 "0yybp94wikf21vkcl8b6w6l5pnd95nl4fxryz669l4lyxsxiz0qw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-either" ,rust-either-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-regex" ,rust-regex-1))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-either" ,rust-either-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-once-cell" ,rust-once-cell-1)
+             ("rust-regex" ,rust-regex-1))))
     (home-page "https://github.com/harryfei/which-rs.git")
-    (synopsis "Rust equivalent of Unix command @command{which}")
+    (synopsis "Rust equivalent of @command{which}")
     (description
-     "This package provides a Rust equivalent of Unix command @command{which}.
-It locates installed executable in cross platforms.")
+     "This package provides a cross-platform Rust equivalent of the
+Unix @command{which} command.  It returns the full path of an installed
+executable.")
     (license license:expat)))
 
 (define-public rust-which-3
