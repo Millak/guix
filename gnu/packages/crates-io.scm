@@ -10547,41 +10547,46 @@ traits.")
 (define-public rust-clap-3
   (package
     (name "rust-clap")
-    (version "3.1.18")
+    (version "3.2.23")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "02s4hk9hrmm2s1j7dkbwpyd75mfzx3p8ks2chmp4ccybv95xznyj"))))
+        (base32 "19bkwkj49ha7mlip0gxsqb9xmd3jpr7ghvcx1hkx6icqrd2mqrbi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-backtrace" ,rust-backtrace-0.3)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-clap-derive" ,rust-clap-derive-3)
-        ("rust-clap-lex" ,rust-clap-lex-0.2)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-strsim" ,rust-strsim-0.10)
-        ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-terminal-size" ,rust-terminal-size-0.1)
-        ("rust-textwrap" ,rust-textwrap-0.15)
-        ("rust-unicase" ,rust-unicase-2)
-        ("rust-yaml-rust" ,rust-yaml-rust-0.4))
-       #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-humantime" ,rust-humantime-2)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-rustversion" ,rust-rustversion-1)
-        ("rust-shlex" ,rust-shlex-1)
-        ("rust-snapbox" ,rust-snapbox-0.4)
-        ("rust-trybuild" ,rust-trybuild-1))))
+     (list #:cargo-test-flags
+           '(list "--release" "--"
+                  ;; thread 'main' panicked at 'assertion failed: `(left == right)`
+                  ;;   left: `"_AnonymousValueParser(ValueParser::other(TypeId { t: 3349385470118513432 }))"`,
+                  ;;  right: `"_AnonymousValueParser(ValueParser::other(usize))"`', src/builder/value_parser.rs:18:1
+                  "--skip=builder::value_parser::value_parser")
+           #:cargo-inputs
+           `(("rust-atty" ,rust-atty-0.2)
+             ("rust-backtrace" ,rust-backtrace-0.3)
+             ("rust-bitflags" ,rust-bitflags-1)
+             ("rust-clap-derive" ,rust-clap-derive-3)
+             ("rust-clap-lex" ,rust-clap-lex-0.2)
+             ("rust-indexmap" ,rust-indexmap-1)
+             ("rust-once-cell" ,rust-once-cell-1)
+             ("rust-regex" ,rust-regex-1)
+             ("rust-strsim" ,rust-strsim-0.10)
+             ("rust-termcolor" ,rust-termcolor-1)
+             ("rust-terminal-size" ,rust-terminal-size-0.2)
+             ("rust-textwrap" ,rust-textwrap-0.16)
+             ("rust-unicase" ,rust-unicase-2)
+             ("rust-yaml-rust" ,rust-yaml-rust-0.4))
+           #:cargo-development-inputs
+           `(("rust-humantime" ,rust-humantime-2)
+             ("rust-regex" ,rust-regex-1)
+             ("rust-rustversion" ,rust-rustversion-1)
+             ("rust-shlex" ,rust-shlex-1)
+             ("rust-snapbox" ,rust-snapbox-0.2)
+             ("rust-static-assertions" ,rust-static-assertions-1)
+             ("rust-trybuild" ,rust-trybuild-1)
+             ("rust-trycmd" ,rust-trycmd-0.13))))
     (home-page "https://clap.rs/")
     (synopsis "Command Line Argument Parser")
     (description
