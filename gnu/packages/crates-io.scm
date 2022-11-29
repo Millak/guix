@@ -32377,14 +32377,15 @@ file IO.")
 (define-public rust-memoffset-0.6
   (package
     (name "rust-memoffset")
-    (version "0.6.4")
+    (version "0.6.5")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "memoffset" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1yfx2v8kmkhr2d4gwk8ghihdwg73vapn3vvp0im06f0kgx8crb2r"))))
+        (base32
+         "1kkrzll58a3ayn5zdyy9i1f1v3mx0xgl29x0chq614zazba638ss"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -32411,8 +32412,7 @@ for Rust structs.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "1fblqzc25hfaym8m0pj112s66pqq87avvaqm5hp5rskib2w9w63m"))))
+        (base32 "1fblqzc25hfaym8m0pj112s66pqq87avvaqm5hp5rskib2w9w63m"))))
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
