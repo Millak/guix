@@ -31942,13 +31942,13 @@ annealing.")
 (define-public r-mlr3tuning
   (package
     (name "r-mlr3tuning")
-    (version "0.15.0")
+    (version "0.17.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3tuning" version))
               (sha256
                (base32
-                "13p0gcnl8sxvn3ig526pscl63g1dx7l5i9sfzi2yyrddg8vgik4g"))))
+                "1dg02qyyymflgws47sly3b7wd8nj4i9vv7ybx42hgvd55al3smdp"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbotk
