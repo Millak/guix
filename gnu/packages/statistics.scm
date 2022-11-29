@@ -825,14 +825,14 @@ curves, Cox models, and parametric accelerated failure time models.")
 (define-public r-bit
   (package
     (name "r-bit")
-    (version "4.0.4")
+    (version "4.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "bit" version))
        (sha256
         (base32
-         "0s7isadibxp2wr62r5cpbyh9z31sczzfz4j3rm7gxgjfpqgq8174"))))
+         "1g5zakrzkhrqh3d7p1zka6zzzw11rdlbrvxsh05s7dkli1m57wph"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
