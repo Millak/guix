@@ -68026,47 +68026,42 @@ crate.")
      "This package provides code gen support for the windows crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-aarch64-msvc-0.36
+(define-public rust-windows-aarch64-msvc-0.42
   (package
     (name "rust-windows-aarch64-msvc")
-    (version "0.36.1")
+    (version "0.42.0")
     (source (origin
               (method url-fetch)
-              (uri (crate-uri "windows_aarch64_msvc" version))
+              (uri (crate-uri "windows-aarch64-msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0ixaxs2c37ll2smprzh0xq5p238zn8ylzb3lk1zddqmd77yw7f4v"))))
+                "1d6d9ny0yl5l9vvagydigvkfcphzk2aygchiccywijimb8pja3yx"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t))
+     (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
     (synopsis "Code gen support for the windows crate")
     (description "This package provides code gen support for the windows
 crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-windows-aarch64-msvc-0.28
+(define-public rust-windows-aarch64-msvc-0.36
   (package
+    (inherit rust-windows-aarch64-msvc-0.42)
     (name "rust-windows-aarch64-msvc")
-    (version "0.28.0")
+    (version "0.36.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "windows_aarch64_msvc" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hpk0n2z0jzzvwlvs98b75sa4q920953nqfc119rv19nwm0mlsaj"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description "This package provides code gen support for the windows
-crate.")
-    (license (list license:expat license:asl2.0))))
+        (base32 "0ixaxs2c37ll2smprzh0xq5p238zn8ylzb3lk1zddqmd77yw7f4v"))))))
 
 (define-public rust-windows-aarch64-msvc-0.32
   (package
+    (inherit rust-windows-aarch64-msvc-0.36)
     (name "rust-windows-aarch64-msvc")
     (version "0.32.0")
     (source (origin
@@ -68075,15 +68070,20 @@ crate.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1x8bnafz15ksgpbjbgk1l1j2jx4rq4a2ylzcahb1jhy4n59jgsfq"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t))
-    (home-page "https://github.com/microsoft/windows-rs")
-    (synopsis "Code gen support for the windows crate")
-    (description "This package provides code gen support for the windows
-crate.")
-    (license (list license:expat license:asl2.0))))
+                "1x8bnafz15ksgpbjbgk1l1j2jx4rq4a2ylzcahb1jhy4n59jgsfq"))))))
+
+(define-public rust-windows-aarch64-msvc-0.28
+  (package
+    (inherit rust-windows-aarch64-msvc-0.32)
+    (name "rust-windows-aarch64-msvc")
+    (version "0.28.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "windows_aarch64_msvc" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1hpk0n2z0jzzvwlvs98b75sa4q920953nqfc119rv19nwm0mlsaj"))))))
 
 (define-public rust-windows-implement-0.32
   (package
