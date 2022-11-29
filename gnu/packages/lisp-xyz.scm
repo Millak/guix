@@ -454,6 +454,41 @@ It's intended as a simpler alternative to parser generators.")
 (define-public ecl-meta
   (sbcl-package->ecl-package sbcl-meta))
 
+(define-public sbcl-clavier
+  (let ((commit "048bea40cac0a89480f8c41ae542be45945f3268")
+        (revision "0"))
+    (package
+      (name "sbcl-clavier")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/clavier")
+               (commit commit)))
+         (file-name (git-file-name "cl-clavier" version))
+         (sha256
+          (base32 "0734xia2hf7lqkm59gjhyvpsp0vl50djyhy4llwwbzbwwdkdihw4"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-stefil))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-chronicity
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-closer-mop))
+      (home-page "https://github.com/mmontone/clavier/")
+      (synopsis "General purpose validation library")
+      (description "Clavier is a general purpose validation library for
+Common Lisp.")
+      (license license:expat))))
+
+(define-public cl-clavier
+  (sbcl-package->cl-source-package sbcl-clavier))
+
+(define-public ecl-clavier
+  (sbcl-package->ecl-package sbcl-clavier))
+
 (define-public sbcl-cl-inotify
   (let ((commit "66f29e01ec28355ebba8292411b4de90eebd76a3")
         (revision "0"))
