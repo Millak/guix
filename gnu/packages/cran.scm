@@ -1809,13 +1809,13 @@ control over dimensions and appearance.")
 (define-public r-philentropy
   (package
     (name "r-philentropy")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "philentropy" version))
               (sha256
                (base32
-                "1dpf4hfflp4mcql4na46wzcq1flabkipiwyycz9wj5xbxlmcz2hk"))))
+                "1dw46p2bk68hqbc44629lywg5r1mdaz37ahccgmsx07fg8rf4wnf"))))
     (properties `((upstream-name . "philentropy")))
     (build-system r-build-system)
     (propagated-inputs (list r-kernsmooth r-poorman r-rcpp))
