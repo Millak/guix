@@ -31272,13 +31272,13 @@ other R users.")
 (define-public r-seurat
   (package
     (name "r-seurat")
-    (version "4.2.0")
+    (version "4.3.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "Seurat" version))
               (sha256
                (base32
-                "1vzb2k21nnzlky5dbf586wnixffz7wc9ncrpbgdw8md2kcmd58r2"))))
+                "0z7rzxi1gli56k50s6w1363ndw18wykgk5xmc3g7jhpphqxwpfky"))))
     (properties `((upstream-name . "Seurat")))
     (build-system r-build-system)
     (propagated-inputs
@@ -31306,6 +31306,7 @@ other R users.")
            r-pbapply
            r-plotly
            r-png
+           r-progressr
            r-rann
            r-rcolorbrewer
            r-rcpp
@@ -31321,7 +31322,7 @@ other R users.")
            r-sctransform
            r-seuratobject
            r-shiny
-           r-spatstat-core
+           r-spatstat-explore
            r-spatstat-geom
            r-tibble
            r-uwot))
