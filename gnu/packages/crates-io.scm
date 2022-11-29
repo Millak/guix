@@ -10520,29 +10520,28 @@ traits.")
 (define-public rust-clap-derive-3
   (package
     (name "rust-clap-derive")
-    (version "3.1.18")
+    (version "3.2.18")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "clap_derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g53w6qkqcc122bqh51jzfg51147il643idvq1czxkr2x5306ci5"))))
+        (base32 "0r9az0cl33xx0i9g18l56l3vd5ayjvcflvza2gdf8jwcab78n37a"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-heck" ,rust-heck-0.4)
-        ("rust-proc-macro-error" ,rust-proc-macro-error-1)
-        ("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-heck" ,rust-heck-0.4)
+             ("rust-proc-macro-error"
+              ,rust-proc-macro-error-1)
+             ("rust-proc-macro2" ,rust-proc-macro2-1)
+             ("rust-quote" ,rust-quote-1)
+             ("rust-syn" ,rust-syn-1))))
     (home-page "https://clap.rs/")
-    (synopsis
-     "Parse command line argument by defining a struct, derive crate")
+    (synopsis "Procedural macro crate for Clap")
     (description
-     "This package provides a parse command line argument by defining a struct,
-derive crate.")
+     "This package provides the procedural macro crate for Clap.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-clap-3
