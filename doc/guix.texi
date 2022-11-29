@@ -18409,9 +18409,6 @@ udev rules can be provided as a list of files through the @var{rules}
 variable.  The procedures @code{udev-rule}, @code{udev-rules-service}
 and @code{file->udev-rule} from @code{(gnu services base)} simplify the
 creation of such rule files.
-
-The @command{herd rules udev} command, as root, returns the name of the
-directory containing all the active udev rules.
 @end deffn
 
 @deffn {Scheme Procedure} udev-rule [@var{file-name} @var{contents}]
