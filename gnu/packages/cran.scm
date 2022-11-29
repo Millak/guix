@@ -5937,6 +5937,31 @@ techniques from R packages and provides a common interface for calling the
 methods.")
     (license license:gpl3)))
 
+(define-public r-timechange
+  (package
+    (name "r-timechange")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "timechange" version))
+              (sha256
+               (base32
+                "0w3zbmzhg3zr5d9aa83kmr6gyhk75l7jysa7zs0pnz9x4ffr20w5"))))
+    (properties `((upstream-name . "timechange")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cpp11))
+    (home-page "https://github.com/vspinu/timechange/")
+    (synopsis "Efficient manipulation of Date-Times")
+    (description
+     "This package provides efficient routines for manipulation of
+date-time objects while accounting for time-zones and daylight saving
+times.  The package includes utilities for updating of date-time
+components (year, month, day etc.), modification of time-zones,
+rounding of date-times, period addition and subtraction etc.  Parts of
+the CCTZ source code, released under the Apache 2.0 License, are
+included in this package.")
+    (license license:gpl3)))
+
 (define-public r-timedate
   (package
     (name "r-timedate")
