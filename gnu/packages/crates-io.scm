@@ -59255,32 +59255,31 @@ tinyobjloader.")
 (define-public rust-tokio-1
   (package
     (name "rust-tokio")
-    (version "1.15.0")
+    (version "1.22.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tokio" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32
-         "0f2qwp9ljc4gf955g7qcksp0jc1bwmzxb2nf6mb7h1n2irvirgzv"))))
+        (base32 "1qrarnfikvp8cwd3qcskzgdb1a6f47r11xjbql2wd25lbyky8v6p"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-autocfg" ,rust-autocfg-1)
-        ("rust-bytes" ,rust-bytes-1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-memchr" ,rust-memchr-2)
-        ("rust-mio" ,rust-mio-0.7)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-parking-lot" ,rust-parking-lot-0.11)
-        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
-        ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
-        ("rust-tokio-macros" ,rust-tokio-macros-1)
-        ("rust-tracing" ,rust-tracing-0.1)
-        ("rust-winapi" ,rust-winapi-0.3))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-autocfg" ,rust-autocfg-1)
+             ("rust-bytes" ,rust-bytes-1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-memchr" ,rust-memchr-2)
+             ("rust-mio" ,rust-mio-0.8)
+             ("rust-num-cpus" ,rust-num-cpus-1)
+             ("rust-parking-lot" ,rust-parking-lot-0.12)
+             ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+             ("rust-signal-hook-registry" ,rust-signal-hook-registry-1)
+             ("rust-socket2" ,rust-socket2-0.4)
+             ("rust-tokio-macros" ,rust-tokio-macros-1)
+             ("rust-tracing" ,rust-tracing-0.1)
+             ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://tokio.rs")
     (synopsis "Event-driven, non-blocking I/O platform")
     (description
