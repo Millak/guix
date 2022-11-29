@@ -11811,16 +11811,16 @@ and coverage methods to tune the choice of threshold.")
 (define-public r-ggstance
   (package
     (name "r-ggstance")
-    (version "0.3.5")
+    (version "0.3.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggstance" version))
        (sha256
-        (base32 "0jz9vvnmcc6a38n8nzr458r65sna23bgn5r8mxdhzdlyqibihr7d"))))
+        (base32 "0wk3gbi5365sndi02gwd4c33vcrj5p8cfwakwjg010y5hgxx96nd"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-plyr r-rlang r-withr))
+     (list r-cli r-ggplot2 r-plyr r-rlang r-withr))
     (home-page "https://cran.r-project.org/web/packages/ggstance/")
     (synopsis "Horizontal and vertical versions of @code{r-ggplot2}")
     (description
