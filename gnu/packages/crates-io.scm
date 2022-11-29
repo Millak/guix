@@ -19374,27 +19374,27 @@ deserialized from environment variables.")
 (define-public rust-errno-0.2
   (package
     (name "rust-errno")
-    (version "0.2.4")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "errno" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0kn8mlygxxr02cm97401nppd2dbkwsalpcbai67rh6yh3rh73862"))))
+         "18cnqgk8r6lq1n5cfy3bryiyz9zkqr10dxj49sa3fkzfamih8fgn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-errno-dragonfly" ,rust-errno-dragonfly-0.1)
-        ("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-errno-dragonfly" ,rust-errno-dragonfly-0.1)
+             ("rust-libc" ,rust-libc-0.2)
+             ("rust-winapi" ,rust-winapi-0.3))))
     (home-page "https://github.com/lambda-fairy/rust-errno")
     (synopsis "Cross-platform interface to the @code{errno} variable")
     (description
-     "Cross-platform interface to the @code{errno} variable.")
+     "This package provides a cross-platform interface to the
+@code{errno} variable.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-errno-dragonfly-0.1
