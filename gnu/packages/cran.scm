@@ -29139,6 +29139,50 @@ tests for covariate effects (Cox-Berman-Waller-Lawson,
 Kolmogorov-Smirnov, ANOVA) are also supported.")
     (license license:gpl2+)))
 
+(define-public r-spatstat-model
+  (package
+    (name "r-spatstat-model")
+    (version "3.0-2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "spatstat.model" version))
+              (sha256
+               (base32
+                "0a6lf5y0k13h60s0lnwwfrmxswl7avcg4fhqmha1nmycidhga8z9"))))
+    (properties `((upstream-name . "spatstat.model")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-abind
+           r-goftest
+           r-matrix
+           r-mgcv
+           r-nlme
+           r-rpart
+           r-spatstat-data
+           r-spatstat-explore
+           r-spatstat-geom
+           r-spatstat-random
+           r-spatstat-sparse
+           r-spatstat-utils
+           r-tensor))
+    (home-page "https://spatstat.org/")
+    (synopsis "Parametric statistical modelling for the spatstat family")
+    (description
+     "This package implements functionality for exploratory data
+analysis and nonparametric analysis of spatial data, mainly spatial
+point patterns, in the spatstat family of packages.  Methods include
+quadrat counts, K-functions and their simulation envelopes, nearest
+neighbour distance and empty space statistics, Fry plots, pair
+correlation function, kernel smoothed intensity, relative risk
+estimation with cross-validated bandwidth selection, mark correlation
+functions, segregation indices, mark dependence diagnostics, and
+kernel estimates of covariate effects.  Formal hypothesis tests of
+random pattern (chi-squared, Kolmogorov-Smirnov, Monte Carlo,
+Diggle-Cressie-Loosmore-Ford, Dao-Genton, two-stage Monte Carlo) and
+tests for covariate effects (Cox-Berman-Waller-Lawson,
+Kolmogorov-Smirnov, ANOVA) are also supported.")
+    (license license:gpl2+)))
+
 (define-public r-spatstat-utils
   (package
     (name "r-spatstat-utils")
