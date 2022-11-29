@@ -58196,8 +58196,35 @@ writing colored text to a terminal.")
     (description "Terminal capabilities with type-safe getters.")
     (license license:wtfpl2)))
 
+(define-public rust-termion-2
+  (package
+    (name "rust-termion")
+    (version "2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "termion" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "147c0a9l2dj4l8xhd7bb1f0f611lv6k0szacx3jwf21lkwviz735"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:tests? #f ;tests require a terminal
+           #:cargo-inputs
+           `(("rust-libc" ,rust-libc-0.2)
+             ("rust-numtoa" ,rust-numtoa-0.1)
+             ("rust-redox-syscall" ,rust-redox-syscall-0.2)
+             ("rust-redox-termios" ,rust-redox-termios-0.1)
+             ("rust-serde" ,rust-serde-1))))
+    (home-page "https://gitlab.redox-os.org/redox-os/termion")
+    (synopsis "Library for manipulating terminals")
+    (description
+     "This package provides a bindless library for manipulating terminals.")
+    (license license:expat)))
+
 (define-public rust-termion-1
   (package
+    (inherit rust-termion-2)
     (name "rust-termion")
     (version "1.5.5")
     (source
@@ -58208,19 +58235,13 @@ writing colored text to a terminal.")
         (sha256
          (base32
           "01f9787d5nx445bqbj644v38bn0hl2swwjy9baz0dnbqi6fyqb62"))))
-    (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f      ; Tests want a terminal.
-       #:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
-        ("rust-numtoa" ,rust-numtoa-0.1)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.1)
-        ("rust-redox-termios" ,rust-redox-termios-0.1))))
-    (home-page "https://gitlab.redox-os.org/redox-os/termion")
-    (synopsis "Library for manipulating terminals")
-    (description
-     "This package provides a bindless library for manipulating terminals.")
-    (license license:expat)))
+     (list #:tests? #f ;tests require a terminal
+           #:cargo-inputs
+           `(("rust-libc" ,rust-libc-0.2)
+             ("rust-numtoa" ,rust-numtoa-0.1)
+             ("rust-redox-syscall" ,rust-redox-syscall-0.1)
+             ("rust-redox-termios" ,rust-redox-termios-0.1))))))
 
 (define-public rust-termios-0.3
   (package
