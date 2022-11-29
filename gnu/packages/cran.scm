@@ -27551,14 +27551,14 @@ linear systems can be manageable using the @code{Matrix} package along with
 (define-public r-zvcv
   (package
     (name "r-zvcv")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ZVCV" version))
        (sha256
         (base32
-         "0gc76j9i8fkm2v638nyzzb1qxl4zmapbspkkaffb8gi5qyjja448"))))
+         "0ws0v7i6r7skb8lv6j718k29v5qsy1b007jxidv81iv0jcz9zfpy"))))
     (properties `((upstream-name . "ZVCV")))
     (build-system r-build-system)
     (propagated-inputs
