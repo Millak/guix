@@ -45,6 +45,7 @@
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3564,6 +3565,29 @@ in C using Gtk+-3 and WebKitGtk.")
        "Guile-JPEG is a Scheme library to parse JPEG image files and to
 perform geometrical transforms on JPEG images.")
       (license license:gpl3+))))
+
+(define-public guile-jtd
+  (package
+    (name "guile-jtd")
+    (version "220323a")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mwette/guile-jtd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l8fyqhvksarvpbr903i3ss3432jzvyvhgcqa15j922ngqh4ds6f"))))
+    (build-system guile-build-system)
+    (native-inputs (list guile-3.0))
+    (home-page "https://github.com/mwette/guile-jtd")
+    (synopsis "Python's @code{pdb.set_trace()} but for Guile")
+    (description
+     "The @code{(jtd)} module for Guile provides a procedure
+@code{jump-to-debugger} for escaping to the Guile REPL for the purpose of
+debugging code.")
+    (license license:lgpl2.1+)))
 
 (define-public guile-png
   (package
