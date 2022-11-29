@@ -17232,14 +17232,14 @@ port-forwarding to your local computer.")
 (define-public r-future
   (package
     (name "r-future")
-    (version "1.28.0")
+    (version "1.29.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "future" version))
        (sha256
         (base32
-         "1xhv0nf97yxxxsmxczyqqbnb4yn5sfn5vzvhm9dmw9csrmmadpbg"))))
+         "0ws3jp82qjpnvgn5xrxdq7hg7r97rkylj329f9jqr69g3paiyvc5"))))
     (build-system r-build-system)
     (arguments
      `(#:phases
