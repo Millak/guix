@@ -20408,13 +20408,13 @@ analysis.")
 (define-public r-png
   (package
     (name "r-png")
-    (version "0.1-7")
+    (version "0.1-8")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "png" version))
               (sha256
                (base32
-                "0g2mcp55lvvpx4kd3mn225mpbxqcq73wy5qx8b4lyf04iybgysg2"))))
+                "077nca3x0l6mq2g6izknzcn994bqs3nfqk7wscrjbfk2dnxzldjs"))))
     (build-system r-build-system)
     (inputs
      (list libpng zlib))
