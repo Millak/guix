@@ -11554,6 +11554,42 @@ harness.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-tempdir" ,rust-tempdir-0.3))))))
 
+(define-public rust-comrak-0.12
+  (package
+    (name "rust-comrak")
+    (version "0.12.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "comrak" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0x2f1qz64i3ni7sk87whc3bvp27ps1wxn0ia47qlvsrk39p4fg7z"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-clap" ,rust-clap-2)
+             ("rust-entities" ,rust-entities-1)
+             ("rust-lazy-static" ,rust-lazy-static-1)
+             ("rust-pest" ,rust-pest-2)
+             ("rust-pest-derive" ,rust-pest-derive-2)
+             ("rust-regex" ,rust-regex-1)
+             ("rust-shell-words" ,rust-shell-words-1)
+             ("rust-syntect" ,rust-syntect-4)
+             ("rust-twoway" ,rust-twoway-0.2)
+             ("rust-typed-arena" ,rust-typed-arena-1)
+             ("rust-unicode-categories" ,rust-unicode-categories-0.1)
+             ("rust-xdg" ,rust-xdg-2))
+           #:cargo-development-inputs
+           `(("rust-propfuzz" ,rust-propfuzz-0.0.1)
+             ("rust-timebomb" ,rust-timebomb-0.1))))
+    (home-page "https://github.com/kivikakk/comrak")
+    (synopsis "GitHub flavoured Markdown parser and formatter")
+    (description
+     "This package provides a 100% CommonMark-compatible GitHub
+flavoured Markdown parser and formatter written in Rust.")
+    (license license:bsd-2)))
+
 (define-public rust-concat-idents-1
   (package
     (name "rust-concat-idents")
