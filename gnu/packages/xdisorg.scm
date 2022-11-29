@@ -2891,53 +2891,50 @@ tools to complement clipnotify.")
            "1403sw49ccb8xsd8v611fzp0csaglfz8nmz3wcjsk8x11h9jvxwy"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (delete 'build)
-           (replace 'install
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out  (assoc-ref outputs "out"))
-                      (bin  (string-append out "/bin"))
-                      (doc  (string-append %output "/share/doc/"
-                                           ,name "-" ,version)))
-                 (install-file "clipdel" bin)
-                 (install-file "clipmenu" bin)
-                 (install-file "clipmenud" bin)
-                 (install-file "clipfsck" bin)
-                 (install-file "clipctl" bin)
-                 (install-file "README.md" doc)
-                 #t)))
-           (add-after 'install 'wrap-script
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out               (assoc-ref outputs "out"))
-                      (clipnotify        (assoc-ref inputs "clipnotify"))
-                      (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
-                      (gawk              (assoc-ref inputs "gawk"))
-                      (util-linux        (assoc-ref inputs "util-linux"))
-                      (xdotool           (assoc-ref inputs "xdotool"))
-                      (xsel              (assoc-ref inputs "xsel"))
-                      (guile             (search-input-file inputs "bin/guile")))
-                 (for-each
-                  (lambda (prog)
-                    (wrap-script (string-append out "/bin/" prog)
-                      #:guile guile
-                      `("PATH" ":" prefix
-                        ,(map (lambda (dir)
-                                (string-append dir "/bin"))
-                              (list clipnotify coreutils-minimal
-                                    gawk util-linux xdotool xsel)))))
-                  '("clipmenu" "clipmenud" "clipdel" "clipfsck" "clipctl")))
-               #t))
-           (replace 'check
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               ;; substitute a shebang appearing inside a string (the test
-               ;; file writes this string to a temporary file):
-               (substitute* "tests/test-clipmenu"
-                 (("#!/usr/bin/env bash")
-                  (string-append "#!" (which "bash"))))
-               (invoke "tests/test-clipmenu")
-               #t)))))
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (delete 'build)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (doc (string-append #$output "/share/doc/"
+                                          #$name "-" #$version)))
+                  (install-file "clipdel" bin)
+                  (install-file "clipmenu" bin)
+                  (install-file "clipmenud" bin)
+                  (install-file "clipfsck" bin)
+                  (install-file "clipctl" bin)
+                  (install-file "README.md" doc))))
+            (add-after 'install 'wrap-script
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (let* ((out               (assoc-ref outputs "out"))
+                       (clipnotify        (assoc-ref inputs "clipnotify"))
+                       (coreutils-minimal (assoc-ref inputs "coreutils-minimal"))
+                       (gawk              (assoc-ref inputs "gawk"))
+                       (util-linux        (assoc-ref inputs "util-linux"))
+                       (xdotool           (assoc-ref inputs "xdotool"))
+                       (xsel              (assoc-ref inputs "xsel"))
+                       (guile             (search-input-file inputs "bin/guile")))
+                  (for-each
+                   (lambda (prog)
+                     (wrap-script (string-append out "/bin/" prog)
+                       #:guile guile
+                       `("PATH" ":" prefix
+                         ,(map (lambda (dir)
+                                 (string-append dir "/bin"))
+                               (list clipnotify coreutils-minimal
+                                     gawk util-linux xdotool xsel)))))
+                   '("clipmenu" "clipmenud" "clipdel" "clipfsck" "clipctl")))))
+            (replace 'check
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                ;; substitute a shebang appearing inside a string (the test
+                ;; file writes this string to a temporary file):
+                (substitute* "tests/test-clipmenu"
+                  (("#!/usr/bin/env bash")
+                   (string-append "#!" (which "bash"))))
+                (invoke "tests/test-clipmenu"))))))
       (inputs
        (list clipnotify
              coreutils-minimal
