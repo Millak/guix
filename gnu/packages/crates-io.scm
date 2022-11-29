@@ -14569,23 +14569,21 @@ use with sct crate.")
 (define-public rust-ctor-0.1
   (package
     (name "rust-ctor")
-    (version "0.1.15")
+    (version "0.1.26")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "ctor" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
+        (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32
-          "09x2my9x33srjdip8yf4lm5gq7xqis2694abvpa64r60pajqm19r"))))
+         (base32 "15m0wqhv12p25xkxz5dxvg23r7a6bkh7p8zi1cdhgswjhdl028vd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-syn" ,rust-syn-1)
-        ("rust-quote" ,rust-quote-1))
-       #:cargo-development-inputs
-       (("rust-libc-print" ,rust-libc-print-0.1))))
+     (list #:cargo-inputs
+           `(("rust-syn" ,rust-syn-1)
+             ("rust-quote" ,rust-quote-1))
+           #:cargo-development-inputs
+           `(("rust-libc-print" ,rust-libc-print-0.1))))
     (home-page "https://github.com/mmastrac/rust-ctor")
     (synopsis "__attribute__((constructor)) for Rust")
     (description
