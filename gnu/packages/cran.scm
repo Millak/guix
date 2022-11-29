@@ -30337,18 +30337,18 @@ different palettes and includes both diverging and sequential types.")
 (define-public r-slider
   (package
     (name "r-slider")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "slider" version))
        (sha256
         (base32
-         "1vxk2bc33svwcki2j8zr5jcxswh27i0fqgzjw2a5a1pp9dh3fmd3"))))
+         "18gw0bxpbb00qcafmyv2avyj83s710hrj10x998ch9qbbyx1fsmw"))))
     (properties `((upstream-name . "slider")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis r-glue r-rlang r-vctrs r-warp))
+     (list r-cli r-rlang r-vctrs r-warp))
     (native-inputs (list r-knitr))
     (home-page "https://github.com/DavisVaughan/slider")
     (synopsis "Sliding window functions")
