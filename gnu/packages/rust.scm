@@ -625,6 +625,11 @@ safety and thread safety guarantees.")
           rust-1.63 "1.64.0" "018j720b2n12slp4xk64jc6shkncd46d621qdyzh2a8s3r49zkdk")))
     (package
       (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (patches (search-patches "rust-1.64-fix-riscv64-bootstrap.patch"))
+         (patch-flags '("-p1" "--reverse"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base-rust)
          ((#:phases phases)
@@ -638,8 +643,16 @@ safety and thread safety guarantees.")
                  (generate-all-checksums "vendor"))))))))))
 
 (define rust-1.65
-  (rust-bootstrapped-package
-   rust-1.64 "1.65.0" "0f005kc0vl7qyy298f443i78ibz71hmmh820726bzskpyrkvna2q"))
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.64 "1.65.0" "0f005kc0vl7qyy298f443i78ibz71hmmh820726bzskpyrkvna2q")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (patches '())
+         (patch-flags '("-p1")))))))
 
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
