@@ -63500,6 +63500,30 @@ the Unicode and Internationalization Crates (UNIC) project.")
 Internationalization Crates (UNIC) project.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-unic-emoji-char-0.9
+  (package
+    (name "rust-unic-emoji-char")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "unic-emoji-char" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ka9fr7s6lv0z43r9xphg9injn35pfxf9g9q18ki0wl9d0g241qb"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-inputs
+           `(("rust-unic-char-property" ,rust-unic-char-property-0.9)
+             ("rust-unic-char-range" ,rust-unic-char-range-0.9)
+             ("rust-unic-ucd-version" ,rust-unic-ucd-version-0.9))))
+    (home-page "https://github.com/open-i18n/rust-unic/")
+    (synopsis "UNIC emoji character properties for Rust")
+    (description
+     "This package provides UNIC properties for emoji characters
+in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-unic-segment-0.9
   (package
     (name "rust-unic-segment")
