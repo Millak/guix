@@ -2873,11 +2873,11 @@ tools to complement clipnotify.")
     (license license:public-domain)))
 
 (define-public clipmenu
-  (let ((commit "bcbe7b144598db4a103f14e8408c4b7327d6d5e1")
+  (let ((commit "7c34ace1fbab76eb1c1dc9b30dd4ac1a7fe4b90b")
         (revision "1"))
     (package
       (name "clipmenu")
-      (version (string-append "6.0.1-"
+      (version (string-append "6.2.0-"
                               revision "." (string-take commit 7)))
       (source
        (origin
@@ -2888,7 +2888,7 @@ tools to complement clipnotify.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0053j4i14lz5m2bzc5sch5id5ilr1bl196mp8fp0q8x74w3vavs9"))))
+           "1403sw49ccb8xsd8v611fzp0csaglfz8nmz3wcjsk8x11h9jvxwy"))))
       (build-system gnu-build-system)
       (arguments
        `(#:phases
@@ -2904,6 +2904,8 @@ tools to complement clipnotify.")
                  (install-file "clipdel" bin)
                  (install-file "clipmenu" bin)
                  (install-file "clipmenud" bin)
+                 (install-file "clipfsck" bin)
+                 (install-file "clipctl" bin)
                  (install-file "README.md" doc)
                  #t)))
            (add-after 'install 'wrap-script
@@ -2925,7 +2927,7 @@ tools to complement clipnotify.")
                                 (string-append dir "/bin"))
                               (list clipnotify coreutils-minimal
                                     gawk util-linux xdotool xsel)))))
-                  '("clipmenu" "clipmenud" "clipdel")))
+                  '("clipmenu" "clipmenud" "clipdel" "clipfsck" "clipctl")))
                #t))
            (replace 'check
              (lambda* (#:key inputs outputs #:allow-other-keys)
