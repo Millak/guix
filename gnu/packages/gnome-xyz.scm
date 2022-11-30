@@ -1530,6 +1530,47 @@ used in text editing environments to provide a complete and integrated
 feature-set for programming Vala effectively.")
     (license license:lgpl2.1+)))
 
+
+(define-public yaru-theme
+  (package
+    (name "yaru-theme")
+    (version "22.10.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ubuntu/yaru")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0f052a5cyf4lijyrdp4kjvxrx6d5fbj7109pi2bhxs9lk5jy8z86"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list python sassc pkg-config `(,glib "bin") `(,gtk+ "bin")))
+    (arguments
+     (list #:configure-flags #~'("-Dmate=true"
+                                 "-Dmate-dark=true"
+                                 "-Dxfwm4=true"
+                                 "-Dmetacity=true"
+                                 "-Dsessions=false")))
+    (home-page "https://github.com/ubuntu/yaru")
+    (synopsis "Ubuntu community theme yaru")
+    (description "Yaru is the default theme for Ubuntu.
+
+It contains:
+
+@itemize
+@item a GNOME Shell theme based on the upstream GNOME shell theme
+@item a light and dark GTK theme (gtk2 and gtk3) based on the upstream Adwaita
+ Gtk theme
+@item an icon & cursor theme, derived from the Unity8 Suru icons and Suru icon
+ theme
+@item a sound theme, combining sounds from the WoodenBeaver and Touch-Remix
+ sound themes.
+@end itemize")
+    (license (list license:lgpl2.1 license:lgpl3 license:cc-by-sa4.0))))
+  
 (define-public nordic-theme
   (let ((commit "07d764c5ebd5706e73d2e573f1a983e37b318915")
 	(revision "0"))
