@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,10 +35,24 @@
   #:export (home-xdg-base-directories-service-type
             home-xdg-base-directories-configuration
             home-xdg-base-directories-configuration?
+            home-xdg-base-directories-configuration-cache-home
+            home-xdg-base-directories-configuration-config-home
+            home-xdg-base-directories-configuration-data-home
+            home-xdg-base-directories-configuration-state-home
+            home-xdg-base-directories-configuration-log-home
+            home-xdg-base-directories-configuration-runtime-dir
 
             home-xdg-user-directories-service-type
             home-xdg-user-directories-configuration
             home-xdg-user-directories-configuration?
+            home-xdg-user-directories-configuration-desktop
+            home-xdg-user-directories-configuration-documents
+            home-xdg-user-directories-configuration-download
+            home-xdg-user-directories-configuration-music
+            home-xdg-user-directories-configuration-pictures
+            home-xdg-user-directories-configuration-publicshare
+            home-xdg-user-directories-configuration-templates
+            home-xdg-user-directories-configuration-videos
 
             xdg-desktop-action
             xdg-desktop-entry
