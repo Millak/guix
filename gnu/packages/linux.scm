@@ -9444,7 +9444,7 @@ provides user-space tools for creating EROFS file systems.")
        (sha256
         (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
     (native-inputs (list autoconf automake libtool))
-    (inputs (list sqlite))
+    (inputs (list perl sqlite))
     (arguments
      `(#:configure-flags
        (list "--enable-all"
