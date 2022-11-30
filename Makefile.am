@@ -1002,7 +1002,7 @@ release: dist-with-updated-version all
 	      -v1 --no-grafts --fallback
 # Generate the ISO installation images.
 	for system in $(GUIX_SYSTEM_SUPPORTED_SYSTEMS) ; do				\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t iso9660						\
 	    --label="GUIX_$${system}_$(VERSION)"					\
@@ -1018,7 +1018,7 @@ release: dist-with-updated-version all
 	done
 # Generate the VM images.
 	for system in $(GUIX_SYSTEM_VM_SYSTEMS) ; do					\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t qcow2 $(GUIX_SYSTEM_VM_IMAGE_FLAGS)			\
 	    --save-provenance								\
