@@ -3868,6 +3868,9 @@ tools and applications:
 the GNOME desktop.  It supports both POP3 and IMAP servers as well as the
 mbox, maildir and mh local mailbox formats.  Balsa also supports SMTP and/or
 the use of a local MTA such as Sendmail.")
+    (properties
+     '((release-monitoring-url
+       . "https://pawsa.fedorapeople.org/balsa/download.html")))
     (license license:gpl3+)))
 
 (define-public afew
