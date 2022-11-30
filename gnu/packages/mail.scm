@@ -3833,7 +3833,13 @@ tools and applications:
          "--with-gpgme"
          "--with-sqlite"
          "--with-compface"
-         "--with-ldap")))
+         "--with-ldap")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'adjust-for-new-webkitgtk
+                    (lambda _
+                      (substitute* "configure"
+                        (("webkit2gtk-4.0")
+                         "webkit2gtk-4.1")))))))
     (inputs
      (list cyrus-sasl
            enchant
@@ -3842,7 +3848,7 @@ tools and applications:
            gnutls
            gpgme
            gtk+
-           gtksourceview
+           gtksourceview-4
            gtkspell3
            libassuan ; in gpgme.pc Requires
            libcanberra
