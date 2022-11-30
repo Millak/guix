@@ -68,6 +68,7 @@
                 (invoke "make" "modules_prepare")))
             (delete 'strip)             ;faster
             (delete 'build-doc)         ;costly and not useful here
+            (delete 'install-doc)
             (replace 'install
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((out-lib-build (string-append #$output "/lib/modules/build")))
