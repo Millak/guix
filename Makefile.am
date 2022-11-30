@@ -751,20 +751,35 @@ endef
 # in <https://issues.guix.gnu.org/48963>.  Each 'eval' call below creates a
 # 'make-*-go' phony target that builds the corresponding subset.
 
-MODULES_CORE     = guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
-MODULES_PACKAGES = $(filter gnu/packages/%,$(MODULES))
-MODULES_SYSTEM   = gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
-MODULES_CLI      = $(filter guix/scripts/%,$(MODULES))
-MODULES_PO       = guix/build/po.scm
+first_half :=								\
+  gnu/packages/a% gnu/packages/b% gnu/packages/c% gnu/packages/d%	\
+  gnu/packages/e% gnu/packages/f% gnu/packages/g% gnu/packages/h%	\
+  gnu/packages/i% gnu/packages/j% gnu/packages/k% gnu/packages/l%
+
+MODULES_CORE      := guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
+MODULES_PACKAGES1 := $(filter $(first_half),$(MODULES))
+MODULES_PACKAGES2 := $(filter-out $(first_half),$(filter gnu/packages/%,$(MODULES)))
+MODULES_PACKAGES  := $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)
+MODULES_SYSTEM    := gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
+MODULES_CLI       := $(filter guix/scripts/%,$(MODULES))
+MODULES_PO        := guix/build/po.scm
 
 $(eval $(call guile-compilation-rule,make-core-go,	\
   $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
   0))
 .PHONY: make-core-go
 
-$(eval $(call guile-compilation-rule,make-packages-go,	\
-  $(MODULES_PACKAGES) make-core-go,			\
+$(eval $(call guile-compilation-rule,make-packages1-go,	\
+  $(MODULES_PACKAGES1) make-core-go,			\
   $(words $(MODULES_CORE))))
+.PHONY: make-packages1-go
+
+$(eval $(call guile-compilation-rule,make-packages2-go,	\
+  $(MODULES_PACKAGES2) make-core-go make-packages1-go,	\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1))))
+.PHONY: make-packages2-go
+
+make-packages-go: make-packages1-go make-packages2-go
 .PHONY: make-packages-go
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
