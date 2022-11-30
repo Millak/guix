@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1029,6 +1030,49 @@ rebase.")
     (description
      "This package provides a tool for generating C/C++ bindings to Rust code.")
     (license license:mpl2.0)))
+
+(define-public rust-cbindgen-0.24
+  (package
+    (inherit rust-cbindgen)
+    (name "rust-cbindgen")
+    (version "0.24.3")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-toml" ,rust-toml-0.5))
+        #:cargo-development-inputs
+        (("rust-serial-test" ,rust-serial-test-0.5))))
+    (native-inputs
+     (list python-cython))))
+
+(define-public rust-cbindgen-0.23
+  (package
+    (inherit rust-cbindgen-0.24)
+    (name "rust-cbindgen")
+    (version "0.23.0")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
 (define-public rust-cbindgen-0.19
   (package
