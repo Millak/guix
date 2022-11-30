@@ -183,11 +183,11 @@
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
+    "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
     "third_party/libjxl" ;ASL2.0
     "third_party/libgav1" ;ASL2.0
-    "third_party/libgifcodec" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3, BSD-2
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
     "third_party/libsecret" ;LGPL2.1+
@@ -273,7 +273,7 @@
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
-    "third_party/wayland/protocol" ;Expat
+    "third_party/wayland/src/protocol" ;Expat
     "third_party/wayland/stubs" ;BSD-3, Expat
     "third_party/wayland/wayland_scanner_wrapper.py" ;BSD-3
     "third_party/wayland-protocols" ;Expat
@@ -317,20 +317,22 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "107.0.5304.121")
+(define %chromium-version "108.0.5359.71")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
-(define %arch-revision "6afedb08139b97089ce8ef720ece5cd14c83948c")
+(define %arch-revision "4de5019014aeb77187a517c5ca6db8723d622a40")
 
 (define %ungoogled-origin
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
-                        (commit %ungoogled-revision)))
+                        ;; XXX: Use a raw commit because it has not been
+                        ;; tagged yet.
+                        (commit "352a8844b01a05a786ba76da599d106487f1533f")))
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1ns664y7qx0ry8hg8r704z64jmx8j6rpxn2lkliv0xjfwlrbbfx3"))))
+      "1309rz06s7fw9p7h5968nk23rbsyfhqm5znqrw6nh24qdbg6z3zx"))))
 
 (define %debian-origin
   (origin
@@ -360,9 +362,6 @@
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
-(define %gcc-patches
-  '())
-
 (define (arch-patch revision name hash)
   (origin
     (method url-fetch)
@@ -376,10 +375,12 @@
    (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m102.patch"
                "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh")
    (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m106.patch"
-               "0li10cvxnppmmmsc7w77b1s7z02s5bzd39zsal9x768708fx64jc")
-   ;; Fix crash when using Global Media Controls.
-   (arch-patch %arch-revision "REVERT-enable-GlobalMediaControlsCastStartStop.patch"
-               "1ilsw421lylkjnq3lvc607bdx7cvwlish8qzgwx9s84l4hzv37vp")))
+               "0li10cvxnppmmmsc7w77b1s7z02s5bzd39zsal9x768708fx64jc")))
+
+(define %arch-patches
+  (list
+   (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
+               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")))
 
 (define %guix-patches
   (list (local-file
@@ -397,6 +398,9 @@
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-system-nspr.patch")))))
+
+(define %patches
+  (append %debian-patches %arch-patches %guix-patches))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -419,8 +423,7 @@
           (for-each (lambda (patch)
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
-                    (append '#+%debian-patches '#+%guix-patches
-                            '#+%gcc-patches))
+                    '#+%patches)
 
           ;; These patches are "reversed", i.e. their changes should be undone.
           (for-each (lambda (patch)
@@ -495,7 +498,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "12z0fhgxcsdkf6shnsg9maj3v901226cjcy8y2x8m88maw2apc0j"))
+                "0pgzf6xrd71is1dld1arhq366vjp8p54x75zyx6y7vcjqj0a0v6b"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -561,7 +564,7 @@
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
               "use_system_libpng=true"
-              "use_system_libwayland_server=true"
+              "use_system_libwayland=true"
               "use_system_wayland_scanner=true"
               (string-append "system_wayland_scanner_path=\""
                              (search-input-file %build-inputs
@@ -911,7 +914,7 @@
            gdk-pixbuf
            glib
            gtk+
-           harfbuzz-3
+           harfbuzz-5
            icu4c-71
            jsoncpp
            lcms
