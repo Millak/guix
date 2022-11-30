@@ -473,9 +473,6 @@ applied on the fields and values of FIELDS using the
 
 COMBINE is a procedure that takes one or more arguments and combines
 all the alist entries into one value, @code{string-append} or
-@code{append} are usually good candidates for this.
-
-See the @code{serialize-alist} procedure in `@code{(gnu home services
-version-control}' for an example usage.)}"
+@code{append} are usually good candidates for this."
   (apply combine
          (map (generic-serialize-alist-entry serialize-field) fields)))
