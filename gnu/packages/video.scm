@@ -5120,7 +5120,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
 (define-public svt-av1
   (package
     (name "svt-av1")
-    (version "0.9.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -5129,10 +5129,8 @@ transcode or reformat the videos in any way, producing perfect backups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02fchq2vlxcxzbrss72xl9vrxzysdy39d5i159bmg3qa45ngd2iw"))))
+        (base32 "0blnla32yz665bx0xyx8lrjs2wqd2xhpbqwwpz72mq7zf341j8vv"))))
     (build-system cmake-build-system)
-    ;; SVT-AV1 only supports 64-bit Intel-compatible CPUs.
-    (supported-systems '("x86_64-linux"))
     (arguments
       ;; The test suite tries to download test data and git clone a 3rd-party
       ;; fork of libaom.  Skip it.
@@ -5150,7 +5148,8 @@ transcode or reformat the videos in any way, producing perfect backups.")
     (synopsis "AV1 video codec")
     (description "SVT-AV1 is an AV1 codec implementation.  The encoder is a
 work-in-progress, aiming to support video-on-demand and live streaming
-applications.  It only supports Intel-compatible CPUs (x86).")
+applications with high performance requirements.  It mainly targets
+Intel-compatible CPUs (x86), but has limited support for other architectures.")
     (home-page "https://gitlab.com/AOMediaCodec/SVT-AV1")
     (license license:bsd-2)))
 
