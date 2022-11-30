@@ -258,6 +258,7 @@ Package Management
 * Invoking guix package::       Package installation, removal, etc.
 * Substitutes::                 Downloading pre-built binaries.
 * Packages with Multiple Outputs::  Single source package, multiple outputs.
+* Invoking guix locate::        Locating packages that provide a file.
 * Invoking guix gc::            Running the garbage collector.
 * Invoking guix pull::          Fetching the latest Guix and distribution.
 * Invoking guix time-machine::  Running an older revision of Guix.
@@ -3297,6 +3298,7 @@ guix install emacs-guix
 * Invoking guix package::       Package installation, removal, etc.
 * Substitutes::                 Downloading pre-built binaries.
 * Packages with Multiple Outputs::  Single source package, multiple outputs.
+* Invoking guix locate::        Locating packages that provide a file.
 * Invoking guix gc::            Running the garbage collector.
 * Invoking guix pull::          Fetching the latest Guix and distribution.
 * Invoking guix time-machine::  Running an older revision of Guix.
@@ -4415,6 +4417,134 @@ possibly header files, @code{bin} for stand-alone programs, and
 Files}).  The outputs of a packages are listed in the third column of
 the output of @command{guix package --list-available} (@pxref{Invoking
 guix package}).
+
+
+@node Invoking guix locate
+@section Invoking @command{guix locate}
+
+@cindex file, searching in packages
+@cindex file search
+@cindex searching for packages
+There's so much free software out there that sooner or later, you will
+need to search for packages.  The @command{guix search} command that
+we've seen before (@pxref{Invoking guix package}) lets you search by
+keywords:
+
+@example
+guix search video editor
+@end example
+
+@cindex searching for packages, by file name
+Sometimes, you instead want to find which package provides a given file,
+and this is where @command{guix locate} comes in.  Here is how you can
+find which package provides the @command{ls} command:
+
+@example
+$ guix locate ls
+coreutils@@9.1       /gnu/store/@dots{}-coreutils-9.1/bin/ls
+@end example
+
+Of course the command works for any file, not just commands:
+
+@example
+$ guix locate unistr.h
+icu4c@@71.1          /gnu/store/@dots{}/include/unicode/unistr.h
+libunistring@@1.0    /gnu/store/@dots{}/include/unistr.h
+@end example
+
+You may also specify @dfn{glob patterns} with wildcards.  For example,
+here is how you would search for packages providing @file{.service}
+files:
+
+@example
+$ guix locate -g '*.service'
+man-db@@2.11.1        @dots{}/lib/systemd/system/man-db.service
+wpa-supplicant@@2.10  @dots{}/system-services/fi.w1.wpa_supplicant1.service
+@end example
+
+The @command{guix locate} command relies on a database that maps file
+names to package names.  By default, it automatically creates that
+database if it does not exist yet by traversing packages available
+@emph{locally}, which can take a few minutes (depending on the size of
+your store and the speed of your storage device).
+
+@quotation Note
+For now, @command{guix locate} builds its database based on purely local
+knowledge---meaning that you will not find packages that never reached
+your store.  Eventually it will support downloading a pre-built database
+so you can potentially find more packages.
+@end quotation
+
+By default, @command{guix locate} first tries to look for a system-wide
+database, usually under @file{/var/cache/guix/locate}; if it does not
+exist or is too old, it falls back to the per-user database, by default
+under @file{~/.cache/guix/locate}.  On a multi-user system,
+administrators may want to periodically update the system-wide database
+so that all users can benefit from it.
+
+The general syntax is:
+
+@example
+guix locate [@var{options}@dots{}] @var{file}@dots{}
+@end example
+
+@noindent
+... where @var{file} is the name of a file to search for (specifically,
+the ``base name'' of the file: files whose parent directories are called
+@var{file} are not matched).
+
+The available options are as follows:
+
+@table @code
+@item --glob
+@item -g
+Interpret @var{file}@dots{} as @dfn{glob patterns}---patterns that may
+include wildcards, such as @samp{*.scm} to denote all files ending in
+@samp{.scm}.
+
+@item --stats
+Display database statistics.
+
+@item --update
+@itemx -u
+Update the file database.
+
+By default, the database is automatically updated when it is too old.
+
+@item --clear
+Clear the database and re-populate it.
+
+This option lets you start anew, ensuring old data is removed from the
+database, which also avoids having an endlessly growing database.  By
+default @command{guix locate} automatically does that periodically,
+though infrequently.
+
+@item --database=@var{file}
+Use @var{file} as the database, creating it if necessary.
+
+By default, @command{guix locate} picks the database under
+@file{~/.cache/guix} or @file{/var/cache/guix}, whichever is the most
+recent one.
+
+@item --method=@var{method}
+@itemx -m @var{method}
+Use @var{method} to select the set of packages to index.  Possible
+values are:
+
+@table @code
+@item manifests
+This is the default method: it works by traversing profiles on the
+machine and recording packages it encounters---packages you or other
+users of the machine installed, directly or indirectly.  It is fast but
+it can miss other packages available in the store but not referred to by
+any profile.
+
+@item store
+This is a slower but more exhaustive method: it checks among all the
+existing packages those that are available in the store and records
+them.
+@end table
+@end table
 
 
 @node Invoking guix gc
