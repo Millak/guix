@@ -56480,7 +56480,7 @@ values without proliferating generics.")
     (description "This package provides custom derive for @code{sval}.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-svd-parser-0.9
+(define-public rust-svd-parser-0.10
   (package
     (name "rust-svd-parser")
     (version "0.10.2")
