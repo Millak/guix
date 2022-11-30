@@ -21016,14 +21016,14 @@ Row} (CSR) format.")
 (define-public r-text2vec
   (package
     (name "r-text2vec")
-    (version "0.6.2")
+    (version "0.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "text2vec" version))
        (sha256
         (base32
-         "1as58w1hb6h0hpncwcr2nx9a8bj5fy6bfllx2a8ck8hal764iach"))))
+         "1hi7ydb7xkgbff4lwnnz1biyl8m90w16hn3x5rrzvscvm53sj4y7"))))
     (properties `((upstream-name . "text2vec")))
     (build-system r-build-system)
     (propagated-inputs
