@@ -4317,8 +4317,47 @@ features present in other programming languages.")
               (uri (cran-uri "plotly" version))
               (sha256
                (base32
-                "0yin1kid3a69fcwrrajwzqbhx4xc81x8p8m0yfh1fkm2rfhj22dc"))))
+                "0yin1kid3a69fcwrrajwzqbhx4xc81x8p8m0yfh1fkm2rfhj22dc"))
+              (modules '((guix build utils)))
+              (snippet
+               '(with-directory-excursion "inst/htmlwidgets/lib/"
+                  (for-each delete-file
+                            '("plotlyjs/plotly-latest.min.js"
+                              "colourpicker/colourpicker.min.js"
+                              "typedarray/typedarray.min.js"
+                              "selectize/selectize.min.js"))))))
     (build-system r-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils)
+                  (guix build r-build-system)
+                  (srfi srfi-1))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (with-directory-excursion "inst/htmlwidgets/lib/"
+               (symlink (string-append (assoc-ref inputs "js-selectize")
+                                       "/share/javascript/selectize.min.js")
+                        "selectize/selectize.min.js")
+               (call-with-values
+                   (lambda ()
+                     (unzip2
+                      `((,(assoc-ref inputs "js-plotly")
+                         "plotlyjs/plotly-latest.min.js")
+                        (,(string-append (assoc-ref inputs "js-colourpicker")
+                                         "/js/colourpicker.js")
+                         "colourpicker/colourpicker.min.js")
+                        (,(string-append (assoc-ref inputs "js-typedarray")
+                                         "/typedarray.js")
+                         "typedarray/typedarray.min.js"))))
+                 (lambda (sources targets)
+                   (for-each (lambda (source target)
+                               (format #t "Processing ~a --> ~a~%"
+                                       source target)
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
+                             sources targets)))))))))
     (propagated-inputs
      (list r-base64enc
            r-crosstalk
@@ -4341,6 +4380,48 @@ features present in other programming languages.")
            r-tidyr
            r-vctrs
            r-viridislite))
+    (native-inputs
+     `(("esbuild" ,esbuild)
+       ("js-colourpicker"
+        ,(let ((commit "27c2a266d51e18a9fe6d7542264152b27c7d34e0")
+               (version "1.1")
+               (revision "0"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/daattali/jquery-colourpicker")
+                   (commit commit)))
+             (file-name (git-file-name "jquery-colourpicker"
+                                       (git-version version revision commit)))
+             (sha256
+              (base32
+               "0lg8amh8xh6p246j38rqghrljd7v5z34i169ra6403z8ga33wiqb")))))
+       ("js-plotly"
+        ,(let ((version "2.11.1"))
+           (origin
+             (method url-fetch)
+             (uri (string-append "https://raw.githubusercontent.com/plotly/plotly.js/v"
+                                 version "/dist/plotly.js"))
+             (sha256
+              (base32
+               "1mxd8s4v3i885w5i02cyzqsrvqfr9w0svdclvqxbd05dly4bdkbj")))))
+       ("js-selectize" ,js-selectize)
+       ;; This is not quite the same as the bundled minified script from 2016,
+       ;; but it seems to be the original with fixes from late 2017.
+       ("js-typedarray"
+        ,(let ((commit "9f7d4168657e2c164d647a6959f402f2c33eb5b4")
+               (version "0")
+               (revision "0"))
+           (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url "https://github.com/inexorabletash/polyfill/")
+                   (commit commit)))
+             (file-name (git-file-name "typedarray-polyfill"
+                                       (git-version version revision commit)))
+             (sha256
+              (base32
+               "0f9np4mmyhny03n3xpwzs07rld30lnfqsnh97x1v7xm0qy0zjanf")))))))
     (home-page "https://plot.ly/r")
     (synopsis "Create interactive web graphics")
     (description
