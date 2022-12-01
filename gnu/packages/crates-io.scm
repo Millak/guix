@@ -66,6 +66,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
@@ -67677,8 +67678,43 @@ extended attributes.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-xcb-1
+  (package
+    (name "rust-xcb")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "xcb" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ifnchjzf9xlwy6pfa90mwa6j43bx2bi5xl40m5gykymwbbv9bhg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-build-flags '("--all-features")
+       #:cargo-test-flags '("--all-features")
+       #:cargo-development-inputs
+       (("rust-gl" ,rust-gl-0.14)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-x11" ,rust-x11-2))
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-quick-xml" ,rust-quick-xml-0.22)
+        ("rust-x11" ,rust-x11-2))))
+    (inputs
+     (list mesa))                      ;required by rust-x11-2
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/rust-x-bindings/rust-xcb")
+    (synopsis "Rust bindings and wrappers for XCB")
+    (description
+     "This package provides Rust bindings and wrappers for XCB.")
+    (license license:expat)))
+
 (define-public rust-xcb-0.9
   (package
+    (inherit rust-xcb-1)
     (name "rust-xcb")
     (version "0.9.0")
     (source
@@ -67701,12 +67737,7 @@ extended attributes.")
     (inputs
      (list libx11 libxcb xcb-proto))
     (native-inputs
-     (list pkg-config python))
-    (home-page "https://github.com/rtbo/rust-xcb")
-    (synopsis "Rust bindings and wrappers for XCB")
-    (description
-     "This package provides Rust bindings and wrappers for XCB.")
-    (license license:expat)))
+     (list pkg-config python))))
 
 (define-public rust-xcursor-0.3
   (package
