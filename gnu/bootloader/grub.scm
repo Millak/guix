@@ -53,13 +53,14 @@
             grub-theme-gfxmode
 
             install-grub-efi-removable
-            install-grub-efi-netboot
+            make-grub-efi-netboot-installer
 
             grub-bootloader
             grub-efi-bootloader
             grub-efi-removable-bootloader
             grub-efi32-bootloader
             grub-efi-netboot-bootloader
+            grub-efi-netboot-removable-bootloader
             grub-mkrescue-bootloader
             grub-minimal-bootloader
 
@@ -353,7 +354,7 @@ code."
         ((or #f (? string?))
          #~(format #f "search --file --set ~a" #$file)))))
 
-(define* (grub-configuration-file config entries
+(define* (make-grub-configuration grub config entries
                                   #:key
                                   (locale #f)
                                   (system (%current-system))
@@ -453,9 +454,7 @@ menuentry ~s {
   (define locale-config
     (let* ((entry (first all-entries))
            (device (menu-entry-device entry))
-           (mount-point (menu-entry-device-mount-point entry))
-           (bootloader (bootloader-configuration-bootloader config))
-           (grub (bootloader-package bootloader)))
+           (mount-point (menu-entry-device-mount-point entry)))
       #~(let ((locale #$(and locale
                              (locale-definition-source
                               (locale-name->definition locale))))
@@ -481,8 +480,6 @@ set lang=~a~%"
 
   (define keyboard-layout-config
     (let* ((layout (bootloader-configuration-keyboard-layout config))
-           (grub   (bootloader-package
-                    (bootloader-configuration-bootloader config)))
            (keymap* (and layout
                          (keyboard-layout-file layout #:grub grub)))
            (entry (first all-entries))
@@ -532,6 +529,16 @@ fi~%"))))
   (computed-file "grub.cfg" builder
                  #:options '(#:local-build? #t
                              #:substitutable? #f)))
+
+(define (grub-configuration-file config . args)
+  (let* ((bootloader (bootloader-configuration-bootloader config))
+         (grub (bootloader-package bootloader)))
+    (apply make-grub-configuration grub config args)))
+
+(define (grub-efi-configuration-file . args)
+  (apply make-grub-configuration grub-efi args))
+
+(define grub-cfg "/boot/grub/grub.cfg")
 
 
 
@@ -674,42 +681,31 @@ fi~%"))))
                               ((target-arm?) "--target=arm-efi"))
                         "--efi-directory" target-esp)))))
 
-(define (install-grub-efi-netboot subdir)
-  "Define a grub-efi-netboot bootloader installer for installation in SUBDIR,
-which is usually efi/Guix or efi/boot."
-  (let* ((system (string-split (nix-system->gnu-triplet
-                                (or (%current-target-system)
-                                    (%current-system)))
-                               #\-))
-         (arch (first system))
-         (boot-efi-link (match system
-                          ;; These are the supportend systems and the names
-                          ;; defined by the UEFI standard for removable media.
-                          (("i686" _ ...)        "/bootia32.efi")
-                          (("x86_64" _ ...)      "/bootx64.efi")
-                          (("arm" _ ...)         "/bootarm.efi")
-                          (("aarch64" _ ...)     "/bootaa64.efi")
-                          (("riscv" _ ...)       "/bootriscv32.efi")
-                          (("riscv64" _ ...)     "/bootriscv64.efi")
-                          ;; Other systems are not supported, although defined.
-                          ;; (("riscv128" _ ...) "/bootriscv128.efi")
-                          ;; (("ia64" _ ...)     "/bootia64.efi")
-                          ((_ ...)               #f)))
-         (core-efi (string-append
-                    ;; This is the arch dependent file name of GRUB, e.g.
-                    ;; i368-efi/core.efi or arm64-efi/core.efi.
-                    (match arch
-                      ("i686"    "i386")
-                      ("aarch64" "arm64")
-                      ("riscv"   "riscv32")
-                      (_         arch))
-                    "-efi/core.efi")))
-    (with-imported-modules
-     '((guix build union))
-     #~(lambda (bootloader target mount-point)
-         "Install the BOOTLOADER, which must be the package grub, as e.g.
-bootx64.efi or bootaa64.efi into SUBDIR, which is usually efi/Guix or efi/boot,
-below the directory TARGET for the system whose root is mounted at MOUNT-POINT.
+(define* (make-grub-efi-netboot-installer grub-efi grub-cfg subdir)
+  "Make a bootloader-installer for a grub-efi-netboot bootloader, which expects
+its files in SUBDIR and its configuration file in GRUB-CFG.
+
+As a grub-efi-netboot package is already pre-installed by 'grub-mknetdir', the
+installer basically copies all files from the bootloader-package (or profile)
+into the bootloader-target directory.
+
+Additionally for network booting over TFTP, two relative symlinks to the store
+and to the GRUB-CFG file are necessary.  Due to this a TFTP root directory must
+not be located on a FAT file-system.
+
+If the bootloader-target does not support symlinks, then it is assumed to be a
+kind of EFI System Partition (ESP).  In this case an intermediate configuration
+file is created with the help of GRUB-EFI to load the GRUB-CFG.
+
+The installer is usable for any efi-bootloader-chain, which prepares the
+bootloader-profile in a way ready for copying.
+
+The installer does not manipulate the system's 'UEFI Boot Manager'.
+
+The returned installer accepts the BOOTLOADER, TARGET and MOUNT-POINT
+arguments.  Its job is to copy the BOOTLOADER, which must be a pre-installed
+grub-efi-netboot package with a SUBDIR like efi/boot or efi/Guix, below the
+directory TARGET for the system whose root is mounted at MOUNT-POINT.
 
 MOUNT-POINT is the last argument in 'guix system init /etc/config.scm mnt/point'
 or '/' for other 'guix system' commands.
@@ -719,17 +715,19 @@ bootloader-configuration in:
 
 (operating-system
  (bootloader (bootloader-configuration
-              (targets '(\"/boot\"))
+              (targets '(\"/boot/efi\"))
               …))
  …)
 
 TARGET is required to be an absolute directory name, usually mounted via NFS,
-and finally needs to be provided by a TFTP server as the TFTP root directory.
+and finally needs to be provided by a TFTP server as
+the TFTP root directory.
 
+Usually the installer will be used to prepare network booting over TFTP.  Then
 GRUB will load tftp://server/SUBDIR/grub.cfg and this file will instruct it to
 load more files from the store like tftp://server/gnu/store/…-linux…/Image.
 
-To make this possible two symlinks will be created. The first symlink points
+To make this possible two symlinks are created.  The first symlink points
 relatively form MOUNT-POINT/TARGET/SUBDIR/grub.cfg to
 MOUNT-POINT/boot/grub/grub.cfg, and the second symlink points relatively from
 MOUNT-POINT/TARGET/%store-prefix to MOUNT-POINT/%store-prefix.
@@ -739,34 +737,80 @@ paths on the TFTP server side are unknown.
 
 It is also important to note that both symlinks will point outside the TFTP root
 directory and that the TARGET/%store-prefix symlink makes the whole store
-accessible via TFTP. Possibly the TFTP server must be configured
-to allow accesses outside its TFTP root directory. This may need to be
-considered for security aspects."
-         (use-modules ((guix build union) #:select (symlink-relative)))
-         (let* ((net-dir (string-append mount-point target "/"))
-                (sub-dir (string-append net-dir #$subdir "/"))
-                (store (string-append mount-point (%store-prefix)))
-                (store-link (string-append net-dir (%store-prefix)))
-                (grub-cfg (string-append mount-point "/boot/grub/grub.cfg"))
-                (grub-cfg-link (string-append sub-dir (basename grub-cfg)))
-                (boot-efi-link (string-append sub-dir #$boot-efi-link)))
-           ;; Prepare the symlink to the store.
-           (mkdir-p (dirname store-link))
-           (false-if-exception (delete-file store-link))
-           (symlink-relative store store-link)
-           ;; Prepare the symlink to the grub.cfg, which points into the store.
-           (mkdir-p (dirname grub-cfg-link))
-           (false-if-exception (delete-file grub-cfg-link))
-           (symlink-relative grub-cfg grub-cfg-link)
-           ;; Install GRUB, which refers to the grub.cfg, with support for
-           ;; encrypted partitions,
-           (setenv "GRUB_ENABLE_CRYPTODISK" "y")
-           (invoke/quiet (string-append bootloader "/bin/grub-mknetdir")
-                         (string-append "--net-directory=" net-dir)
-                         (string-append "--subdir=" #$subdir))
-           ;; Prepare the bootloader symlink, which points to core.efi of GRUB.
-           (false-if-exception (delete-file boot-efi-link))
-           (symlink #$core-efi boot-efi-link))))))
+accessible via TFTP.  Possibly the TFTP server must be configured to allow
+accesses outside its TFTP root directory.  This all may need to be considered
+for security aspects.  It is advised to disable any TFTP write access!
+
+The installer can also be used to prepare booting from local storage, if the
+underlying file-system, like FAT on an EFI System Partition (ESP), does not
+support symlinks.  In this case the MOUNT-POINT/TARGET/SUBDIR/grub.cfg will be
+created with the help of GRUB-EFI to load the /boot/grub/grub.cfg file.  A
+symlink to the store is not needed in this case."
+  (with-imported-modules '((guix build union))
+    #~(lambda (bootloader target mount-point)
+        ;; In context of a disk image creation TARGET will be #f and an
+        ;; installer is expected to do necessary installations on MOUNT-POINT,
+        ;; which will become the root file system.  If TARGET is #f, this
+        ;; installer has nothing to do, as it only cares about the EFI System
+        ;; Partition (ESP).
+        (when target
+          (use-modules ((guix build union) #:select (symlink-relative))
+                       (ice-9 popen)
+                       (ice-9 rdelim))
+          (let* ((mount-point/target (string-append mount-point target "/"))
+                 ;; When installing Guix, it is common to mount TARGET below
+                 ;; MOUNT-POINT rather than the root directory.
+                 (bootloader-target (if (file-exists? mount-point/target)
+                                        mount-point/target
+                                        target))
+                 (store (string-append mount-point (%store-prefix)))
+                 (store-link (string-append bootloader-target (%store-prefix)))
+                 (grub-cfg (string-append mount-point #$grub-cfg))
+                 (grub-cfg-link (string-append bootloader-target
+                                               #$subdir "/"
+                                               (basename grub-cfg))))
+            ;; Copy the bootloader into the bootloader-target directory.
+            ;; Should we beforehand recursively delete any existing file?
+            (copy-recursively bootloader bootloader-target
+                              #:follow-symlinks? #t
+                              #:log (%make-void-port "w"))
+            ;; For TFTP we need to install additional relative symlinks.
+            ;; If we install on an EFI System Partition (ESP) or some other FAT
+            ;; file-system, then symlinks cannot be created and are not needed.
+            ;; Therefore we ignore exceptions when trying.
+            ;; Prepare the symlink to the grub.cfg.
+            (mkdir-p (dirname grub-cfg-link))
+            (false-if-exception (delete-file grub-cfg-link))
+            (if (unspecified?
+                 (false-if-exception (symlink-relative grub-cfg grub-cfg-link)))
+                ;; Symlinks are supported.
+                (begin
+                  ;; Prepare the symlink to the store.
+                  (mkdir-p (dirname store-link))
+                  (false-if-exception (delete-file store-link))
+                  (symlink-relative store store-link))
+                ;; Creating symlinks does not seem to be supported.  Probably
+                ;; an ESP is used.  Add a script to search and load the actual
+                ;; grub.cfg.
+                (let* ((probe #$(file-append grub-efi "/sbin/grub-probe"))
+                       (port (open-pipe* OPEN_READ probe "--target=fs_uuid"
+                                         grub-cfg))
+                       (search-root
+                        (match (read-line port)
+                          ((? eof-object?)
+                           ;; There is no UUID available. As a fallback search
+                           ;; everywhere for the grub.cfg.
+                           (string-append "search --file --set " #$grub-cfg))
+                          (fs-uuid
+                           ;; The UUID to load the grub.cfg from is known.
+                           (string-append "search --fs-uuid --set " fs-uuid))))
+                       (load-grub-cfg (string-append "configfile " #$grub-cfg)))
+                  (close-pipe port)
+                  (with-output-to-file grub-cfg-link
+                    (lambda ()
+                      (display (string-join (list search-root
+                                                  load-grub-cfg)
+                                            "\n")))))))))))
 
 
 
@@ -784,7 +828,7 @@ considered for security aspects."
    (package grub)
    (installer install-grub)
    (disk-image-installer install-grub-disk-image)
-   (configuration-file "/boot/grub/grub.cfg")
+   (configuration-file grub-cfg)
    (configuration-file-generator grub-configuration-file)))
 
 (define grub-minimal-bootloader
@@ -794,11 +838,12 @@ considered for security aspects."
 
 (define grub-efi-bootloader
   (bootloader
-   (inherit grub-bootloader)
+   (name 'grub-efi)
+   (package grub-efi)
    (installer install-grub-efi)
    (disk-image-installer #f)
-   (name 'grub-efi)
-   (package grub-efi)))
+   (configuration-file grub-cfg)
+   (configuration-file-generator grub-configuration-file)))
 
 (define grub-efi-removable-bootloader
   (bootloader
@@ -813,11 +858,22 @@ considered for security aspects."
    (name 'grub-efi32)
    (package grub-efi32)))
 
-(define grub-efi-netboot-bootloader
+(define (make-grub-efi-netboot-bootloader name subdir)
   (bootloader
-   (inherit grub-efi-bootloader)
-   (name 'grub-efi-netboot-bootloader)
-   (installer (install-grub-efi-netboot "efi/Guix"))))
+   (name name)
+   (package (make-grub-efi-netboot (symbol->string name) subdir))
+   (installer (make-grub-efi-netboot-installer grub-efi grub-cfg subdir))
+   (disk-image-installer #f)
+   (configuration-file grub-cfg)
+   (configuration-file-generator grub-efi-configuration-file)))
+
+(define grub-efi-netboot-bootloader
+  (make-grub-efi-netboot-bootloader 'grub-efi-netboot-bootloader
+                                    "efi/Guix"))
+
+(define grub-efi-netboot-removable-bootloader
+  (make-grub-efi-netboot-bootloader 'grub-efi-netboot-removable-bootloader
+                                    "efi/boot"))
 
 (define grub-mkrescue-bootloader
   (bootloader

@@ -37997,8 +37997,9 @@ The type of a bootloader configuration declaration.
 @cindex BIOS, bootloader
 The bootloader to use, as a @code{bootloader} object.  For now
 @code{grub-bootloader}, @code{grub-efi-bootloader},
-@code{grub-efi-netboot-bootloader}, @code{grub-efi-removable-bootloader},
-@code{extlinux-bootloader} and @code{u-boot-bootloader} are supported.
+@code{grub-efi-removable-bootloader}, @code{grub-efi-netboot-bootloader},
+@code{grub-efi-netboot-removable-bootloader}, @code{extlinux-bootloader}
+and @code{u-boot-bootloader} are supported.
 
 @cindex ARM, bootloaders
 @cindex AArch64, bootloaders
@@ -38007,15 +38008,29 @@ modules.  In particular, @code{(gnu bootloader u-boot)} contains definitions
 of bootloaders for a wide range of ARM and AArch64 systems, using the
 @uref{https://www.denx.de/wiki/U-Boot/, U-Boot bootloader}.
 
+@vindex grub-bootloader
+@code{grub-bootloader} allows you to boot in particular Intel-based machines
+in ``legacy'' BIOS mode.
+
 @vindex grub-efi-bootloader
 @code{grub-efi-bootloader} allows to boot on modern systems using the
 @dfn{Unified Extensible Firmware Interface} (UEFI).  This is what you should
 use if the installation image contains a @file{/sys/firmware/efi} directory
 when you boot it on your system.
 
-@vindex grub-bootloader
-@code{grub-bootloader} allows you to boot in particular Intel-based machines
-in ``legacy'' BIOS mode.
+@vindex grub-efi-removable-bootloader
+@code{grub-efi-removable-bootloader} allows you to boot your system from
+removable media by writing the GRUB file to the UEFI-specification location of
+@file{/EFI/BOOT/BOOTX64.efi} of the boot directory, usually @file{/boot/efi}.
+This is also useful for some UEFI firmwares that ``forget'' their configuration
+from their non-volatile storage. Like @code{grub-efi-bootloader}, this can only
+be used if the @file{/sys/firmware/efi} directory is available.
+
+@quotation Note
+This @emph{will} overwrite the GRUB file from any other operating systems that
+also place their GRUB file in the UEFI-specification location; making them
+unbootable.
+@end quotation
 
 @vindex grub-efi-netboot-bootloader
 @code{grub-efi-netboot-bootloader} allows you to boot your system over network
@@ -38024,9 +38039,10 @@ build a diskless Guix system.
 
 The installation of the @code{grub-efi-netboot-bootloader} generates the
 content of the TFTP root directory at @code{targets} (@pxref{Bootloader
-Configuration, @code{targets}}), to be served by a TFTP server.  You may
-want to mount your TFTP server directories onto the @code{targets} to
-move the required files to the TFTP server automatically.
+Configuration, @code{targets}}) below the sub-directory @file{efi/Guix}, to be
+served by a TFTP server.  You may want to mount your TFTP server directories
+onto the @code{targets} to move the required files to the TFTP server
+automatically during installation.
 
 If you plan to use an NFS root file system as well (actually if you mount the
 store from an NFS share), then the TFTP server needs to serve the file
@@ -38055,25 +38071,34 @@ this constellation the symlinks will work.
 For other constellations you will have to program your own bootloader
 installer, which then takes care to make necessary files from the store
 accessible through TFTP, for example by copying them into the TFTP root
-directory to your @code{targets}.
+directory for your @code{targets}.
 
 It is important to note that symlinks pointing outside the TFTP root directory
 may need to be allowed in the configuration of your TFTP server.  Further the
 store link exposes the whole store through TFTP@.  Both points need to be
-considered carefully for security aspects.
+considered carefully for security aspects.  It is advised to disable any TFTP
+write access!
+
+Please note, that this bootloader will not modify the ‘UEFI Boot Manager’ of
+the system.
 
 Beside the @code{grub-efi-netboot-bootloader}, the already mentioned TFTP and
 NFS servers, you also need a properly configured DHCP server to make the booting
 over netboot possible.  For all this we can currently only recommend you to look
 for instructions about @acronym{PXE, Preboot eXecution Environment}.
 
-@vindex grub-efi-removable-bootloader
-@code{grub-efi-removable-bootloader} allows you to boot your system from
-removable media by writing the GRUB file to the UEFI-specification location of
-@file{/EFI/BOOT/BOOTX64.efi} of the boot directory, usually @file{/boot/efi}.
-This is also useful for some UEFI firmwares that ``forget'' their configuration
-from their non-volatile storage. Like @code{grub-efi-bootloader}, this can only
-be used if the @file{/sys/firmware/efi} directory is available.
+If a local EFI System Partition (ESP) or a similar partition with a FAT
+file system is mounted in @code{targets}, then symlinks cannot be
+created.  In this case everything will be prepared for booting from
+local storage, matching the behavior of @code{grub-efi-bootloader}, with
+the difference that all GRUB binaries are copied to @code{targets},
+necessary for booting over the network.
+
+@vindex grub-efi-netboot-removable-bootloader
+@code{grub-efi-netboot-removable-bootloader} is identical to
+@code{grub-efi-netboot-bootloader} with the exception that the
+sub-directory @file{efi/boot} will be used instead of @file{efi/Guix} to
+comply with the UEFI specification for removable media.
 
 @quotation Note
 This @emph{will} overwrite the GRUB file from any other operating systems that

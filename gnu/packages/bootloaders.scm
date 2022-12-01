@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,7 +68,9 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -75,6 +78,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 optargs)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
 
 (define unifont
@@ -389,6 +393,92 @@ menu to select one of the installed operating systems.")
                                  (string-append output-dir "/" basename))))
                   (scandir input-dir))
                  #t)))))))))
+
+(define-public (make-grub-efi-netboot name subdir)
+  "Make a grub-efi-netboot package named NAME, which will be able to boot over
+network via TFTP by accessing its files in the SUBDIR of a TFTP root directory.
+This package is also able to boot from local storage devices.
+
+A bootloader-installer basically needs to copy the package content into the
+bootloader-target directory, which will usually be the TFTP root, as
+'grub-mknetdir' will be invoked already during the package creation.
+
+Alternatively the bootloader-target directory can be a mounted EFI System
+Partition (ESP), or a similar partition with a FAT file system, for booting
+from local storage devices.
+
+The name of the GRUB EFI binary will conform to the UEFI specification for
+removable media.  Depending on the system it will be e.g. bootx64.efi or
+bootaa64.efi below SUBDIR.
+
+The SUBDIR argument needs to be set to \"efi/boot\" to create a package which
+conforms to the UEFI specification for removable media.
+
+The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
+'grub-efi-bootloader'."
+  (package
+    (name name)
+    (version (package-version grub-efi))
+    ;; Source is not needed, but it cannot be omitted.
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (let* ((system (string-split (nix-system->gnu-triplet
+                                   (or (%current-target-system)
+                                       (%current-system)))
+                                  #\-))
+            (arch (first system))
+            (boot-efi
+             (match system
+               ;; These are the supportend systems and the names defined by
+               ;; the UEFI standard for removable media.
+               (("i686" _ ...)        "/bootia32.efi")
+               (("x86_64" _ ...)      "/bootx64.efi")
+               (("arm" _ ...)         "/bootarm.efi")
+               (("aarch64" _ ...)     "/bootaa64.efi")
+               (("riscv" _ ...)       "/bootriscv32.efi")
+               (("riscv64" _ ...)     "/bootriscv64.efi")
+               ;; Other systems are not supported, although defined.
+               ;; (("riscv128" _ ...) "/bootriscv128.efi")
+               ;; (("ia64" _ ...)     "/bootia64.efi")
+               ((_ ...)               #f)))
+            (core-efi (string-append
+                       ;; This is the arch dependent file name of GRUB, e.g.
+                       ;; i368-efi/core.efi or arm64-efi/core.efi.
+                       (match arch
+                         ("i686"    "i386")
+                         ("aarch64" "arm64")
+                         ("riscv"   "riscv32")
+                         (_         arch))
+                       "-efi/core.efi")))
+       (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils))
+            (let* ((bootloader #$(this-package-input "grub-efi"))
+                   (net-dir #$output)
+                   (sub-dir (string-append net-dir "/" #$subdir "/"))
+                   (boot-efi (string-append sub-dir #$boot-efi))
+                   (core-efi (string-append sub-dir #$core-efi)))
+              ;; Install GRUB, which refers to the grub.cfg, with support for
+              ;; encrypted partitions,
+              (setenv "GRUB_ENABLE_CRYPTODISK" "y")
+              (invoke/quiet (string-append bootloader "/bin/grub-mknetdir")
+                            (string-append "--net-directory=" net-dir)
+                            (string-append "--subdir=" #$subdir)
+                            ;; These modules must be pre-loaded to allow booting
+                            ;; from an ESP or a similar partition with a FAT
+                            ;; file system.
+                            (string-append "--modules=part_msdos part_gpt fat"))
+              ;; Move GRUB's core.efi to the removable media name.
+              (false-if-exception (delete-file boot-efi))
+              (rename-file core-efi boot-efi))))))
+    (inputs (list grub-efi))
+    (synopsis (package-synopsis grub-efi))
+    (description (package-description grub-efi))
+    (home-page (package-home-page grub-efi))
+    (license (package-license grub-efi))))
 
 (define-public syslinux
   (let ((commit "bb41e935cc83c6242de24d2271e067d76af3585c"))
