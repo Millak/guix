@@ -699,9 +699,9 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
                                                      "_" "-")))
       (native-inputs
        `(,@(if (not (same-arch?))
-             `(("cross-gcc" ,(cross-gcc triplet))
-               ("cross-binutils" ,(cross-binutils triplet)))
-             `())
+               `(("cross-gcc" ,(cross-gcc triplet))
+                 ("cross-binutils" ,(cross-binutils triplet)))
+               `())
          ,@(package-native-inputs u-boot)))
       (arguments
        `(#:modules ((ice-9 ftw)
@@ -715,8 +715,8 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
          #:make-flags
          (list "HOSTCC=gcc"
                ,@(if (not (same-arch?))
-                   `((string-append "CROSS_COMPILE=" ,triplet "-"))
-                   '()))
+                     `((string-append "CROSS_COMPILE=" ,triplet "-"))
+                     '()))
          #:phases
          (modify-phases %standard-phases
            (replace 'configure
@@ -735,7 +735,7 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
                        (apply invoke "make" `(,@make-flags ,config-name))
                        (verify-config ".config" config-file))
                      (begin
-                       (display "Invalid board name. Valid board names are:"
+                       (display "invalid board name; valid board names are:"
                                 (current-error-port))
                        (let ((suffix-len (string-length "_defconfig"))
                              (entries (scandir "configs")))
@@ -746,7 +746,7 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
                                                (string-drop-right file-name
                                                                   suffix-len))))
                                    (sort entries string-ci<)))
-                       (error "Invalid boardname ~s." ,board))))))
+                       (error "invalid boardname ~s" ,board))))))
            (add-after 'configure 'disable-tools-libcrypto
              ;; Disable libcrypto due to GPL and OpenSSL license
              ;; incompatibilities
