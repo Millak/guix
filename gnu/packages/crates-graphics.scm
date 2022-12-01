@@ -38,6 +38,7 @@
   #:use-module (gnu packages assembly)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gl)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -3127,7 +3128,7 @@ the platform-specific getters provided by winit, or another library.")
 (define-public rust-x11-2
   (package
     (name "rust-x11")
-    (version "2.18.2")
+    (version "2.20.1")
     (source
      (origin
        (method url-fetch)
@@ -3135,12 +3136,14 @@ the platform-specific getters provided by winit, or another library.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wz7l6dlbraa9zalh9i45v9wibvkir9m2m1sg0jnzcbcaj9d1v3p"))))
+        (base32 "10pbvmcyqm6j6zr4zk7znk8silmilihv8jxmbxbl1b0pkidqsqy2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (propagated-inputs
+     (list mesa))
     (home-page "https://github.com/erlepereira/x11-rs")
     (synopsis "X11 library bindings for Rust")
     (description "This crate provides X11 library bindings for Rust.")
