@@ -65182,6 +65182,31 @@ first byte.")
         ("rust-serde" ,rust-serde-1)
         ("rust-sha1" ,rust-sha1-0.2))))))
 
+(define-public rust-uuid-macro-internal-1
+  (package
+    (name "rust-uuid-macro-internal")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "uuid-macro-internal" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1n3nw8vydhm5l3d32j3wgdwfd68rg71m400y4ijyd4s5i7r8kg3k"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/uuid-rs/uuid")
+    (synopsis "@code{uuid!} macro implementation details")
+    (description
+     "This package contains private implementation details of the
+@code{uuid!} macro.  It is not intended for direct usage.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-v-frame-0.2
   (package
     (name "rust-v-frame")
