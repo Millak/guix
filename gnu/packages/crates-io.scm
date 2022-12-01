@@ -52424,6 +52424,28 @@ functionality and without weak references.")
         (base32
          "1i1i8viy6y30mv9v5hwhg9w6b722qkyh9c6n8bn4d27jpv14pg0s"))))))
 
+(define-public rust-sha1-smol-1
+  (package
+    (name "rust-sha1-smol")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sha1_smol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04nhbhvsk5ms1zbshs80iq5r1vjszp2xnm9f0ivj38q3dhc4f6mf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/mitsuhiko/sha1-smol")
+    (synopsis "Dependency free SHA1 implementation")
+    (description
+     "This package provides a minimal dependency free implementation of
+SHA1 for Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-sha1collisiondetection-0.2
   (package
     (name "rust-sha1collisiondetection")
