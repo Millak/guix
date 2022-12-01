@@ -32495,8 +32495,31 @@ parallelize and optimize.")
         (base32
          "0j2s8aqdkhwhy7awga2bmv5n8qq8bgy8672iha9f3y871dm6vibr"))))))
 
+(define-public rust-md5-asm-0.5
+  (package
+    (name "rust-md5-asm")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "md5-asm" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ixmkg8j7sqy9zln6pz9xi2dl2d9zpm8pz6p49za47n1bvradfbk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of MD5 compression function")
+    (description
+     "This package contains an assembly implementation of the MD5
+compression function.")
+    (supported-systems '("x86_64-linux" "i686-linux"))
+    (license license:expat)))
+
 (define-public rust-md5-asm-0.4
   (package
+    (inherit rust-md5-asm-0.5)
     (name "rust-md5-asm")
     (version "0.4.3")
     (source
@@ -32508,16 +32531,9 @@ parallelize and optimize.")
         (sha256
          (base32
           "0gpk5647js1k084jc7pg2gji0cvl6hjkkbfia6lnpk8y4shyairv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/RustCrypto/asm-hashes")
-    (synopsis "Assembly implementation of MD5 compression function")
-    (description "This package contains an assembly implementation of MD5
-compression function.")
-    (supported-systems '("x86_64-linux" "i686-linux"))
-    (license license:expat)))
+       (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-measureme-0.7
   (package
