@@ -633,7 +633,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (name "u-boot")
     (version "2022.04")
     (source (origin
-	      (patches
+              (patches
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
@@ -772,13 +772,21 @@ def test_ctrl_c"))
                      (setenv "PAGER" "cat")
                      (apply invoke "make" test-target make-flags))))
                '()))))
-    (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).  This package provides its
-board-independent tools.")))
+    (description (string-append
+                  (package-description u-boot)
+                  "  This package provides board-independent tools "
+                  "of U-Boot."))))
 
-(define*-public (make-u-boot-package board triplet #:key defconfig configs)
-  "Returns a u-boot package for BOARD cross-compiled for TRIPLET with the
-optional DEFCONFIG file and optional configuration changes from CONFIGS."
+(define*-public (make-u-boot-package board triplet
+                                     #:key
+                                     defconfig
+                                     configs
+                                     name-suffix
+                                     append-description)
+  "Return a U-Boot package for BOARD cross-compiled for TRIPLET with the
+optional DEFCONFIG file and optional configuration changes from CONFIGS.
+NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
+appended to the package description."
   (let ((same-arch? (lambda ()
                       (string=? (%current-system)
                                 (gnu-triplet->nix-system triplet)))))
@@ -786,7 +794,12 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
       (inherit u-boot)
       (name (string-append "u-boot-"
                            (string-replace-substring (string-downcase board)
-                                                     "_" "-")))
+                                                     "_" "-")
+                           (or name-suffix "")))
+      (description (if append-description
+                       (string-append (package-description u-boot)
+                                      "\n\n" append-description)
+                       (package-description u-boot)))
       (native-inputs
        `(,@(if (not (same-arch?))
                `(("cross-gcc" ,(cross-gcc triplet))
@@ -877,21 +890,16 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS."
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
 (define-public u-boot-am335x-boneblack
-  (let ((base (make-u-boot-package
-               "am335x_evm" "arm-linux-gnueabihf"
-               ;; Patch out other device trees to build an image small enough
-               ;; to fit within typical partitioning schemes where the first
-               ;; partition begins at sector 2048.
-               #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\""))))
-    (package
-      (inherit base)
-      (name "u-boot-am335x-boneblack")
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This U-Boot is built for the BeagleBone Black, which was removed upstream,
-adjusted from the am335x_evm build with several device trees removed so that
-it fits within common partitioning schemes."))))
+  (make-u-boot-package
+   "am335x_evm" "arm-linux-gnueabihf"
+   ;; Patch out other device trees to build an image small enough to fit
+   ;; within typical partitioning schemes where the first partition begins at
+   ;; sector 2048.
+   #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
+   #:name-suffix "-boneblack"
+   #:append-description "This U-Boot is built for the BeagleBone Black, which
+was removed upstream, adjusted from the am335x_evm build with several device
+trees removed so that it fits within common partitioning schemes."))
 
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))
@@ -944,7 +952,14 @@ it fits within common partitioning schemes."))))
 
 (define-public u-boot-nintendo-nes-classic-edition
   (let ((base (make-u-boot-package "Nintendo_NES_Classic_Edition"
-                                   "arm-linux-gnueabihf")))
+                                   "arm-linux-gnueabihf"
+                                   #:append-description "This version is for
+the Nintendo NES Classic Edition.  It is assumed that you have added a serial
+port to pins PB0 and PB1 as described on
+@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
+
+In order to use FEL mode on the device, hold the Reset button on the
+device while it's being turned on (and a while longer).")))
     (package
       (inherit base)
       ;; Starting with 2019.01, FEL doesn't work anymore on A33.
@@ -959,15 +974,6 @@ it fits within common partitioning schemes."))))
                   "0znkwljfwwn4y7j20pzz4ilqw8znphrfxns0x1lwdzh3xbr96z3k"))
                 (patches (search-patches
                           "u-boot-nintendo-nes-serial.patch"))))
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This version is for the Nintendo NES Classic Edition.  It is assumed that
-you have added a serial port to pins PB0 and PB1 as described on
-@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
-
-In order to use FEL mode on the device, hold the Reset button on the
-device while it's being turned on (and a while longer).")
       (native-inputs
        `(("python" ,python-2)
          ,@(package-native-inputs base))))))
@@ -979,18 +985,14 @@ device while it's being turned on (and a while longer).")
   (make-u-boot-package "mx6cuboxi" "arm-linux-gnueabihf"))
 
 (define-public u-boot-novena
-  (let ((base (make-u-boot-package
-               "novena" "arm-linux-gnueabihf"
-               ;; Patch configuration to disable loading u-boot.img from FAT
-               ;; partition, allowing it to be installed at a device offset.
-               #:configs '("# CONFIG_SPL_FS_FAT is not set"))))
-    (package
-      (inherit base)
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This U-Boot is built for Novena.  Be advised that this version, contrary
-to Novena upstream, does not load u-boot.img from the first partition."))))
+  (make-u-boot-package
+   "novena" "arm-linux-gnueabihf"
+   ;; Patch configuration to disable loading u-boot.img from FAT partition,
+   ;; allowing it to be installed at a device offset.
+   #:configs '("# CONFIG_SPL_FS_FAT is not set")
+   #:append-description "This U-Boot is built for Novena.  Be advised that this
+version, contrary to Novena upstream, does not load u-boot.img from the first
+partition."))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))
@@ -1142,6 +1144,118 @@ BOOT_TARGET_NVME(func) \\
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
+
+(define*-public (make-u-boot-bin-package u-boot-package
+                                         #:key
+                                         (u-boot-bin "u-boot.bin"))
+  "Return a package with a single U-BOOT-BIN file from the U-BOOT-PACKAGE.
+The package name will be that of the U-BOOT package suffixed with \"-bin\"."
+  (package
+    (name (string-append (package-name u-boot-package) "-bin"))
+    (version (package-version u-boot-package))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:builder
+      (with-imported-modules '((guix build utils))
+        #~(begin
+            (use-modules (guix build utils))
+            (mkdir #$output)
+            (symlink (search-input-file %build-inputs
+                                        (string-append "libexec/" #$u-boot-bin))
+                     (string-append #$output "/" #$u-boot-bin))))))
+    (inputs (list u-boot-package))
+    (home-page (package-home-page u-boot-package))
+    (synopsis (package-synopsis u-boot-package))
+    (description (string-append
+                  (package-description u-boot-package)
+                  "\n\n"
+                  (format #f
+                          "This package only contains the file ~a."
+                          u-boot-bin)))
+    (license (package-license u-boot-package))))
+
+(define-public %u-boot-rpi-efi-configs
+  '("CONFIG_OF_EMBED"
+    "CONFIG_OF_BOARD=y"))
+
+(define %u-boot-rpi-description-32-bit
+  "This is a 32-bit build of U-Boot.")
+
+(define %u-boot-rpi-description-64-bit
+  "This is a common 64-bit build of U-Boot for all 64-bit capable Raspberry Pi
+variants.")
+
+(define %u-boot-rpi-efi-description
+  "It allows network booting and uses the device-tree from the firmware,
+allowing the usage of overlays.  It can act as an EFI firmware for the
+grub-efi-netboot-removable-bootloader.")
+
+(define %u-boot-rpi-efi-description-32-bit
+  (string-append %u-boot-rpi-efi-description "  "
+                 %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-2
+  (make-u-boot-package "rpi_2" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-3-32b
+  (make-u-boot-package "rpi_3_32b" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-4-32b
+  (make-u-boot-package "rpi_4_32b" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-arm64
+  (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"
+                       #:append-description %u-boot-rpi-description-64-bit))
+
+(define-public u-boot-rpi-2-efi
+  (make-u-boot-package "rpi_2" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-3-32b-efi
+  (make-u-boot-package "rpi_3_32b" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-4-32b-efi
+  (make-u-boot-package "rpi_4_32b" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-arm64-efi
+  (make-u-boot-package "rpi_arm64""aarch64-linux-gnu"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description (string-append
+                                             %u-boot-rpi-efi-description "  "
+                                             %u-boot-rpi-description-64-bit)))
+
+(define-public u-boot-rpi-2-bin (make-u-boot-bin-package u-boot-rpi-2))
+
+(define-public u-boot-rpi-3_32b-bin (make-u-boot-bin-package u-boot-rpi-3-32b))
+
+(define-public u-boot-rpi-4_32b-bin (make-u-boot-bin-package u-boot-rpi-4-32b))
+
+(define-public u-boot-rpi-arm64-bin (make-u-boot-bin-package u-boot-rpi-arm64))
+
+(define-public u-boot-rpi-2-efi-bin (make-u-boot-bin-package u-boot-rpi-2-efi))
+
+(define-public u-boot-rpi-3-32b-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-3-32b-efi))
+
+(define-public u-boot-rpi-4-32b-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-4-32b-efi))
+
+(define-public u-boot-rpi-arm64-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-arm64-efi))
 
 (define-public vboot-utils
   (package
