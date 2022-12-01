@@ -67,6 +67,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -846,8 +847,8 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                                   (string-append "infodir=" #$output
                                                  "/share/info"))))))
                  #~())
-          (replace 'configure
-            (lambda* (#:key inputs target #:allow-other-keys)
+          (add-before 'configure 'set-environment
+            (lambda* (#:key target #:allow-other-keys)
               ;; Avoid introducing timestamps.
               (setenv "KCONFIG_NOTIMESTAMP" "1")
               (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
@@ -863,18 +864,21 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                                   (%current-system))))))
                 (setenv "ARCH" arch)
                 (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
-
                 (when target
                   (setenv "CROSS_COMPILE" (string-append target "-"))
                   (format #t "`CROSS_COMPILE' set to `~a'~%"
                           (getenv "CROSS_COMPILE"))))
 
+              ;; Allow EXTRAVERSION to be set via the environment.
+              (substitute* "Makefile"
+                (("^ *EXTRAVERSION[[:blank:]]*=")
+                 "EXTRAVERSION ?="))
               (setenv "EXTRAVERSION"
                       #$(and extra-version
-                             (string-append "-" extra-version)))
-
+                             (string-append "-" extra-version)))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
               (let ((config (assoc-ref inputs "kconfig")))
-
                 ;; Use a custom kernel configuration file or a default
                 ;; configuration file.
                 (if config
@@ -882,17 +886,15 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       (copy-file config ".config")
                       (chmod ".config" #o666))
                     (invoke "make" #$defconfig))
-
                 ;; Appending works even when the option wasn't in the
                 ;; file.  The last one prevails if duplicated.
                 (let ((port (open-file ".config" "a"))
                       (extra-configuration #$(config->string extra-options)))
                   (display extra-configuration port)
                   (close-port port))
-
                 (invoke "make" "oldconfig"))))
           (replace 'install
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+            (lambda* (#:key inputs #:allow-other-keys)
               (let ((moddir (string-append #$output "/lib/modules"))
                     (dtbdir (string-append #$output "/lib/dtbs")))
                 ;; Install kernel image, kernel configuration and link map.
