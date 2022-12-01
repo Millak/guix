@@ -7292,7 +7292,7 @@ almost all of them.")
        ("gtkspell3" ,gtkspell3)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gnome-settings-daemon" ,gnome-settings-daemon) ; desktop-schemas are not enough
-       ("webkitgtk" ,webkitgtk)))
+       ("webkitgtk" ,webkitgtk-with-libsoup2)))
     (home-page "https://wiki.gnome.org/Apps/Eolie")
     (synopsis "Web browser for GNOME")
     (description
