@@ -760,6 +760,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/docker.scm				\
   %D%/tests/file-sharing.scm			\
   %D%/tests/ganeti.scm				\
+  %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
   %D%/tests/monitoring.scm                      \
   %D%/tests/nfs.scm				\
