@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1143,7 +1144,8 @@ project's documentation} for more information."
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
-               (default '())))
+               (default '()))
+  (iwd? network-manager-configuration-iwd? (default #f)))
 
 (define network-manager-activation
   ;; Activation gexp for NetworkManager
@@ -1199,14 +1201,17 @@ project's documentation} for more information."
 
 (define network-manager-shepherd-service
   (match-lambda
-    (($ <network-manager-configuration> network-manager dns vpn-plugins)
+    (($ <network-manager-configuration> network-manager dns vpn-plugins iwd?)
      (let ((conf (plain-file "NetworkManager.conf"
-                             (string-append "[main]\ndns=" dns "\n")))
+                             (string-append
+                              "[main]\ndns=" dns "\n"
+                              (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
            (vpn  (vpn-plugin-directory vpn-plugins)))
        (list (shepherd-service
               (documentation "Run the NetworkManager.")
               (provision '(networking))
-              (requirement '(user-processes dbus-system wpa-supplicant loopback))
+              (requirement (append '(user-processes dbus-system loopback)
+                                   (if iwd? '(iwd) '(wpa-supplicant))))
               (start #~(make-forkexec-constructor
                         (list (string-append #$network-manager
                                              "/sbin/NetworkManager")

@@ -19583,6 +19583,10 @@ This is the list of available plugins for virtual private networks
 (VPNs).  An example of this is the @code{network-manager-openvpn}
 package, which allows NetworkManager to manage VPNs @i{via} OpenVPN.
 
+@item @code{iwd?} (default: @code{#f})
+NetworkManager will use iwd as a backend for wireless networking if this
+option is set to @code{#t}, otherwise it will use wpa-supplicant.
+
 @end table
 @end deftp
 
