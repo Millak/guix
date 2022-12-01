@@ -1013,9 +1013,19 @@ technology, such as head mounted displays with built in head tracking.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Delete the bundled hueplusplus and json libraries.
-           (delete-file-recursively "dependencies/hueplusplus-1.0.0")
-           (delete-file-recursively "dependencies/json")))))
+           ;; Delete many of the bundled libraries.
+           (for-each delete-file-recursively
+                     (list "dependencies/hidapi-win"
+                           "dependencies/hueplusplus-1.0.0"
+                           "dependencies/json"
+                           "dependencies/libusb-1.0.22"
+                           "dependencies/macUSPCIO"
+                           "dependencies/mbedtls-2.24.0"
+                           "dependencies/NVFC"
+                           "dependencies/openrazer-win32"
+                           "dependencies/winring0"
+                           ;; Some bundled appimages
+                           "scripts/tools"))))))
     (build-system cmake-build-system)
     (arguments
      (list
