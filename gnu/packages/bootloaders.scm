@@ -868,7 +868,7 @@ it fits within common partitioning schemes."))))
                  (base32
                   "0znkwljfwwn4y7j20pzz4ilqw8znphrfxns0x1lwdzh3xbr96z3k"))
                 (patches (search-patches
-                           "u-boot-nintendo-nes-serial.patch"))))
+                          "u-boot-nintendo-nes-serial.patch"))))
       (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).
 
