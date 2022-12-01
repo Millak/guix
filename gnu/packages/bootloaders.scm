@@ -340,21 +340,21 @@ menu to select one of the installed operating systems.")
      `(,@(substitute-keyword-arguments (package-arguments grub-efi)
            ((#:configure-flags flags ''())
             `(cons*
-               ,@(cond ((target-x86?) '("--target=i386"))
-                       ((target-aarch64?)
-                        (list "--target=arm"
-                              (string-append "TARGET_CC="
-                                             (cc-for-target "arm-linux-gnueabihf"))))
-                       ((target-arm?) '("--target=arm"))
-                       (else '()))
-               ,flags)))))
+              ,@(cond ((target-x86?) '("--target=i386"))
+                      ((target-aarch64?)
+                       (list "--target=arm"
+                             (string-append "TARGET_CC="
+                                            (cc-for-target "arm-linux-gnueabihf"))))
+                      ((target-arm?) '("--target=arm"))
+                      (else '()))
+              ,flags)))))
     (native-inputs
      (if (target-aarch64?)
-       (modify-inputs (package-native-inputs grub-efi)
-         (prepend
-           (cross-gcc "arm-linux-gnueabihf")
-           (cross-binutils "arm-linux-gnueabihf")))
-       (package-native-inputs grub-efi)))))
+         (modify-inputs (package-native-inputs grub-efi)
+           (prepend
+            (cross-gcc "arm-linux-gnueabihf")
+            (cross-binutils "arm-linux-gnueabihf")))
+         (package-native-inputs grub-efi)))))
 
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command
