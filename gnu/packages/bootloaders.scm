@@ -860,11 +860,13 @@ def test_ctrl_c"))
                                      defconfig
                                      configs
                                      name-suffix
-                                     append-description)
+                                     append-description
+                                     (u-boot u-boot))
   "Return a U-Boot package for BOARD cross-compiled for TRIPLET with the
 optional DEFCONFIG file and optional configuration changes from CONFIGS.
 NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
-appended to the package description."
+appended to the package description.  U-BOOT can be used when a fork or a
+different version of U-Boot must be used."
   (let ((same-arch? (lambda ()
                       (string=? (%current-system)
                                 (gnu-triplet->nix-system triplet)))))
@@ -879,91 +881,102 @@ appended to the package description."
                                       "\n\n" append-description)
                        (package-description u-boot)))
       (native-inputs
-       `(,@(if (not (same-arch?))
+       ;; Note: leave the native u-boot inputs first, so that a user can
+       ;; override the cross-gcc and cross-binutils packages.
+       `(,@(package-native-inputs u-boot)
+         ,@(if (not (same-arch?))
                `(("cross-gcc" ,(cross-gcc triplet))
                  ("cross-binutils" ,(cross-binutils triplet)))
-               `())
-         ,@(package-native-inputs u-boot)))
+               `())))
       (arguments
-       `(#:modules ((ice-9 ftw)
-                    (srfi srfi-1)
-                    (guix build gnu-build-system)
-                    (guix build kconfig)
-                    (guix build utils))
-         #:imported-modules (,@%gnu-build-system-modules
-                             (guix build kconfig))
-         #:test-target "test"
-         #:make-flags
-         (list "HOSTCC=gcc"
-               "KBUILD_VERBOSE=1"
-               ,@(if (not (same-arch?))
-                     `((string-append "CROSS_COMPILE=" ,triplet "-"))
-                     '()))
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs make-flags #:allow-other-keys)
-               (let* ((config-name (string-append ,board "_defconfig"))
-                      (config-file (string-append "configs/" config-name))
-                      (defconfig ,defconfig)
-                      (configs ',configs))
-                 (when defconfig
-                   ;; Replace the board-specific defconfig with the given one.
-                   (copy-file defconfig config-file))
-                 (if (file-exists? config-file)
-                     (begin
-                       (when configs
-                         (modify-defconfig config-file configs))
-                       (apply invoke "make" `(,@make-flags ,config-name))
-                       (verify-config ".config" config-file))
-                     (begin
-                       (display "invalid board name; valid board names are:"
-                                (current-error-port))
-                       (let ((suffix-len (string-length "_defconfig"))
-                             (entries (scandir "configs")))
-                         (for-each (lambda (file-name)
-                                     (when (string-suffix? "_defconfig" file-name)
-                                       (format (current-error-port)
-                                               "- ~A\n"
-                                               (string-drop-right file-name
-                                                                  suffix-len))))
-                                   (sort entries string-ci<)))
-                       (error "invalid boardname ~s" ,board))))))
-           (add-after 'configure 'disable-tools-libcrypto
-             ;; Disable libcrypto due to GPL and OpenSSL license
-             ;; incompatibilities
-             (lambda _
-               (substitute* ".config"
-                 (("CONFIG_TOOLS_LIBCRYPTO=.*$") "CONFIG_TOOLS_LIBCRYPTO=n"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (libexec (string-append out "/libexec"))
-                      (uboot-files (append
-                                    (remove
-                                     ;; Those would not be reproducible
-                                     ;; because of the randomness used
-                                     ;; to produce them.
-                                     ;; It's expected that the user will
-                                     ;; use u-boot-tools to generate them
-                                     ;; instead.
-                                     (lambda (name)
-                                       (string-suffix?
-                                        "sunxi-spl-with-ecc.bin"
-                                        name))
-                                     (find-files "." ".*\\.(bin|efi|img|spl|itb|dtb|rksd)$"))
-                                    (find-files "." "^(MLO|SPL)$"))))
-                 (mkdir-p libexec)
-                 (install-file ".config" libexec)
-                 ;; Useful for "qemu -kernel".
-                 (install-file "u-boot" libexec)
-                 (for-each
-                  (lambda (file)
-                    (let ((target-file (string-append libexec "/" file)))
-                      (mkdir-p (dirname target-file))
-                      (copy-file file target-file)))
-                  uboot-files)
-                 #t)))))))))
+       (substitute-keyword-arguments (package-arguments u-boot)
+         ((#:modules modules '())
+          `((ice-9 ftw)
+            (srfi srfi-1)
+            (guix build gnu-build-system)
+            (guix build kconfig)
+            (guix build utils)
+            ,@modules))
+         ((#:imported-modules imported-modules '())
+          `((guix build kconfig)
+            ,@%gnu-build-system-modules
+            ,@imported-modules))
+         ((#:test-target _ "test")
+          "test")
+         ((#:make-flags make-flags '())
+          #~(list "HOSTCC=gcc"
+                  "KBUILD_VERBOSE=1"
+                  #$@(if (not (same-arch?))
+                         (list (string-append "CROSS_COMPILE=" triplet "-"))
+                         '())
+                  #$@make-flags))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'configure
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (let* ((config-name (string-append #$board "_defconfig"))
+                         (config-file (string-append "configs/" config-name))
+                         (defconfig #$defconfig)
+                         (configs '#$configs))
+                    (when defconfig
+                      ;; Replace the board-specific defconfig with the given
+                      ;; one.
+                      (copy-file defconfig config-file))
+                    (if (file-exists? config-file)
+                        (begin
+                          (when configs
+                            (modify-defconfig config-file configs))
+                          (apply invoke "make" `(,@make-flags ,config-name))
+                          (verify-config ".config" config-file))
+                        (begin
+                          (display "invalid board name; valid board names are:"
+                                   (current-error-port))
+                          (let ((suffix-len (string-length "_defconfig"))
+                                (entries (scandir "configs")))
+                            (for-each (lambda (file-name)
+                                        (when (string-suffix? "_defconfig"
+                                                              file-name)
+                                          (format (current-error-port)
+                                                  "- ~A\n"
+                                                  (string-drop-right
+                                                   file-name suffix-len))))
+                                      (sort entries string-ci<)))
+                          (error "invalid boardname ~s" #$board))))))
+              (add-after 'configure 'disable-tools-libcrypto
+                ;; Disable libcrypto due to GPL and OpenSSL license
+                ;; incompatibilities
+                (lambda _
+                  (substitute* ".config"
+                    (("CONFIG_TOOLS_LIBCRYPTO=.*$")
+                     "CONFIG_TOOLS_LIBCRYPTO=n"))))
+              (replace 'install
+                (lambda _
+                  (let ((libexec (string-append #$output "/libexec"))
+                        (uboot-files
+                         (append
+                          (remove
+                           ;; Those would not be reproducible
+                           ;; because of the randomness used to
+                           ;; produce them.  It's expected that the
+                           ;; user will use u-boot-tools to generate
+                           ;; them instead.
+                           (lambda (name)
+                             (string-suffix?
+                              "sunxi-spl-with-ecc.bin"
+                              name))
+                           (find-files "."
+                                       ".*\\.(bin|efi|img|spl|itb|dtb|rksd)$"))
+                          (find-files "." "^(MLO|SPL)$"))))
+                    (mkdir-p libexec)
+                    (install-file ".config" libexec)
+                    ;; Useful for "qemu -kernel".
+                    (install-file "u-boot" libexec)
+                    (for-each
+                     (lambda (file)
+                       (let ((target-file (string-append libexec "/" file)))
+                         (mkdir-p (dirname target-file))
+                         (copy-file file target-file)))
+                     uboot-files)))))))))))
 
 (define-public u-boot-am335x-boneblack
   (let ((base (make-u-boot-package
