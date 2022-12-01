@@ -59952,19 +59952,20 @@ C library.")
 (define-public rust-tinyvec-1
   (package
     (name "rust-tinyvec")
-    (version "1.2.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tinyvec" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0hn3fkpb9nca9nf9znz2dxlp4ccv37hnbh67aczpzpmpbgq20ljv"))))
+        (base32 "0l6bl2h62a5m44jdnpn7lmj14rd44via8180i7121fvm73mmrk47"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-tinyvec-macros" ,rust-tinyvec-macros-0.1))))
     (home-page "https://crates.io/crates/tinyvec")
     (synopsis "Safe vec-like data structures")
