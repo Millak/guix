@@ -93,22 +93,22 @@
     (name "grub")
     (version "2.06")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
-             (patches (search-patches
-                       "grub-efi-fat-serial-number.patch"
-                       "grub-setup-root.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Adjust QEMU invocation to not use a deprecated device
-                 ;; name that was removed in QEMU 6.0.  Remove for >2.06.
-                 (substitute* "tests/ahci_test.in"
-                   (("ide-drive")
-                    "ide-hd"))))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
+              (patches (search-patches
+                        "grub-efi-fat-serial-number.patch"
+                        "grub-setup-root.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Adjust QEMU invocation to not use a deprecated device
+                  ;; name that was removed in QEMU 6.0.  Remove for >2.06.
+                  (substitute* "tests/ahci_test.in"
+                    (("ide-drive")
+                     "ide-hd"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -118,65 +118,62 @@
        (list "PYTHON=true")
        ;; Grub fails to load modules stripped with --strip-unneeded.
        #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-stuff
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (substitute* "grub-core/Makefile.in"
-                       (("/bin/sh") (which "sh")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-stuff
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (substitute* "grub-core/Makefile.in"
+               (("/bin/sh") (which "sh")))
 
-                     ;; Give the absolute file name of 'mdadm', used to
-                     ;; determine the root file system when it's a RAID
-                     ;; device.  Failing to do that, 'grub-probe' silently
-                     ;; fails if 'mdadm' is not in $PATH.
-                     (when (assoc-ref inputs "mdadm")
-                       (substitute* "grub-core/osdep/linux/getroot.c"
-                         (("argv\\[0\\] = \"mdadm\"")
-                          (string-append "argv[0] = \""
-                                         (assoc-ref inputs "mdadm")
-                                         "/sbin/mdadm\""))))
+             ;; Give the absolute file name of 'mdadm', used to determine the
+             ;; root file system when it's a RAID device.  Failing to do that,
+             ;; 'grub-probe' silently fails if 'mdadm' is not in $PATH.
+             (when (assoc-ref inputs "mdadm")
+               (substitute* "grub-core/osdep/linux/getroot.c"
+                 (("argv\\[0\\] = \"mdadm\"")
+                  (string-append "argv[0] = \""
+                                 (assoc-ref inputs "mdadm")
+                                 "/sbin/mdadm\""))))
 
-                     ;; Make the font visible.
-                     (copy-file (assoc-ref (or native-inputs inputs)
-                                           "unifont")
-                                "unifont.bdf.gz")
-                     (system* "gunzip" "unifont.bdf.gz")
+             ;; Make the font visible.
+             (copy-file (assoc-ref (or native-inputs inputs)
+                                   "unifont")
+                        "unifont.bdf.gz")
+             (system* "gunzip" "unifont.bdf.gz")
 
-                     ;; Give the absolute file name of 'ckbcomp'.
-                     (substitute* "util/grub-kbdcomp.in"
-                       (("^ckbcomp ")
-                        (string-append
-                         (search-input-file inputs "/bin/ckbcomp")
-                         " ")))))
-                  (add-after 'unpack 'set-freetype-variables
-                    ;; These variables need to be set to the native versions
-                    ;; of the dependencies because they are used to build
-                    ;; programs which are executed during build time.
-                    (lambda* (#:key native-inputs #:allow-other-keys)
-                      (when (assoc-ref native-inputs "freetype")
-                        (let ((freetype (assoc-ref native-inputs "freetype")))
-                          (setenv "BUILD_FREETYPE_LIBS"
-                                  (string-append "-L" freetype
-                                                 "/lib -lfreetype"))
-                          (setenv "BUILD_FREETYPE_CFLAGS"
-                                  (string-append "-I" freetype
-                                                 "/include/freetype2"))))
-                     #t))
-                  (add-before 'check 'disable-flaky-test
-                    (lambda _
-                      ;; This test is unreliable. For more information, see:
-                      ;; <https://bugs.gnu.org/26936>.
-                      (substitute* "Makefile.in"
-                        (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
-                          "grub_cmd_date grub_cmd_sleep"))
-                      #t))
-                  (add-before 'check 'disable-pixel-perfect-test
-                    (lambda _
-                      ;; This test compares many screenshots rendered with an
-                      ;; older Unifont (9.0.06) than that packaged in Guix.
-                      (substitute* "Makefile.in"
-                        (("test_unset grub_func_test")
-                          "test_unset"))
-                      #t)))
+             ;; Give the absolute file name of 'ckbcomp'.
+             (substitute* "util/grub-kbdcomp.in"
+               (("^ckbcomp ")
+                (string-append
+                 (search-input-file inputs "/bin/ckbcomp")
+                 " ")))))
+         (add-after 'unpack 'set-freetype-variables
+           ;; These variables need to be set to the native versions of the
+           ;; dependencies because they are used to build programs which are
+           ;; executed during build time.
+           (lambda* (#:key native-inputs #:allow-other-keys)
+             (when (assoc-ref native-inputs "freetype")
+               (let ((freetype (assoc-ref native-inputs "freetype")))
+                 (setenv "BUILD_FREETYPE_LIBS"
+                         (string-append "-L" freetype
+                                        "/lib -lfreetype"))
+                 (setenv "BUILD_FREETYPE_CFLAGS"
+                         (string-append "-I" freetype
+                                        "/include/freetype2"))))))
+         (add-before 'check 'disable-flaky-test
+           (lambda _
+             ;; This test is unreliable. For more information, see:
+             ;; <https://bugs.gnu.org/26936>.
+             (substitute* "Makefile.in"
+               (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
+                "grub_cmd_date grub_cmd_sleep"))))
+         (add-before 'check 'disable-pixel-perfect-test
+           (lambda _
+             ;; This test compares many screenshots rendered with an older
+             ;; Unifont (9.0.06) than that packaged in Guix.
+             (substitute* "Makefile.in"
+               (("test_unset grub_func_test")
+                "test_unset")))))
        ;; Disable tests on ARM and AARCH64 platforms or when cross-compiling.
        #:tests? ,(not (or (any (cute string-prefix? <> (or (%current-target-system)
                                                            (%current-system)))
@@ -223,19 +220,19 @@
        ("flex" ,flex)
        ("texinfo" ,texinfo)
        ("help2man" ,help2man)
-       ("freetype" ,freetype)   ; native version needed for build-grub-mkfont
+       ("freetype" ,freetype)     ;native version needed for build-grub-mkfont
 
        ;; XXX: When building GRUB 2.02 on 32-bit x86, we need a binutils
        ;; capable of assembling 64-bit instructions.  However, our default
        ;; binutils on 32-bit x86 is not 64-bit capable.
        ,@(if (string-match "^i[3456]86-" (%current-system))
              (let ((binutils (package/inherit
-                              binutils
-                              (name "binutils-i386")
-                              (arguments
-                               (substitute-keyword-arguments (package-arguments binutils)
-                                 ((#:configure-flags flags ''())
-                                  `(cons "--enable-64-bit-bfd" ,flags)))))))
+                                 binutils
+                               (name "binutils-i386")
+                               (arguments
+                                (substitute-keyword-arguments (package-arguments binutils)
+                                  ((#:configure-flags flags ''())
+                                   `(cons "--enable-64-bit-bfd" ,flags)))))))
                `(("ld-wrapper" ,(make-ld-wrapper "ld-wrapper-i386"
                                                  #:binutils binutils))
                  ("binutils" ,binutils)))
