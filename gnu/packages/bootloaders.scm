@@ -1039,16 +1039,16 @@ BOOT_TARGET_NVME(func) \\
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31"
-                          (search-input-file inputs "/bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "BL31"
+                         (search-input-file inputs "/bl31.elf"))))
+             ;; Phases do not succeed on the bl31 ELF.
+             (delete 'strip)
+             (delete 'validate-runpath)))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
