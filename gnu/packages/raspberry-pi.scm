@@ -18,11 +18,14 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages raspberry-pi)
+  #:use-module (gnu bootloader)
+  #:use-module (gnu bootloader grub)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages documentation)
@@ -315,6 +318,22 @@ kernel LINUX."
     (description
      (format #f "The device-tree files for Raspberry Pi models from ~a."
              (package-name linux)))))
+
+(define-public grub-efi-bootloader-chain-raspi-64
+  ;; A bootloader capable to boot a Raspberry Pi over network via TFTP or from
+  ;; a local storage like a micro SD card.  It neither installs firmware nor
+  ;; device-tree files for the Raspberry Pi.  It just assumes them to be
+  ;; existing in boot/efi in the same way that some UEFI firmware with ACPI
+  ;; data is usually assumed to be existing on PCs.  It creates firmware
+  ;; configuration files and a bootloader-chain with U-Boot to provide an EFI
+  ;; API for the final GRUB bootloader.  It also serves as a blue-print to
+  ;; create an a custom bootloader-chain with firmware and device-tree
+  ;; packages or files.
+  (efi-bootloader-chain grub-efi-netboot-removable-bootloader
+                        #:packages (list u-boot-rpi-arm64-efi-bin)
+                        #:files (list %raspi-config-txt
+                                      %raspi-bcm27-dtb-txt
+                                      %raspi-u-boot-bootloader-txt)))
 
 (define (make-raspi-defconfig arch defconfig sha256-as-base32)
   "Make for the architecture ARCH a file-like object from the DEFCONFIG file
