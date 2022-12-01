@@ -68108,8 +68108,31 @@ for locating fonts.")
     (description "This package provides an implementation of zbase32.")
     (license license:lgpl3+)))
 
+(define-public rust-zerocopy-0.6
+  (package
+    (name "rust-zerocopy")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zerocopy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0dpj4nd9v56wy93ahjkp95znjzj91waqvidqch8gxwdwq661hbrk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.3))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Utilities for zero-copy parsing and serialization")
+    (description "Utilities for zero-copy parsing and serialization")
+    (license license:bsd-2)))
+
 (define-public rust-zerocopy-0.3
   (package
+    (inherit rust-zerocopy-0.6)
     (name "rust-zerocopy")
     (version "0.3.1")
     (source
@@ -68119,17 +68142,11 @@ for locating fonts.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00nbb6yal8f74bkpn7msjcnhisimw8s5777a63206rfnn3br45zh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))))
-    (home-page "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy")
-    (synopsis "Utilities for zero-copy parsing and serialization")
-    (description
-     "This package provides utilities for zero-copy parsing and
-serialization.")
     (license license:bsd-3)))
 
 (define-public rust-zerocopy-derive-0.3
