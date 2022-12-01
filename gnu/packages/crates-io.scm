@@ -4950,6 +4950,29 @@ methods.")
     (description "This package provides a safe abstraction around AtomicPtr.")
     (license license:asl2.0)))
 
+(define-public rust-atomic-0.5
+  (package
+    (name "rust-atomic")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "atomic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k135q1qfmxxyzrlhr47r0j38r5fnd4163rgl552qxyagrk853dq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))
+    (home-page "https://github.com/Amanieu/atomic-rs")
+    (synopsis "Generic @code{Atomic<T>} wrapper type")
+    (description
+     "This package provides a generic @code{Atomic<T>} type for all
+@code{T: Copy} types, unlike the standard library which only provides a few
+fixed atomic types.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-atomic-polyfill-1
   (package
     (name "rust-atomic-polyfill")
