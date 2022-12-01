@@ -237,6 +237,7 @@ MODULES =					\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
+  guix/build/kconfig.scm			\
   guix/build/linux-module-build-system.scm	\
   guix/build/store-copy.scm			\
   guix/build/json.scm				\

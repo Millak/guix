@@ -74,6 +74,7 @@
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (ice-9 optargs)
   #:use-module (ice-9 regex))
 
 (define unifont
@@ -688,8 +689,9 @@ def test_ctrl_c"))
 also initializes the boards (RAM etc).  This package provides its
 board-independent tools.")))
 
-(define-public (make-u-boot-package board triplet)
-  "Returns a u-boot package for BOARD cross-compiled for TRIPLET."
+(define*-public (make-u-boot-package board triplet #:key defconfig configs)
+  "Returns a u-boot package for BOARD cross-compiled for TRIPLET with the
+optional DEFCONFIG file and optional configuration changes from CONFIGS."
   (let ((same-arch? (lambda ()
                       (string=? (%current-system)
                                 (gnu-triplet->nix-system triplet)))))
@@ -707,8 +709,11 @@ board-independent tools.")))
       (arguments
        `(#:modules ((ice-9 ftw)
                     (srfi srfi-1)
-                    (guix build utils)
-                    (guix build gnu-build-system))
+                    (guix build gnu-build-system)
+                    (guix build kconfig)
+                    (guix build utils))
+         #:imported-modules (,@%gnu-build-system-modules
+                             (guix build kconfig))
          #:test-target "test"
          #:make-flags
          (list "HOSTCC=gcc"
@@ -719,9 +724,19 @@ board-independent tools.")))
          (modify-phases %standard-phases
            (replace 'configure
              (lambda* (#:key outputs make-flags #:allow-other-keys)
-               (let ((config-name (string-append ,board "_defconfig")))
-                 (if (file-exists? (string-append "configs/" config-name))
-                     (apply invoke "make" `(,@make-flags ,config-name))
+               (let* ((config-name (string-append ,board "_defconfig"))
+                      (config-file (string-append "configs/" config-name))
+                      (defconfig ,defconfig)
+                      (configs ',configs))
+                 (when defconfig
+                   ;; Replace the board-specific defconfig with the given one.
+                   (copy-file defconfig config-file))
+                 (if (file-exists? config-file)
+                     (begin
+                       (when configs
+                         (modify-defconfig config-file configs))
+                       (apply invoke "make" `(,@make-flags ,config-name))
+                       (verify-config ".config" config-file))
                      (begin
                        (display "Invalid board name. Valid board names are:"
                                 (current-error-port))
@@ -775,7 +790,12 @@ board-independent tools.")))
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
 (define-public u-boot-am335x-boneblack
-  (let ((base (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf")))
+  (let ((base (make-u-boot-package
+               "am335x_evm" "arm-linux-gnueabihf"
+               ;; Patch out other device trees to build an image small enough
+               ;; to fit within typical partitioning schemes where the first
+               ;; partition begins at sector 2048.
+               #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\""))))
     (package
       (inherit base)
       (name "u-boot-am335x-boneblack")
@@ -784,43 +804,28 @@ also initializes the boards (RAM etc).
 
 This U-Boot is built for the BeagleBone Black, which was removed upstream,
 adjusted from the am335x_evm build with several device trees removed so that
-it fits within common partitioning schemes.")
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-defconfig
-               ;; Patch out other devicetrees to build image small enough to
-               ;; fit within typical partitioning schemes where the first
-               ;; partition begins at sector 2048.
-               (lambda _
-                 (substitute* "configs/am335x_evm_defconfig"
-                   (("CONFIG_OF_LIST=.*$") "CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"\n"))
-                 #t)))))))))
+it fits within common partitioning schemes."))))
 
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))
 
-(define-public (make-u-boot-sunxi64-package board triplet)
-  (let ((base (make-u-boot-package board triplet)))
+(define*-public (make-u-boot-sunxi64-package board triplet
+                                             #:key defconfig configs)
+  (let ((base (make-u-boot-package
+               board triplet #:defconfig defconfig #:configs configs)))
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (let ((bl31
-                         (string-append
-                          (assoc-ref (or native-inputs inputs) "firmware")
-                          "/bl31.bin")))
-                    (setenv "BL31" bl31)
-                    ;; This is necessary when we're using the bundled dtc.
-                    ;(setenv "PATH" (string-append (getenv "PATH") ":"
-                    ;                              "scripts/dtc"))
-                    )
-                  #t))))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                 (let ((bl31
+                        (string-append
+                         (assoc-ref (or native-inputs inputs) "firmware")
+                         "/bl31.bin")))
+                   (setenv "BL31" bl31))))))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-sun50i-a64)
          ,@(package-native-inputs base))))))
@@ -832,20 +837,11 @@ it fits within common partitioning schemes.")
   (make-u-boot-sunxi64-package "pine64-lts" "aarch64-linux-gnu"))
 
 (define-public u-boot-pinebook
-  (let ((base (make-u-boot-sunxi64-package "pinebook" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-pinebook-config
-               ;; Fix regression with LCD video output introduced in 2020.01
-               ;; https://patchwork.ozlabs.org/patch/1225130/
-               (lambda _
-                 (substitute* "configs/pinebook_defconfig"
-                   (("CONFIG_VIDEO_BRIDGE_ANALOGIX_ANX6345=y") "CONFIG_VIDEO_BRIDGE_ANALOGIX_ANX6345=y\nCONFIG_VIDEO_BPP32=y"))
-                 #t)))))))))
+  (make-u-boot-sunxi64-package
+   "pinebook" "aarch64-linux-gnu"
+   ;; Fix regression with LCD video output introduced in 2020.01
+   ;; https://patchwork.ozlabs.org/patch/1225130/
+   #:configs '("CONFIG_VIDEO_BPP32=y")))
 
 (define-public u-boot-bananapi-m2-ultra
   (make-u-boot-package "Bananapi_M2_Ultra" "arm-linux-gnueabihf"))
@@ -896,25 +892,18 @@ device while it's being turned on (and a while longer).")
   (make-u-boot-package "mx6cuboxi" "arm-linux-gnueabihf"))
 
 (define-public u-boot-novena
-  (let ((base (make-u-boot-package "novena" "arm-linux-gnueabihf")))
+  (let ((base (make-u-boot-package
+               "novena" "arm-linux-gnueabihf"
+               ;; Patch configuration to disable loading u-boot.img from FAT
+               ;; partition, allowing it to be installed at a device offset.
+               #:configs '("# CONFIG_SPL_FS_FAT is not set"))))
     (package
       (inherit base)
       (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).
 
 This U-Boot is built for Novena.  Be advised that this version, contrary
-to Novena upstream, does not load u-boot.img from the first partition.")
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-novena-defconfig
-               ;; Patch configuration to disable loading u-boot.img from FAT partition,
-               ;; allowing it to be installed at a device offset.
-               (lambda _
-                 (substitute* "configs/novena_defconfig"
-                   (("CONFIG_SPL_FS_FAT=y") "# CONFIG_SPL_FS_FAT is not set"))
-                 #t)))))))))
+to Novena upstream, does not load u-boot.img from the first partition."))))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))
@@ -1002,7 +991,15 @@ to Novena upstream, does not load u-boot.img from the first partition.")
          ,@(package-native-inputs base))))))
 
 (define-public u-boot-rockpro64-rk3399
-  (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu")))
+  (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu"
+                                   #:configs '("CONFIG_USB=y"
+                                               "CONFIG_AHCI=y"
+                                               "CONFIG_AHCI_PCI=y"
+                                               "CONFIG_SATA=y"
+                                               "CONFIG_SATA_SIL=y"
+                                               "CONFIG_SCSI=y"
+                                               "CONFIG_SCSI_AHCI=y"
+                                               "CONFIG_DM_SCSI=y"))))
     (package
       (inherit base)
       (arguments
@@ -1013,19 +1010,8 @@ to Novena upstream, does not load u-boot.img from the first partition.")
                 (lambda* (#:key inputs #:allow-other-keys)
                   (setenv "BL31"
                           (search-input-file inputs "/bl31.elf"))))
-              (add-after 'unpack 'patch-config
+              (add-after 'unpack 'patch-header
                 (lambda _
-                  (substitute* "configs/rockpro64-rk3399_defconfig"
-                    (("CONFIG_USB=y") "\
-CONFIG_USB=y
-CONFIG_AHCI=y
-CONFIG_AHCI_PCI=y
-CONFIG_SATA=y
-CONFIG_SATA_SIL=y
-CONFIG_SCSI=y
-CONFIG_SCSI_AHCI=y
-CONFIG_DM_SCSI=y
-"))
                   (substitute* "include/config_distro_bootcmd.h"
                     (("\"scsi_need_init=false")
                      "\"setenv scsi_need_init false")
