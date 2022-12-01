@@ -479,14 +479,14 @@ menu to select one of the installed operating systems.")
     (build-system gnu-build-system)
     (native-inputs
      (append
-       (list bison
-             flex
-             libyaml
-             pkg-config
-             swig)
-       (if (member (%current-system) (package-supported-systems valgrind))
-           (list valgrind)
-           '())))
+      (list bison
+            flex
+            libyaml
+            pkg-config
+            swig)
+      (if (member (%current-system) (package-supported-systems valgrind))
+          (list valgrind)
+          '())))
     (inputs
      (list python))
     (arguments
