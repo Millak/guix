@@ -68132,8 +68132,34 @@ for locating fonts.")
 serialization.")
     (license license:bsd-3)))
 
+(define-public rust-zerocopy-derive-0.3
+  (package
+    (name "rust-zerocopy-derive")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zerocopy-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18qr7dqlj89v1xl1g58l2xd6jidv0sbccscgl131gpppba0yc1b5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Custom derive for traits from the zerocopy Rust crate")
+    (description
+     "This package provides custom derive for traits from the zerocopy Rust
+crate.")
+    (license license:bsd-2)))
+
 (define-public rust-zerocopy-derive-0.2
   (package
+    (inherit rust-zerocopy-derive-0.3)
     (name "rust-zerocopy-derive")
     (version "0.2.1")
     (source
@@ -68143,18 +68169,12 @@ serialization.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1594sf9wwgpbavl1hb1avyz6n7km9apm8afc03x9y8h3spk3k76w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1)
         ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy/zerocopy-derive")
-    (synopsis "Custom derive for traits from the zerocopy Rust crate")
-    (description
-     "This package provides custom derive for traits from the zerocopy Rust
-crate.")
     (license license:bsd-3)))
 
 (define-public rust-zeroize-1
