@@ -1869,7 +1869,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/spectre-meltdown-checker-find-kernel.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-glib-2.68.patch		\
-  %D%/packages/patches/sssd-optional-systemd.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
   %D%/packages/patches/suitesparse-mongoose-cmake.patch		\
