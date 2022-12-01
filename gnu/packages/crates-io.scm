@@ -41075,7 +41075,7 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
 (define-public rust-pkg-config-0.3
   (package
     (name "rust-pkg-config")
-    (version "0.3.19")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -41083,7 +41083,7 @@ with additional support for PKCS#8v2 asymmetric key packages (RFC 5958).")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0k4860955riciibxr8bhnklp79jydp4xfylwdn5v9kj96hxlac9q"))))
+         "0q2i61dhqvawc51zfzl3jich57w0cjgfa894hn6ings7ffgsbjba"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
