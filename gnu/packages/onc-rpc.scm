@@ -6,6 +6,7 @@
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -63,6 +64,7 @@
                             "tirpc/netconfig.h")
                (("/etc/netconfig") (string-append (assoc-ref outputs "out")
                                                   "/etc/netconfig"))))))))
+    (native-inputs (list mit-krb5)) ;; for cross-compilation
     (inputs (list mit-krb5))
     (home-page "https://sourceforge.net/projects/libtirpc/")
     (synopsis "Transport-independent Sun/ONC RPC implementation")
