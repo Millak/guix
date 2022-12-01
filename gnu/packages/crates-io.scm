@@ -2891,14 +2891,14 @@ last place (ULPs) comparisons.")
 (define-public rust-arbitrary-1
   (package
     (name "rust-arbitrary")
-    (version "1.0.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "arbitrary" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "14a6r7q9b1kf1m7810p8bcl51q11mrwc5z7fjkz0lx6kdvyk0x13"))))
+        (base32 "106qgz0qxs202xlvjfyvw8dkb6ynr1ymmcclfh89l56mj2zpzm19"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -16372,14 +16372,14 @@ Rust.")
 (define-public rust-derive-arbitrary-1
   (package
     (name "rust-derive-arbitrary")
-    (version "1.0.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "derive_arbitrary" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0nig0iydva7a9h9i9qyi6an9w5qjafmn3qlzvdqqiw0x2kp824jz"))))
+        (base32 "0zw12jc6k6aixqs6m2rsj56grhx2xjw2l8rhr8rj1wj897qdy0s9"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
