@@ -1033,7 +1033,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.10")
+    (version "2.1.12")
     (source
      (origin
        (method git-fetch)
@@ -1045,25 +1045,22 @@ use-case, we encourage users to compose functions to achieve their goals.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i62j6ksmp78ap2dnl969gq6vprc3q87zc8ksj9if8g2603iq6i8"))
+         "06x2d8fv80jp86kd66fm3ragmxrpa2j0lzsbm337ziqjnpsdwc0f"))
        (modules '((guix build utils)))
        ;; Delete generated C files.
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'use-cython
            (lambda _ (setenv "USE_CYTHON" "1")))
-         (add-after 'unpack 'relax
-           (lambda _
-             (substitute* "setup.py"
-               (("pytest < 5.3.4") "pytest"))))
          (add-after 'unpack 'disable-broken-tests
            (lambda _
-             (substitute* "biom/tests/test_cli/test_validate_table.py"
-               (("^(.+)def test_invalid_hdf5" m indent)
+             (substitute* "biom/tests/test_util.py"
+               (("^(.+)def test_biom_open_hdf5_no_h5py" m indent)
                 (string-append indent
                                "@npt.dec.skipif(True, msg='Guix')\n"
                                m)))
@@ -1074,13 +1071,14 @@ use-case, we encourage users to compose functions to achieve their goals.")
                                m))))))))
     (propagated-inputs
      (list python-anndata
-           python-numpy
-           python-scipy
+           python-click
            python-flake8
            python-future
-           python-click
            python-h5py
-           python-pandas))
+           python-numpy
+           python-pandas
+           python-scikit-bio
+           python-scipy))
     (native-inputs
      (list python-cython python-pytest python-pytest-cov python-nose))
     (home-page "http://www.biom-format.org")
