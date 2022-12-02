@@ -8381,8 +8381,33 @@ of built-in fundamental numeric types.")
      "This package provides a library for interaction with units of bytes.")
     (license license:expat)))
 
+(define-public rust-bytecheck-0.6
+  (package
+    (name "rust-bytecheck")
+    (version "0.6.9")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bytecheck" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0vs0a8p3bpaz3vc15zknqkd5ajgzgswf2bmd1mbwdbdm28naq76i"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytecheck-derive" ,rust-bytecheck-derive-0.6)
+        ("rust-ptr-meta" ,rust-ptr-meta-0.1)
+        ("rust-simdutf8" ,rust-simdutf8-0.1)
+        ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/rkyv/bytecheck")
+    (synopsis "Type validation framework")
+    (description "This package provides a type validation framework for
+Rust.")
+    (license license:expat)))
+
 (define-public rust-bytecheck-0.5
   (package
+    (inherit rust-bytecheck-0.6)
     (name "rust-bytecheck")
     (version "0.5.2")
     (source
@@ -8392,31 +8417,25 @@ of built-in fundamental numeric types.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0q11ap6nqj0rsc8ypwjh918916zlrcrzdgqm175gnpb2yn9axyh1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-bytecheck-derive" ,rust-bytecheck-derive-0.5)
         ("rust-log" ,rust-log-0.4)
         ("rust-ptr-meta" ,rust-ptr-meta-0.1)
-        ("rust-simdutf8" ,rust-simdutf8-0.1))))
-    (home-page "https://github.com/rkyv/bytecheck")
-    (synopsis "Type validation framework")
-    (description "This package provides a type validation framework for
-Rust.")
-    (license license:expat)))
+        ("rust-simdutf8" ,rust-simdutf8-0.1))))))
 
-(define-public rust-bytecheck-derive-0.5
+(define-public rust-bytecheck-derive-0.6
   (package
     (name "rust-bytecheck-derive")
-    (version "0.5.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "bytecheck_derive" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "0grbkwwv5j91n7zrimci6fh4k79flxga3mkjg50jysnyraizi088"))))
+    (version "0.6.9")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bytecheck_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1gxr63mi91rrjzfzcb8pfwsnarp9i2w1n168nc05aq4fx7mpdr8k"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -8428,6 +8447,24 @@ Rust.")
     (description "This package provides a Derive macro for bytecheck, the type
 validation framework for Rust.")
     (license license:expat)))
+
+(define-public rust-bytecheck-derive-0.5
+  (package
+    (inherit rust-bytecheck-derive-0.6)
+    (name "rust-bytecheck-derive")
+    (version "0.5.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bytecheck_derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0grbkwwv5j91n7zrimci6fh4k79flxga3mkjg50jysnyraizi088"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-bytecount-0.6
   (package
