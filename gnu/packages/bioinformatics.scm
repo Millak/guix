@@ -1095,42 +1095,45 @@ e.g. microbiome samples, genomes, metagenomes.")
 (define-public python-pairtools
   (package
     (name "python-pairtools")
-    (version "0.3.0")
+    (version "1.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mirnylab/pairtools")
+                    (url "https://github.com/open2c/pairtools")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gr8y13q7sd6yai6df4aavl2470n1f9s3cib6r473z4hr8hcbwmc"))))
+                "0xn4cg4jq3rfn42h8rfwg0k6xkvihjrv32gwldb9y0jp05lzw9cs"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-references
            (lambda _
-             (substitute* '("pairtools/pairtools_merge.py"
-                            "pairtools/pairtools_sort.py")
-               (("/bin/bash") (which "bash")))
-             #t))
+             (substitute* '("pairtools/cli/header.py"
+                            "pairtools/cli/merge.py"
+                            "pairtools/cli/sort.py")
+               (("/bin/bash") (which "bash")))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (with-directory-excursion "/tmp"
                  (invoke "pytest" "-v"))))))))
     (native-inputs
-     (list python-cython python-nose python-pytest))
-    (inputs
-     `(("python" ,python-wrapper)))
+     (list python-cython python-pytest))
     (propagated-inputs
      (list htslib ; for bgzip, looked up in PATH
            samtools ; looked up in PATH
            lz4 ; for lz4c
+           python-bioframe
            python-click
-           python-numpy))
-    (home-page "https://github.com/mirnylab/pairtools")
+           python-numpy
+           python-pandas
+           python-pysam
+           python-pyyaml
+           python-scipy))
+    (home-page "https://github.com/open2c/pairtools")
     (synopsis "Process mapped Hi-C data")
     (description "Pairtools is a simple and fast command-line framework to
 process sequencing data from a Hi-C experiment.  Process pair-end sequence
