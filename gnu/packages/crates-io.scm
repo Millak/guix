@@ -65089,8 +65089,47 @@ first byte.")
         (base32
          "0zamsj2986shm4x9zncjf2m5qy9scaw7qnxw4f89b2afpg6a8wl7"))))))
 
+(define-public rust-uuid-1
+  (package
+    (name "rust-uuid")
+    (version "1.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "uuid" version))
+              (file-name
+               (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k6fchay62ryjhkxsbbj38030lm3797c13vsp54bkd9ij3gf0bj2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-trybuild" ,rust-trybuild-1)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3)
+        ("rust-windows-sys" ,rust-windows-sys-0.42))
+       #:cargo-inputs
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-atomic" ,rust-atomic-0.5)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-md-5" ,rust-md-5-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-sha1-smol" ,rust-sha1-smol-1)
+        ("rust-slog" ,rust-slog-2)
+        ("rust-uuid-macro-internal" ,rust-uuid-macro-internal-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))))
+    (home-page "https://github.com/uuid-rs/uuid")
+    (synopsis "Library to generate and parse UUIDs")
+    (description
+     "This package provides a library to generate and parse UUIDs.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-uuid-0.8
   (package
+    (inherit rust-uuid-1)
     (name "rust-uuid")
     (version "0.8.2")
     (source
@@ -65102,7 +65141,6 @@ first byte.")
         (sha256
          (base32
           "1dy4ldcp7rnzjy56dxh7d2sgrcvn4q77y0a8r0a48946h66zjp5w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -65111,12 +65149,7 @@ first byte.")
         ("rust-serde" ,rust-serde-1)
         ("rust-sha1" ,rust-sha1-0.6)
         ("rust-slog" ,rust-slog-2)
-        ("rust-winapi" ,rust-winapi-0.3))))
-    (home-page "https://github.com/uuid-rs/uuid")
-    (synopsis "Library to generate and parse UUIDs")
-    (description
-     "This package provides a library to generate and parse UUIDs.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-winapi" ,rust-winapi-0.3))))))
 
 (define-public rust-uuid-0.7
   (package
