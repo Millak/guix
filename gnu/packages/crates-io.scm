@@ -14189,24 +14189,26 @@ using const generics.")
 (define-public rust-crypto-common-0.1
   (package
     (name "rust-crypto-common")
-    (version "0.1.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "crypto-common" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "1l4q4ync13i056vjc775v0za8qh987da7yvrjj25q909cd9nngb8"))))
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "crypto-common" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1cvby95a6xg7kxdz5ln3rl9xh66nz66w46mm3g56ri1z5x815yqv"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build?
-        #t
-        #:cargo-inputs
-        (("rust-generic-array" ,rust-generic-array-0.14)
-         ("rust-rand-core" ,rust-rand-core-0.6))))
+     `(#:cargo-inputs
+       (("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-typenum" ,rust-typenum-1))))
     (home-page "https://github.com/RustCrypto/traits")
     (synopsis "Common cryptographic traits")
-    (description "Common cryptographic traits")
+    (description
+     "This package contains a collection of traits which describe functionality
+of cryptographic primitives.")
+    ;; The user can choose either license.
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-crypto-mac-0.11
