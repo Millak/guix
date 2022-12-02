@@ -1176,8 +1176,7 @@ alignments and perform the following operations:
                         (package-inputs this-package)))))))
        `(#:phases
          (modify-phases %standard-phases
-           (add-after
-               'install 'wrap-programs
+           (add-after 'install 'wrap-programs
              (lambda* (#:key outputs #:allow-other-keys)
                ;; Make sure all executables in "bin" find the required Perl
                ;; modules at runtime.  As the PERL5LIB variable contains also
@@ -1194,8 +1193,7 @@ alignments and perform the following operations:
                  (for-each (lambda (file)
                              (wrap-program file
                                `("PERL5LIB" ":" prefix (,path))))
-                           (find-files bin "\\.pl$"))
-                 #t)))))))
+                           (find-files bin "\\.pl$")))))))))
     (inputs
      (list perl-module-build perl-data-stag perl-libwww perl-uri))
     (native-inputs
