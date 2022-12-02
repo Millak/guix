@@ -836,7 +836,6 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
     (version version)
     (source source)
     (supported-systems supported-systems)
-    (outputs `("out" ,@(if build-doc? '("doc") '())))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -863,16 +862,10 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                         (invoke "make" "infodocs")))
                     (add-after 'build-doc 'install-doc
                       (lambda _
-                        (let* ((info-dir (string-append #$output:doc
-                                                        "/share/info"))
-                               (info (string-append
-                                      info-dir "/TheLinuxKernel.info.gz")))
-                          (with-directory-excursion "Documentation/output"
-                            (invoke "make" "-C" "texinfo" "install-info"
-                                    (string-append "infodir=" info-dir)))
-                          ;; Create a symlink, for convenience.
-                          (symlink info (string-append info-dir
-                                                       "/linux.info.gz"))))))
+                        (with-directory-excursion "Documentation/output"
+                          (invoke "make" "-C" "texinfo" "install-info"
+                                  (string-append "infodir=" #$output
+                                                 "/share/info"))))))
                  #~())
           (add-before 'configure 'set-environment
             (lambda* (#:key target #:allow-other-keys)

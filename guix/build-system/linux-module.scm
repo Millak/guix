@@ -59,7 +59,6 @@
     (name (string-append (package-name linux) "-module-builder"))
     (inputs
      `(("linux" ,linux)))
-    (outputs (delete "doc" (package-outputs linux)))
     (arguments
      (substitute-keyword-arguments (package-arguments linux)
        ((#:phases phases)
