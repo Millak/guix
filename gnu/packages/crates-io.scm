@@ -29334,6 +29334,35 @@ kernel32.")
      "This package provides a Log macro for log's kv-unstable backend.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-k9-0.11
+  (package
+    (name "rust-k9")
+    (version "0.11.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "k9" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a8pxz6fygqzknxdlb4l835kqxgjk7snm4bjhhhn783r025vbp9j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-colored" ,rust-colored-1)
+                       ("rust-diff" ,rust-diff-0.1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-term-size" ,rust-term-size-0.3))))
+    (home-page "https://github.com/aaronabramov/k9")
+    (synopsis "Testing library")
+    (description
+     "This package contains helper macros for writing unit tests.")
+    (license license:expat)))
+
 (define-public rust-language-tags-0.3
   (package
     (name "rust-language-tags")
