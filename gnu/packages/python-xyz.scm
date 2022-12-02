@@ -164,6 +164,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages django)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages docker)
@@ -22431,6 +22432,25 @@ working with iterables.")
     (home-page "https://readthedocs.org/projects/latexcodec/")
     (synopsis "Work with LaTeX code in Python")
     (description "Lexer and codec to work with LaTeX code in Python.")
+    (license license:expat)))
+
+(define-public python-pybloom-live
+  (package
+    (name "python-pybloom-live")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pybloom_live" version))
+              (sha256
+               (base32
+                "040i6bjqvl33j30v865shsk30s3h7f16pqwiaj5kig857dfmqm4r"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-bitarray python-xxhash))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/joseph-fox/python-bloomfilter")
+    (synopsis "Bloom filter")
+    (description "This package provides a scalable Bloom filter implemented in
+Python.")
     (license license:expat)))
 
 (define-public python-pybtex
