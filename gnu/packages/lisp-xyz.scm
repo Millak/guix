@@ -455,8 +455,8 @@ It's intended as a simpler alternative to parser generators.")
   (sbcl-package->ecl-package sbcl-meta))
 
 (define-public sbcl-clavier
-  (let ((commit "048bea40cac0a89480f8c41ae542be45945f3268")
-        (revision "0"))
+  (let ((commit "9b1424eaad131e114a45b400784079124b5e2321")
+        (revision "1"))
     (package
       (name "sbcl-clavier")
       (version (git-version "0.0.0" revision commit))
@@ -468,7 +468,7 @@ It's intended as a simpler alternative to parser generators.")
                (commit commit)))
          (file-name (git-file-name "cl-clavier" version))
          (sha256
-          (base32 "0734xia2hf7lqkm59gjhyvpsp0vl50djyhy4llwwbzbwwdkdihw4"))))
+          (base32 "1gjd0rhxs2x7gn3fw1hnxivmm4ca4f1wxlg0fqv8fdfabgzsvl5y"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-stefil))
       (inputs
