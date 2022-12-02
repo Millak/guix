@@ -2978,6 +2978,71 @@ generation, and transformation to RDF.  Salad provides a bridge between document
 and record oriented data modeling and the Semantic Web.")
     (license license:asl2.0)))
 
+(define-public python-scikit-bio
+  (package
+    (name "python-scikit-bio")
+    (version "0.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scikit-bio" version))
+              (sha256
+               (base32
+                "1a8xbp3vrw8wfpm3pa2nb4rcar0643iqnb043ifwqbqyc86clhv3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See https://github.com/biocore/scikit-bio/pull/1826
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "skbio/sequence/tests/test_sequence.py"
+               (("def test_concat_strict_many")
+                "def _do_not_test_concat_strict_many"))
+             (substitute* "skbio/stats/distance/_mantel.py"
+               (("from scipy.stats import PearsonRConstantInputWarning")
+                "from scipy.stats import ConstantInputWarning")
+               (("from scipy.stats import PearsonRNearConstantInputWarning")
+                "from scipy.stats import NearConstantInputWarning")
+               (("from scipy.stats import SpearmanRConstantInputWarning") "")
+               (("warnings.warn\\(PearsonRConstantInputWarning\\(\\)\\)")
+                "warnings.warn(ConstantInputWarning())")
+               (("warnings.warn\\(PearsonRNearConstantInputWarning\\(\\)\\)")
+                "warnings.warn(NearConstantInputWarning())")
+               (("warnings.warn\\(SpearmanRConstantInputWarning\\(\\)\\)")
+                "warnings.warn(ConstantInputWarning())"))
+             (substitute* "skbio/diversity/alpha/tests/test_base.py"
+               (("self.assertEqual\\(pielou_e")
+                "self.assertAlmostEqual(pielou_e"))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python3" "setup.py" "build_ext" "--inplace")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "python3" "-m" "skbio.test")))))))
+    (propagated-inputs
+     (list python-cachecontrol
+           python-decorator
+           python-h5py
+           python-hdmedians
+           python-ipython
+           python-lockfile
+           python-matplotlib
+           python-natsort
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-coverage python-pytest))
+    (home-page "https://scikit-bio.org")
+    (synopsis "Data structures, algorithms and educational resources for bioinformatics")
+    (description
+     "This package provides data structures, algorithms and educational
+resources for bioinformatics.")
+    (license license:bsd-3)))
+
 (define-public cwltool
   (package
     (name "cwltool")
