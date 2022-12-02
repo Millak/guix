@@ -63793,7 +63793,7 @@ deserialization.")
 (define-public rust-typenum-1
   (package
     (name "rust-typenum")
-    (version "1.12.0")
+    (version "1.15.0")
     (source
       (origin
         (method url-fetch)
@@ -63801,8 +63801,10 @@ deserialization.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0cvbksljz61ian21fnn0h51kphl0pwpzb932bv4s0rwy1wh8lg1p"))))
+          "11yrvz1vd43gqv738yw1v75rzngjbs7iwcgzjy3cq5ywkv2imy6w"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-scale-info" ,rust-scale-info-1))))
     (home-page "https://github.com/paholg/typenum")
     (synopsis "Rust library for type-level numbers evaluated at compile time")
     (description "Typenum is a Rust library for type-level numbers evaluated at
