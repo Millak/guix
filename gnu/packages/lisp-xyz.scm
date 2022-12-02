@@ -255,6 +255,46 @@ text.")
 (define-public ecl-langutils
   (sbcl-package->ecl-package sbcl-langutils))
 
+(define-public sbcl-duologue
+  (let ((commit "ea1ada244a81da65f85b548823c9a6d7c9c145e1")
+        (revision "0"))
+    (package
+      (name "sbcl-duologue")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/duologue")
+               (commit commit)))
+         (file-name (git-file-name "cl-duologue" version))
+         (sha256
+          (base32 "1yg7f27im9h0m6jihcay1p7alfhzm9hafwm5dw5hsyacy8f2cwk2"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-stefil))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-anaphora
+              sbcl-chronicity
+              sbcl-cl-ansi-text
+              sbcl-cl-fad
+              sbcl-clavier
+              sbcl-drakma))
+      (home-page "https://github.com/mmontone/duologue/")
+      (synopsis "High level user interaction library")
+      (description
+       "Duologue is high-level interaction library for Common Lisp.  It features
+coloured printing via @code{cl-ansi-text} and readline completion.")
+      (license (list license:expat
+                     ;; https://github.com/mmontone/duologue/issues/9
+                     license:gpl3+)))))
+
+(define-public cl-duologue
+  (sbcl-package->cl-source-package sbcl-duologue))
+
+(define-public ecl-duologue
+  (sbcl-package->ecl-package sbcl-duologue))
+
 (define-public sbcl-alea
   (package
     (name "sbcl-alea")
