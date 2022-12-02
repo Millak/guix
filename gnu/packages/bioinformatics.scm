@@ -57,6 +57,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system r)
@@ -10600,6 +10601,37 @@ use of lightweight alignments (accurate but fast-to-compute proxies for
 traditional read alignments) and massively-parallel stochastic collapsed
 variational inference.")
     (license license:gpl3+)))
+
+(define-public python-genomic-regions
+  (package
+    (name "python-genomic-regions")
+    (version "0.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "genomic_regions" version))
+              (sha256
+               (base32
+                "0hz811iyd1prml1r90qyzimmwyjwycwkjqw4vnl12bxy61rfzjz5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-future
+           python-intervaltree
+           python-numpy
+           python-pandas
+           python-pybedtools
+           python-pybigwig
+           python-pytest
+           python-msgpack-numpy
+           python-cython
+           python-msgpack
+           python-pysam))
+    (home-page "https://pypi.org/project/genomic-regions/")
+    (synopsis "Consistently handle genomic regions")
+    (description "This package aims to simplify working with genomic region /
+interval data by providing a common interface that lets you access a wide
+selection of file types and formats for handling genomic region data---all
+using the same syntax.")
+    (license license:expat)))
 
 (define-public python-loompy
   (package
