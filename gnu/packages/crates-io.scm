@@ -12429,8 +12429,42 @@ semantics than those provided by @code{as} or @code{From}/@code{Into}.")
     (description "Convert strings into any case.")
     (license license:expat)))
 
+(define-public rust-cookie-0.15
+  (package
+    (name "rust-cookie")
+    (version "0.15.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cookie" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03gql9c2l0wg3hpfp67wg2ns21wysk0xsjxwdbjrf0s6grrcgwfm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes-gcm" ,rust-aes-gcm-0.8)
+        ("rust-base64" ,rust-base64-0.13)
+        ("rust-hkdf" ,rust-hkdf-0.10)
+        ("rust-hmac" ,rust-hmac-0.10)
+        ("rust-percent-encoding" ,rust-percent-encoding-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.9)
+        ("rust-subtle" ,rust-subtle-2)
+        ("rust-time" ,rust-time-0.2)
+        ("rust-version-check" ,rust-version-check-0.9))))
+    (home-page "https://github.com/SergioBenitez/cookie-rs")
+    (synopsis
+     "Crate for parsing HTTP cookie headers and managing a cookie jar")
+    (description
+     "Parse HTTP cookie headers and manage a cookie jar with this crate.
+It supports signed and private (encrypted + signed) jars.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cookie-0.12
   (package
+    (inherit rust-cookie-0.15)
     (name "rust-cookie")
     (version "0.12.0")
     (source
@@ -12442,20 +12476,12 @@ semantics than those provided by @code{as} or @code{From}/@code{Into}.")
        (sha256
         (base32
          "1mdvqixahcywvqp0y8k2skkgbpfhsp0w73l9mz93dcrx1gq091l8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.10)
         ("rust-ring" ,rust-ring-0.14)
         ("rust-time" ,rust-time-0.1)
-        ("rust-url" ,rust-url-1))))
-    (home-page "https://github.com/SergioBenitez/cookie-rs")
-    (synopsis
-     "Crate for parsing HTTP cookie headers and managing a cookie jar")
-    (description
-     "Parse HTTP cookie headers and manage a cookie jar with this crate.
-It supports signed and private (encrypted + signed) jars.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-url" ,rust-url-1))))))
 
 (define-public rust-cookie-0.11
   (package
@@ -12574,36 +12600,6 @@ contents of the OS-level clipboard.")
     (description "This package provides special functions for fixed-point
 numbers using the CORDIC method.")
     (license license:bsd-3)))
-
-(define-public rust-cookie-0.15
-  (package
-    (name "rust-cookie")
-    (version "0.15.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "cookie" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "03gql9c2l0wg3hpfp67wg2ns21wysk0xsjxwdbjrf0s6grrcgwfm"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-aes-gcm" ,rust-aes-gcm-0.8)
-        ("rust-base64" ,rust-base64-0.13)
-        ("rust-hkdf" ,rust-hkdf-0.10)
-        ("rust-hmac" ,rust-hmac-0.10)
-        ("rust-percent-encoding" ,rust-percent-encoding-2)
-        ("rust-rand" ,rust-rand-0.8)
-        ("rust-sha2" ,rust-sha2-0.9)
-        ("rust-subtle" ,rust-subtle-2)
-        ("rust-time" ,rust-time-0.2)
-        ("rust-version-check" ,rust-version-check-0.9))))
-    (home-page "https://github.com/SergioBenitez/cookie-rs")
-    (synopsis "HTTP cookie parsing and cookie jar management")
-    (description "This package provides HTTP cookie parsing and cookie jar
-management.  It supports signed and private (encrypted, authenticated) jars.")
-    (license (list license:expat license:asl2.0))))
 
 (define-public rust-core2-0.3
   (package
