@@ -45,6 +45,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
@@ -2009,6 +2010,36 @@ and fast file reading.")
     (description
      "This package provides tools to export R data as LaTeX and HTML tables.")
     (license license:gpl2+)))
+
+(define-public python-hdmedians
+  (package
+    (name "python-hdmedians")
+    (version "0.14.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hdmedians" version))
+              (sha256
+               (base32
+                "1mn2k8srnmfy451l7zvb2l4hn9701bc5awjm6q3vmqbicyqyqyml"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
+    (propagated-inputs (list python-cython python-numpy))
+    (native-inputs (list python-nose))
+    (home-page "http://github.com/daleroberts/hdmedians")
+    (synopsis "High-dimensional medians")
+    (description "Various definitions for a high-dimensional median exist and
+this Python package provides a number of fast implementations of these
+definitions.  Medians are extremely useful due to their high breakdown
+point (up to 50% contamination) and have a number of nice applications in
+machine learning, computer vision, and high-dimensional statistics.")
+    (license license:asl2.0)))
 
 (define-public python-patsy
   (package

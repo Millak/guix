@@ -4950,6 +4950,29 @@ methods.")
     (description "This package provides a safe abstraction around AtomicPtr.")
     (license license:asl2.0)))
 
+(define-public rust-atomic-0.5
+  (package
+    (name "rust-atomic")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "atomic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k135q1qfmxxyzrlhr47r0j38r5fnd4163rgl552qxyagrk853dq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-autocfg" ,rust-autocfg-1))))
+    (home-page "https://github.com/Amanieu/atomic-rs")
+    (synopsis "Generic @code{Atomic<T>} wrapper type")
+    (description
+     "This package provides a generic @code{Atomic<T>} type for all
+@code{T: Copy} types, unlike the standard library which only provides a few
+fixed atomic types.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-atomic-polyfill-1
   (package
     (name "rust-atomic-polyfill")
@@ -17146,7 +17169,7 @@ diff.")
 (define-public rust-digest-0.10
   (package
     (name "rust-digest")
-    (version "0.10.1")
+    (version "0.10.6")
     (source
      (origin
        (method url-fetch)
@@ -17155,7 +17178,7 @@ diff.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16wpqnwlzx0lbnwccwikns7dq8fblcc6kma2l7xz8anlh5hdd5xn"))))
+         "0vz74785s96g727vg37iwkjvbkcfzp093j49ihhyf8sh9s7kfs41"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -29311,6 +29334,35 @@ kernel32.")
      "This package provides a Log macro for log's kv-unstable backend.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-k9-0.11
+  (package
+    (name "rust-k9")
+    (version "0.11.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "k9" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1a8pxz6fygqzknxdlb4l835kqxgjk7snm4bjhhhn783r025vbp9j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-anyhow" ,rust-anyhow-1)
+                       ("rust-colored" ,rust-colored-1)
+                       ("rust-diff" ,rust-diff-0.1)
+                       ("rust-lazy-static" ,rust-lazy-static-1)
+                       ("rust-libc" ,rust-libc-0.2)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-syn" ,rust-syn-1)
+                       ("rust-term-size" ,rust-term-size-0.3))))
+    (home-page "https://github.com/aaronabramov/k9")
+    (synopsis "Testing library")
+    (description
+     "This package contains helper macros for writing unit tests.")
+    (license license:expat)))
+
 (define-public rust-language-tags-0.3
   (package
     (name "rust-language-tags")
@@ -32372,8 +32424,33 @@ parallelize and optimize.")
      "This package provides MaybeUninit for friends of backwards compatibility.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-md-5-0.10
+  (package
+    (name "rust-md-5")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "md-5" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1jmrykh705dfclkgxwjysj5y8l1nyrn1gddw5xpgyjyla1l50rb3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-md5-asm" ,rust-md5-asm-0.5))))
+    (home-page "https://github.com/RustCrypto/hashes")
+    (synopsis "MD5 hash function")
+    (description
+     "This library provides a MD5 hash function for Rust.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-md-5-0.9
   (package
+    (inherit rust-md-5-0.10)
     (name "rust-md-5")
     (version "0.9.1")
     (source
@@ -32385,7 +32462,6 @@ parallelize and optimize.")
         (sha256
          (base32
           "059ajjacz1q3cms7vl6cvhdqs4qdw2nnwj9dq99ryzv0p6djfnkv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-block-buffer" ,rust-block-buffer-0.9)
@@ -32394,11 +32470,7 @@ parallelize and optimize.")
         ("rust-opaque-debug" ,rust-opaque-debug-0.3))
        #:cargo-development-inputs
        (("rust-digest" ,rust-digest-0.9)
-        ("rust-hex-literal" ,rust-hex-literal-0.2))))
-    (home-page "https://github.com/RustCrypto/hashes")
-    (synopsis "MD5 hash function")
-    (description "MD5 hash function.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
 (define-public rust-md-5-0.8
   (package
@@ -32472,8 +32544,31 @@ parallelize and optimize.")
         (base32
          "0j2s8aqdkhwhy7awga2bmv5n8qq8bgy8672iha9f3y871dm6vibr"))))))
 
+(define-public rust-md5-asm-0.5
+  (package
+    (name "rust-md5-asm")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "md5-asm" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ixmkg8j7sqy9zln6pz9xi2dl2d9zpm8pz6p49za47n1bvradfbk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/RustCrypto/asm-hashes")
+    (synopsis "Assembly implementation of MD5 compression function")
+    (description
+     "This package contains an assembly implementation of the MD5
+compression function.")
+    (supported-systems '("x86_64-linux" "i686-linux"))
+    (license license:expat)))
+
 (define-public rust-md5-asm-0.4
   (package
+    (inherit rust-md5-asm-0.5)
     (name "rust-md5-asm")
     (version "0.4.3")
     (source
@@ -32485,16 +32580,9 @@ parallelize and optimize.")
         (sha256
          (base32
           "0gpk5647js1k084jc7pg2gji0cvl6hjkkbfia6lnpk8y4shyairv"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/RustCrypto/asm-hashes")
-    (synopsis "Assembly implementation of MD5 compression function")
-    (description "This package contains an assembly implementation of MD5
-compression function.")
-    (supported-systems '("x86_64-linux" "i686-linux"))
-    (license license:expat)))
+       (("rust-cc" ,rust-cc-1))))))
 
 (define-public rust-measureme-0.7
   (package
@@ -32718,8 +32806,33 @@ file IO.")
        (sha256
         (base32 "0nmymqy9q62x577ydja0ysfyir7h5qa0n5fwcnvchfhhlsi0rdyr"))))))
 
+(define-public rust-memoffset-0.7
+  (package
+    (name "rust-memoffset")
+    (version "0.7.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "memoffset" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1x2zv8hv9c9bvgmhsjvr9bymqwyxvgbca12cm8xkhpyy5k1r7s2x"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1))
+       #:cargo-development-inputs
+       (("rust-doc-comment" ,rust-doc-comment-0.3))))
+    (home-page "https://github.com/Gilnaa/memoffset")
+    (synopsis "C-like offset_of functionality for Rust structs")
+    (description
+     "This package provides C-like @code{offset_of} functionality
+for Rust structs.")
+    (license license:expat)))
+
 (define-public rust-memoffset-0.6
   (package
+    (inherit rust-memoffset-0.7)
     (name "rust-memoffset")
     (version "0.6.5")
     (source
@@ -32736,13 +32849,7 @@ file IO.")
        (("rust-autocfg" ,rust-autocfg-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))
-    (inputs (list rust-autocfg-1))
-    (home-page "https://github.com/Gilnaa/memoffset")
-    (synopsis "C-like offset_of functionality for Rust structs")
-    (description
-     "This package provides C-like @code{offset_of} functionality
-for Rust structs.")
-    (license license:expat)))
+    (inputs (list rust-autocfg-1))))
 
 (define-public rust-memoffset-0.5
   (package
@@ -52346,6 +52453,28 @@ functionality and without weak references.")
         (base32
          "1i1i8viy6y30mv9v5hwhg9w6b722qkyh9c6n8bn4d27jpv14pg0s"))))))
 
+(define-public rust-sha1-smol-1
+  (package
+    (name "rust-sha1-smol")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sha1_smol" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "04nhbhvsk5ms1zbshs80iq5r1vjszp2xnm9f0ivj38q3dhc4f6mf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/mitsuhiko/sha1-smol")
+    (synopsis "Dependency free SHA1 implementation")
+    (description
+     "This package provides a minimal dependency free implementation of
+SHA1 for Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-sha1collisiondetection-0.2
   (package
     (name "rust-sha1collisiondetection")
@@ -68008,8 +68137,31 @@ for locating fonts.")
     (description "This package provides an implementation of zbase32.")
     (license license:lgpl3+)))
 
+(define-public rust-zerocopy-0.6
+  (package
+    (name "rust-zerocopy")
+    (version "0.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zerocopy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0dpj4nd9v56wy93ahjkp95znjzj91waqvidqch8gxwdwq661hbrk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-byteorder" ,rust-byteorder-1)
+        ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.3))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Utilities for zero-copy parsing and serialization")
+    (description "Utilities for zero-copy parsing and serialization")
+    (license license:bsd-2)))
+
 (define-public rust-zerocopy-0.3
   (package
+    (inherit rust-zerocopy-0.6)
     (name "rust-zerocopy")
     (version "0.3.1")
     (source
@@ -68019,21 +68171,41 @@ for locating fonts.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "00nbb6yal8f74bkpn7msjcnhisimw8s5777a63206rfnn3br45zh"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-byteorder" ,rust-byteorder-1)
         ("rust-zerocopy-derive" ,rust-zerocopy-derive-0.2))))
-    (home-page "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy")
-    (synopsis "Utilities for zero-copy parsing and serialization")
-    (description
-     "This package provides utilities for zero-copy parsing and
-serialization.")
     (license license:bsd-3)))
+
+(define-public rust-zerocopy-derive-0.3
+  (package
+    (name "rust-zerocopy-derive")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zerocopy-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "18qr7dqlj89v1xl1g58l2xd6jidv0sbccscgl131gpppba0yc1b5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-synstructure" ,rust-synstructure-0.12))))
+    (home-page "https://github.com/google/zerocopy")
+    (synopsis "Custom derive for traits from the zerocopy Rust crate")
+    (description
+     "This package provides custom derive for traits from the zerocopy Rust
+crate.")
+    (license license:bsd-2)))
 
 (define-public rust-zerocopy-derive-0.2
   (package
+    (inherit rust-zerocopy-derive-0.3)
     (name "rust-zerocopy-derive")
     (version "0.2.1")
     (source
@@ -68043,18 +68215,12 @@ serialization.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1594sf9wwgpbavl1hb1avyz6n7km9apm8afc03x9y8h3spk3k76w"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-syn" ,rust-syn-1)
         ("rust-synstructure" ,rust-synstructure-0.12))))
-    (home-page "https://fuchsia.googlesource.com/fuchsia/+/HEAD/src/lib/zerocopy/zerocopy-derive")
-    (synopsis "Custom derive for traits from the zerocopy Rust crate")
-    (description
-     "This package provides custom derive for traits from the zerocopy Rust
-crate.")
     (license license:bsd-3)))
 
 (define-public rust-zeroize-1

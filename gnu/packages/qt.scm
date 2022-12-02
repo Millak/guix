@@ -2745,14 +2745,22 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/devtools-frontend/src/third_party/typescript"
                     "third_party/emoji-segmenter"
                     "third_party/fdlibm"
-                    "third_party/ffmpeg"
+                    "third_party/ffmpeg/libavcodec/avcodec.h"
+                    "third_party/ffmpeg/libavcodec/packet.h"
+                    "third_party/ffmpeg/libavformat/avformat.h"
+                    "third_party/ffmpeg/libavformat/avio.h"
+                    "third_party/ffmpeg/libavutil/avutil.h"
+                    "third_party/ffmpeg/libavutil/imgutils.h"
+                    "third_party/ffmpeg/libavutil/log.h"
+                    "third_party/ffmpeg/libavutil/mathematics.h"
+                    "third_party/ffmpeg/libavutil/opt.h"
                     "third_party/freetype"
                     "third_party/googletest"
                     "third_party/harfbuzz-ng"
                     "third_party/highway"
                     "third_party/hunspell"
                     "third_party/iccjpeg"
-                    "third_party/icu"
+                    "third_party/icu" ;TODO: make pdfium use system version
                     "third_party/inspector_protocol"
                     "third_party/jinja2"
                     "third_party/jsoncpp"
@@ -2770,18 +2778,23 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/libjingle_xmpp"
                     "third_party/libjpeg_turbo"
                     "third_party/libjxl"
-                    "third_party/libpng"
+                    "third_party/libpng" ;TODO: make pdfium use system version
                     "third_party/libsrtp"
                     "third_party/libsync"
                     "third_party/libudev"
                     "third_party/liburlpattern"
                     "third_party/libvpx"
                     "third_party/libwebm"
-                    "third_party/libwebp"
+                    "third_party/libwebp/src/webp/decode.h"
+                    "third_party/libwebp/src/webp/demux.h"
+                    "third_party/libwebp/src/webp/encode.h"
+                    "third_party/libwebp/src/webp/format_constants.h"
+                    "third_party/libwebp/src/webp/mux.h"
+                    "third_party/libwebp/src/webp/mux_types.h"
+                    "third_party/libwebp/src/webp/types.h"
                     "third_party/libx11"
                     "third_party/libxcb-keysyms"
-                    "third_party/libxml"
-                    "third_party/libxslt"
+                    "third_party/libxml/chromium"
                     "third_party/libyuv"
                     "third_party/lottie"
                     "third_party/lss"
@@ -2794,7 +2807,11 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/node"
                     "third_party/one_euro_filter"
                     "third_party/openh264"
-                    "third_party/opus"
+                    "third_party/opus/src/include/opus.h"
+                    "third_party/opus/src/include/opus_custom.h"
+                    "third_party/opus/src/include/opus_defines.h"
+                    "third_party/opus/src/include/opus_multistream.h"
+                    "third_party/opus/src/include/opus_types.h"
                     "third_party/ots"
                     "third_party/pdfium"
                     "third_party/pdfium/third_party/agg23"
@@ -2850,7 +2867,7 @@ and binaries removed, and adds modular support for using system libraries.")
                     "third_party/woff2"
                     "third_party/wuffs"
                     "third_party/x11proto"
-                    "third_party/zlib"
+                    "third_party/zlib" ;TODO: make pdfium use system version
                     "url/third_party/mozilla"
                     "v8/src/third_party/utf8-decoder"
                     "v8/src/third_party/valgrind"
@@ -2914,15 +2931,29 @@ linux/libcurl_wrapper.h"
               "-DQT_FEATURE_webengine_printing_and_pdf=OFF"
               "-DQT_FEATURE_webengine_pepper_plugins=OFF" ;widevine
               "-DQT_FEATURE_system_ffmpeg=ON"
+
               ;; Do not artificially limit codec support; video decoding is
               ;; done by ffmpeg.
               "-DQT_FEATURE_webengine_proprietary_codecs=ON"
+
+              ;; Use system libraries where possible (see src/core/CMakeLists.txt).
               "-DQT_FEATURE_webengine_system_alsa=ON"
+              "-DQT_FEATURE_webengine_system_ffmpeg=ON"
+              "-DQT_FEATURE_webengine_system_freetype=ON"
+              "-DQT_FEATURE_webengine_system_harfbuzz=ON"
               "-DQT_FEATURE_webengine_system_icu=ON"
-              "-DQT_FEATURE_webengine_system_libxml=ON"
+              "-DQT_FEATURE_webengine_system_lcms2=ON"
+              "-DQT_FEATURE_webengine_system_libevent=ON"
+              "-DQT_FEATURE_webengine_system_libjpeg=ON"
               "-DQT_FEATURE_webengine_system_libpci=ON"
               "-DQT_FEATURE_webengine_system_libpng=ON"
+              "-DQT_FEATURE_webengine_system_libwebp=ON"
+              "-DQT_FEATURE_webengine_system_libxml=ON"
+              "-DQT_FEATURE_webengine_system_libxslt=ON"
+              "-DQT_FEATURE_webengine_system_minizip=ON"
+              "-DQT_FEATURE_webengine_system_opus=ON"
               "-DQT_FEATURE_webengine_system_pulseaudio=ON"
+              "-DQT_FEATURE_webengine_system_re2=ON"
               "-DQT_FEATURE_webengine_system_zlib=ON")
       #:phases
       #~(modify-phases %standard-phases
@@ -2989,6 +3020,7 @@ linux/libcurl_wrapper.h"
     (inputs
      (modify-inputs (package-inputs qtwebengine-5)
        (replace "qtmultimedia" qtmultimedia)
+       (replace "harfbuzz" harfbuzz-5)
        (append libxkbfile xkeyboard-config)))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs qtwebengine-5)

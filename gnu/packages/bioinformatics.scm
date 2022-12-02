@@ -847,7 +847,7 @@ intended to behave exactly the same as the original BWK awk.")
 (define-public python-cellbender
   (package
     (name "python-cellbender")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -857,8 +857,8 @@ intended to behave exactly the same as the original BWK awk.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zav2q8nnss80i25y06fccagkvrqsy7lpylsl4dxv4qkj8p4fnv3"))))
-    (build-system python-build-system)
+         "12q22va7rbc3sx9ygc6p6hh6xw9wbqjmhba5h5gb836p5xplj5fa"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
     (propagated-inputs
@@ -885,14 +885,14 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 (define-public python-htsget
   (package
    (name "python-htsget")
-   (version "0.2.5")
+   (version "0.2.6")
    (source (origin
             (method url-fetch)
             (uri (pypi-uri "htsget" version))
             (sha256
              (base32
-              "0ic07q85vhw9djf23k57b21my7i5xp400m8gfqgr5gcryqvdr0yk"))))
-   (build-system python-build-system)
+              "111q4pzkav26aa3hkgh948wqlyrq7dq6sjml9z63n3blw8s6b0c4"))))
+   (build-system pyproject-build-system)
    (native-inputs
     (list python-setuptools-scm))
    (propagated-inputs
@@ -914,11 +914,12 @@ servers supporting the protocol.")
               (sha256
                (base32
                 "18rhzk08d3rpxhi5xh6pqg64x6v5q3daw6y3v54k85v4swncjrwj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
                   (guix build utils)
-                  (guix build python-build-system))
+                  (guix build python-build-system)
+                  (guix build pyproject-build-system))
        ;; See https://github.com/daler/pybedtools/issues/192
        #:phases
        (modify-phases %standard-phases
@@ -978,7 +979,7 @@ which are widely used for genomic interval manipulation or \"genome algebra\".
 pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
     ;; pypi lists GPLv2 in the PKG-INFO and website, but was relicensed in
-    ;; version 0.9.0 and the LICENSE.txt is consistant with the source code.
+    ;; version 0.9.0 and the LICENSE.txt is consistent with the source code.
     ;;
     ;; pybedtools/include/gzstream.cpp and pybedtools/include/gzstream.h are
     ;; licensed lgpl2.1+
@@ -1032,7 +1033,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
 (define-public python-biom-format
   (package
     (name "python-biom-format")
-    (version "2.1.10")
+    (version "2.1.12")
     (source
      (origin
        (method git-fetch)
@@ -1044,25 +1045,22 @@ use-case, we encourage users to compose functions to achieve their goals.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0i62j6ksmp78ap2dnl969gq6vprc3q87zc8ksj9if8g2603iq6i8"))
+         "06x2d8fv80jp86kd66fm3ragmxrpa2j0lzsbm337ziqjnpsdwc0f"))
        (modules '((guix build utils)))
        ;; Delete generated C files.
        (snippet
         '(for-each delete-file (find-files "." "\\.c")))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'use-cython
            (lambda _ (setenv "USE_CYTHON" "1")))
-         (add-after 'unpack 'relax
-           (lambda _
-             (substitute* "setup.py"
-               (("pytest < 5.3.4") "pytest"))))
          (add-after 'unpack 'disable-broken-tests
            (lambda _
-             (substitute* "biom/tests/test_cli/test_validate_table.py"
-               (("^(.+)def test_invalid_hdf5" m indent)
+             (substitute* "biom/tests/test_util.py"
+               (("^(.+)def test_biom_open_hdf5_no_h5py" m indent)
                 (string-append indent
                                "@npt.dec.skipif(True, msg='Guix')\n"
                                m)))
@@ -1073,13 +1071,14 @@ use-case, we encourage users to compose functions to achieve their goals.")
                                m))))))))
     (propagated-inputs
      (list python-anndata
-           python-numpy
-           python-scipy
+           python-click
            python-flake8
            python-future
-           python-click
            python-h5py
-           python-pandas))
+           python-numpy
+           python-pandas
+           python-scikit-bio
+           python-scipy))
     (native-inputs
      (list python-cython python-pytest python-pytest-cov python-nose))
     (home-page "http://www.biom-format.org")
@@ -1094,42 +1093,45 @@ e.g. microbiome samples, genomes, metagenomes.")
 (define-public python-pairtools
   (package
     (name "python-pairtools")
-    (version "0.3.0")
+    (version "1.0.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/mirnylab/pairtools")
+                    (url "https://github.com/open2c/pairtools")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0gr8y13q7sd6yai6df4aavl2470n1f9s3cib6r473z4hr8hcbwmc"))))
+                "0xn4cg4jq3rfn42h8rfwg0k6xkvihjrv32gwldb9y0jp05lzw9cs"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-references
            (lambda _
-             (substitute* '("pairtools/pairtools_merge.py"
-                            "pairtools/pairtools_sort.py")
-               (("/bin/bash") (which "bash")))
-             #t))
+             (substitute* '("pairtools/cli/header.py"
+                            "pairtools/cli/merge.py"
+                            "pairtools/cli/sort.py")
+               (("/bin/bash") (which "bash")))))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "/tmp"
-               (invoke "pytest" "-v")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "/tmp"
+                 (invoke "pytest" "-v"))))))))
     (native-inputs
-     (list python-cython python-nose python-pytest))
-    (inputs
-     `(("python" ,python-wrapper)))
+     (list python-cython python-pytest))
     (propagated-inputs
      (list htslib ; for bgzip, looked up in PATH
            samtools ; looked up in PATH
            lz4 ; for lz4c
+           python-bioframe
            python-click
-           python-numpy))
-    (home-page "https://github.com/mirnylab/pairtools")
+           python-numpy
+           python-pandas
+           python-pysam
+           python-pyyaml
+           python-scipy))
+    (home-page "https://github.com/open2c/pairtools")
     (synopsis "Process mapped Hi-C data")
     (description "Pairtools is a simple and fast command-line framework to
 process sequencing data from a Hi-C experiment.  Process pair-end sequence
@@ -2973,6 +2975,71 @@ object identifiers, object references, documentation generation, code
 generation, and transformation to RDF.  Salad provides a bridge between document
 and record oriented data modeling and the Semantic Web.")
     (license license:asl2.0)))
+
+(define-public python-scikit-bio
+  (package
+    (name "python-scikit-bio")
+    (version "0.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scikit-bio" version))
+              (sha256
+               (base32
+                "1a8xbp3vrw8wfpm3pa2nb4rcar0643iqnb043ifwqbqyc86clhv3"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See https://github.com/biocore/scikit-bio/pull/1826
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "skbio/sequence/tests/test_sequence.py"
+               (("def test_concat_strict_many")
+                "def _do_not_test_concat_strict_many"))
+             (substitute* "skbio/stats/distance/_mantel.py"
+               (("from scipy.stats import PearsonRConstantInputWarning")
+                "from scipy.stats import ConstantInputWarning")
+               (("from scipy.stats import PearsonRNearConstantInputWarning")
+                "from scipy.stats import NearConstantInputWarning")
+               (("from scipy.stats import SpearmanRConstantInputWarning") "")
+               (("warnings.warn\\(PearsonRConstantInputWarning\\(\\)\\)")
+                "warnings.warn(ConstantInputWarning())")
+               (("warnings.warn\\(PearsonRNearConstantInputWarning\\(\\)\\)")
+                "warnings.warn(NearConstantInputWarning())")
+               (("warnings.warn\\(SpearmanRConstantInputWarning\\(\\)\\)")
+                "warnings.warn(ConstantInputWarning())"))
+             (substitute* "skbio/diversity/alpha/tests/test_base.py"
+               (("self.assertEqual\\(pielou_e")
+                "self.assertAlmostEqual(pielou_e"))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python3" "setup.py" "build_ext" "--inplace")))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests? (invoke "python3" "-m" "skbio.test")))))))
+    (propagated-inputs
+     (list python-cachecontrol
+           python-decorator
+           python-h5py
+           python-hdmedians
+           python-ipython
+           python-lockfile
+           python-matplotlib
+           python-natsort
+           python-numpy
+           python-pandas
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-coverage python-pytest))
+    (home-page "https://scikit-bio.org")
+    (synopsis "Data structures, algorithms and educational resources for bioinformatics")
+    (description
+     "This package provides data structures, algorithms and educational
+resources for bioinformatics.")
+    (license license:bsd-3)))
 
 (define-public cwltool
   (package
