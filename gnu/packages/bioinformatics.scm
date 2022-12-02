@@ -885,14 +885,14 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 (define-public python-htsget
   (package
    (name "python-htsget")
-   (version "0.2.5")
+   (version "0.2.6")
    (source (origin
             (method url-fetch)
             (uri (pypi-uri "htsget" version))
             (sha256
              (base32
-              "0ic07q85vhw9djf23k57b21my7i5xp400m8gfqgr5gcryqvdr0yk"))))
-   (build-system python-build-system)
+              "111q4pzkav26aa3hkgh948wqlyrq7dq6sjml9z63n3blw8s6b0c4"))))
+   (build-system pyproject-build-system)
    (native-inputs
     (list python-setuptools-scm))
    (propagated-inputs
