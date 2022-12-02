@@ -310,7 +310,7 @@ bindings and many of the powerful features of GNU Emacs.")
 (define-public jucipp
   (package
     (name "jucipp")
-    (version "1.7.1")
+    (version "1.7.2")
     (home-page "https://gitlab.com/cppit/jucipp")
     (source (origin
               (method git-fetch)
@@ -322,7 +322,7 @@ bindings and many of the powerful features of GNU Emacs.")
                                   (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0xyf1fa7jvxzvg1dxh5vc50fbwjjsar4fmlvbfhicdd1f8bhz1ii"))
+               (base32 "034il3z38a7qvp95f52n9rxbqmh8fxsy416rjak3zzagvfkvzyii"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -346,7 +346,7 @@ bindings and many of the powerful features of GNU Emacs.")
                      ;; Disable the CMake build test, as it does not test
                      ;; functionality of the package, and requires doing
                      ;; an "in-source" build.
-                     (("add_test\\(cmake_build_test.*\\)")
+                     (("add_test\\(cmake_(build|file_api)_test.*\\)")
                       "")
                      ;; Disable the git test, as it requires the full checkout.
                      (("add_test\\(git_test.*\\)")
