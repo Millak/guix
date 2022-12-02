@@ -847,7 +847,7 @@ intended to behave exactly the same as the original BWK awk.")
 (define-public python-cellbender
   (package
     (name "python-cellbender")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -857,8 +857,8 @@ intended to behave exactly the same as the original BWK awk.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1zav2q8nnss80i25y06fccagkvrqsy7lpylsl4dxv4qkj8p4fnv3"))))
-    (build-system python-build-system)
+         "12q22va7rbc3sx9ygc6p6hh6xw9wbqjmhba5h5gb836p5xplj5fa"))))
+    (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
     (propagated-inputs
