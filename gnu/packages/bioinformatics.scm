@@ -1116,10 +1116,10 @@ e.g. microbiome samples, genomes, metagenomes.")
                (("/bin/bash") (which "bash")))
              #t))
          (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (with-directory-excursion "/tmp"
-               (invoke "pytest" "-v")))))))
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (with-directory-excursion "/tmp"
+                 (invoke "pytest" "-v"))))))))
     (native-inputs
      (list python-cython python-nose python-pytest))
     (inputs
