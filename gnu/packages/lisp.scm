@@ -423,17 +423,14 @@ an interpreter, a compiler, a debugger, and much more.")
 (define-public sbcl
   (package
     (name "sbcl")
-    (version "2.2.10")
+    (version "2.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sbcl/sbcl/" version "/sbcl-"
                            version "-source.tar.bz2"))
-       (patches
-        ;; TODO: remove this patch when updating to sbcl > 2.2.10.
-        (search-patches "sbcl-fix-build-on-arm64-with-clisp-as-host.patch"))
        (sha256
-        (base32 "0cq8x4svkawirxq5s5gs4qxkl23m4q5p722a2kpss8qjfslc7hwc"))
+        (base32 "1pwnhjp0fmkcgq11a6hj36gw8k05qramspgdbj28063k2s0dc1rn"))
        (modules '((guix build utils)))
        (snippet
         '(begin

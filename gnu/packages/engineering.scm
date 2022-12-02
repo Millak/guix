@@ -669,7 +669,7 @@ multipole-accelerated algorithm.")
 (define-public fritzing
   (package
     (name "fritzing")
-    (version "0.9.3b")
+    (version "0.9.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -678,7 +678,7 @@ multipole-accelerated algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hpyc550xfhr6gmnc85nq60w00rm0ljm0y744dp0z88ikl04f4s3"))))
+                "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -687,24 +687,18 @@ multipole-accelerated algorithm.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "fritzing-parts-db")
                                "parts")
-             ;; Make compatible with libgit2 > 0.24
-             (substitute* "src/version/partschecker.cpp"
-               (("error = git_remote_connect\\(remote, GIT_DIRECTION_FETCH, &callbacks\\)")
-                "error = git_remote_connect(remote, GIT_DIRECTION_FETCH, &callbacks, NULL, NULL)"))
-
              ;; Use system libgit2 and boost.
              (substitute* "phoenix.pro"
-               (("^LIBGIT2INCLUDE =.*")
-                (string-append "LIBGIT2INCLUDE="
-                               (assoc-ref inputs "libgit2") "/include\n"))
-               (("^    LIBGIT2LIB =.*")
-                (string-append "    LIBGIT2LIB="
-                               (assoc-ref inputs "libgit2") "/lib\n")))
-             ;; This file checks for old versions of Boost, insisting on
-             ;; having us download the boost sources and placing them in the
-             ;; build directory.
-             (substitute* "pri/utils.pri"
-               (("error\\(") "message("))
+               (("^LIBGIT_STATIC.*")
+                (string-append "LIBGIT2INCLUDE=" (assoc-ref inputs "libgit2") "/include\n"
+                               "LIBGIT2LIB=" (assoc-ref inputs "libgit2") "/lib\n"
+                               "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
+                               "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
+               (("^.*pri/libgit2detect.pri.") ""))
+             ;; Trick the internal mechanism to load the parts
+             (substitute* "src/version/partschecker.cpp"
+               ((".*git_libgit2_init.*")
+                "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
 
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"
@@ -723,11 +717,11 @@ multipole-accelerated algorithm.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/fritzing/fritzing-parts")
-                 (commit version)))
+                 (commit (string-append "release_" version))))
            (file-name (git-file-name "fritzing-parts" version))
            (sha256
             (base32
-             "1d2v8k7p176j0lczx4vx9n9gbg3vw09n2c4b6w0wj5wqmifywhc1"))))))
+             "0wsvn57v6n0ygnhk2my94rrfzb962z1cj4d1xmp1farwck3811h6"))))))
     (home-page "https://fritzing.org")
     (synopsis "Electronic circuit design")
     (description
@@ -970,6 +964,7 @@ Emacs).")
                                #$(this-package-input "opencascade-occt")
                                "/include/opencascade")
                 "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+                "-DKICAD_USE_EGL=ON"    ;because wxWidgets uses EGL
                 "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
        #:phases
        (modify-phases %standard-phases
@@ -980,16 +975,6 @@ Emacs).")
                 (string-append "NGSPICE_DLL_FILE=\""
                                (assoc-ref inputs "libngspice")
                                "/lib/libngspice.so\"")))))
-         (add-after 'unpack 'fix-python-detection
-           (lambda _
-             (substitute* "CMakeModules/FindPythonLibs.cmake"
-               (("_PYTHON3_VERSIONS 3\\.8 3\\.7")
-                "_PYTHON3_VERSIONS 3.9 3.8 3.7"))))
-         (add-after 'unpack 'add-missing-include
-           (lambda _
-             (substitute* "common/lib_tree_model.cpp"
-               (("#include <eda_pattern_match.h>" all)
-                (string-append "#include <algorithm>\n" all)))))
          (add-after 'install 'wrap-program
            ;; Ensure correct Python at runtime.
            (lambda* (#:key inputs outputs #:allow-other-keys)

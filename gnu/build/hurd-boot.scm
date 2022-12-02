@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -127,6 +127,9 @@ set."
 
 (define (translated? file-name)
   "Return true if a translator is installed on FILE-NAME."
+  ;; On GNU/Hurd, 'getxattr' in glibc opens the file without O_NOTRANS, and
+  ;; then, for "gnu.translator", it calls 'file_get_translator', resulting in
+  ;; EOPNOTSUPP (conversely, 'showtrans' opens the file with O_NOTRANS).
   (if (string-contains %host-type "linux-gnu")
       (passive-translator-xattr? file-name)
       (passive-translator-installed? file-name)))
@@ -210,30 +213,33 @@ set."
       ;; 'fd_to_filename' in libc expects it.
       ("dev/fd"      ("/hurd/magic"    "--directory" "fd")  #o555)
 
-      ("dev/tty1"    ("/hurd/term"     "/dev/tty1" "hurdio" "/dev/vcs/1/console")
-                                                            #o666)
-      ("dev/tty2"    ("/hurd/term"     "/dev/tty2" "hurdio" "/dev/vcs/2/console")
-                                                            #o666)
-      ("dev/tty3"    ("/hurd/term"     "/dev/tty3" "hurdio" "/dev/vcs/3/console")
-                                                            #o666)
+      ;; Create a number of ttys; syslogd writes to tty12 by default.
+      ;; FIXME: Creating /dev/tty12 leads the console client to switch to
+      ;; tty12 when syslogd starts, which is confusing for users.  Thus, do
+      ;; not create tty12.
+      ,@(map (lambda (n)
+               (let ((n (number->string n)))
+                 `(,(string-append "dev/tty" n)
+                   ("/hurd/term" ,(string-append "/dev/tty" n)
+                    "hurdio" ,(string-append "/dev/vcs/" n "/console"))
+                   #o666)))
+             (iota 11 1))
 
-      ("dev/ptyp0"   ("/hurd/term"     "/dev/ptyp0" "pty-master" "/dev/ttyp0")
-                                                            #o666)
-      ("dev/ptyp1"   ("/hurd/term"     "/dev/ptyp1" "pty-master" "/dev/ttyp1")
-                                                            #o666)
-      ("dev/ptyp2"   ("/hurd/term"     "/dev/ptyp2" "pty-master" "/dev/ttyp2")
-                                                            #o666)
+      ,@(append-map (lambda (n)
+                      (let ((n (number->string n)))
+                        `((,(string-append "dev/ptyp" n)
+                           ("/hurd/term" ,(string-append "/dev/ptyp" n)
+                            "pty-master" ,(string-append "/dev/ttyp" n))
+                           #o666)
 
-      ("dev/ttyp0"   ("/hurd/term"     "/dev/ttyp0" "pty-slave" "/dev/ptyp0")
-                                                            #o666)
-      ("dev/ttyp1"   ("/hurd/term"     "/dev/ttyp1" "pty-slave" "/dev/ptyp1")
-                                                            #o666)
-      ("dev/ttyp2"   ("/hurd/term"     "/dev/ttyp2" "pty-slave" "/dev/ptyp2")
-                                                            #o666)))
+                          (,(string-append "dev/ttyp" n)
+                           ("/hurd/term" ,(string-append "/dev/ttyp" n)
+                            "pty-slave" ,(string-append "/dev/ptyp" n))
+                           #o666))))
+                    (iota 10 0))))
 
   (for-each scope-set-translator servers)
   (mkdir* "dev/vcs/1")
-  (mkdir* "dev/vcs/2")
   (mkdir* "dev/vcs/2")
   (rename-file (scope "dev/console") (scope "dev/console-"))
   (for-each scope-set-translator devices)

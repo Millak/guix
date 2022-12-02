@@ -50,6 +50,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 ( <paren@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,6 +152,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages rust-apps)
   #:use-module (gnu packages search)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages samba)
@@ -3811,14 +3813,14 @@ tools and applications:
 (define-public balsa
   (package
     (name "balsa")
-    (version "2.6.3")
+    (version "2.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://pawsa.fedorapeople.org/balsa/"
                            "balsa-" version ".tar.xz"))
        (sha256
-        (base32 "1m0x3rk7cp7slr47rmg4y91rbxgs652v706lyxj600m5r5v4bl6l"))))
+        (base32 "1hcgmjka2x2igdrmvzlfs12mv892kv4vzv5iy90kvcqxa625kymy"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -3831,7 +3833,13 @@ tools and applications:
          "--with-gpgme"
          "--with-sqlite"
          "--with-compface"
-         "--with-ldap")))
+         "--with-ldap")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'adjust-for-new-webkitgtk
+                    (lambda _
+                      (substitute* "configure"
+                        (("webkit2gtk-4.0")
+                         "webkit2gtk-4.1")))))))
     (inputs
      (list cyrus-sasl
            enchant
@@ -3840,7 +3848,7 @@ tools and applications:
            gnutls
            gpgme
            gtk+
-           gtksourceview
+           gtksourceview-4
            gtkspell3
            libassuan ; in gpgme.pc Requires
            libcanberra
@@ -3860,6 +3868,9 @@ tools and applications:
 the GNOME desktop.  It supports both POP3 and IMAP servers as well as the
 mbox, maildir and mh local mailbox formats.  Balsa also supports SMTP and/or
 the use of a local MTA such as Sendmail.")
+    (properties
+     '((release-monitoring-url
+       . "https://pawsa.fedorapeople.org/balsa/download.html")))
     (license license:gpl3+)))
 
 (define-public afew
@@ -4754,3 +4765,120 @@ addresses.")
 mailserver on their machine.  It enables these users to send their mail over a
 remote SMTP server.")
     (license license:gpl2+)))
+
+(define-public aerc
+  (package
+    (name "aerc")
+    (version "0.13.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~rjarry/aerc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18rykklc0ppl53sm9lzhrw6kv4rcc7x45nv7qii7m4qads2pyjm5"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~rjarry/aerc"
+           ;; Installing the source is only necessary for Go libraries.
+           #:install-source? #f
+           #:build-flags
+           #~(list "-tags=notmuch" "-ldflags"
+                   (string-append "-X main.Version=" #$version
+                                  " -X git.sr.ht/~rjarry/aerc/config.shareDir="
+                                  #$output "/share/aerc"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-paths
+                 (lambda* (#:key import-path inputs #:allow-other-keys)
+                   (with-directory-excursion
+                       (string-append "src/" import-path)
+                     (substitute* (list "config/config.go"
+                                        "lib/templates/template.go"
+                                        "widgets/compose.go"
+                                        "widgets/msgviewer.go"
+                                        "worker/maildir/worker.go"
+                                        "worker/notmuch/worker.go")
+                       (("\"sh\"")
+                        (string-append
+                         "\"" (search-input-file inputs "bin/sh")
+                         "\"")))
+                     (substitute* "commands/z.go"
+                       (("\"zoxide\"")
+                        (string-append
+                         "\"" (search-input-file inputs "bin/zoxide")
+                         "\"")))
+                     (substitute* (list "lib/crypto/gpg/gpg.go"
+                                        "lib/crypto/gpg/gpg_test.go"
+                                        "lib/crypto/gpg/gpgbin/keys.go"
+                                        "lib/crypto/gpg/gpgbin/gpgbin.go")
+                       (("\"gpg\"")
+                        (string-append
+                         "\"" (search-input-file inputs "bin/gpg")
+                         "\""))
+                       (("strings\\.Contains\\(stderr\\.String\\(\\), .*\\)")
+                        "strings.Contains(stderr.String(), \"gpg\")")))))
+               (add-after 'build 'doc
+                 (lambda* (#:key import-path build-flags #:allow-other-keys)
+                   (invoke "make" "doc" "-C"
+                           (string-append "src/" import-path))))
+               (replace 'install
+                 (lambda* (#:key import-path build-flags #:allow-other-keys)
+                   (invoke "make" "install" "-C"
+                           (string-append "src/" import-path)
+                           (string-append "PREFIX=" #$output)))))))
+    (inputs (list gnupg
+                  go-github-com-zenhack-go-notmuch
+                  go-golang-org-x-oauth2
+                  go-github-com-xo-terminfo
+                  go-github-com-stretchr-testify
+                  go-github-com-riywo-loginshell
+                  go-github-com-pkg-errors
+                  go-github-com-mitchellh-go-homedir
+                  go-github-com-miolini-datacounter
+                  go-github-com-mattn-go-runewidth
+                  go-github-com-mattn-go-isatty
+                  go-github-com-lithammer-fuzzysearch
+                  go-github-com-kyoh86-xdg
+                  go-github-com-imdario-mergo
+                  go-github-com-google-shlex
+                  go-github-com-go-ini-ini
+                  go-github-com-gdamore-tcell-v2
+                  go-github-com-gatherstars-com-jwz
+                  go-github-com-fsnotify-fsnotify
+                  go-github-com-emersion-go-smtp
+                  go-github-com-emersion-go-sasl
+                  go-github-com-emersion-go-pgpmail
+                  go-github-com-emersion-go-message
+                  go-github-com-emersion-go-maildir
+                  go-github-com-emersion-go-imap-sortthread
+                  go-github-com-emersion-go-imap
+                  go-github-com-emersion-go-msgauth
+                  go-github-com-emersion-go-mbox
+                  go-github-com-ddevault-go-libvterm
+                  go-github-com-danwakefield-fnmatch
+                  go-github-com-creack-pty
+                  go-github-com-arran4-golang-ical
+                  go-github-com-protonmail-go-crypto
+                  go-github-com-syndtr-goleveldb-leveldb
+                  go-git-sr-ht-sircmpwn-getopt
+                  go-git-sr-ht-rockorager-tcell-term
+                  zoxide))
+    (native-inputs (list scdoc))
+    (home-page "https://git.sr.ht/~rjarry/aerc")
+    (synopsis "Email client for the terminal")
+    (description "@code{aerc} is a textual email client for terminals. It
+features:
+@enumerate
+@item First-class support for using patches and @code{git send-email}
+@item Vi-like keybindings and command system
+@item A built-in console
+@item Support for multiple accounts
+@end enumerate")
+    ;; The license given is MIT/Expat; however, linking against notmuch
+    ;; effectively makes it GPL-3.0-or-later. See this thread discussing it:
+    ;; <https://lists.sr.ht/~rjarry/aerc-devel/%3Cb5cb213a7d0c699a886971658c2476
+    ;; 1073eb2391%40disroot.org%3E>
+    (license license:gpl3+)))

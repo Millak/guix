@@ -2454,13 +2454,13 @@ plants.  The method has been specifically designed to:
 (define-public r-alpine
   (package
     (name "r-alpine")
-    (version "1.22.0")
+    (version "1.24.0")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "alpine" version))
               (sha256
                (base32
-                "1nl1hxwakh5m9rqm3ksn2jzknsj9xnwl51bmc30knknm4q35wdv9"))))
+                "0rjnwljh4c2f7ml0m14pllns4pvyjwwf23qsn6zjygm5x04bapf0"))))
     (properties `((upstream-name . "alpine")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4216,18 +4216,19 @@ mapping.")
 (define-public r-nmf
   (package
     (name "r-nmf")
-    (version "0.24.0")
+    (version "0.25")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "NMF" version))
        (sha256
         (base32
-         "14yxra6in5c1md5nr75y8cdmh9pg0lxqabqflvlhgg1vbg9i2628"))))
+         "0kdl7yz4v7pms6y2lff4x5w7pwkx54488qx0v539qmvcbxv1if98"))))
     (properties `((upstream-name . "NMF")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cluster
+           r-codetools
            r-biobase
            r-biocmanager
            r-bigmemory ; suggested
@@ -4238,7 +4239,6 @@ mapping.")
            r-foreach
            r-ggplot2
            r-gridbase
-           r-pkgmaker
            r-rcolorbrewer
            r-registry
            r-reshape2
@@ -4787,13 +4787,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.32.1")
+    (version "1.32.3")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1fkfbs0n0sdssli7ibrswkfag080kgv8n1zf6ssxx729g1fz3m3h"))))
+                "0z2g3p6ip4g865na9bmqaa7w2s52769pmjr3hpiv6x8bhifh3nm5"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -6009,6 +6009,42 @@ of microarray data.  Functions are included for supervised dimension
 reduction (between group analysis) and joint dimension reduction of two
 datasets (coinertia analysis).")
     (license license:artistic2.0)))
+
+(define-public r-metaneighbor
+  (package
+    (name "r-metaneighbor")
+    (version "1.18.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "MetaNeighbor" version))
+              (sha256
+               (base32
+                "1gjjp5qlmv26sd3fvrd8cgv3invckxr8ldjpizpqm4mxjzifxwpm"))))
+    (properties `((upstream-name . "MetaNeighbor")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beanplot
+           r-dplyr
+           r-ggplot2
+           r-gplots
+           r-igraph
+           r-matrix
+           r-matrixstats
+           r-rcolorbrewer
+           r-singlecellexperiment
+           r-summarizedexperiment
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/MetaNeighbor")
+    (synopsis "Single cell replicability analysis")
+    (description
+     "This package implements a method to rapidly assess cell type identity using
+both functional and random gene sets and it allows users to quantify cell type
+replicability across datasets using neighbor voting.  @code{MetaNeighbor} works
+on the basis that cells of the same type should have more similar gene expression
+profiles than cells of different types.")
+    (license license:expat)))
 
 (define-public r-methylkit
   (package
@@ -8764,6 +8800,41 @@ HTML page.  The interactions are built on top of the popular static
 representations of analysis results in order to provide additional
 information.")
     (license license:lgpl3)))
+
+(define-public r-glmgampoi
+  (package
+    (name "r-glmgampoi")
+    (version "1.10.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "glmGamPoi" version))
+              (sha256
+               (base32
+                "12jbqigg4k2ngrk2anbrrxrwkp57bbzdz492lg8lc6w1gygp5yip"))))
+    (properties `((upstream-name . "glmGamPoi")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-beachmat
+           r-biocgenerics
+           r-delayedarray
+           r-delayedmatrixstats
+           r-hdf5array
+           r-matrixgenerics
+           r-matrixstats
+           r-rcpp
+           r-rcpparmadillo
+           r-rlang
+           r-singlecellexperiment
+           r-summarizedexperiment))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/const-ae/glmGamPoi")
+    (synopsis "Fit a Gamma-Poisson Generalized Linear Model")
+    (description
+     "Fit linear models to overdispersed count data.  The package can estimate
+the overdispersion and fit repeated models for matrix input.  It is designed
+to handle large input datasets as they typically occur in single cell RNA-seq
+experiments.")
+    (license license:gpl3)))
 
 (define-public r-rots
   (package
@@ -17820,14 +17891,14 @@ the Bioconductor project.")
 (define-public r-biodb
   (package
     (name "r-biodb")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "biodb" version))
        (sha256
         (base32
-         "08ahz3v2xbhwfh89dbnhhcdm0x5qv4hibi8wknlqf5x8gqm5j5w6"))))
+         "0mbqsias2ajw29d1wgl10y2cjqv3slrsgifccz0kh9l5r6bk28vz"))))
     (properties `((upstream-name . "biodb")))
     (build-system r-build-system)
     (propagated-inputs

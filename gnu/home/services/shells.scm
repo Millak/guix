@@ -25,6 +25,7 @@
   #:use-module (gnu packages bash)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -479,31 +480,30 @@ with text blocks from other extensions and the base service.")
 with text blocks from other extensions and the base service."))
 
 (define (home-bash-extensions original-config extension-configs)
-  (match original-config
-    (($ <home-bash-configuration> _ _ environment-variables aliases
-                                  bash-profile bashrc bash-logout)
-     (home-bash-configuration
-      (inherit original-config)
-      (environment-variables
-       (append environment-variables
-               (append-map
-                home-bash-extension-environment-variables extension-configs)))
-      (aliases
-       (append aliases
-               (append-map
-                home-bash-extension-aliases extension-configs)))
-      (bash-profile
-       (append bash-profile
-               (append-map
-                home-bash-extension-bash-profile extension-configs)))
-      (bashrc
-       (append bashrc
-               (append-map
-                home-bash-extension-bashrc extension-configs)))
-      (bash-logout
-       (append bash-logout
-               (append-map
-                home-bash-extension-bash-logout extension-configs)))))))
+  (match-record original-config <home-bash-configuration>
+    (environment-variables aliases bash-profile bashrc bash-logout)
+    (home-bash-configuration
+     (inherit original-config)
+     (environment-variables
+      (append environment-variables
+              (append-map
+               home-bash-extension-environment-variables extension-configs)))
+     (aliases
+      (append aliases
+              (append-map
+               home-bash-extension-aliases extension-configs)))
+     (bash-profile
+      (append bash-profile
+              (append-map
+               home-bash-extension-bash-profile extension-configs)))
+     (bashrc
+      (append bashrc
+              (append-map
+               home-bash-extension-bashrc extension-configs)))
+     (bash-logout
+      (append bash-logout
+              (append-map
+               home-bash-extension-bash-logout extension-configs))))))
 
 (define home-bash-service-type
   (service-type (name 'home-bash)

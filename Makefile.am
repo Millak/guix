@@ -237,6 +237,7 @@ MODULES =					\
   guix/build/waf-build-system.scm		\
   guix/build/haskell-build-system.scm		\
   guix/build/julia-build-system.scm		\
+  guix/build/kconfig.scm			\
   guix/build/linux-module-build-system.scm	\
   guix/build/store-copy.scm			\
   guix/build/json.scm				\
@@ -439,6 +440,8 @@ EXAMPLES =					\
   gnu/system/examples/desktop.tmpl		\
   gnu/system/examples/lightweight-desktop.tmpl	\
   gnu/system/examples/docker-image.tmpl		\
+  gnu/system/examples/raspberry-pi-64.tmpl	\
+  gnu/system/examples/raspberry-pi-64-nfs-root.tmpl	\
   gnu/system/examples/vm-image.tmpl
 
 GOBJECTS = $(MODULES:%.scm=%.go) guix/config.go $(dist_noinst_DATA:%.scm=%.go)

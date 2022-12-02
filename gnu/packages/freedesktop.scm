@@ -1882,7 +1882,7 @@ that wish to perform colour calibration.")
 (define-public libfprint
   (package
     (name "libfprint")
-    (version "1.94.4")
+    (version "1.94.5")
     (source
      (origin
        (method git-fetch)
@@ -1891,7 +1891,7 @@ that wish to perform colour calibration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wfd2svsq26wizhsaifnr74havswbc1rlfm79b36yrhw9n7c3jqb"))))
+        (base32 "1l1ak7y2kz0nrdkfj41n7h34dyykgzdg50y752ayk3ginp6szr7r"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags

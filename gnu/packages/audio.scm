@@ -892,7 +892,7 @@ engineers, musicians, soundtrack editors and composers.")
            #t))))
     (build-system cmake-build-system)
     (inputs
-     (list wxwidgets-3.1
+     (list wxwidgets
            gtk+
            alsa-lib
            jack-1

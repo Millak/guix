@@ -131,6 +131,7 @@
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,9 +160,11 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages django)
   #:use-module (gnu packages djvu)
   #:use-module (gnu packages docker)
@@ -4633,6 +4636,73 @@ offers a full-featured GUI (GTK and QT versions) that makes it highly
 accessible for novices, as well as a scripting interface offering the full
 flexibility and power of the Python language.")
     (license license:gpl3+)))
+
+(define-public python-dm-tree
+  (package
+    (name "python-dm-tree")
+    (version "0.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "dm-tree" version))
+              (sha256
+               (base32 "0apxfxgmqh22qpk92zmmf3acqkavhwxz78lnwz026a5rlnncizih"))))
+    (build-system python-build-system)
+    (inputs (list pybind11 abseil-cpp python))
+    (propagated-inputs (list python-wheel
+                             python-absl-py
+                             python-attrs
+                             python-numpy
+                             python-wrapt))
+    (arguments
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'build-shared-lib
+                 (lambda _
+                   (let* ((pybind11   #$(this-package-input "pybind11"))
+                          (python     #$(this-package-input "python"))
+                          (version    (python-version python))
+                          (abseil-cpp #$(this-package-input "abseil-cpp")))
+                     ;; Delete default cmake build.
+                     (substitute* "setup.py"
+                       (("ext_modules.*") "")
+                       (("cmdclass.*") ""))
+                     ;; Actual build phase.
+                     (mkdir-p "build/temp/tree/")
+                     (invoke
+                      "gcc" "-pthread" "-Wno-unused-result" "-Wsign-compare"
+                      "-DNDEBUG" "-g" "-fwrapv" "-O3" "-Wall"
+                      "-fno-semantic-interposition" "-fPIC"
+                      "-I" (string-append pybind11
+                                          "/lib/python" version
+                                          "/site-packages/pybind11/include")
+                      "-I" (string-append python "/include/python"
+                                          version)
+                      "-I" (string-append abseil-cpp "/include")
+                      "-c" "tree/tree.cc"
+                      "-o" "build/temp/tree/tree.o"
+                      "-fvisibility=hidden" "-g0")
+                     (mkdir-p "build/lib/tree")
+                     (invoke
+                      "g++" "-pthread" "-shared"
+                      (string-append "-Wl," "-rpath=" python "/lib")
+                      "-fno-semantic-interposition"
+                      "build/temp/tree/tree.o"
+                      "-L" (string-append python "/lib")
+                      "-L" (string-append abseil-cpp "/lib")
+                      "-l" "absl_int128"
+                      "-l" "absl_raw_hash_set"
+                      "-l" "absl_raw_logging_internal"
+                      "-l" "absl_strings"
+                      "-l" "absl_throw_delegate"
+                      "-o" "build/lib/tree/_tree.so")))))))
+    (home-page "https://github.com/deepmind/tree")
+    (synopsis "Work with nested data structures in Python")
+    (description "Tree is a python library for working with nested data
+structures.  In a way, @code{tree} generalizes the builtin @code{map} function
+which only supports flat sequences, and allows you to apply a function to each
+leaf preserving the overall structure.")
+    (license license:asl2.0)))
 
 (define-public python-docutils
   (package
@@ -22364,6 +22434,25 @@ working with iterables.")
     (description "Lexer and codec to work with LaTeX code in Python.")
     (license license:expat)))
 
+(define-public python-pybloom-live
+  (package
+    (name "python-pybloom-live")
+    (version "4.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pybloom_live" version))
+              (sha256
+               (base32
+                "040i6bjqvl33j30v865shsk30s3h7f16pqwiaj5kig857dfmqm4r"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-bitarray python-xxhash))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/joseph-fox/python-bloomfilter")
+    (synopsis "Bloom filter")
+    (description "This package provides a scalable Bloom filter implemented in
+Python.")
+    (license license:expat)))
+
 (define-public python-pybtex
   (package
     (name "python-pybtex")
@@ -23080,6 +23169,32 @@ environments.")
      "Namecheap API client in Python")
     (description
      "PyNamecheap is a Namecheap API client in Python.")
+    (license license:expat)))
+
+(define-public python-pynixutil
+  (package
+    (name "python-pynixutil")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nix-community/pynixutil")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              ;; Derivation test uses nix.
+              (modules '((guix build utils)))
+              (snippet '(delete-file "tests/test_drv.py"))
+              (sha256
+               (base32
+                "1lnspcai7mqpv73bbd8kgyw63fxwgkwvfkl09b2bl5y2g2v7np6m"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list poetry python-pytest))
+    (home-page "https://github.com/nix-community/pynixutil")
+    (synopsis "Utility functions for working with data from Nix in Python")
+    (description
+     "@code{pynixutil} provides functions for base32 encoding/decoding and
+derivation parsing, namingly @code{b32decode()}, @code{b32encode()} and
+@code{drvparse()}.")
     (license license:expat)))
 
 (define-public python-dns-lexicon

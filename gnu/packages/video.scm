@@ -5083,7 +5083,7 @@ transcode or reformat the videos in any way, producing perfect backups.")
 (define-public svt-av1
   (package
     (name "svt-av1")
-    (version "0.9.1")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -5092,10 +5092,8 @@ transcode or reformat the videos in any way, producing perfect backups.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02fchq2vlxcxzbrss72xl9vrxzysdy39d5i159bmg3qa45ngd2iw"))))
+        (base32 "0blnla32yz665bx0xyx8lrjs2wqd2xhpbqwwpz72mq7zf341j8vv"))))
     (build-system cmake-build-system)
-    ;; SVT-AV1 only supports 64-bit Intel-compatible CPUs.
-    (supported-systems '("x86_64-linux"))
     (arguments
       ;; The test suite tries to download test data and git clone a 3rd-party
       ;; fork of libaom.  Skip it.
@@ -5113,7 +5111,8 @@ transcode or reformat the videos in any way, producing perfect backups.")
     (synopsis "AV1 video codec")
     (description "SVT-AV1 is an AV1 codec implementation.  The encoder is a
 work-in-progress, aiming to support video-on-demand and live streaming
-applications.  It only supports Intel-compatible CPUs (x86).")
+applications with high performance requirements.  It mainly targets
+Intel-compatible CPUs (x86), but has limited support for other architectures.")
     (home-page "https://gitlab.com/AOMediaCodec/SVT-AV1")
     (license license:bsd-2)))
 
@@ -5569,3 +5568,27 @@ VCS, by default, makes screenshots the same size as the video, see the manual
 for details on how to change this.")
    (home-page "http://p.outlyer.net/vcs/")
    (license license:lgpl2.1+)))
+
+(define-public svtplay-dl
+  (package
+    (name "svtplay-dl")
+    (version "4.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/spaam/svtplay-dl")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wdrdszalvhv80m5jizbvjz4jc08acmbpxcsslyfb5cwh842in8m"))))
+    (build-system python-build-system)
+    (inputs (list ffmpeg python-pyaml python-requests python-pysocks
+                  python-cryptography))
+    (home-page "https://svtplay-dl.se/")
+    (synopsis "Download or stream SVT Play's (and others) TV programmes")
+    (description
+     "@code{svtplay-dl} allows downloading TV programmes from various Swedish
+broadcasters including SVT Play, Sveriges Radio, TV4 Play, along with many
+others.")
+    (license license:expat)))

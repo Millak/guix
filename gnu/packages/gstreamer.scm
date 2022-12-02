@@ -794,7 +794,7 @@ model to base your own plug-in on, here it is.")
                   ;; This test is flaky on at least some architectures.
                   ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
                   #$@(if (member (%current-system)
-                                 '("i686-linux" "aarch64-linux"))
+                                 '("i686-linux" "aarch64-linux" "riscv64-linux"))
                          `((("'elements/camerabin\\.c'\\]\\],")
                             "'elements/camerabin.c'], true, ],"))
                          '())

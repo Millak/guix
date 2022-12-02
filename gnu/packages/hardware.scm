@@ -998,7 +998,7 @@ technology, such as head mounted displays with built in head tracking.")
 (define-public openrgb
   (package
     (name "openrgb")
-    (version "0.7")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -1007,15 +1007,25 @@ technology, such as head mounted displays with built in head tracking.")
              (commit (string-append "release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xhfaz0b74nfnh7il2cz5c0338xlzay00g6hc2h3lsncarj8d5n7"))
+        (base32 "1yz7sdrjcxajm1zpa5djinmych5dvck0r1fvk0x5qmk87va4p9z3"))
        (patches
         (search-patches "openrgb-unbundle-hueplusplus.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; Delete the bundled hueplusplus and json libraries.
-           (delete-file-recursively "dependencies/hueplusplus-1.0.0")
-           (delete-file-recursively "dependencies/json")))))
+           ;; Delete many of the bundled libraries.
+           (for-each delete-file-recursively
+                     (list "dependencies/hidapi-win"
+                           "dependencies/hueplusplus-1.0.0"
+                           "dependencies/json"
+                           "dependencies/libusb-1.0.22"
+                           "dependencies/macUSPCIO"
+                           "dependencies/mbedtls-2.24.0"
+                           "dependencies/NVFC"
+                           "dependencies/openrazer-win32"
+                           "dependencies/winring0"
+                           ;; Some bundled appimages
+                           "scripts/tools"))))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1044,7 +1054,8 @@ technology, such as head mounted displays with built in head tracking.")
            mbedtls-apache
            qtbase-5))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           qttools-5))
     (synopsis "RGB lighting control")
     (description
      "OpenRGB is lighting control that doesn't depend on manufacturer software.

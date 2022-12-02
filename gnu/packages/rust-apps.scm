@@ -20,6 +20,8 @@
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,11 +39,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rust-apps)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
-  #:use-module (guix download)
-  #:use-module (guix git-download)
   #:use-module (guix deprecation)
+  #:use-module (guix download)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -1028,6 +1031,49 @@ rebase.")
      "This package provides a tool for generating C/C++ bindings to Rust code.")
     (license license:mpl2.0)))
 
+(define-public rust-cbindgen-0.24
+  (package
+    (inherit rust-cbindgen)
+    (name "rust-cbindgen")
+    (version "0.24.3")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-toml" ,rust-toml-0.5))
+        #:cargo-development-inputs
+        (("rust-serial-test" ,rust-serial-test-0.5))))
+    (native-inputs
+     (list python-cython))))
+
+(define-public rust-cbindgen-0.23
+  (package
+    (inherit rust-cbindgen-0.24)
+    (name "rust-cbindgen")
+    (version "0.23.0")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
+
 (define-public rust-cbindgen-0.19
   (package
     (inherit rust-cbindgen)
@@ -1875,6 +1921,164 @@ C-compatible) software.")
 consecutive lines and since program start.")
     (license license:expat)))
 
+(define-public skim
+  (package
+    (name "skim")
+    (version "0.9.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "skim" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1d5v9vq8frkdjm7bnw3455h6xf3c277d51il2qasn7r20kwik7ab"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-atty-0.2" ,rust-atty-0.2)
+         ("rust-beef" ,rust-beef-0.5)
+         ("rust-bitflags" ,rust-bitflags-1)
+         ("rust-chrono" ,rust-chrono-0.4)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-crossbeam" ,rust-crossbeam-0.8)
+         ("rust-defer-drop" ,rust-defer-drop-1)
+         ("rust-derive-builder" ,rust-derive-builder-0.9)
+         ("rust-env-logger" ,rust-env-logger-0.8)
+         ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-nix" ,rust-nix-0.19)
+         ("rust-rayon" ,rust-rayon-1)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-shlex" ,rust-shlex-0.1)
+         ("rust-time" ,rust-time-0.2)
+         ("rust-timer" ,rust-timer-0.2)
+         ("rust-tuikit" ,rust-tuikit-0.4)
+         ("rust-unicode-width" ,rust-unicode-width-0.1)
+         ("rust-vte" ,rust-vte-0.9))
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (share (string-append out "/share"))
+                     (man (string-append out "/share/man"))
+                     (vimfiles (string-append share "/vim/vimfiles/plugin"))
+                     (bash-completion
+                      (string-append share "/bash-completions/completions"))
+                     (zsh-site (string-append share "/zsh/site-functions"))
+                     (fish-vendor
+                      (string-append share "/fish/vendor-completions.d")))
+                ;; Binaries
+                (for-each
+                 (lambda (binary) (install-file binary bin))
+                 (find-files "bin"))
+                (mkdir-p share)
+                ;; Manpages
+                (copy-recursively "man" man)
+                ;; Vim plugins
+                (mkdir-p vimfiles)
+                (copy-recursively "plugin" vimfiles)
+                ;; Completions
+                (mkdir-p bash-completion)
+                (copy-file
+                 "shell/completion.bash"
+                 (string-append bash-completion "/skim"))
+                (copy-file
+                 "shell/key-bindings.bash"
+                 (string-append bash-completion "/skim-bindings"))
+                (mkdir-p zsh-site)
+                (copy-file
+                 "shell/completion.zsh"
+                 (string-append zsh-site "/_skim"))
+                (copy-file
+                 "shell/key-bindings.zsh"
+                 (string-append zsh-site "/_skim-bindings"))
+                (mkdir-p fish-vendor)
+                (copy-file
+                 "shell/key-bindings.fish"
+                 (string-append fish-vendor "/skim-bindings.fish"))))))))
+    (home-page "https://github.com/lotabout/skim")
+    (synopsis "Fuzzy Finder in Rust")
+    (description "This package provides a fuzzy finder in Rust.")
+    (license license:expat)))
+
+(define-public skim-0.7
+  (package
+    (inherit skim)
+    (name "skim")
+    (version "0.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "skim" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1yiyd6fml5hd2l811sckkzmiiq9bd7018ajk4qk3ai4wyvqnw8mv"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-derive-builder" ,rust-derive-builder-0.9)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.14)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-shlex" ,rust-shlex-0.1)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-timer" ,rust-timer-0.2)
+        ("rust-tuikit" ,rust-tuikit-0.2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-vte" ,rust-vte-0.3))))))
+
+(define-public rust-skim-0.7
+  (deprecated-package "rust-skim-0.7" skim-0.7))
+
+(define-public svd2rust
+  (package
+    (name "svd2rust")
+    (version "0.19.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "svd2rust" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0q8slfgjfhpljzlk2myb0i538mfq99q1ljn398jm17r1q2pjjxhv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cast" ,rust-cast-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-clap-conf" ,rust-clap-conf-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-inflections" ,rust-inflections-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-svd-parser" ,rust-svd-parser-0.10)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-embedded/svd2rust/")
+    (synopsis
+     "Generate Rust register maps (`struct`s) from SVD files")
+    (description
+     "This program can be used to generate Rust register maps (`struct`s) from SVD
+files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public swayhide
   (package
     (name "swayhide")
@@ -1899,6 +2103,43 @@ process has finished, the terminal is moved back.  This is useful if your
 workflow includes opening graphical programs from the terminal, as the locked
 terminal won't have to take up any space.")
     (license license:gpl3+)))
+
+(define-public swayr
+  (package
+   (name "swayr")
+   (version "0.18.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "swayr" version))
+     (file-name (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32 "1m443lwbs3lm20kkviw60db56w9i59dm393z1sn6llpfi2xihh3h"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:tests? #f
+      #:cargo-inputs
+      (("rust-clap" ,rust-clap-3)
+       ("rust-directories" ,rust-directories-4)
+       ("rust-env-logger" ,rust-env-logger-0.9)
+       ("rust-log" ,rust-log-0.4)
+       ("rust-once-cell" ,rust-once-cell-1)
+       ("rust-rand" ,rust-rand-0.8)
+       ("rust-regex" ,rust-regex-1)
+       ("rust-rt-format" ,rust-rt-format-0.3)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-serde-json" ,rust-serde-json-1)
+       ("rust-swayipc" ,rust-swayipc-3)
+       ("rust-toml" ,rust-toml-0.5))))
+   (home-page "https://sr.ht/~tsdh/swayr/")
+   (synopsis "Window-switcher for the sway window manager")
+   (description
+    "This package provides a last-recently-used window-switcher for the sway
+window manager. Swayr consists of a daemon, and a client. The swayrd daemon
+records window/workspace creations, deletions, and focus changes using sway's
+JSON IPC interface. The swayr client offers subcommands, and sends them to the
+daemon which executes them.")
+   (license license:gpl3+)))
 
 (define-public tealdeer
   (package
@@ -2029,32 +2270,54 @@ It will then write @code{fixup!} commits for each of those changes.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.6.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ih01l3xp8plicxhmyxjkq12ncpdb8954jcj3dh3lwvkhvw29nkk"))))
+        (base32 "0y5v2vgl9f3n0n0w4b3iddbfyxv0hls0vw5406ry0hcvnnjyy2l3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-askama" ,rust-askama-0.10)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-dunce" ,rust-dunce-1)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-ordered-float" ,rust-ordered-float-2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-seq-macro" ,rust-seq-macro-0.2))))
+     (list #:cargo-inputs
+           `(("rust-anyhow" ,rust-anyhow-1)
+             ("rust-askama" ,rust-askama-0.11)
+             ("rust-bincode" ,rust-bincode-1)
+             ("rust-clap" ,rust-clap-3)
+             ("rust-clap-complete" ,rust-clap-complete-3)
+             ("rust-clap-complete-fig" ,rust-clap-complete-fig-3)
+             ("rust-dirs" ,rust-dirs-4)
+             ("rust-dunce" ,rust-dunce-1)
+             ("rust-fastrand" ,rust-fastrand-1)
+             ("rust-glob" ,rust-glob-0.3)
+             ("rust-nix" ,rust-nix-0.24)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-which" ,rust-which-4))
+           #:cargo-development-inputs
+           `(("rust-assert-cmd" ,rust-assert-cmd-2)
+             ("rust-rstest" ,rust-rstest-0.15)
+             ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+             ("rust-tempfile" ,rust-tempfile-3))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-older-rust
+                 (lambda _
+                   (setenv "RUSTC_BOOTSTRAP" "1")
+                   (substitute* "Cargo.toml"
+                     (("^rust-version = .*$")
+                      (string-append
+                       "rust-version = \""
+                       #$(package-version rust)
+                       "\"\n")))
+                   (substitute* "src/main.rs"
+                     (("#!\\[allow\\(clippy::single_component_path_imports)]")
+                      "#![feature(total_cmp)]"))
+                   (substitute* "src/cmd/query.rs"
+                     (("let handle = &mut io::stdout\\()\\.lock\\();")
+                      "\
+let _stdout = io::stdout();
+let handle = &mut _stdout.lock();")))))))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description

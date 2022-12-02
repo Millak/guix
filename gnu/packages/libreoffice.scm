@@ -483,14 +483,14 @@ Apple Keynote documents.  It currently supports Keynote versions 2 to 5.")
 (define-public liblangtag
   (package
     (name "liblangtag")
-    (version "0.6.3")
+    (version "0.6.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://bitbucket.org/tagoh/liblangtag/downloads/"
                             "liblangtag-" version ".tar.bz2"))
         (sha256
-         (base32 "1g9kwxx60q0hpwvs66ys1cb9qg54hfvbivadwli8sfpc085a44hz"))))
+         (base32 "0r55r30ih8dgq1hwbpl834igilj7bpxcnmlrlkd3vryk2wn0c0ap"))))
     (build-system gnu-build-system)
     (native-inputs
      (list libtool pkg-config))
@@ -745,14 +745,14 @@ from the old StarOffice (.sdc, .sdw, ...).")
 (define-public libwps
   (package
     (name "libwps")
-    (version "0.4.12")
+    (version "0.4.13")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://sourceforge/" name "/" name "/"
                           name "-" version "/" name "-" version ".tar.xz"))
       (sha256 (base32
-               "1nsfacqp5sfkyayw7q0wp68lidksd1wjdix8qmsbf0vdl19gn6p2"))))
+               "03y4aslp5lfqc14agn0hgkifwrknh8s4hfjll9wrfs1hq3kaz5ff"))))
     (build-system gnu-build-system)
     (native-inputs
      (list doxygen pkg-config))
@@ -992,7 +992,7 @@ spell-checking library.")
     (build-system gnu-build-system)
     (inputs
      (list perl))
-    (home-page "http://hunspell.sourceforge.net/")
+    (home-page "https://hunspell.github.io/")
     (synopsis "Hyphenation library")
     (description "Hyphen is a hyphenation library using TeX hyphenation
 patterns, which are pre-processed by a perl script.")
@@ -1050,20 +1050,20 @@ spell-checking library.")
 (define-public mythes
   (package
     (name "mythes")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
      (origin
       (method url-fetch)
-      (uri (string-append "mirror://sourceforge/hunspell/MyThes/" version "/"
-                          name "-" version ".tar.gz"))
-      (sha256 (base32
-               "0prh19wy1c74kmzkkavm9qslk99gz8h8wmjvwzjc6lf8v2az708y"))))
+      (uri (string-append "https://github.com/hunspell/mythes/releases/"
+                          "download/v" version "/mythes-" version ".tar.xz"))
+      (sha256
+       (base32 "07ajdyyif19k445dqffkm32c1kl8z0cw6bczc7x5zgkvf1q9y9qr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list hunspell perl))
-    (home-page "http://hunspell.sourceforge.net/")
+    (home-page "https://hunspell.github.io/")
     (synopsis "Thesaurus")
     (description "MyThes is a simple thesaurus that uses a structured text
 data file and an index file with binary search to look up words and phrases

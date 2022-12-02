@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
+;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,17 +18,22 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages raspberry-pi)
+  #:use-module (gnu bootloader)
+  #:use-module (gnu bootloader grub)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages cross-base)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages embedded)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages embedded)
+  #:use-module (gnu packages linux)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -40,7 +46,10 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:export (make-raspi-bcm28-dtbs
+            raspi-config-file
+            raspi-custom-txt))
 
 (define-public bcm2835
   (package
@@ -235,3 +244,126 @@ Raspberry Pi.  Note: It does not work on Raspberry Pi 1.")
                (install-file "arm64.bin" libexec)
                #t))))))))
     (supported-systems '("aarch64-linux"))))
+
+(define (raspi-config-file name content)
+  "Make a configuration file like config.txt for the Raspberry Pi firmware.
+CONTENT can be a list of strings, which are concatenated with a newline
+character.  Alternatively CONTENT can be a string with the full file content."
+  (plain-file
+   name
+   (if (list? content)
+       (string-join content "\n" 'suffix)
+       content)))
+
+(define-public %raspi-config-txt
+  ;; A config.txt file to start the ARM cores up in 64-bit mode if necessary
+  ;; and to include a dtb.txt, bootloader.txt, and a custom.txt, each with
+  ;; separated configurations for the Raspberry Pi firmware.
+  (raspi-config-file
+   "config.txt"
+   `("# See https://www.raspberrypi.org/documentation/configuration/config-txt/README.md for details."
+     ""
+     ,(string-append "arm_64bit=" (if (target-aarch64?) "1" "0"))
+     "include dtb.txt"
+     "include bootloader.txt"
+     "include custom.txt")))
+
+(define-public %raspi-bcm27-dtb-txt
+  ;; A dtb.txt file to be included by the config.txt to ensure that the
+  ;; downstream device tree files bcm27*.dtb will be used.
+  (raspi-config-file
+   "dtb.txt"
+   "upstream_kernel=0"))
+
+(define-public %raspi-bcm28-dtb-txt
+  ;; A dtb.txt file to be included by the config.txt to ensure that the
+  ;; upstream device tree files bcm28*.dtb will be used.
+  ;; This also implies the use of the dtoverlay=upstream.
+  (raspi-config-file
+   "dtb.txt"
+   "upstream_kernel=1"))
+
+(define-public %raspi-u-boot-bootloader-txt
+  ;; A bootloader.txt file to be included by the config.txt to load the
+  ;; U-Boot bootloader.
+  (raspi-config-file
+   "bootloader.txt"
+   '("dtoverlay=upstream"
+     "enable_uart=1"
+     "kernel=u-boot.bin")))
+
+(define (raspi-custom-txt content)
+  "Make a custom.txt file for the Raspberry Pi firmware.
+CONTENT can be a list of strings, which are concatenated with a newline
+character.  Alternatively CONTENT can be a string with the full file content."
+  (raspi-config-file "custom.txt" content))
+
+(define (make-raspi-bcm28-dtbs linux)
+  "Make a package with the device-tree files for Raspberry Pi models from the
+kernel LINUX."
+  (package
+    (inherit linux)
+    (name "raspi-bcm28-dtbs")
+    (source #f)
+    (build-system copy-build-system)
+    (arguments
+     #~(list
+        #:phases #~(modify-phases %standard-phases (delete 'unpack))
+        #:install-plan
+        (list (list (search-input-directory %build-inputs
+                                            "lib/dtbs/broadcom/")
+                    "." #:include-regexp '("/bcm....-rpi.*\\.dtb")))))
+    (inputs (list linux))
+    (synopsis "Device-tree files for a Raspberry Pi")
+    (description
+     (format #f "The device-tree files for Raspberry Pi models from ~a."
+             (package-name linux)))))
+
+(define-public grub-efi-bootloader-chain-raspi-64
+  ;; A bootloader capable to boot a Raspberry Pi over network via TFTP or from
+  ;; a local storage like a micro SD card.  It neither installs firmware nor
+  ;; device-tree files for the Raspberry Pi.  It just assumes them to be
+  ;; existing in boot/efi in the same way that some UEFI firmware with ACPI
+  ;; data is usually assumed to be existing on PCs.  It creates firmware
+  ;; configuration files and a bootloader-chain with U-Boot to provide an EFI
+  ;; API for the final GRUB bootloader.  It also serves as a blue-print to
+  ;; create an a custom bootloader-chain with firmware and device-tree
+  ;; packages or files.
+  (efi-bootloader-chain grub-efi-netboot-removable-bootloader
+                        #:packages (list u-boot-rpi-arm64-efi-bin)
+                        #:files (list %raspi-config-txt
+                                      %raspi-bcm27-dtb-txt
+                                      %raspi-u-boot-bootloader-txt)))
+
+(define (make-raspi-defconfig arch defconfig sha256-as-base32)
+  "Make for the architecture ARCH a file-like object from the DEFCONFIG file
+with the hash SHA256-AS-BASE32.  This object can be used as the #:defconfig
+argument of the function (modify-linux)."
+  (make-defconfig
+   (string-append
+    ;; This is from commit 7838840 on branch rpi-5.18.y,
+    ;; see https://github.com/raspberrypi/linux/tree/rpi-5.18.y/
+    ;; and https://github.com/raspberrypi/linux/commit/7838840b5606a2051b31da4c598466df7b1c3005
+    "https://raw.githubusercontent.com/raspberrypi/linux/7838840b5606a2051b31da4c598466df7b1c3005/arch/"
+    arch "/configs/" defconfig)
+   sha256-as-base32))
+
+(define-public %bcm2709-defconfig
+  (make-raspi-defconfig
+   "arm" "bcm2709_defconfig"
+   "1hcxmsr131f92ay3bfglrggds8ajy904yj3vw7c42i4c66256a79"))
+
+(define-public %bcm2711-defconfig
+  (make-raspi-defconfig
+   "arm" "bcm2711_defconfig"
+   "1n7g5yq0hdp8lh0x6bfxph2ff8yn8zisdj3qg0gbn83j4v8i1zbd"))
+
+(define-public %bcm2711-defconfig-64
+  (make-raspi-defconfig
+   "arm64" "bcm2711_defconfig"
+   "0k9q7qvw826v2hrp49xnxnw93pnnkicwx869chvlf7i57461n4i7"))
+
+(define-public %bcmrpi3-defconfig
+  (make-raspi-defconfig
+   "arm64" "bcmrpi3_defconfig"
+   "1bfnl4p0ddx3200dg91kmh2pln36w95y05x1asc312kixv0jgd81"))

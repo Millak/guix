@@ -693,14 +693,14 @@ and visualization with these data structures.")
 (define-public python-msgpack-numpy
   (package
     (name "python-msgpack-numpy")
-    (version "0.4.6.post0")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "msgpack-numpy" version))
        (sha256
         (base32
-         "0syzy645mwcy7lfjwz6pc8f9p2vv1qk4limc8iina3l5nnf0rjyz"))))
+         "0sbfanbkfs6c77np4vz0ayrwnv99bpn5xgj5fnf2yhhk0lcd6ry6"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-msgpack python-numpy))

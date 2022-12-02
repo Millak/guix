@@ -1021,7 +1021,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
 (define-public libblockdev
   (package
     (name "libblockdev")
-    (version "2.27")
+    (version "2.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/storaged-project/"
@@ -1029,7 +1029,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                                   version "-1/libblockdev-" version ".tar.gz"))
               (sha256
                (base32
-                "05rm9h8v30rahr245jcw6if6b5g16mb5hnz7wl1shzip0wky3k3d"))))
+                "1x3xbgd2dyjhcqvyalpnrp727xidfxmaxgyyvv5gwx4aw90wijc2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1142,6 +1142,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
+    ;; When updating, remove go-github-com-gdamore-tcell-v2-2.3 from golang.scm.
     (version "27")
     (source (origin
               (method git-fetch)
@@ -1155,7 +1156,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
     (build-system go-build-system)
     (native-inputs
      (list go-github.com-mattn-go-runewidth go-golang-org-x-term
-           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2))
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")

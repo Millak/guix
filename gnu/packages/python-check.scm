@@ -16,6 +16,7 @@
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2437,6 +2438,34 @@ servers.")
 documentation by parsing them from their source and evaluating the
 parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
+    (license license:expat)))
+
+(define-public python-pytest-parawtf
+  (package
+    (name "python-pytest-parawtf")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-parawtf" version))
+              (sha256
+               (base32
+                "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; https://github.com/flub/pytest-parawtf/issues/1
+                 (invoke "pytest" "-k" "not test_mark")))))))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/flub/pytest-parawtf/")
+    (synopsis "Finally spell paramete?ri[sz]e correctly")
+    (description
+"@code{python-pytest} uses one of four different spellings of
+parametrize.  This plugin allows you to use all four.")
     (license license:expat)))
 
 (define-public python-pytest-httpx

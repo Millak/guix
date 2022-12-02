@@ -1345,6 +1345,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/jami-fix-unit-tests-build.patch          \
   %D%/packages/patches/jami-libjami-headers-search.patch	\
   %D%/packages/patches/jami-no-webengine.patch			\
+  %D%/packages/patches/jami-sip-contacts.patch			\
   %D%/packages/patches/jami-sip-unregister.patch		\
   %D%/packages/patches/jami-xcb-link.patch			\
   %D%/packages/patches/jamvm-1.5.1-aarch64-support.patch	\
@@ -1822,6 +1823,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ruby-mustache-1.1.1-fix-race-condition-tests.patch \
   %D%/packages/patches/ruby-sanitize-system-libxml.patch	\
   %D%/packages/patches/rustc-1.54.0-src.patch			\
+  %D%/packages/patches/rust-1.64-fix-riscv64-bootstrap.patch	\
   %D%/packages/patches/rust-adblock-ignore-live-tests.patch		\
   %D%/packages/patches/i3status-rust-enable-unstable-features.patch	\
   %D%/packages/patches/rust-ndarray-remove-blas-src-dep.patch	\
@@ -1836,7 +1838,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/sbcl-aserve-fix-rfe12668.patch	\
   %D%/packages/patches/sbcl-burgled-batteries3-fix-signals.patch	\
   %D%/packages/patches/sbcl-clml-fix-types.patch		\
-  %D%/packages/patches/sbcl-fix-build-on-arm64-with-clisp-as-host.patch	\
   %D%/packages/patches/sbcl-png-fix-sbcl-compatibility.patch	\
   %D%/packages/patches/scalapack-gcc-10-compilation.patch	\
   %D%/packages/patches/scheme48-tests.patch			\
@@ -1867,7 +1868,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/spectre-meltdown-checker-find-kernel.patch \
   %D%/packages/patches/sphinxbase-fix-doxygen.patch		\
   %D%/packages/patches/spice-vdagent-glib-2.68.patch		\
-  %D%/packages/patches/sssd-optional-systemd.patch		\
   %D%/packages/patches/sssd-system-directories.patch		\
   %D%/packages/patches/steghide-fixes.patch			\
   %D%/packages/patches/suitesparse-mongoose-cmake.patch		\

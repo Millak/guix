@@ -258,7 +258,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.28")
+    (version "0.28.1")
     (source
      (origin
        (method git-fetch)
@@ -267,7 +267,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0dd20cq3nz4jjysaqx2aiqqaxvkfkbj2x4zm2mz3pd4rmydckj2y"))))
+        (base32 "111as99278vbv6pwj8rpl308g327f8iznnrz71mngl6d5mr0xpa1"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -305,7 +305,7 @@ e.g. emacs-geiser-guile for Guile.")
 (define-public emacs-geiser-guile
   (package
     (name "emacs-geiser-guile")
-    (version "0.28.0")
+    (version "0.28.1")
     (source
      (origin
        (method git-fetch)
@@ -314,7 +314,7 @@ e.g. emacs-geiser-guile for Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13qxg1npm0pmnml5q268k5xk1clyqldp8v200ihrqwqlc3ga7f36"))))
+        (base32 "0gp8xbfm7y2gabjyys8jylfy1pkkglqas32xxrbqxfh1hv0cfh2f"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -888,6 +888,29 @@ of the segments available in that package using icons from
 @code{emacs-all-the-icons}.  Icon fonts allow for more tailored and detailed
 information in the mode line.")
     (license license:expat)))
+
+(define-public emacs-spongebob
+  (let ((commit "ae8ae6ba0dc57b7357ba87ff0609d27c4a0a5f51")
+        (revision "0"))
+     (package
+      (name "emacs-spongebob")
+      (version (git-version "0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+               (url "https://gitlab.com/dustyweb/spongebob.el")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+          (base32 "1agqpp078ij2irn0kb8bgqk0nd47fi20yfd9szn8kbqypfqalvgc"))))
+       (build-system emacs-build-system)
+      (home-page "https://gitlab.com/dustyweb/gauche")
+      (synopsis "Memetically mock a region of text")
+      (description "This package transforms text using @code{studlify-region}
+and inserts a SpongeBob SquarePants ASCII art figure in the current
+buffer.")
+      (license license:gpl3+))))
 
 (define-public emacs-project
   (package
@@ -5088,6 +5111,28 @@ window.")
 at the current line number or active region.  @code{git-link-commit} returns
 the URL for a commit.  URLs are added to the kill ring.")
     (license license:gpl3+)))
+
+(define-public emacs-frowny
+  (package
+    (name "emacs-frowny")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/duckwork/frowny.el")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "01ss3js71as1jpqcf0x9hfvapiyyhj9ni4y1n6wvqsghv5dcaiy0"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/duckwork/frowny.el")
+    (synopsis "Insert frownies in Emacs :(")
+    (description "This package ships @code{frowny-mode}, which makes it so that
+inserting a single @code{(} when after a @code{:} will not automatically close
+the parenthesis, meaning that only @code{:(} is inserted.  Works with
+@code{electric-pair-mode}, @code{paredit-mode}, and others.")
+    (license license:public-domain)))
 
 (define-public emacs-apache-mode
   (package
@@ -15971,7 +16016,7 @@ similar syntax; currently C++, Objective-C, Java, CORBA's IDL, Pike, and AWK.")
 (define-public emacs-csharp-mode
   (package
     (name "emacs-csharp-mode")
-    (version "1.1.1")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -15980,7 +16025,7 @@ similar syntax; currently C++, Objective-C, Java, CORBA's IDL, Pike, and AWK.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wfd4jdjsq8qp6pavf25y87dxvlnsqapfi4c4m3xj24baalr2dpq"))))
+        (base32 "1d0pf236xi4c7fazv67a53yrac24lilnkzp9pb55xm88gig7rfmz"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/josteink/csharp-mode")
     (synopsis "Major mode for C# code")
@@ -30358,39 +30403,40 @@ service, and connect it with Emacs via inter-process communication.")
     (name "emacs-telega")
     (build-system emacs-build-system)
     (arguments
-     `(#:emacs ,(if (target-64bit?)
-                    emacs-minimal
-                    ;; Require wide-int support for 32-bit platform.
-                    emacs-wide-int)
-       #:include (cons "^etc\\/" %default-include)
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-sources
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Hard-code paths to `ffplay` and `ffmpeg`.
-             (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
-                    (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
-               (substitute* '("telega-ffplay.el" "telega-vvnote.el")
-                 (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
-                   all func cmd)
-                  (string-append func " \""
-                                 (search-input-file
-                                  inputs (string-append "/bin/" cmd))))
-                 (("\\(executable-find \"ffplay\"\\)")
-                  (string-append "(and (file-executable-p \"" ffplay-bin "\")"
-                                 "\"" ffplay-bin "\")"))
-                 (("\\(executable-find \"ffmpeg\"\\)")
-                  (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
-                                 "\"" ffmpeg-bin "\")"))))))
-         (add-after 'unpack 'configure
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "telega-customize.el"
-               (("@TELEGA_SERVER_BIN@")
-                (search-input-file inputs "/bin/telega-server")))
-             (substitute* "telega-util.el"
-               (("@TELEGA_SHARE@")
-                (string-append (elpa-directory (assoc-ref outputs "out"))
-                               "/etc"))))))))
+     (list
+      #:emacs (if (target-64bit?)
+                  emacs-minimal
+                  ;; Require wide-int support for 32-bit platform.
+                  emacs-wide-int)
+      #:include #~(cons "^etc\\/" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-sources
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Hard-code paths to `ffplay` and `ffmpeg`.
+              (let* ((ffplay-bin (search-input-file inputs "/bin/ffplay"))
+                     (ffmpeg-bin (search-input-file inputs "/bin/ffmpeg")))
+                (substitute* '("telega-ffplay.el" "telega-vvnote.el")
+                  (("(shell-command-to-string\|concat) \"(ffmpeg\|ffprobe)"
+                    all func cmd)
+                   (string-append func " \""
+                                  (search-input-file
+                                   inputs (string-append "/bin/" cmd))))
+                  (("\\(executable-find \"ffplay\"\\)")
+                   (string-append "(and (file-executable-p \"" ffplay-bin "\")"
+                                  "\"" ffplay-bin "\")"))
+                  (("\\(executable-find \"ffmpeg\"\\)")
+                   (string-append "(and (file-executable-p \"" ffmpeg-bin "\")"
+                                  "\"" ffmpeg-bin "\")"))))))
+          (add-after 'unpack 'configure
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (substitute* "telega-customize.el"
+                (("@TELEGA_SERVER_BIN@")
+                 (search-input-file inputs "/bin/telega-server")))
+              (substitute* "telega-util.el"
+                (("@TELEGA_SHARE@")
+                 (string-append (elpa-directory (assoc-ref outputs "out"))
+                                "/etc"))))))))
     (inputs
      (list emacs-telega-server ffmpeg))
     (native-inputs '())
@@ -30406,13 +30452,14 @@ for the Telegram messaging platform.")))
     (inherit emacs-telega)
     (name "emacs-telega-contrib")
     (arguments
-     `(#:exclude '("telega-live-location.el")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'enter-subdirectory
-           (lambda _ (chdir "contrib") #t))
-         (add-before 'install-license-files 'leave-subdirectory
-           (lambda _ (chdir "..") #t)))))
+     (list
+      #:exclude #~(list "telega-live-location.el")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'enter-subdirectory
+            (lambda _ (chdir "contrib")))
+          (add-before 'install-license-files 'leave-subdirectory
+            (lambda _ (chdir ".."))))))
     (inputs '())
     (native-inputs '())
     (propagated-inputs

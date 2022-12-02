@@ -1,0 +1,565 @@
+https://github.com/rust-lang/rust/commit/263edd43c5255084292329423c61a9d69715ebfa.patch
+https://github.com/rust-lang/rust/issues/102155
+Issue seen on native builds on riscv64 across multiple Linux
+Distributions. An alternative workaround appears to be building stage 1
+with debug enabled.
+
+From 27412d1e3e128349bc515c16ce882860e20f037d Mon Sep 17 00:00:00 2001
+From: 5225225 <5225225@mailbox.org>
+Date: Thu, 14 Jul 2022 22:42:47 +0100
+Subject: [PATCH] Use constant eval to do strict validity checks
+
+---
+ Cargo.lock                                    |  1 +
+ .../src/intrinsics/mod.rs                     | 15 +----
+ compiler/rustc_codegen_ssa/Cargo.toml         |  1 +
+ compiler/rustc_codegen_ssa/src/mir/block.rs   |  9 ++-
+ .../src/const_eval/machine.rs                 |  2 +-
+ .../src/interpret/intrinsics.rs               | 56 ++++++++--------
+ compiler/rustc_const_eval/src/lib.rs          |  6 ++
+ .../src/might_permit_raw_init.rs              | 40 +++++++++++
+ compiler/rustc_middle/src/query/mod.rs        |  8 +++
+ compiler/rustc_middle/src/ty/query.rs         |  1 +
+ compiler/rustc_query_impl/src/keys.rs         | 12 +++-
+ compiler/rustc_target/src/abi/mod.rs          | 38 +++++------
+ .../intrinsics/panic-uninitialized-zeroed.rs  | 66 ++++++++++++-------
+ 13 files changed, 161 insertions(+), 94 deletions(-)
+ create mode 100644 compiler/rustc_const_eval/src/might_permit_raw_init.rs
+
+diff --git a/Cargo.lock b/Cargo.lock
+index 147d47044078a..dd6f0345affd0 100644
+--- a/Cargo.lock
++++ b/Cargo.lock
+@@ -3664,6 +3664,7 @@ dependencies = [
+  "rustc_arena",
+  "rustc_ast",
+  "rustc_attr",
++ "rustc_const_eval",
+  "rustc_data_structures",
+  "rustc_errors",
+  "rustc_fs_util",
+diff --git a/compiler/rustc_codegen_cranelift/src/intrinsics/mod.rs b/compiler/rustc_codegen_cranelift/src/intrinsics/mod.rs
+index eafae1cdc8af0..4b2207f375879 100644
+--- a/compiler/rustc_codegen_cranelift/src/intrinsics/mod.rs
++++ b/compiler/rustc_codegen_cranelift/src/intrinsics/mod.rs
+@@ -58,7 +58,6 @@ pub(crate) use llvm::codegen_llvm_intrinsic_call;
+ use rustc_middle::ty::print::with_no_trimmed_paths;
+ use rustc_middle::ty::subst::SubstsRef;
+ use rustc_span::symbol::{kw, sym, Symbol};
+-use rustc_target::abi::InitKind;
+ 
+ use crate::prelude::*;
+ use cranelift_codegen::ir::AtomicRmwOp;
+@@ -672,12 +671,7 @@ fn codegen_regular_intrinsic_call<'tcx>(
+                 return;
+             }
+ 
+-            if intrinsic == sym::assert_zero_valid
+-                && !layout.might_permit_raw_init(
+-                    fx,
+-                    InitKind::Zero,
+-                    fx.tcx.sess.opts.unstable_opts.strict_init_checks) {
+-
++            if intrinsic == sym::assert_zero_valid && !fx.tcx.permits_zero_init(layout) {
+                 with_no_trimmed_paths!({
+                     crate::base::codegen_panic(
+                         fx,
+@@ -688,12 +682,7 @@ fn codegen_regular_intrinsic_call<'tcx>(
+                 return;
+             }
+ 
+-            if intrinsic == sym::assert_uninit_valid
+-                && !layout.might_permit_raw_init(
+-                    fx,
+-                    InitKind::Uninit,
+-                    fx.tcx.sess.opts.unstable_opts.strict_init_checks) {
+-
++            if intrinsic == sym::assert_uninit_valid && !fx.tcx.permits_uninit_init(layout) {
+                 with_no_trimmed_paths!({
+                     crate::base::codegen_panic(
+                         fx,
+diff --git a/compiler/rustc_codegen_ssa/Cargo.toml b/compiler/rustc_codegen_ssa/Cargo.toml
+index faabea92f5a6c..81c8b9ceb136e 100644
+--- a/compiler/rustc_codegen_ssa/Cargo.toml
++++ b/compiler/rustc_codegen_ssa/Cargo.toml
+@@ -40,6 +40,7 @@ rustc_metadata = { path = "../rustc_metadata" }
+ rustc_query_system = { path = "../rustc_query_system" }
+ rustc_target = { path = "../rustc_target" }
+ rustc_session = { path = "../rustc_session" }
++rustc_const_eval = { path = "../rustc_const_eval" }
+ 
+ [dependencies.object]
+ version = "0.29.0"
+diff --git a/compiler/rustc_codegen_ssa/src/mir/block.rs b/compiler/rustc_codegen_ssa/src/mir/block.rs
+index 745da821c9d76..773c55cf551d5 100644
+--- a/compiler/rustc_codegen_ssa/src/mir/block.rs
++++ b/compiler/rustc_codegen_ssa/src/mir/block.rs
+@@ -22,7 +22,7 @@ use rustc_span::source_map::Span;
+ use rustc_span::{sym, Symbol};
+ use rustc_symbol_mangling::typeid_for_fnabi;
+ use rustc_target::abi::call::{ArgAbi, FnAbi, PassMode};
+-use rustc_target::abi::{self, HasDataLayout, InitKind, WrappingRange};
++use rustc_target::abi::{self, HasDataLayout, WrappingRange};
+ use rustc_target::spec::abi::Abi;
+ 
+ /// Used by `FunctionCx::codegen_terminator` for emitting common patterns
+@@ -528,7 +528,6 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
+         source_info: mir::SourceInfo,
+         target: Option<mir::BasicBlock>,
+         cleanup: Option<mir::BasicBlock>,
+-        strict_validity: bool,
+     ) -> bool {
+         // Emit a panic or a no-op for `assert_*` intrinsics.
+         // These are intrinsics that compile to panics so that we can get a message
+@@ -547,12 +546,13 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
+         });
+         if let Some(intrinsic) = panic_intrinsic {
+             use AssertIntrinsic::*;
++
+             let ty = instance.unwrap().substs.type_at(0);
+             let layout = bx.layout_of(ty);
+             let do_panic = match intrinsic {
+                 Inhabited => layout.abi.is_uninhabited(),
+-                ZeroValid => !layout.might_permit_raw_init(bx, InitKind::Zero, strict_validity),
+-                UninitValid => !layout.might_permit_raw_init(bx, InitKind::Uninit, strict_validity),
++                ZeroValid => !bx.tcx().permits_zero_init(layout),
++                UninitValid => !bx.tcx().permits_uninit_init(layout),
+             };
+             if do_panic {
+                 let msg_str = with_no_visible_paths!({
+@@ -687,7 +687,6 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
+             source_info,
+             target,
+             cleanup,
+-            self.cx.tcx().sess.opts.unstable_opts.strict_init_checks,
+         ) {
+             return;
+         }
+diff --git a/compiler/rustc_const_eval/src/const_eval/machine.rs b/compiler/rustc_const_eval/src/const_eval/machine.rs
+index 29ab1d187719c..e00e667fb71e2 100644
+--- a/compiler/rustc_const_eval/src/const_eval/machine.rs
++++ b/compiler/rustc_const_eval/src/const_eval/machine.rs
+@@ -104,7 +104,7 @@ pub struct CompileTimeInterpreter<'mir, 'tcx> {
+ }
+ 
+ impl<'mir, 'tcx> CompileTimeInterpreter<'mir, 'tcx> {
+-    pub(super) fn new(const_eval_limit: Limit, can_access_statics: bool) -> Self {
++    pub(crate) fn new(const_eval_limit: Limit, can_access_statics: bool) -> Self {
+         CompileTimeInterpreter {
+             steps_remaining: const_eval_limit.0,
+             stack: Vec::new(),
+diff --git a/compiler/rustc_const_eval/src/interpret/intrinsics.rs b/compiler/rustc_const_eval/src/interpret/intrinsics.rs
+index e2a8a9891f72f..7827fb8395b7f 100644
+--- a/compiler/rustc_const_eval/src/interpret/intrinsics.rs
++++ b/compiler/rustc_const_eval/src/interpret/intrinsics.rs
+@@ -15,7 +15,7 @@ use rustc_middle::ty::layout::LayoutOf as _;
+ use rustc_middle::ty::subst::SubstsRef;
+ use rustc_middle::ty::{Ty, TyCtxt};
+ use rustc_span::symbol::{sym, Symbol};
+-use rustc_target::abi::{Abi, Align, InitKind, Primitive, Size};
++use rustc_target::abi::{Abi, Align, Primitive, Size};
+ 
+ use super::{
+     util::ensure_monomorphic_enough, CheckInAllocMsg, ImmTy, InterpCx, Machine, OpTy, PlaceTy,
+@@ -413,35 +413,33 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
+                         ),
+                     )?;
+                 }
+-                if intrinsic_name == sym::assert_zero_valid
+-                    && !layout.might_permit_raw_init(
+-                        self,
+-                        InitKind::Zero,
+-                        self.tcx.sess.opts.unstable_opts.strict_init_checks,
+-                    )
+-                {
+-                    M::abort(
+-                        self,
+-                        format!(
+-                            "aborted execution: attempted to zero-initialize type `{}`, which is invalid",
+-                            ty
+-                        ),
+-                    )?;
++
++                if intrinsic_name == sym::assert_zero_valid {
++                    let should_panic = !self.tcx.permits_zero_init(layout);
++
++                    if should_panic {
++                        M::abort(
++                            self,
++                            format!(
++                                "aborted execution: attempted to zero-initialize type `{}`, which is invalid",
++                                ty
++                            ),
++                        )?;
++                    }
+                 }
+-                if intrinsic_name == sym::assert_uninit_valid
+-                    && !layout.might_permit_raw_init(
+-                        self,
+-                        InitKind::Uninit,
+-                        self.tcx.sess.opts.unstable_opts.strict_init_checks,
+-                    )
+-                {
+-                    M::abort(
+-                        self,
+-                        format!(
+-                            "aborted execution: attempted to leave type `{}` uninitialized, which is invalid",
+-                            ty
+-                        ),
+-                    )?;
++
++                if intrinsic_name == sym::assert_uninit_valid {
++                    let should_panic = !self.tcx.permits_uninit_init(layout);
++
++                    if should_panic {
++                        M::abort(
++                            self,
++                            format!(
++                                "aborted execution: attempted to leave type `{}` uninitialized, which is invalid",
++                                ty
++                            ),
++                        )?;
++                    }
+                 }
+             }
+             sym::simd_insert => {
+diff --git a/compiler/rustc_const_eval/src/lib.rs b/compiler/rustc_const_eval/src/lib.rs
+index d65d4f7eb720e..72ac6af685dc4 100644
+--- a/compiler/rustc_const_eval/src/lib.rs
++++ b/compiler/rustc_const_eval/src/lib.rs
+@@ -33,11 +33,13 @@ extern crate rustc_middle;
+ pub mod const_eval;
+ mod errors;
+ pub mod interpret;
++mod might_permit_raw_init;
+ pub mod transform;
+ pub mod util;
+ 
+ use rustc_middle::ty;
+ use rustc_middle::ty::query::Providers;
++use rustc_target::abi::InitKind;
+ 
+ pub fn provide(providers: &mut Providers) {
+     const_eval::provide(providers);
+@@ -59,4 +61,8 @@ pub fn provide(providers: &mut Providers) {
+         let (param_env, value) = param_env_and_value.into_parts();
+         const_eval::deref_mir_constant(tcx, param_env, value)
+     };
++    providers.permits_uninit_init =
++        |tcx, ty| might_permit_raw_init::might_permit_raw_init(tcx, ty, InitKind::Uninit);
++    providers.permits_zero_init =
++        |tcx, ty| might_permit_raw_init::might_permit_raw_init(tcx, ty, InitKind::Zero);
+ }
+diff --git a/compiler/rustc_const_eval/src/might_permit_raw_init.rs b/compiler/rustc_const_eval/src/might_permit_raw_init.rs
+new file mode 100644
+index 0000000000000..f971c2238c7bb
+--- /dev/null
++++ b/compiler/rustc_const_eval/src/might_permit_raw_init.rs
+@@ -0,0 +1,40 @@
++use crate::const_eval::CompileTimeInterpreter;
++use crate::interpret::{InterpCx, MemoryKind, OpTy};
++use rustc_middle::ty::layout::LayoutCx;
++use rustc_middle::ty::{layout::TyAndLayout, ParamEnv, TyCtxt};
++use rustc_session::Limit;
++use rustc_target::abi::InitKind;
++
++pub fn might_permit_raw_init<'tcx>(
++    tcx: TyCtxt<'tcx>,
++    ty: TyAndLayout<'tcx>,
++    kind: InitKind,
++) -> bool {
++    let strict = tcx.sess.opts.unstable_opts.strict_init_checks;
++
++    if strict {
++        let machine = CompileTimeInterpreter::new(Limit::new(0), false);
++
++        let mut cx = InterpCx::new(tcx, rustc_span::DUMMY_SP, ParamEnv::reveal_all(), machine);
++
++        let allocated = cx
++            .allocate(ty, MemoryKind::Machine(crate::const_eval::MemoryKind::Heap))
++            .expect("OOM: failed to allocate for uninit check");
++
++        if kind == InitKind::Zero {
++            cx.write_bytes_ptr(
++                allocated.ptr,
++                std::iter::repeat(0_u8).take(ty.layout.size().bytes_usize()),
++            )
++            .expect("failed to write bytes for zero valid check");
++        }
++
++        let ot: OpTy<'_, _> = allocated.into();
++
++        // Assume that if it failed, it's a validation failure.
++        cx.validate_operand(&ot).is_ok()
++    } else {
++        let layout_cx = LayoutCx { tcx, param_env: ParamEnv::reveal_all() };
++        ty.might_permit_raw_init(&layout_cx, kind)
++    }
++}
+diff --git a/compiler/rustc_middle/src/query/mod.rs b/compiler/rustc_middle/src/query/mod.rs
+index bdae7e5fcd6b1..0581ef41f66c2 100644
+--- a/compiler/rustc_middle/src/query/mod.rs
++++ b/compiler/rustc_middle/src/query/mod.rs
+@@ -2053,4 +2053,12 @@ rustc_queries! {
+         desc { |tcx| "looking up generator diagnostic data of `{}`", tcx.def_path_str(key) }
+         separate_provide_extern
+     }
++
++    query permits_uninit_init(key: TyAndLayout<'tcx>) -> bool {
++        desc { "checking to see if {:?} permits being left uninit", key.ty }
++    }
++
++    query permits_zero_init(key: TyAndLayout<'tcx>) -> bool {
++        desc { "checking to see if {:?} permits being left zeroed", key.ty }
++    }
+ }
+diff --git a/compiler/rustc_middle/src/ty/query.rs b/compiler/rustc_middle/src/ty/query.rs
+index 3d662ed5de4ba..2452bcf6a61b8 100644
+--- a/compiler/rustc_middle/src/ty/query.rs
++++ b/compiler/rustc_middle/src/ty/query.rs
+@@ -28,6 +28,7 @@ use crate::traits::query::{
+ use crate::traits::specialization_graph;
+ use crate::traits::{self, ImplSource};
+ use crate::ty::fast_reject::SimplifiedType;
++use crate::ty::layout::TyAndLayout;
+ use crate::ty::subst::{GenericArg, SubstsRef};
+ use crate::ty::util::AlwaysRequiresDrop;
+ use crate::ty::GeneratorDiagnosticData;
+diff --git a/compiler/rustc_query_impl/src/keys.rs b/compiler/rustc_query_impl/src/keys.rs
+index 6fbafeb1d32b3..5477431431374 100644
+--- a/compiler/rustc_query_impl/src/keys.rs
++++ b/compiler/rustc_query_impl/src/keys.rs
+@@ -6,7 +6,7 @@ use rustc_middle::mir;
+ use rustc_middle::traits;
+ use rustc_middle::ty::fast_reject::SimplifiedType;
+ use rustc_middle::ty::subst::{GenericArg, SubstsRef};
+-use rustc_middle::ty::{self, Ty, TyCtxt};
++use rustc_middle::ty::{self, layout::TyAndLayout, Ty, TyCtxt};
+ use rustc_span::symbol::{Ident, Symbol};
+ use rustc_span::{Span, DUMMY_SP};
+ 
+@@ -385,6 +385,16 @@ impl<'tcx> Key for Ty<'tcx> {
+     }
+ }
+ 
++impl<'tcx> Key for TyAndLayout<'tcx> {
++    #[inline(always)]
++    fn query_crate_is_local(&self) -> bool {
++        true
++    }
++    fn default_span(&self, _: TyCtxt<'_>) -> Span {
++        DUMMY_SP
++    }
++}
++
+ impl<'tcx> Key for (Ty<'tcx>, Ty<'tcx>) {
+     #[inline(always)]
+     fn query_crate_is_local(&self) -> bool {
+diff --git a/compiler/rustc_target/src/abi/mod.rs b/compiler/rustc_target/src/abi/mod.rs
+index d1eafd6ac5fb8..6f4d073d70486 100644
+--- a/compiler/rustc_target/src/abi/mod.rs
++++ b/compiler/rustc_target/src/abi/mod.rs
+@@ -1372,7 +1372,7 @@ pub struct PointeeInfo {
+ 
+ /// Used in `might_permit_raw_init` to indicate the kind of initialisation
+ /// that is checked to be valid
+-#[derive(Copy, Clone, Debug)]
++#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+ pub enum InitKind {
+     Zero,
+     Uninit,
+@@ -1487,14 +1487,18 @@ impl<'a, Ty> TyAndLayout<'a, Ty> {
+     ///
+     /// `init_kind` indicates if the memory is zero-initialized or left uninitialized.
+     ///
+-    /// `strict` is an opt-in debugging flag added in #97323 that enables more checks.
++    /// This code is intentionally conservative, and will not detect
++    /// * zero init of an enum whose 0 variant does not allow zero initialization
++    /// * making uninitialized types who have a full valid range (ints, floats, raw pointers)
++    /// * Any form of invalid value being made inside an array (unless the value is uninhabited)
+     ///
+-    /// This is conservative: in doubt, it will answer `true`.
++    /// A strict form of these checks that uses const evaluation exists in
++    /// `rustc_const_eval::might_permit_raw_init`, and a tracking issue for making these checks
++    /// stricter is <https://github.com/rust-lang/rust/issues/66151>.
+     ///
+-    /// FIXME: Once we removed all the conservatism, we could alternatively
+-    /// create an all-0/all-undef constant and run the const value validator to see if
+-    /// this is a valid value for the given type.
+-    pub fn might_permit_raw_init<C>(self, cx: &C, init_kind: InitKind, strict: bool) -> bool
++    /// FIXME: Once all the conservatism is removed from here, and the checks are ran by default,
++    /// we can use the const evaluation checks always instead.
++    pub fn might_permit_raw_init<C>(self, cx: &C, init_kind: InitKind) -> bool
+     where
+         Self: Copy,
+         Ty: TyAbiInterface<'a, C>,
+@@ -1507,13 +1511,8 @@ impl<'a, Ty> TyAndLayout<'a, Ty> {
+                     s.valid_range(cx).contains(0)
+                 }
+                 InitKind::Uninit => {
+-                    if strict {
+-                        // The type must be allowed to be uninit (which means "is a union").
+-                        s.is_uninit_valid()
+-                    } else {
+-                        // The range must include all values.
+-                        s.is_always_valid(cx)
+-                    }
++                    // The range must include all values.
++                    s.is_always_valid(cx)
+                 }
+             }
+         };
+@@ -1534,19 +1533,12 @@ impl<'a, Ty> TyAndLayout<'a, Ty> {
+         // If we have not found an error yet, we need to recursively descend into fields.
+         match &self.fields {
+             FieldsShape::Primitive | FieldsShape::Union { .. } => {}
+-            FieldsShape::Array { count, .. } => {
++            FieldsShape::Array { .. } => {
+                 // FIXME(#66151): For now, we are conservative and do not check arrays by default.
+-                if strict
+-                    && *count > 0
+-                    && !self.field(cx, 0).might_permit_raw_init(cx, init_kind, strict)
+-                {
+-                    // Found non empty array with a type that is unhappy about this kind of initialization
+-                    return false;
+-                }
+             }
+             FieldsShape::Arbitrary { offsets, .. } => {
+                 for idx in 0..offsets.len() {
+-                    if !self.field(cx, idx).might_permit_raw_init(cx, init_kind, strict) {
++                    if !self.field(cx, idx).might_permit_raw_init(cx, init_kind) {
+                         // We found a field that is unhappy with this kind of initialization.
+                         return false;
+                     }
+diff --git a/src/test/ui/intrinsics/panic-uninitialized-zeroed.rs b/src/test/ui/intrinsics/panic-uninitialized-zeroed.rs
+index 3ffd35ecdb8da..255151a96032c 100644
+--- a/src/test/ui/intrinsics/panic-uninitialized-zeroed.rs
++++ b/src/test/ui/intrinsics/panic-uninitialized-zeroed.rs
+@@ -57,6 +57,13 @@ enum LR_NonZero {
+ 
+ struct ZeroSized;
+ 
++#[allow(dead_code)]
++#[repr(i32)]
++enum ZeroIsValid {
++    Zero(u8) = 0,
++    One(NonNull<()>) = 1,
++}
++
+ fn test_panic_msg<T>(op: impl (FnOnce() -> T) + panic::UnwindSafe, msg: &str) {
+     let err = panic::catch_unwind(op).err();
+     assert_eq!(
+@@ -152,33 +159,12 @@ fn main() {
+             "attempted to zero-initialize type `*const dyn core::marker::Send`, which is invalid"
+         );
+ 
+-        /* FIXME(#66151) we conservatively do not error here yet.
+-        test_panic_msg(
+-            || mem::uninitialized::<LR_NonZero>(),
+-            "attempted to leave type `LR_NonZero` uninitialized, which is invalid"
+-        );
+-        test_panic_msg(
+-            || mem::zeroed::<LR_NonZero>(),
+-            "attempted to zero-initialize type `LR_NonZero`, which is invalid"
+-        );
+-
+-        test_panic_msg(
+-            || mem::uninitialized::<ManuallyDrop<LR_NonZero>>(),
+-            "attempted to leave type `std::mem::ManuallyDrop<LR_NonZero>` uninitialized, \
+-             which is invalid"
+-        );
+-        test_panic_msg(
+-            || mem::zeroed::<ManuallyDrop<LR_NonZero>>(),
+-            "attempted to zero-initialize type `std::mem::ManuallyDrop<LR_NonZero>`, \
+-             which is invalid"
+-        );
+-        */
+-
+         test_panic_msg(
+             || mem::uninitialized::<(NonNull<u32>, u32, u32)>(),
+             "attempted to leave type `(core::ptr::non_null::NonNull<u32>, u32, u32)` uninitialized, \
+                 which is invalid"
+         );
++
+         test_panic_msg(
+             || mem::zeroed::<(NonNull<u32>, u32, u32)>(),
+             "attempted to zero-initialize type `(core::ptr::non_null::NonNull<u32>, u32, u32)`, \
+@@ -196,11 +182,23 @@ fn main() {
+                 which is invalid"
+         );
+ 
++        test_panic_msg(
++            || mem::uninitialized::<LR_NonZero>(),
++            "attempted to leave type `LR_NonZero` uninitialized, which is invalid"
++        );
++
++        test_panic_msg(
++            || mem::uninitialized::<ManuallyDrop<LR_NonZero>>(),
++            "attempted to leave type `core::mem::manually_drop::ManuallyDrop<LR_NonZero>` uninitialized, \
++             which is invalid"
++        );
++
+         test_panic_msg(
+             || mem::uninitialized::<NoNullVariant>(),
+             "attempted to leave type `NoNullVariant` uninitialized, \
+                 which is invalid"
+         );
++
+         test_panic_msg(
+             || mem::zeroed::<NoNullVariant>(),
+             "attempted to zero-initialize type `NoNullVariant`, \
+@@ -212,10 +210,12 @@ fn main() {
+             || mem::uninitialized::<bool>(),
+             "attempted to leave type `bool` uninitialized, which is invalid"
+         );
++
+         test_panic_msg(
+             || mem::uninitialized::<LR>(),
+             "attempted to leave type `LR` uninitialized, which is invalid"
+         );
++
+         test_panic_msg(
+             || mem::uninitialized::<ManuallyDrop<LR>>(),
+             "attempted to leave type `core::mem::manually_drop::ManuallyDrop<LR>` uninitialized, which is invalid"
+@@ -229,6 +229,7 @@ fn main() {
+         let _val = mem::zeroed::<Option<&'static i32>>();
+         let _val = mem::zeroed::<MaybeUninit<NonNull<u32>>>();
+         let _val = mem::zeroed::<[!; 0]>();
++        let _val = mem::zeroed::<ZeroIsValid>();
+         let _val = mem::uninitialized::<MaybeUninit<bool>>();
+         let _val = mem::uninitialized::<[!; 0]>();
+         let _val = mem::uninitialized::<()>();
+@@ -259,12 +260,33 @@ fn main() {
+                 || mem::zeroed::<[NonNull<()>; 1]>(),
+                 "attempted to zero-initialize type `[core::ptr::non_null::NonNull<()>; 1]`, which is invalid"
+             );
++
++            // FIXME(#66151) we conservatively do not error here yet (by default).
++            test_panic_msg(
++                || mem::zeroed::<LR_NonZero>(),
++                "attempted to zero-initialize type `LR_NonZero`, which is invalid"
++            );
++
++            test_panic_msg(
++                || mem::zeroed::<ManuallyDrop<LR_NonZero>>(),
++                "attempted to zero-initialize type `core::mem::manually_drop::ManuallyDrop<LR_NonZero>`, \
++                 which is invalid"
++            );
+         } else {
+             // These are UB because they have not been officially blessed, but we await the resolution
+             // of <https://github.com/rust-lang/unsafe-code-guidelines/issues/71> before doing
+             // anything about that.
+             let _val = mem::uninitialized::<i32>();
+             let _val = mem::uninitialized::<*const ()>();
++
++            // These are UB, but best to test them to ensure we don't become unintentionally
++            // stricter.
++
++            // It's currently unchecked to create invalid enums and values inside arrays.
++            let _val = mem::zeroed::<LR_NonZero>();
++            let _val = mem::zeroed::<[LR_NonZero; 1]>();
++            let _val = mem::zeroed::<[NonNull<()>; 1]>();
++            let _val = mem::uninitialized::<[NonNull<()>; 1]>();
+         }
+     }
+ }

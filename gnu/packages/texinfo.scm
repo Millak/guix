@@ -2,7 +2,7 @@
 ;;; Copyright © 2012, 2013, 2015, 2016, 2017, 2019, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2017, 2019 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2019, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -40,6 +40,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gettext)
+  #:use-module ((gnu packages hurd) #:select (hurd-target?))
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages readline))
@@ -71,7 +72,10 @@
                     (("env -i")
                      "env "))
                   #t)))
-            %standard-phases)))
+            %standard-phases)
+
+       ;; XXX: Work around <https://issues.guix.gnu.org/59616>.
+       #:tests? ,(not (hurd-target?))))
     (inputs (list ncurses perl))
     ;; When cross-compiling, texinfo will build some of its own binaries with
     ;; the native compiler. This means ncurses is needed both in both inputs
@@ -98,14 +102,14 @@ is on expressing the content semantically, avoiding physical markup commands.")
 (define-public texinfo-7
   (package
     (inherit texinfo)
-    (version "7.0")
+    (version "7.0.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/texinfo/texinfo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1q73zd0bm7zjamc5ssf329v7fndd8dqv0d7fii6s1rqwaf14nx10"))))))
+                "1cn6na6vgz6nhda0f5naiysx5sqhw3azi81qk6hah1yqnbyj3lmw"))))))
 
 (define-public texinfo-5
   (package (inherit texinfo)

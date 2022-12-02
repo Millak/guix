@@ -215,17 +215,6 @@ lines.")
    (parameter-alist '())
    "Extra options to include."))
 
-(define (serialize-getmail-configuration-file field-name val)
-  (match-record val <getmail-configuration-file>
-    (retriever destination options)
-    #~(string-append
-       "[retriever]\n"
-       #$(serialize-getmail-retriever-configuration #f retriever)
-       "\n[destination]\n"
-       #$(serialize-getmail-destination-configuration #f destination)
-       "\n[options]\n"
-       #$(serialize-getmail-options-configuration #f options))))
-
 (define-configuration getmail-configuration-file
   (retriever
    (getmail-retriever-configuration (getmail-retriever-configuration))
@@ -236,6 +225,17 @@ lines.")
   (options
    (getmail-options-configuration (getmail-options-configuration))
    "Configure getmail."))
+
+(define (serialize-getmail-configuration-file field-name val)
+  (match-record val <getmail-configuration-file>
+    (retriever destination options)
+    #~(string-append
+       "[retriever]\n"
+       #$(serialize-getmail-retriever-configuration #f retriever)
+       "\n[destination]\n"
+       #$(serialize-getmail-destination-configuration #f destination)
+       "\n[options]\n"
+       #$(serialize-getmail-options-configuration #f options))))
 
 (define (serialize-symbol field-name val) "")
 (define (serialize-getmail-configuration field-name val) "")

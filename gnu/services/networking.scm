@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -277,8 +278,10 @@ fe80::1%lo0 apps.facebook.com\n")
 
 (define dhcp-client-shepherd-service
   (match-lambda
-    (($ <dhcp-client-configuration> package interfaces)
-     (let ((pid-file "/var/run/dhclient.pid"))
+    ((? dhcp-client-configuration? config)
+     (let ((package (dhcp-client-configuration-package config))
+           (interfaces (dhcp-client-configuration-interfaces config))
+           (pid-file "/var/run/dhclient.pid"))
        (list (shepherd-service
               (documentation "Set up networking via DHCP.")
               (requirement '(user-processes udev))
@@ -359,46 +362,46 @@ Protocol (DHCP) client, on all the non-loopback network interfaces.")))
   (interfaces dhcpd-configuration-interfaces
               (default '())))
 
-(define dhcpd-shepherd-service
-  (match-lambda
-    (($ <dhcpd-configuration> package config-file version run-directory
-                              lease-file pid-file interfaces)
-     (unless config-file
-       (error "Must supply a config-file"))
-     (list (shepherd-service
-            ;; Allow users to easily run multiple versions simultaneously.
-            (provision (list (string->symbol
-                              (string-append "dhcpv" version "-daemon"))))
-            (documentation (string-append "Run the DHCPv" version " daemon"))
-            (requirement '(networking))
-            (start #~(make-forkexec-constructor
-                      '(#$(file-append package "/sbin/dhcpd")
-                        #$(string-append "-" version)
-                        "-lf" #$lease-file
-                        "-pf" #$pid-file
-                        "-cf" #$config-file
-                        #$@interfaces)
-                      #:pid-file #$pid-file))
-            (stop #~(make-kill-destructor)))))))
+(define (dhcpd-shepherd-service config)
+  (match-record config <dhcpd-configuration>
+    (package config-file version run-directory
+             lease-file pid-file interfaces)
+    (unless config-file
+      (error "Must supply a config-file"))
+    (list (shepherd-service
+           ;; Allow users to easily run multiple versions simultaneously.
+           (provision (list (string->symbol
+                             (string-append "dhcpv" version "-daemon"))))
+           (documentation (string-append "Run the DHCPv" version " daemon"))
+           (requirement '(networking))
+           (start #~(make-forkexec-constructor
+                     '(#$(file-append package "/sbin/dhcpd")
+                       #$(string-append "-" version)
+                       "-lf" #$lease-file
+                       "-pf" #$pid-file
+                       "-cf" #$config-file
+                       #$@interfaces)
+                     #:pid-file #$pid-file))
+           (stop #~(make-kill-destructor))))))
 
-(define dhcpd-activation
-  (match-lambda
-    (($ <dhcpd-configuration> package config-file version run-directory
-                              lease-file pid-file interfaces)
-     (with-imported-modules '((guix build utils))
-       #~(begin
-           (unless (file-exists? #$run-directory)
-             (mkdir #$run-directory))
-           ;; According to the DHCP manual (man dhcpd.leases), the lease
-           ;; database must be present for dhcpd to start successfully.
-           (unless (file-exists? #$lease-file)
-             (with-output-to-file #$lease-file
-               (lambda _ (display ""))))
-           ;; Validate the config.
-           (invoke/quiet
-            #$(file-append package "/sbin/dhcpd")
-            #$(string-append "-" version)
-            "-t" "-cf" #$config-file))))))
+(define (dhcpd-activation config)
+  (match-record config <dhcpd-configuration>
+    (package config-file version run-directory
+             lease-file pid-file interfaces)
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (unless (file-exists? #$run-directory)
+            (mkdir #$run-directory))
+          ;; According to the DHCP manual (man dhcpd.leases), the lease
+          ;; database must be present for dhcpd to start successfully.
+          (unless (file-exists? #$lease-file)
+            (with-output-to-file #$lease-file
+              (lambda _ (display ""))))
+          ;; Validate the config.
+          (invoke/quiet
+           #$(file-append package "/sbin/dhcpd")
+           #$(string-append "-" version)
+           "-t" "-cf" #$config-file)))))
 
 (define dhcpd-service-type
   (service-type
@@ -449,16 +452,16 @@ daemon is responsible for allocating IP addresses to its client.")))
            (fold loop res x)
            (cons (format #f "~a" x) res)))))
 
-  (match ntp-server
-    (($ <ntp-server> type address options)
-     ;; XXX: It'd be neater if fields were validated at the syntax level (for
-     ;; static ones at least).  Perhaps the Guix record type could support a
-     ;; predicate property on a field?
-     (unless (enum-set-member? type ntp-server-types)
-       (error "Invalid NTP server type" type))
-     (string-join (cons* (symbol->string type)
-                         address
-                         (flatten options))))))
+  (match-record ntp-server <ntp-server>
+    (type address options)
+    ;; XXX: It'd be neater if fields were validated at the syntax level (for
+    ;; static ones at least).  Perhaps the Guix record type could support a
+    ;; predicate property on a field?
+    (unless (enum-set-member? type ntp-server-types)
+      (error "Invalid NTP server type" type))
+    (string-join (cons* (symbol->string type)
+                        address
+                        (flatten options)))))
 
 (define %ntp-servers
   ;; Default set of NTP servers. These URLs are managed by the NTP Pool project.
@@ -497,17 +500,16 @@ deprecated.  Please use <ntp-server> records instead.\n")
       ((($ <ntp-server>) ($ <ntp-server>) ...)
        ntp-servers))))
 
-(define ntp-shepherd-service
-  (lambda (config)
-    (match config
-      (($ <ntp-configuration> ntp servers allow-large-adjustment?)
-       (let ((servers (ntp-configuration-servers config)))
-         ;; TODO: Add authentication support.
-         (define config
-           (string-append "driftfile /var/run/ntpd/ntp.drift\n"
-                          (string-join (map ntp-server->string servers)
-                                       "\n")
-                          "
+(define (ntp-shepherd-service config)
+  (match-record config <ntp-configuration>
+    (ntp servers allow-large-adjustment?)
+    (let ((servers (ntp-configuration-servers config)))
+      ;; TODO: Add authentication support.
+      (define config
+        (string-append "driftfile /var/run/ntpd/ntp.drift\n"
+                       (string-join (map ntp-server->string servers)
+                                    "\n")
+                       "
 # Disable status queries as a workaround for CVE-2013-5211:
 # <http://support.ntp.org/bin/view/Main/SecurityNotice#DRDoS_Amplification_Attack_using>.
 restrict default kod nomodify notrap nopeer noquery limited
@@ -521,21 +523,21 @@ restrict -6 ::1
 # option by default, as documented in the 'ntp.conf' manual.
 restrict source notrap nomodify noquery\n"))
 
-         (define ntpd.conf
-           (plain-file "ntpd.conf" config))
+      (define ntpd.conf
+        (plain-file "ntpd.conf" config))
 
-         (list (shepherd-service
-                (provision '(ntpd))
-                (documentation "Run the Network Time Protocol (NTP) daemon.")
-                (requirement '(user-processes networking))
-                (start #~(make-forkexec-constructor
-                          (list (string-append #$ntp "/bin/ntpd") "-n"
-                                "-c" #$ntpd.conf "-u" "ntpd"
-                                #$@(if allow-large-adjustment?
-                                       '("-g")
-                                       '()))
-                          #:log-file "/var/log/ntpd.log"))
-                (stop #~(make-kill-destructor)))))))))
+      (list (shepherd-service
+             (provision '(ntpd))
+             (documentation "Run the Network Time Protocol (NTP) daemon.")
+             (requirement '(user-processes networking))
+             (start #~(make-forkexec-constructor
+                       (list (string-append #$ntp "/bin/ntpd") "-n"
+                             "-c" #$ntpd.conf "-u" "ntpd"
+                             #$@(if allow-large-adjustment?
+                                    '("-g")
+                                    '()))
+                       #:log-file "/var/log/ntpd.log"))
+             (stop #~(make-kill-destructor)))))))
 
 (define %ntp-accounts
   (list (user-account
@@ -742,19 +744,19 @@ daemon will keep the system clock synchronized with that of the given servers.")
                   " ") "\n")))
           entries)))
 
-(define inetd-shepherd-service
-  (match-lambda
-    (($ <inetd-configuration> program ()) '()) ; empty list of entries -> do nothing
-    (($ <inetd-configuration> program entries)
-     (list
-      (shepherd-service
-       (documentation "Run inetd.")
-       (provision '(inetd))
-       (requirement '(user-processes networking syslogd))
-       (start #~(make-forkexec-constructor
-                 (list #$program #$(inetd-config-file entries))
-                 #:pid-file "/var/run/inetd.pid"))
-       (stop #~(make-kill-destructor)))))))
+(define (inetd-shepherd-service config)
+  (let ((entries (inetd-configuration-entries config)))
+    (if (null? entries)
+        '()                                       ;do nothing
+        (let ((program (inetd-configuration-program config)))
+          (list (shepherd-service
+                 (documentation "Run inetd.")
+                 (provision '(inetd))
+                 (requirement '(user-processes networking syslogd))
+                 (start #~(make-forkexec-constructor
+                           (list #$program #$(inetd-config-file entries))
+                           #:pid-file "/var/run/inetd.pid"))
+                 (stop #~(make-kill-destructor))))))))
 
 (define-public inetd-service-type
   (service-type
@@ -938,97 +940,94 @@ applications in communication.  It is used by Jami, for example.")))
 
 (define (tor-configuration->torrc config)
   "Return a 'torrc' file for CONFIG."
-  (match config
-    (($ <tor-configuration> tor config-file services
-                            socks-socket-type control-socket?)
-     (computed-file
-      "torrc"
-      (with-imported-modules '((guix build utils))
-        #~(begin
-            (use-modules (guix build utils)
-                         (ice-9 match))
+  (match-record config <tor-configuration>
+    (tor config-file hidden-services socks-socket-type control-socket?)
+    (computed-file
+     "torrc"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils)
+                        (ice-9 match))
 
-            (call-with-output-file #$output
-              (lambda (port)
-                (display "\
+           (call-with-output-file #$output
+             (lambda (port)
+               (display "\
 ### These lines were generated from your system configuration:
 DataDirectory /var/lib/tor
 Log notice syslog\n" port)
-                (when (eq? 'unix '#$socks-socket-type)
-                  (display "\
+               (when (eq? 'unix '#$socks-socket-type)
+                 (display "\
 SocksPort unix:/var/run/tor/socks-sock
 UnixSocksGroupWritable 1\n" port))
-                (when #$control-socket?
-                  (display "\
+               (when #$control-socket?
+                 (display "\
 ControlSocket unix:/var/run/tor/control-sock GroupWritable RelaxDirModeCheck
 ControlSocketsGroupWritable 1\n"
-                           port))
+                          port))
 
-                (for-each (match-lambda
-                            ((service (ports hosts) ...)
-                             (format port "\
+               (for-each (match-lambda
+                           ((service (ports hosts) ...)
+                            (format port "\
 HiddenServiceDir /var/lib/tor/hidden-services/~a~%"
-                                     service)
-                             (for-each (lambda (tcp-port host)
-                                         (format port "\
+                                    service)
+                            (for-each (lambda (tcp-port host)
+                                        (format port "\
 HiddenServicePort ~a ~a~%"
-                                                 tcp-port host))
-                                       ports hosts)))
-                          '#$(map (match-lambda
-                                    (($ <hidden-service> name mapping)
-                                     (cons name mapping)))
-                                  services))
+                                                tcp-port host))
+                                      ports hosts)))
+                         '#$(map (match-lambda
+                                   (($ <hidden-service> name mapping)
+                                    (cons name mapping)))
+                                 hidden-services))
 
-                (display "\
+               (display "\
 ### End of automatically generated lines.\n\n" port)
 
-                ;; Append the user's config file.
-                (call-with-input-file #$config-file
-                  (lambda (input)
-                    (dump-port input port)))
-                #t))))))))
+               ;; Append the user's config file.
+               (call-with-input-file #$config-file
+                 (lambda (input)
+                   (dump-port input port)))
+               #t)))))))
 
 (define (tor-shepherd-service config)
   "Return a <shepherd-service> running Tor."
-  (match config
-    (($ <tor-configuration> tor)
-     (let* ((torrc (tor-configuration->torrc config))
-            (tor   (least-authority-wrapper
-                    (file-append tor "/bin/tor")
-                    #:name "tor"
-                    #:mappings (list (file-system-mapping
-                                      (source "/var/lib/tor")
-                                      (target source)
-                                      (writable? #t))
-                                     (file-system-mapping
-                                      (source "/dev/log") ;for syslog
-                                      (target source))
-                                     (file-system-mapping
-                                      (source "/var/run/tor")
-                                      (target source)
-                                      (writable? #t))
-                                     (file-system-mapping
-                                      (source torrc)
-                                      (target source)))
-                    #:namespaces (delq 'net %namespaces))))
-       (list (shepherd-service
-              (provision '(tor))
+  (let* ((torrc (tor-configuration->torrc config))
+         (tor   (least-authority-wrapper
+                 (file-append (tor-configuration-tor config) "/bin/tor")
+                 #:name "tor"
+                 #:mappings (list (file-system-mapping
+                                   (source "/var/lib/tor")
+                                   (target source)
+                                   (writable? #t))
+                                  (file-system-mapping
+                                   (source "/dev/log") ;for syslog
+                                   (target source))
+                                  (file-system-mapping
+                                   (source "/var/run/tor")
+                                   (target source)
+                                   (writable? #t))
+                                  (file-system-mapping
+                                   (source torrc)
+                                   (target source)))
+                 #:namespaces (delq 'net %namespaces))))
+    (list (shepherd-service
+           (provision '(tor))
 
-              ;; Tor needs at least one network interface to be up, hence the
-              ;; dependency on 'loopback'.
-              (requirement '(user-processes loopback syslogd))
+           ;; Tor needs at least one network interface to be up, hence the
+           ;; dependency on 'loopback'.
+           (requirement '(user-processes loopback syslogd))
 
-              ;; XXX: #:pid-file won't work because the wrapped 'tor'
-              ;; program would print its PID within the user namespace
-              ;; instead of its actual PID outside.  There's no inetd or
-              ;; systemd socket activation support either (there's
-              ;; 'sd_notify' though), so we're stuck with that.
-              (start #~(make-forkexec-constructor
-                        (list #$tor "-f" #$torrc)
-                        #:user "tor" #:group "tor"))
-              (stop #~(make-kill-destructor))
-              (actions (list (shepherd-configuration-action torrc)))
-              (documentation "Run the Tor anonymous network overlay.")))))))
+           ;; XXX: #:pid-file won't work because the wrapped 'tor'
+           ;; program would print its PID within the user namespace
+           ;; instead of its actual PID outside.  There's no inetd or
+           ;; systemd socket activation support either (there's
+           ;; 'sd_notify' though), so we're stuck with that.
+           (start #~(make-forkexec-constructor
+                     (list #$tor "-f" #$torrc)
+                     #:user "tor" #:group "tor"))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action torrc)))
+           (documentation "Run the Tor anonymous network overlay.")))))
 
 (define (tor-activation config)
   "Set up directories for Tor and its hidden services, if any."
@@ -1143,19 +1142,20 @@ project's documentation} for more information."
   (dns network-manager-configuration-dns
        (default "default"))
   (vpn-plugins network-manager-configuration-vpn-plugins ;list of file-like
-               (default '())))
+               (default '()))
+  (iwd? network-manager-configuration-iwd? (default #f)))
 
-(define network-manager-activation
+(define (network-manager-activation config)
   ;; Activation gexp for NetworkManager
-  (match-lambda
-    (($ <network-manager-configuration> network-manager dns vpn-plugins)
-     #~(begin
-         (use-modules (guix build utils))
-         (mkdir-p "/etc/NetworkManager/system-connections")
-         #$@(if (equal? dns "dnsmasq")
-                ;; create directory to store dnsmasq lease file
-                '((mkdir-p "/var/lib/misc"))
-                '())))))
+  (match-record config <network-manager-configuration>
+    (network-manager dns vpn-plugins)
+    #~(begin
+        (use-modules (guix build utils))
+        (mkdir-p "/etc/NetworkManager/system-connections")
+        #$@(if (equal? dns "dnsmasq")
+               ;; create directory to store dnsmasq lease file
+               '((mkdir-p "/var/lib/misc"))
+               '()))))
 
 (define (vpn-plugin-directory plugins)
   "Return a directory containing PLUGINS, the NM VPN plugins."
@@ -1188,44 +1188,47 @@ project's documentation} for more information."
      (cons (user-group (name "network-manager") (system? #t))
            accounts))))
 
-(define network-manager-environment
-  (match-lambda
-    (($ <network-manager-configuration> network-manager dns vpn-plugins)
-     ;; Define this variable in the global environment such that
-     ;; "nmcli connection import type openvpn file foo.ovpn" works.
-     `(("NM_VPN_PLUGIN_DIR"
-        . ,(file-append (vpn-plugin-directory vpn-plugins)
-                        "/lib/NetworkManager/VPN"))))))
+(define (network-manager-environment config)
+  (match-record config <network-manager-configuration>
+    (network-manager dns vpn-plugins)
+    ;; Define this variable in the global environment such that
+    ;; "nmcli connection import type openvpn file foo.ovpn" works.
+    `(("NM_VPN_PLUGIN_DIR"
+       . ,(file-append (vpn-plugin-directory vpn-plugins)
+                       "/lib/NetworkManager/VPN")))))
 
-(define network-manager-shepherd-service
-  (match-lambda
-    (($ <network-manager-configuration> network-manager dns vpn-plugins)
-     (let ((conf (plain-file "NetworkManager.conf"
-                             (string-append "[main]\ndns=" dns "\n")))
-           (vpn  (vpn-plugin-directory vpn-plugins)))
-       (list (shepherd-service
-              (documentation "Run the NetworkManager.")
-              (provision '(networking))
-              (requirement '(user-processes dbus-system wpa-supplicant loopback))
-              (start #~(make-forkexec-constructor
-                        (list (string-append #$network-manager
-                                             "/sbin/NetworkManager")
-                              (string-append "--config=" #$conf)
-                              "--no-daemon")
-                        #:environment-variables
-                        (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
-                                             "/lib/NetworkManager/VPN")
-                              ;; Override non-existent default users
-                              "NM_OPENVPN_USER="
-                              "NM_OPENVPN_GROUP=")))
-              (stop #~(make-kill-destructor))))))))
+(define (network-manager-shepherd-service config)
+  (match-record config <network-manager-configuration>
+    (network-manager dns vpn-plugins iwd?)
+    (let ((conf (plain-file "NetworkManager.conf"
+                            (string-append
+                             "[main]\ndns=" dns "\n"
+                             (if iwd? "[device]\nwifi.backend=iwd\n" ""))))
+          (vpn  (vpn-plugin-directory vpn-plugins)))
+      (list (shepherd-service
+             (documentation "Run the NetworkManager.")
+             (provision '(networking))
+             (requirement (append '(user-processes dbus-system loopback)
+                                  (if iwd? '(iwd) '(wpa-supplicant))))
+             (start #~(make-forkexec-constructor
+                       (list (string-append #$network-manager
+                                            "/sbin/NetworkManager")
+                             (string-append "--config=" #$conf)
+                             "--no-daemon")
+                       #:environment-variables
+                       (list (string-append "NM_VPN_PLUGIN_DIR=" #$vpn
+                                            "/lib/NetworkManager/VPN")
+                             ;; Override non-existent default users
+                             "NM_OPENVPN_USER="
+                             "NM_OPENVPN_GROUP=")))
+             (stop #~(make-kill-destructor)))))))
 
 (define network-manager-service-type
-  (let
-      ((config->packages
-        (match-lambda
-         (($ <network-manager-configuration> network-manager _ vpn-plugins)
-          `(,network-manager ,@vpn-plugins)))))
+  (let ((config->packages
+         (lambda (config)
+          (match-record config <network-manager-configuration>
+            (network-manager vpn-plugins)
+            `(,network-manager ,@vpn-plugins)))))
 
     (service-type
      (name 'network-manager)
@@ -1332,9 +1335,8 @@ a network connection manager."))))
 
 (define modem-manager-service-type
   (let ((config->package
-         (match-lambda
-          (($ <modem-manager-configuration> modem-manager)
-           (list modem-manager)))))
+         (lambda (config)
+           (list (modem-manager-configuration-modem-manager config)))))
     (service-type (name 'modem-manager)
                   (extensions
                    (list (service-extension dbus-root-service-type
@@ -1405,24 +1407,25 @@ device is detected."
 usb-modeswitch package specified in CONFIG.  The rules file will invoke
 usb_modeswitch.sh from the usb-modeswitch package, modified to pass the right
 config file."
-  (match config
-    (($ <usb-modeswitch-configuration> usb-modeswitch data config-file)
-     (computed-file
-      "usb_modeswitch.rules"
-      (with-imported-modules '((guix build utils))
-        #~(begin
-            (use-modules (guix build utils))
-            (let ((in (string-append #$data "/udev/40-usb_modeswitch.rules"))
-                  (out (string-append #$output "/lib/udev/rules.d"))
-                  (script #$(usb-modeswitch-sh usb-modeswitch config-file)))
-              (mkdir-p out)
-              (chdir out)
-              (install-file in out)
-              (substitute* "40-usb_modeswitch.rules"
-                (("PROGRAM=\"usb_modeswitch")
-                 (string-append "PROGRAM=\"" script "/usb_modeswitch"))
-                (("RUN\\+=\"usb_modeswitch")
-                 (string-append "RUN+=\"" script "/usb_modeswitch"))))))))))
+  (match-record config <usb-modeswitch-configuration>
+    (usb-modeswitch usb-modeswitch-data config-file)
+    (computed-file
+     "usb_modeswitch.rules"
+     (with-imported-modules '((guix build utils))
+       #~(begin
+           (use-modules (guix build utils))
+           (let ((in (string-append #$usb-modeswitch-data
+                                    "/udev/40-usb_modeswitch.rules"))
+                 (out (string-append #$output "/lib/udev/rules.d"))
+                 (script #$(usb-modeswitch-sh usb-modeswitch config-file)))
+             (mkdir-p out)
+             (chdir out)
+             (install-file in out)
+             (substitute* "40-usb_modeswitch.rules"
+               (("PROGRAM=\"usb_modeswitch")
+                (string-append "PROGRAM=\"" script "/usb_modeswitch"))
+               (("RUN\\+=\"usb_modeswitch")
+                (string-append "RUN+=\"" script "/usb_modeswitch")))))))))
 
 (define usb-modeswitch-service-type
   (service-type
@@ -1466,40 +1469,39 @@ whatever the thing is supposed to do).")))
   (extra-options      wpa-supplicant-configuration-extra-options  ;list of strings
                       (default '())))
 
-(define wpa-supplicant-shepherd-service
-  (match-lambda
-    (($ <wpa-supplicant-configuration> wpa-supplicant requirement pid-file dbus?
-                                       interface config-file extra-options)
-     (list (shepherd-service
-            (documentation "Run the WPA supplicant daemon")
-            (provision '(wpa-supplicant))
-            (requirement (if dbus?
-                             (cons 'dbus-system requirement)
-                             requirement))
-            (start #~(make-forkexec-constructor
-                      (list (string-append #$wpa-supplicant
-                                           "/sbin/wpa_supplicant")
-                            (string-append "-P" #$pid-file)
-                            "-B"        ;run in background
-                            "-s"        ;log to syslogd
-                            #$@(if dbus?
-                                   #~("-u")
-                                   #~())
-                            #$@(if interface
-                                   #~((string-append "-i" #$interface))
-                                   #~())
-                            #$@(if config-file
-                                   #~((string-append "-c" #$config-file))
-                                   #~())
-                            #$@extra-options)
-                      #:pid-file #$pid-file))
-            (stop #~(make-kill-destructor)))))))
+(define (wpa-supplicant-shepherd-service config)
+  (match-record config <wpa-supplicant-configuration>
+    (wpa-supplicant requirement pid-file dbus?
+                    interface config-file extra-options)
+    (list (shepherd-service
+           (documentation "Run the WPA supplicant daemon")
+           (provision '(wpa-supplicant))
+           (requirement (if dbus?
+                            (cons 'dbus-system requirement)
+                            requirement))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$wpa-supplicant
+                                          "/sbin/wpa_supplicant")
+                           (string-append "-P" #$pid-file)
+                           "-B"                   ;run in background
+                           "-s"                   ;log to syslogd
+                           #$@(if dbus?
+                                  #~("-u")
+                                  #~())
+                           #$@(if interface
+                                  #~((string-append "-i" #$interface))
+                                  #~())
+                           #$@(if config-file
+                                  #~((string-append "-c" #$config-file))
+                                  #~())
+                           #$@extra-options)
+                     #:pid-file #$pid-file))
+           (stop #~(make-kill-destructor))))))
 
 (define wpa-supplicant-service-type
   (let ((config->package
-         (match-lambda
-           (($ <wpa-supplicant-configuration> wpa-supplicant)
-            (list wpa-supplicant)))))
+         (lambda (config)
+           (list (wpa-supplicant-configuration-wpa-supplicant config)))))
     (service-type (name 'wpa-supplicant)
                   (extensions
                    (list (service-extension shepherd-root-service-type
@@ -1621,41 +1623,38 @@ simulation."
   (package openvswitch-configuration-package
            (default openvswitch)))
 
-(define openvswitch-activation
-  (match-lambda
-    (($ <openvswitch-configuration> package)
-     (let ((ovsdb-tool (file-append package "/bin/ovsdb-tool")))
-       (with-imported-modules '((guix build utils))
-         #~(begin
-             (use-modules (guix build utils))
-             (mkdir-p "/var/run/openvswitch")
-             (mkdir-p "/var/lib/openvswitch")
-             (let ((conf.db "/var/lib/openvswitch/conf.db"))
-               (unless (file-exists? conf.db)
-                 (system* #$ovsdb-tool "create" conf.db)))))))))
+(define (openvswitch-activation config)
+  (let ((ovsdb-tool (file-append (openvswitch-configuration-package config)
+                                 "/bin/ovsdb-tool")))
+    (with-imported-modules '((guix build utils))
+      #~(begin
+          (use-modules (guix build utils))
+          (mkdir-p "/var/run/openvswitch")
+          (mkdir-p "/var/lib/openvswitch")
+          (let ((conf.db "/var/lib/openvswitch/conf.db"))
+            (unless (file-exists? conf.db)
+              (system* #$ovsdb-tool "create" conf.db)))))))
 
-(define openvswitch-shepherd-service
-  (match-lambda
-    (($ <openvswitch-configuration> package)
-     (let ((ovsdb-server (file-append package "/sbin/ovsdb-server"))
-           (ovs-vswitchd (file-append package "/sbin/ovs-vswitchd")))
-       (list
-        (shepherd-service
-         (provision '(ovsdb))
-         (documentation "Run the Open vSwitch database server.")
-         (start #~(make-forkexec-constructor
-                   (list #$ovsdb-server "--pidfile"
-                         "--remote=punix:/var/run/openvswitch/db.sock")
-                   #:pid-file "/var/run/openvswitch/ovsdb-server.pid"))
-         (stop #~(make-kill-destructor)))
-        (shepherd-service
-         (provision '(vswitchd))
-         (requirement '(ovsdb))
-         (documentation "Run the Open vSwitch daemon.")
-         (start #~(make-forkexec-constructor
-                   (list #$ovs-vswitchd "--pidfile")
-                   #:pid-file "/var/run/openvswitch/ovs-vswitchd.pid"))
-         (stop #~(make-kill-destructor))))))))
+(define (openvswitch-shepherd-service config)
+  (let* ((package      (openvswitch-configuration-package config))
+         (ovsdb-server (file-append package "/sbin/ovsdb-server"))
+         (ovs-vswitchd (file-append package "/sbin/ovs-vswitchd")))
+    (list (shepherd-service
+           (provision '(ovsdb))
+           (documentation "Run the Open vSwitch database server.")
+           (start #~(make-forkexec-constructor
+                     (list #$ovsdb-server "--pidfile"
+                           "--remote=punix:/var/run/openvswitch/db.sock")
+                     #:pid-file "/var/run/openvswitch/ovsdb-server.pid"))
+           (stop #~(make-kill-destructor)))
+          (shepherd-service
+           (provision '(vswitchd))
+           (requirement '(ovsdb))
+           (documentation "Run the Open vSwitch daemon.")
+           (start #~(make-forkexec-constructor
+                     (list #$ovs-vswitchd "--pidfile")
+                     #:pid-file "/var/run/openvswitch/ovs-vswitchd.pid"))
+           (stop #~(make-kill-destructor))))))
 
 (define openvswitch-service-type
   (service-type
@@ -1695,20 +1694,20 @@ COMMIT
   (ipv6-rules iptables-configuration-ipv6-rules
               (default %iptables-accept-all-rules)))
 
-(define iptables-shepherd-service
-  (match-lambda
-    (($ <iptables-configuration> iptables ipv4-rules ipv6-rules)
-     (let ((iptables-restore (file-append iptables "/sbin/iptables-restore"))
-           (ip6tables-restore (file-append iptables "/sbin/ip6tables-restore")))
-       (shepherd-service
-        (documentation "Packet filtering framework")
-        (provision '(iptables))
-        (start #~(lambda _
-                   (invoke #$iptables-restore #$ipv4-rules)
-                   (invoke #$ip6tables-restore #$ipv6-rules)))
-        (stop #~(lambda _
-                  (invoke #$iptables-restore #$%iptables-accept-all-rules)
-                  (invoke #$ip6tables-restore #$%iptables-accept-all-rules))))))))
+(define (iptables-shepherd-service config)
+  (match-record config <iptables-configuration>
+    (iptables ipv4-rules ipv6-rules)
+    (let ((iptables-restore (file-append iptables "/sbin/iptables-restore"))
+          (ip6tables-restore (file-append iptables "/sbin/ip6tables-restore")))
+      (shepherd-service
+       (documentation "Packet filtering framework")
+       (provision '(iptables))
+       (start #~(lambda _
+                  (invoke #$iptables-restore #$ipv4-rules)
+                  (invoke #$ip6tables-restore #$ipv6-rules)))
+       (stop #~(lambda _
+                 (invoke #$iptables-restore #$%iptables-accept-all-rules)
+                 (invoke #$ip6tables-restore #$%iptables-accept-all-rules)))))))
 
 (define iptables-service-type
   (service-type
@@ -1767,17 +1766,17 @@ table inet filter {
   (ruleset nftables-configuration-ruleset ; file-like object
            (default %default-nftables-ruleset)))
 
-(define nftables-shepherd-service
-  (match-lambda
-    (($ <nftables-configuration> package ruleset)
-     (let ((nft (file-append package "/sbin/nft")))
-       (shepherd-service
-        (documentation "Packet filtering and classification")
-        (provision '(nftables))
-        (start #~(lambda _
-                   (invoke #$nft "--file" #$ruleset)))
-        (stop #~(lambda _
-                  (invoke #$nft "flush" "ruleset"))))))))
+(define (nftables-shepherd-service config)
+  (match-record config <nftables-configuration>
+    (package ruleset)
+    (let ((nft (file-append package "/sbin/nft")))
+      (shepherd-service
+       (documentation "Packet filtering and classification")
+       (provision '(nftables))
+       (start #~(lambda _
+                  (invoke #$nft "--file" #$ruleset)))
+       (stop #~(lambda _
+                 (invoke #$nft "flush" "ruleset")))))))
 
 (define nftables-service-type
   (service-type
@@ -2150,23 +2149,22 @@ of the IPFS peer-to-peer storage network.")))
   (config-file keepalived-configuration-config-file ;file-like
                (default #f)))
 
-(define keepalived-shepherd-service
-  (match-lambda
-    (($ <keepalived-configuration> keepalived config-file)
-     (list
-      (shepherd-service
-       (provision '(keepalived))
-       (documentation "Run keepalived.")
-       (requirement '(loopback))
-       (start #~(make-forkexec-constructor
-                 (list (string-append #$keepalived "/sbin/keepalived")
-                       "--dont-fork" "--log-console" "--log-detail"
-                       "--pid=/var/run/keepalived.pid"
-                       (string-append "--use-file=" #$config-file))
-                 #:pid-file "/var/run/keepalived.pid"
-                 #:log-file "/var/log/keepalived.log"))
-       (respawn? #f)
-       (stop #~(make-kill-destructor)))))))
+(define (keepalived-shepherd-service config)
+  (match-record config <keepalived-configuration>
+    (keepalived config-file)
+    (list (shepherd-service
+           (provision '(keepalived))
+           (documentation "Run keepalived.")
+           (requirement '(loopback))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$keepalived "/sbin/keepalived")
+                           "--dont-fork" "--log-console" "--log-detail"
+                           "--pid=/var/run/keepalived.pid"
+                           (string-append "--use-file=" #$config-file))
+                     #:pid-file "/var/run/keepalived.pid"
+                     #:log-file "/var/log/keepalived.log"))
+           (respawn? #f)
+           (stop #~(make-kill-destructor))))))
 
 (define %keepalived-log-rotation
   (list (log-rotation

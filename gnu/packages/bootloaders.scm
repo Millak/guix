@@ -16,6 +16,7 @@
 ;;; Copyright © 2021 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,13 +68,17 @@
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system trivial)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (ice-9 optargs)
+  #:use-module (ice-9 match)
   #:use-module (ice-9 regex))
 
 (define unifont
@@ -92,22 +97,22 @@
     (name "grub")
     (version "2.06")
     (source (origin
-             (method url-fetch)
-             (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
-             (patches (search-patches
-                       "grub-efi-fat-serial-number.patch"
-                       "grub-setup-root.patch"))
-             (modules '((guix build utils)))
-             (snippet
-              '(begin
-                 ;; Adjust QEMU invocation to not use a deprecated device
-                 ;; name that was removed in QEMU 6.0.  Remove for >2.06.
-                 (substitute* "tests/ahci_test.in"
-                   (("ide-drive")
-                    "ide-hd"))))))
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/grub/grub-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1qbycnxkx07arj9f2nlsi9kp0dyldspbv07ysdyd34qvz55a97mp"))
+              (patches (search-patches
+                        "grub-efi-fat-serial-number.patch"
+                        "grub-setup-root.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Adjust QEMU invocation to not use a deprecated device
+                  ;; name that was removed in QEMU 6.0.  Remove for >2.06.
+                  (substitute* "tests/ahci_test.in"
+                    (("ide-drive")
+                     "ide-hd"))))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -117,65 +122,62 @@
        (list "PYTHON=true")
        ;; Grub fails to load modules stripped with --strip-unneeded.
        #:strip-flags '("--strip-debug" "--enable-deterministic-archives")
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-stuff
-                   (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                     (substitute* "grub-core/Makefile.in"
-                       (("/bin/sh") (which "sh")))
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-stuff
+           (lambda* (#:key native-inputs inputs #:allow-other-keys)
+             (substitute* "grub-core/Makefile.in"
+               (("/bin/sh") (which "sh")))
 
-                     ;; Give the absolute file name of 'mdadm', used to
-                     ;; determine the root file system when it's a RAID
-                     ;; device.  Failing to do that, 'grub-probe' silently
-                     ;; fails if 'mdadm' is not in $PATH.
-                     (when (assoc-ref inputs "mdadm")
-                       (substitute* "grub-core/osdep/linux/getroot.c"
-                         (("argv\\[0\\] = \"mdadm\"")
-                          (string-append "argv[0] = \""
-                                         (assoc-ref inputs "mdadm")
-                                         "/sbin/mdadm\""))))
+             ;; Give the absolute file name of 'mdadm', used to determine the
+             ;; root file system when it's a RAID device.  Failing to do that,
+             ;; 'grub-probe' silently fails if 'mdadm' is not in $PATH.
+             (when (assoc-ref inputs "mdadm")
+               (substitute* "grub-core/osdep/linux/getroot.c"
+                 (("argv\\[0\\] = \"mdadm\"")
+                  (string-append "argv[0] = \""
+                                 (assoc-ref inputs "mdadm")
+                                 "/sbin/mdadm\""))))
 
-                     ;; Make the font visible.
-                     (copy-file (assoc-ref (or native-inputs inputs)
-                                           "unifont")
-                                "unifont.bdf.gz")
-                     (system* "gunzip" "unifont.bdf.gz")
+             ;; Make the font visible.
+             (copy-file (assoc-ref (or native-inputs inputs)
+                                   "unifont")
+                        "unifont.bdf.gz")
+             (system* "gunzip" "unifont.bdf.gz")
 
-                     ;; Give the absolute file name of 'ckbcomp'.
-                     (substitute* "util/grub-kbdcomp.in"
-                       (("^ckbcomp ")
-                        (string-append
-                         (search-input-file inputs "/bin/ckbcomp")
-                         " ")))))
-                  (add-after 'unpack 'set-freetype-variables
-                    ;; These variables need to be set to the native versions
-                    ;; of the dependencies because they are used to build
-                    ;; programs which are executed during build time.
-                    (lambda* (#:key native-inputs #:allow-other-keys)
-                      (when (assoc-ref native-inputs "freetype")
-                        (let ((freetype (assoc-ref native-inputs "freetype")))
-                          (setenv "BUILD_FREETYPE_LIBS"
-                                  (string-append "-L" freetype
-                                                 "/lib -lfreetype"))
-                          (setenv "BUILD_FREETYPE_CFLAGS"
-                                  (string-append "-I" freetype
-                                                 "/include/freetype2"))))
-                     #t))
-                  (add-before 'check 'disable-flaky-test
-                    (lambda _
-                      ;; This test is unreliable. For more information, see:
-                      ;; <https://bugs.gnu.org/26936>.
-                      (substitute* "Makefile.in"
-                        (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
-                          "grub_cmd_date grub_cmd_sleep"))
-                      #t))
-                  (add-before 'check 'disable-pixel-perfect-test
-                    (lambda _
-                      ;; This test compares many screenshots rendered with an
-                      ;; older Unifont (9.0.06) than that packaged in Guix.
-                      (substitute* "Makefile.in"
-                        (("test_unset grub_func_test")
-                          "test_unset"))
-                      #t)))
+             ;; Give the absolute file name of 'ckbcomp'.
+             (substitute* "util/grub-kbdcomp.in"
+               (("^ckbcomp ")
+                (string-append
+                 (search-input-file inputs "/bin/ckbcomp")
+                 " ")))))
+         (add-after 'unpack 'set-freetype-variables
+           ;; These variables need to be set to the native versions of the
+           ;; dependencies because they are used to build programs which are
+           ;; executed during build time.
+           (lambda* (#:key native-inputs #:allow-other-keys)
+             (when (assoc-ref native-inputs "freetype")
+               (let ((freetype (assoc-ref native-inputs "freetype")))
+                 (setenv "BUILD_FREETYPE_LIBS"
+                         (string-append "-L" freetype
+                                        "/lib -lfreetype"))
+                 (setenv "BUILD_FREETYPE_CFLAGS"
+                         (string-append "-I" freetype
+                                        "/include/freetype2"))))))
+         (add-before 'check 'disable-flaky-test
+           (lambda _
+             ;; This test is unreliable. For more information, see:
+             ;; <https://bugs.gnu.org/26936>.
+             (substitute* "Makefile.in"
+               (("grub_cmd_date grub_cmd_set_date grub_cmd_sleep")
+                "grub_cmd_date grub_cmd_sleep"))))
+         (add-before 'check 'disable-pixel-perfect-test
+           (lambda _
+             ;; This test compares many screenshots rendered with an older
+             ;; Unifont (9.0.06) than that packaged in Guix.
+             (substitute* "Makefile.in"
+               (("test_unset grub_func_test")
+                "test_unset")))))
        ;; Disable tests on ARM and AARCH64 platforms or when cross-compiling.
        #:tests? ,(not (or (any (cute string-prefix? <> (or (%current-target-system)
                                                            (%current-system)))
@@ -222,19 +224,19 @@
        ("flex" ,flex)
        ("texinfo" ,texinfo)
        ("help2man" ,help2man)
-       ("freetype" ,freetype)   ; native version needed for build-grub-mkfont
+       ("freetype" ,freetype)     ;native version needed for build-grub-mkfont
 
        ;; XXX: When building GRUB 2.02 on 32-bit x86, we need a binutils
        ;; capable of assembling 64-bit instructions.  However, our default
        ;; binutils on 32-bit x86 is not 64-bit capable.
        ,@(if (string-match "^i[3456]86-" (%current-system))
              (let ((binutils (package/inherit
-                              binutils
-                              (name "binutils-i386")
-                              (arguments
-                               (substitute-keyword-arguments (package-arguments binutils)
-                                 ((#:configure-flags flags ''())
-                                  `(cons "--enable-64-bit-bfd" ,flags)))))))
+                                 binutils
+                               (name "binutils-i386")
+                               (arguments
+                                (substitute-keyword-arguments (package-arguments binutils)
+                                  ((#:configure-flags flags ''())
+                                   `(cons "--enable-64-bit-bfd" ,flags)))))))
                `(("ld-wrapper" ,(make-ld-wrapper "ld-wrapper-i386"
                                                  #:binutils binutils))
                  ("binutils" ,binutils)))
@@ -342,21 +344,21 @@ menu to select one of the installed operating systems.")
      `(,@(substitute-keyword-arguments (package-arguments grub-efi)
            ((#:configure-flags flags ''())
             `(cons*
-               ,@(cond ((target-x86?) '("--target=i386"))
-                       ((target-aarch64?)
-                        (list "--target=arm"
-                              (string-append "TARGET_CC="
-                                             (cc-for-target "arm-linux-gnueabihf"))))
-                       ((target-arm?) '("--target=arm"))
-                       (else '()))
-               ,flags)))))
+              ,@(cond ((target-x86?) '("--target=i386"))
+                      ((target-aarch64?)
+                       (list "--target=arm"
+                             (string-append "TARGET_CC="
+                                            (cc-for-target "arm-linux-gnueabihf"))))
+                      ((target-arm?) '("--target=arm"))
+                      (else '()))
+              ,flags)))))
     (native-inputs
      (if (target-aarch64?)
-       (modify-inputs (package-native-inputs grub-efi)
-         (prepend
-           (cross-gcc "arm-linux-gnueabihf")
-           (cross-binutils "arm-linux-gnueabihf")))
-       (package-native-inputs grub-efi)))))
+         (modify-inputs (package-native-inputs grub-efi)
+           (prepend
+            (cross-gcc "arm-linux-gnueabihf")
+            (cross-binutils "arm-linux-gnueabihf")))
+         (package-native-inputs grub-efi)))))
 
 ;; Because grub searches hardcoded paths it's easiest to just build grub
 ;; again to make it find both grub-pc and grub-efi.  There is a command
@@ -391,6 +393,92 @@ menu to select one of the installed operating systems.")
                                  (string-append output-dir "/" basename))))
                   (scandir input-dir))
                  #t)))))))))
+
+(define-public (make-grub-efi-netboot name subdir)
+  "Make a grub-efi-netboot package named NAME, which will be able to boot over
+network via TFTP by accessing its files in the SUBDIR of a TFTP root directory.
+This package is also able to boot from local storage devices.
+
+A bootloader-installer basically needs to copy the package content into the
+bootloader-target directory, which will usually be the TFTP root, as
+'grub-mknetdir' will be invoked already during the package creation.
+
+Alternatively the bootloader-target directory can be a mounted EFI System
+Partition (ESP), or a similar partition with a FAT file system, for booting
+from local storage devices.
+
+The name of the GRUB EFI binary will conform to the UEFI specification for
+removable media.  Depending on the system it will be e.g. bootx64.efi or
+bootaa64.efi below SUBDIR.
+
+The SUBDIR argument needs to be set to \"efi/boot\" to create a package which
+conforms to the UEFI specification for removable media.
+
+The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
+'grub-efi-bootloader'."
+  (package
+    (name name)
+    (version (package-version grub-efi))
+    ;; Source is not needed, but it cannot be omitted.
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (let* ((system (string-split (nix-system->gnu-triplet
+                                   (or (%current-target-system)
+                                       (%current-system)))
+                                  #\-))
+            (arch (first system))
+            (boot-efi
+             (match system
+               ;; These are the supportend systems and the names defined by
+               ;; the UEFI standard for removable media.
+               (("i686" _ ...)        "/bootia32.efi")
+               (("x86_64" _ ...)      "/bootx64.efi")
+               (("arm" _ ...)         "/bootarm.efi")
+               (("aarch64" _ ...)     "/bootaa64.efi")
+               (("riscv" _ ...)       "/bootriscv32.efi")
+               (("riscv64" _ ...)     "/bootriscv64.efi")
+               ;; Other systems are not supported, although defined.
+               ;; (("riscv128" _ ...) "/bootriscv128.efi")
+               ;; (("ia64" _ ...)     "/bootia64.efi")
+               ((_ ...)               #f)))
+            (core-efi (string-append
+                       ;; This is the arch dependent file name of GRUB, e.g.
+                       ;; i368-efi/core.efi or arm64-efi/core.efi.
+                       (match arch
+                         ("i686"    "i386")
+                         ("aarch64" "arm64")
+                         ("riscv"   "riscv32")
+                         (_         arch))
+                       "-efi/core.efi")))
+       (list
+        #:modules '((guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build utils))
+            (let* ((bootloader #$(this-package-input "grub-efi"))
+                   (net-dir #$output)
+                   (sub-dir (string-append net-dir "/" #$subdir "/"))
+                   (boot-efi (string-append sub-dir #$boot-efi))
+                   (core-efi (string-append sub-dir #$core-efi)))
+              ;; Install GRUB, which refers to the grub.cfg, with support for
+              ;; encrypted partitions,
+              (setenv "GRUB_ENABLE_CRYPTODISK" "y")
+              (invoke/quiet (string-append bootloader "/bin/grub-mknetdir")
+                            (string-append "--net-directory=" net-dir)
+                            (string-append "--subdir=" #$subdir)
+                            ;; These modules must be pre-loaded to allow booting
+                            ;; from an ESP or a similar partition with a FAT
+                            ;; file system.
+                            (string-append "--modules=part_msdos part_gpt fat"))
+              ;; Move GRUB's core.efi to the removable media name.
+              (false-if-exception (delete-file boot-efi))
+              (rename-file core-efi boot-efi))))))
+    (inputs (list grub-efi))
+    (synopsis (package-synopsis grub-efi))
+    (description (package-description grub-efi))
+    (home-page (package-home-page grub-efi))
+    (license (package-license grub-efi))))
 
 (define-public syslinux
   (let ((commit "bb41e935cc83c6242de24d2271e067d76af3585c"))
@@ -481,14 +569,14 @@ menu to select one of the installed operating systems.")
     (build-system gnu-build-system)
     (native-inputs
      (append
-       (list bison
-             flex
-             libyaml
-             pkg-config
-             swig)
-       (if (member (%current-system) (package-supported-systems valgrind))
-           (list valgrind)
-           '())))
+      (list bison
+            flex
+            libyaml
+            pkg-config
+            swig)
+      (if (member (%current-system) (package-supported-systems valgrind))
+          (list valgrind)
+          '())))
     (inputs
      (list python))
     (arguments
@@ -545,7 +633,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (name "u-boot")
     (version "2022.04")
     (source (origin
-	      (patches
+              (patches
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
@@ -594,12 +682,12 @@ also initializes the boards (RAM etc).")
          (add-after 'unpack 'patch
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "Makefile"
-              (("/bin/pwd") (which "pwd"))
-              (("/bin/false") (which "false")))
+               (("/bin/pwd") (which "pwd"))
+               (("/bin/false") (which "false")))
              (substitute* "tools/dtoc/fdt_util.py"
-              (("'cc'") "'gcc'"))
+               (("'cc'") "'gcc'"))
              (substitute* "tools/patman/test_util.py"
-              ;; python3-coverage is simply called coverage in guix.
+               ;; python3-coverage is simply called coverage in guix.
                (("python3-coverage") "coverage")
 
                ;; Don't require 100% coverage since it's brittle and can
@@ -607,40 +695,40 @@ also initializes the boards (RAM etc).")
                (("raise ValueError\\('Test coverage failure'\\)")
                 "print('Continuing anyway since Guix does not care :O')"))
              (substitute* "test/run"
-              ;; Make it easier to find test failures.
-              (("#!/bin/bash") "#!/bin/bash -x")
-              ;; This test would require git.
-              (("\\./tools/patman/patman") (which "true"))
-              ;; FIXME: test fails, needs further investiation
-              (("run_test \"binman\"") "# run_test \"binman\"")
-              ;; FIXME: test_spl fails, needs further investiation
-              (("test_ofplatdata or test_handoff or test_spl")
+               ;; Make it easier to find test failures.
+               (("#!/bin/bash") "#!/bin/bash -x")
+               ;; This test would require git.
+               (("\\./tools/patman/patman") (which "true"))
+               ;; FIXME: test fails, needs further investiation
+               (("run_test \"binman\"") "# run_test \"binman\"")
+               ;; FIXME: test_spl fails, needs further investiation
+               (("test_ofplatdata or test_handoff or test_spl")
                 "test_ofplatdata or test_handoff")
-              ;; FIXME: code coverage not working
-              (("run_test \"binman code coverage\"")
-               "# run_test \"binman code coverage\"")
-              ;; This test would require internet access.
-              (("\\./tools/buildman/buildman") (which "true")))
+               ;; FIXME: code coverage not working
+               (("run_test \"binman code coverage\"")
+                "# run_test \"binman code coverage\"")
+               ;; This test would require internet access.
+               (("\\./tools/buildman/buildman") (which "true")))
              (substitute* "test/py/tests/test_sandbox_exit.py"
-              (("def test_ctrl_c")
-               "@pytest.mark.skip(reason='Guix has problems with SIGINT')
+               (("def test_ctrl_c")
+                "@pytest.mark.skip(reason='Guix has problems with SIGINT')
 def test_ctrl_c"))
              ;; Test against the tools being installed rather than tools built
              ;; for "sandbox" target.
              (substitute* "test/image/test-imagetools.sh"
                (("BASEDIR=sandbox") "BASEDIR=."))
              (for-each (lambda (file)
-                              (substitute* file
-                                  ;; Disable features that require OpenSSL due
-                                  ;; to GPL/Openssl license incompatibilities.
-                                  ;; See https://bugs.gnu.org/34717 for
-                                  ;; details.
-                                  (("CONFIG_FIT_SIGNATURE=y")
-                                   "CONFIG_FIT_SIGNATURE=n\nCONFIG_UT_LIB_ASN1=n\nCONFIG_TOOLS_LIBCRYPTO=n")
-                                  ;; This test requires a sound system, which is un-used
-                                  ;; in u-boot-tools.
-                                  (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
-                              (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))
+                         (substitute* file
+                           ;; Disable features that require OpenSSL due
+                           ;; to GPL/Openssl license incompatibilities.
+                           ;; See https://bugs.gnu.org/34717 for
+                           ;; details.
+                           (("CONFIG_FIT_SIGNATURE=y")
+                            "CONFIG_FIT_SIGNATURE=n\nCONFIG_UT_LIB_ASN1=n\nCONFIG_TOOLS_LIBCRYPTO=n")
+                           ;; This test requires a sound system, which is un-used
+                           ;; in u-boot-tools.
+                           (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
+                       (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))
              #t))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
@@ -668,28 +756,37 @@ def test_ctrl_c"))
                            "tools/env/fw_printenv"
                            "tools/sunxi-spl-image-builder"))
                #t)))
-           (delete 'check)
-           (add-after 'install 'check
-             (lambda* (#:key make-flags test-target #:allow-other-keys)
-               (invoke "test/image/test-imagetools.sh")))
-           ;; Only run full test suite on x86_64 systems, as many tests
-           ;; assume x86_64.
-           ,@(if (string-match "^x86_64-linux"
-                               (or (%current-target-system)
-                                   (%current-system)))
-                 '((add-after 'check 'check-x86
-                     (lambda* (#:key make-flags test-target #:allow-other-keys)
-                       (apply invoke "make" "mrproper" make-flags)
-                       (setenv "SDL_VIDEODRIVER" "dummy")
-                       (setenv "PAGER" "cat")
-                       (apply invoke "make" test-target make-flags))))
-                 '()))))
-    (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).  This package provides its
-board-independent tools.")))
+         (delete 'check)
+         (add-after 'install 'check
+           (lambda* (#:key make-flags test-target #:allow-other-keys)
+             (invoke "test/image/test-imagetools.sh")))
+         ;; Only run full test suite on x86_64 systems, as many tests
+         ;; assume x86_64.
+         ,@(if (string-match "^x86_64-linux"
+                             (or (%current-target-system)
+                                 (%current-system)))
+               '((add-after 'check 'check-x86
+                   (lambda* (#:key make-flags test-target #:allow-other-keys)
+                     (apply invoke "make" "mrproper" make-flags)
+                     (setenv "SDL_VIDEODRIVER" "dummy")
+                     (setenv "PAGER" "cat")
+                     (apply invoke "make" test-target make-flags))))
+               '()))))
+    (description (string-append
+                  (package-description u-boot)
+                  "  This package provides board-independent tools "
+                  "of U-Boot."))))
 
-(define-public (make-u-boot-package board triplet)
-  "Returns a u-boot package for BOARD cross-compiled for TRIPLET."
+(define*-public (make-u-boot-package board triplet
+                                     #:key
+                                     defconfig
+                                     configs
+                                     name-suffix
+                                     append-description)
+  "Return a U-Boot package for BOARD cross-compiled for TRIPLET with the
+optional DEFCONFIG file and optional configuration changes from CONFIGS.
+NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
+appended to the package description."
   (let ((same-arch? (lambda ()
                       (string=? (%current-system)
                                 (gnu-triplet->nix-system triplet)))))
@@ -697,33 +794,51 @@ board-independent tools.")))
       (inherit u-boot)
       (name (string-append "u-boot-"
                            (string-replace-substring (string-downcase board)
-                                                     "_" "-")))
+                                                     "_" "-")
+                           (or name-suffix "")))
+      (description (if append-description
+                       (string-append (package-description u-boot)
+                                      "\n\n" append-description)
+                       (package-description u-boot)))
       (native-inputs
        `(,@(if (not (same-arch?))
-             `(("cross-gcc" ,(cross-gcc triplet))
-               ("cross-binutils" ,(cross-binutils triplet)))
-             `())
+               `(("cross-gcc" ,(cross-gcc triplet))
+                 ("cross-binutils" ,(cross-binutils triplet)))
+               `())
          ,@(package-native-inputs u-boot)))
       (arguments
        `(#:modules ((ice-9 ftw)
                     (srfi srfi-1)
-                    (guix build utils)
-                    (guix build gnu-build-system))
+                    (guix build gnu-build-system)
+                    (guix build kconfig)
+                    (guix build utils))
+         #:imported-modules (,@%gnu-build-system-modules
+                             (guix build kconfig))
          #:test-target "test"
          #:make-flags
          (list "HOSTCC=gcc"
                ,@(if (not (same-arch?))
-                   `((string-append "CROSS_COMPILE=" ,triplet "-"))
-                   '()))
+                     `((string-append "CROSS_COMPILE=" ,triplet "-"))
+                     '()))
          #:phases
          (modify-phases %standard-phases
            (replace 'configure
              (lambda* (#:key outputs make-flags #:allow-other-keys)
-               (let ((config-name (string-append ,board "_defconfig")))
-                 (if (file-exists? (string-append "configs/" config-name))
-                     (apply invoke "make" `(,@make-flags ,config-name))
+               (let* ((config-name (string-append ,board "_defconfig"))
+                      (config-file (string-append "configs/" config-name))
+                      (defconfig ,defconfig)
+                      (configs ',configs))
+                 (when defconfig
+                   ;; Replace the board-specific defconfig with the given one.
+                   (copy-file defconfig config-file))
+                 (if (file-exists? config-file)
                      (begin
-                       (display "Invalid board name. Valid board names are:"
+                       (when configs
+                         (modify-defconfig config-file configs))
+                       (apply invoke "make" `(,@make-flags ,config-name))
+                       (verify-config ".config" config-file))
+                     (begin
+                       (display "invalid board name; valid board names are:"
                                 (current-error-port))
                        (let ((suffix-len (string-length "_defconfig"))
                              (entries (scandir "configs")))
@@ -734,7 +849,7 @@ board-independent tools.")))
                                                (string-drop-right file-name
                                                                   suffix-len))))
                                    (sort entries string-ci<)))
-                       (error "Invalid boardname ~s." ,board))))))
+                       (error "invalid boardname ~s" ,board))))))
            (add-after 'configure 'disable-tools-libcrypto
              ;; Disable libcrypto due to GPL and OpenSSL license
              ;; incompatibilities
@@ -775,52 +890,37 @@ board-independent tools.")))
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
 (define-public u-boot-am335x-boneblack
-  (let ((base (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf")))
-    (package
-      (inherit base)
-      (name "u-boot-am335x-boneblack")
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This U-Boot is built for the BeagleBone Black, which was removed upstream,
-adjusted from the am335x_evm build with several device trees removed so that
-it fits within common partitioning schemes.")
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-defconfig
-               ;; Patch out other devicetrees to build image small enough to
-               ;; fit within typical partitioning schemes where the first
-               ;; partition begins at sector 2048.
-               (lambda _
-                 (substitute* "configs/am335x_evm_defconfig"
-                   (("CONFIG_OF_LIST=.*$") "CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"\n"))
-                 #t)))))))))
+  (make-u-boot-package
+   "am335x_evm" "arm-linux-gnueabihf"
+   ;; Patch out other device trees to build an image small enough to fit
+   ;; within typical partitioning schemes where the first partition begins at
+   ;; sector 2048.
+   #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
+   #:name-suffix "-boneblack"
+   #:append-description "This U-Boot is built for the BeagleBone Black, which
+was removed upstream, adjusted from the am335x_evm build with several device
+trees removed so that it fits within common partitioning schemes."))
 
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))
 
-(define-public (make-u-boot-sunxi64-package board triplet)
-  (let ((base (make-u-boot-package board triplet)))
+(define*-public (make-u-boot-sunxi64-package board triplet
+                                             #:key defconfig configs)
+  (let ((base (make-u-boot-package
+               board triplet #:defconfig defconfig #:configs configs)))
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                  (let ((bl31
-                         (string-append
-                          (assoc-ref (or native-inputs inputs) "firmware")
-                          "/bl31.bin")))
-                    (setenv "BL31" bl31)
-                    ;; This is necessary when we're using the bundled dtc.
-                    ;(setenv "PATH" (string-append (getenv "PATH") ":"
-                    ;                              "scripts/dtc"))
-                    )
-                  #t))))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                 (let ((bl31
+                        (string-append
+                         (assoc-ref (or native-inputs inputs) "firmware")
+                         "/bl31.bin")))
+                   (setenv "BL31" bl31))))))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-sun50i-a64)
          ,@(package-native-inputs base))))))
@@ -832,20 +932,11 @@ it fits within common partitioning schemes.")
   (make-u-boot-sunxi64-package "pine64-lts" "aarch64-linux-gnu"))
 
 (define-public u-boot-pinebook
-  (let ((base (make-u-boot-sunxi64-package "pinebook" "aarch64-linux-gnu")))
-    (package
-      (inherit base)
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-pinebook-config
-               ;; Fix regression with LCD video output introduced in 2020.01
-               ;; https://patchwork.ozlabs.org/patch/1225130/
-               (lambda _
-                 (substitute* "configs/pinebook_defconfig"
-                   (("CONFIG_VIDEO_BRIDGE_ANALOGIX_ANX6345=y") "CONFIG_VIDEO_BRIDGE_ANALOGIX_ANX6345=y\nCONFIG_VIDEO_BPP32=y"))
-                 #t)))))))))
+  (make-u-boot-sunxi64-package
+   "pinebook" "aarch64-linux-gnu"
+   ;; Fix regression with LCD video output introduced in 2020.01
+   ;; https://patchwork.ozlabs.org/patch/1225130/
+   #:configs '("CONFIG_VIDEO_BPP32=y")))
 
 (define-public u-boot-bananapi-m2-ultra
   (make-u-boot-package "Bananapi_M2_Ultra" "arm-linux-gnueabihf"))
@@ -861,7 +952,14 @@ it fits within common partitioning schemes.")
 
 (define-public u-boot-nintendo-nes-classic-edition
   (let ((base (make-u-boot-package "Nintendo_NES_Classic_Edition"
-                                   "arm-linux-gnueabihf")))
+                                   "arm-linux-gnueabihf"
+                                   #:append-description "This version is for
+the Nintendo NES Classic Edition.  It is assumed that you have added a serial
+port to pins PB0 and PB1 as described on
+@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
+
+In order to use FEL mode on the device, hold the Reset button on the
+device while it's being turned on (and a while longer).")))
     (package
       (inherit base)
       ;; Starting with 2019.01, FEL doesn't work anymore on A33.
@@ -875,16 +973,7 @@ it fits within common partitioning schemes.")
                  (base32
                   "0znkwljfwwn4y7j20pzz4ilqw8znphrfxns0x1lwdzh3xbr96z3k"))
                 (patches (search-patches
-                           "u-boot-nintendo-nes-serial.patch"))))
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This version is for the Nintendo NES Classic Edition.  It is assumed that
-you have added a serial port to pins PB0 and PB1 as described on
-@url{https://linux-sunxi.org/Nintendo_NES_Classic_Edition}.
-
-In order to use FEL mode on the device, hold the Reset button on the
-device while it's being turned on (and a while longer).")
+                          "u-boot-nintendo-nes-serial.patch"))))
       (native-inputs
        `(("python" ,python-2)
          ,@(package-native-inputs base))))))
@@ -896,25 +985,14 @@ device while it's being turned on (and a while longer).")
   (make-u-boot-package "mx6cuboxi" "arm-linux-gnueabihf"))
 
 (define-public u-boot-novena
-  (let ((base (make-u-boot-package "novena" "arm-linux-gnueabihf")))
-    (package
-      (inherit base)
-      (description "U-Boot is a bootloader used mostly for ARM boards.  It
-also initializes the boards (RAM etc).
-
-This U-Boot is built for Novena.  Be advised that this version, contrary
-to Novena upstream, does not load u-boot.img from the first partition.")
-      (arguments
-       (substitute-keyword-arguments (package-arguments base)
-         ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'patch-novena-defconfig
-               ;; Patch configuration to disable loading u-boot.img from FAT partition,
-               ;; allowing it to be installed at a device offset.
-               (lambda _
-                 (substitute* "configs/novena_defconfig"
-                   (("CONFIG_SPL_FS_FAT=y") "# CONFIG_SPL_FS_FAT is not set"))
-                 #t)))))))))
+  (make-u-boot-package
+   "novena" "arm-linux-gnueabihf"
+   ;; Patch configuration to disable loading u-boot.img from FAT partition,
+   ;; allowing it to be installed at a device offset.
+   #:configs '("# CONFIG_SPL_FS_FAT is not set")
+   #:append-description "This U-Boot is built for Novena.  Be advised that this
+version, contrary to Novena upstream, does not load u-boot.img from the first
+partition."))
 
 (define-public u-boot-cubieboard
   (make-u-boot-package "Cubieboard" "arm-linux-gnueabihf"))
@@ -927,16 +1005,16 @@ to Novena upstream, does not load u-boot.img from the first partition.")
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31"
-                          (search-input-file inputs "/bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "BL31"
+                         (search-input-file inputs "/bl31.elf"))))
+             ;; Phases do not succeed on the bl31 ELF.
+             (delete 'strip)
+             (delete 'validate-runpath)))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
@@ -988,65 +1066,62 @@ to Novena upstream, does not load u-boot.img from the first partition.")
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
+             ;; Phases do not succeed on the bl31 ELF.
+             (delete 'strip)
+             (delete 'validate-runpath)))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
 
 (define-public u-boot-rockpro64-rk3399
-  (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu")))
+  (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu"
+                                   #:configs '("CONFIG_USB=y"
+                                               "CONFIG_AHCI=y"
+                                               "CONFIG_AHCI_PCI=y"
+                                               "CONFIG_SATA=y"
+                                               "CONFIG_SATA_SIL=y"
+                                               "CONFIG_SCSI=y"
+                                               "CONFIG_SCSI_AHCI=y"
+                                               "CONFIG_DM_SCSI=y"))))
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31"
-                          (search-input-file inputs "/bl31.elf"))))
-              (add-after 'unpack 'patch-config
-                (lambda _
-                  (substitute* "configs/rockpro64-rk3399_defconfig"
-                    (("CONFIG_USB=y") "\
-CONFIG_USB=y
-CONFIG_AHCI=y
-CONFIG_AHCI_PCI=y
-CONFIG_SATA=y
-CONFIG_SATA_SIL=y
-CONFIG_SCSI=y
-CONFIG_SCSI_AHCI=y
-CONFIG_DM_SCSI=y
-"))
-                  (substitute* "include/config_distro_bootcmd.h"
-                    (("\"scsi_need_init=false")
-                     "\"setenv scsi_need_init false")
-                    (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
-                     "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
-                  (substitute* "include/configs/rockchip-common.h"
-                    (("#define BOOT_TARGET_DEVICES\\(func\\)")
-                     "
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "BL31"
+                         (search-input-file inputs "/bl31.elf"))))
+             (add-after 'unpack 'patch-header
+               (lambda _
+                 (substitute* "include/config_distro_bootcmd.h"
+                   (("\"scsi_need_init=false")
+                    "\"setenv scsi_need_init false")
+                   (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
+                    "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
+                 (substitute* "include/configs/rockchip-common.h"
+                   (("#define BOOT_TARGET_DEVICES\\(func\\)")
+                    "
 #if CONFIG_IS_ENABLED(CMD_SCSI)
        #define BOOT_TARGET_SCSI(func) func(SCSI, scsi, 0)
 #else
        #define BOOT_TARGET_SCSI(func)
 #endif
 #define BOOT_TARGET_DEVICES(func)")
-                    (("BOOT_TARGET_NVME\\(func\\) \\\\")
-                     "\
+                   (("BOOT_TARGET_NVME\\(func\\) \\\\")
+                    "\
 BOOT_TARGET_NVME(func) \\
        BOOT_TARGET_SCSI(func) \\"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+             ;; Phases do not succeed on the bl31 ELF.
+             (delete 'strip)
+             (delete 'validate-runpath)))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
@@ -1056,19 +1131,131 @@ BOOT_TARGET_NVME(func) \\
     (package
       (inherit base)
       (arguments
-        (substitute-keyword-arguments (package-arguments base)
-          ((#:phases phases)
-           `(modify-phases ,phases
-              (add-after 'unpack 'set-environment
-                (lambda* (#:key inputs #:allow-other-keys)
-                  (setenv "BL31"
-                          (search-input-file inputs "/bl31.elf"))))
-              ;; Phases do not succeed on the bl31 ELF.
-              (delete 'strip)
-              (delete 'validate-runpath)))))
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (add-after 'unpack 'set-environment
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "BL31"
+                         (search-input-file inputs "/bl31.elf"))))
+             ;; Phases do not succeed on the bl31 ELF.
+             (delete 'strip)
+             (delete 'validate-runpath)))))
       (native-inputs
        `(("firmware" ,arm-trusted-firmware-rk3399)
          ,@(package-native-inputs base))))))
+
+(define*-public (make-u-boot-bin-package u-boot-package
+                                         #:key
+                                         (u-boot-bin "u-boot.bin"))
+  "Return a package with a single U-BOOT-BIN file from the U-BOOT-PACKAGE.
+The package name will be that of the U-BOOT package suffixed with \"-bin\"."
+  (package
+    (name (string-append (package-name u-boot-package) "-bin"))
+    (version (package-version u-boot-package))
+    (source #f)
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:builder
+      (with-imported-modules '((guix build utils))
+        #~(begin
+            (use-modules (guix build utils))
+            (mkdir #$output)
+            (symlink (search-input-file %build-inputs
+                                        (string-append "libexec/" #$u-boot-bin))
+                     (string-append #$output "/" #$u-boot-bin))))))
+    (inputs (list u-boot-package))
+    (home-page (package-home-page u-boot-package))
+    (synopsis (package-synopsis u-boot-package))
+    (description (string-append
+                  (package-description u-boot-package)
+                  "\n\n"
+                  (format #f
+                          "This package only contains the file ~a."
+                          u-boot-bin)))
+    (license (package-license u-boot-package))))
+
+(define-public %u-boot-rpi-efi-configs
+  '("CONFIG_OF_EMBED"
+    "CONFIG_OF_BOARD=y"))
+
+(define %u-boot-rpi-description-32-bit
+  "This is a 32-bit build of U-Boot.")
+
+(define %u-boot-rpi-description-64-bit
+  "This is a common 64-bit build of U-Boot for all 64-bit capable Raspberry Pi
+variants.")
+
+(define %u-boot-rpi-efi-description
+  "It allows network booting and uses the device-tree from the firmware,
+allowing the usage of overlays.  It can act as an EFI firmware for the
+grub-efi-netboot-removable-bootloader.")
+
+(define %u-boot-rpi-efi-description-32-bit
+  (string-append %u-boot-rpi-efi-description "  "
+                 %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-2
+  (make-u-boot-package "rpi_2" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-3-32b
+  (make-u-boot-package "rpi_3_32b" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-4-32b
+  (make-u-boot-package "rpi_4_32b" "arm-linux-gnueabihf"
+                       #:append-description %u-boot-rpi-description-32-bit))
+
+(define-public u-boot-rpi-arm64
+  (make-u-boot-package "rpi_arm64" "aarch64-linux-gnu"
+                       #:append-description %u-boot-rpi-description-64-bit))
+
+(define-public u-boot-rpi-2-efi
+  (make-u-boot-package "rpi_2" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-3-32b-efi
+  (make-u-boot-package "rpi_3_32b" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-4-32b-efi
+  (make-u-boot-package "rpi_4_32b" "arm-linux-gnueabihf"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description %u-boot-rpi-efi-description-32-bit))
+
+(define-public u-boot-rpi-arm64-efi
+  (make-u-boot-package "rpi_arm64""aarch64-linux-gnu"
+                       #:name-suffix "-efi"
+                       #:configs %u-boot-rpi-efi-configs
+                       #:append-description (string-append
+                                             %u-boot-rpi-efi-description "  "
+                                             %u-boot-rpi-description-64-bit)))
+
+(define-public u-boot-rpi-2-bin (make-u-boot-bin-package u-boot-rpi-2))
+
+(define-public u-boot-rpi-3_32b-bin (make-u-boot-bin-package u-boot-rpi-3-32b))
+
+(define-public u-boot-rpi-4_32b-bin (make-u-boot-bin-package u-boot-rpi-4-32b))
+
+(define-public u-boot-rpi-arm64-bin (make-u-boot-bin-package u-boot-rpi-arm64))
+
+(define-public u-boot-rpi-2-efi-bin (make-u-boot-bin-package u-boot-rpi-2-efi))
+
+(define-public u-boot-rpi-3-32b-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-3-32b-efi))
+
+(define-public u-boot-rpi-4-32b-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-4-32b-efi))
+
+(define-public u-boot-rpi-arm64-efi-bin
+  (make-u-boot-bin-package u-boot-rpi-arm64-efi))
 
 (define-public vboot-utils
   (package

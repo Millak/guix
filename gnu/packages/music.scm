@@ -2463,6 +2463,66 @@ which can modulate the oscillators, filter, and amplitude; distortion and
 reverb effects.")
     (license license:gpl2+)))
 
+(define-public paulxstretch
+  (package
+    (name "paulxstretch")
+    (version "1.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/essej/paulxstretch")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1pff51imfgmgqzc6mdgwd1v9fci0a8hj85fnkdsvkdzbnxdzvs9r"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f                            ;no test suite
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'install
+                 (lambda _
+                   (let* ((bin (string-append #$output "/bin"))
+                          (lib (string-append #$output "/lib"))
+                          (share (string-append #$output "/share"))
+                          (clap (string-append lib "/clap"))
+                          (vst3 (string-append lib "/vst3")))
+                     (with-directory-excursion
+                         "PaulXStretch_artefacts/RelWithDebInfo"
+                       (install-file "Standalone/paulxstretch" bin)
+                       (install-file "CLAP/PaulXStretch.clap" clap)
+                       (mkdir-p vst3)
+                       (copy-recursively "VST3" vst3)
+                       (install-file (string-append
+                                      #$source
+                                      "/linux/paulxstretch.desktop")
+                                     (string-append share "/applications"))
+                       (install-file
+                        (string-append
+                         #$source
+                         "/images/paulxstretch_icon_1024_rounded.png")
+                        (string-append share "/pixmaps")))))))))
+    (home-page "https://sonosaurus.com/paulxstretch/")
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib
+                  curl
+                  fftwf
+                  freetype
+                  jack-1
+                  libx11
+                  libxcursor
+                  libxext
+                  libxinerama
+                  libxrandr))
+    (supported-systems '("x86_64-linux"))         ;pffft.c uses SIMD code
+    (synopsis "Audio timestretching application and plugin")
+    (description
+     "PaulXStretch is an application/plugin is based on the PaulStretch
+algorithm (Paul’s Extreme Time Stretch, originally developed by Nasca Octavian
+Paul), and specifically the PaulXStretch version from Xenakios.")
+    (license license:gpl3+)))
+
 (define-public setbfree
   (package
     (name "setbfree")
@@ -3980,7 +4040,7 @@ with a number of bugfixes and changes to improve IT playback.")
     (inputs
      (list jack-1
            alsa-lib
-           wxwidgets-gtk2
+           wxwidgets-gtk2-3.0
            libsndfile
            libsamplerate
            liblo

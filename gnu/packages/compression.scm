@@ -1127,7 +1127,7 @@ tarballs.")
 (define-public libjcat
   (package
     (name "libjcat")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method git-fetch)
@@ -1137,7 +1137,7 @@ tarballs.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08zywwhm9q8m8v17w2mp23w3w93p40ir1w4x18zrlbhs10xnhiys"))))
+        (base32 "0fbcmnpc0y7s2ls3q829dv3ardhv0m5gxqqmbn0dnkzgkh42vv7p"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection help2man pkg-config))
@@ -2695,7 +2695,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.12")
+    (version "1.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2704,7 +2704,7 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16n9232zjavcp5wp17cx0gh2v7gipxpncsha05j3ybajfs7g88jv"))))
+                "09y69mnbv3mprgjp53zvin5zqznqajginrk5b25xmi9y0b83bns8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

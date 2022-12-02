@@ -8,6 +8,7 @@
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages freedesktop)
@@ -45,18 +47,19 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages video)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages webkit)
-  #:use-module (gnu packages xorg)
-  #:use-module ((srfi srfi-1) #:select (alist-delete)))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public wxwidgets
   (package
     (name "wxwidgets")
-    (version "3.0.5.1")
+    (version "3.2.1")
     (source
      (origin
        (method url-fetch)
@@ -64,24 +67,128 @@
                            "releases/download/v" version
                            "/wxWidgets-" version ".tar.bz2"))
        (sha256
-        (base32 "01y89999jw5q7njrhxajincx7lydls6yq37ikazjryssrxrnw3s4"))))
+        (base32 "0rpsyph7l7kmpld376y0940la3c94y5vdpxmbkj8isqknimrfaf2"))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
+       (snippet
+        '(begin
+           ;; wxWidgets bundles third-party code in the "3rdparty" directory as
+           ;; well as the "src" directory.  Remove external components that are
+           ;; not required.
+           (let ((preserved-3rdparty '("nanosvg"))
+                 ;; The src directory contains a mixture of third party libraries
+                 ;; and similarly-named integration code.  Cautiously use a
+                 ;; blacklist approach here.
+                 (bundled-src '("expat" "jpeg" "png" "tiff" "zlib")))
+             (with-directory-excursion "3rdparty"
+               (for-each delete-file-recursively
+                         (scandir "." (negate (cut member <>
+                                                   (append '("." "..")
+                                                           preserved-3rdparty))))))
+             (with-directory-excursion "src"
+               (for-each delete-file-recursively bundled-src)))))))
     (build-system glib-or-gtk-build-system)
     (inputs
-     `(("glu" ,glu)
-       ;; XXX gstreamer-0.10 builds fail
-       ;; ("gstreamer" ,gstreamer-0.10)
-       ("gtk" ,gtk+)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libmspack" ,libmspack)
-       ("libsm" ,libsm)
-       ("libtiff" ,libtiff)
-       ("mesa" ,mesa)
-       ("webkitgtk" ,webkitgtk)
-       ("sdl" ,sdl)
-       ("shared-mime-info" ,shared-mime-info)
-       ("xdg-utils" ,xdg-utils)))
+     (list catch-framework
+           curl
+           expat
+           glu
+           gstreamer
+           gst-plugins-base
+           gtk+
+           libjpeg-turbo
+           libmspack
+           libnotify
+           libpng
+           libsecret
+           libsm
+           libtiff
+           mesa
+           pcre2
+           sdl2
+           shared-mime-info
+           webkitgtk-with-libsoup2
+           xdg-utils
+           zlib))
     (native-inputs
      (list pkg-config))
+    (arguments
+     (list
+      #:configure-flags #~'("--with-libmspack"
+                            "--with-regex"
+                            "--with-sdl"
+                            "--enable-gui"
+                            "--enable-mediactrl"
+                            "--enable-webview"
+                            "--enable-webviewwebkit")
+      #:make-flags
+      #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+      #:tests? #f                       ;TODO
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-newer-webkit
+            (lambda _
+              ;; XXX: The configure script tests only for an ancient
+              ;; WebKitGTK version.
+              (substitute* "configure"
+                (("webkit2gtk-4\\.0")
+                 "webkit2gtk-4.1"))))
+          (add-after 'unpack 'refer-to-inputs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((catch (search-input-file inputs "include/catch.hpp"))
+                    (mime (search-input-directory inputs "share/mime"))
+                    (xdg-open (search-input-file inputs "bin/xdg-open")))
+                (install-file catch "3rdparty/catch/include/")
+                (substitute* "src/unix/utilsx11.cpp"
+                  (("wxExecute\\(xdg_open \\+")
+                   (string-append "wxExecute(\"" xdg-open "\"")))
+                (substitute* "src/unix/mimetype.cpp"
+                  (("/usr(/local)?/share/mime")
+                   mime)))))
+          (replace 'configure
+            (lambda* (#:key native-inputs inputs configure-flags
+                      #:allow-other-keys)
+              (let ((sh (search-input-file (or native-inputs inputs)
+                                           "bin/sh")))
+                ;; The configure script does not understand some of the default
+                ;; options of gnu-build-system, so run it "by hand".
+                (apply invoke "./configure"
+                       (string-append "SHELL=" sh)
+                       (string-append "CONFIG_SHELL=" sh)
+                       (string-append "--prefix=" #$output)
+                       configure-flags)))))))
+    (home-page "https://www.wxwidgets.org/")
+    (synopsis "Widget toolkit for creating graphical user interfaces")
+    (description
+     "wxWidgets is a C++ library that lets developers create applications with
+a graphical user interface.  It has language bindings for Python, Perl, Ruby
+and many other languages.")
+    (license (list l:lgpl2.0+ (l:fsf-free "file://doc/license.txt")))))
+
+(define-public wxwidgets-gtk2
+  (package/inherit wxwidgets
+    (name "wxwidgets-gtk2")
+    (inputs (modify-inputs (package-inputs wxwidgets)
+              (delete "gtk+")
+              (prepend gtk+-2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments wxwidgets)
+       ((#:configure-flags flags #~'())
+        #~(append #$flags '("--with-gtk=2")))))))
+
+(define-public wxwidgets-3.0
+  (package
+    (inherit wxwidgets)
+    (version "3.0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/wxWidgets/wxWidgets/"
+                                  "releases/download/v" version
+                                  "/wxWidgets-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "01y89999jw5q7njrhxajincx7lydls6yq37ikazjryssrxrnw3s4"))))
     (arguments
      `(#:configure-flags
        '("--with-regex" "--with-libmspack"
@@ -102,20 +209,24 @@
        (modify-phases %standard-phases
          (add-after 'unpack 'refer-to-inputs
            (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((mime (search-input-directory inputs "/share/mime")))
+             (let ((mime (search-input-directory inputs "share/mime"))
+                   (xdg-open (search-input-file inputs "bin/xdg-open")))
                (substitute* "src/unix/utilsx11.cpp"
                  (("wxExecute\\(xdg_open \\+")
-                  (string-append "wxExecute(\"" (which "xdg-open") "\"")))
+                  (string-append "wxExecute(\"" xdg-open "\"")))
                (substitute* "src/unix/mimetype.cpp"
-                 (("/usr(/local)?/share/mime") mime))
-               #t))))))
-    (home-page "https://www.wxwidgets.org/")
-    (synopsis "Widget toolkit for creating graphical user interfaces")
-    (description
-     "wxWidgets is a C++ library that lets developers create applications with
-a graphical user interface.  It has language bindings for Python, Perl, Ruby
-and many other languages.")
-    (license (list l:lgpl2.0+ (l:fsf-free "file://doc/license.txt")))))
+                 (("/usr(/local)?/share/mime") mime))))))))))
+
+(define-public wxwidgets-gtk2-3.0
+  (package/inherit wxwidgets-3.0
+    (name "wxwidgets-gtk2")
+    (inputs (modify-inputs (package-inputs wxwidgets-3.0)
+              (delete "gtk+")
+              (prepend gtk+-2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments wxwidgets-3.0)
+       ((#:configure-flags flags #~'())
+        #~(append #$flags '("--with-gtk=2")))))))
 
 (define-public wxwidgets-2
   (package
@@ -152,74 +263,17 @@ and many other languages.")
                (("-Wall") "-Wall -Wno-narrowing"))
              #t)))))))
 
-(define-public wxwidgets-gtk2
-  (package/inherit wxwidgets
-           (inputs `(("gtk+" ,gtk+-2)
-                     ,@(alist-delete
-                        "gtk+"
-                        (package-inputs wxwidgets))))
-           (name "wxwidgets-gtk2")))
-
-;; Development version of wxWidgets, required to build against gstreamer-1.x.
-;; This can be removed when wxWidgets is updated to the next stable version.
-(define-public wxwidgets-3.1
-  (package (inherit wxwidgets)
-           (version "3.1.5")
-           (source
-            (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/wxWidgets/wxWidgets")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name "wxwidgets" version))
-              (sha256
-               (base32
-                "0j998nzqmycafignclxmahgqm5kgs1fiqbsiyvzm7bnpnafi333y"))))
-           (inputs (modify-inputs (package-inputs wxwidgets)
-                     (prepend catch-framework gstreamer gst-plugins-base)))
-           (arguments
-            (substitute-keyword-arguments (package-arguments wxwidgets)
-              ((#:configure-flags flags)
-               '(list "--with-regex" "--with-libmspack" "--with-sdl"
-                      "--enable-mediactrl" "--enable-webviewwebkit"))
-              ((#:phases phases)
-               `(modify-phases ,phases
-                  (add-after 'unpack 'add-catch
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (install-file
-                       (search-input-file inputs "include/catch.hpp")
-                       "3rdparty/catch/include/")))
-                  (replace 'configure
-                    (lambda* (#:key configure-flags inputs native-inputs outputs
-                         #:allow-other-keys)
-                      (let ((sh (search-input-file (or native-inputs inputs)
-                                                   "bin/sh")))
-                        (apply invoke "./configure"
-                               (string-append "SHELL=" sh)
-                               (string-append "CONFIG_SHELL=" sh)
-                               (string-append "--prefix="
-                                              (assoc-ref outputs "out"))
-                               configure-flags))))))))))
-
-(define-public wxwidgets-gtk2-3.1
-  (package/inherit wxwidgets-3.1
-           (inputs `(("gtk+" ,gtk+-2)
-                     ,@(alist-delete
-                        "gtk+"
-                        (package-inputs wxwidgets-3.1))))
-           (name "wxwidgets-gtk2")))
-
 (define-public python-wxpython
   (package
     (name "python-wxpython")
-    (version "4.0.7.post1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "wxPython" version))
        (sha256
         (base32
-         "1jppcr3n428m8pgwb9q3g0iiqydxd451ncri4njk8b53xsiflhys"))
+         "1iw6xp76b3fmdqwbqmsx9i1razzpfki5z1hq6l8mszlxa32fng36"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -255,7 +309,7 @@ and many other languages.")
     (native-inputs
      (list pkg-config python-waf))
     (propagated-inputs
-     (list python-numpy python-pillow python-six))
+     (list python-attrdict python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
     (synopsis "Cross platform GUI toolkit for Python")
     (description "wxPython is a cross-platform GUI toolkit for the Python
@@ -278,7 +332,7 @@ provide a 100% native look and feel for the application.")
         (base32 "1fdbvihw1w2vm29xj54cqgpdabhlg0ydf3clkb0qrlf7mhgkc1rz"))))
     (build-system glib-or-gtk-build-system)
     (inputs
-     (list wxwidgets-3.1 cairo ffmpeg))
+     (list wxwidgets cairo ffmpeg))
     (native-inputs
      (list pkg-config))
     (propagated-inputs

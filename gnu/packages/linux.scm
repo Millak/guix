@@ -67,6 +67,7 @@
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -189,11 +190,31 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 regex))
+  #:use-module (ice-9 regex)
+  #:export (customize-linux
+            make-defconfig))
+
+(define (linux-srcarch)
+  "Return the linux SRCARCH name, which is set in the toplevel Makefile of
+Linux and denotes the architecture-specific directory name below arch/ in its
+source code.  Some few architectures share a common folder.  It resembles the
+definition of SRCARCH based on ARCH in the Makefile and may be used to place a
+defconfig file in the proper path."
+  (let ((linux-arch (platform-linux-architecture
+                     (lookup-platform-by-target-or-system
+                      (or (%current-target-system)
+                          (%current-system))))))
+    (match linux-arch
+      ("i386"    "x86")
+      ("x86_64"  "x86")
+      ("sparc32" "sparc")
+      ("sparc64" "sparc")
+      ("sh64"    "sh")
+      (_         linux-arch))))
 
 (define-public (system->defconfig system)
   "Some systems (notably powerpc-linux) require a special target for kernel
-defconfig.  Return the appropriate make target if applicable, otherwise return
+defconfig.  Return the appropriate Make target if applicable, otherwise return
 \"defconfig\"."
   (cond ((string-prefix? "powerpc-" system) "pmac32_defconfig")
         ((string-prefix? "powerpc64-" system) "ppc64_defconfig")
@@ -846,8 +867,8 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                                   (string-append "infodir=" #$output
                                                  "/share/info"))))))
                  #~())
-          (replace 'configure
-            (lambda* (#:key inputs target #:allow-other-keys)
+          (add-before 'configure 'set-environment
+            (lambda* (#:key target #:allow-other-keys)
               ;; Avoid introducing timestamps.
               (setenv "KCONFIG_NOTIMESTAMP" "1")
               (setenv "KBUILD_BUILD_TIMESTAMP" (getenv "SOURCE_DATE_EPOCH"))
@@ -863,18 +884,21 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                                   (%current-system))))))
                 (setenv "ARCH" arch)
                 (format #t "`ARCH' set to `~a'~%" (getenv "ARCH"))
-
                 (when target
                   (setenv "CROSS_COMPILE" (string-append target "-"))
                   (format #t "`CROSS_COMPILE' set to `~a'~%"
                           (getenv "CROSS_COMPILE"))))
 
+              ;; Allow EXTRAVERSION to be set via the environment.
+              (substitute* "Makefile"
+                (("^ *EXTRAVERSION[[:blank:]]*=")
+                 "EXTRAVERSION ?="))
               (setenv "EXTRAVERSION"
                       #$(and extra-version
-                             (string-append "-" extra-version)))
-
+                             (string-append "-" extra-version)))))
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
               (let ((config (assoc-ref inputs "kconfig")))
-
                 ;; Use a custom kernel configuration file or a default
                 ;; configuration file.
                 (if config
@@ -882,17 +906,15 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       (copy-file config ".config")
                       (chmod ".config" #o666))
                     (invoke "make" #$defconfig))
-
                 ;; Appending works even when the option wasn't in the
                 ;; file.  The last one prevails if duplicated.
                 (let ((port (open-file ".config" "a"))
                       (extra-configuration #$(config->string extra-options)))
                   (display extra-configuration port)
                   (close-port port))
-
                 (invoke "make" "oldconfig"))))
           (replace 'install
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+            (lambda* (#:key inputs #:allow-other-keys)
               (let ((moddir (string-append #$output "/lib/modules"))
                     (dtbdir (string-append #$output "/lib/dtbs")))
                 ;; Install kernel image, kernel configuration and link map.
@@ -1238,6 +1260,110 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
       (inputs (modify-inputs (package-inputs base-linux-libre)
                 (prepend cpio))))))
 
+
+;;;
+;;; Linux kernel customization functions.
+;;;
+
+(define* (customize-linux #:key name
+                          (linux linux-libre)
+                          source
+                          defconfig
+                          (configs "")
+                          extra-version)
+  "Make a customized Linux package NAME derived from the LINUX package.
+
+If NAME is not given, then it defaults to the same name as the LINUX package.
+
+Unless SOURCE is given the source of LINUX is used.
+
+A DEFCONFIG file to be used can be given as an origin, as a file-like object
+(file-append, local-file etc.), or as a string with the name of a defconfig file
+available in the Linux sources.  If DEFCONFIG is not given, then a defconfig
+file will be saved from the LINUX package configuration.
+
+Additional CONFIGS will be used to modify the given or saved defconfig, which
+will finally be used to build Linux.
+
+CONFIGS can be a list of strings, with one configuration per line.  The usual
+defconfig syntax has to be used, but there is a special extension to ease the
+removal of configurations.  Comment lines are supported as well.
+
+Here is an example:
+
+  '(;; This string defines the version tail in 'uname -r'.
+    \"CONFIG_LOCALVERSION=\\\"-handcrafted\\\"
+    ;; This '# CONFIG_... is not set' syntax has to match exactly!
+    \"# CONFIG_BOOT_CONFIG is not set\"
+    \"CONFIG_NFS_SWAP=y\"
+    ;; This is a multiline configuration:
+    \"CONFIG_E1000=y
+# This is a comment, below follows an extension to unset a configuration:
+CONFIG_CMDLINE_EXTEND\")
+
+A string of configurations instead of a list of configuration strings is also
+possible.
+
+EXTRA-VERSION can be a string overwriting the EXTRAVERSION setting of the LINUX
+package, after being prepended by a hyphen.  It will be visible in the output
+of 'uname -r' behind the Linux version numbers."
+  (package
+    (inherit linux)
+    (name (or name (package-name linux)))
+    (source (or source (package-source linux)))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments linux)
+       ((#:imported-modules imported-modules %gnu-build-system-modules)
+        `((guix build kconfig) ,@imported-modules))
+       ((#:modules modules)
+        `((guix build kconfig) ,@modules))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys #:rest arguments)
+                (setenv "EXTRAVERSION"
+                        #$(and extra-version
+                               (not (string-null? extra-version))
+                               (string-append "-" extra-version)))
+                (let* ((configs
+                        (string-append "arch/" #$(linux-srcarch) "/configs/"))
+                       (guix_defconfig
+                        (string-append configs "guix_defconfig")))
+                  #$(cond
+                     ((not defconfig)
+                      #~(begin
+                          ;; Call the original 'configure phase.
+                          (apply (assoc-ref #$phases 'configure) arguments)
+                          ;; Save a defconfig file.
+                          (invoke "make" "savedefconfig")
+                          ;; Move the saved defconfig to the proper location.
+                          (rename-file "defconfig"
+                                       guix_defconfig)))
+                     ((string? defconfig)
+                      ;; Use another existing defconfig from the Linux sources.
+                      #~(rename-file (string-append configs #$defconfig)
+                                     guix_defconfig))
+                     (else
+                      ;; Copy the defconfig input to the proper location.
+                      #~(copy-file (assoc-ref inputs "guix_defconfig")
+                                   guix_defconfig)))
+                  (chmod guix_defconfig #o644)
+                  (modify-defconfig guix_defconfig '#$configs)
+                  (invoke "make" "guix_defconfig")
+                  (verify-config ".config" guix_defconfig))))))))
+    (native-inputs
+     (append (if (or (not defconfig)
+                     (string? defconfig))
+                 '()
+                 ;; The defconfig should be an origin or file-like object.
+                 `(("guix_defconfig" ,defconfig)))
+             (package-native-inputs linux)))))
+
+(define (make-defconfig uri sha256-as-base32)
+  (origin (method url-fetch)
+          (uri uri)
+          (sha256 (base32 sha256-as-base32))))
 
 
 ;;;
@@ -3151,7 +3277,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
 (define-public powertop
   (package
     (name "powertop")
-    (version "2.14")
+    (version "2.15")
     (source
      (origin
        (method git-fetch)
@@ -3160,7 +3286,7 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1zkr2y5nb1nr22nq8a3zli87iyfasfq6489p7h1k428pv8k45w4f"))))
+        (base32 "10vbk4vplmzp3p1mhwnhj81g6i5xvam9pdvmiy6cmd0xvnmdyy77"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -3179,18 +3305,17 @@ devices.  It replaces @code{iwconfig}, which is deprecated.")
                  ;; These programs are only needed to calibrate, so using
                  ;; relative file names avoids adding extra inputs.  When they
                  ;; are missing powertop gracefully handles it.
-                 (("/usr/bin/hcitool") "hcitool")
-                 (("/usr/bin/xset") "xset")
-                 (("/usr/sbin/hciconfig") "hciconfig"))
-               #t))))))
+                 (("/usr/s?bin/(hciconfig|hcitool|xset)" _ command)
+                  command))))))))
+    (native-inputs
+     (list autoconf
+           autoconf-archive
+           automake
+           gettext-minimal
+           libtool
+           pkg-config))
     (inputs
      (list kmod libnl ncurses pciutils zlib))
-    (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)))
     (home-page "https://01.org/powertop/")
     (synopsis "Analyze power consumption on Intel-based laptops")
     (description

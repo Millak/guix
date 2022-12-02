@@ -1725,7 +1725,7 @@ display a clock or apply image manipulation techniques to the background image."
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.15")
+    (version "0.9.16")
     (source
      (origin
        (method git-fetch)
@@ -1734,7 +1734,7 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0mvwsd3krrlniga0fq13b0qvsf1fj22mk9nzsfgz49r55lqw8sdv"))))
+        (base32 "06vwsax8z6vvvav4c1d40nfiljc7h1cla57r43nv8dw86n539ic5"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -2986,4 +2986,50 @@ file.")))
       (home-page "https://github.com/michaelforney/wld")
       (synopsis "Primitive drawing library for Wayland")
       (description "wld is a drawing library that targets Wayland.")
+      (license license:expat))))
+
+(define-public swc
+  (let ((commit "a7b615567f83d9e48d585251015048c441ca0239")
+        (revision "1"))
+    (package
+      (name "swc")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/swc")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "19rpbwpi81pm92fkhsmbx7pzagpah5m9ih5h5k3m8dy6r8ihdh35"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;no tests
+         #:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list libdrm
+                    libinput
+                    libxcb
+                    libxkbcommon
+                    wayland
+                    wayland-protocols
+                    wld
+                    xcb-util-wm))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/swc")
+      (synopsis "Library for making a simple Wayland compositor")
+      (description
+       "swc is a small Wayland compositor implemented as a library.
+
+It has been designed primarily with tiling window managers in mind.  Additionally,
+notable features include:
+@itemize
+@item Easy to follow code base
+@item XWayland support
+@item Can place borders around windows
+@end itemize")
       (license license:expat))))

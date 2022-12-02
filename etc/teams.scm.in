@@ -393,7 +393,8 @@ and Thunderbird."
         "The Racket language and Racket-based languages, Racket packages,
 Racket's variant of Chez Scheme, and development of a Racket build system and
 importer."
-        #:scope (list "gnu/packages/racket.scm")))
+        #:scope (list "gnu/packages/chez.scm"
+                      "gnu/packages/racket.scm")))
 
 
 (define-member (person "Thiago Jung Bauermann"

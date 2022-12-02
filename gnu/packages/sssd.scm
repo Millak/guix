@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
@@ -154,7 +154,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.7.4")
+    (version "2.8.1")
     (source
      (origin
        (method git-fetch)
@@ -163,9 +163,8 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1946pfwyv1ci0m4flrhwkksq42p14n7kcng6fbq6sy4lcn5g3yml"))
-       (patches (search-patches "sssd-optional-systemd.patch"
-                                "sssd-system-directories.patch"))))
+        (base32 "19vn2a1r33q6fnw7jmfv3s4kirnviz0rgq0w6wzx6h008iysidsd"))
+       (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

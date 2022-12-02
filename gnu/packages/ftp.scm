@@ -240,7 +240,7 @@ output.
            nettle
            pugixml
            sqlite
-           wxwidgets))
+           wxwidgets-3.0))
     (home-page "https://filezilla-project.org")
     (synopsis "Full-featured graphical FTP/FTPS/SFTP client")
     (description

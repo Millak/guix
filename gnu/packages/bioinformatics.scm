@@ -57,6 +57,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system r)
@@ -10600,6 +10601,102 @@ use of lightweight alignments (accurate but fast-to-compute proxies for
 traditional read alignments) and massively-parallel stochastic collapsed
 variational inference.")
     (license license:gpl3+)))
+
+(define-public python-fanc
+  (package
+    (name "python-fanc")
+    (version "0.9.25")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vaquerizaslab/fanc")
+                    ;; There are no tags.  This commit corresponds to
+                    ;; version 0.9.25.
+                    (commit "e2205346c13ea5349681dff21adeb271d4ea5261")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rxq24p852iiayi0083fyigvc30as695rha71q6xd4s2ij1k9mqi"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-vv"
+                       "-k"
+                       ;; XXX: These all fail because they fail to read
+                       ;; the included test_{cooler,juicer}.hic files.
+                       (string-append "not test_edges_iter"
+                                      " and not test_get_edges_uncorrected"
+                                      " and not test_get_edges"))))))))
+    (propagated-inputs
+     (list python-biopython
+           python-cooler
+           python-deprecated
+           python-future
+           python-genomic-regions
+           python-gridmap
+           python-h5py
+           python-intervaltree
+           python-matplotlib
+           python-msgpack
+           python-msgpack-numpy
+           python-numpy
+           python-pandas
+           python-pillow
+           python-progressbar2
+           python-pybedtools
+           python-pybigwig
+           python-pysam
+           python-pytest
+           python-pyyaml
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-tables))
+    (native-inputs
+     (list python-cython))
+    (home-page "https://github.com/vaquerizaslab/fanc")
+    (synopsis "Framework for the analysis of C-data")
+    (description
+     "FAN-C provides a pipeline for analysing Hi-C data starting at
+mapped paired-end sequencing reads.")
+    (license license:gpl3+)))
+
+(define-public python-genomic-regions
+  (package
+    (name "python-genomic-regions")
+    (version "0.0.10")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "genomic_regions" version))
+              (sha256
+               (base32
+                "0hz811iyd1prml1r90qyzimmwyjwycwkjqw4vnl12bxy61rfzjz5"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-future
+           python-intervaltree
+           python-numpy
+           python-pandas
+           python-pybedtools
+           python-pybigwig
+           python-pytest
+           python-msgpack-numpy
+           python-cython
+           python-msgpack
+           python-pysam))
+    (home-page "https://pypi.org/project/genomic-regions/")
+    (synopsis "Consistently handle genomic regions")
+    (description "This package aims to simplify working with genomic region /
+interval data by providing a common interface that lets you access a wide
+selection of file types and formats for handling genomic region data---all
+using the same syntax.")
+    (license license:expat)))
 
 (define-public python-loompy
   (package

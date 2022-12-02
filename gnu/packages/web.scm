@@ -4898,6 +4898,69 @@ little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
     (license (list license:expat license:cc-by3.0))))
 
+(define-public go-github-com-itchyny-timefmt-go
+  (package
+    (name "go-github-com-itchyny-timefmt-go")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/timefmt-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5z8hy5lbjqdxp544mf238i77n7pf7bv3psgr5gffh0630dsyag"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/itchyny/timefmt-go"))
+    (home-page "https://github.com/itchyny/timefmt-go")
+    (synopsis "Efficient time formatting library (strftime, strptime) for Golang")
+    (description
+     "@code{timefmt-go} is a Go language package for formatting and parsing date
+time strings.")
+    (license license:expat)))
+
+(define-public go-github-com-itchyny-gojq
+  (package
+    (name "go-github-com-itchyny-gojq")
+    (version "0.12.9")
+    (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/itchyny/gojq")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1m4zchhhi2428r1v0qz08drac4s63mag1pwcqzsf6n495yc3g0h0"))))
+    (build-system go-build-system)
+    (inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-itchyny-timefmt-go
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-gopkg-in-yaml-v3))
+    (arguments
+     (list
+      #:import-path "github.com/itchyny/gojq/cmd/gojq"
+      #:unpack-path "github.com/itchyny/gojq"))
+    (home-page "https://github.com/itchyny/gojq")
+    (synopsis "Pure Go implementation of jq")
+    (description
+     "@command{gojq} is an Go implementation and library of the jq JSON
+processor.")
+    (license license:expat)))
+
+(define-public gojq
+  (package
+    (inherit go-github-com-itchyny-gojq)
+    (name "gojq")
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments go-github-com-itchyny-gojq)
+      (list #:install-source? #f)))))
+
 (define-public pup
   (let ((revision "1")
         (commit "681d7bb639334bf485476f5872c5bdab10931f9a"))

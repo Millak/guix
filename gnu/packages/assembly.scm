@@ -144,8 +144,10 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
     (build-system gnu-build-system)
     (native-inputs (list zlib))
     (arguments
-     ;; Some tests fail when run in parallel.
-     `(#:parallel-tests? #f))
+     `(#:configure-flags
+       (list "--disable-static")
+       ;; Some tests fail when run in parallel.
+       #:parallel-tests? #f))
     (synopsis "Library for generating assembly code at runtime")
     (description
      "GNU Lightning is a library that generates assembly language code at

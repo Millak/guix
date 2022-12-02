@@ -2158,7 +2158,7 @@ exchanged form one Spatial DBMS and the other.")
            sqlite
            tinyxml
            wxsvg
-           wxwidgets
+           wxwidgets-3.0
            xz
            zlib))
     (arguments
