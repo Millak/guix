@@ -46498,6 +46498,26 @@ uses finite automata and guarantees linear time matching on all inputs.")
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3))))))
 
+(define-public rust-rend-0.3
+  (package
+    (name "rust-rend")
+    (version "0.3.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rend" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "15fz3rw8c74586kxl6dcdn4s864ph884wfpg9shgnbrnnss69bvr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytecheck" ,rust-bytecheck-0.6))))
+    (home-page "https://github.com/rkyv/rend")
+    (synopsis "Endian-aware primitives for Rust")
+    (description
+     "This package provides endian-aware primitives for Rust.")
+    (license license:expat)))
+
 (define-public rust-reopen-0.3
   (package
     (name "rust-reopen")
