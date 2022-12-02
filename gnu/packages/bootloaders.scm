@@ -1376,6 +1376,158 @@ grub-efi-netboot-removable-bootloader.")
 (define-public u-boot-rpi-arm64-efi-bin
   (make-u-boot-bin-package u-boot-rpi-arm64-efi))
 
+(define u-boot-ts-mx6
+  ;; There is no release; use the latest commit of the
+  ;; 'imx_v2015.04_3.14.52_1.1.0_ga' branch.
+  (let ((revision "0")
+        (commit "08809160fbc60d6e949fa9d37d9a41aab8fef742"))
+    (package
+      (inherit u-boot)
+      (name "u-boot-ts-mx6")
+      (version (git-version "2015.04_3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/embeddedTS/u-boot-imx")
+                      (commit commit)))
+                (file-name (git-file-name "u-boot-imx-ts" version))
+                (sha256
+                 (base32
+                  "01mja33351hkcs59rmfvppqlxqw4rh9gng7a7hx2cfspqwh2y6kr"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments u-boot)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'patch-u-boot
+                (lambda _
+                  (substitute* (find-files "include/configs" "^ts[0-9]{4}\\.h$")
+                    ;; Default to boot a standard zImage instead of a uImage.
+                    (("/boot/uImage")
+                     "/boot/zImage")
+                    (("uimage")
+                     "zimage")
+                    (("bootm \\$\\{loadaddr}")
+                     "bootz ${loadaddr}")
+                    ;; This reference DTB is not available in mainline.
+                    (("ts7970-revf.dtb")
+                     "ts7970.dtb")
+                    ;; Enable support for DISTRO_DEFAULTS, which enables to
+                    ;; use 'sysboot' to boot Guix System.  Also enable
+                    ;; "standard" boot commands for dealing with discovery and
+                    ;; booting of syslinux configurations (extlinux.conf).
+
+                    ;; Disable the stock CONFIG_BOOTCOMMAND to avoid a
+                    ;; redefinition error.
+                    (("CONFIG_BOOTCOMMAND")
+                     "CONFIG_BOOTCOMMAND_DISABLED")
+                    (("CONFIG_BOOTDELAY")
+                     "CONFIG_BOOTDELAY_DISABLED")
+                    ;; Inspired by include/configs/embestmx6boards.h
+                    (("#define CONFIG_EXTRA_ENV_SETTINGS.*" anchor)
+                     (string-append "\
+#include <config_distro_defaults.h>
+
+#define MEM_LAYOUT_ENV_SETTINGS    \\
+\t\"bootm_size=0x10000000\\0\"     \\
+\t\"kernel_addr_r=0x10800000\\0\"  \\
+\t\"fdt_addr_r=0x18000000\\0\"     \\
+\t\"scriptaddr=0x18100000\\0\"     \\
+\t\"pxefile_addr_r=0x18200000\\0\" \\
+\t\"ramdisk_addr_r=0x18300000\\0\"
+
+#define BOOT_TARGET_DEVICES(func)  \\
+\tfunc(MMC, mmc, 0)                \\
+\tfunc(MMC, mmc, 1)                \\
+\tfunc(SATA, sata, 0)              \\
+\tfunc(USB, usb, 0)                \\
+\tfunc(PXE, pxe, na)               \\
+\tfunc(DHCP, dhcp, na)
+
+#include <config_distro_bootcmd.h>
+
+" anchor
+
+;; Sadly, the user config CONFIG_DEFAULT_FDT_FILE did not exist in that older
+;; U-Boot.  A placeholder is added here, to be substituted in each TS U-Boot
+;; board package.
+"\
+\t\"fdtfile=DEFAULT_FDT_FILE\\0\" \\
+\tMEM_LAYOUT_ENV_SETTINGS \\
+\tBOOTENV \\\n")))))
+              (add-after 'unpack 'patch-for-reproducibility
+                (lambda _
+                  ;; Substitute dynamically computed timestamps with static
+                  ;; ones.
+                  (substitute* "Makefile"
+                    (("U_BOOT_DATE \"%b %d %C%y\"")
+                     "U_BOOT_DATE \"Jan 01 1969\"")
+                    (("U_BOOT_TIME \"%T\"")
+                     "U_BOOT_TIME \"00:00:00\""))))
+              (add-before 'build 'adjust-for-gcc10
+                (lambda _
+                  (copy-file "include/linux/compiler-gcc6.h"
+                             "include/linux/compiler-gcc10.h")
+                  (substitute* "arch/arm/Makefile"
+                    (("march=armv5")
+                     "march=armv5te"))))
+              (add-after 'install 'build+install-tools
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (apply invoke "make" "tools-all" make-flags)
+                  (install-file "tools/env/fw_printenv"
+                                (string-append #$output "/bin"))
+                  (symlink (string-append #$output "/bin/fw_printenv")
+                           (string-append #$output "/bin/fw_setenv"))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs u-boot)
+         (delete "dtc"))))))            ;otherwise the build fails
+
+;;; Note: the default cross-build of this package is currently broken on
+;;; master; the fix exists as commit 6454208222d6e7760daa964b590f35ea75ffe0e5
+;;; ("build: gnu-build-system: Remove source from native inputs.") on
+;;; core-updates.
+(define-public u-boot-ts7970-q-2g-1000mhz-c
+  (let ((base
+         (make-u-boot-package "ts7970-q-2g-1000mhz-c" "arm-linux-gnueabihf"
+                              #:u-boot u-boot-ts-mx6
+                              #:append-description
+                              "This U-Boot variant is for the Technologic
+Systems TS-7970 revision C board, which includes a quad core Freescale i.MX6
+CPU and 2 GiB of RAM clocked at 1000MHz.  The binary U-Boot image to flash is
+the @file{libexec/u-boot.imx} file.  It can be used with the @file{zImage} and
+the @file{imx6q-ts7970.dtb} files provided by the
+@code{linux-libre-arm-generic} image.
+
+To flash this bootloader, write it to an SD card, then using the U-Boot serial
+console:
+@example
+mmc dev 0
+load mmc 0:1 ${loadaddr} /u-boot.imx
+sf probe
+sf erase 0 0x80000
+sf write ${loadaddr} 0x400 $filesize
+@end example
+
+The factory values of U-Boot must also be reset so that it boots using a
+zImage instead of the default uImage:
+@example
+run clearenv
+reset
+@end example
+
+For more information, refer to
+@url{https://docs.embeddedts.com/TS-7970#Update_U-Boot}.")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'patch-u-boot 'set-default-fdt-file
+                (lambda _
+                  (substitute* "include/configs/ts7970.h"
+                    (("DEFAULT_FDT_FILE")
+                     "imx6q-ts7970.dtb")))))))))))
+
 (define-public vboot-utils
   (package
     (name "vboot-utils")
