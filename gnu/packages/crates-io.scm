@@ -17169,7 +17169,7 @@ diff.")
 (define-public rust-digest-0.10
   (package
     (name "rust-digest")
-    (version "0.10.1")
+    (version "0.10.6")
     (source
      (origin
        (method url-fetch)
@@ -17178,7 +17178,7 @@ diff.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16wpqnwlzx0lbnwccwikns7dq8fblcc6kma2l7xz8anlh5hdd5xn"))))
+         "0vz74785s96g727vg37iwkjvbkcfzp093j49ihhyf8sh9s7kfs41"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
