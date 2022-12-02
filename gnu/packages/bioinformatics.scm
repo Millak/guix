@@ -914,11 +914,12 @@ servers supporting the protocol.")
               (sha256
                (base32
                 "18rhzk08d3rpxhi5xh6pqg64x6v5q3daw6y3v54k85v4swncjrwj"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:modules ((srfi srfi-26)
                   (guix build utils)
-                  (guix build python-build-system))
+                  (guix build python-build-system)
+                  (guix build pyproject-build-system))
        ;; See https://github.com/daler/pybedtools/issues/192
        #:phases
        (modify-phases %standard-phases
@@ -978,7 +979,7 @@ which are widely used for genomic interval manipulation or \"genome algebra\".
 pybedtools extends BEDTools by offering feature-level manipulations from with
 Python.")
     ;; pypi lists GPLv2 in the PKG-INFO and website, but was relicensed in
-    ;; version 0.9.0 and the LICENSE.txt is consistant with the source code.
+    ;; version 0.9.0 and the LICENSE.txt is consistent with the source code.
     ;;
     ;; pybedtools/include/gzstream.cpp and pybedtools/include/gzstream.h are
     ;; licensed lgpl2.1+
