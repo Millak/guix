@@ -49487,8 +49487,37 @@ sub-processes using a fork-like interface.")
         (base32
          "1n3iw9kaq70dw1rvvma0gjwydbj0f2mvvqvrva69f5cl6yv1dnd0"))))))
 
+(define-public rust-rkyv-0.7
+  (package
+    (name "rust-rkyv")
+    (version "0.7.39")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rkyv" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "05gdspzw03hq6l58si4ixfj5xd27ljw6fiqksggnvn87bd4b7hnf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-bytecheck" ,rust-bytecheck-0.6)
+                       ("rust-hashbrown" ,rust-hashbrown-0.12)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-ptr-meta" ,rust-ptr-meta-0.1)
+                       ("rust-rend" ,rust-rend-0.3)
+                       ("rust-rkyv-derive" ,rust-rkyv-derive-0.7)
+                       ("rust-seahash" ,rust-seahash-4)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-tinyvec" ,rust-tinyvec-1)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/rkyv/rkyv")
+    (synopsis "Zero-copy deserialization framework for Rust")
+    (description "Rkyv is a zero-copy deserialization framework for Rust.")
+    (license license:expat)))
+
 (define-public rust-rkyv-0.6
   (package
+    (inherit rust-rkyv-0.7)
     (name "rust-rkyv")
     (version "0.6.7")
     (source
@@ -49498,7 +49527,6 @@ sub-processes using a fork-like interface.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "01wsn0i8gsw958j892w8i4fyzjdsyhrh7c5zajig049kbqz5n4yb"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -49506,14 +49534,35 @@ sub-processes using a fork-like interface.")
         ("rust-memoffset" ,rust-memoffset-0.6)
         ("rust-ptr-meta" ,rust-ptr-meta-0.1)
         ("rust-rkyv-derive" ,rust-rkyv-derive-0.6)
-        ("rust-seahash" ,rust-seahash-4))))
+        ("rust-seahash" ,rust-seahash-4))))))
+
+
+(define-public rust-rkyv-derive-0.7
+  (package
+    (name "rust-rkyv-derive")
+    (version "0.7.39")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rkyv_derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1i1lmir3lm8zj8k1an7j2rchv1admqhysh6r6bfkcgmmi3fdmbkf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(;#:skip-build? #t
+       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/rkyv/rkyv")
-    (synopsis "Zero-copy deserialization framework for Rust")
-    (description "Rkyv is a zero-copy deserialization framework for Rust.")
+    (synopsis "Derive macro for zero-copy deserialization framework")
+    (description "This package provides a Derive macro for the rkyv
+deserialization framework.")
     (license license:expat)))
 
 (define-public rust-rkyv-derive-0.6
   (package
+    (inherit rust-rkyv-derive-0.7)
     (name "rust-rkyv-derive")
     (version "0.6.7")
     (source
@@ -49523,18 +49572,12 @@ sub-processes using a fork-like interface.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1mc7rnps41gdywahsffqlypsp9jqmp0r6hlh2nxm31bddfgli3xs"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/rkyv/rkyv")
-    (synopsis "Derive macro for zero-copy deserialization framework")
-    (description "This package provides a Derive macro for the rkyv
-deserialization framework.")
-    (license license:expat)))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-ryu-1
   (package
