@@ -54760,6 +54760,57 @@ maximal amount of configuration possible intended.")
      "An RSpec inspired minimal testing framework for Rust.")
     (license license:expat)))
 
+(define-public rust-speedy-0.8
+  (package
+    (name "rust-speedy")
+    (version "0.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "speedy" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02crzzdlaadz2ya2ij86wamsixbklhp6lbbnji6wz46rkdhqdmip"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-chrono" ,rust-chrono-0.4)
+                       ("rust-glam" ,rust-glam-0.17)
+                       ("rust-indexmap" ,rust-indexmap-1)
+                       ("rust-memoffset" ,rust-memoffset-0.7)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-smallvec" ,rust-smallvec-1)
+                       ("rust-speedy-derive" ,rust-speedy-derive-0.8)
+                       ("rust-uuid" ,rust-uuid-1))))
+    (home-page "https://github.com/koute/speedy")
+    (synopsis "Binary serialization framework")
+    (description
+     "This package provides a fast binary serialization framework for Rust.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-speedy-derive-0.8
+  (package
+    (name "rust-speedy-derive")
+    (version "0.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "speedy-derive" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xx4v0h2i6ncnvi7v5y5l44xh12v4pjfkakahk6f27c0c084lazb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/koute/speedy")
+    (synopsis "Binary serialization framework")
+    (description
+     "This package provides a fast binary serialization framework,
+@code{#[derive(Readable, Writable)]} support")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-spin-0.9
   (package
     (name "rust-spin")
