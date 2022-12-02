@@ -326,9 +326,7 @@
   (origin
     (method git-fetch)
     (uri (git-reference (url "https://github.com/Eloston/ungoogled-chromium")
-                        ;; XXX: Use a raw commit because it has not been
-                        ;; tagged yet.
-                        (commit "352a8844b01a05a786ba76da599d106487f1533f")))
+                        (commit %ungoogled-revision)))
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
