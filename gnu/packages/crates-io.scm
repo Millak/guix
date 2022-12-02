@@ -8501,33 +8501,10 @@ in a byte slice, fast.")
         ("rust-quickcheck" ,rust-quickcheck-0.6)
         ("rust-rand" ,rust-rand-0.4))))))
 
-(define-public rust-bytemuck-1.5
-  (package
-    (name "rust-bytemuck")
-    (version "1.5.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "bytemuck" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "18355qn3r9yp7ibg00r688sjx58g2qsjylwyq15w5b41b46asjss"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:cargo-inputs
-       (("rust-bytemuck-derive" ,rust-bytemuck-derive-1))))
-    (home-page "https://github.com/Lokathor/bytemuck")
-    (synopsis "Crate for mucking around with piles of bytes")
-    (description
-     "This package provides a crate for mucking around with piles of bytes.")
-    (license license:zlib)))
-
 (define-public rust-bytemuck-1
   (package
     (name "rust-bytemuck")
-    (version "1.4.0")
+    (version "1.12.3")
     (source
       (origin
         (method url-fetch)
@@ -8536,7 +8513,7 @@ in a byte slice, fast.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "071043n73hwi55z9c55ga4v52v8a7ri56gqja8r98clkdyxns14j"))))
+          "0zwlaqkrp7r7bnl2n40x9ncpspb93d8xcckar61f54nal7csi8xa"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -24048,7 +24025,7 @@ libcurl, which is intended to be used with the @code{git2} crate.")
      `(#:skip-build? #t
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.5)
-        ("rust-bytemuck" ,rust-bytemuck-1.5)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
@@ -24076,7 +24053,7 @@ graphics.")
      `(#:skip-build? #t  ; TODO: we need a more recent criterion
        #:cargo-inputs
        (("rust-approx" ,rust-approx-0.4)
-        ("rust-bytemuck" ,rust-bytemuck-1.5)
+        ("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
@@ -24103,7 +24080,7 @@ graphics.")
     (arguments
      `(#:skip-build? #t  ; TODO: we need a more recent criterion
        #:cargo-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1.5)
+       (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
@@ -24130,7 +24107,7 @@ graphics.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1.5)
+       (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
@@ -24161,7 +24138,7 @@ graphics.")
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bytemuck" ,rust-bytemuck-1.5)
+       (("rust-bytemuck" ,rust-bytemuck-1)
         ("rust-mint" ,rust-mint-0.5)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.7)
@@ -34317,7 +34294,7 @@ transformations and statically-sized or dynamically-sized matrices.")
         (("rust-abomonation" ,rust-abomonation-0.7)
          ("rust-alga" ,rust-alga-0.9)
          ("rust-approx" ,rust-approx-0.4)
-         ("rust-bytemuck" ,rust-bytemuck-1.5)
+         ("rust-bytemuck" ,rust-bytemuck-1)
          ("rust-glam" ,rust-glam-0.13)
          ("rust-matrixcompare-core" ,rust-matrixcompare-core-0.1)
          ("rust-matrixmultiply" ,rust-matrixmultiply-0.3)
