@@ -51343,14 +51343,14 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.133")
+    (version "1.0.148")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "16lq33l09nkm0hxdhfjjmh3yjv83rrcqw9lbxb8y4q3va5km0mlp"))))
+        (base32 "1p62a9n1527bv3k0fmjgny1ps12mr90v3qbn0rnis6d09fxn8gz5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -51698,14 +51698,14 @@ TOML/JSON/MessagePack strings and serializable values.")
 (define-public rust-serde-derive-1
   (package
     (name "rust-serde-derive")
-    (version "1.0.133")
+    (version "1.0.148")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde-derive" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0dym0l8a0pch0mkqnhrf89n4wngzwf0d1z88hb8dhs456acic87d"))))
+        (base32 "031cp7vd2zq479zjrzpwpfzhphilgng30dv1pyx22dd5b9194m55"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
