@@ -1354,14 +1354,15 @@ visual effects work for film.")
      `((upstream-name . "OpenSceneGraph")))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; no test target available
-       ;; Without this flag, 'rd' will be added to the name of the
-       ;; library binaries and break linking with other programs.
-       #:build-type "Release"
-       #:configure-flags
-       (list (string-append "-DCMAKE_INSTALL_RPATH="
-                            (assoc-ref %outputs "out") "/lib:"
-                            (assoc-ref %outputs "out") "/lib64"))))
+     (list
+      #:tests? #f                      ; no test target available
+      ;; Without this flag, 'rd' will be added to the name of the
+      ;; library binaries and break linking with other programs.
+      #:build-type "Release"
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_RPATH="
+                             #$output "/lib:"
+                             #$output "/lib64"))))
     (native-inputs
      (list pkg-config unzip))
     (inputs
