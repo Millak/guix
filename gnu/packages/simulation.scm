@@ -286,6 +286,11 @@ Google's protocol buffers for the environmental perception of automated driving
 functions in virtual scenarios.")
     (license license:mpl2.0)))
 
+(define-public python-open-simulation-interface
+  (package/inherit open-simulation-interface
+    (build-system python-build-system)
+    (arguments '())))
+
 (define-public python-fenics-dijitso
   (package
     (name "python-fenics-dijitso")
