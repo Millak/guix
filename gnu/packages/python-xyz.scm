@@ -193,6 +193,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libevent)
@@ -14498,6 +14499,46 @@ writer: an ini file round tripper.  Its main feature is that it is very easy to
 use, with a straightforward programmer’s interface and a simple syntax for
 config files.")
     (home-page "https://github.com/DiffSK/configobj")
+    (license license:bsd-3)))
+
+(define-public python-omegaconf
+  (package
+    (name "python-omegaconf")
+    (version "2.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/omry/omegaconf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet #~(begin
+                           (delete-file-recursively "build_helpers/bin")
+                           (substitute* "build_helpers/build_helpers.py"
+                             (("java") "antlr4")
+                             (("\"-jar\",") "")
+                             (("str\\(build_dir / \"bin\" / \"antlr.*\"\\),") ""))))
+              (sha256
+               (base32
+                "00rw1rkjycn0jdg3jmar6jdxb1pcb21jclm5g1921s9z8f5ii5dh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   (substitute* "requirements/base.txt"
+                     (("antlr4-python3-runtime==")
+                      "antlr4-python3-runtime>=")))))))
+    (propagated-inputs (list java-antlr4-runtime-python
+                             python-pydevd
+                             python-pyyaml))
+    (native-inputs (list icedtea antlr4 python-pytest python-pytest-mock))
+    (home-page "https://github.com/omry/omegaconf")
+    (synopsis "Flexible configuration system")
+    (description "OmegaConf is a hierarchical configuration system and
+supports merging configurations from multiple sources.  It provides a
+consistent API regardless of how the configuration was created.")
     (license license:bsd-3)))
 
 (define-public python-configargparse
