@@ -56963,7 +56963,7 @@ interface")
 (define-public rust-syn-1
   (package
     (name "rust-syn")
-    (version "1.0.99")
+    (version "1.0.105")
     (source
      (origin
        (method url-fetch)
@@ -56971,7 +56971,7 @@ interface")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "04xba78p559nl737llv7nqcwm723dp6ah5bbp0h5w1amqrpfznsq"))))
+         "0279ivl07g0y5fs5bwmglhkdvi99ypcm36yb774f8bbh8lyv9fb0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
