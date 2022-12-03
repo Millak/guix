@@ -1088,8 +1088,10 @@ development.")
            libpng
            libtiff
            libwebp
+           lz4
            netcdf
            openssl
+           openjpeg
            pcre2
            postgresql ; libpq
            proj
