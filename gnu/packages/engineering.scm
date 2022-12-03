@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -68,6 +68,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -2350,6 +2351,38 @@ well as conversion and validation tools for input and output data.  The
 specification can be downloaded at @url{http://3mf.io/specification/}.")
     (home-page "https://3mf.io/")
     (license license:bsd-2)))
+
+(define-public python-pyvisa
+  (package
+    (name "python-pyvisa")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PyVISA" version))
+              (sha256
+               (base32
+                "1iprr3h6d4w6v8ksgqpkgg545sai7i8hi5a5an394p26b25h1yl9"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Delete bundled python-prettytable.
+                          (delete-file-recursively "pyvisa/thirdparty")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'use-system-prettytable
+                          (lambda _
+                            (substitute* "pyvisa/shell.py"
+                              (("from .thirdparty import prettytable")
+                               "import prettytable")))))))
+    (native-inputs (list python-pytest-7.1))
+    (propagated-inputs (list python-dataclasses python-prettytable
+                             python-typing-extensions))
+    (home-page "https://pyvisa.readthedocs.io/en/latest/")
+    (synopsis "Python binding for the VISA library")
+    (description "PyVISA is a Python package for support of the
+@acronym{VISA, Virtual Instrument Software Architecture}, in order to control
+measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
+    (license license:expat)))
 
 (define-public openscad
   (package
