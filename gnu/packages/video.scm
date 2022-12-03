@@ -167,6 +167,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -2443,6 +2444,38 @@ To load this plugin, specify the following option when starting mpv:
               (sha256
                (base32
                 "1x12f2bd4jqd532rnixmwvcx8d29yxiacpcxqqh86qczc49la8gm"))))))
+
+(define-public orf-dl
+  (let ((commit "2dbbe7ef4e0efe0f3c1d59c503108e22d9065999")
+        (revision "1"))
+    (package
+      (name "orf-dl")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tpoechtrager/orf_dl")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1w413miy01cm7rzb5c6wwfdnc2sqv87cvxwikafgrkswpimvdjsk"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan #~`(("orf_dl.php" "bin/orf-dl"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-source
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "orf_dl.php"
+                       (("ffmpeg")
+                        (search-input-file inputs "bin/ffmpeg"))))))))
+      (inputs (list php ffmpeg))
+      (home-page "https://github.com/tpoechtrager/orf_dl")
+      (synopsis "Download videos from tvthek.orf.at")
+      (description "This package provides a PHP-based command line application
+to download videos from Austria's national television broadcaster.")
+      (license license:gpl2+))))
 
 (define-public youtube-dl
   (package
