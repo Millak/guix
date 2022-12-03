@@ -254,6 +254,38 @@ problems for efficient solution on parallel systems.")
     (license license:gpl3+)
     (home-page "https://openfoam.org")))
 
+(define-public open-simulation-interface
+  (package
+    (name "open-simulation-interface")
+    (version "3.5.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/"
+                                        "OpenSimulationInterface/"
+                                        "open-simulation-interface"))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "09vclrvsawx608kk0vnzywr71xn11qzwxzh2j508zjfn0kvhyx7q"))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f         ; tests are for the python package
+                     #:phases
+                     #~(modify-phases %standard-phases
+                         (add-after 'unpack 'fix-cmake
+                           (lambda _
+                             (substitute* "CMakeLists.txt"
+                               (("-targets\\.cmake") "_targets.cmake")))))))
+    (native-inputs (list protobuf))
+    (home-page
+     "https://github.com/OpenSimulationInterface/open-simulation-interface")
+    (synopsis "Generic interface for environmental perception")
+    (description "The Open Simulation Interface is a generic interface based on
+Google's protocol buffers for the environmental perception of automated driving
+functions in virtual scenarios.")
+    (license license:mpl2.0)))
+
 (define-public python-fenics-dijitso
   (package
     (name "python-fenics-dijitso")
