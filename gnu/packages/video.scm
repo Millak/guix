@@ -4545,6 +4545,39 @@ of modern, widely supported codecs.")
     ;; Combination under GPLv2.  See LICENSE.
     (license license:gpl2)))
 
+(define-public h264bitstream
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight-qt
+  (let ((commit "34f3c58afa3c47b6cf0a49308a68cbf89c5e0bff")
+        (revision "1"))
+    (package
+      (name "h264bitstream")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/aizvorski/h264bitstream")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0rrhzckz2a89q0chw2bfl4g89yiv9a0dcqcj80lcpdr3a1ix8q85"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'install 'fix-include-bs-h
+                            (lambda _
+                              (symlink (string-append #$output
+                                        "/include/h264bitstream/bs.h")
+                                       (string-append #$output "/include/bs.h")))))))
+      (native-inputs (list autoconf automake libtool pkg-config))
+      (inputs (list ffmpeg))
+      (synopsis "Library to read and write H.264 video bitstreams")
+      (description
+       "This package provides the GameStream code shared between Moonlight clients.")
+      (home-page "https://github.com/aizvorski/h264bitstream")
+      (license license:lgpl2.1+))))
+
 (define-public intel-vaapi-driver
   (package
     (name "intel-vaapi-driver")
