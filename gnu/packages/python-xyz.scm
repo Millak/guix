@@ -25544,7 +25544,7 @@ scripts to load entry points more quickly.")
 (define-public python-funcparserlib
   (package
     (name "python-funcparserlib")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         ;; Source tarball on PyPi lacks tests.
@@ -25554,7 +25554,7 @@ scripts to load entry points more quickly.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "00pswdys5c4hpqpvfcy5zqv30gyjvjvagi12811jizw57hxrm1cs"))))
+         (base32 "0dw3i4fyf3j9h1l7xfgs99fc2w2axk6xqk0sdag43k444ss4hkrc"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases
