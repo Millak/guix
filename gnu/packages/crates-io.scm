@@ -51708,12 +51708,11 @@ TOML/JSON/MessagePack strings and serializable values.")
         (base32 "0dym0l8a0pch0mkqnhrf89n4wngzwf0d1z88hb8dhs456acic87d"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:skip-build? #t
+       #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))
-       #:cargo-development-inputs
-       (("rust-serde" ,rust-serde-1))))
+        ("rust-syn" ,rust-syn-1))))
     (home-page "https://serde.rs")
     (synopsis
      "Macros 1.1 implementation of #[derive(Serialize, Deserialize)]")
