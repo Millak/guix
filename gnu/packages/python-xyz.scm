@@ -16146,48 +16146,31 @@ ISO 8859, etc.).")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.12.1")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "0kc7ncv0lr3spni29i9g8nszyr4xinswqi2zzs6v8kqqi593pvyj"))))
-    (build-system python-build-system)
+        (base32 "026wq2p7h1dmg2ldwhxiv28i5qld0llhnak06dxp4rdrkpsqg3v9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-and-qpa
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                      ;; These tests try to download online data.
-                      "not test_PolyLineROI"
-                      " and not test_getArrayRegion_axisorder"
-                      " and not test_getArrayRegion"
-                      " and not test_PlotCurveItem"
-                      " and not test_NonUniformImage_colormap"
-                      " and not test_NonUniformImage_lut"
-                      " and not test_ImageItem_axisorder"
-                      " and not test_ImageItem"
-                      ;; The test_reload test fails and suggests adding
-                      ;; "--assert=plain" to the pytest command, but it
-                      ;; doesn't solve the failure.
-                      " and not test_reload")))))))
+     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
+     ;; but it still doesn't pass.
+     (list #:test-flags #~'("-k" "not test_reload")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-qpa
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-xdist))
+     (list python-pytest-7.1 python-pytest-cov python-pytest-xdist))
     (inputs
      (list qtbase-5))
     (propagated-inputs
      (list python-h5py python-numpy python-pyopengl python-scipy
            python-pyqt-without-qtwebkit))
-    (home-page "http://www.pyqtgraph.org")
+    (home-page "https://www.pyqtgraph.org")
     (synopsis "Scientific graphics and GUI library for Python")
     (description
      "PyQtGraph is a Pure-python graphics library for PyQt5, PyQt6, PySide2
