@@ -64,6 +64,7 @@
   #:use-module (gnu packages high-availability)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lua)
   #:use-module (gnu packages lxqt)
   #:use-module (gnu packages mtools)
   #:use-module (gnu packages package-management)
@@ -83,6 +84,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages security-token)
+  #:use-module (gnu packages readline)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages virtualization)
@@ -1387,4 +1389,52 @@ confused with the @code{cpuid} command line utility from package @code{cpuid}.")
      "This package provides library for LAN eXtensions for Instrumentation
 based on the LXI Consortium standard which defines the communication protocols
 for modern instrumentation and data acquision systems using Ethernet.")
+    (license license:bsd-3)))
+
+(define-public lxi-tools
+  (package
+    (name "lxi-tools")
+    (version "2.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lxi-tools/lxi-tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1xc99xhca386az73rpsrf3z0j7y0hrv0xcwj1dr2ahr7lhnjznqp"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            (lambda _
+              (substitute* "build-aux/meson/postinstall.py"
+                (("gtk-update-icon-cache") (which "true"))
+                (("update-desktop-database") (which "true"))))))))
+    (native-inputs
+     (list bash-completion
+           cmake
+           (list glib "bin")
+           pkg-config
+           python
+           readline))
+    (inputs
+     (list glib
+           gtk
+           gtksourceview
+           json-glib
+           libadwaita
+           liblxi
+           lua))
+    (home-page "https://lxi-tools.github.io/")
+    (synopsis "LAN eXtensions for Instrumentation tools")
+    (description
+     "This package provides tools for LAN eXtensions for Instrumentation based
+on the LXI Consortium standard which defines the communication protocols for
+modern instrumentation and data acquision systems using Ethernet.")
     (license license:bsd-3)))
