@@ -936,6 +936,36 @@ forward model is implemented in @code{fenics} or
 @url{https://firedrakeproject.org,firedrake}.")
     (license license:lgpl3)))
 
+(define %commonroad-dont-install-license-at-root
+  #~(substitute* "setup.py"
+      (("data_files=\\[\\('.', \\['LICENSE.txt'\\]\\)\\],")
+       "")))
+
+(define-public python-commonroad-vehicle-models
+  (package
+    (name "python-commonroad-vehicle-models")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "commonroad-vehicle-models" version))
+              (sha256
+               (base32
+                "13jg0cys7y4n7rg548w6mxk9g10gd5qxmj4ynrlriczpffqy6kc7"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup.py
+                 (lambda _
+                   #$%commonroad-dont-install-license-at-root)))))
+    (propagated-inputs (list python-numpy python-omegaconf))
+    (home-page "https://commonroad.in.tum.de/")
+    (synopsis "CommonRoad vehicle models")
+    (description "This package provides vehicle models used in CommonRoad
+benchmarks.  Varying abstraction levels are used ranging from kinematic single
+track models to multi-body models.")
+    (license license:bsd-3)))
+
 (define-public sumo
   (package
     (name "sumo")
