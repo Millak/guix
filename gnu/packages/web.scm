@@ -7912,7 +7912,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.5")
+    (version "1.8.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7920,7 +7920,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "0p3wr3ic4c50wxi7sr1hi8m8izmmjnazcmyqvxaf56yx58b3gpxv"))))
+                "1j0bgnixffz2lv5xgp5c88hl146c1vyk1988gyd70mhgyl9700jy"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
