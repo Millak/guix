@@ -1351,8 +1351,10 @@ visual effects work for film.")
         (base32 "00i14h82qg3xzcyd8p02wrarnmby3aiwmz0z43l50byc9f8i05n1"))
        (file-name (git-file-name name version))))
     (properties
-     `((upstream-name . "OpenSceneGraph")))
+     `((upstream-name . "OpenSceneGraph")
+       (output-synopsis "pluginlib" "Plugins as shared libraries")))
     (build-system cmake-build-system)
+    (outputs (list "out" "pluginlib"))
     (arguments
      (list
       #:tests? #f                      ; no test target available
@@ -1362,7 +1364,40 @@ visual effects work for film.")
       #:configure-flags
       #~(list (string-append "-DCMAKE_INSTALL_RPATH="
                              #$output "/lib:"
-                             #$output "/lib64"))))
+                             #$output "/lib64"))
+      #:modules `((guix build cmake-build-system)
+                  (guix build utils)
+                  (ice-9 regex))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'copy-plugins
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (pluginlib (assoc-ref outputs "pluginlib")))
+                (mkdir-p (string-append pluginlib "/lib/pkgconfig"))
+                (with-directory-excursion (string-append out "/lib/osgPlugins-"
+                                                         #$version)
+                  (for-each
+                   (lambda (lib)
+                     (let ((blib (basename lib))
+                           (m (string-match "([^/]*)\\.so$" lib)))
+                       (symlink (canonicalize-path lib)
+                                (string-append pluginlib "/lib/lib" blib))
+                       (call-with-output-file (string-append
+                                               pluginlib
+                                               "/lib/pkgconfig/"
+                                               (match:substring m 1) ".pc")
+                         (lambda (port)
+                           (format port "libdir=~a/lib~%" pluginlib)
+                           (newline port)
+                           (format port "Name: ~a~%" (match:substring m 1))
+                           (format port "Version: ~a~%" #$version)
+                           (display "Description: A plugin for openscenegraph\n"
+                                    port)
+                           (display "Requires: openscenegraph\n" port)
+                           (format port "Libs: -L${libdir} -l~a~%"
+                                   (match:substring m 1))))))
+                   (find-files "." "\\.so")))))))))
     (native-inputs
      (list pkg-config unzip))
     (inputs
