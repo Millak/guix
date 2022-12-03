@@ -40,6 +40,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
@@ -47,6 +48,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
@@ -964,6 +966,45 @@ forward model is implemented in @code{fenics} or
     (description "This package provides vehicle models used in CommonRoad
 benchmarks.  Varying abstraction levels are used ranging from kinematic single
 track models to multi-body models.")
+    (license license:bsd-3)))
+
+(define-public python-commonroad-io
+  (package
+    (name "python-commonroad-io")
+    (version "2022.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "commonroad-io" version))
+              (sha256
+               (base32
+                "1cj9zj567mca8xb8sx9h3nnl2cccv6vh8h73imgpq61cimk9mvas"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup.py
+                 (lambda _
+                   #$%commonroad-dont-install-license-at-root)))))
+    (propagated-inputs (list python-commonroad-vehicle-models
+                             python-iso3166
+                             python-lxml
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-omegaconf
+                             python-pillow
+                             python-protobuf
+                             python-rtree
+                             python-scipy
+                             python-shapely
+                             python-tqdm))
+    (native-inputs (list python-lxml python-pytest))
+    (home-page "https://commonroad.in.tum.de/")
+    (synopsis "Read, write, and visualize CommonRoad scenarios.")
+    (description "This package provides methods to read, write, and visualize
+CommonRoad scenarios and planning problems.  It can be used as a framework for
+implementing motion planning algorithms to solve CommonRoad Benchmarks
+and is the basis for other tools of the CommonRoad Framework.")
     (license license:bsd-3)))
 
 (define-public sumo
