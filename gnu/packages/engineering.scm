@@ -2384,6 +2384,42 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
 measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
     (license license:expat)))
 
+(define-public python-scikit-rf
+  (package
+    (name "python-scikit-rf")
+    (version "0.24.1")
+    (source (origin
+              (method git-fetch) ;PyPI misses some files required for tests
+              (uri (git-reference
+                    (url "https://github.com/scikit-rf/scikit-rf")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1shp8q8324dkwf448mv9zzi7krx882p122ma4fk015qz91sg4wff"))
+              (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-openpyxl
+                             python-pandas
+                             python-pyqt
+                             python-pyqtgraph
+                             python-qtpy
+                             python-scipy))
+    (native-inputs (list python-coverage
+                         python-flake8
+                         python-nbval
+                         python-networkx
+                         python-pytest-7.1
+                         python-pytest-cov
+                         python-pyvisa))
+    (home-page "https://scikit-rf.org/")
+    (synopsis "Radio frequency and Microwave Engineering Scikit")
+    (description "Scikit-rf, or @code{skrf}, is a Python package for RF and
+Microwave engineering.")
+    (license license:bsd-3)))
+
 (define-public openscad
   (package
     (name "openscad")
