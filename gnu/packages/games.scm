@@ -6230,6 +6230,50 @@ application that locks the keyboard and mouse and instead displays bright
 colors, pictures, and sounds.")
     (license license:gpl3+)))
 
+(define-public moonlight-common
+  ;; Used as submodule in https://github.com/moonlight-stream/moonlight
+  (let ((commit "8c55c086d596607041e4394fb62a1bc800b7f37c")
+        (revision "1"))
+    (package
+      (name "moonlight-common")
+      (version (git-version "3.1.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url
+                       "https://github.com/moonlight-stream/moonlight-common-c")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0pqm0a2p2sqvazv5gak6gl7d405kaaq6r13l7yhycm0myayqavrp"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'use-system-enet-package
+                            (lambda _
+                              (substitute* "CMakeLists.txt"
+                                (("add_subdirectory\\(enet\\)")
+                                 ""))))
+                          (replace 'install
+                            (lambda* (#:key outputs source #:allow-other-keys)
+                              (let* ((include (string-append #$output
+                                                             "/include"))
+                                     (lib (string-append #$output "/lib")))
+                                (mkdir-p include)
+                                (mkdir-p lib)
+                                (install-file (string-append source
+                                               "/src/Limelight.h") include)
+                                (install-file "libmoonlight-common-c.so" lib)))))))
+      (native-inputs (list pkg-config))
+      (inputs (list enet-moonlight openssl qtbase-5))
+      (synopsis "GameStream protocol core implementation")
+      (description
+       "This package provides the GameStream core code for the protocol.")
+      (home-page "https://github.com/moonlight-stream/moonlight-common-c")
+      (license license:gpl3+))))
+
 (define-public mrrescue
   (package
     (name "mrrescue")
