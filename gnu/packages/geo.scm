@@ -65,6 +65,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -185,22 +186,38 @@ BUFR and WMO GTS abbreviated header formats.")
 (define-public cdo
   (package
     (name "cdo")
-    (version "2.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://code.mpimet.mpg.de/attachments/download/26823/cdo-"
-                     version ".tar.gz"))
-              (sha256
-               (base32
-                "1khdbd5cmnn7qm6hcqg4md5wbq14fs6brrns8b3g18diqgqvpvpd"))))
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://code.mpimet.mpg.de/attachments/download/27481/cdo-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1k18llghpf3jnjn0xcnhmbg7arb1fiy854qqn9m5c1abjin38wdq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--with-netcdf="
-                                  #$(this-package-input "netcdf")))))
+           #~(list (string-append "--with-curl="
+                                  #$(this-package-input "curl"))
+                   (string-append "--with-eccodes="
+                                  #$(this-package-input "eccodes"))
+                   (string-append "--with-fftw3="
+                                  #$(this-package-input "fftw"))
+                   (string-append "--with-hdf5="
+                                  #$(this-package-input "hdf5"))
+                   (string-append "--with-netcdf="
+                                  #$(this-package-input "netcdf"))
+                   (string-append "--with-proj="
+                                  #$(this-package-input "proj"))
+                   (string-append "--with-udunits2="
+                                  #$(this-package-input "udunits"))
+                   (string-append "--with-libxml2="
+                                  #$(this-package-input "libxml2")))
+           ;; Some tests can fail on machines with many threads.
+           #:parallel-tests? #f))
     (inputs
-     (list netcdf))
+     (list curl eccodes fftw hdf5 libxml2 netcdf proj udunits))
     (native-inputs
      (list pkg-config))
     (home-page "https://code.mpimet.mpg.de/projects/cdo")
