@@ -52,6 +52,10 @@
         (option '(#\t "type") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'type (string->symbol arg) result)))
+        (option '("list-types") #f #f
+                (lambda (opt name arg result)
+                  (display (string-join '("guile" "machine") "\n" 'suffix))
+                  (exit 0)))
         (option '("listen") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'listen arg result)))
@@ -70,6 +74,8 @@
   (display (G_ "Usage: guix repl [OPTIONS...] [-- FILE ARGS...]
 In the Guix execution environment, run FILE as a Guile script with
 command-line arguments ARGS.  If no FILE is given, start a Guile REPL.\n"))
+  (display (G_ "
+      --list-types       display REPL types and exit"))
   (display (G_ "
   -t, --type=TYPE        start a REPL of the given TYPE"))
   (display (G_ "

@@ -12031,6 +12031,10 @@ of Guix.
 The available options are as follows:
 
 @table @code
+@item --list-types
+Display the @var{TYPE} options for @command{guix repl --type=TYPE} and
+exit.
+
 @item --type=@var{type}
 @itemx -t @var{type}
 Start a REPL of the given @var{TYPE}, which can be one of the following:
