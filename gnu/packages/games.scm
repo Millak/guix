@@ -6230,6 +6230,67 @@ application that locks the keyboard and mouse and instead displays bright
 colors, pictures, and sounds.")
     (license license:gpl3+)))
 
+(define-public moonlight-qt
+  (package
+    (name "moonlight-qt")
+    (version "3.1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/moonlight-stream/moonlight-qt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02y2rbiiawhj1dvgxdaz8k9kpz6zkv20zsk17fbqj8259m3g5xr5"))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'configure
+                          (lambda* _
+                            (symlink (string-append #$(this-package-input
+                                                       "sdl2-gamecontrollerdb")
+                                                    "/share/sdl2/gamecontrollerdb.txt")
+                             "app/SDL_GameControllerDB/gamecontrollerdb.txt")
+                            ;; Unbundle libraries.
+                            (substitute* "moonlight-qt.pro"
+                              (("moonlight-common-c \\\\")
+                               "#moonlight-common-c \\")
+                              (("qmdnsengine \\\\")
+                               "#qmdnsengine \\")
+                              (("app \\\\")
+                               "app")
+                              (("app.depends")
+                               "INCLUDEPATH +=")
+                              (("h264bitstream \\\\")
+                               "#h264bitstream \\"))
+                            (invoke "qmake"
+                                    (string-append "PREFIX="
+                                                   #$output)))))))
+    (native-inputs (list pkg-config qttools-5))
+    (inputs (list ffmpeg
+                  h264bitstream
+                  libva
+                  libvdpau
+                  moonlight-common
+                  openssl
+                  opus
+                  qmdnsengine
+                  qtbase-5
+                  qtdeclarative-5
+                  qtquickcontrols2-5
+                  qtsvg-5
+                  sdl2
+                  sdl2-ttf
+                  sdl2-gamecontrollerdb))
+    (synopsis "GameStream client")
+    (description
+     "Moonlight is an implementation of NVIDIA's GameStream, as used by the
+NVIDIA Shield.")
+    (home-page "https://moonlight-stream.org")
+    (license license:gpl3+)))
+
 (define-public moonlight-common
   ;; Used as submodule in https://github.com/moonlight-stream/moonlight
   (let ((commit "8c55c086d596607041e4394fb62a1bc800b7f37c")
