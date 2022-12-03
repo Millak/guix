@@ -61957,6 +61957,27 @@ serializing Rust structures.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-toml-datetime-0.5
+  (package
+    (name "rust-toml-datetime")
+    (version "0.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "toml_datetime" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1zcjvygkix0hm7nv7i6ag4fd0l1pglga1wyq2l8zgy0fgpjm32w0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))
+    (home-page "https://github.com/toml-rs/toml")
+    (synopsis "TOML-compatible datetime type")
+    (description
+     "This package provides a TOML-compatible datetime type for Rust.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-edit-0.14
   (package
     (name "rust-toml-edit")
