@@ -2624,6 +2624,45 @@ library remains flexible, portable, and easily embeddable.")
     (home-page "http://enet.bespin.org")
     (license license:expat)))
 
+(define-public enet-moonlight
+  (let ((commit "4cde9cc3dcc5c30775a80da1de87f39f98672a31")
+        (revision "1"))
+    (package
+      (inherit enet)
+      (name "enet")
+      (version (git-version "1.3.17" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/cgutman/enet")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "07sr32jy989ja23fwg8bvrq2slgm7bhfw6v3xq7yczbw86c1dndv"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f ;no test suite
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'build-share-lib
+                            (lambda* _
+                              ;;  -DBUILD_SHARED_LIBS=ON not working
+                              (substitute* "CMakeLists.txt"
+                                (("STATIC")
+                                 "SHARED"))))
+                          (replace 'install
+                            (lambda* (#:key outputs source #:allow-other-keys)
+                              (let* ((include (string-append #$output
+                                                             "/include"))
+                                     (lib (string-append #$output "/lib")))
+                                (mkdir-p include)
+                                (mkdir-p lib)
+                                (copy-recursively (string-append source
+                                                                 "/include")
+                                                  include)
+                                (install-file "libenet.so" lib)))))))
+      (native-inputs (list pkg-config)))))
+
 (define-public sslh
   (package
     (name "sslh")
