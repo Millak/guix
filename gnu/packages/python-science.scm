@@ -2390,6 +2390,47 @@ fractional factorial methods.")
 NeuroML2 models.")
     (license license:lgpl3)))
 
+(define-public python-pynetdicom
+  (package
+    (name "python-pynetdicom")
+    (version "2.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pynetdicom" version))
+              (sha256
+               (base32
+                "0farmgviaarb3f4xn751card3v0lza57vwgl5azxxq65p7li44i3"))))
+    (build-system python-build-system)
+    (arguments
+     (list  #:phases #~(modify-phases %standard-phases
+                         (replace 'check
+                           (lambda* (#:key tests? #:allow-other-keys)
+                             (when tests?
+                               (invoke "pytest" "-vv" "-k"
+                                       ;; network tests, 2977/3283 pass
+                                       (string-append
+                                        " not TestFindSCP"
+                                        " and not TestQRGetServiceClass"
+                                        " and not TestQRMoveServiceClass"
+                                        " and not TestStoreSCP"
+                                        " and not test_ae.py"
+                                        " and not test_echoscp.py"
+                                        " and not test_qrscp_echo.py"
+                                        " and not test_storescp.py"
+                                        " and not test_pr_level_patient"
+                                        " and not test_pr_level_series"
+                                        " and not test_scp_cancelled"))))))))
+    (native-inputs (list python-pyfakefs python-pytest))
+    (propagated-inputs (list python-pydicom python-sqlalchemy))
+    (home-page "https://github.com/pydicom/pynetdicom")
+    (synopsis "Python implementation of the DICOM networking protocol")
+    (description
+     "@code{pynetdicom} is a Python package that implements the DICOM
+networking protocol.  Working with @code{pydicom}, it allows the easy creation
+of DICOM @acronym{SCUs,Service Class Users} and
+@acronym{SCPs,Service Class Providers}.")
+    (license license:expat)))
+
 (define-public python-libneuroml
   (package
     (name "python-libneuroml")
