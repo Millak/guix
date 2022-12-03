@@ -128,6 +128,30 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public libaec
+  (package
+    (name "libaec")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.dkrz.de/k202009/libaec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14myrmmiz9z6wgxqywf3a63cq514vrzsd6z4zvpwigvawlk30iip"))))
+    (build-system cmake-build-system)
+    (home-page "https://gitlab.dkrz.de/k202009/libaec")
+    (synopsis "Adaptive Entropy Coding library")
+    (description "Libaec provides fast lossless compression of 1 up to 32 bit
+wide signed or unsigned integers (samples).  The library achieves best results
+for low entropy data as often encountered in space imaging instrument data or
+numerical model output from weather or climate simulations.  While floating
+point representations are not directly supported, they can also be efficiently
+coded by grouping exponents and mantissa.")
+    (license license:bsd-2)))
+
 (define-public cdo
   (package
     (name "cdo")
