@@ -1676,3 +1676,38 @@ provides command line tools for Mbed OS to detect Mbed enabled devices
 connected by USB, checkout Mbed projects and perform builds amongst other
 operations.")
     (license license:asl2.0)))
+
+(define-public ts4900-utils
+  ;; There are no proper release nor tag; use the latest commit.
+  (let ((revision "0")
+        (commit "e10a12f8050d1d1229e711c7cfab8a0d5d93ee58"))
+    (package
+      (name "ts4900-utils")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/embeddedTS/ts4900-utils")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vr8i425qijbwgbc10av3wr35p3x11wy6y442w0ja0yny7si8wp8"))))
+      (build-system gnu-build-system)
+      (native-inputs (list autoconf automake))
+      (home-page "https://github.com/embeddedTS/ts4900-utils")
+      (synopsis "Utilities for the TS-4900 board family")
+      (description "This package contains utilities useful for boards of the
+TS-4900 family.  The included commands are:
+@itemize @code
+@item adc8390
+@item gpioctl
+@item isl12020rtc
+@item load_fpga
+@item nvramctl
+@item tshwctl
+@item tsmicroctl
+@item tsmicroupdate
+@item tssilomon
+@end itemize")
+      (license license:bsd-2))))
