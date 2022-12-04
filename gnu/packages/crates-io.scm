@@ -10322,6 +10322,28 @@ transfer coding.")
 usage.")
     (license license:asl2.0)))
 
+(define-public rust-ciborium-ll-0.2
+  (package
+    (name "rust-ciborium-ll")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ciborium-ll" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06ygqh33k3hp9r9mma43gf189b6cyq62clk65f4w1q54nni30c11"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs (("rust-hex" ,rust-hex-0.4))
+       #:cargo-inputs (("rust-ciborium-io" ,rust-ciborium-io-0.2)
+                       ("rust-half" ,rust-half-1))))
+    (home-page "https://github.com/enarx/ciborium")
+    (synopsis "Low-level CBOR codec primitives")
+    (description
+     "This package provides low-level primitives for parsing the CBOR codec.")
+    (license license:asl2.0)))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
