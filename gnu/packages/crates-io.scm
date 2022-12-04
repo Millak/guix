@@ -27443,28 +27443,28 @@ that efficiently appends and removes common indentation after every newline.")
 (define-public rust-indexmap-1
   (package
     (name "rust-indexmap")
-    (version "1.7.0")
+    (version "1.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "indexmap" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19b2zwfajhsfcgny0clv8y4jppy704znfhv8nv2dw9a18l2kcqxw"))))
+        (base32 "16dkr2h5p379jcr8rnb420396yvzid2myirc2w70zcf43yffg18q"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-autocfg" ,rust-autocfg-1)
-        ("rust-hashbrown" ,rust-hashbrown-0.11)
-        ("rust-rayon" ,rust-rayon-1)
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rustc-rayon" ,rust-rustc-rayon-0.4)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-fnv" ,rust-fnv-1)
         ("rust-fxhash" ,rust-fxhash-0.2)
-        ("rust-itertools" ,rust-itertools-0.9)
+        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-rand" ,rust-rand-0.7)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/bluss/indexmap")
     (synopsis "Hash table with consistent order and fast iteration")
