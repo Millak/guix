@@ -61817,8 +61817,40 @@ stream-based WebSocket implementation.")
     (description "Unix Domain sockets for Tokio.")
     (license license:expat)))
 
+(define-public rust-tokio-util-0.7
+  (package
+    (name "rust-tokio-util")
+    (version "0.7.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h67jb56bsxy4pi1a41pda8d52569ci5clvqv3c6cg9vy1sy1chb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-sink" ,rust-futures-sink-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-hashbrown" ,rust-hashbrown-0.12)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-slab" ,rust-slab-0.4)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://tokio.rs")
+    (synopsis "Additional utilities for working with Tokio")
+    (description
+     "This package provides additional utilities for working with Tokio.")
+    (license license:expat)))
+
 (define-public rust-tokio-util-0.6
   (package
+    (inherit rust-tokio-util-0.7)
     (name "rust-tokio-util")
     (version "0.6.4")
     (source
@@ -61828,7 +61860,6 @@ stream-based WebSocket implementation.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0agvfvvgh225vgb2z9w83lwqcqsy3pvkcbvnaz7m7rj6dg6facgc"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -61840,12 +61871,7 @@ stream-based WebSocket implementation.")
         ("rust-log" ,rust-log-0.4)
         ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
         ("rust-slab" ,rust-slab-0.4)
-        ("rust-tokio" ,rust-tokio-1))))
-    (home-page "https://tokio.rs")
-    (synopsis "Additional utilities for working with Tokio")
-    (description
-     "This package provides additional utilities for working with Tokio.")
-    (license license:expat)))
+        ("rust-tokio" ,rust-tokio-1))))))
 
 (define-public rust-tokio-util-0.4
   (package
