@@ -2759,7 +2759,12 @@ for xdg-desktop-portal that is using Qt/KF5.")
                   (string-append "execl(\"" sh "\", \"" sh "\"")))
                (substitute* "src/screencast/screencast.c"
                  (("execvp\\(\"sh")
-                  (string-append "execvp(\"" sh)))))))))
+                  (string-append "execvp(\"" sh))))))
+         (add-after 'install 'install-documentation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "../source/README.md"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/doc/" ,name)))))))
     (native-inputs
      (list cmake pkg-config))
     (inputs (list elogind
