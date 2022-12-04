@@ -10006,28 +10006,6 @@ macros.")
 clauses.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-chalk-ir-0.68
-  (package
-    (inherit rust-chalk-ir-0.75)
-    (name "rust-chalk-ir")
-    (version "0.68.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "chalk-ir" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0riyv4fjmxys8gsyrikn9in34cjcgwgj55qyaj9w9fld8kqxbmqr"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-bitflags" ,rust-bitflags-1)
-        ("rust-chalk-derive" ,rust-chalk-derive-0.68)
-        ("rust-lazy-static" ,rust-lazy-static-1))))))
-
 (define-public rust-chalk-recursive-0.75
   (package
     (name "rust-chalk-recursive")
