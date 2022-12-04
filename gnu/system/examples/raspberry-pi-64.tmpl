@@ -20,9 +20,6 @@
                      raspberry-pi
                      ssh)
 
-(define %my-public-key
-  (local-file (string-append (getenv "HOME") "/.ssh/id_ecdsa.pub")))
-
 (define-public raspberry-pi-64
   (operating-system
     (host-name "raspberrypi-guix")
@@ -70,9 +67,7 @@
                      (service ntp-service-type)
                      (service openssh-service-type
                               (openssh-configuration
-                               (x11-forwarding? #t)
-                               (authorized-keys
-                                `(("pi" ,%my-public-key)))))
+                               (x11-forwarding? #t)))
                      %base-services))
     (name-service-switch %mdns-host-lookup-nss)))
 
