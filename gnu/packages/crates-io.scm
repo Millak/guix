@@ -13644,18 +13644,17 @@ message passing.")
 (define-public rust-crossbeam-deque-0.8
   (package
     (name "rust-crossbeam-deque")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-deque" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ad995vzq74k7jd1pgn9zxbacyzj9ii6l0svhlb2dxzy8vxnxbwl"))))
+        (base32 "1z6ifz35lyk0mw818xcl3brgss2k8islhgdmfk9s5fwjnr982pki"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crossbeam-epoch" ,rust-crossbeam-epoch-0.9)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))))
