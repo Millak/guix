@@ -1417,10 +1417,10 @@ style API.")
              (substitute* "test/parsing/run_tests.sh"
                (("`which echo`") (which "echo"))))))))
     (home-page "https://lloyd.github.io/yajl/")
-    (synopsis "C library for parsing JSON")
+    (synopsis "C library for parsing and generating JSON")
     (description
-     "Yet Another JSON Library (YAJL) is a small event-driven (SAX-style) JSON
-parser written in ANSI C and a small validating JSON generator.")
+     "@acronym{YAJL, Yet Another JSON Library} is a small event-driven
+(SAX-style) JSON parser and validating generator written in ANSI C.")
     (license license:isc)))
 
 (define-public libyajl
