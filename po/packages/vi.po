@@ -1,23 +1,24 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2021 the authors of Guix (msgids) and the following authors (msgstr)
-# This file is distributed under the same license as the GNU guix package.
-# simmon <simmon@nplob.com>, 2021, 2022.
-# Kim InSoo <simmon@nplob.com>, 2022.
-# 김인수 <simmon@nplob.com>, 2022.
+# Vietnamese translation for guix.
+# Copyright © 2013 the authors of Guix (msgids) and the following authors (msgstr)
+# This file is distributed under the same license as the guix package.
+# Trần Ngọc Quân <vnwildman@gmail.com>, 2013.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: GNU guix\n"
+"Project-Id-Version: guix 0.5-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-11-25 07:19+0000\n"
-"Last-Translator: 김인수 <simmon@nplob.com>\n"
-"Language-Team: Korean <https://translate.fedoraproject.org/projects/guix/packages/ko/>\n"
-"Language: ko\n"
+"PO-Revision-Date: 2013-12-04 07:48+0700\n"
+"Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
+"Language-Team: Vietnamese <translation-team-vi@lists.sourceforge.net>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #: gnu/packages/abiword.scm:115
 msgid "Word processing program"
@@ -33,9 +34,6 @@ msgid ""
 "becoming a state of the art word processor, with lots of features useful for\n"
 "your daily work, personal needs, or for just some good old typing fun."
 msgstr ""
-"AbiWord는 워드프로세서용 프로그램입니다.\n"
-"이는 일상적인 작업, 개인적인 요구, 또는 오래된 입력방식을 즐기는 경우에 유용한 기능을 포함하고 있으며\n"
-"최신 유행의 워드프로세서로 빠르게 변화하고 있습니다."
 
 #: gnu/packages/aspell.scm:88 gnu/packages/libreoffice.scm:816
 msgid "Spell checker"
@@ -51,7 +49,7 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:148
 msgid "This package provides a dictionary for the GNU Aspell spell checker."
-msgstr "이 꾸러미는 GNU Aspell 맞춤법 검사기를 위한 사전을 제공합니다."
+msgstr ""
 
 #: gnu/packages/aspell.scm:461 gnu/packages/libreoffice.scm:866
 #: gnu/packages/libreoffice.scm:939
@@ -59,8 +57,6 @@ msgid ""
 "This package provides a dictionary for the Hunspell spell-checking\n"
 "library."
 msgstr ""
-"이 꾸러미는 Hunspell 맞춤법 검사를 위해 라이브러리를\n"
-"제공합니다."
 
 #: gnu/packages/aspell.scm:479
 msgid "Hunspell dictionary for English"
@@ -88,15 +84,13 @@ msgstr ""
 
 #: gnu/packages/aspell.scm:539
 msgid "Interactive spell-checking tool for Unix"
-msgstr "유닉스를 위한 대화형 맞춤법-점검용 도구"
+msgstr ""
 
 #: gnu/packages/aspell.scm:540
 msgid ""
 "Ispell is an interactive spell-checking tool supporting many\n"
 "European languages."
 msgstr ""
-"Ispell은 수많은 유럽 언어 지원하는 상호작용 맞춤법 검사용\n"
-"도구입니다."
 
 #: gnu/packages/audio.scm:202
 msgid "Embedded Audio Acceleration"
@@ -395,11 +389,11 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1339
 msgid "The SWH Plugins package for the LADSPA plugin system"
-msgstr "LADSPA 플러그인 시스템을 위한 SWH 플러그인 꾸러미"
+msgstr ""
 
 #: gnu/packages/audio.scm:1340
 msgid "This package provides Steve Harris's LADSPA plugins."
-msgstr "이 꾸러미는 스티브 해리스씨의 LADSPA 플러그인을 제공합니다."
+msgstr ""
 
 #: gnu/packages/audio.scm:1378
 msgid "SWH plugins in LV2 format"
@@ -589,7 +583,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:1993
 msgid "MPEG-4 and MPEG-2 AAC decoder"
-msgstr "MPEG-4와 MPEG-2 AAA 인코더"
+msgstr ""
 
 #: gnu/packages/audio.scm:1995
 msgid "FAAD2 is an MPEG-4 and MPEG-2 AAC decoder supporting LC, Main, LTP, SBR, -PS, and DAB+."
@@ -812,8 +806,6 @@ msgid ""
 "This package provides a python API to read and write MIDI\n"
 "files."
 msgstr ""
-"이 꾸러미는 파이썬 API를 미디 파일 읽기와 쓰기는데\n"
-"제공합니다."
 
 #: gnu/packages/audio.scm:2842
 msgid "Convert audio to multichannel MIDI"
@@ -864,19 +856,19 @@ msgstr ""
 
 #: gnu/packages/audio.scm:2981
 msgid "LV2 port of the mda Piano plugin"
-msgstr "mda Piano 플러그인의 LV2 포트"
+msgstr ""
 
 #: gnu/packages/audio.scm:2982
 msgid "An LV2 port of the mda Piano VSTi."
-msgstr "mda Piano VSTi의 LV2 포트."
+msgstr ""
 
 #: gnu/packages/audio.scm:2995
 msgid "LV2 port of the mda EPiano plugin"
-msgstr "mda EPiano 플러그인의 LV2 포트"
+msgstr ""
 
 #: gnu/packages/audio.scm:2996
 msgid "An LV2 port of the mda EPiano VSTi."
-msgstr "mda EPiano VSTi의 VL2 포트."
+msgstr ""
 
 #: gnu/packages/audio.scm:3020 gnu/packages/audio.scm:3061
 msgid "C++ libraries for LV2 plugins"
@@ -909,7 +901,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3140
 msgid "freealut is the OpenAL Utility Toolkit."
-msgstr "freealut는 OpenAL 유틸리티 툴킷입니다."
+msgstr ""
 
 #: gnu/packages/audio.scm:3170
 msgid "Modular patch bay for audio and MIDI systems"
@@ -974,7 +966,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:3396
 msgid "This package provides libshout plus IDJC extensions."
-msgstr "이 꾸러미는 IDJC 확장을 추가한 libshout를 제공합니다."
+msgstr ""
 
 #: gnu/packages/audio.scm:3414
 msgid "Sampling rate conversion and filter design utilities"
@@ -1193,7 +1185,7 @@ msgstr ""
 
 #: gnu/packages/audio.scm:4035
 msgid "Graphical user interface for FluidSynth"
-msgstr "FluidSynth를 위한 그래픽 사용자 연결장치"
+msgstr ""
 
 #: gnu/packages/audio.scm:4037
 msgid ""
@@ -1383,8 +1375,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/audio.scm:4673
+#, fuzzy
+#| msgid "Stream editor"
 msgid "Sound editor"
-msgstr ""
+msgstr "Trình soạn thảo luồng dữ liệu"
 
 #: gnu/packages/audio.scm:4676
 msgid ""
@@ -2177,7 +2171,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:98
 msgid "Hello, GNU world: An example GNU package"
-msgstr ""
+msgstr "Xin chào, gia đình GNU: Một gói GNU ví dụ"
 
 #: gnu/packages/base.scm:100
 msgid ""
@@ -2188,7 +2182,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:137
 msgid "Print lines matching a pattern"
-msgstr ""
+msgstr "In ra những dòng khớp với một mẫu"
 
 #: gnu/packages/base.scm:139
 msgid ""
@@ -2203,7 +2197,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:179
 msgid "Stream editor"
-msgstr ""
+msgstr "Trình soạn thảo luồng dữ liệu"
 
 #: gnu/packages/base.scm:182
 msgid ""
@@ -2216,7 +2210,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:238
 msgid "Managing tar archives"
-msgstr ""
+msgstr "Quản lý kho lưu tar"
 
 #: gnu/packages/base.scm:240
 msgid ""
@@ -2230,7 +2224,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:269
 msgid "Apply differences to originals, with optional backups"
-msgstr ""
+msgstr "Áp dụng những khác biệt này vào bản gốc, với các sao lưu tùy chọn"
 
 #: gnu/packages/base.scm:271
 msgid ""
@@ -2243,7 +2237,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:297
 msgid "Comparing and merging files"
-msgstr ""
+msgstr "So sánh và hòa trộn các tập tin"
 
 #: gnu/packages/base.scm:299
 msgid ""
@@ -2256,7 +2250,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:334
 msgid "Operating on files matching given criteria"
-msgstr ""
+msgstr "Thực hiện trên những tập tin khớp với điều kiện đã cho"
 
 #: gnu/packages/base.scm:336
 msgid ""
@@ -2270,7 +2264,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:430
 msgid "Core GNU utilities (file, text, shell)"
-msgstr ""
+msgstr "Tiện ích lõi GNU (file, text, shell)"
 
 #: gnu/packages/base.scm:432
 msgid ""
@@ -2283,7 +2277,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:507
 msgid "Remake files automatically"
-msgstr ""
+msgstr "Tạo lại các tập tin một cách tự động"
 
 #: gnu/packages/base.scm:509
 msgid ""
@@ -2297,7 +2291,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:586
 msgid "Binary utilities: bfd gas gprof ld"
-msgstr ""
+msgstr "Tiện ích nhị phân: bfd gas gprof ld"
 
 #: gnu/packages/base.scm:588
 msgid ""
@@ -2311,7 +2305,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:713
 msgid "The linker wrapper"
-msgstr ""
+msgstr "Bộ bao liên kết"
 
 #: gnu/packages/base.scm:715
 msgid ""
@@ -2322,7 +2316,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:949
 msgid "The GNU C Library"
-msgstr ""
+msgstr "Thư viện C từ GNU"
 
 #: gnu/packages/base.scm:951
 msgid ""
@@ -2358,7 +2352,7 @@ msgstr ""
 
 #: gnu/packages/base.scm:1428
 msgid "Database of current and historical time zones"
-msgstr ""
+msgstr "Cơ sở dữ liệu của hiện tại và múi giờ lịch sử"
 
 #: gnu/packages/base.scm:1429
 msgid ""
@@ -3016,8 +3010,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/compression.scm:1779
+#, fuzzy
+#| msgid "Comparing and merging files"
 msgid "Compression and file packing utility"
-msgstr ""
+msgstr "So sánh và hòa trộn các tập tin"
 
 #: gnu/packages/compression.scm:1781
 msgid ""
@@ -3538,7 +3534,7 @@ msgstr ""
 
 #: gnu/packages/databases.scm:656
 msgid "This package provides memcache client and server functionality."
-msgstr "이 꾸러미는 memcache 클라이언트와 서버 기능을 제공합니다."
+msgstr ""
 
 #: gnu/packages/databases.scm:680
 msgid "CLI for SQLite databases"
@@ -3694,7 +3690,7 @@ msgstr ""
 
 #: gnu/packages/databases.scm:1610
 msgid "Manipulate plain text files as databases"
-msgstr ""
+msgstr "Thao tác các tập tin văn bản thường như là cơ sở dữ liệu"
 
 #: gnu/packages/databases.scm:1612
 msgid ""
@@ -3783,11 +3779,11 @@ msgstr ""
 
 #: gnu/packages/databases.scm:1947
 msgid "Database independent interface for Perl"
-msgstr "펄을 위한 데이타베이스 독립 연결장치."
+msgstr ""
 
 #: gnu/packages/databases.scm:1948
 msgid "This package provides a database interface for Perl."
-msgstr "이 꾸러미는 펄을 위한 데이타베이스 연결장치를 제공합니다."
+msgstr ""
 
 #: gnu/packages/databases.scm:1995
 msgid "Extensible and flexible object <-> relational mapper"
@@ -4058,8 +4054,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/databases.scm:2716
+#, fuzzy
+#| msgid "Framework for building readers for GNU Guile"
 msgid "WiredTiger bindings for GNU Guile"
-msgstr ""
+msgstr "Một framework để xây dựng bộ đọc dành cho GNU Guile"
 
 #: gnu/packages/databases.scm:2718
 msgid ""
@@ -4236,8 +4234,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/databases.scm:3158
+#, fuzzy
+#| msgid "The GNU C Library"
 msgid "Python ODBC Library"
-msgstr ""
+msgstr "Thư viện C từ GNU"
 
 #: gnu/packages/databases.scm:3159
 msgid ""
@@ -4260,11 +4260,11 @@ msgstr ""
 
 #: gnu/packages/databases.scm:3217
 msgid "MongoDB driver for Go"
-msgstr "Go를 위한 MongoDB 드라이버"
+msgstr ""
 
 #: gnu/packages/databases.scm:3218
 msgid "This package provides a MongoDB driver for Go."
-msgstr "이 꾸러미는 Go를 위한 MongoDB 드라이버를 제공합니다."
+msgstr ""
 
 #: gnu/packages/databases.scm:3257
 msgid "Python binding for the ‘Lightning’ database (LMDB)"
@@ -4409,11 +4409,11 @@ msgstr ""
 
 #: gnu/packages/databases.scm:3675
 msgid "Async database support for Python"
-msgstr "파이썬을 위한 비동기 데이타베이스 지원"
+msgstr ""
 
 #: gnu/packages/databases.scm:3676
 msgid "This package implements async database support for Python."
-msgstr "이 꾸러미는 파이썬을 위한 비동기 데이타베이스 지원을 구현합니다."
+msgstr ""
 
 #: gnu/packages/databases.scm:3697
 msgid "Python PostgreSQL adapter"
@@ -4875,7 +4875,7 @@ msgstr ""
 
 #: gnu/packages/debug.scm:786
 msgid "Console front-end to the GNU debugger"
-msgstr "GNU 디버거에 대한 콘솔 프론트-엔드"
+msgstr ""
 
 #: gnu/packages/debug.scm:788
 msgid ""
@@ -4905,7 +4905,7 @@ msgstr ""
 
 #: gnu/packages/debug.scm:855
 msgid "This package provides a frontend to GDB, the GNU debugger."
-msgstr "이와 같은 꾸러미는 GNU 디버거 GDB에 대한 프론트엔드를 제공합니다."
+msgstr ""
 
 #: gnu/packages/dejagnu.scm:78
 msgid "GNU software testing framework"
@@ -5258,8 +5258,6 @@ msgid ""
 "This package provides a userspace daemon for the Nintendo\n"
 "Joy-Con controllers."
 msgstr ""
-"이 꾸러미는 닌텐도를 위한 사용자 공간을 제공합니다\n"
-"Joy-Con 제어기."
 
 #: gnu/packages/games.scm:1580
 msgid "Re-implementation of Caesar III game engine"
@@ -5598,11 +5596,11 @@ msgstr ""
 
 #: gnu/packages/games.scm:3065
 msgid "User interface for gnushogi"
-msgstr "gnushogi를 위한 사용자 연결장치"
+msgstr ""
 
 #: gnu/packages/games.scm:3066
 msgid "A graphical user interface for the package @code{gnushogi}."
-msgstr "꾸러미 @code{gnushogi}을 위한 그래픽 사용자 연결장치."
+msgstr ""
 
 #: gnu/packages/games.scm:3118
 msgid "GNU/Linux port of the indie game \"l'Abbaye des Morts\""
@@ -5705,7 +5703,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3442
 msgid "This package contains the game data of GNU Freedink."
-msgstr "이 꾸러미는 GNU Freedink의 게임 자료를 포함합니다."
+msgstr ""
 
 #: gnu/packages/games.scm:3464
 msgid "Front-end for managing and playing Dink Modules"
@@ -5719,7 +5717,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:3534
 msgid "Graphical user interface for chess programs"
-msgstr "체스 프로그램을 위한 그래픽 사용자 연결장치"
+msgstr ""
 
 #: gnu/packages/games.scm:3535
 msgid ""
@@ -7255,7 +7253,7 @@ msgstr ""
 
 #: gnu/packages/games.scm:10294
 msgid "Graphical user interface to play chess"
-msgstr "체스를 하는 그래픽 사용자 연결장치"
+msgstr ""
 
 #: gnu/packages/games.scm:10296
 msgid ""
@@ -7538,8 +7536,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gcc.scm:851
+#, fuzzy
+#| msgid "GNU C++ standard library (intermediate)"
 msgid "GNU C++ standard library"
-msgstr ""
+msgstr "Thư viện GNU C++ chuẩn (khâu trung gian)"
 
 #: gnu/packages/gcc.scm:876
 msgid "Headers of GNU libstdc++"
@@ -8937,8 +8937,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gnome.scm:5596 gnu/packages/gnome.scm:7840
+#, fuzzy
+#| msgid "Stream editor"
 msgid "GNOME text editor"
-msgstr ""
+msgstr "Trình soạn thảo luồng dữ liệu"
 
 #: gnu/packages/gnome.scm:5598
 msgid ""
@@ -9213,8 +9215,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gnome.scm:7011
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "GObject bindings for libudev"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/gnome.scm:7013
 msgid ""
@@ -9238,8 +9242,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gnome.scm:7115
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "GLib binding for libusb1"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/gnome.scm:7117
 msgid ""
@@ -9517,15 +9523,13 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:8776
 msgid "C++ bindings to the libxml2 XML parser library"
-msgstr "libxml2 XML 구문 분석기 라이브러리에 C++ 바인딩"
+msgstr ""
 
 #: gnu/packages/gnome.scm:8778
 msgid ""
 "This package provides a C++ interface to the libxml2 XML parser\n"
 "library."
 msgstr ""
-"이 꾸러미는 libxml2 XML 구문 분석기 라이브러리에 C++ 연결장치를\n"
-"제공합니다."
 
 #: gnu/packages/gnome.scm:9014
 msgid "Display manager for GNOME"
@@ -10167,7 +10171,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:12003
 msgid "Graphical user interface for git"
-msgstr "git을 위한 그래픽 사용자 연결장치"
+msgstr ""
 
 #: gnu/packages/gnome.scm:12005
 msgid ""
@@ -10472,7 +10476,7 @@ msgstr ""
 
 #: gnu/packages/gnome.scm:13387
 msgid "This package provides a graphical file manager."
-msgstr "이 꾸러미는 그래픽 파일 관리자를 제공합니다."
+msgstr ""
 
 #: gnu/packages/gnuzilla.scm:215
 msgid "Mozilla JavaScript engine"
@@ -10717,8 +10721,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/gtk.scm:1446
+#, fuzzy
+#| msgid "Framework for building readers for GNU Guile"
 msgid "Cairo bindings for GNU Guile"
-msgstr ""
+msgstr "Một framework để xây dựng bộ đọc dành cho GNU Guile"
 
 #: gnu/packages/gtk.scm:1448
 msgid ""
@@ -11139,7 +11145,7 @@ msgstr ""
 
 #: gnu/packages/guile.scm:136 gnu/packages/guile.scm:239
 msgid "Scheme implementation intended especially for extensions"
-msgstr ""
+msgstr "Lược đồ thực thi có dụng ý đặc biệt cho phần mở rộng"
 
 #: gnu/packages/guile.scm:138 gnu/packages/guile.scm:241
 msgid ""
@@ -11214,8 +11220,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:842
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "Guile bindings for libgit2"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/guile.scm:844
 msgid ""
@@ -11224,8 +11232,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:878
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "Guile bindings to zlib"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/guile.scm:880
 msgid ""
@@ -11235,8 +11245,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:909
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "Guile bindings to lzlib"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/guile.scm:911
 msgid ""
@@ -11256,8 +11268,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/guile.scm:959
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "Guile bindings for liblzma (XZ)"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/guile.scm:960
 msgid ""
@@ -13754,8 +13768,6 @@ msgid ""
 "This package provides small event loop that wraps the\n"
 "epoll family of APIs."
 msgstr ""
-"이 꾸러미는 API의 epoll 제품군을 감싸는 작은 이벤트\n"
-"루프를 제공합니다."
 
 #: gnu/packages/linux.scm:5042
 msgid "Interface library for the Linux IEEE1394 drivers"
@@ -15986,8 +15998,6 @@ msgid ""
 "This package provides account management tools for\n"
 "Discord."
 msgstr ""
-"이 꾸러미는 디스코드를 위한 계정 관리 도구를\n"
-"제공합니다."
 
 #: gnu/packages/messaging.scm:3529
 msgid "Command-line validation tool for phone numbers"
@@ -22348,8 +22358,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/perl.scm:9457
+#, fuzzy
+#| msgid "Collection of useful Guile Scheme modules"
 msgid "Collection of very basic statistics modules"
-msgstr ""
+msgstr "Bộ sưu tập của các mô-đun Lược đồ Guile"
 
 #: gnu/packages/perl.scm:9458
 msgid ""
@@ -23489,8 +23501,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/perl.scm:11816
+#, fuzzy
+#| msgid "Guile bindings to ncurses"
 msgid "SDL bindings to Perl"
-msgstr ""
+msgstr "Guile ràng buộc vào ncurses"
 
 #: gnu/packages/perl.scm:11818
 msgid ""
@@ -23880,7 +23894,7 @@ msgstr ""
 
 #: gnu/packages/photo.scm:832
 msgid "This package provides RawTherapee's highly optimized RAW processing routines."
-msgstr "이와 같은 꾸러미는 RawTherapee의 고도로 최적화된 단순 처리 일상을 제공합니다."
+msgstr ""
 
 #: gnu/packages/ratpoison.scm:93
 msgid "Simple mouse-free tiling window manager"
@@ -24026,8 +24040,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/scheme.scm:228
+#, fuzzy
+#| msgid "Scheme implementation intended especially for extensions"
 msgid "Scheme implementation with integrated editor and debugger"
-msgstr ""
+msgstr "Lược đồ thực thi có dụng ý đặc biệt cho phần mở rộng"
 
 #: gnu/packages/scheme.scm:230
 msgid ""
@@ -24065,8 +24081,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/scheme.scm:403
+#, fuzzy
+#| msgid "Scheme implementation intended especially for extensions"
 msgid "Scheme implementation using a bytecode interpreter"
-msgstr ""
+msgstr "Lược đồ thực thi có dụng ý đặc biệt cho phần mở rộng"
 
 #: gnu/packages/scheme.scm:405
 msgid ""
@@ -25544,7 +25562,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1702
 msgid "Hyphenation patterns for Armenian"
-msgstr "아르메니아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1703
 msgid ""
@@ -25564,7 +25582,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1730
 msgid "Hyphenation patterns for Belarusian"
-msgstr "벨라루스인을 위해 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1731
 msgid ""
@@ -25574,7 +25592,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1742
 msgid "Hyphenation patterns for Bulgarian"
-msgstr "불가리아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1743
 msgid ""
@@ -25584,7 +25602,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1756
 msgid "Hyphenation patterns for Catalan"
-msgstr "카탈로니아인를 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1757
 msgid ""
@@ -25624,7 +25642,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1807
 msgid "Hyphenation patterns for Croatian"
-msgstr "크로아티아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1808
 msgid ""
@@ -25644,7 +25662,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1831
 msgid "Hyphenation patterns for Danish"
-msgstr "덴마크인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1832
 msgid ""
@@ -25684,7 +25702,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1883
 msgid "Hyphenation patterns for Estonian"
-msgstr "에스토니아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1884
 msgid ""
@@ -25736,7 +25754,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1947
 msgid "Hyphenation patterns for Friulan"
-msgstr "프리울리인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1948
 msgid ""
@@ -25746,7 +25764,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1960
 msgid "Hyphenation patterns for Galician"
-msgstr "갈리시아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1961
 msgid ""
@@ -25756,7 +25774,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1972
 msgid "Hyphenation patterns for Georgian"
-msgstr "조지아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1973
 msgid ""
@@ -25766,7 +25784,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:1990 gnu/packages/tex.scm:2650
 msgid "Hyphenation patterns for German"
-msgstr "독일인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:1991
 msgid ""
@@ -25787,7 +25805,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2023
 msgid "Hyphenation patterns for Hungarian"
-msgstr "헝가리인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2024
 msgid ""
@@ -25797,7 +25815,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2036
 msgid "Hyphenation patterns for Icelandic"
-msgstr "아이슬란드인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2037
 msgid ""
@@ -25914,7 +25932,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2190
 msgid "This package provides hyphenation patterns for Macedonian."
-msgstr "이 꾸러미는 마케도니아인를 위해 하이픈 유형을 제공합니다."
+msgstr ""
 
 #: gnu/packages/tex.scm:2202
 msgid "Mongolian hyphenation patterns in Cyrillic script"
@@ -25960,8 +25978,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:2259
+#, fuzzy
+#| msgid "Print lines matching a pattern"
 msgid "Piedmontese hyphenation patterns"
-msgstr ""
+msgstr "In ra những dòng khớp với một mẫu"
 
 #: gnu/packages/tex.scm:2260
 msgid ""
@@ -26064,7 +26084,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2394
 msgid "Hyphenation patterns for Spanish"
-msgstr "스페인 사람을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2395
 msgid ""
@@ -26084,7 +26104,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2418
 msgid "Thai hyphenation patterns"
-msgstr "태국 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2419
 msgid ""
@@ -26117,8 +26137,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:2460
+#, fuzzy
+#| msgid "Print lines matching a pattern"
 msgid "Ukrainian hyphenation patterns"
-msgstr ""
+msgstr "In ra những dòng khớp với một mẫu"
 
 #: gnu/packages/tex.scm:2461
 msgid ""
@@ -26173,7 +26195,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2671
 msgid "Hyphenation patterns for Ukrainian"
-msgstr "우크라이나인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2672
 msgid ""
@@ -26184,7 +26206,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:2706
 msgid "Hyphenation patterns for Russian"
-msgstr "러시아인을 위한 하이픈 유형"
+msgstr ""
 
 #: gnu/packages/tex.scm:2707
 msgid ""
@@ -27176,7 +27198,7 @@ msgstr ""
 
 #: gnu/packages/tex.scm:5203
 msgid "This package provides a math interface to the Rsfs fonts."
-msgstr "이 꾸러미는 Rsfs 글꼴에 math 연결장치를 제공합니다."
+msgstr ""
 
 #: gnu/packages/tex.scm:5238
 msgid "Captions on more than floats"
@@ -28359,8 +28381,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/tex.scm:8208
+#, fuzzy
+#| msgid "Stream editor"
 msgid "LaTeX editor"
-msgstr ""
+msgstr "Trình soạn thảo luồng dữ liệu"
 
 #: gnu/packages/tex.scm:8209
 msgid ""
@@ -31745,8 +31769,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/virtualization.scm:1560
+#, fuzzy
+#| msgid "Managing tar archives"
 msgid "Manage virtual machines"
-msgstr ""
+msgstr "Quản lý kho lưu tar"
 
 #: gnu/packages/virtualization.scm:1562
 msgid ""
@@ -32169,8 +32195,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/web.scm:1049
+#, fuzzy
+#| msgid "The GNU C Library"
 msgid "JSON C library"
-msgstr ""
+msgstr "Thư viện C từ GNU"
 
 #: gnu/packages/web.scm:1051
 msgid ""
@@ -33895,8 +33923,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/web.scm:5947
+#, fuzzy
+#| msgid "Collection of useful Guile Scheme modules"
 msgid "Collection of Varnish modules"
-msgstr ""
+msgstr "Bộ sưu tập của các mô-đun Lược đồ Guile"
 
 #: gnu/packages/web.scm:5949
 msgid ""
@@ -34737,8 +34767,10 @@ msgid ""
 msgstr ""
 
 #: gnu/packages/xiph.scm:468
+#, fuzzy
+#| msgid "Stream editor"
 msgid "Streaming media server"
-msgstr ""
+msgstr "Trình soạn thảo luồng dữ liệu"
 
 #: gnu/packages/xiph.scm:469
 msgid ""
@@ -34770,3 +34802,6 @@ msgid ""
 "@cite{A Hybrid DSP/Deep Learning Approach to Real-Time Full-Band Speech\n"
 "Enhancement}."
 msgstr ""
+
+#~ msgid "Run jobs at scheduled times"
+#~ msgstr "Chạy các công việc theo lịch biểu"
