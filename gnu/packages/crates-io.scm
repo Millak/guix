@@ -7463,24 +7463,6 @@ extension of blocks.")
        (("rust-arrayref" ,rust-arrayref-0.3)
         ("rust-byte-tools" ,rust-byte-tools-0.2))))))
 
-(define-public rust-block-buffer-0.2
-  (package
-    (inherit rust-block-buffer-0.9)
-    (name "rust-block-buffer")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "block-buffer" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "055q90a6vk80j85i3fixjd5ci0dznrm9lkdd6xbjk7sx5w2a2f8k"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-byte-tools" ,rust-byte-tools-0.2)
-        ("rust-generic-array" ,rust-generic-array-0.8))))))
-
 (define-public rust-block-cipher-0.7
   (package
     (name "rust-block-cipher")
