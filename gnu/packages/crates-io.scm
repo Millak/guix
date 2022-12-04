@@ -28638,6 +28638,31 @@ and locking in the core framework.")
 whether or not a given path points to an executable file.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-is-terminal-0.4
+  (package
+    (name "rust-is-terminal")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "is-terminal" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c2322dg9s35h87ln33w6qsjlgplhzza89rwmkvac4r9ikvhjxlj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hermit-abi" ,rust-hermit-abi-0.2)
+        ("rust-io-lifetimes" ,rust-io-lifetimes-1)
+        ("rust-rustix" ,rust-rustix-0.36)
+        ("rust-windows-sys" ,rust-windows-sys-0.42))))
+    (home-page "https://github.com/sunfishcode/is-terminal")
+    (synopsis "Test whether a given stream is a terminal")
+    (description
+     "@code{is-terminal} is a simple utility that tests whether a given
+stream runs in a TTY.")
+    (license license:expat)))
+
 (define-public rust-iso8601-0.3
   (package
     (name "rust-iso8601")
