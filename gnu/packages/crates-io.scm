@@ -19758,21 +19758,6 @@ decoding.")
 ecosystem.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-ethereum-types-0.9
-  (package
-    (inherit rust-ethereum-types-0.12)
-    (name "rust-ethereum-types")
-    (version "0.9.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "ethereum-types" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1c1l2sg6li301izl4nzkkfrpc8snafxwnr81vfwygn3bd3zyqfj7"))))))
-
 (define-public rust-ethereum-types-serialize-0.2
   (package
     (name "rust-ethereum-types-serialize")
