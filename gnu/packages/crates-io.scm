@@ -47482,6 +47482,27 @@ rust.")
 and table-based tests.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-0.11
+  (package
+    (inherit rust-rstest-0.15)
+    (name "rust-rstest")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rstest" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "02nh4kpfg1j4v95fhc0bxx9ak3wnz5jg70f94z92wfzyx9mcd212"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-rustc-version" ,rust-rustc-version-0.4)
+                       ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rstest-0.10
   (package
     (inherit rust-rstest-0.15)
