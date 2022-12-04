@@ -31284,8 +31284,37 @@ in plain text.  It is smart about where a link ends, such as with trailing
 punctuation.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-linux-raw-sys-0.1
+  (package
+    (name "rust-linux-raw-sys")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "linux-raw-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0zxlp1c4h7kkc4ldgcj5cn7dzynvlksg8y0s9czn2v1sjvc0i7wg"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-static-assertions" ,rust-static-assertions-1))
+       #:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/sunfishcode/linux-raw-sys")
+    (synopsis "Generated bindings for Linux APIs")
+    (description
+     "This package provides automatically generated bindings for
+Linux userspace APIs.")
+    ;; The user can choose either license, or a variant of ASL2.0 with
+    ;; LLVM exception.  See COPYRIGHT in the repository.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-linux-raw-sys-0.0.46
   (package
+    (inherit rust-linux-raw-sys-0.1)
     (name "rust-linux-raw-sys")
     (version "0.0.46")
     (source (origin
@@ -31302,14 +31331,7 @@ punctuation.")
              ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))
            #:cargo-development-inputs
            `(("rust-libc" ,rust-libc-0.2)
-             ("rust-static-assertions" ,rust-static-assertions-1))))
-    (home-page "https://github.com/sunfishcode/linux-raw-sys")
-    (synopsis "Generated bindings for Linux APIs")
-    (description
-     "This package provides automatically generated bindings for
-Linux userspace APIs.")
-    (license (list license:asl2.0
-                   license:expat))))
+             ("rust-static-assertions" ,rust-static-assertions-1))))))
 
 (define-public rust-libssh2-sys-0.2
   (package
