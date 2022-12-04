@@ -25849,8 +25849,35 @@ consistent, and reasonably well performing.")
        #:cargo-inputs
        (("rust-unicode-segmentation" ,rust-unicode-segmentation-1))))))
 
+(define-public rust-hermit-abi-0.2
+  (package
+    (name "rust-hermit-abi")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "hermit-abi" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1iz439yz9qzk3rh9pqx2rz5c4107v3qbd7bppfsbzb1mzr02clgf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
+    (home-page "https://github.com/hermitcore/rusty-hermit")
+    (synopsis "Small interface to call functions from RustyHermit")
+    (description
+     "Hermit-abi is small interface to call functions from the unikernel RustyHermit.
+It is used to build the target x86_64-unknown-hermit.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hermit-abi-0.1
   (package
+    (inherit rust-hermit-abi-0.2)
     (name "rust-hermit-abi")
     (version "0.1.10")
     (source
@@ -25862,19 +25889,12 @@ consistent, and reasonably well performing.")
         (sha256
          (base32
           "0blmmzik5cs79ivq70s9gal8ypgzj50wnl2hwsaam46gjjbz2p3j"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
         (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
          ("rust-libc" ,rust-libc-0.2)
-         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))
-    (home-page "https://github.com/hermitcore/rusty-hermit")
-    (synopsis "Small interface to call functions from RustyHermit")
-    (description
-     "Hermit-abi is small interface to call functions from the unikernel RustyHermit.
-It is used to build the target x86_64-unknown-hermit.")
-    (license (list license:expat license:asl2.0))))
+         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1))))))
 
 (define-public rust-hex-0.4
   (package
