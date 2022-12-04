@@ -10303,6 +10303,25 @@ transfer coding.")
        (sha256
         (base32 "11yghnd24w0i9p8g368c3pg7qh9nfz7kgri6pywja9pnmakj13a9"))))))
 
+(define-public rust-ciborium-io-0.2
+  (package
+    (name "rust-ciborium-io")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ciborium-io" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0sdkk7l7pqi2nsbm9c6g8im1gb1qdd83l25ja9xwhg07mx9yfv9l"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/enarx/ciborium")
+    (synopsis "Simplified Read/Write traits")
+    (description
+     "This package provides simplified Read/Write traits for @code{no_std}
+usage.")
+    (license license:asl2.0)))
+
 (define-public rust-ci-info-0.3
   (package
     (name "rust-ci-info")
