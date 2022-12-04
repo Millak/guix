@@ -2977,6 +2977,31 @@ defined in RFC 2425 and RFC 2426 to/from The Insidious Big Brother Database
 shine on top of your cursor so you know where it is.")
     (license license:gpl3+)))
 
+(define-public emacs-carp
+  (let ((commit "17d3d84963434233997626850195f205882bf0df")
+        (revision "0"))
+    (package
+      (name "emacs-carp")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/carp-lang/carp-emacs")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "0mn4mg94hzzwb54kikg4c6hvf9ka15f2nz95g0clmn8r0mvkj4d5"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+        (list emacs-clojure-mode emacs-flycheck))
+      (home-page "https://github.com/carp-lang/carp-emacs")
+      (synopsis "Emacs support for Carp")
+      (description
+       "This package provides syntax highlighting, a minor mode for
+listing type errors via Flycheck, as well as REPL support for Carp.")
+      (license license:asl2.0))))
+
 (define-public emacs-counsel-bbdb
   (package
     (name "emacs-counsel-bbdb")
