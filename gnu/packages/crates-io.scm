@@ -2676,6 +2676,31 @@ it outputs messages to Android's logcat.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-anes-0.1
+  (package
+    (name "rust-anes")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "anes" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "16bj1ww1xkwzbckk32j2pnbn5vk6wgsl3q4p3j9551xbcarwnijb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                   ;FIXME: unresolved import anes::parser..?
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-libc" ,rust-libc-0.2))
+       #:cargo-inputs (("rust-bitflags" ,rust-bitflags-1))))
+    (home-page "https://github.com/zrzka/anes-rs")
+    (synopsis "Parse ANSI escape sequences")
+    (description
+     "This package contains an ANSI escape sequences provider and parser.")
+    ;; The user can choose either license.
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ansi-parser-0.6
   (package
     (name "rust-ansi-parser")
