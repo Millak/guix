@@ -24321,33 +24321,6 @@ libraries GMP, MPFR, and MPC.")
 and loading crate.")
     (license license:expat)))
 
-(define-public rust-goblin-0.0
-  (package
-    (name "rust-goblin")
-    (version "0.0.23")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "goblin" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1g92bl76dgc3v3rins61l811pkwsl3jif1x35h2jx33b7dsv8mmc"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-plain" ,rust-plain-0.2)
-        ("rust-scroll" ,rust-scroll-0.9))))
-    (home-page "https://github.com/m4b/goblin")
-    (synopsis "Binary parsing and loading")
-    (description
-     "An impish, cross-platform, ELF, Mach-o, and PE binary parsing and
-loading crate.")
-    (license license:expat)))
-
 (define-public rust-greetd-ipc-0.8
   (package
     (name "rust-greetd-ipc")
