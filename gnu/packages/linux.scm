@@ -524,14 +524,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 (define-public linux-libre-5.15-source
   (source-with-patches linux-libre-5.15-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch
-                             (search-patch "linux-libre-infodocs-target.patch"))))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-5.10-source
   (source-with-patches linux-libre-5.10-pristine-source
                        (list %boot-logo-patch
-                             %linux-libre-arm-export-__sync_icache_dcache-patch
-                             (search-patch "linux-libre-infodocs-target.patch"))))
+                             %linux-libre-arm-export-__sync_icache_dcache-patch)))
 
 (define-public linux-libre-5.4-source
   (source-with-patches linux-libre-5.4-pristine-source
@@ -799,10 +797,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                            (configuration-file #f)
                            (defconfig "defconfig")
                            (extra-options %default-extra-linux-options)
-                           (build-doc? (doc-supported? version))
                            (patches
                             `(,%boot-logo-patch
-                              ,@(if build-doc?
+                              ,@(if (doc-supported? version)
                                     (list (search-patch
                                            "linux-libre-infodocs-target.patch"))
                                     '()))))
@@ -816,8 +813,7 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                      #:extra-version extra-version
                      #:configuration-file configuration-file
                      #:defconfig defconfig
-                     #:extra-options extra-options
-                     #:build-doc? build-doc?))
+                     #:extra-options extra-options))
 
 (define* (make-linux-libre* version gnu-revision source supported-systems
                             #:key
@@ -826,10 +822,7 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                             ;; See kernel-config for an example.
                             (configuration-file #f)
                             (defconfig "defconfig")
-                            (extra-options %default-extra-linux-options)
-                            (build-doc? (doc-supported? version)))
-  (when (and build-doc? (not (doc-supported? version)))
-    (error "unsupported 'build-doc?' for kernels <5.10"))
+                            (extra-options %default-extra-linux-options))
   (package
     (name (if extra-version
               (string-append "linux-libre-" extra-version)
@@ -854,20 +847,6 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
               (substitute* (find-files
                             "." "^Makefile(\\.include)?$")
                 (("/bin/pwd") "pwd"))))
-          #$@(if build-doc?
-                 #~((add-before 'configure 'build-doc
-                      (lambda _
-                        (substitute* "Documentation/Makefile"
-                          ;; Remove problematic environment check script.
-                          ((".*scripts/sphinx-pre-install.*") ""))
-                        (invoke "make" "infodocs")))
-                    (add-after 'build-doc 'install-doc
-                      (lambda _
-                        (with-directory-excursion "Documentation/output"
-                          (invoke "make" "-C" "texinfo" "install-info"
-                                  (string-append "infodir=" #$output
-                                                 "/share/info"))))))
-                 #~())
           (add-before 'configure 'set-environment
             (lambda* (#:key target #:allow-other-keys)
               ;; Avoid introducing timestamps.
@@ -967,19 +946,6 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
        ("gmp" ,gmp)
        ("mpfr" ,mpfr)
        ("mpc" ,mpc)
-
-       ;; For generating the documentation.
-       ,@(if build-doc?
-             ;; TODO: remove fontconfig after the 5.10 kernel is dropped.
-             ;; Also replace python-wrapper by python at that time.
-             `(("fontconfig" ,fontconfig)
-               ("graphviz" ,graphviz)
-               ("python" ,python-wrapper)
-               ("python-sphinx" ,python-sphinx)
-               ("texinfo" ,texinfo)
-               ("which" ,which))
-             '())
-
        ,@(match (let ((arch (platform-linux-architecture
                              (lookup-platform-by-target-or-system
                               (or (%current-target-system)
@@ -1017,6 +983,43 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-pristine-source linux-libre-6.0-pristine-source)
 (define-public linux-libre-source          linux-libre-6.0-source)
 (define-public linux-libre                 linux-libre-6.0)
+
+(define-public linux-libre-documentation
+  (package
+    (inherit linux-libre)
+    (name "linux-libre-documentation")
+    (arguments
+     (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda _
+                       (substitute* "Documentation/Makefile"
+                         ;; Remove problematic environment check script.
+                         ((".*scripts/sphinx-pre-install.*") ""))
+                       (invoke "make" "infodocs")))
+                   (replace 'install
+                     (lambda _
+                       (let* ((info-dir (string-append #$output "/share/info"))
+                              (info (string-append info-dir
+                                                   "/TheLinuxKernel.info.gz")))
+                         (with-directory-excursion "Documentation/output"
+                           (invoke "make" "-C" "texinfo" "install-info"
+                                   (string-append "infodir=" info-dir)))
+                         ;; Create a symlink, for convenience.
+                         (symlink info (string-append info-dir
+                                                      "/linux.info.gz"))))))))
+    (native-inputs
+     (list graphviz
+           perl
+           python
+           python-sphinx
+           texinfo
+           which))
+    (synopsis "Documentation for the kernel Linux-Libre")
+    (description "This package provides the documentation for the kernel
+Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
