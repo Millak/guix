@@ -726,30 +726,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "This package is a core library of Gfx-rs.")
     (license license:asl2.0)))
 
-(define-public rust-gfx-gl-0.6
-  (package
-    (name "rust-gfx-gl")
-    (version "0.6.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gfx_gl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0ppzj4bgjawdqz3fvnscqk8lnmgh95pwzh0v96vwy809cxj83lzj"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gl-generator" ,rust-gl-generator-0.14))))
-    (home-page "https://github.com/gfx-rs/gfx_gl")
-    (synopsis "OpenGL bindings for gfx, based on gl-rs")
-    (description
-     "This package provides OpenGL bindings for gfx, based on gl-rs.")
-    (license license:asl2.0)))
-
 (define-public rust-gif-0.11
   (package
     (name "rust-gif")
