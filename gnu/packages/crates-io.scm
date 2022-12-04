@@ -13412,8 +13412,59 @@ final xor value.  It has many built-in CRC functions.")
 Rust.")
     (license license:bsd-3)))
 
+(define-public rust-criterion-0.4
+  (package
+    (name "rust-criterion")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "criterion" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1jsl4r0yc3fpkyjbi8aa1jrm69apqq9rxwnjnd9brqmaq44nxiz7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anes" ,rust-anes-0.1)
+        ("rust-async-std" ,rust-async-std-1)
+        ("rust-atty" ,rust-atty-0.2)
+        ("rust-cast" ,rust-cast-0.3)
+        ("rust-ciborium" ,rust-ciborium-0.2)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-criterion-plot" ,rust-criterion-plot-0.5)
+        ("rust-csv" ,rust-csv-1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-oorandom" ,rust-oorandom-11.1)
+        ("rust-plotters" ,rust-plotters-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-smol" ,rust-smol-1)
+        ("rust-tinytemplate" ,rust-tinytemplate-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-walkdir" ,rust-walkdir-2))
+       #:cargo-development-inputs
+       (("rust-approx" ,rust-approx-0.5)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://bheisler.github.io/criterion.rs/book/index.html")
+    (synopsis "Statistics-driven micro-benchmarking library")
+    (description
+     "This package provides a statistics-driven micro-benchmarking library.")
+    ;; The user can choose either license.
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-criterion-0.3
   (package
+    (inherit rust-criterion-0.4)
     (name "rust-criterion")
     (version "0.3.5")
     (source
@@ -13424,7 +13475,6 @@ Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "044d2x7cxfvw2g558lzyllcv7jcdkw9xmacmb0nzx8pv4pyxl10n"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-async-std" ,rust-async-std-1)
@@ -13454,12 +13504,7 @@ Rust.")
         ("rust-futures" ,rust-futures-0.3)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-tempfile" ,rust-tempfile-3))))
-    (home-page "https://bheisler.github.io/criterion.rs/book/index.html")
-    (synopsis "Statistics-driven micro-benchmarking library")
-    (description
-     "This package provides a statistics-driven micro-benchmarking library.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-criterion-0.2
   (package
