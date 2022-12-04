@@ -9955,29 +9955,6 @@ reduced-round ChaCha8Poly1305 and ChaCha12Poly1305 lightweight variants.")
 macros.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-chalk-derive-0.68
-  (package
-    (inherit rust-chalk-derive-0.75)
-    (name "rust-chalk-derive")
-    (version "0.68.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "chalk-derive" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0ss18zx2ddp50mvbwffs5jmmcs7a0pkiq1g62xa7z1bacvkm45ga"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-proc-macro2" ,rust-proc-macro2-1)
-        ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1)
-        ("rust-synstructure" ,rust-synstructure-0.12))))))
-
 (define-public rust-chalk-ir-0.75
   (package
     (name "rust-chalk-ir")
