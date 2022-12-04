@@ -1363,7 +1363,7 @@ pretty simple, REST API.")
            openssl
            readline
            cyrus-sasl
-           libyajl
+           yajl
            audit
            dmidecode
            dnsmasq
@@ -1403,7 +1403,7 @@ to integrate other virtualization mechanisms if needed.")
     (build-system meson-build-system)
     (inputs
      (list openssl cyrus-sasl lvm2 ; for libdevmapper
-           libyajl))
+           yajl))
     (native-inputs
      (list pkg-config intltool
            `(,glib "bin") vala))
@@ -2269,7 +2269,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
        ("iproute" ,iproute) ; TODO: patch invocations.
        ("libaio" ,libaio)
        ("libx11" ,libx11)
-       ("libyajl" ,libyajl)
+       ("yajl" ,yajl)
        ("ncurses" ,ncurses)
        ("openssl" ,openssl)
        ("ovmf" ,ovmf)

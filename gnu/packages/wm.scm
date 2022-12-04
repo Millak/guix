@@ -287,7 +287,7 @@ or musca).
      (list alsa-lib
            libconfuse
            libnl
-           libyajl
+           yajl
            pulseaudio))
     (native-inputs
      (list asciidoc
@@ -342,7 +342,7 @@ commands would.")
            xcb-util-xrm
            libxkbcommon
            libev
-           libyajl
+           yajl
            xmlto
            perl-pod-simple
            libx11

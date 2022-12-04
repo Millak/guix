@@ -1395,9 +1395,9 @@ current version of any major web browser.")
 style API.")
     (license license:expat)))
 
-(define-public libyajl
+(define-public yajl
   (package
-    (name "libyajl")
+    (name "yajl")
     (version "2.1.0")
     (source (origin
               (method git-fetch)
@@ -1423,6 +1423,9 @@ style API.")
      "Yet Another JSON Library (YAJL) is a small event-driven (SAX-style) JSON
 parser written in ANSI C and a small validating JSON generator.")
     (license license:isc)))
+
+(define-public libyajl
+  (deprecated-package "libyajl" yajl))
 
 (define-public libwebsockets
   (package

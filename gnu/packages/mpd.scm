@@ -170,7 +170,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                   zlib))
     (native-inputs (list cmake pkg-config python-sphinx))
     ;; Missing optional inputs:
-    ;;   libyajl
+    ;;   yajl
     ;;   libcdio_paranoia
     ;;   libmms
     ;;   libadplug

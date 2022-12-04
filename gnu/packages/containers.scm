@@ -91,7 +91,7 @@
       (inputs
        (list libcap
              libseccomp
-             libyajl))
+             yajl))
       (native-inputs
        (list automake
              autoconf

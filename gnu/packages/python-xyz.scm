@@ -29784,9 +29784,9 @@ simple mock/record and a complete capture/replay framework.")
              (when tests?
                (invoke "pytest" "-vv")))))))
     (inputs
-     ;; libyajl is optional, but compiling with it makes faster
+     ;; yajl is optional, but compiling with it makes faster
      ;; backends available to ijson:
-     (list libyajl))
+     (list yajl))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
