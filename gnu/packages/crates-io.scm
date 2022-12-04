@@ -13930,21 +13930,6 @@ abstractions around common WinAPI calls.")
        #:cargo-inputs
        (("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-crossterm-winapi-0.4
-  (package
-    (inherit rust-crossterm-winapi-0.7)
-    (name "rust-crossterm-winapi")
-    (version "0.4.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "crossterm-winapi" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1j3av8bba3f5y4n4w1vgn0iz28vdajxrli6lqxnvpddbphskmph2"))))
-    (arguments
-     `(#:cargo-inputs (("rust-winapi" ,rust-winapi-0.3))))))
-
 (define-public rust-crunchy-0.2
   (package
     (name "rust-crunchy")
