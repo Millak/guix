@@ -109,7 +109,10 @@ AppArmor supplements the traditional Unix discretionary access control (DAC)
 model by providing mandatory access control (MAC).  It has been included in
 the mainline Linux kernel since version 2.6.36 and its development has been
 supported by Canonical since 2009.")
-    (license license:lgpl2.1)))
+    (license license:lgpl2.1)
+    (supported-systems (filter (lambda (system)
+                                 (string-suffix? "-linux" system))
+                               %supported-systems))))
 
 (define-public apparmor
   (let ((base libapparmor))
