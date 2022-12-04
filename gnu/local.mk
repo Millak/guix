@@ -1345,6 +1345,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/jami-fix-unit-tests-build.patch          \
   %D%/packages/patches/jami-libjami-headers-search.patch	\
   %D%/packages/patches/jami-no-webengine.patch			\
+  %D%/packages/patches/jami-sipaccount-segfault.patch		\
   %D%/packages/patches/jami-sip-contacts.patch			\
   %D%/packages/patches/jami-sip-unregister.patch		\
   %D%/packages/patches/jami-xcb-link.patch			\

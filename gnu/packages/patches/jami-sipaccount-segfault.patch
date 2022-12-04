@@ -1,0 +1,30 @@
+From e5a449d60abc667d85dacd75ad6e31d4ddca5853 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?S=C3=A9bastien=20Blin?=
+ <sebastien.blin@savoirfairelinux.com>
+Date: Thu, 17 Nov 2022 12:02:20 -0500
+Subject: [PATCH] sipaccount: fix potential null dereference
+
+Detected by sonarqube
+
+Change-Id: I606f9cf2458dda07471d0a67af8915c7ca13d410
+---
+ src/sip/sipaccount.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/daemon/src/sip/sipaccount.cpp b/daemon/src/sip/sipaccount.cpp
+index 695b71839..e544ac31a 100644
+--- a/daemon/src/sip/sipaccount.cpp
++++ b/daemon/src/sip/sipaccount.cpp
+@@ -789,7 +789,8 @@ SIPAccount::sendRegister()
+     if (pjsip_regc_set_transport(regc, &tp_sel) != PJ_SUCCESS)
+         throw VoipLinkException("Unable to set transport");
+ 
+-    setUpTransmissionData(tdata, tp_sel.u.transport->key.type);
++    if (tp_sel.u.transport)
++        setUpTransmissionData(tdata, tp_sel.u.transport->key.type);
+ 
+     // pjsip_regc_send increment the transport ref count by one,
+     if ((status = pjsip_regc_send(regc, tdata)) != PJ_SUCCESS) {
+-- 
+GitLab
+
