@@ -2530,6 +2530,40 @@ Currently supported:
 @end itemize")
     (license license:isc)))
 
+(define-public flatpak-xdg-utils
+  (package
+    (name "flatpak-xdg-utils")
+    (version "1.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/flatpak/flatpak-xdg-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q8wsc46fcjm737hz10jvgci5wl9sz8hj9aix2y2zdj11bqib9af"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-run-session" "--" "meson" "test"
+                                      "--print-errorlogs")))))))
+    (inputs (list glib))
+    (native-inputs (list dbus pkg-config))
+    (synopsis
+     "Simple portal-based commandline tools for use inside sandboxes")
+    (description
+     "This package contains a number of commandline utilities for use inside
+Flatpak sandboxes and other containers, like @command{guix shell --container}.
+They work by talking to portals.  Currently, there is flatpak-spawn for
+running commands in sandboxes as well as xdg-open and xdg-email, which are
+compatible with the well-known scripts of the same name.")
+    (home-page "https://github.com/flatpak/flatpak-xdg-utils")
+    (license (list license:lgpl2.0+ license:lgpl2.1+))))
+
 (define-public libportal
   (package
     (name "libportal")
