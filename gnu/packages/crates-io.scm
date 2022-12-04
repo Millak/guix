@@ -48389,8 +48389,41 @@ hex conversion traits.")
         (sha256
           (base32 "07pff94vqc1mhrqp9i06xzayiad4xfx7588zkqsdw875lpkqrsqc"))))))
 
+(define-public rust-rustc-rayon-0.4
+  (package
+    (name "rust-rustc-rayon")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustc-rayon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ykjr1i56jmi8ykkcr7x555wnxki1vsi703mz6n2x7k0naqg0y8s"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ;XXX can not find rayon?
+       #:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.7)
+        ("rust-either" ,rust-either-1)
+        ("rust-rustc-rayon-core" ,rust-rustc-rayon-core-0.4))
+       #:cargo-development-inputs
+       (("rust-docopt" ,rust-docopt-1))))
+    (home-page "https://github.com/rust-lang/rustc-rayon")
+    (synopsis
+     "Simple work-stealing parallelism for Rust - fork for rustc")
+    (description
+     "Rustc-rayon is a fork of the Rayon crate.  It adds a few \"in progress\"
+features that rustc is using, mostly around deadlock detection.  These features
+are not stable and should not be used by others -- though they may find their
+way into rayon proper at some point.  In general, if you are not rustc, you
+should be using the real rayon crate, not rustc-rayon.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-rustc-rayon-0.3
   (package
+    (inherit rust-rustc-rayon-0.4)
     (name "rust-rustc-rayon")
     (version "0.3.0")
     (source
@@ -48402,7 +48435,6 @@ hex conversion traits.")
        (sha256
         (base32
          "0fjvy8bf0hd1zq9d3fdxbdp4z4p1k8jfyx51k5qip3wk1pwnf9zk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
@@ -48416,20 +48448,39 @@ hex conversion traits.")
         ("rust-rand" ,rust-rand-0.6)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
         ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1))))
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
+
+(define-public rust-rustc-rayon-core-0.4
+  (package
+    (name "rust-rustc-rayon-core")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rustc-rayon-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0c4cf58056ya3282c24bnyq39cwm1rd1m96lymfbb6yvl12929h2"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f   ;XXX cannot find rayon_core?
+       #:cargo-inputs
+       (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
+        ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-num-cpus" ,rust-num-cpus-1))))
     (home-page "https://github.com/rust-lang/rustc-rayon")
-    (synopsis
-     "Simple work-stealing parallelism for Rust - fork for rustc")
+    (synopsis "Core APIs for Rayon - fork for rustc")
     (description
-     "Rustc-rayon is a fork of the Rayon crate.  It adds a few \"in progress\"
-features that rustc is using, mostly around deadlock detection.  These features
-are not stable and should not be used by others -- though they may find their
-way into rayon proper at some point.  In general, if you are not rustc, you
-should be using the real rayon crate, not rustc-rayon.")
+     "Note: This package is an unstable fork made for use in rustc
+
+Rayon-core represents the \"core, stable\" APIs of Rayon: join, scope, and so
+forth, as well as the ability to create custom thread-pools with ThreadPool.")
     (license (list license:asl2.0 license:expat))))
 
 (define-public rust-rustc-rayon-core-0.3
   (package
+    (inherit rust-rustc-rayon-core-0.4)
     (name "rust-rustc-rayon-core")
     (version "0.3.0")
     (source
@@ -48441,7 +48492,6 @@ should be using the real rayon crate, not rustc-rayon.")
         (sha256
          (base32
           "1cwc50mcclzfmhmi87953fjk6cc9ppmchn9mlwzfllq03y1jf97a"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f
        #:cargo-inputs
@@ -48454,15 +48504,7 @@ should be using the real rayon crate, not rustc-rayon.")
        (("rust-libc" ,rust-libc-0.2)
         ("rust-rand" ,rust-rand-0.6)
         ("rust-rand-xorshift" ,rust-rand-xorshift-0.1)
-        ("rust-scoped-tls" ,rust-scoped-tls-1))))
-    (home-page "https://github.com/rust-lang/rustc-rayon")
-    (synopsis "Core APIs for Rayon - fork for rustc")
-    (description
-     "Note: This package is an unstable fork made for use in rustc
-
-Rayon-core represents the \"core, stable\" APIs of Rayon: join, scope, and so
-forth, as well as the ability to create custom thread-pools with ThreadPool.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-scoped-tls" ,rust-scoped-tls-1))))))
 
 (define-public rust-rustc-serialize-0.3
   (package
