@@ -1415,8 +1415,7 @@ style API.")
          (add-after 'patch-source-shebangs 'patch-tests
            (lambda _
              (substitute* "test/parsing/run_tests.sh"
-               (("`which echo`") (which "echo")))
-             #t)))))
+               (("`which echo`") (which "echo"))))))))
     (home-page "https://lloyd.github.io/yajl/")
     (synopsis "C library for parsing JSON")
     (description
