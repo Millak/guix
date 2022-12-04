@@ -38436,19 +38436,19 @@ under its new name.")
 (define-public rust-os-pipe-1
   (package
     (name "rust-os-pipe")
-    (version "1.0.1")
+    (version "1.1.2")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "os-pipe" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "0mczqmqrkzmln4xg5ki1gwgykf4dsii0h4p7fxf667889ysz54ic"))))
+         (base32 "0fa640v9bi1qcq3jgq1p76lphi4fwj4a9msrmfrq87n1z3qm58n6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-winapi" ,rust-winapi-0.3))))
+        ("rust-windows-sys" ,rust-windows-sys-0.42))))
     (native-inputs
      (list python-minimal-wrapper))     ; For the tests.
     (home-page "https://github.com/oconnor663/os_pipe.rs")
