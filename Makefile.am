@@ -427,6 +427,7 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.9-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
+  gnu/packages/aux-files/python/sanity-check-next.py	\
   gnu/packages/aux-files/python/sitecustomize.py	\
   gnu/packages/aux-files/renpy/renpy.in	\
   gnu/packages/aux-files/run-in-namespace.c
@@ -754,20 +755,35 @@ endef
 # in <https://issues.guix.gnu.org/48963>.  Each 'eval' call below creates a
 # 'make-*-go' phony target that builds the corresponding subset.
 
-MODULES_CORE     = guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
-MODULES_PACKAGES = $(filter gnu/packages/%,$(MODULES))
-MODULES_SYSTEM   = gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
-MODULES_CLI      = $(filter guix/scripts/%,$(MODULES))
-MODULES_PO       = guix/build/po.scm
+first_half :=								\
+  gnu/packages/a% gnu/packages/b% gnu/packages/c% gnu/packages/d%	\
+  gnu/packages/e% gnu/packages/f% gnu/packages/g% gnu/packages/h%	\
+  gnu/packages/i% gnu/packages/j% gnu/packages/k% gnu/packages/l%
+
+MODULES_CORE      := guix.scm $(filter-out guix/scripts/%,$(filter guix/%,$(MODULES)))
+MODULES_PACKAGES1 := $(filter $(first_half),$(MODULES))
+MODULES_PACKAGES2 := $(filter-out $(first_half),$(filter gnu/packages/%,$(MODULES)))
+MODULES_PACKAGES  := $(MODULES_PACKAGES1) $(MODULES_PACKAGES2)
+MODULES_SYSTEM    := gnu.scm $(filter-out gnu/packages/%,$(filter gnu/%,$(MODULES)))
+MODULES_CLI       := $(filter guix/scripts/%,$(MODULES))
+MODULES_PO        := guix/build/po.scm
 
 $(eval $(call guile-compilation-rule,make-core-go,	\
   $(MODULES_CORE) guix/config.scm $(dist_noinst_DATA),	\
   0))
 .PHONY: make-core-go
 
-$(eval $(call guile-compilation-rule,make-packages-go,	\
-  $(MODULES_PACKAGES) make-core-go,			\
+$(eval $(call guile-compilation-rule,make-packages1-go,	\
+  $(MODULES_PACKAGES1) make-core-go,			\
   $(words $(MODULES_CORE))))
+.PHONY: make-packages1-go
+
+$(eval $(call guile-compilation-rule,make-packages2-go,	\
+  $(MODULES_PACKAGES2) make-core-go make-packages1-go,	\
+  $(words $(MODULES_CORE) $(MODULES_PACKAGES1))))
+.PHONY: make-packages2-go
+
+make-packages-go: make-packages1-go make-packages2-go
 .PHONY: make-packages-go
 
 $(eval $(call guile-compilation-rule,make-system-go,	\
@@ -990,7 +1006,7 @@ release: dist-with-updated-version all
 	      -v1 --no-grafts --fallback
 # Generate the ISO installation images.
 	for system in $(GUIX_SYSTEM_SUPPORTED_SYSTEMS) ; do				\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t iso9660						\
 	    --label="GUIX_$${system}_$(VERSION)"					\
@@ -1006,7 +1022,7 @@ release: dist-with-updated-version all
 	done
 # Generate the VM images.
 	for system in $(GUIX_SYSTEM_VM_SYSTEMS) ; do					\
-	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//v'`" ;	\
+	  GUIX_DISPLAYED_VERSION="`git describe --match=v* | sed -'es/^v//'`" ;		\
 	  image=`$(top_builddir)/pre-inst-env						\
 	    guix system image -t qcow2 $(GUIX_SYSTEM_VM_IMAGE_FLAGS)			\
 	    --save-provenance								\

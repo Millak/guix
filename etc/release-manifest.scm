@@ -61,7 +61,7 @@ TARGET."
   ;; XXX: For now we are less demanding of "i586-gnu".
   (map specification->package
        '("coreutils" "grep" "findutils" "gawk" "make"
-         "gcc-toolchain" "tar" "xz")))
+         #;"gcc-toolchain" "tar" "xz")))
 
 (define %system-packages
   ;; Key packages proposed by the Guix System installer.
