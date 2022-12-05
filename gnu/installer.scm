@@ -27,6 +27,8 @@
   #:use-module (guix utils)
   #:use-module (guix ui)
   #:use-module ((guix self) #:select (make-config.scm))
+  #:use-module (guix describe)
+  #:use-module (guix channels)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (gnu installer utils)
@@ -52,6 +54,7 @@
   #:use-module (gnu system locale)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (web uri)
   #:export (installer-program))
 
 (define module-to-import?
@@ -315,6 +318,25 @@ selected keymap."
              ((installer-final-page current-installer)
               result prev-steps))))))))
 
+(define (provenance-sexp)
+  "Return an sexp representing the currently-used channels, for logging
+purposes."
+  (match (match (current-channels)
+           (() (and=> (repository->guix-channel (dirname (current-filename)))
+                      list))
+           (channels channels))
+    (#f
+     (warning (G_ "cannot determine installer provenance~%"))
+     'unknown)
+    ((channels ...)
+     (map (lambda (channel)
+            (let* ((uri (string->uri (channel-url channel)))
+                   (url (if (or (not uri) (eq? 'file (uri-scheme uri)))
+                            "local checkout"
+                            (channel-url channel))))
+             `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
+          channels))))
+
 (define (installer-program)
   "Return a file-like object that runs the given INSTALLER."
   (define init-gettext
@@ -428,6 +450,9 @@ selected keymap."
 
             (define current-installer newt-installer)
             (define steps (#$steps current-installer))
+
+            (installer-log-line "installer provenance: ~s"
+                                '#$(provenance-sexp))
 
             (dynamic-wind
               (installer-init current-installer)
