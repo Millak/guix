@@ -5854,6 +5854,33 @@ testing and other simple calculations.")
 Enrichment Analysis} (GSEA).")
     (license license:artistic2.0)))
 
+(define-public r-harshlight
+  (package
+    (name "r-harshlight")
+    (version "1.70.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "Harshlight" version))
+              (sha256
+               (base32
+                "0asjgcnwawg8x7ql0srhb2011rvb4kr2cpsa1cy28nfmjfvdf0qm"))))
+    (properties `((upstream-name . "Harshlight")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-altcdfenvs
+           r-biobase))
+    (home-page "http://asterion.rockefeller.edu/Harshlight/")
+    (synopsis "Corrective make-up program for microarray chips")
+    (description
+     "The package detects extended diffuse and compact blemishes on microarray
+chips.  Harshlight marks the areas in a collection of chips (affybatch
+objects).  A corrected @code{AffyBatch} object will result.  The package
+replaces the defected areas with @code{N/A}s or the median of the values of
+the same probe.  The new version handles the substitute value as a whole
+matrix to solve the memory problem.")
+    (license license:gpl2+)))
+
 (define-public r-hpar
   (package
     (name "r-hpar")
