@@ -6010,6 +6010,33 @@ reduction (between group analysis) and joint dimension reduction of two
 datasets (coinertia analysis).")
     (license license:artistic2.0)))
 
+(define-public r-makecdfenv
+  (package
+    (name "r-makecdfenv")
+    (version "1.74.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "makecdfenv" version))
+              (sha256
+               (base32
+                "0bvj5dg6yfjnhga1z8788zmb98d8shyz8pzz0ggnml87c1p2gy25"))))
+    (properties `((upstream-name . "makecdfenv")))
+    (build-system r-build-system)
+    (inputs (list zlib))
+    (propagated-inputs
+     (list r-affy
+           r-affyio
+           r-biobase
+           r-zlibbioc))
+    (home-page "https://bioconductor.org/packages/makecdfenv")
+    (synopsis "Chip description file environment maker")
+    (description
+     "This package implements two functions.  One of them reads an Affymetrix
+@acronym{CDF, chip description file} and creates a hash table environment
+containing the location/probe set membership mapping.  The other one creates a
+package that automatically loads that environment.")
+    (license license:gpl2+)))
+
 (define-public r-metaneighbor
   (package
     (name "r-metaneighbor")
