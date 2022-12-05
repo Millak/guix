@@ -457,30 +457,27 @@ physics settings to tweak as well.")
         (base32 "0vw94issjzz6rji0ssqv5yrll513dvj7m0d33q8lbih1gdh4alal"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags (list (string-append "-DDATADIR="
-                                              (assoc-ref %outputs "out")
-                                              "/share/astromenace"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           ;; Upstream provides no install phase.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share (string-append out "/share"))
-                    (apps (string-append share "/applications"))
-                    (data (string-append share "/astromenace"))
-                    (icons (string-append share "/icons/hicolor/64x64/apps")))
-               (install-file "astromenace" bin)
-               (install-file "gamedata.vfs" data)
-               (let ((source (assoc-ref inputs "source")))
-                 (with-directory-excursion (string-append source "/share")
-                   (install-file "astromenace.desktop" apps)
-                   (mkdir-p icons)
-                   (copy-file "astromenace_64.png"
-                              (string-append icons "/astromenace.png")))))
-             #t)))))
+     (list
+      #:tests? #f                       ;no tests
+      #:configure-flags
+      #~(list (string-append "-DDATADIR=" #$output "/share/astromenace"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            ;; Upstream provides no install phase.
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share"))
+                     (apps (string-append share "/applications"))
+                     (data (string-append share "/astromenace"))
+                     (icons (string-append share "/icons/hicolor/64x64/apps")))
+                (install-file "astromenace" bin)
+                (install-file "gamedata.vfs" data)
+                (with-directory-excursion (string-append #$source "/share")
+                  (install-file "astromenace.desktop" apps)
+                  (mkdir-p icons)
+                  (copy-file "astromenace_64.png"
+                             (string-append icons "/astromenace.png")))))))))
     (inputs
      (list freealut
            freetype
