@@ -915,13 +915,13 @@ buffer.")
 (define-public emacs-project
   (package
     (name "emacs-project")
-    (version "0.8.3")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/project-" version ".tar"))
        (sha256
-        (base32 "15x6nbvyy592fwn36syxi9719sknvrm4bwnpyc16z9jn2xm62q3p"))))
+        (base32 "0g4cnh771jjwjqhja0kwsv0162ff2xidpk8b6s3r5rzjc9inpcq7"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-xref))
     (home-page "https://elpa.gnu.org/packages/project.html")
