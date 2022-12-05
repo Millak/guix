@@ -14166,18 +14166,17 @@ passive voice.")
       #:test-command #~(list "make" "test-dirty")
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'configure
-            ;; XXX: Generate "org-loaddefs.el" and set proper version string.
+          (replace 'expand-load-path
+            ;; Make sure `load-path' includes "lisp" directory, otherwise
+            ;; byte-compilation fails.
+            (lambda args
+              (with-directory-excursion "lisp"
+                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
+          (add-after 'expand-load-path 'bootstrap
+            ;; XXX: Generate "org-loaddefs.el".
             (lambda _
-              (invoke "make" "autoloads"
-                      (string-append "ORGVERSION=" #$version))
-              (let ((elpa (elpa-directory #$output))
-                    (info (string-append #$output "/share/info")))
-                (substitute* "local.mk"
-                  (("^lispdir.*") (string-append "lispdir = " elpa))
-                  (("^datadir.*") (string-append "datadir = " elpa "/etc"))
-                  (("^infodir.*") (string-append "infodir = " info))))))
-          (add-after 'configure 'fix-tests
+              (invoke "make" "autoloads")))
+          (add-before 'check 'fix-tests
             (lambda* (#:key inputs #:allow-other-keys)
               ;; XXX: Running tests updates ID locations.  The process expects
               ;; a file to be writeable in "~/.emacs.d/".
@@ -14201,15 +14200,15 @@ passive voice.")
               (substitute* "testing/lisp/test-org.el"
                 (("test-org/org-(encode-time|time-string-to-time) .*" all)
                  (string-append all "  (skip-unless nil)\n")))))
-          (replace 'expand-load-path
-            ;; Make sure `load-path' includes "lisp" directory, otherwise
-            ;; byte-compilation fails.
-            (lambda args
-              (with-directory-excursion "lisp"
-                (apply (assoc-ref %standard-phases 'expand-load-path) args))))
           (replace 'install
             (lambda _
-              (invoke "make" "install")))
+              (let ((elpa (elpa-directory #$output))
+                    (info (string-append #$output "/share/info")))
+                (substitute* "local.mk"
+                  (("^lispdir.*") (string-append "lispdir = " elpa))
+                  (("^datadir.*") (string-append "datadir = " elpa "/etc"))
+                  (("^infodir.*") (string-append "infodir = " info))))
+              (invoke "make" "install" (string-append "ORGVERSION=" #$version))))
           (add-after 'install 'install-org-news
             ;; Install ORG-NEWS files in doc directory.
             (lambda _
