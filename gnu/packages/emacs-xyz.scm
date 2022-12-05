@@ -5306,27 +5306,30 @@ intended to be.")
     (license license:gpl3+)))
 
 (define-public emacs-ef-themes
-  (package
-    (name "emacs-ef-themes")
-    (version "0.9.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://git.sr.ht/~protesilaos/ef-themes")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1h1xlcbcay8wlmhzv7b5h6vrvwdwkzc171aa0rfja2xds4ry9k0m"))))
-    (build-system emacs-build-system)
-    (home-page "https://git.sr.ht/~protesilaos/ef-themes")
-    (synopsis "Colorful and legible themes")
-    (description
-     "The Ef themes are a collection of light and dark themes for GNU Emacs
+  ;; XXX: Upstream did not tag last release.  The commit below matches version
+  ;; bump.
+  (let ((commit "35201e49e8c3f5d1a2d6c17cb1697a9e18529a9a"))
+    (package
+      (name "emacs-ef-themes")
+      (version "0.10.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~protesilaos/ef-themes")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0c3gly6d5037dvvznf1mzihrfrcrrjmnsd2dda5k4frfyrc25rmn"))))
+      (build-system emacs-build-system)
+      (home-page "https://git.sr.ht/~protesilaos/ef-themes")
+      (synopsis "Colorful and legible themes")
+      (description
+       "The Ef themes are a collection of light and dark themes for GNU Emacs
 whose goal is to provide colorful yet legible options for users who want
 something with a bit more flair than the Modus themes.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-espuds
   (package
