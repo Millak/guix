@@ -2492,6 +2492,37 @@ mapped reads).  It is currently designed for un-stranded paired-end RNA-seq
 data.")
     (license license:gpl2+)))
 
+(define-public r-altcdfenvs
+  (package
+    (name "r-altcdfenvs")
+    (version "2.60.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "altcdfenvs" version))
+              (sha256
+               (base32
+                "0fm4l93j6nm1w1w57zzryc1hkzapp8l16pkwjzdzllvwvsnsg8r0"))))
+    (properties `((upstream-name . "altcdfenvs")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-biobase
+           r-biocgenerics
+           r-biostrings
+           r-hypergraph
+           r-makecdfenv
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/altcdfenvs")
+    (synopsis
+     "Convenience data structures and functions to handle CDF environments")
+    (description
+     "The package is usable with Affymetrix GeneChip short oligonucleotide
+arrays, and it can be adapted or extended to other platforms.  It is able to
+modify or replace the grouping of probes in the probe sets.  Also, the package
+contains simple functions to read R connections in the FASTA format and it can
+create an alternative mapping from sequences.")
+    (license license:gpl2+)))
+
 (define-public r-aneufinder
   (package
     (name "r-aneufinder")
