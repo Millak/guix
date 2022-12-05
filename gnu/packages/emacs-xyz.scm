@@ -20193,13 +20193,13 @@ temperature shifting tools and brightness adaption software.")
 (define-public emacs-peg
   (package
     (name "emacs-peg")
-    (version "1.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/peg-" version ".tar"))
        (sha256
-        (base32 "0skr5dz9k34r409hisnj37n1b7n62l3md0glnfx578xkbmxlpcxl"))))
+        (base32 "0yxfwwwc6fck1p9smcm1dwnva42868xvavhy7j749vlxrgb3v94x"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/peg.html")
     (synopsis "Parsing Expression Grammars in Elisp")
