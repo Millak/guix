@@ -2202,6 +2202,53 @@ conditions or various species.  @code{AMOUNTAIN} aims to search active modules
 in multi-layer WGCN using a continuous optimization approach.")
     (license license:gpl2+)))
 
+(define-public r-amplican
+  (package
+    (name "r-amplican")
+    (version "1.20.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "amplican" version))
+              (sha256
+               (base32
+                "1c990i6gxbarcpbdpkz017x94spwzap95l95synlizbkyif4z8ij"))))
+    (properties `((upstream-name . "amplican")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biocparallel
+           r-biostrings
+           r-clustercrit
+           r-data-table
+           r-dplyr
+           r-genomeinfodb
+           r-genomicranges
+           r-ggplot2
+           r-ggthemes
+           r-gridextra
+           r-gtable
+           r-iranges
+           r-knitr
+           r-matrix
+           r-matrixstats
+           r-rcpp
+           r-rmarkdown
+           r-s4vectors
+           r-shortread
+           r-stringr
+           r-waffle))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/valenlab/amplican")
+    (synopsis "Automated analysis of CRISPR experiments")
+    (description
+     "The package performs alignment of the amplicon reads, normalizes
+gathered data, calculates multiple statistics (e.g. cut rates, frameshifts)
+and presents the results in the form of aggregated reports.  Data and
+statistics can be broken down by experiments, barcodes, user defined groups,
+guides and amplicons allowing for quick identification of potential
+problems.")
+    (license license:gpl3)))
+
 (define-public r-amaretto
   (package
     (name "r-amaretto")
