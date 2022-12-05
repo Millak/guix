@@ -1351,6 +1351,29 @@ this one is much simpler and much more consistent.  When using this package,
 then only the color of the mode line changes when a window becomes in-/active.")
     (license license:gpl3+)))
 
+(define-public emacs-acme-theme
+  (let ((commit "7c408d111c5e451ecb8fdd5f76cf7d8074aec793")
+        (revision "0"))
+    (package
+      (name "emacs-acme-theme")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/ianyepan/acme-emacs-theme")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "16qxspzlf0bvw36ff4qnrn5p7mc5sf923ba0ar04cr87bfqgyak4"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/ianyepan/acme-emacs-theme")
+      (synopsis "Emacs theme inspired by Plan 9's Acme and Sam Editor")
+      (description "Acme theme is an Emacs theme with an old-school vibe
+inspired by Plan 9 Acme and the Sam text editor.")
+      (license license:gpl3+))))
+
 (define-public emacs-theme-magic
   ;; No tagged release upstream, but the commit below correspond to the 0.2.3
   ;; release.
