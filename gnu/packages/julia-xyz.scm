@@ -1472,6 +1472,15 @@ valuable enough at this time.")
                 (("pip install")
                  (string-append (search-input-file inputs "bin/pip")
                                 " install")))))
+          (add-after 'link-depot 'fix-test-git-submodule
+            ;; Git v2.38.1 fixes security issues and changes the default
+            ;; behaviour of `git submodule`.  This substitution is a backport
+            ;; of the upstream patch, not yet released, fixing the test suite.
+            ;; https://github.com/JuliaDocs/Documenter.jl/commit/b5a5c65d02d136743e7c18ffebf8baba900484fc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/utilities.jl"
+                (("submodule add")
+                 "-c protocol.file.allow=always submodule add"))))
           (add-after 'link-depot 'remove-javascript-downloads
             (lambda _
               (substitute* "src/Writers/HTMLWriter.jl"
