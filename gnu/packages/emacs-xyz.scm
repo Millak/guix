@@ -4158,7 +4158,7 @@ during idle time, while Emacs is doing nothing else.")
 (define-public emacs-pdf-tools
   (package
     (name "emacs-pdf-tools")
-    (version "0.91")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -4167,7 +4167,7 @@ during idle time, while Emacs is doing nothing else.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07ixspgn4s1jg66w7m2f3sh43giakz9srhp7rpw389z32g57i1rx"))))
+        (base32 "1idazz46zx2q84di4p73770l4bcnai2a03q95psg827ykdnmjwij"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; there are no tests
