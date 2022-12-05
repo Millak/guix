@@ -3931,6 +3931,8 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
 (define-public python-jsonschema-next
   (package
     (inherit python-jsonschema)
+    ;; XXX: Update to the latest version requires new build system - Hatch
+    ;; https://hatch.pypa.io/
     (version "4.5.1")
     (source
      (origin
@@ -3938,25 +3940,9 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
        (uri (pypi-uri "jsonschema" version))
        (sha256
         (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-jsonschema)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            ;; XXX: PEP 517 manual build/install procedures copied from
-            ;; python-isort.
-            (replace 'build
-              (lambda _
-                ;; ZIP does not support timestamps before 1980.
-                (setenv "SOURCE_DATE_EPOCH" "315532800")
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((whl (car (find-files "dist" "\\.whl$"))))
-                  (invoke "pip" "--no-cache-dir" "--no-input"
-                          "install" "--no-deps" "--prefix" #$output whl))))))))
-    (native-inputs (list python-pypa-build
-                         python-setuptools-scm
-                         python-twisted))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-scm python-twisted))
     (propagated-inputs
      (list python-attrs
            python-importlib-metadata
