@@ -54,6 +54,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)               ;libnotify
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages image)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
@@ -208,6 +209,32 @@ solution (client-side agent)")
     (properties
      '((release-monitoring-url . "https://www.zabbix.com/download_sources")
        (upstream-name . "zabbix")))))
+
+(define-public zabbix-agent2
+  (package/inherit zabbix-agentd
+    (name "zabbix-agent2")
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-agent"
+                   "--enable-agent2"
+                   "--enable-ipv6"
+                   "--with-libpcre2"
+                   ;; agent2 only supports OpenSSL.
+                   (string-append "--with-openssl="
+                                  (dirname (dirname
+                                            (search-input-file
+                                             %build-inputs "lib/libssl.so")))))
+           #:make-flags
+           #~'("BUILD_TIME=00:00:01" "BUILD_DATE=Jan 1 1970")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-HOME
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go pkg-config))
+    (inputs
+     (list openssl pcre2 zlib))))
 
 (define-public zabbix-server
   (package
