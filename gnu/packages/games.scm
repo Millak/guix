@@ -445,7 +445,7 @@ physics settings to tweak as well.")
 (define-public astromenace
   (package
     (name "astromenace")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -454,7 +454,7 @@ physics settings to tweak as well.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ad6l887jxqv8xspwc2rvy8ym9sdlmkqdqhsh0pi076kjarxsyws"))))
+        (base32 "0vw94issjzz6rji0ssqv5yrll513dvj7m0d33q8lbih1gdh4alal"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no test
