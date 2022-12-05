@@ -14094,6 +14094,30 @@ problems into least squares ones first.")
 exact and interval-censored observations.")
     (license license:gpl2+)))
 
+(define-public r-clustercrit
+  (package
+    (name "r-clustercrit")
+    (version "1.2.8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "clusterCrit" version))
+              (sha256
+               (base32
+                "10pz1bikdbkm2ky3xnagp0qv60whalavp6j39b4p7d75jj5xcxgk"))))
+    (properties `((upstream-name . "clusterCrit")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://www.r-project.org/")
+    (synopsis "Computing clustering validation indices")
+    (description
+     "The @code{clusterCrit} package provides an implementation of the
+following indices: Czekanowski-Dice, Folkes-Mallows, Hubert Γ, Jaccard,
+McNemar, Kulczynski, Phi, Rand, Rogers-Tanimoto, Russel-Rao or Sokal-Sneath.
+ClusterCrit defines several functions which compute internal quality indices
+or external comparison indices.  The partitions are specified as an integer
+vector giving the index of the cluster each observation belongs to.")
+    (license license:gpl2+)))
+
 (define-public r-clusteval
   (package
     (name "r-clusteval")
