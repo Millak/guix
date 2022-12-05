@@ -9996,7 +9996,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.20")
+    (version "0.29")
     (source
      (origin
        (method git-fetch)
@@ -10004,7 +10004,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "1rm53sqfl8hnb1l1fr0s8kxgp03prc2ggywqs5ssiqx87vhyn70w"))
+        (base32 "11wk1511hj8m9rmccgq4fb8x7vlr9pi00a9h285lxwj1bdmy9dlz"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
