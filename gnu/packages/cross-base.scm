@@ -7,6 +7,7 @@
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,9 @@
   #:use-module (gnu packages mingw)
   #:use-module (guix platform)
   #:use-module (guix packages)
+  #:use-module (guix diagnostics)
   #:use-module (guix download)
+  #:use-module (guix i18n)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -74,7 +77,20 @@
         `(cons ,(string-append "--target=" target)
                ,flags))))))
 
-(define* (cross-binutils target #:optional (binutils binutils))
+(define (contains-keyword? args)
+  "Check if ARGS contains a keyword object."
+  (find keyword? args))
+
+(define* (cross-binutils . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-binutils* args)
+      (apply cross-binutils/deprecated args)))
+
+(define* (cross-binutils/deprecated target #:optional (binutils binutils))
+  (warning (G_ "'cross-binutils' must be used with keyword arguments~%"))
+  (cross-binutils* target #:binutils binutils))
+
+(define* (cross-binutils* target #:key (binutils binutils))
   "Return a cross-Binutils for TARGET using BINUTILS."
   (let ((binutils (package
                     (inherit binutils)
@@ -333,11 +349,27 @@ target that libc."
                              %gcc-cross-include-paths)))
     (native-search-paths '())))
 
-(define* (cross-kernel-headers target
-                               #:optional
-                               (linux-headers linux-libre-headers)
-                               (xgcc (cross-gcc target))
-                               (xbinutils (cross-binutils target)))
+(define* (cross-kernel-headers . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-kernel-headers* args)
+      (apply cross-kernel-headers/deprecated args)))
+
+(define* (cross-kernel-headers/deprecated target
+                                          #:optional
+                                          (linux-headers linux-libre-headers)
+                                          (xgcc (cross-gcc target))
+                                          (xbinutils (cross-binutils target)))
+  (warning (G_ "'cross-kernel-headers' must be used with keyword arguments~%"))
+  (cross-kernel-headers* target
+                         #:linux-headers linux-headers
+                         #:xgcc xgcc
+                         #:xbinutils xbinutils))
+
+(define* (cross-kernel-headers* target
+                                #:key
+                                (linux-headers linux-libre-headers)
+                                (xgcc (cross-gcc target))
+                                (xbinutils (cross-binutils target)))
   "Return headers depending on TARGET."
 
   (define xlinux-headers
@@ -491,12 +523,30 @@ target that libc."
     ((or "i586-pc-gnu" "i586-gnu") xhurd-core-headers)
     (_ xlinux-headers)))
 
-(define* (cross-libc target
-                     #:optional
-                     (libc glibc)
-                     (xgcc (cross-gcc target))
-                     (xbinutils (cross-binutils target))
-                     (xheaders (cross-kernel-headers target)))
+(define* (cross-libc . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-libc* args)
+      (apply cross-libc/deprecated args)))
+
+(define* (cross-libc/deprecated target
+                                #:optional
+                                (libc glibc)
+                                (xgcc (cross-gcc target))
+                                (xbinutils (cross-binutils target))
+                                (xheaders (cross-kernel-headers target)))
+  (warning (G_ "'cross-libc' must be used with keyword arguments~%"))
+  (cross-libc* target
+               #:libc libc
+               #:xgcc xgcc
+               #:xbinutils xbinutils
+               #:xheaders xheaders))
+
+(define* (cross-libc* target
+                      #:key
+                      (libc glibc)
+                      (xgcc (cross-gcc target))
+                      (xbinutils (cross-binutils target))
+                      (xheaders (cross-kernel-headers target)))
   "Return LIBC cross-built for TARGET, a GNU triplet. Use XGCC and XBINUTILS
 and the cross tool chain."
   (if (target-mingw? target)
