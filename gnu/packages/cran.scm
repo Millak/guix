@@ -15146,6 +15146,35 @@ Processing.")
      "This package provides a framework for text mining applications within R.")
     (license license:gpl3)))
 
+(define-public r-waffle
+  (package
+    (name "r-waffle")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "waffle" version))
+              (sha256
+               (base32
+                "1qjmai33p96cyavi9lgi6k30h6fj7db5sr569v9jf4kwx92c61df"))))
+    (properties `((upstream-name . "waffle")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-extrafont
+           r-ggplot2
+           r-gridextra
+           r-gtable
+           r-rcolorbrewer))
+    (home-page "https://github.com/hrbrmstr/waffle/tree/cran")
+    (synopsis "Creating waffle chart visualizations in R")
+    (description
+     "This package creates square pie charts also known as waffle charts.
+These can be used to communicate parts of a whole for categorical quantities.
+To emulate the percentage view of a pie chart, a 10x10 grid should be used.
+In this way each square is representing 1% of the total.  Waffle provides
+tools to create charts as well as stitch them together.  Isotype pictograms
+can be made by using glyphs.")
+    (license license:gpl2+)))
+
 (define-public r-waveslim
   (package
     (name "r-waveslim")
