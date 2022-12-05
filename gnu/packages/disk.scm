@@ -589,11 +589,10 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
       ;; as ‘/dev/disk/by-id/’.
      `(#:tests? #f))
     (inputs
-     (list `(,util-linux "lib") parted glib gtkmm-3 libxml2))
+     (list `(,util-linux "lib") parted glib gtkmm-3 lvm2 libxml2))
     (native-inputs
      (list intltool
            itstool
-           lvm2 ; for tests
            yelp-tools
            pkg-config))
     (home-page "https://gparted.org/")
