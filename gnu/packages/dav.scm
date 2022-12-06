@@ -157,7 +157,7 @@ efficient syncing
            python-pytest-cov
            python-pytest-httpserver
            radicale))
-    (propagated-inputs
+    (inputs
      (list python-aiohttp
            python-aiostream
            python-atomicwrites
