@@ -356,13 +356,12 @@ provided as a list of file-like objects."))
            (config-dir (file-append (config->fail2ban-etc-directory config)
                                     "/etc/fail2ban"))
            (fail2ban-action (lambda args
-                              #~(lambda _
-                                  (invoke #$fail2ban-server
-                                          "-c" #$config-dir
-                                          "-p" #$pid-file
-                                          "-s" #$socket-file
-                                          "-b"
-                                          #$@args)))))
+                              #~(invoke #$fail2ban-server
+                                        "-c" #$config-dir
+                                        "-p" #$pid-file
+                                        "-s" #$socket-file
+                                        "-b"
+                                        #$@args))))
 
       ;; TODO: Add 'reload' action.
       (list (shepherd-service
@@ -371,8 +370,11 @@ provided as a list of file-like objects."))
              (requirement '(user-processes))
              (modules `((ice-9 match)
                         ,@%default-modules))
-             (start (fail2ban-action "start"))
-             (stop (fail2ban-action "stop")))))))
+             (start #~(lambda ()
+                        #$(fail2ban-action "start")))
+             (stop #~(lambda (_)
+                       #$(fail2ban-action "stop")
+                       #f)))))))                  ;successfully stopped
 
 (define fail2ban-service-type
   (service-type (name 'fail2ban)
