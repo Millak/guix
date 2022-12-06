@@ -11196,7 +11196,7 @@ the C/C++ function at point.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1j92ll2afvcp891fxra3sawxg000cs3ra01wxksiil2dg5zpzzkn"))))
+           "18kx2mfmxy8s8csnp0iaiirl2z9baicq9f2w7rxlgkxww5511v7d"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-function-args emacs-lispy emacs-zoutline))
