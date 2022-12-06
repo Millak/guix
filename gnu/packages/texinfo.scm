@@ -75,7 +75,8 @@
             %standard-phases)
 
        ;; XXX: Work around <https://issues.guix.gnu.org/59616>.
-       #:tests? ,(not (hurd-target?))))
+       #:tests? ,(and (not (hurd-target?))
+                      (not (%current-target-system)))))
     (inputs (list ncurses perl))
     ;; When cross-compiling, texinfo will build some of its own binaries with
     ;; the native compiler. This means ncurses is needed both in both inputs
