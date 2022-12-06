@@ -11170,7 +11170,7 @@ state and will work even without lispy being enabled.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "1vxrjy6k030hcbclblgcaaw7h6k17kl3n9zla08527525c0gma01"))))
+           "1j92ll2afvcp891fxra3sawxg000cs3ra01wxksiil2dg5zpzzkn"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-ivy))
       (home-page "https://github.com/abo-abo/function-args")
