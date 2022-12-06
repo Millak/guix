@@ -36,6 +36,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
@@ -261,6 +262,32 @@ generate both TeX output for high-quality hardcopies or HTML output for online
 browsing.  The documentation is extracted directly from the C/C++/IDL source
 or Java class files.")
     (license gpl2+)))
+
+(define-public pod2pdf
+  (package
+    (name "pod2pdf")
+    (version "0.42")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                     "mirror://cpan/authors/id/J/JO/JONALLEN/pod2pdf-"
+                     version
+                     ".tar.gz"))
+              (sha256
+                (base32
+                  "0w5p7yy01vph74nfr9qzjb18p1avmhhcpza0qz9r88fmb0blbiyv"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     (list perl-getopt-argvfile
+           perl-pdf-api2
+           perl-pod-parser))
+    (home-page "https://metacpan.org/release/pod2pdf")
+    (synopsis "Convert Pod to PDF format")
+    (description "pod2pdf converts documents written in Perl's @acronym{POD, Plain Old
+Documentation} format to PDF files.  It also supports some extensions to the POD
+format, and supports the file types JPG, GIF, TIFF, PNG, and PNM for embedded
+objects.")
+    (license artistic2.0)))
 
 (define-public python-docrepr
   (package
