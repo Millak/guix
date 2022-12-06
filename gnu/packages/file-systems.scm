@@ -752,6 +752,41 @@ transaction log.
 from the jfsutils package.  It is meant to be used in initrds.")
     (license (package-license jfsutils))))
 
+(define-public nilfs-utils
+  (package
+    (name "nilfs-utils")
+    (version "2.2.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://nilfs.sourceforge.io/download"
+                            "/nilfs-utils-" version ".tar.bz2"))
+        (sha256
+         (base32 "15vsayvzr8nc29n939sz9ddq46vpn53rp8h8qv484h88qac3kxjx"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "--enable-static=no")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'bootstrap 'force-bootstrap
+             (lambda _
+               (delete-file "configure")
+               (substitute* "configure.ac"
+                 (("\\[/etc\\]") "[${prefix}/etc]")
+                 (("\\[/sbin\\]") "[${prefix}/sbin]")))))))
+    (inputs
+     (list (list util-linux "lib")))
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://nilfs.sourceforge.io/")
+    (synopsis "Continuous Snapshotting Filesystem")
+    (description
+     "NILFS is a log-structured file system supporting versioning of the entire
+file system and continuous snapshotting, which allows users to even restore
+files mistakenly overwritten or destroyed just a few seconds ago.")
+    (license license:gpl3+)))
+
 (define-public disorderfs
   (package
     (name "disorderfs")
