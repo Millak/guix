@@ -873,7 +873,7 @@ notebooks and tiling window managers.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "42.1")
+    (version "42.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -882,12 +882,13 @@ notebooks and tiling window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dlqa69zvzzdxyh21qfrx2nhpfy0fbihxpgkxqmramcgv3h5k4q3"))
+                "0qq2p19p3r3lz8yfynpnf36cipv54bzdbmq1x5zgwhyl4yl41g28"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gettext-minimal
+     (list gcr
+           gettext-minimal
            gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
            pkg-config
