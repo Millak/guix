@@ -6601,6 +6601,37 @@ whole lot more into a single form.")
 (define-public ecl-metabang-bind
   (sbcl-package->ecl-package sbcl-metabang-bind))
 
+(define-public sbcl-fare-csv
+  (let ((commit "f877a238dcbf587a89359cccf2128919a94a348c")
+        (revision "0"))
+    (package
+      (name "sbcl-fare-csv")
+      (version (git-version "1.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/frideau/fare-csv")
+               (commit commit)))
+         (file-name (git-file-name "cl-fare-csv" version))
+         (sha256
+          (base32 "0k3mf968w94m4yff1k2jh7xlnpsm016qs4448bvklacjrr72vk8x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-hu.dwim.stefil))
+      (home-page "https://gitlab.common-lisp.net/frideau/fare-csv/")
+      (synopsis "Robust CSV parser and printer")
+      (description
+       "This package provides a robust CSV parser and printer that tries to
+follow the fine print of de facto standards.  It can be configured to choose
+which standard exactly.")
+      (license license:expat))))
+
+(define-public cl-fare-csv
+  (sbcl-package->cl-source-package sbcl-fare-csv))
+
+(define-public ecl-fare-csv
+  (sbcl-package->ecl-package sbcl-fare-csv))
+
 (define-public sbcl-fare-utils
   (let ((commit "66e9c6f1499140bc00ccc22febf2aa528cbb5724")
         (revision "1"))
