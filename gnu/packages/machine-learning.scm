@@ -43,6 +43,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
@@ -1282,6 +1283,51 @@ predictive of the outcome in supervised learning problems, and are especially
 good at identifying feature interactions that are normally overlooked by
 standard feature selection algorithms.")
     (license license:expat)))
+
+(define-public python-cleanlab
+  (package
+    (name "python-cleanlab")
+    (version "2.2.0")
+    ;; The version on pypi does not come with tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cleanlab/cleanlab")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00dqhxpwg781skknw943ynll2s44g4j125dx8aapk1d5d71sbzqy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX This requires pytest lazy_fixture
+             (delete-file "tests/test_multilabel_classification.py")
+             ;; Requires tensorflow
+             (delete-file "tests/test_frameworks.py")
+             ;; Tries to download datasets from the internet at runtime.
+             (delete-file "tests/test_dataset.py"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scikit-learn
+           python-termcolor
+           python-tqdm))
+    (native-inputs
+     (list python-pytest
+           python-pytorch
+           python-torchvision))
+    (home-page "https://cleanlab.ai")
+    (synopsis "Automatically find and fix dataset issues")
+    (description
+     "cleanlab automatically finds and fixes errors in any ML dataset. This
+data-centric AI package facilitates machine learning with messy, real-world
+data by providing clean labels during training.")
+    (license license:agpl3+)))
 
 (define-public python-cmaes
   (package
