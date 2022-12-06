@@ -291,24 +291,17 @@ similar XML files, in the same way the @command{diff} utility does it.")
 (define-public python-janus
   (package
     (name "python-janus")
-    (version "0.6.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "janus" version))
        (sha256
-        (base32 "030xvl2vghi5ispfalhvch1rl6i2jsy5bf1dgjafa7vifppy04j7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--cov=janus" "--cov=tests")))))))
+        (base32 "04hnrdcf03g1s0x3sr72sh9gnszz6kyfsl9dg8a4n0zvvhn6z5yz"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov python-pytest-asyncio))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/aio-libs/janus/")
     (synopsis
      "Sync-async queue to interoperate between asyncio tasks and classic threads")
