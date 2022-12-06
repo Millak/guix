@@ -45,6 +45,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freeipmi)
   #:use-module (gnu packages linux)
@@ -75,8 +76,13 @@
        '(begin
           (use-modules (guix build utils))
           ;; Delete pre-generated manpages and documents.
-          ;; TODO: Add pod2pdf for pdfs, generate rst files.
-          (for-each delete-file (find-files "src" "\\.(1|7|html)$"))))))
+          ;; TODO: generate rst files.
+          ;; parallel_cheat_bw.pdf uses libreoffice to be generated.
+          (rename-file "src/parallel_cheat_bw.pdf"
+                       "src/parallel_cheat_bw.pdf-keep")
+          (for-each delete-file (find-files "src" "\\.(1|7|html|pdf)$"))
+          (rename-file "src/parallel_cheat_bw.pdf-keep"
+                       "src/parallel_cheat_bw.pdf")))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -111,7 +117,7 @@
                      "echo"
                      ":::" "1" "2" "3"))))))
     (native-inputs
-     (list perl))
+     (list perl pod2pdf))
     (inputs
      (list bash-minimal perl procps))
     (home-page "https://www.gnu.org/software/parallel/")
