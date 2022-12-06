@@ -1651,6 +1651,8 @@ by @code{dovecot-configuration}.  @var{config} may also be created by
   opensmtpd-configuration?
   (package     opensmtpd-configuration-package
                (default opensmtpd))
+  (shepherd-requirement opensmtpd-configuration-shepherd-requirement
+                        (default '())) ; list of symbols
   (config-file opensmtpd-configuration-config-file
                (default %default-opensmtpd-config-file))
   (setgid-commands? opensmtpd-setgid-commands? (default #t)))
@@ -1667,10 +1669,11 @@ match from local for any action outbound
 "))
 
 (define (opensmtpd-shepherd-service config)
-  (match-record config <opensmtpd-configuration> (package config-file)
+  (match-record config <opensmtpd-configuration>
+                       (package config-file shepherd-requirement)
     (list (shepherd-service
            (provision '(smtpd))
-           (requirement '(loopback))
+           (requirement `(loopback ,@shepherd-requirement))
            (documentation "Run the OpenSMTPD daemon.")
            (start (let ((smtpd (file-append package "/sbin/smtpd")))
                     #~(make-forkexec-constructor

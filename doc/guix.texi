@@ -25729,6 +25729,11 @@ Data type representing the configuration of opensmtpd.
 @item @code{package} (default: @var{opensmtpd})
 Package object of the OpenSMTPD SMTP server.
 
+@item @code{shepherd-requirement} (default: @code{'()})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'networking}
+if you want to configure OpenSMTPD to listen on non-loopback interfaces.
+
 @item @code{config-file} (default: @code{%default-opensmtpd-config-file})
 File-like object of the OpenSMTPD configuration file to use.  By default
 it listens on the loopback network interface, and allows for mail from
