@@ -3671,18 +3671,6 @@ with sensible defaults out of the box.")
         (base32 "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
     (arguments `())))
 
-(define-public python-click-5
-  (package (inherit python-click)
-    (name "python-click")
-    (version "5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "click" version))
-       (sha256
-        (base32 "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337"))))
-    (arguments `())))
-
 (define-public python-cligj
   (package
     (name "python-cligj")
