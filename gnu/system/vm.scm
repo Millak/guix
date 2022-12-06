@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -234,8 +234,8 @@ with '-virtfs' options for the host file systems listed in SHARED-FS."
 
      #$@(map virtfs-option shared-fs)
      #$@(if rw-image?
-            #~((format #f "-drive file=~a,if=virtio" #$image))
-            #~((format #f "-drive file=~a,if=virtio,cache=writeback,werror=report,readonly=on"
+            #~((format #f "-drive file=~a,format=qcow2,if=virtio" #$image))
+            #~((format #f "-drive file=~a,format=raw,if=virtio,cache=writeback,werror=report,readonly=on"
                        #$image)))))
 
 (define* (system-qemu-image/shared-store-script os
@@ -303,17 +303,26 @@ useful when FULL-BOOT?  is true."
               "-m " (number->string #$memory-size)
               #$@options))
 
+    (define copy-image
+      ;; Script that "copies" BASE-IMAGE to /tmp.  Make a copy-on-write image,
+      ;; which is much cheaper than actually copying it.
+      (program-file "copy-image"
+                    (with-imported-modules '((guix build utils))
+                      #~(begin
+                          (use-modules (guix build utils))
+                          (unless (file-exists? #$rw-image)
+                            (invoke #+(file-append qemu "/bin/qemu-img")
+                                    "create" "-b" #$base-image
+                                    "-F" "raw" "-f" "qcow2" #$rw-image))))))
+
     (define builder
       #~(call-with-output-file #$output
           (lambda (port)
             (format port "#!~a~%"
                     #+(file-append bash "/bin/sh"))
-            (when (not #$volatile?)
-              (format port "~a~%"
-                      #$(program-file "copy-image"
-                                      #~(unless (file-exists? #$rw-image)
-                                          (copy-file #$base-image #$rw-image)
-                                          (chmod #$rw-image #o640)))))
+            #$@(if volatile?
+                   #~()
+                   #~((format port "~a~%" #+copy-image)))
             (format port "exec ~a \"$@\"~%"
                     (string-join #$qemu-exec " "))
             (chmod port #o555))))
