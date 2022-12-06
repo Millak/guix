@@ -9512,27 +9512,37 @@ provides user-space tools for creating EROFS file systems.")
        (sha256
         (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
     (native-inputs (list autoconf automake libtool))
-    (inputs (list perl sqlite))
+    (inputs (list perl perl-dbd-sqlite sqlite dmidecode kmod))
     (arguments
-     `(#:configure-flags
-       (list "--enable-all"
-             ;; Don't install unused /etc/sysconfig/rasdaemon environment file.
-             "--with-sysconfdefdir=."
-             "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'munge-autotools
-           (lambda _
-             ;; For some reason upstream forces sysconfdir=/etc.  This results
-             ;; in EPERM during the install phase.  Removing the offending
-             ;; line lets sysconfdir correctly pick up DESTDIR.
-             (substitute* "configure.ac"
-               (("^test .* sysconfdir=/etc\n$") ""))
-             ;; Upstream tries to create /var/lib/rasdaemon at install time.
-             ;; This results in EPERM on guix.  Instead, the service should
-             ;; create this at activation time.
-             (substitute* "Makefile.am"
-               (("^\\s*\\$\\(install_sh\\) -d .*@RASSTATEDIR@.*$") "")))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-all"
+              ;; Don't install unused /etc/sysconfig/rasdaemon environment file.
+              "--with-sysconfdefdir=."
+              "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'munge-autotools
+            (lambda _
+              ;; For some reason upstream forces sysconfdir=/etc.  This results
+              ;; in EPERM during the install phase.  Removing the offending
+              ;; line lets sysconfdir correctly pick up DESTDIR.
+              (substitute* "configure.ac"
+                (("^test .* sysconfdir=/etc\n$") ""))
+              ;; Upstream tries to create /var/lib/rasdaemon at install time.
+              ;; This results in EPERM on guix.  Instead, the service should
+              ;; create this at activation time.
+              (substitute* "Makefile.am"
+                (("^\\s*\\$\\(install_sh\\) -d .*@RASSTATEDIR@.*$") ""))))
+          (add-after 'install 'fix-dmidecode-and-modprobe
+            (lambda _
+              (substitute* (string-append #$output "/sbin/ras-mc-ctl")
+                (("find_prog \\(\"dmidecode\"\\).*$") (format #f "~s;~%" (string-append #$dmidecode "/sbin/dmidecode")))
+                (("find_prog \\(\"modprobe\"\\).*$") (format #f "~s;~%" (string-append #$kmod "/bin/modprobe"))))))
+          (add-after 'wrap 'wrap-rasdaemon
+            (lambda _
+              (wrap-program (string-append #$output "/sbin/ras-mc-ctl")
+                `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:))))))))
     (build-system gnu-build-system)
     (home-page "https://github.com/mchehab/rasdaemon")
     (synopsis "Platform Reliability, Availability, and Serviceability tools")
