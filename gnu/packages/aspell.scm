@@ -320,6 +320,14 @@ dictionaries, including personal ones.")
                      (base32
                       "0w2k5l5rbqpliripgqwiqixz5ghnjf7i9ggbrc4ly4vy1ia10rmc")))
 
+(define-public aspell-dict-nb
+  (aspell-dictionary "nb" "Norwegian Bokmål"
+                     #:version "0.50.1-2"
+                     #:prefix "aspell-"
+                     #:sha256
+                     (base32
+                      "1xvns7dwx2sc0msldj7r2hv0426913rg3dpnkxlrvnsyrxzjpbpc")))
+
 (define-public aspell-dict-pl
   (aspell-dictionary "pl" "Polish"
                      #:version "0.51-0"
