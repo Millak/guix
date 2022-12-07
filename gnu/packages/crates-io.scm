@@ -51767,6 +51767,30 @@ the application/x-www-form-urlencoded format.")
 for later processing.")
     (license license:expat)))
 
+(define-public rust-serde-xml-rs-0.5
+  (package
+    (name "rust-serde-xml-rs")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde-xml-rs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1ypdy4cry8y6jbia0l0cqvkxkdvl7vplzfzb44s6lbxyb682w5k5"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-log" ,rust-log-0.4)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-xml-rs" ,rust-xml-rs-0.8))))
+    (home-page "https://github.com/RReverser/serde-xml-rs")
+    (synopsis "xml-rs based deserializer for Serde")
+    (description "This package provies a xml-rs based deserializer for Serde
+(compatible with 0.9+)")
+    (license license:expat)))
+
 (define-public rust-serde-yaml-0.8
   (package
     (name "rust-serde-yaml")
