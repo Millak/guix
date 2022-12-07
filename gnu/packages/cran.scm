@@ -16280,6 +16280,29 @@ functions.  To this end, the package interfaces with the @dfn{Multiple
 Precision Floating-Point Reliable} (MPFR) library.")
     (license license:gpl2+)))
 
+(define-public r-rmutil
+  (package
+    (name "r-rmutil")
+    (version "1.1.10")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rmutil" version))
+              (sha256
+               (base32
+                "1yd5gkg4jg3rvqrfl8c5r07lcr37n1p9h1a7b6s45iswd77dg7w1"))))
+    (properties `((upstream-name . "rmutil")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://www.commanster.eu/rcode.html")
+    (synopsis
+     "Utilities for nonlinear regression and repeated measurements models")
+    (description
+     "This package provides a toolkit of functions for nonlinear regression
+and repeated measurements.  It was designated to be imported by other packages
+such as @code{gnlm}, @code{stable}, @code{growth}, @code{repeated}, and
+@code{event}.")
+    (license license:gpl2+)))
+
 (define-public r-assertive-base
   (package
     (name "r-assertive-base")
