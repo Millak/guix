@@ -6452,6 +6452,37 @@ color labels, layout, etc.")
     ;; Any version of the GPL
     (license license:gpl2+)))
 
+(define-public r-statip
+  (package
+    (name "r-statip")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "statip" version))
+              (sha256
+               (base32
+                "0kymc3ds1nx0h11ffmm3vmqr1w34gd0k788vf72x2v45h8c1ma2n"))))
+    (properties `((upstream-name . "statip")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-clue r-rpart))
+    (home-page "https://github.com/paulponcet/statip")
+    (synopsis "Statistical functions for probability distributions and regression")
+    (description
+     "This package provides a collection of miscellaneous statistical
+functions for:
+@itemize
+@item probability distributions,
+@item probability density estimation,
+@item most frequent value estimation,
+@item other statistical measures of location,
+@item construction of histograms,
+@item calculation of the Hellinger distance,
+@item use of classical kernels, and
+@item univariate piecewise-constant regression.
+@end itemize")
+    (license license:gpl3)))
+
 (define-public r-stringdist
   (package
     (name "r-stringdist")
