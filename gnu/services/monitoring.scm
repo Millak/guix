@@ -224,14 +224,11 @@ Prometheus.")
 
 
 (define (serialize-string field-name val)
-  (if (and (string? val) (string=? val ""))
+  (if (or (eq? 'user field-name)
+          (eq? 'group field-name)
+          (and (string? val) (string=? val "")))
       ""
       (serialize-field field-name val)))
-
-(define group? string?)
-
-(define serialize-group
-  (const ""))
 
 (define include-files? list?)
 
@@ -256,8 +253,8 @@ Prometheus.")
   (user
    (string "zabbix")
    "User who will run the Zabbix server.")
-  (group ;for zabbix-server-account procedure
-   (group "zabbix")
+  (group
+   (string "zabbix")
    "Group who will run the Zabbix server.")
   (db-host
    (string "127.0.0.1")
@@ -438,7 +435,7 @@ results in a Web interface.")))
    (string "zabbix")
    "User who will run the Zabbix agent.")
   (group
-   (group "zabbix")
+   (string "zabbix")
    "Group who will run the Zabbix agent.")
   (hostname
    (string "")

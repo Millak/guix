@@ -28126,7 +28126,7 @@ The zabbix-server package.
 @item @code{user} (default: @code{"zabbix"}) (type: string)
 User who will run the Zabbix server.
 
-@item @code{group} (default: @code{"zabbix"}) (type: group)
+@item @code{group} (default: @code{"zabbix"}) (type: string)
 Group who will run the Zabbix server.
 
 @item @code{db-host} (default: @code{"127.0.0.1"}) (type: string)
@@ -28212,7 +28212,7 @@ The zabbix-agent package.
 @item @code{user} (default: @code{"zabbix"}) (type: string)
 User who will run the Zabbix agent.
 
-@item @code{group} (default: @code{"zabbix"}) (type: group)
+@item @code{group} (default: @code{"zabbix"}) (type: string)
 Group who will run the Zabbix agent.
 
 @item @code{hostname} (default: @code{""}) (type: string)
