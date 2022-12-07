@@ -1181,6 +1181,52 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
+(define-public python-imbalanced-learn
+  (package
+    (name "python-imbalanced-learn")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "imbalanced-learn" version))
+              (sha256
+               (base32
+                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'unbreak-tests
+           (lambda _
+             ;; The doctests require tensorflow
+             (substitute* "setup.cfg"
+               (("--doctest-modules") ""))
+             ;; Some tests require a home directory
+             (setenv "HOME" (getcwd))
+             ;; We don't have keras
+             (delete-file "imblearn/keras/tests/test_generator.py")
+             ;; We don't have tensorflow
+             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
+    (propagated-inputs
+     (list python-joblib
+           python-numpy
+           python-scikit-learn
+           python-scipy
+           python-threadpoolctl))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-mypy
+           python-pandas
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
+    (synopsis "Toolbox for imbalanced dataset in machine learning")
+    (description "This is a Python package offering a number of re-sampling
+techniques commonly used in datasets showing strong between-class imbalance.
+It is compatible with @code{scikit-learn}.")
+    (license license:expat)))
+
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
