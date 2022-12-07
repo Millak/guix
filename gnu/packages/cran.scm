@@ -7224,6 +7224,26 @@ distributions over time or space.  This package enables the creation of such
 plots in @code{ggplot2}.")
     (license license:gpl2)))
 
+(define-public r-gss
+  (package
+    (name "r-gss")
+    (version "2.2-3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gss" version))
+              (sha256
+               (base32
+                "0jr45lkpcndg5nynjsfnxn1wwkh4gkhsgv4hlvw6jn2frw0n8c14"))))
+    (properties `((upstream-name . "gss")))
+    (build-system r-build-system)
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=gss")
+    (synopsis "General smoothing splines")
+    (description
+     "This package provides a comprehensive collection for structural
+multivariate function estimation using smoothing splines.")
+    (license license:gpl2+)))
+
 (define-public r-cli
   (package
     (name "r-cli")
