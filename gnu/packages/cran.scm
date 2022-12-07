@@ -21901,6 +21901,57 @@ perspective plots, slice plots, surface plots, scatter plots, etc.  It
 includes data sets from oceanography.")
     (license license:gpl3+)))
 
+(define-public r-plotroc
+  (package
+    (name "r-plotroc")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "plotROC" version))
+              (sha256
+               (base32
+                "0kaz9hrimi9gi7cf7flag9kc9yrg5fdyylqa5hn53x4dy8vhj37g"))
+              (snippet
+               '(delete-file "inst/d3.v3.min.js"))))
+    (properties `((upstream-name . "plotROC")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'process-javascript
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((source (assoc-ref inputs "d3.v3.js"))
+                   (target "inst/d3.v3.min.js"))
+               (invoke "esbuild" source "--minify"
+                       (string-append "--outfile=" target))))))))
+    (propagated-inputs
+     (list r-ggplot2
+           r-gridsvg
+           r-plyr
+           r-rlang
+           r-shiny))
+    (native-inputs
+     `(("r-knitr" ,r-knitr)
+       ("esbuild" ,esbuild)
+       ("d3.v3.js"
+        ,(origin
+           (method url-fetch)
+           (uri "https://d3js.org/d3.v3.js")
+           (sha256
+            (base32
+             "1arr7sr08vy7wh0nvip2mi7dpyjw4576vf3bm45rp4g5lc1k1x41"))))))
+    (home-page "https://sachsmc.github.io/plotROC/")
+    (synopsis "Generating useful receiver operating characteristic curve charts")
+    (description
+     "This package generates @acronym{ROC, receiver operating characteristic}
+plots.  Most ROC curve plots obscure the cutoff values and inhibit
+interpretation and comparison of multiple curves.  This attempts to address
+those shortcomings by providing plotting and interactive tools.  Functions are
+provided to generate an interactive ROC curve plot for web use, and print
+versions.  A Shiny application implementing the functions is also included.")
+    (license license:expat)))
+
 (define-public r-ggfortify
   (package
     (name "r-ggfortify")
