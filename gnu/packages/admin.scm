@@ -5714,3 +5714,40 @@ file or files to several hosts.")
     (description
      "@code{doctl} provides a unified command line interface to the DigitalOcean API.")
     (license license:asl2.0)))
+
+(define-public du-dust
+  (package
+    (name "du-dust")
+    (version "0.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "du-dust" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1daif13rdd7wb8m5fbp6zif5b8znqcvmkxrjpp2w2famsp36sahx"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-ansi-term" ,rust-ansi-term-0.12)
+                       ("rust-clap" ,rust-clap-3)
+                       ("rust-clap" ,rust-clap-3)
+                       ("rust-clap-complete" ,rust-clap-complete-3)
+                       ("rust-config-file" ,rust-config-file-0.2)
+                       ("rust-directories" ,rust-directories-4)
+                       ("rust-lscolors" ,rust-lscolors-0.7)
+                       ("rust-rayon" ,rust-rayon-1)
+                       ("rust-regex" ,rust-regex-1)
+                       ("rust-serde" ,rust-serde-1)
+                       ("rust-stfu8" ,rust-stfu8-0.2)
+                       ("rust-sysinfo" ,rust-sysinfo-0.15)
+                       ("rust-terminal-size" ,rust-terminal-size-0.1)
+                       ("rust-thousands" ,rust-thousands-0.2)
+                       ("rust-unicode-width" ,rust-unicode-width-0.1)
+                       ("rust-winapi-util" ,rust-winapi-util-0.1))
+       #:cargo-development-inputs (("rust-assert-cmd" ,rust-assert-cmd-1)
+                                   ("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/bootandy/dust")
+    (synopsis "Graphical disk usage analyzer")
+    (description "This package provides a graphical disk usage analyzer in
+text mode.")
+    (license license:asl2.0)))
