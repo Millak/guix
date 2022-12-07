@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -610,7 +611,7 @@ Texinfo.  Otherwise, return the string."
                (sanitize validate-texinfo))       ; one or two paragraphs
   (license package-license                        ; (list of) <license>
            (sanitize validate-license))
-  (home-page package-home-page)
+  (home-page package-home-page)                   ; string
   (supported-systems package-supported-systems    ; list of strings
                      (default %supported-systems))
 
