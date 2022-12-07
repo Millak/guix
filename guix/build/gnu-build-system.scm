@@ -83,10 +83,12 @@ there are none."
        dir)))
 
   (define native-input-directories
-    (match native-inputs
+    ;; When cross-compiling, the source appears in native-inputs rather than
+    ;; inputs.
+    (match (and=> native-inputs (cut alist-delete "source" <>))
       (((_ . dir) ...)
        dir)
-      (#f                                         ; not cross compiling
+      (#f                               ;not cross-compiling
        '())))
 
   ;; Tell 'ld-wrapper' to disallow non-store libraries.
