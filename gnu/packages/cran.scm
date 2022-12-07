@@ -667,6 +667,56 @@ from CRAN, but also from Bioconductor or even arbitrary git or mercurial
 repositories, replacing the need for installation via @code{devtools}.")
     (license license:gpl3+)))
 
+(define-public r-gunifrac
+  (package
+    (name "r-gunifrac")
+    (version "1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "GUniFrac" version))
+              (sha256
+               (base32
+                "13qb5fw9km6p5x8li9x3liqbh833wf2v73npj8jl3msplzfk82vp"))))
+    (properties `((upstream-name . "GUniFrac")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ape
+           r-dirmult
+           r-foreach
+           r-ggplot2
+           r-ggrepel
+           r-mass
+           r-matrix
+           r-matrixstats
+           r-modeest
+           r-rcpp
+           r-rmutil
+           r-statmod
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=GUniFrac")
+    (synopsis
+     "Generalized UniFrac distances and methods for microbiome data analysis")
+    (description
+     "This package provides a suite of methods for powerful and robust
+microbiome data analysis, including data normalization, data simulation,
+community-level association testing and differential abundance analysis.  It
+implements generalized UniFrac distances, @dfn{Geometric Mean of Pairwise
+Ratios} (GMPR) normalization, semiparametric data simulator, distance-based
+statistical methods, and feature- based statistical methods.  The
+distance-based statistical methods include three extensions of PERMANOVA:
+
+@itemize
+@item PERMANOVA using the Freedman-Lane permutation scheme,
+@item PERMANOVA omnibus test using multiple matrices, and
+@item analytical approach to approximating PERMANOVA p-value.
+@end itemize
+
+Feature-based statistical methods include linear model-based methods for
+differential abundance analysis of zero-inflated high-dimensional
+compositional data.")
+    (license license:gpl3)))
+
 (define-public r-ids
   (package
     (name "r-ids")
