@@ -63,7 +63,7 @@
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
@@ -2086,7 +2086,7 @@ done
 for i in ~a/games/lib/nethackdir/*; do
   ln -s $i $(basename $i)
 done
-~a/games/nethack"
+~a/games/nethack \"$@\""
                       (assoc-ref %build-inputs "bash")
                       (list->search-path-as-string
                         (list
