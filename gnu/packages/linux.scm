@@ -262,10 +262,10 @@ of 'uname -r' behind the Linux version numbers."
                         #$(and extra-version
                                (not (string-null? extra-version))
                                (string-append "-" extra-version)))
-                (let* ((configs
-                        (string-append "arch/" #$(linux-srcarch) "/configs/"))
-                       (guix_defconfig
-                        (string-append configs "guix_defconfig")))
+                (let* ((configs (string-append "arch/" #$(linux-srcarch)
+                                               "/configs/"))
+                       (guix_defconfig (string-append configs
+                                                      "guix_defconfig")))
                   #$(cond
                      ((not defconfig)
                       #~(begin
@@ -282,19 +282,11 @@ of 'uname -r' behind the Linux version numbers."
                                      guix_defconfig))
                      (else
                       ;; Copy the defconfig input to the proper location.
-                      #~(copy-file (assoc-ref inputs "guix_defconfig")
-                                   guix_defconfig)))
+                      #~(copy-file #$defconfig guix_defconfig)))
                   (chmod guix_defconfig #o644)
                   (modify-defconfig guix_defconfig '#$configs)
                   (invoke "make" "guix_defconfig")
-                  (verify-config ".config" guix_defconfig))))))))
-    (native-inputs
-     (append (if (or (not defconfig)
-                     (string? defconfig))
-                 '()
-                 ;; The defconfig should be an origin or file-like object.
-                 `(("guix_defconfig" ,defconfig)))
-             (package-native-inputs linux)))))
+                  (verify-config ".config" guix_defconfig))))))))))
 
 (define (make-defconfig uri sha256-as-base32)
   (origin (method url-fetch)
