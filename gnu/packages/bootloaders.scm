@@ -965,7 +965,7 @@ different version of U-Boot must be used."
                               "sunxi-spl-with-ecc.bin"
                               name))
                            (find-files "."
-                                       ".*\\.(bin|efi|img|spl|itb|dtb|rksd)$"))
+                                       ".*\\.(bin|efi|img|imx|spl|itb|dtb|rksd)$"))
                           (find-files "." "^(MLO|SPL)$"))))
                     (mkdir-p libexec)
                     (install-file ".config" libexec)
