@@ -11910,6 +11910,32 @@ applications.")
         ("rust-toml" ,rust-toml-0.5)
         ("rust-yaml-rust" ,rust-yaml-rust-0.4))))))
 
+(define-public rust-config-file-0.2
+  (package
+    (name "rust-config-file")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "config-file" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1yys2088y6lnc959k1k78y0amjkp6a00pjybsk3x50872lnfflfz"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs (("rust-serde" ,rust-serde-1)
+                       ("rust-serde-xml-rs" ,rust-serde-xml-rs-0.5)
+                       ("rust-serde-json" ,rust-serde-json-1)
+                       ("rust-serde-yaml" ,rust-serde-yaml-0.8)
+                       ("rust-thiserror" ,rust-thiserror-1)
+                       ("rust-toml" ,rust-toml-0.5))))
+    (home-page "https://github.com/Keruspe/config-file")
+    (synopsis "Read and parse configuration files")
+    (description "This package provides ability to read and parse
+configuration files.")
+    (license license:bsd-2)))
+
 (define-public rust-configparser-2
   (package
     (name "rust-configparser")
