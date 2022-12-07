@@ -7353,6 +7353,28 @@ standard output and error of the processes, using non-blocking connections.
 timeout.  It can also poll several processes at once.")
     (license license:expat)))
 
+(define-public r-timeseries
+  (package
+    (name "r-timeseries")
+    (version "4021.105")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "timeSeries" version))
+              (sha256
+               (base32
+                "1k6vihbs20m7zjrxh13y9mmsvnia3844c7j13p0b7m5i9fb6rqxz"))))
+    (properties `((upstream-name . "timeSeries")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-timedate))
+    (home-page
+     "https://r-forge.r-project.org/scm/viewvc.php/pkg/timeSeries/?root=rmetrics")
+    (synopsis "Metrics for financial time series objects")
+    (description
+     "This package implements S4 classes and various tools for financial time
+series.  Basic functions such as scaling and sorting, subsetting, mathematical
+operations and statistical functions are provided.")
+    (license license:gpl2+)))
+
 (define-public r-tsp
   (package
     (name "r-tsp")
