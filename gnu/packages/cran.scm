@@ -8360,6 +8360,37 @@ functions and random generation functions for a large number of univariate and
 multivariate distributions.")
     (license license:gpl2)))
 
+(define-public r-fbasics
+  (package
+    (name "r-fbasics")
+    (version "4021.93")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "fBasics" version))
+              (sha256
+               (base32
+                "1lmmdwzvqhggy6rr7yc9y5f8hxxgyzsgwm3ry0sz5ljbgfijl7g6"))))
+    (properties `((upstream-name . "fBasics")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gss
+           r-mass
+           r-spatial
+           r-stabledist
+           r-timedate
+           r-timeseries))
+    (home-page
+     "https://r-forge.r-project.org/scm/viewvc.php/pkg/fBasics/?root=rmetrics")
+    (synopsis "Metrics for markets and basic statistics")
+    (description
+     "This package provides a collection of functions to explore and to
+investigate basic properties of financial returns and related quantities.  The
+covered fields include techniques of explorative data analysis and the
+investigation of distributional properties, including parameter estimation and
+hypothesis testing.  Even more, there are several utility functions for data
+handling and management.")
+    (license license:gpl2+)))
+
 (define-public r-fractal
   (package
     (name "r-fractal")
