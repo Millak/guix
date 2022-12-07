@@ -31100,6 +31100,31 @@ expressive statistical grammar that coheres with the Tidy design framework.")
 model-related packages.")
     (license license:expat)))
 
+(define-public r-modeest
+  (package
+    (name "r-modeest")
+    (version "2.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "modeest" version))
+              (sha256
+               (base32
+                "087dw0013y4m7fcl06mxylh9lnp6acysl80d80r9srv4pw4r950s"))))
+    (properties `((upstream-name . "modeest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-fbasics
+           r-stable
+           r-stabledist
+           r-statip))
+    (home-page "https://github.com/paulponcet/modeest")
+    (synopsis "Mode estimations for univariate data or distributions")
+    (description
+     "The package provides estimators of the mode of univariate unimodal (and
+sometimes multimodal) data and values of the modes of usual probability
+distributions.")
+    (license license:gpl3)))
+
 (define-public r-conflicted
   (package
     (name "r-conflicted")
