@@ -11120,6 +11120,34 @@ code.  The main target of this macro is speed.")
 (define-public ecl-specialized-function
   (sbcl-package->ecl-package sbcl-specialized-function))
 
+(define-public sbcl-conduit-packages
+  (package
+   (name "sbcl-conduit-packages")
+   (version "2.0.0")
+   (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tfeb/conduit-packages")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-conduit-packages" version))
+       (sha256
+        (base32 "1n783in84mrk9lnc3nshwsgxhb8y0dk6ys9z6jlxkv0jpjxhpjjc"))))
+   (build-system asdf-build-system/sbcl)
+   (arguments '(#:asd-systems '("org.tfeb.conduit-packages")))
+   (synopsis "Conduit packages for Common Lisp")
+   (description "This library defines a way of treating Common Lisp
+packages as conduits which can sit between one or more implementation
+packages and users of those packages.")
+   (home-page "https://github.com/tfeb/conduit-packages/")
+   (license license:expat)))
+
+(define-public cl-conduit-packages
+  (sbcl-package->cl-source-package sbcl-conduit-packages))
+
+(define-public ecl-conduit-packages
+  (sbcl-package->ecl-package sbcl-conduit-packages))
+
 (define-public sbcl-constantfold
   (let ((commit "0ff1d97a3fbcb89264f6a2af6ce62b73e7b421f4")
         (revision "1"))
