@@ -399,6 +399,25 @@ visualization of their differences.")
     (description "This package implements Dirichlet regression models.")
     (license license:gpl2+)))
 
+(define-public r-dirmult
+  (package
+    (name "r-dirmult")
+    (version "0.1.3-5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "dirmult" version))
+              (sha256
+               (base32
+                "05whzhl81nyag7321hw98xa63r440s9bgj1764346yvm9bvzjqi4"))))
+    (properties `((upstream-name . "dirmult")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=dirmult")
+    (synopsis "Estimation in Dirichlet-Multinomial distribution")
+    (description
+     "This package estimates the parameters in Dirichlet-Multinomial and
+computes log-likelihoods.")
+    (license license:gpl2+)))
+
 (define-public r-dixontest
   (package
     (name "r-dixontest")
