@@ -32865,6 +32865,25 @@ based on Rustls and Ring.")
     (description "This package provides Rust bindings for Metal.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-thousands-0.2
+  (package
+    (name "rust-thousands")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "thousands" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0848gnkn7ah51lrx15z9zmn701ipn6gc4xbk4kfdlfahkypkpxiv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t))
+    (home-page "https://github.com/tov/thousands-rs")
+    (synopsis "Adds digit separators to numerals, configurably.")
+    (description "This package provides thousand separators for numerals.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-tls-parser-0.10
   (package
     (name "rust-tls-parser")
