@@ -6452,6 +6452,28 @@ color labels, layout, etc.")
     ;; Any version of the GPL
     (license license:gpl2+)))
 
+(define-public r-stable
+  (package
+    (name "r-stable")
+    (version "1.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "stable" version))
+              (sha256
+               (base32
+                "194xsa291v5f0jya1c3aigbclg8cci427ffpb8brxamm6n57hf12"))))
+    (properties `((upstream-name . "stable")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rmutil))
+    (home-page "https://www.commanster.eu/rcode.html")
+    (synopsis
+     "Probability functions and regression models for stable distributions")
+    (description
+     "This package provides density, distribution, quantile and hazard
+functions of a stable variate, as well as generalized regression models for
+the parameters of a stable distribution.")
+    (license license:gpl2+)))
+
 (define-public r-statip
   (package
     (name "r-statip")
