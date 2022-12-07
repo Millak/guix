@@ -32,6 +32,7 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix svn-download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -1091,6 +1092,41 @@ the Raspberry Pi chip.")
       (synopsis "GCC for VC4")
       (description "This package provides @code{gcc} for VideoCore IV,
 the Raspberry Pi chip."))))
+
+(define-public imx-usb-loader
+  ;; There are no proper releases.
+  (let ((commit "30b43d69770cd69e84c045dc9dcabb1f3e9d975a")
+        (revision "0"))
+    (package
+      (name "imx-usb-loader")
+      ;; For the version string, see IMX_LOADER_VERSION in imx_loader.h.
+      (version (git-version "0.2pre" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/boundarydevices/imx_usb_loader")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1jdxbg63qascyl8x32njs9k9gzy86g209q7hc0jp74qyh0i6fwwc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:test-target "tests"
+             #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                  (string-append "prefix=" #$output))
+             #:phases #~(modify-phases %standard-phases
+                          (delete 'configure))))
+      (native-inputs (list pkg-config))
+      (inputs (list libusb))
+      (home-page "https://github.com/boundarydevices/imx_usb_loader")
+      (synopsis "USB and UART loader for i.MX5/6/7/8 series")
+      (description "This utility downloads and executes code on Freescale
+i.MX5/i.MX6/i.MX7 and Vybrid SoCs through the Serial Download Protocol (SDP).
+Depending on the board, there is usually some kind of recovery button to bring
+the SoC into serial download boot mode; check the documentation of your
+hardware.  The utility support USB and UART as serial link.")
+      (license license:lgpl2.1+))))
 
 (define-public python-libmpsse
   (package
