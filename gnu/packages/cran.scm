@@ -16061,6 +16061,30 @@ visualization; flexible image manipulation; metadata and sparse image
 handling.")
     (license license:gpl2)))
 
+(define-public r-gridsvg
+  (package
+    (name "r-gridsvg")
+    (version "1.7-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gridSVG" version))
+              (sha256
+               (base32
+                "1jspjn56yrkx98hhs98npzm0k0kwpv8x1hg40kphx5ikhvincxmr"))))
+    (properties `((upstream-name . "gridSVG")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-jsonlite r-xml))
+    (home-page "https://cran.r-project.org/package=gridSVG")
+    (synopsis "Export grid gaphics as SVG")
+    (description
+     "This package provides functions to export graphics drawn with package
+grid to SVG format.  Extra functions provide access to SVG features that are
+not available in standard R graphics, such as hyperlinks, animation, filters,
+masks, clipping paths, and gradient and pattern fills.")
+    ;; Any version of the GPL.
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-grimport
   (package
     (name "r-grimport")
