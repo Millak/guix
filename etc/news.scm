@@ -26,6 +26,16 @@
 (channel-news
  (version 0)
 
+ (entry (commit "dfc6957a5af7d179d4618eb19d4f555c519bc6f2")
+        (title
+         (en "New @code{customize-linux} procedure"))
+        (body
+         (en "The @code{(gnu packages linux)} module includes a new
+@code{customize-linux} procedure, which should now be used instead of
+replacing the @samp{\"kconfig\"} native input of a @code{linux-libre}-derived
+package, as the kernel config file is no longer provided as a native
+input.")))
+
  (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
         (title
          (en "New @option{--symlink} option for @command{guix shell}")
