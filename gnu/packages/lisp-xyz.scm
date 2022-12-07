@@ -22812,8 +22812,8 @@ them as strings.")
   (sbcl-package->ecl-package sbcl-simple-date-time))
 
 (define-public sbcl-april
-  (let ((commit "93b10042206475b9cce649d76ffaf00dcdbe498f")
-        (revision "2"))
+  (let ((commit "bdd74f168ec82f28fe4ab692f2c0af39441a5701")
+        (revision "3"))
     (package
       (name "sbcl-april")
       (version (git-version "1.0" revision commit))
@@ -22825,7 +22825,7 @@ them as strings.")
                (commit commit)))
          (file-name (git-file-name "cl-april" version))
          (sha256
-          (base32 "16az6cs13hxqn7sa2cxask077kvzp8prnrvnqm5igqq92y174n8g"))
+          (base32 "0hvlp2286z1ksa7jr7r661kdr0lpfv25n5chl72jrzq5zz70lidx"))
          (modules '((guix build utils)))
          (snippet '(begin
                      ;; Remove bundled Apache-relicensed MaxPC.
