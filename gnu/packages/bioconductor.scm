@@ -2857,6 +2857,40 @@ biological knowledge.  Genes, and clinical pathways are incorporated in the
 model as latent variables.")
     (license license:gpl3)))
 
+(define-public r-asics
+  (package
+    (name "r-asics")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "ASICS" version))
+              (sha256
+               (base32
+                "0c2b3gdza58vqhharhw8967p2w2knnrm5s2svvnnjbf67qbg45b7"))))
+    (properties `((upstream-name . "ASICS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocparallel
+           r-ggplot2
+           r-glmnet
+           r-gridextra
+           r-matrix
+           r-mvtnorm
+           r-pepsnmr
+           r-plyr
+           r-quadprog
+           r-ropls
+           r-summarizedexperiment
+           r-zoo))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/ASICS")
+    (synopsis "Automatic statistical identification in complex spectra")
+    (description
+     "ASICS quantifies concentration of metabolites in a complex spectrum.
+The identification of metabolites is performed by fitting a mixture model to
+the spectra of the library with a sparse penalty.")
+    (license license:gpl2+)))
+
 (define-public r-aspli
   (package
     (name "r-aspli")
