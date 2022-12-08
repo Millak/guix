@@ -25878,6 +25878,30 @@ They are based on clustering, the statistical concept of data depth,
 statistical shape analysis and archetypal analysis.")
     (license license:gpl2+)))
 
+(define-public r-anytime
+  (package
+    (name "r-anytime")
+    (version "0.3.9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "anytime" version))
+              (sha256
+               (base32
+                "0jjpqynai5nd7mfy1smb44356f3d5bmpxhs1i9x9jw5c959c35hh"))))
+    (properties `((upstream-name . "anytime")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-bh
+           r-rcpp))
+    (home-page "http://dirk.eddelbuettel.com/code/anytime.html")
+    (synopsis "Converter of input to POSIXct or Date")
+    (description
+     "The package converts the input in any one of character, integer, numeric,
+factor, or an ordered type into @code{POSIXct} (or @code{Date}) objects, using
+one of a number of predefined formats, and relying on Boost facilities for date
+and time parsing.")
+    (license license:gpl2+)))
+
 (define-public r-anndata
   (package
     (name "r-anndata")
