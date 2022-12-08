@@ -221,18 +221,12 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
              ;; causing the build to fail prematurely.
              (substitute* "contrib/generate_precompile.jl"
                (("1200") "1100"))))
-         ;; For some reason libquadmath is unavailable on this architecture.
+         ;; libquadmath is not available on all architectures.
          ;; https://github.com/JuliaLang/julia/issues/41613
-         ,@(if (target-aarch64?)
-             '((add-after 'unpack 'drop-libquadmath-on-aarch64
-                 (lambda _
-                   (substitute* '("contrib/fixup-libgfortran.sh"
-                                  "deps/csl.mk"
-                                  "base/Makefile")
-                     ((".*libquadmath.*") ""))
-                   (substitute* "Makefile"
-                     (("libquadmath ") "")))))
-             '())
+         (add-after 'unpack 'make-libquadmath-optional
+           (lambda _
+             (substitute* "base/Makefile"
+               (("libquadmath,0") "libquadmath,0,ALLOW_FAILURE"))))
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
            (lambda _ (setenv "HOME" "/tmp")))
