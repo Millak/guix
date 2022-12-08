@@ -1775,7 +1775,7 @@ metaprogramming on Julia Expr, the meta programming standard library for
 (define-public julia-exprtools
   (package
     (name "julia-exprtools")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
       (origin
         (method git-fetch)
@@ -1784,7 +1784,7 @@ metaprogramming on Julia Expr, the meta programming standard library for
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "058ax5d96jpym5w3g37ah1c4xq3fskwpjdhchakzax15vqzy7ab4"))))
+         (base32 "0sxrhc5dz1v53zs8sym4csfy28ki00b7x7aihm2zmkrx48if63gb"))))
     (build-system julia-build-system)
     (home-page "https://github.com/invenia/ExprTools.jl")
     (synopsis "Light-weight expression manipulation tools")
