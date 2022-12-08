@@ -482,12 +482,7 @@
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
-    (version (if (string-prefix? %chromium-version %ungoogled-revision)
-                 %ungoogled-revision
-                 ;; ungoogled-chromium version tags always have a "-1" suffix,
-                 ;; so we can hijack "-0" in cases where the Chromium source
-                 ;; is newer than the latest available tag.
-                 (string-append %chromium-version "-0")))
+    (version %ungoogled-revision)
     (synopsis "Graphical web browser")
     (source (origin
               (method url-fetch)
