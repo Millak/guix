@@ -6452,14 +6452,14 @@ mouse click.  You can do everything mouse can do with a keyboard.")
 (define-public transset
   (package
     (name "transset")
-    (version "1.0.2")
+    (version "1.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.x.org/releases/individual/app/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0rya202y87dwl35jnmq8hs3arzdrv5z4vf1xmi0py4rnmhdpszaw"))))
+                "095q1xnr0m1y88gkk85g64plypk813fif0gcfm9bxpmc3nl0vfmd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
