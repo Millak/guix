@@ -2203,7 +2203,7 @@ algebra routines written in Julia (except for optimized BLAS).")
 (define-public julia-genericschur
   (package
     (name "julia-genericschur")
-    (version "0.5.1")
+    (version "0.5.3")
     (source
       (origin
         (method git-fetch)
@@ -2212,7 +2212,7 @@ algebra routines written in Julia (except for optimized BLAS).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "12x6lxzxm91y3k6s9dam46dq5hrby5sr0gy0fdfnp0xhjzdy2j0d"))))
+         (base32 "02f2azi6036ca8nlgyvvfagwbks8jxfz4k0d8a709ixr1n0ylwap"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2221,7 +2221,7 @@ algebra routines written in Julia (except for optimized BLAS).")
           (add-after 'link-depot 'adjust-test-suite
             (lambda _
               (substitute* "test/complex.jl"
-                ;; expected Array{Int32,1}, got a value of type Array{Int64,1}
+                ;; expected Vector{Int32,1}, got a value of type Vector{Int64,1}
                 (("A = _example") "#A = _example")
                 (("schurtest\\(A,20\\)") ""))
               (substitute* "test/runtests.jl"
