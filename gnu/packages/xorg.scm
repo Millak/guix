@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Lu Hui <luhux76@gmail.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2023, 2024 John Kehayias <john.kehayias@protonmail.com>
@@ -4050,15 +4051,15 @@ it for output on various types of printers.")
 (define-public xprop
   (package
     (name "xprop")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/app/xprop-"
-                           version ".tar.bz2"))
+                           version ".tar.xz"))
        (sha256
         (base32
-         "18ckr8g1z50zkc01hprkpm1npwbq32yqib4b3l98c95z2q1yv4lv"))))
+         "0vjqnn42gscw1z2wdj24kdwjwvd7mw58pj0nm9203k1fn4jqa2sq"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 xorgproto))
