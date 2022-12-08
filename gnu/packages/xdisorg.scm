@@ -3172,11 +3172,13 @@ if there's more than one.")
     (version "0.6")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://faculty.missouri.edu/~stephen/software/"
-                           name "/" name "-" version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/stephenmontgomerysmith/xkbset")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "199mlm127zk1lr8nrq22n68l2l8cjwc4cgwd67rg1i6497n2y0xc"))))
+        (base32 "1b8jf5zfg4a82k7929jkb0prx8yy79nsxa0n7zhhk5a0hwpc32xx"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 perl perl-tk))
@@ -3209,7 +3211,7 @@ if there's more than one.")
                            (string-append (assoc-ref outputs "out")
                                           "/share/doc/" ,name "-" ,version))
              #t)))))
-    (home-page "https://faculty.missouri.edu/~stephen/software/")
+    (home-page "https://stephenmontgomerysmith.github.io/software/#xkbset")
     (synopsis "User-preference utility for XKB extensions for X")
     (description
      "This is a program to help manage many of the XKB features of the X Window
