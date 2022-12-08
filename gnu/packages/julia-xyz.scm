@@ -4906,7 +4906,7 @@ in @code{Gadfly}, @code{Plots} and @code{Makie} to label axes and keys.")
 (define-public julia-simd
   (package
     (name "julia-simd")
-    (version "3.4.0")
+    (version "3.4.2")
     (source
       (origin
         (method git-fetch)
@@ -4915,7 +4915,7 @@ in @code{Gadfly}, @code{Plots} and @code{Makie} to label axes and keys.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0z7m5fykc6r4bxz4hfm6d3v1h7gg0c322l4zv8r3vrb8hrd6h263"))))
+         (base32 "02pbrg2qa20pqnckbnbg5jyic2ahydql09f3xhzd1xnxicp77lw5"))))
     (build-system julia-build-system)
     (home-page "https://github.com/eschnett/SIMD.jl")
     (synopsis "Explicit SIMD vectorization")
