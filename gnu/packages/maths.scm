@@ -2626,27 +2626,30 @@ satisfiability checking (SAT).")
 (define-public clingo
   (package
     (name "clingo")
-    (version "5.5.0")
+    (version "5.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/potassco/clingo")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "clasp")
+                   ;; TODO: Unvendor other third-party stuff
+                   (delete-file-recursively "third_party/catch")))
               (sha256
                (base32
-                "0rfjwkcwm0mmf3r4i7asyjwb6cia4i7px7fn2kdbi9j85qvas4pb"))))
+                "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags `("-DCLINGO_BUILD_TESTS=on"
                            "-DCLINGO_INSTALL_LIB=on"
                            "-DCLINGO_BUILD_STATIC=off"
                            "-DCLINGO_BUILD_SHARED=on"
-                           ;; XXX: Clingo requries private headers and
-                           ;;      sources from clasp
-                           ,(string-append
-                             "-DCLASP_SOURCE_DIR="
-                             (assoc-ref %build-inputs "clasp-src")))
+                           "-DCLINGO_USE_LOCAL_CLASP=off"
+                           "-DCLINGO_USE_LOCAL_CATCH=off")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-cmake
@@ -2678,10 +2681,8 @@ satisfiability checking (SAT).")
                                "unpool-ast-v2" "parse_term"
                                "propagator" "propgator-sequence-mining"
                                "symbol" "visitor"))))))))))
-    (inputs
-     (list clasp libpotassco))
-    (native-inputs
-     `(("clasp-src" ,(package-source clasp))))
+    (inputs (list catch2-3.1 clasp libpotassco))
+    (native-inputs (list pkg-config))
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
