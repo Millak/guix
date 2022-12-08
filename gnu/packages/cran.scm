@@ -4922,6 +4922,33 @@ approach is used to estimate the lower cut-off for the scaling region.")
     ;; Any of these GPL versions.
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-ptw
+  (package
+    (name "r-ptw")
+    (version "1.9-16")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "ptw" version))
+              (sha256
+               (base32
+                "0rma3h9ksc5qigdvk5vappb4ipd4rpk64wckzcxvxspakr5w71vy"))))
+    (properties `((upstream-name . "ptw")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcppde))
+    (home-page "https://github.com/rwehrens/ptw")
+    (synopsis "Parametric time warping")
+    (description
+     "Parametric time warping aligns patterns.  It aims to put corresponding
+features at the same locations.  The algorithm searches for an optimal
+polynomial describing the warping.  It is possible to align one sample to a
+reference, several samples to the same reference, or several samples to
+several references.  One can choose between calculating individual warpings,
+or one global warping for a set of samples and one reference.  Two
+optimization criteria are implemented: @acronym{RMS, Root Mean Square} error
+and @acronym{WCC, Weighted Cross Correlation}.  Both warping of peak profiles
+and of peak lists are supported.")
+    (license license:gpl2+)))
+
 (define-public r-compare
   (package
     (name "r-compare")
