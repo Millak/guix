@@ -631,7 +631,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
 (define u-boot
   (package
     (name "u-boot")
-    (version "2022.04")
+    (version "2022.10")
     (source (origin
               (patches
                (list %u-boot-rockchip-inno-usb-patch
@@ -644,7 +644,8 @@ tree binary files.  These are board description files used by Linux and BSD.")
                     "u-boot-" version ".tar.bz2"))
               (sha256
                (base32
-                "1l5w13dznj0z1ibqv2d6ljx2ma1gnf5x5ay3dqkqwxr6750nbq38"))))
+                "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
+    (build-system  gnu-build-system)
     (native-inputs
      `(("bc" ,bc)
        ("bison" ,bison)
@@ -660,7 +661,6 @@ tree binary files.  These are board description files used by Linux and BSD.")
        ("python-pytest" ,python-pytest)
        ("swig" ,swig)
        ("libuuid" ,util-linux "lib")))
-    (build-system  gnu-build-system)
     (home-page "https://www.denx.de/wiki/U-Boot/")
     (synopsis "ARM bootloader")
     (description "U-Boot is a bootloader used mostly for ARM boards.  It
