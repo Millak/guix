@@ -11369,6 +11369,43 @@ noncentral hypergeometric distribution (also called extended hypergeometric
 distribution).")
     (license license:gpl3)))
 
+(define-public r-golem
+  (package
+    (name "r-golem")
+    (version "0.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "golem" version))
+              (sha256
+               (base32
+                "0rjkl1r83h0hcn30zssx64qm07sdx3g4v5rdxn56gbzfghw7ddcl"))))
+    (properties `((upstream-name . "golem")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-attempt
+           r-cli
+           r-config
+           r-crayon
+           r-desc
+           r-fs
+           r-here
+           r-htmltools
+           r-pkgload
+           r-roxygen2
+           r-rstudioapi
+           r-shiny
+           r-usethis
+           r-yaml))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ThinkR-open/golem")
+    (synopsis "Framework for robust Shiny applications")
+    (description
+     "This package implements an opinionated framework for building a
+production- ready Shiny application.  Golem contains a series of tools like
+dependency management, version management, easy installation and deployment or
+documentation management.")
+    (license license:expat)))
+
 (define-public r-goplot
   (package
     (name "r-goplot")
