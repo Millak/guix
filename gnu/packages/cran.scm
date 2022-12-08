@@ -17808,6 +17808,29 @@ intersecting sets using a novel matrix design, along with visualizations of
 several common set, element and attribute related tasks.")
     (license license:expat)))
 
+(define-public r-shinycustomloader
+  (package
+    (name "r-shinycustomloader")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "shinycustomloader" version))
+              (sha256
+               (base32
+                "1klx71vr26g0gjf6hbiia1qidqii5d467i1sdjvlrg1hxdcggqff"))))
+    (properties `((upstream-name . "shinycustomloader")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-glue
+           r-shiny))
+    (home-page "https://cran.r-project.org/package=shinycustomloader")
+    (synopsis "Custom loader for Shiny outputs")
+    (description
+     "This package provides a custom @code{CSS/HTML} or @code{GIF/image} file
+for the loading screen in R @code{Shiny}.  It also can use the marquee to have
+a custom text loading screen.")
+    (license license:gpl3)))
+
 ;; This package includes a JavaScript file, which is not minified.  When
 ;; upgrading please check that there are no new minified JavaScript files.
 (define-public r-shinybs
