@@ -647,20 +647,20 @@ tree binary files.  These are board description files used by Linux and BSD.")
                 "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
     (build-system  gnu-build-system)
     (native-inputs
-     `(("bc" ,bc)
-       ("bison" ,bison)
-       ("dtc" ,dtc)
-       ("gnutls" ,gnutls)
-       ("flex" ,flex)
-       ("lz4" ,lz4)
-       ("tinfo" ,ncurses/tinfo)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("python-coverage" ,python-coverage)
-       ("python-pycryptodomex" ,python-pycryptodomex)
-       ("python-pytest" ,python-pytest)
-       ("swig" ,swig)
-       ("libuuid" ,util-linux "lib")))
+     (list bc
+           bison
+           dtc
+           gnutls
+           flex
+           lz4
+           ncurses/tinfo
+           perl
+           python
+           python-coverage
+           python-pycryptodomex
+           python-pytest
+           swig
+           (list util-linux "lib")))
     (home-page "https://www.denx.de/wiki/U-Boot/")
     (synopsis "ARM bootloader")
     (description "U-Boot is a bootloader used mostly for ARM boards.  It
