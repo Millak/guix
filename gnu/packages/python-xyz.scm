@@ -565,6 +565,24 @@ and variables you'll need already imported and created.
     (home-page "https://github.com/google/python-fire")
     (license license:asl2.0)))
 
+(define-public python-fit-nbinom
+  (package
+    (name "python-fit-nbinom")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fit_nbinom" version))
+              (sha256
+               (base32
+                "12v8l5i35vjbpvh5i4lw29ys6vpr3z7pysyrx33hxaq09zr015mx"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/joachimwolff/fit_nbinom")
+    (synopsis "Negative binomial maximum likelihood estimator")
+    (description "This package provides an implementation in Python using
+scipy and numpy of negative binomial maximum likelihood estimation.")
+    (license license:gpl3+)))
+
 (define-public python-dotmap
   (package
     (name "python-dotmap")
