@@ -1289,17 +1289,17 @@ with the Cygwin XWin server when running X11 in a rootless mode.")
 (define-public libxcomposite
   (package
     (name "libxcomposite")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXcomposite-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "13sfcglvz87vl58hd9rszwr73z0z4nwga3c12rfh7f5s2ln8l8dk"))))
+            "11rcvk380l5540gfqy9p8mbzw3l1p5g8l214p870f28smvqbqh7y"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
