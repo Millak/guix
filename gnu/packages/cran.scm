@@ -7425,6 +7425,31 @@ information} (NMI), @dfn{adjusted mutual information} (AMI), @dfn{normalized
 variation information} (NVI) and entropy.")
     (license license:gpl3+)))
 
+(define-public r-attempt
+  (package
+    (name "r-attempt")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "attempt" version))
+              (sha256
+               (base32
+                "1ylgg7jcp8wqmxgf1mydnvh26k0mr8jyjla4hw06730r40yrs58m"))))
+    (properties `((upstream-name . "attempt")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rlang))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ColinFay/attempt")
+    (synopsis "Tools for defensive programming")
+    (description
+     "This package provides tools for defensive programming.  It is inspired
+by @code{purrr} mappers and based on @code{rlang}.  Attempt extends and
+facilitates defensive programming by providing a consistent grammar, and a set
+of functions for common tests and conditions.  Attempt only depends on
+@code{rlang}, and focuses on speed, so it can be integrated with other
+functions and used in the data analysis.")
+    (license license:expat)))
+
 (define-public r-debugme
   (package
     (name "r-debugme")
