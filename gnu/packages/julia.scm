@@ -164,7 +164,8 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
 
        ;; The test suite takes many times longer than building and
        ;; can easily fail on smaller machines when they run out of memory.
-       #:tests? ,(not (target-aarch64?))
+       #:tests? ,(not (or (%current-target-system)
+                          (target-aarch64?)))
 
        ;; Do not strip binaries to keep support for full backtraces.
        ;; See https://github.com/JuliaLang/julia/issues/17831
