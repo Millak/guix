@@ -28,13 +28,19 @@
 
  (entry (commit "dfc6957a5af7d179d4618eb19d4f555c519bc6f2")
         (title
-         (en "New @code{customize-linux} procedure"))
+         (en "New @code{customize-linux} procedure")
+         (de "Neue Prozedur @code{customize-linux}"))
         (body
          (en "The @code{(gnu packages linux)} module includes a new
 @code{customize-linux} procedure, which should now be used instead of
 replacing the @samp{\"kconfig\"} native input of a @code{linux-libre}-derived
 package, as the kernel config file is no longer provided as a native
-input.")))
+input.")
+         (de "Das Modul @code{(gnu packages linux)} enthält eine neue Prozedur
+@code{customize-linux}, die von nun an für angepasste Linux-Pakete benutzt
+werden sollte.  Die native Eingabe @samp{\"kconfig\"} eines von
+@code{linux-libre} abgeleiteten Pakets zu ersetzen, funktioniert nicht mehr,
+weil die Kernel-Konfigurationsdatei nicht mehr als native Eingabe vorliegt.")))
 
  (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
         (title
