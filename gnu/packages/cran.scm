@@ -4638,6 +4638,27 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 @code{citation(\"Rcpp\")} for details on these last two.")
     (license license:gpl2+)))
 
+(define-public r-rcppde
+  (package
+    (name "r-rcppde")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "RcppDE" version))
+              (sha256
+               (base32
+                "1i9jj595nqpb16y22z2b8fcf0gq1fg0pbiisbd837p1cyw4nff69"))))
+    (properties `((upstream-name . "RcppDE")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-rcpp r-rcpparmadillo))
+    (home-page "https://cran.r-project.org/package=RcppDE")
+    (synopsis "Global optimization by differential evolution in C++")
+    (description
+     "This package provides an iteration of the @code{DEoptim} function.  It
+performs global optimization by differential evolution.")
+    (license license:gpl2+)))
+
 (define-public r-rcppml
   (package
     (name "r-rcppml")
