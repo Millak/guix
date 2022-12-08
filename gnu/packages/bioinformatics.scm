@@ -1237,21 +1237,21 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.76")
+    (version "1.80")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "0wlch9xpa0fpgjzyxi6jsfca6iakaq9a05927xg8vqnmvaccnwrq"))))
-    (build-system python-build-system)
+                "0hqf3jsxn2sphcx81fx7x3i69sarpjsi70fzw98f8rw7z2d5x02j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://biopython.org/")
