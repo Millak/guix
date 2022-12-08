@@ -2644,43 +2644,44 @@ satisfiability checking (SAT).")
                 "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags `("-DCLINGO_BUILD_TESTS=on"
-                           "-DCLINGO_INSTALL_LIB=on"
-                           "-DCLINGO_BUILD_STATIC=off"
-                           "-DCLINGO_BUILD_SHARED=on"
-                           "-DCLINGO_USE_LOCAL_CLASP=off"
-                           "-DCLINGO_USE_LOCAL_CATCH=off")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_subdirectory\\(clasp\\)")
-                "find_package(clasp REQUIRED)"))
-             (substitute* "libclingo/CMakeLists.txt"
-               (("\"cmake/Clingo\"") "\"cmake/clingo\"")
-               (("ClingoConfig\\.cmake") "clingo-config.cmake")
-               (("ClingoConfigVersion\\.cmake")
-                "clingo-config-version.cmake"))
-             (substitute* "cmake/ClingoConfig.cmake.in"
-               (("find_package\\(Clasp") "find_package(clasp"))
-             (rename-file "cmake/ClingoConfig.cmake.in"
-                          "cmake/clingo-config.cmake.in")))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             (with-directory-excursion "libclingo/tests"
-               (substitute* "CMakeLists.txt"
-                 (("COMMAND test_clingo" all)
-                  (string-append all
-                                 " -f "
-                                 "\"${CMAKE_CURRENT_SOURCE_DIR}/good.txt\"")))
-               (call-with-output-file "good.txt"
-                 (lambda (port)
-                   (for-each (lambda (test) (format port "~s~%" test))
-                             '("parse-ast-v2" "add-ast-v2" "build-ast-v2"
-                               "unpool-ast-v2" "parse_term"
-                               "propagator" "propgator-sequence-mining"
-                               "symbol" "visitor"))))))))))
+     (list
+      #:configure-flags #~`("-DCLINGO_BUILD_TESTS=on"
+                            "-DCLINGO_INSTALL_LIB=on"
+                            "-DCLINGO_BUILD_STATIC=off"
+                            "-DCLINGO_BUILD_SHARED=on"
+                            "-DCLINGO_USE_LOCAL_CLASP=off"
+                            "-DCLINGO_USE_LOCAL_CATCH=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(clasp\\)")
+                 "find_package(clasp REQUIRED)"))
+              (substitute* "libclingo/CMakeLists.txt"
+                (("\"cmake/Clingo\"") "\"cmake/clingo\"")
+                (("ClingoConfig\\.cmake") "clingo-config.cmake")
+                (("ClingoConfigVersion\\.cmake")
+                 "clingo-config-version.cmake"))
+              (substitute* "cmake/ClingoConfig.cmake.in"
+                (("find_package\\(Clasp") "find_package(clasp"))
+              (rename-file "cmake/ClingoConfig.cmake.in"
+                           "cmake/clingo-config.cmake.in")))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              (with-directory-excursion "libclingo/tests"
+                (substitute* "CMakeLists.txt"
+                  (("COMMAND test_clingo" all)
+                   (string-append all
+                                  " -f "
+                                  "\"${CMAKE_CURRENT_SOURCE_DIR}/good.txt\"")))
+                (call-with-output-file "good.txt"
+                  (lambda (port)
+                    (for-each (lambda (test) (format port "~s~%" test))
+                              '("parse-ast-v2" "add-ast-v2" "build-ast-v2"
+                                "unpool-ast-v2" "parse_term"
+                                "propagator" "propgator-sequence-mining"
+                                "symbol" "visitor"))))))))))
     (inputs (list catch2-3.1 clasp libpotassco))
     (native-inputs (list pkg-config))
     (home-page "https://potassco.org/")
