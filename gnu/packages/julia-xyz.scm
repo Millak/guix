@@ -5760,7 +5760,7 @@ allows for efficient string representation and transfer")
 (define-public julia-woodburymatrices
   (package
     (name "julia-woodburymatrices")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
       (origin
         (method git-fetch)
@@ -5769,19 +5769,8 @@ allows for efficient string representation and transfer")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "04yykivi8zrbryxlmb0p5xa6lma8iq22r5s863117dnnqj5gaffd"))))
+         (base32 "1vwy8nlhvjh0ndia4ni40iq4pf2nhwy5iy3rmf4i2jff13vc6aqn"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      (if (target-x86-32?)
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'remove-failing-test-i686
-                (lambda _
-                  (substitute* "test/woodbury.jl"
-                    (("@test logdet\\(W\\)")
-                     "@test_broken logdet(W)")))))
-          #~%standard-phases)))
     (home-page "https://github.com/timholy/WoodburyMatrices.jl")
     (synopsis "Support for the Woodbury matrix identity for Julia")
     (description "This package provides support for the Woodbury matrix identity
