@@ -62,7 +62,7 @@ types/functions defined in AbstractFFTs.")
 (define-public julia-abstracttrees
   (package
     (name "julia-abstracttrees")
-    (version "0.3.4")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -71,7 +71,7 @@ types/functions defined in AbstractFFTs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16is5n2qa69cci34vfazxsa7ik6q0hbnnqrbrhkq8frh142f1xs8"))))
+        (base32 "04g3b6j4nvxs36rcjm743gwhy0vv0d6pvgx771agjljx109bciyr"))))
     (build-system julia-build-system)
     (home-page "https://juliacollections.github.io/AbstractTrees.jl/stable/")
     (synopsis "Abstract Julia interfaces for working with trees")
