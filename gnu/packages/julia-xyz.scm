@@ -127,7 +127,7 @@ ANSI escape codes to another format.")
 (define-public julia-aqua
   (package
     (name "julia-aqua")
-    (version "0.5.1")
+    (version "0.5.5")
     (source
       (origin
         (method git-fetch)
@@ -136,7 +136,7 @@ ANSI escape codes to another format.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1g0kyzcdykgs247j72jpc2qqall696jwgb3hnn4cxmbi8bkf7wpk"))))
+         (base32 "12hng8czkgynsn1pshavma2wijypl6k05hhgivc3rqiyclfpi89z"))))
     (build-system julia-build-system)
     (arguments
      (list #:parallel-tests? #f))
