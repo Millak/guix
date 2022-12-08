@@ -1254,7 +1254,7 @@ Julia from R or Python.")
 (define-public julia-datastructures
   (package
     (name "julia-datastructures")
-    (version "0.18.9")
+    (version "0.18.13")
     (source
      (origin
        (method git-fetch)
@@ -1263,7 +1263,7 @@ Julia from R or Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hdqp8ipsqdw5bqqkdvz4j6n67x80sj5azr9vzyxwjfsgkfbnk2l"))))
+        (base32 "1ikrgc4d39980nrr77yzcnr1v74wrjh9xvyi2ajfzbcim58vrcqg"))))
     (propagated-inputs
      (list julia-compat
            julia-orderedcollections))
