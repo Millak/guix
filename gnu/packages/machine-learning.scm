@@ -1552,35 +1552,39 @@ interactive learning.")
 (define-public python-hyperopt
   (package
     (name "python-hyperopt")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hyperopt" version))
        (sha256
-        (base32 "1k4ma8ci0bxghw7g4ms944zak1pi83yv2d6bxd7fcslm1zalfq5w"))))
-    (build-system python-build-system)
+        (base32 "0jd1ghmm423kbhjvd6pxq92y5vkz25390687fcnd7fshh3jrmy0v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--ignore"
+               (invoke "python" "-m" "pytest"
                        ;; Needs python-pyspark.
-                       "hyperopt/tests/test_spark.py"
+                       "--ignore" "hyperopt/tests/integration/test_spark.py"
                        ;; Needs both python-scikit-learn and python-lightgbm.
-                       "--ignore" "hyperopt/tests/test_atpe_basic.py"
+                       "--ignore" "hyperopt/tests/unit/test_atpe_basic.py"
                        ;; The tests below need python-lightgbm.
-                       "-k" (string-append "not test_branin"
-                                           " and not test_distractor"
-                                           " and not test_q1lognormal"
-                                           " and not test_quadratic1"
-                                           " and not test_twoarms"))))))))
+                       "-k"
+                       (string-append "not test_branin"
+                                      " and not test_distractor"
+                                      " and not test_q1lognormal"
+                                      " and not test_quadratic1"
+                                      " and not test_twoarms"
+                                      ;; XXX Type error with this version of scipy
+                                      " and not test_distribution_rvs"))))))))
     (propagated-inputs
      (list python-cloudpickle
            python-future
+           python-py4j
            python-networkx
            python-numpy
            python-scipy
@@ -1588,8 +1592,6 @@ interactive learning.")
            python-tqdm))
     (native-inputs
      (list python-black
-           python-ipython
-           python-ipyparallel
            python-nose
            python-pymongo
            python-pytest))
