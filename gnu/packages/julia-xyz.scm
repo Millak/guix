@@ -989,6 +989,14 @@ common subexpression elimination.")
        (sha256
         (base32 "0qzvaqi5gqgc747fnajbvvf5vqbh6cwykwky00c7glvmvdsgk3z0"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-shell-invocation
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "test/runtests.jl"
+                (("shcmd = `sh`") (string-append "shcmd = `" (which "sh") "`"))))))))
     (home-page "https://github.com/JuliaLang/Compat.jl")
     (synopsis "Compatibility across Julia versions")
     (description "The Compat package is designed to ease interoperability
