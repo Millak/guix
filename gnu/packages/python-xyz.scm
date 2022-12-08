@@ -901,6 +901,24 @@ template")
 variables into the markdown template")
     (license license:expat)))
 
+(define-public python-py4j
+  (package
+    (name "python-py4j")
+    (version "0.10.9.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "py4j" version))
+              (sha256
+               (base32
+                "1fwdx92cdaiviradksfyygg05g1fpc3x2lf65bv5rnispcam6vhb"))))
+    (build-system python-build-system)
+    (home-page "https://www.py4j.org/")
+    (synopsis "Dynamically access arbitrary Java objects from Python")
+    (description
+     "This package enables Python programs to dynamically access arbitrary
+Java objects.")
+    (license license:bsd-3)))
+
 (define-public python-pymdown-extensions
   (package
     (name "python-pymdown-extensions")
