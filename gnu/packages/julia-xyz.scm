@@ -5687,7 +5687,7 @@ working with @acronym{URIs,Uniform Resource Identifiers}, as defined in RFC
 (define-public julia-unitful
   (package
     (name "julia-unitful")
-    (version "1.9.0")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -5696,7 +5696,7 @@ working with @acronym{URIs,Uniform Resource Identifiers}, as defined in RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10qwscd15dnmvx116dwvg99m7kmwgmj5ahdkq7psiq48lcc554gq"))))
+        (base32 "1b8w6wqc7azqzg2f8zc3bmc72fb01sx0rqh6dv3k54wj01ph15p7"))))
     (build-system julia-build-system)
     (arguments
      (list #:parallel-tests? #f))
