@@ -3156,7 +3156,7 @@ extensions to the iterator interface.")
 (define-public julia-jive
   (package
     (name "julia-jive")
-    (version "0.2.20")
+    (version "0.2.27")
     (source
      (origin
        (method git-fetch)
@@ -3165,7 +3165,7 @@ extensions to the iterator interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0khwsdh8472jxcfi9lqw14l49sqlbsixql1jb4irnyajxkdjrcsf"))))
+        (base32 "010dxs9p5ab97h80kw12bx5mkraf0584wi0ggk8wnhg10jf3lpam"))))
     (build-system julia-build-system)
     (home-page "https://github.com/wookay/Jive.jl")
     (synopsis "Julia package to help with writing tests")
