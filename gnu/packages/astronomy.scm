@@ -67,6 +67,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
@@ -1337,6 +1338,50 @@ the easy construction of interactive matplotlib widget based animations.")
     (synopsis "Source detection and photometry")
     (description "Photutils is an Astropy package for detection and photometry
 of astronomical sources.")
+    (license license:bsd-3)))
+
+(define-public python-poppy
+  (package
+    (name "python-poppy")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "poppy" version))
+              (sha256
+               (base32
+                "050cn6aabd1dxbi7zihbqnkl79hz6q6d5n6g25zmrpvc4sii171m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     ;; XXX: With python-synphot (marked as optional) package added to the list
+     ;; it tries to download from remote host during tests and fails. Overall
+     ;; tests take up to 5-8min to pass.
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-docutils
+           python-h5py
+           python-pandas
+           python-pytest
+           python-pytest-astropy
+           python-sphinx
+           python-setuptools-scm))
+    (home-page "https://poppy-optics.readthedocs.io/")
+    (synopsis "Physical Optics Propagation in Python")
+    (description
+     "@acronym{POPPY, Physical Optics Propagation in Python} is a Python package that
+simulates physical optical propagation including diffraction.  It implements a
+flexible framework for modeling Fraunhofer and Fresnel diffraction and point
+spread function formation, particularly in the context of astronomical
+telescopes.
+
+POPPY was developed as part of a simulation package for the James Webb Space
+Telescope, but is more broadly applicable to many kinds of imaging simulations.
+It is not, however, a substitute for high fidelity optical design software such
+as Zemax or Code V, but rather is intended as a lightweight alternative for
+cases for which diffractive rather than geometric optics is the topic of
+interest, and which require portability between platforms or ease of scripting.")
     (license license:bsd-3)))
 
 (define-public python-pyvo
