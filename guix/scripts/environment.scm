@@ -728,14 +728,21 @@ WHILE-LIST."
             (home     (getenv "HOME"))
             (uid      (if user 1000 (getuid)))
             (gid      (if user 1000 (getgid)))
-            (passwd   (let ((pwd (getpwuid (getuid))))
+
+            ;; On a foreign distro, the name service switch might be
+            ;; dysfunctional and 'getpwuid' throws.  Don't let that hamper
+            ;; operations.
+            (passwd   (let ((pwd (false-if-exception (getpwuid (getuid)))))
                         (password-entry
-                         (name (or user (passwd:name pwd)))
-                         (real-name (if user
+                         (name (or user
+                                   (and=> pwd passwd:name)
+                                   (getenv "USER")
+                                   "charlie"))
+                         (real-name (if (or user (not pwd))
                                         ""
                                         (passwd:gecos pwd)))
                          (uid uid) (gid gid) (shell bash)
-                         (directory (if user
+                         (directory (if (or user (not pwd))
                                         (string-append "/home/" user)
                                         (passwd:dir pwd))))))
             (groups   (list (group-entry (name "users") (gid gid))
