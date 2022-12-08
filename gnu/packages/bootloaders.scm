@@ -863,9 +863,9 @@ optional DEFCONFIG file and optional configuration changes from CONFIGS.
 NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
 appended to the package description.  U-BOOT can be used when a fork or a
 different version of U-Boot must be used."
-  (let ((same-arch? (lambda ()
-                      (string=? (%current-system)
-                                (gnu-triplet->nix-system triplet)))))
+  (let ((native-build? (lambda ()
+                         (string=? (%current-system)
+                                   (gnu-triplet->nix-system triplet)))))
     (package
       (inherit u-boot)
       (name (string-append "u-boot-"
@@ -876,16 +876,11 @@ different version of U-Boot must be used."
                        (string-append (package-description u-boot)
                                       "\n\n" append-description)
                        (package-description u-boot)))
-      (native-inputs
-       ;; Note: leave the native u-boot inputs first, so that a user can
-       ;; override the cross-gcc and cross-binutils packages.
-       `(,@(package-native-inputs u-boot)
-         ,@(if (not (same-arch?))
-               `(("cross-gcc" ,(cross-gcc triplet))
-                 ("cross-binutils" ,(cross-binutils triplet)))
-               `())))
+      (build-system gnu-build-system)
       (arguments
        (substitute-keyword-arguments (package-arguments u-boot)
+         ((#:target _ #f)
+          (and (not (native-build?)) triplet))
          ((#:modules modules '())
           `((ice-9 ftw)
             (srfi srfi-1)
@@ -902,7 +897,7 @@ different version of U-Boot must be used."
          ((#:make-flags make-flags '())
           #~(list "HOSTCC=gcc"
                   "KBUILD_VERBOSE=1"
-                  #$@(if (not (same-arch?))
+                  #$@(if (not (native-build?))
                          (list (string-append "CROSS_COMPILE=" triplet "-"))
                          '())
                   #$@make-flags))
