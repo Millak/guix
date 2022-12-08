@@ -8514,6 +8514,35 @@ classification and ranking tasks.  @dfn{Area under curve} (AUC), precision at
 a given recall, F-score for single and multiple classes are available.")
     (license license:gpl2+)))
 
+(define-public r-pepsnmr
+  (package
+    (name "r-pepsnmr")
+    (version "1.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "PepsNMR" version))
+              (sha256
+               (base32
+                "02i29jinawssqlb33wvj0h9w6cfcvamlyfxdynd38jmwx23l15l5"))))
+    (properties `((upstream-name . "PepsNMR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-ggplot2
+           r-gridextra
+           r-matrix
+           r-matrixstats
+           r-ptw
+           r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/ManonMartin/PepsNMR")
+    (synopsis "Pre-process 1H-NMR FID signals")
+    (description
+     "This package provides R functions for common pre-processing steps that
+are applied on @acronym{1H-NMR, proton nuclear magnetic resonance} data.  It
+also provides a function to read the @acronym{FID, free induction decay}
+signals directly in the Bruker format.")
+    (license license:gpl2)))
+
 ;; This is a CRAN package, but it depends on a Bioconductor package.
 (define-public r-codedepends
   (package
