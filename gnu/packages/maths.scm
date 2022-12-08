@@ -4977,6 +4977,15 @@ Fresnel integrals, and similar related functions as well.")
              "library")
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-riscv64?)
+             ;; GraphBLAS FTBFS on riscv64-linux
+             `((add-after 'unpack 'skip-graphblas
+                 (lambda _
+                   (substitute* "Makefile"
+                     ((".*cd GraphBLAS.*") "")
+                     (("metisinstall gbinstall moninstall")
+                     "metisinstall moninstall")))))
+             '())
          (delete 'configure))))         ;no configure script
     (inputs
      (list tbb openblas gmp mpfr metis))
