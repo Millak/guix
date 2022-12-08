@@ -158,10 +158,10 @@ resolution, asynchronous file system operations, and threading primitives.")
     (properties '((hidden? . #t)))))
 
 (define-public libuv-julia
-  (let ((commit "fb3e3364c33ae48c827f6b103e05c3f0e78b79a9")
-        (revision "3"))
+  (let ((commit "e6f0e4900e195c8352f821abe2b3cffc3089547b")
+        (revision "4"))
     ;; When upgrading Julia, also upgrade this.  Get the commit from
-    ;; https://github.com/JuliaLang/julia/blob/v1.6.1/deps/libuv.version
+    ;; https://github.com/JuliaLang/julia/blob/v1.8.2/deps/libuv.version
     (package
       (inherit libuv)
       (name "libuv-julia")
@@ -174,7 +174,10 @@ resolution, asynchronous file system operations, and threading primitives.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1kqpn19d20aka30h6q5h8lnzyp0vw0xzgx0wm4w2r5j6yf76m2hr"))))
+                  "0ib2cprvbyviwrzm0fw6dqvlbm9akf2kj3vjzp82q3gii74cv3c9"))))
+      (arguments
+       '(#:configure-flags '("--with-pic")
+         #:tests? #f))
       (home-page "https://github.com/JuliaLang/libuv")
       (properties '((hidden? . #t))))))
 

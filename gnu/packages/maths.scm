@@ -4853,7 +4853,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
 (define-public openlibm
   (package
     (name "openlibm")
-    (version "0.7.4")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -4862,7 +4862,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1azms0lpxb7vxb3bln5lyz0wpwx6jnzbffkclclpq2v5aiw8d14i"))))
+        (base32 "1xsrcr49z0wdqpwd98jmw2xh18myzsa9xman0kp1h2i89x8mic5b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags

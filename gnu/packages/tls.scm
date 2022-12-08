@@ -1002,25 +1002,16 @@ number generator")
     (name "mbedtls-apache")
     ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
     ;; when updating.
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ARMmbed/mbedtls")
              (commit (string-append "mbedtls-" version))))
-       (sha256
-        (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Can be removed with the next version.
-           ;; Reduce level of format truncation warnings due to false positives.
-           ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
-           (substitute* "CMakeLists.txt"
-             (("Wformat-truncation=2") "Wformat-truncation"))
-           #t))))
+       (sha256
+        (base32 "0s37dsi29v7146fi9k4frvx5rz2snxdm6c3rwq2fvnca2r80hfjl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -1030,8 +1021,7 @@ number generator")
        (modify-phases %standard-phases
          (add-after 'unpack 'make-source-writable
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
+             (for-each make-file-writable (find-files ".")))))))
     (native-inputs
      (list perl python))
     (synopsis "Small TLS library")
@@ -1048,6 +1038,26 @@ coding footprint.")
   (hidden-package
    (package
      (inherit mbedtls-apache)
+     (name "mbedtls-apache")
+     (version "2.26.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ARMmbed/mbedtls")
+              (commit (string-append "mbedtls-" version))))
+        (sha256
+         (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
+        (file-name (git-file-name name version))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; Can be removed with the next version.
+            ;; Reduce level of format truncation warnings due to false positives.
+            ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
+            (substitute* "CMakeLists.txt"
+              (("Wformat-truncation=2") "Wformat-truncation"))
+            #t))))
      (arguments
       (substitute-keyword-arguments (package-arguments mbedtls-apache)
         ((#:phases phases)
