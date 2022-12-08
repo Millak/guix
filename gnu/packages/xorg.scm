@@ -4150,17 +4150,17 @@ up your screen.")
 (define-public xset
   (package
     (name "xset")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xset-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0my987wjvra7l92ry6q44ky383yg3phzxhdbn3lqhapm1ll9bzg4"))))
+            "0bsyyx3k32k9vpb8x3ks7hlfr03nm0i14fv3cg6n4f2vcdajsscz"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto libxmu libxext libx11))
