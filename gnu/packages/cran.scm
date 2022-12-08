@@ -17157,6 +17157,26 @@ Lumley & Pepe (Biometrics, Vol 56 No 2, 2000, PP 337-344)")
 discovery rates.")
     (license license:gpl2)))
 
+(define-public r-logging
+  (package
+    (name "r-logging")
+    (version "0.10-108")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "logging" version))
+              (sha256
+               (base32
+                "13gd40ygx586vs6xcp6clg69a92aj8zxlk1rn3xzkx8klfjimjc5"))))
+    (properties `((upstream-name . "logging")))
+    (build-system r-build-system)
+    (home-page "https://github.com/WLOGSolutions/r-logging")
+    (synopsis "R logging implementation of log4j")
+    (description
+     "This package implements the R version of the @code{log4j} package.  It offers
+hierarchic loggers, multiple handlers per logger, level based filtering, space
+handling in messages and custom formatting.")
+    (license license:gpl3)))
+
 (define-public r-longitudinal
   (package
     (name "r-longitudinal")
