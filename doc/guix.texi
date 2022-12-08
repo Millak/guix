@@ -43172,7 +43172,7 @@ bootstrap stack, working towards a Full Source Bootstrap.  Also ongoing
 is work to bring these bootstraps to the @code{arm-linux} and
 @code{aarch64-linux} architectures and to the Hurd.
 
-If you are interested, join us on @samp{#bootstrappable} on the Freenode
+If you are interested, join us on @samp{#bootstrappable} on the Libera.Chat
 IRC network or discuss on @email{bug-mes@@gnu.org} or
 @email{gash-devel@@nongnu.org}.
 
