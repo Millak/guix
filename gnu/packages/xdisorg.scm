@@ -3169,7 +3169,7 @@ if there's more than one.")
 (define-public xkbset
   (package
     (name "xkbset")
-    (version "0.6")
+    (version "0.8")
     (source
      (origin
        (method git-fetch)
@@ -3178,7 +3178,7 @@ if there's more than one.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b8jf5zfg4a82k7929jkb0prx8yy79nsxa0n7zhhk5a0hwpc32xx"))))
+        (base32 "1xa6sgvnwynl2qrjnsppvb2vg4p5v1pisrfhrmnlymw1fzhh6s9p"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 perl perl-tk))
