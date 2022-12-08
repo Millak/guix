@@ -93,6 +93,7 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -2717,6 +2718,28 @@ satisfiability checking (SAT).")
     (description "This package provides Python bindings to the clingo package,
 making it so that you can write @acronym{ASPs, Answer Set Programs} through
 Python code.")))
+
+(define-public python-telingo
+  (package
+    (name "python-telingo")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/telingo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "python-telingo-fix-comparison.patch"))
+              (sha256
+               (base32
+                "0g3khxfdzc2hc7dkiyyqhb399h6h21m5wkp6wy8w71n0m32fiy53"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-clingo))
+    (home-page "https://potassco.org/")
+    (synopsis "Solve dynamic temporal logic programs")
+    (description "This package provides a system to solve dynamic temporal
+logic programs based on clingo.")
+    (license license:expat)))
 
 (define-public ceres
   (package
