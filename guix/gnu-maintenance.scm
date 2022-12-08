@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -837,7 +837,7 @@ the directory containing its source tarball."
         ;; Return false and move on upon connection failures and bogus HTTP
         ;; servers.
         (unless (memq key '(gnutls-error tls-certificate-error
-                                         system-error
+                                         system-error getaddrinfo-error
                                          bad-header bad-header-component))
           (apply throw key args))
         #f))))
