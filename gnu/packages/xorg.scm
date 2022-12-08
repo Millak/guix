@@ -4708,17 +4708,17 @@ common definitions and porting layer.")
 (define-public libice
   (package
     (name "libice")
-    (version "1.0.10")
+    (version "1.1.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libICE-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0j638yvmyna2k4mz465jywgdybgdchdqppfx6xfazg7l5khxr1kg"))))
+            "0nr2mcsm50psgdm2wiwbiqg6g9x2rxm3bs3kmr5bv00iv10grlh2"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
