@@ -1996,40 +1996,35 @@ using finite difference.")
     (license license:expat)))
 
 (define-public julia-fixedpointnumbers
-  (package
-    (name "julia-fixedpointnumbers")
-    (version "0.8.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j0n40n04q9sk68wh9jq90m6c67k4ws02k41djjzkrqmpzv4rcdi"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'disable-failing-test
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* "test/fixed.jl"
-                ;; A deprecation warning is not thrown
-                (("@test_logs.*:warn" all) (string-append "# " all))))))))
-    (propagated-inputs
-     (list julia-compat))
-    (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
-    (synopsis "Fixed point types for Julia")
-    (description "@code{FixedPointNumbers.jl} implements fixed-point number
+  (let ((commit "59ee94b93f2f1ee75544ef44187fc0e440cd8015")
+        (revision "1"))
+    (package
+      (name "julia-fixedpointnumbers")
+      (version (git-version "0.8.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ghriy7p2fj7mwdx11ssjg28jmwz8pi13c3j8p1grvwb4nvc0jnq"))))
+      (build-system julia-build-system)
+      (arguments
+       (list #:tests? #f))      ; Cycle with julia-documenter
+      (propagated-inputs
+       (list julia-compat))
+      (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
+      (synopsis "Fixed point types for Julia")
+      (description "@code{FixedPointNumbers.jl} implements fixed-point number
 types for Julia.  A fixed-point number represents a fractional, or
 non-integral, number.  In contrast with the more widely known floating-point
 numbers, with fixed-point numbers the decimal point doesn't \"float\":
 fixed-point numbers are effectively integers that are interpreted as being
 scaled by a constant factor.  Consequently, they have a fixed number of
 digits (bits) after the decimal (radix) point.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public julia-formatting
   (package
