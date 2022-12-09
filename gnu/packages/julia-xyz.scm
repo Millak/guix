@@ -365,32 +365,29 @@ benchmarks as well as comparing benchmark results.")
     (license license:expat)))
 
 (define-public julia-bfloat16s
-  ;; Not tagged upstream
-  (let ((commit "ef6051e4308ed0c02f10168b99d226237e0ae33c")
-        (version "0.2.0"))
-    (package
-      (name "julia-bfloat16s")
-      (version version)
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/JuliaMath/BFloat16s.jl")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "16sr578k4i47lhziri47nvspdrsni2wc1qjhs6hzffh9si6a7jfq"))))
-      (build-system julia-build-system)
-      (home-page "https://github.com/JuliaMath/BFloat16s.jl")
-      (synopsis "Define BFloat16 data type")
-      (description "This package defines the @code{BFloat16} data type.  The
+  (package
+    (name "julia-bfloat16s")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/BFloat16s.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12d5dv5jy8vphczlbnks0qa6wmlz0czxq7gc48bcb94f9qvq0r1n"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/BFloat16s.jl")
+    (synopsis "Define BFloat16 data type")
+    (description "This package defines the @code{BFloat16} data type.  The
 only currently available hardware implementation of this datatype are Google's
 Cloud TPUs.  As such, this package is suitable to evaluate whether using TPUs
 would cause precision problems for any particular algorithm, even without
 access to TPU hardware.  Note that this package is designed for functionality,
 not performance, so this package should be used for precision experiments
 only, not performance experiments.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public julia-bioalignments
   (package
