@@ -4695,7 +4695,7 @@ values.")
 (define-public go-gopkg-in-yaml-v3
   (package
     (name "go-gopkg-in-yaml-v3")
-    (version "3")
+    (version "3.0.1")
     (source
      (origin
        (method git-fetch)
@@ -4704,7 +4704,7 @@ values.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "06f4lnrp494wqaygv09dggr2dwf3z2bawqhnlnnwiamg5y787k4g"))))
+        (base32 "01b0wjb7yzv8wzzz2iim8mjpkwjnykcanrwiq06pkl89lr6gv8hn"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "gopkg.in/yaml.v3"))
