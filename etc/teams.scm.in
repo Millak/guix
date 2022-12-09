@@ -515,6 +515,10 @@ importer."
                        "rg@raghavgururajan.name")
   mentors)
 
+(define-member (person "宋文武"
+                       "iyzsong@envs.net")
+  games localization)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
