@@ -116,7 +116,7 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
   (define command-output "")
   (define (line-accumulator line)
     (set! command-output
-          (string-append/shared command-output line "\n")))
+          (string-append/shared command-output line)))
   (define result (run-external-command-with-line-hooks (list line-accumulator)
                                                        args))
   (define exit-val (status:exit-val result))
