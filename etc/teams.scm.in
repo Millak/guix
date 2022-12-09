@@ -360,6 +360,17 @@ asdf-build-system."
                       "gnu/packages/motti.scm"
                       "guix/build/minetest-build-system.scm")))
 
+(define-team localization
+  (team 'localization
+        #:name "Localization (l10n) team"
+        #:description
+        "Localization of your system to specific languages."
+        #:scope (list "gnu/packages/anthy.scm"
+                      "gnu/packages/fcitx5.scm"
+                      "gnu/packages/fcitx.scm"
+                      "gnu/packages/fonts.scm"
+                      "gnu/packages/ibus.scm")))
+
 (define-team translations
   (team 'translations
         #:name "Translations"
