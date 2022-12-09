@@ -3930,7 +3930,11 @@ optimization of functions.")
     (arguments
      (list
       #:julia-package-name "OptimTestProblems"
-      #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"))
+      #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"
+      #:julia-package-dependencies
+      #~(list '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e")
+              '("SparseArrays" . "2f01184e-e22b-5df5-ae63-d93ebab69eaf")
+              '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))))
     (home-page "https://github.com/JuliaNLSolvers/OptimTestProblems.jl")
     (synopsis "Collection of optimization test problems")
     (description "The purpose of this package is to provide test problems for
