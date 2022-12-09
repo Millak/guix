@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -293,6 +293,15 @@ Second line" 24))
                                 (map rx '("go" "game"))))
          (>0 (package-relevance libb2
                                 (map rx '("crypto" "library")))))))
+
+(test-assert "package-relevance and upstream name"
+  ;; https://issues.guix.gnu.org/58136
+  (let ((ggplot2  (specification->package "r-ggplot2"))
+        (ggstance (specification->package "r-ggstance"))
+        (rx       (make-regexp "ggplot2" regexp/icase)))
+    (> (package-relevance ggplot2 (list rx))
+       (package-relevance ggstance (list rx))
+       0)))
 
 (define (make-empty-file directory file)
   ;; Create FILE in DIRECTORY.

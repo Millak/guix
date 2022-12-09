@@ -1668,6 +1668,7 @@ score, the more relevant OBJ is to REGEXPS."
   ;; Metrics used to compute the "relevance score" of a package against a set
   ;; of regexps.
   `((,package-name . 4)
+    (,package-upstream-name* . 2)
 
     ;; Match against uncommon outputs.
     (,(lambda (package)
