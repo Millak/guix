@@ -5198,7 +5198,7 @@ dependency on it.")
 (define-public julia-statsbase
   (package
     (name "julia-statsbase")
-    (version "0.33.8")
+    (version "0.33.10")
     (source
       (origin
         (method git-fetch)
@@ -5207,7 +5207,7 @@ dependency on it.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "02y4pm5yvg713a2pn970bbcfkrn2h133rxbxk1da18svhqw3czhi"))))
+         (base32 "0pjsn531zdz3s34pa418pvyqvrx8nbcc8j0fgwfnadssihqah6g7"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-dataapi
