@@ -1389,7 +1389,7 @@ dictionaries in Julia, for improved productivity and performance.")
 (define-public julia-distances
   (package
     (name "julia-distances")
-    (version "0.10.3")
+    (version "0.10.7")
     (source
       (origin
         (method git-fetch)
@@ -1398,7 +1398,7 @@ dictionaries in Julia, for improved productivity and performance.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1yqd9wg4z15k42mrp4y14j2x0sq7yrjhm5zpqklrw6w6j1c367ig"))))
+         (base32 "0sgrh3bzhmqqz0m28lmk66xhnl62i5r2miaiqml8nhbkaapbwc06"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -1412,7 +1412,14 @@ dictionaries in Julia, for improved productivity and performance.")
                 (("test dyz ≥") "test_nowarn dyz ≥")
                 (("test dist\\(y, x") "test_nowarn dist(y, x")
                 (("test dist\\(z, x") "test_nowarn dist(z, x")
-                (("test dist\\(z, y") "test_nowarn dist(z, y")))))))
+                (("test dist\\(z, y") "test_nowarn dist(z, y"))
+              #$@(if (not (target-64bit?))
+                   ;; A little too much precision
+                   ;; Evaluated: 1.8839055991209719 === 1.8839055991209717
+                   `((substitute* "test/test_dists.jl"
+                       (("@test whamming\\(a, b, w\\) === sum")
+                        "@test_skip whamming(a, b, w) === sum")))
+                   '()))))))
     (propagated-inputs
      (list julia-statsapi))
     (native-inputs
