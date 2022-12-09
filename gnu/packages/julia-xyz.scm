@@ -3089,7 +3089,7 @@ as a string together with the return value.")
 (define-public julia-irtools
   (package
     (name "julia-irtools")
-    (version "0.4.3")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -3098,7 +3098,7 @@ as a string together with the return value.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11334fcg2slpwcj0raxf457brhf7pxglgxc6cy8q58ggrpxqfqql"))))
+        (base32 "1faddim4gp9pgyadgxi7zdqpdn6qkh7acqpdy29ixpbnb0wgla5r"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-macrotools))
