@@ -138,6 +138,9 @@ parent image record."
    (size 'guess)
    (label root-label)
    (file-system "ext4")
+   ;; Disable the metadata_csum and 64bit features of ext4, for compatibility
+   ;; with U-Boot.
+   (file-system-options (list "-O" "^metadata_csum,^64bit"))
    (flags '(boot))
    (initializer (gexp initialize-root-partition))))
 
