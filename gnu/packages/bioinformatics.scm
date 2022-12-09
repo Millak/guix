@@ -13466,25 +13466,25 @@ genomic scores), long range contacts and the visualization of viewpoints.")
 (define-public python-pygenometracks
   (package
     (name "python-pygenometracks")
-    (version "3.3")
+    (version "3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyGenomeTracks" version))
        (sha256
         (base32
-         "16laa0wnf4qn9fb9ych4w1vqhqwjss70v0y0f6wp4gwqfrlgac0f"))))
-    (build-system python-build-system)
+         "1l7smg2gc1vm2181lzmdnywb11gp6s6z6j444dbsigv65car8z8p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
                (("matplotlib ==3.1.1")
-                "matplotlib >=3.1.1"))
-             #t)))))
+                "matplotlib >=3.1.1")))))))
     (propagated-inputs
      (list python-future
            python-gffutils
