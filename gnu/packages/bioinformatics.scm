@@ -13413,7 +13413,7 @@ the HiCExplorer and pyGenomeTracks packages.")
 (define-public python-hicexplorer
   (package
     (name "python-hicexplorer")
-    (version "2.1.4")
+    (version "3.7.2")
     (source
      (origin
        ;; The latest version is not available on Pypi.
@@ -13424,32 +13424,114 @@ the HiCExplorer and pyGenomeTracks packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q5gpbzmrkvygqgw524q36b4nrivcmyi5v194vsx0qw7b3gcmq08"))))
-    (build-system python-build-system)
+         "1yavgxry38g326z10bclvdf8glmma05fxj5m73h15m1r2l9xmw3v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-up-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">="))
-             #t)))))
+     (list
+      #:test-flags
+      '(list "hicexplorer/test/general/"
+             "--ignore" "hicexplorer/test/general/test_hicTADClassifier.py"
+             "--ignore" "hicexplorer/test/general/test_hicTrainTADClassifier.py"
+             "-k"
+             (string-append
+              ;; Unknown chromosome: ChrX
+              "not test_build_matrix_restrictionCutFile_two"
+              ;; fixture 'keepSelfLigation' not found
+              " and not test_build_matrix_restrictionCutFile_six"
+              ;; ValueError: object dtype is not supported by sparse matrices
+              " and not test_hic_transfer_obs_exp_perChromosome"
+
+              ;; No KR balancing available
+              " and not test_correct_matrix_KR_partial_cool"
+              " and not test_correct_matrix_KR_cool"
+              " and not test_correct_matrix_KR_H5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See https://github.com/deeptools/Knight-Ruiz-Matrix-balancing-algorithm/issues/23
+          (add-after 'unpack 'remove-dependency-on-krbalancing
+            (lambda _
+              (substitute* "hicexplorer/hicCorrectMatrix.py"
+                (("from krbalancing import.*") "")
+                (("( *)assert\\(args.correctionMethod == 'KR'\\)" m indent)
+                 (string-append m "\n"
+                                indent "log.error('krbalancing not available')\n"
+                                indent "exit(1)")))
+              (substitute* "setup.py"
+                (("\"krbalancing >= 0.0.5\",") ""))
+              (substitute* "requirements.txt"
+                (("krbalancing >= 0.0.5") ""))))
+          (add-after 'unpack 'fix-references
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (substitute* "hicexplorer/lib/tadClassifier.py"
+                  (("model_location = site.getsitepackages\\(\\)\\[0\\]")
+                   (string-append "model_location = \"" site "\""))))
+              (substitute* "hicexplorer/hicFindRestSite.py"
+                (("subprocess.check_output\\(\\[\"cat\"")
+                 (string-append "subprocess.check_output([\""
+                                (which "cat") "\""))
+                (("cmd = 'sort -k1")
+                 (string-append "cmd = '" (which "sort") " -k1")))))
+          ;; The tests aim to detect available memory and run more tests when
+          ;; there is more available memory.  Let's run them deterministically
+          ;; instead and don't run any tests that require more than 1GB of
+          ;; RAM.
+          (add-after 'unpack 'run-only-low-mem-tests
+            (lambda _
+              (with-directory-excursion "hicexplorer/test"
+                (substitute* '("trivial_runs/test_hicBuildMatrix_trivial_runs_2.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_five.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_four.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_1.py"
+                               "trivial_runs/test_hicBuildMatrix_trivial_runs.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_3.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_three.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_2.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_six.py"
+                               "general/test_hicDifferentialTAD.py"
+                               "general/test_hicDetectLoops.py"
+                               "general/test_hicPlotMatrix.py"
+                               "general/test_hicHyperoptDetectLoops.py"
+                               "general/test_hicCreateThresholdFile.py"
+                               "general/test_hicMergeDomains.py"
+                               "general/test_hicHyperoptDetectLoopsHiCCUPS.py"
+                               "general/test_hicAggregateContacts.py"
+                               "general/test_hicInterIntraTAD.py")
+                  (("^memory =.*") "memory = 1\n"))))))))
     (propagated-inputs
      (list python-biopython
-           python-configparser
+           python-cleanlab-1
            python-cooler
+           python-fit-nbinom
            python-future
+           python-graphviz
+           python-hic2cool
+           python-hicmatrix
+           python-hyperopt
+           python-imbalanced-learn
            python-intervaltree
+           python-ipykernel
            python-jinja2
            python-matplotlib
            python-numpy
            python-pandas
+           python-psutil
+           python-pybedtools
            python-pybigwig
+           python-pygenometracks
            python-pysam
+           python-scikit-learn
            python-scipy
-           python-six
            python-tables
+           python-tqdm
            python-unidecode))
+    (native-inputs
+     (list graphviz)) ;for hicexplorer/test/test_compute_function.py
     (home-page "https://hicexplorer.readthedocs.io")
     (synopsis "Process, analyze and visualize Hi-C data")
     (description
