@@ -626,6 +626,10 @@
     (build-derivations %store (list drv))
     (call-with-input-file output get-string-all)))
 
+(test-equal "package-upstream-name*"
+  (package-upstream-name* (specification->package "guile-gcrypt"))
+  "gcrypt")
+
 
 ;;;
 ;;; Source derivation with snippets.
