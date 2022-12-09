@@ -324,7 +324,7 @@ the entries on the bands.")
 (define-public julia-benchmarktools
   (package
     (name "julia-benchmarktools")
-    (version "1.1.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -333,7 +333,7 @@ the entries on the bands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xz3kdrphp4b158pg7dwkiry49phs2fjjpdvk1hjpww5ykxacks8"))))
+        (base32 "02n2pi71jvhsnc25a888i6imimd2c1phg6iyr73b12595lrz175d"))))
     (build-system julia-build-system)
     (arguments
      (list
