@@ -755,50 +755,51 @@ a complete panorama and stitch any series of overlapping pictures.")
 (define-public rawtherapee
   (package
     (name "rawtherapee")
-    (version "5.8")
+    (version "5.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://rawtherapee.com/shared/source/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
-                "0lq8qi7g0a28h3rab7bk5bbbd4gvfma42bvlz1dfn8p9mah2h19n"))))
+                "08s81mxnrj183bss2rb0hac1qyn7bmcnk3x2ymg1cp0q5322ibwf"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ; no test suite
-       #:build-type "release"
-       #:configure-flags
-       (list (string-append "-DLENSFUNDBDIR="
-                            (assoc-ref %build-inputs "lensfun")
-                            "/share/lensfun")
-             ;; Don't optimize the build for the host machine. See the file
-             ;; 'ProcessorTargets.cmake' in the source distribution for more
-             ;; information.
-             "-DPROC_TARGET_NUMBER=1"
-             ;; These flags are recommended by upstream for distributed packages.
-             ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
-             "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
-             "-DCMAKE_C_FLAGS=-O3 -fPIC"
-             "-DCACHE_NAME_SUFFIX=\"\"")))
+     (list
+      #:tests? #f                      ; no test suite
+      #:build-type "release"
+      #:configure-flags
+      #~(list (string-append "-DLENSFUNDBDIR="
+                             #$(this-package-input "lensfun")
+                             "/share/lensfun")
+              ;; Don't optimize the build for the host machine. See the file
+              ;; 'ProcessorTargets.cmake' in the source distribution for more
+              ;; information.
+              "-DPROC_TARGET_NUMBER=1"
+              ;; These flags are recommended by upstream for distributed packages.
+              ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
+              "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+              "-DCMAKE_C_FLAGS=-O3 -fPIC"
+              "-DCACHE_NAME_SUFFIX=\"\"")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("expat" ,expat)
-       ("fftw" ,fftwf)
-       ("glib" ,glib)
-       ("glibmm" ,glibmm)
-       ("gtk+" ,gtk+)
-       ("gtkmm" ,gtkmm-3)
-       ("lcms" ,lcms)
-       ("lensfun" ,lensfun)
-       ("libcanberra" ,libcanberra)
-       ("libiptcdata" ,libiptcdata)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
-       ("libsigc++" ,libsigc++)
-       ("libtiff" ,libtiff)
-       ("zlib" ,zlib)))
+     (list expat
+           fftwf
+           glib
+           glibmm
+           gtk+
+           gtkmm-3
+           lcms
+           lensfun
+           libcanberra
+           libiptcdata
+           libjpeg-turbo
+           libpng
+           librsvg
+           libsigc++
+           libtiff
+           zlib))
     (home-page "https://rawtherapee.com")
     (synopsis "Raw image developing and processing")
     (description "RawTherapee is a raw image processing suite.  It comprises a
