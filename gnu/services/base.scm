@@ -61,7 +61,8 @@
                           util-linux xfsprogs))
   #:use-module (gnu packages bash)
   #:use-module ((gnu packages base)
-                #:select (coreutils glibc glibc-utf8-locales tar))
+                #:select (coreutils glibc glibc-utf8-locales tar
+                          canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
   #:autoload   (gnu packages hurd) (hurd)
@@ -1211,7 +1212,13 @@ the tty to run, among other things."
   (name-services nscd-configuration-name-services ;list of file-like
                  (default '()))
   (glibc      nscd-configuration-glibc            ;file-like
-              (default glibc)))
+              (default (let-system (system target)
+                         ;; Unless we're cross-compiling, arrange to use nscd
+                         ;; from 'glibc-final' instead of pulling in a second
+                         ;; glibc copy.
+                         (if target
+                             glibc
+                             (canonical-package glibc))))))
 
 (define-record-type* <nscd-cache> nscd-cache make-nscd-cache
   nscd-cache?
