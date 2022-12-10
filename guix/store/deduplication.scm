@@ -262,7 +262,10 @@ down the road."
       (deduplicate file (dump-and-compute-hash) #:store store)
       (call-with-output-file file
         (lambda (output)
-          (sendfile output input size 0)))))
+          (if (file-port? input)
+              (sendfile output input size 0)
+              (dump-port input output size
+                         #:buffer-size %deduplication-minimum-size))))))
 
 (define* (copy-file/deduplicate source target
                                 #:key (store (%store-directory)))
