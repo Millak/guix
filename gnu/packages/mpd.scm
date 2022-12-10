@@ -581,7 +581,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "10.1.3")
+    (version "10.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -590,7 +590,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16cvjwbyb1m88kmgylp95p82a4xdjikmrw9arl6kvmgcbyw317yp"))))
+                "06i8v8dh2x4lrph9lm56h5yy698y95ic5xrgmyisafvxd239sn0x"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ; no test target
