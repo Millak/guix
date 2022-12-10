@@ -16597,18 +16597,31 @@ feature is fast retrieval of range queries into numpy arrays.")
 (define-public python-dna-features-viewer
   (package
     (name "python-dna-features-viewer")
-    (version "3.0.3")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dna_features_viewer" version))
        (sha256
         (base32
-         "0vci6kg2id6r6rh3cifq7ccnh7j0mb8iqg3hji6rva0ayrdqzafc"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; there are none
+         "10a5pmh73spdgfml88zjqg1rn2j2zdxn06ir8a5q3arspyqvyqcb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer/issues/73
+         ;; and https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer/pull/74
+         (add-after 'unpack 'fix-biopython-compatibility
+           (lambda _
+             (substitute* "dna_features_viewer/biotools.py"
+               (("zip\\(aa1 \\+ \"\\*\", aa3 \\+ \\[\"\\*\"\\]\\)")
+                "zip(aa1 + ('*',), aa3 + ('*',))")))))))
     (propagated-inputs
-     (list python-biopython python-matplotlib))
+     (list python-biopython
+           python-matplotlib
+           python-packaging))
     (home-page
      "https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer")
     (synopsis "Plot features from DNA sequences")
