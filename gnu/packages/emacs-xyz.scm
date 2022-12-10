@@ -33313,16 +33313,16 @@ complementary packages.")
 (define-public emacs-wisp-mode
   (package
     (name "emacs-wisp-mode")
-    (version "0.3.0")
+    (version "1.0.8")
     (source
      (origin
        (method hg-fetch)
        (uri (hg-reference
              (url "https://hg.sr.ht/~arnebab/wisp")
-             (changeset (string-append "wisp-mode-" version))))
+             (changeset (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "189baxk27rq3s6h6mh0m25sv504853rpvyxxdcwx6wdy7l88qany"))))
+        (base32 "1hqwdmx081icv516cyndjkwvgr7b41hi5qdaylkv0jran35jwjiw"))))
     (build-system emacs-build-system)
     (home-page "https://www.draketo.de/software/wisp")
     (synopsis "Syntax highlighting and indentation support for Wisp files")
