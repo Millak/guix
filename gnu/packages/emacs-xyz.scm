@@ -7945,7 +7945,7 @@ features:
 (define-public emacs-company-math
   (package
     (name "emacs-company-math")
-    (version "1.4")
+    (version "1.5")
     (source
      (origin
        (method git-fetch)
@@ -7954,7 +7954,7 @@ features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1y1fw926insgdl7ib9ynxjrxf3p6wfjkfxvf5vgdca7267cvcll1"))))
+        (base32 "010p3rhb7win6ndx3ilz2lcg69d2qyxfvpi0hcid2srzxffpwn3i"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-math-symbol-lists emacs-company))
