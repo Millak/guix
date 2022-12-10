@@ -173,6 +173,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
@@ -3590,7 +3591,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.39.2.1")
+    (version "3.40.0.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3600,24 +3601,23 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "06x3qgg71xz8l3kz8gz04wkfp5f6zfrg476a4mm1c5hikqyw6ykj"))
-       ;; Cherry-picked from upstream, remove when bumping to 3.39.3.
-       (patches
-        (search-patches "python-apsw-3.39.2.1-test-fix.patch"))))
-    (build-system python-build-system)
-    (native-inputs (list unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.39 required.
+         "02sgja00azvd08wi2wm105apmhp2644s7aw9b1zdg3dkcwjnsiad"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.40 required.
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'build
-                 (lambda _
-                   (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                           "--enable=load_extension")))
-               (add-after 'build 'build-test-helper
-                 (lambda _
-                   (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                           "-I." "-Isqlite3" "src/testextension.c"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                      "--enable=load_extension")))
+          (add-after 'build 'build-test-helper
+            (lambda _
+              (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
+                      "-I." "-Isqlite3" "src/testextension.c"))))))
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
     (description
