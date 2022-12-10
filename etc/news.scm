@@ -42,10 +42,10 @@ input.")
 werden sollte.  Die native Eingabe @samp{\"kconfig\"} eines von
 @code{linux-libre} abgeleiteten Pakets zu ersetzen, funktioniert nicht mehr,
 weil die Kernel-Konfigurationsdatei nicht mehr als native Eingabe vorliegt.")
-         (fr "Le module @code{(gnu packages linux)} inclus une nouvelle
-procédure @code{customize-linux} qui devrait maintenant être utilisée au lieu
+         (fr "Le module @code{(gnu packages linux)} inclut une nouvelle
+procédure @code{customize-linux}, qui devrait maintenant être utilisée au lieu
 de remplacer l'entrée native @samp{\"kconfig\"} d'un paquet dérivé de
-@code{linux-libre}, car le fichier de configuration du noyau n'est plus fournit
+@code{linux-libre}, car le fichier de configuration du noyau n'est plus fourni
 en tant qu'entrée native.")))
 
  (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
