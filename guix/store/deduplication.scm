@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017 Caleb Ristvedt <caleb.ristvedt@cune.org>
-;;; Copyright © 2018-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -262,7 +262,7 @@ down the road."
       (deduplicate file (dump-and-compute-hash) #:store store)
       (call-with-output-file file
         (lambda (output)
-          (dump-port input output size)))))
+          (sendfile output input size 0)))))
 
 (define* (copy-file/deduplicate source target
                                 #:key (store (%store-directory)))
