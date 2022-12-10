@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -887,21 +888,17 @@ The core is 12 builtin special forms and 33 builtin functions.")
 (define-public gauche
   (package
     (name "gauche")
-    (version "0.9.10")
+    (version "0.9.12")
     (home-page "https://practical-scheme.net/gauche/index.html")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://sourceforge/gauche/Gauche/Gauche-"
-             version ".tgz"))
+             "https://github.com/shirok/Gauche/releases/download/release"
+             (string-replace-substring version "." "_")
+             "/Gauche-" version ".tgz"))
        (sha256
-        (base32 "0ci57ak5cp3lkmfy3nh50hifh8nbg58hh6r18asq0rn5mqfxyf8g"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Remove libatomic-ops.
-                   (delete-file-recursively "gc/libatomic_ops")
-                   #t))))
+        (base32 "05xnym1phg8i14bacip5d0d3v0gc1nn5mgayd5hnda873f969bml"))))
     (build-system gnu-build-system)
     (inputs
      (list libatomic-ops slib zlib))
@@ -932,8 +929,8 @@ The core is 12 builtin special forms and 33 builtin functions.")
          (add-before 'check 'patch-network-tests
            ;; Remove net checks.
            (lambda _
-             (delete-file "ext/net/test.scm")
-             (invoke "touch" "ext/net/test.scm")
+             (delete-file "test/net.scm")
+             (invoke "touch" "test/net.scm")
              #t))
          (add-after 'install 'install-docs
            (lambda _
