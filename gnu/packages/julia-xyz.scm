@@ -2258,7 +2258,7 @@ matrices the Schur form is often more useful.")
 (define-public julia-geometrybasics
   (package
     (name "julia-geometrybasics")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
       (origin
         (method git-fetch)
@@ -2267,7 +2267,7 @@ matrices the Schur form is often more useful.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "057j3hjpli3q5b98cqkpi4p10x2k9pyksrz62hjmv1kb5qzdvhsj"))))
+         (base32 "0kxn7gzv4sm3017qbng70iqb4wzy1k2fj5w6lkz1kn7lx7z7m33x"))))
     (build-system julia-build-system)
     (arguments
      (list
