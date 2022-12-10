@@ -2402,7 +2402,7 @@ library for parsing HTML.")
 (define-public julia-http
   (package
     (name "julia-http")
-    (version "0.9.12")
+    (version "0.9.17")
     (source
      (origin
        (method git-fetch)
@@ -2411,7 +2411,7 @@ library for parsing HTML.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jsyk3mhnwj4h19cxclx26igdqdrw51fd3k1hgav0nm67dy4cxyk"))))
+        (base32 "1ynzcl30sf5r42l75l5x1a8z0643hlck2kysyhag9795gzafxzv3"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2442,6 +2442,9 @@ library for parsing HTML.")
                 (("@testset.*Body - .*" all)
                  (string-append all "return\n"))
                 (("@testset.*Write to file.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/cookies.jl"
+                (("@testset.*Set-Cookie casing.*" all)
                  (string-append all "return\n"))))))))
     (propagated-inputs
      (list julia-inifile
