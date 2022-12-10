@@ -16923,7 +16923,7 @@ one if it fails.")
 (define-public emacs-jarchive
   (package
     (name "emacs-jarchive")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -16932,7 +16932,7 @@ one if it fails.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1fi3y5kmy7ginyqg12q797bma638xmam7lrk74x6yhx84xgzb4fq"))))
+                "0v1mz9z8dgxr4yj9p0wf0a748nlnvv2z0mrbkbqz7nsnw5djkimd"))))
     (build-system emacs-build-system)
     (home-page "https://sr.ht/~dannyfreeman/jarchive")
     (synopsis "Jarchive teaches Emacs how to navigate to files inside JARs")
