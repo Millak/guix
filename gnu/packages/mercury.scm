@@ -171,7 +171,7 @@ separate compilation, and numerous optimization/time trade-offs.")
 (define-public mercury
   (package (inherit mercury-minimal)
            (name "mercury")
-           (version "20.06.1")
+           (version "22.01.4")
            (source
             (origin
               (method git-fetch)
@@ -183,7 +183,7 @@ separate compilation, and numerous optimization/time trade-offs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b6rmdinw8mj6n9sc7c75kkf42gd2k254rf51x4snlrqckxj7aaz"))))
+                "0ycy1j9a4rdj6d37x02dj6kyr00mykvc5kykci11fim906d92gzh"))))
            (arguments
             (substitute-keyword-arguments
                 (package-arguments mercury-minimal)
@@ -205,7 +205,6 @@ separate compilation, and numerous optimization/time trade-offs.")
                                 "scripts/Mmake.vars.in"
                                 "scripts/mdb.in"
                                 "scripts/rs6000_hack"
-                                "scripts/fullarch"
                                 "scripts/mmc.in"
                                 "scripts/mprof.in"
                                 "scripts/gud.el"
