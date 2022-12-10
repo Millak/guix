@@ -1025,6 +1025,66 @@ backends, PackageKit can perform these tasks using the appropriate package
 manager for the current system.")
     (license license:gpl2+)))
 
+(define-public power-profiles-daemon
+  (package
+    (name "power-profiles-daemon")
+    (version "0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wqcajbj358zpyj6y4h1v34y2yncq76wqxd0jm431habcly0bqyr"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Dsystemdsystemunitdir=false")
+           #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'fake-pkexec
+                 (lambda _ (setenv "PKEXEC_UID" "-1")))
+               (add-before 'configure 'correct-polkit-dir
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("polkit_gobject_dep\\..*")
+                      (string-append "'" #$output "/share/polkit-1/actions'")))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program
+                       (string-append #$output "/bin/powerprofilesctl")
+                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list `(,glib "bin") gobject-introspection pkg-config python vala))
+    (inputs
+     (list bash-minimal                           ;for 'wrap-program'
+           dbus
+           dbus-glib
+           libgudev
+           glib polkit
+           python
+           python-pygobject
+           upower))
+    (home-page "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+    (synopsis "Power profile handling over D-Bus")
+    (description
+     "power-profiles-daemon offers to modify system behaviour based upon
+user-selected power profiles.  There are 3 different power profiles, a
+\"balanced\" default mode, a \"power-saver\" mode, as well as a
+\"performance\" mode.  The first 2 of those are available on every system.
+The \"performance\" mode is only available on select systems and is
+implemented by different \"drivers\" based on the system or systems it
+targets.  In addition to those 2 or 3 modes (depending on the system),
+\"actions\" can be hooked up to change the behaviour of a particular device.
+For example, this can be used to disable the fast-charging for some USB
+devices when in power-saver mode.")
+    (license license:gpl3)))
+
+
 (define-public python-libevdev
   (package
     (name "python-libevdev")
