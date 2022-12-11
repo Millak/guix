@@ -7011,12 +7011,12 @@ exceeded.")
     (native-inputs
      (list cmocka pkg-config))
     (inputs
-     `(("acl" ,acl)                     ; extended attributes (xattr)
-       ("libuuid" ,util-linux "lib")
-       ("lzo" ,lzo)
-       ("openssl" ,openssl)             ; optional crypto support
-       ("zlib" ,zlib)
-       ("zstd" ,zstd "lib")))
+     (list acl                          ; extended attributes (xattr)
+           lzo
+           openssl                      ; optional crypto support
+           `(,util-linux "lib")
+           zlib
+           `(,zstd "lib")))
     (build-system gnu-build-system)
     (synopsis "MTD Flash Storage Utilities")
     (description "This package provides utilities for testing, partitioning, etc
