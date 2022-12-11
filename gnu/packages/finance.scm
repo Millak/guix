@@ -1660,7 +1660,8 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
      (list
       #:parallel-build? #f              ;fails with -j64
       #:configure-flags
-      #~(list (string-append "--with-opensp-includes="
+      #~(list "--disable-static"
+              (string-append "--with-opensp-includes="
                              (search-input-directory %build-inputs
                                                      "include/OpenSP")))))
     (native-inputs
