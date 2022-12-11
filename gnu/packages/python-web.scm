@@ -3889,6 +3889,38 @@ SlimIt also provides a library that includes a JavaScript parser, lexer,
 pretty printer and a tree visitor.")
     (license license:expat)))
 
+(define-public python-flask-jwt
+  (package
+    (name "python-flask-jwt")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-JWT" version))
+              (sha256
+               (base32
+                "1bfh7cr0sf65rn4h1q67472y6ml9s8c4k0xxfhrwvwg0plpngh29"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "setup.cfg"
+               (("\\[pytest\\]") "[tool:pytest]"))
+             (substitute* "requirements.txt"
+               (("PyJWT>=1.4.0,<1.5.0") "PyJWT>=2.0.0"))
+             (substitute* '("tests/test_jwt.py"
+                            "flask_jwt/__init__.py")
+               (("access_token.decode\\('utf-8'\\)") "access_token")))))))
+    (propagated-inputs (list python-flask python-pyjwt))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/mattupstate/flask-jwt")
+    (synopsis "JWT token authentication for Flask apps")
+    (description "This package implements JWT token authentication for Flask
+apps.")
+    (license license:expat)))
+
 (define-public python-flask-restful
   (package
     (name "python-flask-restful")
