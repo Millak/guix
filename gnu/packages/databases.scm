@@ -3138,13 +3138,13 @@ or languages.  It uses only Python's built-in data types.")
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
-    (version "4.0.32")
+    (version "4.0.35")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyodbc" version))
        (sha256
-        (base32 "0sqs0x2l5mk3yv0wwz3ya8yh5f4babihyhc8hjbf2m86b71z1rcv"))
+        (base32 "1j7577acd2f16zifw49ajg0aw7vm0pdg6jxrr1dlaa5rx14azfcj"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete precompiled binaries.  The corresponding source is included.
