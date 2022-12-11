@@ -9397,14 +9397,14 @@ receiving.  It is dedicated to the PL011 UART of the Raspberry Pi.")
 (define-public ipset
   (package
     (name "ipset")
-    (version "7.15")
+    (version "7.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ipset.netfilter.org/"
                            "ipset-" version ".tar.bz2"))
        (sha256
-        (base32 "0l8pcaym6057hq3a4zwnk53p5y6xg1m3d3c83wn18h5nmnm4am8a"))))
+        (base32 "1l4nybq17gr2ick7bbb5gq46bsqiw4rxmrvi0qfkvpm1yk6xkcc7"))))
     (build-system gnu-build-system)
     (inputs
      (list libmnl))
