@@ -6945,19 +6945,19 @@ bioinformatics file formats, sequence alignment, and more.")
 (define-public seqmagick
   (package
     (name "seqmagick")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "seqmagick" version))
        (sha256
         (base32
-         "0pf98da7i59q47gwrbx0wjk6xlvbybiwphw80w7h4ydjj0579a2b"))))
-    (build-system python-build-system)
+         "0c6skyig8fyylnbj4597pjj9h0dn36rkxrhwd34yrsc6k6f7r8a0"))))
+    (build-system pyproject-build-system)
     (inputs
-     (list python-biopython))
+     (list python-biopython python-pygtrie))
     (native-inputs
-     (list python-nose))
+     (list python-pytest))
     (home-page "https://github.com/fhcrc/seqmagick")
     (synopsis "Tools for converting and modifying sequence files")
     (description
