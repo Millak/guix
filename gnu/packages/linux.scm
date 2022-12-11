@@ -7721,7 +7721,7 @@ conntrack-tools among many other applications.")
 (define-public libnetfilter-cttimeout
   (package
     (name "libnetfilter-cttimeout")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -7729,8 +7729,7 @@ conntrack-tools among many other applications.")
                            "libnetfilter_cttimeout/files/"
                            "libnetfilter_cttimeout-" version ".tar.bz2"))
        (sha256
-        (base32
-         "1fpyz1zlvcq80244knvyvy87909xjqlj02lmw8yblz2m9xsi5axf"))))
+        (base32 "0983cpyvxyycbnzqlrzml80pph2z51r6s7sxp06ciq8468pxln8b"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libmnl))
