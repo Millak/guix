@@ -20954,24 +20954,29 @@ while only declaring the test-specific fields.")
 (define-public python-marshmallow
   (package
     (name "python-marshmallow")
-    (version "3.9.1")
+    (version "3.19.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "marshmallow" version))
-      (sha256
-       (base32
-        "0kizhh3mnhpa08wfnsv1gagy22bpxzxszgbiylkhpz1d8qvwrykk"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "marshmallow" version))
+       (sha256
+        (base32
+         "0y6vpq2p5841kcw2qil68la0rx9z1vmxzj3dxjv99kjhsq7jq0wh"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-dateutil python-simplejson))
+     (list python-packaging))
     (native-inputs
-     (list python-pytest python-pytz))
+     (list python-flake8
+           python-flake8-bugbear
+           python-mypy
+           python-pre-commit
+           python-pytest
+           python-pytz
+           python-simplejson))
     (home-page "https://github.com/marshmallow-code/marshmallow")
-    (synopsis "Convert complex datatypes to and from native
-     Python datatypes")
-    (description "@code{marshmallow} provides a library for converting
-     complex datatypes to and from native Python datatypes.")
+    (synopsis "Convert complex datatypes to and from native Python datatypes")
+    (description "@code{marshmallow} provides a library for converting complex
+datatypes to and from native Python datatypes.")
     (license license:expat)))
 
 (define-public python-marshmallow-jsonapi
