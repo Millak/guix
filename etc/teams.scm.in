@@ -428,6 +428,10 @@ importer."
                        "andreas@enge.fr")
   science)
 
+(define-member (person "Tobias Geerinckx-Rice"
+                       "me@tobias.gr")
+  core kernel mentors)
+
 (define-member (person "Björn Höfling"
                        "bjoern.hoefling@bjoernhoefling.de")
   java)
