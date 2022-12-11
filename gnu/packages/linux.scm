@@ -6773,7 +6773,7 @@ not as a replacement for it.")
          (add-after 'patch-source-shebangs 'patch-hardcoded-paths
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
-                   (utils-linux (assoc-ref inputs "utils-linux"))
+                   (util-linux (assoc-ref inputs "util-linux"))
                    (cryptsetup (assoc-ref inputs "cryptsetup"))
                    (linux-pam (assoc-ref inputs "linux-pam"))
                    (lvm2 (assoc-ref inputs "lvm2")))
@@ -6787,9 +6787,9 @@ not as a replacement for it.")
                               "src/desktop/ecryptfs-mount-private.desktop.in"
                               "src/desktop/ecryptfs-setup-private.desktop.in")
                  (("/bin/mount")
-                  (string-append utils-linux "/bin/mount"))
+                  (string-append util-linux "/bin/mount"))
                  (("/bin/umount")
-                  (string-append utils-linux "/bin/umount"))
+                  (string-append util-linux "/bin/umount"))
                  (("/sbin/mount.ecryptfs_private")
                   (string-append out "/sbin/mount.ecryptfs_private"))
                  (("/sbin/umount.ecryptfs_private")
@@ -6833,20 +6833,20 @@ not as a replacement for it.")
      (list intltool perl ; for pod2man
            pkg-config))
     (inputs
-     `(("coreutils" ,coreutils)
-       ("findutils" ,findutils)
-       ("gawk" ,gawk)
-       ("grep" ,grep)
-       ("keyutils" ,keyutils)
-       ("linux-pam" ,linux-pam)
-       ("lsof" ,lsof)
-       ("utils-linux" ,util-linux)
-       ("cryptsetup" ,cryptsetup)
-       ("lvm2" ,lvm2)
-       ("nss" ,nss)
-       ("rsync", rsync)
-       ("sed" ,sed)
-       ("which" ,which)))
+     (list coreutils
+           cryptsetup
+           findutils
+           gawk
+           grep
+           keyutils
+           linux-pam
+           lsof
+           lvm2
+           nss
+           rsync
+           sed
+           util-linux
+           which))
     (home-page "https://ecryptfs.org/")
     (synopsis "eCryptfs cryptographic file system utilities")
     (description
