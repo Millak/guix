@@ -1293,9 +1293,9 @@ signatures include trusted comments in addition to untrusted comments.
 Trusted comments are signed, thus verified, before being displayed.")
     (license license:isc)))
 
-(define-public libolm
+(define-public olm
   (package
-    (name "libolm")
+    (name "olm")
     (version "3.2.12")
     (source (origin
               (method git-fetch)
@@ -1319,12 +1319,15 @@ Trusted comments are signed, thus verified, before being displayed.")
              (when tests?
                (with-directory-excursion "tests"
                  (invoke "ctest" "."))))))))
-    (synopsis "Implementation of the olm and megolm cryptographic ratchets")
-    (description "The libolm library implements the Double Ratchet
+    (synopsis "Implementation of the Olm and Megolm cryptographic ratchets")
+    (description "The Olm library implements the Double Ratchet
 cryptographic ratchet.  It is written in C and C++11, and exposed as a C
 API.")
     (home-page "https://matrix.org/docs/projects/other/olm/")
     (license license:asl2.0)))
+
+(define-public libolm
+  (deprecated-package "libolm" olm))
 
 (define-public python-olm
   (package
@@ -1351,10 +1354,9 @@ API.")
      (list python-cffi python-future))
     (native-inputs
      (list python-pytest python-pytest-benchmark python-aspectlib))
-    (synopsis "Python bindings for libolm")
-    (description "The libolm library implements the Double Ratchet
-cryptographic ratchet.  It is written in C and C++11, and exposed as a C
-API.  This package contains its Python bindings.")))
+    (synopsis "Python bindings for Olm")
+    (description "The Olm library implements the Double Ratchet
+cryptographic ratchet.  This package contains its Python bindings.")))
 
 (define-public hash-extender
   (let ((commit "cb8aaee49f93e9c0d2f03eb3cafb429c9eed723d")
