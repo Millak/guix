@@ -20975,6 +20975,34 @@ while only declaring the test-specific fields.")
      as Swagger.")
     (license license:expat)))
 
+(define-public python-apispec-webframeworks
+  (package
+    (name "python-apispec-webframeworks")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "apispec-webframeworks" version))
+              (sha256
+               (base32
+                "1wyw30402xq2a8icrsjmy9v43jyvawcjd85ccb2zicqlg4k5pcqd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-apispec))
+    (native-inputs
+     (list python-bottle
+           python-flake8
+           python-flake8-bugbear
+           python-flask
+           python-mock
+           python-pre-commit
+           python-pytest
+           python-tornado
+           python-tox))
+    (home-page "https://github.com/marshmallow-code/apispec-webframeworks")
+    (synopsis "Web framework plugins for apispec")
+    (description "This package provides plugins for using @code{apispec} with
+web frameworks.")
+    (license license:expat)))
+
 (define-public python-flasgger
   (package
     (name "python-flasgger")
