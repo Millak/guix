@@ -4320,9 +4320,9 @@ Python loading in HPC environments.")
           (base32 "1nai43251r791qvc1c4hhvcaa6hq7zcjlww7k3ip7br6zgxqjaxm"))))
       (build-system trivial-build-system)
       (inputs
-       `(("bash" ,bash-minimal)
-         ("perl" ,perl)
-         ("procps" ,procps)))
+       (list bash-minimal
+             perl
+             procps))
       (native-inputs
        (list gzip))
       (arguments
