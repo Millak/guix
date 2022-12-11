@@ -1252,14 +1252,14 @@ your online accounts makes it necessary.")
 (define-public hashcat
   (package
     (name "hashcat")
-    (version "6.2.5")
+    (version "6.2.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hashcat.net/files/hashcat-" version
                                   ".tar.gz"))
               (sha256
                (base32
-                "0sc96xcsc20xd4fyby3i45nm9as3hl4nhk9snkvmk5l9mpbrjs3g"))
+                "0akv1cgbmwyw8h8zbw5w5ixh92y95sdadh8qiz60hjgkpivi0pmj"))
               (modules '((guix build utils)))
               ;; Delete bundled libraries.
               (snippet
