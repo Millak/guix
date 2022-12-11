@@ -1802,7 +1802,7 @@ over ssh connections.")
 (define-public realmd
   (package
     (name "realmd")
-    (version "0.17.0")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1811,8 +1811,7 @@ over ssh connections.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1c6q2a86kk2f1akzc36nh52hfwsmmc0mbp6ayyjxj4zsyk9zx5bf"))))
+        (base32 "063cf4jkpfj548a7dxmffrpbh3j413nq3zy1zzj20lcfffnnaqwn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-systemd-unit-dir=no"
