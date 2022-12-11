@@ -472,6 +472,31 @@ bunnies, chickens, cows, kittens, rats, sheep, warthogs, penguins and pandas.")
     (license (list license:cc0 license:expat))
     (properties `((upstream-name . "TenPlus1/mobs_animal")))))
 
+(define-public minetest-mobs-monster
+  (package
+    (name "minetest-mobs-monster")
+    ;; Upstream does not use version numbers, so use the release title
+    ;; from ContentDB instead;
+    (version "2022-12-10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://notabug.org/TenPlus1/mobs_monster")
+             (commit "1b197f9ae136179a764ef45824464b667ade52e6")))
+       (sha256
+        (base32 "15g8acrzvsiccxchfmgjhyf2lmkbrpdjqv3v7hmqz7xqypi8wm3h"))
+       (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (propagated-inputs (list minetest-mobs))
+    (home-page "https://notabug.org/TenPlus1/mobs_monster")
+    (synopsis "Add monsters with Mobs Redo on minetest")
+    (description
+     "This Minetest mod adds many types of monsters to Minetest, that live on the
+surface or deep underground.")
+    (license license:expat)
+    (properties `((upstream-name . "TenPlus1/mobs_monster")))))
+
 (define-public minetest-pipeworks
   (package
     (name "minetest-pipeworks")
