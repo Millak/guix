@@ -368,6 +368,8 @@ made to get a better separation of core libraries and applications.
     (build-system gnu-build-system)
     (arguments
      (list
+      #:configure-flags
+      #~(list (string-append "--with-bzip2=" #$(this-package-input "bzip2")))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-paths
@@ -384,7 +386,7 @@ made to get a better separation of core libraries and applications.
                 (invoke "diff" "-r" "testprog.lis" "testprog.out")
                 (invoke "cmp" "-l" "testprog.fit" "testprog.std")))))))
     (native-inputs (list gfortran))
-    (inputs (list curl zlib))
+    (inputs (list bzip2 curl zlib))
     (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
     (synopsis "Library for reading and writing FITS files")
     (description "CFITSIO provides simple high-level routines for reading and
