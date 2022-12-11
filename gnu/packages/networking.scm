@@ -1967,9 +1967,10 @@ transmission protocol (SCTP) in a Go application.")
          "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f)) ; no tests
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f))                ; no test suite
     (native-inputs
      (list gettext-minimal))
     (inputs
