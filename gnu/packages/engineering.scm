@@ -2437,7 +2437,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02976k91ypv41rqdl27jbmyhnhgx7k5bj520lcqs8qzgcdsynd03"))))
+        (base32 "0wsfz2jqfhmqshyr1n4qxcc3c6a96gyll4h34vn2zzvvcnncn9rb"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
