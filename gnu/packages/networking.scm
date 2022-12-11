@@ -3852,14 +3852,14 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
 (define-public bird
   (package
     (name "bird")
-    (version "2.0.10")
+    (version "2.0.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0npx3zgbjnhm4905zmj2qkz3d13s8hakassq6sbzm1ywv3fl3lvy"))))
+                "1mjm7w5zkbc5q2v4bdn7mcqzcq94s7fiz8a5lz98kl5rcwxvi9v0"))))
     (inputs
      (list libssh readline))
     (native-inputs
