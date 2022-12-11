@@ -21074,7 +21074,7 @@ web frameworks.")
 (define-public python-flasgger
   (package
     (name "python-flasgger")
-    (version "0.6.3")
+    (version "0.9.5")
     (source
       (origin
         (method git-fetch)
@@ -21083,29 +21083,35 @@ web frameworks.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0yydxsyjnc0clbrjqb1n7587l6cdqvwdagwxk5hkx01qwdfbkvpn"))))
-    (build-system python-build-system)
+          (base32 "0a2djgfq905a4in16068qz0ikg88dm4nbckaamhaz2v9khllr0bi"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("flake8 flasgger --ignore=F403")
-                "flake8 flasgger --ignore=E731,F403"))
-             (invoke "py.test"))))))
+     (list
+      ;; This test fails due to missing fixtures
+      #:test-flags '(list "-k" "not test_swag")
+      #:phases
+      '(modify-phases %standard-phases
+        (add-after 'unpack 'prepare-check
+          (lambda _
+            ;; This requires a dummy package "flasgger_package" to be installed.
+            (delete-file "examples/package_example.py")
+            ;; These fail with an internal server error
+            (for-each delete-file '("examples/marshmallow_apispec.py"
+                                    "examples/validation.py")))))))
     (propagated-inputs
      (list python-flask python-pyyaml python-jsonschema python-mistune
            python-six))
     (native-inputs
-     (list python-decorator
+     (list python-apispec
+           python-apispec-webframeworks
+           python-decorator
            python-flake8
+           python-flask-jwt
            python-flask-restful
            python-flex
-           python-pytest
-           python-pytest-cov
            python-marshmallow
-           python-apispec))
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/rochacbruno/flasgger/")
     (synopsis "Extract Swagger specs from your Flask project")
     (description "@code{python-flasgger} allows extracting Swagger specs
