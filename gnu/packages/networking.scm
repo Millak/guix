@@ -1972,8 +1972,7 @@ transmission protocol (SCTP) in a Go application.")
      (list fftw ncurses openssl))
     (arguments
      `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-                          "PREFIX=")
+                          (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:tests? #f)) ; no tests
     (home-page "https://www.vanheusden.com/httping/")
     (synopsis "Web server latency and throughput monitor")
