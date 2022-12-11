@@ -769,3 +769,25 @@ build your island in the sky.  Every 30 seconds you will receive a random
 block or item from the oneblock to expand the island!")
     (license license:gpl3+)
     (properties `((upstream-name . "NO11/oneblock")))))
+
+(define-public minetest-wielded-light
+  (package
+    (name "minetest-wielded-light")
+    (version "2022-06-24")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/minetest-mods/wielded_light")
+                    (commit "b5236562af9772dff8522fe2bda5b5f738e81b88")))
+              (sha256
+               (base32
+                "0m5rf8wkc9iq04xppjfva9d83qmhlnx8fibdbi2d3pkwwl6p2y5c"))
+              (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (home-page (minetest-topic 19378))
+    (synopsis "Adds shining for wielded and dropped items")
+    (description
+     "With this Minetest extension, all bright nodes lighten the player
+environment if wielded.")
+    (license license:gpl3+)
+    (properties `((upstream-name . "bell07/wielded_light")))))
