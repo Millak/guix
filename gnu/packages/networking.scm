@@ -4257,14 +4257,14 @@ realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.15")
+    (version "1.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "09iidaan6gq384n7ykdwwsll3vmq6q7zd7j7j721k2p91c9kmzpp"))
+        (base32 "1ab5hkgi2iwqpfw6xy2wxjhqmz6pnkynfkg85zm7r9kv1ijr3cz3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
