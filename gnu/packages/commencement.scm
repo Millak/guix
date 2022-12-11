@@ -1969,6 +1969,15 @@ exec " gcc "/bin/" program
     (arguments
      `(#:tests? #f
        #:implicit-inputs? #f
+       ,@(if (target-arm?)
+           ;; Some binaries fail to build.
+           `(#:configure-flags '(,(string-append
+                                    "--enable-no-install-program="
+                                    ;; the defaults
+                                    "arch,coreutils,hostname"
+                                    ;; fails on aarch64
+                                    ",timeout,sort")))
+           '())
        #:guile ,%bootstrap-guile
        ,@(package-arguments coreutils)))))
 
