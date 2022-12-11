@@ -275,7 +275,7 @@ particularly in catching syntax errors.")
 (define-public grml-zsh-config
   (package
     (name "grml-zsh-config")
-    (version "0.19.3")
+    (version "0.19.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -283,7 +283,7 @@ particularly in catching syntax errors.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "05fri77028znjnvmh8mz3424rn8ilysj7hn8br2hk1qwkp4zzwp9"))))
+                "0ifw490z3v9ljccbmm04adz39fj2dmx8mjgayxqj0a9ln90yfdc4"))))
     (build-system copy-build-system)
     (arguments
      (list
