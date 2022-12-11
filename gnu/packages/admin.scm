@@ -1559,7 +1559,10 @@ connection alive.")
       (description
        "ISC's Dynamic Host Configuration Protocol (DHCP) distribution provides a
 reference implementation of all aspects of DHCP, through a suite of DHCP
-tools: server, client, and relay agent.")
+tools: server, client, and relay agent.
+
+This software is @emph{end-of-life}!  ISC does not intend to issue any further
+maintenance releases.")
       (license license:mpl2.0)
       (properties '((cpe-name . "dhcp"))))))
 
