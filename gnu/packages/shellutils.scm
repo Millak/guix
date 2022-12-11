@@ -428,7 +428,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.32.1")
+    (version "2.32.2")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -437,7 +437,7 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1i473j7j4sx8p83zqlnakskqk0jyd3byajp7jmv2gym9s4k841y7"))))
+               "17nn4qg1fj4i9rh1gdpbddn2nky71h9dkxyz5a4jsdq25bsx0ps2"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"
