@@ -2695,7 +2695,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.14")
+    (version "1.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2704,19 +2704,16 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09y69mnbv3mprgjp53zvin5zqznqajginrk5b25xmi9y0b83bns8"))))
-    (build-system gnu-build-system)
+                "001l1xdc3k1dfjvl3ng480ydz0rnyvlhv54l5mshg2p9v4iz3v09"))))
+    (build-system cmake-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "PREFIX=" #$output))
+     (list #:configure-flags
+           #~(list "-DLIBDEFLATE_BUILD_STATIC_LIB=NO")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-static-library-installation
+               (replace 'check
                  (lambda _
-                   (substitute* "Makefile"
-                     (("install .*\\$\\(STATIC_LIB\\).*") ""))))
-               (delete 'configure))))   ; no configure script
+                   (invoke "../source/scripts/run_tests.sh"))))))
     (inputs
      (list zlib))
     (home-page "https://github.com/ebiggers/libdeflate")
