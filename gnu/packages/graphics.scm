@@ -957,7 +957,7 @@ other vector formats such as:
 (define-public alembic
   (package
     (name "alembic")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method git-fetch)
@@ -966,7 +966,7 @@ other vector formats such as:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0glfx3cm7r8zn3cn7j4x4ch1ab6igfis0i2lcy23jc56q87r8yj2"))))
+        (base32 "04cvzr87zqx55si4j3dqiidbmfx92ja3mc1dj0v6ddvl0cwj3m7i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_HDF5=ON")))
