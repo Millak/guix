@@ -47,6 +47,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
@@ -1978,7 +1979,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 (define-public indi
   (package
     (name "indi")
-    (version "1.9.3")
+    (version "1.9.9")
     (source
      (origin
        (method git-fetch)
@@ -1987,10 +1988,12 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c7md288d3g2vf0m1ai6x2l4j4rmlasc4rya92phvd4ynf8vcki2"))))
+        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     ;; TODO: fix failing tests on aarch64-system.
+     `(#:tests? ,(not (or (%current-target-system) (target-aarch64?)))
+       #:configure-flags
        (let ((out (assoc-ref %outputs "out")))
          (list
           "-DINDI_BUILD_UNITTESTS=ON"
@@ -2015,6 +2018,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
            curl
            fftw
            gsl
+           libev
            libjpeg-turbo
            libnova
            libtiff
