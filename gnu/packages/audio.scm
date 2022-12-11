@@ -5065,7 +5065,7 @@ stream to one or more IceCast and/or ShoutCast servers.")
 (define-public libltc
   (package
     (name "libltc")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
@@ -5073,8 +5073,7 @@ stream to one or more IceCast and/or ShoutCast servers.")
         (string-append "https://github.com/x42/libltc/releases/download/v"
                        version "/libltc-" version ".tar.gz"))
        (sha256
-        (base32
-         "173h9dgmain3nyrwk6q2d7yl4fnh4vacag4s2p01n5b7nyrkxrjh"))))
+        (base32 "0j8j7cnw02arh8122d13bwkps1c0mi2xqq55gyi2bs91dk6l4v8a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:parallel-tests? #f))           ;tests fail otherwise
