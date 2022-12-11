@@ -18089,7 +18089,7 @@ characters, mouse support, and auto suggestions.")
              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-click python-future python-six))
-    (home-page "https://github.com/amperser/proselint")
+    (home-page "http://proselint.com/")
     (synopsis "Linter for prose")
     (description "@code{python-proselint} is a linter for English prose, that
 scans through a file and detects issues.")
