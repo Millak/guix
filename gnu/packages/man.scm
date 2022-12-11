@@ -316,6 +316,7 @@ Linux kernel and C library interfaces employed by user-space programs.")
 (define-public man-pages-posix
   (package
     (name "man-pages-posix")
+    ;; Make sure that updates are still legally distributable.  2017-a is not.
     (version "2013-a")
     (source
      (origin
