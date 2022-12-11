@@ -465,6 +465,8 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
   ;; A well-rounded set of packages for interacting with disks, partitions and
   ;; file systems, included with the Guix installation image.
   (list parted gptfdisk ddrescue
+        ;; Use the static LVM2 because it's already pulled in by the installer.
+        lvm2-static
         ;; We used to provide fdisk from GNU fdisk, but as of version 2.0.0a
         ;; it pulls Guile 1.8, which takes unreasonable space; furthermore
         ;; util-linux's fdisk is already available, in %base-packages-linux.
