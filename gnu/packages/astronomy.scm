@@ -356,7 +356,7 @@ made to get a better separation of core libraries and applications.
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "3.49")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -364,18 +364,27 @@ made to get a better separation of core libraries and applications.
              "http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "1cyl1qksnkl3cq1fzl4dmjvkd6329b57y9iqyv44wjakbh6s4rav"))))
+        (base32 "128qsv2q0f0g714ahlsixiikvvbwxi9bg9q9pcr5cd3f7wdkv9gb"))))
     (build-system gnu-build-system)
-    ;; XXX Building with curl currently breaks wcslib.  It doesn't use
-    ;; pkg-config and hence won't link with -lcurl.
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda _
-             (substitute* "Makefile.in" (("/bin/") ""))
-             #t)))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "Makefile.in" (("/bin/") ""))))
+          (delete 'check)
+          ;; TODO: Testing steps are sourced from docs/fitsio.pdf, implement
+          ;; the logic in Guile in the future.
+          (add-after 'install 'post-install-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "testprog")
+                (with-output-to-file "testprog.lis" (lambda _(invoke "./testprog")))
+                (invoke "diff" "-r" "testprog.lis" "testprog.out")
+                (invoke "cmp" "-l" "testprog.fit" "testprog.std")))))))
+    (native-inputs (list gfortran))
+    (inputs (list curl zlib))
     (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
     (synopsis "Library for reading and writing FITS files")
     (description "CFITSIO provides simple high-level routines for reading and
@@ -384,7 +393,7 @@ programmer from the internal complexities of the FITS format. CFITSIO also
 provides many advanced features for manipulating and filtering the information
 in FITS files.")
     (license (license:non-copyleft "file://License.txt"
-                          "See License.txt in the distribution."))))
+                                   "See License.txt in the distribution."))))
 
 (define-public python-fitsio
   (package
