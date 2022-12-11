@@ -400,13 +400,13 @@ in FITS files.")
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "0q8siijys9kmjnqvyipjgh6hkhf4fwvr1swhsf4if211i9b0m1xy"))
+        (base32 "1y80hgvlkjz1bijfyb2j03853yc1kc63yrf9ab7as31ad2r6kxb1"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
@@ -430,13 +430,8 @@ in FITS files.")
                  (("self.system_fitsio_libdir = None") "pass")
                  (("self.use_system_fitsio") "True")
                  (("self.system_fitsio_includedir") includedir)
-                 (("self.system_fitsio_libdir") libdir)))))
-         (add-after 'unpack 'skip-bzip2-test
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The bzip2 test fails because Guix' cfitsio
-             ;; is built without bzip2 support.
-             (substitute* "fitsio/test.py"
-               (("'SKIP_BZIP_TEST' in os.environ") "True")))))))
+                 (("self.system_fitsio_libdir") libdir))))))))
+    (inputs (list curl-minimal))
     (propagated-inputs
      (list python-numpy cfitsio))
     (home-page "https://github.com/esheldon/fitsio")
