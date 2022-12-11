@@ -84,14 +84,14 @@
 (define-public dash
   (package
     (name "dash")
-    (version "0.5.11.5")
+    (version "0.5.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://gondor.apana.org.au/~herbert/dash/files/"
                            "dash-" version ".tar.gz"))
        (sha256
-        (base32 "1g93w4lpn3jfwn2gaq17a1lxdig11x0j7gr9byc3fy8zi4882xyv"))
+        (base32 "12pjm2j0q0q88nvqbcyqjwr8s1c29ilxyq2cdj8k42wbdv24liva"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -99,8 +99,7 @@
            ;; This isn't the case on Guix or indeed most other GNU systems.
            (substitute* "src/dash.1"
              (("the standard command interpreter for the system")
-              "a command interpreter based on the original Bourne shell"))
-           #t))))
+              "a command interpreter based on the original Bourne shell"))))))
     (build-system gnu-build-system)
     (inputs
      (list libedit))
