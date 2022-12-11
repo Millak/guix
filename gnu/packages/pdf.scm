@@ -1276,7 +1276,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -1285,7 +1285,7 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s0ysg8kfbrvwcr80vrsx7150ixa9v7pb4xm49s97nkiq5k69hal"))))
+        (base32 "1zj1fdaqih9d878yxy96ivgqyg4j31slvh2gqsyz2l2vj3s8z54x"))))
     (build-system python-build-system)
     (arguments
      (list
