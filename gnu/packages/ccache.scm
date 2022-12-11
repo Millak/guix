@@ -35,14 +35,14 @@
 (define-public ccache
   (package
     (name "ccache")
-    (version "4.7.2")
+    (version "4.7.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/ccache/ccache/releases/download/v"
                            version "/ccache-" version ".tar.xz"))
        (sha256
-        (base32 "1bsf27dii1bm6bamvs6gi6vm5pjrd0956vf8597ix76lfyjpbjhp"))))
+        (base32 "0djfm138m863g772bnq7m2mfwh3y8sqxczc3yssg1yiybp8n836z"))))
     (build-system cmake-build-system)
     (arguments
      (list #:configure-flags
