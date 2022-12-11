@@ -4978,6 +4978,23 @@ text styles of documentation.")
     (description "This package installs Github custom lexers to Pygments.")
     (license license:bsd-3)))
 
+(define-public python-pygtrie
+  (package
+    (name "python-pygtrie")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pygtrie" version))
+              (sha256
+               (base32
+                "1qm4xdmzd4q5pc9h5gjdpr5m7lg06k8dvqnjn7d07d3fhani8d90"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/mina86/pygtrie")
+    (synopsis "Pure Python trie data structure implementation")
+    (description
+     "This package provides a pure Python trie data structure implementation.")
+    (license license:asl2.0)))
+
 (define-public python-bump2version
   (package
     (name "python-bump2version")
