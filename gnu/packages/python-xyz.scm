@@ -4088,23 +4088,22 @@ memory usage and transliteration quality.")
 (define-public python-pyjwt
   (package
     (name "python-pyjwt")
-    (version "2.4.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyJWT" version))
        (sha256
         (base32
-         "1fmbcwfw1463wjzwbcgg3s16rad6kfb1mc5y7jbkp6v9ihh0hafl"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
+         "1z85kwr945rbzrn5wabrsmck5x8disa9wc7b3y5gci7w65z5qa39"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-cryptography python-pytest))
+     (list python-coverage
+           python-cryptography
+           python-pre-commit
+           python-pytest
+           python-sphinx
+           python-sphinx-rtd-theme))
     (home-page "https://github.com/progrium/pyjwt")
     (synopsis "JSON Web Token implementation in Python")
     (description
