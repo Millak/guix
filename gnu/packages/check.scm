@@ -3235,7 +3235,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
-    (version "1.4.1")
+    (version "1.4.2")
     ;; Pypi package lacks tests.
     (source
      (origin (method git-fetch)
@@ -3245,7 +3245,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "10x7ds09b9415r92f7g9714gxixvvq3bm5mnh29ml9aba8blcb0n"))))
+               "0srahyzrk5awfh4rmppvqkblfmiavdklxl9i5mcr8gl7ahiwwl7f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
