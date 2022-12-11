@@ -130,6 +130,7 @@
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -150,6 +151,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rrdtool)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
@@ -6762,6 +6764,10 @@ not as a replacement for it.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--disable-pywrap")
+       #:modules (,@%gnu-build-system-modules
+                  (ice-9 binary-ports)
+                  (rnrs bytevectors)
+                  (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-hardcoded-paths
@@ -6799,17 +6805,48 @@ not as a replacement for it.")
                  (("/sbin/unix_chkpwd")
                   (string-append linux-pam "/sbin/unix_chkpwd"))
                  (("/sbin/dmsetup")
-                  (string-append lvm2 "/sbin/dmsetup")))))))))
+                  (string-append lvm2 "/sbin/dmsetup"))))))
+         (add-after 'install 'wrap-scripts
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (add (map (lambda (bin)
+                                (dirname (search-input-file
+                                          inputs (string-append "bin/" bin))))
+                              ;; For simplicity, we wrap all scripts the same.
+                              (list "awk" "find" "gettext" "grep" "keyctl" "ls"
+                                    "lsof" "mount" "rsync" "sed" "which")))
+                                        (script? (lambda (file)
+                               (call-with-input-file file
+                                 (lambda (port)
+                                   (bytevector=? (string->utf8 "#!")
+                                                 (get-bytevector-n port 2)))))))
+               (for-each (lambda (file)
+                           (when (script? file)
+                             (wrap-program file
+                               ;; '= would be better than 'suffix but break
+                               ;; setuid binaries.
+                               `("PATH" ":" suffix (,@add
+                                                    ,(string-append bin))))))
+                         (find-files bin "."))))))))
     (native-inputs
      (list intltool perl ; for pod2man
            pkg-config))
     (inputs
-     `(("keyutils" ,keyutils)
+     `(("coreutils" ,coreutils)
+       ("findutils" ,findutils)
+       ("gawk" ,gawk)
+       ("grep" ,grep)
+       ("keyutils" ,keyutils)
        ("linux-pam" ,linux-pam)
+       ("lsof" ,lsof)
        ("utils-linux" ,util-linux)
        ("cryptsetup" ,cryptsetup)
        ("lvm2" ,lvm2)
-       ("nss" ,nss)))
+       ("nss" ,nss)
+       ("rsync", rsync)
+       ("sed" ,sed)
+       ("which" ,which)))
     (home-page "https://ecryptfs.org/")
     (synopsis "eCryptfs cryptographic file system utilities")
     (description
