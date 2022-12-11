@@ -4024,7 +4024,7 @@ from the module-init-tools project.")
 (define-public earlyoom
   (package
     (name "earlyoom")
-    (version "1.6.2")
+    (version "1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4033,7 +4033,7 @@ from the module-init-tools project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16iyn51xlrsbshc7p5xl2338yyfzknaqc538sa7mamgccqwgyvvq"))))
+                "1xqrs6wz59ks76hdgfd4vaj010kbvllilgam2xxyn0g56kai71zi"))))
     (build-system gnu-build-system)
     (arguments
      (list
