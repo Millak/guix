@@ -1645,7 +1645,7 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
 (define-public libofx
   (package
     (name "libofx")
-    (version "0.10.7")
+    (version "0.10.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1654,7 +1654,7 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k3ygavyb9b3f1ra62dsa46iiia0a1588yn3zy7bh7w4vfcrbd6d"))))
+                "120hyhs4fkxrgpvd2p0hpf5v8dq0jjql2fzllk77m33m1c82pr18"))))
     (build-system gnu-build-system)
     (arguments
      (list
