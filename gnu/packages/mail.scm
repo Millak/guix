@@ -3294,7 +3294,7 @@ writing OpenSMTPd filters.")
 (define-public opensmtpd-filter-dkimsign
   (package
     (name "opensmtpd-filter-dkimsign")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
@@ -3303,7 +3303,7 @@ writing OpenSMTPd filters.")
                   (string-append "https://distfiles.sigtrap.nl/"
                                  "filter-dkimsign-" version ".tar.gz")))
        (sha256
-        (base32 "0jwp47ixibnz8rghn193bk2hxh1j1zfrnidml18j7d7cylxfrd55"))))
+        (base32 "1hrn31hayr0hb32km5c42hhbaxw7g3jcgm59p0v0ydlj1fs0sprv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -3324,8 +3324,8 @@ writing OpenSMTPd filters.")
      (list mandoc))           ; silently installs empty man page without
     (inputs
      (list libevent libopensmtpd
-           ;; XXX Our OpenSMTPd package uses libressl, but this package currently
-           ;; supports HAVE_ED25519 only with openssl.  Switch back when possible.
+           ;; Our OpenSMTPd package uses libressl, but this package currently
+           ;; supports HAVE_ED25519 only with openssl.
            openssl))
     (home-page "http://imperialat.at/dev/filter-dkimsign/")
     (synopsis "OpenSMTPd filter for signing mail with DKIM")
