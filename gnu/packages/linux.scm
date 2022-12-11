@@ -7694,7 +7694,7 @@ userspace queueing component and the logging subsystem.")
 (define-public libnetfilter-conntrack
   (package
     (name "libnetfilter-conntrack")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
@@ -7703,8 +7703,7 @@ userspace queueing component and the logging subsystem.")
                            "libnetfilter_conntrack-"
                            version ".tar.bz2"))
        (sha256
-        (base32
-         "1ky1mqgnplw2h9jf0kn0a69d94jkydhbiipng9l2hdcj13h3pl8c"))))
+        (base32 "1a3rnpsba64dzy97wwjrxal89wr0nf9znvag2j18nkp3kzs9vgb7"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libnfnetlink libmnl))
