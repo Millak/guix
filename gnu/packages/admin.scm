@@ -4884,7 +4884,7 @@ entries, providing commands to add, remove, comment, and search.")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (home-page "https://github.com/jclehner/nmrpflash")
-    (synopsis "Netgear unbrick utility")
+    (synopsis "Reflash (``unbrick'') Netgear devices with corrupted firmware")
     (description "This package provides a utility to flash a new firmware
 image to a Netgear device.  It has been tested on Netgear EX2700, EX6120,
 EX6150v2, DNG3700v2, R6100, R6220, R7000, D7000, WNR3500, R6400, R6800,
