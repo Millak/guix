@@ -196,7 +196,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.7")
+    (version "1.9.8")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mf7a4f9vzvnkiavc87aqyciswggsb4fpy7j05jxnvjyyxv3l7gp"))))
+        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
