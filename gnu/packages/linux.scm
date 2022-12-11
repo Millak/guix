@@ -8904,16 +8904,8 @@ the superuser to make device nodes.")
              (substitute* "test/compare-tar"
                (("tar -tvf") "tar --numeric-owner -tvf")))))))
     (native-inputs
-     `(;; For bootstrapping the package.
-       ("autoconf" ,autoconf-2.71)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("po4a" ,po4a)
-
-       ;; For tests.
-       ("sharutils" ,sharutils)
-       ("xz" ,xz)))
+     (list autoconf-2.71 automake gettext-minimal libtool po4a
+           sharutils xz))               ; for tests
     (inputs
      (list acl libcap util-linux sed coreutils))
     (synopsis "Run commands in an environment with fake root privileges")
