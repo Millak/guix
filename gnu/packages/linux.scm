@@ -7747,7 +7747,7 @@ by conntrack-tools.")
 (define-public libnetfilter-cthelper
   (package
     (name "libnetfilter-cthelper")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -7755,8 +7755,7 @@ by conntrack-tools.")
                            "libnetfilter_cthelper/files/"
                            "libnetfilter_cthelper-" version ".tar.bz2"))
        (sha256
-        (base32
-         "0gfgzkc1fjniqwk4jxds72c0lcgfhq2591hrvjrvd9nrqiqqwq87"))))
+        (base32 "04n95ngil5l8m8v64dfjm1dwq0wd3kf4vw1zblsrff13hxa3s1ql"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libmnl))
