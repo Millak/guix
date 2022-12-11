@@ -3452,14 +3452,13 @@ framework.")
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
-    (version "0.38.2")
+    (version "0.38.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "SQLAlchemy-Utils" version))
         (sha256
-         (base32
-          "1d6fq81489kqzxmk3l6f39sinw206lzs392frmpr5lsjzg9xc0cy"))))
+         (base32 "0k8z0mjhvdv302kn0nhci8b2dgw4cn2akprsf37ma1540ykgp6lz"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; FIXME: Many tests require a running database server.
