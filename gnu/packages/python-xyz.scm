@@ -21012,33 +21012,36 @@ datatypes to and from native Python datatypes.")
 (define-public python-apispec
   (package
     (name "python-apispec")
-    (version "4.0.0")
+    (version "6.0.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "apispec" version))
-      (sha256
+       (method url-fetch)
+       (uri (pypi-uri "apispec" version))
+       (sha256
         (base32
-          "12n4w5zkn4drcn8izq68vmixmqvz6abviqkdn4ip0kaax3jjh3in"))))
-    (build-system python-build-system)
+         "11vqxwdxmm7qmyhdbxk4gnx37nbzmn266ah92gi4pvzd76vq0vg7"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"
-                              ;; Disable validation tests since they require
-                              ;; the optional 'prance' library which is not
-                              ;; yet in Guix.
-                              "-k" "not openapi_tools_validate"))))))
+     (list
+      ;; Disable validation tests since they require
+      ;; the optional 'prance' library which is not
+      ;; yet in Guix.
+      #:test-flags '(list "-k" "not openapi_tools_validate")))
     (propagated-inputs
-     (list python-pyyaml))
+     (list python-packaging))
     (native-inputs
-     (list python-pytest python-marshmallow))
+     (list python-flake8
+           python-flake8-bugbear
+           python-marshmallow
+           python-mypy
+           python-pre-commit
+           python-pytest
+           python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
     (synopsis "Swagger/OpenAPI specification generator")
     (description "@code{python-apispec} is a pluggable API specification
-     generator.  It currently supports the OpenAPI specification, formerly known
-     as Swagger.")
+generator.  It currently supports the OpenAPI specification, formerly known as
+Swagger.")
     (license license:expat)))
 
 (define-public python-apispec-webframeworks
