@@ -387,14 +387,14 @@ highlighted.
 (define-public ii
   (package
     (name "ii")
-    (version "1.9")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dl.suckless.org/tools/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "05wcaszm9hap5gqf58bciqm3ad1kfgp976fs3fsn3ll3nliv6345"))))
+                "0ns2wpzkk7qzhv7addgr0w5as0m7jwag5nxai2dr61wc436syrsg"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
