@@ -1966,14 +1966,14 @@ transmission protocol (SCTP) in a Go application.")
         (base32
          "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs
-     (list fftw ncurses openssl))
     (arguments
      `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
                           (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:tests? #f)) ; no tests
+    (native-inputs
+     (list gettext-minimal))
+    (inputs
+     (list fftw ncurses openssl))
     (home-page "https://www.vanheusden.com/httping/")
     (synopsis "Web server latency and throughput monitor")
     (description
