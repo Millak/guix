@@ -30,7 +30,10 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages zig))
 
-(define-public ncdu
+(define-public ncdu-1
+  ;; This old version is ‘LTS’.  Version 2 works fine and has more features,
+  ;; but Zig is still a fast-moving target and doesn't support cross-compilation
+  ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
     (version "1.18")
@@ -55,10 +58,10 @@ ncurses installed.")
                              version)))
     (home-page "https://dev.yorhel.nl/ncdu")))
 
-(define-public ncdu-2
+(define-public ncdu
   (package
-    (inherit ncdu)
-    (name "ncdu2")      ; To destinguish it from the C based version.
+    (inherit ncdu-1)
+    (name "ncdu")
     (version "2.2.1")
     (source (origin
               (method url-fetch)
@@ -94,5 +97,7 @@ ncurses installed.")
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig))
-    (properties `((upstream-name . "ncdu")))))
+     (list perl zig))))
+
+(define-public ncdu-2
+  (deprecated-package "ncdu2" ncdu))
