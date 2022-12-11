@@ -982,25 +982,23 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.1")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0zkv3ddzlxx21i796azfbqxrqnsxn83vsczscv577iyzxp3v5c8x"))
+        (base32 "10dxjim60ch4qznqa5s63q936mkvy95p0k26kcwzv43hmybdcjxs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove Python bundles.
            (with-directory-excursion "astropy/extern"
              (for-each delete-file-recursively '("ply" "configobj")))
-           ;; Remove cextern bundles and leave the wcslib bundle.  Astropy
-           ;; upgrades to different versions of wcslib every few releases
-           ;; and tests break every upgrade.
-           ;; TODO: unbundle wcslib.
+           ;; Remove cextern bundles. Check bundled versions against available
+           ;; in Guix in the future update of astropy.
            (with-directory-excursion "cextern"
-             (for-each delete-file-recursively '("cfitsio" "expat")))
+             (for-each delete-file-recursively '("cfitsio" "expat" "wcslib")))
            #t))))
     (build-system python-build-system)
     (arguments
@@ -1008,10 +1006,8 @@ accurately in real time at any rate desired.")
        (modify-phases %standard-phases
          (add-after 'unpack 'preparations
            (lambda _
-             ;; Use our own libraries in place of bundles, with the
-             ;; exception of wcslib.
-             (setenv "ASTROPY_USE_SYSTEM_CFITSIO" "1")
-             (setenv "ASTROPY_USE_SYSTEM_EXPAT" "1")
+             ;; Use our own libraries in place of bundles.
+             (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
              ;; Some tests require a writable home.
              (setenv "HOME" "/tmp")
              ;; Relax xfail tests.
@@ -1058,7 +1054,7 @@ accurately in real time at any rate desired.")
            python-sgp4
            python-skyfield))
     (inputs
-     (list cfitsio expat))
+     (list cfitsio expat wcslib))
     (propagated-inputs
      (list python-configobj
            python-numpy
