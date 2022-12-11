@@ -397,12 +397,13 @@ highlighted.
                 "0ns2wpzkk7qzhv7addgr0w5as0m7jwag5nxai2dr61wc436syrsg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))   ; no configure script
     (home-page "https://tools.suckless.org/ii/")
     (synopsis "FIFO and file system based IRC client")
     (description
