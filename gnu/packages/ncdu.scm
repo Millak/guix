@@ -66,7 +66,12 @@ ncurses installed.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hfimrr7z9zrfkiyj09i8nh4a1rjn7d00y9xzpc7mkyqpkvghjjy"))))
+                "0hfimrr7z9zrfkiyj09i8nh4a1rjn7d00y9xzpc7mkyqpkvghjjy"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Delete a pregenerated man page.  We'll build it ourselves.
+                   (delete-file "ncdu.1")))))
     (arguments
      (list
        #:make-flags
@@ -83,7 +88,6 @@ ncurses installed.")
                        (mkdtemp "/tmp/zig-cache-XXXXXX"))))
            (add-after 'build 'build-manpage
              (lambda _
-               (delete-file "ncdu.1")
                (invoke "make" "doc")))
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
