@@ -4332,10 +4332,14 @@ Python loading in HPC environments.")
            (use-modules (guix build utils)
                         (ice-9 match)
                         (srfi srfi-26))
-           (setenv "PATH" (string-append
-                           (assoc-ref %build-inputs "bash") "/bin" ":"
-                           (assoc-ref %build-inputs "gzip") "/bin" ":"
-                           (assoc-ref %build-inputs "perl") "/bin" ":"))
+           (setenv "PATH" (string-join
+                           (map (lambda (file)
+                                  (dirname (search-input-file %build-inputs
+                                                              file)))
+                                (list "bin/bash"
+                                      "bin/gzip"
+                                      "bin/perl"))
+                           ":"))
            (copy-recursively (assoc-ref %build-inputs "source")
                              ,(string-append real-name "-" version))
            (with-directory-excursion ,(string-append real-name "-" version)
