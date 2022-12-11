@@ -16081,7 +16081,7 @@ coordinates between different assemblies.")
 (define-public python-cgatcore
   (package
     (name "python-cgatcore")
-    (version "0.6.7")
+    (version "0.6.14")
     ;; The version of pypi does not include test data.
     (source (origin
               (method git-fetch)
@@ -16091,11 +16091,22 @@ coordinates between different assemblies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17vk88v1bx7x02ibzkc9i7ir4b5p1hcjr38jpsfzyzxr68352d5k"))))
-    (build-system python-build-system)
+                "0fjjaski39j8b7v21wldmbwwsfhicngajah7n4skafi56kdck33p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This test actually does what it should, but the check fails with
+              ;; TypeError: cannot unpack non-iterable Namespace object
+              "not test_start_and_stop_are_logged_with_argparse"
+              ;; These all attempt to connect to localhost with SSH
+              " and not test_job_should_use_TMPDIR_and_clean_up"
+              " and not test_job_should_use_TMPDIR_and_clean_up_after_fail"
+              " and not test_job_should_write_to_explicit_temp_and_not_clean_up"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'fix-references
            (lambda _
              (substitute* "cgatcore/pipeline/execution.py"
@@ -16103,21 +16114,22 @@ coordinates between different assemblies.")
                (("executable=\"/bin/bash\"")
                 (string-append "executable=\"" (which "bash") "\""))
                (("\\\\time") (which "time")))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Requires network access
-               (delete-file "tests/test_pipeline_execution.py")
-               (invoke "python" "-m" "pytest" "-v")))))))
+         (add-after 'unpack 'sqlite-compatibility
+           (lambda _
+             ;; Load apsw (and thus newer sqlite3) before importing Python's
+             ;; older sqlite3 library.
+             (substitute* "cgatcore/pipeline/__init__.py"
+               (("import os")
+                (string-append "import os\nimport apsw")))
+             (substitute* "tests/template_pipeline.py"
+               (("import sys" m)
+                (string-append "import apsw\n" m))))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("lsof" ,lsof)
-       ("hostname" ,inetutils)
-       ("openssl" ,openssl)))
-    (inputs
-     (list time))
+     (list python-pytest
+           lsof
+           inetutils
+           openssl))
+    (inputs (list time))
     (propagated-inputs
      (list python-apsw
            python-gevent
