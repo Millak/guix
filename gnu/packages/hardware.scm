@@ -135,7 +135,7 @@ sets, and tools to deal with register databases.")
 (define-public hw-probe
   (package
     (name "hw-probe")
-    (version "1.6.4")
+    (version "1.6.5")
     (source
      (origin
        (method git-fetch)
@@ -145,7 +145,7 @@ sets, and tools to deal with register databases.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "028wnhrbn10lfxwmcpzdbz67ygldimv7z1k1bm64ggclykvg5aim"))))
+        (base32 "1sbp0scdi54zwgvb1s3ki3cw8xnxaxzm5cicq2nn3a2b6n1d4ljs"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -264,6 +264,7 @@ sets, and tools to deal with register databases.")
            ddcutil
            dmidecode
            dpkg
+           edac-utils
            edid-decode
            efibootmgr
            efivar
