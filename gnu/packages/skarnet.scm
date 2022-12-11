@@ -216,14 +216,14 @@ clock synchronization.")))
 (define-public s6-rc
   (package
    (name "s6-rc")
-   (version "0.5.2.3")
+   (version "0.5.3.2")
    (source
     (origin
      (method url-fetch)
      (uri (string-append "https://skarnet.org/software/s6-rc/s6-rc-"
                          version ".tar.gz"))
      (sha256
-      (base32 "1xyaplwzvqnb53mg59a7jklakzwsiqivp6qggsry3sbaw4hf3d5j"))))
+      (base32 "0f70sswqcmihynks3cs6kk97nywcp2lzr2hspp9578sadaba892g"))))
     (build-system gnu-build-system)
     (inputs (list skalibs execline s6))
     (arguments
