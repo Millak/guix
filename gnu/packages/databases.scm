@@ -2844,7 +2844,7 @@ semantics.")
 (define-public libpqxx
   (package
     (name "libpqxx")
-    (version "7.7.3")
+    (version "7.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2853,7 +2853,7 @@ semantics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mrhsih5bhiin0l3c4vp22l9p7c5035m0vvqpx18c0407fkzc7hp"))))
+                "1qwpfba8g55jjv0xnsk4hhf2cmhk7mdirxx115cvnjjw97ppy0z0"))))
     (build-system gnu-build-system)
     (native-inputs (list gcc-11 python-wrapper))
     (inputs (list postgresql))
