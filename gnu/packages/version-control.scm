@@ -225,14 +225,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.38.1")
+   (version "2.39.0")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "1n8afjjim30lddhm25cdscdr2xfa518293jhqbxy1fd2b3mgipcp"))))
+              "0nr6d46z3zfxbr1psww7vylva3mw6vbhnywixhywm6aszc9rn6ds"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -252,7 +252,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "17bms6d0v5dw34bpsm78gpq1pn0jp6ap8nbcrby4hzfwa810kya7"))))
+            "0rwl3rkj50r1dkrlgf3d2paxbz5fz7bq4azhzb6a4d6c8bazcw3p"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
