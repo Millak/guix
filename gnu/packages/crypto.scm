@@ -1296,7 +1296,7 @@ Trusted comments are signed, thus verified, before being displayed.")
 (define-public olm
   (package
     (name "olm")
-    (version "3.2.12")
+    (version "3.2.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1304,7 +1304,7 @@ Trusted comments are signed, thus verified, before being displayed.")
                     (commit version)))
               (sha256
                (base32
-                "1k8v9ig32vmjm58rbris621d7mvp4q91qa5p79vc51p41sz91yhj"))
+                "0pj7gs32ixhlls792wah7xf49j5pra0avp7dpvy9cndkdkg6biq5"))
               (file-name (git-file-name name version))
               ;; Delete the bundled blob.  It's free, but unauditable,
               ;; and apparently only required for android.
