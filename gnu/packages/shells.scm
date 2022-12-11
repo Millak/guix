@@ -108,9 +108,9 @@
     (home-page "http://gondor.apana.org.au/~herbert/dash")
     (synopsis "POSIX-compliant shell optimised for size")
     (description
-     "dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
+     "Dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
 as small as possible, often without sacrificing speed.  It is faster than the
-GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  dash is a
+GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  Dash is a
 direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (license (list license:bsd-3
                    license:gpl2+))))    ; mksignames.c
