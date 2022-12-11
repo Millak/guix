@@ -577,13 +577,13 @@ the API, and provides features such as:
 (define-public python-pylibmc
   (package
     (name "python-pylibmc")
-    (version "1.6.1")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pylibmc" version))
        (sha256
-        (base32 "1sg7d9j0v6g3xg3finf4l1hb72c13vcyyi6rqrc9shbx903d93ca"))))
+        (base32 "1q06696lxpqn155sydg3z6dksimks6n35q72zdjsvarpal8ldypf"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -593,7 +593,7 @@ the API, and provides features such as:
            (lambda _
              (invoke "memcached" "-d"))))))
     (native-inputs
-     (list memcached python-nose))
+     (list memcached python-pytest))
     (inputs
      (list libmemcached zlib cyrus-sasl))
     (home-page "http://sendapatch.se/projects/pylibmc/")
