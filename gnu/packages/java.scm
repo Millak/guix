@@ -2119,8 +2119,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk15
   (make-openjdk
-   openjdk14 "15.0.3"
-   "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"
+   openjdk14 "15.0.9"
+   "1k3x06fv89l84ysjsyw8s89q8blghq85m6xjzv373x6297ln8n7a"
    (source (origin
              (inherit (package-source base))
              (modules '())
