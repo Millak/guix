@@ -23176,38 +23176,41 @@ Emacs minor mode to escape sequences in code.")
       (license license:gpl3+))))
 
 (define-public emacs-dashboard
-  (package
-    (name "emacs-dashboard")
-    (version "1.7.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/rakanalh/emacs-dashboard")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1qv4cqjy2s2d2bysbq10vq1axpbd8qc3jn1s1r81lxqkcja8zasa"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-page-break-lines))
-    (arguments
-     '(#:include '("\\.el$" "\\.txt$" "\\.png$")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-dashboard-widgets
-           ;; This phase fixes compilation error.
-           (lambda _
-             (chmod "dashboard-widgets.el" #o666)
-             (emacs-substitute-variables "dashboard-widgets.el"
-               ("dashboard-init-info"
-                '(format "Loaded in %s" (emacs-init-time))))
-             #t)))))
-    (home-page "https://github.com/rakanalh/emacs-dashboard")
-    (synopsis "Startup screen extracted from Spacemacs")
-    (description "This package provides an extensible Emacs dashboard, with
+  (let ((version "1.7.0")
+        (commit "a69cc103aebd957f967e431399681b6d9d6b52fc")
+        (revision "0"))
+    (package
+      (name "emacs-dashboard")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rakanalh/emacs-dashboard")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1c6snnpc9rp6zhhdz411wyh2wn56yq2cdmxxqsp1ibvac8cbb1pq"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-page-break-lines))
+      (arguments
+       '(#:include '("\\.el$" "\\.txt$" "\\.png$")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-dashboard-widgets
+             ;; This phase fixes compilation error.
+             (lambda _
+               (chmod "dashboard-widgets.el" #o666)
+               (emacs-substitute-variables "dashboard-widgets.el"
+                 ("dashboard-init-info"
+                  '(format "Loaded in %s" (emacs-init-time))))
+               #t)))))
+      (home-page "https://github.com/rakanalh/emacs-dashboard")
+      (synopsis "Startup screen extracted from Spacemacs")
+      (description "This package provides an extensible Emacs dashboard, with
 sections for bookmarks, projectil projects, org-agenda and more.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-slime-company
   (package
