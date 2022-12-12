@@ -2016,7 +2016,9 @@ raise a deprecation warning if the 'compression-level' field was used."
 
 (define %guix-publish-log-rotations
   (list (log-rotation
-         (files (list "/var/log/guix-publish.log")))))
+         (files (list "/var/log/guix-publish.log"))
+         (options `("rotate 4"                    ;don't keep too many of them
+                    ,@%default-log-rotation-options)))))
 
 (define (guix-publish-activation config)
   (let ((cache (guix-publish-configuration-cache config)))

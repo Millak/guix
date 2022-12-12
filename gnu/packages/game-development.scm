@@ -736,6 +736,34 @@ to ease the development of games and multimedia applications.  It is composed
 of five modules: system, window, graphics, audio and network.")
     (license license:zlib)))
 
+(define-public csfml
+  (package
+    (name "csfml")
+    (version "2.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SFML/CSFML")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wj1p798myyavld2xdhvvflb5h4nf1vgxxzs6nh5qad44vj9b3kb"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DCSFML_BUILD_DOC=TRUE")
+           #:tests? #f)) ;no tests
+    (native-inputs (list doxygen))
+    (inputs (list sfml))
+    (synopsis "C bindings for the SFML multimedia library")
+    (description
+     "CSFML is the official C binding to the SFML libraries.  SFML provides a
+simple interface to the various computer components, to ease the development of
+games and multimedia applications.  It is composed of five modules: system,
+window, graphics, audio and network.")
+    (home-page "https://www.sfml-dev.org/download/csfml/")
+    (license license:zlib)))
+
 (define-public sfxr
   (package
     (name "sfxr")

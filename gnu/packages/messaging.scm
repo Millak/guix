@@ -1375,7 +1375,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -1383,11 +1383,11 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "07nw275xfamczzvzps8hsnpbhzvr4qc726fx92w8ncmdag7wlw1r"))))
+        (base32 "1rs6qpkidiww805cd91q059r2lm5lzblrkyn01zz4g1mls8ghk5a"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTS=true")
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true" "-DUSE_SOUP3=true")
            #:parallel-build? #f         ; not supported
            #:modules '((guix build cmake-build-system)
                        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -1439,7 +1439,7 @@ Encryption to Gajim.")
            libgee
            libnice
            libsignal-protocol-c
-           libsoup-minimal-2
+           libsoup
            libsrtp                      ;for calls support
            pango
            qrencode

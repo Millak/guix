@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,8 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system go)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
@@ -856,3 +859,29 @@ engineering.")
     (home-page "https://github.com/epasveer/seer")
     ;; Note: Some icons in src/resources are creative commons 3.0 and/or 4.0.
     (license license:gpl3+)))
+
+(define-public delve
+  (package
+    (name "delve")
+    (version "1.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-delve/delve")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "07jch3yd1pgqviyy18amn23gazbzi7l51f210c3vmc707v3vbbqr"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-delve/delve/cmd/dlv"
+           #:unpack-path "github.com/go-delve/delve"
+           #:install-source? #f
+           #:phases #~(modify-phases %standard-phases (delete 'check))))
+    (propagated-inputs (list go))
+    (home-page "https://github.com/go-delve/delve")
+    (synopsis "Debugger for the Go programming language")
+    (description "Delve is a debugger for the Go programming language.")
+    (license license:expat)))

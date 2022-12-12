@@ -3161,7 +3161,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
 (define-public mlt
   (package
     (name "mlt")
-    (version "7.8.0")
+    (version "7.12.0")
     (source
      (origin
        (method git-fetch)
@@ -3170,7 +3170,7 @@ from sites like Twitch.tv and pipes them into a video player of choice.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01589xpx1vgx1l1zjg553nbjks5wy31rdvyq1sjnbp9w7p7nzjdg"))))
+        (base32 "182i6fgn9aiskj62kj10cxf5wh233a241n7qvh0l95il01zmpfb3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -4820,7 +4820,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "22.10.25")
+    (version "22.11.25")
     (source
      (origin
        (method git-fetch)
@@ -4829,7 +4829,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12n179d1ymmzvlx5rzwmd89gwaa731b4y66nfl8wlr88wss4mncm"))))
+        (base32 "01qv0lb57kgmi5shcnhjwf47vqvbyjndxx6v7ha3sh4x5r8x0mrn"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests

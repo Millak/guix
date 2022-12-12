@@ -43,6 +43,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
@@ -1180,6 +1181,52 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
+(define-public python-imbalanced-learn
+  (package
+    (name "python-imbalanced-learn")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "imbalanced-learn" version))
+              (sha256
+               (base32
+                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'unbreak-tests
+           (lambda _
+             ;; The doctests require tensorflow
+             (substitute* "setup.cfg"
+               (("--doctest-modules") ""))
+             ;; Some tests require a home directory
+             (setenv "HOME" (getcwd))
+             ;; We don't have keras
+             (delete-file "imblearn/keras/tests/test_generator.py")
+             ;; We don't have tensorflow
+             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
+    (propagated-inputs
+     (list python-joblib
+           python-numpy
+           python-scikit-learn
+           python-scipy
+           python-threadpoolctl))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-mypy
+           python-pandas
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
+    (synopsis "Toolbox for imbalanced dataset in machine learning")
+    (description "This is a Python package offering a number of re-sampling
+techniques commonly used in datasets showing strong between-class imbalance.
+It is compatible with @code{scikit-learn}.")
+    (license license:expat)))
+
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
@@ -1282,6 +1329,76 @@ predictive of the outcome in supervised learning problems, and are especially
 good at identifying feature interactions that are normally overlooked by
 standard feature selection algorithms.")
     (license license:expat)))
+
+(define-public python-cleanlab
+  (package
+    (name "python-cleanlab")
+    (version "2.2.0")
+    ;; The version on pypi does not come with tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cleanlab/cleanlab")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00dqhxpwg781skknw943ynll2s44g4j125dx8aapk1d5d71sbzqy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX This requires pytest lazy_fixture
+             (delete-file "tests/test_multilabel_classification.py")
+             ;; Requires tensorflow
+             (delete-file "tests/test_frameworks.py")
+             ;; Tries to download datasets from the internet at runtime.
+             (delete-file "tests/test_dataset.py"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scikit-learn
+           python-termcolor
+           python-tqdm))
+    (native-inputs
+     (list python-pytest
+           python-pytorch
+           python-torchvision))
+    (home-page "https://cleanlab.ai")
+    (synopsis "Automatically find and fix dataset issues")
+    (description
+     "cleanlab automatically finds and fixes errors in any ML dataset. This
+data-centric AI package facilitates machine learning with messy, real-world
+data by providing clean labels during training.")
+    (license license:agpl3+)))
+
+(define-public python-cleanlab-1
+  (package
+    (inherit python-cleanlab)
+    (name "python-cleanlab")
+    (version "1.0.1")
+    ;; The version on pypi does not come with tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cleanlab/cleanlab")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03kw2agnhadmrq9zvrlvvlc2c37dpflga5nhmsaag8scw223gqyp"))))
+    (build-system pyproject-build-system)
+    (arguments (list))
+    (propagated-inputs
+     (list python-numpy
+           python-scikit-learn
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-pytest))))
 
 (define-public python-cmaes
   (package

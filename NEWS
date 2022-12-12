@@ -34,6 +34,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** ‘guix shell’ has a new ‘--emulate-fhs’ option
 *** ‘guix shell’ has a new ‘--symlink’ option
 *** ‘--with-commit’ option now accepts strings returned by ‘git describe’
+*** ‘--with-source’ option now applied recursively
 *** Align tabular data output by commands like ‘guix package --list-available’
 *** Improved ‘guix import go’ importer via a new PEG parser
 *** Improved Software Heritage downloader
@@ -52,6 +53,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** GNOME is now at version 42
 *** TeX Live is now at version 2021
 *** Multiple TeX Live trees can now be used via GUIX_TEXMF
+*** Python modules are searched in GUIX_PYTHONPATH instead of PYTHONPATH
 *** Python is now faster thanks to being built with optimizations
 *** The Rust bootstrap now starts from 1.54 instead of 1.19
 *** Most Python 2 packages have been removed
@@ -120,7 +122,6 @@ nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
     (<https://issues.guix.gnu.org/51425>)
 *** Fonts can now be discovered in any profile via XDG_DATA_DIRS
     (<https://issues.guix.gnu.org/31403>)
-*** Python modules are searched in GUIX_PYTHONPATH instead of PYTHONPATH
 *** Various Python reproducibility fixes
 *** The installer now supports MSDOS disk labels on UEFI systems
     (<https://issues.guix.gnu.org/47889>)
@@ -128,10 +129,10 @@ nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
     (<https://issues.guix.gnu.org/48419>)
 *** The installer no longer crashes when deleting a free space partition
 *** Emacs handles major upgrades better without a re-login
-    (<https://bugs.gnu.org/47458>)
+    (<https://issues.guix.gnu.org/47458>)
 *** The bootloader configuration now accepts multiple targets
-    (<https://issues.guix.gnu.org/40997>.)
-*** A file system mount point is always created when ‘create?’ is true
+    (<https://issues.guix.gnu.org/40997>)
+*** File system mount point is always created when ‘create?’ is true
     (<https://issues.guix.gnu.org/40158>)
 *** Build the man database only if ‘man-db’ is in the profile
 *** gdk-pixbuf now discovers pixbuf loaders via a search path
@@ -142,10 +143,12 @@ nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
     (https://issues.guix.gnu.org/38838)
 *** ‘chfn’ can now change the user's full name
     (https://issues.guix.gnu.org/52539)
-*** Gnome settings Bluetooth panel is now working
+*** GNOME Settings Bluetooth panel is now working
     (https://issues.guix.gnu.org/32166)
 *** Inferiors are now caching store connections
     (https://issues.guix.gnu.org/48007)
+*** Retry downloads when a substitute has become unavailable
+    (https://issues.guix.gnu.org/57978)
 *** The installer doesn't segfault when removing an extended partition
 *** The installer doesn't ship an older Guix revision
     (https://issues.guix.gnu.org/53210)

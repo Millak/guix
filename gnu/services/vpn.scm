@@ -833,7 +833,7 @@ PostUp = ~a set %i private-key ~a
 
 (define (wireguard-activation config)
   (match-record config <wireguard-configuration>
-    (private-key)
+    (private-key wireguard)
     #~(begin
         (use-modules (guix build utils)
                      (ice-9 popen)
@@ -842,7 +842,7 @@ PostUp = ~a set %i private-key ~a
         (unless (file-exists? #$private-key)
           (let* ((pipe
                   (open-input-pipe (string-append
-                                    #$(file-append wireguard-tools "/bin/wg")
+                                    #$(file-append wireguard "/bin/wg")
                                     " genkey")))
                  (key (read-line pipe)))
             (call-with-output-file #$private-key

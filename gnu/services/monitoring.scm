@@ -224,14 +224,11 @@ Prometheus.")
 
 
 (define (serialize-string field-name val)
-  (if (and (string? val) (string=? val ""))
+  (if (or (eq? 'user field-name)
+          (eq? 'group field-name)
+          (and (string? val) (string=? val "")))
       ""
       (serialize-field field-name val)))
-
-(define group? string?)
-
-(define serialize-group
-  (const ""))
 
 (define include-files? list?)
 
@@ -256,8 +253,8 @@ Prometheus.")
   (user
    (string "zabbix")
    "User who will run the Zabbix server.")
-  (group ;for zabbix-server-account procedure
-   (group "zabbix")
+  (group
+   (string "zabbix")
    "Group who will run the Zabbix server.")
   (db-host
    (string "127.0.0.1")
@@ -438,7 +435,7 @@ results in a Web interface.")))
    (string "zabbix")
    "User who will run the Zabbix agent.")
   (group
-   (group "zabbix")
+   (string "zabbix")
    "Group who will run the Zabbix agent.")
   (hostname
    (string "")
@@ -516,6 +513,18 @@ configuration file."))
            (format port #$(serialize-configuration
                            config zabbix-agent-configuration-fields)))))))
 
+(define (zabbix-agent-arguments config)
+  #~(let* ((config-file #$(zabbix-agent-config-file config))
+           (agent #$(zabbix-agent-configuration-zabbix-agent config))
+           (agent2? (file-exists? (string-append agent "/sbin/zabbix_agent2"))))
+      (if agent2?
+          (list (string-append agent "/sbin/zabbix_agent2")
+                "-config" config-file
+                "-foreground")
+          (list (string-append agent "/sbin/zabbix_agentd")
+                "--config" config-file
+                "--foreground"))))
+
 (define (zabbix-agent-shepherd-service config)
   "Return a <shepherd-service> for Zabbix agent with CONFIG."
   (list (shepherd-service
@@ -523,10 +532,7 @@ configuration file."))
          (requirement '(user-processes))
          (documentation "Run Zabbix agent daemon.")
          (start #~(make-forkexec-constructor
-                   (list #$(file-append (zabbix-agent-configuration-zabbix-agent config)
-                                        "/sbin/zabbix_agentd")
-                         "--config" #$(zabbix-agent-config-file config)
-                         "--foreground")
+                   #$(zabbix-agent-arguments config)
                    #:user #$(zabbix-agent-configuration-user config)
                    #:group #$(zabbix-agent-configuration-group config)
                    #:pid-file #$(zabbix-agent-configuration-pid-file config)

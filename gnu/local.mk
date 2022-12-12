@@ -116,6 +116,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/anthy.scm			\
   %D%/packages/antivirus.scm			\
   %D%/packages/apl.scm				\
+  %D%/packages/apparmor.scm			\
   %D%/packages/apr.scm				\
   %D%/packages/arcan.scm			\
   %D%/packages/aspell.scm			\
@@ -759,6 +760,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/tests/docker.scm				\
   %D%/tests/file-sharing.scm			\
   %D%/tests/ganeti.scm				\
+  %D%/tests/gdm.scm				\
   %D%/tests/guix.scm				\
   %D%/tests/monitoring.scm                      \
   %D%/tests/nfs.scm				\
@@ -1346,6 +1348,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/jami-fix-unit-tests-build.patch          \
   %D%/packages/patches/jami-libjami-headers-search.patch	\
   %D%/packages/patches/jami-no-webengine.patch			\
+  %D%/packages/patches/jami-sipaccount-segfault.patch		\
   %D%/packages/patches/jami-sip-contacts.patch			\
   %D%/packages/patches/jami-sip-unregister.patch		\
   %D%/packages/patches/jami-xcb-link.patch			\
@@ -1375,7 +1378,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/jsoncpp-pkg-config-version.patch		\
   %D%/packages/patches/julia-SOURCE_DATE_EPOCH-mtime.patch	\
   %D%/packages/patches/julia-tracker-16-compat.patch		\
-  %D%/packages/patches/julia-allow-parallel-build.patch		\
   %D%/packages/patches/libffi-3.3-powerpc-fixes.patch		\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
@@ -1465,7 +1467,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/libtirpc-hurd.patch			\
   %D%/packages/patches/libtommath-fix-linkage.patch		\
   %D%/packages/patches/libtool-skip-tests2.patch		\
-  %D%/packages/patches/libunwind-julia-fix-GCC10-fno-common.patch \
   %D%/packages/patches/libusb-0.1-disable-tests.patch		\
   %D%/packages/patches/libusb-for-axoloti.patch			\
   %D%/packages/patches/libutils-add-includes.patch		\
@@ -1758,8 +1759,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-robotframework-atest.patch	\
   %D%/packages/patches/python-robotframework-source-date-epoch.patch \
   %D%/packages/patches/python-robotframework-sshlibrary-rf5-compat.patch \
-  %D%/packages/patches/python-seaborn-kde-test.patch		\
-  %D%/packages/patches/python-seaborn-2690.patch		\
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
   %D%/packages/patches/python-versioneer-guix-support.patch	\

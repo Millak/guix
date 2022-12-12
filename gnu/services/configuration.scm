@@ -249,7 +249,7 @@ does not have a default value" field kind)))
                        #'(field ...)
                        #'(field-getter ...)
                        #'(field-default ...))
-               (%location #,(id #'stem #'stem #'-location)
+               (%location #,(id #'stem #'stem #'-source-location)
                           (default (and=> (current-source-location)
                                           source-properties->location))
                           (innate)))
@@ -436,7 +436,11 @@ the list result in @code{#t} when applying PRED? on them."
 (define list-of-strings?
   (list-of string?))
 
-(define alist? list?)
+(define alist?
+  (match-lambda
+    (() #t)
+    ((head . tail) (and (pair? head) (alist? tail)))
+    (_ #f)))
 
 (define serialize-file-like empty-serializer)
 

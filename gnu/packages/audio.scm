@@ -4828,7 +4828,7 @@ representations.")
 (define-public cava
   (package
     (name "cava")
-    (version "0.7.4")
+    (version "0.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4837,15 +4837,7 @@ representations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mziklmqifhnb4kg9ia2r56r8wjn6xp40bkpf484hsgqvnrccl86"))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (delete-file-recursively "iniparser")
-                   (substitute* "configure.ac"
-                     (("AC_CONFIG_FILES\\(iniparser/Makefile\\)") ""))
-                   (substitute* "Makefile.am"
-                     (("SUBDIRS = iniparser") ""))))))
+                "0v0l6al3ygj6lq224ddffb1f10yv4218k7l82hbba8d7dj2rc67b"))))
     (build-system gnu-build-system)
     (native-inputs (list autoconf automake libtool))
     (inputs (list fftw ncurses pulseaudio iniparser))
@@ -4875,7 +4867,7 @@ representations.")
                                              (string-append #$output
                                               "/share/doc/examples")))
                              (find-files "example_files")))))))
-    (home-page "https://karlstav.github.io/cava/")
+    (home-page "https://github.com/karlstav/cava")
     (synopsis "Console audio visualizer for ALSA, MPD, and PulseAudio")
     (description "C.A.V.A. is a bar audio spectrum visualizer for the terminal
 using ALSA, MPD, PulseAudio, or a FIFO buffer as its input.")

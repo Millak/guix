@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Daniel Pimentel <d4n1@d4n1.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -406,6 +406,12 @@ from protobuf specification files.")
         (base32
          "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
     (build-system python-build-system)
+    (inputs (list protobuf))
+    (arguments
+     `(;; Favor C++ implementation from protobuf over the native Python
+       ;; implementation. The additional dependency yields significant
+       ;; performance improvements for some workloads.
+       #:configure-flags '("--cpp_implementation")))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
@@ -462,9 +468,8 @@ structured data.")
        (sha256
         (base32
          "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
-    (inputs
-     (cons python-six
-           (package-inputs python-protobuf)))))
+    (arguments '())                            ;no "--cpp_implementation" here
+    (inputs (list python-six))))
 
 (define-public python-proto-plus
   (package

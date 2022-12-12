@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,9 +22,11 @@
   #:use-module (gnu bootloader u-boot)
   #:use-module (gnu image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages certs)
   #:use-module (guix platforms arm)
   #:use-module (gnu services)
   #:use-module (gnu services base)
+  #:use-module (gnu services networking)
   #:use-module (gnu system)
   #:use-module (gnu system file-systems)
   #:use-module (gnu system image)
@@ -47,13 +50,17 @@
                           (mount-point "/")
                           (type "ext4"))
                         %base-file-systems))
-    (services (cons (service agetty-service-type
-                             (agetty-configuration
-                              (extra-options '("-L")) ; no carrier detect
-                              (baud-rate "115200")
-                              (term "vt100")
-                              (tty "ttyS0")))
-                    %base-services))))
+    (services (cons*
+               (service agetty-service-type
+                        (agetty-configuration
+                         (extra-options '("-L")) ; no carrier detect
+                         (baud-rate "115200")
+                         (term "vt100")
+                         (tty "ttyS0")))
+               (service dhcp-client-service-type)
+               (service ntp-service-type)
+               %base-services))
+    (packages (cons nss-certs %base-packages))))
 
 (define pine64-image-type
   (image-type

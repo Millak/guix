@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
+;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4715,6 +4716,36 @@ parts of it.")
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
 
+(define-public libblastrampoline
+  (package
+    (name "libblastrampoline")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaLinearAlgebra/libblastrampoline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mf79zw11kxyil72y2ly5x8bbz3ng3nsqmp0zcps16b69wvfs19c"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list "-C" "src"
+                          (string-append "prefix=" (assoc-ref %outputs "out"))
+                          (string-append "CC=" ,(cc-for-target)))
+       #:tests? #f      ; No check target.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (home-page "https://github.com/JuliaLinearAlgebra/libblastrampoline")
+    (synopsis "PLT trampolines to provide a BLAS and LAPACK demuxing library")
+    (description
+     "This package uses PLT trampolines to provide a BLAS and LAPACK demuxing
+library.")
+    (license license:expat)))
+
 (define-public blis
   (package
     (name "blis")
@@ -4822,7 +4853,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
 (define-public openlibm
   (package
     (name "openlibm")
-    (version "0.7.4")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -4831,7 +4862,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1azms0lpxb7vxb3bln5lyz0wpwx6jnzbffkclclpq2v5aiw8d14i"))))
+        (base32 "1xsrcr49z0wdqpwd98jmw2xh18myzsa9xman0kp1h2i89x8mic5b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -4946,6 +4977,15 @@ Fresnel integrals, and similar related functions as well.")
              "library")
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-riscv64?)
+             ;; GraphBLAS FTBFS on riscv64-linux
+             `((add-after 'unpack 'skip-graphblas
+                 (lambda _
+                   (substitute* "Makefile"
+                     ((".*cd GraphBLAS.*") "")
+                     (("metisinstall gbinstall moninstall")
+                     "metisinstall moninstall")))))
+             '())
          (delete 'configure))))         ;no configure script
     (inputs
      (list tbb openblas gmp mpfr metis))

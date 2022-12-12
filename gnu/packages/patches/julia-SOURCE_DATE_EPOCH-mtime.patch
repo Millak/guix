@@ -8,15 +8,16 @@ Patch by Nicoló Balzarotti <nicolo@nixo.xyz>.
 
 --- a/base/loading.jl
 +++ b/base/loading.jl
-@@ -807,7 +807,10 @@
-         path = normpath(joinpath(dirname(prev), _path))
+@@ -1131,7 +1131,10 @@ function _include_dependency(mod::Module, _path::AbstractString)
      end
      if _track_dependencies[]
+         @lock require_lock begin
 -        push!(_require_dependencies, (mod, path, mtime(path)))
 +          push!(_require_dependencies,
 +                (mod, path,
 +                 haskey(ENV, "SOURCE_DATE_EPOCH") ?
 +                 parse(Float64, ENV["SOURCE_DATE_EPOCH"]) : mtime(path)))
+         end
      end
      return path, prev
  end

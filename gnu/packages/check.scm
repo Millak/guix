@@ -657,6 +657,51 @@ normally do not detect.  The goal is to detect only real errors in the code
 (i.e. have zero false positives).")
     (license license:gpl3+)))
 
+(define-public cukinia
+  (package
+    (name "cukinia")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/savoirfairelinux/cukinia")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i92b37w8kb0rzkazlnnhjjbh1l1nmk2yrjvar7rpl97i9gn212m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; The test suite assumes the host system runs systemd, has a root user,
+      ;; among other things (see:
+      ;; https://github.com/savoirfairelinux/cukinia/issues/51).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (delete 'build)               ;no build system
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./cukinia" "tests/testcases.conf"))))
+          (replace 'install
+            (lambda _
+              (install-file "cukinia" (string-append #$output "/bin")))))))
+    (home-page "https://github.com/savoirfairelinux/cukinia")
+    (synopsis "Simple on-target system test framework")
+    (description "Cukinia is designed to help GNU/Linux-based embedded
+firmware developers run simple system-level validation tests on their
+firmware.  Cukinia integrates well with embedded firmware generation
+frameworks such as Buildroot and Yocto, and can be run manually or by your
+favourite continuous integration framework.  Among Cukinia features are:
+@itemize
+@item simple to use
+@item no dependencies other than BusyBox or GNU Coreutils
+@item easy integration with CI/CD pipelines.
+@end itemize")
+    (license (list license:gpl3+ license:asl2.0)))) ;dual license
+
 (define-public cxxtest
   (package
     (name "cxxtest")

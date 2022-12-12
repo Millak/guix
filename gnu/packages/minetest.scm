@@ -746,3 +746,26 @@ stopping before signals.
 advtrains up to version 2.2.1.")
     (license (list license:cc-by-sa3.0 license:agpl3+))
     (properties `((upstream-name . "orwell/basic_trains")))))
+
+(define-public minetest-oneblock
+  (package
+    (name "minetest-oneblock")
+    (version "2022-09-01")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/NO411/oneblock")
+                    (commit "3582c825137e61b3d2ae3d60b8b9746acd6dfe3d")))
+              (sha256
+               (base32
+                "1pkdrj99qqwmz7c86w2mh081ynyxhiwv2rl01xjm1wfpazx5zhdg"))
+              (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (home-page "https://github.com/NO411/oneblock")
+    (synopsis "Build your island in the sky with random items!")
+    (description
+     "This package provides an extension of the Minetest game that lets you
+build your island in the sky.  Every 30 seconds you will receive a random
+block or item from the oneblock to expand the island!")
+    (license license:gpl3+)
+    (properties `((upstream-name . "NO11/oneblock")))))

@@ -187,7 +187,14 @@ and the maven-build-system."
 
 (define-team science
   (team 'science
-        #:name "Science team"))
+        #:name "Science team"
+        #:description "The main science disciplines and fields related
+packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
+        #:scope (list "gnu/packages/algebra.scm"
+                      "gnu/packages/astronomy.scm"
+                      "gnu/packages/geo.scm"
+                      "gnu/packages/chemestry.scm"
+                      "gnu/packages/maths.scm")))
 
 (define-team emacs
   (team 'emacs

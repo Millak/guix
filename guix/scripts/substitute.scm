@@ -366,7 +366,7 @@ authorized substitutes."
 When FRESH? is true, delete any cached connections for URI and open a new one.
 Return #f if URI's scheme is 'file' or #f.
 
-When true, TIMEOUT is the maximum number of milliseconds to wait for
+When true, TIMEOUT is the maximum number of seconds to wait for
 connection establishment.  When VERIFY-CERTIFICATE? is true, verify HTTPS
 server certificates."
       (define host (uri-host uri))

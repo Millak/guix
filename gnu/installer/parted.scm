@@ -379,12 +379,44 @@ fail. See rereadpt function in wipefs.c of util-linux for an explanation."
 (define %min-device-size
   (* 2 GIBIBYTE-SIZE)) ;2GiB
 
+(define (mapped-device? device)
+  "Return #true if DEVICE is a mapped device, false otherwise."
+  (string-prefix? "/dev/dm-" device))
+
+;; TODO: Use DM_TABLE_DEPS ioctl instead of dmsetup.
+(define (mapped-device-parent-partition device)
+  "Return the parent partition path of the mapped DEVICE."
+  (let* ((command `("dmsetup" "deps" ,device "-o" "devname"))
+         (parent #f)
+         (handler
+          (lambda (input)
+            ;; We are parsing an output that should look like:
+            ;; 1 dependencies  : (sda2)
+            (let ((result
+                   (string-match "\\(([^\\)]+)\\)"
+                                 (get-string-all input))))
+              (and result
+                   (set! parent
+                         (format #f "/dev/~a"
+                                 (match:substring result 1))))))))
+    (run-external-command-with-handler handler command)
+    parent))
+
 (define (eligible-devices)
   "Return all the available devices except the install device and the devices
 which are smaller than %MIN-DEVICE-SIZE."
 
   (define the-installer-root-partition-path
-    (installer-root-partition-path))
+    (let ((root (installer-root-partition-path)))
+      (cond
+       ((mapped-device? root)
+        ;; If the partition is a mapped device (/dev/dm-X), locate the parent
+        ;; partition.  It is the case when Ventoy is used to host the
+        ;; installation image.
+        (let ((parent (mapped-device-parent-partition root)))
+          (installer-log-line "mapped device ~a -> ~a" parent root)
+          parent))
+       (else root))))
 
   (define (small-device? device)
     (let ((length (device-length device))

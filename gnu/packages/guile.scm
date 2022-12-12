@@ -432,9 +432,9 @@ without requiring the source code to be rewritten.")
                                                 ;  when heavily loaded)
 
 (define-public guile-next
-  (let ((version "3.0.7")
+  (let ((version "3.0.8")
         (revision "0")
-        (commit "d70c1dbebf9ac0fd45af4578c23983ec4a7da535"))
+        (commit "a1a85581f17dade76a598b48eac7d3d308e3a0a5"))
     (package
       (inherit guile-3.0)
       (name "guile-next")
@@ -448,7 +448,7 @@ without requiring the source code to be rewritten.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "05rsk9lh5kchbav3lwfwgvgybrykqqjmkkc6689fhb3mjr5m3dqj"))))
+                  "1l5zkg0wpchyizq8s4615hkj0n0i029l72k3pq2hha89r3bcn8al"))))
       (arguments
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
@@ -666,14 +666,14 @@ specification.  These are the main features:
   (package
     (inherit guile-json-3)
     (name "guile-json")
-    (version "4.7.1")
+    (version "4.7.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/guile-json/guile-json-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hv8jjb6wdhvfrprwdi36125sci1ip4zfflv79hqlz7nh0irld65"))))))
+                "127k2xc07w1gnyqs40z4865l8p3ra5xgpcn569dz04lxsa709fiq"))))))
 
 (define-public guile2.2-json
   (package-for-guile-2.2 guile-json-4))

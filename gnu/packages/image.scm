@@ -1937,22 +1937,23 @@ lightweight animated-GIF viewer, and @command{gifdiff} compares two GIFs for
 identical visual appearance.")
    (license license:gpl2+)))
 
-;; 1.0.7 is buggy and reverted in git repository.
 (define-public jp2a
   (package
     (name "jp2a")
-    (version "1.0.6")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://debian/pool/main/j/jp2a/jp2a_"
-                           version ".orig.tar.gz"))
+       (uri (string-append "https://github.com/Talinx/jp2a/releases/download/v"
+                           version "/jp2a-" version ".tar.gz"))
         (sha256
          (base32
-          "076frk3pa16s4r1b10zgy81vdlz0385zh3ykbnkaij25jn5aqc09"))))
+          "10kwhh1a0ivrzagl2vcxrbqmlr2q8x29ymqwzchpiriy6xqxck8l"))))
     (build-system gnu-build-system)
     (inputs
-     (list curl libjpeg-turbo ncurses))
+     (list curl libpng libjpeg-turbo ncurses))
+    (native-inputs
+     (list doxygen))
     (home-page "https://csl.name/jp2a/")
     (synopsis "Convert JPEG images to ASCII")
     (description

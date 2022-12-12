@@ -513,6 +513,35 @@ comes with a SOCKS proxy client.")
         (base32
          "1rswrspv27x33xa5bnhrkjqzhv0sknv5kd7pl1vidw9d2z4rx2l0"))))))
 
+(define-public python-aiostream
+  (package
+    (name "python-aiostream")
+    (version "0.4.5")
+    (source (origin
+              ;; Tests not included in pypi release.
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vxgmichel/aiostream")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0l2ijb7yk0820wiyf6zrzx8fhzf8925an7r06mcaw3in1mr6rssq"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-asyncio
+           python-pytest-cov
+           python-pytest-runner))
+    (home-page "https://github.com/vxgmichel/aiostream")
+    (synopsis "Generator-based operators for asynchronous iteration")
+    (description "@code{aiostream} provides a collection of stream operators that can
+be combined to create asynchronous pipelines of operations.  It can be seen as an
+asynchronous version of @code{itertools}, although some aspects are slightly
+different. All the provided operators return a unified interface called a stream.  A
+stream is an enhanced asynchronous iterable.")
+    (license license:gpl3)))
+
 (define-public python-asgiref
   (package
     (name "python-asgiref")
@@ -3858,6 +3887,38 @@ transfers.")
 JavaScript into more compact code so that it downloads and runs faster.
 SlimIt also provides a library that includes a JavaScript parser, lexer,
 pretty printer and a tree visitor.")
+    (license license:expat)))
+
+(define-public python-flask-jwt
+  (package
+    (name "python-flask-jwt")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Flask-JWT" version))
+              (sha256
+               (base32
+                "1bfh7cr0sf65rn4h1q67472y6ml9s8c4k0xxfhrwvwg0plpngh29"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "setup.cfg"
+               (("\\[pytest\\]") "[tool:pytest]"))
+             (substitute* "requirements.txt"
+               (("PyJWT>=1.4.0,<1.5.0") "PyJWT>=2.0.0"))
+             (substitute* '("tests/test_jwt.py"
+                            "flask_jwt/__init__.py")
+               (("access_token.decode\\('utf-8'\\)") "access_token")))))))
+    (propagated-inputs (list python-flask python-pyjwt))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/mattupstate/flask-jwt")
+    (synopsis "JWT token authentication for Flask apps")
+    (description "This package implements JWT token authentication for Flask
+apps.")
     (license license:expat)))
 
 (define-public python-flask-restful

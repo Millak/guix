@@ -302,8 +302,13 @@
 (define (cuirass-log-rotations config)
   "Return the list of log rotations that corresponds to CONFIG."
   (list (log-rotation
-         (files (list (cuirass-configuration-log-file config)
-                      (cuirass-configuration-web-log-file config)))
+         (files (append (list (cuirass-configuration-log-file config)
+                              (cuirass-configuration-web-log-file config))
+                        (let ((server
+                               (cuirass-configuration-remote-server config)))
+                          (if server
+                              (list (cuirass-remote-server-log-file server))
+                              '()))))
          (frequency 'weekly)
          (options `("rotate 40"                   ;worth keeping
                     ,@%default-log-rotation-options)))))
@@ -394,12 +399,21 @@ CONFIG."
                     #:log-file #$log-file))
            (stop #~(make-kill-destructor))))))
 
+(define (cuirass-remote-worker-log-rotations config)
+  "Return the list of log rotations that corresponds to CONFIG."
+  (list (log-rotation
+         (files (list (cuirass-remote-worker-log-file config)))
+         (frequency 'weekly)
+         (options `("rotate 4"                    ;don't keep too many of them
+                    ,@%default-log-rotation-options)))))
+
 (define cuirass-remote-worker-service-type
   (service-type
    (name 'cuirass-remote-worker)
    (extensions
-    (list
-     (service-extension shepherd-root-service-type
-                        cuirass-remote-worker-shepherd-service)))
+    (list (service-extension shepherd-root-service-type
+                             cuirass-remote-worker-shepherd-service)
+          (service-extension rottlog-service-type
+                             cuirass-remote-worker-log-rotations)))
    (description
     "Run the Cuirass remote build worker service.")))

@@ -317,7 +317,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "108.0.5359.71")
+(define %chromium-version "108.0.5359.98")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 (define %arch-revision "4de5019014aeb77187a517c5ca6db8723d622a40")
@@ -330,7 +330,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "1309rz06s7fw9p7h5968nk23rbsyfhqm5znqrw6nh24qdbg6z3zx"))))
+      "16rc15qsndrsj52p56ma3hg94jslkfy2f91ryr3qss73r2rkjf8j"))))
 
 (define %debian-origin
   (origin
@@ -482,12 +482,7 @@
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
-    (version (if (string-prefix? %chromium-version %ungoogled-revision)
-                 %ungoogled-revision
-                 ;; ungoogled-chromium version tags always have a "-1" suffix,
-                 ;; so we can hijack "-0" in cases where the Chromium source
-                 ;; is newer than the latest available tag.
-                 (string-append %chromium-version "-0")))
+    (version %ungoogled-revision)
     (synopsis "Graphical web browser")
     (source (origin
               (method url-fetch)
@@ -496,7 +491,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0pgzf6xrd71is1dld1arhq366vjp8p54x75zyx6y7vcjqj0a0v6b"))
+                "07jnhd5y7k4zp2ipz052isw7llagxn8l8rbz8x3jkjz3f5wi7dk0"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)

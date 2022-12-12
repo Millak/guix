@@ -565,6 +565,24 @@ and variables you'll need already imported and created.
     (home-page "https://github.com/google/python-fire")
     (license license:asl2.0)))
 
+(define-public python-fit-nbinom
+  (package
+    (name "python-fit-nbinom")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "fit_nbinom" version))
+              (sha256
+               (base32
+                "12v8l5i35vjbpvh5i4lw29ys6vpr3z7pysyrx33hxaq09zr015mx"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-numpy python-scipy))
+    (home-page "https://github.com/joachimwolff/fit_nbinom")
+    (synopsis "Negative binomial maximum likelihood estimator")
+    (description "This package provides an implementation in Python using
+scipy and numpy of negative binomial maximum likelihood estimation.")
+    (license license:gpl3+)))
+
 (define-public python-dotmap
   (package
     (name "python-dotmap")
@@ -901,6 +919,24 @@ template")
 variables into the markdown template")
     (license license:expat)))
 
+(define-public python-py4j
+  (package
+    (name "python-py4j")
+    (version "0.10.9.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "py4j" version))
+              (sha256
+               (base32
+                "1fwdx92cdaiviradksfyygg05g1fpc3x2lf65bv5rnispcam6vhb"))))
+    (build-system python-build-system)
+    (home-page "https://www.py4j.org/")
+    (synopsis "Dynamically access arbitrary Java objects from Python")
+    (description
+     "This package enables Python programs to dynamically access arbitrary
+Java objects.")
+    (license license:bsd-3)))
+
 (define-public python-pymdown-extensions
   (package
     (name "python-pymdown-extensions")
@@ -923,6 +959,36 @@ variables into the markdown template")
     (description "PyMdown Extensions is a collection of extensions for Python
 Markdown.  All extensions are found under the module namespace of pymdownx.")
     (license license:expat)))
+
+(define-public python-pint
+  (package
+    (name "python-pint")
+    (version "0.19.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "Pint" version))
+              (sha256
+               (base32
+                "1bsbiikm9i4saqc6mc3minkmrgnsgcg734agsvd7icqhyngrim71"))))
+    (build-system python-build-system)
+    (native-inputs
+     (list python-pytest
+           python-pytest-cov
+           python-pytest-mpl
+           python-pytest-subtests
+           python-setuptools-scm
+           python-sparse
+           python-dask
+           python-xarray
+           python-distributed))
+    (home-page "https://github.com/hgrecco/pint")
+    (synopsis "Physical quantities module")
+    (description
+     "Pint is a Python package to define, operate and manipulate physical
+quantities: the product of a numerical value and a unit of measurement.  It
+allows arithmetic operations between them and conversions from and to
+different units.")
+    (license license:bsd-3)))
 
 (define-public python-plotille
   (package
@@ -3011,6 +3077,29 @@ the optional C extension for speedups.  Simplejson is also supported on
 Python 3.3+.")
     (license license:x11)))
 
+(define-public python-simple-rlp
+  (package
+    (name "python-simple-rlp")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SamuelHaidu/simple-rlp")
+             ;; Upstream doesn't tag the git repo.
+             (commit "342ea269d84da1ddc4a7630cdebc90159261391c")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1nv92sphpkyrncak4qgj50qmgkmj4ycl2szbnv9c7ihgl5df4div"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/SamuelHaidu/simple-rlp")
+    (synopsis
+     "Python implementation of RLP (Recursive Length Prefix) encoding")
+    (description
+     "@code{simple-rlp} is a python implementation of RLP (Recursive Length \
+Prefix) - Encode and decode data structures.")
+    (license license:expat)))
 
 (define-public python-pyicu
   (package
@@ -3229,6 +3318,46 @@ existing ones.")
     (synopsis "Polling utility with many configurable options")
     (description "Polling2 is a utility used to wait for a function to return
 a certain expected condition.")
+    (license license:expat)))
+
+(define-public python-pomegranate
+  (package
+    (name "python-pomegranate")
+    (version "0.14.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pomegranate" version))
+              (sha256
+               (base32
+                "0gb9srkbxzlkjyfizvxkw5y0bvnfcyiaxapz0hrdaba8j096b5i2"))
+              (modules '((guix build utils)))
+              ;; Delete generated Cython C files.
+              (snippet
+               '(for-each delete-file (find-files "." "\\.c$")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "setup.py" "test")))))))
+    (propagated-inputs
+     (list python-joblib
+           python-networkx
+           python-numpy
+           python-pyyaml
+           python-scipy))
+    (native-inputs
+     (list python-cython
+           python-nose
+           python-pandas))
+    (home-page "https://pypi.python.org/pypi/pomegranate/")
+    (synopsis "Graphical models library for Python")
+    (description
+     "Pomegranate is a graphical models library for Python, implemented in
+Cython for speed.")
     (license license:expat)))
 
 (define-public python-poyo
@@ -3669,18 +3798,6 @@ with sensible defaults out of the box.")
        (uri (pypi-uri "click" version))
        (sha256
         (base32 "06kbzd6sjfkqan3miwj9wqyddfxc2b6hi7p5s4dvqjb3gif2bdfj"))))
-    (arguments `())))
-
-(define-public python-click-5
-  (package (inherit python-click)
-    (name "python-click")
-    (version "5.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "click" version))
-       (sha256
-        (base32 "0njsm0wn31l21bi118g5825ma5sa3rwn7v2x4wjd7yiiahkri337"))))
     (arguments `())))
 
 (define-public python-cligj
@@ -4900,6 +5017,23 @@ text styles of documentation.")
     (synopsis "Pygments Github custom lexers")
     (description "This package installs Github custom lexers to Pygments.")
     (license license:bsd-3)))
+
+(define-public python-pygtrie
+  (package
+    (name "python-pygtrie")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pygtrie" version))
+              (sha256
+               (base32
+                "1qm4xdmzd4q5pc9h5gjdpr5m7lg06k8dvqnjn7d07d3fhani8d90"))))
+    (build-system pyproject-build-system)
+    (home-page "https://github.com/mina86/pygtrie")
+    (synopsis "Pure Python trie data structure implementation")
+    (description
+     "This package provides a pure Python trie data structure implementation.")
+    (license license:asl2.0)))
 
 (define-public python-bump2version
   (package
@@ -10239,40 +10373,37 @@ SVG, EPS, PNG and terminal output.")
 (define-public python-seaborn
   (package
     (name "python-seaborn")
-    (version "0.11.2")
+    (version "0.12.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "seaborn" version))
               (sha256
                (base32
-                "1xpl3zb945sihsiwm9q1yyx84sakk1phcg0fprj6i0j0dllfjifg"))
-              (patches (search-patches "python-seaborn-kde-test.patch"
-                                       "python-seaborn-2690.patch"))))
+                "08vvnp4ps86857imxz2l5xi2vir5xdcdp3apq4badb4b5llifgw9"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'patch-more-tests
-                    (lambda _
-                      (substitute* "seaborn/tests/test_distributions.py"
-                        (("get_contour_color\\(ax\\.collections\\[0\\]\\)")
-                         "get_contour_color(ax.collections[0])")
-                        (("c\\.get_color\\(\\)") "get_contour_color(c)")
-                        (("def test_hue_ignores_cmap")
-                         "def skip_test_hue_ignores_cmap")
-                        (("def test_fill_artists")
-                         "def skip_test_fill_artists")
-                        (("def test_with_rug") "def skip_test_with_rug"))))
-                  (add-before 'check 'start-xserver
-                    (lambda _
-                      (system "Xvfb :1 &")
-                      (setenv "DISPLAY" ":1")))
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "seaborn")))))))
+     (list #:modules '((guix build python-build-system)
+                       (guix build utils)
+                       (ice-9 match))
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'build
+                          (lambda _
+                            (invoke "python" "-m" "build" "--wheel"
+                                    "--no-isolation" ".")))
+                        (replace 'install
+                          (lambda _
+                            (match (find-files "dist" "\\.whl$")
+                              ((wheel _ ...)
+                               (invoke "python" "-m" "pip" "install"
+                                       (string-append "--prefix=" #$output)
+                                       wheel)))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "pytest" "-vv")))))))
     (propagated-inputs (list python-pandas python-matplotlib python-numpy
                              python-scipy))
-    (native-inputs (list python-pytest xorg-server-for-tests))
+    (native-inputs (list python-flit-core python-pypa-build python-pytest))
     (home-page "https://seaborn.pydata.org/")
     (synopsis "Statistical data visualization")
     (description
@@ -14777,7 +14908,7 @@ with a new public API, and RPython support.")
 (define-public python-hy
   (package
     (name "python-hy")
-    (version "0.24.0")
+    (version "0.25.0")
     (source
      (origin
        (method git-fetch)               ; no tests in PyPI release
@@ -14786,7 +14917,7 @@ with a new public API, and RPython support.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s458ymd9g3s8k2ccc300jr4w66c7q3vhmhs9z3d3a4qg0xdhs9y"))))
+        (base32 "1am6z9m0s9svysj0wrfz069rpvbqqimphqll3912q4bvdlz6vrjp"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -20899,6 +21030,34 @@ while only declaring the test-specific fields.")
      as Swagger.")
     (license license:expat)))
 
+(define-public python-apispec-webframeworks
+  (package
+    (name "python-apispec-webframeworks")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "apispec-webframeworks" version))
+              (sha256
+               (base32
+                "1wyw30402xq2a8icrsjmy9v43jyvawcjd85ccb2zicqlg4k5pcqd"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-apispec))
+    (native-inputs
+     (list python-bottle
+           python-flake8
+           python-flake8-bugbear
+           python-flask
+           python-mock
+           python-pre-commit
+           python-pytest
+           python-tornado
+           python-tox))
+    (home-page "https://github.com/marshmallow-code/apispec-webframeworks")
+    (synopsis "Web framework plugins for apispec")
+    (description "This package provides plugins for using @code{apispec} with
+web frameworks.")
+    (license license:expat)))
+
 (define-public python-flasgger
   (package
     (name "python-flasgger")
@@ -25542,7 +25701,7 @@ scripts to load entry points more quickly.")
 (define-public python-funcparserlib
   (package
     (name "python-funcparserlib")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
       (origin
         ;; Source tarball on PyPi lacks tests.
@@ -25552,7 +25711,7 @@ scripts to load entry points more quickly.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "00pswdys5c4hpqpvfcy5zqv30gyjvjvagi12811jizw57hxrm1cs"))))
+         (base32 "0dw3i4fyf3j9h1l7xfgs99fc2w2axk6xqk0sdag43k444ss4hkrc"))))
     (build-system pyproject-build-system)
     (arguments
      '(#:phases

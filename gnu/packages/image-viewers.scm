@@ -110,7 +110,7 @@
 (define-public ytfzf
   (package
     (name "ytfzf")
-    (version "2.4.1")
+    (version "2.5.2")
     (home-page "https://github.com/pystardust/ytfzf")
     (source
      (origin
@@ -121,7 +121,7 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "198qhnjklrgrjs35ygym6sgx1ibwn6qrihfiginvmx38gdavdj4x"))))
+        (base32 "138rqjjyh6ar951v0v5sl1v000ja8zznn141qqw8ymx5h2z44r6w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -613,7 +613,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
 (define-public mcomix
   (package
     (name "mcomix")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
@@ -621,7 +621,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                            "mcomix-" version ".tar.gz"))
        (sha256
         (base32
-         "187ca815vxb2in1ryvfiaf1zapi0bc9jxdac3c1bky0kr6x7xyap"))))
+         "0n0akk3njsm0paqxfbxqycwhwy6smjg0rhlcz5r7r82n7rqx0f7g"))))
     (build-system python-build-system)
     (inputs
      (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
@@ -726,14 +726,14 @@ preloading.")
 (define-public chafa
   (package
     (name "chafa")
-    (version "1.8.0")
+    (version "1.12.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://hpjansson.org/chafa/releases/chafa-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0sr86bnrqcf6wxigrgsglv4fc79g5djmki20ih4hg8kbhcnnbzr1"))))
+                "0gsp39xnra331lk0db5pfqpdmqfhf7ii3a7yywj33sknf0dbsx4p"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

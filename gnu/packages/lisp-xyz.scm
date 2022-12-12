@@ -255,6 +255,46 @@ text.")
 (define-public ecl-langutils
   (sbcl-package->ecl-package sbcl-langutils))
 
+(define-public sbcl-duologue
+  (let ((commit "ea1ada244a81da65f85b548823c9a6d7c9c145e1")
+        (revision "0"))
+    (package
+      (name "sbcl-duologue")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mmontone/duologue")
+               (commit commit)))
+         (file-name (git-file-name "cl-duologue" version))
+         (sha256
+          (base32 "1yg7f27im9h0m6jihcay1p7alfhzm9hafwm5dw5hsyacy8f2cwk2"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-stefil))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-anaphora
+              sbcl-chronicity
+              sbcl-cl-ansi-text
+              sbcl-cl-fad
+              sbcl-clavier
+              sbcl-drakma))
+      (home-page "https://github.com/mmontone/duologue/")
+      (synopsis "High level user interaction library")
+      (description
+       "Duologue is high-level interaction library for Common Lisp.  It features
+coloured printing via @code{cl-ansi-text} and readline completion.")
+      (license (list license:expat
+                     ;; https://github.com/mmontone/duologue/issues/9
+                     license:gpl3+)))))
+
+(define-public cl-duologue
+  (sbcl-package->cl-source-package sbcl-duologue))
+
+(define-public ecl-duologue
+  (sbcl-package->ecl-package sbcl-duologue))
+
 (define-public sbcl-alea
   (package
     (name "sbcl-alea")
@@ -455,8 +495,8 @@ It's intended as a simpler alternative to parser generators.")
   (sbcl-package->ecl-package sbcl-meta))
 
 (define-public sbcl-clavier
-  (let ((commit "048bea40cac0a89480f8c41ae542be45945f3268")
-        (revision "0"))
+  (let ((commit "9b1424eaad131e114a45b400784079124b5e2321")
+        (revision "1"))
     (package
       (name "sbcl-clavier")
       (version (git-version "0.0.0" revision commit))
@@ -468,7 +508,7 @@ It's intended as a simpler alternative to parser generators.")
                (commit commit)))
          (file-name (git-file-name "cl-clavier" version))
          (sha256
-          (base32 "0734xia2hf7lqkm59gjhyvpsp0vl50djyhy4llwwbzbwwdkdihw4"))))
+          (base32 "1gjd0rhxs2x7gn3fw1hnxivmm4ca4f1wxlg0fqv8fdfabgzsvl5y"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs (list sbcl-stefil))
       (inputs
@@ -6561,6 +6601,37 @@ whole lot more into a single form.")
 (define-public ecl-metabang-bind
   (sbcl-package->ecl-package sbcl-metabang-bind))
 
+(define-public sbcl-fare-csv
+  (let ((commit "f877a238dcbf587a89359cccf2128919a94a348c")
+        (revision "0"))
+    (package
+      (name "sbcl-fare-csv")
+      (version (git-version "1.0.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/frideau/fare-csv")
+               (commit commit)))
+         (file-name (git-file-name "cl-fare-csv" version))
+         (sha256
+          (base32 "0k3mf968w94m4yff1k2jh7xlnpsm016qs4448bvklacjrr72vk8x"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-hu.dwim.stefil))
+      (home-page "https://gitlab.common-lisp.net/frideau/fare-csv/")
+      (synopsis "Robust CSV parser and printer")
+      (description
+       "This package provides a robust CSV parser and printer that tries to
+follow the fine print of de facto standards.  It can be configured to choose
+which standard exactly.")
+      (license license:expat))))
+
+(define-public cl-fare-csv
+  (sbcl-package->cl-source-package sbcl-fare-csv))
+
+(define-public ecl-fare-csv
+  (sbcl-package->ecl-package sbcl-fare-csv))
+
 (define-public sbcl-fare-utils
   (let ((commit "66e9c6f1499140bc00ccc22febf2aa528cbb5724")
         (revision "1"))
@@ -11048,6 +11119,34 @@ code.  The main target of this macro is speed.")
 
 (define-public ecl-specialized-function
   (sbcl-package->ecl-package sbcl-specialized-function))
+
+(define-public sbcl-conduit-packages
+  (package
+   (name "sbcl-conduit-packages")
+   (version "2.0.0")
+   (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/tfeb/conduit-packages")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-conduit-packages" version))
+       (sha256
+        (base32 "1n783in84mrk9lnc3nshwsgxhb8y0dk6ys9z6jlxkv0jpjxhpjjc"))))
+   (build-system asdf-build-system/sbcl)
+   (arguments '(#:asd-systems '("org.tfeb.conduit-packages")))
+   (synopsis "Conduit packages for Common Lisp")
+   (description "This library defines a way of treating Common Lisp
+packages as conduits which can sit between one or more implementation
+packages and users of those packages.")
+   (home-page "https://github.com/tfeb/conduit-packages/")
+   (license license:expat)))
+
+(define-public cl-conduit-packages
+  (sbcl-package->cl-source-package sbcl-conduit-packages))
+
+(define-public ecl-conduit-packages
+  (sbcl-package->ecl-package sbcl-conduit-packages))
 
 (define-public sbcl-constantfold
   (let ((commit "0ff1d97a3fbcb89264f6a2af6ce62b73e7b421f4")
@@ -22713,8 +22812,8 @@ them as strings.")
   (sbcl-package->ecl-package sbcl-simple-date-time))
 
 (define-public sbcl-april
-  (let ((commit "93b10042206475b9cce649d76ffaf00dcdbe498f")
-        (revision "2"))
+  (let ((commit "bdd74f168ec82f28fe4ab692f2c0af39441a5701")
+        (revision "3"))
     (package
       (name "sbcl-april")
       (version (git-version "1.0" revision commit))
@@ -22726,7 +22825,7 @@ them as strings.")
                (commit commit)))
          (file-name (git-file-name "cl-april" version))
          (sha256
-          (base32 "16az6cs13hxqn7sa2cxask077kvzp8prnrvnqm5igqq92y174n8g"))
+          (base32 "0hvlp2286z1ksa7jr7r661kdr0lpfv25n5chl72jrzq5zz70lidx"))
          (modules '((guix build utils)))
          (snippet '(begin
                      ;; Remove bundled Apache-relicensed MaxPC.

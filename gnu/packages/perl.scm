@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -5206,6 +5207,27 @@ Linux, fsevents on OS X, @code{kqueue} on FreeBSD, and
 back to a full directory scan if none of these are available.")
     (license license:perl-license)))
 
+(define-public perl-getopt-argvfile
+  (package
+    (name "perl-getopt-argvfile")
+    (version "1.11")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                     "mirror://cpan/authors/id/J/JS/JSTENZEL/Getopt-ArgvFile-"
+                     version
+                     ".tar.gz"))
+              (sha256
+               (base32
+                "08jvhfqcjlsn013x96qa6paif0095x6y60jslp8p3zg67i8sl29p"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/release/Getopt-ArgvFile")
+    (synopsis "Perl module for reading script options and parameters from files")
+    (description "This module simply interpolates option file hints in @code{@@ARGV}
+by the contents of the pointed files.  This enables option reading from files instead
+of or additional to the usual reading from the command line.")
+    (license license:artistic2.0)))
+
 (define-public perl-getopt-long
   (package
     (name "perl-getopt-long")
@@ -6248,6 +6270,18 @@ expression and a list of abbreviations (built in and given).")
         (base32
          "1qgap0j0ixmif309dvbqca7sy8xha9xgnj9s2lvh8qrczkc92gqi"))))
     (build-system perl-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-translit
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out")))
+                (wrap-program (string-append out "/bin/translit")
+                  `("PERL5LIB" ":" prefix
+                    (,(getenv "PERL5LIB")
+                     ,(string-append out "/lib/perl5/site_perl"))))))))))
+    (inputs (list bash-minimal))
     (home-page "https://metacpan.org/release/Lingua-Translit")
     (synopsis "Transliterate text between writing systems")
     (description "@code{Lingua::Translit} can be used to convert text from one

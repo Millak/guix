@@ -22,6 +22,7 @@
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2324,4 +2325,28 @@ let handle = &mut _stdout.lock();")))))))
      "Zoxide is a fast replacement for your @command{cd} command.  It keeps
 track of the directories you use most frequently, and uses a ranking algorithm
 to navigate to the best match.")
+    (license license:expat)))
+
+(define-public htmlq
+  (package
+    (name "htmlq")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "htmlq" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0912cdkz5xji1hzfj1cf42zh1kd860b52xmwwhb7q2jhp6qk25jh"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-clap" ,rust-clap-2)
+         ("rust-html5ever" ,rust-html5ever-0.25)
+         ("rust-kuchiki" ,rust-kuchiki-0.8)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/mgdm/htmlq")
+    (synopsis "Like jq, but for HTML")
+    (description "Extract content from HTML files using CSS selectors.")
     (license license:expat)))

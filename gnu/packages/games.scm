@@ -63,7 +63,7 @@
 ;;; Copyright © 2021 David Pflug <david@pflug.io>
 ;;; Copyright © 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
-;;; Copyright © 2021 Noisytoot <noisytoot@disroot.org>
+;;; Copyright © 2021, 2022 Noisytoot <ron@noisytoot.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021 Christopher Baines <mail@cbaines.net>
@@ -445,7 +445,7 @@ physics settings to tweak as well.")
 (define-public astromenace
   (package
     (name "astromenace")
-    (version "1.4.1")
+    (version "1.4.2")
     (source
      (origin
        (method git-fetch)
@@ -454,33 +454,30 @@ physics settings to tweak as well.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ad6l887jxqv8xspwc2rvy8ym9sdlmkqdqhsh0pi076kjarxsyws"))))
+        (base32 "0vw94issjzz6rji0ssqv5yrll513dvj7m0d33q8lbih1gdh4alal"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags (list (string-append "-DDATADIR="
-                                              (assoc-ref %outputs "out")
-                                              "/share/astromenace"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'install
-           ;; Upstream provides no install phase.
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (share (string-append out "/share"))
-                    (apps (string-append share "/applications"))
-                    (data (string-append share "/astromenace"))
-                    (icons (string-append share "/icons/hicolor/64x64/apps")))
-               (install-file "astromenace" bin)
-               (install-file "gamedata.vfs" data)
-               (let ((source (assoc-ref inputs "source")))
-                 (with-directory-excursion (string-append source "/share")
-                   (install-file "astromenace.desktop" apps)
-                   (mkdir-p icons)
-                   (copy-file "astromenace_64.png"
-                              (string-append icons "/astromenace.png")))))
-             #t)))))
+     (list
+      #:tests? #f                       ;no tests
+      #:configure-flags
+      #~(list (string-append "-DDATADIR=" #$output "/share/astromenace"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            ;; Upstream provides no install phase.
+            (lambda _
+              (let* ((bin (string-append #$output "/bin"))
+                     (share (string-append #$output "/share"))
+                     (apps (string-append share "/applications"))
+                     (data (string-append share "/astromenace"))
+                     (icons (string-append share "/icons/hicolor/64x64/apps")))
+                (install-file "astromenace" bin)
+                (install-file "gamedata.vfs" data)
+                (with-directory-excursion (string-append #$source "/share")
+                  (install-file "astromenace.desktop" apps)
+                  (mkdir-p icons)
+                  (copy-file "astromenace_64.png"
+                             (string-append icons "/astromenace.png")))))))))
     (inputs
      (list freealut
            freetype
@@ -2089,7 +2086,7 @@ done
 for i in ~a/games/lib/nethackdir/*; do
   ln -s $i $(basename $i)
 done
-~a/games/nethack"
+~a/games/nethack \"$@\""
                       (assoc-ref %build-inputs "bash")
                       (list->search-path-as-string
                         (list
@@ -3956,7 +3953,7 @@ Protocol).")
 (define-public extremetuxracer
   (package
     (name "extremetuxracer")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3964,7 +3961,7 @@ Protocol).")
                     version "/etr-" version ".tar.xz"))
               (sha256
                (base32
-                "0hc3qd9hv3h9qm53yxgc7iy1v1wyajwxyvil4vqvzf9ascz9dnlj"))))
+                "0knd22lzhzqih1w92y6m7yxha376c6ydl22wy4xm6jg2x5jlk1qw"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))

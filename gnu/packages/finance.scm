@@ -889,6 +889,23 @@ the Monero command line client and daemon.")
 the Monero GUI client.")
     (license license:bsd-3)))
 
+(define-public python-bech32
+  (package
+    (name "python-bech32")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bech32" version))
+              (sha256
+               (base32
+                "16fq5cfy5id9hp123ylhpl55pf38xwk0hv7sziqpig838qhvhvbx"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/fiatjaf/bech32")
+    (synopsis "Reference implementation for Bech32 and Segwit addresses")
+    (description "This package provides a python reference implementation for
+Bech32 and segwit addresses.")
+    (license license:expat)))
+
 (define-public python-trezor-agent
   ;; It is called 'libagent' in pypi; i.e. this is the library as opposed to
   ;; the toplevel app called trezor-agent.

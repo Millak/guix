@@ -392,7 +392,7 @@ when booting a root file system on a Btrfs subvolume."
           ;; DEVICE-MOUNT-POINT is not "/", meaning that the store is on a
           ;; separate partition.
 
-          ;; When BTRFS-SUBVOLUME-FILE-NAME is defined, prepend it the linux and
+          ;; When STORE-DIRECTORY-PREFIX is defined, prepend it the linux and
           ;; initrd paths, to allow booting from a Btrfs subvolume.
           #~(format port "menuentry ~s {
   ~a

@@ -290,26 +290,6 @@ logic, also known as grey logic.")
 genetic variation data.")
     (license license:expat)))
 
-(define-public python-sgp4
-  (package
-    (name "python-sgp4")
-    (version "2.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sgp4" version))
-       (sha256
-        (base32 "0dncp9i5b6afkg7f8mj9j0qzsp008b8v73yc0qkmizhpns7mvwvx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/brandon-rhodes/python-sgp4")
-    (synopsis "Track earth satellite TLE orbits using SGP4")
-    (description
-     "This package provides a Python implementation of the most recent version
-of the SGP4 satellite tracking algorithm.")
-    (license license:expat)))
-
 (define-public python-trimesh
   (package
     (name "python-trimesh")
