@@ -5935,7 +5935,7 @@ obviously it can be shared with files outside our set).")
 (define-public f2fs-tools
   (package
     (name "f2fs-tools")
-    (version "1.14.0")
+    (version "1.15.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5945,7 +5945,7 @@ obviously it can be shared with files outside our set).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06ss05n87i1c3149qb3n7j1qp2scv3g2adx0v6ljkl59ab9b5saj"))))
+                "1ffws8pbpzp9730v0wy5xjas698lnbd2p7wpr2gl4mx45rsay9a5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -6008,18 +6008,9 @@ disks and SD cards.  This package provides the userland utilities.")
                          "-I" libuuid "/include/blkid")
           (string-append "libblkid_LIBS=-L" libuuid-static "/lib -lblkid")))
        #:disallowed-references (,util-linux)
+       #:make-flags '("LDFLAGS=-all-static")
        #:phases
        (modify-phases %standard-phases ; TODO: f2fs phases.
-         (add-after 'unpack 'make-static
-           (lambda _
-             (define (append-to-file name body)
-               (let ((file (open-file name "a")))
-                 (display body file)
-                 (close-port file)))
-             (append-to-file "mkfs/Makefile.am" "\nmkfs_f2fs_LDFLAGS = -all-static\n")
-             (append-to-file "fsck/Makefile.am" "\nfsck_f2fs_LDFLAGS = -all-static\n")
-             (append-to-file "tools/Makefile.am" "\nf2fscrypt_LDFLAGS = -all-static -luuid\n")
-             #t))
           (add-after 'install 'remove-store-references
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Work around bug in our util-linux.
