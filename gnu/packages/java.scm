@@ -2142,8 +2142,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk17
   (make-openjdk
-   openjdk16 "17.0.3"
-   "0slmd6ww947gxpp4yr2wmr5z975bg86qh7zqfp2radf2q77ql65b"
+   openjdk16 "17.0.5"
+   "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
