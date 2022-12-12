@@ -9724,7 +9724,7 @@ endpoint and it understands SPARQL.")
                        "--no-suite" "slow")))))))
     (native-inputs
      (list dbus
-           intltool
+           gettext-minimal
            `(,glib "bin")
            docbook-xsl
            docbook-xml
