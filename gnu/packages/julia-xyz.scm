@@ -1670,7 +1670,7 @@ be passed to in-place differentiation methods instead of an output buffer.")
 (define-public julia-diffrules
   (package
     (name "julia-diffrules")
-    (version "1.0.2")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1679,11 +1679,15 @@ be passed to in-place differentiation methods instead of an output buffer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cwjvj4gma7924fm3yas0nf0jlnwwx4v7fi79ii3s290lkdldzfl"))))
+        (base32 "0l983kzy01y7qqw42pi0ihpvx3yzfnwrhcmk38avw7y513qlm7vf"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-nanmath
+     (list julia-irrationalconstants
+           julia-logexpfunctions
+           julia-nanmath
            julia-specialfunctions))
+    (native-inputs
+     (list julia-finitedifferences))
     (home-page "https://github.com/JuliaDiff/DiffRules.jl")
     (synopsis "Primitive differentiation rules")
     (description "This package provides primitive differentiation rules that
