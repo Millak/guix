@@ -2781,7 +2781,7 @@ inline presentation of greyscale or color images.")
 (define-public julia-imagetransformations
   (package
     (name "julia-imagetransformations")
-    (version "0.8.12")
+    (version "0.9.5")
     (source
       (origin
         (method git-fetch)
@@ -2790,7 +2790,7 @@ inline presentation of greyscale or color images.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0i8gw68hljshsy9wdl5mrpbb31irhmayqyglsxi7jwm88iy9pxhm"))))
+         (base32 "1wavfs5chq8s9ma0k8fxfaqam4560w4l2j3lhbd9aqsjlgvi3swc"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2798,16 +2798,19 @@ inline presentation of greyscale or color images.")
      (list julia-axisalgorithms
            julia-colorvectorspace
            julia-coordinatetransformations
-           julia-identityranges
+           julia-imagebase
            julia-imagecore
            julia-interpolations
            julia-offsetarrays
            julia-rotations
            julia-staticarrays))
     ;(native-inputs
-    ; `(("julia-imagemagick" ,julia-imagemagick)
-    ;   ("julia-referencetests" ,julia-referencetests)
-    ;   ("julia-testimages" ,julia-testimages)))
+    ; (list julia-endpointranges
+    ;       julia-imageio
+    ;       julia-imagemagick
+    ;       julia-referencetests
+    ;       julia-tau
+    ;       julia-testimages))
     (home-page "https://github.com/JuliaImages/ImageTransformations.jl")
     (synopsis "Geometric transformations on images for Julia")
     (description "This package provides support for image resizing, image
