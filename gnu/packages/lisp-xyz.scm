@@ -1425,6 +1425,53 @@ within.")
 (define-public cl-ubiquitous
   (sbcl-package->cl-source-package sbcl-ubiquitous))
 
+(define-public sbcl-uax-14
+  (let ((commit "0432162525119c401d3d705bb9bcc9580a03914f")
+        (revision "1"))
+    (package
+      (name "sbcl-uax-14")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/uax-14")
+               (commit commit)))
+         (file-name (git-file-name "uax-14" version))
+         (sha256
+          (base32 "1sb2s58k01yjaggaq8i7kbyfsh6mzyqbiz1vm59smxn9qqwd8apm"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute sbcl-cl-ppcre))
+      (inputs
+       (list sbcl-documentation-utils))
+      (arguments
+       `(#:asd-systems '("uax-14")))
+      (home-page "https://shinmera.github.io/uax-14/")
+      (synopsis "Unicode Standard Annex #14 for standardised line breaking")
+      (description
+       "This is an implementation of the Unicode Standards Annex
+#14 (@url{http://www.unicode.org/reports/tr14/}) line breaking algorithm.  It
+provides a fast and convenient way to determine line breaking opportunities in
+text.
+
+Note that this algorithm does not support break opportunities that require
+morphological analysis.  In order to handle such cases, please consult a system
+that provides this kind of capability, such as a hyphenation algorithm.
+
+Also note that this system is completely unaware of layouting decisions.  Any
+kind of layouting decisions, such as which breaks to pick, how to space
+between words, how to handle bidirectionality, and what to do in emergency
+situations when there are no breaks on an overfull line are left up to the
+user.")
+      (license license:zlib))))
+
+(define-public ecl-uax-14
+  (sbcl-package->ecl-package sbcl-uax-14))
+
+(define-public cl-uax-14
+  (sbcl-package->cl-source-package sbcl-uax-14))
+
 (define-public sbcl-uax-15
   (package
     (name "sbcl-uax-15")
