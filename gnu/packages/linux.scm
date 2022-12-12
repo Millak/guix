@@ -5976,13 +5976,15 @@ disks and SD cards.  This package provides the userland utilities.")
     (name "f2fs-tools")
     (version "1.7.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
-                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (git-reference-url
+                          (origin-uri (package-source f2fs-tools))))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m6bn1ibq0p53m0n97il91xqgjgn2pzlz74lb5bfzassx7159m1k"))))
+                "0wpzklw8smnngng0dm25jdmi7v5zfhpz02dksyxpz0a7kzzvnqqm"))))
     (inputs
      (list `(,util-linux "lib") libselinux))
     (arguments
