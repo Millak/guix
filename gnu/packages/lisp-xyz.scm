@@ -10428,6 +10428,39 @@ the library does not depend on X11).
 (define-public ecl-cl-colors2
   (sbcl-package->ecl-package sbcl-cl-colors2))
 
+(define-public sbcl-colored
+  (let ((commit "bee87efb0b047da0f071f5cf1457997ab5f93feb")
+        (revision "1"))
+    (package
+      (name "sbcl-colored")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/colored/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mpg91r6yfb9xqccd4r8z3hl2qzjhdj6daswb1cinrm8ffxrvy5k"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils))
+      (synopsis "Colour representation, conversion, and operation for Common Lisp")
+      (description
+       "This is a library for representing and mapping colours between their
+various spaces.")
+      (home-page "https://shinmera.github.io/colored/")
+      (license license:zlib))))
+
+(define-public cl-colored
+  (sbcl-package->cl-source-package sbcl-colored))
+
+(define-public ecl-colored
+  (sbcl-package->ecl-package sbcl-colored))
+
 (define-public sbcl-cl-jpeg
   (let ((commit "ec557038128df6895fbfb743bfe8faf8ec2534af")
         (revision "1"))
