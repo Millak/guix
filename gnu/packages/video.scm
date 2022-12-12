@@ -4561,15 +4561,9 @@ It counts more than 100 plugins.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gettext-minimal pkg-config))
     (inputs
-     `(("libjpeg" ,libjpeg-turbo)
-       ("ffmpeg" ,ffmpeg)
-       ("libmicrohttpd" ,libmicrohttpd)
-       ("sqlite" ,sqlite)))
+     (list libjpeg-turbo ffmpeg libmicrohttpd sqlite))
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'bootstrap
