@@ -5028,6 +5028,26 @@ files that the user must interact with through a file browser.")
 argument.")
     (license license:expat)))
 
+(define-public julia-shiftedarrays
+  (package
+    (name "julia-shiftedarrays")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaArrays/ShiftedArrays.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0wy7k29qx2lvj587kiz31fzdc60808mjsgpp41h6b682ypz8rw0c"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaArrays/ShiftedArrays.jl")
+    (synopsis "Lazy shifted arrays for data analysis in Julia")
+    (description
+     "This package provides an implementation of shifted arrays for Julia.")
+    (license license:expat)))
+
 (define-public julia-showoff
   (package
     (name "julia-showoff")
