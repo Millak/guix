@@ -20012,6 +20012,38 @@ developing library for Common Lisp.")
 (define-public cl-liballegro
   (sbcl-package->cl-source-package sbcl-cl-liballegro))
 
+(define-public sbcl-font-discovery
+  (let ((commit "5101ca79151055f3ec9839aae73b8af42b884528")
+        (revision "1"))
+    (package
+      (name "sbcl-font-discovery")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/font-discovery")
+               (commit commit)))
+         (file-name (git-file-name "font-discovery" version))
+         (sha256
+          (base32 "1p9wkwc23rnif8vcjaj5ih1fmr5g57sidqjlz08qw6k0z4f6bia1"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi sbcl-documentation-utils sbcl-trivial-indent))
+      (home-page "https://shinmera.github.io/font-discovery/")
+      (synopsis "Find system font files matching a font spec")
+      (description
+       "This is a library to find system font files.  It works on systems with
+FontConfig on Linux, BSD.  It does not have any foreign dependencies that
+aren't already directly available on the system.")
+      (license license:zlib))))
+
+(define-public ecl-font-discovery
+  (sbcl-package->ecl-package sbcl-font-discovery))
+
+(define-public cl-font-discovery
+  (sbcl-package->cl-source-package sbcl-font-discovery))
+
 (define-public sbcl-alloy
   (let ((commit "e86e22c2887836ec31cd97e039f0bca5248d8f1c")
         (revision "1"))
