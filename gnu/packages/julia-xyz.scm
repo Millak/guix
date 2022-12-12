@@ -1099,28 +1099,31 @@ for construction of objects.")
     (license license:expat)))
 
 (define-public julia-coordinatetransformations
-  (package
-    (name "julia-coordinatetransformations")
-    (version "0.6.1")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "15zbkn32v7xlz7559s0r5a0vkwmjwsswxaqpzijly4lky4jnp33d"))))
-    (build-system julia-build-system)
-    (propagated-inputs
-     (list julia-staticarrays))
-    (native-inputs
-    (list julia-documenter
-          julia-forwarddiff
-          julia-unitful))
-    (home-page "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
-    (synopsis "Coordinate transformations in Julia")
-    (description "@code{CoordinateTransformations} is a Julia package to manage
+  ;; Test suite fixed after the last release.
+  (let ((commit "78f5a5cc8cf77f21407b4f175673fa4f6bf86633")
+        (revision "1"))
+    (package
+      (name "julia-coordinatetransformations")
+      (version (git-version "0.6.2" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "026g3b2m2z509jdlqvd46yhnhg8y6m00plr3k7cjlbzrfi2yjjn8"))))
+      (build-system julia-build-system)
+      (propagated-inputs
+       (list julia-staticarrays))
+      (native-inputs
+      (list julia-documenter
+            julia-forwarddiff
+            julia-unitful))
+      (home-page "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
+      (synopsis "Coordinate transformations in Julia")
+      (description "@code{CoordinateTransformations} is a Julia package to manage
 simple or complex networks of coordinate system transformations.
 Transformations can be easily applied, inverted, composed, and differentiated
 (both with respect to the input coordinates and with respect to transformation
@@ -1129,7 +1132,7 @@ light-weight and efficient enough for, e.g., real-time graphical applications,
 while support for both explicit and automatic differentiation makes it easy to
 perform optimization and therefore ideal for computer vision applications such
 as SLAM (simultaneous localization and mapping).")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public julia-crayons
   (package
