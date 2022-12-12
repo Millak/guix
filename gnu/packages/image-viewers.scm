@@ -613,7 +613,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
 (define-public mcomix
   (package
     (name "mcomix")
-    (version "2.0.1")
+    (version "2.0.2")
     (source
      (origin
        (method url-fetch)
@@ -621,7 +621,7 @@ imaging.  It supports several HDR and LDR image formats, and it can:
                            "mcomix-" version ".tar.gz"))
        (sha256
         (base32
-         "187ca815vxb2in1ryvfiaf1zapi0bc9jxdac3c1bky0kr6x7xyap"))))
+         "0n0akk3njsm0paqxfbxqycwhwy6smjg0rhlcz5r7r82n7rqx0f7g"))))
     (build-system python-build-system)
     (inputs
      (list p7zip python python-pillow python-pygobject python-pycairo gtk+))
