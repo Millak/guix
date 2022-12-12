@@ -111,7 +111,10 @@ turn doesn't take any constant overhead into account, force a 1-MiB minimum."
                            (if (eq? size 'guess)
                                (estimate-partition-size root)
                                size))
-                    (if (member 'esp flags) (list "-S" "1024") '()))
+                    ;; u-boot in particular needs the formatted block
+                    ;; size and the physical block size to be equal.
+                    ;; TODO: What about 4k blocks?
+                    (if (member 'esp flags) (list "-S" "512") '()))
     (for-each (lambda (file)
                 (unless (member file '("." ".."))
                   (invoke "mcopy" "-bsp" "-i" target
