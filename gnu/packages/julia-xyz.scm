@@ -2113,7 +2113,7 @@ c-style numerical formatting.")
 (define-public julia-forwarddiff
   (package
     (name "julia-forwarddiff")
-    (version "0.10.18")
+    (version "0.10.34")
     (source
      (origin
        (method git-fetch)
@@ -2122,7 +2122,7 @@ c-style numerical formatting.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vb46x8mcn61g1l14qrk22c043khg2ml4q1ci7h4k2v34f2ak5fs"))))
+        (base32 "1lwjw2jzkffwk06hfc30vxhv36ng3gf12qjc43swmqiakkd3m5jx"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Unexpected and non-deterministic failures for i686, e.g.,
@@ -2135,9 +2135,11 @@ c-style numerical formatting.")
      (list julia-calculus
            julia-difftests))
     (propagated-inputs
-     (list julia-commonsubexpressions
+     (list julia-calculus
+           julia-commonsubexpressions
            julia-diffresults
            julia-diffrules
+           julia-difftests
            julia-nanmath
            julia-specialfunctions
            julia-staticarrays))
