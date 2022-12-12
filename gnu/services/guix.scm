@@ -336,30 +336,30 @@
       (start #~(lambda args
                  (parameterize ((%current-logfile-date-format ""))
                    (apply
-                    make-forkexec-constructor
-                    (list #$(make-guix-build-coordinator-start-script
-                             database-uri-string
-                             allocation-strategy
-                             "/var/run/guix-build-coordinator/pid"
-                             package
-                             #:agent-communication-uri-string
-                             agent-communication-uri-string
-                             #:client-communication-uri-string
-                             client-communication-uri-string
-                             #:hooks hooks
-                             #:parallel-hooks parallel-hooks
-                             #:guile guile))
-                    #:user #$user
-                    #:group #$group
-                    #:pid-file "/var/run/guix-build-coordinator/pid"
-                    ;; Allow time for migrations to run
-                    #:pid-file-timeout 60
-                    #:environment-variables
-                    `(,(string-append
-                        "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
-                      "LC_ALL=en_US.utf8"
-                      "PATH=/run/current-system/profile/bin") ; for hooks
-                    #:log-file "/var/log/guix-build-coordinator/coordinator.log"
+                    (make-forkexec-constructor
+                     (list #$(make-guix-build-coordinator-start-script
+                              database-uri-string
+                              allocation-strategy
+                              "/var/run/guix-build-coordinator/pid"
+                              package
+                              #:agent-communication-uri-string
+                              agent-communication-uri-string
+                              #:client-communication-uri-string
+                              client-communication-uri-string
+                              #:hooks hooks
+                              #:parallel-hooks parallel-hooks
+                              #:guile guile))
+                     #:user #$user
+                     #:group #$group
+                     #:pid-file "/var/run/guix-build-coordinator/pid"
+                     ;; Allow time for migrations to run
+                     #:pid-file-timeout 60
+                     #:environment-variables
+                     `(,(string-append
+                         "GUIX_LOCPATH=" #$glibc-utf8-locales "/lib/locale")
+                       "LC_ALL=en_US.utf8"
+                       "PATH=/run/current-system/profile/bin") ; for hooks
+                     #:log-file "/var/log/guix-build-coordinator/coordinator.log")
                     args))))
       (stop #~(make-kill-destructor))
       (modules
