@@ -3320,6 +3320,46 @@ existing ones.")
 a certain expected condition.")
     (license license:expat)))
 
+(define-public python-pomegranate
+  (package
+    (name "python-pomegranate")
+    (version "0.14.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pomegranate" version))
+              (sha256
+               (base32
+                "0gb9srkbxzlkjyfizvxkw5y0bvnfcyiaxapz0hrdaba8j096b5i2"))
+              (modules '((guix build utils)))
+              ;; Delete generated Cython C files.
+              (snippet
+               '(for-each delete-file (find-files "." "\\.c$")))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "setup.py" "test")))))))
+    (propagated-inputs
+     (list python-joblib
+           python-networkx
+           python-numpy
+           python-pyyaml
+           python-scipy))
+    (native-inputs
+     (list python-cython
+           python-nose
+           python-pandas))
+    (home-page "https://pypi.python.org/pypi/pomegranate/")
+    (synopsis "Graphical models library for Python")
+    (description
+     "Pomegranate is a graphical models library for Python, implemented in
+Cython for speed.")
+    (license license:expat)))
+
 (define-public python-poyo
   (package
     (name "python-poyo")
