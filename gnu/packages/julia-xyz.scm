@@ -2583,7 +2583,7 @@ dependencies.")
 (define-public julia-imagecore
   (package
     (name "julia-imagecore")
-    (version "0.9.1")
+    (version "0.9.4")
     (source
       (origin
         (method git-fetch)
@@ -2592,7 +2592,7 @@ dependencies.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0h9m3pl3wic1jrgaqkdifz24cya5vxd3m6qdmm37pxg2y2ii2vcq"))))
+         (base32 "0a6m3cszgh2bfsgs08i64f1h1pwh6by4267rvwyvdk470z0ayc8q"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2609,7 +2609,7 @@ dependencies.")
            julia-reexport))
     ;(native-inputs
     ; `(("julia-aqua" ,julia-aqua)
-    ;   ("julia-colorvectorspace" ,julia-colorvectorspace)
+    ;   ("julia-blockarrays" ,julia-blockarrays)
     ;   ("julia-documenter" ,julia-documenter)
     ;   ("julia-fftw" ,julia-fftw)
     ;   ("julia-imageinterminal" ,julia-imageinterminal)
