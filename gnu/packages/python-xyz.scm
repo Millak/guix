@@ -23473,14 +23473,14 @@ tool).")
 (define-public python-numcodecs
   (package
     (name "python-numcodecs")
-    (version "0.6.4")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numcodecs" version))
        (sha256
         (base32
-         "0kbfr8pl3x9glsypbq8hzim003f16ml1b1cvgrh4w1sdvgal6j7g"))
+         "1i2rvm1f23dapcf6w3mj4877jzq5f24bhfa0fafbv1nr7xmqr0r2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -23490,11 +23490,11 @@ tool).")
                                    "numcodecs/lz4.c"
                                    "numcodecs/vlen.c"
                                    "numcodecs/zstd.c"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ; TODO: unclear why numcodecs.* are not found
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'disable-avx2
            (lambda _
              (setenv "DISABLE_NUMCODECS_AVX2" "1")))
@@ -23511,16 +23511,18 @@ tool).")
                 "'numcodecs.lz4', libraries=['lz4'], ")
                (("'numcodecs.blosc',")
                 "'numcodecs.blosc', libraries=['blosc'], "))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv")))))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (inputs
      (list c-blosc lz4 zlib
            `(,zstd "lib")))
     (propagated-inputs
-     (list python-numpy python-msgpack))
+     (list python-entrypoints
+           python-numpy
+           python-msgpack
+           python-typing-extensions-next))
     (native-inputs
      (list python-cython python-pytest python-setuptools-scm))
     (home-page "https://github.com/zarr-developers/numcodecs")
