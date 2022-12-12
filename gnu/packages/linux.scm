@@ -8991,7 +8991,7 @@ types and interfaces and translates so that the X server can use them.")
      (list alsa-lib
            dbus
            eudev
-           ffmpeg
+           ffmpeg-4
            gstreamer
            gst-plugins-base
            libva
@@ -9035,6 +9035,7 @@ of Linux application development.")
      (modify-inputs (package-native-inputs pipewire)
        (prepend python-docutils)))
     (inputs (modify-inputs (package-inputs pipewire)
+              (replace "ffmpeg" ffmpeg)
               (prepend avahi
                        bluez
                        jack-2

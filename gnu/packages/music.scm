@@ -6806,7 +6806,7 @@ choice.")
      (list alsa-lib
            boost
            curl
-           ffmpeg
+           ffmpeg-4
            lame
            libev
            libmicrohttpd

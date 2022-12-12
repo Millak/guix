@@ -323,7 +323,7 @@ console.")
              bluez
              curl
              eudev
-             ffmpeg
+             ffmpeg-4
              font-wqy-microhei
              freetype
              glew
@@ -1471,7 +1471,7 @@ as RetroArch.")
                  "--disable-builtinminiupnpc")))))))
     (inputs
      `(("alsa-lib" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("freetype" ,freetype)
        ("libxinerama" ,libxinerama)
        ("libxkbcommon" ,libxkbcommon)
@@ -2035,7 +2035,7 @@ assembler, and debugger for the Intel 8085 microprocessor.
        (list libcdio
              sdl2
              gtk+
-             ffmpeg
+             ffmpeg-4
              libxv
              libarchive
              pulseaudio))
@@ -2322,7 +2322,7 @@ elseif(FALSE)"))
     (native-inputs (list pkg-config python))
     (inputs (list bash
                   cityhash
-                  ffmpeg
+                  ffmpeg-4
                   glew
                   glslang
                   libpng

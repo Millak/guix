@@ -2546,7 +2546,7 @@ using the Enchant spell-checking library.")
            cups-minimal
            curl
            dbus
-           ffmpeg
+           ffmpeg-4
            fontconfig
            harfbuzz
            icu4c

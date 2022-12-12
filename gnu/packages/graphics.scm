@@ -1308,7 +1308,7 @@ visual effects work for film.")
        ("jasper" ,jasper)
        ("librsvg" ,librsvg)
        ("libxrandr" ,libxrandr)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("mesa" ,mesa)))
     (synopsis "High-performance real-time graphics toolkit")
     (description

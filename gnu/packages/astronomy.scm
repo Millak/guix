@@ -813,7 +813,7 @@ astronomical fields.  SkyMaker is part of the EFIGI
     (native-inputs
      (list pkg-config))
      (inputs
-      (list gtkmm-3 libskry ffmpeg))
+      (list gtkmm-3 libskry ffmpeg-4))
      (home-page "https://github.com/GreatAttractor/stackistry")
      (synopsis "Astronomical lucky imaging/image stacking tool")
      (description
@@ -1714,7 +1714,7 @@ arrays with NumPy as its only dependency.")
                (copy-recursively "include" include))
              #t)))))
     (inputs
-     (list ffmpeg))
+     (list ffmpeg-4))
     (home-page "https://github.com/GreatAttractor/libskry")
     (synopsis "Astronimical lucky imaging library")
     (description

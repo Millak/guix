@@ -273,7 +273,7 @@
            python-wrapper))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            freetype
            imagemagick
            lame
@@ -450,7 +450,7 @@ as a joint effort between the BBC and Fluendo.")
      (list gettext-minimal doxygen pkg-config))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            gtk+-2
            lame
            libdv
@@ -1876,7 +1876,7 @@ audio/video codec library.")
                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
                (setenv "LD_LIBRARY_PATH" path)))))))))
 
-(define-public ffmpeg ffmpeg-4)
+(define-public ffmpeg ffmpeg-5)
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
@@ -1923,7 +1923,7 @@ audio/video codec library.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list ffmpeg libjpeg-turbo libpng gvfs))
+     (list ffmpeg-4 libjpeg-turbo libpng gvfs))
     (arguments
      `(#:configure-flags (list "-DENABLE_GIO=ON" "-DENABLE_THUMBNAILER=ON")))
     (home-page "https://github.com/dirkvdb/ffmpegthumbnailer")
@@ -2102,7 +2102,7 @@ streaming protocols.")
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cdparanoia" ,cdparanoia)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("giflib" ,giflib)
@@ -3296,6 +3296,7 @@ tools, XML authoring components, and an extensible plug-in based API.")
        ,@(package-arguments mlt)))
     (inputs
      (modify-inputs (package-inputs mlt)
+       (replace "ffmpeg" ffmpeg-4)
        (replace "gtk+" gtk+-2)))))
 
 (define-public v4l-utils
@@ -3409,7 +3410,7 @@ be used for realtime video capture via Linux-specific APIs.")
       bash-minimal
       curl
       eudev
-      ffmpeg
+      ffmpeg-4
       fontconfig
       freetype
       glib
@@ -3679,7 +3680,7 @@ making @dfn{screencasts}.")
     ;; As a result, they are omitted. Please add them back if problems appear.
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            glu
            jack-1
            libxi
@@ -3872,7 +3873,7 @@ supported players in addition to this package.")
     (inputs
      `(("bzip2" ,bzip2)
        ("dbus-glib" ,dbus-glib)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
@@ -4313,7 +4314,7 @@ and ITU-T H.222.0.")
     (inputs
      (list zlib))
     (propagated-inputs
-     (list ffmpeg))
+     (list ffmpeg-4))
     (native-inputs
      (list pkg-config))
     (synopsis "Cross-platform wrapper around ffmpeg/libav")
@@ -4743,7 +4744,7 @@ create smoother and stable videos.")
      (list alsa-lib zlib))
     (propagated-inputs                  ;all referenced in installed headers
      (list cppzmq
-           ffmpeg
+           ffmpeg-4
            imagemagick
            jsoncpp
            libopenshot-audio
@@ -4968,7 +4969,7 @@ speed and correctness.")
            "01qbcgfl3g9kfwn1jf1z9pdj3bvf5lmg71d1vwkcllc2az24bjqp"))))
       (build-system meson-build-system)
       (native-inputs (list libdrm pkg-config))
-      (inputs (list ffmpeg pulseaudio wayland wayland-protocols))
+      (inputs (list ffmpeg-4 pulseaudio wayland wayland-protocols))
       (home-page "https://github.com/atomnuker/wlstream")
       (synopsis "Screen capture tool for Wayland sessions")
       (description "Wlstream is a screen capture tool for recording audio and

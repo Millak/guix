@@ -547,7 +547,7 @@ specialized device.")
       (inputs
        (list alsa-lib
              coreutils-minimal          ;for patched 'env' shebang
-             ffmpeg
+             ffmpeg-4
              freetype
              lame
              libass

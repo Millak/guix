@@ -254,7 +254,7 @@ build tree Yggdrasil.")
                ;; There's a Julia file for each platform, override them all
                (find-files "src/wrappers/" "\\.jl$")))))))
     (inputs
-     (list ffmpeg))
+     (list ffmpeg-4))
     (propagated-inputs
      (list julia-jllwrappers
            julia-bzip2-jll

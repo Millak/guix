@@ -8478,7 +8478,7 @@ to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list cairo ffmpeg pango sdl2 sdl2-image))
+     (list cairo ffmpeg-4 pango sdl2 sdl2-image))
     (home-page "https://github.com/fmang/oshu/")
     (synopsis "Rhythm game in which you click on circles")
     (description "@i{oshu!} is a minimalist variant of the @i{osu!} rhythm game,
@@ -9318,7 +9318,7 @@ play with up to four players simultaneously.  It has network support.")
                     (string-append "../hedgewars-src-" #$version)
                   (install-file "misc/hedgewars.png" icons))))))))
     (inputs
-     (list ffmpeg
+     (list ffmpeg-4
            freeglut
            ghc-entropy
            ghc-hslogger

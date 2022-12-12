@@ -123,7 +123,7 @@
               (files '("share/arcan/scripts")))))
       (inputs
        `(("apr" ,apr)
-         ("ffmpeg" ,ffmpeg)
+         ("ffmpeg" ,ffmpeg-4)
          ("freetype" ,freetype)
          ("glib" ,glib)
          ("glu" ,glu)

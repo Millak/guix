@@ -603,7 +603,11 @@ Filter) modules follow the convention of 1V / Octave.")
         "--enable-samplerate"
         "--enable-avcodec")))
     (inputs
-     (list jack-1 libsndfile libsamplerate fftwf ffmpeg)) ; for libavcodec
+     (list jack-1
+           libsndfile
+           libsamplerate
+           ffmpeg-4                     ;for libavcodec
+           fftwf))
     (native-inputs
      (list pkg-config))
     (home-page "https://aubio.org/")
@@ -4442,7 +4446,7 @@ simplified, although really accurate, measuring tools.")
               ,home-page))
            #t))))
     (build-system gnu-build-system)
-    (inputs (list ffmpeg sox))
+    (inputs (list ffmpeg-4 sox))
     (synopsis "Tool to adjust loudness of media files")
     (description
      "BS1770GAIN is a loudness scanner compliant with ITU-R BS.1770 and its
