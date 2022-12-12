@@ -1722,6 +1722,57 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+
+(define-public swaynotificationcenter
+  (package
+    (name "swaynotificationcenter")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ErikReider/SwayNotificationCenter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xvr5m5sqznr3dd512i5pk0d56v7n0ywdcy6rnz85vbf2k7b6kj5"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
+    (native-inputs
+     (list `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python-minimal
+           scdoc
+           vala-next))
+    (inputs
+     (list json-glib
+           glib
+           gtk+
+           gtk-layer-shell
+           libhandy
+           wayland-protocols))
+    (synopsis "Notification daemon with a graphical interface")
+    (description
+     "This package provides a notification daemon for the Sway Wayland
+compository, supporting the following featuers:
+
+@itemize
+@item Keyboard shortcuts
+@item Notification body markup with image support
+@item A panel to view previous notifications
+@item Show album art for notifications like Spotify
+@item Do not disturb
+@item Click notification to execute default action
+@item Show alternative notification actions
+@item Customization through a CSS file
+@item Trackpad/mouse gesture to close notification
+@item The same features as any other basic notification daemon
+@item Basic configuration through a JSON config file
+@item Hot-reload config through swaync-client
+@end itemize")
+    (home-page "https://github.com/ErikReider/SwayNotificationCenter")
+    (license license:expat)))
+
 (define-public waybar
   (package
     (name "waybar")
