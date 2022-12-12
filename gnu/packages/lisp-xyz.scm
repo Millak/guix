@@ -20184,8 +20184,8 @@ aren't already directly available on the system.")
   (sbcl-package->cl-source-package sbcl-font-discovery))
 
 (define-public sbcl-alloy
-  (let ((commit "e86e22c2887836ec31cd97e039f0bca5248d8f1c")
-        (revision "1"))
+  (let ((commit "ea02e4576fd92917201b3c9b63dd3cdc72045dbf")
+        (revision "2"))
     (package
       (name "sbcl-alloy")
       (version (git-version "0.0.0" revision commit))
@@ -20197,12 +20197,25 @@ aren't already directly available on the system.")
                (commit commit)))
          (file-name (git-file-name "alloy" version))
          (sha256
-          (base32 "1jsqjr6sf86hcdvnjp4gd10qv0r7kfkr9hmda85irb5lha4q9n7w"))))
+          (base32 "1g8ibvlajhlbdrmny7ck55ilv1shjdpj38q380wri4mavfymjw5f"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-alexandria sbcl-parachute))
       (inputs
-       (list sbcl-array-utils sbcl-closer-mop sbcl-documentation-utils))
+       (list sbcl-array-utils sbcl-closer-mop sbcl-documentation-utils
+             sbcl-float-features sbcl-colored sbcl-stealth-mixin
+             sbcl-cl-opengl sbcl-font-discovery sbcl-uax-14 sbcl-sdf))
+      (arguments
+       ;; Dismiss alloy-svg, since it is not completed:
+       ;; https://github.com/Shirakumo/alloy/issues/24
+       '(#:asd-systems '("alloy"
+                         "alloy-windowing"
+                         "alloy-animation"
+                         "alloy-simple"
+                         "alloy-simple-presentations"
+                         "alloy-opengl"
+                         "alloy-opengl-msdf"
+                         "alloy-opengl-png")))
       (home-page "https://shirakumo.github.io/alloy/")
       (synopsis
        "Common Lisp user interface protocol and toolkit implementation")
