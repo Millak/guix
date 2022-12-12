@@ -2552,7 +2552,7 @@ such arrays easy via traits.")
 (define-public julia-imagebase
   (package
     (name "julia-imagebase")
-    (version "0.1.1")
+    (version "0.1.5")
     (source
       (origin
         (method git-fetch)
@@ -2561,7 +2561,7 @@ such arrays easy via traits.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1n63f2zs6ail9pcl7rzgv3l0z8v1idjsaza3zgvgy7iacxsdpcj2"))))
+         (base32 "00gi268jsyhlkadkkbyiffph6c8yb7zw34px76n6hs7dkfzp6jm3"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2569,9 +2569,14 @@ such arrays easy via traits.")
      (list julia-imagecore
            julia-reexport))
     ;(native-inputs
-    ; `(("julia-imagemagick" ,julia-imagemagick)
-    ;   ("julia-offsetarrays" ,julia-offsetarrays)
-    ;   ("julia-testimages" ,julia-testimages)))
+    ; (list julia-aqua
+    ;       julia-documenter
+    ;       julia-imagefiltering
+    ;       julia-imageio
+    ;       julia-imagemagick
+    ;       julia-offsetarrays
+    ;       jula-statistics
+    ;       julia-testimages))
     (home-page "https://github.com/JuliaImages/ImageBase.jl")
     (synopsis "Wrapper package around ImageCore")
     (description "This is a twin package to @code{ImageCore} with functions that
