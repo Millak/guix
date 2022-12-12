@@ -5937,13 +5937,15 @@ obviously it can be shared with files outside our set).")
     (name "f2fs-tools")
     (version "1.14.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
-                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.kernel.org/pub/scm/linux/kernel\
+/git/jaegeuk/f2fs-tools.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lab1446c78xsjwhpki7s85z4171m8p9279c8yhm4882wba674k1"))))
+                "06ss05n87i1c3149qb3n7j1qp2scv3g2adx0v6ljkl59ab9b5saj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
