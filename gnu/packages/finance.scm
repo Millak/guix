@@ -1905,8 +1905,8 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public emacs-beancount
   ;; Note that upstream has not made any release since this project moved
   ;; into its own repository (it was originally part of beancount itself)
-  (let ((commit "dbafe6a73d90c1f64d457b356b9dbb43499f70d5")
-        (revision "0"))
+  (let ((commit "687775da63784d153a3c1cfee9801090c6b51842")
+        (revision "1"))
     (package
       (name "emacs-beancount")
       (version (git-version "0.0.0" revision commit))
@@ -1918,7 +1918,7 @@ generate a variety of reports from them, and provides a web interface.")
                (commit commit)))
          (sha256
           (base32
-           "0v9bws2gv5b00x829p7hrcxqgdp7iwxvv1vhfjka81qrw6w1fvjw"))
+           "08383yqqanx29al1hg1r6ndx3gwjg6fj7kl340f1zz9m9cfiyvg3"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/beancount/beancount-mode")
