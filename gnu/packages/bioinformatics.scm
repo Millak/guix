@@ -14225,7 +14225,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    (version "0.9.5")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -14234,17 +14234,28 @@ polymorphisms) and indels with respect to a reference genome and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g2f78k68yglmj4fsfmgs8idqv3di9aj53fg0ld0hqljg8chhh82"))))
-    (build-system python-build-system)
+        (base32 "1q4l7jhr1k135an3n9aa9wsid5lk6fwxb0hcldrr6v6y76zi4gj1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See upstream commit eee0f6eaec57d5c6e58142d661979f3aacc5f76a
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "setup.py"
+               (("'joblib.*") "")))))))
     (propagated-inputs
      (list python-biopython
            python-future
            python-matplotlib
            python-numpy
-           python-reportlab
            python-pandas
-           python-pysam
+           python-pomegranate
            python-pyfaidx
+           python-pysam
+           python-reportlab
+           python-scikit-learn
            python-scipy
            ;; R packages
            r-dnacopy))
