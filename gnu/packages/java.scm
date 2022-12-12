@@ -1493,8 +1493,25 @@ blacklisted.certs.pem"
   (make-openjdk openjdk17 "18.0.2"
                 "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
+(define-public openjdk19
+  (make-openjdk openjdk18 "19.0.1"
+                "0kyalb391znw6idmfn3dsx6c2mal1hl63f0bwa4mlnsxfl380bi1"
+   (arguments
+    (substitute-keyword-arguments (package-arguments openjdk18)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; Update file path.
+               (substitute* "src/java.base/share/data/blockedcertsconverter/blocked.certs.pem"
+                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))
+           (add-before 'configure 'define-java-environment-variables
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Fix for "valid range 1980-01-01T00:00:02Z to 2099-12-31T23:59:59Z".
+               (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk18)
+(define-public openjdk openjdk19)
 
 
 (define-public ant/java8
