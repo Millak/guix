@@ -2155,8 +2155,8 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk18
-  (make-openjdk openjdk17 "18"
-                "1bv6bdhkmwvn10l0xy8yi9xibds640hs5zsvx0jp7wrxa3qw4qy8"))
+  (make-openjdk openjdk17 "18.0.2"
+                "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk18)
