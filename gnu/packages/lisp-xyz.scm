@@ -10761,8 +10761,8 @@ performance and correctness.")
   (sbcl-package->ecl-package sbcl-png-read))
 
 (define-public sbcl-3b-bmfont
-  (let ((commit "d1b5bec0de580c2d08ec947a93c56b1400f2a37a")
-        (revision "1"))
+  (let ((commit "48a38f52d282064829851c484d9e7dee0ffe9e72")
+        (revision "2"))
     (package
       (name "sbcl-3b-bmfont")
       (version (git-version "0.0.1" revision commit))
@@ -10774,7 +10774,7 @@ performance and correctness.")
                (commit commit)))
          (file-name (git-file-name "3b-bmfont" version))
          (sha256
-          (base32 "12sgf7m0h6fqzhvkas7vmci6mprj3j3fnz778jlbqbsydln6v2yc"))))
+          (base32 "0v4lcrlpx60ayg0g5b10q2hjh1iaanln4ck0hm1rvjxm39gl2d86"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems
