@@ -5947,15 +5947,6 @@ obviously it can be shared with files outside our set).")
                (base32
                 "1ffws8pbpzp9730v0wy5xjas698lnbd2p7wpr2gl4mx45rsay9a5"))))
     (build-system gnu-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-include (string-append out "/include")))
-               (install-file "include/f2fs_fs.h" out-include)
-               (install-file "mkfs/f2fs_format_utils.h" out-include)))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
@@ -5988,9 +5979,15 @@ disks and SD cards.  This package provides the userland utilities.")
     (inputs
      (list `(,util-linux "lib") libselinux))
     (arguments
-     (substitute-keyword-arguments (package-arguments f2fs-tools)
-       ((#:configure-flags _ #~'())
-        #~'("CFLAGS=-fcommon"))))))
+     '(#:configure-flags '("CFLAGS=-fcommon")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (out-include (string-append out "/include")))
+               (install-file "include/f2fs_fs.h" out-include)
+               (install-file "mkfs/f2fs_format_utils.h" out-include)))))))))
 
 (define-public f2fs-tools/static
   (static-package
