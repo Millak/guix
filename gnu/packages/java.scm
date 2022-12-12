@@ -2137,8 +2137,8 @@ blacklisted.certs.pem"
       (append `(,openjdk14 "jdk"))))))
 
 (define-public openjdk16
-  (make-openjdk openjdk15 "16.0.1"
-                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
+  (make-openjdk openjdk15 "16.0.2"
+                "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"))
 
 (define-public openjdk17
   (make-openjdk
