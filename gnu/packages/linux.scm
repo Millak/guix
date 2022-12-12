@@ -5932,49 +5932,8 @@ uncompressed size will not match the number given by @command{tar} or
 obviously it can be shared with files outside our set).")
     (license license:gpl2+)))
 
-(define-public f2fs-tools-1.7
-  (package
-    (name "f2fs-tools")
-    (version "1.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
-                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1m6bn1ibq0p53m0n97il91xqgjgn2pzlz74lb5bfzassx7159m1k"))))
-
-    (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-include (string-append out "/include")))
-               (install-file "include/f2fs_fs.h" out-include)
-               (install-file "mkfs/f2fs_format_utils.h" out-include)
-               #t))))))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
-    (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("libselinux" ,libselinux)))
-    (home-page "https://f2fs.wiki.kernel.org/")
-    (synopsis "Userland tools for f2fs")
-    (description
-     "F2FS, the Flash-Friendly File System, is a modern file system
-designed to be fast and durable on flash devices such as solid-state
-disks and SD cards.  This package provides the userland utilities.")
-    ;; The formatting utility, libf2fs and include/f2fs_fs.h is dual
-    ;; GPL2/LGPL2.1, everything else is GPL2 only. See 'COPYING'.
-    (license (list license:gpl2 license:lgpl2.1))))
-
 (define-public f2fs-tools
   (package
-    (inherit f2fs-tools-1.7)
     (name "f2fs-tools")
     (version "1.14.0")
     (source (origin
@@ -5985,8 +5944,49 @@ disks and SD cards.  This package provides the userland utilities.")
               (sha256
                (base32
                 "1lab1446c78xsjwhpki7s85z4171m8p9279c8yhm4882wba674k1"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (out-include (string-append out "/include")))
+               (install-file "include/f2fs_fs.h" out-include)
+               (install-file "mkfs/f2fs_format_utils.h" out-include)))))))
+    (native-inputs
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("libuuid" ,util-linux "lib")))))
+     (list `(,util-linux "lib")))       ;for libuuid
+    (home-page "https://f2fs.wiki.kernel.org/")
+    (synopsis "Userland tools for f2fs")
+    (description
+     "F2FS, the Flash-Friendly File System, is a modern file system
+designed to be fast and durable on flash devices such as solid-state
+disks and SD cards.  This package provides the userland utilities.")
+    ;; The formatting utility, libf2fs and include/f2fs_fs.h is dual
+    ;; GPL2/LGPL2.1, everything else is GPL2 only. See 'COPYING'.
+    (license (list license:gpl2 license:lgpl2.1))))
+
+(define-public f2fs-tools-1.7
+  (package
+    (inherit f2fs-tools)
+    (name "f2fs-tools")
+    (version "1.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
+                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1m6bn1ibq0p53m0n97il91xqgjgn2pzlz74lb5bfzassx7159m1k"))))
+    (inputs
+     (list `(,util-linux "lib") libselinux))
+    (arguments
+     (substitute-keyword-arguments (package-arguments f2fs-tools)
+       ((#:configure-flags _ #~'())
+        #~'("CFLAGS=-fcommon"))))))
 
 (define-public f2fs-tools/static
   (static-package
