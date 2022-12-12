@@ -1639,7 +1639,10 @@ reading and writing.")
      `(("zpb-ttf" ,sbcl-zpb-ttf)))
     (arguments
      '(#:asd-systems '("cl-vectors"
-                       "cl-paths-ttf")))
+                       "cl-paths"
+                       "cl-paths-ttf"
+                       "cl-aa"
+                       "cl-aa-misc")))
     (home-page "http://projects.tuxee.net/cl-vectors/")
     (synopsis "Create, transform and render anti-aliased vectorial paths")
     (description
