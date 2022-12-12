@@ -1761,15 +1761,15 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.15")
+    (version "11.0.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
                                   version "-ga.tar.xz"))
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0di91nnms2iq1svgq72r5y17am17r4vh2lq43k0bkcwpc84d6nd8"))
+                "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
               (modules '((guix build utils)))
               (snippet
                '(for-each delete-file (find-files "." ".*.(bin|exe|jar)$")))))
@@ -2019,6 +2019,7 @@ new Date();"))
            libxtst))
     (native-inputs
      (list autoconf
+           bash                     ; not bash-minimal, needs ulimit
            openjdk10
            `(,openjdk10 "jdk")
            gnu-make-4.2
