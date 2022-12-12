@@ -3104,6 +3104,52 @@ function, which captures the standard output and standard error, and returns it
 as a string together with the return value.")
     (license license:expat)))
 
+(define-public julia-irrationalconstants
+  (package
+    (name "julia-irrationalconstants")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/IrrationalConstants.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a007iyh26x67a1bj6fcz7pfxa43kn2v7jpmnz727jkk3xgppg2s"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/IrrationalConstants.jl")
+    (synopsis "Additional irrationals for Julia")
+    (description "This package provides these irrational constants:
+@itemize
+@item
+@item twoπ       = 2π
+@item fourπ      = 4π
+@item halfπ      = π / 2
+@item quartπ     = π / 4
+@item invπ       = 1 / π
+@item twoinvπ    = 2 / π
+@item fourinvπ   = 4 / π
+@item inv2π      = 1 / (2π)
+@item inv4π      = 1 / (4π)
+@item sqrt2      = √2
+@item sqrt3      = √3
+@item sqrtπ      = √π
+@item sqrt2π     = √2π
+@item sqrt4π     = √4π
+@item sqrthalfπ  = √(π / 2)
+@item invsqrt2   = 1 / √2
+@item invsqrtπ   = 1 / √π
+@item invsqrt2π  = 1 / √2π
+@item loghalf    = log(1 / 2)
+@item logtwo     = log(2)
+@item logten     = log(10)
+@item logπ       = log(π)
+@item log2π      = log(2π)
+@item log4π      = log(4π)
+@end itemize")
+    (license license:expat)))
+
 (define-public julia-irtools
   (package
     (name "julia-irtools")
