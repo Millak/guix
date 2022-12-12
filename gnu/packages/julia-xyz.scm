@@ -3467,7 +3467,7 @@ implemented in Julia.")
 (define-public julia-logexpfunctions
   (package
     (name "julia-logexpfunctions")
-    (version "0.2.4")
+    (version "0.3.17")
     (source
       (origin
         (method git-fetch)
@@ -3476,12 +3476,17 @@ implemented in Julia.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0rvms3mmq8a1viqlyzdgs2ccddcy6j0c677dlb8m5nk6hkiwr16n"))))
+         (base32 "0272c1256r42y6g4wsjmgpwcl5s7z98b8sfmyycckqf0zp5dzxg4"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-docstringextensions))
+     (list julia-chainrulescore
+           julia-changesofvariables
+           julia-docstringextensions
+           julia-inversefunctions
+           julia-irrationalconstants))
     (native-inputs
-     (list julia-offsetarrays))
+     (list julia-chainrulestestutils
+           julia-offsetarrays))
     (home-page "https://github.com/JuliaStats/LogExpFunctions.jl")
     (synopsis "Special functions based on @code{log} and @code{exp}")
     (description "Various special functions based on log and exp moved from
