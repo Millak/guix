@@ -3907,7 +3907,7 @@ still being completely generic
 (define-public julia-nanmath
   (package
     (name "julia-nanmath")
-    (version "0.3.5")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -3916,7 +3916,7 @@ still being completely generic
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hczhz00qj99w63vp627kwk02l2sr2qmzc2rkwwkdwvzy670p25q"))))
+        (base32 "1fwqa2fzl84a86ppjb2xaqh93b5gg42zyrclbjfdm5l0044hwii6"))))
     (build-system julia-build-system)
     (home-page "https://github.com/mlubin/NaNMath.jl")
     (synopsis "Implementations of basic math functions")
