@@ -126,7 +126,7 @@
 (define-public openldap-2.6
   (package
     (inherit openldap)
-    (version "2.6.1")
+    (version "2.6.3")
     (source (origin
               (method url-fetch)
               ;; See <http://www.openldap.org/software/download/> for a list of
@@ -142,7 +142,7 @@
                           "openldap-release/openldap-" version ".tgz")))
               (sha256
                (base32
-                "1wz6f3g3bbqgbbxs20zlappmmhapqbl791c0waibhz9djsk6wmwx"))))
+                "0ihddk8c6hg9lkjv0wk0w13g8kb75r8dfsn1n6b77mzk3pbs38nj"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openldap)
        ((#:phases phases)
