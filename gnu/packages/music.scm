@@ -3554,7 +3554,7 @@ tune-in sender list from @url{http://opml.radiotime.com}.")
 (define-public pianobar
   (package
     (name "pianobar")
-    (version "2020.11.28")
+    (version "2022.04.01")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3563,7 +3563,7 @@ tune-in sender list from @url{http://opml.radiotime.com}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13qx52a1yj2wghf7yd9jf4ar92scbc8zgqdq0kkqf4p9isf1phf3"))))
+                "14s97fx83dg8szbib2y608hjzfdhz20hch2ify3gqhji58v69wil"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
