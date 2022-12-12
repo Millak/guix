@@ -201,6 +201,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
@@ -23601,29 +23602,26 @@ N-dimensional arrays for Python.")
        (sha256
         (base32
          "0v7npqrg1rdm8jzw22a45c0mqrmsv05r3k88i3lhzi0pzzxca1i1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (replace 'build
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
-             (substitute* "anndata/_metadata.py"
-               (("__version__ =.*")
-                (string-append "__version__ = \"" ,version "\"\n")))
-             ;; ZIP does not support timestamps before 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$"))))))))
+     (list
+      #:test-flags
+      '(list "-k" "not concatenation.rst")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Doctests require scanpy from (gnu packages bioinformatics)
+          (add-after 'unpack 'disable-doctests
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--doctest-modules") ""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "anndata/_metadata.py"
+                (("__version__ =.*")
+                 (string-append "__version__ = \"" #$version "\"\n")))
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
     (propagated-inputs
      (list python-h5py
            python-importlib-metadata
@@ -23632,9 +23630,14 @@ N-dimensional arrays for Python.")
            python-packaging
            python-pandas
            python-scipy
+           python-scikit-learn
            python-zarr))
     (native-inputs
-     (list python-joblib python-pytest python-toml python-flit
+     (list python-boltons
+           python-joblib
+           python-pytest
+           python-toml
+           python-flit
            python-setuptools-scm))
     (home-page "https://github.com/theislab/anndata")
     (synopsis "Annotated data for data analysis pipelines")
