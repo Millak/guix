@@ -164,6 +164,7 @@ SPIR-V, aiming to emit GLSL or MSL that looks like human-written code.")
        (uri (git-reference
              (url "https://github.com/KhronosGroup/glslang")
              (commit version)))
+       (patches (search-patches "glslang-install-static-libs.patch"))
        (sha256
         (base32
          "12a1zl8qxa28nbf6m67260c0lwdw3bqbj0jz1382wgm5px1fpqw6"))

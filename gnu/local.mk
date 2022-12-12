@@ -1228,6 +1228,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/glibc-2.29-supported-locales.patch     	\
   %D%/packages/patches/glibc-static-nss.patch			\
   %D%/packages/patches/glibc-supported-locales.patch     	\
+  %D%/packages/patches/glslang-install-static-libs.patch     	\
   %D%/packages/patches/gmp-arm-asm-nothumb.patch		\
   %D%/packages/patches/gmp-faulty-test.patch			\
   %D%/packages/patches/gnash-fix-giflib-version.patch	        \
