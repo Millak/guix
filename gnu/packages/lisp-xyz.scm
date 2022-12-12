@@ -10802,6 +10802,63 @@ read/write Bit Map Font (BMF) into text, JSON and XML.")
 (define-public cl-3b-bmfont
   (sbcl-package->cl-source-package sbcl-3b-bmfont))
 
+(define sbcl-3b-bmfont/shinmera
+  (let ((commit "58e529d24b7799d56b4b3f9c8a953b585d42c7d2")
+        (revision "1"))
+    (package (inherit sbcl-3b-bmfont)
+             (version (git-version "0.0.1" revision commit))
+             (source
+              (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Shinmera/3b-bmfont/")
+                      (commit commit)))
+                (file-name (git-file-name "3b-bmfont2" version))
+                (sha256
+                 (base32 "17zby669b64rhxhk2szamzdgvispimh6ici05xa6x2vz4rvk71jq")))))))
+
+(define-public sbcl-sdf
+  ;; Shinmera's fork required for Alloy.
+  (let ((commit "e1ab3ac4ea52c0e0119b832f428c71f580b4d83b")
+        (revision "1"))
+    (package
+      (name "sbcl-sdf")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/sdf")
+               (commit commit)))
+         (file-name (git-file-name "sdf" version))
+         (sha256
+          (base32 "1cyq4hkgiw9mnb87ah6xw19cybfs9hfbjvg1ch2mf4cr0ism0nvn"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-zpb-ttf
+             sbcl-cl-vectors
+             sbcl-opticl
+             sbcl-binpack
+             sbcl-3b-bmfont/shinmera
+             sbcl-pathname-utils))
+      (arguments
+       `(#:asd-systems '("sdf" "sdf/bmfont")))
+      (home-page "https://github.com/Shinmera/sdf")
+      (synopsis "Signed distance font atlas generator")
+      (description
+       "This library generates
+sdf (@url{https://steamcdn-a.akamaihd.net/apps/valve/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf}),
+psdf and
+msdf (@url{https://github.com/Chlumsky/msdfgen/files/3050967/thesis.pdf})
+atlases.")
+      (license license:expat))))
+
+(define-public ecl-sdf
+  (sbcl-package->ecl-package sbcl-sdf))
+
+(define-public cl-sdf
+  (sbcl-package->cl-source-package sbcl-sdf))
+
 (define-public sbcl-zpng
   (package
     (name "sbcl-zpng")
