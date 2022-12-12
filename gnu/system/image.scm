@@ -972,9 +972,9 @@ image, depending on IMAGE format."
                 (G_ "~a: unsupported image format") image-format)))))))
 
 
-;;
-;; Image detection.
-;;
+;;;
+;;; Image type discovery.
+;;;
 
 (define (image-modules)
   "Return the list of image modules."

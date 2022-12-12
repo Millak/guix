@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -282,12 +282,31 @@ disk."
     (mount "/.rw-store" (%store-directory) "" MS_MOVE)
     (rmdir "/.rw-store")))
 
+(define (umount* directory)
+  "Unmount DIRECTORY, but retry a few times upon EBUSY."
+  (let loop ((attempts 5))
+    (catch 'system-error
+      (lambda ()
+        (umount directory))
+      (lambda args
+        (if (and (= EBUSY (system-error-errno args))
+                 (> attempts 0))
+            (begin
+              (sleep 1)
+              (loop (- attempts 1)))
+            (apply throw args))))))
+
 (define (unmount-cow-store target backing-directory)
   "Unmount copy-on-write store."
   (let ((tmp-dir "/remove"))
     (mkdir-p tmp-dir)
     (mount (%store-directory) tmp-dir "" MS_MOVE)
-    (umount tmp-dir)
+
+    ;; We might get EBUSY at this point, possibly because of lingering
+    ;; processes with open file descriptors.  Use 'umount*' to retry upon
+    ;; EBUSY, leaving a bit of time.  See <https://issues.guix.gnu.org/59884>.
+    (umount* tmp-dir)
+
     (rmdir tmp-dir)
     (delete-file-recursively
      (string-append target backing-directory))))
