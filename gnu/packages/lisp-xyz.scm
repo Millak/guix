@@ -17536,6 +17536,38 @@ compiled foreign library collection.")
 (define-public cl-conspack
   (sbcl-package->cl-source-package sbcl-cl-conspack))
 
+(define-public sbcl-binpack
+  (let ((commit "e67f56bb697bdeac81e28e1cca4a5d117a9cf125")
+        (revision "1"))
+    (package
+     (name "sbcl-binpack")
+     (version (git-version "0.0.1" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lispgames/binpack")
+             (commit commit)))
+       (file-name (git-file-name "binpack" version))
+       (sha256
+        (base32 "1pcnsg60pqywd3k72m5pwimq01sm3jyvc1c3rbkij740r7grdxi1"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-parachute))
+     (inputs
+      (list sbcl-alexandria))
+     (home-page "https://github.com/lispgames/binpack")
+     (synopsis "Common Lisp rectangle packer for sprite/texture atlases")
+     (description
+      "This library features a rectangle packer for sprite and texture atlases.")
+     (license license:expat))))
+
+(define-public ecl-binpack
+  (sbcl-package->ecl-package sbcl-binpack))
+
+(define-public cl-binpack
+  (sbcl-package->cl-source-package sbcl-binpack))
+
 (define-public sbcl-cl-opengl
   (let ((commit "e2d83e0977b7e7ac3f3d348d8ccc7ccd04e74d59")
         (revision "1"))
