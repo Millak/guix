@@ -3063,12 +3063,12 @@ capabilities.")
                (wrap-program (string-append out "/bin/vspipe")
                  `("PYTHONPATH" ":" = (,site)))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("cython" ,python-cython)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("yasm" ,yasm)))
+     (list autoconf
+           automake
+           python-cython
+           libtool
+           pkg-config
+           yasm))
     (inputs
      (list ffmpeg libass python tesseract-ocr zimg))
     (home-page "http://www.vapoursynth.com/")
