@@ -23238,8 +23238,6 @@ manages all the Bluetooth devices and provides a number of D-Bus
 interfaces.  When AUTO-ENABLE? is true, the bluetooth controller is
 powered automatically at boot, which can be useful when using a
 bluetooth keyboard or mouse.
-
-Users need to be in the @code{lp} group to access the D-Bus service.
 @end deffn
 
 @deffn {Scheme Variable} bluetooth-service-type
