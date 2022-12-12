@@ -4919,7 +4919,13 @@ through matrix-vector multiplication.")
       (arguments
        (list
         #:julia-package-name "SafeTestsets"
-        #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"))
+        #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'link-depot 'fix-package-toml
+              (lambda _
+                (substitute* "Project.toml"
+                  (("version = .*") "version = \"0.0.1\"\n")))))))
       (native-inputs
        (list julia-staticarrays))
       (home-page "https://github.com/YingboMa/SafeTestsets.jl")
