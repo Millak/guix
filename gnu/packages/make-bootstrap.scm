@@ -797,7 +797,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
   ;; A stripped static Guile 3.0 binary, for use in initrds
   ;; and during bootstrap.
   (make-guile-static-stripped
-   (make-guile-static guile-3.0
+   (make-guile-static guile-3.0-latest
                       '("guile-2.2-default-utf8.patch"
                         "guile-3.0-linux-syscalls.patch"
                         "guile-3.0-relocatable.patch"))))
