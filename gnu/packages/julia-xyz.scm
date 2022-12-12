@@ -3438,7 +3438,7 @@ that let you do deep transformations of code.")
 (define-public julia-mappedarrays
   (package
     (name "julia-mappedarrays")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
       (origin
         (method git-fetch)
@@ -3447,22 +3447,36 @@ that let you do deep transformations of code.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0l5adird8m1cmnsxwhzi5hcr7q9bm1rf7a6018zc7kcn2yxdshy3"))))
+         (base32 "08kb28dv1zzqbbxblhyllgs4sjxyp76dgjqhdizcq4zg4i1kls6p"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; Fix deprecation warning
+             ;; https://github.com/JuliaArrays/MappedArrays.jl/pull/51
+             (substitute* "src/MappedArrays.jl"
+               (("Vararg\\{<:AbstractArray") "Vararg{AbstractArray"))
+             ;; Fix test failures
+             ;; https://github.com/JuliaArrays/MappedArrays.jl/pull/50
+             (substitute* "test/runtests.jl"
+               (("_zero\\(x\\) = x > 0 \\? x : 0")
+                "_zero(x) = ismissing(x) ? x : (x > 0 ? x : 0)"))))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
-      (if (target-64bit?)
-          #~%standard-phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'fix-tests-int32-i686
-                (lambda _
-                  (substitute* "test/runtests.jl"
-                    (("Int64") "Int32"))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ((".*@test_throws ErrorException b.*") ""))
+
+              (when #$(not (target-64bit?))
+                (substitute* "test/runtests.jl"
+                  (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-fixedpointnumbers))
     (native-inputs
-     (list julia-colortypes
+     (list julia-colors
            julia-fixedpointnumbers
            julia-offsetarrays))
     (home-page "https://github.com/JuliaArrays/MappedArrays.jl")
