@@ -2100,8 +2100,8 @@ blacklisted.certs.pem"
                   "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
-  (make-openjdk openjdk12 "13.0.7"
-                "0wrrr0d7lz1v8qqm752mn4gz5l2vpl2kmx4ac3ysvk4mljc924hp"))
+  (make-openjdk openjdk12 "13.0.13"
+                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"))
 
 (define-public openjdk14
   (make-openjdk
