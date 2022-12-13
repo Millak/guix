@@ -1604,8 +1604,8 @@ discrete, and conditional dimensions.")
 
 ;; There have been no proper releases yet.
 (define-public kaldi
-  (let ((commit "dd107fd594ac58af962031c1689abfdc10f84452")
-        (revision "0")
+  (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
+        (revision "1")
         (openfst openfst-1.7.3)) ;; Temporary bypass for upstream issues
     (package
       (name "kaldi")
@@ -1618,7 +1618,7 @@ discrete, and conditional dimensions.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0iqbzgn7gzmgwvjfzifpbwwidxx887qmlgmsjkg7b1yzyfv00l21"))))
+                  "1wkxz3p0h68mxbg41i1wygir2r4rraxbb4672xkkvvs85r6c8r8i"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
