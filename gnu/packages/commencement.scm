@@ -1443,29 +1443,29 @@ ac_cv_c_float_format='IEEE (little-endian)'
   ;; stricly needed, but very helpful for development because it builds
   ;; relatively fast.  If this configures and builds then gcc-mesboot1 also
   ;; builds.
-  (let ((triplet (match (%current-system)
-                   ((or "armhf-linux" "aarch64-linux")
-                    "arm-unknown-linux-gnu")
-                   ((or "i686-linux" "x86_64-linux")
-                    "i686-unknown-linux-gnu"))))
-    (package
-      (inherit gcc-mesboot0)
-      (name "gcc-core-mesboot1")
-      (version "4.6.4")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://gnu/gcc/gcc-"
-                                    version "/gcc-core-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "173kdb188qg79pcz073cj9967rs2vzanyjdjyxy9v0xb0p5sad75"))))
-      (supported-systems '("armhf-linux" "aarch64-linux"
-                           "i686-linux" "x86_64-linux"))
-      (inputs `(("gmp-source" ,gmp-boot)
-                ("mpfr-source" ,mpfr-boot)
-                ("mpc-source" ,mpc-boot)))
-      (native-inputs (%boot-mesboot1-inputs))
-      (arguments
+  (package
+    (inherit gcc-mesboot0)
+    (name "gcc-core-mesboot1")
+    (version "4.6.4")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-"
+                                  version "/gcc-core-" version ".tar.gz"))
+              (sha256
+               (base32
+                "173kdb188qg79pcz073cj9967rs2vzanyjdjyxy9v0xb0p5sad75"))))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
+    (inputs `(("gmp-source" ,gmp-boot)
+              ("mpfr-source" ,mpfr-boot)
+              ("mpc-source" ,mpc-boot)))
+    (native-inputs (%boot-mesboot1-inputs))
+    (arguments
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i686-unknown-linux-gnu"))))
        (list #:implicit-inputs? #f
              #:guile %bootstrap-guile
              #:tests? #f
@@ -1479,7 +1479,11 @@ ac_cv_c_float_format='IEEE (little-endian)'
                                 "-B" libc "/lib "
                                 "-Wl,-dynamic-linker "
                                 "-Wl," libc
-                                #$(glibc-dynamic-linker "i686-linux"))))
+                                (match #$triplet
+                                       ("i686-unknown-linux-gnu"
+                                        #$(glibc-dynamic-linker "i686-linux"))
+                                       ("arm-unknown-linux-gnu"
+                                        #$(glibc-dynamic-linker "armhf-linux"))))))
                  (list (string-append "LDFLAGS=" ldflags)
                        (string-append "LDFLAGS_FOR_TARGET=" ldflags)))
              #:configure-flags
@@ -1561,7 +1565,7 @@ ac_cv_c_float_format='IEEE (little-endian)'
                             (kernel-headers (assoc-ref %build-inputs "kernel-headers")))
                        (setenv "CONFIG_SHELL" (string-append bash "/bin/sh"))
                        (setenv "C_INCLUDE_PATH" (string-append
-                                                 gcc "/lib/gcc-lib/i686-unknown-linux-gnu/2.95.3/include"
+                                                 gcc "/lib/gcc-lib/" #$triplet "/2.95.3/include"
                                                  ":" kernel-headers "/include"
                                                  ":" glibc "/include"
                                                  ":" (getcwd) "/mpfr/src"))
