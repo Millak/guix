@@ -3117,7 +3117,7 @@ The type @code{K} may be any ordered type.")
 (define-public julia-invertedindices
   (package
     (name "julia-invertedindices")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
       (origin
         (method git-fetch)
@@ -3126,7 +3126,7 @@ The type @code{K} may be any ordered type.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1179z20yxnkyziip7gn26wr1g3k3ssl1ci7pig3khc900f62di46"))))
+         (base32 "15ym4dzyi4fkz0dznni032w3c84zmfa6mrzj2ljqvlqx1i6agqis"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-offsetarrays))
