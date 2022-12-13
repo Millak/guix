@@ -802,26 +802,23 @@ provides the Ribotaper pipeline.")
                (base32
                 "1pxc3zdnirxbf9a0az698hd8xdik7qkhypm7v6hn922x8y9qmspm"))))
     (build-system gnu-build-system)
-    (inputs
-     (list zlib))
-    (native-inputs
-     (list bison))
+    (inputs (list zlib))
+    (native-inputs (list bison))
     (arguments
-     `(#:tests? #f ; There are no tests to run.
-       ;; Bison must generate files, before other targets can build.
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin  (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (mkdir-p man)
-               (copy-file "awk.1" (string-append man "/bioawk.1"))
-               (install-file "bioawk" bin))
-             #t)))))
+     (list
+      #:tests? #f ; There are no tests to run.
+      ;; Bison must generate files, before other targets can build.
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; There is no configure phase.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man1")))
+                (mkdir-p man)
+                (copy-file "awk.1" (string-append man "/bioawk.1"))
+                (install-file "bioawk" bin)))))))
     (home-page "https://github.com/lh3/bioawk")
     (synopsis "AWK with bioinformatics extensions")
     (description "Bioawk is an extension to Brian Kernighan's awk, adding the
