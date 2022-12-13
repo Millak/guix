@@ -1968,11 +1968,11 @@ exec ~a ~a/~a \"$@\"~%"
                                    "client.py"
                                    "worker.py")))))))))
       (inputs
-       `(("gst-kaldi-nnet2-online" ,gst-kaldi-nnet2-online)
-         ("python" ,python-wrapper)
-         ("python-pygobject" ,python-pygobject)
-         ("python-pyyaml" ,python-pyyaml)
-         ("python-tornado" ,python-tornado-6)))
+       (list gst-kaldi-nnet2-online
+             python-wrapper
+             python-pygobject
+             python-pyyaml
+             python-tornado-6))
       (home-page "https://github.com/alumae/kaldi-gstreamer-server")
       (synopsis "Real-time full-duplex speech recognition server")
       (description "This is a real-time full-duplex speech recognition server,
