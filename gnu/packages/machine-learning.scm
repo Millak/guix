@@ -1816,8 +1816,8 @@ written in C++.")
                             (find-files "." "\\.h")))))))))))
 
 (define-public gst-kaldi-nnet2-online
-  (let ((commit "cb227ef43b66a9835c14eb0ad39e08ee03c210ad")
-        (revision "2"))
+  (let ((commit "7888ae562a65bd7e406783ce2c33535bc66a30ef")
+        (revision "3"))
     (package
       (name "gst-kaldi-nnet2-online")
       (version (git-version "0" revision commit))
@@ -1829,12 +1829,13 @@ written in C++.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i6ffwiavxx07ri0lxix6s8q0r31x7i4xxvhys5jxkixf5q34w8g"))))
+                  "0xp59a6lmx1y24i8bkmxcm27lhm5x5m6y41670yjzhamcbnx8jcr"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; there are none
-         #:make-flags
-         (list (string-append "SHELL="
+       (list
+        #:tests? #f                    ; there are none
+        #:make-flags
+        '(list (string-append "SHELL="
                               (assoc-ref %build-inputs "bash") "/bin/bash")
                (string-append "KALDI_ROOT="
                               (assoc-ref %build-inputs "kaldi-src"))
@@ -1842,33 +1843,32 @@ written in C++.")
                               (assoc-ref %build-inputs "kaldi") "/lib")
                "KALDI_FLAVOR=dynamic")
          #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
-           (replace 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((glib (assoc-ref inputs "glib")))
-                 (setenv "CXXFLAGS" "-fPIC")
-                 (setenv "CPLUS_INCLUDE_PATH"
-                         (string-append glib "/include/glib-2.0:"
-                                        glib "/lib/glib-2.0/include:"
-                                        (assoc-ref inputs "gstreamer")
-                                        "/include/gstreamer-1.0")))
-               (substitute* "Makefile"
-                 (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
-                 (("\\$\\(error Cannot find") "#"))
-               #t))
-           (add-before 'build 'build-depend
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "depend" make-flags)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/gstreamer-1.0")))
-                 (install-file "libgstkaldinnet2onlinedecoder.so" lib)
-                 #t))))))
+         '(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((glib (assoc-ref inputs "glib")))
+                  (setenv "CXXFLAGS" "-fPIC")
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-append glib "/include/glib-2.0:"
+                                         glib "/lib/glib-2.0/include:"
+                                         (assoc-ref inputs "gstreamer")
+                                         "/include/gstreamer-1.0:"
+                                         (getenv "CPLUS_INCLUDE_PATH"))))
+                (substitute* "Makefile"
+                  (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
+                  (("\\$\\(error Cannot find") "#"))))
+            (add-before 'build 'build-depend
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "depend" make-flags)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (lib (string-append out "/lib/gstreamer-1.0")))
+                  (install-file "libgstkaldinnet2onlinedecoder.so" lib)))))))
       (inputs
-       (list glib gstreamer jansson openfst kaldi))
+       (list glib gstreamer jansson openfst-1.7.3 kaldi))
       (native-inputs
        `(("bash" ,bash)
          ("glib:bin" ,glib "bin")       ; glib-genmarshal
