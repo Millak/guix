@@ -1221,17 +1221,16 @@ BOOT_TARGET_NVME(func) \\
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "BL31"
-                         (search-input-file inputs "/bl31.elf"))))
-             ;; Phases do not succeed on the bl31 ELF.
-             (delete 'strip)
-             (delete 'validate-runpath)))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3399)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))
+              ;; Phases do not succeed on the bl31 ELF.
+              (delete 'strip)
+              (delete 'validate-runpath)))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3399))))))
 
 (define*-public (make-u-boot-bin-package u-boot-package
                                          #:key
