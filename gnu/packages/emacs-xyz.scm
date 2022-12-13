@@ -4275,7 +4275,7 @@ during idle time, while Emacs is doing nothing else.")
      (list cairo glib libpng poppler zlib))
     (propagated-inputs
      (list emacs-tablist))
-    (home-page "https://github.com/politza/pdf-tools")
+    (home-page "https://github.com/vedang/pdf-tools")
     (synopsis "Emacs support library for PDF files")
     (description
      "PDF Tools is, among other things, a replacement of DocView for PDF
