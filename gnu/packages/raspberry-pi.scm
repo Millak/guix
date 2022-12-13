@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,18 +24,24 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bootloaders)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages embedded)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages qt)
+  #:use-module (gnu packages tls)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system qt)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -367,3 +374,84 @@ argument of the function (modify-linux)."
   (make-raspi-defconfig
    "arm64" "bcmrpi3_defconfig"
    "1bfnl4p0ddx3200dg91kmh2pln36w95y05x1asc312kixv0jgd81"))
+
+(define-public rpi-imager
+  (package
+    (name "rpi-imager")
+    (version "1.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/raspberrypi/rpi-imager")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)
+                         (ice-9 ftw)
+                         (srfi srfi-26)))
+              (snippet '(begin
+                          ;; Remove all but the following bundled libraries,
+                          ;; which are not yet packaged in Guix.
+                          (define keep '("." ".."
+                                         "drivelist"
+                                         "mountutils"
+                                         "sha256crypt"))
+                          (with-directory-excursion "src/dependencies"
+                            (for-each delete-file-recursively
+                                      (scandir "." (negate
+                                                    (cut member <> keep)))))))
+              (sha256
+               (base32
+                "0i7r1myhinhlgispq92nzvrjvbc48l87z8xfwc038l44qj1lsq8g"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:configure-flags #~(list "-DENABLE_TELEMETRY=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "src")))
+          (add-after 'chdir 'customize-os-list.json
+            ;; The default operating system JSON list contains non-FSDG
+            ;; systems.
+            (lambda _
+              (let* ((datadir (string-append #$output
+                                             "/share/rpi-imager"))
+                     (os-list.json (string-append datadir "/os-list.json")))
+                (mkdir-p datadir)
+                #$(with-extensions (list guile-json-4)
+                    #~(begin
+                        (use-modules (json))
+                        (call-with-output-file os-list.json
+                          ;; TODO: Register FSDG and RPi compatible OS
+                          ;; images here.
+                          (lambda (port)
+                            (scm->json '() port)))))
+                (substitute* "config.h"
+                  (("#define OSLIST_URL.*")
+                   (string-append "#define OSLIST_URL \"file:///"
+                                  os-list.json "\"\n"))))))
+          (add-after 'chdir 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; lsblk expects to have access to /sys/dev/block,
+                ;; which doesn't exist in the build container;
+                ;; prevent the check to fail the build.
+                (("ret EQUAL \"1\"")
+                 "FALSE")))))))
+    (inputs
+     (list gnutls
+           curl
+           libarchive
+           qtdeclarative-5
+           qtquickcontrols2-5
+           qtsvg-5
+           qttools-5
+           util-linux))
+    (home-page "https://github.com/raspberrypi/rpi-imager/")
+    (synopsis "Raspberry Pi Imaging Utility")
+    (description "rpi-imager is graphical utility to easily provision and
+flash a memory card with an operating system image suitable for the Raspberry
+Pi single board computer.")
+    (license license:asl2.0)))
