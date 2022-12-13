@@ -2062,8 +2062,7 @@ genome (2.9 GB for paired-end).")
                '(begin
                   ;; Remove bundled SeqAn and samtools
                   (delete-file-recursively "src/SeqAn-1.4.2")
-                  (delete-file-recursively "src/samtools-0.1.18")
-                  #t))))
+                  (delete-file-recursively "src/samtools-0.1.18")))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-build? #f             ; not supported
@@ -2078,8 +2077,7 @@ genome (2.9 GB for paired-end).")
                        (string-join
                         (delete (string-append gcc "/include/c++")
                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                        ":"))
-               #t)))
+                        ":")))))
          (add-after 'unpack 'use-system-samtools
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/Makefile.in"
@@ -2099,8 +2097,7 @@ genome (2.9 GB for paired-end).")
                             "src/map2gtf.h"
                             "src/align_status.h")
                (("#include <bam.h>") "#include <samtools/bam.h>")
-               (("#include <sam.h>") "#include <samtools/sam.h>"))
-             #t)))))
+               (("#include <sam.h>") "#include <samtools/sam.h>")))))))
     (native-inputs
      `(("gcc@5" ,gcc-5))) ;; doesn't build with later versions
     (inputs
