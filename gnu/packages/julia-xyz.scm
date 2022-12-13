@@ -4285,7 +4285,7 @@ plotting components.")
 (define-public julia-pooledarrays
   (package
     (name "julia-pooledarrays")
-    (version "1.3.0")
+    (version "1.4.2")
     (source
       (origin
         (method git-fetch)
@@ -4294,10 +4294,12 @@ plotting components.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0qdwvf1p5z6z0q4s4hn85ysd8wq47zy6hlzddc5ijvhk86ccqlrr"))))
+         (base32 "0g30d46n8cc8vr9icjhfkqz2il2185ijh7xhfy9vhcnmllzpd0yg"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-dataapi))
+    (native-inputs
+     (list julia-offsetarrays))
     (home-page "https://github.com/JuliaData/PooledArrays.jl")
     (synopsis "Pooled representation of arrays in Julia")
     (description "This package provides a pooled representation of arrays for
