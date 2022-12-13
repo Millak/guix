@@ -1359,16 +1359,21 @@ ac_cv_c_float_format='IEEE (little-endian)'
     (name "binutils-mesboot1")
     (native-inputs (%boot-mesboot0-inputs))
     (arguments
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i686-unknown-linux-gnu"))))
      (substitute-keyword-arguments (package-arguments binutils-mesboot0)
        ((#:configure-flags configure-flags)
         '(let ((out (assoc-ref %outputs "out")))
            `("--disable-nls"
              "--disable-shared"
              "--disable-werror"
-             "--build=i686-unknown-linux-gnu"
-             "--host=i686-unknown-linux-gnu"
+             ,(string-append "--build=" #$triplet)
+             ,(string-append "--host=" #$triplet)
              "--with-sysroot=/"
-             ,(string-append "--prefix=" out))))))))
+             ,(string-append "--prefix=" out)))))))))
 
 (define gnu-make-mesboot
   (package
