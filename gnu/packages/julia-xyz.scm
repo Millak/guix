@@ -5784,7 +5784,7 @@ package.")
 (define-public julia-tracker
   (package
     (name "julia-tracker")
-    (version "0.2.12")
+    (version "0.2.22")
     (source
       (origin
         (method git-fetch)
@@ -5793,16 +5793,18 @@ package.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1s4mdywbp7nli7z985fqaj1rs4i6d92b1jx3lhg0qhk1s5wc0v8j"))
-        (patches (search-patches "julia-tracker-16-compat.patch"))))
+         (base32 "0sxncn999dc5j15y0h3cw28x41pv5qjaw64drhy1y4rn3na48504"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-adapt
            julia-diffrules
            julia-forwarddiff
+           julia-functors
+           julia-logexpfunctions
            julia-macrotools
            julia-nanmath
            julia-nnlib
+           julia-optimisers
            julia-requires
            julia-specialfunctions))
     (native-inputs
