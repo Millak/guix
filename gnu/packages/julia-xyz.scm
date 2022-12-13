@@ -2209,7 +2209,7 @@ arbitrary functions.")
 (define-public julia-functors
   (package
     (name "julia-functors")
-    (version "0.2.7")
+    (version "0.4.1")
     (source
       (origin
         (method git-fetch)
@@ -2218,8 +2218,12 @@ arbitrary functions.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "03ry1wn1y2jssq65l29bi6q4ki041aa6gl1nd2w6cgl00k2mrxf3"))))
+         (base32 "00rzbj2rs2lq91wz8qyxq14bg7p9i49dq7y44fvxn6jaikha2ymw"))))
     (build-system julia-build-system)
+    (native-inputs
+     (list julia-documenter
+           julia-staticarrays
+           julia-zygote))
     (home-page "https://fluxml.ai/Functors.jl/stable/")
     (synopsis "Design pattern for structures as in machine learning")
     (description "This package provides tools to express a design pattern for
