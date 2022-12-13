@@ -679,7 +679,7 @@ methods.")
 (define-public julia-categoricalarrays
   (package
     (name "julia-categoricalarrays")
-    (version "0.9.7")
+    (version "0.10.7")
     (source
      (origin
        (method git-fetch)
@@ -688,16 +688,33 @@ methods.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bcfylxdaizgasnmlkjjkf4dgfvy2y9ycnphw2d0z6mm9vx3n04x"))))
+        (base32 "17fix7wlwqbif5jbcrbi0a0ghdl3429km3l6lqa962p7jf1gjd2d"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               ;; Plots.jl isn't packaged yet.
+               (substitute* "test/runtests.jl"
+                 ((".*13_arraycommon\\.jl.*") "")))))))
     (native-inputs
-     (list julia-pooledarrays))
+     (list julia-json
+           julia-json3
+           ;julia-plots
+           julia-pooledarrays
+           julia-recipesbase
+           julia-sentinelarrays
+           julia-structtypes))
     (propagated-inputs
      (list julia-dataapi
            julia-json
            julia-json3
            julia-missings
            julia-recipesbase
+           julia-requires
+           julia-sentinelarrays
            julia-structtypes))
     (home-page "https://github.com/JuliaData/CategoricalArrays.jl")
     (synopsis "Arrays for working with categorical data")
