@@ -2252,23 +2252,34 @@ off-target reads for a capture method that targets CpG-rich region.")
 (define-public python-bx-python
   (package
     (name "python-bx-python")
-    (version "0.8.12")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/bxlab/bx-python")
-                    (commit "f4e6a5c93e719db69b5798b6fdd9b167da358316")))
+                    (commit "4f4a48d3f227ae390c1b22072867ba86e347bdef")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mclahslz34vq9x424jmzsxk0nmpm1j716fa8h3zwr9ssvch7skc"))))
-    (build-system python-build-system)
+                "1c914rw8phiw7zwzngz9i9hdciz5lq53drwdbpl2bd2sf5bj2biy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
+         ;; Unrecognized argument.
+         (add-after 'unpack 'disable-cython-doctests
+           (lambda _ (substitute* "pytest.ini" (("--doctest-cython") "")))))))
     (propagated-inputs
      (list python-numpy))
     (inputs
      (list zlib))
     (native-inputs
-     (list python-lzo python-nose python-cython))
+     (list python-cython python-lzo python-pytest))
     (home-page "https://github.com/bxlab/bx-python")
     (synopsis "Tools for manipulating biological data")
     (description
