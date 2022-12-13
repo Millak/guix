@@ -364,7 +364,7 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
 (define-public bedops
   (package
     (name "bedops")
-    (version "2.4.35")
+    (version "2.4.41")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -373,39 +373,49 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mmgsgwz5r9w76hzgxkxc9s9lkdhhaf7vr6i02b09vbswvs1fyqx"))))
+                "046037qdxsn01ln28rbrwnc7wq4a3xahmb2k74l0w75dby5ni42l"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:make-flags (list (string-append "BINDIR=" %output "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-tarballs
-           (lambda _
-             ;; FIXME: Bedops includes tarballs of minimally patched upstream
-             ;; libraries jansson, zlib, and bzip2.  We cannot just use stock
-             ;; libraries because at least one of the libraries (zlib) is
-             ;; patched to add a C++ function definition (deflateInit2cpp).
-             ;; Until the Bedops developers offer a way to link against system
-             ;; libraries we have to build the in-tree copies of these three
-             ;; libraries.
+     (list
+      ;; We cannot run the tests because the build system makes strange
+      ;; assumptions about where executables are located.
+      #:tests? #false
+      #:test-target "tests"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-tarballs
+            (lambda _
+              ;; FIXME: Bedops includes tarballs of minimally patched upstream
+              ;; libraries jansson, zlib, and bzip2.  We cannot just use stock
+              ;; libraries because at least one of the libraries (zlib) is
+              ;; patched to add a C++ function definition (deflateInit2cpp).
+              ;; Until the Bedops developers offer a way to link against system
+              ;; libraries we have to build the in-tree copies of these three
+              ;; libraries.
 
-             ;; See upstream discussion:
-             ;; https://github.com/bedops/bedops/issues/124
+              ;; See upstream discussion:
+              ;; https://github.com/bedops/bedops/issues/124
 
-             ;; Unpack the tarballs to benefit from shebang patching.
-             (with-directory-excursion "third-party"
-               (invoke "tar" "xvf" "jansson-2.6.tar.bz2")
-               (invoke "tar" "xvf" "zlib-1.2.7.tar.bz2")
-               (invoke "tar" "xvf" "bzip2-1.0.6.tar.bz2"))
-             ;; Disable unpacking of tarballs in Makefile.
-             (substitute* "system.mk/Makefile.linux"
-               (("^\tbzcat .*") "\t@echo \"not unpacking\"\n")
-               (("\\./configure") "CONFIG_SHELL=bash ./configure"))
-             (substitute* "third-party/zlib-1.2.7/Makefile.in"
-               (("^SHELL=.*$") "SHELL=bash\n"))
-             #t))
-         (delete 'configure))))
+              ;; Unpack the tarballs to benefit from shebang patching.
+              (with-directory-excursion "third-party"
+                (invoke "tar" "xvf" "jansson-2.6.tar.bz2")
+                (invoke "tar" "xvf" "zlib-1.2.7.tar.bz2")
+                (invoke "tar" "xvf" "bzip2-1.0.6.tar.bz2"))
+              ;; Disable unpacking of tarballs in Makefile.
+              (substitute* "system.mk/Makefile.linux"
+                (("^\tbzcat .*") "\t@echo \"not unpacking\"\n")
+                (("\\./configure") "CONFIG_SHELL=bash ./configure"))
+              (substitute* "third-party/zlib-1.2.7/Makefile.in"
+                (("^SHELL=.*$") "SHELL=bash\n"))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      (string-append "BINDIR=" #$output "/bin")))))))
+    (native-inputs
+     (list diffutils perl which))
     (home-page "https://github.com/bedops/bedops")
     (synopsis "Tools for high-performance genomic feature operations")
     (description
