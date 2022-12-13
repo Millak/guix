@@ -817,6 +817,7 @@ appended to the package description."
          #:test-target "test"
          #:make-flags
          (list "HOSTCC=gcc"
+               "KBUILD_VERBOSE=1"
                ,@(if (not (same-arch?))
                      `((string-append "CROSS_COMPILE=" ,triplet "-"))
                      '()))
