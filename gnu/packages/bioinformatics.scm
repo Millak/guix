@@ -219,7 +219,7 @@ structure of the predicted RNA.")
 (define-public bamtools
   (package
     (name "bamtools")
-    (version "2.5.1")
+    (version "2.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -228,21 +228,10 @@ structure of the predicted RNA.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nfb2ypcx9959xnbz6wxh6py3xfizgmg8nrknxl95c507m9hmq8b"))))
+                "14lw571vbks138i0lj66qjdbk8iwa817x2zbpzij61vv1gdgfbn5"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ;no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append
-                     "-Wl,-rpath="
-                     (assoc-ref outputs "out") "/lib/bamtools"))
-            #t)))))
-    (inputs (list zlib))
+    (inputs (list jsoncpp zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/pezmaster31/bamtools")
     (synopsis "C++ API and command-line toolkit for working with BAM data")
     (description
