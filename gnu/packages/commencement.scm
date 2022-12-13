@@ -961,31 +961,31 @@ MesCC-Tools), and finally M2-Planet.")
 
 (define binutils-mesboot0
   ;; The initial Binutils
-  (let ((triplet (match (%current-system)
-                   ((or "armhf-linux" "aarch64-linux")
-                    "arm-unknown-linux-gnu")
-                   ((or "i686-linux" "x86_64-linux")
-                    "i386-unknown-linux-gnu"))))
-    (package
-      (inherit binutils)
-      (name "binutils-mesboot0")
-      (version "2.20.1a")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://gnu/binutils/binutils-"
-                                    version ".tar.bz2"))
-                ;; `patches' needs XZ
-                ;; (patches (search-patches "binutils-boot-2.20.1a.patch"))
-                ;; (patch-guile %bootstrap-guile)
-                (sha256
-                 (base32
-                  "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi"))))
-      (inputs '())
-      (propagated-inputs '())
-      (native-inputs (%boot-tcc-inputs))
-      (supported-systems '("armhf-linux" "aarch64-linux"
-                           "i686-linux" "x86_64-linux"))
-      (arguments
+  (package
+    (inherit binutils)
+    (name "binutils-mesboot0")
+    (version "2.20.1a")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/binutils/binutils-"
+                                  version ".tar.bz2"))
+              ;; `patches' needs XZ
+              ;; (patches (search-patches "binutils-boot-2.20.1a.patch"))
+              ;; (patch-guile %bootstrap-guile)
+              (sha256
+               (base32
+                "0r7dr0brfpchh5ic0z9r4yxqn4ybzmlh25sbp30cacqk8nb7rlvi"))))
+    (inputs '())
+    (propagated-inputs '())
+    (native-inputs (%boot-tcc-inputs))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
+    (arguments
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i386-unknown-linux-gnu"))))
        (list
         #:implicit-inputs? #f
         #:guile %bootstrap-guile
