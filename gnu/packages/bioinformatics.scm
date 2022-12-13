@@ -172,47 +172,49 @@
 (define-public aragorn
   (package
     (name "aragorn")
-    (version "1.2.38")
+    (version "1.2.41")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://mbio-serv2.mbioekol.lu.se/ARAGORN/Downloads/aragorn"
-                    version ".tgz"))
+              (uri (string-append "https://www.ansikte.se/ARAGORN/Downloads/"
+                                  "aragorn" version ".c"))
               (sha256
                (base32
-                "09i1rg716smlbnixfm7q1ml2mfpaa2fpn3hwjg625ysmfwwy712b"))))
+                "0jkzx7sqiarydvz3bwaxh790fpvpkfc926dhsza1dbdhq32ir8wj"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (invoke "gcc"
-                     "-O3"
-                     "-ffast-math"
-                     "-finline-functions"
-                     "-o"
-                     "aragorn"
-                     (string-append "aragorn" ,version ".c"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "aragorn" bin)
-               (install-file "aragorn.1" man))
-             #t)))))
-    (home-page "http://mbio-serv2.mbioekol.lu.se/ARAGORN")
+     (list
+      #:tests? #f ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke "gcc" "-O3" "-ffast-math" "-finline-functions"
+                      "-o" "aragorn" #$source)))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man1")))
+                (install-file "aragorn" bin)
+                (mkdir-p man)
+                (copy-file (assoc-ref inputs "aragorn.1")
+                           (string-append man "/aragorn.1"))))))))
+    (native-inputs
+     `(("aragorn.1"
+        ,(origin
+           (method url-fetch)
+           (uri "https://www.ansikte.se/ARAGORN/Downloads/aragorn.1")
+           (sha256
+            (base32
+             "0bn9lapa6f0cl07dbn2fjrapirv9d4bk7w248w39fhb4vbczcc3f"))))))
+    (home-page "https://www.ansikte.se/ARAGORN/")
     (synopsis "Detect tRNA, mtRNA and tmRNA genes in nucleotide sequences")
     (description
      "Aragorn identifies transfer RNA, mitochondrial RNA and
 transfer-messenger RNA from nucleotide sequences, based on homology to known
 tRNA consensus sequences and RNA structure.  It also outputs the secondary
 structure of the predicted RNA.")
-    (license license:gpl2)))
+    (license license:gpl3+)))
 
 (define-public bamtools
   (package
