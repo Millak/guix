@@ -745,7 +745,7 @@ variables, both with unordered (nominal variables) and ordered categories
 (define-public julia-chainrules
   (package
     (name "julia-chainrules")
-    (version "1.1.0")
+    (version "1.35.0")
     (source
      (origin
        (method git-fetch)
@@ -754,18 +754,19 @@ variables, both with unordered (nominal variables) and ordered categories
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0if93pd3b3scg2x3gmk1cbwjk0ax1n792vy8c38y3xl7jpd5cb70"))))
+        (base32 "17irgz3gamyrmzsjhq4s1n1sblvhkj10yg5y5y53yr631cl2fr6a"))))
     (build-system julia-build-system)
-    (inputs                             ;required for test
-     (list julia-chainrulestestutils
-           julia-finitedifferences
-           julia-nanmath
-           julia-specialfunctions))
+    (arguments
+     (list #:tests? #f))        ; JuliaInterpreter.jl not packaged yet.
+    ;(inputs                             ;required for test
+    ; (list julia-chainrulestestutils
+    ;       julia-finitedifferences
+    ;       julia-juliainterpreter))
     (propagated-inputs
      (list julia-chainrulescore
            julia-compat
-           julia-reexport
-           julia-requires))
+           julia-irrationalconstants
+           julia-realdot))
     (home-page "https://github.com/JuliaDiff/ChainRules.jl")
     (synopsis "Common utilities for automatic differentiation")
     (description "The is package provides a variety of common utilities that
