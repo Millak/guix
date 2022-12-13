@@ -242,7 +242,7 @@ BAM files.")
 (define-public bamutils
   (package
     (name "bamutils")
-    (version "1.0.14")
+    (version "1.0.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -251,21 +251,22 @@ BAM files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i2r332k1kz0jysyg89d858wqq59n16lw6dv5qmilcwshb77r9v7"))))
+                "1pxydf9qsr8667jh525bc2wiqn9nwk8rkg05kbyfmjs8d261fl9y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Unclear how to run tests
-       #:make-flags
-       ,#~(list "USER_WARNINGS=-std=gnu++98" ;
-                (string-append "INSTALLDIR=" #$output "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/Makefile" ;
-               (("^DATE=.*") "DATE=\"1970-01-01\"\n"))
-             (copy-recursively (assoc-ref inputs "libstatgen")
-                               "../libStatGen"))))))
+     (list
+      #:tests? #f ;fails to link debug libraries
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "INSTALLDIR=" #$output "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/Makefile"
+                (("^DATE=.*") "DATE=\"1970-01-01\"\n"))
+              (copy-recursively (assoc-ref inputs "libstatgen")
+                                "../libStatGen"))))))
     (inputs
      (list zlib))
     (native-inputs
@@ -278,7 +279,7 @@ BAM files.")
            (file-name (git-file-name "libstatgen" version))
            (sha256
             (base32
-             "0q9iyk046r4m7qnav8c3f28zsar25lj9nydiklwaswmzdijhi4p1"))))))
+             "0spvbpvnpxrgj8kajpkhf1mv7kdyvj723y9zh13jykvnjh8a15j3"))))))
     (home-page "https://genome.sph.umich.edu/wiki/BamUtil")
     (synopsis "Programs for working on SAM/BAM files")
     (description "This package provides several programs that perform
