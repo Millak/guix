@@ -1269,7 +1269,7 @@ dependency on it.")
 (define-public julia-dataframes
   (package
     (name "julia-dataframes")
-    (version "1.2.2")
+    (version "1.3.6")
     (source
       (origin
         (method git-fetch)
@@ -1278,7 +1278,7 @@ dependency on it.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1bk0amrghgjrkyn1mm4ac23swwbgszl1d0qyl9137qj5zvv9dasp"))))
+         (base32 "01ybc1ckn5wi7kwp29g5ms4m3g650856z4xv71racbdr8475pmg5"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -1295,24 +1295,33 @@ dependency on it.")
                  (string-append all "return\n")))
               (substitute* "test/join.jl"
                 (("test (levels\\(outerjoin\\(B)" _ test)
-                 (string-append "test_nowarn " test))))))))
+                 (string-append "test_nowarn " test)))
+              ;; Compat with julia-1.8, remove with next package update.
+              (substitute* "test/indexing_offset.jl"
+                (("@test_throws ErrorException")
+                 "@test_throws Base.CanonicalIndexError")))))))
     (propagated-inputs
-     (list julia-dataapi
+     (list julia-categoricalarrays
+           julia-compat
+           julia-dataapi
            julia-invertedindices
            julia-iteratorinterfaceextensions
            julia-missings
            julia-pooledarrays
            julia-prettytables
            julia-reexport
+           julia-shiftedarrays
            julia-sortingalgorithms
            julia-tables
-           julia-tabletraits))
+           julia-tabletraits
+           julia-unitful))
     (native-inputs
      (list julia-categoricalarrays
            julia-combinatorics
            julia-datastructures
            julia-datavalues
            julia-offsetarrays
+           julia-shiftedarrays
            julia-unitful))
     (home-page "https://dataframes.juliadata.org/stable/")
     (synopsis "In-memory tabular data")
