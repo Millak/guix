@@ -566,7 +566,7 @@ for all types of microbial diversity analyses.")
 (define-public pbbam
   (package
     (name "pbbam")
-    (version "1.7.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -575,7 +575,7 @@ for all types of microbial diversity analyses.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1avdm5hwhr5ls79017blyalx1npzbf1aa6dgb6j6lg8sq4nk9yyg"))))
+                "1iyazi3l7dswpfxh39k5j7ydi0ywja0579xz3r6l9kkwz2n1z6dc"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
