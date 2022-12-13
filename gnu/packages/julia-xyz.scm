@@ -4115,7 +4115,7 @@ which they were added to the collection.")
 (define-public julia-offsetarrays
   (package
     (name "julia-offsetarrays")
-    (version "1.10.3")
+    (version "1.12.8")
     (source
      (origin
        (method git-fetch)
@@ -4124,7 +4124,7 @@ which they were added to the collection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j5a8ar8yc0j9h87gwfyrcqm23wpyv5yv5gn8vzilpg4vr0fiasc"))))
+        (base32 "09cidr42q0xwp6wwyaw09hl580vqi85wb5f78pxrxcfm75yg3xki"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-adapt))
