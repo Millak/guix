@@ -708,6 +708,8 @@ uploading PlatformIO projects.")
                               "DEMO-ROLO.otl"
                               "HY-ABOUT"
                               "man/hkey-help.txt"
+                              "man/hyberbole.info"
+                              "kotl/.*"
                               "\\.kotl$"
                               %default-include)
            #:phases
@@ -724,6 +726,13 @@ uploading PlatformIO projects.")
                      (("\\(hyperb:check-dir-user\\)") ""))
                    (substitute* "hgnus.el"
                      (("hmail ") "hmail hvar "))))
+               (add-after 'install 'install-doc
+                 (lambda _
+                   (install-file "man/hyperbole.info"
+                                 (string-append #$output "/share/info"))
+                   (install-file "man/hkey-help.txt"
+                                 (string-append #$output "/share/doc/"
+                                                #$name "-" #$version))))
                (add-after 'install 'install-images
                  (lambda _
                    (let ((dir (string-append #$output "/share/info/im")))
