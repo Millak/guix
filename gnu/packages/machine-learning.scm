@@ -1884,8 +1884,8 @@ automatically.")
 
 (define-public kaldi-gstreamer-server
   ;; This is the tip of the py3 branch
-  (let ((commit "f68cab490be7eb0da2af1475fbc16655f50a60cb")
-        (revision "2"))
+  (let ((commit "f79e204d751a5964918001822e4520fa2acfd246")
+        (revision "3"))
     (package
       (name "kaldi-gstreamer-server")
       (version (git-version "0" revision commit))
@@ -1897,7 +1897,7 @@ automatically.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "17lh1368vkg8ngrcbn2phvigzlmalrqg6djx2gg61qq1a0nj87dm"))))
+                  "1iijq8jmgdxr7961inal1ggs496ymxradm51m4sqx8vl983x14y8"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; there are no tests that can be run automatically
