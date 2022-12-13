@@ -1246,7 +1246,7 @@ as comma-delimited (csv), tab-delimited (tsv), or otherwise.")
 (define-public julia-dataapi
   (package
     (name "julia-dataapi")
-    (version "1.7.0")
+    (version "1.13.0")
     (source
       (origin
         (method git-fetch)
@@ -1255,7 +1255,7 @@ as comma-delimited (csv), tab-delimited (tsv), or otherwise.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0swk31p83fycz5cdj4fg6b0wfqj473lnx94q2fl7ybxkkc6afba7"))))
+         (base32 "1x5pdpjlbk29766ark7rmzjbl0rhxmsb1cp04lc891aknh30rn3i"))))
     (build-system julia-build-system)
     (home-page "https://github.com/JuliaData/DataAPI.jl")
     (synopsis "Data-focused namespace for packages to share functions")
