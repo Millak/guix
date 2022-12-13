@@ -776,7 +776,7 @@ execute forward-, reverse-, and mixed-mode primitives.")
 (define-public julia-chainrulescore
   (package
     (name "julia-chainrulescore")
-    (version "1.0.2")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -785,7 +785,7 @@ execute forward-, reverse-, and mixed-mode primitives.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1866xv30h1bi7f2m993nljzf58wwmv8zlgn6ffn9j3wckch1nfpb"))))
+        (base32 "0lgfcsb7f6c7knhiz5dbqh8x47d370pn71y9ys2y6763g0b4pm61"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -793,7 +793,9 @@ execute forward-, reverse-, and mixed-mode primitives.")
        #~(modify-phases %standard-phases
            (add-after 'unpack 'adjust-tests
              (lambda _
-               (substitute* "test/differentials/composite.jl"
+               (substitute* "test/tangent_types/tangent.jl"
+                 ;; This test is disabled after the release.
+                 (("@test haskey.*Float.*") "")
                  (("@test (.*construct)" _ test)
                   (string-append "@test_broken " test))))))))
     (inputs                             ;required for tests
