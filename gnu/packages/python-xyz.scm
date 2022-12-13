@@ -18350,13 +18350,13 @@ etc.")
 (define-public python-pyserial-asyncio
   (package
     (name "python-pyserial-asyncio")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyserial-asyncio" version))
        (sha256
-        (base32 "0cwd2cjz859v6jrm3y6hikfqjyhyfj5vhfjb8vvflvl6791yah8n"))))
+        (base32 "0bx3syngmq2j9mh81byzka1x4ilw8ac9mbx52zn7b7ayw0ijj0xn"))))
     (build-system python-build-system)
     (propagated-inputs (list python-pyserial))
     (home-page "https://github.com/pyserial/pyserial-asyncio")
