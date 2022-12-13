@@ -1625,7 +1625,7 @@ discrete, and conditional dimensions.")
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
+             (lambda _ (chdir "src")))
            (replace 'configure
              (lambda* (#:key build system inputs outputs #:allow-other-keys)
                (when (not (or (string-prefix? "x86_64" system)
@@ -1671,8 +1671,7 @@ discrete, and conditional dimensions.")
                (invoke "make" "-C" "onlinebin" "depend")
                (invoke "make" "-C" "onlinebin")
                (invoke "make" "-C" "gst-plugin" "depend")
-               (invoke "make" "-C" "gst-plugin")
-               #t))
+               (invoke "make" "-C" "gst-plugin")))
            ;; TODO: also install the executables.
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
@@ -1693,8 +1692,7 @@ discrete, and conditional dimensions.")
                                (install-file file target-dir)))
                            (find-files "." "\\.h"))
                  (install-file "gst-plugin/libgstonlinegmmdecodefaster.so"
-                               (string-append lib "/gstreamer-1.0"))
-                 #t))))))
+                               (string-append lib "/gstreamer-1.0"))))))))
       (inputs
        (list alsa-lib
              `(,gfortran "lib")
