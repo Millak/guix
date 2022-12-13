@@ -6032,7 +6032,7 @@ archives in Julia.")
 (define-public julia-zygoterules
   (package
     (name "julia-zygoterules")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -6041,7 +6041,7 @@ archives in Julia.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07i2mf6rr5b8i6l82qgwl5arsb5pwyyzyfasgnszhdqllk9501bs"))))
+        (base32 "0h9m9ibxfcw9cqa7p0aylpvibvlxsn5nlfzkz1pk68jy58vkzhca"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-macrotools))
