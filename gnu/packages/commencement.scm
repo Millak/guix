@@ -1024,33 +1024,33 @@ MesCC-Tools), and finally M2-Planet.")
   ;; library, such as dir.h/struct DIR/readdir, locales, signals...  Also,
   ;; with gcc-2.95.3, binutils (2.14.0, 2.20.1a) and glibc-2.2.5 we found a
   ;; GNU toolchain triplet "that works".
-  (let ((triplet (match (%current-system)
-                   ((or "armhf-linux" "aarch64-linux")
-                    "arm-unknown-linux-gnu")
-                   ((or "i686-linux" "x86_64-linux")
-                    "i686-unknown-linux-gnu"))))
-    (package
-      (inherit gcc)
-      (name "gcc-core-mesboot0")
-      (version "2.95.3")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://gnu/gcc/gcc-2.95.3/gcc-core-"
-                                    version
-                                    ".tar.gz"))
-                ;; `patches' needs XZ
-                ;; (patches (search-patches "gcc-boot-2.95.3.patch"))
-                (sha256
-                 (base32
-                  "1xvfy4pqhrd5v2cv8lzf63iqg92k09g6z9n2ah6ndd4h17k1x0an"))))
-      (supported-systems '("armhf-linux" "aarch64-linux"
-                           "i686-linux" "x86_64-linux"))
-      (inputs '())
-      (propagated-inputs '())
-      (native-inputs `(("binutils" ,binutils-mesboot0)
-                       ,@(%boot-tcc-inputs)))
-      (outputs '("out"))
-      (arguments
+  (package
+    (inherit gcc)
+    (name "gcc-core-mesboot0")
+    (version "2.95.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/gcc/gcc-2.95.3/gcc-core-"
+                                  version
+                                  ".tar.gz"))
+              ;; `patches' needs XZ
+              ;; (patches (search-patches "gcc-boot-2.95.3.patch"))
+              (sha256
+               (base32
+                "1xvfy4pqhrd5v2cv8lzf63iqg92k09g6z9n2ah6ndd4h17k1x0an"))))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
+    (inputs '())
+    (propagated-inputs '())
+    (native-inputs `(("binutils" ,binutils-mesboot0)
+                     ,@(%boot-tcc-inputs)))
+    (outputs '("out"))
+    (arguments
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i686-unknown-linux-gnu"))))
        (list #:implicit-inputs? #f
              #:guile %bootstrap-guile
              #:tests? #f
@@ -1142,8 +1142,13 @@ ac_cv_c_float_format='IEEE (little-endian)'
                        (invoke "ar" "x" (string-append tcc "/lib/tcc/libtcc1.a"))
                        (invoke "ar" "x" (string-append tcc "/lib/libc.a"))
                        (invoke "ar" "r" (string-append gcc-dir "/libc.a")
-                               "libc.o" "libtcc1.o")))))))
-      (native-search-paths
+                               "libc.o" "libtcc1.o"))))))))
+    (native-search-paths
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i686-unknown-linux-gnu"))))
        (list (search-path-specification
               (variable "C_INCLUDE_PATH")
               (files `("include"
