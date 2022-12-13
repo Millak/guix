@@ -3992,7 +3992,7 @@ interface to interact with these types.")
 (define-public julia-nnlib
   (package
     (name "julia-nnlib")
-    (version "0.7.29")
+    (version "0.7.34")
     (source
       (origin
         (method git-fetch)
@@ -4001,21 +4001,26 @@ interface to interact with these types.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "16vn5w5274kcywh1xp0zqjk5q10xrk125aznz5av6wifwrvghk8s"))))
+         (base32 "1xzlh7pj6aqmbkrskqgwvifprg9a6xkkdh00ls6f6xnzqfrnhwna"))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-cuda-tests
+          (add-after 'link-depot 'skip-some-tests
             (lambda _
               (substitute* "test/runtests.jl"
+                ;; Skip the CUDA tests
                 (("using CUDA") "")
-                (("&& CUDA\\.functional\\(\\)") ""))
+                (("&& CUDA\\.functional\\(\\)") "")
+
+                ;; UnicodePlots is only used for the doctests
+                (("if VERSION <.*") "if true\n"))
               (setenv "NNLIB_TEST_CUDA" "false"))))))
     (propagated-inputs
      (list julia-adapt
            julia-chainrulescore
+           julia-compat
            julia-requires))
     (native-inputs
      (list julia-chainrulestestutils
