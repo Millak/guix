@@ -1927,8 +1927,7 @@ automatically.")
                                       "-m" "compileall"
                                       "-f" ; force rebuild
                                       ,file)))
-                           (find-files "." "\\.py$")))
-               #t))
+                           (find-files "." "\\.py$")))))
            (replace 'install
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -1967,8 +1966,7 @@ exec ~a ~a/~a \"$@\"~%"
                              (list server client worker)
                              (list "master_server.py"
                                    "client.py"
-                                   "worker.py")))
-                 #t))))))
+                                   "worker.py")))))))))
       (inputs
        `(("gst-kaldi-nnet2-online" ,gst-kaldi-nnet2-online)
          ("python" ,python-wrapper)
