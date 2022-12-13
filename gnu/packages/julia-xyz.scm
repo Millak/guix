@@ -4663,6 +4663,29 @@ by Ranges.")
 type, which make some sacrifices but have better computational performance.")
     (license license:expat)))
 
+(define-public julia-realdot
+  (package
+    (name "julia-realdot")
+    (version "0.1.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaMath/RealDot.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jr8dq110j8axjfz936b1lqqcnqg3979rfg11w76rq1iz7zgi691"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/RealDot.jl")
+    (synopsis "Compute realdot efficiently")
+    (description "This package only contains and exports a single function
+@code{realdot(x, y)}.  It computes @code{real(LinearAlgebra.dot(x, y))} while
+avoiding computing the imaginary part of @code{LinearAlgebra.dot(x, y)} if
+possible.  The real dot product is useful when one treats complex numbers as
+embedded in a real vector space.")
+    (license license:expat)))
+
 (define-public julia-recipesbase
   (package
     (name "julia-recipesbase")
