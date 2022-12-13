@@ -877,6 +877,14 @@ diff --git a/sysdeps/unix/sysv/linux/arm/mmap.S b/sysdeps/unix/sysv/linux/arm/mm
 index af93c7b..97b4a55 100644
 --- a/sysdeps/unix/sysv/linux/arm/mmap.S
 +++ b/sysdeps/unix/sysv/linux/arm/mmap.S
+@@ -21,6 +21,7 @@
+ .text
+
+ ENTRY (__mmap)
++#ifdef __NR_mmap
+
+        /* Because we can only get five args through the syscall interface, and
+           mmap() takes six, we need to build a parameter block and pass its
 @@ -41,7 +41,14 @@ ENTRY (__mmap)
  
  	/* do the syscall */
@@ -892,6 +900,15 @@ index af93c7b..97b4a55 100644
  
  	/* pop args off the stack. */
  	add	sp, sp, #16
+@@ -50,6 +59,7 @@ ENTRY (__mmap)
+        RETINSTR(movcc, pc, lr)
+        b       PLTJMP(syscall_error);
+
++#endif
+ PSEUDO_END (__mmap)
+
+ weak_alias (__mmap, mmap)
+
 diff --git a/sysdeps/unix/sysv/linux/arm/mmap64.S b/sysdeps/unix/sysv/linux/arm/mmap64.S
 index 1f19bf0..8cb40f5 100644
 --- a/sysdeps/unix/sysv/linux/arm/mmap64.S

@@ -1195,33 +1195,33 @@ ac_cv_c_float_format='IEEE (little-endian)'
   ;; GNU C Library 2.2.5 is the most recent glibc that we managed to build
   ;; using gcc-2.95.3.  Newer versions (2.3.x, 2.6, 2.1x) seem to need a newer
   ;; gcc.
-  (let ((triplet (match (%current-system)
-                   ((or "armhf-linux" "aarch64-linux")
-                    "arm-unknown-linux-gnu")
-                   ((or "i686-linux" "x86_64-linux")
-                    "i686-unknown-linux-gnu"))))
-    (package
-      (inherit glibc)
-      (name "glibc-mesboot0")
-      (version "2.2.5")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://gnu/glibc/glibc-"
-                                    version
-                                    ".tar.gz"))
-                ;; Patch needs XZ
-                ;; (patches (search-patches "glibc-boot-2.2.5.patch"))
-                (sha256
-                 (base32
-                  "1vl48i16gx6h68whjyhgnn1s57vqq32f9ygfa2fls7pdkbsqvp2q"))))
-      (supported-systems '("armhf-linux" "aarch64-linux"
-                           "i686-linux" "x86_64-linux"))
-      (inputs '())
-      (propagated-inputs '())
-      (native-inputs `(("headers" ,mesboot-headers)
-                       ,@(%boot-mesboot-core-inputs)))
-      (outputs '("out"))
-      (arguments
+  (package
+    (inherit glibc)
+    (name "glibc-mesboot0")
+    (version "2.2.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/glibc/glibc-"
+                                  version
+                                  ".tar.gz"))
+              ;; Patch needs XZ
+              ;; (patches (search-patches "glibc-boot-2.2.5.patch"))
+              (sha256
+               (base32
+                "1vl48i16gx6h68whjyhgnn1s57vqq32f9ygfa2fls7pdkbsqvp2q"))))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
+    (inputs '())
+    (propagated-inputs '())
+    (native-inputs `(("headers" ,mesboot-headers)
+                     ,@(%boot-mesboot-core-inputs)))
+    (outputs '("out"))
+    (arguments
+     (let ((triplet (match (%current-system)
+                           ((or "armhf-linux" "aarch64-linux")
+                            "arm-unknown-linux-gnu")
+                           ((or "i686-linux" "x86_64-linux")
+                            "i686-unknown-linux-gnu"))))
        (list #:implicit-inputs? #f
              #:guile %bootstrap-guile
              #:tests? #f
