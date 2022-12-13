@@ -4083,6 +4083,33 @@ doesn't provide any other \"high-level\" functionality like layers or AD.")
 optimization of functions.")
     (license license:expat)))
 
+(define-public julia-optimisers
+  (package
+    (name "julia-optimisers")
+    (version "0.2.13")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/FluxML/Optimisers.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1xs51r365l6r56rpm08kba00nfcl5jlglwy8494w06vbi22ysbq7"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-chainrulescore
+           julia-functors
+           julia-zygote))
+    (native-inputs
+     (list julia-staticarrays
+           julia-zygote))
+    (home-page "https://github.com/FluxML/Optimisers.jl")
+    (synopsis "Optimisers and utilities for learning loops")
+    (description "@code{Optimisers.jl} defines many standard gradient-based
+optimisation rules, and tools for applying them to deeply nested models.")
+    (license license:expat)))
+
 (define-public julia-optimtestproblems
   (package
     (name "julia-optimtestproblems")
