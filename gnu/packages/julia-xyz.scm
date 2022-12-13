@@ -4830,7 +4830,7 @@ can be avoided.")
 (define-public julia-reversediff
   (package
     (name "julia-reversediff")
-    (version "1.9.0")
+    (version "1.14.4")
     (source
       (origin
         (method git-fetch)
@@ -4839,7 +4839,7 @@ can be avoided.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1wrr6sqj2xl9grkvdp88rw3manxy9vbx28zq2wssya5ns1xabsnl"))))
+         (base32 "0hwsjmr4wiscqa5kaj4mw0i4agyyzdcmq4r1gp2i563nc1ziaylg"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Test suite failing for i686, e.g.,
@@ -4849,10 +4849,13 @@ can be avoided.")
      (list #:tests? (not (or (%current-target-system)
                              (target-x86-32?)))))
     (propagated-inputs
-     (list julia-diffresults
+     (list julia-chainrulescore
+           julia-diffresults
            julia-diffrules
+           julia-difftests
            julia-forwarddiff
            julia-functionwrappers
+           julia-logexpfunctions
            julia-macrotools
            julia-nanmath
            julia-specialfunctions
