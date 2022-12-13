@@ -18908,6 +18908,10 @@ is recommended.
 @item @code{terminal-switch} (default: @code{#f})
 Make this terminal active on start of @code{greetd}.
 
+@item @code{source-profile?} (default: @code{#t})
+Whether to source @file{/etc/profile} and @file{~/.profile}, when they
+exist.
+
 @item @code{default-session-user} (default: @samp{"greeter"})
 The user to use for running the greeter.
 
