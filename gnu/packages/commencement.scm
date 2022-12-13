@@ -697,28 +697,28 @@ MesCC-Tools), and finally M2-Planet.")
 
 (define gnu-make-mesboot0
   ;; The initial make
-  (let ((triplet (match (%current-system)
-                   ((or "armhf-linux" "aarch64-linux")
-                    "arm-linux")
-                   ((or "i686-linux" "x86_64-linux")
-                    "i686-linux-gnu"))))
-    (package
-      (inherit gnu-make)
-      (name "make-mesboot0")
-      (version "3.80")
-      (source (origin
-                (method url-fetch)
-                (uri (string-append "mirror://gnu/make/make-" version ".tar.gz"))
-                (sha256
-                 (base32
-                  "1pb7fb7fqf9wz9najm85qdma1xhxzf1rhj5gwrlzdsz2zm0hpcv4"))))
-      (supported-systems '("armhf-linux" "aarch64-linux"
-                           "i686-linux" "x86_64-linux"))
-      (inputs '())
-      (propagated-inputs '())
-      (native-inputs `(("tcc" ,tcc-boot0)
-                       ,@(%boot-gash-inputs)))
-      (arguments
+  (package
+    (inherit gnu-make)
+    (name "make-mesboot0")
+    (version "3.80")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnu/make/make-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1pb7fb7fqf9wz9najm85qdma1xhxzf1rhj5gwrlzdsz2zm0hpcv4"))))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
+    (inputs '())
+    (propagated-inputs '())
+    (native-inputs `(("tcc" ,tcc-boot0)
+                     ,@(%boot-gash-inputs)))
+    (arguments
+     (let ((triplet (match (%current-system)
+                             ((or "armhf-linux" "aarch64-linux")
+                              "arm-linux")
+                             ((or "i686-linux" "x86_64-linux")
+                              "i686-linux-gnu"))))
        `(#:implicit-inputs? #f
          #:guile ,%bootstrap-guile
          #:configure-flags (list "CC=tcc"
@@ -1373,7 +1373,8 @@ ac_cv_c_float_format='IEEE (little-endian)'
                (base32
                 "1rs2f9hmvy3q6zkl15jnlmnpgffm0bhw5ax0h5c7q604wqrip69x"))))
     (native-inputs (%boot-mesboot0-inputs))
-    (supported-systems '("i686-linux" "x86_64-linux"))
+    (supported-systems '("armhf-linux" "aarch64-linux"
+                         "i686-linux" "x86_64-linux"))
     (inputs '())
     (propagated-inputs '())
     (arguments
