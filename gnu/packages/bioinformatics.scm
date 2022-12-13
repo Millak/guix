@@ -435,14 +435,15 @@ computational cluster.")
                 "1f2hh79l7dn147c2xyfgf5wfjvlqfw32kjfnnh2n1qy6rpzx2fik"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       ,#~(list (string-append "prefix=" #$output))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (inputs
      (list samtools zlib))
     (home-page "https://github.com/arq5x/bedtools2")
