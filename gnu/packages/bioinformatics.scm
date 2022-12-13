@@ -600,9 +600,9 @@ for all types of microbial diversity analyses.")
     (inputs
      (list boost samtools))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper))) ; for tests
+     (list googletest
+           pkg-config
+           python-wrapper)) ;for tests
     (home-page "https://github.com/PacificBiosciences/pbbam")
     (synopsis "Work with PacBio BAM files")
     (description
