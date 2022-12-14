@@ -196,6 +196,7 @@
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages lisp-xyz)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages music)
   #:use-module (gnu packages version-control)
@@ -8635,6 +8636,46 @@ autocomplete style popup menu.")
       (description
        "Popper is a minor-mode to tame the flood of ephemeral
 windows Emacs produces, while still keeping them within arm’s reach.")
+      (license license:gpl3+))))
+
+(define-public emacs-pydoc
+  ;; https://github.com/statmobile/pydoc/issues/31
+  (let ((commit "c8b667e17bfe3e63221f822c5c4d58c8fb4fea90")
+        (revision "0"))
+    (package
+      (name "emacs-pydoc")
+      (version (git-version "0.2" revision commit))
+      (source
+       (origin
+         (uri (git-reference
+               (url "https://github.com/statmobile/pydoc")
+               (commit commit)))
+         (method git-fetch)
+         (sha256
+          (base32 "082ar5w28dknaa63mf587vdzr78xlnvh8lbxqq3hk6qa2c72akam"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+        (list
+         #:phases
+         #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-python-executable
+              (lambda* (#:key outputs #:allow-other-keys)
+                (emacs-substitute-variables "pydoc.el"
+                  ("pydoc-python-command"
+                    (search-input-file outputs "bin/python")))))
+            (add-after 'unpack 'patch-lsof-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "pydoc.el"
+                  (("\"lsof")
+                   ;; Replace removed double quote in parsing of lsof executable.
+                   (string-append "\"" (search-input-file inputs "bin/lsof")))))))))
+      (inputs (list lsof python-wrapper))
+      (propagated-inputs (list python-jedi))
+      (home-page "https://github.com/statmobile/pydoc")
+      (synopsis "Navigate Python documentation in Emacs")
+      (description "This package provides an Emacs mode for navigating
+Python documentation with @code{pydoc} in Emacs.")
       (license license:gpl3+))))
 
 (define-public emacs-python-black
