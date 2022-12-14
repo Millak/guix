@@ -4215,7 +4215,7 @@ languages like Fortran.")
 (define-public julia-paddedviews
   (package
     (name "julia-paddedviews")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
       (origin
         (method git-fetch)
@@ -4224,7 +4224,7 @@ languages like Fortran.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0ran2vj6ahlzib0g77y7g0jhavy3k9s2mqq23ybpgp9z677wf26h"))))
+         (base32 "1835q06g6ymqh1k7625ssahwm46j08370v2inb61y1lw8vd99f3x"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-offsetarrays))
