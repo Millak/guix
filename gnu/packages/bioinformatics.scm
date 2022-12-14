@@ -482,26 +482,27 @@ BED, GFF/GTF, VCF.")
                (base32
                 "11rvca19ncg03kxd0wzlfx5ws7r3nisd0z8s9j9n182d8ksp2pxz"))))
     (arguments
-     '(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "src/utils/fileType/FileRecordTypeChecker.h"
-               (("static const float PERCENTAGE")
-                "static constexpr float PERCENTAGE"))
-             (substitute* "src/utils/general/DualQueue.h"
-               (("template <class T, template<class T> class CompareFunc>")
-                "template <class T, template<class U> class CompareFunc>"))))
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (for-each (lambda (file)
-                           (install-file file bin))
-                         (find-files "bin" ".*"))))))))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            (lambda _
+              (substitute* "src/utils/fileType/FileRecordTypeChecker.h"
+                (("static const float PERCENTAGE")
+                 "static constexpr float PERCENTAGE"))
+              (substitute* "src/utils/general/DualQueue.h"
+                (("template <class T, template<class T> class CompareFunc>")
+                 "template <class T, template<class U> class CompareFunc>"))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin/")))
+                (for-each (lambda (file)
+                            (install-file file bin))
+                          (find-files "bin" ".*"))))))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (inputs
      (list samtools zlib))))
 
