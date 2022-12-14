@@ -456,7 +456,7 @@ controls for certain tuners which may be paired with an audio device.")
 (define-public soapyrtlsdr
   (package
     (name "soapyrtlsdr")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method git-fetch)
@@ -465,7 +465,7 @@ controls for certain tuners which may be paired with an audio device.")
              (commit (string-append "soapy-rtl-sdr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dlnryj6k20pk7w7v4v13y099r7ikhvlzbgzgphmi5cxkdv0shrd"))))
+        (base32 "0g1d69lpqw9c8hkir0h61nh40rgyz9p9x04xcfdih7iw26n5vai1"))))
     (build-system cmake-build-system)
     (inputs
      (list rtl-sdr soapysdr))
