@@ -26264,8 +26264,25 @@ Zombie Raptor game engine project.")
          (sha256
           (base32 "146mwshynhdw82m2nxrcjvf1nk0z3fn6ywcd2vqxkly5qricc53w"))))
       (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
       (arguments
-       '(#:asd-systems '("charje.triads")))
+       '(#:asd-systems '("charje.triads")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'create-asdf-configuration 'build-binary
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "HOME" (getcwd))
+               (invoke
+                "sbcl" "--eval" "(require :asdf)" "--eval"
+                (format
+                 #f "~S"
+                 `(progn
+                   (require "charje.triads"
+                            ,(string-append (getcwd) "/charje.triads.asd"))
+                   (asdf:make "charje.triads"))))
+               (install-file
+                (string-append (getcwd) "/triads")
+                (string-append (assoc-ref outputs "bin") "/bin")))))))
       (inputs
        (list sbcl-cl-str
              sbcl-serapeum
@@ -26282,7 +26299,15 @@ roman numeral given in the key.")
   (sbcl-package->cl-source-package sbcl-triads))
 
 (define-public ecl-triads
-  (sbcl-package->ecl-package sbcl-triads))
+  (let ((ecl-package (sbcl-package->ecl-package sbcl-triads)))
+    (package
+      (inherit ecl-package)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments ecl-package)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-binary))))))))
 
 (define-public sbcl-closure-template
   ;; There are no releases since 2015.
