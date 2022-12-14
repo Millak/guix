@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -58,6 +58,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 
@@ -244,14 +245,16 @@ servers from Python programs.")
 (define-public 389-ds-base
   (package
     (name "389-ds-base")
-    (version "1.4.4.17")
+    (version "1.4.5.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/389ds/389-ds-base/archive/"
-                                  "389-ds-base-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/389ds/389-ds-base")
+                    (commit (string-append "389-ds-base-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i8m4crbnjjhfb7cq758rd0fxyz36i291yq6fykkprjykz9s3zv4"))))
+                "1s627w4kwrbszrkm6k6v32gx7jd27h4yqvs81kjkakiaq2lh1s1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
@@ -264,26 +267,18 @@ servers from Python programs.")
        #:configure-flags
        (list (string-append "--with-db="
                             (assoc-ref %build-inputs "bdb"))
-             (string-append "--with-sasl="
-                            (assoc-ref %build-inputs "cyrus-sasl"))
              (string-append "--with-netsnmp="
                             (assoc-ref %build-inputs "net-snmp"))
-             (string-append "--with-pcre="
-                            (assoc-ref %build-inputs "pcre"))
              (string-append "--with-selinux="
                             (assoc-ref %build-inputs "libselinux"))
              "--localstatedir=/var"
-             "--with-instconfigdir=/etc/dirsrv"
-             ;; The Perl scripts are being removed in the 1.4.0 release.
-             ;; Building them would require packaging of the outdated Mozilla
-             ;; LDAP SDK (instead of OpenLDAP) and PerLDAP.
-             "--disable-perl")
+             "--with-instconfigdir=/etc/dirsrv")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-references
            (lambda _
-             (substitute* "include/ldaputil/certmap.h"
-               (("nss3/cert.h") "nss/cert.h"))
+             (substitute* "ldap/servers/plugins/sync/sync_persist.c"
+               (("nspr4") "nspr"))
              (substitute* "src/lib389/lib389/utils.py"
                (("'/sbin/ip'")
                 (string-append "'" (which "ip") "'")))
@@ -291,10 +286,7 @@ servers from Python programs.")
                (("'/usr/bin/certutil'")
                 (string-append "'" (which "certutil") "'"))
                (("'/usr/bin/openssl'")
-                (string-append "'" (which "openssl") "'"))
-               (("'/usr/bin/c_rehash'")
-                (string-append "'" (which "perl") "', '"
-                               (which "c_rehash") "'")))))
+                (string-append "'" (which "openssl") "'")))))
          (add-after 'unpack 'overwrite-default-locations
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
@@ -309,8 +301,7 @@ servers from Python programs.")
                   "initconfig_dir = /etc/dirsrv/registry\n"))
                ;; This is used to determine where to write certificate files
                ;; when installing new directory server instances.
-               (substitute* '("src/lib389/lib389/instance/setup.py"
-                              "src/lib389/lib389/instance/remove.py")
+               (substitute* "src/lib389/lib389/instance/setup.py"
                  (("etc_dirsrv_path = .*")
                   "etc_dirsrv_path = '/etc/dirsrv/'\n")))))
          (add-after 'unpack 'fix-install-location-of-python-tools
