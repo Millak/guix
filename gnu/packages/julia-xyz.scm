@@ -2446,7 +2446,7 @@ visualisation applications.")
 (define-public julia-graphics
   (package
     (name "julia-graphics")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
       (origin
         (method git-fetch)
@@ -2455,7 +2455,7 @@ visualisation applications.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "10h1s09v7qkvrjr6l678zamb1p248n8jv4rrwkf8g7d2bpfz9amn"))))
+         (base32 "083fppcbmchgnqp4xqdsd4asavq51jq31w8ak35ns701534hr82p"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-colors
