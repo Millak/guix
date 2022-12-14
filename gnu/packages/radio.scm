@@ -1174,34 +1174,30 @@ for correctness.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mossmann/hackrf")
+             (url "https://github.com/greatscottgadgets/hackrf")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32 "0m9j160q5zb3jimszv1lb6j76zf5lwijvpfl1k28d832rh847vvk"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DUDEV_RULES_GROUP=dialout"
-             (string-append "-DUDEV_RULES_PATH="
-                            (assoc-ref %outputs "out")
-                            "/lib/udev/rules.d"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'enter-source-directory
-           (lambda _
-             (chdir "host")
-             #t))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libhackrf.a"))
-             #t))
-         (add-before 'install-license-files 'leave-source-directory
-           (lambda _
-             (chdir "..")
-             #t)))
-       #:tests? #f)) ; no test suite
+     (list #:configure-flags
+           #~(list "-DUDEV_RULES_GROUP=dialout"
+                   (string-append "-DUDEV_RULES_PATH="
+                                  #$output
+                                  "/lib/udev/rules.d"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'enter-source-directory
+                 (lambda _
+                   (chdir "host")))
+               (add-after 'install 'delete-static-library
+                 (lambda _
+                   (delete-file (string-append #$output "/lib/libhackrf.a"))))
+               (add-before 'install-license-files 'leave-source-directory
+                 (lambda _
+                   (chdir ".."))))
+           #:tests? #f)) ; no test suite
     (native-inputs
      (list pkg-config))
     (inputs
