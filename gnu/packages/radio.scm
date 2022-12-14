@@ -1515,14 +1515,14 @@ operators.")
 (define-public xnec2c
   (package
     (name "xnec2c")
-    (version "4.4.11")
+    (version "4.4.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xnec2c.org/releases/xnec2c-v"
                            version ".tar.gz"))
        (sha256
-        (base32 "13ybnb1v1y9wjmj49s8ir2rpfsz7h8r9jwv0qd4if9wsn44jg29k"))))
+        (base32 "1ibj2bjzn4dp988w0yayjsiccv44icsm02gr0g6gk389p7lg32p9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
