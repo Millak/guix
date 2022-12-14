@@ -2903,6 +2903,9 @@ number of occurrences of bit @code{b} in @code{bv[1:i]}
 index of i-th occurrence of @code{b} in @code{bv}.
 @end itemize
 and other shortcuts or types.")
+    ;; There are plenty of places in the code which rely on the
+    ;; length of an Integer in a 64-bit system.
+    (supported-systems %64bit-supported-systems)
     (license license:expat)))
 
 (define-public julia-indexing
