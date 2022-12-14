@@ -1601,7 +1601,7 @@ their position, altitude, speed, etc.")
 (define-public rtl-433
   (package
     (name "rtl-433")
-    (version "21.12")
+    (version "22.11")
     (source
      (origin
        (method git-fetch)
@@ -1610,7 +1610,7 @@ their position, altitude, speed, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ygxs35zvgnamhqdwk1akcwagcirzpi4wndzgf9d23faiv4cm01a"))))
+        (base32 "0qx89qmf0zn0qa05vraipny4ihx6lm72s830mbfyzw2znyk3wdm8"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
