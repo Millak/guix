@@ -1169,7 +1169,7 @@ for correctness.")
 (define-public hackrf
   (package
     (name "hackrf")
-    (version "2021.03.1")
+    (version "2022.09.1")
     (source
      (origin
        (method git-fetch)
@@ -1178,7 +1178,7 @@ for correctness.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12fkgimjy5ia291c1rn4y59pn9r5wdvz5x9z5xc8zr1xr96iyhfs"))))
+        (base32 "0m9j160q5zb3jimszv1lb6j76zf5lwijvpfl1k28d832rh847vvk"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
