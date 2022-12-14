@@ -29069,7 +29069,7 @@ Sets the lock directory of the instance.
 @item @code{log-dir} (default: @code{"/var/log/dirsrv/slapd-@{instance_name@}"}) (type: string)
 Sets the log directory of the instance.
 
-@item @code{run-dir} (default: @code{"/var/run/dirsrv"}) (type: string)
+@item @code{run-dir} (default: @code{"/run/dirsrv"}) (type: string)
 Sets PID directory of the instance.
 
 @item @code{schema-dir} (default: @code{"/etc/dirsrv/slapd-@{instance_name@}/schema"}) (type: string)

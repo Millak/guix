@@ -120,7 +120,7 @@ database.")
    (string "/var/log/dirsrv/slapd-{instance_name}")
    "Sets the log directory of the instance.")
   (run-dir
-   (string "/var/run/dirsrv")
+   (string "/run/dirsrv")
    "Sets PID directory of the instance.")
   (schema-dir
    (string "/etc/dirsrv/slapd-{instance_name}/schema")
