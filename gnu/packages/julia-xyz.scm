@@ -3423,7 +3423,7 @@ equations in string literals in the Julia language.")
 (define-public julia-lazyarrays
   (package
     (name "julia-lazyarrays")
-    (version "0.22.2")
+    (version "0.22.16")
     (source
       (origin
         (method git-fetch)
@@ -3432,7 +3432,7 @@ equations in string literals in the Julia language.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "17rhlrmgfvdw8w62pg32ikr9j4xy2ylr7mx7ar0hnpzryv929rp5"))))
+         (base32 "127yld4f26lchw5jwp30g2jkjbm7narfsxwcbggy7dfp43s531c5"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -3445,13 +3445,15 @@ equations in string literals in the Julia language.")
                   (substitute* "test/multests.jl"
                     (("Int64") "Int32"))))))))
     (propagated-inputs
-     (list julia-arraylayouts
+     (list julia-aqua
+           julia-arraylayouts
            julia-fillarrays
            julia-macrotools
            julia-matrixfactorizations
            julia-staticarrays))
     (native-inputs
-     (list julia-tracker))
+     (list julia-aqua
+           julia-tracker))
     (home-page "https://github.com/JuliaArrays/LazyArrays.jl")
     (synopsis "Lazy arrays and linear algebra")
     (description "This package supports lazy analogues of array operations like
