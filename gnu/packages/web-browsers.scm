@@ -72,6 +72,7 @@
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunistring)
@@ -829,7 +830,7 @@ http, and https via third-party applications.")
 (define-public tinmop
   (package
     (name "tinmop")
-    (version "0.9.9")
+    (version "0.9.9.14")
     (source
      (origin
        (method git-fetch)
@@ -838,12 +839,13 @@ http, and https via third-party applications.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0s73587wf29jzymlqrgcnci7w6wsfj1vcs7szxshsmaiszf0skwk"))))
+        (base32 "0xpqakqg4827wv92vvzwcvkqzr8d523fvnyjvnj4ac83d4w6nnls"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
            automake
            gnu-gettext
+           imagemagick
            mandoc
            nano
            openssl
