@@ -3060,6 +3060,27 @@ container mapping @code{(K,V)} pairs via the type @code{IntervalTree{K, V}}.
 The type @code{K} may be any ordered type.")
       (license license:expat))))
 
+(define-public julia-inversefunctions
+  (package
+    (name "julia-inversefunctions")
+    (version "0.1.8")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaMath/InverseFunctions.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "05g9f6i735x7syfr56l4yf4fy71kgdisjc6cfxi4jkf46iq86a69"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-documenter))
+    (home-page "https://github.com/JuliaMath/InverseFunctions.jl")
+    (synopsis "Interface for function inversion")
+    (description "This package provides an interface to invert functions.")
+    (license license:expat)))
+
 (define-public julia-invertedindices
   (package
     (name "julia-invertedindices")
