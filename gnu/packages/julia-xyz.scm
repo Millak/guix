@@ -1801,7 +1801,7 @@ combinations of dual numbers with predefined Julia numeric types.")
 (define-public julia-ellipsisnotation
   (package
     (name "julia-ellipsisnotation")
-    (version "1.1.0")
+    (version "1.6.0")
     (source
       (origin
         (method git-fetch)
@@ -1810,17 +1810,8 @@ combinations of dual numbers with predefined Julia numeric types.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0py46kxl702r8pw3v7x4cqllf7yc91b0dr7vb60xh2qi7d6y3jc7"))))
+         (base32 "0l4fc180chhxlq9d67122c0lgq2hfsxsmcgml2bfl2rnh13gya2b"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'adjust-test-suite
-            (lambda _
-              (substitute* "test/runtests.jl"
-                ;; Seems to not play nicely with Julia-1.6.
-                ((".*basic.jl.*") "")))))))
     (propagated-inputs
      (list julia-arrayinterface))
     (home-page "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
