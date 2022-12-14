@@ -2497,46 +2497,42 @@ Caller-ID.")
     (license license:gpl3+)))
 
 (define-public rfcat
-  ;; Use a commit for now because some fixes to make rfcat work with
-  ;; Python 3 instead of Python 2 are not in a release yet.
-  (let ((commit "725bf79af27d47cdec64107317c1c8fe3f7ad7b8")
-        (revision "1"))
-    (package
-      (name "rfcat")
-      (version (git-version "1.9.5" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/atlas0fd00m/rfcat")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0dbc6n4pxsa73wzxny773khc73r1dn3ma5hi7xv76vcykjvzkdi3"))))
-      (build-system python-build-system)
-      (inputs
-       (list python-future
-             python-ipython
-             python-numpy
-             python-pyserial
-             python-pyside-2
-             python-pyusb))
-      (arguments
-       `(#:tests? #f  ; Tests want to use a serial port
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-permissions
-             (lambda _
-               (make-file-writable "rflib/rflib_version.py")))
-           (add-after 'install 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "etc/udev/rules.d/20-rfcat.rules"
-                             (string-append (assoc-ref outputs "out")
-                                            "/lib/udev/rules.d")))))))
-      (home-page "https://github.com/atlas0fd00m/rfcat")
-      (synopsis "Program to control some radio dongles")
-      (description
-       "@code{rfcat} is a program to control some radio dongles operating in
+  (package
+    (name "rfcat")
+    (version "1.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas0fd00m/rfcat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zmgbgf1025ln2v6lc27dmkmwv8pxjgrmhmpk34rkkixhvnk69pf"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-future
+           python-ipython
+           python-numpy
+           python-pyserial
+           python-pyside-2
+           python-pyusb))
+    (arguments
+     `(#:tests? #f  ; Tests want to use a serial port
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-permissions
+           (lambda _
+             (make-file-writable "rflib/rflib_version.py")))
+         (add-after 'install 'install-udev-rules
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "etc/udev/rules.d/20-rfcat.rules"
+                           (string-append (assoc-ref outputs "out")
+                                          "/lib/udev/rules.d")))))))
+    (home-page "https://github.com/atlas0fd00m/rfcat")
+    (synopsis "Program to control some radio dongles")
+    (description
+     "@code{rfcat} is a program to control some radio dongles operating in
 ISM bands.
 
 Supported dongles:
@@ -2549,8 +2545,8 @@ Supported dongles:
 
 To install the rfcat udev rules, you must extend @code{udev-service-type} with
 this package.  E.g.: @code{(udev-rules-service 'rfcat rfcat)}")
-      (license (list license:bsd-3
-                     license:gpl2)))))
+    (license (list license:bsd-3
+                   license:gpl2))))
 
 (define-public rx-tools
   ;; No tagged release since 2016, use commit instead.
