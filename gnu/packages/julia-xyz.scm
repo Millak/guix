@@ -3634,7 +3634,7 @@ comes from the fact that @code{M == map(f, A)}.")
 (define-public julia-matrixfactorizations
   (package
     (name "julia-matrixfactorizations")
-    (version "0.8.4")
+    (version "0.9.3")
     (source
       (origin
         (method git-fetch)
@@ -3643,7 +3643,7 @@ comes from the fact that @code{M == map(f, A)}.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "15zvcv2l4iqmjpnqjyx2kry7a85p652nbjy9pj3wq0piksqcz4jb"))))
+         (base32 "0sqmig01irmvh617h2rsw44hl39qwv2913nlqjsdz9si5vli2hsl"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -3651,10 +3651,8 @@ comes from the fact that @code{M == map(f, A)}.")
       #~(modify-phases %standard-phases
           (add-after 'link-depot 'skip-failing-test
             (lambda _
-              ;; Tests with math functions are hard.
               (substitute* "test/test_ul.jl"
-                (("@test @inferred\\(logdet") "@test @test_nowarn(logdet")
-                ;; Also skip the REPL test.
+                ;; Don't warn on the REPL test.
                 (("test String") "test_nowarn String")))))))
     (propagated-inputs
      (list julia-arraylayouts))
