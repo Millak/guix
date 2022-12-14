@@ -311,7 +311,7 @@ axes, allowing column names or interval selections.")
 (define-public julia-bandedmatrices
   (package
     (name "julia-bandedmatrices")
-    (version "0.16.10")
+    (version "0.17.9")
     (source
       (origin
         (method git-fetch)
@@ -320,13 +320,15 @@ axes, allowing column names or interval selections.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0rlfj9gr9ss621v5kw5b06206yaak21s2vq9vk7r8a7p2ylncism"))))
+         (base32 "0nrcasjdpwf15z7l2lzyhxjqxlnqk5if78s15sh4gdgxf9kzj3a6"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-arraylayouts
+     (list julia-aqua
+           julia-arraylayouts
            julia-fillarrays))
     (native-inputs
-     (list julia-genericlinearalgebra))
+     (list julia-aqua
+           julia-genericlinearalgebra))
     (home-page "https://github.com/JuliaMatrices/BandedMatrices.jl")
     (synopsis "Julia package for representing banded matrices")
     (description "This package supports representing banded matrices by only
