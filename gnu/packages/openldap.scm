@@ -30,6 +30,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gettext)
@@ -245,7 +246,9 @@ servers from Python programs.")
 (define-public 389-ds-base
   (package
     (name "389-ds-base")
-    (version "1.4.5.0")
+    ;; More recent versions require rust.  That's not bad, but it's a
+    ;; challenge to integrate three build systems.
+    (version "2.2.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -254,7 +257,7 @@ servers from Python programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1s627w4kwrbszrkm6k6v32gx7jd27h4yqvs81kjkakiaq2lh1s1z"))))
+                "1sdvfbjfg0091f47562gw3gdc2vgvvhyhdi21lrpwnw9lqc8xdxk"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((srfi srfi-1)
@@ -355,16 +358,18 @@ servers from Python programs.")
            httpd
            icu4c
            iproute
+           json-c
            libevent
            libselinux
            linux-pam
+           lmdb
            mit-krb5
            net-snmp
            nspr
            nss
-           (list nss "bin")             ; for certutil
+           (list nss "bin")             ;for certutil
            openldap
-           openssl                      ; #included by net-snmp
+           openssl                      ;#included by net-snmp
            pcre
            python
            python-pyasn1
