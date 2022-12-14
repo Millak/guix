@@ -1577,18 +1577,19 @@ gain and standing wave ratio.")
     (inputs
      (list hackrf libusb ncurses rtl-sdr))
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "BLADERF=no")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (install-file "dump1090" bin)
-               (install-file "view1090" bin)))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "BLADERF=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin/")))
+                (install-file "dump1090" bin)
+                (install-file "view1090" bin)))))))
     (synopsis "Mode S decoder for rtl-sdr devices")
     (description
      "Dump1090 is a Mode S decoder specifically designed for rtl-sdr devices.
