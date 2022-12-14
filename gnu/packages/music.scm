@@ -4775,7 +4775,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "3.6.2")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -4784,22 +4784,17 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0szvb6mlzy9df9lrq546rrpixa480knzij1wgh6ilflxz87q048q"))
+        (base32 "16rcwr6fzghv8100syzicabqg8jqvng3zzsi6h3ja4zkp9hcbkcr"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove unused libraries.
         '(begin
            (for-each delete-file-recursively
-                     '("thirdparty/freetype"
-                       "thirdparty/openssl"
-                       "thirdparty/portmidi"
-                       "thirdparty/qt-google-analytics"))))))
+                     '("thirdparty/freetype"))))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags
-       `("-DBUILD_TELEMETRY_MODULE=OFF" ;don't phone home
-         "-DBUILD_WEBENGINE=OFF"
-         "-DDOWNLOAD_SOUNDFONT=OFF"
+       `("-DDOWNLOAD_SOUNDFONT=OFF"
          "-DMUSESCORE_BUILD_CONFIG=release"
          "-DUSE_SYSTEM_FREETYPE=ON")
        ;; There are tests, but no simple target to run.  The command used to
@@ -4811,6 +4806,8 @@ includes LV2 plugins and a JACK standalone client.")
        ;; Basically, it requires to start a whole new build process.
        ;; So we simply skip them.
        #:tests? #f))
+    (native-inputs
+     (list git-minimal pkg-config qttools-5))
     (inputs
      (list alsa-lib
            freetype
@@ -4823,15 +4820,16 @@ includes LV2 plugins and a JACK standalone client.")
            portaudio
            portmidi
            pulseaudio
+           python
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
+           qtnetworkauth-5
            qtquickcontrols2-5
            qtscript
            qtsvg-5
+           qtx11extras
            qtxmlpatterns))
-    (native-inputs
-     (list pkg-config qttools-5))
     (synopsis "Music composition and notation software")
     (description
      "MuseScore is a music score typesetter.  Its main purpose is the creation
@@ -4846,7 +4844,7 @@ appearance and layout are provided.
 MuseScore can also play back scores through the built-in sequencer and SoundFont
 sample library.")
     (home-page "https://musescore.org")
-    (license license:gpl2)))
+    (license license:gpl3)))
 
 (define-public muse-sequencer
   (package
