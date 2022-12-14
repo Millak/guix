@@ -4869,7 +4869,7 @@ package can help create and update if need be.")
 (define-public julia-requires
   (package
     (name "julia-requires")
-    (version "1.1.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4878,14 +4878,13 @@ package can help create and update if need be.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03hyfy7c0ma45b0y756j76awi3az2ii4bz4s8cxm3xw9yy1z7b01"))))
+        (base32 "0gmqs7f17aq500lbdff4ibws00f8m0pnzskvf4b3ig520xv3n3nm"))))
     (build-system julia-build-system)
     (arguments
-     (list #:parallel-tests? #f))
-    (inputs                             ;required for test
-     (list julia-example))
-    (propagated-inputs
-     (list julia-colors))
+     (list #:parallel-tests? #f))       ; Test suite has race conditions.
+    (native-inputs
+     (list julia-colors
+           julia-example))
     (home-page "https://github.com/JuliaPackaging/Requires.jl/")
     (synopsis "Faster package loader")
     (description "This package make loading packages faster, maybe.  It
