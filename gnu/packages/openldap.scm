@@ -269,7 +269,8 @@ servers from Python programs.")
       #:imported-modules `((guix build python-build-system)
                            ,@%gnu-build-system-modules)
       #:configure-flags
-      #~(list (string-append "--with-db="
+      #~(list "--enable-cmocka"
+              (string-append "--with-db="
                              #$(this-package-input "bdb"))
               (string-append "--with-netsnmp="
                              #$(this-package-input "net-snmp"))
@@ -380,6 +381,7 @@ servers from Python programs.")
     (native-inputs
      (list autoconf
            automake
+           cmocka
            doxygen
            gettext-minimal
            libtool
