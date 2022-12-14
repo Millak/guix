@@ -5100,6 +5100,8 @@ a loadable module.")
     (description "This package finds the first occurrence of a byte or set of
 bytes in a chunk of memory.  Think of it like a much faster version of
 @code{findfirst} that only iterates over bytes in memory.")
+    ;; https://github.com/jakobnissen/ScanByte.jl/issues/2
+    (supported-systems '("x86_64-linux"))
     (license license:expat)))
 
 (define-public julia-scratch
