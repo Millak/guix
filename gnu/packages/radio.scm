@@ -1626,7 +1626,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
 (define-public multimon-ng
   (package
     (name "multimon-ng")
-    (version "1.1.9")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1635,7 +1635,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01716cfhxfzsab9zjply9giaa4nn4b7rm3p3vizrwi7n253yiwm2"))))
+        (base32 "0hm7391z1iz2sk4xkwfphqz8qvihqjzsh45csz14gb4jfs1p6ks2"))))
     (build-system cmake-build-system)
     (inputs
      (list libx11 pulseaudio))
