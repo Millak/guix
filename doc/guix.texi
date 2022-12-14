@@ -39223,7 +39223,7 @@ $ qemu-system-x86_64 \
    -nic user,model=virtio-net-pci \
    -enable-kvm -m 2048 \
    -device virtio-blk,drive=myhd \
-   -drive if=none,file=/tmp/qemu-image,id=myhd
+   -drive if=none,file=guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2,id=myhd
 @end example
 
 Here is what each of these options means:
@@ -39259,8 +39259,9 @@ better performance than if it were emulating a complete disk drive.  See the
 QEMU and KVM documentation for more info.
 
 @item -drive if=none,file=/tmp/qemu-image,id=myhd
-Use our QCOW image, the @file{/tmp/qemu-image} file, as the backing
-store of the ``myhd'' drive.
+Use our QCOW image, the
+@file{guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2} file, as
+the backing store of the ``myhd'' drive.
 @end table
 
 The default @command{run-vm.sh} script that is returned by an invocation of

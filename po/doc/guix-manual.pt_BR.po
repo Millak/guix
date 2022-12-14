@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: guix manual checkout\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-12-02 03:18+0000\n"
-"PO-Revision-Date: 2022-01-25 15:16+0000\n"
+"PO-Revision-Date: 2022-12-15 00:11+0100\n"
 "Last-Translator: Fábio Rodrigues Ribeiro <farribeiro@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://translate.fedoraproject.org/projects/guix/documentation-manual/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -71324,7 +71324,7 @@ msgstr ""
 
 #. type: table
 #: guix-git/doc/guix.texi:39296
-msgid "Use our QCOW image, the @file{/tmp/qemu-image} file, as the backing store of the ``myhd'' drive."
+msgid "Use our QCOW image, the @file{guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2} file, as the backing store of the ``myhd'' drive."
 msgstr ""
 
 #. type: Plain text
