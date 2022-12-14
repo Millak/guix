@@ -121,10 +121,8 @@ chk_require()
         command -v "$c" &>/dev/null || warn+=("$c")
     done
 
-    [ "${#warn}" -ne 0 ] &&
-        { _err "${ERR}Missing commands: ${warn[*]}.";
-          return 1; }
-    
+    [ "${#warn}" -ne 0 ] && die "Missing commands: ${warn[*]}."
+
     _msg "${PAS}verification of required commands completed"
 }
 
