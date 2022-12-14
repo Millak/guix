@@ -601,7 +601,7 @@ A @code{BlockBandedMatrix} is a subtype of @code{BlockMatrix} of
 (define-public julia-bson
   (package
     (name "julia-bson")
-    (version "0.3.3")
+    (version "0.3.6")
     (source
       (origin
         (method git-fetch)
@@ -610,7 +610,7 @@ A @code{BlockBandedMatrix} is a subtype of @code{BlockMatrix} of
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1l5608ma2ys7v2gpcqbiv9mwfc6yrlqkihrfx1pf7fgv5llhd4fn"))))
+         (base32 "1accra3casg66fhn5r07hz3rgs7qf9ld9ajnz8f80aid85zyp891"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-dataframes))
