@@ -427,28 +427,31 @@ controls for certain tuners which may be paired with an audio device.")
       (license license:expat))))
 
 (define-public soapyhackrf
-  (package
-    (name "soapyhackrf")
-    (version "0.3.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pothosware/SoapyHackRF")
-             (commit (string-append "soapy-hackrf-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wnnsm3c4ivwcbs1b68svbyds13aajws9mqk2xjc2pqgj0fdhcvz"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list hackrf soapysdr))
-    (arguments
-     `(#:tests? #f))  ; No test suite
-    (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
-    (synopsis "SoapySDR HackRF module")
-    (description
-     "This package provides HackRF devices support to the SoapySDR library.")
-    (license license:expat)))
+  ;; Some fixes are not yet in a tagged release.
+  (let ((commit "6c0c33f0aa44c3080674e6bca0273184d3e9eb44")
+        (revision "1"))
+    (package
+      (name "soapyhackrf")
+      (version (git-version "0.3.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyHackRF")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1khplrp6iphdclj1wrybxs7pw42rf9112fhfhw7x2fvds8yiswm7"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list hackrf soapysdr))
+      (arguments
+       `(#:tests? #f))  ; No test suite
+      (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
+      (synopsis "SoapySDR HackRF module")
+      (description
+       "This package provides HackRF devices support to the SoapySDR library.")
+      (license license:expat))))
 
 (define-public soapyrtlsdr
   (package
