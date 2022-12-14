@@ -149,7 +149,7 @@ provides functions to run a few automatable checks for Julia packages.")
 (define-public julia-arrayinterface
   (package
     (name "julia-arrayinterface")
-    (version "3.1.19")
+    (version "5.0.8")
     (source
       (origin
         (method git-fetch)
@@ -158,7 +158,7 @@ provides functions to run a few automatable checks for Julia packages.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0cmldnzvdgmfnrnrzgj6v1mfr2rvk5096392rwmhd3iyx7v0pq33"))))
+         (base32 "0b0h4ihc8sykd96rn16vpk5kfk0p1si5iim61cixk9x12ma8ia3h"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Unexpected failures for i686, e.g.,
@@ -168,15 +168,17 @@ provides functions to run a few automatable checks for Julia packages.")
      (list #:tests? (not (or (%current-target-system)
                              (target-x86-32?)))))
     (propagated-inputs
-     (list julia-ifelse
+     (list julia-compat
+           julia-ifelse
            julia-requires
-           julia-static))
+           julia-static-0.6))
     (native-inputs
      (list julia-aqua
            julia-bandedmatrices
            julia-blockbandedmatrices
            julia-ifelse
            julia-offsetarrays
+           julia-static-0.6
            julia-staticarrays))
     (home-page "https://github.com/JuliaArrays/ArrayInterface.jl")
     (synopsis "Base array interface primitives")
