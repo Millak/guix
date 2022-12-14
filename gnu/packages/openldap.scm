@@ -357,42 +357,41 @@ servers from Python programs.")
                            "/bin/ds-logpipe.py"
                            "/bin/ds-replcheck"))))))))
     (inputs
-     `(("bdb" ,bdb)
-       ("cracklib" ,cracklib)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("gnutls" ,gnutls)
-       ("httpd" ,httpd)
-       ("icu4c" ,icu4c)
-       ("iproute" ,iproute)
-       ("libevent" ,libevent)
-       ("libselinux" ,libselinux)
-       ("linux-pam" ,linux-pam)
-       ("mit-krb5" ,mit-krb5)
-       ("net-snmp" ,net-snmp)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
-       ("nss:bin" ,nss "bin")           ; for certutil
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)             ; #included by net-snmp
-       ("pcre" ,pcre)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)
-       ("python-pytest" ,python-pytest)
-       ("python-dateutil" ,python-dateutil)
-       ("python-six" ,python-six)
-       ("python-argcomplete" ,python-argcomplete)
-       ("python-argparse-manpage" ,python-argparse-manpage)
-       ("python-ldap" ,python-ldap)))
+     (list bdb
+           cracklib
+           cyrus-sasl
+           gnutls
+           httpd
+           icu4c
+           iproute
+           libevent
+           libselinux
+           linux-pam
+           mit-krb5
+           net-snmp
+           nspr
+           nss
+           (list nss "bin")             ; for certutil
+           openldap
+           openssl                      ; #included by net-snmp
+           pcre
+           python
+           python-pyasn1
+           python-pyasn1-modules
+           python-pytest
+           python-dateutil
+           python-six
+           python-argcomplete
+           python-argparse-manpage
+           python-ldap))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("rsync" ,rsync)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           doxygen
+           gettext-minimal
+           libtool
+           rsync
+           pkg-config))
     (home-page "https://directory.fedoraproject.org")
     (synopsis "Enterprise-class LDAP server")
     (description "389ds is an enterprise-class LDAP server.  It is hardened by
