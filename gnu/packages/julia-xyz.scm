@@ -527,7 +527,7 @@ and amino acids that are used ny otherBioJulia packages.")
 (define-public julia-blockarrays
   (package
     (name "julia-blockarrays")
-    (version "0.16.8")
+    (version "0.16.23")
     (source
       (origin
         (method git-fetch)
@@ -536,7 +536,7 @@ and amino acids that are used ny otherBioJulia packages.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1by26036fk9mawmcgqxpwizgbs398v9p6vrbsgg7h6llqn3q9iw1"))))
+         (base32 "14gby25ixbp9ha0y2aj4gnjkzha4c7v4y3sicicgbkysnq921qd0"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -552,7 +552,7 @@ and amino acids that are used ny otherBioJulia packages.")
      (list julia-arraylayouts
            julia-fillarrays))
     (native-inputs
-     (list julia-lazyarrays
+     (list julia-aqua
            julia-offsetarrays
            julia-staticarrays))
     (home-page "https://github.com/JuliaArrays/BlockArrays.jl")
