@@ -260,96 +260,93 @@ servers from Python programs.")
                 "1sdvfbjfg0091f47562gw3gdc2vgvvhyhdi21lrpwnw9lqc8xdxk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((srfi srfi-1)
+     (list
+      #:modules '((srfi srfi-1)
                   (guix build gnu-build-system)
                   ((guix build python-build-system)
                    #:select (add-installed-pythonpath python-version))
                   (guix build utils))
-       #:imported-modules ((guix build python-build-system)
+      #:imported-modules `((guix build python-build-system)
                            ,@%gnu-build-system-modules)
-       #:configure-flags
-       (list (string-append "--with-db="
-                            (assoc-ref %build-inputs "bdb"))
-             (string-append "--with-netsnmp="
-                            (assoc-ref %build-inputs "net-snmp"))
-             (string-append "--with-selinux="
-                            (assoc-ref %build-inputs "libselinux"))
-             "--localstatedir=/var"
-             "--with-instconfigdir=/etc/dirsrv")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-references
-           (lambda _
-             (substitute* "ldap/servers/plugins/sync/sync_persist.c"
-               (("nspr4") "nspr"))
-             (substitute* "src/lib389/lib389/utils.py"
-               (("'/sbin/ip'")
-                (string-append "'" (which "ip") "'")))
-             (substitute* "src/lib389/lib389/nss_ssl.py"
-               (("'/usr/bin/certutil'")
-                (string-append "'" (which "certutil") "'"))
-               (("'/usr/bin/openssl'")
-                (string-append "'" (which "openssl") "'")))))
-         (add-after 'unpack 'overwrite-default-locations
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "src/lib389/lib389/paths.py"
-                 (("/usr/share/dirsrv/inf/defaults.inf")
-                  (string-append out "/share/dirsrv/inf/defaults.inf")))
-               ;; This directory can only be specified relative to sysconfdir.  This
-               ;; is used to determine where to look for installed directory
-               ;; servers, so in the absence of a search path it needs to be global.
-               (substitute* "ldap/admin/src/defaults.inf.in"
-                 (("^initconfig_dir =.*")
-                  "initconfig_dir = /etc/dirsrv/registry\n"))
-               ;; This is used to determine where to write certificate files
-               ;; when installing new directory server instances.
-               (substitute* "src/lib389/lib389/instance/setup.py"
-                 (("etc_dirsrv_path = .*")
-                  "etc_dirsrv_path = '/etc/dirsrv/'\n")))))
-         (add-after 'unpack 'fix-install-location-of-python-tools
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pythondir (string-append
-                                out "/lib/python"
-                                (python-version (assoc-ref inputs "python"))
+      #:configure-flags
+      #~(list (string-append "--with-db="
+                             #$(this-package-input "bdb"))
+              (string-append "--with-netsnmp="
+                             #$(this-package-input "net-snmp"))
+              (string-append "--with-selinux="
+                             #$(this-package-input "libselinux"))
+              "--localstatedir=/var"
+              "--with-instconfigdir=/etc/dirsrv")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-references
+            (lambda _
+              (substitute* "ldap/servers/plugins/sync/sync_persist.c"
+                (("nspr4") "nspr"))
+              (substitute* "src/lib389/lib389/utils.py"
+                (("'/sbin/ip'")
+                 (string-append "'" (which "ip") "'")))
+              (substitute* "src/lib389/lib389/nss_ssl.py"
+                (("'/usr/bin/certutil'")
+                 (string-append "'" (which "certutil") "'"))
+                (("'/usr/bin/openssl'")
+                 (string-append "'" (which "openssl") "'")))))
+          (add-after 'unpack 'overwrite-default-locations
+            (lambda _
+              (substitute* "src/lib389/lib389/paths.py"
+                (("/usr/share/dirsrv/inf/defaults.inf")
+                 (string-append #$output "/share/dirsrv/inf/defaults.inf")))
+              ;; This directory can only be specified relative to sysconfdir.  This
+              ;; is used to determine where to look for installed directory
+              ;; servers, so in the absence of a search path it needs to be global.
+              (substitute* "ldap/admin/src/defaults.inf.in"
+                (("^initconfig_dir =.*")
+                 "initconfig_dir = /etc/dirsrv/registry\n"))
+              ;; This is used to determine where to write certificate files
+              ;; when installing new directory server instances.
+              (substitute* "src/lib389/lib389/instance/setup.py"
+                (("etc_dirsrv_path = .*")
+                 "etc_dirsrv_path = '/etc/dirsrv/'\n"))))
+          (add-after 'unpack 'fix-install-location-of-python-tools
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((pythondir (string-append
+                                #$output "/lib/python"
+                                (python-version #$(this-package-input "python"))
                                 "/site-packages/")))
-               ;; Install directory must be on PYTHONPATH.
-               (add-installed-pythonpath inputs outputs)
-               ;; Install directory must exist.
-               (mkdir-p pythondir)
-               (substitute* "src/lib389/setup.py"
-                 (("/usr") out))
-               (substitute* "Makefile.am"
-                 (("setup.py install --skip-build" m)
-                  (string-append
-                   m " --prefix=" out
-                   " --root=/ --single-version-externally-managed"))))))
-         (add-after 'build 'build-python-tools
-           (lambda* (#:key make-flags #:allow-other-keys)
-             ;; Set DETERMINISTIC_BUILD to override the embedded mtime in pyc
-             ;; files.
-             (setenv "DETERMINISTIC_BUILD" "1")
-             ;; Use deterministic hashes for strings, bytes, and datetime
-             ;; objects.
-             (setenv "PYTHONHASHSEED" "0")
-             (apply invoke "make" "lib389" make-flags)))
-         (add-after 'install 'install-python-tools
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "lib389-install" make-flags)))
-         (add-after 'install-python-tools 'wrap-python-tools
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (pythonpath (getenv "GUIX_PYTHONPATH")))
-               (for-each (lambda (file)
-                           (wrap-program (string-append out file)
-                             `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
-                         '("/sbin/dsconf"
-                           "/sbin/dscreate"
-                           "/sbin/dsctl"
-                           "/sbin/dsidm"
-                           "/bin/ds-logpipe.py"
-                           "/bin/ds-replcheck"))))))))
+                ;; Install directory must be on PYTHONPATH.
+                (add-installed-pythonpath inputs outputs)
+                ;; Install directory must exist.
+                (mkdir-p pythondir)
+                (setenv "INSTALL_PREFIX" #$output)
+                (substitute* "Makefile.am"
+                  (("setup.py install --skip-build" m)
+                   (string-append
+                    m " --prefix=" #$output
+                    " --root=/ --single-version-externally-managed"))))))
+          (add-after 'build 'build-python-tools
+            (lambda* (#:key make-flags #:allow-other-keys)
+              ;; Set DETERMINISTIC_BUILD to override the embedded mtime in pyc
+              ;; files.
+              (setenv "DETERMINISTIC_BUILD" "1")
+              ;; Use deterministic hashes for strings, bytes, and datetime
+              ;; objects.
+              (setenv "PYTHONHASHSEED" "0")
+              (apply invoke "make" "lib389" make-flags)))
+          (add-after 'install 'install-python-tools
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "lib389-install" make-flags)))
+          (add-after 'install-python-tools 'wrap-python-tools
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((pythonpath (getenv "GUIX_PYTHONPATH")))
+                (for-each (lambda (file)
+                            (wrap-program (string-append #$output file)
+                              `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
+                          '("/sbin/dsconf"
+                            "/sbin/dscreate"
+                            "/sbin/dsctl"
+                            "/sbin/dsidm"
+                            "/bin/ds-logpipe.py"
+                            "/bin/ds-replcheck"))))))))
     (inputs
      (list bdb
            cracklib
