@@ -53,6 +53,7 @@ REQUIRE=(
     "chmod"
     "uname"
     "groupadd"
+    "useradd"
     "tail"
     "tr"
     "xz"
