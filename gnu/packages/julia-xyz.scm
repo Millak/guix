@@ -4326,7 +4326,7 @@ actual computation.")
 (define-public julia-plotutils
   (package
     (name "julia-plotutils")
-    (version "1.0.15")
+    (version "1.2.0")
     (source
       (origin
         (method git-fetch)
@@ -4335,8 +4335,17 @@ actual computation.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "12aw5gkkcfhpczv2w510k65w1j0hjnh825ihimi223v8plsi5105"))))
+         (base32 "1yml9ayaniqnzx5r8sfjckifcm99ck7qhc19cd8fs0bwzkh7nza7"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-test-suite
+             (lambda _
+               (substitute* "test/runtests.jl"
+                 (("(@test_throws) ErrorException (.*notacolor)" _ @test notacolor)
+                  (string-append @test " ArgumentError " notacolor))))))))
     (propagated-inputs
      (list julia-colors
            julia-colorschemes
