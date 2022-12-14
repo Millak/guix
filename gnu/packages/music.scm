@@ -5008,7 +5008,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "22.06")
+    (version "22.12")
     (source
      (origin
        (method url-fetch)
@@ -5016,7 +5016,7 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.bz2"))
        (sha256
-        (base32 "1nzs6g8g36g37zi8dl7gznc77596418g6rzm9a5vxcgbam8q494h"))))
+        (base32 "061xy3flmj7bllibkp5wzdycvghfxvyzdr9g9yrr5q3m70a7wznz"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
@@ -5081,6 +5081,7 @@ specification and header.")
            lilypond
            lrdf
            qtbase-5
+           shared-mime-info
            tar
            lirc
            wavpack
