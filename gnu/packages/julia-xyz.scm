@@ -5433,6 +5433,21 @@ There are multiple ways to understand @code{StackView}:
 types and a common interface that is shared between them.")
     (license license:expat)))
 
+(define-public julia-static-0.6
+  (package
+    (inherit julia-static)
+    (name "julia-static")
+    (version "0.6.6")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/SciML/Static.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "03ri8nl046cz7l433p0nlr84yywxvjykyymqparm8lxxwkv0rxqd"))))))
+
 (define-public julia-staticarrays
   (package
     (name "julia-staticarrays")
