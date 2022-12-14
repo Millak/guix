@@ -2413,19 +2413,27 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.2d")
+    (version "1.50")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/eliggett/wfview")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kpkwxhcacgmprbr8xz840rj9a22513vxrh2q7d3js5i1dva8j2z"))))
+        (base32 "1djgn1z4hibzci53mrvskz47jfq6hk8lhhqckpa93pvsi9kadl4k"))))
     (build-system qt-build-system)
     (inputs
-     (list opus qcustomplot qtbase-5 qtmultimedia-5 qtserialport))
+     (list eigen
+           opus
+           portaudio
+           pulseaudio
+           qcustomplot
+           qtbase-5
+           qtmultimedia-5
+           qtserialport
+           rtaudio))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases
