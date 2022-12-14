@@ -282,6 +282,10 @@ servers from Python programs.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-references
             (lambda _
+              ;; Avoid dependency on systemd-detect-virt
+              (substitute* "src/lib389/lib389/instance/setup.py"
+                (("container_result = subprocess.*") "container_result = 1\n")
+                (("container_result.returncode") "container_result"))
               (substitute* "ldap/servers/plugins/sync/sync_persist.c"
                 (("nspr4") "nspr"))
               (substitute* "src/lib389/lib389/utils.py"
