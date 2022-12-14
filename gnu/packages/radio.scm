@@ -2518,17 +2518,17 @@ Caller-ID.")
            python-pyside-2
            python-pyusb))
     (arguments
-     `(#:tests? #f  ; Tests want to use a serial port
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-permissions
-           (lambda _
-             (make-file-writable "rflib/rflib_version.py")))
-         (add-after 'install 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "etc/udev/rules.d/20-rfcat.rules"
-                           (string-append (assoc-ref outputs "out")
-                                          "/lib/udev/rules.d")))))))
+     (list
+      #:tests? #f  ; Tests want to use a serial port
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-permissions
+            (lambda _
+              (make-file-writable "rflib/rflib_version.py")))
+          (add-after 'install 'install-udev-rules
+            (lambda* _
+              (install-file "etc/udev/rules.d/20-rfcat.rules"
+                            (string-append #$output "/lib/udev/rules.d")))))))
     (home-page "https://github.com/atlas0fd00m/rfcat")
     (synopsis "Program to control some radio dongles")
     (description
