@@ -895,7 +895,7 @@ transformations).")
 (define-public julia-colors
   (package
     (name "julia-colors")
-    (version "0.12.8")
+    (version "0.12.9")
     (source
      (origin
        (method git-fetch)
@@ -904,12 +904,22 @@ transformations).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kx3hq7rf8p5zx6ly9k5j90zijmc7yrwmy96cgkl2ibdfbnhmya3"))))
+        (base32 "1g0fvvz09pfk6jxqrdplwkw1yywcqvwjd3ga24hblq71mah367n6"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/runtests.jl"
+                 ((".*detect_ambiguities.*") "")))))))
     (propagated-inputs
      (list julia-colortypes
            julia-fixedpointnumbers
            julia-reexport))
+    (native-inputs
+     (list julia-abstracttrees))
     (home-page "https://github.com/JuliaGraphics/Colors.jl")
     (synopsis "Tools for dealing with color")
     (description "This package provides a wide array of functions for dealing
