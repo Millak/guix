@@ -3021,7 +3021,7 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
 (define-public julia-interpolations
   (package
     (name "julia-interpolations")
-    (version "0.13.3")
+    (version "0.13.6")
     (source
       (origin
         (method git-fetch)
@@ -3030,7 +3030,7 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1236c20k388qlh7k74mhf7hkbn0vf7ss8b1rgh1a6aj0234ayfnc"))))
+         (base32 "1skzvgd63rhj1zpn45gi3974rbrir9p2y17zyfmkz6c6nird7bkj"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -3043,16 +3043,19 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
                         (target-x86-32?)))))
     (propagated-inputs
      (list julia-axisalgorithms
+           julia-chainrulescore
            julia-offsetarrays
            julia-ratios
            julia-requires
            julia-staticarrays
            julia-woodburymatrices))
     (native-inputs
-     (list julia-dualnumbers
+     (list julia-colorvectorspace
+           julia-dualnumbers
            julia-forwarddiff
            julia-offsetarrays
-           julia-unitful julia-zygote))
+           julia-unitful
+           julia-zygote))
     (home-page "https://github.com/JuliaMath/Interpolations.jl")
     (synopsis "Continuous interpolation of discrete datasets")
     (description "This package implements a variety of interpolation schemes for
