@@ -822,6 +822,33 @@ can be a test-only dependency, allowing it to have potentially heavy
 dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible.")
     (license license:expat)))
 
+(define-public julia-changesofvariables
+  (package
+    (name "julia-changesofvariables")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/ChangesOfVariables.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1migyhiqr1rq496302wlkb0s5l8zwqs97ajfkip0jzpvrk2s2xxy"))))
+    (build-system julia-build-system)
+    (arguments
+     ;; Pulls in ForwardDiff, would have a cyclical
+     ;; dependency with LogExpFunctions.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list julia-chainrulescore))
+    (home-page "https://github.com/JuliaMath/ChangesOfVariables.jl")
+    (synopsis "Interface for transformation functions in Julia")
+    (description "This package defines functionality to calculate volume element
+changes for functions that perform a change of variables (like coordinate
+transformations).")
+    (license license:expat)))
+
 (define-public julia-codeczlib
   (package
     (name "julia-codeczlib")
