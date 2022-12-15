@@ -284,13 +284,24 @@ templates under @file{/etc/configuration}.")))
 ;; appropriate options.  The GUI installer needs it when the machine does not
 ;; support Kernel Mode Setting.  Otherwise kmscon is missing /dev/fb0.
 (define (uvesafb-shepherd-service _)
+  (define modprobe
+    (program-file "modprobe-wrapper"
+                  #~(begin
+                      ;; Use a wrapper because shepherd 0.9.3 won't let us
+                      ;; pass environment variables to the child process:
+                      ;; <https://issues.guix.gnu.org/60106>.
+                      (setenv "LINUX_MODULE_DIRECTORY"
+                              "/run/booted-system/kernel/lib/modules")
+                      (apply execl #$(file-append kmod "/bin/modprobe")
+                             "modprobe" (cdr (command-line))))))
+
   (list (shepherd-service
          (documentation "Load the uvesafb kernel module if needed.")
          (provision '(maybe-uvesafb))
          (requirement '(file-systems))
          (start #~(lambda ()
                     (or (file-exists? "/dev/fb0")
-                        (invoke #+(file-append kmod "/bin/modprobe")
+                        (invoke #+modprobe
                                 "uvesafb"
                                 (string-append "v86d=" #$v86d "/sbin/v86d")
                                 "mode_option=1024x768"))))
