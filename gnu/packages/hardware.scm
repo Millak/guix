@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1132,7 +1133,14 @@ supported by the Linux kernel.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zwrkqfxd671iy69v3q0844gfdpm1yk51i9qh2rqc969bd8glxga"))))
+          (base32 "0zwrkqfxd671iy69v3q0844gfdpm1yk51i9qh2rqc969bd8glxga"))
+         (snippet
+          #~(begin
+              ;; https://github.com/rockchip-linux/rkdeveloptool/pull/57
+              (use-modules (guix build utils))
+              (substitute* "main.cpp"
+                (("snprintf\\(buffer, sizeof\\(buffer\\), \"\\%s\", chip)")
+                 "memccpy(buffer, chip, '\\0', sizeof(buffer))"))))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf automake pkg-config))
