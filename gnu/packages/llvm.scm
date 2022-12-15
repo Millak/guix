@@ -562,11 +562,11 @@ output), and Binutils.")
 
 (define %llvm-monorepo-hashes
   '(("14.0.6" . "14f8nlvnmdkp9a9a79wv67jbmafvabczhah8rwnqrgd5g3hfxxxx")
-    ("15.0.5" . "1z2szqlanksdmj91590wnxqav5z437mpasg00ghb610xkam2v34m")))
+    ("15.0.6" . "13vj0q6if5095a3awq8d97l17qdsc7fks6avkai9k80kl0kzxpv6")))
 
 (define %llvm-patches
   '(("14.0.6" . ("clang-14.0-libc-search-path.patch"))
-    ("15.0.5" . ("clang-15.0-libc-search-path.patch"))))
+    ("15.0.6" . ("clang-15.0-libc-search-path.patch"))))
 
 (define (llvm-monorepo version)
   (origin
@@ -582,7 +582,7 @@ output), and Binutils.")
 (define-public llvm-15
   (package
     (name "llvm")
-    (version "15.0.5")
+    (version "15.0.6")
     (source (llvm-monorepo version))
     (build-system cmake-build-system)
     (outputs '("out" "opt-viewer"))
@@ -739,7 +739,7 @@ of programming tools as well as libraries with equivalent functionality.")
                     (package-version llvm-15)))
      (sha256
       (base32
-       "0sa6si9v7ddsa9vmg6s3918xx969rvck2v1a0g7hb0fp9jk9j4r1")))))
+       "099v2yqg11h0h8qqddzkny6b77pafcr7vy5ksc33kqggji173ccj")))))
 
 (define-public clang-14
   (clang-from-llvm
