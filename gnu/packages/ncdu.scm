@@ -33,14 +33,14 @@
 (define-public ncdu
   (package
     (name "ncdu")
-    (version "1.17")
+    (version "1.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1wfvdajln0iy7364nxkg4bpgdv8l3b6a9bnkhy67icqsxnl4a1w1"))))
+                "15czid6584j7vclwrw85ihahknghxv2w6b9mrk9cbjc0cnls2drw"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
