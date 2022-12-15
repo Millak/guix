@@ -142,8 +142,8 @@ GID."
                  (list (string-append #$package "/bin/nix-daemon")
                        #$@extra-options)
                  #:environment-variables
-                   (list (string-append "TMPDIR=" build-directory)
-                         "PATH=/run/current-system/profile/bin")))
+                 (list (string-append "TMPDIR=" #$build-directory)
+                       "PATH=/run/current-system/profile/bin")))
        (respawn? #f)
        (stop #~(make-kill-destructor)))))))
 
