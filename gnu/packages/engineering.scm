@@ -860,25 +860,30 @@ and others.")
 (define-public gerbv
   (package
     (name "gerbv")
-    (version "2.7.0")
+    (version "2.10.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://sourceforge/gerbv/gerbv/gerbv-"
-                                  version "/gerbv-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/gerbv/gerbv")
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "1d2k43k7i4yvbpi4sw1263a8d0q98z2n7aqhmpinpkih8a681vn5"))))
+                "06bcm5zw7whsnnmfld3gl2j907lxc68gnsbzr2pc4w6qc923rgmj"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("CFLAGS=-fcommon")))
-    (native-inputs
-     `(("glib:bin" ,glib "bin")         ; for glib-compile-schemas, etc.
-       ("desktop-file-utils" ,desktop-file-utils)
-       ("pkg-config" ,pkg-config)))
-    (inputs
-     `(("cairo" ,cairo)
-       ("gtk" ,gtk+-2)))
-    (home-page "http://gerbv.geda-project.org/")
+    (native-inputs (list autoconf
+                         automake
+                         desktop-file-utils
+                         gettext-minimal
+                         `(,glib "bin")
+                         libtool
+                         pkg-config))
+    (inputs (list cairo
+                  ;; As of 2.10.0 gerbv is still GTK+2 only.  GTK 3/4 porting
+                  ;; issue: https://github.com/gerbv/gerbv/issues/71.
+                  gtk+-2))
+    (home-page "https://gerbv.github.io/")
     (synopsis "Gerber file viewer")
     (description
      "Gerbv is a viewer for files in the Gerber format (RS-274X only), which
