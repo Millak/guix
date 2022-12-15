@@ -4787,14 +4787,19 @@ includes LV2 plugins and a JACK standalone client.")
         (base32 "16rcwr6fzghv8100syzicabqg8jqvng3zzsi6h3ja4zkp9hcbkcr"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove unused libraries.
         '(begin
+           ;; Remove unused libraries...
            (for-each delete-file-recursively
-                     '("thirdparty/freetype"))))))
+                     '("thirdparty/freetype"))
+           ;; ... and precompiled binaries.
+           (delete-file-recursively "src/diagnostics/crashpad_handler")
+           (substitute* "src/diagnostics/CMakeLists.txt"
+             (("install") "#install"))))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags
        `("-DDOWNLOAD_SOUNDFONT=OFF"
+         "-DBUILD_DIAGNOSTICS=OFF"
          "-DMUSESCORE_BUILD_CONFIG=release"
          "-DUSE_SYSTEM_FREETYPE=ON")
        ;; There are tests, but no simple target to run.  The command used to
@@ -4825,6 +4830,7 @@ includes LV2 plugins and a JACK standalone client.")
            qtdeclarative-5
            qtgraphicaleffects
            qtnetworkauth-5
+           qtquickcontrols-5
            qtquickcontrols2-5
            qtscript
            qtsvg-5
