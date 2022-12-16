@@ -3610,6 +3610,30 @@ your functions and to easily compare the results.  A statistical test
 is used to determine whether the results truly differ.")
     (license license:lgpl3+)))
 
+(define-public ocaml-bechamel
+  (package
+    (name "ocaml-bechamel")
+    (version "0.3.0")
+    (home-page "https://github.com/mirage/bechamel")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1x7sf45iy5dzx7kknbkkvpna42rcwpj5p55y0nqsg2fb4srj0b1q"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "bechamel"))
+    (propagated-inputs (list ocaml-fmt ocaml-stdlib-shims))
+    (synopsis "Yet Another Benchmark in OCaml")
+    (description
+     "BEnchmark for a CHAMEL/camel/caml which is agnostic to the system.  It's a
+micro-benchmark tool for OCaml which lets the user to re-analyzes and prints
+samples.")
+    (license license:expat)))
+
 (define-public ocaml-batteries
   (package
     (name "ocaml-batteries")
