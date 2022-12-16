@@ -8142,7 +8142,7 @@ variants.")
                (("`") "'")
                (("COMMAND") "[COMMAND]")
                (("\\.\\.\\.") "…")))))))
-    (inputs
+    (propagated-inputs
      (list ocaml-fmt
            ocaml-astring
            ocaml-logs
