@@ -5449,6 +5449,7 @@ interfaces and the standard higher-level merlin protocol.")
              (when tests?
                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-merlin))))
     (native-inputs
      (list ocaml-dot-merlin-reader ; required for tests
            ocaml-ppxlib
@@ -5460,6 +5461,32 @@ features for OCaml.  Emacs and Vim support is provided out-of-the-box.
 External contributors added support for Visual Studio Code, Sublime Text and
 Atom.")
     (license license:expat)))
+
+(define-public ocaml5.0-merlin
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-merlin-lib-500)
+     (name "ocaml-merlin")
+     (arguments
+      '(#:package "merlin"
+        #:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
+     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
+     (native-inputs
+      (list ocaml-dot-merlin-reader     ; required for tests
+            ocaml-ppxlib
+            ocaml-mdx
+            jq))
+     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
+     (description "Merlin is an editor service that provides modern IDE
+features for OCaml.  Emacs and Vim support is provided out-of-the-box.
+External contributors added support for Visual Studio Code, Sublime Text and
+Atom.")
+     (license license:expat))))
 
 (define-public ocaml-gsl
   (package
