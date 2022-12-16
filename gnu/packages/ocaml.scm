@@ -2770,6 +2770,32 @@ architectures and provide a best-effort boxed representation on 32-bit
 architectures.")
     (license license:isc)))
 
+(define-public ocaml-hmap
+  (package
+    (name "ocaml-hmap")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://erratique.ch/software/hmap/releases/hmap-0.8.1.tbz")
+       (sha256
+    (base32 "10xyjy4ab87z7jnghy0wnla9wrmazgyhdwhr4hdmxxdn28dxn03a"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:build-flags
+       (list "build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (native-inputs (list ocaml-topkg ocamlbuild opam))
+    (home-page "https://erratique.ch/software/hmap")
+    (synopsis "Heterogeneous value maps for OCaml")
+    (description
+     "Hmap provides heterogeneous value maps for OCaml.  These maps bind keys to
+values with arbitrary types.  Keys witness the type of the value they are bound
+to which allows adding and looking up bindings in a type safe manner.")
+    (license license:isc)))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
