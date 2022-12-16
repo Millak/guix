@@ -7808,9 +7808,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
 (define-public ocaml-odoc
   (package
     (name "ocaml-odoc")
-    ;; 2.2.0-alpha contains fixes for Dune 3.0 compatibility
-    ;; (https://github.com/ocaml/odoc/commit/6ac97f3148f7791ec7451785ef4dbd9ca0daf2d1)
-    (version "2.2.0-alpha")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -7819,7 +7817,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07zjkk455l51i29lcayzrc1q8j5bvbv97sscv8yhcj7x6h6q2nag"))))
+        (base32 "19mww1lyrdi705aw3lwql6xc7p11fcq5gprmhyxpb4x80gnvlzrh"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f; not compatible with current version of ocaml-yojson
