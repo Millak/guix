@@ -185,6 +185,67 @@ OCaml and can effectively bootstrap OCaml 4.07.
 This package produces a native @command{ocamlc} and a bytecode @command{ocamllex}.")
       (license license:expat))))
 
+(define-public ocaml-5.0
+  (package
+    (name "ocaml")
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocaml/ocaml")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1p0p8wldrnbr61wfy3x4122017g4k5gjvfwlg3mvlqn8r2fxn2m5"))))
+    (build-system gnu-build-system)
+    (native-search-paths
+     (list (search-path-specification
+            (variable "OCAMLPATH")
+            (files (list "lib/ocaml" "lib/ocaml/site-lib")))
+           (search-path-specification
+            (variable "CAML_LD_LIBRARY_PATH")
+            (files (list "lib/ocaml/site-lib/stubslibs"
+                         "lib/ocaml/site-lib/stublibs")))))
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list libx11 libiberty ;needed for objdump support
+           zlib))                       ;also needed for objdump support
+    (arguments
+     `(#:configure-flags '("--enable-ocamltest")
+       #:test-target "tests"
+       #:make-flags '("world.opt")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-/bin/sh-references
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((sh (search-input-file inputs "/bin/sh"))
+                    (quoted-sh (string-append "\"" sh "\"")))
+               (with-fluids ((%default-port-encoding #f))
+                 (for-each
+                  (lambda (file)
+                    (substitute* file
+                      (("\"/bin/sh\"")
+                       (begin
+                         (format (current-error-port) "\
+patch-/bin/sh-references: ~a: changing `\"/bin/sh\"' to `~a'~%"
+                                 file quoted-sh)
+                         quoted-sh))))
+                  (find-files "." "\\.ml$")))))))))
+    (home-page "https://ocaml.org/")
+    (synopsis "The OCaml programming language")
+    (description
+     "OCaml is a general purpose industrial-strength programming language with
+an emphasis on expressiveness and safety.  Developed for more than 20 years at
+Inria it benefits from one of the most advanced type systems and supports
+functional, imperative and object-oriented styles of programming.")
+    ;; The compiler is distributed under qpl1.0 with a change to choice of
+    ;; law: the license is governed by the laws of France.  The library is
+    ;; distributed under lgpl2.0.
+    (license (list license:qpl license:lgpl2.0))))
+
+
 (define-public ocaml-4.14
   (package
     (name "ocaml")
