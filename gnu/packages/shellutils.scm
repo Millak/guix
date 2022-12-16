@@ -6,7 +6,7 @@
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2019 Collin J. Doering <collin@rekahsoft.ca>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2020 Dion Mendel <guix@dm9.info>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -519,7 +519,7 @@ below the current cursor position, scrolling the screen if necessary.")
 (define-public hstr
   (package
     (name "hstr")
-    (version "2.5")
+    (version "2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -528,7 +528,7 @@ below the current cursor position, scrolling the screen if necessary.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xg10jyiq12bcygi6aa9qq9pki7bipdsvsza037p2iqix19jg0x8"))))
+                "1iqvqm4mirx7imwwmz4blxbsr215lcgbw3h31ssbs3fk54hq7xn9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
