@@ -962,10 +962,12 @@ name = Guix Builder")
          ("opam-repo-f372039d" ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
                                            "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws")))))
     (inputs
-     (list ocaml ncurses curl bubblewrap))
-    (propagated-inputs
-     (list ocaml-cmdliner ocaml-dose3 ocaml-mccs ocaml-opam-file-format
-           ocaml-re))
+     (list ocaml ncurses curl bubblewrap ocaml-cmdliner ocaml-dose3
+           ocaml-mccs ocaml-opam-file-format ocaml-re))
+    (properties
+     ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
+     ;; compiled opam until opam is compatible with OCaml 5.0.
+     `((ocaml5.0-variant . ,(delay opam))))
     (home-page "http://opam.ocamlpro.com/")
     (synopsis "Package manager for OCaml")
     (description
