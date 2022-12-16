@@ -2833,6 +2833,21 @@ OCaml with fibers.")
 (define-public ocaml5.0-eio
   (package-with-ocaml5.0 ocaml-eio))
 
+(define ocaml-eio-luv
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-luv")
+    (arguments `(#:package "eio_luv"
+                 #:test-target "."))
+    (propagated-inputs (list ocaml-eio ocaml-luv))
+    (native-inputs (list ocaml-mdx))
+    (synopsis "Libuv-based backend for Ocaml Eio")
+    (description "@code{Eio_luv} provides a cross-platform backend for
+@code{Ocaml Eio}'s APIs using luv (libuv)")))
+
+(define-public ocaml5.0-eio-luv
+  (package-with-ocaml5.0 ocaml-eio-luv))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
