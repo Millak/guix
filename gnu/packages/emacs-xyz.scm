@@ -10250,6 +10250,13 @@ call.")
          (sha256
           (base32 "0f4m0bb1f91x9jqfc0ny95a3pfh1mzzjzdjpa6f548hynq8j34ib"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "-batch"
+                          "-l" "eglot-tempel-tests.el"
+                          "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs (list emacs-ert-runner))
       (propagated-inputs (list emacs-eglot emacs-tempel))
       (home-page "https://github.com/fejfighter/eglot-tempel")
       (synopsis "Bridge for Tempel templates with Eglot")
