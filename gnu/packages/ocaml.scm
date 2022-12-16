@@ -6757,7 +6757,8 @@ useful errors on failure.")
            ocaml-migrate-parsetree
            ocaml-re))
     (properties `((upstream-name . "ppx_expect")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))))
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-ppx-expect))))
     (home-page "https://github.com/janestreet/ppx_expect")
     (synopsis "Cram like framework for OCaml")
     (description "Expect-test is a framework for writing tests in OCaml, similar
@@ -6766,6 +6767,28 @@ to Cram.  Expect-tests mimics the existing inline tests framework with the
 output-generating code, interleaved with @code{%expect} extension expressions
 to denote the expected output.")
     (license license:asl2.0)))
+
+(define-public ocaml5.0-ppx-expect
+  ;; Contains fixes for OCaml 5.0
+  ;; (https://github.com/janestreet/ppx_expect/pull/39/).
+  (let ((commit "83edfc1ee779e8dcdd975e26715c2e688326befa")
+        (revision "0"))
+    (package-with-ocaml5.0
+     (package
+       (inherit ocaml-ppx-expect)
+       (name "ocaml-ppx-expect")
+       (version (git-version "0.15.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/janestreet/ppx_expect")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "05r7wlmrhb5biwyw6bjcpmr77srglijcbf7nm7h2hiil0d0i7bkz"))))
+       (properties '())))))
 
 (define-public ocaml4.07-ppx-expect
   (package-with-ocaml4.07
