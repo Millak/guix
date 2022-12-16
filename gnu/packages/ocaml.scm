@@ -5369,7 +5369,7 @@ serializers and deserializers from type definitions.")
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
-    (version "4.6-414")
+    (version "4.7-414")
     (source
      (origin
        (method git-fetch)
@@ -5379,7 +5379,7 @@ serializers and deserializers from type definitions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1cpa9x45w54l4mqqmc8z3s5gscggw37gb6z9i7wwss86fj1wgclh"))))
+         "1bd4j2zq0lyszbkibgky1z9swv4scb7ljww3fv1kqy0cya743b5l"))))
     (build-system dune-build-system)
     (arguments '(#:package "merlin-lib"
                  #:tests? #f))          ; no tests
@@ -5416,7 +5416,9 @@ interfaces and the standard higher-level merlin protocol.")
     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
     (native-inputs
      (list ocaml-dot-merlin-reader ; required for tests
-           ocaml-mdx jq))
+           ocaml-ppxlib
+           ocaml-mdx
+           jq))
     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
     (description "Merlin is an editor service that provides modern IDE
 features for OCaml.  Emacs and Vim support is provided out-of-the-box.
