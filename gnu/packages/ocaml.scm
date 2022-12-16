@@ -2826,6 +2826,27 @@ process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
 
+(define-public ocaml-lwt-dllist
+  (package
+    (name "ocaml-lwt-dllist")
+    (version "1.0.1")
+    (home-page "https://github.com/mirage/lwt-dllist")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18bi8fb4yly1pyf43pjvvdhlyzb3wkgxifffx9d1g9y2mwsng6jw"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-lwt))
+    (synopsis "OCaml library providing mutable doubly-linked list with Lwt iterators")
+    (description "This OCaml library provides an implementation of a mutable
+doubly-linked list with Lwt iterators.")
+    (license license:expat)))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
