@@ -2796,6 +2796,43 @@ values with arbitrary types.  Keys witness the type of the value they are bound
 to which allows adding and looking up bindings in a type safe manner.")
     (license license:isc)))
 
+(define ocaml-eio
+  (package
+    (name "ocaml-eio")
+    (version "0.7")
+    (home-page "https://github.com/ocaml-multicore/eio")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32
+                "118raxdwv6pn5b152ffdhmwdi0l4wlwflcj2nmckfmm7v1z2fq4s"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "eio"
+                 #:test-target "."))
+    (propagated-inputs (list ocaml-bigstringaf
+                             ocaml-cstruct
+                             ocaml-lwt
+                             ocaml-lwt-dllist
+                             ocaml-logs
+                             ocaml-optint
+                             ocaml-psq
+                             ocaml-fmt
+                             ocaml-hmap
+                             ocaml-mtime
+                             ocaml-odoc))
+    (native-inputs (list ocaml-astring ocaml-crowbar ocaml-alcotest))
+    (synopsis "Effect-based direct-style IO API for OCaml")
+    (description "This package provides an effect-based IO API for multicore
+OCaml with fibers.")
+    (license license:isc)))
+
+(define-public ocaml5.0-eio
+  (package-with-ocaml5.0 ocaml-eio))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
