@@ -5384,11 +5384,33 @@ serializers and deserializers from type definitions.")
     (arguments '(#:package "merlin-lib"
                  #:tests? #f))          ; no tests
     (propagated-inputs (list ocaml-csexp ocaml-menhir))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-merlin-lib))))
     (home-page "https://ocaml.github.io/merlin/")
     (synopsis "Merlin libraries")
     (description "These libraries provides access to low-level compiler
 interfaces and the standard higher-level merlin protocol.")
     (license license:expat)))
+
+;; the 500 indicates that this version is for OCaml 5.0
+(define ocaml-merlin-lib-500
+  (package
+    (inherit ocaml-merlin-lib)
+    (name "ocaml-merlin-lib")
+    (version "4.7.1-500")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/merlin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "05a87i2dkzv800nwb6y7b2j45avg8gs3gzb5a98wrj1i5zjqwh01"))))
+    (properties '())))
+
+(define-public ocaml5.0-merlin-lib
+  (package-with-ocaml5.0 ocaml-merlin-lib-500))
 
 (define-public ocaml-dot-merlin-reader
   (package
