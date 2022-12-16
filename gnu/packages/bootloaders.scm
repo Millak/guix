@@ -69,7 +69,10 @@
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -641,7 +644,10 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
-                     (search-patch "u-boot-infodocs-target.patch")))
+                     (search-patch "u-boot-infodocs-target.patch")
+                     (search-patch "u-boot-patman-fix-help.patch")
+                     (search-patch "u-boot-patman-local-conf.patch")
+                     (search-patch "u-boot-patman-get-maintainer.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -815,6 +821,34 @@ def test_ctrl_c"))
                   (package-description u-boot)
                   "  This package provides board-independent tools "
                   "of U-Boot."))))
+
+;;; This is packaged separately, as it can be used in other contexts than for
+;;; U-Boot development.
+(define-public patman
+  (package
+    (inherit u-boot)
+    (name "patman")
+    (build-system pyproject-build-system)
+    (arguments
+     ;; The test suite strongly relies on the git metadata being available (23
+     ;; failed, 14 passed).
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "tools/patman"))))))
+    (inputs (list python-pygit2 python-requests))
+    (synopsis "Patch automation tool")
+    (description "Patman is a patch automation script which:
+@itemize
+@item Creates patches directly from your branch
+@item Cleans them up by removing unwanted tags
+@item Inserts a cover letter with change lists
+@item Runs the patches through automated checks
+@item Optionally emails them out to selected people.
+@end itemize")))
 
 (define*-public (make-u-boot-package board triplet
                                      #:key

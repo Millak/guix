@@ -1,0 +1,176 @@
+Upstream status: https://patchwork.ozlabs.org/project/uboot/list/?series=333354
+
+diff --git a/tools/patman/main.py b/tools/patman/main.py
+index bf300c6e64..3616b28f27 100755
+--- a/tools/patman/main.py
++++ b/tools/patman/main.py
+@@ -116,7 +116,7 @@ status.add_argument('-f', '--force', action='store_true',
+ argv = sys.argv[1:]
+ args, rest = parser.parse_known_args(argv)
+ if hasattr(args, 'project'):
+-    settings.Setup(gitutil, parser, args.project, '')
++    settings.Setup(parser, args.project)
+     args, rest = parser.parse_known_args(argv)
+ 
+ # If we have a command, it is safe to parse all arguments
+diff --git a/tools/patman/patman.rst b/tools/patman/patman.rst
+index 8c5c9cc2cc..7828899879 100644
+--- a/tools/patman/patman.rst
++++ b/tools/patman/patman.rst
+@@ -74,7 +74,7 @@ out where to send patches pretty well.
+ During the first run patman creates a config file for you by taking the default
+ user name and email address from the global .gitconfig file.
+ 
+-To add your own, create a file ~/.patman like this::
++To add your own, create a file `~/.patman` like this::
+ 
+     # patman alias file
+ 
+@@ -85,6 +85,12 @@ To add your own, create a file ~/.patman like this::
+     wolfgang: Wolfgang Denk <wd@denx.de>
+     others: Mike Frysinger <vapier@gentoo.org>, Fred Bloggs <f.bloggs@napier.net>
+ 
++Patman will also look for a `.patman` configuration file at the root
++of the current project git repository, which makes it possible to
++override the `project` settings variable or anything else in a
++project-specific way.  The values of this "local" configuration file
++take precedence over those of the "global" one.
++
+ Aliases are recursive.
+ 
+ The checkpatch.pl in the U-Boot tools/ subdirectory will be located and
+diff --git a/tools/patman/settings.py b/tools/patman/settings.py
+index 903d6fcb0b..e8e2908f1f 100644
+--- a/tools/patman/settings.py
++++ b/tools/patman/settings.py
+@@ -1,5 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0+
+ # Copyright (c) 2011 The Chromium OS Authors.
++# Copyright (c) 2022 Maxim Cournoyer <maxim.cournoyer@savoirfairelinux.com>
+ #
+ 
+ try:
+@@ -11,8 +12,7 @@ import argparse
+ import os
+ import re
+ 
+-from patman import command
+-from patman import tools
++from patman import gitutil
+ 
+ """Default settings per-project.
+ 
+@@ -190,7 +190,8 @@ def ReadGitAliases(fname):
+ 
+     fd.close()
+ 
+-def CreatePatmanConfigFile(gitutil, config_fname):
++
++def CreatePatmanConfigFile(config_fname):
+     """Creates a config file under $(HOME)/.patman if it can't find one.
+ 
+     Args:
+@@ -328,26 +329,46 @@ def GetItems(config, section):
+     except:
+         raise
+ 
+-def Setup(gitutil, parser, project_name, config_fname=''):
++def Setup(parser, project_name, config_fname=None):
+     """Set up the settings module by reading config files.
+ 
++    Unless `config_fname` is specified, a `.patman` config file local
++    to the git repository is consulted, followed by the global
++    `$HOME/.patman`. If none exists, the later is created. Values
++    defined in the local config file take precedence over those
++    defined in the global one.
++
+     Args:
+-        parser:         The parser to update
++        parser:         The parser to update.
+         project_name:   Name of project that we're working on; we'll look
+             for sections named "project_section" as well.
+-        config_fname:   Config filename to read ('' for default)
++        config_fname:   Config filename to read.  An error is raised if it
++            does not exist.
+     """
+     # First read the git alias file if available
+     _ReadAliasFile('doc/git-mailrc')
+     config = _ProjectConfigParser(project_name)
+-    if config_fname == '':
++
++    if config_fname and not os.path.exists(config_fname):
++        raise Exception(f'provided {config_fname} does not exist')
++
++    if not config_fname:
+         config_fname = '%s/.patman' % os.getenv('HOME')
++    has_config = os.path.exists(config_fname)
++
++    git_local_config_fname = os.path.join(gitutil.get_top_level(), '.patman')
++    has_git_local_config = os.path.exists(git_local_config_fname)
+ 
+-    if not os.path.exists(config_fname):
+-        print("No config file found ~/.patman\nCreating one...\n")
+-        CreatePatmanConfigFile(gitutil, config_fname)
++    # Read the git local config last, so that its values override
++    # those of the global config, if any.
++    if has_config:
++        config.read(config_fname)
++    if has_git_local_config:
++        config.read(git_local_config_fname)
+ 
+-    config.read(config_fname)
++    if not (has_config or has_git_local_config):
++        print("No config file found.\nCreating ~/.patman...\n")
++        CreatePatmanConfigFile(config_fname)
+ 
+     for name, value in GetItems(config, 'alias'):
+         alias[name] = value.split(',')
+diff --git a/tools/patman/test_settings.py b/tools/patman/test_settings.py
+new file mode 100644
+index 0000000000..9c14b4aaa3
+--- /dev/null
++++ b/tools/patman/test_settings.py
+@@ -0,0 +1,43 @@
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Copyright (c) 2022 Maxim Cournoyer <maxim.cournoyer@savoirfairelinux.com>
++#
++
++import argparse
++import contextlib
++import os
++import subprocess
++import tempfile
++
++from patman import settings
++
++
++@contextlib.contextmanager
++def empty_git_repository():
++    with tempfile.TemporaryDirectory() as tmpdir:
++        os.chdir(tmpdir)
++        subprocess.check_call(['git', 'init'])
++        yield tmpdir
++
++
++def test_git_local_config():
++    with empty_git_repository():
++        with tempfile.NamedTemporaryFile() as global_config:
++            global_config.write(b'[settings]\n'
++                                b'project=u-boot\n')
++            global_config.flush()
++            parser = argparse.ArgumentParser()
++            parser.add_argument('-p', '--project', default='unknown')
++
++            # Test "global" config is used.
++            settings.Setup(parser, 'unknown', global_config.name)
++            args, _ = parser.parse_known_args()
++            assert args.project == 'u-boot'
++
++            # Test local config can shadow it.
++            with open('.patman', 'w', buffering=1) as f:
++                f.write('[settings]\n'
++                        'project=guix-patches\n')
++            settings.Setup(parser, 'unknown', global_config.name)
++            args, _ = parser.parse_known_args([])
++            assert args.project == 'guix-patches'
