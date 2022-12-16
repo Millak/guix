@@ -5419,9 +5419,22 @@ interfaces and the standard higher-level merlin protocol.")
     (arguments '(#:package "dot-merlin-reader"
                  #:tests? #f))          ; no tests
     (propagated-inputs (list ocaml-merlin-lib))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-dot-merlin-reader))))
     (synopsis "Reads config files for @code{ocaml-merlin}")
     (description "@code{ocaml-dot-merlin-reader} is an external reader for
 @code{ocaml-merlin} configurations.")))
+
+(define-public ocaml5.0-dot-merlin-reader
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-merlin-lib-500)
+     (name "ocaml-dot-merlin-reader")
+     (arguments '(#:package "dot-merlin-reader"
+                  #:tests? #f))         ; no tests
+     (propagated-inputs (list ocaml5.0-merlin-lib))
+     (synopsis "Reads config files for @code{ocaml-merlin}")
+     (description "@code{ocaml-dot-merlin-reader} is an external reader for
+@code{ocaml-merlin} configurations."))))
 
 (define-public ocaml-merlin
   (package
