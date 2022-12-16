@@ -1408,7 +1408,7 @@ manipulate them in various ways.")
 (define-public vcsh
   (package
     (name "vcsh")
-    (version "1.20190621-4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -1417,25 +1417,30 @@ manipulate them in various ways.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gx5nbqyprgy6picns5hxky3lyzkqfq3xhm614f0wcdi58xrsdh0"))))
+        (base32 "15lb09c2q261p1pp5r7j9k8389ybrd2q19xhnp1nnha6gs78i4wq"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list which))
+     (list autoconf
+           automake
+           ;; for man page
+           ronn-ng
+           ;; for tests
+           perl
+           perl-test-harness
+           perl-shell-command
+           perl-test-most
+           ;; for bash-completion
+           pkg-config))
     (inputs
-     (list git perl perl-test-harness perl-shell-command perl-test-most))
+     (list git))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (add-after 'install 'install-bash-completion
-           ;; As of 1.20190621, zsh completion is installed by default but bash
-           ;; completion is not.  Do so manually.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out         (assoc-ref outputs "out"))
-                    (completions (string-append out "/etc/bash_completion.d")))
-               (mkdir-p completions)
-               (copy-file "_vcsh_bash" (string-append completions "/vcsh"))))))
+         (add-before 'bootstrap 'fix-version-gen
+           (lambda _
+             (call-with-output-file ".tarball-version"
+               (lambda (port)
+                 (display version port))))))
        #:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))
        #:test-target "test"))
