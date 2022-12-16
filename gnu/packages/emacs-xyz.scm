@@ -118,6 +118,7 @@
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
+;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -195,6 +196,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages lisp)
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
@@ -13252,6 +13254,54 @@ Makefile targets.")
 you a @code{helm} selection of directory Makefile's targets.  Selecting a
 target will call @code{compile} on it.")
       (license license:gpl3+))))
+
+(define-public emacs-islisp-mode
+  (package
+    (name "emacs-islisp-mode")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/sasanidas/islisp-mode")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1s6alrv1hfi1plj5lh826j0h71xvm2v092kglj3yvy34g73dgrna"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:include #~(cons "\\.lsp$" %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Move the extensions source files to the top level, which is
+          ;; included in the EMACSLOADPATH.
+          (add-after 'unpack 'move-source-files
+            (lambda _
+              (for-each (lambda (dir)
+                          (let ((files (find-files dir "\\.(lsp|el)$")))
+                            (for-each (lambda (f)
+                                        (rename-file f (basename f)))
+                                      files)))
+                        '("advance" "implementations/easy-islisp"))))
+          (add-after 'move-source-files 'patch-eisl-variables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "easy-islisp.el"
+                ("easy-islisp-executable"
+                 (search-input-file inputs "/bin/eisl"))
+                ("easy-islisp-library-directory"
+                 `(or (getenv "EASY_ISLISP")
+                      ,(search-input-directory inputs "share/eisl/library")))))))))
+    (inputs (list eisl))
+    (home-page "https://gitlab.com/sasanidas/islisp-mode")
+    (synopsis "ISLisp support for Emacs")
+    (description
+     "This package provides support for programming with ISLisp in Emacs.  It
+features a major mode with syntax highlighting, symbol autocompletion and
+documentation search, among other features.  It also includes an inferior mode
+with REPL integration.  Currently it only supports the Easy ISLisp (eisl)
+implementation.")
+    (license license:gpl3+)))
 
 (define-public emacs-cider
   (package
