@@ -8839,11 +8839,20 @@ document and by the text width.")
            ocaml-uunf
            ocaml-uutf
            ocaml-pprint))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-crowbar))))
     (synopsis "Ocaml library for tests, let a fuzzer find failing cases")
     (description "Crowbar is a library for testing code, combining
 QuickCheck-style property-based testing and the magical bug-finding powers of
 @uref{http://lcamtuf.coredump.cx/afl/, afl-fuzz}.")
     (license license:expat)))
+
+(define-public ocaml5.0-crowbar
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-crowbar)
+     ;; Tests require ocaml-calendar which does not work with OCaml 5.0
+     (arguments `(#:tests? #f))
+     (properties '()))))
 
 (define-public ocaml-eqaf
   (package
