@@ -2903,6 +2903,27 @@ OCaml with fibers.")
 (define-public ocaml5.0-eio-linux
   (package-with-ocaml5.0 ocaml-eio-linux))
 
+(define ocaml-eio-main
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-main")
+    (arguments `(#:package "eio_main"
+                 #:test-target "."
+                 ;; tests require network
+                 #:tests? #f))
+    (propagated-inputs
+     (list ocaml-eio
+           ocaml-eio-luv
+           ocaml-eio-linux))
+    (native-inputs
+     (list ocaml-mdx))
+    (synopsis "Eio backend selector")
+    (description "@code{Eio_main} selects an appropriate backend (e.g.
+@samp{eio_linux} or @samp{eio_luv}), depending on your platform.")))
+
+(define-public ocaml5.0-eio-main
+  (package-with-ocaml5.0 ocaml-eio-main))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
