@@ -5487,7 +5487,8 @@ functionality for parsing and pretty-printing s-expressions.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-sexplib0))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-base))))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-base))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-base))))
     (synopsis
      "Full standard library replacement for OCaml")
     (description
@@ -5501,6 +5502,28 @@ features such as I/O are not offered by Base.  They are instead
 provided by companion libraries such as
 @url{https://github.com/janestreet/stdio, ocaml-stdio}.")
     (license license:expat)))
+
+(define-public ocaml5.0-base
+  ;; This version contains fixes for OCaml 5.0
+  ;; (see https://github.com/ocaml/opam-repository/pull/21851)
+  (let ((commit "423dbad212f55506767d758b1ceb2d6e0ee8e7f5")
+        (revision "0"))
+   (package-with-ocaml5.0
+    (package
+      (inherit ocaml-base)
+      (name "ocaml-base")
+      (version (git-version "0.15.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kit-ty-kate/base")
+               (commit commit)))
+         (file-name (git-file-name "ocaml5.0-base" version))
+         (sha256
+          (base32
+           "15vsiv3q53l1bzrvqgspf3lp2104s9dzw62z3nl75f53jvjvsyf6"))))
+      (properties '())))))
 
 (define-public ocaml4.07-base
   (package-with-ocaml4.07
