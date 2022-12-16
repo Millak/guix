@@ -1688,7 +1688,7 @@ archive(native) = \"frontc.cmxa\""))))
 (define-public ocaml-qcheck
   (package
     (name "ocaml-qcheck")
-    (version "0.18.1")
+    (version "0.20")
     (source
      (origin
        (method git-fetch)
@@ -1697,12 +1697,12 @@ archive(native) = \"frontc.cmxa\""))))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g3r8lrw6fsdphgpnp08saxyxk1vd3chpmb564ir2qnsp716vz6z"))))
+        (base32 "1r0m5p1dd06lbgfxqdpl1ya4vb8252z7hqkvdi9k444g4rx2ay3p"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
     (propagated-inputs
-     (list ocaml-alcotest ocaml-ounit))
+     (list ocaml-alcotest ocaml-ounit ocaml-ppxlib))
     (native-inputs
      (list ocamlbuild))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-qcheck))))
