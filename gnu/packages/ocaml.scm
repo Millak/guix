@@ -2848,6 +2848,38 @@ OCaml with fibers.")
 (define-public ocaml5.0-eio-luv
   (package-with-ocaml5.0 ocaml-eio-luv))
 
+(define-public ocaml-uring
+  (package
+    (name "ocaml-uring")
+    (version "0.4")
+    (home-page "https://github.com/ocaml-multicore/ocaml-uring")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "0k70y7nb2wrk2yql0pwnrhsp1x7k9ld4gd8iihbv6r34kcm3a5m1"))))
+    (build-system dune-build-system)
+    (arguments `(#:test-target "."))
+    (propagated-inputs
+     (list ocaml-cstruct
+           ocaml-fmt
+           ocaml-optint))
+    (native-inputs
+     (list ocaml-lwt
+           ocaml-bechamel
+           ocaml-logs
+           ocaml-cmdliner
+           ocaml-mdx))
+    (synopsis "OCaml bindings for Linux io_uring")
+    (description "This package provides OCaml bindings to the Linux
+@code{io_uring} kernel IO interfaces.")
+    (license
+     (list license:isc license:expat))))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
