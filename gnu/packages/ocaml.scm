@@ -1404,14 +1404,14 @@ to the other.")
 (define-public ocaml-findlib
   (package
     (name "ocaml-findlib")
-    (version "1.9.3")
+    (version "1.9.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.camlcity.org/download/"
                                   "findlib" "-" version ".tar.gz"))
               (sha256
                (base32
-                "0hfcwamcvinmww59b5i4yxbf0kxyzkp5qv3d1c7ybn9q52vgq463"))))
+                "0w9578j1561f5gi51sn2jgxm3kh3sn88cpannhdkqcdg1kk08iqd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list m4 ocaml))
