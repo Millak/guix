@@ -1820,6 +1820,9 @@ following a very simple s-expression syntax.")
 (define ocaml4.09-dune-bootstrap
   (package-with-ocaml4.09 dune-bootstrap))
 
+(define ocaml5.0-dune-bootstrap
+  (package-with-ocaml5.0 dune-bootstrap))
+
 (define-public dune-configurator
   (package
     (inherit dune-bootstrap)
@@ -1840,7 +1843,8 @@ following a very simple s-expression syntax.")
              (delete-file-recursively "vendor/pp"))))))
     (propagated-inputs
      (list ocaml-csexp))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune-configurator))))
     (synopsis "Dune helper library for gathering system configuration")
     (description "Dune-configurator is a small library that helps writing
 OCaml scripts that test features available on the system, in order to generate
@@ -1865,13 +1869,25 @@ config.h files for instance.  Among other things, dune-configurator allows one t
     (propagated-inputs
      `(("ocaml-csexp" ,ocaml4.09-csexp)))))
 
+(define-public ocaml5.0-dune-configurator
+  (package
+    (inherit dune-configurator)
+    (name "ocaml5.0-dune-configurator")
+    (arguments
+     `(,@(package-arguments dune-configurator)
+       #:dune ,ocaml5.0-dune-bootstrap
+       #:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib))
+    (propagated-inputs (list ocaml5.0-csexp))))
+
 (define-public dune
   (package
     (inherit dune-bootstrap)
     (propagated-inputs
      (list dune-configurator))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-dune))
-                  (ocaml4.09-variant . ,(delay ocaml4.09-dune))))))
+                  (ocaml4.09-variant . ,(delay ocaml4.09-dune))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune))))))
 
 (define-public ocaml4.09-dune
   (package
@@ -1892,6 +1908,12 @@ config.h files for instance.  Among other things, dune-configurator allows one t
               (sha256
                (base32
                 "0l4x0x2fz135pljv88zj8y6w1ninsqw0gn1mdxzprd6wbxbyn8wr"))))))
+
+(define-public ocaml5.0-dune
+  (package
+    (inherit ocaml5.0-dune-bootstrap)
+    (propagated-inputs
+     (list ocaml5.0-dune-configurator))))
 
 (define-public ocaml-csexp
   (package
@@ -1918,7 +1940,8 @@ config.h files for instance.  Among other things, dune-configurator allows one t
              #t)))))
     (propagated-inputs
      (list ocaml-result))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-csexp))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-csexp))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-csexp))))
     (home-page "https://github.com/ocaml-dune/csexp")
     (synopsis "Parsing and printing of S-expressions in Canonical form")
     (description "This library provides minimal support for Canonical
@@ -1946,6 +1969,18 @@ module of this library is parameterised by the type of S-expressions.")
            ((#:dune _) ocaml4.09-dune-bootstrap))))
     (propagated-inputs
      `(("ocaml-result" ,ocaml4.09-result)))))
+
+(define-public ocaml5.0-csexp
+  (package
+    (inherit ocaml-csexp)
+    (name "ocaml5.0-csexp")
+    (arguments
+     `(#:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib
+       ,@(substitute-keyword-arguments (package-arguments ocaml-csexp)
+           ((#:dune _) ocaml5.0-dune-bootstrap))))
+    (propagated-inputs
+     `(("ocaml-result" ,ocaml5.0-result)))))
 
 (define-public ocaml-migrate-parsetree
   (package
@@ -2132,7 +2167,8 @@ bitsrings in Erlang style as primitives to the language.")))
     (arguments
      `(#:test-target "."
        #:dune ,dune-bootstrap))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-result))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-result))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-result))))
     (home-page "https://github.com/janestreet/result")
     (synopsis "Compatibility Result module")
     (description "Uses the new result type defined in OCaml >= 4.03 while
@@ -2149,6 +2185,16 @@ defined in this library.")
        #:dune ,ocaml4.09-dune-bootstrap
        #:ocaml ,ocaml-4.09
        #:findlib ,ocaml4.09-findlib))))
+
+(define-public ocaml5.0-result
+  (package
+    (inherit ocaml-result)
+    (name "ocaml5.0-result")
+    (arguments
+     `(#:test-target "."
+       #:dune ,ocaml5.0-dune-bootstrap
+       #:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib))))
  
 (define-public ocaml-topkg
   (package
