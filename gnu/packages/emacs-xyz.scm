@@ -13272,6 +13272,8 @@ target will call @code{compile} on it.")
     (arguments
      (list
       #:include #~(cons "\\.lsp$" %default-include)
+      #:tests? #true
+      #:test-command #~(list "ert-runner")
       #:phases
       #~(modify-phases %standard-phases
           ;; Move the extensions source files to the top level, which is
@@ -13292,6 +13294,7 @@ target will call @code{compile} on it.")
                 ("easy-islisp-library-directory"
                  `(or (getenv "EASY_ISLISP")
                       ,(search-input-directory inputs "share/eisl/library")))))))))
+    (native-inputs (list emacs-ert-runner))
     (inputs (list eisl))
     (home-page "https://gitlab.com/sasanidas/islisp-mode")
     (synopsis "ISLisp support for Emacs")
