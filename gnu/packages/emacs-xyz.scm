@@ -10234,6 +10234,29 @@ provides a front-end interface for the workspace/symbols LSP procedure
 call.")
    (license license:gpl3+)))
 
+(define-public emacs-eglot-tempel
+  (let ((commit "e08b203d6a7c495d4b91ed4537506b5f1ea8a84f")
+        (revision "0"))
+    (package
+      (name "emacs-eglot-tempel")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/fejfighter/eglot-tempel")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0f4m0bb1f91x9jqfc0ny95a3pfh1mzzjzdjpa6f548hynq8j34ib"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-eglot emacs-tempel))
+      (home-page "https://github.com/fejfighter/eglot-tempel")
+      (synopsis "Bridge for Tempel templates with Eglot")
+      (description "This package is an adapter to use the Tempel templating
+library with Eglot instead of Yasnippet.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-yasnippet
   (let ((commit "ae0450889484f23dc4ec37518852a2c61b89f184")
         (revision "0"))
