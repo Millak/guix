@@ -2880,6 +2880,29 @@ OCaml with fibers.")
     (license
      (list license:isc license:expat))))
 
+(define ocaml-eio-linux
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-linux")
+    (arguments `(#:package "eio_linux"
+                 #:test-target "."))
+    (propagated-inputs
+     (list ocaml-eio
+           ocaml-uring
+           ocaml-logs
+           ocaml-fmt))
+    (native-inputs
+     (list ocaml-mdx
+           ocaml-alcotest
+           ocaml-mdx))
+    (synopsis "Linux backend for ocaml-eio")
+    (description "@code{Eio_linux} provides a Linux io-uring backend for
+@code{Ocaml Eio} APIs, plus a low-level API that can be used directly
+(in non-portable code).")))
+
+(define-public ocaml5.0-eio-linux
+  (package-with-ocaml5.0 ocaml-eio-linux))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
