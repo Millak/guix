@@ -1466,6 +1466,13 @@ compilers that can directly deal with packages.")
     (native-inputs
      (list m4 ocaml-4.09))))
 
+(define-public ocaml5.0-findlib
+  (package
+    (inherit ocaml-findlib)
+    (name "ocaml5.0-findlib")
+    (native-inputs
+     (list m4 ocaml-5.0))))
+
 (define-public ocaml-ounit2
   (package
     (name "ocaml-ounit2")
