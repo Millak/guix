@@ -1174,7 +1174,7 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.4.2")
+    (version "1.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1182,7 +1182,7 @@ the desktop wallpaper.")
                                   "xfce4-taskmanager-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ya81si7xhqqbbc9lfcjg2i1pi1qdfw1pnjry7kf95f1w50244nd"))))
+                "1rcaalqv6sdsnc6ick8fifgkqcf2xiflw9yk5szqn2qs4jx02kzn"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1190,6 +1190,7 @@ the desktop wallpaper.")
      (list libwnck
            libxmu
            gtk+
+           libxfce4ui
            ;; FIXME: Remove libxext and libxt when libxmu propagates them.
            libxext
            libxt))
