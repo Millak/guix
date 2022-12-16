@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,6 +63,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages valgrind)
@@ -638,7 +640,8 @@ tree binary files.  These are board description files used by Linux and BSD.")
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
-                     %u-boot-rk3399-enable-emmc-phy-patch))
+                     %u-boot-rk3399-enable-emmc-phy-patch
+                     (search-patch "u-boot-infodocs-target.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -668,6 +671,42 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).")
     (license license:gpl2+)))
+
+;;; This is very similar to the linux-libre-documentation package, since it
+;;; reuses the same Makefile-based build system.
+(define-public u-boot-documentation
+  (package
+    (inherit u-boot)
+    (name "u-boot-documentation")
+    (arguments
+     (list
+      #:make-flags #~(list "HOSTCC=gcc"
+                           ;; Avoid treating Sphinx warnings as errors.
+                           "SPHINXOPTS=")
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (apply invoke "make" "infodocs" make-flags)))
+                   (replace 'install
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (let* ((info-dir (string-append #$output "/share/info"))
+                              (info (string-append info-dir
+                                                   "/DasUBoot.info.gz")))
+                         (with-directory-excursion "doc/output"
+                           (apply invoke "make" "-C" "texinfo" "install-info"
+                                  (string-append "infodir=" info-dir)
+                                  make-flags))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs u-boot)
+       (append fontconfig
+               python-sphinx
+               texinfo
+               which)))
+    (synopsis "U-Boot documentation")
+    (description "This package provides the documentation for U-Boot, as an
+Info manual.")))
 
 (define-public u-boot-tools
   (package
