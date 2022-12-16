@@ -2723,6 +2723,28 @@ for mapping files in memory.  This function is the same as the
 @command{Unix.map_file} function added in OCaml >= 4.06.")
     (license (list license:qpl license:lgpl2.0))))
 
+(define-public ocaml-psq
+  (package
+    (name "ocaml-psq")
+    (version "0.2.1")
+    (home-page "https://github.com/pqwy/psq")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "0ahxbzkbq5sw8sqv31c2lil2zny4076q8b0dc7h5slq7i2r23d79"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-qcheck ocaml-alcotest))
+    (synopsis "Functional Priority Search Queues for OCaml")
+    (description
+     "This library provides Functional Priority Search Queues for OCaml.
+Typical applications are searches, schedulers and caches.")
+    (license license:isc)))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
