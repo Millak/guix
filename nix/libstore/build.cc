@@ -2576,7 +2576,7 @@ Path DerivationGoal::openLogFile()
         closeOnExec(fd);
 
         if (!(fLogFile = fdopen(fd.borrow(), "w")))
-            throw SysError(format("opening file `%1%'") % logFileName);
+            throw SysError(format("opening log file `%1%'") % logFileName);
 
         int err;
         if (!(bzLogFile = BZ2_bzWriteOpen(&err, fLogFile, 9, 0, 0)))
