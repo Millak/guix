@@ -643,6 +643,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/xorg.scm				\
   %D%/packages/xfce.scm				\
   %D%/packages/zig.scm				\
+  %D%/packages/zig-xyz.scm			\
   %D%/packages/zile.scm				\
   %D%/packages/zwave.scm			\
 						\
