@@ -402,7 +402,7 @@ executing in M-mode.")
 (define-public seabios
   (package
     (name "seabios")
-    (version "1.15.0")
+    (version "1.16.1")
     (source
      (origin
        (method git-fetch)
@@ -411,7 +411,7 @@ executing in M-mode.")
              (commit (string-append "rel-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gnsfmbgcvihsap8sz8c2n3qs439q44i3pwrms2nv3xcnf1sclj9"))))
+        (base32 "0gph1hf70jjpx55qc0lzx2yghkipg9dnsin07i4jajk0p1jpd2d0"))))
     (build-system gnu-build-system)
     (native-inputs (list python-wrapper))
     (arguments
