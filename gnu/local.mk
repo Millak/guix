@@ -1381,6 +1381,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/julia-tracker-16-compat.patch		\
   %D%/packages/patches/libffi-3.3-powerpc-fixes.patch		\
   %D%/packages/patches/libffi-float128-powerpc64le.patch	\
+  %D%/packages/patches/libgeotiff-fix-tests-with-proj-9.1.1.patch	\
   %D%/packages/patches/libobjc2-unbundle-robin-map.patch	\
   %D%/packages/patches/librime-fix-build-with-gcc10.patch	\
   %D%/packages/patches/libvirt-add-install-prefix.patch	\

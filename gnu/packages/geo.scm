@@ -409,6 +409,7 @@ and driving.")
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
+       (patches (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"))
        (sha256
         (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
