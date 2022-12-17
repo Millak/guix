@@ -416,7 +416,8 @@ executing in M-mode.")
     (native-inputs (list python-wrapper))
     (arguments
      `(#:tests? #f                      ; no check target
-       #:make-flags '("EXTRAVERSION=-guix") ;upstream wants distros to set this
+       #:make-flags '("EXTRAVERSION=-guix" ;upstream wants distros to set this
+                      "V=1")            ;build verbosely
        #:modules (,@%gnu-build-system-modules
                   (ice-9 match))
        #:phases
