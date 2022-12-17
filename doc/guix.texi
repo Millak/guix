@@ -17059,7 +17059,7 @@ I/O faster, and thus paging out unused portions of program memory will
 expand the RAM available for such caching.
 
 For a more detailed description of how memory is managed from the
-viewpoint of a monolithic kernel, @xref{Memory
+viewpoint of a monolithic kernel, @pxref{Memory
 Concepts,,, libc, The GNU C Library Reference Manual}.
 
 The Linux kernel has support for swap partitions and swap files: the
