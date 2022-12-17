@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2176,7 +2177,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                                          (%current-system)))
                      '("-DAVIF_CODEC_RAV1E=ON")
                      '())
-              "-DAVIF_BUILD_TESTS=ON")
+              "-DAVIF_BUILD_TESTS=ON" "-DAVIF_BUILD_APPS=ON")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
@@ -2185,7 +2186,21 @@ This package can be used to create @code{favicon.ico} files for web sites.")
           (add-after 'install 'install-readme
             (lambda _
               (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
-                (install-file "../source/README.md" doc)))))))
+                (install-file "../source/README.md" doc))))
+          (add-after 'install 'split
+            (lambda _
+              (let* ((avifenc  (string-append #$output       "/bin/avifenc"))
+                     (avifenc* (string-append #$output:tools "/bin/avifenc"))
+                     (avifdec  (string-append #$output       "/bin/avifdec"))
+                     (avifdec* (string-append #$output:tools "/bin/avifdec")))
+                (mkdir-p (string-append #$output:tools "/bin"))
+
+                (for-each (lambda (old new)
+                            (copy-file old new)
+                            (delete-file old)
+                            (chmod new #o555))
+                          (list avifenc avifdec)
+                          (list avifenc* avifdec*))))))))
     (inputs
      (append
       ;; XXX: rav1e depends on rust, which currently only works on x86_64.
@@ -2193,7 +2208,9 @@ This package can be used to create @code{favicon.ico} files for web sites.")
       (if (string-prefix? "x86_64" (or (%current-target-system)
                                        (%current-system)))
           (list rav1e) '())
-      (list dav1d libaom)))
+      (list dav1d libaom zlib libpng libjpeg-turbo)))
+    (outputs (list "out"
+                   "tools"))  ; avifenc & avifdec
     (synopsis "Encode and decode AVIF files")
     (description "Libavif is a C implementation of @acronym{AVIF, the AV1 Image
 File Format}.  It can encode and decode all YUV formats and bit depths supported
