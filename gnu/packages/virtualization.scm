@@ -160,7 +160,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "7.1.0")
+    (version "7.2.0")
     (source
      (origin
        (method url-fetch)
@@ -168,7 +168,7 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "1rmvrgqjhrvcmchnz170dxvrrf14n6nm39y8ivrprmfydd9lwqx0"))
+         "0mr1xd78bgp1l61281sdx0338ji0aa68j2p9994sskblhwkcwjav"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-aarch64-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
@@ -178,7 +178,7 @@
            ;; Delete bundled code that we provide externally.
            ;; TODO: Unbundle SeaBIOS!
            (for-each delete-file-recursively
-                     '("dtc" "meson" "slirp"))))))
+                     '("dtc" "meson"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -195,7 +195,8 @@
                 (string-append "--host-cc=" gcc)
                 (string-append "--prefix=" out)
                 "--sysconfdir=/etc"
-                "--enable-slirp=system"
+                (string-append "--meson=" (search-input-file %build-inputs
+                                                             "bin/meson"))
                 "--enable-fdt=system"
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
@@ -371,7 +372,7 @@ exec smbd $@")))
            perl
            flex
            bison
-           meson
+           meson-0.63
            ninja
            pkg-config
            python-wrapper
