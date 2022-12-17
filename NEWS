@@ -80,9 +80,10 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** The init RAM disk honors more arguments—e.g. ‘root’ and ‘rootflags’
 *** ‘guix system image’ can now generate WSL images
 *** The mcron task scheduler logs now contain the jobs exit statuses
+*** Chromium extensions are now built in a deterministic fashion
 
 ** Programming interfaces
-*** Package input fields can now plain package lists
+*** Package input fields can now be plain package lists
 *** G-expressions can now be used in build phases
 *** New ‘modify-inputs’ macro to ease customizing a list of package inputs
 *** New ‘this-package-input’ and ‘this-package-native-input’ macros
@@ -92,7 +93,7 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** ‘texlive-union’ is now deprecated in favor of ‘texlive-updmap.cfg’
 *** New (guix cpu) module
 *** New (guix least-authority) module
-*** New (guix plaform) module
+*** New (guix platform) module
 *** New (guix read-print) module
 
 It provides a comment-preserving reader and a comment-preserving
@@ -102,6 +103,12 @@ pretty-printer smarter than (ice-9 pretty-print).
 
 This build system lets you build Guix instances from channel specifications,
 similar to how 'guix time-machine' would do it, as regular packages.
+
+*** New ‘pyproject-build-system’
+
+This is an extension of ‘python-build-system’ with support for PEP-517 and
+‘pyproject.toml’ files.  It may eventually get merged back into
+‘python-build-system’.
 
 *** New ‘elm-build-system’
 *** New ‘rebar-build-system’
