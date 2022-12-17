@@ -1093,7 +1093,7 @@ GNOME Shell, including the top panel, dash and overview.")
 (define-public gnome-shell-extension-radio
   (package
     (name "gnome-shell-extension-radio")
-    (version "19")
+    (version "20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1103,7 +1103,7 @@ GNOME Shell, including the top panel, dash and overview.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qsi6c57hxh4jqdw18knm06601lhag6jdbvzg0r79aa9572zy8a0"))))
+                "01dmziad9g7bs3hr59aaz3mivkc6rqfyb9bz2v202zk22vcr5a2y"))))
     (build-system copy-build-system)
     (arguments
      (list
