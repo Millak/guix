@@ -81,6 +81,24 @@ Please send Guix bug reports to bug-guix@gnu.org.
 *** ‘guix system image’ can now generate WSL images
 *** The mcron task scheduler logs now contain the jobs exit statuses
 *** Chromium extensions are now built in a deterministic fashion
+*** The ‘rsync’ service lets you specify individual “modules”
+*** New services
+
+anonip, bitmask, fail2ban, gitile, greetd, jami, lightdm, log-cleanup,
+nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
+
+*** 5311 new packages
+
+*** 6573 package updates
+
+Noteworthy updates:
+bash 5.1.8, binutils 2.37, clojure 1.11.1, cups 2.3.3op2, emacs 28.2,
+enlightenment 0.25.4, gcc-toolchain 12.2.0, gdb 12.1, ghc 8.10.7,
+gimp 2.10.32, glibc 2.33, gnome 42.4, gnupg 2.2.32, go 1.19.1, guile 3.0.8,
+icecat 102.5.0-guix0-preview1, icedtea 3.19.0, inkscape 1.2.1, julia 1.6.7,
+libreoffice 7.4.3.2, linux-libre 6.0.10, ocaml 4.14.0, octave 7.2.0,
+openjdk 18, perl 5.34.0, python2 2.7.18, python 3.9.9, racket 8.7,
+rust 1.60.0, r 4.2.2, sbcl 2.2.10, shepherd 0.9.3, xorg-server 21.1.4
 
 ** Programming interfaces
 *** Package input fields can now be plain package lists
@@ -112,9 +130,6 @@ This is an extension of ‘python-build-system’ with support for PEP-517 and
 
 *** New ‘elm-build-system’
 *** New ‘rebar-build-system’
-*** New services
-anonip, bitmask, fail2ban, gitile, greetd, jami, lightdm, log-cleanup,
-nar-herder, opendht, rasdaemon, samba, seatd, strongswan, wsdd
 
 ** Noteworthy bug fixes
 *** Fall back to Software Heritage when cloning a channel
