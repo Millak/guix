@@ -1046,7 +1046,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.5.1")
+    (version "3.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1054,7 +1054,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "1l93q7xf6qx9ck5axfkf3ygmvclxkvrjd8x00ckn7j0d0750ci3w"))
+                "1qckwnygszxkkq40bf87s3m1sab6jj9jyakdvskh0qf7dq8zjarf"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -1084,6 +1084,7 @@ development.")
            json-c
            libgeotiff
            libjpeg-turbo
+           libjxl
            libpng
            libtiff
            libwebp
