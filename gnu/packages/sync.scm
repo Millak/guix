@@ -54,6 +54,7 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ocaml)
@@ -217,7 +218,7 @@ Nextcloud Server with your computer.")
 (define-public megacmd
   (package
     (name "megacmd")
-    (version "1.1.0")
+    (version "1.5.1")
     (source
       (origin
         (method git-fetch)
@@ -227,28 +228,29 @@ Nextcloud Server with your computer.")
               (recursive? #t)))
         (sha256
          (base32
-          "004j8m3xs6slx03g2g6wzr97myl2v3zc09wxnfar5c62a625pd53"))
+          "12v46jyxdgp2qqdpmd084d60hd5srjbgwpk082b3rp5dl7yg1rd8"))
         (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     ;; XXX: Disabling tests because they depend on libgtest.la from googletest,
     ;; which is not installed for unclear reasons.
     (arguments
-     `(#:tests? #f
-       #:configure-flags '("--with-pcre")))
+     (list #:tests? #f
+           #:configure-flags #~'("--with-pcre")))
     (native-inputs
      (list autoconf automake libtool))
     (inputs
-     `(("c-ares" ,c-ares)
-       ("crypto++" ,crypto++)
-       ("curl" ,curl)
-       ("freeimage" ,freeimage)
-       ("gtest" ,googletest)
-       ("openssl" ,openssl)
-       ("pcre" ,pcre)
-       ("readline" ,readline)
-       ("sodium" ,libsodium)
-       ("sqlite3" ,sqlite)
-       ("zlib" ,zlib)))
+     (list c-ares
+           crypto++
+           curl
+           freeimage
+           googletest
+           libuv
+           openssl
+           pcre
+           readline
+           libsodium
+           sqlite
+           zlib))
     (home-page "https://mega.nz/cmd")
     (synopsis
      "Command Line Interactive and Scriptable Application to access mega.nz")
