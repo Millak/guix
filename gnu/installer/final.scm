@@ -221,10 +221,18 @@ or #f.  Return #t on success and #f on failure."
              ;; alive.
              (stop-service 'guix-daemon)
 
-             ;; Restore the database and restart it.
+             ;; Restore the database and restart it.  As part of restoring the
+             ;; database, remove the WAL and shm files in case they were left
+             ;; behind after guix-daemon was stopped.  Failing to do so,
+             ;; sqlite might behave as if transactions that appear in the WAL
+             ;; file were committed.  (See <https://www.sqlite.org/wal.html>.)
              (installer-log-line "restoring store database from '~a'"
                                  saved-database)
              (copy-file saved-database database-file)
+             (for-each (lambda (suffix)
+                         (false-if-exception
+                          (delete-file (string-append database-file suffix))))
+                       '("-wal" "-shm"))
              (start-service 'guix-daemon)
 
              ;; Finally umount the cow-store and exit the container.
