@@ -1178,13 +1178,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.20.3")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "01lhnkhw22jp6hnrs5qvgkq4fqcni2sx7ydiyv8w8xxx5wpglq0d"))))
+        (base32 "0hnfs75dcnz12ximah5xn9566r8zz189lxikmj4lrs9jl4l3l7ff"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1207,13 +1207,12 @@ utilities for data translation and processing.")
            python-scipy
            python-shapely))
     (inputs
-     (list geos
-           ;; cartopy's setup.py looks for the proj executable.
-           ;; Not sure if it actually makes use of it since it
-           ;; probably uses proj only through pyproj.
-           proj))
+     (list geos))
     (native-inputs
-     (list python-cython python-flufl-lock python-pytest))
+     (list python-cython
+           python-flufl-lock
+           python-pytest
+           python-pytest-mpl))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
