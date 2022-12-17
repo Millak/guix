@@ -293,7 +293,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.0")
+    (version "3.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -301,7 +301,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "12l59pxawyizmc4wn20dvjn7aifqwkim4ysmc78h91mayjmqravr"))))
+                "1qhbirv1rbznv99ha0pa0zybvcsn0dsz2xfc65vr8bgrm77v63kd"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
