@@ -702,14 +702,14 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "1gjg63irs44djyqbp9gg7s02d0y5i9cd1a83phyzp5fcj56y3n5k"))))
+            "0czbfl5dd7jckbwvinfwiwdb99sxj796gfn3a9zqbsdc4xcl8257"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
