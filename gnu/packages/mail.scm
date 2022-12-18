@@ -2566,13 +2566,13 @@ maintained.")
 (define-public khard
   (package
     (name "khard")
-    (version "0.17.0")
+    (version "0.18.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri name version))
               (sha256
                (base32
-                "062nv4xkfsjc11k9m52dh6xjn9z68a4a6x1s8z05wwv4jbp1lkhn"))))
+                "05860fdayqap128l7i6bcmi9kdyi2gx02g2pmh88d56xgysd927y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2581,8 +2581,7 @@ maintained.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (zsh (string-append out "/share/zsh/site-functions")))
-               (copy-recursively "misc/zsh" zsh)
-               #t))))))
+               (copy-recursively "misc/zsh" zsh)))))))
     (native-inputs
      (list python-setuptools-scm))
     (inputs
