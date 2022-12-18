@@ -856,15 +856,6 @@ engineers, musicians, soundtrack editors and composers.")
     (version "3.2.1")
     (source
      (origin
-       ;; If built from the release tag, Audacity will describe itself
-       ;; as an "Alpha test version" and suggest to users that they use
-       ;; the "latest stable released version".
-       ;; XXX: For 3.2.1 we rebelliously use a git tag anyway because the only
-       ;; "processed" download is a .zip containing a .tar.gz which does not
-       ;; fare well with the patch and snippet machinery:
-       ;;   https://github.com/audacity/audacity/issues/3811
-       ;; TODO: Find a way to control the "alpha" status even when using git
-       ;; so we're not reliant on preprocessed source code.
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/audacity/audacity")
@@ -940,7 +931,11 @@ engineers, musicians, soundtrack editors and composers.")
         ;; TODO: enable this flag once we've packaged all dependencies
         ;; "-Daudacity_obey_system_dependencies=on"
         ;; disable crash reports, updates, ..., anything that phones home
-        "-Daudacity_has_networking=off")
+        "-Daudacity_has_networking=off"
+        ;; When building from Git — even from a release tag — this is undefined,
+        ;; and Audacity assumes that is is an ‘alpha’ version and includes debug
+        ;; symbols and extra code.  Force level 2, ‘release’.
+        "-DAUDACITY_BUILD_LEVEL=2")
        #:imported-modules ((guix build glib-or-gtk-build-system)
                            ,@%cmake-build-system-modules)
        #:modules
