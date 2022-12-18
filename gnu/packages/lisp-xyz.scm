@@ -104,6 +104,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -893,6 +894,71 @@ Features:
 
 (define-public ecl-cl-irc
   (sbcl-package->ecl-package sbcl-cl-irc))
+
+(define-public sbcl-coleslaw
+  (let ((commit "e7e68ce6020d13b14bf212890a7d8973d7af3b40")
+        (revision "0"))
+    (package
+      (name "sbcl-coleslaw")
+      (version (git-version "0.9.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/coleslaw-org/coleslaw")
+               (commit commit)))
+         (file-name (git-file-name "cl-coleslaw" version))
+         (sha256
+          (base32 "1w21a272q4x7nlr4kbmwwvkjvb4hpnw869byvy47vv361y7pimws"))))
+      (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       '(#:asd-systems '("coleslaw" "coleslaw-cli")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda _
+               (substitute* "plugins/publish-gh-pages.sh"
+                 (("^rsync\\b") (which "rsync")))
+               (substitute* '("plugins/rsync.lisp"
+                              "src/coleslaw.lisp")
+                 (("\\brun-program \"rsync\\b")
+                  (string-append "run-program \"" (which "rsync"))))))
+           (add-after 'create-asdf-configuration 'build-program
+             (lambda* (#:key outputs #:allow-other-keys)
+               (build-program
+                (string-append (assoc-ref outputs "bin") "/bin/coleslaw")
+                outputs
+                #:dependencies '("coleslaw-cli")
+                #:entry-program '((apply (function coleslaw-cli::main)
+                                   arguments))
+                #:compress? #t))))))
+      (native-inputs
+       (list sbcl-prove))
+      (inputs
+       (list rsync
+             sbcl-3bmd
+             sbcl-alexandria
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-cl-unicode
+             sbcl-clack
+             sbcl-closer-mop
+             sbcl-closure-template
+             sbcl-inferior-shell
+             sbcl-local-time
+             sbcl-trivia))
+      (home-page "https://github.com/coleslaw-org/coleslaw")
+      (synopsis "Static site generator")
+      (description
+       "Coleslaw is a static site generator written in Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-coleslaw
+  (sbcl-package->cl-source-package sbcl-coleslaw))
+
+(define-public ecl-coleslaw
+  (sbcl-package->ecl-package sbcl-coleslaw))
 
 (define-public sbcl-tripod
   (let ((commit "bcea16610b4961a927e417e4413fffe686d71c83")
