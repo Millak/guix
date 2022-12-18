@@ -634,7 +634,7 @@ the output locally.")
     (home-page "https://cran.r-project.org/package=gson")
     (synopsis "Base Class and Methods for 'gson' Format")
     (description
-     "This packages proposes a new file format named @code{gson} for storing
+     "This package proposes a new file format named @code{gson} for storing
 gene set and related information, and provides read, write and other utilities
 to process this file format.")
     (license license:artistic2.0)))
