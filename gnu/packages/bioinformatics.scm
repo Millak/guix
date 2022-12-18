@@ -12802,32 +12802,35 @@ implementation differs in these ways:
        (sha256
         (base32
          "0k524xnx3dvpz5yx65p316wghvi01zs17is8w2m3w2qywiswk0sl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
-             ;; ZIP does not support timestamps before 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$")))))
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? inputs #:allow-other-keys)
-             (when tests?
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; Plot tests that fail.
+             (string-append "not test_dotplot_matrixplot_stacked_violin"
+                            " and not test_violin_without_raw"
+                            " and not test_correlation"
+                            " and not test_scatterplots"
+                            " and not test_scatter_embedding_add_outline_vmin_vmax_norm"
+                            " and not test_paga"
+                            " and not test_paga_compare"
+                            " and not test_clustermap"
+
+                            ;; These try to connect to the network
+                            " and not test_scrublet_plots"
+                            " and not test_plot_rank_genes_groups_gene_symbols"
+                            " and not test_pca_n_pcs"
+                            " and not test_pca_chunked"
+                            " and not test_pca_sparse"
+                            " and not test_pca_reproducible"))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'pretend-version
+             (lambda _
+               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+           (add-after 'unpack 'delete-bad-tests
+             (lambda _
                ;; These tests require Internet access.
                (delete-file-recursively "scanpy/tests/notebooks")
                (delete-file "scanpy/tests/test_clustering.py")
@@ -12854,27 +12857,11 @@ implementation differs in these ways:
 
                (setenv "PYTHONPATH"
                        (string-append (getcwd) ":"
-                                      (assoc-ref inputs "python-anndata:source") ":"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (invoke "pytest" "-vv"
-                       "-k"
-                       ;; Plot tests that fail.
-                       (string-append "not test_dotplot_matrixplot_stacked_violin"
-                                      " and not test_violin_without_raw"
-                                      " and not test_correlation"
-                                      " and not test_scatterplots"
-                                      " and not test_scatter_embedding_add_outline_vmin_vmax_norm"
-                                      " and not test_paga"
-                                      " and not test_paga_compare"
-                                      " and not test_clustermap"
-
-                                      ;; These try to connect to the network
-                                      " and not test_scrublet_plots"
-                                      " and not test_plot_rank_genes_groups_gene_symbols"
-                                      " and not test_pca_n_pcs"
-                                      " and not test_pca_chunked"
-                                      " and not test_pca_sparse"
-                                      " and not test_pca_reproducible"))))))))
+                                      #$(this-package-native-input "python-anndata:source") ":"
+                                      (getenv "GUIX_PYTHONPATH")))))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'check 'set-numba-cache-dir
+             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
            python-dask
