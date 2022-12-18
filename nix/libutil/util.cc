@@ -264,7 +264,7 @@ string readFile(const Path & path, bool drain)
 {
     AutoCloseFD fd = open(path.c_str(), O_RDONLY);
     if (fd == -1)
-        throw SysError(format("opening file `%1%'") % path);
+        throw SysError(format("reading file `%1%'") % path);
     return drain ? drainFD(fd) : readFile(fd);
 }
 
@@ -273,7 +273,7 @@ void writeFile(const Path & path, const string & s)
 {
     AutoCloseFD fd = open(path.c_str(), O_WRONLY | O_TRUNC | O_CREAT, 0666);
     if (fd == -1)
-        throw SysError(format("opening file '%1%'") % path);
+        throw SysError(format("writing file '%1%'") % path);
     writeFull(fd, s);
 }
 

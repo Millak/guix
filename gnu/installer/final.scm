@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -114,6 +114,8 @@ it can interact with the rest of the system."
     ;; Catch SIGINT and kill the container process.
     (sigaction SIGINT
       (lambda (signum)
+        ;: FIXME: Use of SIGKILL prevents the dynamic-wind exit handler of
+        ;; THUNK to run.
         (false-if-exception
          (kill pid SIGKILL))))
 
@@ -196,14 +198,16 @@ or #f.  Return #t on success and #f on failure."
              ;; the loaded cow-store locale files will prevent umounting.
              (install-locale locale)
 
-             ;; Save the database, so that it can be restored once the
-             ;; cow-store is umounted.
+             ;; Stop the daemon and save the database, so that it can be
+             ;; restored once the cow-store is umounted.
+             (stop-service 'guix-daemon)
              (copy-file database-file saved-database)
+
+             (installer-log-line "mounting copy-on-write store")
              (mount-cow-store (%installer-target-dir) backing-directory))
            (lambda ()
              ;; We need to drag the guix-daemon to the container MNT
              ;; namespace, so that it can operate on the cow-store.
-             (stop-service 'guix-daemon)
              (start-service 'guix-daemon (list (number->string (getpid))))
 
              (setvbuf (current-output-port) 'none)
@@ -213,11 +217,25 @@ or #f.  Return #t on success and #f on failure."
 
              (set! ret (run-command install-command #:tty? #t)))
            (lambda ()
-             ;; Restart guix-daemon so that it does no keep the MNT namespace
+             ;; Stop guix-daemon so that it does no keep the MNT namespace
              ;; alive.
-             (restart-service 'guix-daemon)
+             (stop-service 'guix-daemon)
+
+             ;; Restore the database and restart it.  As part of restoring the
+             ;; database, remove the WAL and shm files in case they were left
+             ;; behind after guix-daemon was stopped.  Failing to do so,
+             ;; sqlite might behave as if transactions that appear in the WAL
+             ;; file were committed.  (See <https://www.sqlite.org/wal.html>.)
+             (installer-log-line "restoring store database from '~a'"
+                                 saved-database)
              (copy-file saved-database database-file)
+             (for-each (lambda (suffix)
+                         (false-if-exception
+                          (delete-file (string-append database-file suffix))))
+                       '("-wal" "-shm"))
+             (start-service 'guix-daemon)
 
              ;; Finally umount the cow-store and exit the container.
+             (installer-log-line "unmounting copy-on-write store")
              (unmount-cow-store (%installer-target-dir) backing-directory)
              (assert-exit ret))))))))
