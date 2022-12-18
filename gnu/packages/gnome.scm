@@ -7429,6 +7429,47 @@ principles are simplicity and standards compliance.")
 of running programs and invoke methods on those interfaces.")
     (license license:gpl2+)))
 
+(define-public d-spy
+  (package
+    (name "d-spy")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0wk7i3vyq4a98g29ms7vz3wy8xkk3pgw48g0fm65qk32xa679s7a"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
+    (native-inputs
+     (list desktop-file-utils           ; for update-desktop-database
+           `(,glib "bin")
+           gettext-minimal
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list gtk
+           libadwaita))
+    (home-page "https://gitlab.gnome.org/GNOME/d-spy")
+    (synopsis "D-Bus debugger")
+    (description
+     "D-Spy is a tool to explore and test end-points and interfaces of running
+programs via D-Bus.  It also ships a library for integration into development
+environments.")
+    (license license:gpl2+)))
+
 (define-public yelp-xsl
   (package
     (name "yelp-xsl")
