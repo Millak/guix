@@ -59,11 +59,11 @@
            automake
            libtool))
     (inputs
-     `(("libftdi" ,libftdi)
-       ("libmicrohttpd" ,libmicrohttpd)
-       ("libusb" ,libusb)
-       ("libuuid" ,util-linux "lib")
-       ("zlib" ,zlib)))
+     (list libftdi
+           libmicrohttpd
+           libusb
+           `(,util-linux "lib")
+           zlib))
     (propagated-inputs
      (list protobuf))       ; for pkg-config --libs libola
     (arguments
