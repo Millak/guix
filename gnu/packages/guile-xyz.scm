@@ -564,6 +564,44 @@ library for GNU Guile based on the actor model.")
       (properties '((upstream-name . "8sync")))
       (license license:lgpl3+))))
 
+(define guile-8sync-for-pubstrate
+  (let ((commit "7972787723d08a491379b63e6e5dc1cc6a3fac87")
+        (revision "0"))
+    (package
+      (inherit guile-8sync)
+      (name "guile-8sync-for-pubstrate")
+      (version (git-version "0.4.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (commit commit)
+                      (url "https://git.savannah.gnu.org/git/8sync.git")))
+                (sha256
+                 (base32
+                  "0m3k3cizi89frnw58dws3g4jcssck6jf1ahpadxxg3ncclqzad8r"))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 '(substitute* "Makefile.am"
+                    (("2.2") "3.0")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        '(list "GUILE_AUTO_COMPILE=0")
+        #:phases
+        '(modify-phases %standard-phases
+           ;; See commit ee371103855e5bfe8aae3debe442a24c6353e172
+           (add-after 'unpack 'fix-srfi64-tests
+             (lambda _
+               (substitute* '("tests/test-actors.scm"
+                              "tests/test-rmeta-slot.scm")
+                 (("\\(test-exit\\)") "")
+                 (("\\(test-end.*" m)
+                  (string-append "(test-exit)" m))))))))
+      (native-inputs (list autoconf automake guile-3.0 pkg-config texinfo))
+      (propagated-inputs (list guile-fibers)))))
+
 (define-public guile-daemon
   (package
     (name "guile-daemon")
