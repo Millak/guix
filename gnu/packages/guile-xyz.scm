@@ -3726,7 +3726,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3735,10 +3735,21 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1nk81z2cf9fsyppq5ly0yjw7yvdk5qraf71in7ayzdkngphhfgfx"))))
+                "1lv2cjzgrr0yshqng96l6bnn8pjmljv8qcn4w3wldh97ns7qigds"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+       #:phases
+       (modify-phases %standard-phases
+         ;; Guile-PNG tries to log parser messages to the syslog which is not
+         ;; available during the build.
+         (add-after 'unpack 'fix-tests
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "tests/graphics.scm"
+               (("             \\(png graphics\\)\\)")
+                (string-append "             (png graphics)\n"
+                               "             (png fsm context))\n"
+                               "(log-clear-handlers!)"))))))))
     (native-inputs (list autoconf automake pkg-config texinfo))
     (inputs (list bash-minimal guile-3.0 guile-lib guile-zlib))
     (propagated-inputs (list guile-smc))
