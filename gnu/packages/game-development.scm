@@ -1203,46 +1203,47 @@ interface (API).")
                 "0g6j79naab7583kymf1bgxc5l5c9h5laq887rmvh8vw8iyifrl6n"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                ; tests require pygame to be installed first
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-build-config
-           (lambda _
-             (substitute* "buildconfig/config_unix.py"
-               (("origincdirs = \\[.*\\]")
-                "origincdirs = os.environ['C_INCLUDE_PATH'].split(\":\")")
-               (("ORIGLIBDIRS") "LIBRARY_PATH")
-               (("incdirs = \\[\\]") "incdirs = origincdirs")
-               (("libdirs = \\[\\]") "libdirs = origlibdirs"))))
-         (add-after 'unpack 'fix-sdl2-headers
-           (lambda _
-             (substitute* "buildconfig/config_unix.py"
-               (("SDL_ttf.h") "SDL2/SDL_ttf.h")
-               (("SDL_image.h") "SDL2/SDL_image.h")
-               (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
-             (substitute* "src_c/imageext.c"
-               (("SDL_image.h") "SDL2/SDL_image.h"))
-             (substitute* "src_c/font.h"
-               (("SDL_ttf.h") "SDL2/SDL_ttf.h"))
-             (substitute* "src_c/mixer.h"
-               (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
-             (substitute* "src_c/_sdl2/mixer.c"
-               (("SDL_mixer.h") "SDL2/SDL_mixer.h")))))))
+     (list
+      #:tests? #f                 ; tests require pygame to be installed first
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-config
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("origincdirs = \\[.*\\]")
+                 "origincdirs = os.environ['C_INCLUDE_PATH'].split(\":\")")
+                (("ORIGLIBDIRS") "LIBRARY_PATH")
+                (("incdirs = \\[\\]") "incdirs = origincdirs")
+                (("libdirs = \\[\\]") "libdirs = origlibdirs"))))
+          (add-after 'unpack 'fix-sdl2-headers
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h")
+                (("SDL_image.h") "SDL2/SDL_image.h")
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/imageext.c"
+                (("SDL_image.h") "SDL2/SDL_image.h"))
+              (substitute* "src_c/font.h"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h"))
+              (substitute* "src_c/mixer.h"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/_sdl2/mixer.c"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h")))))))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("freetype" ,freetype)
-       ("sdl2" ,sdl2)
-       ("sdl2-image" ,sdl2-image)
-       ("sdl2-mixer" ,sdl2-mixer)
-       ("sdl2-ttf" ,sdl2-ttf)
-       ("sdl2-gfx" ,sdl2-gfx)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libX11" ,libx11)
-       ("libsmpeg" ,libsmpeg)
-       ("portmidi" ,portmidi)
-       ("v4l-utils" ,v4l-utils)))
+     (list freetype
+           sdl2
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf
+           sdl2-gfx
+           libjpeg-turbo
+           libpng
+           libx11
+           libsmpeg
+           portmidi
+           v4l-utils))
     (home-page "https://www.pygame.org")
     (synopsis "SDL wrapper for Python")
     (description "Pygame is a set of Python modules designed for writing games.
