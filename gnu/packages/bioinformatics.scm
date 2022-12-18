@@ -10847,25 +10847,12 @@ API services.")
               (sha256
                (base32
                 "1b4qyngwagh5sc2ygyfqyirg63myzh1g1glk03a1ykxfii32cjlp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;pypi source does not contain tests
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (for-each
-               (lambda (wheel)
-                 (format #t wheel)
-                 (invoke "python" "-m" "pip" "install"
-                         wheel (string-append "--prefix=" #$output)))
-               (find-files "dist" "\\.whl$"))))
           (add-before 'sanity-check 'set-env
             (lambda _
               ;; numba RuntimeError: cannot cache function 'rdist'
