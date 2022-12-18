@@ -60,6 +60,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -412,6 +413,7 @@ the same, being completely separated from the Internet.")
               "--with-debug"
               "--with-stream"
               "--with-stream_ssl_module"
+              "--with-http_stub_status_module"
               ;; Even when not cross-building, we pass the
               ;; --crossbuild option to avoid customizing for the
               ;; kernel version on the build machine.
@@ -834,6 +836,57 @@ and @acronym{HLS, HTTP Live Streaming} protocols.  It allows NGINX to accept
 incoming RTMP streams for recording or redistribution.  It also supports
 on-demand streaming from a file on disk and pulling from an upstream RTMP
 stream.  Remote control of the module is possible over HTTP.")
+    (license license:bsd-2)))
+
+(define-public nginx-module-vts
+  (package
+    (inherit nginx)
+    (name "nginx-module-vts")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vozlt/nginx-module-vts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "017298vpp1ra16xyfdbsczdrz0b0y67x6adkzcc98y6gb3kg52n7"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("nginx-sources" ,(package-source nginx))
+       ,@(package-inputs nginx)))
+    (arguments
+     (substitute-keyword-arguments
+         `(#:make-flags '("modules") ;Only build this module not all of nginx.
+           ,@(package-arguments nginx))
+       ((#:configure-flags flags)
+        #~(cons "--add-dynamic-module=." #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'unpack-nginx-sources
+              (lambda _
+                (begin
+                  ;; The nginx source code is part of the module’s source.
+                  (format #t "decompressing nginx source code~%")
+                  (invoke "tar" "xvf" #$(this-package-input "nginx-sources")
+                          ;; This package's LICENSE file would be
+                          ;; overwritten with the one from nginx when
+                          ;; unpacking the nginx source, so rename the nginx
+                          ;; one when unpacking.
+                          "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                          "--strip-components=1"))))
+            (replace 'install
+              (lambda _
+                (let ((modules-dir (string-append #$output
+                                                  "/etc/nginx/modules")))
+                  (install-file "objs/ngx_http_vhost_traffic_status_module.so" modules-dir))))
+            (delete 'fix-root-dirs)
+            (delete 'install-man-page)))))
+    (home-page "https://github.com/vozlt/nginx-module-vts")
+    (synopsis "NGINX module for monitoring virtual host traffic status")
+    (description "This NGINX module provides access to virtual host status information,
+similar to live activity monitoring provided with NGINX plus.")
     (license license:bsd-2)))
 
 (define-public lighttpd
