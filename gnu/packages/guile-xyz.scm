@@ -4076,8 +4076,8 @@ gnome-keyring, and many more.")
     (license license:expat)))
 
 (define-public guile-webutils
-  (let ((commit "8541904f761066dc9c27b1153e9a838be9a55299")
-        (revision "0"))
+  (let ((commit "d309d65a85247e4f3cea63a17defd1e6d35d821f")
+        (revision "1"))
     (package
       (name "guile-webutils")
       (version (git-version "0.1" revision commit))
@@ -4089,15 +4089,7 @@ gnome-keyring, and many more.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1s9n3hbxd7lfpdi0x8wr0cfvlsf6g62ird9gbspxdrp5p05rbi64"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(begin
-                    ;; Allow builds with Guile 3.0.
-                    (substitute* "configure.ac"
-                      (("2\\.2 2\\.0")
-                       "3.0 2.2 2.0"))
-                    #t))))
+                  "1a3bblk5zaldkkxn0a94s544drqm0w2i5fsjpghagd64m149blf0"))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf automake pkg-config texinfo))
