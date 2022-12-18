@@ -19,6 +19,7 @@
 
 (define-module (gnu packages lighting)
   #:use-module (guix build-system gnu)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
@@ -67,10 +68,11 @@
     (propagated-inputs
      (list protobuf))       ; for pkg-config --libs libola
     (arguments
-     `( ;; G++ >= 4.8 macro expansion tracking requires lots of memory, causing
-       ;; build to fail on low memory systems.  We disable that with the
-       ;; following configure flags.
-       #:configure-flags (list "CXXFLAGS=-ftrack-macro-expansion=0")))
+     (list
+      ;; G++ >= 4.8 macro expansion tracking requires lots of memory, causing
+      ;; build to fail on low memory systems.  We disable that with the
+      ;; following configure flags.
+      #:configure-flags #~(list "CXXFLAGS=-ftrack-macro-expansion=0")))
     (synopsis "Framework for controlling entertainment lighting equipment")
     (description "The Open Lighting Architecture is a framework for lighting
 control information.  It supports a range of protocols and over a dozen USB
