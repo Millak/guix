@@ -295,7 +295,9 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public samba/fixed
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
-   (package/inherit samba
+   (package
+     (inherit samba)
+     (replacement samba/fixed-patched)
      (version "4.15.3")
      (source
       (origin
@@ -318,6 +320,18 @@ Desktops into Active Directory environments using the winbind daemon.")
             docbook-xsl
             libxslt
             libxml2)))))
+
+(define-public samba/fixed-patched
+  (package
+    (inherit samba/fixed)
+    (version "4.15.13")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://download.samba.org/pub/samba/stable/"
+                           "samba-" version ".tar.gz"))
+       (sha256
+        (base32 "0s29vzn5f42vjhx6h25c7v67n14ymqxn8glqa97d0rajd99y64n4"))))))
 
 (define-public talloc
   (package
