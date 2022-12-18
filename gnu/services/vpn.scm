@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nathan Dehnel <ncdehnel@gmail.com>
 ;;; Copyright © 2022 Cameron V Chaparro <cameron@cameronchaparro.com>
+;;; Copyright © 2022 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
             wireguard-peer-endpoint
             wireguard-peer-allowed-ips
             wireguard-peer-public-key
+            wireguard-peer-preshared-key
             wireguard-peer-keep-alive
 
             wireguard-configuration
@@ -709,6 +711,8 @@ strongSwan.")))
   (endpoint          wireguard-peer-endpoint
                      (default #f))     ;string
   (public-key        wireguard-peer-public-key)   ;string
+  (preshared-key     wireguard-peer-preshared-key
+                     (default #f))     ;string
   (allowed-ips       wireguard-peer-allowed-ips) ;list of strings
   (keep-alive        wireguard-peer-keep-alive
                      (default #f)))    ;integer
@@ -762,10 +766,18 @@ AllowedIPs = ~a
                   (format #f "PersistentKeepalive = ~a\n" keep-alive)
                   "\n"))))
 
+  (define (peers->preshared-keys peer keys)
+    (let ((public-key (wireguard-peer-public-key peer))
+          (preshared-key (wireguard-peer-preshared-key peer)))
+      (if preshared-key
+          (cons* public-key preshared-key keys)
+          keys)))
+
   (match-record config <wireguard-configuration>
     (wireguard interface addresses port private-key peers dns
                pre-up post-up pre-down post-down table)
     (let* ((config-file (string-append interface ".conf"))
+           (peer-keys (fold peers->preshared-keys (list) peers))
            (peers (map peer->config peers))
            (config
             (computed-file
@@ -780,7 +792,7 @@ AllowedIPs = ~a
 Address = ~a
 ~a
 ~a
-PostUp = ~a set %i private-key ~a
+PostUp = ~a set %i private-key ~a~{ peer ~a preshared-key ~a~}
 ~a
 ~a
 ~a
@@ -800,6 +812,7 @@ PostUp = ~a set %i private-key ~a
                                       "\n"))
                                #$(file-append wireguard "/bin/wg")
                                #$private-key
+                               '#$peer-keys
                                #$(if (null? post-up)
                                      ""
                                      (string-join
