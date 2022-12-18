@@ -72,6 +72,7 @@
                 #:select (dosfstools))
   #:use-module ((gnu packages file-systems)
                 #:select (bcachefs-tools exfat-utils jfsutils zfs))
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages terminals)
   #:use-module ((gnu packages wm) #:select (sway))
   #:use-module ((gnu build file-systems)
@@ -2487,7 +2488,15 @@ notably to select, copy, and paste text.  The default options use the
         (documentation "kmscon virtual terminal")
         (requirement '(user-processes udev dbus-system))
         (provision (list (symbol-append 'term- (string->symbol virtual-terminal))))
-        (start #~(make-forkexec-constructor #$kmscon-command))
+        (start #~(make-forkexec-constructor
+                  #$kmscon-command
+
+                  ;; The installer needs to be able to display glyphs from
+                  ;; various scripts, so give it access to freefont.
+                  ;; TODO: Make this configurable.
+                  #:environment-variables
+                  (list (string-append "XDG_DATA_DIRS="
+                                       #$font-gnu-freefont "/share"))))
         (stop #~(make-kill-destructor)))))
    (description "Start the @command{kmscon} virtual terminal emulator for the
 Linux @dfn{kernel mode setting} (KMS).")))
