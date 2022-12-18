@@ -337,6 +337,72 @@ to UNIX pipes (@code{|}), Clojure's threading macros (@code{->} and
 @code{->>}).")
       (license license:gpl3+))))
 
+(define-public guile-pubstrate
+  (let ((commit "b11b7df5e7ffefa45c5859b868d8125c4d939418")
+        (revision "1"))
+    (package
+      (name "guile-pubstrate")
+      (version (git-version "0.1.dev" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/dustyweb/pubstrate")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qk45b3hjhzzq3dim699jrbmlc7ryr4s1fiz99ljz16rag2rr5p4"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        '(list "GUILE_AUTO_COMPILE=0")
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-system
+             (lambda _
+               (substitute* "configure.ac"
+                 (("GUILE_PROGS" m)
+                  (string-append m "
+guilemoduledir=\"${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}\"
+AC_SUBST([guilemoduledir])
+AC_SUBST([GUILE_EFFECTIVE_VERSION])
+")))
+               ;; The user.scm line is doubled
+               (substitute* "Makefile.am"
+                 ((".*pubstrate/webapp/user.scm.*") "")
+                 ((".*pubstrate/webapp/app.scm.*" m)
+                  (string-append m "pubstrate/webapp/user.scm \\\n"))
+                 (("/ccache") "/site-ccache"))))
+           (add-after 'unpack 'fix-srfi64-tests
+             (lambda _
+               (substitute* (find-files "tests/" "test-.*\\.scm$")
+                 (("\\(test-exit\\)") "")
+                 (("\\(test-end.*" m)
+                  (string-append "(test-exit)" m))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             pkg-config
+             texinfo))
+      (inputs
+       (list guile-3.0
+             libgcrypt))
+      (propagated-inputs
+       (list gnutls
+             guile-8sync-for-pubstrate
+             guile-gcrypt
+             guile-gdbm-ffi
+             guile-irregex
+             guile-lib
+             guile-sjson
+             guile-webutils))
+      (home-page "https://gitlab.com/dustyweb/pubstrate/")
+      (synopsis "ActivityStreams and ActivityPub implementation in Guile")
+      (description "This package provides an implementation of ActivityStreams
+and ActivityPub in Guile.  It includes a full (currently demo) web server.")
+      (license license:gpl3+))))
+
 (define-public guile-f-scm
   (package
     (name "guile-f-scm")
