@@ -187,7 +187,7 @@ external dependencies.")
 (define-public samba
   (package
     (name "samba")
-    (version "4.16.4")
+    (version "4.16.8")
     (source
      ;; For updaters: the current PGP fingerprint is
      ;; 81F5E2832BD2545A1897B713AA99442FB680B620.
@@ -196,7 +196,7 @@ external dependencies.")
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
                            "samba-" version ".tar.gz"))
        (sha256
-        (base32 "0bvhqinxwpbwp4ayhd9q8ga0w89gnkl1m3nrwpj1fnhjzd4ghclm"))))
+        (base32 "11a1vikbijaq7csg49h5ivn25gx84v6wx8z8kgsj1wmkhsf9bcmv"))))
     (build-system gnu-build-system)
     (arguments
      (list
