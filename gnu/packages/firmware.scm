@@ -411,9 +411,14 @@ executing in M-mode.")
              (commit (string-append "rel-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gph1hf70jjpx55qc0lzx2yghkipg9dnsin07i4jajk0p1jpd2d0"))))
+        (base32 "0gph1hf70jjpx55qc0lzx2yghkipg9dnsin07i4jajk0p1jpd2d0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Delete IASL-generated files.
+            (for-each delete-file (find-files "." "\\.hex$"))))))
     (build-system gnu-build-system)
-    (native-inputs (list python-wrapper))
+    (native-inputs (list acpica python-wrapper))
     (arguments
      (list
       #:tests? #f                       ;no tests
@@ -433,6 +438,12 @@ executing in M-mode.")
                 (lambda (port)
                   (format port #$(package-version this-package))))
               (setenv "CC" "gcc")))
+          (add-before 'build 'build-description-tables
+            (lambda _
+              ;; Regenerate the ACPI description tables.
+              (invoke "make" "iasl")
+              ;; Clear temporary files added by the iasl target.
+              (invoke "make" "clean")))
           (add-after 'build 'build-vgabios
             (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
               (for-each
