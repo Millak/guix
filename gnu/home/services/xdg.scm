@@ -245,6 +245,8 @@ pre-populated content.")
                         home-activation-service-type
                         home-xdg-user-directories-activation-service)))
                 (default-value (home-xdg-user-directories-configuration))
+                (compose identity)
+                (extend last-extension-or-cfg)
                 (description "Configure XDG user directories.  To
 disable a directory, point it to the $HOME.")))
 
