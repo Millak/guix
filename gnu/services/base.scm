@@ -2494,11 +2494,11 @@ notably to select, copy, and paste text.  The default options use the
                   #$kmscon-command
 
                   ;; The installer needs to be able to display glyphs from
-                  ;; various scripts, so give it access to freefont.
+                  ;; various scripts, so give it access to unifont.
                   ;; TODO: Make this configurable.
                   #:environment-variables
                   (list (string-append "XDG_DATA_DIRS="
-                                       #$font-gnu-freefont "/share"))))
+                                       #$font-gnu-unifont "/share"))))
         (stop #~(make-kill-destructor)))))
    (description "Start the @command{kmscon} virtual terminal emulator for the
 Linux @dfn{kernel mode setting} (KMS).")))
