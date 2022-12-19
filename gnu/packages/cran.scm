@@ -29243,14 +29243,14 @@ input.")
 (define-public r-lightgbm
   (package
     (name "r-lightgbm")
-    (version "3.3.3")
+    (version "3.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lightgbm" version))
        (sha256
         (base32
-         "1a4nacdpsqd5mr7jnw1g9nyn8w7p0hskfm07cy8yrj3h8a5hmcz8"))))
+         "12hcq2idjgggs8l9a5aaxbw1wsfz6byzaxqn9k6afvkf3v5srp65"))))
     (properties `((upstream-name . "lightgbm")))
     (build-system r-build-system)
     (propagated-inputs
