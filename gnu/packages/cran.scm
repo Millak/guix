@@ -22918,6 +22918,9 @@ atmospheric physics.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-rlang))
+    ;; We can't add this here because via r-stringr this package ends up being
+    ;; an input to r-knitr.
+    #;
     (native-inputs
      (list r-knitr)) ; for vignettes
     (home-page "https://github.com/r-lib/lifecycle")
