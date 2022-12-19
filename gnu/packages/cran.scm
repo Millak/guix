@@ -17191,14 +17191,14 @@ package \"boot\".")
 (define-public r-survivalroc
   (package
     (name "r-survivalroc")
-    (version "1.0.3")
+    (version "1.0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "survivalROC" version))
        (sha256
         (base32
-         "0wnd65ff5w679hxa1zrpfrx9qg47q21pjxppsga6m3h4iq1yfj8l"))))
+         "0p6irjs8a9xxgxwax0y9fzapcib237if3iy8g6lzv793mzmsyx41"))))
     (properties `((upstream-name . "survivalROC")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/survivalROC")
