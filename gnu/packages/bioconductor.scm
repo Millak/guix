@@ -7861,13 +7861,13 @@ dependencies between GO terms can be implemented and applied.")
 (define-public r-tximport
   (package
     (name "r-tximport")
-    (version "1.26.0")
+    (version "1.26.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "tximport" version))
               (sha256
                (base32
-                "1w1m6r85a5nvcfxbkq5dmczaar8vf3vbrgrmxqkjqhlpcq58z5ng"))))
+                "1r67q4nb2bx9nqycyr2gnfmh4gizl0c7l510vmlcdvplv3yi73yn"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
