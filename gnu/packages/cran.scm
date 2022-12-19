@@ -26819,14 +26819,14 @@ Norwegian, Portuguese, Romanian, Russian, Spanish, Swedish and Turkish.")
 (define-public r-quanteda
   (package
     (name "r-quanteda")
-    (version "3.2.3")
+    (version "3.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "quanteda" version))
        (sha256
         (base32
-         "1blk9nhydvqyyz0kzhph7nh7ahcjzflmgyr4sv8fx5bpmn4hwjzk"))))
+         "1yg3lgckh6fncmw037p4gaa2bab59yh6izqix1cgyysjg4jpcw62"))))
     (properties `((upstream-name . "quanteda")))
     (build-system r-build-system)
     (propagated-inputs
