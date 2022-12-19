@@ -27330,14 +27330,14 @@ output in R.")
 (define-public r-bdgraph
   (package
     (name "r-bdgraph")
-    (version "2.70")
+    (version "2.71")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BDgraph" version))
        (sha256
         (base32
-         "1s148fvvg1c0n4swsvcinlwckj86jys5nvwp4wlyzh3aw9siyqz7"))))
+         "1lihsbliq7f91ywdq5cabzd5fbyhb10h62ss3n2l7i2fdglb77d1"))))
     (properties `((upstream-name . "BDgraph")))
     (build-system r-build-system)
     (propagated-inputs
