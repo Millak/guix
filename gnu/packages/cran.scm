@@ -18813,14 +18813,14 @@ can be used with function approximation, eligibility traces (Singh & Sutton,
 (define-public r-lemon
   (package
     (name "r-lemon")
-    (version "0.4.5")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lemon" version))
        (sha256
         (base32
-         "1y3ljidhqdakxlya2npj2w0az820g8kw6gl1cfm4f0cxvzgd1ly4"))))
+         "0v1kbyk64yzsk92h6yq03kp9alc9632qprznsws61r8firiskim5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ggplot2
@@ -18829,7 +18829,6 @@ can be used with function approximation, eligibility traces (Singh & Sutton,
            r-knitr
            r-lattice
            r-plyr
-           r-rlang
            r-scales))
     (native-inputs
      (list r-knitr))
