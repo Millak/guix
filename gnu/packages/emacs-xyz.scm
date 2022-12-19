@@ -803,7 +803,7 @@ comparing large files in batches.")
 (define-public emacs-package-build
   (package
     (name "emacs-package-build")
-    (version "3.2")
+    (version "4.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -812,7 +812,7 @@ comparing large files in batches.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02ngllr9lilpjsgdpk4628kdp0nwdlrkxj78bvi4jlhnbk4chh1c"))))
+                "165gbrc1h1yj764kn3qq2y1551y04lqnklfa0k87gqgd38q5v985"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/melpa/package-build")
     (synopsis "Tools for assembling an Emacs package archive")
