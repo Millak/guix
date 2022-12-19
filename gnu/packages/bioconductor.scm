@@ -5364,26 +5364,26 @@ distribution.")
 (define-public r-deseq2
   (package
     (name "r-deseq2")
-    (version "1.38.1")
+    (version "1.38.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "DESeq2" version))
        (sha256
         (base32
-         "0xp3rfhwn8k1bqzqnjzjqlaq8lqyad7kqjhb29vkbxgzjvafvxmk"))))
+         "1m81yvcl63h5m7kbbxpjk7hzygxmn4l9mlgqrdmnnls56183h3b4"))))
     (properties `((upstream-name . "DESeq2")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase
            r-biocgenerics
            r-biocparallel
-           r-genefilter
            r-geneplotter
            r-genomicranges
            r-ggplot2
            r-iranges
            r-locfit
+           r-matrixstats
            r-rcpp
            r-rcpparmadillo
            r-s4vectors
