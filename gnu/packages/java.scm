@@ -1772,7 +1772,7 @@ new Date();"))
                 "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each delete-file (find-files "." ".*.(bin|exe|jar)$")))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -1851,8 +1851,7 @@ new Date();"))
                        (format (current-error-port)
                                "warning: failed to substitute: ~a~%"
                                file))))
-                 (find-files "."
-                             "\\.c$|\\.h$")))))
+                 (find-files "." "\\.c$|\\.h$")))))
           (add-before 'build 'write-source-revision-file
             (lambda _
               (with-output-to-file ".src-rev"
@@ -1879,7 +1878,7 @@ new Date();"))
                        ,@make-flags))))
           (replace 'install
             (lambda _
-              (let ((images (car (find-files "build" ".*-server-release"
+              (let ((images (car (find-files "build" "-server-release"
                                              #:directories? #t))))
                 (copy-recursively (string-append images "/images/jdk")
                                   #$output:jdk)
@@ -1913,7 +1912,7 @@ new Date();"))
                   (invoke "unzip" archive))
                 (delete-file archive)
                 (with-directory-excursion dir
-                  (let ((char-data-files (find-files "." "CharacterData.*")))
+                  (let ((char-data-files (find-files "." "CharacterData")))
                     (for-each (lambda (file)
                                 (substitute* file
                                   (((string-append "This file was generated "
@@ -1924,7 +1923,7 @@ new Date();"))
                                                   "file"))))
                               char-data-files)))
                 (with-directory-excursion dir
-                  (let ((files (find-files "." ".*" #:directories? #t)))
+                  (let ((files (find-files "." #:directories? #t)))
                     (apply invoke "zip" "-0" "-X" archive files))))))
           (add-after 'strip-character-data-timestamps 'remove-extraneous-files
             (lambda* (#:key outputs #:allow-other-keys)
@@ -1949,7 +1948,7 @@ new Date();"))
                               (invoke "unzip" archive))
                             (delete-file archive)
                             (for-each (compose repack-archive canonicalize-path)
-                                      (find-files dir "(ct.sym|\\.jar)$"))
+                                      (find-files dir "(ct\\.sym|\\.jar)$"))
                             (let ((reset-file-timestamp
                                    (lambda (file)
                                      (let ((s (lstat file)))
@@ -1959,7 +1958,7 @@ new Date();"))
                               (for-each reset-file-timestamp
                                         (find-files dir #:directories? #t)))
                             (with-directory-excursion dir
-                              (let ((files (find-files "." ".*" #:directories? #t)))
+                              (let ((files (find-files "." #:directories? #t)))
                                 (apply invoke "zip" "-0" "-X" archive files)))))))
                 (for-each repack-archive
                           (find-files #$output:doc "\\.zip$"))
