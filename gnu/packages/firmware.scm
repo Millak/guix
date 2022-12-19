@@ -423,7 +423,10 @@ executing in M-mode.")
      (list
       #:tests? #f                       ;no tests
       #:make-flags
-      #~'("EXTRAVERSION=-guix"          ;upstream wants distros to set this
+      ;; If EXTRAVERSION is not set the build system will embed the current
+      ;; date in binaries.  Use this opportunity to personalize as recommended
+      ;; by Build_overview.md.
+      #~'("EXTRAVERSION=/GNU Guix"
           "V=1")                        ;build verbosely
       #:modules `(,@%gnu-build-system-modules
                   (ice-9 threads)
@@ -432,9 +435,8 @@ executing in M-mode.")
       #~(modify-phases %standard-phases
           (replace 'configure
             (lambda _
-              ;; Create the ".version" file that is present in release tarballs.
-              ;; Otherwise this will be regarded as an "unclean" build, and the
-              ;; build system ends up encoding the build date in the binaries.
+              ;; Ensure this file is present in case we're building from a git
+              ;; checkout instead of release tarball.
               (call-with-output-file ".version"
                 (lambda (port)
                   (format port #$(package-version this-package))))
