@@ -17050,27 +17050,23 @@ Emacs.")
 (define-public emacs-eglot
   (package
     (name "emacs-eglot")
-    (version "1.9")
+    (version "1.10")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/joaotavora/eglot")
-             (commit version)))
-       (file-name (git-file-name name version))
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/eglot-" version
+                           ".tar"))
        (sha256
         (base32
-         "030837yak24ymjawsfr1hgyfdjy3k30ld1ca0cgnrxhgxc7p8hwv"))))
+         "0iw1jnfsjd2yq73ic3cld8m51wyxdwn3kjv9ala28krvsvb4h3y4"))))
     (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #t
-      #:test-command #~(list "emacs" "--batch"
-                             "-l" "eglot.el"
-                             "-l" "eglot-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")))
     (propagated-inputs
-     (list emacs-eldoc emacs-jsonrpc emacs-project))
+     (list emacs-external-completion
+           emacs-eldoc
+           emacs-jsonrpc
+           emacs-project
+           emacs-seq
+           emacs-xref))
     (home-page "https://github.com/joaotavora/eglot")
     (synopsis "Client for Language Server Protocol (LSP) servers")
     (description
