@@ -2838,16 +2838,18 @@ a list of p-values.")
 (define-public r-htmlwidgets
   (package
     (name "r-htmlwidgets")
-    (version "1.5.4")
+    (version "1.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "htmlwidgets" version))
               (sha256
                (base32
-                "1hgz8sx8xrvfcdwa4q15k942w4qsqg8lyxbbf7qyfzbi807wcgqs"))))
+                "06prjx6ic2bddaw50ksz6l7hsidkzwb69m85vzc0apxvwaygz0gh"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-htmltools r-jsonlite r-yaml))
+     (list r-htmltools r-jsonlite
+           r-knitr r-rmarkdown
+           r-yaml))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/ramnathv/htmlwidgets")
