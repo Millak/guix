@@ -7736,6 +7736,9 @@ estimated from a given sample.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang))
+    ;; We can't have r-knitr among the inputs here, because r-vctrs ends up
+    ;; being an eventual input to r-knitr.
+    #;
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/r-lib/vctrs")
