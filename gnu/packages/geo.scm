@@ -79,6 +79,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -151,6 +152,35 @@ numerical model output from weather or climate simulations.  While floating
 point representations are not directly supported, they can also be efficiently
 coded by grouping exponents and mantissa.")
     (license license:bsd-2)))
+
+(define-public eccodes
+  (package
+    (name "eccodes")
+    (version "2.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://confluence.ecmwf.int/download/attachments/45757960/"
+             "eccodes-" version "-Source.tar.gz"))
+       (sha256
+        (base32 "16cw4v2d0kjq6gq04paqny0sh5jymn70w449mig7m5h3spzv7rgd"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DENABLE_MEMFS=ON" "-DENABLE_PNG=ON")
+       #:validate-runpath? #f))
+    (inputs
+     (list jasper libaec libjpeg-turbo libpng netcdf openjpeg))
+    (native-inputs
+     (list gfortran perl pkg-config python))
+    (home-page "https://confluence.ecmwf.int/display/ECC")
+    (synopsis "Library for handling the GRIB, BUFR and GTS file formats")
+    (description "ecCodes is a package developed by @acronym{ECMWF, European
+Centre for Medium-Range Weather Forecasts} which provides an application
+programming interface and a set of tools for decoding and encoding messages in
+the @acronym{WMO, World Meteorological Organization} FM-92 GRIB, WMO FM-94
+BUFR and WMO GTS abbreviated header formats.")
+    (license license:asl2.0)))
 
 (define-public cdo
   (package
