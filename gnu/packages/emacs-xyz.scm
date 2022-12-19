@@ -17344,21 +17344,20 @@ highlighting.")
   ;; Commit refers to a commit in the Emacs repository, as jsonrpc.el was
   ;; upstreamed.  By convention, it should refer to a commit in which
   ;; jsonrpc.el was actually touched.
-  (let ((commit "50654cf0b1bf6210fc8f46d8e7ae13bbeeccecb5")
-        (revision "0"))                 ; Currently a version bump
+  (let ((commit "8bf4cdcf79bc3254a9169f28f68922ab83bd4e78")) ;version bump
     (package
       (name "emacs-jsonrpc")
-      (version (git-version "1.0.15" revision commit))
+      (version "1.0.16")
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/emacs.git")
+               (url "https://git.savannah.gnu.org/git/emacs")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0srwb171dxha1nfzppk6x9v4bdj3lk74pksqnhalw8jw9c67b72y"))))
+           "1mka35kparv7z52kknh9nam4wyczcp73glp48q24v05gm42a8xxr"))))
       (build-system emacs-build-system)
       (arguments
        (list #:phases
