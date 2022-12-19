@@ -11988,14 +11988,14 @@ investigation using RNA-seq data.")
 (define-public r-aucell
   (package
     (name "r-aucell")
-    (version "1.20.1")
+    (version "1.20.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "AUCell" version))
        (sha256
         (base32
-         "0bq729kavqkam2s4dmfzixgznsys61j0lvj5pk3b70gxv44gmpsh"))))
+         "1qb13qd5xzgrpx6jlg3ll0ff5spz3y06ji31vvqzm759almg2w3s"))))
     (properties `((upstream-name . "AUCell")))
     (build-system r-build-system)
     (propagated-inputs
@@ -12004,6 +12004,7 @@ investigation using RNA-seq data.")
            r-delayedarray
            r-delayedmatrixstats
            r-gseabase
+           r-matrix
            r-mixtools
            r-r-utils
            r-shiny
