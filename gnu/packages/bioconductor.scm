@@ -13721,38 +13721,30 @@ package.")
 (define-public r-opencyto
   (package
     (name "r-opencyto")
-    (version "2.10.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "openCyto" version))
        (sha256
         (base32
-         "1pkpm98fs17zqdvyymd58sl4cib7gdi7drvdkagilrafjcrpq31m"))))
+         "16wsa9dhnz8gz1siyhfxvnbfg142g7fmhxiqxr7n69qpq9w8yhr0"))))
     (properties `((upstream-name . "openCyto")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-biobase
+     (list r-bh
+           r-biobase
            r-biocgenerics
-           r-clue
+           r-cpp11
            r-data-table
            r-flowclust
            r-flowcore
-           r-flowstats
            r-flowviz
            r-flowworkspace
            r-graph
-           r-gtools
-           r-ks
-           r-lattice
-           r-mass
            r-ncdfflow
-           r-plyr
-           r-r-utils
            r-rbgl
-           r-rcolorbrewer
-           r-rcpp
-           r-rrcov))
+           r-rcolorbrewer))
     (native-inputs
      (list r-knitr))
     (home-page "https://bioconductor.org/packages/openCyto")
