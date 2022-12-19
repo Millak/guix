@@ -34313,14 +34313,14 @@ object to and from disk.")
 (define-public r-rgeos
   (package
     (name "r-rgeos")
-    (version "0.5-9")
+    (version "0.6-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rgeos" version))
        (sha256
         (base32
-         "1m73y0nwrdwsjrl48c4fg1kdqnh79835brnmxv9ak01ndbzcp45b"))))
+         "1wppxr9iibb0gi1hr6qzda9dc8spf6297lkfddl41j78q14bs3a2"))))
     (properties `((upstream-name . "rgeos")))
     (build-system r-build-system)
     (inputs
