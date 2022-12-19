@@ -16222,13 +16222,13 @@ routines.")
 (define-public r-s4vectors
   (package
     (name "r-s4vectors")
-    (version "0.36.0")
+    (version "0.36.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "S4Vectors" version))
               (sha256
                (base32
-                "05al4diwdbsa9b37i8msxnp79fxk7k24dk2vhh131s3snb89jvfs"))))
+                "16lssnmhy3klqp4sw1328f38cixkjh9317gdyikcrmsbcwg2ak6v"))))
     (properties
      `((upstream-name . "S4Vectors")))
     (build-system r-build-system)
