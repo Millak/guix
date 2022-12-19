@@ -1609,13 +1609,13 @@ respecting the grammar of its graphics paradigm.")
 (define-public r-ggside
   (package
     (name "r-ggside")
-    (version "0.2.1")
+    (version "0.2.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "ggside" version))
               (sha256
                (base32
-                "1vl7kzgmi5xxxsqvyg4cm4xwd3lfjgysay1lw6hri5vj22mnga5h"))))
+                "1z50z4xpxfpqdz26hja6xw3q403p00cr5qawjxl0qg4jixl7j65p"))))
     (properties `((upstream-name . "ggside")))
     (build-system r-build-system)
     (propagated-inputs
@@ -1624,7 +1624,8 @@ respecting the grammar of its graphics paradigm.")
            r-gtable
            r-rlang
            r-scales
-           r-tibble))
+           r-tibble
+           r-vctrs))
     (native-inputs (list r-knitr))
     (home-page "https://cran.r-project.org/package=ggside")
     (synopsis "Side grammar graphics that extends @code{ggplot2}")
