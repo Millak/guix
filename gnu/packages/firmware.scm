@@ -426,6 +426,7 @@ executing in M-mode.")
       #~'("EXTRAVERSION=-guix"          ;upstream wants distros to set this
           "V=1")                        ;build verbosely
       #:modules `(,@%gnu-build-system-modules
+                  (ice-9 threads)
                   (ice-9 match))
       #:phases
       #~(modify-phases %standard-phases
@@ -477,7 +478,7 @@ executing in M-mode.")
                        ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
                        ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n")))))
                 (mkdir "out")
-                (for-each
+                (n-par-for-each (parallel-job-count)
                  (match-lambda
                    ((target . config)
                     (let* ((dot-config (string-append (getcwd) "/" target
