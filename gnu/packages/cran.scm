@@ -35759,13 +35759,13 @@ formatting and delivering log messages with low overhead.")
 (define-public r-fasterize
   (package
     (name "r-fasterize")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "fasterize" version))
         (sha256
-          (base32 "10bzl77c1b9jhcn1xp467qzp2n8c7s3wpxn53qjh1nwvbri5kd32"))))
+          (base32 "1ckxi2iyxdahhgbliblcrkzziblfagzr54srjk27yp1lcgivvvs4"))))
     (properties `((upstream-name . "fasterize")))
     (build-system r-build-system)
     (propagated-inputs
