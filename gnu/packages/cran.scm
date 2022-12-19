@@ -2703,13 +2703,13 @@ Zucchini.")
 (define-public r-httpuv
   (package
     (name "r-httpuv")
-    (version "1.6.6")
+    (version "1.6.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "httpuv" version))
               (sha256
                (base32
-                "14qjf7bpl7pay89b7vi2vccl342q8xs6101a9x6qijy54k9myfa1"))
+                "0jjb2w59x8a4k24j9rc4rjm37h1ccrfq1nzd40inbnd6kcqf3lkm"))
               ;; Unvendor bundled libraries. As of 1.5.4 the vendored libuv
               ;; only contains fixes for building on Solaris.
               (patches (search-patches "r-httpuv-1.6.6-unvendor-libuv.patch"))
