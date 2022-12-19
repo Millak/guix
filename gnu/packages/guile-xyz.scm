@@ -1281,6 +1281,36 @@ non-mutating insert, delete, and search operations, with support for
 convenient nested tree operations.")
     (license license:gpl3+)))
 
+(define-public guile-aws
+  (let ((commit "f32bea12333e1054b97ab50e58a72636edabb5b7")
+        (revision "1"))
+    (package
+      (name "guile-aws")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.elephly.net/software/guile-aws.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z2mrjw1dry14vjqsh9xi199bavlmy6cajshnv015n7p5my0cx9z"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake pkg-config))
+      (inputs
+       (list guile-3.0))
+      (propagated-inputs
+       (list guile-json-4 guile-gcrypt))
+      (home-page "https://git.elephly.net/software/guile-aws.git")
+      (synopsis "Scheme DSL for the AWS APIs")
+      (description
+       "This package provides a DSL for a number of @dfn{Amazon Web
+Services} (AWS) APIs, including EFS, EC2, Route53, and more.  Guile AWS uses
+the Guile compiler tower to generate the DSL from AWS JSON specifications.")
+      (license license:gpl3+))))
+
 (define-public guile-simple-zmq
   (let ((commit "ff0b39aec9312517fb48681564e261bd000aaf63")
         (revision "10"))
