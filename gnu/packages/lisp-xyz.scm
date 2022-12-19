@@ -961,8 +961,8 @@ Features:
   (sbcl-package->ecl-package sbcl-coleslaw))
 
 (define-public sbcl-tripod
-  (let ((commit "bcea16610b4961a927e417e4413fffe686d71c83")
-        (revision "0"))
+  (let ((commit "b019a27cd7eb895870f84b0eb6c3edc5d7b05928")
+        (revision "1"))
     (package
       (name "sbcl-tripod")
       (version (git-version "0.0.1" revision commit))
@@ -974,17 +974,30 @@ Features:
                (commit commit)))
          (file-name (git-file-name "cl-tripod" version))
          (sha256
-          (base32 "07czbwzfqg8n1q4dsfmrdp2zmp90xgsg8q26hkrniyvkylq4nn1z"))))
+          (base32 "0y8sns6njq9x7km58vpj7gx4cia9zkcpng3d38300xk0nnk2kz8w"))))
       (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'create-asdf-configuration 'build-program
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (build-program (string-append #$output:bin "/bin/tripod")
+                                    outputs
+                                    #:entry-program '((tripod:entry-point))
+                                    #:compress? #t))))))
       (inputs
-        (list sbcl-alexandria
-              sbcl-cl-gopher
-              sbcl-cl-markdown
-              sbcl-clss
-              sbcl-hunchentoot
-              sbcl-phos
-              sbcl-plump
-              sbcl-trivial-mimes))
+       (list sbcl-alexandria
+             sbcl-cl-gopher
+             sbcl-cl-markdown
+             sbcl-clss
+             sbcl-hunchentoot
+             sbcl-local-time
+             sbcl-nactivitypub
+             sbcl-njson
+             sbcl-phos
+             sbcl-plump
+             sbcl-trivial-mimes))
       (home-page "https://aartaka.me/blog/tripod")
       (synopsis "Common Lisp web server aiming to ease website hosting")
       (description
@@ -997,7 +1010,6 @@ and Gopher website hosting.")
 
 (define-public ecl-tripod
   (sbcl-package->ecl-package sbcl-tripod))
-
 
 (define-public sbcl-trivial-timeout
   (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
