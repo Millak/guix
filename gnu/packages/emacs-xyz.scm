@@ -17193,37 +17193,38 @@ running tests easier.")
     (license license:gpl3+)))
 
 (define-public emacs-org-transclusion
-  (package
-    (name "emacs-org-transclusion")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/nobiot/org-transclusion")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0pjk6686ss50s9ws014if9mnixsf9m53z1d7bvkbx09lq3jqa7ry"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #true
-      #:test-command #~(list "emacs" "--batch"
-                             "-l" "org-transclusion.el"
-                             "-l" "test/unit-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")))
-    (native-inputs
-     (list emacs-ert-runner))
-    (home-page "https://nobiot.github.io/org-transclusion/")
-    (synopsis "Enable transclusion with Org Mode")
-    (description "Org-transclusion lets you insert a copy of text content via
+  (let ((commit "cf51df7b87e0d32ba13ac5380557e81d9845d81b")) ;version bump
+    (package
+      (name "emacs-org-transclusion")
+      (version "1.3.1")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/nobiot/org-transclusion")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ix5l8cjcafw8lqhkmwa3cpdw6cbpx65k0iww426nxya849y61yx"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "--batch"
+                               "-l" "org-transclusion.el"
+                               "-l" "test/unit-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (native-inputs
+       (list emacs-ert-runner))
+      (home-page "https://nobiot.github.io/org-transclusion/")
+      (synopsis "Enable transclusion with Org Mode")
+      (description "Org-transclusion lets you insert a copy of text content via
 a file link or ID link within an Org file.  It lets you have the same content
 present in different buffers at the same time without copy-and-pasting it.
 Edit the source of the content, and you can refresh the transcluded copies to
 the up-to-date state.  Org-transclusion keeps your files clear of the
 transcluded copies, leaving only the links to the original content.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-disable-mouse
   (package
