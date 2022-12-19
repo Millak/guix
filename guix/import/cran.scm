@@ -410,7 +410,11 @@ empty list when the FIELD cannot be found."
     ("tcl/tk" "tcl")
     ("booktabs" "texlive-booktabs")
     ("freetype2" "freetype")
+    ("mariadb-devel" "mariadb")
+    ("mysql56_dev" "mariadb")
     ("sqlite3" "sqlite")
+    ("udunits-2" "udunits")
+    ("x11" "libx11")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
