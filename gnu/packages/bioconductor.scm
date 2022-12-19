@@ -3480,6 +3480,44 @@ of Bioconductor.")
 packages.")
     (license license:artistic2.0)))
 
+(define-public r-cardelino
+  (package
+    (name "r-cardelino")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "cardelino" version))
+              (sha256
+               (base32
+                "1ma4clkrkrjvy12ln2d2smyzzsz9y9554f5wgwmh9kv6s4xc66qs"))))
+    (properties `((upstream-name . "cardelino")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-combinat
+                             r-genomeinfodb
+                             r-genomicranges
+                             r-ggplot2
+                             r-ggtree
+                             r-matrix
+                             r-matrixstats
+                             r-pheatmap
+                             r-s4vectors
+                             r-snpstats
+                             r-variantannotation
+                             r-vcfr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/single-cell-genetics/cardelino")
+    (synopsis "Clone identification from single cell data")
+    (description
+     "This package provides methods to infer clonal tree configuration for a
+population of cells using single-cell RNA-seq data (scRNA-seq), and possibly
+other data modalities.  Methods are also provided to assign cells to inferred
+clones and explore differences in gene expression between clones.  These
+methods can flexibly integrate information from imperfect clonal trees
+inferred based on bulk exome-seq data, and sparse variant alleles expressed in
+scRNA-seq data.  A flexible beta-binomial error model that accounts for
+stochastic dropout events as well as systematic allelic imbalance is used.")
+    (license license:gpl3)))
+
 (define-public r-coverageview
   (package
     (name "r-coverageview")
