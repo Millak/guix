@@ -15614,13 +15614,13 @@ functionality.")
 (define-public r-biocviews
   (package
     (name "r-biocviews")
-    (version "1.66.0")
+    (version "1.66.1")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biocViews" version))
               (sha256
                (base32
-                "1rgn0agw5m4y8838lxzq1r658h1pblaidmm444yfimjffa8znj23"))))
+                "1xplkzm29v6aysfhb6kf2nnmvc37jmcvv6vsgbx8z8qccn96jk02"))))
     (properties
      `((upstream-name . "biocViews")))
     (build-system r-build-system)
@@ -15632,6 +15632,7 @@ functionality.")
            r-rcurl
            r-xml
            r-runit))
+    (native-inputs (list r-knitr))
     (home-page "https://bioconductor.org/packages/biocViews")
     (synopsis "Bioconductor package categorization helper")
     (description "The purpose of biocViews is to create HTML pages that
