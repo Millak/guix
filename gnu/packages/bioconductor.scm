@@ -2334,13 +2334,13 @@ analysis, modelling, and visualization of spike-in controls.")
 (define-public r-ancombc
   (package
     (name "r-ancombc")
-    (version "2.0.1")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "ANCOMBC" version))
               (sha256
                (base32
-                "1bwzvi6j3s66dcll1lb4xy25j4nfn1ln6mc3flh0wgy13l26x8m6"))))
+                "0dlinv4vhxgni8ygzvfw8pbc6d1v9x5chhrpxblhs2c65bkgyxz5"))))
     (properties `((upstream-name . "ANCOMBC")))
     (build-system r-build-system)
     (propagated-inputs
