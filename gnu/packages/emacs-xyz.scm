@@ -4527,6 +4527,33 @@ create an Extempore REPL, connect the current @code{extempore-mode} buffer to a
 running Extempore process, and more.")
       (license license:bsd-2))))
 
+(define-public emacs-external-completion
+  (package
+    (name "emacs-external-completion")
+    (version "0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://elpa.gnu.org/packages/external-completion-" version
+                    ".tar"))
+              (sha256
+               (base32
+                "12pddwp5jby2icshj77w4kwxv75zi00jdxw18f721d7zx3l7q668"))))
+    (build-system emacs-build-system)
+    (home-page "https://elpa.gnu.org/packages/external-completion.html")
+    (synopsis "Let external tools control Emacs completion style")
+    (description
+     "The @code{external} completion style is used with a ``programmable
+completion'' table that gathers completions from an external tool such as
+a shell utility, an inferior process, an HTTP server.  The table and external
+tool are fully in control of the matching of the pattern string to the
+potential candidates of completion.  When @code{external} is in use, the usual
+styles configured by the user or other in @code{completion-styles} are
+ignored.  This compromise is for speed: all other styles need the full data
+set to be available in Emacs addressing space, which is often slow if not
+completely unfeasible.")
+    (license license:gpl3+)))
+
 (define-public emacs-kakoune
   ;; Package has no release.  Version is extracted from "Version:" keyword in
   ;; main file.
