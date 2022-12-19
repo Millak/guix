@@ -113,6 +113,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
@@ -2470,6 +2471,48 @@ binary to setuid-binaries:
   %setuid-programs))
 @end example")
     (license license:asl2.0)))
+
+(define-public wl-color-picker
+  (package
+    (name "wl-color-picker")
+    (version "1.3")
+    (home-page "https://github.com/jgmdev/wl-color-picker")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h5b8qfwri7a1invk8dran3436ac37x6r8fic3l5cxqj5rgnky4n"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("wl-color-picker.sh" "bin/wl-color-picker")
+                        ("wl-color-picker.png" "share/pixmaps/")
+                        ("wl-color-picker.svg"
+                         "share/icons/hicolor/scalable/apps/")
+                        ("wl-color-picker.desktop" "share/applications/"))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'wrap-script
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (wrap-program (string-append (assoc-ref outputs "out")
+                                                   "/bin/wl-color-picker")
+                                    `("PATH" =
+                                      (,(getenv "PATH")))))))))
+    (inputs (list coreutils-minimal
+                  bash-minimal
+                  grim
+                  hicolor-icon-theme
+                  imagemagick
+                  slurp
+                  wl-clipboard
+                  zenity))
+    (synopsis "Wayland color picker")
+    (description
+     "@command{wl-color-picker} is a script that provides color picker for
+Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
+    (license license:expat)))
 
 (define-public wl-clipboard
   (package
