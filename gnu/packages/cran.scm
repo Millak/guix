@@ -30917,19 +30917,18 @@ pipeline friendly so that data processing with lists can be chained.")
 (define-public r-rsample
   (package
     (name "r-rsample")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rsample" version))
        (sha256
         (base32
-         "1iy61riwjch9z4m6k7whsrkl80sk9sww5lf1np4iq4vdfq6w01jb"))))
+         "1fmqfk1yihmh7lkszsf7pvn6zf67lpgff46hv2lpnfbssa3axllh"))))
     (properties `((upstream-name . "rsample")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
-           r-ellipsis
            r-furrr
            r-generics
            r-glue
