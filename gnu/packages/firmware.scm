@@ -444,49 +444,76 @@ executing in M-mode.")
               (invoke "make" "iasl")
               ;; Clear temporary files added by the iasl target.
               (invoke "make" "clean")))
-          (add-after 'build 'build-vgabios
+          (replace 'build
             (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
-              (for-each
-               (match-lambda
-                 ((target . config)
-                  (let* ((dot-config (string-append (getcwd) "/" target "/.config"))
-                         (flags (append make-flags
-                                        (list (string-append "KCONFIG_CONFIG="
-                                                             dot-config)
-                                              (string-append "OUT=" target "/")))))
-                    (mkdir target)
-                    (call-with-output-file dot-config
-                      (lambda (port)
-                        (for-each (lambda (entry)
-                                    (if (string-suffix? "=n" entry)
-                                        (format port "# CONFIG_~a is not set~%"
-                                                (string-drop-right entry 2))
-                                        (format port "CONFIG_~a~%" entry)))
-                                  (cons "BUILD_VGABIOS=y" config))))
-                    (apply invoke "make" "oldnoconfig" flags)
-                    (apply invoke "make" flags)
-                    (link (string-append target "/bios.bin")
-                          (string-append "out/" target ".bin")))))
-               ;; These tuples are modelled after Debians packaging:
-               ;; https://salsa.debian.org/qemu-team/seabios/-/blob/master/debian/rules
-               '(("ati"    . ("VGA_ATI=y" "VGA_PCI=y"))
-                 ("bochs-display" . ("DISPLAY_BOCHS=y" "VGA_PCI=y"))
-                 ("cirrus" . ("VGA_CIRRUS=y" "VGA_PCI=y"))
-                 ("stdvga" . ("VGA_BOCHS=y" "VGA_PCI=y"))
-                 ("virtio" . ("VGA_BOCHS_VIRTIO=y" "VGA_PCI=y"))
-                 ("vmware" . ("VGA_BOCHS_VMWARE=y" "VGA_PCI=y"))
-                 ("qxl"    . ("VGA_BOCHS_QXL=y" "VGA_PCI=y"))
-                 ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
-                 ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n"))))))
+              ;; Note: These BIOS configurations are taken from QEMUs roms/
+              ;; directory.
+              (let ((biosen
+                     '(;; The standard BIOS using default options.
+                       ("bios-256k" . ("QEMU=y" "ROM_SIZE=256" "ATA_DMA=n"))
+                       ;; A minimal BIOS for old QEMU machine types.
+                       ("bios-128k"
+                        . ("QEMU=y" "ROM_SIZE=128" "ATA_DMA=n" "BOOTSPLASH=n"
+                           "XEN=n" "USB_OHCI=n" "USB_XHCI=n" "USB_UAS=n"
+                           "SDCARD=n" "TCGBIOS=n" "MPT_SCSI=n" "ESP_SCSI=n"
+                           "MEGASAS=n" "PVSCSI=n" "NVME=n" "USE_SMM=n"
+                           "VGAHOOKS=n" "HOST_BIOS_GEOMETRY=n" "ACPI_PARSE=n"))
+                       ;; Minimal BIOS for the "microvm" machine type.
+                       ("bios-microvm"
+                        . ("QEMU=y" "ROM_SIZE=128" "XEN=n" "BOOTSPLASH=n" "ATA=n"
+                           "AHCI=n" "SDCARD=n" "PVSCSI=n" "ESP_SCSI=n" "LSI_SCSI=n"
+                           "MEGASAS=n" "MPT_SCSI=n" "FLOPPY=n" "FLASH_FLOPPY=n"
+                           "NVME=n" "PS2PORT=n" "USB=n" "LPT=n" "RTC_TIMER=n"
+                           "USE_SMM=n" "PMTIMER=n" "TCGBIOS=n" "HARDWARE_IRQ=n"
+                           "ACPI_PARSE=y"))))
+                    (vgabiosen
+                     '(("ati"    . ("VGA_ATI=y" "VGA_PCI=y"))
+                       ("bochs-display" . ("DISPLAY_BOCHS=y" "VGA_PCI=y"))
+                       ("cirrus" . ("VGA_CIRRUS=y" "VGA_PCI=y"))
+                       ("stdvga" . ("VGA_BOCHS=y" "VGA_PCI=y"))
+                       ("virtio" . ("VGA_BOCHS=y" "VGA_BOCHS_VIRTIO=y" "VGA_PCI=y"))
+                       ("vmware" . ("VGA_BOCHS=y" "VGA_BOCHS_VMWARE=y" "VGA_PCI=y"))
+                       ("qxl"    . ("VGA_BOCHS=y" "VGA_BOCHS_QXL=y" "VGA_PCI=y"))
+                       ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
+                       ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n")))))
+                (mkdir "out")
+                (for-each
+                 (match-lambda
+                   ((target . config)
+                    (let* ((dot-config (string-append (getcwd) "/" target
+                                                      "/.config"))
+                           (flags (append make-flags
+                                          (list (string-append "KCONFIG_CONFIG="
+                                                               dot-config)
+                                                (string-append "OUT=" target "/")))))
+                      (mkdir target)
+                      (call-with-output-file dot-config
+                        (lambda (port)
+                          (for-each (lambda (entry)
+                                      (format port "CONFIG_~a~%" entry))
+                                    config)))
+                      (apply invoke "make" "oldnoconfig" flags)
+                      (apply invoke "make" flags)
+                      (link (string-append target "/"
+                                           (if (string-prefix? "vgabios" target)
+                                               "vgabios.bin" "bios.bin"))
+                            (string-append "out/" target ".bin")))))
+                 (append biosen
+                         (map (lambda (pair)
+                                `(,(string-append "vgabios-" (car pair))
+                                  .
+                                  ,(cons "BUILD_VGABIOS=y" (cdr pair))))
+                              vgabiosen))))))
           (replace 'install
             (lambda _
-              (let ((fmw (string-append #$output "/share/firmware")))
+              (let ((firmware (string-append #$output "/share/firmware")))
                 (for-each (lambda (bios)
-                            (install-file bios fmw))
+                            (install-file bios firmware))
                           (find-files "out" "\\.bin$"))
-                (with-directory-excursion fmw
-                  ;; QEMU 1.7 and later looks only for the latter.
-                  (symlink "bios.bin" "bios-256k.bin"))))))))
+                (with-directory-excursion firmware
+                  ;; Compatibility symlinks for QEMU.
+                  (symlink "bios-128k.bin" "bios.bin")
+                  (symlink "vgabios-isavga.bin" "vgabios.bin"))))))))
     (home-page "https://www.seabios.org/SeaBIOS")
     (synopsis "x86 BIOS implementation")
     (description "SeaBIOS is an implementation of a 16bit x86 BIOS.  SeaBIOS
