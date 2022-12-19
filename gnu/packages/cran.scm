@@ -15439,14 +15439,14 @@ Processing.")
 (define-public r-tm
   (package
     (name "r-tm")
-    (version "0.7-9")
+    (version "0.7-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tm" version))
        (sha256
         (base32
-         "0a3ylj9735i21fh6iz63fkh1pnf2hs8ipp8wjdj25dahl18yhlyv"))))
+         "15lxaqlgkl9chiz0aw05l55bvlh48jwdgplfl8f2d8xsaq4gmbvc"))))
     (properties `((upstream-name . "tm")))
     (build-system r-build-system)
     (propagated-inputs
