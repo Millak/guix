@@ -2233,13 +2233,13 @@ previous R versions and their release dates.")
 (define-public r-whisker
   (package
     (name "r-whisker")
-    (version "0.4")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "whisker" version))
               (sha256
                (base32
-                "1a7vz0dk95xfjvi38wbpw8vmf5qn3g8p490msz2rw0piwidmk1ks"))))
+                "1g7jy6dnc5igs7yqy1n7cmy0ia8dm2yi3qj1mil2y0q88m4m2ldz"))))
     (build-system r-build-system)
     (home-page "https://github.com/edwindj/whisker")
     (synopsis "Logicless mustache templating for R")
