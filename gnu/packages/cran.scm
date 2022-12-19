@@ -16036,13 +16036,13 @@ useful for building large phylogenies using multiple markers.")
 (define-public r-rnexml
   (package
     (name "r-rnexml")
-    (version "2.4.8")
+    (version "2.4.9")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RNeXML" version))
               (sha256
                (base32
-                "0l5qpg6f107k927vnnki7g9yfs20xkpd7c5pkvbj8bpybbwjkm16"))))
+                "180w7c8n4xcn3x7haymi1fl3fpnklqfgmaki6jkxpm3hdiffmbsd"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-ape
