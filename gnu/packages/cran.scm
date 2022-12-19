@@ -7407,13 +7407,13 @@ script.")
 (define-public r-aricode
   (package
     (name "r-aricode")
-    (version "1.0.1")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "aricode" version))
               (sha256
                (base32
-                "0772l9gyrih48l1kymih0mb7szjqqnwcm4lzj0yzp4cs8l2mdf4f"))))
+                "1w5jnql49f0wd5h4b89l69s7qldp7qm90p4jm0j4kz9w0vvm2kjz"))))
     (properties `((upstream-name . "aricode")))
     (build-system r-build-system)
     (propagated-inputs (list r-matrix r-rcpp))
