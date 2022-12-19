@@ -1,0 +1,10 @@
+# This config file allows for Patchwork integration with
+# https://patches.guix-patches.cbaines.net/.
+
+[settings]
+project: guix-patches
+patchwork_url: https://patches.guix-patches.cbaines.net
+add_signoff: False
+get_maintainer_script: etc/teams.scm get-maintainer
+# TODO: enable check_patch
+check_patch: False
