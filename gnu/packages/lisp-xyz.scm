@@ -23334,6 +23334,50 @@ Lisp.  A subsystem offers an experimental GUI Gemini client.")
 (define-public ecl-phos
   (sbcl-package->ecl-package sbcl-phos))
 
+(define-public sbcl-germinal
+  (let ((commit "5bfb371ea57dae8985c0e1c6f184f0338487d684")
+        (revision "0"))
+    (package
+      (name "sbcl-germinal")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.carcosa.net/jmcbray/germinal")
+               (commit commit)))
+         (file-name (git-file-name "cl-germinal" version))
+         (sha256
+          (base32 "12jypa8m10825lp5yxfcm1fyk3r4ziwcri7ndxa0m5dz0y7hggck"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl+ssl
+             sbcl-cl-fad
+             sbcl-cl-interpol
+             sbcl-cl-ppcre
+             sbcl-cl-str
+             sbcl-local-time
+             sbcl-osicat
+             sbcl-ppath
+             sbcl-quri
+             sbcl-trivial-mimes
+             sbcl-uax-15
+             sbcl-usocket))
+      (home-page "https://git.carcosa.net/jmcbray/germinal")
+      (synopsis "Gemini protocol server")
+      (description "Germinal is a server for the Gemini protocol, written in
+Common Lisp.")
+      (license license:agpl3))))
+
+(define-public cl-germinal
+  (sbcl-package->cl-source-package sbcl-germinal))
+
+(define-public ecl-germinal
+  (sbcl-package->ecl-package sbcl-germinal))
+
 (define-public sbcl-css-lite
   (let ((commit "6ee4e6212ed56943d665df163d2a834b122e6273")
         (revision "0"))
