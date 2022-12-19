@@ -2437,13 +2437,13 @@ tables, autolinks and strikethrough text.")
 (define-public r-roxygen2
   (package
     (name "r-roxygen2")
-    (version "7.2.2")
+    (version "7.2.3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "roxygen2" version))
               (sha256
                (base32
-                "07pijickz5kgd31xzn2z11xqiym4sscj742qwbc5bjh7mayhhmki"))))
+                "1nhn0jhnxzlyqx0qnpd7k7q3azzngyn0j4zs8awmlmyjfywzli6q"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-brew
@@ -2451,7 +2451,6 @@ tables, autolinks and strikethrough text.")
            r-commonmark
            r-cpp11
            r-desc
-           r-digest
            r-knitr
            r-pkgload
            r-purrr
