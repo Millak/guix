@@ -522,6 +522,7 @@ executing in M-mode.")
     (description "SeaBIOS is an implementation of a 16bit x86 BIOS.  SeaBIOS
 can run in an emulator or it can run natively on X86 hardware with the use of
 coreboot.")
+    (supported-systems '("i686-linux" "x86_64-linux"))
     ;; Dual licensed.
     (license (list license:gpl3+ license:lgpl3+
                    ;; src/fw/acpi-dsdt.dsl is lgpl2
