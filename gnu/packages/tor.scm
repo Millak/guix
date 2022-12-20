@@ -434,14 +434,14 @@ Potential client and exit connections are scrubbed of sensitive information.")
 (define-public tractor
   (package
     (name "tractor")
-    (version "3.14")
+    (version "4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traxtor" version))
        (sha256
         (base32
-         "06jhsg179rfckagrpk9r8wqp44anf1bchm3ins2saf5806f0n5lw"))))
+         "107iwkhw9rxbp4samlcw24gdvgqh23rd7z60lrl1b4iljmhqjvcs"))))
     (build-system python-build-system)
     (native-inputs
      `(("glib:bin" ,glib "bin")))       ; for glib-compile-schemas.
