@@ -402,7 +402,7 @@ exec smbd $@")))
            pixman
            pulseaudio
            sdl2
-           seabios
+           seabios-qemu
            spice
            usbredir
            util-linux
