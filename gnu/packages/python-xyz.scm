@@ -2883,7 +2883,8 @@ standard.")
                 "nosetests"
                 "-v" "tests/"
                 "-I" "greendns_test.py"
-                "-I" "socket_test.py")))))))
+                "-I" "socket_test.py"
+                "-e" "test_018b_http_10_keepalive_framing")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
