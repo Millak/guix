@@ -1097,9 +1097,14 @@ development.")
            proj
            qhull
            sqlite
-           zlib))
+           swig
+           zlib
+           zstd))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://gdal.org/")
     (synopsis "Raster and vector geospatial data format library")
     (description "GDAL is a translator library for raster and vector geospatial
@@ -1127,25 +1132,6 @@ utilities for data translation and processing.")
                (license:non-copyleft "file://alg/internal_libqhull/COPYING.txt")
                ;; frmts/mrf/libLERC
                license:asl2.0))))
-
-(define-public python-gdal
-  (package (inherit gdal)
-    (name "python-gdal")
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'chdir
-           (lambda _
-             (chdir "swig/python")
-             #t)))))
-    (native-inputs '())
-    (propagated-inputs
-     (list python-numpy))
-    (inputs
-     (list gdal))
-    (synopsis "GDAL (Geospatial Data Abstraction Library) python bindings")))
 
 (define-public python-pyshp
   (package
@@ -2554,6 +2540,7 @@ growing set of geoscientific methods.")
                              "ProcessingQgisAlgorithmsTestPt2"
                              "ProcessingQgisAlgorithmsTestPt3"
                              "ProcessingQgisAlgorithmsTestPt4"
+                             "ProcessingGdalAlgorithmsRasterTest"
                              "ProcessingGdalAlgorithmsVectorTest"
                              "ProcessingGrass7AlgorithmsImageryTest"
                              "ProcessingGrass7AlgorithmsRasterTestPt1"
@@ -2671,7 +2658,6 @@ growing set of geoscientific methods.")
            python-chardet
            python-dateutil
            python-future
-           python-gdal
            python-jinja2
            python-numpy
            python-owslib
