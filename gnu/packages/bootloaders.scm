@@ -1119,15 +1119,14 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((opensbi (string-append (assoc-ref inputs "firmware")
-                                               "/fw_dynamic.bin")))
-                   (setenv "OPENSBI" opensbi))))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "OPENSBI" (search-input-file inputs
+                                                       "fw_dynamic.bin"))))))))
       (inputs
-       `(("firmware" ,opensbi-generic)
-         ,@(package-inputs base))))))
+       (modify-inputs (package-inputs base)
+         (append opensbi-generic))))))
 
 (define-public u-boot-rock64-rk3328
   (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
