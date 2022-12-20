@@ -27119,7 +27119,7 @@ Debug server.")
 (define-public emacs-bfuture
   (package
     (name "emacs-bfuture")
-    (version "1.0.1")
+    (version "1.0.2")
     (source
      (origin
        (method git-fetch)
@@ -27128,7 +27128,7 @@ Debug server.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "1m4v4xbsvg26z7nvg2c8q7x1nvv7v4ajm56l0nbkwcbdbrgahpva"))
+         "1qflkyr7fafw84mksxs25mka133y8ak8nsga3al29014pshbvzxn"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (arguments
