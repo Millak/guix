@@ -1398,13 +1398,18 @@ Encryption to Gajim.")
            #:phases
            #~(modify-phases %standard-phases
                ;; For A/V support.
+               (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+                 (assoc-ref glib-or-gtk:%standard-phases
+                            'generate-gdk-pixbuf-loaders-cache-file))
                (add-after 'install 'wrap
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
                           (dino (string-append out "/bin/dino"))
                           (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
                      (wrap-program dino
-                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                       `("GDK_PIXBUF_MODULE_FILE" =
+                         (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))
                (add-after 'install 'glib-or-gtk-wrap
                  (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
                (replace 'check
@@ -1421,7 +1426,8 @@ Encryption to Gajim.")
            pkg-config
            vala))
     (inputs
-     (list atk
+     (list adwaita-icon-theme
+           atk
            cairo
            librsvg
            glib
