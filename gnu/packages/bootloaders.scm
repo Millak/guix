@@ -860,12 +860,14 @@ def test_ctrl_c"))
                                      (u-boot u-boot))
   "Return a U-Boot package for BOARD cross-compiled for TRIPLET with the
 optional DEFCONFIG file and optional configuration changes from CONFIGS.
-NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
-appended to the package description.  U-BOOT can be used when a fork or a
-different version of U-Boot must be used."
+TRIPLET may also be set to #f to disable cross-compilation.  NAME-SUFFIX is
+appended to the package name, while APPEND-DESCRIPTION is appended to the
+package description.  U-BOOT can be used when a fork or a different version of
+U-Boot must be used."
   (let ((native-build? (lambda ()
-                         (string=? (%current-system)
-                                   (gnu-triplet->nix-system triplet)))))
+                         (or (not triplet) ;disable cross-compilation
+                             (string=? (%current-system)
+                                       (gnu-triplet->nix-system triplet))))))
     (package
       (inherit u-boot)
       (name (string-append "u-boot-"
