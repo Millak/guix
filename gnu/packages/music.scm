@@ -4749,26 +4749,27 @@ standalone JACK client and an LV2 plugin is also available.")
                             "src/external/pugixml")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSFIZZ_LV2_UI=OFF"
-             "-DSFIZZ_VST=OFF"
-             "-DSFIZZ_VST2=OFF"
-             "-DSFIZZ_TESTS=ON"
-             "-DSFIZZ_USE_SYSTEM_ABSEIL=ON"
-             "-DSFIZZ_USE_SYSTEM_PUGIXML=ON"
-             ;; XXX: Guix SIMDe version 0.7.2 is not enough.
-             ;; "-DSFIZZ_USE_SYSTEM_SIMDE=ON"
-             )))
+     (list
+      #:configure-flags
+      #~(list "-DSFIZZ_LV2_UI=OFF"
+              "-DSFIZZ_VST=OFF"
+              "-DSFIZZ_VST2=OFF"
+              "-DSFIZZ_TESTS=ON"
+              "-DSFIZZ_USE_SYSTEM_ABSEIL=ON"
+              "-DSFIZZ_USE_SYSTEM_PUGIXML=ON"
+              ;; XXX: Guix SIMDe version 0.7.2 is not enough.
+              ;; "-DSFIZZ_USE_SYSTEM_SIMDE=ON"
+              )))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("abseil-cpp" ,abseil-cpp)
-       ("glib" ,glib)
-       ("jack" ,jack-2)
-       ("lv2" ,lv2)
-       ("libsamplerate" ,libsamplerate)
-       ("pugixml" ,pugixml)
-       ("simde" ,simde)))
+     (list abseil-cpp
+           glib
+           jack-2
+           lv2
+           libsamplerate
+           pugixml
+           simde))
     (home-page "https://sfz.tools/sfizz/")
     (synopsis "SFZ parser and synth library")
     (description "Sfizz provides an SFZ parser and synth C++ library.  It
