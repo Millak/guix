@@ -2876,15 +2876,14 @@ standard.")
              ;; getprotobyname is called.  Thankfully there is an environment
              ;; variable to disable the greendns import, so use it:
              (setenv "EVENTLET_NO_GREENDNS" "yes")))
-         (add-after 'unpack 'delete-broken-tests
-           (lambda _
-             (delete-file "tests/greendns_test.py")
-             (delete-file "tests/socket_test.py")))
-         ;; See https://github.com/eventlet/eventlet/issues/562#issuecomment-714183009
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "nosetests" "-v" "tests/")))))))
+               (invoke
+                "nosetests"
+                "-v" "tests/"
+                "-I" "greendns_test.py"
+                "-I" "socket_test.py")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
