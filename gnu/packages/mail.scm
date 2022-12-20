@@ -4026,11 +4026,11 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "4590e4822dda792f59f69b764824aa148d92dad0")
-        (revision "2"))
+  (let ((commit "350b2dfbe22bea82ca2d5739d5aebbf9277fe7b7")
+        (revision "1"))
     (package
       (name "mumi")
-      (version (git-version "0.0.2" revision commit))
+      (version (git-version "0.0.3" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4039,33 +4039,38 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16brl1dk92kppzvxx8q5hcqiywg863s4sz5wb64hz8a37xa4hkyr"))))
+                  "1i728cf5shsh0rcv38z244855s2jhifj91prq7c2zk99fsiadw50"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((guix build gnu-build-system)
+       (list
+        #:modules '((guix build gnu-build-system)
                     ((guix build guile-build-system)
                      #:select (target-guile-effective-version))
                     (guix build utils))
-         #:imported-modules ((guix build guile-build-system)
+        #:imported-modules `((guix build guile-build-system)
                              ,@%gnu-build-system-modules)
 
-         #:configure-flags '("--localstatedir=/var")
+        #:configure-flags '(list "--localstatedir=/var")
 
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (version (target-guile-effective-version))
-                      (scm (string-append out "/share/guile/site/" version))
-                      (go  (string-append out "/lib/guile/" version
-                                          "/site-ccache")))
-                 (wrap-program (string-append bin "/mumi")
-                   `("GUILE_LOAD_PATH" ":" prefix
-                     (,scm ,(getenv "GUILE_LOAD_PATH")))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                     (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'install-picocss
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
+                  (mkdir-p "assets/pico/scss")
+                  (copy-recursively pico "assets/pico/scss"))))
+            (add-after 'install 'wrap-executable
+              (lambda _
+                (let* ((bin (string-append #$output "/bin"))
+                       (version (target-guile-effective-version))
+                       (scm (string-append #$output "/share/guile/site/" version))
+                       (go  (string-append #$output "/lib/guile/" version
+                                           "/site-ccache")))
+                  (wrap-program (string-append bin "/mumi")
+                    `("GUILE_LOAD_PATH" ":" prefix
+                      (,scm ,(getenv "GUILE_LOAD_PATH")))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                      (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
        (list guile-email-latest
              guile-fibers
@@ -4079,7 +4084,16 @@ It is a replacement for the @command{urlview} program.")
              guile-3.0
              mailutils))
       (native-inputs
-       (list autoconf automake pkg-config))
+       (list autoconf automake pkg-config sassc
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/picocss/pico.git")
+                     (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
+               (file-name (git-file-name "pico" "1.5.6"))
+               (sha256
+                (base32
+                 "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
       (home-page "https://git.elephly.net/software/mumi.git")
       (synopsis "Debbugs web interface")
       (description "Mumi is a Debbugs web interface.")
