@@ -1535,8 +1535,14 @@ the features of iPXE without the hassle of reflashing.")
   (package/inherit ipxe
     (name "ipxe-qemu")
     (native-inputs
-     (modify-inputs (package-native-inputs ipxe)
-       (prepend edk2-tools)))
+     ;; QEMU uses a 64-bit UEFI firmware.
+     (if (target-x86-64?)
+         (modify-inputs (package-native-inputs ipxe)
+           (prepend edk2-tools))
+         (modify-inputs (package-native-inputs ipxe)
+           (prepend edk2-tools
+                    (cross-gcc "x86_64-linux-gnu")
+                    (cross-binutils "x86_64-linux-gnu")))))
     (arguments
      (let ((roms
             ;; Alist of ROM -> (VID . DID) entries.  This list and below
@@ -1554,14 +1560,17 @@ the features of iPXE without the hassle of reflashing.")
           `((ice-9 match) ,@modules))
          ((#:make-flags flags)
           #~(append (delete "everything" #$flags)
-                    '("CONFIG=qemu")
+                    '("CONFIG=qemu"
+                      #$@(if (target-x86-64?)
+                             '()
+                             '("CROSS_COMPILE=x86_64-linux-gnu-")))
                     (map (match-lambda
                            ((_ . (vid . did))
                             (string-append "bin/" vid did ".rom")))
                          '#$roms)
                     (map (match-lambda
                            ((_ . (vid . did))
-                            (string-append "bin-efi/"
+                            (string-append "bin-x86_64-efi/"
                                            vid did ".efidrv")))
                          '#$roms)))
          ((#:phases phases)
@@ -1582,7 +1591,7 @@ the features of iPXE without the hassle of reflashing.")
                                   "-l" "0x02"
                                   "-f" (string-append "0x" vid)
                                   "-i" (string-append "0x" did)
-                                  "-ec" (string-append "bin-efi/"
+                                  "-ec" (string-append "bin-x86_64-efi/"
                                                        vid did ".efidrv")
                                   "-o" (string-append firmware
                                                       "/efi-" name ".rom")))))
