@@ -530,6 +530,70 @@ coreboot.")
                    ;; cpl with a linking exception.
                    license:cpl1.0))))
 
+(define-public edk2-tools
+  (package
+    (name "edk2-tools")
+    (version "202211")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tianocore/edk2")
+                    (commit (string-append "edk2-stable" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1264542mm0mffjcmw5sw34h94n405swz5z56rw1ragp3j62144iy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "BUILD_CC=" #$(cc-for-target)))
+           #:test-target "Tests"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-directory
+                 (lambda _
+                   (chdir "BaseTools")))
+               (add-after 'change-directory 'disable-some-tools
+                 (lambda _
+                   ;; Disable building brotli and xz, since we package them
+                   ;; separately, and it would require fetching submodules.
+                   (substitute* "Source/C/GNUmakefile"
+                     (("^[[:blank:]]+BrotliCompress[[:blank:]]+\\\\")
+                      "\\")
+                     (("^[[:blank:]]+LzmaCompress[[:blank:]]+\\\\")
+                      "\\"))))
+               (replace 'build
+                 (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                   ;; The default build target also runs tests.
+                   (apply invoke "make" "-C" "Source/C" make-flags)))
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (mkdir #$output)
+                   (copy-recursively "Source/C/bin"
+                                     (string-append #$output "/bin")))))))
+    (native-inputs
+     (list python-wrapper))
+    (inputs
+     (list `(,util-linux "lib")))       ;for libuuid
+    (home-page
+     "https://github.com/tianocore/tianocore.github.io/wiki/EDK-II-Tools-List")
+    (synopsis "EFI development tools")
+    (description
+     "This package contains tools for processing UEFI firmware content.
+Executables included are:
+
+@itemize
+@item @code{EfiRom}: Build Option ROM images.
+@item @code{GenFfs}: Generate FFS files.
+@item @code{GenFv}: Generate a PI firmware volume image.
+@item @code{GenFw}: Get image data from PE32 files.
+@item @code{GenSec}: Generate EFI_SECTION type files.
+@item @code{VfrCompile}: Parse preprocessed UEFI and Framework VFR files.
+@item @code{VolInfo}: Display the contents of a firmware volume.
+@end itemize")
+    (license license:bsd-2)))
+
 (define-public ovmf
   (let ((commit "13a50a6fe1dcfa6600c38456ee24e0f9ecf51b5f")
         (revision "1"))
