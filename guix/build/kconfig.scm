@@ -102,10 +102,10 @@ An error is thrown for invalid configurations.
                   ;; The search for duplicates is done.
                   ;; Return the alist or throw an error on duplicates.
                   (if (null? duplicates)
-                      alist
+                      (reverse alist)
                       (error
                        (format #f "duplicate configurations in ~a" defconfig)
-                       duplicates))
+                       (reverse duplicates)))
                   ;; Continue the search for duplicates.
                   (loop (cdr keys)
                         (if (member (first keys) (cdr keys))
