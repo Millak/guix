@@ -1136,14 +1136,13 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((bl31 (search-input-file inputs "/bl31.elf")))
-                   (setenv "BL31" bl31))))))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3328)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31 "(search-input-file inputs "bl31.elf"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3328))))))
 
 (define-public u-boot-firefly-rk3399
   (let ((base (make-u-boot-package "firefly-rk3399" "aarch64-linux-gnu")))
