@@ -17028,13 +17028,13 @@ graphviz.")
 (define-public python-gevent
   (package
     (name "python-gevent")
-    (version "21.12.0")
+    (version "22.10.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gevent" version))
               (sha256
                (base32
-                "0kh9mmq811mzfgj60n64icybjp4ryjmfmy1vg7x92yrniibn92zl"))
+                "0ijwwm2yr7jgz8xs1rbvzj6gp7xw1pagf0i7g99b6dzffshiv80w"))
               (modules '((guix build utils)))
               (snippet
                '(begin
