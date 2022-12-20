@@ -133,10 +133,8 @@ DEFCONFIG:
   \"CONFIG_F\")
 
 Instead of a list, CONFIGS can be a string with one configuration per line."
-  (let* (;; Split the configs into a list of single configurations.  Both a
-         ;; string and or a list of strings is supported, each with newlines
-         ;; to separate configurations.
-         (config-pairs (map config-string->pair
+  ;; Normalize CONFIGS to a list of configuration pairs.
+  (let* ((config-pairs (map config-string->pair
                             (append-map (cut string-split <>  #\newline)
                                         (if (string? configs)
                                             (list configs)
