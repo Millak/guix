@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2018, 2021-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -1532,3 +1532,59 @@ existing PXE ROM on your network card, or you can chainload into iPXE to obtain
 the features of iPXE without the hassle of reflashing.")
       (license license:gpl2+))))
 
+(define-public ipxe-qemu
+  (package/inherit ipxe
+    (name "ipxe-qemu")
+    (native-inputs
+     (modify-inputs (package-native-inputs ipxe)
+       (prepend edk2-tools)))
+    (arguments
+     (let ((roms
+            ;; Alist of ROM -> (VID . DID) entries.  This list and below
+            ;; build steps are taken from QEMUs roms/Makefile.
+            '(("e1000"       . ("8086" . "100e"))
+              ("e1000e"      . ("8086" . "10d3"))
+              ("eepro100"    . ("8086" . "1209"))
+              ("ne2k_pci"    . ("1050" . "0940"))
+              ("pcnet"       . ("1022" . "2000"))
+              ("rtl8139"     . ("10ec" . "8139"))
+              ("virtio"      . ("1af4" . "1000"))
+              ("vmxnet3"     . ("15ad" . "07b0")))))
+       (substitute-keyword-arguments (package-arguments ipxe)
+         ((#:modules modules)
+          `((ice-9 match) ,@modules))
+         ((#:make-flags flags)
+          #~(append (delete "everything" #$flags)
+                    '("CONFIG=qemu")
+                    (map (match-lambda
+                           ((_ . (vid . did))
+                            (string-append "bin/" vid did ".rom")))
+                         '#$roms)
+                    (map (match-lambda
+                           ((_ . (vid . did))
+                            (string-append "bin-efi/"
+                                           vid did ".efidrv")))
+                         '#$roms)))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'install
+                (lambda _
+                  (let ((firmware (string-append #$output "/share/firmware")))
+                    (mkdir-p firmware)
+                    (for-each
+                     (match-lambda
+                       ((name . (vid . did))
+                        (let ((rom (string-append "bin/" vid did ".rom")))
+                          (copy-file rom
+                                     (string-append firmware
+                                                    "/pxe-" name ".rom"))
+                          (invoke "EfiRom"
+                                  "-b" rom
+                                  "-l" "0x02"
+                                  "-f" (string-append "0x" vid)
+                                  "-i" (string-append "0x" did)
+                                  "-ec" (string-append "bin-efi/"
+                                                       vid did ".efidrv")
+                                  "-o" (string-append firmware
+                                                      "/efi-" name ".rom")))))
+                     '#$roms)))))))))))
