@@ -1283,6 +1283,38 @@ leveraging built-in functionality.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
+(define-public emacs-fzf
+  (let ((commit "21912ebc7e1084aa88c9d8b7715e782a3978ed23")
+        (revision "0"))
+    (package
+      (name "emacs-fzf")
+      (version (git-version "0.0.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bling/fzf.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gdqjh8996hb06bnnyhi94k69mjfrzyfgq00a9s4wwagv28sqmkj"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-fzf-executable
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "fzf.el"
+                  ("fzf/executable" (search-input-file inputs "/bin/fzf"))))))))
+      (inputs (list fzf))
+      (home-page "https://github.com/bling/fzf.el")
+      (synopsis "Emacs front-end for Fzf finder")
+      (description "This package provides an Emacs front-end for Fzf general
+purpose finder.")
+      (license license:gpl3+))))
+
 (define-public emacs-minions
   (package
     (name "emacs-minions")
