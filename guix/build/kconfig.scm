@@ -31,6 +31,16 @@
 ;;
 ;; Code:
 
+(define (pair->config-string pair)
+  "Convert a PAIR back to a config-string."
+  (let* ((key (first pair))
+         (value (cdr pair)))
+    (if (string? key)
+        (if (string? value)
+            (string-append key "=" value)
+            (string-append "# " key " is not set"))
+        value)))
+
 (define (config-string->pair config-string)
   "Parse a configuration string like \"CONFIG_EXAMPLE=m\" into a key-value pair.
 An error is thrown for invalid configurations.
@@ -76,16 +86,6 @@ An error is thrown for invalid configurations.
         (if (regexp-exec config-comment-regexp config-string)
             (cons #f config-string)     ;keep valid comments
             (error "Invalid configuration" config-string)))))
-
-(define (pair->config-string pair)
-  "Convert a PAIR back to a config-string."
-  (let* ((key (first pair))
-         (value (cdr pair)))
-    (if (string? key)
-        (if (string? value)
-            (string-append key "=" value)
-            (string-append "# " key " is not set"))
-        value)))
 
 (define (defconfig->alist defconfig)
   "Convert the content of a DEFCONFIG (or .config) file into an alist."
