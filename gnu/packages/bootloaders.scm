@@ -728,8 +728,7 @@ def test_ctrl_c"))
                            ;; This test requires a sound system, which is un-used
                            ;; in u-boot-tools.
                            (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
-                       (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))
-             #t))
+                       (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "tools-only_defconfig" make-flags)))
@@ -754,8 +753,7 @@ def test_ctrl_c"))
                            "tools/proftool"
                            "tools/fdtgrep"
                            "tools/env/fw_printenv"
-                           "tools/sunxi-spl-image-builder"))
-               #t)))
+                           "tools/sunxi-spl-image-builder")))))
          (delete 'check)
          (add-after 'install 'check
            (lambda* (#:key make-flags test-target #:allow-other-keys)
