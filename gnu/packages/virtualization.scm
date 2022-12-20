@@ -175,13 +175,10 @@
        (modules '((guix build utils)))
        (snippet
         '(begin
-           ;; TODO: Scrub all firmwares from this directory!
-           (with-directory-excursion "pc-bios"
-             ;; Delete firmwares provided by SeaBIOS.
-             (for-each delete-file (find-files "." "^(bios|vgabios).*\\.bin$")))
            ;; Delete bundled code that we provide externally.
+           ;; TODO: Unbundle SeaBIOS!
            (for-each delete-file-recursively
-                     '("dtc" "meson" "roms/seabios"))))))
+                     '("dtc" "meson"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -192,20 +189,15 @@
                    (not (string=? "i686-linux" (%current-system))))
       #:configure-flags
       #~(let ((gcc (search-input-file %build-inputs "/bin/gcc"))
-              (meson (search-input-file %build-inputs "bin/meson"))
-              (seabios (search-input-file %build-inputs
-                                          "share/firmware/bios.bin"))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
                 (string-append "--host-cc=" gcc)
-                (string-append "--meson=" meson)
                 (string-append "--prefix=" out)
-
                 "--sysconfdir=/etc"
+                (string-append "--meson=" (search-input-file %build-inputs
+                                                             "bin/meson"))
                 "--enable-fdt=system"
-                (string-append "--firmwarepath=" out "/share/qemu:"
-                               (dirname seabios))
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
                 ;; The binaries need to be linked against -lrt.
@@ -219,33 +211,6 @@
                   ,@%gnu-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
-          ;; Since we removed the bundled firmwares above, many tests
-          ;; can't work.  Re-add them here.
-          (add-after 'unpack 'replace-firmwares
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let* ((seabios (dirname (search-input-file
-                                        inputs "share/firmware/bios.bin")))
-                     (seabios-firmwares (find-files seabios "\\.bin$"))
-                     (allowed-differences
-                      ;; Ignore minor differences (addresses etc) in the firmware
-                      ;; data tables compared to what the test suite expects.
-                      '("tests/data/acpi/pc/SSDT.dimmpxm"
-                        "tests/data/acpi/pc/DSDT.dimmpxm"
-                        "tests/data/acpi/pc/ERST.acpierst"
-                        "tests/data/acpi/q35/ERST.acpierst"
-                        "tests/data/acpi/q35/DSDT.cxl"))
-                     (allowed-differences-whitelist
-                      (open-file "tests/qtest/bios-tables-test-allowed-diff.h"
-                                 "a")))
-                (with-directory-excursion "pc-bios"
-                  (for-each (lambda (file)
-                              (symlink file (basename file)))
-                            seabios-firmwares))
-                (for-each (lambda (file)
-                            (format allowed-differences-whitelist
-                                    "\"~a\",~%" file))
-                          allowed-differences)
-                (close-port allowed-differences-whitelist))))
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
               ;; These tests can time out on heavily-loaded and/or slow storage.
@@ -312,22 +277,17 @@
               (mkdir-p "b/qemu")
               (chdir "b/qemu")
               (apply invoke "../../configure" configure-flags)))
-
           ;; Configure, build and install QEMU user-emulation static binaries.
           (add-after 'configure 'configure-user-static
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((static (assoc-ref outputs "static"))
                      (gcc (search-input-file inputs "/bin/gcc"))
-                     (seabios (search-input-file inputs "/share/firmware/bios.bin"))
                      ;; This is the common set of configure flags; it is
                      ;; duplicated here to isolate this phase from manipulations
                      ;; to the #:configure-flags build argument, as done in
                      ;; derived packages such as qemu-minimal.
                      (configure-flags (list (string-append "--cc=" gcc)
                                             (string-append "--host-cc=" gcc)
-                                            (string-append "--firmwarepath="
-                                                           #$output "/share/qemu:"
-                                                           (dirname seabios))
                                             "--sysconfdir=/etc"
                                             "--disable-debug-info")))
               (mkdir-p "../user-static")
@@ -353,15 +313,6 @@
                                         (scandir "."
                                                  (cut string-suffix?
                                                       "-linux-user" <>))))))))
-
-          (add-after 'install 'delete-firmwares
-            (lambda _
-              ;; Delete firmares that are accessible on --firmwarepath.
-              ;; For some reason tests fail if we simply remove them from
-              ;; pc-bios/meson.build, hence this roundabout way.
-              (with-directory-excursion (string-append #$output "/share/qemu")
-                (for-each delete-file
-                          (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")))))
           ;; Create a wrapper for Samba. This allows QEMU to use Samba without
           ;; pulling it in as an input. Note that you need to explicitly install
           ;; Samba in your Guix profile for Samba support.
@@ -406,7 +357,6 @@ exec smbd $@")))
            pixman
            pulseaudio
            sdl2
-           seabios
            spice
            usbredir
            util-linux
@@ -417,16 +367,13 @@ exec smbd $@")))
            zlib
            `(,zstd "lib")))
     (native-inputs
-     ;; Note: acpica is here only to pretty-print firmware differences with IASL
-     ;; (see the replace-firmwares phase above).
-     (list acpica
-           bison
-           flex
-           gettext-minimal
+     (list gettext-minimal
            `(,glib "bin")               ;gtester, etc.
+           perl
+           flex
+           bison
            meson-0.63
            ninja
-           perl
            pkg-config
            python-wrapper
            python-sphinx
