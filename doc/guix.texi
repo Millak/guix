@@ -39719,11 +39719,10 @@ The service type for an @emph{extensible} service looks like this:
 
                 (compose concatenate)       ;concatenate the list of rules
                 (extend (lambda (config rules)
-                          (match config
-                            (($ <udev-configuration> udev initial-rules)
-                             (udev-configuration
-                              (udev udev)   ;the udev package to use
-                              (rules (append initial-rules rules)))))))))
+                          (udev-configuration
+                           (inherit config)
+                           (rules (append (udev-configuration-rules config)
+                                          rules)))))))
 @end lisp
 
 This is the service type for the
