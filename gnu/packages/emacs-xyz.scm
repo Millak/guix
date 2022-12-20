@@ -1288,7 +1288,7 @@ leveraging built-in functionality.")
         (revision "0"))
     (package
       (name "emacs-fzf")
-      (version (git-version "0.0.2" revision commit))
+      (version (git-version "0.2" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
