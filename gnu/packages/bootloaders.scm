@@ -1108,6 +1108,46 @@ partition."))
 (define-public u-boot-qemu-riscv64-smode
   (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu"))
 
+(define-public u-boot-sandbox
+  (let ((base (make-u-boot-package
+               "sandbox" #f             ;build for the native system
+               ;; Disable CONFIG_TOOLS_LIBCRYPTO, CONFIG_FIT_SIGNATURE and
+               ;; CONFIG_FIT_CIPHER and their selectors as these features
+               ;; require OpenSSL, which is incompatible with the GPLv2-only
+               ;; parts of U-boot.  The options below replicate the changes
+               ;; that disabling the above features in 'make menuconfig' then
+               ;; refreshing the defconfig with 'make savedefconfig' would do.
+               #:configs (list "# CONFIG_FIT_RSASSA_PSS is not set"
+                               "# CONFIG_FIT_CIPHER is not set"
+                               "# CONFIG_LEGACY_IMAGE_FORMAT is not set"
+                               "# CONFIG_IMAGE_PRE_LOAD is not set"
+                               "# CONFIG_IMAGE_PRE_LOAD_SIG is not set"
+                               "# CONFIG_CMD_BOOTM_PRE_LOAD is not set"
+                               "CONFIG_RSA=y"
+                               "# CONFIG_EFI_SECURE_BOOT is not set"
+                               "# CONFIG_TOOLS_LIBCRYPTO is not set")
+               #:append-description
+               "The sandbox configuration of U-Boot provides a
+@command{u-boot} command that runs as a normal user space application.  It can
+be used to test the functionality of U-Boot interactively without having to
+deploy to an actual target device.  @xref{Sandbox<6>,,,u-boot, The U-Boot
+Documentation} for more information (for example by running @samp{info
+\"(u-boot) Sandbox<6>\"}).")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'symlink-u-boot-command
+                (lambda* (#:key outputs #:allow-other-keys)
+                  ;; For ease of discovery.
+                  (mkdir (string-append #$output "/bin"))
+                  (symlink (search-input-file outputs "libexec/u-boot")
+                           (string-append #$output "/bin/u-boot"))))))))
+      (inputs (modify-inputs (package-inputs base)
+                (append sdl2))))))
+
 (define-public u-boot-sifive-unleashed
   (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
 
