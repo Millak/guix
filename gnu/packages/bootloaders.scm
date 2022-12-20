@@ -1001,17 +1001,13 @@ removed so that it fits within common partitioning schemes.")))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                 (let ((bl31
-                        (string-append
-                         (assoc-ref (or native-inputs inputs) "firmware")
-                         "/bl31.bin")))
-                   (setenv "BL31" bl31))))))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-sun50i-a64)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-sun50i-a64))))))
 
 (define-public u-boot-pine64-plus
   (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"))
