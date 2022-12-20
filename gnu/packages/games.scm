@@ -52,7 +52,7 @@
 ;;; Copyright © 2020 Vitaliy Shatrov <D0dyBo0D0dyBo0@protonmail.com>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Trevor Hass <thass@okstate.edu>
 ;;; Copyright © 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
@@ -10336,10 +10336,10 @@ etc.  You can also play games on FICS or against an engine.")
     (license license:gpl2+)))
 
 (define-public stockfish
-  (let ((neural-network-revision "6877cd24400e")) ; also update hash below
+  (let ((neural-network-revision "ad9b42354671")) ; also update hash below
     (package
       (name "stockfish")
-      (version "15")
+      (version "15.1")
       (source
        (origin
          (method git-fetch)
@@ -10348,7 +10348,7 @@ etc.  You can also play games on FICS or against an engine.")
                (commit (string-append "sf_" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1v19v6qhwbf31wpc3qcih4dvqxwqkh0p426skgjin6ags31hkbmh"))))
+          (base32 "0zmnv8vbhhid73pjyxg56r4ckm887znv4d55br370plm3p5b56xa"))))
       (build-system gnu-build-system)
       (inputs
        `(("neural-network"
@@ -10358,7 +10358,7 @@ etc.  You can also play games on FICS or against an engine.")
                                  neural-network-revision ".nnue"))
              (sha256
               (base32
-               "1qyna598c0v7gdpycc6kpl12h5a2wa50dqray6gv208f80jcsxv8"))))))
+               "11mpdhnsfggldgvmzwmya64pp3fndyppi2fkdf8kfhbi8qsl56xd"))))))
       (arguments
        `(#:tests? #f
          #:make-flags (list "-C" "src"
@@ -10388,11 +10388,13 @@ etc.  You can also play games on FICS or against an engine.")
                         (copy-file (assoc-ref inputs "neural-network")
                                    (format #f "src/nn-~a.nnue"
                                            ,neural-network-revision))))
-                    ;; Guix doesn't use a multiarch gcc.
-                    (add-after 'unpack 'remove-m-flag
+                    (add-after 'unpack 'remove-m-flag-and-net-target
                       (lambda _
                         (substitute* "src/Makefile"
-                          (("-m\\$\\(bits\\)") "")))))))
+                          ;; Guix doesn't use a multiarch gcc.
+                          (("-m\\$\\(bits\\)") "")
+                          ;; Dont depend on net target.
+                          ((": net") ": ")))))))
       (synopsis "Strong chess engine")
       (description
        "Stockfish is a very strong chess engine.  It is much stronger than the
