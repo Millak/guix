@@ -10228,7 +10228,7 @@ replaced with the directory you choose.")
 (define-public emacs-consult-notmuch
   (package
     (name "emacs-consult-notmuch")
-    (version "0.8")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -10237,7 +10237,7 @@ replaced with the directory you choose.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18r47cj89qli534irah3lwwzsnik5bcf61clnrkhafqv9y51m67z"))))
+        (base32 "0gcd69i99prnskh1na7clydqgh1y9rbzkdc6dy9zmin9hfdrw1yd"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-consult emacs-notmuch))
