@@ -72,7 +72,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (ice-9 match))
 
 (define-public ath9k-htc-firmware
   (package
@@ -418,7 +419,13 @@ executing in M-mode.")
             ;; Delete IASL-generated files.
             (for-each delete-file (find-files "." "\\.hex$"))))))
     (build-system gnu-build-system)
-    (native-inputs (list acpica python-wrapper))
+    (native-inputs
+     (append
+       (list acpica python-wrapper)
+       (if (member (%current-system) '("i686-linux" "x86_64-linux"))
+         '()
+         (list (cross-gcc "i686-linux-gnu")
+               (cross-binutils "i686-linux-gnu")))))
     (arguments
      (list
       #:tests? #f                       ;no tests
@@ -440,7 +447,16 @@ executing in M-mode.")
               (call-with-output-file ".version"
                 (lambda (port)
                   (format port #$(package-version this-package))))
-              (setenv "CC" "gcc")))
+              ;; If we use (cc-for-target) then we have the system prefix
+              ;; twice or we might have the wrong prefix.
+              (setenv "CC" "gcc")
+              #$@(match (%current-system)
+                   ((or "i686-linux" "x86_64-linux")
+                    #~())
+                   (_
+                    #~((substitute* "Makefile"
+                         (("CROSS_PREFIX=")
+                          "CROSS_PREFIX=i686-linux-gnu-")))))))
           (add-before 'build 'build-description-tables
             (lambda _
               ;; Regenerate the ACPI description tables.
@@ -522,7 +538,6 @@ executing in M-mode.")
     (description "SeaBIOS is an implementation of a 16bit x86 BIOS.  SeaBIOS
 can run in an emulator or it can run natively on X86 hardware with the use of
 coreboot.")
-    (supported-systems '("i686-linux" "x86_64-linux"))
     ;; Dual licensed.
     (license (list license:gpl3+ license:lgpl3+
                    ;; src/fw/acpi-dsdt.dsl is lgpl2
