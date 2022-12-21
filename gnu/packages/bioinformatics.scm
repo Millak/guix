@@ -2333,7 +2333,7 @@ has several key features:
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.18.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               ;; Test data is missing on PyPi.
@@ -2343,12 +2343,12 @@ has several key features:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "042ca27r6634xg2ixgvq1079cp714wmm6ml7bwc1snn0wxxzywfg"))
+                "1dq6jwwm98lm30ijdgqc5xz5ppda4nj999y6qs78mhw8x0kij8gg"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; FIXME: Unbundle samtools and bcftools.
                           (delete-file-recursively "htslib")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
