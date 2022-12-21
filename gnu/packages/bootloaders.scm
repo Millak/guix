@@ -889,7 +889,7 @@ appended to the package description."
 (define-public u-boot-malta
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
-(define-public u-boot-am335x-boneblack
+(define-public u-boot-am335x-evm-boneblack
   (make-u-boot-package
    "am335x_evm" "arm-linux-gnueabihf"
    ;; Patch out other device trees to build an image small enough to fit
