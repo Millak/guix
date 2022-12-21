@@ -17975,7 +17975,7 @@ This is the service that sets up ``special files'' such as
 @file{/bin/sh}; an instance of it is part of @code{%base-services}.
 
 The value associated with @code{special-files-service-type} services
-must be a list of tuples where the first element is the ``special file''
+must be a list of two-element lists where the first element is the ``special file''
 and the second element is its target.  By default it is:
 
 @cindex @file{/bin/sh}
