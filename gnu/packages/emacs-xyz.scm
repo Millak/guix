@@ -9337,11 +9337,11 @@ email.")
     (license license:gpl3+)))
 
 (define-public emacs-org-msg
-  ;; No git tags.  The commit below corresponds to the release of version 3.3.
-  (let ((commit "89e746c0a864031eef940758230bc7263a6f2289"))
+  ;; No git tags.  The commit below corresponds to the release of version 4.0.
+  (let ((commit "60e22e446325a9b3387396459d98be7c1c52579d"))
     (package
       (name "emacs-org-msg")
-      (version "3.3")
+      (version "4.0")
       (source
        (origin
          (method git-fetch)
@@ -9350,7 +9350,7 @@ email.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "15gd5zbxvdallyra9lmpb9i1r2mmwz0j0i0ra7j9imnbfiz3ln9r"))))
+          (base32 "077g7gvn1k6i2x4m2kd3dkrznc89f5a5pd916wsmpy703pv0aca5"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-htmlize))
