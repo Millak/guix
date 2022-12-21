@@ -607,7 +607,7 @@ for all types of microbial diversity analyses.")
                 (string-append "'" (which "sh") "'"))))))))
     ;; These libraries are listed as "Required" in the pkg-config file.
     (propagated-inputs
-     (list htslib pbcopper zlib))
+     (list htslib-1.14 pbcopper zlib))
     (inputs
      (list boost samtools))
     (native-inputs
