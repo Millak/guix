@@ -5125,6 +5125,12 @@ files and directories.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "0mml0in6xxhfv4mdb7rl9k8m6xwmrjl5bb301p8d56sfng982pdl"))))
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'add-contrib
+                     (lambda _
+                       (copy-recursively "contrib" "."))))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rnkn/fountain-mode")
     (synopsis "Major mode for screenwriting in Fountain markup")
