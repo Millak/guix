@@ -6,7 +6,7 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
@@ -444,7 +444,7 @@ Potential client and exit connections are scrubbed of sensitive information.")
          "107iwkhw9rxbp4samlcw24gdvgqh23rd7z60lrl1b4iljmhqjvcs"))))
     (build-system python-build-system)
     (native-inputs
-     `(("glib:bin" ,glib "bin")))       ; for glib-compile-schemas.
+     (list (list glib "bin")))       ; for glib-compile-schemas.
     (inputs
      (list python-fire
            python-psutil
@@ -453,20 +453,17 @@ Potential client and exit connections are scrubbed of sensitive information.")
            python-stem
            python-termcolor))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-man-page
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (man1 (string-append out "/share/man/man1")))
-               (install-file "tractor/man/tractor.1" man1)
-               #t)))
-         (add-after 'install 'install-gschema
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (schemas (string-append out "/share/glib-2.0/schemas")))
-               (install-file "tractor/tractor.gschema.xml" schemas)
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man-page
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (install-file "tractor/man/tractor.1" man1))))
+          (add-after 'install 'install-gschema
+            (lambda _
+              (let ((schemas (string-append #$output "/share/glib-2.0/schemas")))
+                (install-file "tractor/tractor.gschema.xml" schemas)))))))
     (home-page "https://framagit.org/tractor")
     (synopsis "Setup an onion routing proxy")
     (description
