@@ -14443,6 +14443,44 @@ contigs.  It then uses paired read information, if available, to retrieve the
 repeated areas between contigs.")
     (license license:gpl2+)))
 
+(define-public vembrane
+  (package
+    (name "vembrane")
+    (version "0.13.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vembrane/vembrane")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gdih56gpqd8ks3sd4ah844kac09hi3g073k9gvazb32ah50900w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("pysam = \"\\^0.19\"") "pysam = \"^0.20\"")
+               (("numpy = \\{ version = \"\\^1.23\"")
+                "numpy = { version = \"^1\"")))))))
+    (inputs
+     (list python-asttokens python-intervaltree python-numpy
+           python-pysam python-pyyaml))
+    (native-inputs
+     (list poetry python-pytest))
+    (home-page "https://github.com/vembrane/vembrane")
+    (synopsis "Filter VCF/BCF files with Python expressions.")
+    (description "Vembrane allows to simultaneously filter variants based on
+any INFO or FORMAT field, CHROM, POS, ID, REF, ALT, QUAL, FILTER, and the
+annotation field ANN.  When filtering based on ANN, annotation entries are
+filtered first.  If no annotation entry remains, the entire variant is
+deleted.")
+    (license license:expat)))
+
 (define-public python-velocyto
   (package
     (name "python-velocyto")
