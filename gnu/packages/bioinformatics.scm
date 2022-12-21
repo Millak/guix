@@ -3670,6 +3670,25 @@ software to answer ad hoc questions.")
            go-golang-org-x-image
            go-golang-org-x-text))))
 
+(define-public python-bamnostic
+  (package
+    (name "python-bamnostic")
+    (version "1.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bamnostic" version))
+              (sha256
+               (base32
+                "0cjpzyqz6r4lmiwry2gcxdczwpkhl3lyyjg4s8addln17691ysxk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/betteridiot/bamnostic/")
+    (synopsis "Tool for binary alignment map, random access and parsing")
+    (description
+     "Bamnostic is a pure Python @dfn{Binary Alignment Map} (BAM) file parser
+and random access tool.")
+    (license license:bsd-3)))
+
 (define-public exonerate
   (package
     (name "exonerate")
