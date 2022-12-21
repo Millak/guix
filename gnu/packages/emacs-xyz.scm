@@ -1577,33 +1577,29 @@ you will die.  The game builds the list of words from the active buffer.")
       (license license:gpl2+))))
 
 (define-public emacs-graphql
-  (package
-    (name "emacs-graphql")
-    (version "0.1.1")
-    (source (origin
-              (modules '((guix build utils)))
-              ;; Remove examples file with references to external packages as
-              ;; they do not exist at compilation time.
-              (snippet
-               '(begin (delete-file "examples.el")))
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vermiculus/graphql.el")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0sp0skc1rnhi39szfbq1i99pdgd3bhn4c15cff05iqhjy2d4hniw"))))
-    (build-system emacs-build-system)
-    (home-page
-     "https://github.com/vermiculus/graphql.el")
-    (synopsis "GraphQL utilities")
-    (description
-     "GraphQL.el provides a generally-applicable domain-specific language for
+  (let ((commit "b57b5ca5d2d0837e1fb4a4f30c051d5f3e643f0f")) ;version bump
+    (package
+      (name "emacs-graphql")
+      (version "0.1.2")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vermiculus/graphql.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "18k2c2b7y5qgc7qpkqjmz1nv61w470ja3vwprmy5dlkzficzqsvf"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-ghub))
+      (home-page "https://github.com/vermiculus/graphql.el")
+      (synopsis "GraphQL utilities")
+      (description
+       "GraphQL.el provides a generally-applicable domain-specific language for
 creating and executing GraphQL queries against your favorite web services.
 GraphQL is a data query language and runtime designed and used to request and
 deliver data to mobile and web apps.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-graphql-mode
   ;; No tagged commit.  No "Version" keyword either.
