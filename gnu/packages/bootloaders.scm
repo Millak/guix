@@ -655,6 +655,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
            lz4
            ncurses/tinfo
            perl
+           pkg-config                   ;for 'make menuconfig'
            python
            python-coverage
            python-pycryptodomex
