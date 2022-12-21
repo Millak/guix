@@ -2417,17 +2417,31 @@ UCSC genome browser.")
 (define-public python-plastid
   (package
     (name "python-plastid")
-    (version "0.5.1")
+    (version "0.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "plastid" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/joshuagryphon/plastid")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a7mdky2xw02y88l51f58pqk8039ahdp6sblj3zx58zarmy2pqyl"))))
-    (build-system python-build-system)
+                "1ka9j08j6i105l89w8b7sg0l8lm3lcrxzy4cjl5dp4cxdmycap62"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Some test files are not included.
-     `(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-test-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "tar" "-C" "plastid/test"
+                      "-xf" (assoc-ref inputs "test-data"))
+              ;; This one requires bowtie-build
+              (delete-file "plastid/test/functional/test_crossmap.py")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python3" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-numpy
            python-scipy
@@ -2437,8 +2451,18 @@ UCSC genome browser.")
            python-biopython
            python-twobitreader
            python-termcolor))
+    (inputs
+     (list openssl))
     (native-inputs
-     (list python-cython python-nose))
+     `(("python-cython" ,python-cython)
+       ("python-nose" ,python-nose)
+       ("test-data"
+        ,(origin
+           (method url-fetch)
+           (uri "https://www.dropbox.com/s/np3wlfvp6gx8tb8/2022-05-04.plastid-test-data.tar.bz2?dl=1")
+           (file-name "plastid-test-data-2022-05-04.tar.bz2")
+           (sha256
+            (base32 "1szsji06m2r21flnvxg84jnj5zmlk6z10c9651v9ag71nxj9rbzn"))))))
     (home-page "https://github.com/joshuagryphon/plastid")
     (synopsis "Python library for genomic analysis")
     (description
