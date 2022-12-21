@@ -3689,6 +3689,62 @@ software to answer ad hoc questions.")
 and random access tool.")
     (license license:bsd-3)))
 
+(define-public python-episcanpy
+  (package
+    (name "python-episcanpy")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "episcanpy" version))
+              (sha256
+               (base32
+                "1qqcyhyzy6idpjmidfdpzwk02hbxm25rymz42h51nlk0vd4r2wwm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The tests import episcanpy.api, but this is known to not work.
+      ;; See https://github.com/colomemaria/epiScanpy/issues/133
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-anndata
+           python-bamnostic
+           python-h5py
+           python-intervaltree
+           python-joblib
+           python-kneed
+           python-legacy-api-wrap
+           python-matplotlib
+           python-natsort
+           python-networkx
+           python-numba
+           python-numpy
+           python-packaging
+           python-pandas
+           python-scanpy
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-tqdm
+           python-pysam
+           python-tbb
+           python-umap-learn))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/colomemaria/epiScanpy")
+    (synopsis "Tool for epigenomics single cell analysis")
+    (description
+     "EpiScanpy is a toolkit to analyse single-cell open
+chromatin (scATAC-seq) and single-cell DNA methylation (for example scBS-seq)
+data.  EpiScanpy is the epigenomic extension of the very popular scRNA-seq
+analysis tool Scanpy (Genome Biology, 2018).")
+    (license license:bsd-3)))
+
 (define-public exonerate
   (package
     (name "exonerate")
