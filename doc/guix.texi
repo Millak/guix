@@ -109,6 +109,7 @@ Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
+Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -17108,6 +17109,19 @@ should consider ease of use when deciding between them.  Partitions are
 allocated at disk formatting time (logical volumes notwithstanding),
 whereas files can be allocated and deallocated at any time.
 
+@cindex hibernation
+@cindex suspend to disk
+Swap space is also required to put the system into @dfn{hibernation}
+(also called @dfn{suspend to disk}), whereby memory is dumped to swap
+before shutdown so it can be restored when the machine is eventually
+restarted.  Hibernation uses at most half the size of the RAM in the
+configured swap space.  The Linux kernel needs to know about the swap
+space to be used to resume from hibernation on boot (@i{via} a kernel
+argument).  When using a swap file, its offset in the device holding it
+also needs to be given to the kernel; that value has to be updated if
+the file is initialized again as swap---e.g., because its size was
+changed.
+
 Note that swap space is not zeroed on shutdown, so sensitive data (such
 as passwords) may linger on it if it was paged out.  As such, you should
 consider having your swap reside on an encrypted device (@pxref{Mapped
@@ -17192,6 +17206,57 @@ of an @code{operating-system} declaration.
 Use the file @file{/btrfs/swapfile} as swap space, which depends on the
 file system mounted at @file{/btrfs}.  Note how we use Guile's filter to
 select the file system in an elegant fashion!
+
+@lisp
+(swap-devices
+  (list
+    (swap-space
+      (target "/dev/mapper/my-swap")
+      (dependencies mapped-devices))))
+
+(kernel-arguments
+  (cons* "resume=/dev/mapper/my-swap"
+         %default-kernel-arguments))
+@end lisp
+
+The above snippet of an @code{operating-system} declaration enables
+the mapped device @file{/dev/mapper/my-swap} (which may be part of an
+encrypted device) as swap space, and tells the kernel to use it for
+hibernation via the @code{resume} kernel argument
+(@pxref{operating-system Reference}, @code{kernel-arguments}).
+
+@lisp
+(swap-devices
+  (list
+    (swap-space
+      (target "/swapfile")
+      (dependencies (filter (file-system-mount-point-predicate "/")
+                            file-systems)))))
+
+(kernel-arguments
+  (cons* "resume=/swapfile"
+         "resume_offset=92514304"
+         %default-kernel-arguments))
+@end lisp
+
+This other snippet of @code{operating-system} enables the swap file
+@file{/swapfile} for hibernation by telling the kernel about the file
+(@code{resume} argument) and its offset on disk (@code{resume_offset}
+argument).  The latter value can be found in the output of the command
+@command{filefrag -e} as the first number right under the
+@code{physical_offset} column header (the second command extracts its
+value directly):
+
+@smallexample
+$ sudo filefrag -e /swapfile
+Filesystem type is: ef53
+File size of /swapfile is 2463842304 (601524 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    2047:   92514304..  92516351:   2048:
+@dots{}
+$ sudo filefrag -e /swapfile | grep '^ *0:' | cut -d: -f3 | cut -d. -f1
+   92514304
+@end smallexample
 
 @node User Accounts
 @section User Accounts
