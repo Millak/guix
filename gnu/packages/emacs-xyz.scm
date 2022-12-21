@@ -5115,7 +5115,7 @@ files and directories.")
 (define-public emacs-fountain-mode
   (package
     (name "emacs-fountain-mode")
-    (version "3.6.1")
+    (version "3.6.2")
     (source
      (origin
        (method git-fetch)
@@ -5124,7 +5124,7 @@ files and directories.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1b1yjgink8psyggzkvqzwfnnimmawsv83yl34ccg9921z8bx27mb"))))
+        (base32 "0mml0in6xxhfv4mdb7rl9k8m6xwmrjl5bb301p8d56sfng982pdl"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rnkn/fountain-mode")
     (synopsis "Major mode for screenwriting in Fountain markup")
