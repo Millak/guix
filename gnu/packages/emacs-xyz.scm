@@ -23192,24 +23192,23 @@ Emacs minor mode to escape sequences in code.")
          (sha256
           (base32 "1c6snnpc9rp6zhhdz411wyh2wn56yq2cdmxxqsp1ibvac8cbb1pq"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons* "\\.txt$" "\\.png$" %default-include)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-dashboard-widgets
+              ;; This phase fixes compilation error.
+              (lambda _
+                (emacs-substitute-variables "dashboard-widgets.el"
+                  ("dashboard-init-info"
+                   '(format "Loaded in %s" (emacs-init-time)))))))))
       (propagated-inputs
        (list emacs-page-break-lines))
-      (arguments
-       '(#:include '("\\.el$" "\\.txt$" "\\.png$")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-dashboard-widgets
-             ;; This phase fixes compilation error.
-             (lambda _
-               (chmod "dashboard-widgets.el" #o666)
-               (emacs-substitute-variables "dashboard-widgets.el"
-                 ("dashboard-init-info"
-                  '(format "Loaded in %s" (emacs-init-time))))
-               #t)))))
       (home-page "https://github.com/rakanalh/emacs-dashboard")
       (synopsis "Startup screen extracted from Spacemacs")
       (description "This package provides an extensible Emacs dashboard, with
-sections for bookmarks, projectil projects, org-agenda and more.")
+sections for bookmarks, Projectile projects, Org Agenda and more.")
       (license license:gpl3+))))
 
 (define-public emacs-slime-company
