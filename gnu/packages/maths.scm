@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
+;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1852,16 +1853,16 @@ similar to MATLAB, GNU Octave or SciPy.")
 (define-public netcdf
   (package
     (name "netcdf")
-    (version "4.7.4")
+    (version "4.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://www.unidata.ucar.edu/downloads/netcdf/ftp/"
-             "netcdf-c-" version ".tar.gz"))
+             "https://downloads.unidata.ucar.edu/netcdf-c/" version
+             "/netcdf-c-" version ".tar.gz"))
        (sha256
         (base32
-         "1a2fpp15a2rl1m50gcvvzd9y6bavl6vjf9zzf63sz5gdmq06yiqf"))
+         "0j8b814mjdqvqanzmrxpq8hn33n22cdzb3gf9vhya24wnwi615ac"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure this variable is defined only once.  Failing to do so
@@ -1874,13 +1875,18 @@ similar to MATLAB, GNU Octave or SciPy.")
     (native-inputs
      (list m4 doxygen graphviz))
     (inputs
-     `(("hdf4" ,hdf4-alt)
+     `(("curl" ,curl)
+       ("hdf4" ,hdf4-alt)
        ("hdf5" ,hdf5)
-       ("curl" ,curl)
-       ("zlib" ,zlib)
-       ("libjpeg" ,libjpeg-turbo)))
+       ("libjpeg" ,libjpeg-turbo)
+       ("libxml2" ,libxml2)
+       ("unzip" ,unzip)
+       ("zlib" ,zlib)))
     (arguments
-     `(#:configure-flags '("--enable-doxygen" "--enable-dot" "--enable-hdf4")
+     `(#:configure-flags '("--enable-doxygen"
+                           "--enable-dot"
+                           "--enable-hdf4"
+                           "--disable-dap-remote-tests")
 
        #:phases (modify-phases %standard-phases
          (add-before 'configure 'fix-source-date
@@ -1891,8 +1897,7 @@ similar to MATLAB, GNU Octave or SciPy.")
              ;; package not reproducible.
              (substitute* "./configure"
                (("date -u -d \"\\$\\{SOURCE_DATE_EPOCH\\}\"")
-                "date --date='@0'"))
-             #t))
+                "date --date='@0'"))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libnetcdf.settings contains the full filename of the compilers
@@ -1901,8 +1906,11 @@ similar to MATLAB, GNU Octave or SciPy.")
              ;; store items.
              (substitute* "libnetcdf.settings"
                (("(/gnu/store/)([0-9A-Za-z]*)" all prefix hash)
-                (string-append prefix (string-take hash 10) "...")))
-             #t)))
+                (string-append prefix (string-take hash 10) "...")))))
+         (add-before 'check 'fix-test-rcmerge
+           (lambda _
+             ;; Set HOME, to fix the test-rcmerge test.
+             (setenv "HOME" "/tmp"))))
 
        #:parallel-tests? #f))           ;various race conditions
     (home-page "https://www.unidata.ucar.edu/software/netcdf/")
