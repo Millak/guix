@@ -1419,7 +1419,7 @@ order to add a suitable bootloader menu entry.")
   ;;
   ;; TODO: Bump this timestamp at each modifications of the package (not only
   ;; for updates) by running: date +%s.
-  (let ((timestamp "1591706427"))
+  (let ((timestamp "1671715380"))
     (package
       (name "ipxe")
       (version "1.21.1")
@@ -1481,6 +1481,14 @@ order to add a suitable bootloader menu entry.")
          (modify-phases %standard-phases
            (add-after 'unpack 'enter-source-directory
              (lambda _ (chdir "src") #t))
+           (add-after 'enter-source-directory 'set-version
+             (lambda _
+               ;; When not building from a git checkout, iPXE encodes the
+               ;; version as "1.0.0+".  Use the package version instead.
+               (substitute* "Makefile"
+                 (("^VERSION[[:blank:]]+=.*")
+                  (string-append "VERSION = " ,(package-version this-package)
+                                 "-guix\n")))))
            (add-after 'enter-source-directory 'set-options
              (lambda _
                (substitute* "config/general.h"
