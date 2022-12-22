@@ -2202,6 +2202,41 @@ Codec.")
 Audio Broadcasting}.")
       (license license:gpl2+))))
 
+(define-public dsd
+  (let ((commit "59423fa46be8b41ef0bd2f3d2b45590600be29f0")
+        (revision "1"))
+    (package
+      (name "dsd")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szechyjs/dsd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "128gvgkanvh4n5bjnzkfk419hf5fdbad94fb8d8lv67h94vfchyd"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list itpp libsndfile mbelib portaudio))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-itpp-detection
+                   (lambda _
+                     (substitute* "cmake/FindITPP.cmake"
+                       (("libitpp\\.dll")
+                        "itpp_debug")))))))
+      (synopsis "Digital speech decoder")
+      (description
+       "DSD is able to decode several digital voice formats used in radio
+transmissions.")
+      (home-page "https://github.com/szechyjs/dsd")
+      (license (list license:expat license:gpl2)))))
+
 (define-public dsdcc
   (package
     (name "dsdcc")
