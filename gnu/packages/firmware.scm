@@ -569,6 +569,59 @@ coreboot.")
                     (symlink "bios-128k.bin" "bios.bin")
                     (symlink "vgabios-isavga.bin" "vgabios.bin")))))))))))
 
+(define-public sgabios
+  ;; There are no tags in the repository.
+  (let ((commit "72f39d48bedf044e202fd51fecf3e2218fc2ae66")
+        (revision "0"))
+    (package
+      (name "sgabios")
+      (version (git-version "0.0" revision commit))
+      (home-page "https://gitlab.com/qemu-project/sgabios")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ybl021i0xaz18wzq4q13ifypy5b3dj8m11c8m0qdiq00g06vm0i"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~'(#$@(if (member (%current-system) '("i686-linux" "x86_64-linux"))
+                        #~("CC=gcc")
+                        #~("CC=i686-linux-gnu-gcc" "LD=i686-linux-gnu-ld"))
+                     "HOSTCC=gcc")
+             #:parallel-build? #f
+             #:tests? #f   ;no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'build-reproducibly
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("BUILD_DATE = .*")
+                        "BUILD_DATE = \\\"Jan 1 1970\\\"\n")
+                       (("BUILD_SHORT_DATE = .*")
+                        "BUILD_SHORT_DATE = \\\"1/1/70\\\"\n"))))
+                 (delete 'configure)
+                 (replace 'install
+                   (lambda _
+                     (install-file "sgabios.bin"
+                                   (string-append #$output "/share/qemu")))))))
+      (native-inputs
+       (if (member (%current-system) '("i686-linux" "x86_64-linux"))
+           '()
+           (list (cross-gcc "i686-linux-gnu")
+                 (cross-binutils "i686-linux-gnu"))))
+      (synopsis "Serial graphics adapter BIOS")
+      (description
+       "SGABIOS provides a means for legacy PC software to communicate with an
+attached serial console as if a VGA card is attached.  It is designed to be
+inserted into a BIOS as an option ROM to provide over a serial port the display
+and input capabilites normally handled by a VGA adapter and a keyboard, and
+additionally provide hooks for logging displayed characters for later collection
+after an operating system boots.")
+      (license license:asl2.0))))
+
 (define-public edk2-tools
   (package
     (name "edk2-tools")
