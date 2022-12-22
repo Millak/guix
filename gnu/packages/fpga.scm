@@ -65,27 +65,26 @@
   #:use-module (gnu packages libusb))
 
 (define-public abc
- (let ((commit "5ae4b975c49c")
-       (revision "1"))
+ (let ((commit "70cb339f869e")
+       (revision "2"))
   (package
     (name "abc")
     (version (git-version "0.0" revision commit))
     (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://bitbucket.org/alanmi/abc/get/" commit ".zip"))
-              (file-name (string-append name "-" version "-checkout.zip"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/berkeley-abc/abc")
+                    (commit commit)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1syygi1x40rdryih3galr4q8yg1w5bvdzl75hd27v1xq0l5bz3d0"))))
+                "1ngxg4jvz8vwm74sbidysgz3v5lrzjcabkqj4nhcksi6hnhyc9m8"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list unzip))
     (inputs
      (list readline))
     (arguments
      (list #:license-file-regexp "copyright.txt"
-           #:tests? #f ; no check target
+           #:tests? #f ; no tests
            #:phases
            #~(modify-phases %standard-phases
                (delete 'configure)
