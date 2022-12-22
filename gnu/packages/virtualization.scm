@@ -198,9 +198,9 @@
       #~(let ((gcc (search-input-file %build-inputs "/bin/gcc"))
               (meson (search-input-file %build-inputs "bin/meson"))
               (seabios (search-input-file %build-inputs
-                                          "share/firmware/bios.bin"))
+                                          "share/qemu/bios.bin"))
               (ipxe (search-input-file %build-inputs
-                                       "share/firmware/pxe-virtio.rom"))
+                                       "share/qemu/pxe-virtio.rom"))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
@@ -231,10 +231,10 @@
           (add-after 'unpack 'replace-firmwares
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((seabios (dirname (search-input-file
-                                        inputs "share/firmware/bios.bin")))
+                                        inputs "share/qemu/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
                      (ipxe (dirname (search-input-file
-                                     inputs "share/firmware/pxe-virtio.rom")))
+                                     inputs "share/qemu/pxe-virtio.rom")))
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (allowed-differences
                       ;; Ignore minor differences (addresses etc) in the firmware

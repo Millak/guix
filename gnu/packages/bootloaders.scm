@@ -1577,7 +1577,7 @@ the features of iPXE without the hassle of reflashing.")
           #~(modify-phases #$phases
               (replace 'install
                 (lambda _
-                  (let ((firmware (string-append #$output "/share/firmware")))
+                  (let ((firmware (string-append #$output "/share/qemu")))
                     (mkdir-p firmware)
                     (for-each
                      (match-lambda

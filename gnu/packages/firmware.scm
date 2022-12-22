@@ -560,7 +560,7 @@ coreboot.")
                                 vgabiosen))))))
             (replace 'install
               (lambda _
-                (let ((firmware (string-append #$output "/share/firmware")))
+                (let ((firmware (string-append #$output "/share/qemu")))
                   (for-each (lambda (bios)
                               (install-file bios firmware))
                             (find-files "out" "\\.bin$"))
