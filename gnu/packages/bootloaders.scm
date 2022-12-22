@@ -1547,10 +1547,27 @@ the features of iPXE without the hassle of reflashing.")
      (if (target-x86-64?)
          (modify-inputs (package-native-inputs ipxe)
            (prepend edk2-tools))
-         (modify-inputs (package-native-inputs ipxe)
-           (prepend edk2-tools
-                    (cross-gcc "x86_64-linux-gnu")
-                    (cross-binutils "x86_64-linux-gnu")))))
+         (if (target-64bit?)
+           (modify-inputs (package-native-inputs ipxe)
+             (prepend edk2-tools
+                      (cross-gcc "x86_64-linux-gnu")
+                      (cross-binutils "x86_64-linux-gnu")))
+           ;; Our default 32-bit binutils is not 64-bit capable.
+           (let ((binutils-64-bit-bfd
+                   (package/inherit
+                     binutils
+                     (name "binutils-64-bit-bfd")
+                     (arguments
+                       (substitute-keyword-arguments (package-arguments binutils)
+                        ((#:configure-flags flags ''())
+                         `(cons "--enable-64-bit-bfd" ,flags)))))))
+             (modify-inputs (package-native-inputs ipxe)
+               (prepend edk2-tools
+                        (make-ld-wrapper "ld-wrapper-64-bit-bfd"
+                                         #:binutils binutils)
+                        binutils-64-bit-bfd
+                        (cross-gcc "x86_64-linux-gnu")
+                        (cross-binutils "x86_64-linux-gnu")))))))
     (arguments
      (let ((roms
             ;; Alist of ROM -> (VID . DID) entries.  This list and below
