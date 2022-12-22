@@ -9070,19 +9070,19 @@ just provides syntax highlighting.")
 (define-public emacs-god-mode
   (package
     (name "emacs-god-mode")
-    (version "2.17.3")
+    (version "2.18.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/chrisdone/god-mode")
+             (url "https://github.com/emacsorphanage/god-mode")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wsc04l5j5a9y5439qx85pcchxjnjgcgwbffw3l30q9zlblvc58b"))))
+         "1njln47w25ix9w0xjv02110ngr8d8ma3w7db0x4xcxhihbl65zly"))))
     (build-system emacs-build-system)
-    (home-page "https://github.com/chrisdone/god-mode")
+    (home-page "https://github.com/emacsorphanage/god-mode")
     (synopsis "Minor mode for entering commands without modifier keys")
     (description
      "This package provides a global minor mode for entering Emacs commands
