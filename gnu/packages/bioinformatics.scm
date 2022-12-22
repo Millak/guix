@@ -538,6 +538,46 @@ BED, GFF/GTF, VCF.")
 and utilities for PacBio C++ applications.")
     (license license:bsd-3)))
 
+(define-public r-bedtorch
+  (let ((commit "f5ff4f83b94f59eac660333c64e4b2f296b35cea")
+        (revision "1"))
+    (package
+      (name "r-bedtorch")
+      (version (git-version "0.1.12.12" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/haizi-zh/bedtorch/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08l04iqf54b5995gc7rvqqd7w327fwqs7qjyhc9y5cqfj8yv4c48"))))
+      (properties `((upstream-name . "bedtorch")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-assertthat
+             r-curl
+             r-data-table
+             r-dplyr
+             r-genomeinfodb
+             r-genomicranges
+             r-purrr
+             r-r-utils
+             r-rcpp
+             r-rcurl
+             r-readr
+             r-rhtslib12
+             r-s4vectors
+             r-stringr
+             r-tidyr))
+      (home-page "https://github.com/haizi-zh/bedtorch/")
+      (synopsis "R package for fast BED-file manipulation")
+      (description
+       "The goal of bedtorch is to provide a fast BED file manipulation tool
+suite native in R.")
+      (license license:expat))))
+
 (define-public r-btools
   (let ((commit "fa21d4ca01d37ea4d98b45582453f3bf95cbc2b5")
         (revision "1"))
