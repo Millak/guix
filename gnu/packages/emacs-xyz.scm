@@ -30782,7 +30782,7 @@ icon support, git integration, and several other utilities.")
 (define-public emacs-mood-line
   (package
     (name "emacs-mood-line")
-    (version "1.2.5")
+    (version "2.0.0")
     (source
      (origin
        (method git-fetch)
@@ -30791,7 +30791,7 @@ icon support, git integration, and several other utilities.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6s80j259xf8nxjxcsmp7wyvpcg5wyx58brlrbwg1aa9hl3fxga"))))
+        (base32 "0g29di2g8w8639z8d73kq9x2p8krzmjfn1bqd5jsv28v77j80k8h"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/jessieh/mood-line")
     (synopsis "Minimal mode-line for Emacs")
