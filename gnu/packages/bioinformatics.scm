@@ -17637,6 +17637,47 @@ module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
 
+(define-public wiggletools
+  (package
+    (name "wiggletools")
+    (version "1.2.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ensembl/WiggleTools/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1g3qla4l1g583nzlgyww5jqxpq87ndpn9cmjls098bgqjyn5292q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Tests require internet access
+      #:tests? #false
+      #:make-flags
+      #~(list "Wiggletools"
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "bin/wiggletools"
+                            (string-append #$output "/bin")))))))
+    (inputs
+     (list curl ; XXX: needed by libbigwig
+           htslib libbigwig gsl xz zlib))
+    (home-page "https://github.com/Ensembl/WiggleTools/")
+    (synopsis "Operations on the space of numerical functions defined on the genome")
+    (description "The WiggleTools package allows genomewide data files to be
+manipulated as numerical functions, equipped with all the standard functional
+analysis operators (sum, product, product by a scalar, comparators), and
+derived statistics (mean, median, variance, stddev, t-test, Wilcoxon's rank
+sum test, etc).")
+    (license license:asl2.0)))
+
 (define-public flair
   (package
     (name "flair")
