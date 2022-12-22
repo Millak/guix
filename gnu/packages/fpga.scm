@@ -84,16 +84,14 @@
     (inputs
      (list readline))
     (arguments
-     `(#:license-file-regexp "copyright.txt"
-       #:tests? #f ; no check target
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-bin (string-append out "/bin")))
-               (install-file "abc" out-bin)))))))
+     (list #:license-file-regexp "copyright.txt"
+           #:tests? #f ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (install-file "abc" (string-append #$output "/bin")))))))
     (home-page "https://people.eecs.berkeley.edu/~alanmi/abc/")
     (synopsis "Sequential logic synthesis and formal verification")
     (description "ABC is a program for sequential logic synthesis and
