@@ -9082,6 +9082,12 @@ just provides syntax highlighting.")
         (base32
          "1njln47w25ix9w0xjv02110ngr8d8ma3w7db0x4xcxhihbl65zly"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #true
+           #:test-command
+           #~(list "emacs" "--no-init-file" "--batch"
+                   "--eval=(require 'ecukes)" "--eval=(ecukes)")))
+    (native-inputs (list emacs-ecukes))
     (home-page "https://github.com/emacsorphanage/god-mode")
     (synopsis "Minor mode for entering commands without modifier keys")
     (description
