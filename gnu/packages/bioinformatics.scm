@@ -574,6 +574,33 @@ and utilities for PacBio C++ applications.")
 for all types of microbial diversity analyses.")
       (license license:expat))))
 
+(define-public r-rhtslib12
+  (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
+        (revision "1"))
+    (package
+      (name "r-rhtslib12")
+      (version (git-version "1.23.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/haizi-zh/Rhtslib12")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0a3kkp0phi2fq6ip8p9vfj3axn7l15f2mb51a6v3ai4nlkhqqawj"))))
+      (properties `((upstream-name . "Rhtslib12")))
+      (build-system r-build-system)
+      (propagated-inputs (list curl zlib r-zlibbioc))
+      (native-inputs (list pkg-config r-knitr))
+      (home-page "https://github.com/haizi-zh/Rhtslib12")
+      (synopsis "HTSlib high-throughput sequencing library as an R package")
+      (description
+       "This package provides version 1.12 of the HTSlib C library for
+high-throughput sequence analysis.  The package is primarily useful to
+developers of other R packages who wish to make use of HTSlib.")
+      (license license:lgpl2.0+))))
+
 (define-public pbbam
   (package
     (name "pbbam")
