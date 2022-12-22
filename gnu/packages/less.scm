@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,7 +37,7 @@
 (define-public less
   (package
     (name "less")
-    (version "590")
+    (version "608")
     (source
      (origin
        (method url-fetch)
@@ -46,7 +47,7 @@
                                  version ".tar.gz")))
        (patches (search-patches "less-hurd-path-max.patch"))
        (sha256
-        (base32 "044fl3izmsi8n1vqzsqdp65q0qyyn5kmsg4sk7id0mxzx15zbbba"))))
+        (base32 "02f2d9d6hyf03va28ip620gjc6rf4aikmdyk47h7frqj18pbx6m6"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (home-page "https://www.gnu.org/software/less/")
