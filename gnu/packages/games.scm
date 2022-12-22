@@ -11020,7 +11020,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "0.9.11")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -11029,7 +11029,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m8649srzg3j2b1hs4x2y8fib6hn7v0afv4c7bjnfk4bhpi4cqd7"))))
+        (base32 "0bvp9xhzlh4d6q5jlvz4nciald75g9v0vahzax47q9xgajnbibzk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
