@@ -178,10 +178,14 @@
            ;; TODO: Scrub all firmwares from this directory!
            (with-directory-excursion "pc-bios"
              ;; Delete firmwares provided by SeaBIOS.
-             (for-each delete-file (find-files "." "^(bios|vgabios).*\\.bin$")))
+             (for-each delete-file (find-files "." "^(bios|vgabios).*\\.bin$"))
+             ;; Delete iPXE firmwares.
+             (for-each delete-file (find-files "." "^(efi|pxe)-.*\\.rom$")))
            ;; Delete bundled code that we provide externally.
            (for-each delete-file-recursively
-                     '("dtc" "meson" "roms/seabios"))))))
+                     '("dtc" "meson"
+                       "roms/ipxe"
+                       "roms/seabios"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -195,6 +199,8 @@
               (meson (search-input-file %build-inputs "bin/meson"))
               (seabios (search-input-file %build-inputs
                                           "share/firmware/bios.bin"))
+              (ipxe (search-input-file %build-inputs
+                                       "share/firmware/pxe-virtio.rom"))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
@@ -205,7 +211,8 @@
                 "--sysconfdir=/etc"
                 "--enable-fdt=system"
                 (string-append "--firmwarepath=" out "/share/qemu:"
-                               (dirname seabios))
+                               (dirname seabios) ":"
+                               (dirname ipxe))
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
                 ;; The binaries need to be linked against -lrt.
@@ -226,6 +233,9 @@
               (let* ((seabios (dirname (search-input-file
                                         inputs "share/firmware/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
+                     (ipxe (dirname (search-input-file
+                                     inputs "share/firmware/pxe-virtio.rom")))
+                     (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (allowed-differences
                       ;; Ignore minor differences (addresses etc) in the firmware
                       ;; data tables compared to what the test suite expects.
@@ -240,7 +250,7 @@
                 (with-directory-excursion "pc-bios"
                   (for-each (lambda (file)
                               (symlink file (basename file)))
-                            seabios-firmwares))
+                            (append seabios-firmwares ipxe-firmwares)))
                 (for-each (lambda (file)
                             (format allowed-differences-whitelist
                                     "\"~a\",~%" file))
@@ -357,7 +367,9 @@
               ;; pc-bios/meson.build, hence this roundabout way.
               (with-directory-excursion (string-append #$output "/share/qemu")
                 (for-each delete-file
-                          (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")))))
+                          (append
+                           (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")
+                           (find-files "." "^(efi|pxe)-.*\\.rom$"))))))
           ;; Create a wrapper for Samba. This allows QEMU to use Samba without
           ;; pulling it in as an input. Note that you need to explicitly install
           ;; Samba in your Guix profile for Samba support.
@@ -385,6 +397,7 @@ exec smbd $@")))
            dtc
            glib
            gtk+
+           ipxe-qemu
            libaio
            libcacard                    ;smartcard support
            attr libcap-ng               ;VirtFS support
