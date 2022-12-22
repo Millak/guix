@@ -179,13 +179,16 @@
            (with-directory-excursion "pc-bios"
              ;; Delete firmwares provided by SeaBIOS.
              (for-each delete-file (find-files "." "^(bios|vgabios).*\\.bin$"))
+             ;; Delete SGABIOS.
+             (delete-file "sgabios.bin")
              ;; Delete iPXE firmwares.
              (for-each delete-file (find-files "." "^(efi|pxe)-.*\\.rom$")))
            ;; Delete bundled code that we provide externally.
            (for-each delete-file-recursively
                      '("dtc" "meson"
                        "roms/ipxe"
-                       "roms/seabios"))))))
+                       "roms/seabios"
+                       "roms/sgabios"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -199,6 +202,8 @@
               (meson (search-input-file %build-inputs "bin/meson"))
               (seabios (search-input-file %build-inputs
                                           "share/qemu/bios.bin"))
+              (sgabios (search-input-file %build-inputs
+                                          "/share/qemu/sgabios.bin"))
               (ipxe (search-input-file %build-inputs
                                        "share/qemu/pxe-virtio.rom"))
               (out #$output))
@@ -212,7 +217,8 @@
                 "--enable-fdt=system"
                 (string-append "--firmwarepath=" out "/share/qemu:"
                                (dirname seabios) ":"
-                               (dirname ipxe))
+                               (dirname ipxe) ":"
+                               (dirname sgabios))
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
                 ;; The binaries need to be linked against -lrt.
@@ -233,6 +239,7 @@
               (let* ((seabios (dirname (search-input-file
                                         inputs "share/qemu/bios.bin")))
                      (seabios-firmwares (find-files seabios "\\.bin$"))
+                     (sgabios (search-input-file inputs "share/qemu/sgabios.bin"))
                      (ipxe (dirname (search-input-file
                                      inputs "share/qemu/pxe-virtio.rom")))
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
@@ -250,7 +257,8 @@
                 (with-directory-excursion "pc-bios"
                   (for-each (lambda (file)
                               (symlink file (basename file)))
-                            (append seabios-firmwares ipxe-firmwares)))
+                            (append seabios-firmwares ipxe-firmwares
+                                    (list sgabios))))
                 (for-each (lambda (file)
                             (format allowed-differences-whitelist
                                     "\"~a\",~%" file))
@@ -368,6 +376,7 @@
               (with-directory-excursion (string-append #$output "/share/qemu")
                 (for-each delete-file
                           (append
+                           '("sgabios.bin")
                            (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")
                            (find-files "." "^(efi|pxe)-.*\\.rom$"))))))
           ;; Create a wrapper for Samba. This allows QEMU to use Samba without
@@ -416,6 +425,7 @@ exec smbd $@")))
            pulseaudio
            sdl2
            seabios-qemu
+           sgabios
            spice
            usbredir
            util-linux
