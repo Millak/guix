@@ -84,7 +84,8 @@
     (inputs
      (list readline))
     (arguments
-     `(#:tests? #f ; no check target
+     `(#:license-file-regexp "copyright.txt"
+       #:tests? #f ; no check target
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
@@ -98,7 +99,8 @@
     (description "ABC is a program for sequential logic synthesis and
 formal verification.")
     (license
-      (license:non-copyleft "https://fedoraproject.org/wiki/Licensing:MIT#Modern_Variants")))))
+     (license:non-copyleft
+      "https://people.eecs.berkeley.edu/~alanmi/abc/copyright.htm")))))
 
 (define-public iverilog
   (package
