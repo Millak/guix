@@ -796,7 +796,7 @@ this process.  It is compatible with Fortinet VPNs.")
 (define-public openvpn
   (package
     (name "openvpn")
-    (version "2.5.7")
+    (version "2.5.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -804,7 +804,7 @@ this process.  It is compatible with Fortinet VPNs.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0s1yq530j4i4kicgvsxgl532vyn03gfhlxfdnsb43j05k4w0ld08"))))
+                "1cixqm4gn2d1v8qkbww75j30fzvxz13gc7whcmz54i0x4fvibwx6"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-iproute2=yes")))
