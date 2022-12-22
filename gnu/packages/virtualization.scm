@@ -318,16 +318,12 @@
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let* ((static (assoc-ref outputs "static"))
                      (gcc (search-input-file inputs "/bin/gcc"))
-                     (seabios (search-input-file inputs "/share/firmware/bios.bin"))
                      ;; This is the common set of configure flags; it is
                      ;; duplicated here to isolate this phase from manipulations
                      ;; to the #:configure-flags build argument, as done in
                      ;; derived packages such as qemu-minimal.
                      (configure-flags (list (string-append "--cc=" gcc)
                                             (string-append "--host-cc=" gcc)
-                                            (string-append "--firmwarepath="
-                                                           #$output "/share/qemu:"
-                                                           (dirname seabios))
                                             "--sysconfdir=/etc"
                                             "--disable-debug-info")))
               (mkdir-p "../user-static")
