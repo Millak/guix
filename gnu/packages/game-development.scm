@@ -1247,8 +1247,8 @@ interface (API).")
     (home-page "https://www.pygame.org")
     (synopsis "SDL wrapper for Python")
     (description "Pygame is a set of Python modules designed for writing games.
-Pygame adds functionality on top of the excellent SDL library. This allows you
-to create fully featured games and multimedia programs in the python language.")
+It adds functionality on top of the SDL library, allowing you to create games
+and multimedia programs in the Python language.")
     (license (list license:bsd-2
                    ;; python numeric license as listed by Debian looks like
                    ;; an Expat-style license with a warranty disclaimer for
