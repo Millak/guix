@@ -1614,7 +1614,7 @@ valuable enough at this time.")
     (inputs
      (list python-wrapper))
     (native-inputs
-     (list git-minimal
+     (list git-minimal/fixed                  ;needed for the "Utilities" test
            julia-documentermarkdown
            julia-documentertools))
     (home-page "https://juliadocs.github.io/Documenter.jl")
