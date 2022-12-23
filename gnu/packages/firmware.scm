@@ -589,7 +589,9 @@ coreboot.")
        (list #:make-flags
              #~'(#$@(if (member (%current-system) '("i686-linux" "x86_64-linux"))
                         #~("CC=gcc")
-                        #~("CC=i686-linux-gnu-gcc" "LD=i686-linux-gnu-ld"))
+                        #~("CC=i686-linux-gnu-gcc"
+                           "LD=i686-linux-gnu-ld"
+                           "OBJCOPY=i686-linux-gnu-objcopy"))
                      "HOSTCC=gcc")
              #:parallel-build? #f
              #:tests? #f   ;no tests
