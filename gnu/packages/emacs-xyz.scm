@@ -13388,7 +13388,7 @@ implementation.")
 (define-public emacs-cider
   (package
     (name "emacs-cider")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method git-fetch)
@@ -13397,7 +13397,7 @@ implementation.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ih902n8p3pl1apprprkyrlnrp2dxli86y5k09zahy9mglfz2z5n"))))
+        (base32 "1a3xbfn1id8dcy3178kmdnzcvh7lq2pdwwg4axhncw6jq9hqiqja"))))
     (build-system emacs-build-system)
     (arguments
      '(#:exclude                        ;don't exclude 'cider-test.el'
