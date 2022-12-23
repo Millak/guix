@@ -28550,7 +28550,7 @@ and frame grabber interface.")
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal
+           git-minimal/fixed                      ;for tests
            ninja
            python-coverage
            python-cython
