@@ -1522,8 +1522,10 @@ To install the policy run this command as root:
 semodule -i etc/guix-daemon.cil
 @end example
 
-Then relabel the file system with @code{restorecon} or by a different
-mechanism provided by your system.
+Then relabel the file system with @code{restorecon -vR /} or by a
+different mechanism provided by your system.  You may need to remount
+@file{/gnu/store} to make it writable first, e.g. with @code{mount -o
+remount,rw /gnu/store}.
 
 Once the policy is installed, the file system has been relabeled, and
 the daemon has been restarted, it should be running in the
