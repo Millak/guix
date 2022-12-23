@@ -2280,7 +2280,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.6.2")
+    (version "7.8.5")
     (source
      (origin
        (method git-fetch)
@@ -2289,7 +2289,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "193iwwb4mbr29mlgaqb67j8214k10k2q0ky9fcl1ja52vmdzz71b"))))
+        (base32 "0kfzmxbhfpvs8csfbhnl5nij6nlbr00s43392wfq35vnnkbgk5lv"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2357,14 +2357,7 @@ voice formats.")
                  ;; …but force extensions that are guaranteed to be available.
                  (substitute* file
                    ((".*cmake_pop_check_state" eof)
-                    (string-append "force_ext_available(SSE2)\n" eof)))))))
-         (add-after 'unpack 'fix-boost-compatibility
-           (lambda _
-             (substitute*
-                 '("plugins/channelrx/noisefigure/noisefigure.cpp"
-                   "plugins/channelrx/noisefigure/noisefigureenrdialog.cpp")
-               (("boost::math::barycentric_rational<double>")
-                "boost::math::interpolators::barycentric_rational<double>")))))))
+                    (string-append "force_ext_available(SSE2)\n" eof))))))))))
     (home-page "https://github.com/f4exb/sdrangel/wiki")
     (synopsis "Software defined radio")
     (description
