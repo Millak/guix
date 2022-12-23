@@ -30758,6 +30758,27 @@ provide the ability to selectively apply arguments to callable objects
 and to reference instance methods using weak-references.")
     (license license:bsd-3)))
 
+(define-public python-pyee
+  (package
+    (name "python-pyee")
+    (version "9.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pyee" version))
+       (sha256
+        (base32 "0cjbxbqr9f8bn2h3ra69d550qj2r1hmsgrh5nx31ywmwia9c8w17"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-typing-extensions))
+    (native-inputs (list python-twisted python-trio))
+    (home-page "https://github.com/jfhbrook/pyee")
+    (synopsis "Emit events with Python")
+    (description
+     "This package provides a port of node.js's EventEmitter to python.
+Additionally, it includes a number of subclasses useful for implementing async
+and threaded programming in python, such as async/await.")
+    (license license:expat)))
+
 (define-public python-queuelib
   (package
     (name "python-queuelib")
