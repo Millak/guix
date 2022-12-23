@@ -559,8 +559,8 @@ It is a GUI for @code{soapy_power}, @code{hackrf_sweep}, @code{rtl_power},
 
 (define-public aptdec
   ;; No release since 2013, use commit directly.
-  (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
-        (revision "2"))
+  (let ((commit "4d4a0c9787a27d1eba26b9299c23ae9c66e56716")
+        (revision "3"))
     (package
       (name "aptdec")
       (version (git-version "1.7" revision commit))
@@ -569,10 +569,11 @@ It is a GUI for @code{soapy_power}, @code{hackrf_sweep}, @code{rtl_power},
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Xerbo/aptdec")
-               (commit commit)))
+               (commit commit)
+               (recursive? #t)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fzkhqnbkc2dd39jzb5m5mwcl31b0x3w0yykpx4s195llq4bdvis"))))
+          (base32 "09dvvwk4bs9d4bf9z74ixvhzghwzmlbqbx1dn20hbhpm0bgxwk8m"))))
       (build-system cmake-build-system)
       (inputs
        (list libpng libsndfile))
