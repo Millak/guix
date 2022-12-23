@@ -598,7 +598,7 @@ per window.")
 (define-public xfce4-appfinder
   (package
     (name "xfce4-appfinder")
-    (version "4.16.1")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -607,7 +607,7 @@ per window.")
                                   "/" name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1v77h5634n49idci2jiw0k7jjk0vzpsvgyx2fkp18l39jayykqxz"))))
+                "136137w2xc78jq0xcbymjwdxapllwyy7h3ydshz0gli7ngbrhaln"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool))
