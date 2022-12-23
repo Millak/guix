@@ -180,7 +180,7 @@ storage system.")
 (define-public libxfce4ui
   (package
     (name "libxfce4ui")
-    (version "4.16.1")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -188,7 +188,7 @@ storage system.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xl52pjh7xi67qpv8800xrizf28r0bh1jm21va6hggznbap4csfr"))))
+                "0bp5wl9r6wbl7a18wikldb6kvyqzaz16sk2bh9swwyqv08q7pgvf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -200,7 +200,7 @@ storage system.")
            ;; libxfce4kbd-private-3.pc refers to all these.
            libxfce4util
            xfconf))
-    (inputs (list libsm libice startup-notification))
+    (inputs (list libgtop libice libsm startup-notification))
     (home-page "https://www.xfce.org/")
     (synopsis "Widgets library for Xfce")
     (description
