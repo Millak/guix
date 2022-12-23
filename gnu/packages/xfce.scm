@@ -352,7 +352,7 @@ merging features essential for loading menus modified with menu editors.")
 (define-public tumbler
   (package
     (name "tumbler")
-    (version "4.16.1")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -360,7 +360,7 @@ merging features essential for loading menus modified with menu editors.")
                                   "tumbler-" version ".tar.bz2"))
               (sha256
                (base32
-                "0gi77675gi1bbhrrg0p60dy06clf24xa0hz2jb74hnzk2gxbyaw5"))))
+                "006gvwa7jqkky2qvl2yngbd4yzp63wpilhhmyg9p24pk9spz71s0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config intltool
@@ -375,6 +375,7 @@ merging features essential for loading menus modified with menu editors.")
            freetype
            libjpeg-turbo
            libgsf
+           libxfce4util
            poppler
            ;; FIXME Provide gstreamer and gstreamer-tag to get video thumbnails
            ;; ("gstreamer" ,gstreamer)
