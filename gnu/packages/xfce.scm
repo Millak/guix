@@ -807,7 +807,7 @@ on the screen.")
 (define-public xfdesktop
   (package
     (name "xfdesktop")
-    (version "4.16.1")
+    (version "4.18.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -815,7 +815,7 @@ on the screen.")
                                   "xfdesktop-" version ".tar.bz2"))
               (sha256
                (base32
-                "04dxljc74zlkz7h8wjj3hx9300r202a4d2hj8agfjmdf100cn7g3"))
+                "0mpp9znpwkhp1h4cmpxhkhij1qgdr0fa6npzm4i7x1r51hcni4pg"))
               (modules '((guix build utils)))
               (snippet
                #~(begin
