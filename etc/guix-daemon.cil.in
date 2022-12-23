@@ -447,6 +447,8 @@
            any (unconfined_u object_r guix_store_content_t (low low)))
   (filecon "@prefix@/bin/guix-daemon"
            file (system_u object_r guix_daemon_exec_t (low low)))
+  (filecon "@guix_localstatedir@/guix/profiles/per-user/[^/]+/current-guix/bin/guix-daemon"
+           file (system_u object_r guix_daemon_exec_t (low low)))
   (filecon "@storedir@/.+-(guix-.+|profile)/bin/guix-daemon"
            file (system_u object_r guix_daemon_exec_t (low low)))
   (filecon "@storedir@/[a-z0-9]+-guix-daemon"
