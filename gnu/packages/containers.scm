@@ -281,6 +281,10 @@ configure network interfaces in Linux containers.")
        (uri (git-reference
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
+       (modules '((guix build utils)))
+       ;; FIXME: Btrfs libraries not detected by these scripts.
+       (snippet '(substitute* "Makefile"
+                   ((".*hack/btrfs.*") "")))
        (sha256
         (base32 "05hv4xdf06n728lmsx793zygypc9i404bgcgpy0fyrg8c2s11q2h"))
        (file-name (git-file-name name version))))
