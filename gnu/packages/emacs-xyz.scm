@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Adriano Peluso <catonano@gmail.com>
@@ -10680,6 +10680,30 @@ another (presumably currently running) Emacs Lisp file.")
      "This Emacs package provides a mean to track important buffer positions
 after buffer changes.")
     (license license:gpl3+)))
+
+(define-public emacs-loccur
+  (let ((commit "01b7afa62589432a98171074abb8c5a1e089034a")
+        (revision "1"))
+    (package
+      (name "emacs-loccur")
+      (version (git-version "1.2.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/fourier/loccur/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1b1x1xsiwqzsiss1jc6w990v1vfvbn5d5w67yzmx59s9ldjmdqq2"))))
+    (build-system emacs-build-system)
+      (home-page "https://github.com/fourier/loccur")
+      (synopsis "Perform an occur-like folding in current buffer")
+      (description
+       "Loccur is a tool to quickly navigate a file.  It is a minor mode for
+Emacs acting like occur but w/o creating a new window.  It just hides all the
+text excepting lines containing matches.")
+      (license license:gpl3+))))
 
 (define-public emacs-realgud
   (package
