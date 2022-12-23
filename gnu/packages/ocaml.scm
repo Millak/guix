@@ -8703,7 +8703,8 @@ defined in OCaml 4.12.0.")
             ocaml-uuseg
             ocaml-uutf))
     (native-inputs
-      (list git-minimal ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
+      (list git-minimal/fixed                     ;for tests
+            ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
     (home-page "https://github.com/ocaml-ppx/ocamlformat")
     (synopsis "Auto-formatter for OCaml code")
     (description "OCamlFormat is a tool to automatically format OCaml code in
