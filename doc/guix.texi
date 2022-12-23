@@ -1558,7 +1558,7 @@ but it would be preferable to define socket rules for only this label.
 @code{guix gc} cannot access arbitrary links to profiles.  By design,
 the file label of the destination of a symlink is independent of the
 file label of the link itself.  Although all profiles under
-$localstatedir are labelled, the links to these profiles inherit the
+@file{$localstatedir} are labelled, the links to these profiles inherit the
 label of the directory they are in.  For links in the user’s home
 directory this will be @code{user_home_t}.  But for links from the root
 user’s home directory, or @file{/tmp}, or the HTTP server’s working
