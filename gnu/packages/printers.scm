@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2024 Herman Rimm <herman@rimm.ee>
 ;;; Copyright © 2025 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
@@ -20,21 +21,29 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages printers)
-  #:use-module (guix gexp)
-  #:use-module (guix packages)
-  #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
-  #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix gexp)
+  #:use-module (guix git-download)
+  #:use-module (guix packages)
   #:use-module (gnu packages avahi)
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages golang-xyz)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-graphics)
+  #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages version-control)
-  #:use-module (gnu packages qt))
+  #:use-module (gnu packages wxwidgets)
+  #:use-module (gnu packages xorg)
+  #:use-module (gnu packages xml))
 
 ;; This is a module for packages related to printer-like devices, but not
 ;; related to CUPS.
@@ -172,4 +181,67 @@ to work as the printer is accessed directly via libusb.")
      "Robocut is a simple graphical program that allows you to cut graphics
 with Graphtec and Sihouette plotting cutters using an SVG file as its input.")
     (home-page "http://robocut.org")
+    (license license:gpl3+)))
+
+(define-public printrun
+  (package
+    (name "printrun")
+    (version "2.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/kliment/Printrun")
+              (commit (string-append "printrun-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0imnpyc4w3xzm353fjmwig4a2yfm2nhagl1bib4871m014c4vli0"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-backend #~'unittest
+      #:test-flags #~(list "discover" "tests")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-files
+            (lambda _
+              (delete-file "printrun/power/osx.py")
+              (delete-file "printrun/packer.py")
+              (substitute* "printrun/utils.py"
+                (("shared_pronterface_images_dir = .*")
+                 (string-append
+                  "shared_pronterface_images_dir = \""
+                  #$output "/share/pronterface/images\"\n"))
+                (("shared_pixmaps_dir = .*")
+                 (string-append "shared_pixmaps_dir = \""
+                                #$output "/share/pixmaps\"\n"))
+                (("shared_pronterface_dir = .*")
+                 (string-append "shared_pixmaps_dir = \""
+                                #$output
+                                "/share/pronterface\"\n")))))
+          (add-before 'check 'setup-display
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (system "Xvfb :1 &")
+                (setenv "DISPLAY" ":1")))))))
+    (native-inputs
+     (list python-cython
+           python-setuptools
+           xorg-server-for-tests))
+    (inputs
+     (list python-dbus-python
+           python-lxml
+           python-numpy
+           python-pillow
+           python-platformdirs
+           python-psutil
+           python-puremagic
+           python-pyglet-1
+           python-pyserial
+           python-wxpython))
+    (home-page "https://github.com/kliment/Printrun/")
+    (synopsis "Pronterface, Pronsole, and Printcore 3D printing host software")
+    (description
+     "Printrun consists of printcore, pronsole and pronterface, and a small
+collection of helpful scripts.")
     (license license:gpl3+)))
