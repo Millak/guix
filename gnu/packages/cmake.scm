@@ -333,7 +333,7 @@ and workspaces that can be used in the compiler environment of your choice.")
   (package
     (inherit cmake-minimal)
     (name "cmake")
-    (version "3.24.2")
+    (version "3.25.1")
     (source (origin
               (inherit (package-source cmake-minimal))
               (method url-fetch)
@@ -348,7 +348,7 @@ and workspaces that can be used in the compiler environment of your choice.")
                                   ,@rest))))
               (sha256
                (base32
-                "1ny8y2dzc6fww9gzb1ml0vjpx4kclphjihkxagxigprxdzq2140d"))
+                "1n4inb3fvk70sni5gmkljqw3cyllalyg3fnr9rlr7x3aa44isl8w"))
               (patches (search-patches "cmake-curl-certificates-3.24.patch"))))
     (outputs '("out" "doc"))
     (arguments
