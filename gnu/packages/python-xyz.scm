@@ -18889,13 +18889,13 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public glances
   (package
   (name "glances")
-  (version "3.1.7")
+  (version "3.3.0.4")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "Glances" version))
       (sha256
-        (base32 "020vb38qrb0m3sdr7xjr43cmcfxpnyg4hmb97wgxsa9zvwsjwa5x"))
+        (base32 "0klyyxqc7cbrf1i741304i3rrwan19qm2v58xmrlgqsmxac542la"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -18909,7 +18909,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
           #t))))
   (build-system python-build-system)
   (propagated-inputs
-   (list python-future python-psutil))
+   (list python-defusedxml python-future python-packaging python-psutil))
   (home-page "https://github.com/nicolargo/glances")
   (synopsis "Cross-platform curses-based monitoring tool")
   (description
