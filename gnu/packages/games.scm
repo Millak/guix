@@ -7930,7 +7930,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.9.4")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -7940,7 +7940,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0isswidhxhs2q5c4cxryjr8y8ibfxckpfyccly3b4lg1nxvm5gjv"))))
+        (base32 "183dbi4a91xggxm1rmn7vr8rq519yz7b3zhrd03azsg6fxylv9wn"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -7949,7 +7949,8 @@ ncurses for text display.")
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list freetype
+     (list enet
+           freetype
            glpk
            libpng
            libunibreak
@@ -7959,6 +7960,7 @@ ncurses for text display.")
            luajit
            openal
            openblas
+           pcre2
            physfs
            python
            python-pyyaml
