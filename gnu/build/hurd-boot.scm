@@ -194,7 +194,7 @@ set."
       ("proc"                    ("/hurd/procfs" "--stat-mode=444"))))
 
   (define devices
-    '(("dev/full"    ("/hurd/null"     "--full")            #o666)
+    `(("dev/full"    ("/hurd/null"     "--full")            #o666)
       ("dev/null"    ("/hurd/null")                         #o666)
       ("dev/random"  ("/hurd/random"   "--seed-file" "/var/lib/random-seed")
                                                             #o644)
