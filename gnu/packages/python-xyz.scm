@@ -7699,6 +7699,26 @@ a general image processing tool.")
     (description "This package is a fork of Pillow which adds support for SIMD
 parallelism.")))
 
+(define-public python-pixelmatch
+  (package
+    (name "python-pixelmatch")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pixelmatch" version))
+       (sha256
+        (base32 "16b0cz136dcmj4dbr505igpql8dmqmr9vni5nbaa5kygjfjkdynh"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pillow))
+    (home-page "https://github.com/whtsky/pixelmatch-py")
+    (synopsis "A pixel-level image comparison library")
+    (description "This package provides a pixel-level image comparison library
+for Python, originally created to compare screenshots in tests.  Its features
+include accurate anti-aliased pixels detection and perceptual color difference
+metrics.")
+    (license license:isc)))
+
 (define-public python-imagecodecs
   (package
     (name "python-imagecodecs")
