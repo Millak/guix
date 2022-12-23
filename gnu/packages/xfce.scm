@@ -129,7 +129,7 @@ Xfce Desktop Environment.")
 (define-public xfconf
   (package
     (name "xfconf")
-    (version "4.16.0")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/xfce/"
@@ -137,7 +137,7 @@ Xfce Desktop Environment.")
                                   "xfconf-" version ".tar.bz2"))
               (sha256
                (base32
-                "09al5bkq89b8pb3xyxnw0cnz6crxj8678ymwq2k9nzf60y812ak5"))))
+                "01i9bn2v9mcfa03ndd9dyihz7yc1mnfzr550mq3sh07q1cb5131f"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -157,13 +157,6 @@ Xfce Desktop Environment.")
              ;; For the missing '/etc/machine-id'.
              (setenv "DBUS_FATAL_WARNINGS" "0")
              (invoke "dbus-launch" "make" "check")))
-         (add-after 'custom-check 'install-shell-completions
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (etc (string-append out "/etc")))
-               (with-directory-excursion "completions"
-                 (install-file "xfconf-query"
-                               (string-append etc "/bash_completion.d"))))))
          (delete 'check))))
     (native-inputs
      (list pkg-config
