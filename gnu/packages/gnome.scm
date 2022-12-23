@@ -889,6 +889,7 @@ tomorrow, the rest of the week and for special occasions.")
     (build-system meson-build-system)
     (arguments
      (list
+      #:disallowed-references (list (this-package-native-input "git-minimal"))
       #:glib-or-gtk? #t
       #:configure-flags
       #~(list "-Ddogtail=false"         ; Not available
@@ -909,7 +910,7 @@ tomorrow, the rest of the week and for special occasions.")
      (list dbus
            desktop-file-utils
            gettext-minimal
-           git-minimal
+           git-minimal/fixed
            `(,glib "bin")
            gobject-introspection
            gsettings-desktop-schemas
