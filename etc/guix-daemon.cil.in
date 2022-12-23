@@ -94,6 +94,9 @@
   (allow init_t
          guix_store_content_t
          (file (open read execute)))
+  (allow init_t
+         guix_profiles_t
+         (dir (setattr)))
 
   ;; guix-daemon needs to know the names of users
   (allow guix_daemon_t
