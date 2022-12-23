@@ -941,7 +941,7 @@ name = Guix Builder")
          ("ocaml-cppo" ,ocaml-cppo)
 
          ;; For tests.
-         ("git" ,git-minimal)
+         ("git" ,git-minimal/fixed)
          ("openssl" ,openssl)
          ("python" ,python-wrapper)
          ("rsync" ,rsync)
