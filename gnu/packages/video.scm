@@ -62,6 +62,7 @@
 ;;; Copyright © 2022 Bird <birdsite@airmail.cc>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4748,7 +4749,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.2.7")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4757,7 +4758,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i9bsn8gklm1mvj60l3d3xrxdgy8svpxjfqcwsr308j5zjn30pv8"))
+                "0q2899hbaqwh1gxyl9x84l116g82glk0wmr3r1xvfwb107m3mvx9"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -4783,6 +4784,7 @@ create smoother and stable videos.")
            libopenshot-audio
            qtbase-5
            qtmultimedia-5
+           qtsvg-5
            zeromq))
     (arguments
      `(#:configure-flags
@@ -4811,7 +4813,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "2.6.1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4820,7 +4822,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pa8iwl217503bjlqg2zlrw5lxyq5hvxrf5apxrh3843hj1w1myv"))
+                "1az59whx9sga6m8m2c3ndfls5h07r0jn4jipnyxckpxl32vpd147"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4857,12 +4859,6 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                           (("fonts") "share/fonts/truetype")
                           (("[A-Za-z_-]+.ttf") "DejaVuSans.ttf")))
                       #t))
-                  ;; https://github.com/OpenShot/openshot-qt/issues/4502
-                  (add-before 'ensure-no-mtimes-pre-1980 'fix-symbolic-link
-                    (lambda _
-                      (delete-file "images/Humanity/actions/custom/razor_line_with_razor.png")
-                      (symlink "../../../../src/timeline/media/images/razor_line_with_razor.png"
-                               "images/Humanity/actions/custom/razor_line_with_razor.png")))
                   (add-before 'install 'set-tmp-home
                     (lambda _
                       ;; src/classes/info.py "needs" to create several
