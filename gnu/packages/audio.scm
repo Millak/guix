@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4979,7 +4980,7 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
-    (version "0.2.2")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4988,7 +4989,7 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03dygh85riljk7dpn5a5a0d22a2kz45fs13gzwqgnbzzr1k17p2y"))))
+                "1y3apyn71ysks88bv71knjvk832imnbpbb8mgib3q9b8pvdmjw3g"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib
