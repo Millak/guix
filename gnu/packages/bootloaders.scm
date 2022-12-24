@@ -1110,6 +1110,14 @@ partition."))
                        ;; details.
                        #:configs '("# CONFIG_FIT_SIGNATURE is not set")))
 
+(define-public u-boot-qemu-arm64
+  (make-u-boot-package "qemu_arm64" "aarch64-linux-gnu"
+                       ;; Disable features that require OpenSSL due
+                       ;; to GPL/Openssl license incompatibilities.
+                       ;; See https://bugs.gnu.org/34717 for
+                       ;; details.
+                       #:configs '("# CONFIG_FIT_SIGNATURE is not set")))
+
 (define-public u-boot-qemu-riscv64
   (make-u-boot-package "qemu-riscv64" "riscv64-linux-gnu"))
 
