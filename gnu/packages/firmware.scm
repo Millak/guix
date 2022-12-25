@@ -34,6 +34,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -475,6 +476,29 @@ executing in M-mode.")
 
 (define-public opensbi-generic
   (make-opensbi-package "generic" "opensbi-generic"))
+
+(define-public opensbi-qemu
+  (package
+    (inherit opensbi-generic)
+    (name "opensbi-qemu")
+    (native-inputs '())
+    (inputs (list opensbi-generic))
+    (build-system trivial-build-system)
+    (arguments
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules ((guix build utils)))
+               (let ((opensbi-riscv64 (search-input-file %build-inputs
+                                                         "fw_dynamic.bin"))
+                     (out (string-append #$output "/share/qemu")))
+                 (mkdir-p out)
+                 (symlink opensbi-riscv64
+                          (string-append
+                           out "/opensbi-riscv64-generic-fw_dynamic.bin"))))))
+    (synopsis "OpenSBI firmware files for QEMU")
+    (description
+     "This package contains OpenSBI firmware files for use with QEMU.")))
 
 (define-public seabios
   (package
