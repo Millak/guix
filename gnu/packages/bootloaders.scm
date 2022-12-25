@@ -537,12 +537,13 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
              (lambda _
                (invoke "chmod" "a+w" "utils/isohybrid.in")))
            (replace 'check
-             (lambda _
-               (setenv "CC" "gcc")
-               (substitute* "tests/unittest/include/unittest/unittest.h"
-                 ;; Don't look up headers under /usr.
-                 (("/usr/include/") ""))
-               (invoke "make" "unittest"))))))
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (setenv "CC" "gcc")
+                 (substitute* "tests/unittest/include/unittest/unittest.h"
+                   ;; Don't look up headers under /usr.
+                   (("/usr/include/") ""))
+                 (invoke "make" "unittest")))))))
       (home-page "https://www.syslinux.org")
       (synopsis "Lightweight Linux bootloader")
       (description "Syslinux is a lightweight Linux bootloader.")
