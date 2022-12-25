@@ -901,6 +901,29 @@ of the segments available in that package using icons from
 information in the mode line.")
     (license license:expat)))
 
+(define-public emacs-snow
+  (let ((commit "35ea06f19047ac99eaff9663cb035491c4a13e07")
+        (revision "0"))
+     (package
+      (name "emacs-snow")
+      (version (git-version "0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+               (url "https://github.com/alphapapa/snow.el")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+          (base32 "1pcqvg70r1k73k3jxgz5qzwqsvwjnwvpfrbjf4b54smglz2nvz19"))))
+       (build-system emacs-build-system)
+      (home-page "https://github.com/alphapapa/snow.el/")
+      (synopsis "Let it snow in Emacs")
+      (description "This package adds a command @code{snow} that displays
+a buffer in which it snows.  The storm varies in intensity, a gentle breeze
+blows at times, and snow accumulates on the terrain in the scene.")
+      (license license:gpl3+))))
+
 (define-public emacs-spongebob
   (let ((commit "ae8ae6ba0dc57b7357ba87ff0609d27c4a0a5f51")
         (revision "0"))
