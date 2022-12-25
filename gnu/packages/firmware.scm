@@ -343,6 +343,82 @@ broadband modem as found, for example, on PinePhone.")
     (home-page "https://gitlab.com/mobian1/devices/eg25-manager")
     (license license:gpl3+)))
 
+(define* (make-openbios-package name arch)
+  (let ((target (cond
+                 ((string-suffix? "ppc" arch)
+                  "powerpc-linux-gnu")
+                 ((string-suffix? "amd64" arch)
+                  "x86_64-linux-gnu")
+                 ((string-suffix? "x86" arch)
+                  "i686-linux-gnu")
+                 (else (string-append arch "-linux-gnu")))))
+  (package
+    (name name)
+    (version "1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openbios/openbios")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "openbios" version))
+              (patches (search-patches "openbios-gcc-warnings.patch"))
+              (sha256
+               (base32
+                "11cr0097aiw4hc07v5hfl95753ikyra5ig4nv899ci7l42ilrrbr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'build-reproducibly
+                 (lambda _
+                   (substitute* "Makefile.target"
+                     (("TZ=UTC date \\+")
+                      "TZ=UTC date --date=@1 +"))))
+               (replace 'configure
+                 (lambda _
+                   (invoke "./config/scripts/switch-arch" #$arch)))
+               (replace 'install
+                 (lambda _
+                   (let ((build-target
+                          (if (string-contains #$arch "-")
+                              (car (reverse (string-split #$arch #\-)))
+                              #$arch)))
+                     (for-each (lambda (elf)
+                                 (install-file elf
+                                               (string-append #$output
+                                                              "/share/firmware")))
+                               (find-files (string-append "obj-" build-target)
+                                           "\\.elf$"))))))))
+    (native-inputs
+     (append (if (string-prefix? (%current-system) target)
+                 '()
+                 (list (cross-gcc target) (cross-binutils target)))
+             (list libxslt which)))
+    (home-page "https://openfirmware.info/Welcome_to_OpenBIOS")
+    (synopsis "Open Firmware implementation")
+    (description
+     "OpenBIOS is an implementation of the IEEE 1275-1994 \"Open Firmware\"
+specification.  It can be used as a system firmware, as a boot loader, or
+provide OpenFirmware functionality on top of an already running system.")
+    ;; Some files are GPLv2 only.
+    (license license:gpl2))))
+
+(define-public openbios-qemu-ppc
+  (let ((base (make-openbios-package "openbios-qemu-ppc" "qemu-ppc")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'rename-executable
+                (lambda _
+                  (with-directory-excursion #$output
+                    (rename-file "share/firmware" "share/qemu")
+                    (rename-file "share/qemu/openbios-qemu.elf"
+                                 "share/qemu/openbios-ppc")))))))))))
+
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
