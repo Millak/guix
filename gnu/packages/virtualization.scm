@@ -184,6 +184,9 @@
              ;; Delete ppc64 OpenBIOS.  TODO: Remove sparc32 and sparc64 too
              ;; once they are supported in Guix.
              (delete-file "openbios-ppc")
+             ;; Delete riscv64 OpenSBI.  TODO: Remove riscv32 when supported
+             ;; in Guix.
+             (delete-file "opensbi-riscv64-generic-fw_dynamic.bin")
              ;; Delete iPXE firmwares.
              (for-each delete-file (find-files "." "^(efi|pxe)-.*\\.rom$")))
            ;; Delete bundled code that we provide externally.
@@ -191,6 +194,7 @@
                      '("dtc" "meson"
                        "roms/ipxe"
                        "roms/openbios"
+                       "roms/opensbi"
                        "roms/seabios"
                        "roms/sgabios"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
@@ -206,6 +210,9 @@
               (meson (search-input-file %build-inputs "bin/meson"))
               (openbios (search-input-file %build-inputs
                                            "share/qemu/openbios-ppc"))
+              (opensbi (search-input-file
+                        %build-inputs
+                        "share/qemu/opensbi-riscv64-generic-fw_dynamic.bin"))
               (seabios (search-input-file %build-inputs
                                           "share/qemu/bios.bin"))
               (sgabios (search-input-file %build-inputs
@@ -225,6 +232,7 @@
                                (dirname seabios) ":"
                                (dirname ipxe) ":"
                                (dirname openbios) ":"
+                               (dirname opensbi) ":"
                                (dirname sgabios))
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
@@ -252,6 +260,10 @@
                      (ipxe-firmwares (find-files ipxe "\\.rom$"))
                      (openbios (search-input-file
                                 inputs "share/qemu/openbios-ppc"))
+                     (opensbi-riscv64
+                      (search-input-file
+                       inputs
+                       "share/qemu/opensbi-riscv64-generic-fw_dynamic.bin"))
                      (allowed-differences
                       ;; Ignore minor differences (addresses etc) in the firmware
                       ;; data tables compared to what the test suite expects.
@@ -267,7 +279,7 @@
                   (for-each (lambda (file)
                               (symlink file (basename file)))
                             (append seabios-firmwares ipxe-firmwares
-                                    (list openbios sgabios))))
+                                    (list openbios opensbi-riscv64 sgabios))))
                 (for-each (lambda (file)
                             (format allowed-differences-whitelist
                                     "\"~a\",~%" file))
@@ -385,7 +397,9 @@
               (with-directory-excursion (string-append #$output "/share/qemu")
                 (for-each delete-file
                           (append
-                           '("openbios-ppc" "sgabios.bin")
+                           '("openbios-ppc"
+                             "opensbi-riscv64-generic-fw_dynamic.bin"
+                             "sgabios.bin")
                            (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")
                            (find-files "." "^(efi|pxe)-.*\\.rom$"))))))
           ;; Create a wrapper for Samba. This allows QEMU to use Samba without
@@ -430,6 +444,7 @@ exec smbd $@")))
            mesa
            ncurses
            openbios-qemu-ppc
+           opensbi-qemu
            ;; ("pciutils" ,pciutils)
            pixman
            pulseaudio
