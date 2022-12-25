@@ -1125,7 +1125,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.2.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1135,7 +1135,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c2v4pj86442sp71ndjmvd2bl1grp6g9ya2ywdaihq1f2djk6jxl"))))
+        (base32 "0ka5az3aq2khql9nlxnrbkbs7afmp07r2fkx5pvmh6mqnriaimq3"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
