@@ -429,7 +429,7 @@ provide OpenFirmware functionality on top of an already running system.")
        (uri (git-reference
              (url "https://github.com/riscv-software-src/opensbi")
              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "opensbi" version))
        (sha256
         (base32 "0xlnhl965286kvizyjm571qbhj3l5n71a02dmbmgxzcqapzgi9wk"))))
     (build-system gnu-build-system)
