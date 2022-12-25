@@ -1773,7 +1773,7 @@ of use.")
      (list boost doxygen pkg-config))
     (inputs
      (list bullet
-           ffmpeg
+           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
            libxt
            lz4
            mygui-gl              ; OpenMW does not need Ogre.
