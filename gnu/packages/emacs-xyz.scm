@@ -20466,7 +20466,7 @@ timestamps by providing a @code{ts} struct.")
 (define-public emacs-circadian
   (package
     (name "emacs-circadian")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method git-fetch)
@@ -20475,14 +20475,17 @@ timestamps by providing a @code{ts} struct.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wpsykmai3idz0bgfl07hwl9nr4x9sgprvqgw8jln4dz2wf5gdic"))))
+        (base32 "1hydxhmcchaprfmp08xr6nlksz6y97jbf4mswj69bgdfjfbf22km"))))
     (arguments
      (list
       #:tests? #t
-      #:test-command #~(list "ert-runner")))
+      #:test-command
+      #~(list "emacs" "--batch"
+              "-l" "test.el"
+              "--eval" "(ert-run-tests-batch-and-exit test-order)")))
     (build-system emacs-build-system)
     (native-inputs
-     (list emacs-el-mock emacs-ert-runner))
+     (list emacs-el-mock))
     (home-page "https://github.com/guidoschmidt/circadian.el")
     (synopsis "Theme-switching for Emacs based on daytime")
     (description "Circadian may reduce eye strain by automatically switching
