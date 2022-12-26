@@ -766,8 +766,7 @@ of known objects without needing a central registrar.")
              (with-directory-excursion "doc/libzeitgeist"
                (substitute* "zeitgeist-gtkdoc-index.sgml"
                  (("http://www.oasis-open.org/docbook/xml/4.3/")
-                  (string-append (assoc-ref inputs "docbook-xml")
-                                 "/xml/dtd/docbook/"))))))
+                  (search-input-directory inputs "/xml/dtd/docbook/"))))))
          (add-after 'patch-docbook-xml 'disable-failing-tests
            (lambda _
              (substitute* "test/direct/Makefile.am"
@@ -781,25 +780,25 @@ of known objects without needing a central registrar.")
              ;; To honor `autoreconf -vif` by build-system.
              (delete-file "autogen.sh"))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("docbook-xml" ,docbook-xml-4.3)
-       ("gettext" ,gettext-minimal)
-       ("gobject-introspection" ,gobject-introspection)
-       ("gtk-doc" ,gtk-doc/stable)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)
-       ("xorg-server-for-tests" ,xorg-server-for-tests)))
+     (list autoconf
+           automake
+           docbook-xml-4.3
+           gettext-minimal
+           gobject-introspection
+           gtk-doc/stable
+           libtool
+           pkg-config
+           vala
+           xorg-server-for-tests))
     (inputs
-     `(("dee-icu" ,dee)
-       ("gtk+" ,gtk+)
-       ("json-glib" ,json-glib)
-       ("sqlite" ,sqlite)
-       ("telepathy-glib" ,telepathy-glib)
-       ("python" ,python-wrapper)
-       ("python-rdflib" ,python-rdflib)
-       ("xapian-config" ,xapian)))
+     (list dee
+           gtk+
+           json-glib
+           sqlite
+           telepathy-glib
+           python-wrapper
+           python-rdflib
+           xapian))
     (propagated-inputs
      (list glib))
     (synopsis "Desktop Activity Logging")
