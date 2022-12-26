@@ -301,7 +301,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.16")
+    (version "12.50")
     (source
      (origin
        (method url-fetch)
@@ -311,24 +311,21 @@ MTP, and much more.")
              ;; New releases may take a while to hit CPAN.
              (string-append "https://www.sno.phy.queensu.ca/~phil/exiftool/"
                             "Image-ExifTool-" version ".tar.gz")))
-       (patches (search-patches "perl-image-exiftool-CVE-2021-22204.patch"))
        (sha256
         (base32
-         "0skm22b3gg1bfk0amklrprpva41m6mkrhqp0gi7z1nmcf9ypjh61"))))
+         "1a605rz00d7p866a22sw0s63m5a6y4xqqrzp7q7jyc0hbky43s5w"))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure the 'exiftool' commands finds the library.
-             ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
-             (let* ((out (assoc-ref outputs "out"))
-                    (pm  (find-files out "^ExifTool\\.pm$"))
-                    (lib (dirname (dirname (car pm)))))
-               (wrap-program (string-append out "/bin/exiftool")
-                 `("PERL5LIB" prefix (,lib)))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'post-install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Make sure the 'exiftool' commands finds the library.
+                   ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
+                   (let* ((pm  (find-files #$output "^ExifTool\\.pm$"))
+                          (lib (dirname (dirname (car pm)))))
+                     (wrap-program (string-append #$output "/bin/exiftool")
+                       `("PERL5LIB" prefix (,lib)))))))))
     (home-page "https://metacpan.org/release/Image-ExifTool")
     (synopsis "Program and Perl library to manipulate EXIF and other metadata")
     (description "This package provides the @code{exiftool} command and the
