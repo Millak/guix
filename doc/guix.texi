@@ -41007,13 +41007,15 @@ The easiest way to extend a service type, without defining a new service
 type is to use the @code{simple-service} helper from @code{(gnu
 services)}.
 
+@findex literal-string
 @lisp
 (simple-service 'some-useful-env-vars-service
 		home-environment-variables-service-type
 		`(("LESSHISTFILE" . "$XDG_CACHE_HOME/.lesshst")
                   ("SHELL" . ,(file-append zsh "/bin/zsh"))
                   ("USELESS_VAR" . #f)
-                  ("_JAVA_AWT_WM_NONREPARENTING" . #t)))
+                  ("_JAVA_AWT_WM_NONREPARENTING" . #t)
+                  ("LITERAL_VALUE" . ,(literal-string "$@{abc@}"))))
 @end lisp
 
 If you include such a service in you home environment definition, it
@@ -41021,10 +41023,16 @@ will add the following content to the @file{setup-environment} script
 (which is expected to be sourced by the login shell):
 
 @example
-export LESSHISTFILE=$XDG_CACHE_HOME/.lesshst
-export SHELL=/gnu/store/2hsg15n644f0glrcbkb1kqknmmqdar03-zsh-5.8/bin/zsh
+export LESSHISTFILE="$XDG_CACHE_HOME/.lesshst"
+export SHELL="/gnu/store/2hsg15n644f0glrcbkb1kqknmmqdar03-zsh-5.8/bin/zsh"
 export _JAVA_AWT_WM_NONREPARENTING
+export LITERAL_VALUE='$@{abc@}'
 @end example
+
+Notice that @code{literal-string} above lets us declare that a value is
+to be interpreted as a @dfn{literal string}, meaning that ``special
+characters'' such as the dollar sign will not be interpreted by the
+shell.
 
 @quotation Note
 Make sure that module @code{(gnu packages shells)} is imported with
