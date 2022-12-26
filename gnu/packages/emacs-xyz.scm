@@ -15489,6 +15489,29 @@ been adapted to also work with mu4e.")
 the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
 
+(define-public emacs-tempel-collection
+  (let ((commit "cd9529b2a2fdfd49010117d2a1fc49adf9725051")
+        (revision "0"))
+    (package
+      (name "emacs-tempel-collection")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Crandel/tempel-collection")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02x6jq5k7fa46ni64qf8wrmkay6zfbmkildb727zs6wchmyg2znn"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-tempel))
+      (home-page "https://github.com/Crandel/tempel-collection")
+      (synopsis "Collection of TempEl templates")
+      (description "This package provides a collection of templates for
+the Emacs TempEl package.")
+      (license license:gpl3+))))
+
 (define-public emacs-yasnippet
   (package
     (name "emacs-yasnippet")
