@@ -49,6 +49,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1386,7 +1387,7 @@ and auto-mapping slices to MIDI note numbers.")
 (define-public lilypond
   (package
     (name "lilypond")
-    (version "2.20.0")
+    (version "2.24.0")
     (source
      (origin
        (method url-fetch)
@@ -1394,60 +1395,32 @@ and auto-mapping slices to MIDI note numbers.")
                            "v" (version-major+minor version) "/"
                            "lilypond-" version ".tar.gz"))
        (sha256
-        (base32 "0qd6pd4siss016ffmcyw5qc6pr2wihnvrgd4kh1x725w7wr02nar"))))
+        (base32 "0scbyzbxqnzgibls62npg2i3sywnb146gw7jlvinj9dhj8xvxv9w"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;out-test/collated-files.html fails
-       #:out-of-source? #t
-       #:make-flags '("conf=www")       ;to generate images for info manuals
-       #:configure-flags
-       (list "CONFIGURATION=www"
-             (string-append "--with-texgyre-dir="
-                            (assoc-ref %build-inputs "font-tex-gyre")
-                            "/share/fonts/opentype/"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-path-references
-           (lambda _
-             (substitute* "scm/backend-library.scm"
-               (("\\(search-executable '\\(\"gs\"\\)\\)")
-                (string-append "\"" (which "gs") "\""))
-               (("\"/bin/sh\"")
-                (string-append "\"" (which "sh") "\"")))))
-         (add-after 'fix-path-references 'adjust-to-API-change
-           (lambda _
-             (substitute* '("Documentation/pictures/GNUmakefile"
-                            "stepmake/stepmake/tex-rules.make")
-               ((".*-c .setpdfwrite.*") ""))
-             (substitute* "scm/backend-library.scm"
-               (("\"-c.setpdfwrite\"") ""))
-             (substitute* "scm/framework-ps.scm"
-               (("\".setpdfwrite ") "\""))))
-         (add-before 'configure 'prepare-configuration
-           (lambda _
-             (substitute* "configure"
-               (("SHELL=/bin/sh") "SHELL=sh")
-               ;; When checking the fontforge version do not consider the
-               ;; version string that's part of the directory.
-               (("head -n") "tail -n")
-               ;; Also allow for SOURCE_DATE_EPOCH = 0 in fontforge.
-               (("20110222") "19700101"))
-             (setenv "out" "www")
-             (setenv "conf" "www")))
-         (add-after 'install 'install-info
-           (lambda _
-             (invoke "make"
-                     "-j" (number->string (parallel-job-count))
-                     "conf=www" "install-info"))))))
+      (list #:tests? #f                      ;out-test/collated-files.html fails
+            #:out-of-source? #t
+            #:configure-flags
+            #~(list "--disable-documentation" "GUILE_FLAVOR=guile-3.0")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'fix-path-references
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* "scm/backend-library.scm"
+                      (("\\(search-executable '\\(\"gs\"\\)\\)")
+                       (string-append "\"" (search-input-file inputs "bin/gs") "\""))
+                      (("\"/bin/sh\"")
+                       (string-append "\"" (search-input-file inputs "bin/sh") "\""))))))))
     (inputs
-     `(("guile" ,guile-1.8)
+     `(("guile" ,guile-3.0)
+       ("extractpdfmark" ,extractpdfmark)
        ("font-dejavu" ,font-dejavu)
        ("font-tex-gyre" ,font-tex-gyre)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("ghostscript" ,ghostscript)
        ("pango" ,pango)
-       ("python" ,python-2)))
+       ("python" ,python)))
     (native-inputs
      `(("bison" ,bison)
        ("perl" ,perl)
@@ -1459,14 +1432,16 @@ and auto-mapping slices to MIDI note numbers.")
        ("netpbm" ,netpbm)               ;for pngtopnm
        ("texlive" ,(texlive-updmap.cfg (list texlive-metapost
                                         texlive-epsf
+                                        texlive-fontinst
                                         texlive-lh
+                                        texlive-lm
                                         texlive-latex-cyrillic)))
        ("texinfo" ,texinfo)
        ("texi2html" ,texi2html-1.82)
        ("rsync" ,rsync)
        ("pkg-config" ,pkg-config)
        ("zip" ,zip)))
-    (home-page "http://www.lilypond.org/")
+    (home-page "https://lilypond.org")
     (synopsis "Music typesetting")
     (description
      "GNU LilyPond is a music typesetter, which produces high-quality sheet
