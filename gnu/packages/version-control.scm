@@ -2732,17 +2732,17 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.18")
+    (version "2.20")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://www.fossil-scm.org/home/tarball/"
-             "84f25d7eb10c0714109d69bb2809abfa8b4b5c3d73b151a5b10df724dacd46d8"
+             "210e89a0597f225f49722b096cf5563bf193e920e02a9bd38503a906deacd416"
              "/fossil-src-" version ".tar.gz"))
        ;; XXX: Currently the above hash must be manually updated.
        (sha256
-        (base32 "0cq7677p84nnbfvk2dsh3c3y900gslw3zaw8iipfq932vmf1s31h"))
+        (base32 "08g7img88n2nwcdkpzmg4aqbp2iy40nllgas53502dspm97ym4h8"))
        (modules '((guix build utils)))
        (snippet
         '(begin
