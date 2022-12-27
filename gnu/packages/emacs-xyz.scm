@@ -10368,6 +10368,37 @@ call.")
 library with Eglot instead of Yasnippet.")
       (license license:gpl3+))))
 
+(define-public emacs-consult-xdg-recent-files
+  (let ((commit "593023ffb99a368152ebd4e739488fa560bdfdea")
+        (revision "0"))
+    (package
+      (name "emacs-consult-xdg-recent-files")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hrehfeld/consult-xdg-recent-files")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0nd23n67dmlflw52dc1rbhy04mc9ymydnsmvfr75hqb7sznn3343"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult))
+      (home-page "https://github.com/hrehfeld/consult-xdg-recent-files")
+      (synopsis "Include files used by other programs than Emacs in Consult")
+      (description
+       "This package provides the ability to include files used by other
+programs in the candidate lists of commands like @code{consult-recent-file}
+and @code{consult-buffer}.  This allows to use the same interface for file
+opening.
+
+On systems that comply with the XDG specification, these files are listed in
+the file @file{recently-used.xbel}, which is found in the directory
+@file{~/.local/share} or the location described by the environment variable
+@code{XDG_DATA_HOME}.")
+      (license license:gpl3+))))
+
 (define-public emacs-consult-yasnippet
   (let ((commit "ae0450889484f23dc4ec37518852a2c61b89f184")
         (revision "0"))
