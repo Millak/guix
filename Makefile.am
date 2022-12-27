@@ -400,6 +400,10 @@ AUX_FILES =						\
   gnu/packages/aux-files/chromium/master-preferences.json		\
   gnu/packages/aux-files/emacs/guix-emacs.el		\
   gnu/packages/aux-files/guix.vim			\
+  gnu/packages/aux-files/linux-libre/6.1-arm.conf	\
+  gnu/packages/aux-files/linux-libre/6.1-arm64.conf	\
+  gnu/packages/aux-files/linux-libre/6.1-i686.conf	\
+  gnu/packages/aux-files/linux-libre/6.1-x86_64.conf	\
   gnu/packages/aux-files/linux-libre/6.0-arm.conf	\
   gnu/packages/aux-files/linux-libre/6.0-arm64.conf	\
   gnu/packages/aux-files/linux-libre/6.0-i686.conf	\
