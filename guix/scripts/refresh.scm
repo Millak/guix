@@ -382,10 +382,15 @@ downloaded and authenticated; not updating~%")
       (when warn?
         (warn-no-updater package))))
 
-(define* (check-for-package-update package updaters #:key warn?)
-  "Check whether an update is available for PACKAGE and print a message.  When
-WARN? is true and no updater exists for PACKAGE, print a warning."
-  (match (package-latest-release package updaters)
+(define* (check-for-package-update update-spec updaters #:key warn?)
+  "Check whether UPDATE-SPEC is feasible, and print a message.
+When WARN? is true and no updater exists for PACKAGE, print a warning."
+  (define package
+    (update-spec-package update-spec))
+
+  (match (package-latest-release package updaters
+                                 #:version
+                                 (update-spec-version update-spec))
     ((? upstream-source? source)
      (let ((loc (or (package-field-location package 'version)
                     (package-location package))))
@@ -403,23 +408,34 @@ WARN? is true and no updater exists for PACKAGE, print a warning."
                   (package-version package)
                   (package-name package))))
          (else
-          (when warn?
-            (warning loc
-                     (G_ "~a is greater than \
+          (if (update-spec-version update-spec)
+              (info loc
+                    (G_ "~a would be downgraded from ~a to ~a~%")
+                    (package-name package)
+                    (package-version package)
+                    (upstream-source-version source))
+              (when warn?
+                (warning loc
+                         (G_ "~a is greater than \
 the latest known version of ~a (~a)~%")
-                     (package-version package)
-                     (package-name package)
-                     (upstream-source-version source)))))))
+                         (package-version package)
+                         (package-name package)
+                         (upstream-source-version source))))))))
     (#f
      (when warn?
        ;; Distinguish between "no updater" and "failing updater."
        (match (lookup-updater package updaters)
          ((? upstream-updater? updater)
-          (warning (package-location package)
-                   (G_ "'~a' updater failed to determine available \
+          (if (update-spec-version update-spec)
+              (warning (G_ "'~a' updater failed to find version ~a of '~a'~%")
+                       (upstream-updater-name updater)
+                       (update-spec-version update-spec)
+                       (package-name package))
+              (warning (package-location package)
+                       (G_ "'~a' updater failed to determine available \
 releases for ~a~%")
-                   (upstream-updater-name updater)
-                   (package-name package)))
+                       (upstream-updater-name updater)
+                       (package-name package))))
          (#f
           (warn-no-updater package)))))))
 
@@ -591,5 +607,5 @@ all are dependent packages: ~{~a~^ ~}~%")
              (else
               (for-each (cut check-for-package-update <> updaters
                              #:warn? warn?)
-                        (map update-spec-package update-specs))
+                        update-specs)
               (return #t)))))))))
