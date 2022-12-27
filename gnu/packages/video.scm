@@ -5637,7 +5637,7 @@ for details on how to change this.")
 (define-public svtplay-dl
   (package
     (name "svtplay-dl")
-    (version "4.14")
+    (version "4.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5646,7 +5646,7 @@ for details on how to change this.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wdrdszalvhv80m5jizbvjz4jc08acmbpxcsslyfb5cwh842in8m"))))
+                "0yjxmvldskw4pji3lg69pbx05izvxahz9my7z5p31mkiz6v33dmx"))))
     (build-system python-build-system)
     (inputs (list ffmpeg python-pyaml python-requests python-pysocks
                   python-cryptography))
