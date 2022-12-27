@@ -1047,6 +1047,9 @@ fi
         (bashrc    (plain-file "bashrc" "\
 # Bash-specific initialization.
 
+# Provide a default prompt.  The user's ~/.bashrc can override it.
+PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
+
 # The 'bash-completion' package.
 if [ -f /run/current-system/profile/etc/profile.d/bash_completion.sh ]
 then

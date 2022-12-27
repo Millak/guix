@@ -407,6 +407,15 @@ if [ -f ~/.profile ]; then source ~/.profile; fi
 # Honor per-interactive-shell startup file
 if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
 "
+
+        ;; The host distro might provide a bad 'PS1' default--e.g., not taking
+        ;; $GUIX_ENVIRONMENT into account.  Provide a good default here when
+        ;; asked to.  The default can be overridden below via
+        ;; 'environment-variables'.
+        (if (home-bash-configuration-guix-defaults? config)
+            "PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '\n"
+            "")
+
         (serialize-field 'bash-profile)
         (serialize-field 'environment-variables)))
 
