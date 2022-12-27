@@ -19,6 +19,7 @@
 
 (define-module (gnu home services shells)
   #:use-module (gnu services configuration)
+  #:autoload   (gnu system shadow) (%default-bashrc)
   #:use-module (gnu home services utils)
   #:use-module (gnu home services)
   #:use-module (gnu packages shells)
@@ -370,43 +371,6 @@ Used for executing user's commands at the exit of login shell.  It
 won't be read in some cases (if the shell terminates by exec'ing
 another process for example)."))
 
-;; TODO: Use value from (gnu system shadow)
-(define guix-bashrc
-  "\
-# Bash initialization for interactive non-login shells and
-# for remote shells (info \"(bash) Bash Startup Files\").
-
-# Export 'SHELL' to child processes.  Programs such as 'screen'
-# honor it and otherwise use /bin/sh.
-export SHELL
-
-if [[ $- != *i* ]]
-then
-    # We are being invoked from a non-interactive shell.  If this
-    # is an SSH session (as in \"ssh host command\"), source
-    # /etc/profile so we get PATH and other essential variables.
-    [[ -n \"$SSH_CLIENT\" ]] && source /etc/profile
-
-    # Don't do anything else.
-    return
-fi
-
-# Source the system-wide file.
-if [[ -e /etc/bashrc ]]; then
-    source /etc/bashrc
-fi
-
-# Adjust the prompt depending on whether we're in 'guix environment'.
-if [ -n \"$GUIX_ENVIRONMENT\" ]
-then
-    PS1='\\u@\\h \\w [env]\\$ '
-else
-    PS1='\\u@\\h \\w\\$ '
-fi
-alias ls='ls -p --color=auto'
-alias ll='ls -l'
-alias grep='grep --color=auto'\n")
-
 (define (add-bash-configuration config)
   (define (filter-fields field)
     (filter-configuration-fields home-bash-configuration-fields
@@ -449,7 +413,8 @@ if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
      ,@(list (file-if-not-empty
               'bashrc
               (if (home-bash-configuration-guix-defaults? config)
-                  (list (serialize-field 'aliases) guix-bashrc)
+                  (list (serialize-field 'aliases)
+                        (plain-file-content %default-bashrc))
                   (list (serialize-field 'aliases))))
              (file-if-not-empty 'bash-logout)))))
 

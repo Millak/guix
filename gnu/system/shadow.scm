@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
@@ -63,7 +63,8 @@
                user-group-id
                user-group-system?)
 
-  #:export (default-skeletons
+  #:export (%default-bashrc
+            default-skeletons
             skeleton-directory
             %base-groups
             %base-user-accounts
@@ -118,14 +119,8 @@
          (create-home-directory? #f)
          (system? #t))))
 
-(define (default-skeletons)
-  "Return the default skeleton files for /etc/skel.  These files are copied by
-'useradd' in the home directory of newly created user accounts."
-
-  (let ((profile (plain-file "bash_profile" "\
-# Honor per-interactive-shell startup file
-if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"))
-        (bashrc  (plain-file "bashrc" "\
+(define %default-bashrc
+  (plain-file "bashrc" "\
 # Bash initialization for interactive non-login shells and
 # for remote shells (info \"(bash) Bash Startup Files\").
 
@@ -145,7 +140,7 @@ then
 fi
 
 # Source the system-wide file.
-source /etc/bashrc
+[ -f /etc/bashrc ] && source /etc/bashrc
 
 # Adjust the prompt depending on whether we're in 'guix environment'.
 if [ -n \"$GUIX_ENVIRONMENT\" ]
@@ -157,6 +152,15 @@ fi
 alias ls='ls -p --color=auto'
 alias ll='ls -l'
 alias grep='grep --color=auto'\n"))
+
+(define (default-skeletons)
+  "Return the default skeleton files for /etc/skel.  These files are copied by
+'useradd' in the home directory of newly created user accounts."
+
+  (let ((profile (plain-file "bash_profile" "\
+# Honor per-interactive-shell startup file
+if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"))
+        (bashrc  %default-bashrc)
         (zprofile    (plain-file "zprofile" "\
 # Honor system-wide environment variables
 source /etc/profile\n"))
