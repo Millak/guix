@@ -2745,12 +2745,7 @@ by rclone usable with git-annex.")
         (base32 "08g7img88n2nwcdkpzmg4aqbp2iy40nllgas53502dspm97ym4h8"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "compat")
-           ;; Disable obsolete SQLite feature check; remove for 2.19.
-           (substitute* "tools/sqlcompattest.c"
-             ((".*\"ENABLE_JSON1\".*")
-              ""))))))
+        '(delete-file-recursively "compat"))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl                          ;for configuration only
