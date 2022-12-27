@@ -501,11 +501,22 @@ SOURCE, an <upstream-source>."
 changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date;
 raise an error when the updater could not determine available releases.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'always', 'never', and 'interactive' (default)."
+values: 'always', 'never', and 'interactive' (default).
+
+When VERSION is specified, update PACKAGE to that version, even if that is a
+downgrade."
   (match (package-latest-release package updaters #:version version)
     ((? upstream-source? source)
-     (if (version>? (upstream-source-version source)
-                    (package-version package))
+     (if (or (version>? (upstream-source-version source)
+                        (package-version package))
+             (and version
+                  (begin
+                    (warning (package-location package)
+                             (G_ "downgrading '~a' from ~a to ~a~%")
+                             (package-name package)
+                             (package-version package)
+                             (upstream-source-version source))
+                    #t)))
          (let ((method (match (package-source package)
                          ((? origin? origin)
                           (origin-method origin))
