@@ -963,17 +963,23 @@ appended to the package description."
 (define-public u-boot-malta
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
-(define-public u-boot-am335x-evm-boneblack
-  (make-u-boot-package
-   "am335x_evm" "arm-linux-gnueabihf"
-   ;; Patch out other device trees to build an image small enough to fit
-   ;; within typical partitioning schemes where the first partition begins at
-   ;; sector 2048.
-   #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
-   #:name-suffix "-boneblack"
-   #:append-description "This U-Boot is built for the BeagleBone Black, which
-was removed upstream, adjusted from the am335x_evm build with several device
-trees removed so that it fits within common partitioning schemes."))
+(define-public u-boot-am335x-boneblack
+  (let ((base (make-u-boot-package
+               "am335x_evm" "arm-linux-gnueabihf"
+               ;; Patch out other device trees to build an image small enough
+               ;; to fit within typical partitioning schemes where the first
+               ;; partition begins at sector 2048.
+               #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
+               #:append-description
+               "This U-Boot is built for the BeagleBone Black, which was
+removed upstream, adjusted from the am335x_evm build with several device trees
+removed so that it fits within common partitioning schemes.")))
+    (package
+      (inherit base)
+      ;; The name is not derived from the board name on purpose, as the config
+      ;; is modified per the comment above, parting from the default
+      ;; am335x_evm configuration.
+      (name "u-boot-am335x-boneblack"))))
 
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))
