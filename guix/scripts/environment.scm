@@ -610,10 +610,7 @@ If you are using Bash, you can do that by adding these lines to
 @file{~/.bashrc}:
 
 @example
-if [ -n \"$GUIX_ENVIRONMENT\" ]
-then
-  export PS1=\"\\u@@\\h \\w [env]\\$ \"
-fi
+PS1='\\u@@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
 @end example
 "))))))
 
