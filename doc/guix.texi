@@ -31028,7 +31028,7 @@ cache.size = 100 * MB
 "))))
 @end lisp
 
-For more information, refer its @url{https://knot-resolver.readthedocs.org/en/stable/daemon.html#configuration, manual}.
+For more information, refer its @url{https://knot-resolver.readthedocs.io/en/stable/config-overview.html, manual}.
 @end deffn
 
 @deftp {Data Type} knot-resolver-configuration
