@@ -1590,13 +1590,13 @@ Amazon S3 compatible object storage server.")
 (define-public python-pycurl
   (package
     (name "python-pycurl")
-    (version "7.43.0.5")
+    (version "7.45.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycurl" version))
        (sha256
-        (base32 "1cwlb76vddqp2mxqvjbhf367caddzy82rhangddjjhjqaj8x4zgc"))))
+        (base32 "1ji46b924caa4saxvjxs9h673yy0kif297nxpnjn84r7w05mjc2p"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run
