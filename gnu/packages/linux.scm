@@ -1085,43 +1085,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-source          linux-libre-6.0-source)
 (define-public linux-libre                 linux-libre-6.0)
 
-(define-public linux-libre-documentation
-  (package
-    (inherit linux-libre)
-    (name "linux-libre-documentation")
-    (arguments
-     (list
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (replace 'build
-                     (lambda _
-                       (substitute* "Documentation/Makefile"
-                         ;; Remove problematic environment check script.
-                         ((".*scripts/sphinx-pre-install.*") ""))
-                       (invoke "make" "infodocs")))
-                   (replace 'install
-                     (lambda _
-                       (let* ((info-dir (string-append #$output "/share/info"))
-                              (info (string-append info-dir
-                                                   "/TheLinuxKernel.info.gz")))
-                         (with-directory-excursion "Documentation/output"
-                           (invoke "make" "-C" "texinfo" "install-info"
-                                   (string-append "infodir=" info-dir)))
-                         ;; Create a symlink, for convenience.
-                         (symlink info (string-append info-dir
-                                                      "/linux.info.gz"))))))))
-    (native-inputs
-     (list graphviz
-           perl
-           python
-           python-sphinx
-           texinfo
-           which))
-    (synopsis "Documentation for the kernel Linux-Libre")
-    (description "This package provides the documentation for the kernel
-Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
-
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
                      linux-libre-5.15-gnu-revision
@@ -1903,6 +1866,47 @@ login password to @code{gpg-agent}.  This can be useful if you are using a
 GnuPG-based password manager like @code{pass}.")
     (license license:gpl3+)))
 
+
+;;;
+;;; Kernel documentation
+;;;
+
+(define-public linux-libre-documentation
+  (package
+    (inherit linux-libre)
+    (name "linux-libre-documentation")
+    (arguments
+     (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda _
+                       (substitute* "Documentation/Makefile"
+                         ;; Remove problematic environment check script.
+                         ((".*scripts/sphinx-pre-install.*") ""))
+                       (invoke "make" "infodocs")))
+                   (replace 'install
+                     (lambda _
+                       (let* ((info-dir (string-append #$output "/share/info"))
+                              (info (string-append info-dir
+                                                   "/TheLinuxKernel.info.gz")))
+                         (with-directory-excursion "Documentation/output"
+                           (invoke "make" "-C" "texinfo" "install-info"
+                                   (string-append "infodir=" info-dir)))
+                         ;; Create a symlink, for convenience.
+                         (symlink info (string-append info-dir
+                                                      "/linux.info.gz"))))))))
+    (native-inputs
+     (list graphviz
+           perl
+           python
+           python-sphinx
+           texinfo
+           which))
+    (synopsis "Documentation for the kernel Linux-Libre")
+    (description "This package provides the documentation for the kernel
+Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
 
 ;;;
 ;;; Miscellaneous.
