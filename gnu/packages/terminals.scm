@@ -56,6 +56,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -241,7 +242,7 @@ keybindings have different functions.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -250,16 +251,18 @@ keybindings have different functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alcz018jrrpasrmgs8nw775a6pf62xq2xgs54c4mb396prdqy4x"))))
-    (build-system python-build-system)
+        (base32 "0pcrghfi9p1p40d0339lcmhcv24hm1vxqr4rsdln34v385vqv14a"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "nosetests" "-v"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-python-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/pty_test.py"
+                     (("python3") (search-input-file inputs "/bin/python3"))))))))
     (native-inputs
      ;; For tests.
-     (list python-nose))
+     (list python-pytest))
     (home-page "https://asciinema.org")
     (synopsis "Terminal session recorder")
     (description
