@@ -647,6 +647,26 @@ current buffer.")
        "Abstract Emacs Lisp framework for tree navigation.")
       (license license:gpl3+))))
 
+(define-public emacs-hide-lines
+  (package
+    (name "emacs-hide-lines")
+    (version "20210513.1636")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vapniks/hide-lines.git")
+                    (commit "f0828c15e50db5eddb905de783e7683b04d1eca3")))
+              (sha256
+               (base32
+                "1pw0wp1pzy6snycvz12nj0q7jxxj07h3lqas184w44nhrira7qhj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/vapniks/hide-lines")
+    (synopsis "Commands for hiding lines based on a regexp")
+    (description
+     "This package provides commands to hide lines based on a regular
+expression.")
+    (license license:gpl3+)))
+
 (define-public emacs-hgignore-mode
   ;; From 2021-03-14.
   ;; No releases available.
