@@ -56,6 +56,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
@@ -80,6 +81,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages base)
   #:use-module (srfi srfi-1))
 
@@ -381,7 +383,7 @@ required structures.")
     ;; This package supersedes the Guile bindings that came with GnuTLS until
     ;; version 3.7.8 included.
     (name "guile-gnutls")
-    (version "3.7.9")
+    (version "3.7.11")
     (home-page "https://gitlab.com/gnutls/guile/")
     (source (origin
               (method git-fetch)
@@ -390,21 +392,31 @@ required structures.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "00sfpqjmd263ka51fq4xf7nvaaxyfqsr3r8fj94jgx45q6q6n6wq"))
+                "06d7v3i0d9ayp7zqk1rsy4z0wfpq69n0r54f1xrppb9gn7q9iva6"))
               (file-name (git-file-name name version))
               (patches (search-patches "gnutls-cross.patch"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       ;; Tell the build system that we want Guile bindings installed to
-       ;; the output instead of Guiles own module directory.
-       (list "--disable-static"
-             (string-append "--with-guile-site-dir="
-                            "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
-             (string-append "--with-guile-site-ccache-dir="
-                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
-             (string-append "--with-guile-extension-dir="
-                            "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))))
+     (list
+      #:configure-flags
+      ;; Tell the build system that we want Guile bindings installed to the
+      ;; output instead of Guiles own module directory.
+      #~(list "--disable-static"
+              (string-append "--with-guile-site-dir="
+                             "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
+              (string-append "--with-guile-site-ccache-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
+              (string-append "--with-guile-extension-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-more-shebangs
+            (lambda _
+              (for-each patch-shebang
+                        '("autopull.sh" "autogen.sh"))))
+          (replace 'bootstrap
+            (lambda _
+              (invoke "bash" "./bootstrap" "--no-git"))))))
     (native-inputs
      (list autoconf
            automake
@@ -412,7 +424,11 @@ required structures.")
            pkg-config
            texinfo
            gnutls                 ;XXX: 'guile-snarf' invokes the native 'cpp'
-           guile-3.0))
+           guile-3.0
+           (gnulib-checkout
+            #:version "2022-12-06"
+            #:commit "440b528b1d81dd31b2a2e4dde20d5c837c147811"
+            #:hash (base32 "15mq43abbnkbamchc9lynrvrd5ql8qacgyx2ph4kkngxf1bz3pqy"))))
     (inputs
      (list gnutls-latest
            guile-3.0))
