@@ -6111,16 +6111,17 @@ audio and MIDI plugins that can also run as standalone JACK applications.")
         (base32 "0p3y3r2nrhzr0xlcy5rz4c2jsvc10l1n8cwc642r0zppwfabm9il"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ;no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "HAVE_ZITA_CONVOLVER=true")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-CC-variable
-           (lambda _
-             (setenv "CC" "gcc") #t))
-         (delete 'configure))))
+     (list
+      #:tests? #f                      ;no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "HAVE_ZITA_CONVOLVER=true")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-CC-variable
+            (lambda _
+              (setenv "CC" "gcc")))
+          (delete 'configure))))
     (inputs
      (list fftwf
            jack-1 ;for the standalone JACK application
@@ -6137,7 +6138,7 @@ LV2 and VST2 formats, as well as standalone JACK versions.  The collection
 includes ZaMaximX2, ZamAutoSat, ZamComp, ZamCompX2, ZamEQ2, ZamGEQ31,
 ZamHeadX2, ZamPhono, ZamGate, ZamGateX2, ZamTube, ZamDelay, ZamDynamicEQ,
 ZaMultiComp, ZaMultiCompX2 and ZamSynth.")
-    (home-page "http://www.zamaudio.com/?p=976")
+    (home-page "https://www.zamaudio.com/?p=976")
     (license license:gpl2+)))
 
 (define-public geonkick
