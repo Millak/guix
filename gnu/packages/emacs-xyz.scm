@@ -8053,7 +8053,7 @@ features:
 (define-public emacs-company-math
   (package
     (name "emacs-company-math")
-    (version "1.5")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -8062,10 +8062,10 @@ features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "010p3rhb7win6ndx3ilz2lcg69d2qyxfvpi0hcid2srzxffpwn3i"))))
+        (base32 "1pj10i7ml5d2spcmf8035ngcq5zc6rs3lqx09d0qj6bsghglr6j3"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-math-symbol-lists emacs-company))
+     (list emacs-company emacs-math-symbol-lists))
     (home-page "https://github.com/vspinu/company-math")
     (synopsis "Completion backends for math symbols and @code{LaTeX} tags")
     (description
