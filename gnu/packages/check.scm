@@ -580,6 +580,85 @@ It allows the specification of behaviour scenarios using a given-when-then
 pattern.")
       (license license:apsl2))))
 
+(define-public catch2-3.1
+  (package
+    (name "catch2")
+    (version "3.1.1")
+    (home-page "https://github.com/catchorg/Catch2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/catchorg/Catch2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qnr5b3zq8brh43f924rgnw5gmmjf9ax7kbq2crz1mlwgmdymxlp"))))
+    (outputs (list "out" "static"))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-meson
+            (lambda _
+              (substitute* "src/catch2/meson.build"
+                (("static_library") "both_libraries"))))
+          (add-after 'install 'install-cmake-config
+            (lambda* (#:key outputs #:allow-other-keys)
+              (define prefix (string-append (assoc-ref outputs "out")
+                                            "/lib/cmake/Catch2/"))
+              (mkdir-p prefix)
+              (call-with-output-file (string-append
+                                      prefix
+                                      "catch2-config-version.cmake")
+                (lambda (port)
+                  (format
+                   port
+                   "set(PACKAGE_VERSION ~s)~@
+                    if(PACKAGE_FIND_VERSION STREQUAL PACKAGE_VERSION)~@
+                    set(PACKAGE_VERSION_EXACT TRUE)~@
+                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
+                    elseif(PACKAGE_FIND_VERSION VERSION_LESS_EQUAL ~
+                           PACKAGE_VERSION)~@
+                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
+                    else()~@
+                    set(PACKAGE_VERSION_COMPATIBLE FALSE)~@
+                    endif()"
+                   #$version)))
+              (call-with-output-file (string-append prefix
+                                                    "catch2-config.cmake")
+                (lambda (port)
+                  (format
+                   port
+                   "include(FindPkgConfig)~@
+                    pkg_check_modules(CATCH2 IMPORTED_TARGET GLOBAL catch2)~@
+                    pkg_check_modules(CATCH2MAIN ~
+                                      IMPORTED_TARGET GLOBAL ~
+                                      catch2 catch2-with-main)~@
+                    if(CATCH2_FOUND)~@
+                      add_library(Catch2::Catch2 ALIAS PkgConfig::CATCH2)~@
+                    endif()~@
+                    if(CATCH2MAIN_FOUND)~@
+                      add_library(Catch2::Catch2WithMain ~
+                                  ALIAS PkgConfig::CATCH2MAIN)~@
+                    endif()")))))
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (static (assoc-ref outputs "static")))
+                (for-each
+                 (lambda (file)
+                   (install-file file (string-append static "/lib"))
+                   (delete-file file))
+                 (find-files (string-append out "/lib")
+                             "\\.a$"))))))))
+    (inputs (list python-wrapper))
+    (synopsis "Automated test framework for C++ and Objective-C")
+    (description "Catch2 stands for C++ Automated Test Cases in Headers and is
+a multi-paradigm automated test framework for C++ and Objective-C.")
+    (license license:boost1.0)))
+
 (define-public cmdtest
   (package
     (name "cmdtest")
@@ -750,7 +829,7 @@ and it supports a very flexible form of test discovery.")
 (define-public doctest
   (package
     (name "doctest")
-    (version "2.4.8")
+    (version "2.4.9")
     (home-page "https://github.com/onqtam/doctest")
     (source (origin
               (method git-fetch)
@@ -759,7 +838,7 @@ and it supports a very flexible form of test discovery.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "057wdkv3gcz42mh1j284sgvm16i5fk1f9b1plgvavca70q4p52gz"))))
+                "1pkpwwvskcr21p00zrbnxpddv34p605mls86qirqqdwggmws82ds"))))
     (build-system cmake-build-system)
     (synopsis "C++ test framework")
     (description
@@ -3235,7 +3314,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
-    (version "1.4.1")
+    (version "1.4.2")
     ;; Pypi package lacks tests.
     (source
      (origin (method git-fetch)
@@ -3245,7 +3324,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "10x7ds09b9415r92f7g9714gxixvvq3bm5mnh29ml9aba8blcb0n"))))
+               "0srahyzrk5awfh4rmppvqkblfmiavdklxl9i5mcr8gl7ahiwwl7f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases

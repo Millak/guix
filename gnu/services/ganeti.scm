@@ -683,7 +683,8 @@ information to OS install scripts or instances.")))
                    #~(#$schedule))
                   ((? list?)
                    #~('#$schedule)))
-             #$(ganeti-watcher-command config))))))
+             #$(ganeti-watcher-command config)
+             "ganeti-watcher")))))
 
 (define ganeti-watcher-service-type
   (service-type (name 'ganeti-watcher)
@@ -725,7 +726,8 @@ is declared offline by known master candidates.")))
                    #~('#$master-schedule)))
              (lambda ()
               (system* #$(file-append ganeti "/sbin/ganeti-cleaner")
-                       "master")))
+                       "master"))
+             "ganeti master cleaner")
       #~(job #$@(match node-schedule
                   ((? string?)
                    #~(#$node-schedule))
@@ -733,7 +735,8 @@ is declared offline by known master candidates.")))
                    #~('#$node-schedule)))
              (lambda ()
                (system* #$(file-append ganeti "/sbin/ganeti-cleaner")
-                        "node")))))))
+                        "node"))
+             "ganeti node cleaner")))))
 
 (define ganeti-cleaner-service-type
   (service-type (name 'ganeti-cleaner)
@@ -777,6 +780,8 @@ than 21 days from @file{/var/lib/ganeti/queue/archive}.")))
                           (default (ganeti-cleaner-configuration)))
   (file-storage-paths     ganeti-configuration-file-storage-paths ;list of strings | gexp
                           (default '()))
+  (hooks                  ganeti-configuration-hooks  ;<file-like> | #f
+                          (default #f))
   (os                     ganeti-configuration-os  ;list of <ganeti-os>
                           (default '())))
 
@@ -910,7 +915,7 @@ trap - EXIT
   (partition-alignment debootstrap-configuration-partition-alignment ;#f | integer
                        (default 2048)))
 
-(define (hooks->directory hooks)
+(define (debootstrap-hooks->directory hooks)
   (match hooks
     ((? file-like?)
      hooks)
@@ -918,7 +923,7 @@ trap - EXIT
      (let ((names (map car hooks))
            (files (map cdr hooks)))
        (with-imported-modules '((guix build utils))
-         (computed-file "hooks-union"
+         (computed-file "debootstrap-hooks"
                         #~(begin
                             (use-modules (guix build utils)
                                          (ice-9 match))
@@ -942,7 +947,7 @@ trap - EXIT
     (($ <debootstrap-configuration> hooks proxy mirror arch suite extra-pkgs
                                     components generate-cache? clean-cache
                                     partition-style partition-alignment)
-     (let ((customize-dir (hooks->directory hooks)))
+     (let ((customize-dir (debootstrap-hooks->directory hooks)))
        (gexp->derivation
         "debootstrap-variant"
         #~(call-with-output-file (ungexp output "out")
@@ -1034,7 +1039,7 @@ in /etc/ganeti/instance-$os for OS."
     (computed-file (string-append name "-os") builder
                    #:local-build? #t)))
 
-(define (ganeti-directory file-storage-file os)
+(define (ganeti-directory file-storage-file hooks os)
   (let ((dirs (map ganeti-os->directory os))
         (names (map ganeti-os-name os)))
     (define builder
@@ -1044,6 +1049,9 @@ in /etc/ganeti/instance-$os for OS."
           (when #$file-storage-file
             (symlink #$file-storage-file
                      (string-append #$output "/file-storage-paths")))
+          (when #$hooks
+            (symlink #$hooks
+                     (string-append #$output "/hooks")))
           (for-each (match-lambda
                       ((name dest)
                        (symlink dest
@@ -1063,6 +1071,7 @@ in /etc/ganeti/instance-$os for OS."
   (list `("ganeti" ,(ganeti-directory
                      (file-storage-file
                       (ganeti-configuration-file-storage-paths config))
+                     (ganeti-configuration-hooks config)
                      (ganeti-configuration-os config)))))
 
 (define (debootstrap-os variants)

@@ -2380,7 +2380,7 @@ QMatrixClient project.")
            curl
            json-modern-cxx
            libevent
-           libolm
+           olm
            libsodium
            openssl
            spdlog
@@ -2459,11 +2459,11 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            curl
            gst-plugins-base
            gst-plugins-bad              ; sdp & webrtc for voip
-           gst-plugins-good             ; rtpmanager for voip
+           gst-plugins-good-qt          ; rtpmanager for voip
            json-modern-cxx
            libevent
            libnice                      ; for voip
-           libolm
+           olm
            lmdb
            lmdbxx
            mtxclient
@@ -2884,7 +2884,7 @@ validating international phone numbers.")
            libgcrypt
            libgee
            libhandy
-           libolm
+           olm
            libphonenumber
            modem-manager
            pidgin

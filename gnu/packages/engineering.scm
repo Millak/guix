@@ -2437,7 +2437,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "02976k91ypv41rqdl27jbmyhnhgx7k5bj520lcqs8qzgcdsynd03"))))
+        (base32 "0wsfz2jqfhmqshyr1n4qxcc3c6a96gyll4h34vn2zzvvcnncn9rb"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
@@ -3886,7 +3886,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3894,7 +3894,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "0nkb6v9lks25w5sv5s6p2ghgqnnnsf39md8nlx1cy4z89xlaisq9"))))
+                "1f5zzlnr2na4hkvcwn4n9cjlk6595945vwrw89pa683qk5mrb7b6"))))
     (build-system meson-build-system)
     (arguments
      (list

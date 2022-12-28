@@ -1164,7 +1164,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
 (define-public mu
   (package
     (name "mu")
-    (version "1.8.11")
+    (version "1.8.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1173,7 +1173,7 @@ security functionality including PGP, S/MIME, SSH, and SSL.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0b5h5kdalv62z31aqyipymiqhazfssbx4c7ww96nn41a0l0g0ir0"))))
+                "0y4f5p7pwmaj8733rjzg29038dw33057qlsbsq2wapvp24wcjymr"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config
@@ -2566,13 +2566,13 @@ maintained.")
 (define-public khard
   (package
     (name "khard")
-    (version "0.17.0")
+    (version "0.18.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri name version))
               (sha256
                (base32
-                "062nv4xkfsjc11k9m52dh6xjn9z68a4a6x1s8z05wwv4jbp1lkhn"))))
+                "05860fdayqap128l7i6bcmi9kdyi2gx02g2pmh88d56xgysd927y"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2581,8 +2581,7 @@ maintained.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
                     (zsh (string-append out "/share/zsh/site-functions")))
-               (copy-recursively "misc/zsh" zsh)
-               #t))))))
+               (copy-recursively "misc/zsh" zsh)))))))
     (native-inputs
      (list python-setuptools-scm))
     (inputs
@@ -3294,7 +3293,7 @@ writing OpenSMTPd filters.")
 (define-public opensmtpd-filter-dkimsign
   (package
     (name "opensmtpd-filter-dkimsign")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
@@ -3303,7 +3302,7 @@ writing OpenSMTPd filters.")
                   (string-append "https://distfiles.sigtrap.nl/"
                                  "filter-dkimsign-" version ".tar.gz")))
        (sha256
-        (base32 "0jwp47ixibnz8rghn193bk2hxh1j1zfrnidml18j7d7cylxfrd55"))))
+        (base32 "1hrn31hayr0hb32km5c42hhbaxw7g3jcgm59p0v0ydlj1fs0sprv"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -3324,8 +3323,8 @@ writing OpenSMTPd filters.")
      (list mandoc))           ; silently installs empty man page without
     (inputs
      (list libevent libopensmtpd
-           ;; XXX Our OpenSMTPd package uses libressl, but this package currently
-           ;; supports HAVE_ED25519 only with openssl.  Switch back when possible.
+           ;; Our OpenSMTPd package uses libressl, but this package currently
+           ;; supports HAVE_ED25519 only with openssl.
            openssl))
     (home-page "http://imperialat.at/dev/filter-dkimsign/")
     (synopsis "OpenSMTPd filter for signing mail with DKIM")
@@ -4027,11 +4026,11 @@ It is a replacement for the @command{urlview} program.")
     (license license:gpl2+)))
 
 (define-public mumi
-  (let ((commit "4590e4822dda792f59f69b764824aa148d92dad0")
+  (let ((commit "0a90eeda9b5e12a2f83e3917c46fa539f308d0c8")
         (revision "2"))
     (package
       (name "mumi")
-      (version (git-version "0.0.2" revision commit))
+      (version (git-version "0.0.4" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -4040,33 +4039,38 @@ It is a replacement for the @command{urlview} program.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "16brl1dk92kppzvxx8q5hcqiywg863s4sz5wb64hz8a37xa4hkyr"))))
+                  "1yxi1vvygrk8qd0mqh65qh1g99r5d4rlymj8amcn80ggi3z32byk"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((guix build gnu-build-system)
+       (list
+        #:modules '((guix build gnu-build-system)
                     ((guix build guile-build-system)
                      #:select (target-guile-effective-version))
                     (guix build utils))
-         #:imported-modules ((guix build guile-build-system)
+        #:imported-modules `((guix build guile-build-system)
                              ,@%gnu-build-system-modules)
 
-         #:configure-flags '("--localstatedir=/var")
+        #:configure-flags '(list "--localstatedir=/var")
 
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'install 'wrap-executable
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (version (target-guile-effective-version))
-                      (scm (string-append out "/share/guile/site/" version))
-                      (go  (string-append out "/lib/guile/" version
-                                          "/site-ccache")))
-                 (wrap-program (string-append bin "/mumi")
-                   `("GUILE_LOAD_PATH" ":" prefix
-                     (,scm ,(getenv "GUILE_LOAD_PATH")))
-                   `("GUILE_LOAD_COMPILED_PATH" ":" prefix
-                     (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'install-picocss
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((pico (dirname (search-input-file inputs "/scss/pico.scss"))))
+                  (mkdir-p "assets/pico/scss")
+                  (copy-recursively pico "assets/pico/scss"))))
+            (add-after 'install 'wrap-executable
+              (lambda _
+                (let* ((bin (string-append #$output "/bin"))
+                       (version (target-guile-effective-version))
+                       (scm (string-append #$output "/share/guile/site/" version))
+                       (go  (string-append #$output "/lib/guile/" version
+                                           "/site-ccache")))
+                  (wrap-program (string-append bin "/mumi")
+                    `("GUILE_LOAD_PATH" ":" prefix
+                      (,scm ,(getenv "GUILE_LOAD_PATH")))
+                    `("GUILE_LOAD_COMPILED_PATH" ":" prefix
+                      (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
        (list guile-email-latest
              guile-fibers
@@ -4080,7 +4084,16 @@ It is a replacement for the @command{urlview} program.")
              guile-3.0
              mailutils))
       (native-inputs
-       (list autoconf automake pkg-config))
+       (list autoconf automake pkg-config sassc
+             (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://github.com/picocss/pico.git")
+                     (commit "3052db4bd3439e236479dc0f98069f7d3b559486")))
+               (file-name (git-file-name "pico" "1.5.6"))
+               (sha256
+                (base32
+                 "1gs1li48hqizx7lc4n2fdxn9i2v4vafkqpza7svvfpcamfz29jpi")))))
       (home-page "https://git.elephly.net/software/mumi.git")
       (synopsis "Debbugs web interface")
       (description "Mumi is a Debbugs web interface.")
@@ -4471,7 +4484,7 @@ on RFC 3501 and original @code{imaplib} module.")
 (define-public rspamd
   (package
     (name "rspamd")
-    (version "3.2")
+    (version "3.4")
     (source
      (origin
        (method git-fetch)
@@ -4479,7 +4492,7 @@ on RFC 3501 and original @code{imaplib} module.")
              (url "https://github.com/rspamd/rspamd")
              (commit version)))
        (sha256
-        (base32 "122d5m1nfxxz93bhsk8lm4dazvdknzphb0a1188m7bsa4iynbfv2"))
+        (base32 "0jgmi8wqzsnwvfj6w4njzhxhcawbafsdxjkx1ym8r2jx8k4hwhi8"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments

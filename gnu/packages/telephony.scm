@@ -904,7 +904,7 @@ telephony functionality into custom Telegram clients.")
 (define-public coturn
   (package
     (name "coturn")
-    (version "4.6.0")
+    (version "4.6.1")
     (source
      (origin
        (method git-fetch)
@@ -913,7 +913,7 @@ telephony functionality into custom Telegram clients.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "152v2lnjj9b3w61d8aak7hmi9riw9cjs5g54g1gfpzlyk4c2jw21"))))
+        (base32 "04d3c2lxc496zxx3nzqr9fskm2w57kqijdfq3wsa0yp2dp28yjkj"))))
     (inputs
      (list openssl
            sqlite

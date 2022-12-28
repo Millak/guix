@@ -416,6 +416,8 @@ required structures.")
     (inputs
      (list gnutls-latest
            guile-3.0))
+    (properties '((release-tag-prefix . "v")
+                  (release-tag-version-delimiter . ".")))
     (synopsis "Guile bindings to GnuTLS")
     (description
      "This package provides Guile bindings to GnuTLS, a library implementation

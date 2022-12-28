@@ -547,7 +547,7 @@ specialized device.")
       (inputs
        (list alsa-lib
              coreutils-minimal          ;for patched 'env' shebang
-             ffmpeg
+             ffmpeg-4
              freetype
              lame
              libass
@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.7.1")
+    (version "6.7.7")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "0vwddhmr9n21q4yhkcz6iakkff91hvjcfzhg84zvf1ap30xx09hk"))))
+        (base32 "08rm3yka3swr6wf3lcmzh2jlq5ajxi8c6nd2likqzvbg6plrjx6b"))))
     (build-system gnu-build-system)
     (arguments
      (list

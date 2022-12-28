@@ -13,6 +13,7 @@
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Vivien Kraus <vivien@planete-kraus.eu>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -556,15 +557,16 @@ source.  To build it from source, refer to the upstream repository at
          (string-prefix? "https://pypi.org/packages" url)
          (string-prefix? "https://files.pythonhosted.org/packages" url)))))
 
-(define (latest-release package)
-  "Return an <upstream-source> for the latest release of PACKAGE."
+(define* (import-release package #:key (version #f))
+  "Return an <upstream-source> for the latest release of PACKAGE. Optionally
+include a VERSION string to fetch a specific version."
   (let* ((pypi-name    (guix-package->pypi-name package))
          (pypi-package (pypi-fetch pypi-name)))
     (and pypi-package
          (guard (c ((missing-source-error? c) #f))
            (let* ((info    (pypi-project-info pypi-package))
-                  (version (project-info-version info))
-                  (dist    (source-release pypi-package))
+                  (version (or version (project-info-version info)))
+                  (dist    (source-release pypi-package version))
                   (url     (distribution-url dist)))
              (upstream-source
               (urls (list url))
@@ -574,7 +576,7 @@ source.  To build it from source, refer to the upstream repository at
                    #f))
               (input-changes
                (changed-inputs package
-                               (pypi->guix-package pypi-name)))
+                               (pypi->guix-package pypi-name #:version version)))
               (package (package-name package))
               (version version)))))))
 
@@ -583,4 +585,4 @@ source.  To build it from source, refer to the upstream repository at
    (name 'pypi)
    (description "Updater for PyPI packages")
    (pred pypi-package?)
-   (latest latest-release)))
+   (import import-release)))

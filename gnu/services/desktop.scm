@@ -838,9 +838,7 @@ Bluetooth devices and provides a number of D-Bus interfaces.")))
   "Return a service that runs the @command{bluetoothd} daemon, which manages
 all the Bluetooth devices and provides a number of D-Bus interfaces.  When
 AUTO-ENABLE? is true, the bluetooth controller is powered automatically at
-boot.
-
-Users need to be in the @code{lp} group to access the D-Bus service.
+boot, which can be useful when using a bluetooth keyboard or mouse.
 "
   (service bluetooth-service-type
            (bluetooth-configuration

@@ -423,7 +423,7 @@ Kate's features include:
     (home-page "https://invent.kde.org/utilities/kdebugsettings")
     (synopsis "Choose which QLoggingCategory are displayed")
     (description
-     "This package allows to select which QLoggingCategory are displayed.")
+     "This package selects which QLoggingCategory are displayed.")
     (license license:lgpl2.0+)))
 
 (define-public kbackup

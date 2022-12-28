@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -159,7 +159,9 @@ COMMAND will be run in a pseudoterminal.  Returns the integer status value of
 the child process as returned by waitpid."
   (define (handler input)
     (and
-     (and=> (get-line input)
+     ;; Lines for progress bars etc. end in \r; treat is as a line ending so
+     ;; those lines are printed right away.
+     (and=> (read-delimited "\r\n" input 'concat)
             (lambda (line)
               (if (eof-object? line)
                   #f
@@ -186,7 +188,7 @@ in a pseudoterminal."
 
   (installer-log-line "running command ~s" command)
   (define result (run-external-command-with-line-hooks
-                  (list %display-line-hook) command
+                  (list display) command
                   #:tty? tty?))
   (define exit-val (status:exit-val result))
   (define term-sig (status:term-sig result))
@@ -264,7 +266,10 @@ values."
       (or port (%make-void-port "w")))))
 
 (define (%syslog-line-hook line)
-  (format (syslog-port) "installer[~d]: ~a~%" (getpid) line))
+  (let ((line (if (string-suffix? "\r" line)
+                  (string-append (string-drop-right line 1) "\n")
+                  line)))
+    (format (syslog-port) "installer[~d]: ~a" (getpid) line)))
 
 (define-syntax syslog
   (lambda (s)
@@ -293,11 +298,7 @@ values."
       port)))
 
 (define (%installer-log-line-hook line)
-  (format (installer-log-port) "~a~%" line))
-
-(define (%display-line-hook line)
-  (display line)
-  (newline))
+  (display line (installer-log-port)))
 
 (define %default-installer-line-hooks
   (list %syslog-line-hook
@@ -309,9 +310,10 @@ values."
     (syntax-case s ()
       ((_ fmt args ...)
        (string? (syntax->datum #'fmt))
-       #'(let ((formatted (format #f fmt args ...)))
-               (for-each (lambda (f) (f formatted))
-                         %default-installer-line-hooks))))))
+       (with-syntax ((fmt (string-append (syntax->datum #'fmt) "\n")))
+         #'(let ((formatted (format #f fmt args ...)))
+             (for-each (lambda (f) (f formatted))
+                       %default-installer-line-hooks)))))))
 
 
 ;;;

@@ -52,7 +52,7 @@
 ;;; Copyright © 2020 Vitaliy Shatrov <D0dyBo0D0dyBo0@protonmail.com>
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020, 2021 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2021, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Trevor Hass <thass@okstate.edu>
 ;;; Copyright © 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2020 Lu hux <luhux@outlook.com>
@@ -7930,7 +7930,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.9.4")
+    (version "0.10.0")
     (source
      (origin
        (method git-fetch)
@@ -7940,7 +7940,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0isswidhxhs2q5c4cxryjr8y8ibfxckpfyccly3b4lg1nxvm5gjv"))))
+        (base32 "183dbi4a91xggxm1rmn7vr8rq519yz7b3zhrd03azsg6fxylv9wn"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -7949,7 +7949,8 @@ ncurses for text display.")
     (native-inputs
      (list gettext-minimal pkg-config))
     (inputs
-     (list freetype
+     (list enet
+           freetype
            glpk
            libpng
            libunibreak
@@ -7959,6 +7960,7 @@ ncurses for text display.")
            luajit
            openal
            openblas
+           pcre2
            physfs
            python
            python-pyyaml
@@ -8478,7 +8480,7 @@ to download and install them in @file{$HOME/.stepmania-X.Y/Songs} directory.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list cairo ffmpeg pango sdl2 sdl2-image))
+     (list cairo ffmpeg-4 pango sdl2 sdl2-image))
     (home-page "https://github.com/fmang/oshu/")
     (synopsis "Rhythm game in which you click on circles")
     (description "@i{oshu!} is a minimalist variant of the @i{osu!} rhythm game,
@@ -8885,7 +8887,7 @@ fight each other on an arena-like map.")
 (define-public flare-engine
   (package
     (name "flare-engine")
-    (version "1.13.04")
+    (version "1.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8894,7 +8896,7 @@ fight each other on an arena-like map.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "042n2r9whnd3kncf3k89dcl1srn7p2jk6kdc0lb2hbwff55iylnw"))))
+                "1gyaxr6zykwg5kg9xc3vlb5a6fas4z3zbk53y0zlfl35n4vqlh84"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -8914,7 +8916,7 @@ action RPGs.")
 (define-public flare-game
   (package
     (name "flare-game")
-    (version "1.13.04")
+    (version "1.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8923,7 +8925,7 @@ action RPGs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18rdrwv7p5rvmlah5pl9vbc09xlb8id75a7c73yn2sxkm6cf5c2l"))))
+                "1as9dsg0ddz14jjk4y5nj0ml20cwncrcnbdk10r1jaa2vss9bbn3"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -9318,7 +9320,7 @@ play with up to four players simultaneously.  It has network support.")
                     (string-append "../hedgewars-src-" #$version)
                   (install-file "misc/hedgewars.png" icons))))))))
     (inputs
-     (list ffmpeg
+     (list ffmpeg-4
            freeglut
            ghc-entropy
            ghc-hslogger
@@ -10336,10 +10338,10 @@ etc.  You can also play games on FICS or against an engine.")
     (license license:gpl2+)))
 
 (define-public stockfish
-  (let ((neural-network-revision "6877cd24400e")) ; also update hash below
+  (let ((neural-network-revision "ad9b42354671")) ; also update hash below
     (package
       (name "stockfish")
-      (version "15")
+      (version "15.1")
       (source
        (origin
          (method git-fetch)
@@ -10348,7 +10350,7 @@ etc.  You can also play games on FICS or against an engine.")
                (commit (string-append "sf_" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1v19v6qhwbf31wpc3qcih4dvqxwqkh0p426skgjin6ags31hkbmh"))))
+          (base32 "0zmnv8vbhhid73pjyxg56r4ckm887znv4d55br370plm3p5b56xa"))))
       (build-system gnu-build-system)
       (inputs
        `(("neural-network"
@@ -10358,7 +10360,7 @@ etc.  You can also play games on FICS or against an engine.")
                                  neural-network-revision ".nnue"))
              (sha256
               (base32
-               "1qyna598c0v7gdpycc6kpl12h5a2wa50dqray6gv208f80jcsxv8"))))))
+               "11mpdhnsfggldgvmzwmya64pp3fndyppi2fkdf8kfhbi8qsl56xd"))))))
       (arguments
        `(#:tests? #f
          #:make-flags (list "-C" "src"
@@ -10388,11 +10390,13 @@ etc.  You can also play games on FICS or against an engine.")
                         (copy-file (assoc-ref inputs "neural-network")
                                    (format #f "src/nn-~a.nnue"
                                            ,neural-network-revision))))
-                    ;; Guix doesn't use a multiarch gcc.
-                    (add-after 'unpack 'remove-m-flag
+                    (add-after 'unpack 'remove-m-flag-and-net-target
                       (lambda _
                         (substitute* "src/Makefile"
-                          (("-m\\$\\(bits\\)") "")))))))
+                          ;; Guix doesn't use a multiarch gcc.
+                          (("-m\\$\\(bits\\)") "")
+                          ;; Dont depend on net target.
+                          ((": net") ": ")))))))
       (synopsis "Strong chess engine")
       (description
        "Stockfish is a very strong chess engine.  It is much stronger than the
@@ -11020,7 +11024,7 @@ disassembly of the DOS version, extended with new features.")
 (define-public fheroes2
   (package
     (name "fheroes2")
-    (version "0.9.11")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -11029,7 +11033,7 @@ disassembly of the DOS version, extended with new features.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m8649srzg3j2b1hs4x2y8fib6hn7v0afv4c7bjnfk4bhpi4cqd7"))))
+        (base32 "0bvp9xhzlh4d6q5jlvz4nciald75g9v0vahzax47q9xgajnbibzk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ; no tests

@@ -842,7 +842,10 @@ static checks."
     (check-mapped-devices os)
     (when (zero? (getuid))
       (check-file-system-availability (operating-system-file-systems os))
-      (check-initrd-modules os)))
+      (unless (%current-target-system)
+        ;; Skip the check if the user is making use of --target, as it cannot
+        ;; be checked against the running kernel.
+        (check-initrd-modules os))))
 
   (mlet* %store-monad
       ((sys       (system-derivation-for-action image action

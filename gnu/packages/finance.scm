@@ -271,14 +271,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.8")
+    (version "5.6")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/homebank-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "11fgmdqsnxdqma1ffljbcl7w1ahx0s5p41hjy600f8zarsrmnyjh"))))
+                "1ig00d3wby6lisz3vbyb5qm7h4a6npfwqyphdl8fjgibzpapq5a1"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -1645,7 +1645,7 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
 (define-public libofx
   (package
     (name "libofx")
-    (version "0.10.7")
+    (version "0.10.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1654,13 +1654,14 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k3ygavyb9b3f1ra62dsa46iiia0a1588yn3zy7bh7w4vfcrbd6d"))))
+                "120hyhs4fkxrgpvd2p0hpf5v8dq0jjql2fzllk77m33m1c82pr18"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:parallel-build? #f              ;fails with -j64
       #:configure-flags
-      #~(list (string-append "--with-opensp-includes="
+      #~(list "--disable-static"
+              (string-append "--with-opensp-includes="
                              (search-input-directory %build-inputs
                                                      "include/OpenSP")))))
     (native-inputs
@@ -1905,8 +1906,8 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public emacs-beancount
   ;; Note that upstream has not made any release since this project moved
   ;; into its own repository (it was originally part of beancount itself)
-  (let ((commit "dbafe6a73d90c1f64d457b356b9dbb43499f70d5")
-        (revision "0"))
+  (let ((commit "687775da63784d153a3c1cfee9801090c6b51842")
+        (revision "1"))
     (package
       (name "emacs-beancount")
       (version (git-version "0.0.0" revision commit))
@@ -1918,7 +1919,7 @@ generate a variety of reports from them, and provides a web interface.")
                (commit commit)))
          (sha256
           (base32
-           "0v9bws2gv5b00x829p7hrcxqgdp7iwxvv1vhfjka81qrw6w1fvjw"))
+           "08383yqqanx29al1hg1r6ndx3gwjg6fj7kl340f1zz9m9cfiyvg3"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/beancount/beancount-mode")

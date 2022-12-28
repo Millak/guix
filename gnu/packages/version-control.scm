@@ -71,7 +71,6 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix hg-download)
-  #:use-module (guix build python-build-system)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
@@ -1409,7 +1408,7 @@ manipulate them in various ways.")
 (define-public vcsh
   (package
     (name "vcsh")
-    (version "1.20190621-4")
+    (version "2.0.5")
     (source
      (origin
        (method git-fetch)
@@ -1418,25 +1417,30 @@ manipulate them in various ways.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1gx5nbqyprgy6picns5hxky3lyzkqfq3xhm614f0wcdi58xrsdh0"))))
+        (base32 "15lb09c2q261p1pp5r7j9k8389ybrd2q19xhnp1nnha6gs78i4wq"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list which))
+     (list autoconf
+           automake
+           ;; for man page
+           ronn-ng
+           ;; for tests
+           perl
+           perl-test-harness
+           perl-shell-command
+           perl-test-most
+           ;; for bash-completion
+           pkg-config))
     (inputs
-     (list git perl perl-test-harness perl-shell-command perl-test-most))
+     (list git))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
-         (delete 'configure)
-         (delete 'build)
-         (add-after 'install 'install-bash-completion
-           ;; As of 1.20190621, zsh completion is installed by default but bash
-           ;; completion is not.  Do so manually.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out         (assoc-ref outputs "out"))
-                    (completions (string-append out "/etc/bash_completion.d")))
-               (mkdir-p completions)
-               (copy-file "_vcsh_bash" (string-append completions "/vcsh"))))))
+         (add-before 'bootstrap 'fix-version-gen
+           (lambda _
+             (call-with-output-file ".tarball-version"
+               (lambda (port)
+                 (display version port))))))
        #:make-flags (list (string-append "PREFIX="
                                          (assoc-ref %outputs "out")))
        #:test-target "test"))
@@ -2728,25 +2732,20 @@ by rclone usable with git-annex.")
 (define-public fossil
   (package
     (name "fossil")
-    (version "2.18")
+    (version "2.20")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://www.fossil-scm.org/home/tarball/"
-             "84f25d7eb10c0714109d69bb2809abfa8b4b5c3d73b151a5b10df724dacd46d8"
+             "210e89a0597f225f49722b096cf5563bf193e920e02a9bd38503a906deacd416"
              "/fossil-src-" version ".tar.gz"))
        ;; XXX: Currently the above hash must be manually updated.
        (sha256
-        (base32 "0cq7677p84nnbfvk2dsh3c3y900gslw3zaw8iipfq932vmf1s31h"))
+        (base32 "08g7img88n2nwcdkpzmg4aqbp2iy40nllgas53502dspm97ym4h8"))
        (modules '((guix build utils)))
        (snippet
-        '(begin
-           (delete-file-recursively "compat")
-           ;; Disable obsolete SQLite feature check; remove for 2.19.
-           (substitute* "tools/sqlcompattest.c"
-             ((".*\"ENABLE_JSON1\".*")
-              ""))))))
+        '(delete-file-recursively "compat"))))
     (build-system gnu-build-system)
     (native-inputs
      (list tcl                          ;for configuration only

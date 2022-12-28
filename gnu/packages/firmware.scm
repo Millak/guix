@@ -34,6 +34,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -72,7 +73,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (ice-9 match))
 
 (define-public ath9k-htc-firmware
   (package
@@ -342,6 +344,82 @@ broadband modem as found, for example, on PinePhone.")
     (home-page "https://gitlab.com/mobian1/devices/eg25-manager")
     (license license:gpl3+)))
 
+(define* (make-openbios-package name arch)
+  (let ((target (cond
+                 ((string-suffix? "ppc" arch)
+                  "powerpc-linux-gnu")
+                 ((string-suffix? "amd64" arch)
+                  "x86_64-linux-gnu")
+                 ((string-suffix? "x86" arch)
+                  "i686-linux-gnu")
+                 (else (string-append arch "-linux-gnu")))))
+  (package
+    (name name)
+    (version "1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/openbios/openbios")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "openbios" version))
+              (patches (search-patches "openbios-gcc-warnings.patch"))
+              (sha256
+               (base32
+                "11cr0097aiw4hc07v5hfl95753ikyra5ig4nv899ci7l42ilrrbr"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'build-reproducibly
+                 (lambda _
+                   (substitute* "Makefile.target"
+                     (("TZ=UTC date \\+")
+                      "TZ=UTC date --date=@1 +"))))
+               (replace 'configure
+                 (lambda _
+                   (invoke "./config/scripts/switch-arch" #$arch)))
+               (replace 'install
+                 (lambda _
+                   (let ((build-target
+                          (if (string-contains #$arch "-")
+                              (car (reverse (string-split #$arch #\-)))
+                              #$arch)))
+                     (for-each (lambda (elf)
+                                 (install-file elf
+                                               (string-append #$output
+                                                              "/share/firmware")))
+                               (find-files (string-append "obj-" build-target)
+                                           "\\.elf$"))))))))
+    (native-inputs
+     (append (if (string-prefix? (%current-system) target)
+                 '()
+                 (list (cross-gcc target) (cross-binutils target)))
+             (list libxslt which)))
+    (home-page "https://openfirmware.info/Welcome_to_OpenBIOS")
+    (synopsis "Open Firmware implementation")
+    (description
+     "OpenBIOS is an implementation of the IEEE 1275-1994 \"Open Firmware\"
+specification.  It can be used as a system firmware, as a boot loader, or
+provide OpenFirmware functionality on top of an already running system.")
+    ;; Some files are GPLv2 only.
+    (license license:gpl2))))
+
+(define-public openbios-qemu-ppc
+  (let ((base (make-openbios-package "openbios-qemu-ppc" "qemu-ppc")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'rename-executable
+                (lambda _
+                  (with-directory-excursion #$output
+                    (rename-file "share/firmware" "share/qemu")
+                    (rename-file "share/qemu/openbios-qemu.elf"
+                                 "share/qemu/openbios-ppc")))))))))))
+
 (define* (make-opensbi-package platform name #:optional (arch "riscv64"))
   (package
     (name name)
@@ -352,7 +430,7 @@ broadband modem as found, for example, on PinePhone.")
        (uri (git-reference
              (url "https://github.com/riscv-software-src/opensbi")
              (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "opensbi" version))
        (sha256
         (base32 "0xlnhl965286kvizyjm571qbhj3l5n71a02dmbmgxzcqapzgi9wk"))))
     (build-system gnu-build-system)
@@ -399,10 +477,33 @@ executing in M-mode.")
 (define-public opensbi-generic
   (make-opensbi-package "generic" "opensbi-generic"))
 
+(define-public opensbi-qemu
+  (package
+    (inherit opensbi-generic)
+    (name "opensbi-qemu")
+    (native-inputs '())
+    (inputs (list opensbi-generic))
+    (build-system trivial-build-system)
+    (arguments
+     (list #:modules '((guix build utils))
+           #:builder
+           #~(begin
+               (use-modules ((guix build utils)))
+               (let ((opensbi-riscv64 (search-input-file %build-inputs
+                                                         "fw_dynamic.bin"))
+                     (out (string-append #$output "/share/qemu")))
+                 (mkdir-p out)
+                 (symlink opensbi-riscv64
+                          (string-append
+                           out "/opensbi-riscv64-generic-fw_dynamic.bin"))))))
+    (synopsis "OpenSBI firmware files for QEMU")
+    (description
+     "This package contains OpenSBI firmware files for use with QEMU.")))
+
 (define-public seabios
   (package
     (name "seabios")
-    (version "1.15.0")
+    (version "1.16.1")
     (source
      (origin
        (method git-fetch)
@@ -411,76 +512,52 @@ executing in M-mode.")
              (commit (string-append "rel-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gnsfmbgcvihsap8sz8c2n3qs439q44i3pwrms2nv3xcnf1sclj9"))))
+        (base32 "0gph1hf70jjpx55qc0lzx2yghkipg9dnsin07i4jajk0p1jpd2d0"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Delete IASL-generated files.
+            (for-each delete-file (find-files "." "\\.hex$"))))))
     (build-system gnu-build-system)
-    (native-inputs (list python-wrapper))
+    (native-inputs
+     (list acpica python-wrapper))
     (arguments
-     `(#:tests? #f                      ; no check target
-       #:make-flags '("EXTRAVERSION=-guix") ;upstream wants distros to set this
-       #:modules (,@%gnu-build-system-modules
-                  (ice-9 match))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda _
-             ;; Create the ".version" file that is present in release tarballs.
-             ;; Otherwise this will be regarded as an "unclean" build, and the
-             ;; build system ends up encoding the build date in the binaries.
-             (call-with-output-file ".version"
-               (lambda (port)
-                 (format port ,(package-version this-package))))
-             (setenv "CC" "gcc")))
-         (add-after 'build 'build-vgabios
-           (lambda* (#:key (make-flags ''()) #:allow-other-keys)
-             (for-each
-              (match-lambda
-                ((target . config)
-                 (let* ((dot-config (string-append (getcwd) "/" target "/.config"))
-                        (flags (append make-flags
-                                      (list (string-append "KCONFIG_CONFIG="
-                                                           dot-config)
-                                            (string-append "OUT=" target "/")))))
-                   (mkdir target)
-                   (call-with-output-file dot-config
-                     (lambda (port)
-                       (for-each (lambda (entry)
-                                   (if (string-suffix? "=n" entry)
-                                       (format port "# CONFIG_~a is not set~%"
-                                               (string-drop-right entry 2))
-                                       (format port "CONFIG_~a~%" entry)))
-                                 (cons "BUILD_VGABIOS=y" config))))
-                   (apply invoke "make" (append flags '("oldnoconfig")))
-                   (apply invoke "make" flags)
-                   (link (string-append target "/bios.bin")
-                         (string-append "out/" target ".bin")))))
-              ;; These tuples are modelled after Debians packaging:
-              ;; https://salsa.debian.org/qemu-team/seabios/-/blob/master/debian/rules
-              '(("ati"    . ("VGA_ATI=y" "VGA_PCI=y"))
-                ("bochs-display" . ("DISPLAY_BOCHS=y" "VGA_PCI=y"))
-                ("cirrus" . ("VGA_CIRRUS=y" "VGA_PCI=y"))
-                ("stdvga" . ("VGA_BOCHS=y" "VGA_PCI=y"))
-                ("virtio" . ("VGA_BOCHS_VIRTIO=y" "VGA_PCI=y"))
-                ("vmware" . ("VGA_BOCHS_VMWARE=y" "VGA_PCI=y"))
-                ("qxl"    . ("VGA_BOCHS_QXL=y" "VGA_PCI=y"))
-                ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
-                ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n"))))))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (fmw (string-append out "/share/firmware")))
-               (mkdir-p fmw)
-               (copy-file "out/bios.bin" (string-append fmw "/bios.bin"))
-               (for-each (lambda (bios)
-                           (install-file bios fmw))
-                         (find-files "out" "\\.bin$"))
-               (with-directory-excursion fmw
-                 ;; QEMU 1.7 and later looks only for the latter.
-                 (symlink "bios.bin" "bios-256k.bin"))))))))
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags
+      ;; If EXTRAVERSION is not set the build system will embed the current
+      ;; date in binaries.  Use this opportunity to personalize as recommended
+      ;; by Build_overview.md.
+      #~'("EXTRAVERSION=/GNU Guix"
+          "V=1")                        ;build verbosely
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda _
+              ;; Ensure this file is present in case we're building from a git
+              ;; checkout instead of release tarball.
+              (call-with-output-file ".version"
+                (lambda (port)
+                  (format port #$(package-version this-package))))
+              ;; If we use (cc-for-target) then we have the system prefix
+              ;; twice or we might have the wrong prefix.
+              (setenv "CC" "gcc")))
+          (add-before 'build 'build-description-tables
+            (lambda _
+              ;; Regenerate the ACPI description tables.
+              (invoke "make" "iasl")
+              ;; Clear temporary files added by the iasl target.
+              (invoke "make" "clean")))
+          (replace 'install
+            (lambda _
+              (install-file "out/bios.bin"
+                            (string-append #$output "/share/firmware")))))))
     (home-page "https://www.seabios.org/SeaBIOS")
     (synopsis "x86 BIOS implementation")
     (description "SeaBIOS is an implementation of a 16bit x86 BIOS.  SeaBIOS
 can run in an emulator or it can run natively on X86 hardware with the use of
 coreboot.")
+    (supported-systems '("i686-linux" "x86_64-linux"))
     ;; Dual licensed.
     (license (list license:gpl3+ license:lgpl3+
                    ;; src/fw/acpi-dsdt.dsl is lgpl2
@@ -488,6 +565,228 @@ coreboot.")
                    ;; src/fw/lzmadecode.c and src/fw/lzmadecode.h are lgpl3+ and
                    ;; cpl with a linking exception.
                    license:cpl1.0))))
+
+(define-public seabios-qemu
+  (package/inherit seabios
+    (name "seabios-qemu")
+    (native-inputs
+     (if (member (%current-system) '("i686-linux" "x86_64-linux"))
+         (package-native-inputs seabios)
+         (modify-inputs (package-native-inputs seabios)
+           (prepend (cross-gcc "i686-linux-gnu")
+                    (cross-binutils "i686-linux-gnu")))))
+    (supported-systems %supported-systems)
+    (arguments
+     (substitute-keyword-arguments (package-arguments seabios)
+       ((#:modules modules %gnu-build-system-modules)
+        `((ice-9 match)
+          (ice-9 threads)
+          ,@modules))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            #$@(match (%current-system)
+                 ((or "i686-linux" "x86_64-linux")
+                  #~())
+                 (_
+                  #~((add-after 'configure 'configure-cross
+                       (lambda _
+                         (substitute* "Makefile"
+                           (("CROSS_PREFIX=")
+                            "CROSS_PREFIX=i686-linux-gnu-")))))))
+            (replace 'build
+              (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                ;; Note: These BIOS configurations are taken from QEMUs roms/
+                ;; directory.
+                (let ((biosen
+                       '( ;; The standard BIOS using default options.
+                         ("bios-256k" . ("QEMU=y" "ROM_SIZE=256" "ATA_DMA=n"))
+                         ;; A minimal BIOS for old QEMU machine types.
+                         ("bios-128k"
+                          . ("QEMU=y" "ROM_SIZE=128" "ATA_DMA=n" "BOOTSPLASH=n"
+                             "XEN=n" "USB_OHCI=n" "USB_XHCI=n" "USB_UAS=n"
+                             "SDCARD=n" "TCGBIOS=n" "MPT_SCSI=n" "ESP_SCSI=n"
+                             "MEGASAS=n" "PVSCSI=n" "NVME=n" "USE_SMM=n"
+                             "VGAHOOKS=n" "HOST_BIOS_GEOMETRY=n" "ACPI_PARSE=n"))
+                         ;; Minimal BIOS for the "microvm" machine type.
+                         ("bios-microvm"
+                          . ("QEMU=y" "ROM_SIZE=128" "XEN=n" "BOOTSPLASH=n"
+                             "ATA=n" "AHCI=n" "SDCARD=n" "PVSCSI=n" "ESP_SCSI=n"
+                             "LSI_SCSI=n" "MEGASAS=n" "MPT_SCSI=n" "FLOPPY=n"
+                             "FLASH_FLOPPY=n" "NVME=n" "PS2PORT=n" "USB=n"
+                             "LPT=n" "RTC_TIMER=n" "USE_SMM=n" "PMTIMER=n"
+                             "TCGBIOS=n" "HARDWARE_IRQ=n" "ACPI_PARSE=y"))))
+                      (vgabiosen
+                       '(("ati"    . ("VGA_ATI=y" "VGA_PCI=y"))
+                         ("bochs-display" . ("DISPLAY_BOCHS=y" "VGA_PCI=y"))
+                         ("cirrus" . ("VGA_CIRRUS=y" "VGA_PCI=y"))
+                         ("stdvga" . ("VGA_BOCHS=y" "VGA_PCI=y"))
+                         ("virtio" . ("VGA_BOCHS=y" "VGA_BOCHS_VIRTIO=y"
+                                      "VGA_PCI=y"))
+                         ("vmware" . ("VGA_BOCHS=y" "VGA_BOCHS_VMWARE=y"
+                                      "VGA_PCI=y"))
+                         ("qxl"    . ("VGA_BOCHS=y" "VGA_BOCHS_QXL=y"
+                                      "VGA_PCI=y"))
+                         ("isavga" . ("VGA_BOCHS=y" "VGA_PCI=n"))
+                         ("ramfb"  . ("VGA_RAMFB=y" "VGA_PCI=n")))))
+                  (mkdir "out")
+                  (n-par-for-each
+                   (parallel-job-count)
+                   (match-lambda
+                     ((target . config)
+                      (let* ((dot-config (string-append (getcwd) "/" target
+                                                        "/.config"))
+                             (flags (append
+                                     make-flags
+                                     (list (string-append "KCONFIG_CONFIG="
+                                                          dot-config)
+                                           (string-append "OUT=" target "/")))))
+                        (mkdir target)
+                        (call-with-output-file dot-config
+                          (lambda (port)
+                            (for-each (lambda (entry)
+                                        (format port "CONFIG_~a~%" entry))
+                                      config)))
+                        (apply invoke "make" "oldnoconfig" flags)
+                        (apply invoke "make" flags)
+                        (link (string-append target "/"
+                                             (if (string-prefix? "vgabios" target)
+                                                 "vgabios.bin" "bios.bin"))
+                              (string-append "out/" target ".bin")))))
+                   (append biosen
+                           (map (lambda (pair)
+                                  `(,(string-append "vgabios-" (car pair))
+                                    .
+                                    ,(cons "BUILD_VGABIOS=y" (cdr pair))))
+                                vgabiosen))))))
+            (replace 'install
+              (lambda _
+                (let ((firmware (string-append #$output "/share/qemu")))
+                  (for-each (lambda (bios)
+                              (install-file bios firmware))
+                            (find-files "out" "\\.bin$"))
+                  (with-directory-excursion firmware
+                    ;; Compatibility symlinks for QEMU.
+                    (symlink "bios-128k.bin" "bios.bin")
+                    (symlink "vgabios-isavga.bin" "vgabios.bin")))))))))))
+
+(define-public sgabios
+  ;; There are no tags in the repository.
+  (let ((commit "72f39d48bedf044e202fd51fecf3e2218fc2ae66")
+        (revision "0"))
+    (package
+      (name "sgabios")
+      (version (git-version "0.0" revision commit))
+      (home-page "https://gitlab.com/qemu-project/sgabios")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ybl021i0xaz18wzq4q13ifypy5b3dj8m11c8m0qdiq00g06vm0i"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:make-flags
+             #~'(#$@(if (member (%current-system) '("i686-linux" "x86_64-linux"))
+                        #~("CC=gcc")
+                        #~("CC=i686-linux-gnu-gcc"
+                           "LD=i686-linux-gnu-ld"
+                           "OBJCOPY=i686-linux-gnu-objcopy"))
+                     "HOSTCC=gcc")
+             #:parallel-build? #f
+             #:tests? #f   ;no tests
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'build-reproducibly
+                   (lambda _
+                     (substitute* "Makefile"
+                       (("BUILD_DATE = .*")
+                        "BUILD_DATE = \\\"Jan 1 1970\\\"\n")
+                       (("BUILD_SHORT_DATE = .*")
+                        "BUILD_SHORT_DATE = \\\"1/1/70\\\"\n"))))
+                 (delete 'configure)
+                 (replace 'install
+                   (lambda _
+                     (install-file "sgabios.bin"
+                                   (string-append #$output "/share/qemu")))))))
+      (native-inputs
+       (if (member (%current-system) '("i686-linux" "x86_64-linux"))
+           '()
+           (list (cross-gcc "i686-linux-gnu")
+                 (cross-binutils "i686-linux-gnu"))))
+      (synopsis "Serial graphics adapter BIOS")
+      (description
+       "SGABIOS provides a means for legacy PC software to communicate with an
+attached serial console as if a VGA card is attached.  It is designed to be
+inserted into a BIOS as an option ROM to provide over a serial port the display
+and input capabilites normally handled by a VGA adapter and a keyboard, and
+additionally provide hooks for logging displayed characters for later collection
+after an operating system boots.")
+      (license license:asl2.0))))
+
+(define-public edk2-tools
+  (package
+    (name "edk2-tools")
+    (version "202211")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tianocore/edk2")
+                    (commit (string-append "edk2-stable" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1264542mm0mffjcmw5sw34h94n405swz5z56rw1ragp3j62144iy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "BUILD_CC=" #$(cc-for-target)))
+           #:test-target "Tests"
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'change-directory
+                 (lambda _
+                   (chdir "BaseTools")))
+               (add-after 'change-directory 'disable-some-tools
+                 (lambda _
+                   ;; Disable building brotli and xz, since we package them
+                   ;; separately, and it would require fetching submodules.
+                   (substitute* "Source/C/GNUmakefile"
+                     (("^[[:blank:]]+BrotliCompress[[:blank:]]+\\\\")
+                      "\\")
+                     (("^[[:blank:]]+LzmaCompress[[:blank:]]+\\\\")
+                      "\\"))))
+               (replace 'build
+                 (lambda* (#:key (make-flags #~'()) #:allow-other-keys)
+                   ;; The default build target also runs tests.
+                   (apply invoke "make" "-C" "Source/C" make-flags)))
+               (delete 'configure)
+               (replace 'install
+                 (lambda _
+                   (mkdir #$output)
+                   (copy-recursively "Source/C/bin"
+                                     (string-append #$output "/bin")))))))
+    (native-inputs
+     (list python-wrapper))
+    (inputs
+     (list `(,util-linux "lib")))       ;for libuuid
+    (home-page
+     "https://github.com/tianocore/tianocore.github.io/wiki/EDK-II-Tools-List")
+    (synopsis "EFI development tools")
+    (description
+     "This package contains tools for processing UEFI firmware content.
+Executables included are:
+
+@itemize
+@item @code{EfiRom}: Build Option ROM images.
+@item @code{GenFfs}: Generate FFS files.
+@item @code{GenFv}: Generate a PI firmware volume image.
+@item @code{GenFw}: Get image data from PE32 files.
+@item @code{GenSec}: Generate EFI_SECTION type files.
+@item @code{VfrCompile}: Parse preprocessed UEFI and Framework VFR files.
+@item @code{VolInfo}: Display the contents of a firmware volume.
+@end itemize")
+    (license license:bsd-2)))
 
 (define-public ovmf
   (let ((commit "13a50a6fe1dcfa6600c38456ee24e0f9ecf51b5f")

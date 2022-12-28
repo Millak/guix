@@ -56,6 +56,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Derek Chuank <derekchuank@outlook.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
+;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3268,3 +3269,53 @@ light filter or night light.")
     (description "@code{ydotool} is a Linux command-line tool that simulates
 keyboard input, mouse actions, etc.  programmatically or manually.")
     (license license:agpl3+)))
+
+(define-public wvkbd
+  (package
+    (name "wvkbd")
+    (version "0.12")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~proycon/wvkbd")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05zl6jhw7pj7w2cd02m3i0zzn1z99kzwh2mlg9h96j5aw1x1lvp6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target))
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'fix-cross-compile
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("pkg-config")
+                               #$(pkg-config-for-target)))))
+                        (delete 'configure))))
+    (native-inputs (list wayland ;for wayland-scanner
+                         pkg-config))
+    (inputs (list libxkbcommon cairo pango harfbuzz wayland))
+    (home-page "https://git.sr.ht/~proycon/wvkbd")
+    (synopsis "On-screen keyboard for wlroots compositors")
+    (description
+     "This package provides on-screen keyboard for wlroots compositors with
+the following features:
+
+@itemize
+@item Typing, modifier locking, layout switching
+@item Positive visual feedback on key presses
+@item On-the-fly layout and keymap switching
+@item Custom color schemes
+@item International layouts (cyrillic, arabic)
+@item Emoji support
+@item Compose key for character variants (e.g. diacritics)
+@item Show/hide keyboard on signals (SIGUSR1 = hide, SIGUSR2 = show, SIGRTMIN = toggle)
+@item Automatic portrait/landscape detection and subsequent layout switching
+@end itemize")
+    (license (list license:expat  ;3 files under Expat license (see 'LICENSE')
+                   license:gpl3+))))              ;the rest is GPLv3+

@@ -69,7 +69,7 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20221031.1308.130cc26")
+(define %jami-version "20221220.0956.79e1207")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
@@ -93,16 +93,9 @@
                                             "plugins"))))
     (sha256
      (base32
-      "0hbsjjs61n7268lyjnjb9lzfpkkd65fmz76l1bg4awlz1f3cyywm"))
+      "0g5709rmb9944s0ij9g4pm1b871f5z0s5nawvm10z14wx3y1np8m"))
     (patches (search-patches "jami-disable-integration-tests.patch"
-                             "jami-libjami-headers-search.patch"
-                             "jami-fix-unit-tests-build.patch"
-                             "jami-fix-qml-imports.patch"
-                             "jami-no-webengine.patch"
-                             "jami-sipaccount-segfault.patch"
-                             "jami-sip-contacts.patch"
-                             "jami-sip-unregister.patch"
-                             "jami-xcb-link.patch"))))
+                             "jami-libjami-headers-search.patch"))))
 
 ;; Jami maintains a set of patches for some key dependencies (currently
 ;; pjproject and ffmpeg) of Jami that haven't yet been integrated upstream.

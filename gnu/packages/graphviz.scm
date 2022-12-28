@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2015, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Theodoros Foradis <theodoros@foradis.org>
-;;; Copyright © 2017, 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Gábor Boskovits <boskovits@gmail.com>
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -32,6 +32,7 @@
 (define-module (gnu packages graphviz)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -180,27 +181,25 @@ interfaces for other technical domains.")
 (define-public python-graphviz
   (package
     (name "python-graphviz")
-    (version "0.13.2")
+    (version "0.20.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "graphviz" version ".zip"))
               (sha256
                (base32
-                "009alrilzx0v7kl41khbq7k6k8b8pxyvbsi1b1ai933f6kpbxb30"))))
-    (build-system python-build-system)
+                "1y1b956r01kg7qarkkrivhn71q64k0gbq6bcybd4gfd3v95g2n4c"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests #:allow-other-keys)
-                      (if tests
-                          (invoke "pytest" "-vv")
-                          (format #t "test suite not run~%"))
-                      #t)))))
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'prepare-chec
+           ;; Needed for fontconfig cache directories
+           (lambda _ (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list unzip
            ;; For tests.
            graphviz
-           python-mock
            python-pytest
            python-pytest-cov
            python-pytest-mock))

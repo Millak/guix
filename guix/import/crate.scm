@@ -3,6 +3,7 @@
 ;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -354,11 +355,12 @@ look up the development dependencs for the given crate."
 (define crate-package?
   (url-predicate crate-url?))
 
-(define (latest-release package)
-  "Return an <upstream-source> for the latest release of PACKAGE."
+(define* (import-release package #:key (version #f))
+  "Return an <upstream-source> for the latest release of PACKAGE. Optionally
+include a VERSION string to fetch a specific version."
   (let* ((crate-name (guix-package->crate-name package))
          (crate      (lookup-crate crate-name))
-         (version    (crate-latest-version crate))
+         (version    (or version (crate-latest-version crate)))
          (url        (crate-uri crate-name version)))
     (upstream-source
      (package (package-name package))
@@ -370,5 +372,5 @@ look up the development dependencs for the given crate."
    (name 'crate)
    (description "Updater for crates.io packages")
    (pred crate-package?)
-   (latest latest-release)))
+   (import import-release)))
 

@@ -116,7 +116,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.10")
+    (version "0.23.11")
     (source (origin
               (method url-fetch)
               (uri
@@ -125,7 +125,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1a764k504nh9vqmsd92qh8sg03fwns19d7mypm618j6c8bmqqp30"))))
+                "1afwvw2670yz3kxzlqjlg9r8ra8fjihj97hgc6skiwnzz6lfgd7d"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -170,7 +170,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                   zlib))
     (native-inputs (list cmake pkg-config python-sphinx))
     ;; Missing optional inputs:
-    ;;   libyajl
+    ;;   yajl
     ;;   libcdio_paranoia
     ;;   libmms
     ;;   libadplug
@@ -581,7 +581,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "10.1.3")
+    (version "10.1.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -590,7 +590,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16cvjwbyb1m88kmgylp95p82a4xdjikmrw9arl6kvmgcbyw317yp"))))
+                "06i8v8dh2x4lrph9lm56h5yy698y95ic5xrgmyisafvxd239sn0x"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ; no test target

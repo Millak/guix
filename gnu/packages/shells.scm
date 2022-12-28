@@ -84,14 +84,14 @@
 (define-public dash
   (package
     (name "dash")
-    (version "0.5.11.5")
+    (version "0.5.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://gondor.apana.org.au/~herbert/dash/files/"
                            "dash-" version ".tar.gz"))
        (sha256
-        (base32 "1g93w4lpn3jfwn2gaq17a1lxdig11x0j7gr9byc3fy8zi4882xyv"))
+        (base32 "12pjm2j0q0q88nvqbcyqjwr8s1c29ilxyq2cdj8k42wbdv24liva"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -99,8 +99,7 @@
            ;; This isn't the case on Guix or indeed most other GNU systems.
            (substitute* "src/dash.1"
              (("the standard command interpreter for the system")
-              "a command interpreter based on the original Bourne shell"))
-           #t))))
+              "a command interpreter based on the original Bourne shell"))))))
     (build-system gnu-build-system)
     (inputs
      (list libedit))
@@ -109,9 +108,9 @@
     (home-page "http://gondor.apana.org.au/~herbert/dash")
     (synopsis "POSIX-compliant shell optimised for size")
     (description
-     "dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
+     "Dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
 as small as possible, often without sacrificing speed.  It is faster than the
-GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  dash is a
+GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  Dash is a
 direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (license (list license:bsd-3
                    license:gpl2+))))    ; mksignames.c
@@ -849,7 +848,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.12.7")
+    (version "0.12.9")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -862,7 +861,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "02p8w2rpwb8i4lwl2ah5whchn0lihc6hgbmnp0yr0jv4f0r3mgby"))))
+        (base32 "047gjar5lkbms4gdp3063njnqc6fl6p0dcx8bbpi1cdn1956yh1s"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary

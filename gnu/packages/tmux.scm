@@ -267,3 +267,53 @@ following features:
 @item Generate command lines from standard input (Pipe mode).
 @end itemize")
     (license license:expat)))
+
+(define-public tmux-plugin-resurrect
+  (let ((commit "a2ddfb96b94bb64a7a2e3f5fa2a7c57dce8ad579")
+        (revision "0"))
+    (package
+      (name "tmux-plugin-resurrect")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tmux-plugins/tmux-resurrect/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gc8z99na1d4scn2kq4alwyn43h3r7ykz9bkhcypjh8iri6dsl0c"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder (begin
+                     (use-modules (guix build utils))
+                     (let ((out (string-append %output
+                                               "/share/tmux-plugins/resurrect/")))
+                       (mkdir-p out)
+                       (copy-recursively (assoc-ref %build-inputs "source") out)))))
+      (synopsis "Restore tmux environment after system restart")
+      (description
+       "This plugin goes to great lengths to save and restore all the details
+from your tmux environment.  Here's what's been taken care of:
+
+@itemize
+@item all sessions, windows, panes and their order
+@item current working directory for each pane
+@item exact pane layouts within windows (even when zoomed)
+@item active and alternative session
+@item active and alternative window for each session
+@item windows with focus
+@item active pane for each window
+@item \"grouped sessions\" (useful feature when using tmux with multiple monitors)
+@item programs running within a pane! More details in the restoring programs doc.
+@end itemize
+
+Optional:
+
+@itemize
+@item restoring vim and neovim sessions
+@item restoring pane contents
+@end itemize")
+      (home-page "https://github.com/tmux-plugins/tmux-resurrect/")
+      (license license:expat))))

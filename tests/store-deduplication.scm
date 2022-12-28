@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2020-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -135,6 +135,21 @@
 
        (cons (apply = (map (compose stat:ino stat) identical))
              (map (compose stat:nlink stat) identical))))))
+
+(test-assert "copy-file/deduplicate, below %deduplication-minimum-size"
+  (call-with-temporary-directory
+   (lambda (store)
+     (let ((source (string-append store "/input")))
+       (call-with-output-file source
+         (lambda (port)
+           (display "Hello!\n" port)))
+       (copy-file/deduplicate source
+                              (string-append store "/a")
+                              #:store store)
+       (and (not (directory-exists? (string-append store "/.links")))
+            (file=? source (string-append store "/a"))
+            (not (= (stat:ino (stat (string-append store "/a")))
+                    (stat:ino (stat source)))))))))
 
 (test-assert "copy-file/deduplicate"
   (call-with-temporary-directory

@@ -30,17 +30,20 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages zig))
 
-(define-public ncdu
+(define-public ncdu-1
+  ;; This old version is ‘LTS’.  Version 2 works fine and has more features,
+  ;; but Zig is still a fast-moving target and doesn't support cross-compilation
+  ;; yet, so we'll keep both for just a little longer.
   (package
     (name "ncdu")
-    (version "1.17")
+    (version "1.18")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dev.yorhel.nl/download/ncdu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1wfvdajln0iy7364nxkg4bpgdv8l3b6a9bnkhy67icqsxnl4a1w1"))))
+                "15czid6584j7vclwrw85ihahknghxv2w6b9mrk9cbjc0cnls2drw"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
     (synopsis "Ncurses-based disk usage analyzer")
@@ -55,10 +58,10 @@ ncurses installed.")
                              version)))
     (home-page "https://dev.yorhel.nl/ncdu")))
 
-(define-public ncdu-2
+(define-public ncdu
   (package
-    (inherit ncdu)
-    (name "ncdu2")      ; To destinguish it from the C based version.
+    (inherit ncdu-1)
+    (name "ncdu")
     (version "2.2.1")
     (source (origin
               (method url-fetch)
@@ -66,12 +69,19 @@ ncurses installed.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0hfimrr7z9zrfkiyj09i8nh4a1rjn7d00y9xzpc7mkyqpkvghjjy"))))
+                "0hfimrr7z9zrfkiyj09i8nh4a1rjn7d00y9xzpc7mkyqpkvghjjy"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Delete a pregenerated man page.  We'll build it ourselves.
+                   (delete-file "ncdu.1")))))
     (arguments
      (list
        #:make-flags
        #~(list (string-append "PREFIX=" #$output)
-               (string-append "CC=" #$(cc-for-target)))
+               (string-append "CC=" #$(cc-for-target))
+               ;; XXX By default, zig builds with -march=native!
+               (string-append "ZIG_FLAGS=-Drelease-fast -Dcpu=baseline"))
        #:phases
        #~(modify-phases %standard-phases
            (delete 'configure)      ; No configure script.
@@ -81,12 +91,13 @@ ncurses installed.")
                        (mkdtemp "/tmp/zig-cache-XXXXXX"))))
            (add-after 'build 'build-manpage
              (lambda _
-               (delete-file "ncdu.1")
                (invoke "make" "doc")))
            (replace 'check
              (lambda* (#:key tests? #:allow-other-keys)
                (when tests?
                  (invoke "zig" "test" "build.zig")))))))
     (native-inputs
-     (list perl zig))
-    (properties `((upstream-name . "ncdu")))))
+     (list perl zig))))
+
+(define-public ncdu-2
+  (deprecated-package "ncdu2" ncdu))

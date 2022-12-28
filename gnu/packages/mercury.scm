@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,7 +57,7 @@
 (define-public mercury-minimal
   (package
     (name "mercury-minimal")
-    (version "20.06.1")
+    (version "22.01.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -64,7 +65,7 @@
                     version ".tar.gz"))
               (sha256
                (base32
-                "07qwkk871yxd4q1sw5xv26g8jrpvnpprmzvfd7zg7i142kl3l2gg"))))
+                "1vakjg4rqpplkxw7k91qv8jvlasrr6iwrzrylwqllbq088qs0mbp"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -112,7 +113,6 @@
                        "scripts/Mmake.vars.in"
                        "scripts/mdb.in"
                        "scripts/rs6000_hack"
-                       "scripts/fullarch"
                        "scripts/mmc.in"
                        "scripts/canonical_grade"
                        "scripts/mprof.in"
@@ -143,14 +143,14 @@
                           (gc-fork
                            libatomic-ops
                            "https://github.com/Mercury-Language/libatomic_ops.git"
-                           "49b70d57f6922fd8be55a7dcb77955c8abfc9ae9"
-                           "1flvwscsa6b2b8a38vhhcgl10bbkb5nnihw7s7iia60cinf7wcqm")))
+                           "95809e50a5ff6e765f1af2f589796970a73e9c00"
+                           "0a1y795bvzwzk1v8d9g6wvifj7hvhmxlir1g581bq2slj16h95iz")))
        ("libgc" ,(package-source
                   (gc-fork
                    libgc-7
                    "https://github.com/Mercury-Language/bdwgc.git"
-                   "43ac2ea45261ba0a715534e9da41b2504904c46a"
-                   "0bmzmbs7id0ndyhy9xli6fhfad1shrim6vmy2k8m1nqr5wb31q76")))
+                   "def741752f55f9068d4f469a14c4b2c168829730"
+                   "07d94j5l9w6l2kjmcwblgn5lf77aw3r0zjn22pq4hbhknky6ny43")))
        ("pkg-config" ,pkg-config)))
     (synopsis "Pure logic programming language (used only for
 bootstrapping dependent Mercury)")
@@ -171,7 +171,7 @@ separate compilation, and numerous optimization/time trade-offs.")
 (define-public mercury
   (package (inherit mercury-minimal)
            (name "mercury")
-           (version "20.06.1")
+           (version "22.01.4")
            (source
             (origin
               (method git-fetch)
@@ -183,7 +183,7 @@ separate compilation, and numerous optimization/time trade-offs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b6rmdinw8mj6n9sc7c75kkf42gd2k254rf51x4snlrqckxj7aaz"))))
+                "0ycy1j9a4rdj6d37x02dj6kyr00mykvc5kykci11fim906d92gzh"))))
            (arguments
             (substitute-keyword-arguments
                 (package-arguments mercury-minimal)
@@ -205,7 +205,6 @@ separate compilation, and numerous optimization/time trade-offs.")
                                 "scripts/Mmake.vars.in"
                                 "scripts/mdb.in"
                                 "scripts/rs6000_hack"
-                                "scripts/fullarch"
                                 "scripts/mmc.in"
                                 "scripts/mprof.in"
                                 "scripts/gud.el"

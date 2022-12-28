@@ -1590,13 +1590,13 @@ Amazon S3 compatible object storage server.")
 (define-public python-pycurl
   (package
     (name "python-pycurl")
-    (version "7.43.0.5")
+    (version "7.45.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycurl" version))
        (sha256
-        (base32 "1cwlb76vddqp2mxqvjbhf367caddzy82rhangddjjhjqaj8x4zgc"))))
+        (base32 "1ji46b924caa4saxvjxs9h673yy0kif297nxpnjn84r7w05mjc2p"))))
     (build-system python-build-system)
     (arguments
      ;; The tests attempt to access external web servers, so we cannot run
@@ -3924,35 +3924,28 @@ apps.")
 (define-public python-flask-restful
   (package
     (name "python-flask-restful")
-    (version "0.3.8")
+    (version "0.3.9")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "Flask-RESTful" version))
-        (patches (search-patches "python-flask-restful-werkzeug-compat.patch"))
         (sha256
          (base32
-          "05b9lzx5yc3wgml2bcq50lq35h66m8zpj6dc9advcb5z3acsbaay"))))
-    (build-system python-build-system)
+          "0gm5dz088v3d2k1dkcp9b3nnqpkk0fp2jly870hijj2xhc5nbv6c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-imports
-           (lambda _
-             (substitute* "flask_restful/__init__.py"
-               (("flask\\.helpers") "flask.scaffold")))))))
+     ;; This test fails because '/' is not 'http://localhost/'.
+     (list #:test-flags '(list "-k" "not test_redirect")))
     (propagated-inputs
-      (list python-aniso8601 python-flask python-pytz))
+     (list python-aniso8601 python-flask python-pytz))
     (native-inputs
-      (list ;; Optional dependency of Flask. Tests need it.
-            python-blinker python-mock ; For tests
-            python-nose))  ;for tests
-    (home-page
-      "https://www.github.com/flask-restful/flask-restful/")
-    (synopsis
-      "Flask module for creating REST APIs")
+     (list python-blinker
+           python-mock
+           python-pytest))
+    (home-page "https://www.github.com/flask-restful/flask-restful/")
+    (synopsis "Flask module for creating REST APIs")
     (description
-      "This package contains a Flask module for creating REST APIs.")
+     "This package contains a Flask module for creating REST APIs.")
     (license license:bsd-3)))
 
 (define-public python-flask-basicauth

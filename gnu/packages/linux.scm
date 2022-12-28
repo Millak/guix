@@ -130,6 +130,7 @@
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -143,12 +144,14 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rrdtool)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages samba)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
@@ -477,7 +480,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.0-version "6.0.12")
+(define-public linux-libre-6.0-version "6.0.15")
 (define-public linux-libre-6.0-gnu-revision "gnu")
 (define deblob-scripts-6.0
   (linux-libre-deblob-scripts
@@ -487,7 +490,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "16g2bin3xay30zfss1vlb7pwcss5giaxaksp4v1gk05wn51wjrqr")))
 (define-public linux-libre-6.0-pristine-source
   (let ((version linux-libre-6.0-version)
-        (hash (base32 "00ag63lnxw2gijw3b6v29lhrlv480m12954q5zh4jawlz3nk1dw9")))
+        (hash (base32 "08389890gq4b9vkvrb22lzkr4blkn3a5ma074ns19gl89wyyp16l")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.0)))
@@ -495,7 +498,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The "longterm" kernels — the older releases with long-term upstream support.
 ;; Here are the support timelines:
 ;; <https://www.kernel.org/category/releases.html>
-(define-public linux-libre-5.15-version "5.15.82")
+(define-public linux-libre-5.15-version "5.15.85")
 (define-public linux-libre-5.15-gnu-revision "gnu")
 (define deblob-scripts-5.15
   (linux-libre-deblob-scripts
@@ -505,12 +508,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1m73pgx8v047xb2gck2g7j7khniis8c9akn9vhzgsdfglrf8p6fj")))
 (define-public linux-libre-5.15-pristine-source
   (let ((version linux-libre-5.15-version)
-        (hash (base32 "0r8v7113favmch2x6br7jk6idihza99l9qyd7ik99i5sg6xzdvpw")))
+        (hash (base32 "024qhjh9mgfnanr1qd8002n6a4wpn98lajli12a0m3n9z8lsw2rc")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.158")
+(define-public linux-libre-5.10-version "5.10.161")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -520,12 +523,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0a96g4pjdgwvxn2wpz6rfc8nwdlkw138r9pp66kvfrrn08i313ii")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "1rq7lyp41fydybs53rcdjhiy271arh95xch16s5s3jhhanxj82hy")))
+        (hash (base32 "0ya04njrxr4d37zkxvivmn5f0bdvcb504pyp9ahwz8nqpk8gdaks")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
 
-(define-public linux-libre-5.4-version "5.4.226")
+(define-public linux-libre-5.4-version "5.4.228")
 (define-public linux-libre-5.4-gnu-revision "gnu1")
 (define deblob-scripts-5.4
   (linux-libre-deblob-scripts
@@ -535,12 +538,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "1bgblfkcnrabnr9hpdl07qgps57h6bq4v5pjrxs798vq43db66va")))
 (define-public linux-libre-5.4-pristine-source
   (let ((version linux-libre-5.4-version)
-        (hash (base32 "0i4s1hl5q0ax55z7m5krzyw1zj9v03q8jcfksknb6qrg3lm5a7qc")))
+        (hash (base32 "0935dq7zbpf0fkppl3q96a2gh1zrmq01h1nivzgmdhjlmhn3n9c0")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.4)))
 
-(define-public linux-libre-4.19-version "4.19.268")
+(define-public linux-libre-4.19-version "4.19.269")
 (define-public linux-libre-4.19-gnu-revision "gnu1")
 (define deblob-scripts-4.19
   (linux-libre-deblob-scripts
@@ -550,12 +553,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0g1yhzxm3ixfll6n630v7lddcyvf888sg114nimh0lkvzd180s99")))
 (define-public linux-libre-4.19-pristine-source
   (let ((version linux-libre-4.19-version)
-        (hash (base32 "0kr0di4gr6p57c8h6ybcli01kazq235npbh6qrpx0hpmqcdcx6r1")))
+        (hash (base32 "02mjb16xxfj984vibpxvhjl84y5yg0jgzjccjdxnn8db4k9aa2vf")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.19)))
 
-(define-public linux-libre-4.14-version "4.14.301")
+(define-public linux-libre-4.14-version "4.14.302")
 (define-public linux-libre-4.14-gnu-revision "gnu1")
 (define deblob-scripts-4.14
   (linux-libre-deblob-scripts
@@ -565,12 +568,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "00i91lx938nqlgy63hiricqd0fnbbf26vgya9c5lb7m1f4x324im")))
 (define-public linux-libre-4.14-pristine-source
   (let ((version linux-libre-4.14-version)
-        (hash (base32 "16zrpfadsnznpl37crbq5g1hz1ch0zfp2a75yzlqy2fs0f7fxlmc")))
+        (hash (base32 "102c9h0byr9v4bxzkdh7mnw1grm47ji6lf6l1gjlwah7f46j6ap3")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.335")
+(define-public linux-libre-4.9-version "4.9.336")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -580,7 +583,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "0agb1avdqxbmb0z751f5c4d6s7k9zb6dq04z82gx0v4zzrhxhkzd")))
+        (hash (base32 "032hgfvn7za2v49jjc3pdzx0cfglrmjkbl2d3pz857yc0q9y2v8z")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -1081,43 +1084,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-pristine-source linux-libre-6.0-pristine-source)
 (define-public linux-libre-source          linux-libre-6.0-source)
 (define-public linux-libre                 linux-libre-6.0)
-
-(define-public linux-libre-documentation
-  (package
-    (inherit linux-libre)
-    (name "linux-libre-documentation")
-    (arguments
-     (list
-      #:tests? #f
-      #:phases #~(modify-phases %standard-phases
-                   (delete 'configure)
-                   (replace 'build
-                     (lambda _
-                       (substitute* "Documentation/Makefile"
-                         ;; Remove problematic environment check script.
-                         ((".*scripts/sphinx-pre-install.*") ""))
-                       (invoke "make" "infodocs")))
-                   (replace 'install
-                     (lambda _
-                       (let* ((info-dir (string-append #$output "/share/info"))
-                              (info (string-append info-dir
-                                                   "/TheLinuxKernel.info.gz")))
-                         (with-directory-excursion "Documentation/output"
-                           (invoke "make" "-C" "texinfo" "install-info"
-                                   (string-append "infodir=" info-dir)))
-                         ;; Create a symlink, for convenience.
-                         (symlink info (string-append info-dir
-                                                      "/linux.info.gz"))))))))
-    (native-inputs
-     (list graphviz
-           perl
-           python
-           python-sphinx
-           texinfo
-           which))
-    (synopsis "Documentation for the kernel Linux-Libre")
-    (description "This package provides the documentation for the kernel
-Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
 
 (define-public linux-libre-5.15
   (make-linux-libre* linux-libre-5.15-version
@@ -1900,6 +1866,47 @@ login password to @code{gpg-agent}.  This can be useful if you are using a
 GnuPG-based password manager like @code{pass}.")
     (license license:gpl3+)))
 
+
+;;;
+;;; Kernel documentation
+;;;
+
+(define-public linux-libre-documentation
+  (package
+    (inherit linux-libre)
+    (name "linux-libre-documentation")
+    (arguments
+     (list
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda _
+                       (substitute* "Documentation/Makefile"
+                         ;; Remove problematic environment check script.
+                         ((".*scripts/sphinx-pre-install.*") ""))
+                       (invoke "make" "infodocs")))
+                   (replace 'install
+                     (lambda _
+                       (let* ((info-dir (string-append #$output "/share/info"))
+                              (info (string-append info-dir
+                                                   "/TheLinuxKernel.info.gz")))
+                         (with-directory-excursion "Documentation/output"
+                           (invoke "make" "-C" "texinfo" "install-info"
+                                   (string-append "infodir=" info-dir)))
+                         ;; Create a symlink, for convenience.
+                         (symlink info (string-append info-dir
+                                                      "/linux.info.gz"))))))))
+    (native-inputs
+     (list graphviz
+           perl
+           python
+           python-sphinx
+           texinfo
+           which))
+    (synopsis "Documentation for the kernel Linux-Libre")
+    (description "This package provides the documentation for the kernel
+Linux-Libre, as an Info manual.  To consult it, run @samp{info linux}.")))
 
 ;;;
 ;;; Miscellaneous.
@@ -1933,7 +1940,7 @@ It provides the commands @code{powercap-info} and @code{powercap-set}.")
 (define-public powerstat
   (package
     (name "powerstat")
-    (version "0.02.27")
+    (version "0.02.28")
     (source
      (origin
        (method git-fetch)
@@ -1942,7 +1949,7 @@ It provides the commands @code{powercap-info} and @code{powercap-set}.")
              (commit (string-append "V" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ik5yv2bhz2hvyga4h1m28rf0xpi20zpqm4swhvskyf1g6qf381z"))))
+        (base32 "1wydjxmb6qf7rqarpl8rblg4biq3r2kfcx7p3pzvsr0w1xwdiisd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -2866,6 +2873,56 @@ This package also includes @command{ip6tables}, which is used to configure the
 IPv6 packet filter.
 
 Both commands are targeted at system administrators.")
+    (license license:gpl2+)))
+
+(define-public bolt
+  (package
+    (name "bolt")
+    (version "0.9.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/bolt/bolt")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0w66shv7ra8yrhr0byifahbq25wi8qfsm3rifz0j31l7cmnys3js"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags '(list "--localstatedir=/var")
+           #:glib-or-gtk? #t ;To wrap binaries and/or compile schemas
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'replace-directories
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (substitute* "meson.build"
+                              (("udev.get_pkgconfig_variable..udevdir..")
+                               (string-append "'"
+                                              #$output "/lib/udev'")))
+                            (substitute* "scripts/meson-install.sh"
+                              (("mkdir.*")
+                               ""))))
+                        (add-before 'install 'no-polkit-magic
+                          (lambda* (#:key outputs #:allow-other-keys)
+                            (setenv "PKEXEC_UID" "something"))))))
+    (native-inputs (list pkg-config
+                         `(,glib "bin") python asciidoc umockdev))
+    (inputs (list eudev dbus polkit))
+    (synopsis "Thunderbolt 3 device manager")
+    (description
+     "This package provides @command{boltd}, a userspace daemon
+for Thunderbolt devices, and @command{boltctl}, a command-line utility for
+managing those devices.
+
+The daemon @command{boltd} exposes devices via D-Bus to clients.  It also
+stores a database of previously authorized devices and will, depending on the
+policy set for the individual devices, automatically authorize newly connected
+devices without user interaction.
+
+The command-line utility @command{boltctl} manages Thunderbolt devices via
+@command{boltd}.  It can list devices, monitor changes, and initiate
+authorization of devices.")
+    (home-page "https://gitlab.freedesktop.org/bolt/bolt")
     (license license:gpl2+)))
 
 (define-public jitterentropy-rngd
@@ -3973,7 +4030,7 @@ from the module-init-tools project.")
 (define-public earlyoom
   (package
     (name "earlyoom")
-    (version "1.6.2")
+    (version "1.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3982,7 +4039,7 @@ from the module-init-tools project.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16iyn51xlrsbshc7p5xl2338yyfzknaqc538sa7mamgccqwgyvvq"))))
+                "1xqrs6wz59ks76hdgfd4vaj010kbvllilgam2xxyn0g56kai71zi"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -5932,36 +5989,25 @@ uncompressed size will not match the number given by @command{tar} or
 obviously it can be shared with files outside our set).")
     (license license:gpl2+)))
 
-(define-public f2fs-tools-1.7
+(define-public f2fs-tools
   (package
     (name "f2fs-tools")
-    (version "1.7.0")
+    (version "1.15.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
-                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.kernel.org/pub/scm/linux/kernel\
+/git/jaegeuk/f2fs-tools.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1m6bn1ibq0p53m0n97il91xqgjgn2pzlz74lb5bfzassx7159m1k"))))
-
+                "1ffws8pbpzp9730v0wy5xjas698lnbd2p7wpr2gl4mx45rsay9a5"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags '("CFLAGS=-fcommon")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'install-headers
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (out-include (string-append out "/include")))
-               (install-file "include/f2fs_fs.h" out-include)
-               (install-file "mkfs/f2fs_format_utils.h" out-include)
-               #t))))))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("libselinux" ,libselinux)))
+     (list `(,util-linux "lib")))       ;for libuuid
     (home-page "https://f2fs.wiki.kernel.org/")
     (synopsis "Userland tools for f2fs")
     (description
@@ -5972,21 +6018,33 @@ disks and SD cards.  This package provides the userland utilities.")
     ;; GPL2/LGPL2.1, everything else is GPL2 only. See 'COPYING'.
     (license (list license:gpl2 license:lgpl2.1))))
 
-(define-public f2fs-tools
+(define-public f2fs-tools-1.7
   (package
-    (inherit f2fs-tools-1.7)
+    (inherit f2fs-tools)
     (name "f2fs-tools")
-    (version "1.14.0")
+    (version "1.7.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.kernel.org/cgit/linux/kernel/git/jaegeuk"
-                    "/f2fs-tools.git/snapshot/f2fs-tools-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (git-reference-url
+                          (origin-uri (package-source f2fs-tools))))
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1lab1446c78xsjwhpki7s85z4171m8p9279c8yhm4882wba674k1"))))
+                "0wpzklw8smnngng0dm25jdmi7v5zfhpz02dksyxpz0a7kzzvnqqm"))))
     (inputs
-     `(("libuuid" ,util-linux "lib")))))
+     (list `(,util-linux "lib") libselinux))
+    (arguments
+     '(#:configure-flags '("CFLAGS=-fcommon")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-headers
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (out-include (string-append out "/include")))
+               (install-file "include/f2fs_fs.h" out-include)
+               (install-file "mkfs/f2fs_format_utils.h" out-include)))))))))
 
 (define-public f2fs-tools/static
   (static-package
@@ -6004,18 +6062,9 @@ disks and SD cards.  This package provides the userland utilities.")
                          "-I" libuuid "/include/blkid")
           (string-append "libblkid_LIBS=-L" libuuid-static "/lib -lblkid")))
        #:disallowed-references (,util-linux)
+       #:make-flags '("LDFLAGS=-all-static")
        #:phases
        (modify-phases %standard-phases ; TODO: f2fs phases.
-         (add-after 'unpack 'make-static
-           (lambda _
-             (define (append-to-file name body)
-               (let ((file (open-file name "a")))
-                 (display body file)
-                 (close-port file)))
-             (append-to-file "mkfs/Makefile.am" "\nmkfs_f2fs_LDFLAGS = -all-static\n")
-             (append-to-file "fsck/Makefile.am" "\nfsck_f2fs_LDFLAGS = -all-static\n")
-             (append-to-file "tools/Makefile.am" "\nf2fscrypt_LDFLAGS = -all-static -luuid\n")
-             #t))
           (add-after 'install 'remove-store-references
             (lambda* (#:key outputs #:allow-other-keys)
               ;; Work around bug in our util-linux.
@@ -6719,12 +6768,16 @@ not as a replacement for it.")
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list "--disable-pywrap")
+       #:modules (,@%gnu-build-system-modules
+                  (ice-9 binary-ports)
+                  (rnrs bytevectors)
+                  (srfi srfi-26))
        #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-hardcoded-paths
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out"))
-                   (utils-linux (assoc-ref inputs "utils-linux"))
+                   (util-linux (assoc-ref inputs "util-linux"))
                    (cryptsetup (assoc-ref inputs "cryptsetup"))
                    (linux-pam (assoc-ref inputs "linux-pam"))
                    (lvm2 (assoc-ref inputs "lvm2")))
@@ -6738,9 +6791,9 @@ not as a replacement for it.")
                               "src/desktop/ecryptfs-mount-private.desktop.in"
                               "src/desktop/ecryptfs-setup-private.desktop.in")
                  (("/bin/mount")
-                  (string-append utils-linux "/bin/mount"))
+                  (string-append util-linux "/bin/mount"))
                  (("/bin/umount")
-                  (string-append utils-linux "/bin/umount"))
+                  (string-append util-linux "/bin/umount"))
                  (("/sbin/mount.ecryptfs_private")
                   (string-append out "/sbin/mount.ecryptfs_private"))
                  (("/sbin/umount.ecryptfs_private")
@@ -6756,17 +6809,48 @@ not as a replacement for it.")
                  (("/sbin/unix_chkpwd")
                   (string-append linux-pam "/sbin/unix_chkpwd"))
                  (("/sbin/dmsetup")
-                  (string-append lvm2 "/sbin/dmsetup")))))))))
+                  (string-append lvm2 "/sbin/dmsetup"))))))
+         (add-after 'install 'wrap-scripts
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bin (string-append out "/bin"))
+                    (add (map (lambda (bin)
+                                (dirname (search-input-file
+                                          inputs (string-append "bin/" bin))))
+                              ;; For simplicity, we wrap all scripts the same.
+                              (list "awk" "find" "gettext" "grep" "keyctl" "ls"
+                                    "lsof" "mount" "rsync" "sed" "which")))
+                                        (script? (lambda (file)
+                               (call-with-input-file file
+                                 (lambda (port)
+                                   (bytevector=? (string->utf8 "#!")
+                                                 (get-bytevector-n port 2)))))))
+               (for-each (lambda (file)
+                           (when (script? file)
+                             (wrap-program file
+                               ;; '= would be better than 'suffix but break
+                               ;; setuid binaries.
+                               `("PATH" ":" suffix (,@add
+                                                    ,(string-append bin))))))
+                         (find-files bin "."))))))))
     (native-inputs
      (list intltool perl ; for pod2man
            pkg-config))
     (inputs
-     `(("keyutils" ,keyutils)
-       ("linux-pam" ,linux-pam)
-       ("utils-linux" ,util-linux)
-       ("cryptsetup" ,cryptsetup)
-       ("lvm2" ,lvm2)
-       ("nss" ,nss)))
+     (list coreutils
+           cryptsetup
+           findutils
+           gawk
+           grep
+           keyutils
+           linux-pam
+           lsof
+           lvm2
+           nss
+           rsync
+           sed
+           util-linux
+           which))
     (home-page "https://ecryptfs.org/")
     (synopsis "eCryptfs cryptographic file system utilities")
     (description
@@ -6904,7 +6988,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "189")
+    (version "190")
     (source
      (origin
        (method git-fetch)
@@ -6913,7 +6997,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ml12xmmmljp22a89fw23c6gmba4dngavgnisv665w67kbnv5085"))
+        (base32 "1466zkbxgjg8ik0gd9vwsjiwg0yg7g8ra4bw3lg3ypla2kiydy4q"))
        (modules '((guix build utils)))
        (snippet
         `(begin
@@ -6949,7 +7033,7 @@ exceeded.")
 (define-public mtd-utils
   (package
     (name "mtd-utils")
-    (version "2.1.4")
+    (version "2.1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -6957,7 +7041,7 @@ exceeded.")
                     "mtd-utils-" version ".tar.bz2"))
               (sha256
                (base32
-                "168vyzpfa0n66i8lcf626b9jczjr81rqbdk7735lfb18bp8i2rrc"))))
+                "0ilz8hkcyvfcnqpy25kbr8fb71x9vl28wbmw56vvd68n2byjfviq"))))
     (arguments
      (list #:configure-flags
            (if (%current-target-system) ; When cross-compiling.
@@ -6968,12 +7052,12 @@ exceeded.")
     (native-inputs
      (list cmocka pkg-config))
     (inputs
-     `(("acl" ,acl)                     ; extended attributes (xattr)
-       ("libuuid" ,util-linux "lib")
-       ("lzo" ,lzo)
-       ("openssl" ,openssl)             ; optional crypto support
-       ("zlib" ,zlib)
-       ("zstd" ,zstd "lib")))
+     (list acl                          ; extended attributes (xattr)
+           lzo
+           openssl                      ; optional crypto support
+           `(,util-linux "lib")
+           zlib
+           `(,zstd "lib")))
     (build-system gnu-build-system)
     (synopsis "MTD Flash Storage Utilities")
     (description "This package provides utilities for testing, partitioning, etc
@@ -7568,14 +7652,14 @@ re-use code and to avoid re-inventing the wheel.")
 (define-public libnftnl
   (package
     (name "libnftnl")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://netfilter.org/libnftnl/"
                            "libnftnl-" version ".tar.bz2"))
        (sha256
-        (base32 "0m82bmh8i24hwxmz7rxwxjll4904ghd2b1x1p5h8algrg6dyl5p9"))))
+        (base32 "0zs7c8swlirxnbhl8q1b0p8g3jrzns7fyxsrglz71zfdwhxj7zn0"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -7651,7 +7735,7 @@ userspace queueing component and the logging subsystem.")
 (define-public libnetfilter-conntrack
   (package
     (name "libnetfilter-conntrack")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
        (method url-fetch)
@@ -7660,8 +7744,7 @@ userspace queueing component and the logging subsystem.")
                            "libnetfilter_conntrack-"
                            version ".tar.bz2"))
        (sha256
-        (base32
-         "1ky1mqgnplw2h9jf0kn0a69d94jkydhbiipng9l2hdcj13h3pl8c"))))
+        (base32 "1a3rnpsba64dzy97wwjrxal89wr0nf9znvag2j18nkp3kzs9vgb7"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libnfnetlink libmnl))
@@ -7679,7 +7762,7 @@ conntrack-tools among many other applications.")
 (define-public libnetfilter-cttimeout
   (package
     (name "libnetfilter-cttimeout")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -7687,8 +7770,7 @@ conntrack-tools among many other applications.")
                            "libnetfilter_cttimeout/files/"
                            "libnetfilter_cttimeout-" version ".tar.bz2"))
        (sha256
-        (base32
-         "1fpyz1zlvcq80244knvyvy87909xjqlj02lmw8yblz2m9xsi5axf"))))
+        (base32 "0983cpyvxyycbnzqlrzml80pph2z51r6s7sxp06ciq8468pxln8b"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libmnl))
@@ -7706,7 +7788,7 @@ by conntrack-tools.")
 (define-public libnetfilter-cthelper
   (package
     (name "libnetfilter-cthelper")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
@@ -7714,8 +7796,7 @@ by conntrack-tools.")
                            "libnetfilter_cthelper/files/"
                            "libnetfilter_cthelper-" version ".tar.bz2"))
        (sha256
-        (base32
-         "0gfgzkc1fjniqwk4jxds72c0lcgfhq2591hrvjrvd9nrqiqqwq87"))))
+        (base32 "04n95ngil5l8m8v64dfjm1dwq0wd3kf4vw1zblsrff13hxa3s1ql"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libmnl))
@@ -8122,14 +8203,14 @@ available in the kernel Linux.")
 (define-public cpuid
   (package
     (name "cpuid")
-    (version "20221003")
+    (version "20221201")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://www.etallen.com/cpuid/cpuid-"
                                   version ".src.tar.gz"))
               (sha256
                (base32
-                "01w318kxcksfbjwjnnc9ly12g0yp4vm6xjgfl8mmi0jndg0cbi33"))))
+                "0vlg5zc0dayyn9bzyb25fcaxid9svrsjjza11afplrhh50wdrzh8"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
@@ -8793,7 +8874,7 @@ the superuser to make device nodes.")
 (define-public fakeroot
   (package
     (name "fakeroot")
-    (version "1.28")
+    (version "1.30.1")
     (source
      (origin
        ;; There are no tags in the repository, so take this snapshot.
@@ -8802,7 +8883,7 @@ the superuser to make device nodes.")
                            "fakeroot/fakeroot_" version ".orig.tar.gz"))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hlh77b6m2cfm42lcav372mbjni5akbgs25yg4wgi1gndzihbm2n"))
+        (base32 "0xba5gfh7ygv6na8n1ckqd2jnpdr9q88qan385qxp85c47sb3srj"))
        (modules '((guix build utils)
                   (ice-9 ftw)))
        (snippet
@@ -8864,16 +8945,8 @@ the superuser to make device nodes.")
              (substitute* "test/compare-tar"
                (("tar -tvf") "tar --numeric-owner -tvf")))))))
     (native-inputs
-     `(;; For bootstrapping the package.
-       ("autoconf" ,autoconf-2.71)
-       ("automake" ,automake)
-       ("libtool" ,libtool)
-       ("gettext" ,gettext-minimal)
-       ("po4a" ,po4a)
-
-       ;; For tests.
-       ("sharutils" ,sharutils)
-       ("xz" ,xz)))
+     (list autoconf-2.71 automake gettext-minimal libtool po4a
+           sharutils xz))               ; for tests
     (inputs
      (list acl libcap util-linux sed coreutils))
     (synopsis "Run commands in an environment with fake root privileges")
@@ -8991,7 +9064,7 @@ types and interfaces and translates so that the X server can use them.")
      (list alsa-lib
            dbus
            eudev
-           ffmpeg
+           ffmpeg-4
            gstreamer
            gst-plugins-base
            libva
@@ -9035,6 +9108,7 @@ of Linux application development.")
      (modify-inputs (package-native-inputs pipewire)
        (prepend python-docutils)))
     (inputs (modify-inputs (package-inputs pipewire)
+              (replace "ffmpeg" ffmpeg)
               (prepend avahi
                        bluez
                        jack-2
@@ -9290,7 +9364,7 @@ and above.")
 (define-public bpftrace
   (package
     (name "bpftrace")
-    (version "0.15.0")
+    (version "0.16.0")
     (source
      (origin
        (method git-fetch)
@@ -9299,7 +9373,7 @@ and above.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "022fg0kiz0liahj82wvlxmivkwyp86shs5fwr2v4blx7lh05k9zm"))
+        (base32 "0v1376wfk4gy5rrjdsck6r3347nb0bgbj70998z1bkx9z95wm3ab"))
        (patches (search-patches "bpftrace-disable-bfd-disasm.patch"))))
     (build-system cmake-build-system)
     (native-inputs
@@ -9356,14 +9430,14 @@ receiving.  It is dedicated to the PL011 UART of the Raspberry Pi.")
 (define-public ipset
   (package
     (name "ipset")
-    (version "7.15")
+    (version "7.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ipset.netfilter.org/"
                            "ipset-" version ".tar.bz2"))
        (sha256
-        (base32 "0l8pcaym6057hq3a4zwnk53p5y6xg1m3d3c83wn18h5nmnm4am8a"))))
+        (base32 "1l4nybq17gr2ick7bbb5gq46bsqiw4rxmrvi0qfkvpm1yk6xkcc7"))))
     (build-system gnu-build-system)
     (inputs
      (list libmnl))
@@ -9395,7 +9469,7 @@ then IP sets may be the proper tool for you.")
 (define-public liburing
   (package
     (name "liburing")
-    (version "2.2")
+    (version "2.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9404,7 +9478,7 @@ then IP sets may be the proper tool for you.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1677zqqbd9nw9hrdaxqbd1zwy54cxfsv2z0bjipn23mrkz2xzy1k"))))
+                "1ngg5640adlinkal8b28x5snrbab9yr8jw1w539h39k4pqnsbpmw"))))
     (build-system gnu-build-system)
     (arguments
      `(;; Tests are dependent on kernel version and features
@@ -9468,27 +9542,37 @@ provides user-space tools for creating EROFS file systems.")
        (sha256
         (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
     (native-inputs (list autoconf automake libtool))
-    (inputs (list perl sqlite))
+    (inputs (list perl perl-dbd-sqlite sqlite dmidecode kmod))
     (arguments
-     `(#:configure-flags
-       (list "--enable-all"
-             ;; Don't install unused /etc/sysconfig/rasdaemon environment file.
-             "--with-sysconfdefdir=."
-             "--localstatedir=/var")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'munge-autotools
-           (lambda _
-             ;; For some reason upstream forces sysconfdir=/etc.  This results
-             ;; in EPERM during the install phase.  Removing the offending
-             ;; line lets sysconfdir correctly pick up DESTDIR.
-             (substitute* "configure.ac"
-               (("^test .* sysconfdir=/etc\n$") ""))
-             ;; Upstream tries to create /var/lib/rasdaemon at install time.
-             ;; This results in EPERM on guix.  Instead, the service should
-             ;; create this at activation time.
-             (substitute* "Makefile.am"
-               (("^\\s*\\$\\(install_sh\\) -d .*@RASSTATEDIR@.*$") "")))))))
+     (list
+      #:configure-flags
+      #~(list "--enable-all"
+              ;; Don't install unused /etc/sysconfig/rasdaemon environment file.
+              "--with-sysconfdefdir=."
+              "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'munge-autotools
+            (lambda _
+              ;; For some reason upstream forces sysconfdir=/etc.  This results
+              ;; in EPERM during the install phase.  Removing the offending
+              ;; line lets sysconfdir correctly pick up DESTDIR.
+              (substitute* "configure.ac"
+                (("^test .* sysconfdir=/etc\n$") ""))
+              ;; Upstream tries to create /var/lib/rasdaemon at install time.
+              ;; This results in EPERM on guix.  Instead, the service should
+              ;; create this at activation time.
+              (substitute* "Makefile.am"
+                (("^\\s*\\$\\(install_sh\\) -d .*@RASSTATEDIR@.*$") ""))))
+          (add-after 'install 'fix-dmidecode-and-modprobe
+            (lambda _
+              (substitute* (string-append #$output "/sbin/ras-mc-ctl")
+                (("find_prog \\(\"dmidecode\"\\).*$") (format #f "~s;~%" (string-append #$dmidecode "/sbin/dmidecode")))
+                (("find_prog \\(\"modprobe\"\\).*$") (format #f "~s;~%" (string-append #$kmod "/bin/modprobe"))))))
+          (add-after 'wrap 'wrap-rasdaemon
+            (lambda _
+              (wrap-program (string-append #$output "/sbin/ras-mc-ctl")
+                `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:))))))))
     (build-system gnu-build-system)
     (home-page "https://github.com/mchehab/rasdaemon")
     (synopsis "Platform Reliability, Availability, and Serviceability tools")

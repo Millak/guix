@@ -334,7 +334,7 @@ This package is part of the KDE multimedia module.")
     (native-inputs
      (list docbook-xsl
            extra-cmake-modules
-           ffmpeg
+           ffmpeg-4
            kdoctools
            libxslt
            python-wrapper

@@ -201,6 +201,7 @@
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages man)
   #:use-module (gnu packages markup)
   #:use-module (gnu packages maths)
@@ -1674,14 +1675,24 @@ and a list of words that are easier to remember for humans (the
 (define-public python-bitarray
   (package
     (name "python-bitarray")
-    (version "1.4.0")
+    (version "2.6.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "bitarray" version))
               (sha256
                (base32
-                "177fj6wbw5jln54wpp6plcqy2329wjkwqwvgz7022rrg3xfrq49g"))))
+                "0c4jli872nzix81n1xirnrghlq2fdsxb570d9rnfvxi1694sah44"))))
     (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     ;; Step out of the source directory to avoid interference.
+                     (with-directory-excursion "/tmp"
+                       (invoke "python" "-c"
+                               "import bitarray; bitarray.test()"))))))))
     (home-page "https://github.com/ilanschnell/bitarray")
     (synopsis "Efficient arrays of booleans")
     (description "This package provides an object type which efficiently
@@ -1758,21 +1769,14 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
 (define-public python-h5netcdf
   (package
     (name "python-h5netcdf")
-    (version "1.0.1")
+    (version "1.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "h5netcdf" version))
        (sha256
-        (base32 "1b2dcgf5rwy7pb7hr4prkc5vgcw9qc2was20dmnj90lbrpx08rvp"))))
-    (build-system python-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'check
-                 (lambda* (#:key tests? #:allow-other-keys)
-                   (when tests?
-                     (invoke "pytest" "-vv" "h5netcdf/tests")))))))
+        (base32 "0mmzfr6k55zqxxpb64gvdqisak8s1zb2r04yzkmp0wzd7dbknb4k"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-netcdf4
            python-pytest
@@ -1781,9 +1785,11 @@ NetCDF files can also be read and modified.  Python-HDF4 is a fork of
      (list python-h5py python-packaging))
     (home-page "https://h5netcdf.org")
     (synopsis "Python interface for the netCDF4 file-format based on h5py")
-    (description "This package provides Python interface for the netCDF4
-file-format that reads and writes local or remote HDF5 files directly via h5py
-or h5pyd, without relying on the Unidata netCDF library")
+    (description "This package provides a Python interface for the netCDF4
+file-format that reads and writes local or remote HDF5 files directly via
+@url{h5py, https://www.h5py.org/} or @url{h5pyd,
+https://github.com/HDFGroup/h5pyd}, without relying on the Unidata netCDF
+library.")
     (license license:bsd-3)))
 
 (define-public python-h5py
@@ -4087,23 +4093,22 @@ memory usage and transliteration quality.")
 (define-public python-pyjwt
   (package
     (name "python-pyjwt")
-    (version "2.4.0")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "PyJWT" version))
        (sha256
         (base32
-         "1fmbcwfw1463wjzwbcgg3s16rad6kfb1mc5y7jbkp6v9ihh0hafl"))))
-    (build-system python-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-vv")))))))
+         "1z85kwr945rbzrn5wabrsmck5x8disa9wc7b3y5gci7w65z5qa39"))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-cryptography python-pytest))
+     (list python-coverage
+           python-cryptography
+           python-pre-commit
+           python-pytest
+           python-sphinx
+           python-sphinx-rtd-theme))
     (home-page "https://github.com/progrium/pyjwt")
     (synopsis "JSON Web Token implementation in Python")
     (description
@@ -15463,7 +15468,10 @@ enhancements to optimization and data fitting problems.")
                (delete-file "tests/unit/bokeh/models/test_sources.py")
                (delete-file "tests/unit/bokeh/embed/test_bundle.py")
 
-               (invoke "pytest" "-v")))))))
+               ;; XXX: This one test transforms a gif of a red box.  It
+               ;; transforms it all right but the base64 doesn't look as
+               ;; expected, probably because of a change in pillow.
+               (invoke "pytest" "-v" "-k" "not test_transform_PIL")))))))
     (propagated-inputs
      (list node-lts
            python-jinja2
@@ -20948,24 +20956,29 @@ while only declaring the test-specific fields.")
 (define-public python-marshmallow
   (package
     (name "python-marshmallow")
-    (version "3.9.1")
+    (version "3.19.0")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "marshmallow" version))
-      (sha256
-       (base32
-        "0kizhh3mnhpa08wfnsv1gagy22bpxzxszgbiylkhpz1d8qvwrykk"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "marshmallow" version))
+       (sha256
+        (base32
+         "0y6vpq2p5841kcw2qil68la0rx9z1vmxzj3dxjv99kjhsq7jq0wh"))))
+    (build-system pyproject-build-system)
     (propagated-inputs
-     (list python-dateutil python-simplejson))
+     (list python-packaging))
     (native-inputs
-     (list python-pytest python-pytz))
+     (list python-flake8
+           python-flake8-bugbear
+           python-mypy
+           python-pre-commit
+           python-pytest
+           python-pytz
+           python-simplejson))
     (home-page "https://github.com/marshmallow-code/marshmallow")
-    (synopsis "Convert complex datatypes to and from native
-     Python datatypes")
-    (description "@code{marshmallow} provides a library for converting
-     complex datatypes to and from native Python datatypes.")
+    (synopsis "Convert complex datatypes to and from native Python datatypes")
+    (description "@code{marshmallow} provides a library for converting complex
+datatypes to and from native Python datatypes.")
     (license license:expat)))
 
 (define-public python-marshmallow-jsonapi
@@ -21001,33 +21014,36 @@ while only declaring the test-specific fields.")
 (define-public python-apispec
   (package
     (name "python-apispec")
-    (version "4.0.0")
+    (version "6.0.2")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "apispec" version))
-      (sha256
+       (method url-fetch)
+       (uri (pypi-uri "apispec" version))
+       (sha256
         (base32
-          "12n4w5zkn4drcn8izq68vmixmqvz6abviqkdn4ip0kaax3jjh3in"))))
-    (build-system python-build-system)
+         "11vqxwdxmm7qmyhdbxk4gnx37nbzmn266ah92gi4pvzd76vq0vg7"))))
+    (build-system pyproject-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda _
-                      (invoke "pytest" "-vv"
-                              ;; Disable validation tests since they require
-                              ;; the optional 'prance' library which is not
-                              ;; yet in Guix.
-                              "-k" "not openapi_tools_validate"))))))
+     (list
+      ;; Disable validation tests since they require
+      ;; the optional 'prance' library which is not
+      ;; yet in Guix.
+      #:test-flags '(list "-k" "not openapi_tools_validate")))
     (propagated-inputs
-     (list python-pyyaml))
+     (list python-packaging))
     (native-inputs
-     (list python-pytest python-marshmallow))
+     (list python-flake8
+           python-flake8-bugbear
+           python-marshmallow
+           python-mypy
+           python-pre-commit
+           python-pytest
+           python-pyyaml))
     (home-page "https://github.com/marshmallow-code/apispec")
     (synopsis "Swagger/OpenAPI specification generator")
     (description "@code{python-apispec} is a pluggable API specification
-     generator.  It currently supports the OpenAPI specification, formerly known
-     as Swagger.")
+generator.  It currently supports the OpenAPI specification, formerly known as
+Swagger.")
     (license license:expat)))
 
 (define-public python-apispec-webframeworks
@@ -21061,7 +21077,7 @@ web frameworks.")
 (define-public python-flasgger
   (package
     (name "python-flasgger")
-    (version "0.6.3")
+    (version "0.9.5")
     (source
       (origin
         (method git-fetch)
@@ -21070,29 +21086,35 @@ web frameworks.")
               (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "0yydxsyjnc0clbrjqb1n7587l6cdqvwdagwxk5hkx01qwdfbkvpn"))))
-    (build-system python-build-system)
+          (base32 "0a2djgfq905a4in16068qz0ikg88dm4nbckaamhaz2v9khllr0bi"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (substitute* "Makefile"
-               (("flake8 flasgger --ignore=F403")
-                "flake8 flasgger --ignore=E731,F403"))
-             (invoke "py.test"))))))
+     (list
+      ;; This test fails due to missing fixtures
+      #:test-flags '(list "-k" "not test_swag")
+      #:phases
+      '(modify-phases %standard-phases
+        (add-after 'unpack 'prepare-check
+          (lambda _
+            ;; This requires a dummy package "flasgger_package" to be installed.
+            (delete-file "examples/package_example.py")
+            ;; These fail with an internal server error
+            (for-each delete-file '("examples/marshmallow_apispec.py"
+                                    "examples/validation.py")))))))
     (propagated-inputs
      (list python-flask python-pyyaml python-jsonschema python-mistune
            python-six))
     (native-inputs
-     (list python-decorator
+     (list python-apispec
+           python-apispec-webframeworks
+           python-decorator
            python-flake8
+           python-flask-jwt
            python-flask-restful
            python-flex
-           python-pytest
-           python-pytest-cov
            python-marshmallow
-           python-apispec))
+           python-pytest
+           python-pytest-cov))
     (home-page "https://github.com/rochacbruno/flasgger/")
     (synopsis "Extract Swagger specs from your Flask project")
     (description "@code{python-flasgger} allows extracting Swagger specs
@@ -22309,60 +22331,42 @@ based on the CPython 2.7 and 3.7 parsers.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1knv353qhkl2imav3jfp6bgq47m8wkkqhq1dzmqg2sv8rsy7zgl7"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       ,#~(modify-phases %standard-phases
-            ;; Unfortunately, this doesn't seem to be enough to fix these two
-            ;; tests, but we'll patch this anyway.
-            (add-after 'unpack 'patch-shell-reference
-              (lambda _
-                (substitute* "tests/test_completion/test_completion.py"
-                  (("\"bash\"") (string-append "\"" (which "bash") "\""))
-                  (("\"/bin/bash\"")
-                   (string-append "\"" (which "bash") "\"")))))
-            (replace 'build
-              (lambda _
-                (invoke "flit" "build")))
-            (replace 'install
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (add-installed-pythonpath inputs outputs)
-                (for-each
-                 (lambda (wheel)
-                   (format #true wheel)
-                   (invoke "python" "-m" "pip" "install"
-                           wheel (string-append "--prefix=" #$output)))
-                 (find-files "dist" "\\.whl$"))))
-            (replace 'check
-              (lambda* (#:key tests? #:allow-other-keys)
-                (when tests?
-                  (setenv "HOME" "/tmp") ; some tests need it
-
-                  ;; This is for completion tests
-                  (with-output-to-file "/tmp/.bashrc"
-                    (lambda _ (display "# dummy")))
-
-                  (setenv "GUIX_PYTHONPATH"
-                          (string-append (getcwd) ":"
-                                         (getenv "GUIX_PYTHONPATH")))
-                  (let ((disabled-tests (list "test_show_completion"
-                                              "test_install_completion")))
-                    (invoke "python" "-m" "pytest" "tests/"
-                            "-k"
-                            (string-append "not "
-                                           (string-join disabled-tests
-                                                        " and not "))))))))))
+     (list
+      #:test-flags
+      '(let ((disabled-tests (list "test_show_completion"
+                                   "test_install_completion")))
+         (list "-k" (string-append "not "
+                                   (string-join disabled-tests
+                                                " and not "))))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Unfortunately, this doesn't seem to be enough to fix these two
+          ;; tests, but we'll patch this anyway.
+          (add-after 'unpack 'patch-shell-reference
+            (lambda _
+              (substitute* "tests/test_completion/test_completion.py"
+                (("\"bash\"") (string-append "\"" (which "bash") "\""))
+                (("\"/bin/bash\"")
+                 (string-append "\"" (which "bash") "\"")))))
+          (add-before 'check 'pre-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (setenv "HOME" "/tmp")  ; some tests need it
+                ;; This is for completion tests
+                (with-output-to-file "/tmp/.bashrc"
+                  (lambda _ (display "# dummy")))))))))
     (propagated-inputs
      (list python-click))
     (native-inputs
      (list python-coverage python-flit python-pytest python-rich
            python-shellingham))
     (home-page "https://github.com/tiangolo/typer")
-    (synopsis
-     "Typer builds CLI based on Python type hints")
+    (synopsis "Typer builds CLI based on Python type hints")
     (description
-     "Typer is a library for building CLI applications.  It's based on
-Python 3.6+ type hints.")
+     "Typer is a library for building CLI applications.  It's based on Python
+3.6+ type hints.")
     ;; MIT license
     (license license:expat)))
 
@@ -23489,14 +23493,14 @@ tool).")
 (define-public python-numcodecs
   (package
     (name "python-numcodecs")
-    (version "0.6.4")
+    (version "0.10.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "numcodecs" version))
        (sha256
         (base32
-         "0kbfr8pl3x9glsypbq8hzim003f16ml1b1cvgrh4w1sdvgal6j7g"))
+         "1i2rvm1f23dapcf6w3mj4877jzq5f24bhfa0fafbv1nr7xmqr0r2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -23506,11 +23510,11 @@ tool).")
                                    "numcodecs/lz4.c"
                                    "numcodecs/vlen.c"
                                    "numcodecs/zstd.c"))))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false ; TODO: unclear why numcodecs.* are not found
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'disable-avx2
            (lambda _
              (setenv "DISABLE_NUMCODECS_AVX2" "1")))
@@ -23527,16 +23531,18 @@ tool).")
                 "'numcodecs.lz4', libraries=['lz4'], ")
                (("'numcodecs.blosc',")
                 "'numcodecs.blosc', libraries=['blosc'], "))))
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "-vv")))))))
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace"))))))
     (inputs
      (list c-blosc lz4 zlib
            `(,zstd "lib")))
     (propagated-inputs
-     (list python-numpy python-msgpack))
+     (list python-entrypoints
+           python-numpy
+           python-msgpack
+           python-typing-extensions-next))
     (native-inputs
      (list python-cython python-pytest python-setuptools-scm))
     (home-page "https://github.com/zarr-developers/numcodecs")
@@ -23566,14 +23572,14 @@ codecs for use in data storage and communication applications.")
 (define-public python-zarr
   (package
     (name "python-zarr")
-    (version "2.4.0")
+    (version "2.13.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "zarr" version))
        (sha256
         (base32
-         "026n3sjzjv2gmwx6y72b8ij0hk42bc8zdbvfj5gdqzd4i6wj3ajk"))))
+         "135ls2q7zc98pk61a5cnh88j4hnnavcwasrswdjqyqvcc68b096v"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -23615,29 +23621,26 @@ N-dimensional arrays for Python.")
        (sha256
         (base32
          "0v7npqrg1rdm8jzw22a45c0mqrmsv05r3k88i3lhzi0pzzxca1i1"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'check)
-         (replace 'build
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
-             (substitute* "anndata/_metadata.py"
-               (("__version__ =.*")
-                (string-append "__version__ = \"" ,version "\"\n")))
-             ;; ZIP does not support timestamps before 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$"))))))))
+     (list
+      #:test-flags
+      '(list "-k" "not concatenation.rst")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Doctests require scanpy from (gnu packages bioinformatics)
+          (add-after 'unpack 'disable-doctests
+            (lambda _
+              (substitute* "pyproject.toml"
+                (("--doctest-modules") ""))))
+          (add-before 'build 'set-version
+            (lambda _
+              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)
+              (substitute* "anndata/_metadata.py"
+                (("__version__ =.*")
+                 (string-append "__version__ = \"" #$version "\"\n")))
+              ;; ZIP does not support timestamps before 1980.
+              (setenv "SOURCE_DATE_EPOCH" "315532800"))))))
     (propagated-inputs
      (list python-h5py
            python-importlib-metadata
@@ -23646,9 +23649,14 @@ N-dimensional arrays for Python.")
            python-packaging
            python-pandas
            python-scipy
+           python-scikit-learn
            python-zarr))
     (native-inputs
-     (list python-joblib python-pytest python-toml python-flit
+     (list python-boltons
+           python-joblib
+           python-pytest
+           python-toml
+           python-flit
            python-setuptools-scm))
     (home-page "https://github.com/theislab/anndata")
     (synopsis "Annotated data for data analysis pipelines")
@@ -27002,17 +27010,17 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.12.3")
+    (version "4.12.4")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/pyzo/pyzo.git")
+             (url "https://github.com/pyzo/pyzo")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0v6rgp52bf9za2spxx9c1yc6wmskvlsj81iw0gipjy7y8vpypgn2"))))
+         "10qqilbh7n4z2656qbr9gllvgi7xq11xcm2bv64h02jmkb7m4m6n"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -28550,7 +28558,7 @@ and frame grabber interface.")
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal
+           git-minimal/fixed                      ;for tests
            ninja
            python-coverage
            python-cython
@@ -29782,9 +29790,9 @@ simple mock/record and a complete capture/replay framework.")
              (when tests?
                (invoke "pytest" "-vv")))))))
     (inputs
-     ;; libyajl is optional, but compiling with it makes faster
+     ;; yajl is optional, but compiling with it makes faster
      ;; backends available to ijson:
-     (list libyajl))
+     (list yajl))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)

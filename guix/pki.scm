@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2016, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +21,7 @@
   #:use-module (gcrypt pk-crypto)
   #:use-module ((guix utils) #:select (with-atomic-file-output))
   #:use-module ((guix build utils) #:select (mkdir-p))
+  #:autoload   (srfi srfi-1) (delete-duplicates)
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 binary-ports)
@@ -61,9 +62,10 @@ element in KEYS must be a canonical sexp with type 'public-key'."
   ;; want to have name certificates and to use subject names instead of
   ;; complete keys.
   `(acl ,@(map (lambda (key)
-                 `(entry ,(canonical-sexp->sexp key)
+                 `(entry ,key
                          (tag (guix import))))
-               keys)))
+               (delete-duplicates
+                (map canonical-sexp->sexp keys)))))
 
 (define %acl-file
   (string-append %config-directory "/acl"))

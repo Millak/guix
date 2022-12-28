@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -89,6 +90,7 @@
             this-package
             package-name
             package-upstream-name
+            package-upstream-name*
             package-version
             package-full-name
             package-source
@@ -609,7 +611,7 @@ Texinfo.  Otherwise, return the string."
                (sanitize validate-texinfo))       ; one or two paragraphs
   (license package-license                        ; (list of) <license>
            (sanitize validate-license))
-  (home-page package-home-page)
+  (home-page package-home-page)                   ; string
   (supported-systems package-supported-systems    ; list of strings
                      (default %supported-systems))
 
@@ -690,6 +692,38 @@ OVERRIDES."
 it has in Guix."
   (or (assq-ref (package-properties package) 'upstream-name)
       (package-name package)))
+
+(define (package-upstream-name* package)
+  "Return the upstream name of PACKAGE, accounting for commonly-used
+package name prefixes in addition to the @code{upstream-name} property."
+  (let ((namespaces (list "cl-"
+                          "ecl-"
+                          "emacs-"
+                          "ghc-"
+                          "go-"
+                          "guile-"
+                          "java-"
+                          "julia-"
+                          "lua-"
+                          "minetest-"
+                          "node-"
+                          "ocaml-"
+                          "perl-"
+                          "python-"
+                          "r-"
+                          "ruby-"
+                          "rust-"
+                          "sbcl-"
+                          "texlive-"))
+        (name (package-name package)))
+    (or (assq-ref (package-properties package) 'upstream-name)
+        (let loop ((prefixes namespaces))
+          (match prefixes
+            (() name)
+            ((prefix rest ...)
+              (if (string-prefix? prefix name)
+                (substring name (string-length prefix))
+                (loop rest))))))))
 
 (define (hidden-package p)
   "Return a \"hidden\" version of P--i.e., one that 'fold-packages' and thus,

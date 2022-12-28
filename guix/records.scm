@@ -592,13 +592,16 @@ found."
 (define-syntax match-record-inner
   (lambda (s)
     (syntax-case s ()
-      ((_ record type (field rest ...) body ...)
-       #`(let-syntax ((field-offset (syntax-rules ()
+      ((_ record type ((field variable) rest ...) body ...)
+       #'(let-syntax ((field-offset (syntax-rules ()
 			              ((_ f)
                                        (lookup-field field 0 f)))))
            (let* ((offset (type map-fields field-offset))
-                  (field  (struct-ref record offset)))
+                  (variable (struct-ref record offset)))
              (match-record-inner record type (rest ...) body ...))))
+      ((_ record type (field rest ...) body ...)
+       ;; Redirect to the canonical form above.
+       #'(match-record-inner record type ((field field) rest ...) body ...))
       ((_ record type () body ...)
        #'(begin body ...)))))
 

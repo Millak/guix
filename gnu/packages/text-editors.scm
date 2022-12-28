@@ -1148,7 +1148,7 @@ card.  It offers:
 (define-public ne
   (package
     (name "ne")
-    (version "3.3.1")
+    (version "3.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1157,7 +1157,7 @@ card.  It offers:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sg2f6lxq6cjkpd3dvlxxns82hvq826rjnams5in97pssmknr77g"))))
+                "16hzja0x41xz6028d8qij9rh1vkiil8qkswd8yznwlcwyl4h04wr"))))
     (build-system gnu-build-system)
     (native-inputs
      (list perl texinfo))
@@ -1165,6 +1165,7 @@ card.  It offers:
      (list ncurses))
     (arguments
      `(#:tests? #f
+       #:parallel-build? #f             ; or enums.h may not yet be generated
        #:make-flags
        (list "STRIP=true"               ; don't
              (string-append "CC=" ,(cc-for-target))

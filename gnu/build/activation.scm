@@ -363,9 +363,14 @@ second element is the name it should appear at, such as:
   "Tell the kernel to look for device firmware under DIRECTORY.  This
 mechanism bypasses udev: it allows Linux to handle firmware loading directly
 by itself, without having to resort to a \"user helper\"."
-  (call-with-output-file "/sys/module/firmware_class/parameters/path"
-    (lambda (port)
-      (display directory port))))
+
+  ;; If the kernel was built without firmware loading support, this file
+  ;; does not exist.  Do nothing in that case.
+  (let ((firmware-path "/sys/module/firmware_class/parameters/path"))
+    (when (file-exists? firmware-path)
+      (call-with-output-file firmware-path
+        (lambda (port)
+          (display directory port))))))
 
 (define (activate-ptrace-attach)
   "Allow users to PTRACE_ATTACH their own processes.

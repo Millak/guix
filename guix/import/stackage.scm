@@ -4,6 +4,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Xinglu Chem <public@yoctocell.xyz>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -139,9 +140,14 @@ included in the Stackage LTS release."
          (mlambda ()
            (stackage-lts-packages
             (stackage-lts-info-fetch %default-lts-version)))))
-    (lambda* (pkg)
+    (lambda* (pkg #:key (version #f))
       "Return an <upstream-source> for the latest Stackage LTS release of
 PACKAGE or #f if the package is not included in the Stackage LTS release."
+      (when version
+        (error
+         (formatted-message
+          (G_ "~a updater doesn't support updating to a specific version, sorry.")
+          "stackage")))
       (let* ((hackage-name (guix-package->hackage-name pkg))
              (version (lts-package-version (packages) hackage-name))
              (name-version (hackage-name-version hackage-name version)))
@@ -175,6 +181,6 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
    (name 'stackage)
    (description "Updater for Stackage LTS packages")
    (pred stackage-lts-package?)
-   (latest latest-lts-release)))
+   (import latest-lts-release)))
 
 ;;; stackage.scm ends here

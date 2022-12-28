@@ -360,6 +360,17 @@ asdf-build-system."
                       "gnu/packages/motti.scm"
                       "guix/build/minetest-build-system.scm")))
 
+(define-team localization
+  (team 'localization
+        #:name "Localization (l10n) team"
+        #:description
+        "Localization of your system to specific languages."
+        #:scope (list "gnu/packages/anthy.scm"
+                      "gnu/packages/fcitx5.scm"
+                      "gnu/packages/fcitx.scm"
+                      "gnu/packages/fonts.scm"
+                      "gnu/packages/ibus.scm")))
+
 (define-team translations
   (team 'translations
         #:name "Translations"
@@ -427,6 +438,10 @@ importer."
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
   science)
+
+(define-member (person "Tobias Geerinckx-Rice"
+                       "me@tobias.gr")
+  core kernel mentors)
 
 (define-member (person "Björn Höfling"
                        "bjoern.hoefling@bjoernhoefling.de")
@@ -499,6 +514,10 @@ importer."
 (define-member (person "Raghav Gururajan"
                        "rg@raghavgururajan.name")
   mentors)
+
+(define-member (person "宋文武"
+                       "iyzsong@envs.net")
+  games localization)
 
 
 (define (find-team name)

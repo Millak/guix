@@ -244,7 +244,7 @@ Hash hashFile(HashType ht, const Path & path)
     start(ht, ctx);
 
     AutoCloseFD fd = open(path.c_str(), O_RDONLY);
-    if (fd == -1) throw SysError(format("opening file `%1%'") % path);
+    if (fd == -1) throw SysError(format("computing hash of file `%1%'") % path);
 
     unsigned char buf[8192];
     ssize_t n;

@@ -172,52 +172,54 @@
 (define-public aragorn
   (package
     (name "aragorn")
-    (version "1.2.38")
+    (version "1.2.41")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "http://mbio-serv2.mbioekol.lu.se/ARAGORN/Downloads/aragorn"
-                    version ".tgz"))
+              (uri (string-append "https://www.ansikte.se/ARAGORN/Downloads/"
+                                  "aragorn" version ".c"))
               (sha256
                (base32
-                "09i1rg716smlbnixfm7q1ml2mfpaa2fpn3hwjg625ysmfwwy712b"))))
+                "0jkzx7sqiarydvz3bwaxh790fpvpkfc926dhsza1dbdhq32ir8wj"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are no tests
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'build
-           (lambda _
-             (invoke "gcc"
-                     "-O3"
-                     "-ffast-math"
-                     "-finline-functions"
-                     "-o"
-                     "aragorn"
-                     (string-append "aragorn" ,version ".c"))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (install-file "aragorn" bin)
-               (install-file "aragorn.1" man))
-             #t)))))
-    (home-page "http://mbio-serv2.mbioekol.lu.se/ARAGORN")
+     (list
+      #:tests? #f ; there are no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'build
+            (lambda _
+              (invoke "gcc" "-O3" "-ffast-math" "-finline-functions"
+                      "-o" "aragorn" #$source)))
+          (replace 'install
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man1")))
+                (install-file "aragorn" bin)
+                (mkdir-p man)
+                (copy-file (assoc-ref inputs "aragorn.1")
+                           (string-append man "/aragorn.1"))))))))
+    (native-inputs
+     `(("aragorn.1"
+        ,(origin
+           (method url-fetch)
+           (uri "https://www.ansikte.se/ARAGORN/Downloads/aragorn.1")
+           (sha256
+            (base32
+             "0bn9lapa6f0cl07dbn2fjrapirv9d4bk7w248w39fhb4vbczcc3f"))))))
+    (home-page "https://www.ansikte.se/ARAGORN/")
     (synopsis "Detect tRNA, mtRNA and tmRNA genes in nucleotide sequences")
     (description
      "Aragorn identifies transfer RNA, mitochondrial RNA and
 transfer-messenger RNA from nucleotide sequences, based on homology to known
 tRNA consensus sequences and RNA structure.  It also outputs the secondary
 structure of the predicted RNA.")
-    (license license:gpl2)))
+    (license license:gpl3+)))
 
 (define-public bamtools
   (package
     (name "bamtools")
-    (version "2.5.1")
+    (version "2.5.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -226,21 +228,10 @@ structure of the predicted RNA.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0nfb2ypcx9959xnbz6wxh6py3xfizgmg8nrknxl95c507m9hmq8b"))))
+                "14lw571vbks138i0lj66qjdbk8iwa817x2zbpzij61vv1gdgfbn5"))))
     (build-system cmake-build-system)
-    (arguments
-     `(#:tests? #f ;no "check" target
-       #:phases
-       (modify-phases %standard-phases
-         (add-before
-          'configure 'set-ldflags
-          (lambda* (#:key outputs #:allow-other-keys)
-            (setenv "LDFLAGS"
-                    (string-append
-                     "-Wl,-rpath="
-                     (assoc-ref outputs "out") "/lib/bamtools"))
-            #t)))))
-    (inputs (list zlib))
+    (inputs (list jsoncpp zlib))
+    (native-inputs (list pkg-config))
     (home-page "https://github.com/pezmaster31/bamtools")
     (synopsis "C++ API and command-line toolkit for working with BAM data")
     (description
@@ -251,7 +242,7 @@ BAM files.")
 (define-public bamutils
   (package
     (name "bamutils")
-    (version "1.0.14")
+    (version "1.0.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -260,21 +251,22 @@ BAM files.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i2r332k1kz0jysyg89d858wqq59n16lw6dv5qmilcwshb77r9v7"))))
+                "1pxydf9qsr8667jh525bc2wiqn9nwk8rkg05kbyfmjs8d261fl9y"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; Unclear how to run tests
-       #:make-flags
-       ,#~(list "USER_WARNINGS=-std=gnu++98" ;
-                (string-append "INSTALLDIR=" #$output "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/Makefile" ;
-               (("^DATE=.*") "DATE=\"1970-01-01\"\n"))
-             (copy-recursively (assoc-ref inputs "libstatgen")
-                               "../libStatGen"))))))
+     (list
+      #:tests? #f ;fails to link debug libraries
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "INSTALLDIR=" #$output "/bin"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'configure
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/Makefile"
+                (("^DATE=.*") "DATE=\"1970-01-01\"\n"))
+              (copy-recursively (assoc-ref inputs "libstatgen")
+                                "../libStatGen"))))))
     (inputs
      (list zlib))
     (native-inputs
@@ -287,7 +279,7 @@ BAM files.")
            (file-name (git-file-name "libstatgen" version))
            (sha256
             (base32
-             "0q9iyk046r4m7qnav8c3f28zsar25lj9nydiklwaswmzdijhi4p1"))))))
+             "0spvbpvnpxrgj8kajpkhf1mv7kdyvj723y9zh13jykvnjh8a15j3"))))))
     (home-page "https://genome.sph.umich.edu/wiki/BamUtil")
     (synopsis "Programs for working on SAM/BAM files")
     (description "This package provides several programs that perform
@@ -372,7 +364,7 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
 (define-public bedops
   (package
     (name "bedops")
-    (version "2.4.35")
+    (version "2.4.41")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -381,39 +373,49 @@ transparently with both VCFs and BCFs, both uncompressed and BGZF-compressed.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mmgsgwz5r9w76hzgxkxc9s9lkdhhaf7vr6i02b09vbswvs1fyqx"))))
+                "046037qdxsn01ln28rbrwnc7wq4a3xahmb2k74l0w75dby5ni42l"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f
-       #:make-flags (list (string-append "BINDIR=" %output "/bin"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-tarballs
-           (lambda _
-             ;; FIXME: Bedops includes tarballs of minimally patched upstream
-             ;; libraries jansson, zlib, and bzip2.  We cannot just use stock
-             ;; libraries because at least one of the libraries (zlib) is
-             ;; patched to add a C++ function definition (deflateInit2cpp).
-             ;; Until the Bedops developers offer a way to link against system
-             ;; libraries we have to build the in-tree copies of these three
-             ;; libraries.
+     (list
+      ;; We cannot run the tests because the build system makes strange
+      ;; assumptions about where executables are located.
+      #:tests? #false
+      #:test-target "tests"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-tarballs
+            (lambda _
+              ;; FIXME: Bedops includes tarballs of minimally patched upstream
+              ;; libraries jansson, zlib, and bzip2.  We cannot just use stock
+              ;; libraries because at least one of the libraries (zlib) is
+              ;; patched to add a C++ function definition (deflateInit2cpp).
+              ;; Until the Bedops developers offer a way to link against system
+              ;; libraries we have to build the in-tree copies of these three
+              ;; libraries.
 
-             ;; See upstream discussion:
-             ;; https://github.com/bedops/bedops/issues/124
+              ;; See upstream discussion:
+              ;; https://github.com/bedops/bedops/issues/124
 
-             ;; Unpack the tarballs to benefit from shebang patching.
-             (with-directory-excursion "third-party"
-               (invoke "tar" "xvf" "jansson-2.6.tar.bz2")
-               (invoke "tar" "xvf" "zlib-1.2.7.tar.bz2")
-               (invoke "tar" "xvf" "bzip2-1.0.6.tar.bz2"))
-             ;; Disable unpacking of tarballs in Makefile.
-             (substitute* "system.mk/Makefile.linux"
-               (("^\tbzcat .*") "\t@echo \"not unpacking\"\n")
-               (("\\./configure") "CONFIG_SHELL=bash ./configure"))
-             (substitute* "third-party/zlib-1.2.7/Makefile.in"
-               (("^SHELL=.*$") "SHELL=bash\n"))
-             #t))
-         (delete 'configure))))
+              ;; Unpack the tarballs to benefit from shebang patching.
+              (with-directory-excursion "third-party"
+                (invoke "tar" "xvf" "jansson-2.6.tar.bz2")
+                (invoke "tar" "xvf" "zlib-1.2.7.tar.bz2")
+                (invoke "tar" "xvf" "bzip2-1.0.6.tar.bz2"))
+              ;; Disable unpacking of tarballs in Makefile.
+              (substitute* "system.mk/Makefile.linux"
+                (("^\tbzcat .*") "\t@echo \"not unpacking\"\n")
+                (("\\./configure") "CONFIG_SHELL=bash ./configure"))
+              (substitute* "third-party/zlib-1.2.7/Makefile.in"
+                (("^SHELL=.*$") "SHELL=bash\n"))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (invoke "make" "install"
+                      (string-append "BINDIR=" #$output "/bin")))))))
+    (native-inputs
+     (list diffutils perl which))
     (home-page "https://github.com/bedops/bedops")
     (synopsis "Tools for high-performance genomic feature operations")
     (description
@@ -443,14 +445,15 @@ computational cluster.")
                 "1f2hh79l7dn147c2xyfgf5wfjvlqfw32kjfnnh2n1qy6rpzx2fik"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       ,#~(list (string-append "prefix=" #$output))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "prefix=" #$output))
+      #:phases
+      '(modify-phases %standard-phases
          (delete 'configure))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (inputs
      (list samtools zlib))
     (home-page "https://github.com/arq5x/bedtools2")
@@ -479,63 +482,101 @@ BED, GFF/GTF, VCF.")
                (base32
                 "11rvca19ncg03kxd0wzlfx5ws7r3nisd0z8s9j9n182d8ksp2pxz"))))
     (arguments
-     '(#:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'compatibility
-           (lambda _
-             (substitute* "src/utils/fileType/FileRecordTypeChecker.h"
-               (("static const float PERCENTAGE")
-                "static constexpr float PERCENTAGE"))
-             (substitute* "src/utils/general/DualQueue.h"
-               (("template <class T, template<class T> class CompareFunc>")
-                "template <class T, template<class U> class CompareFunc>"))))
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (for-each (lambda (file)
-                           (install-file file bin))
-                         (find-files "bin" ".*"))))))))
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'compatibility
+            (lambda _
+              (substitute* "src/utils/fileType/FileRecordTypeChecker.h"
+                (("static const float PERCENTAGE")
+                 "static constexpr float PERCENTAGE"))
+              (substitute* "src/utils/general/DualQueue.h"
+                (("template <class T, template<class T> class CompareFunc>")
+                 "template <class T, template<class U> class CompareFunc>"))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin/")))
+                (for-each (lambda (file)
+                            (install-file file bin))
+                          (find-files "bin" ".*"))))))))
     (native-inputs
-     `(("python" ,python-wrapper)))
+     (list python-wrapper))
     (inputs
      (list samtools zlib))))
 
 (define-public pbcopper
-  ;; This is the latest commit at the time of this writing.
-  (let ((commit "ad4143afd25a0bd6adc977c544865c992a515841")
+  (package
+    (name "pbcopper")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/PacificBiosciences/pbcopper")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04mgmla96bsmr9gijbn3ibspry625cv4kqqxv70z4jq4qc407jy3"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-meson-files
+           (lambda _
+             (substitute* "meson.build"
+               (("-msse4.1") "")))))))
+    (inputs
+     (list boost))
+    (native-inputs
+     (list googletest pkg-config))
+    (home-page "https://github.com/PacificBiosciences/pbcopper")
+    (synopsis "Data structures, algorithms, and utilities for PacBio C++ applications")
+    (description
+     "The pbcopper library provides a suite of data structures, algorithms,
+and utilities for PacBio C++ applications.")
+    (license license:bsd-3)))
+
+(define-public r-bedtorch
+  (let ((commit "f5ff4f83b94f59eac660333c64e4b2f296b35cea")
         (revision "1"))
     (package
-      (name "pbcopper")
-      (version (git-version "1.9.0" revision commit))
+      (name "r-bedtorch")
+      (version (git-version "0.1.12.12" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
-                      (url "https://github.com/PacificBiosciences/pbcopper")
+                      (url "https://github.com/haizi-zh/bedtorch/")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1qxkbpdkamfisnk36lpi1vdvf3p1lg2hdqna3xgd94pz52bwbmp7"))))
-      (build-system meson-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-meson-files
-             (lambda* (#:key inputs #:allow-other-keys)
-               (substitute* "meson.build"
-                 (("-msse4.1") "")))))))
-      (inputs
-       (list boost))
-      (native-inputs
-       (list googletest pkg-config))
-      (home-page "https://github.com/PacificBiosciences/pbcopper")
-      (synopsis "Data structures, algorithms, and utilities for PacBio C++ applications")
+                  "08l04iqf54b5995gc7rvqqd7w327fwqs7qjyhc9y5cqfj8yv4c48"))))
+      (properties `((upstream-name . "bedtorch")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-assertthat
+             r-curl
+             r-data-table
+             r-dplyr
+             r-genomeinfodb
+             r-genomicranges
+             r-purrr
+             r-r-utils
+             r-rcpp
+             r-rcurl
+             r-readr
+             r-rhtslib12
+             r-s4vectors
+             r-stringr
+             r-tidyr))
+      (home-page "https://github.com/haizi-zh/bedtorch/")
+      (synopsis "R package for fast BED-file manipulation")
       (description
-       "The pbcopper library provides a suite of data structures, algorithms,
-and utilities for PacBio C++ applications.")
-      (license license:bsd-3))))
+       "The goal of bedtorch is to provide a fast BED file manipulation tool
+suite native in R.")
+      (license license:expat))))
 
 (define-public r-btools
   (let ((commit "fa21d4ca01d37ea4d98b45582453f3bf95cbc2b5")
@@ -573,10 +614,37 @@ and utilities for PacBio C++ applications.")
 for all types of microbial diversity analyses.")
       (license license:expat))))
 
+(define-public r-rhtslib12
+  (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
+        (revision "1"))
+    (package
+      (name "r-rhtslib12")
+      (version (git-version "1.23.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/haizi-zh/Rhtslib12")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0a3kkp0phi2fq6ip8p9vfj3axn7l15f2mb51a6v3ai4nlkhqqawj"))))
+      (properties `((upstream-name . "Rhtslib12")))
+      (build-system r-build-system)
+      (propagated-inputs (list curl zlib r-zlibbioc))
+      (native-inputs (list pkg-config r-knitr))
+      (home-page "https://github.com/haizi-zh/Rhtslib12")
+      (synopsis "HTSlib high-throughput sequencing library as an R package")
+      (description
+       "This package provides version 1.12 of the HTSlib C library for
+high-throughput sequence analysis.  The package is primarily useful to
+developers of other R packages who wish to make use of HTSlib.")
+      (license license:lgpl2.0+))))
+
 (define-public pbbam
   (package
     (name "pbbam")
-    (version "1.7.0")
+    (version "2.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -585,7 +653,7 @@ for all types of microbial diversity analyses.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1avdm5hwhr5ls79017blyalx1npzbf1aa6dgb6j6lg8sq4nk9yyg"))))
+                "1iyazi3l7dswpfxh39k5j7ydi0ywja0579xz3r6l9kkwz2n1z6dc"))))
     (build-system meson-build-system)
     (arguments
      `(#:phases
@@ -606,13 +674,13 @@ for all types of microbial diversity analyses.")
                 (string-append "'" (which "sh") "'"))))))))
     ;; These libraries are listed as "Required" in the pkg-config file.
     (propagated-inputs
-     (list htslib pbcopper zlib))
+     (list htslib-1.14 pbcopper zlib))
     (inputs
      (list boost samtools))
     (native-inputs
-     `(("googletest" ,googletest)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper))) ; for tests
+     (list googletest
+           pkg-config
+           python-wrapper)) ;for tests
     (home-page "https://github.com/PacificBiosciences/pbbam")
     (synopsis "Work with PacBio BAM files")
     (description
@@ -683,8 +751,7 @@ speedup comes during compression.")
                    m
                    (format #f "cpp.find_library('hdf5', dirs : '~a'), \
 cpp.find_library('hdf5_cpp', dirs : '~a'), "
-                           hdf5 hdf5)))))
-             #t))
+                           hdf5 hdf5)))))))
          (add-after 'unpack 'find-googletest
            (lambda* (#:key inputs #:allow-other-keys)
              ;; It doesn't find gtest_main because there's no pkg-config file
@@ -693,8 +760,7 @@ cpp.find_library('hdf5_cpp', dirs : '~a'), "
                (("libblasr_gtest_dep = dependency\\('gtest_main'.*")
                 (format #f "cpp = meson.get_compiler('cpp')
 libblasr_gtest_dep = cpp.find_library('gtest_main', dirs : '~a')\n"
-                        (assoc-ref inputs "googletest"))))
-             #t)))
+                        (assoc-ref inputs "googletest")))))))
        ;; TODO: unittest/libblasr_unittest cannot be linked
        ;; ld: ;; unittest/df08227@@libblasr_unittest@exe/alignment_utils_FileUtils_gtest.cpp.o:
        ;; undefined reference to symbol
@@ -814,26 +880,23 @@ provides the Ribotaper pipeline.")
                (base32
                 "1pxc3zdnirxbf9a0az698hd8xdik7qkhypm7v6hn922x8y9qmspm"))))
     (build-system gnu-build-system)
-    (inputs
-     (list zlib))
-    (native-inputs
-     (list bison))
+    (inputs (list zlib))
+    (native-inputs (list bison))
     (arguments
-     `(#:tests? #f ; There are no tests to run.
-       ;; Bison must generate files, before other targets can build.
-       #:parallel-build? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; There is no configure phase.
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin  (string-append out "/bin"))
-                    (man (string-append out "/share/man/man1")))
-               (mkdir-p man)
-               (copy-file "awk.1" (string-append man "/bioawk.1"))
-               (install-file "bioawk" bin))
-             #t)))))
+     (list
+      #:tests? #f ; There are no tests to run.
+      ;; Bison must generate files, before other targets can build.
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; There is no configure phase.
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (man (string-append #$output "/share/man/man1")))
+                (mkdir-p man)
+                (copy-file "awk.1" (string-append man "/bioawk.1"))
+                (install-file "bioawk" bin)))))))
     (home-page "https://github.com/lh3/bioawk")
     (synopsis "AWK with bioinformatics extensions")
     (description "Bioawk is an extension to Brian Kernighan's awk, adding the
@@ -1237,21 +1300,21 @@ sequencing.")
 (define-public python-biopython
   (package
     (name "python-biopython")
-    (version "1.76")
+    (version "1.80")
     (source (origin
               (method url-fetch)
               ;; use PyPi rather than biopython.org to ease updating
               (uri (pypi-uri "biopython" version))
               (sha256
                (base32
-                "0wlch9xpa0fpgjzyxi6jsfca6iakaq9a05927xg8vqnmvaccnwrq"))))
-    (build-system python-build-system)
+                "0hqf3jsxn2sphcx81fx7x3i69sarpjsi70fzw98f8rw7z2d5x02j"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
+     '(#:phases
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            ;; Some tests require a home directory to be set.
-           (lambda _ (setenv "HOME" "/tmp") #t)))))
+           (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-numpy))
     (home-page "https://biopython.org/")
@@ -2077,8 +2140,7 @@ genome (2.9 GB for paired-end).")
                '(begin
                   ;; Remove bundled SeqAn and samtools
                   (delete-file-recursively "src/SeqAn-1.4.2")
-                  (delete-file-recursively "src/samtools-0.1.18")
-                  #t))))
+                  (delete-file-recursively "src/samtools-0.1.18")))))
     (build-system gnu-build-system)
     (arguments
      '(#:parallel-build? #f             ; not supported
@@ -2093,8 +2155,7 @@ genome (2.9 GB for paired-end).")
                        (string-join
                         (delete (string-append gcc "/include/c++")
                                 (string-split (getenv "CPLUS_INCLUDE_PATH") #\:))
-                        ":"))
-               #t)))
+                        ":")))))
          (add-after 'unpack 'use-system-samtools
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "src/Makefile.in"
@@ -2114,8 +2175,7 @@ genome (2.9 GB for paired-end).")
                             "src/map2gtf.h"
                             "src/align_status.h")
                (("#include <bam.h>") "#include <samtools/bam.h>")
-               (("#include <sam.h>") "#include <samtools/sam.h>"))
-             #t)))))
+               (("#include <sam.h>") "#include <samtools/sam.h>")))))))
     (native-inputs
      `(("gcc@5" ,gcc-5))) ;; doesn't build with later versions
     (inputs
@@ -2267,23 +2327,34 @@ off-target reads for a capture method that targets CpG-rich region.")
 (define-public python-bx-python
   (package
     (name "python-bx-python")
-    (version "0.8.12")
+    (version "0.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/bxlab/bx-python")
-                    (commit "f4e6a5c93e719db69b5798b6fdd9b167da358316")))
+                    (commit "4f4a48d3f227ae390c1b22072867ba86e347bdef")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0mclahslz34vq9x424jmzsxk0nmpm1j716fa8h3zwr9ssvch7skc"))))
-    (build-system python-build-system)
+                "1c914rw8phiw7zwzngz9i9hdciz5lq53drwdbpl2bd2sf5bj2biy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-before 'check 'build-extensions
+           (lambda _
+             ;; Cython extensions have to be built before running the tests.
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
+         ;; Unrecognized argument.
+         (add-after 'unpack 'disable-cython-doctests
+           (lambda _ (substitute* "pytest.ini" (("--doctest-cython") "")))))))
     (propagated-inputs
      (list python-numpy))
     (inputs
      (list zlib))
     (native-inputs
-     (list python-lzo python-nose python-cython))
+     (list python-cython python-lzo python-pytest))
     (home-page "https://github.com/bxlab/bx-python")
     (synopsis "Tools for manipulating biological data")
     (description
@@ -2329,7 +2400,7 @@ has several key features:
 (define-public python-pysam
   (package
     (name "python-pysam")
-    (version "0.18.0")
+    (version "0.20.0")
     (source (origin
               (method git-fetch)
               ;; Test data is missing on PyPi.
@@ -2339,12 +2410,12 @@ has several key features:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "042ca27r6634xg2ixgvq1079cp714wmm6ml7bwc1snn0wxxzywfg"))
+                "1dq6jwwm98lm30ijdgqc5xz5ppda4nj999y6qs78mhw8x0kij8gg"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; FIXME: Unbundle samtools and bcftools.
                           (delete-file-recursively "htslib")))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2413,17 +2484,31 @@ UCSC genome browser.")
 (define-public python-plastid
   (package
     (name "python-plastid")
-    (version "0.5.1")
+    (version "0.6.0")
     (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "plastid" version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/joshuagryphon/plastid")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1a7mdky2xw02y88l51f58pqk8039ahdp6sblj3zx58zarmy2pqyl"))))
-    (build-system python-build-system)
+                "1ka9j08j6i105l89w8b7sg0l8lm3lcrxzy4cjl5dp4cxdmycap62"))))
+    (build-system pyproject-build-system)
     (arguments
-     ;; Some test files are not included.
-     `(#:tests? #f))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-test-data
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke "tar" "-C" "plastid/test"
+                      "-xf" (assoc-ref inputs "test-data"))
+              ;; This one requires bowtie-build
+              (delete-file "plastid/test/functional/test_crossmap.py")))
+          (add-before 'check 'build-extensions
+            (lambda _
+              ;; Cython extensions have to be built before running the tests.
+              (invoke "python3" "setup.py" "build_ext" "--inplace"))))))
     (propagated-inputs
      (list python-numpy
            python-scipy
@@ -2433,8 +2518,18 @@ UCSC genome browser.")
            python-biopython
            python-twobitreader
            python-termcolor))
+    (inputs
+     (list openssl))
     (native-inputs
-     (list python-cython python-nose))
+     `(("python-cython" ,python-cython)
+       ("python-nose" ,python-nose)
+       ("test-data"
+        ,(origin
+           (method url-fetch)
+           (uri "https://www.dropbox.com/s/np3wlfvp6gx8tb8/2022-05-04.plastid-test-data.tar.bz2?dl=1")
+           (file-name "plastid-test-data-2022-05-04.tar.bz2")
+           (sha256
+            (base32 "1szsji06m2r21flnvxg84jnj5zmlk6z10c9651v9ag71nxj9rbzn"))))))
     (home-page "https://github.com/joshuagryphon/plastid")
     (synopsis "Python library for genomic analysis")
     (description
@@ -3642,6 +3737,81 @@ software to answer ad hoc questions.")
            go-golang-org-x-image
            go-golang-org-x-text))))
 
+(define-public python-bamnostic
+  (package
+    (name "python-bamnostic")
+    (version "1.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bamnostic" version))
+              (sha256
+               (base32
+                "0cjpzyqz6r4lmiwry2gcxdczwpkhl3lyyjg4s8addln17691ysxk"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/betteridiot/bamnostic/")
+    (synopsis "Tool for binary alignment map, random access and parsing")
+    (description
+     "Bamnostic is a pure Python @dfn{Binary Alignment Map} (BAM) file parser
+and random access tool.")
+    (license license:bsd-3)))
+
+(define-public python-episcanpy
+  (package
+    (name "python-episcanpy")
+    (version "0.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "episcanpy" version))
+              (sha256
+               (base32
+                "1qqcyhyzy6idpjmidfdpzwk02hbxm25rymz42h51nlk0vd4r2wwm"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      ;; The tests import episcanpy.api, but this is known to not work.
+      ;; See https://github.com/colomemaria/epiScanpy/issues/133
+      #:tests? #false
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'build 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
+    (propagated-inputs
+     (list python-anndata
+           python-bamnostic
+           python-h5py
+           python-intervaltree
+           python-joblib
+           python-kneed
+           python-legacy-api-wrap
+           python-matplotlib
+           python-natsort
+           python-networkx
+           python-numba
+           python-numpy
+           python-packaging
+           python-pandas
+           python-scanpy
+           python-scikit-learn
+           python-scipy
+           python-seaborn
+           python-statsmodels
+           python-tqdm
+           python-pysam
+           python-tbb
+           python-umap-learn))
+    (native-inputs (list python-pytest python-setuptools-scm))
+    (home-page "https://github.com/colomemaria/epiScanpy")
+    (synopsis "Tool for epigenomics single cell analysis")
+    (description
+     "EpiScanpy is a toolkit to analyse single-cell open
+chromatin (scATAC-seq) and single-cell DNA methylation (for example scBS-seq)
+data.  EpiScanpy is the epigenomic extension of the very popular scRNA-seq
+analysis tool Scanpy (Genome Biology, 2018).")
+    (license license:bsd-3)))
+
 (define-public exonerate
   (package
     (name "exonerate")
@@ -4730,7 +4900,7 @@ performance.")
 (define-public htslib
   (package
     (name "htslib")
-    (version "1.14")
+    (version "1.16")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4738,7 +4908,7 @@ performance.")
                     version "/htslib-" version ".tar.bz2"))
               (sha256
                (base32
-                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))
+                "093r1n4s134k50m9a925yn95gyi90ps5dlgc6gq4qwvkzxx7qsv0"))))
     (build-system gnu-build-system)
     ;; Let htslib translate "gs://" and "s3://" to regular https links with
     ;; "--enable-gcs" and "--enable-s3". For these options to work, we also
@@ -4763,6 +4933,18 @@ data.  It also provides the @command{bgzip}, @command{htsfile}, and
     ;; Files under cram/ are released under the modified BSD license;
     ;; the rest is released under the Expat license
     (license (list license:expat license:bsd-3))))
+
+(define-public htslib-1.14
+  (package/inherit htslib
+    (version "1.14")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/samtools/htslib/releases/download/"
+                    version "/htslib-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "0pwk8yhhvb85mi1d2qhwsb4samc3rmbcrq7b1s0jz0glaa7in8pd"))))))
 
 (define-public htslib-1.12
   (package/inherit htslib
@@ -6945,19 +7127,19 @@ bioinformatics file formats, sequence alignment, and more.")
 (define-public seqmagick
   (package
     (name "seqmagick")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "seqmagick" version))
        (sha256
         (base32
-         "0pf98da7i59q47gwrbx0wjk6xlvbybiwphw80w7h4ydjj0579a2b"))))
-    (build-system python-build-system)
+         "0c6skyig8fyylnbj4597pjj9h0dn36rkxrhwd34yrsc6k6f7r8a0"))))
+    (build-system pyproject-build-system)
     (inputs
-     (list python-biopython))
+     (list python-biopython python-pygtrie))
     (native-inputs
-     (list python-nose))
+     (list python-pytest))
     (home-page "https://github.com/fhcrc/seqmagick")
     (synopsis "Tools for converting and modifying sequence files")
     (description
@@ -10843,25 +11025,12 @@ API services.")
               (sha256
                (base32
                 "1b4qyngwagh5sc2ygyfqyirg63myzh1g1glk03a1ykxfii32cjlp"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:tests? #f                       ;pypi source does not contain tests
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (for-each
-               (lambda (wheel)
-                 (format #t wheel)
-                 (invoke "python" "-m" "pip" "install"
-                         wheel (string-append "--prefix=" #$output)))
-               (find-files "dist" "\\.whl$"))))
           (add-before 'sanity-check 'set-env
             (lambda _
               ;; numba RuntimeError: cannot cache function 'rdist'
@@ -12811,32 +12980,35 @@ implementation differs in these ways:
        (sha256
         (base32
          "0k524xnx3dvpz5yx65p316wghvi01zs17is8w2m3w2qywiswk0sl"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda _
-             (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" ,version)
-             ;; ZIP does not support timestamps before 1980.
-             (setenv "SOURCE_DATE_EPOCH" "315532800")
-             (invoke "flit" "build")))
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (let ((out (assoc-ref outputs "out")))
-               (for-each (lambda (wheel)
-                           (format #true wheel)
-                           (invoke "python" "-m" "pip" "install"
-                                   wheel (string-append "--prefix=" out)))
-                         (find-files "dist" "\\.whl$")))))
-         ;; Numba needs a writable dir to cache functions.
-         (add-before 'check 'set-numba-cache-dir
-           (lambda _
-             (setenv "NUMBA_CACHE_DIR" "/tmp")))
-         (replace 'check
-           (lambda* (#:key tests? inputs #:allow-other-keys)
-             (when tests?
+     (list
+      #:test-flags
+      '(list "-k"
+             ;; Plot tests that fail.
+             (string-append "not test_dotplot_matrixplot_stacked_violin"
+                            " and not test_violin_without_raw"
+                            " and not test_correlation"
+                            " and not test_scatterplots"
+                            " and not test_scatter_embedding_add_outline_vmin_vmax_norm"
+                            " and not test_paga"
+                            " and not test_paga_compare"
+                            " and not test_clustermap"
+
+                            ;; These try to connect to the network
+                            " and not test_scrublet_plots"
+                            " and not test_plot_rank_genes_groups_gene_symbols"
+                            " and not test_pca_n_pcs"
+                            " and not test_pca_chunked"
+                            " and not test_pca_sparse"
+                            " and not test_pca_reproducible"))
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'pretend-version
+             (lambda _
+               (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
+           (add-after 'unpack 'delete-bad-tests
+             (lambda _
                ;; These tests require Internet access.
                (delete-file-recursively "scanpy/tests/notebooks")
                (delete-file "scanpy/tests/test_clustering.py")
@@ -12863,27 +13035,11 @@ implementation differs in these ways:
 
                (setenv "PYTHONPATH"
                        (string-append (getcwd) ":"
-                                      (assoc-ref inputs "python-anndata:source") ":"
-                                      (getenv "GUIX_PYTHONPATH")))
-               (invoke "pytest" "-vv"
-                       "-k"
-                       ;; Plot tests that fail.
-                       (string-append "not test_dotplot_matrixplot_stacked_violin"
-                                      " and not test_violin_without_raw"
-                                      " and not test_correlation"
-                                      " and not test_scatterplots"
-                                      " and not test_scatter_embedding_add_outline_vmin_vmax_norm"
-                                      " and not test_paga"
-                                      " and not test_paga_compare"
-                                      " and not test_clustermap"
-
-                                      ;; These try to connect to the network
-                                      " and not test_scrublet_plots"
-                                      " and not test_plot_rank_genes_groups_gene_symbols"
-                                      " and not test_pca_n_pcs"
-                                      " and not test_pca_chunked"
-                                      " and not test_pca_sparse"
-                                      " and not test_pca_reproducible"))))))))
+                                      #$(this-package-native-input "python-anndata:source") ":"
+                                      (getenv "GUIX_PYTHONPATH")))))
+           ;; Numba needs a writable dir to cache functions.
+           (add-before 'check 'set-numba-cache-dir
+             (lambda _ (setenv "NUMBA_CACHE_DIR" "/tmp"))))))
     (propagated-inputs
      (list python-anndata
            python-dask
@@ -13373,7 +13529,7 @@ includes operations like compartment, insulation or peak calling.")
 (define-public python-hicmatrix
   (package
     (name "python-hicmatrix")
-    (version "15")
+    (version "16")
       (source
         (origin
           ;;Pypi sources do not contain any test
@@ -13384,11 +13540,12 @@ includes operations like compartment, insulation or peak calling.")
           (file-name (git-file-name name version))
           (sha256
             (base32
-             "1dshjxgb16sdfg9k1bhw2yhyngac04k4ca7aqy8g3i3pprr068r5"))))
-    (build-system python-build-system)
+             "00b9l62j4knrsdp7l3pawi9cqcsl09diycbhmmnar850bzssmq4f"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -13412,7 +13569,7 @@ the HiCExplorer and pyGenomeTracks packages.")
 (define-public python-hicexplorer
   (package
     (name "python-hicexplorer")
-    (version "2.1.4")
+    (version "3.7.2")
     (source
      (origin
        ;; The latest version is not available on Pypi.
@@ -13423,32 +13580,114 @@ the HiCExplorer and pyGenomeTracks packages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0q5gpbzmrkvygqgw524q36b4nrivcmyi5v194vsx0qw7b3gcmq08"))))
-    (build-system python-build-system)
+         "1yavgxry38g326z10bclvdf8glmma05fxj5m73h15m1r2l9xmw3v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'loosen-up-requirements
-           (lambda _
-             (substitute* "setup.py"
-               (("==") ">="))
-             #t)))))
+     (list
+      #:test-flags
+      '(list "hicexplorer/test/general/"
+             "--ignore" "hicexplorer/test/general/test_hicTADClassifier.py"
+             "--ignore" "hicexplorer/test/general/test_hicTrainTADClassifier.py"
+             "-k"
+             (string-append
+              ;; Unknown chromosome: ChrX
+              "not test_build_matrix_restrictionCutFile_two"
+              ;; fixture 'keepSelfLigation' not found
+              " and not test_build_matrix_restrictionCutFile_six"
+              ;; ValueError: object dtype is not supported by sparse matrices
+              " and not test_hic_transfer_obs_exp_perChromosome"
+
+              ;; No KR balancing available
+              " and not test_correct_matrix_KR_partial_cool"
+              " and not test_correct_matrix_KR_cool"
+              " and not test_correct_matrix_KR_H5"))
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; See https://github.com/deeptools/Knight-Ruiz-Matrix-balancing-algorithm/issues/23
+          (add-after 'unpack 'remove-dependency-on-krbalancing
+            (lambda _
+              (substitute* "hicexplorer/hicCorrectMatrix.py"
+                (("from krbalancing import.*") "")
+                (("( *)assert\\(args.correctionMethod == 'KR'\\)" m indent)
+                 (string-append m "\n"
+                                indent "log.error('krbalancing not available')\n"
+                                indent "exit(1)")))
+              (substitute* "setup.py"
+                (("\"krbalancing >= 0.0.5\",") ""))
+              (substitute* "requirements.txt"
+                (("krbalancing >= 0.0.5") ""))))
+          (add-after 'unpack 'fix-references
+            (lambda _
+              (let ((site (string-append #$output "/lib/python"
+                                         #$(version-major+minor
+                                            (package-version python))
+                                         "/site-packages")))
+                (substitute* "hicexplorer/lib/tadClassifier.py"
+                  (("model_location = site.getsitepackages\\(\\)\\[0\\]")
+                   (string-append "model_location = \"" site "\""))))
+              (substitute* "hicexplorer/hicFindRestSite.py"
+                (("subprocess.check_output\\(\\[\"cat\"")
+                 (string-append "subprocess.check_output([\""
+                                (which "cat") "\""))
+                (("cmd = 'sort -k1")
+                 (string-append "cmd = '" (which "sort") " -k1")))))
+          ;; The tests aim to detect available memory and run more tests when
+          ;; there is more available memory.  Let's run them deterministically
+          ;; instead and don't run any tests that require more than 1GB of
+          ;; RAM.
+          (add-after 'unpack 'run-only-low-mem-tests
+            (lambda _
+              (with-directory-excursion "hicexplorer/test"
+                (substitute* '("trivial_runs/test_hicBuildMatrix_trivial_runs_2.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_five.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_four.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_1.py"
+                               "trivial_runs/test_hicBuildMatrix_trivial_runs.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_3.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_three.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_two_2.py"
+                               "trivial_runs/test_hicAggregateContacts_trivial_runs_six.py"
+                               "general/test_hicDifferentialTAD.py"
+                               "general/test_hicDetectLoops.py"
+                               "general/test_hicPlotMatrix.py"
+                               "general/test_hicHyperoptDetectLoops.py"
+                               "general/test_hicCreateThresholdFile.py"
+                               "general/test_hicMergeDomains.py"
+                               "general/test_hicHyperoptDetectLoopsHiCCUPS.py"
+                               "general/test_hicAggregateContacts.py"
+                               "general/test_hicInterIntraTAD.py")
+                  (("^memory =.*") "memory = 1\n"))))))))
     (propagated-inputs
      (list python-biopython
-           python-configparser
+           python-cleanlab-1
            python-cooler
+           python-fit-nbinom
            python-future
+           python-graphviz
+           python-hic2cool
+           python-hicmatrix
+           python-hyperopt
+           python-imbalanced-learn
            python-intervaltree
+           python-ipykernel
            python-jinja2
            python-matplotlib
            python-numpy
            python-pandas
+           python-psutil
+           python-pybedtools
            python-pybigwig
+           python-pygenometracks
            python-pysam
+           python-scikit-learn
            python-scipy
-           python-six
            python-tables
+           python-tqdm
            python-unidecode))
+    (native-inputs
+     (list graphviz)) ;for hicexplorer/test/test_compute_function.py
     (home-page "https://hicexplorer.readthedocs.io")
     (synopsis "Process, analyze and visualize Hi-C data")
     (description
@@ -13465,25 +13704,25 @@ genomic scores), long range contacts and the visualization of viewpoints.")
 (define-public python-pygenometracks
   (package
     (name "python-pygenometracks")
-    (version "3.3")
+    (version "3.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyGenomeTracks" version))
        (sha256
         (base32
-         "16laa0wnf4qn9fb9ych4w1vqhqwjss70v0y0f6wp4gwqfrlgac0f"))))
-    (build-system python-build-system)
+         "1l7smg2gc1vm2181lzmdnywb11gp6s6z6j444dbsigv65car8z8p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f                       ;there are none
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'relax-requirements
            (lambda _
              (substitute* "setup.py"
                (("matplotlib ==3.1.1")
-                "matplotlib >=3.1.1"))
-             #t)))))
+                "matplotlib >=3.1.1")))))))
     (propagated-inputs
      (list python-future
            python-gffutils
@@ -14142,7 +14381,7 @@ polymorphisms) and indels with respect to a reference genome and more.")
 (define-public cnvkit
   (package
     (name "cnvkit")
-    (version "0.9.5")
+    (version "0.9.9")
     (source
      (origin
        (method git-fetch)
@@ -14151,17 +14390,28 @@ polymorphisms) and indels with respect to a reference genome and more.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g2f78k68yglmj4fsfmgs8idqv3di9aj53fg0ld0hqljg8chhh82"))))
-    (build-system python-build-system)
+        (base32 "1q4l7jhr1k135an3n9aa9wsid5lk6fwxb0hcldrr6v6y76zi4gj1"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See upstream commit eee0f6eaec57d5c6e58142d661979f3aacc5f76a
+         (add-after 'unpack 'compatibility
+           (lambda _
+             (substitute* "setup.py"
+               (("'joblib.*") "")))))))
     (propagated-inputs
      (list python-biopython
            python-future
            python-matplotlib
            python-numpy
-           python-reportlab
            python-pandas
-           python-pysam
+           python-pomegranate
            python-pyfaidx
+           python-pysam
+           python-reportlab
+           python-scikit-learn
            python-scipy
            ;; R packages
            r-dnacopy))
@@ -14334,6 +14584,44 @@ short read sequences, removes errors then produces high quality unique
 contigs.  It then uses paired read information, if available, to retrieve the
 repeated areas between contigs.")
     (license license:gpl2+)))
+
+(define-public vembrane
+  (package
+    (name "vembrane")
+    (version "0.13.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vembrane/vembrane")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gdih56gpqd8ks3sd4ah844kac09hi3g073k9gvazb32ah50900w"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "pyproject.toml"
+               (("pysam = \"\\^0.19\"") "pysam = \"^0.20\"")
+               (("numpy = \\{ version = \"\\^1.23\"")
+                "numpy = { version = \"^1\"")))))))
+    (inputs
+     (list python-asttokens python-intervaltree python-numpy
+           python-pysam python-pyyaml))
+    (native-inputs
+     (list poetry python-pytest))
+    (home-page "https://github.com/vembrane/vembrane")
+    (synopsis "Filter VCF/BCF files with Python expressions.")
+    (description "Vembrane allows to simultaneously filter variants based on
+any INFO or FORMAT field, CHROM, POS, ID, REF, ALT, QUAL, FILTER, and the
+annotation field ANN.  When filtering based on ANN, annotation entries are
+filtered first.  If no annotation entry remains, the entire variant is
+deleted.")
+    (license license:expat)))
 
 (define-public python-velocyto
   (package
@@ -15998,7 +16286,7 @@ coordinates between different assemblies.")
 (define-public python-cgatcore
   (package
     (name "python-cgatcore")
-    (version "0.6.7")
+    (version "0.6.14")
     ;; The version of pypi does not include test data.
     (source (origin
               (method git-fetch)
@@ -16008,11 +16296,22 @@ coordinates between different assemblies.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "17vk88v1bx7x02ibzkc9i7ir4b5p1hcjr38jpsfzyzxr68352d5k"))))
-    (build-system python-build-system)
+                "0fjjaski39j8b7v21wldmbwwsfhicngajah7n4skafi56kdck33p"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:test-flags
+      '(list "-k"
+             (string-append
+              ;; This test actually does what it should, but the check fails with
+              ;; TypeError: cannot unpack non-iterable Namespace object
+              "not test_start_and_stop_are_logged_with_argparse"
+              ;; These all attempt to connect to localhost with SSH
+              " and not test_job_should_use_TMPDIR_and_clean_up"
+              " and not test_job_should_use_TMPDIR_and_clean_up_after_fail"
+              " and not test_job_should_write_to_explicit_temp_and_not_clean_up"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-after 'unpack 'fix-references
            (lambda _
              (substitute* "cgatcore/pipeline/execution.py"
@@ -16020,21 +16319,22 @@ coordinates between different assemblies.")
                (("executable=\"/bin/bash\"")
                 (string-append "executable=\"" (which "bash") "\""))
                (("\\\\time") (which "time")))))
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               ;; Requires network access
-               (delete-file "tests/test_pipeline_execution.py")
-               (invoke "python" "-m" "pytest" "-v")))))))
+         (add-after 'unpack 'sqlite-compatibility
+           (lambda _
+             ;; Load apsw (and thus newer sqlite3) before importing Python's
+             ;; older sqlite3 library.
+             (substitute* "cgatcore/pipeline/__init__.py"
+               (("import os")
+                (string-append "import os\nimport apsw")))
+             (substitute* "tests/template_pipeline.py"
+               (("import sys" m)
+                (string-append "import apsw\n" m))))))))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("lsof" ,lsof)
-       ("hostname" ,inetutils)
-       ("openssl" ,openssl)))
-    (inputs
-     (list time))
+     (list python-pytest
+           lsof
+           inetutils
+           openssl))
+    (inputs (list time))
     (propagated-inputs
      (list python-apsw
            python-gevent
@@ -16514,18 +16814,31 @@ feature is fast retrieval of range queries into numpy arrays.")
 (define-public python-dna-features-viewer
   (package
     (name "python-dna-features-viewer")
-    (version "3.0.3")
+    (version "3.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "dna_features_viewer" version))
        (sha256
         (base32
-         "0vci6kg2id6r6rh3cifq7ccnh7j0mb8iqg3hji6rva0ayrdqzafc"))))
-    (build-system python-build-system)
-    (arguments '(#:tests? #false)) ; there are none
+         "10a5pmh73spdgfml88zjqg1rn2j2zdxn06ir8a5q3arspyqvyqcb"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      '(modify-phases %standard-phases
+         ;; See https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer/issues/73
+         ;; and https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer/pull/74
+         (add-after 'unpack 'fix-biopython-compatibility
+           (lambda _
+             (substitute* "dna_features_viewer/biotools.py"
+               (("zip\\(aa1 \\+ \"\\*\", aa3 \\+ \\[\"\\*\"\\]\\)")
+                "zip(aa1 + ('*',), aa3 + ('*',))")))))))
     (propagated-inputs
-     (list python-biopython python-matplotlib))
+     (list python-biopython
+           python-matplotlib
+           python-packaging))
     (home-page
      "https://github.com/Edinburgh-Genome-Foundry/DnaFeaturesViewer")
     (synopsis "Plot features from DNA sequences")
@@ -17390,6 +17703,47 @@ alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
+
+(define-public wiggletools
+  (package
+    (name "wiggletools")
+    (version "1.2.11")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Ensembl/WiggleTools/")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1g3qla4l1g583nzlgyww5jqxpq87ndpn9cmjls098bgqjyn5292q"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; Tests require internet access
+      #:tests? #false
+      #:make-flags
+      #~(list "Wiggletools"
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "bin/wiggletools"
+                            (string-append #$output "/bin")))))))
+    (inputs
+     (list curl ; XXX: needed by libbigwig
+           htslib libbigwig gsl xz zlib))
+    (home-page "https://github.com/Ensembl/WiggleTools/")
+    (synopsis "Operations on the space of numerical functions defined on the genome")
+    (description "The WiggleTools package allows genomewide data files to be
+manipulated as numerical functions, equipped with all the standard functional
+analysis operators (sum, product, product by a scalar, comparators), and
+derived statistics (mean, median, variance, stddev, t-test, Wilcoxon's rank
+sum test, etc).")
+    (license license:asl2.0)))
 
 (define-public flair
   (package

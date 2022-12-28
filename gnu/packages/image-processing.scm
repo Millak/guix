@@ -620,7 +620,7 @@ integrates with various databases on GUI toolkits such as Qt and Tk.")
            (sha256
             (base32 "0ga0l4ranp1834gxgp487ll1amvmssa02l2nk5ja5w0rx4d8hh26"))))))
     (inputs
-     (list ffmpeg
+     (list ffmpeg-4
            gtk+
            gtkglext
            hdf5
@@ -925,7 +925,7 @@ recalculates.")
            double-conversion
            eigen
            expat
-           ffmpeg
+           ffmpeg-4
            freetype
            gdal
            gl2ps

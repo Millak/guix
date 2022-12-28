@@ -1514,7 +1514,7 @@ that we can send the rest of the patches to.
 
 @example
 $ git send-email outgoing/0000-cover-letter.patch -a \
-      --to=guix-patches@@debbugs.gnu.org \
+      --to=guix-patches@@gnu.org \
       $(etc/teams.scm cc-members ...)
 $ rm outgoing/0000-cover-letter.patch # we don't want to resend it!
 @end example

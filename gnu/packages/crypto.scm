@@ -953,14 +953,14 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
 (define-public botan
   (package
     (name "botan")
-    (version "2.19.2")
+    (version "2.19.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://botan.randombit.net/releases/"
                                   "Botan-" version ".tar.xz"))
               (sha256
                (base32
-                "0xad3fa96l6x3azxs2gbz5jfqm2drfv9y9idhf5wvdf62mvg3x9s"))))
+                "0m9dh00zibx13pbjij8lbncf86pix3cxklxmgl47z965k7rlgq6s"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1293,10 +1293,10 @@ signatures include trusted comments in addition to untrusted comments.
 Trusted comments are signed, thus verified, before being displayed.")
     (license license:isc)))
 
-(define-public libolm
+(define-public olm
   (package
-    (name "libolm")
-    (version "3.2.12")
+    (name "olm")
+    (version "3.2.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1304,7 +1304,7 @@ Trusted comments are signed, thus verified, before being displayed.")
                     (commit version)))
               (sha256
                (base32
-                "1k8v9ig32vmjm58rbris621d7mvp4q91qa5p79vc51p41sz91yhj"))
+                "0pj7gs32ixhlls792wah7xf49j5pra0avp7dpvy9cndkdkg6biq5"))
               (file-name (git-file-name name version))
               ;; Delete the bundled blob.  It's free, but unauditable,
               ;; and apparently only required for android.
@@ -1319,12 +1319,15 @@ Trusted comments are signed, thus verified, before being displayed.")
              (when tests?
                (with-directory-excursion "tests"
                  (invoke "ctest" "."))))))))
-    (synopsis "Implementation of the olm and megolm cryptographic ratchets")
-    (description "The libolm library implements the Double Ratchet
+    (synopsis "Implementation of the Olm and Megolm cryptographic ratchets")
+    (description "The Olm library implements the Double Ratchet
 cryptographic ratchet.  It is written in C and C++11, and exposed as a C
 API.")
     (home-page "https://matrix.org/docs/projects/other/olm/")
     (license license:asl2.0)))
+
+(define-public libolm
+  (deprecated-package "libolm" olm))
 
 (define-public python-olm
   (package
@@ -1351,10 +1354,9 @@ API.")
      (list python-cffi python-future))
     (native-inputs
      (list python-pytest python-pytest-benchmark python-aspectlib))
-    (synopsis "Python bindings for libolm")
-    (description "The libolm library implements the Double Ratchet
-cryptographic ratchet.  It is written in C and C++11, and exposed as a C
-API.  This package contains its Python bindings.")))
+    (synopsis "Python bindings for Olm")
+    (description "The Olm library implements the Double Ratchet
+cryptographic ratchet.  This package contains its Python bindings.")))
 
 (define-public hash-extender
   (let ((commit "cb8aaee49f93e9c0d2f03eb3cafb429c9eed723d")

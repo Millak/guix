@@ -66,7 +66,9 @@
                     version ".tar.bz2"))
               (sha256
                (base32
-                "0ax4kqnh7kd3z120ypgp73qy1knz47l6qxsqzrfkd97mh5cdky71"))))
+                "0ax4kqnh7kd3z120ypgp73qy1knz47l6qxsqzrfkd97mh5cdky71"))
+              (patches
+               (search-patches "flashrom-fix-building-on-aarch64.patch"))))
     (build-system gnu-build-system)
     (inputs (list dmidecode pciutils libusb libftdi))
     (native-inputs (list pkg-config))

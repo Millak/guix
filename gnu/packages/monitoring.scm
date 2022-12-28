@@ -636,7 +636,7 @@ devices.")
                       ;; Required because of patched sources.
                       (invoke "autoreconf" "-vfi"))))))
     (inputs
-     (list rrdtool curl libyajl))
+     (list rrdtool curl yajl))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://collectd.org/")

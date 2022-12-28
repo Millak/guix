@@ -404,7 +404,10 @@ configuration file."))
 /etc/ssl/certs"
                            "SSL_CERT_FILE=/run/current-system/profile\
 /etc/ssl/certs/ca-certificates.crt")))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor
+                     ;; The server needs to finish database work on shutdown
+                     ;; which can take a while for big or busy databases.
+                     #:grace-period 60))))))
 
 (define zabbix-server-service-type
   (service-type

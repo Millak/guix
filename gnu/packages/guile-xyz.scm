@@ -337,6 +337,72 @@ to UNIX pipes (@code{|}), Clojure's threading macros (@code{->} and
 @code{->>}).")
       (license license:gpl3+))))
 
+(define-public guile-pubstrate
+  (let ((commit "b11b7df5e7ffefa45c5859b868d8125c4d939418")
+        (revision "1"))
+    (package
+      (name "guile-pubstrate")
+      (version (git-version "0.1.dev" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/dustyweb/pubstrate")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qk45b3hjhzzq3dim699jrbmlc7ryr4s1fiz99ljz16rag2rr5p4"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        '(list "GUILE_AUTO_COMPILE=0")
+        #:phases
+        '(modify-phases %standard-phases
+           (add-after 'unpack 'fix-build-system
+             (lambda _
+               (substitute* "configure.ac"
+                 (("GUILE_PROGS" m)
+                  (string-append m "
+guilemoduledir=\"${datarootdir}/guile/site/${GUILE_EFFECTIVE_VERSION}\"
+AC_SUBST([guilemoduledir])
+AC_SUBST([GUILE_EFFECTIVE_VERSION])
+")))
+               ;; The user.scm line is doubled
+               (substitute* "Makefile.am"
+                 ((".*pubstrate/webapp/user.scm.*") "")
+                 ((".*pubstrate/webapp/app.scm.*" m)
+                  (string-append m "pubstrate/webapp/user.scm \\\n"))
+                 (("/ccache") "/site-ccache"))))
+           (add-after 'unpack 'fix-srfi64-tests
+             (lambda _
+               (substitute* (find-files "tests/" "test-.*\\.scm$")
+                 (("\\(test-exit\\)") "")
+                 (("\\(test-end.*" m)
+                  (string-append "(test-exit)" m))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             pkg-config
+             texinfo))
+      (inputs
+       (list guile-3.0
+             libgcrypt))
+      (propagated-inputs
+       (list gnutls
+             guile-8sync-for-pubstrate
+             guile-gcrypt
+             guile-gdbm-ffi
+             guile-irregex
+             guile-lib
+             guile-sjson
+             guile-webutils))
+      (home-page "https://gitlab.com/dustyweb/pubstrate/")
+      (synopsis "ActivityStreams and ActivityPub implementation in Guile")
+      (description "This package provides an implementation of ActivityStreams
+and ActivityPub in Guile.  It includes a full (currently demo) web server.")
+      (license license:gpl3+))))
+
 (define-public guile-f-scm
   (package
     (name "guile-f-scm")
@@ -563,6 +629,44 @@ and then run @command{scm example.scm}.")
 library for GNU Guile based on the actor model.")
       (properties '((upstream-name . "8sync")))
       (license license:lgpl3+))))
+
+(define guile-8sync-for-pubstrate
+  (let ((commit "7972787723d08a491379b63e6e5dc1cc6a3fac87")
+        (revision "0"))
+    (package
+      (inherit guile-8sync)
+      (name "guile-8sync-for-pubstrate")
+      (version (git-version "0.4.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (commit commit)
+                      (url "https://git.savannah.gnu.org/git/8sync.git")))
+                (sha256
+                 (base32
+                  "0m3k3cizi89frnw58dws3g4jcssck6jf1ahpadxxg3ncclqzad8r"))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                (snippet
+                 '(substitute* "Makefile.am"
+                    (("2.2") "3.0")))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags
+        '(list "GUILE_AUTO_COMPILE=0")
+        #:phases
+        '(modify-phases %standard-phases
+           ;; See commit ee371103855e5bfe8aae3debe442a24c6353e172
+           (add-after 'unpack 'fix-srfi64-tests
+             (lambda _
+               (substitute* '("tests/test-actors.scm"
+                              "tests/test-rmeta-slot.scm")
+                 (("\\(test-exit\\)") "")
+                 (("\\(test-end.*" m)
+                  (string-append "(test-exit)" m))))))))
+      (native-inputs (list autoconf automake guile-3.0 pkg-config texinfo))
+      (propagated-inputs (list guile-fibers)))))
 
 (define-public guile-daemon
   (package
@@ -1176,6 +1280,36 @@ n)} worst case performance for core operations.  The module provides
 non-mutating insert, delete, and search operations, with support for
 convenient nested tree operations.")
     (license license:gpl3+)))
+
+(define-public guile-aws
+  (let ((commit "f32bea12333e1054b97ab50e58a72636edabb5b7")
+        (revision "1"))
+    (package
+      (name "guile-aws")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.elephly.net/software/guile-aws.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0z2mrjw1dry14vjqsh9xi199bavlmy6cajshnv015n7p5my0cx9z"))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake pkg-config))
+      (inputs
+       (list guile-3.0))
+      (propagated-inputs
+       (list guile-json-4 guile-gcrypt))
+      (home-page "https://git.elephly.net/software/guile-aws.git")
+      (synopsis "Scheme DSL for the AWS APIs")
+      (description
+       "This package provides a DSL for a number of @dfn{Amazon Web
+Services} (AWS) APIs, including EFS, EC2, Route53, and more.  Guile AWS uses
+the Guile compiler tower to generate the DSL from AWS JSON specifications.")
+      (license license:gpl3+))))
 
 (define-public guile-simple-zmq
   (let ((commit "ff0b39aec9312517fb48681564e261bd000aaf63")
@@ -3592,7 +3726,7 @@ debugging code.")
 (define-public guile-png
   (package
     (name "guile-png")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3601,10 +3735,21 @@ debugging code.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1nk81z2cf9fsyppq5ly0yjw7yvdk5qraf71in7ayzdkngphhfgfx"))))
+                "1lv2cjzgrr0yshqng96l6bnn8pjmljv8qcn4w3wldh97ns7qigds"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ;to prevent guild warnings
+     `(#:make-flags '("GUILE_AUTO_COMPILE=0") ;to prevent guild warnings
+       #:phases
+       (modify-phases %standard-phases
+         ;; Guile-PNG tries to log parser messages to the syslog which is not
+         ;; available during the build.
+         (add-after 'unpack 'fix-tests
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "tests/graphics.scm"
+               (("             \\(png graphics\\)\\)")
+                (string-append "             (png graphics)\n"
+                               "             (png fsm context))\n"
+                               "(log-clear-handlers!)"))))))))
     (native-inputs (list autoconf automake pkg-config texinfo))
     (inputs (list bash-minimal guile-3.0 guile-lib guile-zlib))
     (propagated-inputs (list guile-smc))
@@ -4076,8 +4221,8 @@ gnome-keyring, and many more.")
     (license license:expat)))
 
 (define-public guile-webutils
-  (let ((commit "8541904f761066dc9c27b1153e9a838be9a55299")
-        (revision "0"))
+  (let ((commit "d309d65a85247e4f3cea63a17defd1e6d35d821f")
+        (revision "1"))
     (package
       (name "guile-webutils")
       (version (git-version "0.1" revision commit))
@@ -4089,15 +4234,7 @@ gnome-keyring, and many more.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1s9n3hbxd7lfpdi0x8wr0cfvlsf6g62ird9gbspxdrp5p05rbi64"))
-                (modules '((guix build utils)))
-                (snippet
-                 '(begin
-                    ;; Allow builds with Guile 3.0.
-                    (substitute* "configure.ac"
-                      (("2\\.2 2\\.0")
-                       "3.0 2.2 2.0"))
-                    #t))))
+                  "1a3bblk5zaldkkxn0a94s544drqm0w2i5fsjpghagd64m149blf0"))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf automake pkg-config texinfo))

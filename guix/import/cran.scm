@@ -5,6 +5,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -410,7 +411,11 @@ empty list when the FIELD cannot be found."
     ("tcl/tk" "tcl")
     ("booktabs" "texlive-booktabs")
     ("freetype2" "freetype")
+    ("mariadb-devel" "mariadb")
+    ("mysql56_dev" "mariadb")
     ("sqlite3" "sqlite")
+    ("udunits-2" "udunits")
+    ("x11" "libx11")
     (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
@@ -689,8 +694,13 @@ s-expression corresponding to that package, or #f on failure."
              (_ #f)))
           (_ #f)))))
 
-(define (latest-cran-release pkg)
+(define* (latest-cran-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "CRAN")))
 
   (define upstream-name
     (package->upstream-name pkg))
@@ -709,20 +719,25 @@ s-expression corresponding to that package, or #f on failure."
            (changed-inputs pkg
                            (description->package 'cran meta)))))))
 
-(define (latest-bioconductor-release pkg)
+(define* (latest-bioconductor-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "bioconductor.org")))
 
   (define upstream-name
     (package->upstream-name pkg))
 
-  (define version
+  (define latest-version
     (latest-bioconductor-package-version upstream-name))
 
   (and version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
-        (version version)
+        (version latest-version)
         (urls (bioconductor-uri upstream-name version))
         (input-changes
          (changed-inputs
@@ -772,13 +787,13 @@ s-expression corresponding to that package, or #f on failure."
    (name 'cran)
    (description "Updater for CRAN packages")
    (pred cran-package?)
-   (latest latest-cran-release)))
+   (import latest-cran-release)))
 
 (define %bioconductor-updater
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
    (pred bioconductor-package?)
-   (latest latest-bioconductor-release)))
+   (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here

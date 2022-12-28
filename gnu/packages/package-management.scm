@@ -164,9 +164,9 @@
   ;; Latest version of Guix, which may or may not correspond to a release.
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
-  (let ((version "1.4.0rc1")
-        (commit "9ccc94afb266428b7feeba805617d31eb8afb23c")
-        (revision 1))
+  (let ((version "1.4.0")
+        (commit "8e2f32cee982d42a79e53fc1e9aa7b8ff0514714")
+        (revision 0))
     (package
       (name "guix")
 
@@ -182,7 +182,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1asx4jqjdp56r9m693ikrzxn4vaga846v2j6956xkavyj19x42nh"))
+                  "042mipw2bp9lc75m9g5q6rdifrp8483cmk57kwrdps0i3vd590dl"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1865,7 +1865,7 @@ for packaging and deployment of cross-compiled Windows applications.")
 (define-public libostree
   (package
     (name "libostree")
-    (version "2022.6")
+    (version "2022.7")
     (source
      (origin
        (method url-fetch)
@@ -1873,7 +1873,7 @@ for packaging and deployment of cross-compiled Windows applications.")
              "https://github.com/ostreedev/ostree/releases/download/v"
              (version-major+minor version) "/libostree-" version ".tar.xz"))
        (sha256
-        (base32 "135dzxqzy19a8hkxm25mriy7zf72sbxz1mzzfw6a2d8bk9yz8pl3"))))
+        (base32 "07s14awf9ynlp84s08dkbwj9i18g93y0yf0k87nbks4l3hkakqlb"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases

@@ -1552,35 +1552,39 @@ interactive learning.")
 (define-public python-hyperopt
   (package
     (name "python-hyperopt")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hyperopt" version))
        (sha256
-        (base32 "1k4ma8ci0bxghw7g4ms944zak1pi83yv2d6bxd7fcslm1zalfq5w"))))
-    (build-system python-build-system)
+        (base32 "0jd1ghmm423kbhjvd6pxq92y5vkz25390687fcnd7fshh3jrmy0v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--ignore"
+               (invoke "python" "-m" "pytest"
                        ;; Needs python-pyspark.
-                       "hyperopt/tests/test_spark.py"
+                       "--ignore" "hyperopt/tests/integration/test_spark.py"
                        ;; Needs both python-scikit-learn and python-lightgbm.
-                       "--ignore" "hyperopt/tests/test_atpe_basic.py"
+                       "--ignore" "hyperopt/tests/unit/test_atpe_basic.py"
                        ;; The tests below need python-lightgbm.
-                       "-k" (string-append "not test_branin"
-                                           " and not test_distractor"
-                                           " and not test_q1lognormal"
-                                           " and not test_quadratic1"
-                                           " and not test_twoarms"))))))))
+                       "-k"
+                       (string-append "not test_branin"
+                                      " and not test_distractor"
+                                      " and not test_q1lognormal"
+                                      " and not test_quadratic1"
+                                      " and not test_twoarms"
+                                      ;; XXX Type error with this version of scipy
+                                      " and not test_distribution_rvs"))))))))
     (propagated-inputs
      (list python-cloudpickle
            python-future
+           python-py4j
            python-networkx
            python-numpy
            python-scipy
@@ -1588,8 +1592,6 @@ interactive learning.")
            python-tqdm))
     (native-inputs
      (list python-black
-           python-ipython
-           python-ipyparallel
            python-nose
            python-pymongo
            python-pytest))
@@ -1602,8 +1604,8 @@ discrete, and conditional dimensions.")
 
 ;; There have been no proper releases yet.
 (define-public kaldi
-  (let ((commit "dd107fd594ac58af962031c1689abfdc10f84452")
-        (revision "0")
+  (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
+        (revision "1")
         (openfst openfst-1.7.3)) ;; Temporary bypass for upstream issues
     (package
       (name "kaldi")
@@ -1616,14 +1618,14 @@ discrete, and conditional dimensions.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0iqbzgn7gzmgwvjfzifpbwwidxx887qmlgmsjkg7b1yzyfv00l21"))))
+                  "1wkxz3p0h68mxbg41i1wygir2r4rraxbb4672xkkvvs85r6c8r8i"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
+             (lambda _ (chdir "src")))
            (replace 'configure
              (lambda* (#:key build system inputs outputs #:allow-other-keys)
                (when (not (or (string-prefix? "x86_64" system)
@@ -1669,8 +1671,7 @@ discrete, and conditional dimensions.")
                (invoke "make" "-C" "onlinebin" "depend")
                (invoke "make" "-C" "onlinebin")
                (invoke "make" "-C" "gst-plugin" "depend")
-               (invoke "make" "-C" "gst-plugin")
-               #t))
+               (invoke "make" "-C" "gst-plugin")))
            ;; TODO: also install the executables.
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
@@ -1691,8 +1692,7 @@ discrete, and conditional dimensions.")
                                (install-file file target-dir)))
                            (find-files "." "\\.h"))
                  (install-file "gst-plugin/libgstonlinegmmdecodefaster.so"
-                               (string-append lib "/gstreamer-1.0"))
-                 #t))))))
+                               (string-append lib "/gstreamer-1.0"))))))))
       (inputs
        (list alsa-lib
              `(,gfortran "lib")
@@ -1814,8 +1814,8 @@ written in C++.")
                             (find-files "." "\\.h")))))))))))
 
 (define-public gst-kaldi-nnet2-online
-  (let ((commit "cb227ef43b66a9835c14eb0ad39e08ee03c210ad")
-        (revision "2"))
+  (let ((commit "7888ae562a65bd7e406783ce2c33535bc66a30ef")
+        (revision "3"))
     (package
       (name "gst-kaldi-nnet2-online")
       (version (git-version "0" revision commit))
@@ -1827,12 +1827,13 @@ written in C++.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i6ffwiavxx07ri0lxix6s8q0r31x7i4xxvhys5jxkixf5q34w8g"))))
+                  "0xp59a6lmx1y24i8bkmxcm27lhm5x5m6y41670yjzhamcbnx8jcr"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; there are none
-         #:make-flags
-         (list (string-append "SHELL="
+       (list
+        #:tests? #f                    ; there are none
+        #:make-flags
+        '(list (string-append "SHELL="
                               (assoc-ref %build-inputs "bash") "/bin/bash")
                (string-append "KALDI_ROOT="
                               (assoc-ref %build-inputs "kaldi-src"))
@@ -1840,33 +1841,32 @@ written in C++.")
                               (assoc-ref %build-inputs "kaldi") "/lib")
                "KALDI_FLAVOR=dynamic")
          #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
-           (replace 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((glib (assoc-ref inputs "glib")))
-                 (setenv "CXXFLAGS" "-fPIC")
-                 (setenv "CPLUS_INCLUDE_PATH"
-                         (string-append glib "/include/glib-2.0:"
-                                        glib "/lib/glib-2.0/include:"
-                                        (assoc-ref inputs "gstreamer")
-                                        "/include/gstreamer-1.0")))
-               (substitute* "Makefile"
-                 (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
-                 (("\\$\\(error Cannot find") "#"))
-               #t))
-           (add-before 'build 'build-depend
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "depend" make-flags)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/gstreamer-1.0")))
-                 (install-file "libgstkaldinnet2onlinedecoder.so" lib)
-                 #t))))))
+         '(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((glib (assoc-ref inputs "glib")))
+                  (setenv "CXXFLAGS" "-fPIC")
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-append glib "/include/glib-2.0:"
+                                         glib "/lib/glib-2.0/include:"
+                                         (assoc-ref inputs "gstreamer")
+                                         "/include/gstreamer-1.0:"
+                                         (getenv "CPLUS_INCLUDE_PATH"))))
+                (substitute* "Makefile"
+                  (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
+                  (("\\$\\(error Cannot find") "#"))))
+            (add-before 'build 'build-depend
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "depend" make-flags)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (lib (string-append out "/lib/gstreamer-1.0")))
+                  (install-file "libgstkaldinnet2onlinedecoder.so" lib)))))))
       (inputs
-       (list glib gstreamer jansson openfst kaldi))
+       (list glib gstreamer jansson openfst-1.7.3 kaldi))
       (native-inputs
        `(("bash" ,bash)
          ("glib:bin" ,glib "bin")       ; glib-genmarshal
@@ -1882,8 +1882,8 @@ automatically.")
 
 (define-public kaldi-gstreamer-server
   ;; This is the tip of the py3 branch
-  (let ((commit "f68cab490be7eb0da2af1475fbc16655f50a60cb")
-        (revision "2"))
+  (let ((commit "f79e204d751a5964918001822e4520fa2acfd246")
+        (revision "3"))
     (package
       (name "kaldi-gstreamer-server")
       (version (git-version "0" revision commit))
@@ -1895,7 +1895,7 @@ automatically.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "17lh1368vkg8ngrcbn2phvigzlmalrqg6djx2gg61qq1a0nj87dm"))))
+                  "1iijq8jmgdxr7961inal1ggs496ymxradm51m4sqx8vl983x14y8"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; there are no tests that can be run automatically
@@ -1925,8 +1925,7 @@ automatically.")
                                       "-m" "compileall"
                                       "-f" ; force rebuild
                                       ,file)))
-                           (find-files "." "\\.py$")))
-               #t))
+                           (find-files "." "\\.py$")))))
            (replace 'install
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -1965,14 +1964,13 @@ exec ~a ~a/~a \"$@\"~%"
                              (list server client worker)
                              (list "master_server.py"
                                    "client.py"
-                                   "worker.py")))
-                 #t))))))
+                                   "worker.py")))))))))
       (inputs
-       `(("gst-kaldi-nnet2-online" ,gst-kaldi-nnet2-online)
-         ("python" ,python-wrapper)
-         ("python-pygobject" ,python-pygobject)
-         ("python-pyyaml" ,python-pyyaml)
-         ("python-tornado" ,python-tornado-6)))
+       (list gst-kaldi-nnet2-online
+             python-wrapper
+             python-pygobject
+             python-pyyaml
+             python-tornado-6))
       (home-page "https://github.com/alumae/kaldi-gstreamer-server")
       (synopsis "Real-time full-duplex speech recognition server")
       (description "This is a real-time full-duplex speech recognition server,

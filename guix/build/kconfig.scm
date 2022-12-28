@@ -31,6 +31,16 @@
 ;;
 ;; Code:
 
+(define (pair->config-string pair)
+  "Convert a PAIR back to a config-string."
+  (let* ((key (first pair))
+         (value (cdr pair)))
+    (if (string? key)
+        (if (string? value)
+            (string-append key "=" value)
+            (string-append "# " key " is not set"))
+        value)))
+
 (define (config-string->pair config-string)
   "Parse a configuration string like \"CONFIG_EXAMPLE=m\" into a key-value pair.
 An error is thrown for invalid configurations.
@@ -77,16 +87,6 @@ An error is thrown for invalid configurations.
             (cons #f config-string)     ;keep valid comments
             (error "Invalid configuration" config-string)))))
 
-(define (pair->config-string pair)
-  "Convert a PAIR back to a config-string."
-  (let* ((key (first pair))
-         (value (cdr pair)))
-    (if (string? key)
-        (if (string? value)
-            (string-append key "=" value)
-            (string-append "# " key " is not set"))
-        value)))
-
 (define (defconfig->alist defconfig)
   "Convert the content of a DEFCONFIG (or .config) file into an alist."
   (with-input-from-file defconfig
@@ -102,10 +102,10 @@ An error is thrown for invalid configurations.
                   ;; The search for duplicates is done.
                   ;; Return the alist or throw an error on duplicates.
                   (if (null? duplicates)
-                      alist
+                      (reverse alist)
                       (error
                        (format #f "duplicate configurations in ~a" defconfig)
-                       duplicates))
+                       (reverse duplicates)))
                   ;; Continue the search for duplicates.
                   (loop (cdr keys)
                         (if (member (first keys) (cdr keys))
@@ -133,10 +133,8 @@ DEFCONFIG:
   \"CONFIG_F\")
 
 Instead of a list, CONFIGS can be a string with one configuration per line."
-  (let* (;; Split the configs into a list of single configurations.  Both a
-         ;; string and or a list of strings is supported, each with newlines
-         ;; to separate configurations.
-         (config-pairs (map config-string->pair
+  ;; Normalize CONFIGS to a list of configuration pairs.
+  (let* ((config-pairs (map config-string->pair
                             (append-map (cut string-split <>  #\newline)
                                         (if (string? configs)
                                             (list configs)

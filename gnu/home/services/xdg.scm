@@ -120,22 +120,25 @@ services more consistent."))
    home-xdg-base-directories-configuration-fields))
 
 (define (ensure-xdg-base-dirs-on-activation config)
-  #~(map (lambda (xdg-base-dir-variable)
-           ((@ (guix build utils) mkdir-p)
-            (getenv
-             xdg-base-dir-variable)))
-         '#$(filter-map
-             (lambda (field)
-               (let ((variable
-                      (string-append
-                       "XDG_"
-                       (object->snake-case-string
-                        (configuration-field-name field) 'upper))))
-                 ;; XDG_RUNTIME_DIR shouldn't be created during activation
-                 ;; and will be provided by elogind or other service.
-                 (and (not (string=? "XDG_RUNTIME_DIR" variable))
-                      variable)))
-             home-xdg-base-directories-configuration-fields)))
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+        (map (lambda (xdg-base-dir-variable)
+               (mkdir-p
+                (getenv
+                 xdg-base-dir-variable)))
+             '#$(filter-map
+                 (lambda (field)
+                   (let ((variable
+                          (string-append
+                           "XDG_"
+                           (object->snake-case-string
+                            (configuration-field-name field) 'upper))))
+                     ;; XDG_RUNTIME_DIR shouldn't be created during activation
+                     ;; and will be provided by elogind or other service.
+                     (and (not (string=? "XDG_RUNTIME_DIR" variable))
+                          variable)))
+                 home-xdg-base-directories-configuration-fields)))))
 
 (define (last-extension-or-cfg config extensions)
   "Picks configuration value from last provided extension.  If there
@@ -245,6 +248,8 @@ pre-populated content.")
                         home-activation-service-type
                         home-xdg-user-directories-activation-service)))
                 (default-value (home-xdg-user-directories-configuration))
+                (compose identity)
+                (extend last-extension-or-cfg)
                 (description "Configure XDG user directories.  To
 disable a directory, point it to the $HOME.")))
 

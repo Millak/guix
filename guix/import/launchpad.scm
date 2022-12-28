@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -121,8 +122,9 @@ for example, 'linuxdcpp'. Return #f if there is no releases."
       (last (remove pre-release? (vector->list (assoc-ref json "entries"))))
       "version"))))
 
-(define (latest-release pkg)
-  "Return an <upstream-source> for the latest release of PKG."
+(define* (import-release pkg #:key (version #f))
+  "Return an <upstream-source> for the latest release of PKG. Optionally
+include a VERSION string to fetch a specific version."
   (define (origin-launchpad-uri origin)
     (match (origin-uri origin)
       ((? string? url) url) ; surely a Launchpad URL
@@ -132,7 +134,7 @@ for example, 'linuxdcpp'. Return #f if there is no releases."
   (let* ((source-uri (origin-launchpad-uri (package-source pkg)))
          (name (package-name pkg))
          (repository (launchpad-repository source-uri))
-         (newest-version (latest-released-version repository)))
+         (newest-version (or version (latest-released-version repository))))
     (if newest-version
         (upstream-source
          (package name)
@@ -145,4 +147,4 @@ for example, 'linuxdcpp'. Return #f if there is no releases."
    (name 'launchpad)
    (description "Updater for Launchpad packages")
    (pred launchpad-package?)
-   (latest latest-release)))
+   (import import-release)))

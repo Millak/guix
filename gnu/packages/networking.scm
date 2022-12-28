@@ -196,7 +196,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.7")
+    (version "1.9.8")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mf7a4f9vzvnkiavc87aqyciswggsb4fpy7j05jxnvjyyxv3l7gp"))))
+        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
@@ -1754,14 +1754,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.1")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1hpxkw0ww6b8fnda5bhgpma2836bfarpxgnkkrzz9fqkkpwh5c5k"))))
+        (base32 "07a18jx88jaa2j1i949w9n1yb149xi02s80inbfji6rgkxliangk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -1966,15 +1966,15 @@ transmission protocol (SCTP) in a Go application.")
         (base32
          "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f))                ; no test suite
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (inputs
      (list fftw ncurses openssl))
-    (arguments
-     `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-                          "PREFIX=")
-       #:tests? #f)) ; no tests
     (home-page "https://www.vanheusden.com/httping/")
     (synopsis "Web server latency and throughput monitor")
     (description
@@ -2760,7 +2760,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.0.1")
+    (version "3.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2768,7 +2768,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "0s5xbcchnfqlgrabjs76bwd5d6qhvjx352r274r5p7wis0b1g8g4"))))
+                "0qwlpnwjcyb7fpw6yp65mdqg20i1851z70xmvzxwxwpifq56a1pm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -3852,14 +3852,14 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
 (define-public bird
   (package
     (name "bird")
-    (version "2.0.10")
+    (version "2.0.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0npx3zgbjnhm4905zmj2qkz3d13s8hakassq6sbzm1ywv3fl3lvy"))))
+                "1mjm7w5zkbc5q2v4bdn7mcqzcq94s7fiz8a5lz98kl5rcwxvi9v0"))))
     (inputs
      (list libssh readline))
     (native-inputs
@@ -4257,14 +4257,14 @@ realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.15")
+    (version "1.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "09iidaan6gq384n7ykdwwsll3vmq6q7zd7j7j721k2p91c9kmzpp"))
+        (base32 "1ab5hkgi2iwqpfw6xy2wxjhqmz6pnkynfkg85zm7r9kv1ijr3cz3"))
        (modules '((guix build utils)))
        (snippet
         '(begin

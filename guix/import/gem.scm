@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -173,11 +174,11 @@ package on RubyGems."
 (define gem-package?
   (url-prefix-predicate "https://rubygems.org/downloads/"))
 
-(define (latest-release package)
+(define* (import-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((gem-name (guix-package->gem-name package))
          (gem      (rubygems-fetch gem-name))
-         (version  (gem-version gem))
+         (version  (or version (gem-version gem)))
          (url      (rubygems-uri gem-name version)))
     (upstream-source
      (package (package-name package))
@@ -189,7 +190,7 @@ package on RubyGems."
    (name 'gem)
    (description "Updater for RubyGem packages")
    (pred gem-package?)
-   (latest latest-release)))
+   (import import-release)))
 
 (define* (gem-recursive-import package-name #:optional version)
   (recursive-import package-name

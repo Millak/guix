@@ -53,6 +53,7 @@ REQUIRE=(
     "chmod"
     "uname"
     "groupadd"
+    "useradd"
     "tail"
     "tr"
     "xz"
@@ -120,10 +121,8 @@ chk_require()
         command -v "$c" &>/dev/null || warn+=("$c")
     done
 
-    [ "${#warn}" -ne 0 ] &&
-        { _err "${ERR}Missing commands: ${warn[*]}.";
-          return 1; }
-    
+    [ "${#warn}" -ne 0 ] && die "Missing commands: ${warn[*]}."
+
     _msg "${PAS}verification of required commands completed"
 }
 
@@ -615,7 +614,10 @@ https://www.gnu.org/software/guix/
 EOF
     # Don't use ‘read -p’ here!  It won't display when run non-interactively.
     echo -n "Press return to continue..."$'\r'
-    read -r char
+    if ! read -r char; then
+	echo
+	die "Can't read standard input.  Hint: don't pipe scripts into a shell."
+    fi
     if [ "$char" ]; then
 	echo
 	echo "...that ($char) was not a return!"

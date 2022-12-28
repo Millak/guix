@@ -284,13 +284,24 @@ templates under @file{/etc/configuration}.")))
 ;; appropriate options.  The GUI installer needs it when the machine does not
 ;; support Kernel Mode Setting.  Otherwise kmscon is missing /dev/fb0.
 (define (uvesafb-shepherd-service _)
+  (define modprobe
+    (program-file "modprobe-wrapper"
+                  #~(begin
+                      ;; Use a wrapper because shepherd 0.9.3 won't let us
+                      ;; pass environment variables to the child process:
+                      ;; <https://issues.guix.gnu.org/60106>.
+                      (setenv "LINUX_MODULE_DIRECTORY"
+                              "/run/booted-system/kernel/lib/modules")
+                      (apply execl #$(file-append kmod "/bin/modprobe")
+                             "modprobe" (cdr (command-line))))))
+
   (list (shepherd-service
          (documentation "Load the uvesafb kernel module if needed.")
          (provision '(maybe-uvesafb))
          (requirement '(file-systems))
          (start #~(lambda ()
                     (or (file-exists? "/dev/fb0")
-                        (invoke #+(file-append kmod "/bin/modprobe")
+                        (invoke #+modprobe
                                 "uvesafb"
                                 (string-append "v86d=" #$v86d "/sbin/v86d")
                                 "mode_option=1024x768"))))
@@ -465,6 +476,8 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
   ;; A well-rounded set of packages for interacting with disks, partitions and
   ;; file systems, included with the Guix installation image.
   (list parted gptfdisk ddrescue
+        ;; Use the static LVM2 because it's already pulled in by the installer.
+        lvm2-static
         ;; We used to provide fdisk from GNU fdisk, but as of version 2.0.0a
         ;; it pulls Guile 1.8, which takes unreasonable space; furthermore
         ;; util-linux's fdisk is already available, in %base-packages-linux.

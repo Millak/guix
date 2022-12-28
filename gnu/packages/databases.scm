@@ -174,6 +174,7 @@
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
@@ -487,14 +488,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.16")
+    (version "1.6.17")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "1nilmfhy8hc7zzlihnx3hmiqf7siyrpgz2g5s3r3l36xy4xsjl9h"))))
+        (base32 "090jpprdjhbr1v9ph15s077bj8ryrsnz1ydg54aw53rxc5ry6m90"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -577,13 +578,13 @@ the API, and provides features such as:
 (define-public python-pylibmc
   (package
     (name "python-pylibmc")
-    (version "1.6.1")
+    (version "1.6.3")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pylibmc" version))
        (sha256
-        (base32 "1sg7d9j0v6g3xg3finf4l1hb72c13vcyyi6rqrc9shbx903d93ca"))))
+        (base32 "1q06696lxpqn155sydg3z6dksimks6n35q72zdjsvarpal8ldypf"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
@@ -593,7 +594,7 @@ the API, and provides features such as:
            (lambda _
              (invoke "memcached" "-d"))))))
     (native-inputs
-     (list memcached python-nose))
+     (list memcached python-pytest))
     (inputs
      (list libmemcached zlib cyrus-sasl))
     (home-page "http://sendapatch.se/projects/pylibmc/")
@@ -1572,14 +1573,14 @@ types are supported, as is encryption.")
 (define-public emacs-rec-mode
   (package
     (name "emacs-rec-mode")
-    (version "1.9.0")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "rec-mode-" version ".tar"))
               (sha256
                (base32
-                "1w1q6kh567fd8xismq9i6wr1y893lypd30l452yvydi1qjiq1n6x"))
+                "0f60bw07l6kk1kkjjxsk30p6rxj9mpngaxqy8piyabnijfgjzd3s"))
               (snippet #~(begin (delete-file "rec-mode.info")))))
     (build-system emacs-build-system)
     (arguments
@@ -2795,7 +2796,7 @@ semantics.")
 (define-public libpqxx
   (package
     (name "libpqxx")
-    (version "7.7.3")
+    (version "7.7.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2804,7 +2805,7 @@ semantics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1mrhsih5bhiin0l3c4vp22l9p7c5035m0vvqpx18c0407fkzc7hp"))))
+                "1qwpfba8g55jjv0xnsk4hhf2cmhk7mdirxx115cvnjjw97ppy0z0"))))
     (build-system gnu-build-system)
     (native-inputs (list gcc-11 python-wrapper))
     (inputs (list postgresql))
@@ -2937,13 +2938,13 @@ with Python's asyncio framework.")
 (define-public python-asyncmy
   (package
     (name "python-asyncmy")
-    (version "0.2.3")
+    (version "0.2.5")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "asyncmy" version))
         (sha256
-          (base32 "19p81jd4w7m7v2x1jdrwibp67wzqx1a7rdw5n4qqmch3iffp97vn"))))
+          (base32 "0i18zxy6xvzv6dk791xifn2sw2q4zvqwpzrzy8qx51d3mp8z6gng"))))
     (build-system python-build-system)
     (native-inputs (list python-cython))
     (home-page "https://github.com/long2ice/asyncmy")
@@ -3089,13 +3090,13 @@ or languages.  It uses only Python's built-in data types.")
 (define-public python-pyodbc
   (package
     (name "python-pyodbc")
-    (version "4.0.32")
+    (version "4.0.35")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyodbc" version))
        (sha256
-        (base32 "0sqs0x2l5mk3yv0wwz3ya8yh5f4babihyhc8hjbf2m86b71z1rcv"))
+        (base32 "1j7577acd2f16zifw49ajg0aw7vm0pdg6jxrr1dlaa5rx14azfcj"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete precompiled binaries.  The corresponding source is included.
@@ -3403,14 +3404,13 @@ framework.")
 (define-public python-sqlalchemy-utils
   (package
     (name "python-sqlalchemy-utils")
-    (version "0.38.2")
+    (version "0.38.3")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "SQLAlchemy-Utils" version))
         (sha256
-         (base32
-          "1d6fq81489kqzxmk3l6f39sinw206lzs392frmpr5lsjzg9xc0cy"))))
+         (base32 "0k8z0mjhvdv302kn0nhci8b2dgw4cn2akprsf37ma1540ykgp6lz"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f)) ; FIXME: Many tests require a running database server.
@@ -3542,7 +3542,7 @@ PickleShare.")
 (define-public python-apsw
   (package
     (name "python-apsw")
-    (version "3.39.2.1")
+    (version "3.40.0.0")
     ;; The compressed release has fetching functionality disabled.
     (source
      (origin
@@ -3552,24 +3552,23 @@ PickleShare.")
              version "/apsw-" version ".zip"))
        (sha256
         (base32
-         "06x3qgg71xz8l3kz8gz04wkfp5f6zfrg476a4mm1c5hikqyw6ykj"))
-       ;; Cherry-picked from upstream, remove when bumping to 3.39.3.
-       (patches
-        (search-patches "python-apsw-3.39.2.1-test-fix.patch"))))
-    (build-system python-build-system)
-    (native-inputs (list unzip))
-    (inputs (list sqlite-next))         ;SQLite 3.39 required.
+         "02sgja00azvd08wi2wm105apmhp2644s7aw9b1zdg3dkcwjnsiad"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-cython unzip))
+    (inputs (list sqlite-next))         ;SQLite 3.40 required.
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (replace 'build
-                 (lambda _
-                   (invoke "python" "setup.py" "build" "--enable-all-extensions"
-                           "--enable=load_extension")))
-               (add-after 'build 'build-test-helper
-                 (lambda _
-                   (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
-                           "-I." "-Isqlite3" "src/testextension.c"))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'build-extensions
+            (lambda _
+              (invoke "python" "setup.py" "build" "--enable-all-extensions"
+                      "--enable=load_extension")))
+          (add-after 'build 'build-test-helper
+            (lambda _
+              (invoke "gcc" "-fPIC" "-shared" "-o" "./testextension.sqlext"
+                      "-I." "-Isqlite3" "src/testextension.c"))))))
     (home-page "https://github.com/rogerbinns/apsw/")
     (synopsis "Another Python SQLite Wrapper")
     (description
@@ -3638,13 +3637,13 @@ managers for automatically closing connections.")
 (define-public python-psycopg2
   (package
     (name "python-psycopg2")
-    (version "2.9.3")
+    (version "2.9.5")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "psycopg2" version))
        (sha256
-        (base32 "1099as8ind9kpz30rmqzc3nir668fmpkxwayrj2sjka3ycdiv14f"))))
+        (base32 "0ni4kq6p7hbkm2qsky998q36q5gq5if4nwd8hwhjx5rsd0p6s955"))))
     (build-system python-build-system)
     (arguments
      ;; Tests would require a postgresql database "psycopg2_test"
@@ -3960,7 +3959,7 @@ reasonable substitute.")
 (define-public python-rq
   (package
     (name "python-rq")
-    (version "1.11")
+    (version "1.11.1")
     (source
      (origin
        (method git-fetch)
@@ -3969,7 +3968,7 @@ reasonable substitute.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dj3m8dh9vf1qiq1drjhfw5xbr975v1kpzn4fwja83cfd7jrpzvy"))))
+        (base32 "0dnjm2s036l4j4ypq0h903vh132dp2wiwjrn8jicz1nw829dqpzf"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
@@ -4057,13 +4056,13 @@ is designed to have a low barrier to entry.")
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")
-    (version "0.4.2")
+    (version "0.4.3")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "sqlparse" version))
               (sha256
                (base32
-                "1bkx52c2jh28c528b69qfk2ijfzw1laxx6lim7jr8fi6fh67600c"))))
+                "0s3jyllg0ka0n7pgqfng1hzvh39li853dr40qcp4s4dv8r481jk9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -4251,6 +4250,138 @@ the SQL language using a syntax that reflects the resulting query.")
     (propagated-inputs
      (list `(,apache-thrift "lib") lz4 utf8proc zlib
            `(,zstd "lib")))
+    (native-inputs
+     (list pkg-config))
+    (outputs '("out" "lib" "include"))
+    (home-page "https://arrow.apache.org/")
+    (synopsis "Columnar in-memory analytics")
+    (description "Apache Arrow is a columnar in-memory analytics layer
+designed to accelerate big data.  It houses a set of canonical in-memory
+representations of flat and hierarchical data along with multiple
+language-bindings for structure manipulation.  It also provides IPC and common
+algorithm implementations.")
+    (license license:asl2.0)))
+
+(define-public apache-arrow-for-ceph
+  (package
+    (name "apache-arrow")
+    (version "6.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/apache/arrow")
+             (commit (string-append "apache-arrow-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mcw361akqw4sxnnpnr9c9v1zk4hphk6gcq763pcb19yzljh88ig"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'enter-source-directory
+           (lambda _ (chdir "cpp")))
+         (add-after 'unpack 'set-env
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cpp/src/parquet/parquet.pc.in"
+               (("includedir=\\$\\{prefix\\}/")
+                "includedir="))
+             (substitute* "cpp/cmake_modules/ThirdpartyToolchain.cmake"
+               (("set\\(xsimd_SOURCE.*") ""))
+             (setenv "BOOST_ROOT" (assoc-ref inputs "boost"))
+             (setenv "BROTLI_HOME" (assoc-ref inputs "brotli"))
+             (setenv "FLATBUFFERS_HOME" (assoc-ref inputs "flatbuffers"))
+             (setenv "RAPIDJSON_HOME" (assoc-ref inputs "rapidjson")))))
+       #:build-type "Release"
+       #:configure-flags
+       (list "-DARROW_PYTHON=ON"
+             "-DARROW_GLOG=ON"
+             ;; Parquet options
+             "-DARROW_PARQUET=ON"
+             "-DPARQUET_BUILD_EXECUTABLES=ON"
+             ;; The maintainers disallow using system versions of
+             ;; jemalloc:
+             ;; https://issues.apache.org/jira/browse/ARROW-3507. This
+             ;; is unfortunate because jemalloc increases performance:
+             ;; https://arrow.apache.org/blog/2018/07/20/jemalloc/.
+             "-DARROW_JEMALLOC=OFF"
+
+             ;; The CMake option ARROW_DEPENDENCY_SOURCE is a global
+             ;; option that instructs the build system how to resolve
+             ;; each dependency. SYSTEM = Finding the dependency in
+             ;; system paths using CMake's built-in find_package
+             ;; function, or using pkg-config for packages that do not
+             ;; have this feature
+             "-DARROW_DEPENDENCY_SOURCE=SYSTEM"
+             "-Dxsimd_SOURCE=SYSTEM"
+
+             "-DARROW_RUNTIME_SIMD_LEVEL=NONE"
+             "-DARROW_SIMD_LEVEL=NONE"
+             "-DARROW_PACKAGE_KIND=Guix"
+
+             ;; Split output into its component packages.
+             (string-append "-DCMAKE_INSTALL_PREFIX="
+                            (assoc-ref %outputs "lib"))
+             (string-append "-DCMAKE_INSTALL_RPATH="
+                            (assoc-ref %outputs "lib")
+                            "/lib")
+             (string-append "-DCMAKE_INSTALL_BINDIR="
+                            (assoc-ref %outputs "out")
+                            "/bin")
+             (string-append "-DCMAKE_INSTALL_INCLUDEDIR="
+                            (assoc-ref %outputs "include")
+                            "/share/include")
+
+             "-DARROW_WITH_SNAPPY=ON"
+             "-DARROW_WITH_ZLIB=ON"
+             "-DARROW_WITH_ZSTD=ON"
+             "-DARROW_WITH_LZ4=ON"
+             "-DARROW_COMPUTE=ON"
+             "-DARROW_CSV=ON"
+             "-DARROW_DATASET=ON"
+             "-DARROW_FILESYSTEM=ON"
+             "-DARROW_HDFS=ON"
+             "-DARROW_JSON=ON"
+             ;; Arrow Python C++ integration library (required for
+             ;; building pyarrow). This library must be built against
+             ;; the same Python version for which you are building
+             ;; pyarrow. NumPy must also be installed. Enabling this
+             ;; option also enables ARROW_COMPUTE, ARROW_CSV,
+             ;; ARROW_DATASET, ARROW_FILESYSTEM, ARROW_HDFS, and
+             ;; ARROW_JSON.
+             "-DARROW_PYTHON=ON"
+
+             ;; Building the tests forces on all the
+             ;; optional features and the use of static
+             ;; libraries.
+             "-DARROW_BUILD_TESTS=OFF"
+             "-DBENCHMARK_ENABLE_GTEST_TESTS=OFF"
+             ;;"-DBENCHMARK_ENABLE_TESTING=OFF"
+             "-DARROW_BUILD_STATIC=OFF")))
+    (inputs
+     (list boost
+           brotli
+           bzip2
+           double-conversion
+           gflags
+           glog
+           grpc
+           protobuf
+           python
+           python-numpy
+           rapidjson
+           re2
+           snappy
+           xsimd))
+    ;; These are all listed under Requires.private in arrow.pc
+    (propagated-inputs
+     (list (list apache-thrift "lib")
+           lz4
+           utf8proc
+           zlib
+           (list zstd "lib")))
     (native-inputs
      (list pkg-config))
     (outputs '("out" "lib" "include"))

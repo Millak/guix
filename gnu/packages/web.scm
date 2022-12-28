@@ -1395,9 +1395,9 @@ current version of any major web browser.")
 style API.")
     (license license:expat)))
 
-(define-public libyajl
+(define-public yajl
   (package
-    (name "libyajl")
+    (name "yajl")
     (version "2.1.0")
     (source (origin
               (method git-fetch)
@@ -1415,14 +1415,16 @@ style API.")
          (add-after 'patch-source-shebangs 'patch-tests
            (lambda _
              (substitute* "test/parsing/run_tests.sh"
-               (("`which echo`") (which "echo")))
-             #t)))))
+               (("`which echo`") (which "echo"))))))))
     (home-page "https://lloyd.github.io/yajl/")
-    (synopsis "C library for parsing JSON")
+    (synopsis "C library for parsing and generating JSON")
     (description
-     "Yet Another JSON Library (YAJL) is a small event-driven (SAX-style) JSON
-parser written in ANSI C and a small validating JSON generator.")
+     "@acronym{YAJL, Yet Another JSON Library} is a small event-driven
+(SAX-style) JSON parser and validating generator written in ANSI C.")
     (license license:isc)))
+
+(define-public libyajl
+  (deprecated-package "libyajl" yajl))
 
 (define-public libwebsockets
   (package
@@ -4659,8 +4661,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "95064d39a337da9f2eb7d5675e0e511301466f77")
-        (revision "34"))
+  (let ((commit "7b69611755ac3b9132710d83a1139b4c5606578d")
+        (revision "36"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4672,7 +4674,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1nkasn2wk36jfnfan619lv604cjj6ppwvmiljckcyyr57yynqbr4"))))
+                  "0lmvmalgfbc6q80f8dwqikdd5kna2vl4jlmf2li206hmcq2hzh6p"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)

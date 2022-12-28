@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,12 +31,18 @@
 (define %cpio-program
   (which "cpio"))
 
+(define %test-file
+  (search-path %load-path "guix.scm"))
+
 
 (test-begin "cpio")
 
+;; The cpio format expects 'ino' to fit in 32 bits.  If we have a bigger inode
+;; number, skip this test.
+(test-skip
+ (if (>= (stat:ino (lstat %test-file)) (expt 2 32)) 1 0))
 (test-assert "file->cpio-header + write-cpio-header + read-cpio-header"
-  (let* ((file   (search-path %load-path "guix.scm"))
-         (header (file->cpio-header file)))
+  (let* ((header (file->cpio-header %test-file)))
     (call-with-values
         (lambda ()
           (open-bytevector-output-port))

@@ -67,7 +67,7 @@
 (define-public plfit
   (package
     (name "plfit")
-    (version "0.9.3")
+    (version "0.9.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -76,7 +76,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03x5jbvg8vwr92682swy58ljxrhqwmga1xzd0cpfbfmda41gm2fb"))))
+                "042b60cnsz5wy27sz026xs0mnn9p58j46crgs78skncgkvzqyyc6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))

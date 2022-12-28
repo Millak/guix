@@ -1409,14 +1409,14 @@ connection alive.")
                                       bind-release-version)))
     (package
       (name "isc-dhcp")
-      (version "4.4.3")
+      (version "4.4.3-P1")
       (source (origin
                 (method url-fetch)
                 (uri (string-append "https://ftp.isc.org/isc/dhcp/"
                                     version "/dhcp-" version ".tar.gz"))
                 (sha256
                  (base32
-                  "062q2g8cj2zv0zv22x6pg21m21bdlscxkg3li0ac0pm0qasccghf"))))
+                  "1ivkvhhvqxap6c51cli7pa6xn76ngxri1zbl45ishz4ranxidi0a"))))
       (build-system gnu-build-system)
       (arguments
        `(#:parallel-build? #f
@@ -1559,7 +1559,10 @@ connection alive.")
       (description
        "ISC's Dynamic Host Configuration Protocol (DHCP) distribution provides a
 reference implementation of all aspects of DHCP, through a suite of DHCP
-tools: server, client, and relay agent.")
+tools: server, client, and relay agent.
+
+This software is @emph{end-of-life}!  ISC does not intend to issue any further
+maintenance releases.")
       (license license:mpl2.0)
       (properties '((cpe-name . "dhcp"))))))
 
@@ -1802,7 +1805,7 @@ over ssh connections.")
 (define-public realmd
   (package
     (name "realmd")
-    (version "0.17.0")
+    (version "0.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1811,8 +1814,7 @@ over ssh connections.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1c6q2a86kk2f1akzc36nh52hfwsmmc0mbp6ayyjxj4zsyk9zx5bf"))))
+        (base32 "063cf4jkpfj548a7dxmffrpbh3j413nq3zy1zzj20lcfffnnaqwn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--with-systemd-unit-dir=no"
@@ -3919,13 +3921,13 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.1")
+    (version "1.4.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "HyFetch" version))
         (sha256
-          (base32 "18s8r63aqyah34vbahccgkiqw4008i2w5kvhqd9s8bdd4yvsrn4n"))))
+          (base32 "1k3pcl16y2czkk7wd79yk0w1kqpi4fp8h8szhjs5ywwy20nqmms8"))))
     (build-system python-build-system)
     (inputs (list python-hypy-utils python-typing-extensions))
     (arguments `(#:phases (modify-phases %standard-phases
@@ -4085,14 +4087,14 @@ information tool.")
 (define-public nnn
   (package
     (name "nnn")
-    (version "4.6")
+    (version "4.7")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jarun/nnn/releases/download/v"
                            version "/nnn-v" version ".tar.gz"))
        (sha256
-        (base32 "0gvyvynw957yirvc1aj65flzni7niaj5bvyk82ka5dfgi2dazb0m"))))
+        (base32 "0dbm54m3iv8hzar38dsfxh77z4mlpjj649ga82s0wwms4vlrm5pg"))))
     (build-system gnu-build-system)
     (inputs
      (list ncurses readline))
@@ -4309,7 +4311,7 @@ Python loading in HPC environments.")
   (let ((real-name "inxi"))
     (package
       (name "inxi-minimal")
-      (version "3.3.23-1")
+      (version "3.3.24-1")
       (source
        (origin
          (method git-fetch)
@@ -4318,12 +4320,12 @@ Python loading in HPC environments.")
                (commit version)))
          (file-name (git-file-name real-name version))
          (sha256
-          (base32 "0bpaffv4zqinfk46sbx82gic7572xsqiwb1lf894l1s6a6xi7zrd"))))
+          (base32 "1nai43251r791qvc1c4hhvcaa6hq7zcjlww7k3ip7br6zgxqjaxm"))))
       (build-system trivial-build-system)
       (inputs
-       `(("bash" ,bash-minimal)
-         ("perl" ,perl)
-         ("procps" ,procps)))
+       (list bash-minimal
+             perl
+             procps))
       (native-inputs
        (list gzip))
       (arguments
@@ -4333,10 +4335,14 @@ Python loading in HPC environments.")
            (use-modules (guix build utils)
                         (ice-9 match)
                         (srfi srfi-26))
-           (setenv "PATH" (string-append
-                           (assoc-ref %build-inputs "bash") "/bin" ":"
-                           (assoc-ref %build-inputs "gzip") "/bin" ":"
-                           (assoc-ref %build-inputs "perl") "/bin" ":"))
+           (setenv "PATH" (string-join
+                           (map (lambda (file)
+                                  (dirname (search-input-file %build-inputs
+                                                              file)))
+                                (list "bin/bash"
+                                      "bin/gzip"
+                                      "bin/perl"))
+                           ":"))
            (copy-recursively (assoc-ref %build-inputs "source")
                              ,(string-append real-name "-" version))
            (with-directory-excursion ,(string-append real-name "-" version)
@@ -4853,7 +4859,7 @@ entries, providing commands to add, remove, comment, and search.")
 (define-public nmrpflash
   (package
     (name "nmrpflash")
-    (version "0.9.16")
+    (version "0.9.19")
     (source
      (origin
        (method git-fetch)
@@ -4862,7 +4868,7 @@ entries, providing commands to add, remove, comment, and search.")
          (url "https://github.com/jclehner/nmrpflash")
          (commit (string-append "v" version))))
        (sha256
-        (base32 "0gp66l3a2wznjnlc2ljs8g38mfrf1b9a0qcfxqg2bczmfxnrsynj"))
+        (base32 "02r2z3mnbj8dfka7adw1l76zq1jh1l13mmkns93c54ychs44jz3d"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
@@ -4881,7 +4887,7 @@ entries, providing commands to add, remove, comment, and search.")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
     (home-page "https://github.com/jclehner/nmrpflash")
-    (synopsis "Netgear unbrick utility")
+    (synopsis "Reflash (``unbrick'') Netgear devices with corrupted firmware")
     (description "This package provides a utility to flash a new firmware
 image to a Netgear device.  It has been tested on Netgear EX2700, EX6120,
 EX6150v2, DNG3700v2, R6100, R6220, R7000, D7000, WNR3500, R6400, R6800,

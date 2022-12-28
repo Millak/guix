@@ -540,8 +540,8 @@ Description: 1st line,
             (first second)
             (list first second))
           (match-record (foo (first 'a) (second 'b)) <foo>
-            (second first)
-            (list first second)))))
+            (second (first first/new-var))
+            (list first/new-var second)))))
 
 (test-equal "match-record, unknown field"
   'syntax-error

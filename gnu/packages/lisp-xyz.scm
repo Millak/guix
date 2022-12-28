@@ -104,6 +104,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sqlite)
@@ -894,9 +895,74 @@ Features:
 (define-public ecl-cl-irc
   (sbcl-package->ecl-package sbcl-cl-irc))
 
-(define-public sbcl-tripod
-  (let ((commit "bcea16610b4961a927e417e4413fffe686d71c83")
+(define-public sbcl-coleslaw
+  (let ((commit "e7e68ce6020d13b14bf212890a7d8973d7af3b40")
         (revision "0"))
+    (package
+      (name "sbcl-coleslaw")
+      (version (git-version "0.9.7" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/coleslaw-org/coleslaw")
+               (commit commit)))
+         (file-name (git-file-name "cl-coleslaw" version))
+         (sha256
+          (base32 "1w21a272q4x7nlr4kbmwwvkjvb4hpnw869byvy47vv361y7pimws"))))
+      (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       '(#:asd-systems '("coleslaw" "coleslaw-cli")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda _
+               (substitute* "plugins/publish-gh-pages.sh"
+                 (("^rsync\\b") (which "rsync")))
+               (substitute* '("plugins/rsync.lisp"
+                              "src/coleslaw.lisp")
+                 (("\\brun-program \"rsync\\b")
+                  (string-append "run-program \"" (which "rsync"))))))
+           (add-after 'create-asdf-configuration 'build-program
+             (lambda* (#:key outputs #:allow-other-keys)
+               (build-program
+                (string-append (assoc-ref outputs "bin") "/bin/coleslaw")
+                outputs
+                #:dependencies '("coleslaw-cli")
+                #:entry-program '((apply (function coleslaw-cli::main)
+                                   arguments))
+                #:compress? #t))))))
+      (native-inputs
+       (list sbcl-prove))
+      (inputs
+       (list rsync
+             sbcl-3bmd
+             sbcl-alexandria
+             sbcl-cl-fad
+             sbcl-cl-ppcre
+             sbcl-cl-unicode
+             sbcl-clack
+             sbcl-closer-mop
+             sbcl-closure-template
+             sbcl-inferior-shell
+             sbcl-local-time
+             sbcl-trivia))
+      (home-page "https://github.com/coleslaw-org/coleslaw")
+      (synopsis "Static site generator")
+      (description
+       "Coleslaw is a static site generator written in Common Lisp.")
+      (license license:bsd-2))))
+
+(define-public cl-coleslaw
+  (sbcl-package->cl-source-package sbcl-coleslaw))
+
+(define-public ecl-coleslaw
+  (sbcl-package->ecl-package sbcl-coleslaw))
+
+(define-public sbcl-tripod
+  (let ((commit "b019a27cd7eb895870f84b0eb6c3edc5d7b05928")
+        (revision "1"))
     (package
       (name "sbcl-tripod")
       (version (git-version "0.0.1" revision commit))
@@ -908,17 +974,30 @@ Features:
                (commit commit)))
          (file-name (git-file-name "cl-tripod" version))
          (sha256
-          (base32 "07czbwzfqg8n1q4dsfmrdp2zmp90xgsg8q26hkrniyvkylq4nn1z"))))
+          (base32 "0y8sns6njq9x7km58vpj7gx4cia9zkcpng3d38300xk0nnk2kz8w"))))
       (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'create-asdf-configuration 'build-program
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (build-program (string-append #$output:bin "/bin/tripod")
+                                    outputs
+                                    #:entry-program '((tripod:entry-point))
+                                    #:compress? #t))))))
       (inputs
-        (list sbcl-alexandria
-              sbcl-cl-gopher
-              sbcl-cl-markdown
-              sbcl-clss
-              sbcl-hunchentoot
-              sbcl-phos
-              sbcl-plump
-              sbcl-trivial-mimes))
+       (list sbcl-alexandria
+             sbcl-cl-gopher
+             sbcl-cl-markdown
+             sbcl-clss
+             sbcl-hunchentoot
+             sbcl-local-time
+             sbcl-nactivitypub
+             sbcl-njson
+             sbcl-phos
+             sbcl-plump
+             sbcl-trivial-mimes))
       (home-page "https://aartaka.me/blog/tripod")
       (synopsis "Common Lisp web server aiming to ease website hosting")
       (description
@@ -931,7 +1010,6 @@ and Gopher website hosting.")
 
 (define-public ecl-tripod
   (sbcl-package->ecl-package sbcl-tripod))
-
 
 (define-public sbcl-trivial-timeout
   (let ((commit "feb869357f40f5e109570fb40abad215fb370c6c")
@@ -1425,6 +1503,53 @@ within.")
 (define-public cl-ubiquitous
   (sbcl-package->cl-source-package sbcl-ubiquitous))
 
+(define-public sbcl-uax-14
+  (let ((commit "0432162525119c401d3d705bb9bcc9580a03914f")
+        (revision "1"))
+    (package
+      (name "sbcl-uax-14")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/uax-14")
+               (commit commit)))
+         (file-name (git-file-name "uax-14" version))
+         (sha256
+          (base32 "1sb2s58k01yjaggaq8i7kbyfsh6mzyqbiz1vm59smxn9qqwd8apm"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute sbcl-cl-ppcre))
+      (inputs
+       (list sbcl-documentation-utils))
+      (arguments
+       `(#:asd-systems '("uax-14")))
+      (home-page "https://shinmera.github.io/uax-14/")
+      (synopsis "Unicode Standard Annex #14 for standardised line breaking")
+      (description
+       "This is an implementation of the Unicode Standards Annex
+#14 (@url{http://www.unicode.org/reports/tr14/}) line breaking algorithm.  It
+provides a fast and convenient way to determine line breaking opportunities in
+text.
+
+Note that this algorithm does not support break opportunities that require
+morphological analysis.  In order to handle such cases, please consult a system
+that provides this kind of capability, such as a hyphenation algorithm.
+
+Also note that this system is completely unaware of layouting decisions.  Any
+kind of layouting decisions, such as which breaks to pick, how to space
+between words, how to handle bidirectionality, and what to do in emergency
+situations when there are no breaks on an overfull line are left up to the
+user.")
+      (license license:zlib))))
+
+(define-public ecl-uax-14
+  (sbcl-package->ecl-package sbcl-uax-14))
+
+(define-public cl-uax-14
+  (sbcl-package->cl-source-package sbcl-uax-14))
+
 (define-public sbcl-uax-15
   (package
     (name "sbcl-uax-15")
@@ -1592,7 +1717,10 @@ reading and writing.")
      `(("zpb-ttf" ,sbcl-zpb-ttf)))
     (arguments
      '(#:asd-systems '("cl-vectors"
-                       "cl-paths-ttf")))
+                       "cl-paths"
+                       "cl-paths-ttf"
+                       "cl-aa"
+                       "cl-aa-misc")))
     (home-page "http://projects.tuxee.net/cl-vectors/")
     (synopsis "Create, transform and render anti-aliased vectorial paths")
     (description
@@ -10428,6 +10556,39 @@ the library does not depend on X11).
 (define-public ecl-cl-colors2
   (sbcl-package->ecl-package sbcl-cl-colors2))
 
+(define-public sbcl-colored
+  (let ((commit "bee87efb0b047da0f071f5cf1457997ab5f93feb")
+        (revision "1"))
+    (package
+      (name "sbcl-colored")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/colored/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0mpg91r6yfb9xqccd4r8z3hl2qzjhdj6daswb1cinrm8ffxrvy5k"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-parachute))
+      (inputs
+       (list sbcl-documentation-utils))
+      (synopsis "Colour representation, conversion, and operation for Common Lisp")
+      (description
+       "This is a library for representing and mapping colours between their
+various spaces.")
+      (home-page "https://shinmera.github.io/colored/")
+      (license license:zlib))))
+
+(define-public cl-colored
+  (sbcl-package->cl-source-package sbcl-colored))
+
+(define-public ecl-colored
+  (sbcl-package->ecl-package sbcl-colored))
+
 (define-public sbcl-cl-jpeg
   (let ((commit "ec557038128df6895fbfb743bfe8faf8ec2534af")
         (revision "1"))
@@ -10678,8 +10839,8 @@ performance and correctness.")
   (sbcl-package->ecl-package sbcl-png-read))
 
 (define-public sbcl-3b-bmfont
-  (let ((commit "d1b5bec0de580c2d08ec947a93c56b1400f2a37a")
-        (revision "1"))
+  (let ((commit "48a38f52d282064829851c484d9e7dee0ffe9e72")
+        (revision "2"))
     (package
       (name "sbcl-3b-bmfont")
       (version (git-version "0.0.1" revision commit))
@@ -10691,7 +10852,7 @@ performance and correctness.")
                (commit commit)))
          (file-name (git-file-name "3b-bmfont" version))
          (sha256
-          (base32 "12sgf7m0h6fqzhvkas7vmci6mprj3j3fnz778jlbqbsydln6v2yc"))))
+          (base32 "0v4lcrlpx60ayg0g5b10q2hjh1iaanln4ck0hm1rvjxm39gl2d86"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:asd-systems
@@ -10718,6 +10879,63 @@ read/write Bit Map Font (BMF) into text, JSON and XML.")
 
 (define-public cl-3b-bmfont
   (sbcl-package->cl-source-package sbcl-3b-bmfont))
+
+(define sbcl-3b-bmfont/shinmera
+  (let ((commit "58e529d24b7799d56b4b3f9c8a953b585d42c7d2")
+        (revision "1"))
+    (package (inherit sbcl-3b-bmfont)
+             (version (git-version "0.0.1" revision commit))
+             (source
+              (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Shinmera/3b-bmfont/")
+                      (commit commit)))
+                (file-name (git-file-name "3b-bmfont2" version))
+                (sha256
+                 (base32 "17zby669b64rhxhk2szamzdgvispimh6ici05xa6x2vz4rvk71jq")))))))
+
+(define-public sbcl-sdf
+  ;; Shinmera's fork required for Alloy.
+  (let ((commit "e1ab3ac4ea52c0e0119b832f428c71f580b4d83b")
+        (revision "1"))
+    (package
+      (name "sbcl-sdf")
+      (version (git-version "0.0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/sdf")
+               (commit commit)))
+         (file-name (git-file-name "sdf" version))
+         (sha256
+          (base32 "1cyq4hkgiw9mnb87ah6xw19cybfs9hfbjvg1ch2mf4cr0ism0nvn"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-zpb-ttf
+             sbcl-cl-vectors
+             sbcl-opticl
+             sbcl-binpack
+             sbcl-3b-bmfont/shinmera
+             sbcl-pathname-utils))
+      (arguments
+       `(#:asd-systems '("sdf" "sdf/bmfont")))
+      (home-page "https://github.com/Shinmera/sdf")
+      (synopsis "Signed distance font atlas generator")
+      (description
+       "This library generates
+sdf (@url{https://steamcdn-a.akamaihd.net/apps/valve/2007/SIGGRAPH2007_AlphaTestedMagnification.pdf}),
+psdf and
+msdf (@url{https://github.com/Chlumsky/msdfgen/files/3050967/thesis.pdf})
+atlases.")
+      (license license:expat))))
+
+(define-public ecl-sdf
+  (sbcl-package->ecl-package sbcl-sdf))
+
+(define-public cl-sdf
+  (sbcl-package->cl-source-package sbcl-sdf))
 
 (define-public sbcl-zpng
   (package
@@ -16732,8 +16950,8 @@ protocol for Mastodon.")
   (sbcl-package->cl-source-package sbcl-tooter))
 
 (define-public sbcl-croatoan
-  (let ((commit "5d0949d57a12e7fece8828e089daa339b260da96")
-        (revision "5"))
+  (let ((commit "35c92fcc6c4458339c7e27bdf16f7fa908d95eb8")
+        (revision "6"))
     (package
       (name "sbcl-croatoan")
       (version (git-version "0.0.1" revision commit))
@@ -16745,7 +16963,7 @@ protocol for Mastodon.")
                (commit commit)))
          (file-name (git-file-name "cl-croatoan" version))
          (sha256
-          (base32 "0qsnz10hri95al73vhpqrs7mapz2px0dbwgfn52sbi93gwk5aki9"))))
+          (base32 "0v1lrdjd29krjb6pr0mql9hjj5c2lv760xwpr17dbsw263vx29xz"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -16871,11 +17089,11 @@ dynamically.")
   (sbcl-package->cl-source-package sbcl-sxql-composer))
 
 (define-public sbcl-cl-i18n
-  (let ((commit "5b569f3fe4c76d600fafecac507ac4f50e4cc1d1")
-        (revision "1"))
+  (let ((commit "66b02dc2cff3ab97f924329aaf965807fe18aa20")
+        (revision "2"))
     (package
       (name "sbcl-cl-i18n")
-      (version (git-version "0.5.2" revision commit))
+      (version (git-version "0.5.3" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -16884,7 +17102,7 @@ dynamically.")
                (commit commit)))
          (file-name (git-file-name "cl-i18n" version))
          (sha256
-          (base32 "0kj1wfvlbi7qwq61b0rcdxa0bmb4sfsnh1bj3n5jxp24sdib73w2"))))
+          (base32 "06ij1wxancsym87gg63nvjh7vfzjipi1f02h4fb2ypip60vw06lc"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-babel sbcl-cl-ppcre-unicode))
@@ -17455,6 +17673,38 @@ compiled foreign library collection.")
 
 (define-public cl-conspack
   (sbcl-package->cl-source-package sbcl-cl-conspack))
+
+(define-public sbcl-binpack
+  (let ((commit "e67f56bb697bdeac81e28e1cca4a5d117a9cf125")
+        (revision "1"))
+    (package
+     (name "sbcl-binpack")
+     (version (git-version "0.0.1" revision commit))
+     (source
+      (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lispgames/binpack")
+             (commit commit)))
+       (file-name (git-file-name "binpack" version))
+       (sha256
+        (base32 "1pcnsg60pqywd3k72m5pwimq01sm3jyvc1c3rbkij740r7grdxi1"))))
+     (build-system asdf-build-system/sbcl)
+     (native-inputs
+      (list sbcl-parachute))
+     (inputs
+      (list sbcl-alexandria))
+     (home-page "https://github.com/lispgames/binpack")
+     (synopsis "Common Lisp rectangle packer for sprite/texture atlases")
+     (description
+      "This library features a rectangle packer for sprite and texture atlases.")
+     (license license:expat))))
+
+(define-public ecl-binpack
+  (sbcl-package->ecl-package sbcl-binpack))
+
+(define-public cl-binpack
+  (sbcl-package->cl-source-package sbcl-binpack))
 
 (define-public sbcl-cl-opengl
   (let ((commit "e2d83e0977b7e7ac3f3d348d8ccc7ccd04e74d59")
@@ -19979,9 +20229,41 @@ developing library for Common Lisp.")
 (define-public cl-liballegro
   (sbcl-package->cl-source-package sbcl-cl-liballegro))
 
-(define-public sbcl-alloy
-  (let ((commit "e86e22c2887836ec31cd97e039f0bca5248d8f1c")
+(define-public sbcl-font-discovery
+  (let ((commit "5101ca79151055f3ec9839aae73b8af42b884528")
         (revision "1"))
+    (package
+      (name "sbcl-font-discovery")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Shinmera/font-discovery")
+               (commit commit)))
+         (file-name (git-file-name "font-discovery" version))
+         (sha256
+          (base32 "1p9wkwc23rnif8vcjaj5ih1fmr5g57sidqjlz08qw6k0z4f6bia1"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi sbcl-documentation-utils sbcl-trivial-indent))
+      (home-page "https://shinmera.github.io/font-discovery/")
+      (synopsis "Find system font files matching a font spec")
+      (description
+       "This is a library to find system font files.  It works on systems with
+FontConfig on Linux, BSD.  It does not have any foreign dependencies that
+aren't already directly available on the system.")
+      (license license:zlib))))
+
+(define-public ecl-font-discovery
+  (sbcl-package->ecl-package sbcl-font-discovery))
+
+(define-public cl-font-discovery
+  (sbcl-package->cl-source-package sbcl-font-discovery))
+
+(define-public sbcl-alloy
+  (let ((commit "ea02e4576fd92917201b3c9b63dd3cdc72045dbf")
+        (revision "2"))
     (package
       (name "sbcl-alloy")
       (version (git-version "0.0.0" revision commit))
@@ -19993,12 +20275,25 @@ developing library for Common Lisp.")
                (commit commit)))
          (file-name (git-file-name "alloy" version))
          (sha256
-          (base32 "1jsqjr6sf86hcdvnjp4gd10qv0r7kfkr9hmda85irb5lha4q9n7w"))))
+          (base32 "1g8ibvlajhlbdrmny7ck55ilv1shjdpj38q380wri4mavfymjw5f"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-alexandria sbcl-parachute))
       (inputs
-       (list sbcl-array-utils sbcl-closer-mop sbcl-documentation-utils))
+       (list sbcl-array-utils sbcl-closer-mop sbcl-documentation-utils
+             sbcl-float-features sbcl-colored sbcl-stealth-mixin
+             sbcl-cl-opengl sbcl-font-discovery sbcl-uax-14 sbcl-sdf))
+      (arguments
+       ;; Dismiss alloy-svg, since it is not completed:
+       ;; https://github.com/Shirakumo/alloy/issues/24
+       '(#:asd-systems '("alloy"
+                         "alloy-windowing"
+                         "alloy-animation"
+                         "alloy-simple"
+                         "alloy-simple-presentations"
+                         "alloy-opengl"
+                         "alloy-opengl-msdf"
+                         "alloy-opengl-png")))
       (home-page "https://shirakumo.github.io/alloy/")
       (synopsis
        "Common Lisp user interface protocol and toolkit implementation")
@@ -23039,6 +23334,50 @@ Lisp.  A subsystem offers an experimental GUI Gemini client.")
 (define-public ecl-phos
   (sbcl-package->ecl-package sbcl-phos))
 
+(define-public sbcl-germinal
+  (let ((commit "5bfb371ea57dae8985c0e1c6f184f0338487d684")
+        (revision "0"))
+    (package
+      (name "sbcl-germinal")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.carcosa.net/jmcbray/germinal")
+               (commit commit)))
+         (file-name (git-file-name "cl-germinal" version))
+         (sha256
+          (base32 "12jypa8m10825lp5yxfcm1fyk3r4ziwcri7ndxa0m5dz0y7hggck"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-babel
+             sbcl-bordeaux-threads
+             sbcl-cl+ssl
+             sbcl-cl-fad
+             sbcl-cl-interpol
+             sbcl-cl-ppcre
+             sbcl-cl-str
+             sbcl-local-time
+             sbcl-osicat
+             sbcl-ppath
+             sbcl-quri
+             sbcl-trivial-mimes
+             sbcl-uax-15
+             sbcl-usocket))
+      (home-page "https://git.carcosa.net/jmcbray/germinal")
+      (synopsis "Gemini protocol server")
+      (description "Germinal is a server for the Gemini protocol, written in
+Common Lisp.")
+      (license license:agpl3))))
+
+(define-public cl-germinal
+  (sbcl-package->cl-source-package sbcl-germinal))
+
+(define-public ecl-germinal
+  (sbcl-package->ecl-package sbcl-germinal))
+
 (define-public sbcl-css-lite
   (let ((commit "6ee4e6212ed56943d665df163d2a834b122e6273")
         (revision "0"))
@@ -26047,8 +26386,25 @@ Zombie Raptor game engine project.")
          (sha256
           (base32 "146mwshynhdw82m2nxrcjvf1nk0z3fn6ywcd2vqxkly5qricc53w"))))
       (build-system asdf-build-system/sbcl)
+      (outputs '("out" "bin"))
       (arguments
-       '(#:asd-systems '("charje.triads")))
+       '(#:asd-systems '("charje.triads")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'create-asdf-configuration 'build-binary
+             (lambda* (#:key outputs #:allow-other-keys)
+               (setenv "HOME" (getcwd))
+               (invoke
+                "sbcl" "--eval" "(require :asdf)" "--eval"
+                (format
+                 #f "~S"
+                 `(progn
+                   (require "charje.triads"
+                            ,(string-append (getcwd) "/charje.triads.asd"))
+                   (asdf:make "charje.triads"))))
+               (install-file
+                (string-append (getcwd) "/triads")
+                (string-append (assoc-ref outputs "bin") "/bin")))))))
       (inputs
        (list sbcl-cl-str
              sbcl-serapeum
@@ -26065,7 +26421,15 @@ roman numeral given in the key.")
   (sbcl-package->cl-source-package sbcl-triads))
 
 (define-public ecl-triads
-  (sbcl-package->ecl-package sbcl-triads))
+  (let ((ecl-package (sbcl-package->ecl-package sbcl-triads)))
+    (package
+      (inherit ecl-package)
+      (outputs '("out"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments ecl-package)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (delete 'build-binary))))))))
 
 (define-public sbcl-closure-template
   ;; There are no releases since 2015.

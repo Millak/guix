@@ -427,33 +427,36 @@ controls for certain tuners which may be paired with an audio device.")
       (license license:expat))))
 
 (define-public soapyhackrf
-  (package
-    (name "soapyhackrf")
-    (version "0.3.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/pothosware/SoapyHackRF")
-             (commit (string-append "soapy-hackrf-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0wnnsm3c4ivwcbs1b68svbyds13aajws9mqk2xjc2pqgj0fdhcvz"))))
-    (build-system cmake-build-system)
-    (inputs
-     (list hackrf soapysdr))
-    (arguments
-     `(#:tests? #f))  ; No test suite
-    (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
-    (synopsis "SoapySDR HackRF module")
-    (description
-     "This package provides HackRF devices support to the SoapySDR library.")
-    (license license:expat)))
+  ;; Some fixes are not yet in a tagged release.
+  (let ((commit "6c0c33f0aa44c3080674e6bca0273184d3e9eb44")
+        (revision "1"))
+    (package
+      (name "soapyhackrf")
+      (version (git-version "0.3.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/pothosware/SoapyHackRF")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1khplrp6iphdclj1wrybxs7pw42rf9112fhfhw7x2fvds8yiswm7"))))
+      (build-system cmake-build-system)
+      (inputs
+       (list hackrf soapysdr))
+      (arguments
+       `(#:tests? #f))  ; No test suite
+      (home-page "https://github.com/pothosware/SoapyHackRF/wiki")
+      (synopsis "SoapySDR HackRF module")
+      (description
+       "This package provides HackRF devices support to the SoapySDR library.")
+      (license license:expat))))
 
 (define-public soapyrtlsdr
   (package
     (name "soapyrtlsdr")
-    (version "0.3.2")
+    (version "0.3.3")
     (source
      (origin
        (method git-fetch)
@@ -462,7 +465,7 @@ controls for certain tuners which may be paired with an audio device.")
              (commit (string-append "soapy-rtl-sdr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dlnryj6k20pk7w7v4v13y099r7ikhvlzbgzgphmi5cxkdv0shrd"))))
+        (base32 "0g1d69lpqw9c8hkir0h61nh40rgyz9p9x04xcfdih7iw26n5vai1"))))
     (build-system cmake-build-system)
     (inputs
      (list rtl-sdr soapysdr))
@@ -556,8 +559,8 @@ It is a GUI for @code{soapy_power}, @code{hackrf_sweep}, @code{rtl_power},
 
 (define-public aptdec
   ;; No release since 2013, use commit directly.
-  (let ((commit "51405971fd4e97714d1e987269e49c6edfe4e0da")
-        (revision "2"))
+  (let ((commit "4d4a0c9787a27d1eba26b9299c23ae9c66e56716")
+        (revision "3"))
     (package
       (name "aptdec")
       (version (git-version "1.7" revision commit))
@@ -566,10 +569,11 @@ It is a GUI for @code{soapy_power}, @code{hackrf_sweep}, @code{rtl_power},
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/Xerbo/aptdec")
-               (commit commit)))
+               (commit commit)
+               (recursive? #t)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0fzkhqnbkc2dd39jzb5m5mwcl31b0x3w0yykpx4s195llq4bdvis"))))
+          (base32 "09dvvwk4bs9d4bf9z74ixvhzghwzmlbqbx1dn20hbhpm0bgxwk8m"))))
       (build-system cmake-build-system)
       (inputs
        (list libpng libsndfile))
@@ -985,7 +989,7 @@ satellites.")
 (define-public gqrx
   (package
     (name "gqrx")
-    (version "2.15.8")
+    (version "2.15.9")
     (source
      (origin
        (method git-fetch)
@@ -994,7 +998,7 @@ satellites.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1ph7fnjxfv7rfdlh17c8j4djvkfqjnalmcvnafhnq7agjy428727"))))
+        (base32 "1a70lmcidp5ccmpvlvpfk1g7pshyp8xq2k0kgxrplf8za5hns019"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
@@ -1169,39 +1173,35 @@ for correctness.")
 (define-public hackrf
   (package
     (name "hackrf")
-    (version "2021.03.1")
+    (version "2022.09.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mossmann/hackrf")
+             (url "https://github.com/greatscottgadgets/hackrf")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12fkgimjy5ia291c1rn4y59pn9r5wdvz5x9z5xc8zr1xr96iyhfs"))))
+        (base32 "0m9j160q5zb3jimszv1lb6j76zf5lwijvpfl1k28d832rh847vvk"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DUDEV_RULES_GROUP=dialout"
-             (string-append "-DUDEV_RULES_PATH="
-                            (assoc-ref %outputs "out")
-                            "/lib/udev/rules.d"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'enter-source-directory
-           (lambda _
-             (chdir "host")
-             #t))
-         (add-after 'install 'delete-static-library
-           (lambda* (#:key outputs #:allow-other-keys)
-             (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libhackrf.a"))
-             #t))
-         (add-before 'install-license-files 'leave-source-directory
-           (lambda _
-             (chdir "..")
-             #t)))
-       #:tests? #f)) ; no test suite
+     (list #:configure-flags
+           #~(list "-DUDEV_RULES_GROUP=dialout"
+                   (string-append "-DUDEV_RULES_PATH="
+                                  #$output
+                                  "/lib/udev/rules.d"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'enter-source-directory
+                 (lambda _
+                   (chdir "host")))
+               (add-after 'install 'delete-static-library
+                 (lambda _
+                   (delete-file (string-append #$output "/lib/libhackrf.a"))))
+               (add-before 'install-license-files 'leave-source-directory
+                 (lambda _
+                   (chdir ".."))))
+           #:tests? #f)) ; no test suite
     (native-inputs
      (list pkg-config))
     (inputs
@@ -1516,14 +1516,14 @@ operators.")
 (define-public xnec2c
   (package
     (name "xnec2c")
-    (version "4.4.11")
+    (version "4.4.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xnec2c.org/releases/xnec2c-v"
                            version ".tar.gz"))
        (sha256
-        (base32 "13ybnb1v1y9wjmj49s8ir2rpfsz7h8r9jwv0qd4if9wsn44jg29k"))))
+        (base32 "1ibj2bjzn4dp988w0yayjsiccv44icsm02gr0g6gk389p7lg32p9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -1562,7 +1562,7 @@ gain and standing wave ratio.")
 (define-public dump1090
   (package
     (name "dump1090")
-    (version "7.1")
+    (version "8.2")
     (source
      (origin
        (method git-fetch)
@@ -1571,25 +1571,26 @@ gain and standing wave ratio.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1702qv5g27sgpqf98sj2qbg36sqzc7r3kssslzzgljqkr5jgrw6m"))))
+        (base32 "16ylywy2fdwf5kqr8kgl9lbzy1zwx4ckj9y122k3h86pfkswljs9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
     (inputs
      (list hackrf libusb ncurses rtl-sdr))
     (arguments
-     `(#:test-target "test"
-       #:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             "BLADERF=no")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (install-file "dump1090" bin)
-               (install-file "view1090" bin)))))))
+     (list
+      #:test-target "test"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              "BLADERF=no")
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin/")))
+                (install-file "dump1090" bin)
+                (install-file "view1090" bin)))))))
     (synopsis "Mode S decoder for rtl-sdr devices")
     (description
      "Dump1090 is a Mode S decoder specifically designed for rtl-sdr devices.
@@ -1601,7 +1602,7 @@ their position, altitude, speed, etc.")
 (define-public rtl-433
   (package
     (name "rtl-433")
-    (version "21.12")
+    (version "22.11")
     (source
      (origin
        (method git-fetch)
@@ -1610,7 +1611,7 @@ their position, altitude, speed, etc.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ygxs35zvgnamhqdwk1akcwagcirzpi4wndzgf9d23faiv4cm01a"))))
+        (base32 "0qx89qmf0zn0qa05vraipny4ihx6lm72s830mbfyzw2znyk3wdm8"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
@@ -1626,7 +1627,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
 (define-public multimon-ng
   (package
     (name "multimon-ng")
-    (version "1.1.9")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1635,7 +1636,7 @@ from devices on the 433 MHz, 868 MHz, 315 MHz, 345 MHz and 915 MHz ISM bands.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01716cfhxfzsab9zjply9giaa4nn4b7rm3p3vizrwi7n253yiwm2"))))
+        (base32 "0hm7391z1iz2sk4xkwfphqz8qvihqjzsh45csz14gb4jfs1p6ks2"))))
     (build-system cmake-build-system)
     (inputs
      (list libx11 pulseaudio))
@@ -2202,6 +2203,41 @@ Codec.")
 Audio Broadcasting}.")
       (license license:gpl2+))))
 
+(define-public dsd
+  (let ((commit "59423fa46be8b41ef0bd2f3d2b45590600be29f0")
+        (revision "1"))
+    (package
+      (name "dsd")
+      (version (git-version "1.7.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szechyjs/dsd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "128gvgkanvh4n5bjnzkfk419hf5fdbad94fb8d8lv67h94vfchyd"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list pkg-config))
+      (inputs
+       (list itpp libsndfile mbelib portaudio))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-itpp-detection
+                   (lambda _
+                     (substitute* "cmake/FindITPP.cmake"
+                       (("libitpp\\.dll")
+                        "itpp_debug")))))))
+      (synopsis "Digital speech decoder")
+      (description
+       "DSD is able to decode several digital voice formats used in radio
+transmissions.")
+      (home-page "https://github.com/szechyjs/dsd")
+      (license (list license:expat license:gpl2)))))
+
 (define-public dsdcc
   (package
     (name "dsdcc")
@@ -2244,7 +2280,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.6.2")
+    (version "7.8.5")
     (source
      (origin
        (method git-fetch)
@@ -2253,7 +2289,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "193iwwb4mbr29mlgaqb67j8214k10k2q0ky9fcl1ja52vmdzz71b"))))
+        (base32 "0kfzmxbhfpvs8csfbhnl5nij6nlbr00s43392wfq35vnnkbgk5lv"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2321,14 +2357,7 @@ voice formats.")
                  ;; …but force extensions that are guaranteed to be available.
                  (substitute* file
                    ((".*cmake_pop_check_state" eof)
-                    (string-append "force_ext_available(SSE2)\n" eof)))))))
-         (add-after 'unpack 'fix-boost-compatibility
-           (lambda _
-             (substitute*
-                 '("plugins/channelrx/noisefigure/noisefigure.cpp"
-                   "plugins/channelrx/noisefigure/noisefigureenrdialog.cpp")
-               (("boost::math::barycentric_rational<double>")
-                "boost::math::interpolators::barycentric_rational<double>")))))))
+                    (string-append "force_ext_available(SSE2)\n" eof))))))))))
     (home-page "https://github.com/f4exb/sdrangel/wiki")
     (synopsis "Software defined radio")
     (description
@@ -2413,19 +2442,27 @@ software-defined radio receivers.")
 (define-public wfview
   (package
     (name "wfview")
-    (version "1.2d")
+    (version "1.50")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.com/eliggett/wfview")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1kpkwxhcacgmprbr8xz840rj9a22513vxrh2q7d3js5i1dva8j2z"))))
+        (base32 "1djgn1z4hibzci53mrvskz47jfq6hk8lhhqckpa93pvsi9kadl4k"))))
     (build-system qt-build-system)
     (inputs
-     (list opus qcustomplot qtbase-5 qtmultimedia-5 qtserialport))
+     (list eigen
+           opus
+           portaudio
+           pulseaudio
+           qcustomplot
+           qtbase-5
+           qtmultimedia-5
+           qtserialport
+           rtaudio))
     (arguments
      `(#:tests? #f  ; No test suite.
        #:phases
@@ -2489,46 +2526,42 @@ Caller-ID.")
     (license license:gpl3+)))
 
 (define-public rfcat
-  ;; Use a commit for now because some fixes to make rfcat work with
-  ;; Python 3 instead of Python 2 are not in a release yet.
-  (let ((commit "725bf79af27d47cdec64107317c1c8fe3f7ad7b8")
-        (revision "1"))
-    (package
-      (name "rfcat")
-      (version (git-version "1.9.5" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/atlas0fd00m/rfcat")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0dbc6n4pxsa73wzxny773khc73r1dn3ma5hi7xv76vcykjvzkdi3"))))
-      (build-system python-build-system)
-      (inputs
-       (list python-future
-             python-ipython
-             python-numpy
-             python-pyserial
-             python-pyside-2
-             python-pyusb))
-      (arguments
-       `(#:tests? #f  ; Tests want to use a serial port
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-permissions
-             (lambda _
-               (make-file-writable "rflib/rflib_version.py")))
-           (add-after 'install 'install-udev-rules
-             (lambda* (#:key outputs #:allow-other-keys)
-               (install-file "etc/udev/rules.d/20-rfcat.rules"
-                             (string-append (assoc-ref outputs "out")
-                                            "/lib/udev/rules.d")))))))
-      (home-page "https://github.com/atlas0fd00m/rfcat")
-      (synopsis "Program to control some radio dongles")
-      (description
-       "@code{rfcat} is a program to control some radio dongles operating in
+  (package
+    (name "rfcat")
+    (version "1.9.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas0fd00m/rfcat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0zmgbgf1025ln2v6lc27dmkmwv8pxjgrmhmpk34rkkixhvnk69pf"))))
+    (build-system python-build-system)
+    (inputs
+     (list python-future
+           python-ipython
+           python-numpy
+           python-pyserial
+           python-pyside-2
+           python-pyusb))
+    (arguments
+     (list
+      #:tests? #f  ; Tests want to use a serial port
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-permissions
+            (lambda _
+              (make-file-writable "rflib/rflib_version.py")))
+          (add-after 'install 'install-udev-rules
+            (lambda* _
+              (install-file "etc/udev/rules.d/20-rfcat.rules"
+                            (string-append #$output "/lib/udev/rules.d")))))))
+    (home-page "https://github.com/atlas0fd00m/rfcat")
+    (synopsis "Program to control some radio dongles")
+    (description
+     "@code{rfcat} is a program to control some radio dongles operating in
 ISM bands.
 
 Supported dongles:
@@ -2541,8 +2574,8 @@ Supported dongles:
 
 To install the rfcat udev rules, you must extend @code{udev-service-type} with
 this package.  E.g.: @code{(udev-rules-service 'rfcat rfcat)}")
-      (license (list license:bsd-3
-                     license:gpl2)))))
+    (license (list license:bsd-3
+                   license:gpl2))))
 
 (define-public rx-tools
   ;; No tagged release since 2016, use commit instead.
@@ -2705,7 +2738,7 @@ Navigation Satellite System.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.10.3")
+    (version "0.10.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2714,7 +2747,7 @@ Navigation Satellite System.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "037vkwk974zrwacxafslkb3mbw9258v9sdpwdvb23msjzbc3snrn"))))
+                "1svxdfb5snxs2y1dwyb0j10ill9ribj4hw1rk023866yzn2zd0l9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests

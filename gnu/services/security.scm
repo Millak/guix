@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 muradm <mail@muradm.net>
+;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -351,28 +352,27 @@ provided as a list of file-like objects."))
   (match-record config <fail2ban-configuration>
     (fail2ban run-directory)
     (let* ((fail2ban-server (file-append fail2ban "/bin/fail2ban-server"))
+           (fail2ban-client (file-append fail2ban "/bin/fail2ban-client"))
            (pid-file (in-vicinity run-directory "fail2ban.pid"))
            (socket-file (in-vicinity run-directory "fail2ban.sock"))
            (config-dir (file-append (config->fail2ban-etc-directory config)
                                     "/etc/fail2ban"))
            (fail2ban-action (lambda args
-                              #~(lambda _
-                                  (invoke #$fail2ban-server
-                                          "-c" #$config-dir
-                                          "-p" #$pid-file
-                                          "-s" #$socket-file
-                                          "-b"
-                                          #$@args)))))
+                              #~(invoke #$fail2ban-client #$@args))))
 
-      ;; TODO: Add 'reload' action.
+      ;; TODO: Add 'reload' action (see 'fail2ban.service.in' in the source).
       (list (shepherd-service
              (provision '(fail2ban))
              (documentation "Run the fail2ban daemon.")
              (requirement '(user-processes))
-             (modules `((ice-9 match)
-                        ,@%default-modules))
-             (start (fail2ban-action "start"))
-             (stop (fail2ban-action "stop")))))))
+             (start #~(make-forkexec-constructor
+                       (list #$fail2ban-server
+                             "-c" #$config-dir "-s" #$socket-file
+                             "-p" #$pid-file "-xf" "start")
+                       #:pid-file #$pid-file))
+             (stop #~(lambda (_)
+                       #$(fail2ban-action "stop")
+                       #f)))))))                  ;successfully stopped
 
 (define fail2ban-service-type
   (service-type (name 'fail2ban)

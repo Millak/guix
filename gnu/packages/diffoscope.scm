@@ -245,7 +245,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.21")
+    (version "0.7.22")
     (source
      (origin
        (method git-fetch)
@@ -254,8 +254,7 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jmnp6dwd91w00vfvph89cvgxwk0nvij8his9az5b72265jf9bxz"))))
+        (base32 "0qpjg37x2ha7lb113fb5cic5if3zv30zqijsmkq91ld909x30ggd"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
@@ -296,8 +295,7 @@ install.")
                (install-file "doc/reprotest.1" mandir1)
                (mkdir-p docdir)
                (install-file "./README.rst" docdir)
-               (install-file "./README-dev.rst" docdir))
-             #t)))))
+               (install-file "./README-dev.rst" docdir)))))))
     (home-page "https://salsa.debian.org/reproducible-builds/reprotest")
     (synopsis "Build software and check it for reproducibility")
     (description "Reprotest builds the same source code twice in different

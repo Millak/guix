@@ -32,7 +32,7 @@
 (define-public re2
    (package
      (name "re2")
-     (version "2022-02-01")
+     (version "2022-12-01")
      (home-page "https://github.com/google/re2")
      (source (origin
                (method git-fetch)
@@ -40,7 +40,7 @@
                (file-name (git-file-name name version))
                (sha256
                 (base32
-                 "1gzdqy5a0ln9rwd8kmwbgis6qin63hapicwb35xkbnj3y84jj6yx"))))
+                 "0g627a5ppyarhf2ph4gyzj89pwbkwfjfajgljzkmjafjmdyxfqs6"))))
      (build-system gnu-build-system)
      (arguments
       (list #:test-target "test"

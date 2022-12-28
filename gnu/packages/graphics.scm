@@ -570,7 +570,7 @@ and export to various formats including the format used by Magicavoxel.")
 (define-public assimp
   (package
     (name "assimp")
-    (version "5.2.2")
+    (version "5.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -579,7 +579,7 @@ and export to various formats including the format used by Magicavoxel.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kjifakjnpm89410pw27wq21fn975gfq46kn9zs3h8bryldvvlgk"))))
+                "0j0pd279n6xyy95x782ha8j75kbx0ck7vs5wv3krhbyfim9bw64l"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
@@ -957,7 +957,7 @@ other vector formats such as:
 (define-public alembic
   (package
     (name "alembic")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method git-fetch)
@@ -966,7 +966,7 @@ other vector formats such as:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0glfx3cm7r8zn3cn7j4x4ch1ab6igfis0i2lcy23jc56q87r8yj2"))))
+        (base32 "04cvzr87zqx55si4j3dqiidbmfx92ja3mc1dj0v6ddvl0cwj3m7i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_HDF5=ON")))
@@ -1308,7 +1308,7 @@ visual effects work for film.")
        ("jasper" ,jasper)
        ("librsvg" ,librsvg)
        ("libxrandr" ,libxrandr)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("mesa" ,mesa)))
     (synopsis "High-performance real-time graphics toolkit")
     (description

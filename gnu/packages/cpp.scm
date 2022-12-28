@@ -1901,7 +1901,7 @@ multi-threaded applications and network applications.")
 (define-public gulrak-filesystem
   (package
     (name "gulrak-filesystem")
-    (version "1.5.10")
+    (version "1.5.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1910,7 +1910,7 @@ multi-threaded applications and network applications.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0dx1yvbz5rnisymkqap7z0b06ag9fcs6q6l82vgi8caylhkwsqs7"))))
+                "1qg10akvhp801xirkj4mqcpvcxj90z81ygpyg752xv110zj4914g"))))
     (build-system cmake-build-system)
     (synopsis "Header only C++ std::filesystem compatible library")
     (description "This package provides a header-only single-file

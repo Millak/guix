@@ -14,6 +14,7 @@
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Marcel Kupiec <formbi@protonmail.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -134,7 +135,7 @@ sets, and tools to deal with register databases.")
 (define-public hw-probe
   (package
     (name "hw-probe")
-    (version "1.6.4")
+    (version "1.6.5")
     (source
      (origin
        (method git-fetch)
@@ -144,7 +145,7 @@ sets, and tools to deal with register databases.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "028wnhrbn10lfxwmcpzdbz67ygldimv7z1k1bm64ggclykvg5aim"))))
+        (base32 "1sbp0scdi54zwgvb1s3ki3cw8xnxaxzm5cicq2nn3a2b6n1d4ljs"))))
     (build-system perl-build-system)
     (arguments
      (list
@@ -263,6 +264,7 @@ sets, and tools to deal with register databases.")
            ddcutil
            dmidecode
            dpkg
+           edac-utils
            edid-decode
            efibootmgr
            efivar
@@ -1132,7 +1134,14 @@ supported by the Linux kernel.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0zwrkqfxd671iy69v3q0844gfdpm1yk51i9qh2rqc969bd8glxga"))))
+          (base32 "0zwrkqfxd671iy69v3q0844gfdpm1yk51i9qh2rqc969bd8glxga"))
+         (snippet
+          #~(begin
+              ;; https://github.com/rockchip-linux/rkdeveloptool/pull/57
+              (use-modules (guix build utils))
+              (substitute* "main.cpp"
+                (("snprintf\\(buffer, sizeof\\(buffer\\), \"\\%s\", chip)")
+                 "memccpy(buffer, chip, '\\0', sizeof(buffer))"))))))
       (build-system gnu-build-system)
       (native-inputs
        (list autoconf automake pkg-config))

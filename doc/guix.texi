@@ -10,8 +10,8 @@
 @include version.texi
 
 @c Identifier of the OpenPGP key used to sign tarballs and such.
-@set OPENPGP-SIGNING-KEY-ID 27D586A4F8900854329FF09F1260E46482E63562
-@set OPENPGP-SIGNING-KEY-URL https://sv.gnu.org/people/viewgpg.php?user_id=127547
+@set OPENPGP-SIGNING-KEY-ID 3CE464558A84FDC69DB40CFB090B11993D9AEBB5
+@set OPENPGP-SIGNING-KEY-URL https://sv.gnu.org/people/viewgpg.php?user_id=15145
 
 @c Base URL for downloads.
 @set BASE-URL https://ftp.gnu.org/gnu/guix
@@ -1522,8 +1522,10 @@ To install the policy run this command as root:
 semodule -i etc/guix-daemon.cil
 @end example
 
-Then relabel the file system with @code{restorecon} or by a different
-mechanism provided by your system.
+Then relabel the file system with @code{restorecon -vR /} or by a
+different mechanism provided by your system.  You may need to remount
+@file{/gnu/store} to make it writable first, e.g. with @code{mount -o
+remount,rw /gnu/store}.
 
 Once the policy is installed, the file system has been relabeled, and
 the daemon has been restarted, it should be running in the
@@ -1556,7 +1558,7 @@ but it would be preferable to define socket rules for only this label.
 @code{guix gc} cannot access arbitrary links to profiles.  By design,
 the file label of the destination of a symlink is independent of the
 file label of the link itself.  Although all profiles under
-$localstatedir are labelled, the links to these profiles inherit the
+@file{$localstatedir} are labelled, the links to these profiles inherit the
 label of the directory they are in.  For links in the user’s home
 directory this will be @code{user_home_t}.  But for links from the root
 user’s home directory, or @file{/tmp}, or the HTTP server’s working
@@ -11706,8 +11708,7 @@ This is the declarative counterpart of @code{text-file}.
 @end deffn
 
 @deffn {Scheme Procedure} computed-file @var{name} @var{gexp} @
-          [#:local-build? #t]
-          [#:options '()]
+  [#:local-build? #t] [#:options '()]
 Return an object representing the store item @var{name}, a file or
 directory computed by @var{gexp}.  When @var{local-build?} is true (the
 default), the derivation is built locally.  @var{options} is a list of
@@ -13932,6 +13933,25 @@ gnu/packages/multiprecision.scm:40:12: 6.1.2 is already the latest version of gm
 @end example
 
 @end table
+
+If for some reason you don't want to update to the latest version, you
+can update to a specific version by appending an equal sign and the
+desired version number to the package specification.  Note that not all
+updaters support this; an error is reported when an updater cannot
+refresh to the specified version.
+
+@example
+$ guix refresh trytond-party
+gnu/packages/guile.scm:392:2: guile would be upgraded from 3.0.3 to 3.0.5
+$ guix refresh -u guile=3.0.4
+@dots{}
+gnu/packages/guile.scm:392:2: guile: updating from version 3.0.3 to version 3.0.4...
+@dots{}
+$ guix refresh -u guile@@2.0=2.0.12
+@dots{}
+gnu/packages/guile.scm:147:2: guile: updating from version 2.0.10 to version 2.0.12...
+@dots{}
+@end example
 
 Sometimes the upstream name differs from the package name used in Guix,
 and @command{guix refresh} needs a little help.  Most updaters honor the
@@ -17060,7 +17080,7 @@ I/O faster, and thus paging out unused portions of program memory will
 expand the RAM available for such caching.
 
 For a more detailed description of how memory is managed from the
-viewpoint of a monolithic kernel, @xref{Memory
+viewpoint of a monolithic kernel, @pxref{Memory
 Concepts,,, libc, The GNU C Library Reference Manual}.
 
 The Linux kernel has support for swap partitions and swap files: the
@@ -23237,8 +23257,6 @@ manages all the Bluetooth devices and provides a number of D-Bus
 interfaces.  When AUTO-ENABLE? is true, the bluetooth controller is
 powered automatically at boot, which can be useful when using a
 bluetooth keyboard or mouse.
-
-Users need to be in the @code{lp} group to access the D-Bus service.
 @end deffn
 
 @deffn {Scheme Variable} bluetooth-service-type
@@ -25729,6 +25747,11 @@ Data type representing the configuration of opensmtpd.
 @table @asis
 @item @code{package} (default: @var{opensmtpd})
 Package object of the OpenSMTPD SMTP server.
+
+@item @code{shepherd-requirement} (default: @code{'()})
+This option can be used to provide a list of symbols naming Shepherd services
+that this service will depend on, such as @code{'networking}
+if you want to configure OpenSMTPD to listen on non-loopback interfaces.
 
 @item @code{config-file} (default: @code{%default-opensmtpd-config-file})
 File-like object of the OpenSMTPD configuration file to use.  By default
@@ -28453,6 +28476,8 @@ Local accounts with lower values will silently fail to authenticate.
 @node LDAP Services
 @subsection LDAP Services
 @cindex LDAP
+
+@subsubheading Authentication against LDAP with nslcd
 @cindex nslcd, LDAP service
 
 The @code{(gnu services authentication)} module provides the
@@ -28928,6 +28953,189 @@ Defaults to @samp{()}.
 
 @c %end of generated documentation for nslcd-configuration
 
+
+@subsubheading LDAP Directory Server
+@cindex LDAP, server
+
+The @code{(gnu services ldap)} module provides the
+@code{directory-server-service-type}, which can be used to create and
+launch an LDAP server instance.
+
+Here is an example configuration of the
+@code{directory-server-service-type}:
+
+@lisp
+(use-service-modules ldap)
+
+...
+(operating-system
+  ...
+  (services
+    (cons
+      (service directory-server-service-type
+               (directory-server-instance-configuration
+                (slapd
+                 (slapd-configuration
+                  (root-password "@{PBKDF2_SHA256@}AAAgAG@dots{}ABSOLUTELYSECRET")))))
+      %base-services)))
+@end lisp
+
+The root password should be generated with the @command{pwdhash} utility
+that is provided by the @code{389-ds-base} package.
+
+Note that changes to the directory server configuration will not be
+applied to existing instances.  You will need to back up and restore
+server data manually.  Only new directory server instances will be
+created upon system reconfiguration.
+
+@c %start of generated documentation for directory-server-instance-configuration
+@deftp {Data Type} directory-server-instance-configuration
+Available @code{directory-server-instance-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{389-ds-base}) (type: file-like)
+The @code{389-ds-base} package.
+
+@item @code{config-version} (default: @code{2}) (type: number)
+Sets the format version of the configuration file.  To use the INF file
+with @command{dscreate}, this parameter must be 2.
+
+@item @code{full-machine-name} (default: @code{"localhost"}) (type: string)
+Sets the fully qualified hostname (FQDN) of this system.
+
+@item @code{selinux} (default: @code{#false}) (type: boolean)
+Enables SELinux detection and integration during the installation of
+this instance.  If set to @code{#true}, @command{dscreate} auto-detects
+whether SELinux is enabled.
+
+@item @code{strict-host-checking} (default: @code{#true}) (type: boolean)
+Sets whether the server verifies the forward and reverse record set in
+the @code{full-machine-name} parameter.  When installing this instance with
+GSSAPI authentication behind a load balancer, set this parameter to
+@code{#false}.
+
+@item @code{systemd} (default: @code{#false}) (type: boolean)
+Enables systemd platform features.  If set to @code{#true},
+@command{dscreate} auto-detects whether systemd is installed.
+
+@item @code{slapd} (type: slapd-configuration)
+Configuration of slapd.
+
+@deftp {Data Type} slapd-configuration
+Available @code{slapd-configuration} fields are:
+
+@table @asis
+@item @code{instance-name} (default: @code{"localhost"}) (type: string)
+Sets the name of the instance.  You can refer to this value in other
+parameters of this INF file using the @code{@{instance_name@}} variable.
+Note that this name cannot be changed after the installation!
+
+@item @code{user} (default: @code{"dirsrv"}) (type: string)
+Sets the user name the ns-slapd process will use after the service
+started.
+
+@item @code{group} (default: @code{"dirsrv"}) (type: string)
+Sets the group name the ns-slapd process will use after the service
+started.
+
+@item @code{port} (default: @code{389}) (type: number)
+Sets the TCP port the instance uses for LDAP connections.
+
+@item @code{secure-port} (default: @code{636}) (type: number)
+Sets the TCP port the instance uses for TLS-secured LDAP connections
+(LDAPS).
+
+@item @code{root-dn} (default: @code{"cn=Directory Manager"}) (type: string)
+Sets the @dfn{Distinquished Name} (DN) of the administrator account for this
+instance.
+
+@item @code{root-password} (default: @code{"@{invalid@}YOU-SHOULD-CHANGE-THIS"}) (type: string)
+Sets the password of the account specified in the @code{root-dn}
+parameter.  You can either set this parameter to a plain text password
+@command{dscreate} hashes during the installation or to a
+"@{algorithm@}hash" string generated by the @command{pwdhash} utility.
+Note that setting a plain text password can be a security risk if
+unprivileged users can read this INF file!
+
+@item @code{self-sign-cert} (default: @code{#true}) (type: boolean)
+Sets whether the setup creates a self-signed certificate and enables TLS
+encryption during the installation.  This is not suitable for
+production, but it enables administrators to use TLS right after the
+installation.  You can replace the self-signed certificate with a
+certificate issued by a certificate authority.
+
+@item @code{self-sign-cert-valid-months} (default: @code{24}) (type: number)
+Set the number of months the issued self-signed certificate will be
+valid.
+
+@item @code{backup-dir} (default: @code{"/var/lib/dirsrv/slapd-@{instance_name@}/bak"}) (type: string)
+Set the backup directory of the instance.
+
+@item @code{cert-dir} (default: @code{"/etc/dirsrv/slapd-@{instance_name@}"}) (type: string)
+Sets the directory of the instance's Network Security Services (NSS)
+database.
+
+@item @code{config-dir} (default: @code{"/etc/dirsrv/slapd-@{instance_name@}"}) (type: string)
+Sets the configuration directory of the instance.
+
+@item @code{db-dir} (default: @code{"/var/lib/dirsrv/slapd-@{instance_name@}/db"}) (type: string)
+Sets the database directory of the instance.
+
+@item @code{initconfig-dir} (default: @code{"/etc/dirsrv/registry"}) (type: string)
+Sets the directory of the operating system's rc configuration directory.
+
+@item @code{ldif-dir} (default: @code{"/var/lib/dirsrv/slapd-@{instance_name@}/ldif"}) (type: string)
+Sets the LDIF export and import directory of the instance.
+
+@item @code{lock-dir} (default: @code{"/var/lock/dirsrv/slapd-@{instance_name@}"}) (type: string)
+Sets the lock directory of the instance.
+
+@item @code{log-dir} (default: @code{"/var/log/dirsrv/slapd-@{instance_name@}"}) (type: string)
+Sets the log directory of the instance.
+
+@item @code{run-dir} (default: @code{"/run/dirsrv"}) (type: string)
+Sets PID directory of the instance.
+
+@item @code{schema-dir} (default: @code{"/etc/dirsrv/slapd-@{instance_name@}/schema"}) (type: string)
+Sets schema directory of the instance.
+
+@item @code{tmp-dir} (default: @code{"/tmp"}) (type: string)
+Sets the temporary directory of the instance.
+@end table
+@end deftp
+
+@item @code{backend-userroot} (type: backend-userroot-configuration)
+Configuration of the userroot backend.
+
+@deftp {Data Type} backend-userroot-configuration
+Available @code{backend-userroot-configuration} fields are:
+
+@table @asis
+@item @code{create-suffix-entry?} (default: @code{#false}) (type: boolean)
+Set this parameter to @code{#true} to create a generic root node entry
+for the suffix in the database.
+
+@item @code{require-index?} (default: @code{#false}) (type: boolean)
+Set this parameter to @code{#true} to refuse unindexed searches in this
+database.
+
+@item @code{sample-entries} (default: @code{"no"}) (type: string)
+Set this parameter to @code{"yes"} to add latest version of sample
+entries to this database.  Or, use @code{"001003006"} to use the 1.3.6
+version sample entries.  Use this option, for example, to create a
+database for testing purposes.
+
+@item @code{suffix} (type: maybe-string)
+Sets the root suffix stored in this database.  If you do not set the
+suffix attribute the install process will not create the backend/suffix.
+You can also create multiple backends/suffixes by duplicating this
+section.
+
+@end table
+@end deftp
+@end table
+@end deftp
+@c end of generated documentation for directory-server
 
 @node Web Services
 @subsection Web Services
@@ -30820,7 +31028,7 @@ cache.size = 100 * MB
 "))))
 @end lisp
 
-For more information, refer its @url{https://knot-resolver.readthedocs.org/en/stable/daemon.html#configuration, manual}.
+For more information, refer its @url{https://knot-resolver.readthedocs.io/en/stable/config-overview.html, manual}.
 @end deffn
 
 @deftp {Data Type} knot-resolver-configuration
@@ -31578,6 +31786,10 @@ The optional endpoint for the peer, such as
 
 @item @code{public-key}
 The peer public-key represented as a base64 string.
+
+@item @code{preshared-key} (default: @code{#f})
+An optional pre-shared key file for this peer.  The given file will not
+be autogenerated.
 
 @item @code{allowed-ips}
 A list of IP addresses from which incoming traffic for this peer is
@@ -34064,6 +34276,10 @@ To override a setting, you must use the configuration type for that service:
 
 @item @code{file-storage-paths} (default: @code{'()})
 List of allowed directories for file storage backend.
+
+@item @code{hooks} (default: @code{#f})
+When set, this should be a file-like object containing a directory with
+@url{https://docs.ganeti.org/docs/ganeti/3.0/html/hooks.html,cluster execution hooks}.
 
 @item @code{os} (default: @code{%default-ganeti-os})
 List of @code{<ganeti-os>} records.
@@ -37209,6 +37425,15 @@ The Nix package to use.
 @item @code{sandbox} (default: @code{#t})
 Specifies whether builds are sandboxed by default.
 
+@item @code{build-directory} (default: @code{"/tmp"})
+The directory where build directory are stored during builds.
+This is useful to change if, for example, the default location does not
+have enough space to hold build trees for big packages.
+
+This is similar to setting the @env{TMPDIR} environment variable for
+@command{guix-daemon}.  @ref{Build Environment Setup, @env{TMPDIR}},
+for more info.
+
 @item @code{build-sandbox-items} (default: @code{'()})
 This is a list of strings or objects appended to the
 @code{build-sandbox-items} field of the configuration file.
@@ -39255,7 +39480,7 @@ $ qemu-system-x86_64 \
    -nic user,model=virtio-net-pci \
    -enable-kvm -m 2048 \
    -device virtio-blk,drive=myhd \
-   -drive if=none,file=/tmp/qemu-image,id=myhd
+   -drive if=none,file=guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2,id=myhd
 @end example
 
 Here is what each of these options means:
@@ -39291,8 +39516,9 @@ better performance than if it were emulating a complete disk drive.  See the
 QEMU and KVM documentation for more info.
 
 @item -drive if=none,file=/tmp/qemu-image,id=myhd
-Use our QCOW image, the @file{/tmp/qemu-image} file, as the backing
-store of the ``myhd'' drive.
+Use our QCOW image, the
+@file{guix-system-vm-image-@value{VERSION}.x86_64-linux.qcow2} file, as
+the backing store of the ``myhd'' drive.
 @end table
 
 The default @command{run-vm.sh} script that is returned by an invocation of
@@ -39521,11 +39747,10 @@ The service type for an @emph{extensible} service looks like this:
 
                 (compose concatenate)       ;concatenate the list of rules
                 (extend (lambda (config rules)
-                          (match config
-                            (($ <udev-configuration> udev initial-rules)
-                             (udev-configuration
-                              (udev udev)   ;the udev package to use
-                              (rules (append initial-rules rules)))))))))
+                          (udev-configuration
+                           (inherit config)
+                           (rules (append (udev-configuration-rules config)
+                                          rules)))))))
 @end lisp
 
 This is the service type for the

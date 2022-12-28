@@ -951,7 +951,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -960,7 +960,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13q3fsrszq828gki3z42lda9gghm9wsnsg7iylp1ypcbj7hd5zhk"))))
+        (base32 "17qq3clfmiyrcah89h8c5r6pc58xcskm5z1czbasv67bfq7chzhy"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1276,7 +1276,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.9.1")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -1285,7 +1285,7 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1s0ysg8kfbrvwcr80vrsx7150ixa9v7pb4xm49s97nkiq5k69hal"))))
+        (base32 "1zj1fdaqih9d878yxy96ivgqyg4j31slvh2gqsyz2l2vj3s8z54x"))))
     (build-system python-build-system)
     (arguments
      (list

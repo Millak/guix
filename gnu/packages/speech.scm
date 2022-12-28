@@ -4,7 +4,7 @@
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
@@ -31,6 +31,7 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
@@ -44,6 +45,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -557,6 +559,51 @@ The system is written in C++ and uses the Edinburgh Speech Tools Library for
 low level architecture and has a Scheme (SIOD) based command interpreter for
 control.")
     (license (license:non-copyleft "file://COPYING"))))
+
+(define-public gst-vosk
+  (package
+    (name "gst-vosk")
+    (version "0.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/PhilippeRo/gst-vosk")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zxifssh57a251af9x4ahglcipvmkgc1pmc67l59s805za9yvq3p"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Do not use prebuilt vosk library
+               '(begin
+                  (delete-file-recursively "vosk")
+                  (substitute* "meson.build"
+                    (("subdir\\('vosk'\\)") ""))
+                  (substitute* "src/meson.build"
+                    (("vosk_libdir =.*") "")
+                    ((", dirs : vosk_libdir") "")
+                    (("include_directories : include_directories.*") ""))
+                  (substitute* '("src/gstvosk.h"
+                                 "src/gstvosk.c")
+                    (("vosk-api.h") "vosk_api.h"))))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'install-vosk-api-header
+           (lambda* (#:key inputs #:allow-other-keys)
+             (install-file (search-input-file inputs "src/vosk_api.h")
+                           "src"))))))
+    (inputs
+     (list vosk-api gstreamer gobject-introspection))
+    (native-inputs (list pkg-config gettext-minimal))
+    (home-page "https://github.com/PhilippeRo/gst-vosk")
+    (synopsis "Gstreamer plugin for VOSK voice recognition engine")
+    (description "This package provides a Gstreamer plugin for the VOSK voice
+recognition engine.")
+    (license license:gpl2+)))
 
 (define-public ekho
   (package

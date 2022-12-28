@@ -257,14 +257,14 @@ specifications are building blocks of S/MIME and TLS.")
 (define libksba/fixed
   (package
     (inherit libksba)
-    (version "1.6.2")
+    (version "1.6.3")
         (source
      (origin
       (method url-fetch)
       (uri (string-append
             "mirror://gnupg/libksba/libksba-" version ".tar.bz2"))
       (sha256
-       (base32 "0wf9j9hlzvgn0vz6zg3fvcmpdr62v8bz1kzsvzdbs4lqqp51rq7w"))))))
+       (base32 "0p6y82j9y6n0l7scjgqhz3as9w13jiqjfx9n2jzynw89nf6wcwiz"))))))
 
 (define-public npth
   (package

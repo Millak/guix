@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016, 2017, 2018, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2018, 2021-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -537,12 +537,13 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
              (lambda _
                (invoke "chmod" "a+w" "utils/isohybrid.in")))
            (replace 'check
-             (lambda _
-               (setenv "CC" "gcc")
-               (substitute* "tests/unittest/include/unittest/unittest.h"
-                 ;; Don't look up headers under /usr.
-                 (("/usr/include/") ""))
-               (invoke "make" "unittest"))))))
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 (setenv "CC" "gcc")
+                 (substitute* "tests/unittest/include/unittest/unittest.h"
+                   ;; Don't look up headers under /usr.
+                   (("/usr/include/") ""))
+                 (invoke "make" "unittest")))))))
       (home-page "https://www.syslinux.org")
       (synopsis "Lightweight Linux bootloader")
       (description "Syslinux is a lightweight Linux bootloader.")
@@ -655,6 +656,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
            lz4
            ncurses/tinfo
            perl
+           pkg-config                   ;for 'make menuconfig'
            python
            python-coverage
            python-pycryptodomex
@@ -728,8 +730,7 @@ def test_ctrl_c"))
                            ;; This test requires a sound system, which is un-used
                            ;; in u-boot-tools.
                            (("CONFIG_SOUND=y") "CONFIG_SOUND=n")))
-                       (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))
-             #t))
+                       (find-files "configs" "sandbox_.*defconfig$|tools-only_defconfig"))))
          (replace 'configure
            (lambda* (#:key make-flags #:allow-other-keys)
              (apply invoke "make" "tools-only_defconfig" make-flags)))
@@ -754,8 +755,7 @@ def test_ctrl_c"))
                            "tools/proftool"
                            "tools/fdtgrep"
                            "tools/env/fw_printenv"
-                           "tools/sunxi-spl-image-builder"))
-               #t)))
+                           "tools/sunxi-spl-image-builder")))))
          (delete 'check)
          (add-after 'install 'check
            (lambda* (#:key make-flags test-target #:allow-other-keys)
@@ -817,6 +817,7 @@ appended to the package description."
          #:test-target "test"
          #:make-flags
          (list "HOSTCC=gcc"
+               "KBUILD_VERBOSE=1"
                ,@(if (not (same-arch?))
                      `((string-append "CROSS_COMPILE=" ,triplet "-"))
                      '()))
@@ -889,7 +890,7 @@ appended to the package description."
 (define-public u-boot-malta
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
-(define-public u-boot-am335x-boneblack
+(define-public u-boot-am335x-evm-boneblack
   (make-u-boot-package
    "am335x_evm" "arm-linux-gnueabihf"
    ;; Patch out other device trees to build an image small enough to fit
@@ -1419,7 +1420,7 @@ order to add a suitable bootloader menu entry.")
   ;;
   ;; TODO: Bump this timestamp at each modifications of the package (not only
   ;; for updates) by running: date +%s.
-  (let ((timestamp "1591706427"))
+  (let ((timestamp "1671715380"))
     (package
       (name "ipxe")
       (version "1.21.1")
@@ -1481,6 +1482,14 @@ order to add a suitable bootloader menu entry.")
          (modify-phases %standard-phases
            (add-after 'unpack 'enter-source-directory
              (lambda _ (chdir "src") #t))
+           (add-after 'enter-source-directory 'set-version
+             (lambda _
+               ;; When not building from a git checkout, iPXE encodes the
+               ;; version as "1.0.0+".  Use the package version instead.
+               (substitute* "Makefile"
+                 (("^VERSION[[:blank:]]+=.*")
+                  (string-append "VERSION = " ,(package-version this-package)
+                                 "-guix\n")))))
            (add-after 'enter-source-directory 'set-options
              (lambda _
                (substitute* "config/general.h"
@@ -1531,3 +1540,85 @@ existing PXE ROM on your network card, or you can chainload into iPXE to obtain
 the features of iPXE without the hassle of reflashing.")
       (license license:gpl2+))))
 
+(define-public ipxe-qemu
+  (package/inherit ipxe
+    (name "ipxe-qemu")
+    (native-inputs
+     ;; QEMU uses a 64-bit UEFI firmware.
+     (if (target-x86-64?)
+         (modify-inputs (package-native-inputs ipxe)
+           (prepend edk2-tools))
+         (if (target-64bit?)
+           (modify-inputs (package-native-inputs ipxe)
+             (prepend edk2-tools
+                      (cross-gcc "x86_64-linux-gnu")
+                      (cross-binutils "x86_64-linux-gnu")))
+           ;; Our default 32-bit binutils is not 64-bit capable.
+           (let ((binutils-64-bit-bfd
+                   (package/inherit
+                     binutils
+                     (name "binutils-64-bit-bfd")
+                     (arguments
+                       (substitute-keyword-arguments (package-arguments binutils)
+                        ((#:configure-flags flags ''())
+                         `(cons "--enable-64-bit-bfd" ,flags)))))))
+             (modify-inputs (package-native-inputs ipxe)
+               (prepend edk2-tools
+                        (make-ld-wrapper "ld-wrapper-64-bit-bfd"
+                                         #:binutils binutils)
+                        binutils-64-bit-bfd
+                        (cross-gcc "x86_64-linux-gnu")
+                        (cross-binutils "x86_64-linux-gnu")))))))
+    (arguments
+     (let ((roms
+            ;; Alist of ROM -> (VID . DID) entries.  This list and below
+            ;; build steps are taken from QEMUs roms/Makefile.
+            '(("e1000"       . ("8086" . "100e"))
+              ("e1000e"      . ("8086" . "10d3"))
+              ("eepro100"    . ("8086" . "1209"))
+              ("ne2k_pci"    . ("1050" . "0940"))
+              ("pcnet"       . ("1022" . "2000"))
+              ("rtl8139"     . ("10ec" . "8139"))
+              ("virtio"      . ("1af4" . "1000"))
+              ("vmxnet3"     . ("15ad" . "07b0")))))
+       (substitute-keyword-arguments (package-arguments ipxe)
+         ((#:modules modules)
+          `((ice-9 match) ,@modules))
+         ((#:make-flags flags)
+          #~(append (delete "everything" #$flags)
+                    '("CONFIG=qemu"
+                      #$@(if (target-x86-64?)
+                             '()
+                             '("CROSS_COMPILE=x86_64-linux-gnu-")))
+                    (map (match-lambda
+                           ((_ . (vid . did))
+                            (string-append "bin/" vid did ".rom")))
+                         '#$roms)
+                    (map (match-lambda
+                           ((_ . (vid . did))
+                            (string-append "bin-x86_64-efi/"
+                                           vid did ".efidrv")))
+                         '#$roms)))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (replace 'install
+                (lambda _
+                  (let ((firmware (string-append #$output "/share/qemu")))
+                    (mkdir-p firmware)
+                    (for-each
+                     (match-lambda
+                       ((name . (vid . did))
+                        (let ((rom (string-append "bin/" vid did ".rom")))
+                          (copy-file rom
+                                     (string-append firmware
+                                                    "/pxe-" name ".rom"))
+                          (invoke "EfiRom"
+                                  "-b" rom
+                                  "-l" "0x02"
+                                  "-f" (string-append "0x" vid)
+                                  "-i" (string-append "0x" did)
+                                  "-ec" (string-append "bin-x86_64-efi/"
+                                                       vid did ".efidrv")
+                                  "-o" (string-append firmware
+                                                      "/efi-" name ".rom")))))
+                     '#$roms)))))))))))

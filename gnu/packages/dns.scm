@@ -290,7 +290,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.87")
+    (version "2.88")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -298,7 +298,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "0ynyi4mixhxhbfxb2bivinkrjc5zgj9lj5bzgvymc8vz98vc0a02"))))
+                "1cy1zci6vyhzczy6ncc5m9d7zsnnzs9mmwd6pr9w0h03l7nlsm13"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -544,14 +544,14 @@ asynchronous fashion.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.4.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0dl8iriy0mscppfa6ar5qcglgvxw87140abwxyksak1lk7fnzkfg"))))
+        (base32 "0ym2fgkjar94y99lyvp93p7jpj33ysprvqd7py28xxn37shs6q1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.2.3")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
@@ -880,7 +880,7 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "117q8jllaakd6gv0mfkq45sigy5c8j8jbyxiwna3wan0mjx81fhv"))
+        (base32 "0b6fnrdy5zqn3mnn5cl92j0m7k9l6hh4gnr92qpirqf54bl2lfm2"))
        (modules '((guix build utils)))
        (snippet
         '(begin

@@ -3554,7 +3554,7 @@ tune-in sender list from @url{http://opml.radiotime.com}.")
 (define-public pianobar
   (package
     (name "pianobar")
-    (version "2020.11.28")
+    (version "2022.04.01")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3563,7 +3563,7 @@ tune-in sender list from @url{http://opml.radiotime.com}.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13qx52a1yj2wghf7yd9jf4ar92scbc8zgqdq0kkqf4p9isf1phf3"))))
+                "14s97fx83dg8szbib2y608hjzfdhz20hch2ify3gqhji58v69wil"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -4730,7 +4730,7 @@ standalone JACK client and an LV2 plugin is also available.")
 (define-public sfizz
   (package
     (name "sfizz")
-    (version "1.0.0")
+    (version "1.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/sfztools/sfizz"
@@ -4738,34 +4738,38 @@ standalone JACK client and an LV2 plugin is also available.")
                                   "/sfizz-" version ".tar.gz"))
               (sha256
                (base32
-                "1pk67xvyqkvhjz2q5hbj5v0mnfvdvvl8vl5bsh6ymwiq3glkd41l"))
+                "1wsr3dpn7a7whqn480m02kp6n4raamnfi3imhf2q8k58md1yn9jw"))
               (modules '((guix build utils)))
               (snippet
-               ;; TODO: pugixml is bundled, but can only be removed in
-               ;; versions after 1.0.0.
                '(for-each delete-file-recursively
                           '("external/abseil-cpp"
                             "external/simde"
                             "plugins/editor/external/vstgui4"
-                            "plugins/vst")))))
+                            "plugins/vst"
+                            "src/external/pugixml")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DSFIZZ_LV2_UI=OFF"
-             "-DSFIZZ_VST=OFF"
-             "-DSFIZZ_VST2=OFF"
-             "-DSFIZZ_TESTS=ON"
-             "-DSFIZZ_USE_SYSTEM_ABSEIL=ON")))
+     (list
+      #:configure-flags
+      #~(list "-DSFIZZ_LV2_UI=OFF"
+              "-DSFIZZ_VST=OFF"
+              "-DSFIZZ_VST2=OFF"
+              "-DSFIZZ_TESTS=ON"
+              "-DSFIZZ_USE_SYSTEM_ABSEIL=ON"
+              "-DSFIZZ_USE_SYSTEM_PUGIXML=ON"
+              ;; XXX: Guix SIMDe version 0.7.2 is not enough.
+              ;; "-DSFIZZ_USE_SYSTEM_SIMDE=ON"
+              )))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("abseil-cpp" ,abseil-cpp)
-       ("glib" ,glib)
-       ("jack" ,jack-2)
-       ("lv2" ,lv2)
-       ("libsamplerate" ,libsamplerate)
-       ("pugixml" ,pugixml)
-       ("simde" ,simde)))
+     (list abseil-cpp
+           glib
+           jack-2
+           lv2
+           libsamplerate
+           pugixml
+           simde))
     (home-page "https://sfz.tools/sfizz/")
     (synopsis "SFZ parser and synth library")
     (description "Sfizz provides an SFZ parser and synth C++ library.  It
@@ -4775,7 +4779,7 @@ includes LV2 plugins and a JACK standalone client.")
 (define-public musescore
   (package
     (name "musescore")
-    (version "3.6.2")
+    (version "4.0")
     (source
      (origin
        (method git-fetch)
@@ -4784,22 +4788,22 @@ includes LV2 plugins and a JACK standalone client.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0szvb6mlzy9df9lrq546rrpixa480knzij1wgh6ilflxz87q048q"))
+        (base32 "16rcwr6fzghv8100syzicabqg8jqvng3zzsi6h3ja4zkp9hcbkcr"))
        (modules '((guix build utils)))
        (snippet
-        ;; Remove unused libraries.
         '(begin
+           ;; Remove unused libraries...
            (for-each delete-file-recursively
-                     '("thirdparty/freetype"
-                       "thirdparty/openssl"
-                       "thirdparty/portmidi"
-                       "thirdparty/qt-google-analytics"))))))
+                     '("thirdparty/freetype"))
+           ;; ... and precompiled binaries.
+           (delete-file-recursively "src/diagnostics/crashpad_handler")
+           (substitute* "src/diagnostics/CMakeLists.txt"
+             (("install") "#install"))))))
     (build-system qt-build-system)
     (arguments
      `(#:configure-flags
-       `("-DBUILD_TELEMETRY_MODULE=OFF" ;don't phone home
-         "-DBUILD_WEBENGINE=OFF"
-         "-DDOWNLOAD_SOUNDFONT=OFF"
+       `("-DDOWNLOAD_SOUNDFONT=OFF"
+         "-DBUILD_DIAGNOSTICS=OFF"
          "-DMUSESCORE_BUILD_CONFIG=release"
          "-DUSE_SYSTEM_FREETYPE=ON")
        ;; There are tests, but no simple target to run.  The command used to
@@ -4811,6 +4815,8 @@ includes LV2 plugins and a JACK standalone client.")
        ;; Basically, it requires to start a whole new build process.
        ;; So we simply skip them.
        #:tests? #f))
+    (native-inputs
+     (list git-minimal pkg-config qttools-5))
     (inputs
      (list alsa-lib
            freetype
@@ -4823,15 +4829,17 @@ includes LV2 plugins and a JACK standalone client.")
            portaudio
            portmidi
            pulseaudio
+           python
            qtbase-5
            qtdeclarative-5
            qtgraphicaleffects
+           qtnetworkauth-5
+           qtquickcontrols-5
            qtquickcontrols2-5
            qtscript
            qtsvg-5
+           qtx11extras
            qtxmlpatterns))
-    (native-inputs
-     (list pkg-config qttools-5))
     (synopsis "Music composition and notation software")
     (description
      "MuseScore is a music score typesetter.  Its main purpose is the creation
@@ -4846,7 +4854,7 @@ appearance and layout are provided.
 MuseScore can also play back scores through the built-in sequencer and SoundFont
 sample library.")
     (home-page "https://musescore.org")
-    (license license:gpl2)))
+    (license license:gpl3)))
 
 (define-public muse-sequencer
   (package
@@ -5010,7 +5018,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "22.06")
+    (version "22.12")
     (source
      (origin
        (method url-fetch)
@@ -5018,61 +5026,62 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.bz2"))
        (sha256
-        (base32 "1nzs6g8g36g37zi8dl7gznc77596418g6rzm9a5vxcgbam8q494h"))))
+        (base32 "061xy3flmj7bllibkp5wzdycvghfxvyzdr9g9yrr5q3m70a7wznz"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DCMAKE_BUILD_TYPE=Release")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-tests
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("BUILD_TESTING OFF") "BUILD_TESTING ON")
-               ;; Make tests work.
-               ((" -fvisibility=hidden") ""))))
-         (add-after 'unpack 'fix-references
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "src/gui/general/ProjectPackager.cpp"
-               (("\"flac\\>")
-                (string-append "\"" (assoc-ref inputs "flac") "/bin/flac"))
-               (("\"wavpack\\>")
-                (string-append "\"" (assoc-ref inputs "wavpack") "/bin/wavpack"))
-               (("\"wvunpack\\>")
-                (string-append "\"" (assoc-ref inputs "wavpack") "/bin/wvunpack"))
-               (("\"bash\\>")
-                (string-append "\"" (assoc-ref inputs "bash") "/bin/bash"))
-               (("\"tar\\>")
-                (string-append "\"" (assoc-ref inputs "tar") "/bin/tar")))
-             (substitute* "src/gui/general/LilyPondProcessor.cpp"
-               (("\"convert-ly\\>")
-                (string-append "\"" (assoc-ref inputs "lilypond") "/bin/convert-ly"))
-               (("\"lilypond\\>")
-                (string-append "\"" (assoc-ref inputs "lilypond") "/bin/lilypond")))))
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             ;; Prevent Last-Modified from being written.
-             ;; The "*.qm" files that are used in locale.qrc would have a new
-             ;; mtime otherwise that is written into qrc_locale.cpp in the
-             ;; end - except when we disable it.
-             (substitute* "src/CMakeLists.txt"
-               (("COMMAND [$][{]QT_RCC_EXECUTABLE[}]")
-                "COMMAND ${QT_RCC_EXECUTABLE} --format-version 1")
-               ;; Extraneous.
-               ;;(("qt5_add_resources[(]rg_SOURCES ../data/data.qrc[)]")
-               ;; "qt5_add_resources(rg_SOURCES ../data/data.qrc OPTIONS --format-version 1)")
-               )
-             ;; Make hashtable traversal order predicable.
-             (setenv "QT_RCC_TEST" "1"))) ; important
-         (add-before 'check 'prepare-check
-           (lambda _
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             ;; Tests create files in $HOME/.local/share/rosegarden .
-             (mkdir-p "/tmp/foo")
-             (setenv "HOME" "/tmp/foo")
-             (setenv "XDG_RUNTIME_DIR" "/tmp/foo"))))))
+     (list
+      #:configure-flags #~(list "-DCMAKE_BUILD_TYPE=Release")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-tests
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("BUILD_TESTING OFF") "BUILD_TESTING ON")
+                ;; Make tests work.
+                ((" -fvisibility=hidden") ""))))
+          (add-after 'unpack 'fix-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/gui/general/ProjectPackager.cpp"
+                (("\"flac\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/flac")))
+                (("\"wavpack\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/wavpack")))
+                (("\"wvunpack\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/wvunpack")))
+                (("\"bash\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/bash")))
+                (("\"tar\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/tar"))))
+              (substitute* "src/gui/general/LilyPondProcessor.cpp"
+                (("\"convert-ly\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/convert-ly")))
+                (("\"lilypond\\>")
+                 (string-append "\"" (search-input-file inputs "/bin/lilypond"))))))
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              ;; Prevent Last-Modified from being written.
+              ;; The "*.qm" files that are used in locale.qrc would have a new
+              ;; mtime otherwise that is written into qrc_locale.cpp in the
+              ;; end - except when we disable it.
+              (substitute* "src/CMakeLists.txt"
+                (("COMMAND [$][{]QT_RCC_EXECUTABLE[}]")
+                 "COMMAND ${QT_RCC_EXECUTABLE} --format-version 1")
+                ;; Extraneous.
+                ;;(("qt5_add_resources[(]rg_SOURCES ../data/data.qrc[)]")
+                ;; "qt5_add_resources(rg_SOURCES ../data/data.qrc OPTIONS --format-version 1)")
+                )
+              ;; Make hashtable traversal order predicable.
+              (setenv "QT_RCC_TEST" "1"))) ; important
+          (add-before 'check 'prepare-check
+            (lambda _
+              (setenv "QT_QPA_PLATFORM" "offscreen")
+              ;; Tests create files in $HOME/.local/share/rosegarden .
+              (mkdir-p "/tmp/foo")
+              (setenv "HOME" "/tmp/foo")
+              (setenv "XDG_RUNTIME_DIR" "/tmp/foo"))))))
     (inputs
      (list alsa-lib
-           bash
+           bash-minimal
            dssi
            flac
            fftwf
@@ -5083,12 +5092,13 @@ specification and header.")
            lilypond
            lrdf
            qtbase-5
+           shared-mime-info
            tar
            lirc
            wavpack
            zlib))
     (native-inputs
-     (list pkg-config qttools-5))           ;for qtlinguist
+     (list pkg-config qttools-5))       ;for qtlinguist
     (synopsis "Music composition and editing environment based around a MIDI
 sequencer")
     (description "Rosegarden is a music composition and editing environment
@@ -6806,7 +6816,7 @@ choice.")
      (list alsa-lib
            boost
            curl
-           ffmpeg
+           ffmpeg-4
            lame
            libev
            libmicrohttpd

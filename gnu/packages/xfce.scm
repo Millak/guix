@@ -1146,7 +1146,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
 (define-public ristretto
   (package
     (name "ristretto")
-    (version "0.12.3")
+    (version "0.12.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/ristretto/"
@@ -1154,7 +1154,7 @@ inhibit interface which allows applications to prevent automatic sleep.")
                                   "ristretto-" version ".tar.bz2"))
               (sha256
                (base32
-                "0gizrn49ayamb1sqfxi3mdxas9dz4dw1sv3iyji718az48hp13w6"))))
+                "0c3rx02bk74fip7ishdxnbn0l9f48qbiglckzclz7v758fbmq074"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool desktop-file-utils
@@ -1174,7 +1174,7 @@ the desktop wallpaper.")
 (define-public xfce4-taskmanager
   (package
     (name "xfce4-taskmanager")
-    (version "1.4.2")
+    (version "1.5.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1182,7 +1182,7 @@ the desktop wallpaper.")
                                   "xfce4-taskmanager-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ya81si7xhqqbbc9lfcjg2i1pi1qdfw1pnjry7kf95f1w50244nd"))))
+                "1rcaalqv6sdsnc6ick8fifgkqcf2xiflw9yk5szqn2qs4jx02kzn"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -1190,6 +1190,7 @@ the desktop wallpaper.")
      (list libwnck
            libxmu
            gtk+
+           libxfce4ui
            ;; FIXME: Remove libxext and libxt when libxmu propagates them.
            libxext
            libxt))
@@ -1233,7 +1234,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.6.4")
+    (version "0.6.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1241,7 +1242,7 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "1xi0j4qk8hhcd3xj4wvzs170n2010z0bv8w1mm53g5gqj7q7ikhf"))))
+                "0425pfp0y17daw77q39vi48lkw3j5yj4724i3hin1rq5k7j30wav"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))

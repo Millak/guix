@@ -81,6 +81,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
+  #:use-module (gnu packages serialization)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -235,6 +236,23 @@ a focus on simplicity and productivity.")
        (sha256
         (base32
          "06ipqz45qcs0y1273gk2gwslxwd7jgighz3mzbddzg16k29n3qaf"))))))
+
+(define-public ruby-3.2
+  (package
+    (inherit ruby-3.1)
+    (version "3.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://cache.ruby-lang.org/pub/ruby/"
+                           (version-major+minor version)
+                           "/ruby-" version ".tar.xz"))
+       (sha256
+        (base32
+         "1d18ifvdbf21cncpany948vc2gjw3qa36ck9b4i97pg60rrmgx6j"))))
+    (inputs
+     (modify-inputs (package-inputs ruby-3.1)
+       (prepend libyaml)))))
 
 (define-public ruby ruby-2.7)
 

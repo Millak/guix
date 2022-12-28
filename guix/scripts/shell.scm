@@ -20,7 +20,8 @@
   #:use-module (guix ui)
   #:use-module ((guix diagnostics) #:select (location))
   #:use-module (guix scripts environment)
-  #:autoload   (guix scripts build) (show-build-options-help)
+  #:autoload   (guix scripts build) (show-build-options-help
+                                     show-native-build-options-help)
   #:autoload   (guix transformations) (options->transformation
                                        transformation-option-key?
                                        show-transformation-options-help)
@@ -75,6 +76,8 @@ interactive shell in that environment.\n"))
   (show-environment-options-help)
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)

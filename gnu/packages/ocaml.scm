@@ -185,6 +185,67 @@ OCaml and can effectively bootstrap OCaml 4.07.
 This package produces a native @command{ocamlc} and a bytecode @command{ocamllex}.")
       (license license:expat))))
 
+(define-public ocaml-5.0
+  (package
+    (name "ocaml")
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ocaml/ocaml")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1p0p8wldrnbr61wfy3x4122017g4k5gjvfwlg3mvlqn8r2fxn2m5"))))
+    (build-system gnu-build-system)
+    (native-search-paths
+     (list (search-path-specification
+            (variable "OCAMLPATH")
+            (files (list "lib/ocaml" "lib/ocaml/site-lib")))
+           (search-path-specification
+            (variable "CAML_LD_LIBRARY_PATH")
+            (files (list "lib/ocaml/site-lib/stubslibs"
+                         "lib/ocaml/site-lib/stublibs")))))
+    (native-inputs
+     (list perl pkg-config))
+    (inputs
+     (list libx11 libiberty ;needed for objdump support
+           zlib))                       ;also needed for objdump support
+    (arguments
+     `(#:configure-flags '("--enable-ocamltest")
+       #:test-target "tests"
+       #:make-flags '("world.opt")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-/bin/sh-references
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let* ((sh (search-input-file inputs "/bin/sh"))
+                    (quoted-sh (string-append "\"" sh "\"")))
+               (with-fluids ((%default-port-encoding #f))
+                 (for-each
+                  (lambda (file)
+                    (substitute* file
+                      (("\"/bin/sh\"")
+                       (begin
+                         (format (current-error-port) "\
+patch-/bin/sh-references: ~a: changing `\"/bin/sh\"' to `~a'~%"
+                                 file quoted-sh)
+                         quoted-sh))))
+                  (find-files "." "\\.ml$")))))))))
+    (home-page "https://ocaml.org/")
+    (synopsis "The OCaml programming language")
+    (description
+     "OCaml is a general purpose industrial-strength programming language with
+an emphasis on expressiveness and safety.  Developed for more than 20 years at
+Inria it benefits from one of the most advanced type systems and supports
+functional, imperative and object-oriented styles of programming.")
+    ;; The compiler is distributed under qpl1.0 with a change to choice of
+    ;; law: the license is governed by the laws of France.  The library is
+    ;; distributed under lgpl2.0.
+    (license (list license:qpl license:lgpl2.0))))
+
+
 (define-public ocaml-4.14
   (package
     (name "ocaml")
@@ -880,7 +941,7 @@ name = Guix Builder")
          ("ocaml-cppo" ,ocaml-cppo)
 
          ;; For tests.
-         ("git" ,git-minimal)
+         ("git" ,git-minimal/fixed)
          ("openssl" ,openssl)
          ("python" ,python-wrapper)
          ("rsync" ,rsync)
@@ -901,10 +962,12 @@ name = Guix Builder")
          ("opam-repo-f372039d" ,(opam-repo "f372039db86a970ef3e662adbfe0d4f5cd980701"
                                            "0ld7fcry6ss6fmrpswvr6bikgx299w97h0gwrjjh7kd7rydsjdws")))))
     (inputs
-     (list ocaml ncurses curl bubblewrap))
-    (propagated-inputs
-     (list ocaml-cmdliner ocaml-dose3 ocaml-mccs ocaml-opam-file-format
-           ocaml-re))
+     (list ocaml ncurses curl bubblewrap ocaml-cmdliner ocaml-dose3
+           ocaml-mccs ocaml-opam-file-format ocaml-re))
+    (properties
+     ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
+     ;; compiled opam until opam is compatible with OCaml 5.0.
+     `((ocaml5.0-variant . ,(delay opam))))
     (home-page "http://opam.ocamlpro.com/")
     (synopsis "Package manager for OCaml")
     (description
@@ -1343,14 +1406,14 @@ to the other.")
 (define-public ocaml-findlib
   (package
     (name "ocaml-findlib")
-    (version "1.9.3")
+    (version "1.9.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.camlcity.org/download/"
                                   "findlib" "-" version ".tar.gz"))
               (sha256
                (base32
-                "0hfcwamcvinmww59b5i4yxbf0kxyzkp5qv3d1c7ybn9q52vgq463"))))
+                "0w9578j1561f5gi51sn2jgxm3kh3sn88cpannhdkqcdg1kk08iqd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list m4 ocaml))
@@ -1404,6 +1467,13 @@ compilers that can directly deal with packages.")
     (name "ocaml4.09-findlib")
     (native-inputs
      (list m4 ocaml-4.09))))
+
+(define-public ocaml5.0-findlib
+  (package
+    (inherit ocaml-findlib)
+    (name "ocaml5.0-findlib")
+    (native-inputs
+     (list m4 ocaml-5.0))))
 
 (define-public ocaml-ounit2
   (package
@@ -1618,7 +1688,7 @@ archive(native) = \"frontc.cmxa\""))))
 (define-public ocaml-qcheck
   (package
     (name "ocaml-qcheck")
-    (version "0.18.1")
+    (version "0.20")
     (source
      (origin
        (method git-fetch)
@@ -1627,12 +1697,12 @@ archive(native) = \"frontc.cmxa\""))))
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g3r8lrw6fsdphgpnp08saxyxk1vd3chpmb564ir2qnsp716vz6z"))))
+        (base32 "1r0m5p1dd06lbgfxqdpl1ya4vb8252z7hqkvdi9k444g4rx2ay3p"))))
     (build-system dune-build-system)
     (arguments
      `(#:test-target "."))
     (propagated-inputs
-     (list ocaml-alcotest ocaml-ounit))
+     (list ocaml-alcotest ocaml-ounit ocaml-ppxlib))
     (native-inputs
      (list ocamlbuild))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-qcheck))))
@@ -1752,6 +1822,9 @@ following a very simple s-expression syntax.")
 (define ocaml4.09-dune-bootstrap
   (package-with-ocaml4.09 dune-bootstrap))
 
+(define ocaml5.0-dune-bootstrap
+  (package-with-ocaml5.0 dune-bootstrap))
+
 (define-public dune-configurator
   (package
     (inherit dune-bootstrap)
@@ -1772,7 +1845,8 @@ following a very simple s-expression syntax.")
              (delete-file-recursively "vendor/pp"))))))
     (propagated-inputs
      (list ocaml-csexp))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-dune-configurator))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune-configurator))))
     (synopsis "Dune helper library for gathering system configuration")
     (description "Dune-configurator is a small library that helps writing
 OCaml scripts that test features available on the system, in order to generate
@@ -1797,13 +1871,25 @@ config.h files for instance.  Among other things, dune-configurator allows one t
     (propagated-inputs
      `(("ocaml-csexp" ,ocaml4.09-csexp)))))
 
+(define-public ocaml5.0-dune-configurator
+  (package
+    (inherit dune-configurator)
+    (name "ocaml5.0-dune-configurator")
+    (arguments
+     `(,@(package-arguments dune-configurator)
+       #:dune ,ocaml5.0-dune-bootstrap
+       #:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib))
+    (propagated-inputs (list ocaml5.0-csexp))))
+
 (define-public dune
   (package
     (inherit dune-bootstrap)
     (propagated-inputs
      (list dune-configurator))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-dune))
-                  (ocaml4.09-variant . ,(delay ocaml4.09-dune))))))
+                  (ocaml4.09-variant . ,(delay ocaml4.09-dune))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-dune))))))
 
 (define-public ocaml4.09-dune
   (package
@@ -1824,6 +1910,12 @@ config.h files for instance.  Among other things, dune-configurator allows one t
               (sha256
                (base32
                 "0l4x0x2fz135pljv88zj8y6w1ninsqw0gn1mdxzprd6wbxbyn8wr"))))))
+
+(define-public ocaml5.0-dune
+  (package
+    (inherit ocaml5.0-dune-bootstrap)
+    (propagated-inputs
+     (list ocaml5.0-dune-configurator))))
 
 (define-public ocaml-csexp
   (package
@@ -1850,7 +1942,8 @@ config.h files for instance.  Among other things, dune-configurator allows one t
              #t)))))
     (propagated-inputs
      (list ocaml-result))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-csexp))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-csexp))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-csexp))))
     (home-page "https://github.com/ocaml-dune/csexp")
     (synopsis "Parsing and printing of S-expressions in Canonical form")
     (description "This library provides minimal support for Canonical
@@ -1878,6 +1971,18 @@ module of this library is parameterised by the type of S-expressions.")
            ((#:dune _) ocaml4.09-dune-bootstrap))))
     (propagated-inputs
      `(("ocaml-result" ,ocaml4.09-result)))))
+
+(define-public ocaml5.0-csexp
+  (package
+    (inherit ocaml-csexp)
+    (name "ocaml5.0-csexp")
+    (arguments
+     `(#:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib
+       ,@(substitute-keyword-arguments (package-arguments ocaml-csexp)
+           ((#:dune _) ocaml5.0-dune-bootstrap))))
+    (propagated-inputs
+     `(("ocaml-result" ,ocaml5.0-result)))))
 
 (define-public ocaml-migrate-parsetree
   (package
@@ -2064,7 +2169,8 @@ bitsrings in Erlang style as primitives to the language.")))
     (arguments
      `(#:test-target "."
        #:dune ,dune-bootstrap))
-    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-result))))
+    (properties `((ocaml4.09-variant . ,(delay ocaml4.09-result))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-result))))
     (home-page "https://github.com/janestreet/result")
     (synopsis "Compatibility Result module")
     (description "Uses the new result type defined in OCaml >= 4.03 while
@@ -2081,6 +2187,16 @@ defined in this library.")
        #:dune ,ocaml4.09-dune-bootstrap
        #:ocaml ,ocaml-4.09
        #:findlib ,ocaml4.09-findlib))))
+
+(define-public ocaml5.0-result
+  (package
+    (inherit ocaml-result)
+    (name "ocaml5.0-result")
+    (arguments
+     `(#:test-target "."
+       #:dune ,ocaml5.0-dune-bootstrap
+       #:ocaml ,ocaml-5.0
+       #:findlib ,ocaml5.0-findlib))))
  
 (define-public ocaml-topkg
   (package
@@ -2607,6 +2723,207 @@ for mapping files in memory.  This function is the same as the
 @command{Unix.map_file} function added in OCaml >= 4.06.")
     (license (list license:qpl license:lgpl2.0))))
 
+(define-public ocaml-psq
+  (package
+    (name "ocaml-psq")
+    (version "0.2.1")
+    (home-page "https://github.com/pqwy/psq")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "0ahxbzkbq5sw8sqv31c2lil2zny4076q8b0dc7h5slq7i2r23d79"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-qcheck ocaml-alcotest))
+    (synopsis "Functional Priority Search Queues for OCaml")
+    (description
+     "This library provides Functional Priority Search Queues for OCaml.
+Typical applications are searches, schedulers and caches.")
+    (license license:isc)))
+
+(define-public ocaml-optint
+  (package
+    (name "ocaml-optint")
+    (version "0.3.0")
+    (home-page "https://github.com/mirage/optint")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "1qj32bcw1in7s6raxdvbmjr3lvj99iwv98x1ar9cwxp4zf8ybfss"))))
+    (build-system dune-build-system)
+    (arguments `(#:test-target "."))
+    (native-inputs (list ocaml-crowbar ocaml-monolith ocaml-fmt))
+    (synopsis "Efficient integer types on 64-bit architectures for OCaml")
+    (description
+     "This OCaml library provides two new integer types, @code{Optint.t} and
+@code{Int63.t}, which guarantee efficient representation on 64-bit
+architectures and provide a best-effort boxed representation on 32-bit
+architectures.")
+    (license license:isc)))
+
+(define-public ocaml-hmap
+  (package
+    (name "ocaml-hmap")
+    (version "0.8.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri "https://erratique.ch/software/hmap/releases/hmap-0.8.1.tbz")
+       (sha256
+    (base32 "10xyjy4ab87z7jnghy0wnla9wrmazgyhdwhr4hdmxxdn28dxn03a"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:build-flags
+       (list "build" "--tests" "true")
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (native-inputs (list ocaml-topkg ocamlbuild opam))
+    (home-page "https://erratique.ch/software/hmap")
+    (synopsis "Heterogeneous value maps for OCaml")
+    (description
+     "Hmap provides heterogeneous value maps for OCaml.  These maps bind keys to
+values with arbitrary types.  Keys witness the type of the value they are bound
+to which allows adding and looking up bindings in a type safe manner.")
+    (license license:isc)))
+
+(define ocaml-eio
+  (package
+    (name "ocaml-eio")
+    (version "0.7")
+    (home-page "https://github.com/ocaml-multicore/eio")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url home-page)
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256 (base32
+                "118raxdwv6pn5b152ffdhmwdi0l4wlwflcj2nmckfmm7v1z2fq4s"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "eio"
+                 #:test-target "."))
+    (propagated-inputs (list ocaml-bigstringaf
+                             ocaml-cstruct
+                             ocaml-lwt
+                             ocaml-lwt-dllist
+                             ocaml-logs
+                             ocaml-optint
+                             ocaml-psq
+                             ocaml-fmt
+                             ocaml-hmap
+                             ocaml-mtime
+                             ocaml-odoc))
+    (native-inputs (list ocaml-astring ocaml-crowbar ocaml-alcotest))
+    (synopsis "Effect-based direct-style IO API for OCaml")
+    (description "This package provides an effect-based IO API for multicore
+OCaml with fibers.")
+    (license license:isc)))
+
+(define-public ocaml5.0-eio
+  (package-with-ocaml5.0 ocaml-eio))
+
+(define ocaml-eio-luv
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-luv")
+    (arguments `(#:package "eio_luv"
+                 #:test-target "."))
+    (propagated-inputs (list ocaml-eio ocaml-luv))
+    (native-inputs (list ocaml-mdx))
+    (synopsis "Libuv-based backend for Ocaml Eio")
+    (description "@code{Eio_luv} provides a cross-platform backend for
+@code{Ocaml Eio}'s APIs using luv (libuv)")))
+
+(define-public ocaml5.0-eio-luv
+  (package-with-ocaml5.0 ocaml-eio-luv))
+
+(define-public ocaml-uring
+  (package
+    (name "ocaml-uring")
+    (version "0.4")
+    (home-page "https://github.com/ocaml-multicore/ocaml-uring")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256 (base32
+                 "0k70y7nb2wrk2yql0pwnrhsp1x7k9ld4gd8iihbv6r34kcm3a5m1"))))
+    (build-system dune-build-system)
+    (arguments `(#:test-target "."))
+    (propagated-inputs
+     (list ocaml-cstruct
+           ocaml-fmt
+           ocaml-optint))
+    (native-inputs
+     (list ocaml-lwt
+           ocaml-bechamel
+           ocaml-logs
+           ocaml-cmdliner
+           ocaml-mdx))
+    (synopsis "OCaml bindings for Linux io_uring")
+    (description "This package provides OCaml bindings to the Linux
+@code{io_uring} kernel IO interfaces.")
+    (license
+     (list license:isc license:expat))))
+
+(define ocaml-eio-linux
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-linux")
+    (arguments `(#:package "eio_linux"
+                 #:test-target "."))
+    (propagated-inputs
+     (list ocaml-eio
+           ocaml-uring
+           ocaml-logs
+           ocaml-fmt))
+    (native-inputs
+     (list ocaml-mdx
+           ocaml-alcotest
+           ocaml-mdx))
+    (synopsis "Linux backend for ocaml-eio")
+    (description "@code{Eio_linux} provides a Linux io-uring backend for
+@code{Ocaml Eio} APIs, plus a low-level API that can be used directly
+(in non-portable code).")))
+
+(define-public ocaml5.0-eio-linux
+  (package-with-ocaml5.0 ocaml-eio-linux))
+
+(define ocaml-eio-main
+  (package
+    (inherit ocaml-eio)
+    (name "ocaml-eio-main")
+    (arguments `(#:package "eio_main"
+                 #:test-target "."
+                 ;; tests require network
+                 #:tests? #f))
+    (propagated-inputs
+     (list ocaml-eio
+           ocaml-eio-luv
+           ocaml-eio-linux))
+    (native-inputs
+     (list ocaml-mdx))
+    (synopsis "Eio backend selector")
+    (description "@code{Eio_main} selects an appropriate backend (e.g.
+@samp{eio_linux} or @samp{eio_luv}), depending on your platform.")))
+
+(define-public ocaml5.0-eio-main
+  (package-with-ocaml5.0 ocaml-eio-main))
+
 (define-public ocaml-lwt
   (package
     (name "ocaml-lwt")
@@ -2636,6 +2953,27 @@ make it easy to run normally-blocking I/O operations concurrently in a single
 process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
+
+(define-public ocaml-lwt-dllist
+  (package
+    (name "ocaml-lwt-dllist")
+    (version "1.0.1")
+    (home-page "https://github.com/mirage/lwt-dllist")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18bi8fb4yly1pyf43pjvvdhlyzb3wkgxifffx9d1g9y2mwsng6jw"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-lwt))
+    (synopsis "OCaml library providing mutable doubly-linked list with Lwt iterators")
+    (description "This OCaml library provides an implementation of a mutable
+doubly-linked list with Lwt iterators.")
+    (license license:expat)))
 
 (define-public ocaml-luv
   (package
@@ -3399,6 +3737,30 @@ many additional enhancements, including:
 your functions and to easily compare the results.  A statistical test
 is used to determine whether the results truly differ.")
     (license license:lgpl3+)))
+
+(define-public ocaml-bechamel
+  (package
+    (name "ocaml-bechamel")
+    (version "0.3.0")
+    (home-page "https://github.com/mirage/bechamel")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url home-page)
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1x7sf45iy5dzx7kknbkkvpna42rcwpj5p55y0nqsg2fb4srj0b1q"))))
+    (build-system dune-build-system)
+    (arguments `(#:package "bechamel"))
+    (propagated-inputs (list ocaml-fmt ocaml-stdlib-shims))
+    (synopsis "Yet Another Benchmark in OCaml")
+    (description
+     "BEnchmark for a CHAMEL/camel/caml which is agnostic to the system.  It's a
+micro-benchmark tool for OCaml which lets the user to re-analyzes and prints
+samples.")
+    (license license:expat)))
 
 (define-public ocaml-batteries
   (package
@@ -4590,6 +4952,7 @@ long and size_t whose sizes depend on the host platform.")
       ("integers" ,ocaml-integers)))
    (inputs
     (list libffi))
+   (properties `((ocaml5.0-variant . ,(delay ocaml5.0-ctypes))))
    (synopsis "Library for binding to C libraries using pure OCaml")
    (description "Ctypes is a library for binding to C libraries using pure
 OCaml.  The primary aim is to make writing C extensions as straightforward as
@@ -4599,6 +4962,33 @@ functions.  You can use these combinators to describe the types of the
 functions that you want to call, then bind directly to those functions -- all
 without writing or generating any C!")
    (license license:expat)))
+
+(define-public ocaml5.0-ctypes
+  ;; Contains fix to support OCaml 5.0
+  ;; (https://github.com/ocamllabs/ocaml-ctypes/pull/709)
+  (let ((commit "52ff621f47dbc1ee5a90c30af0ae0474549946b4")
+        (revision "0"))
+    (package-with-ocaml5.0
+     (package
+       (inherit ocaml-ctypes)
+       (name "ocaml-ctypes")
+       (version (git-version "0.20.1" revision commit))
+       (home-page "https://github.com/ocamllabs/ocaml-ctypes")
+       (arguments
+        (append
+         ;; Some tests fail. Failure seems to be due to OCaml 5.0.
+         `(#:tests? #f)
+         (package-arguments ocaml-ctypes)))
+       (source (origin
+                 (method git-fetch)
+                 (uri (git-reference
+                       (url home-page)
+                       (commit commit)))
+                 (file-name (git-file-name name version))
+                 (sha256
+                  (base32
+                   "0vyiryqchz0mdfhal7bdivqsk5yhvzzckrqv495rlpbdxzklcp7g"))))
+       (properties '())))))
 
 (define-public ocaml-ocb-stubblr
   (package
@@ -4979,7 +5369,7 @@ serializers and deserializers from type definitions.")
 (define-public ocaml-merlin-lib
   (package
     (name "ocaml-merlin-lib")
-    (version "4.6-414")
+    (version "4.7-414")
     (source
      (origin
        (method git-fetch)
@@ -4989,16 +5379,38 @@ serializers and deserializers from type definitions.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1cpa9x45w54l4mqqmc8z3s5gscggw37gb6z9i7wwss86fj1wgclh"))))
+         "1bd4j2zq0lyszbkibgky1z9swv4scb7ljww3fv1kqy0cya743b5l"))))
     (build-system dune-build-system)
     (arguments '(#:package "merlin-lib"
                  #:tests? #f))          ; no tests
     (propagated-inputs (list ocaml-csexp ocaml-menhir))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-merlin-lib))))
     (home-page "https://ocaml.github.io/merlin/")
     (synopsis "Merlin libraries")
     (description "These libraries provides access to low-level compiler
 interfaces and the standard higher-level merlin protocol.")
     (license license:expat)))
+
+;; the 500 indicates that this version is for OCaml 5.0
+(define ocaml-merlin-lib-500
+  (package
+    (inherit ocaml-merlin-lib)
+    (name "ocaml-merlin-lib")
+    (version "4.7.1-500")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ocaml/merlin")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "05a87i2dkzv800nwb6y7b2j45avg8gs3gzb5a98wrj1i5zjqwh01"))))
+    (properties '())))
+
+(define-public ocaml5.0-merlin-lib
+  (package-with-ocaml5.0 ocaml-merlin-lib-500))
 
 (define-public ocaml-dot-merlin-reader
   (package
@@ -5007,9 +5419,22 @@ interfaces and the standard higher-level merlin protocol.")
     (arguments '(#:package "dot-merlin-reader"
                  #:tests? #f))          ; no tests
     (propagated-inputs (list ocaml-merlin-lib))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-dot-merlin-reader))))
     (synopsis "Reads config files for @code{ocaml-merlin}")
     (description "@code{ocaml-dot-merlin-reader} is an external reader for
 @code{ocaml-merlin} configurations.")))
+
+(define-public ocaml5.0-dot-merlin-reader
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-merlin-lib-500)
+     (name "ocaml-dot-merlin-reader")
+     (arguments '(#:package "dot-merlin-reader"
+                  #:tests? #f))         ; no tests
+     (propagated-inputs (list ocaml5.0-merlin-lib))
+     (synopsis "Reads config files for @code{ocaml-merlin}")
+     (description "@code{ocaml-dot-merlin-reader} is an external reader for
+@code{ocaml-merlin} configurations."))))
 
 (define-public ocaml-merlin
   (package
@@ -5024,15 +5449,44 @@ interfaces and the standard higher-level merlin protocol.")
              (when tests?
                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-merlin))))
     (native-inputs
      (list ocaml-dot-merlin-reader ; required for tests
-           ocaml-mdx jq))
+           ocaml-ppxlib
+           ocaml-mdx
+           jq))
     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
     (description "Merlin is an editor service that provides modern IDE
 features for OCaml.  Emacs and Vim support is provided out-of-the-box.
 External contributors added support for Visual Studio Code, Sublime Text and
 Atom.")
     (license license:expat)))
+
+(define-public ocaml5.0-merlin
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-merlin-lib-500)
+     (name "ocaml-merlin")
+     (arguments
+      '(#:package "merlin"
+        #:phases
+        (modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "dune" "runtest" "-p" "merlin,dot-merlin-reader")))))))
+     (propagated-inputs (list ocaml-merlin-lib ocaml-yojson))
+     (native-inputs
+      (list ocaml-dot-merlin-reader     ; required for tests
+            ocaml-ppxlib
+            ocaml-mdx
+            jq))
+     (synopsis "Context sensitive completion for OCaml in Vim and Emacs")
+     (description "Merlin is an editor service that provides modern IDE
+features for OCaml.  Emacs and Vim support is provided out-of-the-box.
+External contributors added support for Visual Studio Code, Sublime Text and
+Atom.")
+     (license license:expat))))
 
 (define-public ocaml-gsl
   (package
@@ -5298,7 +5752,8 @@ functionality for parsing and pretty-printing s-expressions.")
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-sexplib0))
-    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-base))))
+    (properties `((ocaml4.07-variant . ,(delay ocaml4.07-base))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-base))))
     (synopsis
      "Full standard library replacement for OCaml")
     (description
@@ -5312,6 +5767,28 @@ features such as I/O are not offered by Base.  They are instead
 provided by companion libraries such as
 @url{https://github.com/janestreet/stdio, ocaml-stdio}.")
     (license license:expat)))
+
+(define-public ocaml5.0-base
+  ;; This version contains fixes for OCaml 5.0
+  ;; (see https://github.com/ocaml/opam-repository/pull/21851)
+  (let ((commit "423dbad212f55506767d758b1ceb2d6e0ee8e7f5")
+        (revision "0"))
+   (package-with-ocaml5.0
+    (package
+      (inherit ocaml-base)
+      (name "ocaml-base")
+      (version (git-version "0.15.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kit-ty-kate/base")
+               (commit commit)))
+         (file-name (git-file-name "ocaml5.0-base" version))
+         (sha256
+          (base32
+           "15vsiv3q53l1bzrvqgspf3lp2104s9dzw62z3nl75f53jvjvsyf6"))))
+      (properties '())))))
 
 (define-public ocaml4.07-base
   (package-with-ocaml4.07
@@ -5465,7 +5942,7 @@ as part of the same ocaml-migrate-parsetree driver.")
 (define-public ocaml-ppxlib
   (package
     (name "ocaml-ppxlib")
-    (version "0.25.0")
+    (version "0.25.1")
     (home-page "https://github.com/ocaml-ppx/ppxlib")
     (source
      (origin
@@ -5476,7 +5953,7 @@ as part of the same ocaml-migrate-parsetree driver.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wlqvyqy9ccp7z981blv42aqwq7zfq93cakbahjyy48hiiir6vp2"))))
+         "1402fzv5mg5grf3hb82fqsdkzxk07yfp9hvjh33dzjwjsqfhx3wi"))))
     (build-system dune-build-system)
     (arguments
      `(#:phases
@@ -6545,7 +7022,8 @@ useful errors on failure.")
            ocaml-migrate-parsetree
            ocaml-re))
     (properties `((upstream-name . "ppx_expect")
-                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))))
+                  (ocaml4.07-variant . ,(delay ocaml4.07-ppx-expect))
+                  (ocaml5.0-variant . ,(delay ocaml5.0-ppx-expect))))
     (home-page "https://github.com/janestreet/ppx_expect")
     (synopsis "Cram like framework for OCaml")
     (description "Expect-test is a framework for writing tests in OCaml, similar
@@ -6554,6 +7032,28 @@ to Cram.  Expect-tests mimics the existing inline tests framework with the
 output-generating code, interleaved with @code{%expect} extension expressions
 to denote the expected output.")
     (license license:asl2.0)))
+
+(define-public ocaml5.0-ppx-expect
+  ;; Contains fixes for OCaml 5.0
+  ;; (https://github.com/janestreet/ppx_expect/pull/39/).
+  (let ((commit "83edfc1ee779e8dcdd975e26715c2e688326befa")
+        (revision "0"))
+    (package-with-ocaml5.0
+     (package
+       (inherit ocaml-ppx-expect)
+       (name "ocaml-ppx-expect")
+       (version (git-version "0.15.0" revision commit))
+       (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                (url "https://github.com/janestreet/ppx_expect")
+                (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32
+            "05r7wlmrhb5biwyw6bjcpmr77srglijcbf7nm7h2hiil0d0i7bkz"))))
+       (properties '())))))
 
 (define-public ocaml4.07-ppx-expect
   (package-with-ocaml4.07
@@ -7573,9 +8073,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
 (define-public ocaml-odoc
   (package
     (name "ocaml-odoc")
-    ;; 2.2.0-alpha contains fixes for Dune 3.0 compatibility
-    ;; (https://github.com/ocaml/odoc/commit/6ac97f3148f7791ec7451785ef4dbd9ca0daf2d1)
-    (version "2.2.0-alpha")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -7584,7 +8082,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07zjkk455l51i29lcayzrc1q8j5bvbv97sscv8yhcj7x6h6q2nag"))))
+        (base32 "19mww1lyrdi705aw3lwql6xc7p11fcq5gprmhyxpb4x80gnvlzrh"))))
     (build-system dune-build-system)
     (arguments
      `(#:tests? #f; not compatible with current version of ocaml-yojson
@@ -7836,7 +8334,7 @@ variants.")
                (("`") "'")
                (("COMMAND") "[COMMAND]")
                (("\\.\\.\\.") "…")))))))
-    (inputs
+    (propagated-inputs
      (list ocaml-fmt
            ocaml-astring
            ocaml-logs
@@ -8205,7 +8703,8 @@ defined in OCaml 4.12.0.")
             ocaml-uuseg
             ocaml-uutf))
     (native-inputs
-      (list git-minimal ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
+      (list git-minimal/fixed                     ;for tests
+            ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
     (home-page "https://github.com/ocaml-ppx/ocamlformat")
     (synopsis "Auto-formatter for OCaml code")
     (description "OCamlFormat is a tool to automatically format OCaml code in
@@ -8527,6 +9026,31 @@ Using this package, you can run afl-fuzz in ``persistent mode'', which avoids
 repeated forking and is much faster.")
     (license license:expat)))
 
+(define-public ocaml-monolith
+  (package
+    (name "ocaml-monolith")
+    (version "20210525")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://gitlab.inria.fr/fpottier/monolith")
+              (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1b6jj4ivl9ni8kba7wls4xsqdy8nm7q9mnx9347jvb99dmmlj5mc"))))
+    (build-system dune-build-system)
+    (arguments `(#:test-target "."))
+    (propagated-inputs (list ocaml-afl-persistent ocaml-pprint ocaml-seq))
+    (home-page "https://gitlab.inria.fr/fpottier/monolith")
+    (synopsis "Framework for testing an OCaml library using afl-fuzz")
+    (description "Monolith offers facilities for testing an OCaml library (for
+instance, a data structure implementation) by comparing it against a reference
+implementation.  It can be used to perform either random testing or fuzz
+testing by using the @code{afl-fuzz} tool.")
+    (license license:lgpl3+)))
+
 (define-public ocaml-pprint
   (package
     (name "ocaml-pprint")
@@ -8581,11 +9105,20 @@ document and by the text width.")
            ocaml-uunf
            ocaml-uutf
            ocaml-pprint))
+    (properties `((ocaml5.0-variant . ,(delay ocaml5.0-crowbar))))
     (synopsis "Ocaml library for tests, let a fuzzer find failing cases")
     (description "Crowbar is a library for testing code, combining
 QuickCheck-style property-based testing and the magical bug-finding powers of
 @uref{http://lcamtuf.coredump.cx/afl/, afl-fuzz}.")
     (license license:expat)))
+
+(define-public ocaml5.0-crowbar
+  (package-with-ocaml5.0
+   (package
+     (inherit ocaml-crowbar)
+     ;; Tests require ocaml-calendar which does not work with OCaml 5.0
+     (arguments `(#:tests? #f))
+     (properties '()))))
 
 (define-public ocaml-eqaf
   (package

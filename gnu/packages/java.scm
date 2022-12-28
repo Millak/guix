@@ -1761,18 +1761,18 @@ new Date();"))
 (define-public openjdk11
   (package
     (name "openjdk")
-    (version "11.0.15")
+    (version "11.0.17")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://openjdk-sources.osci.io/openjdk11/openjdk-"
                                   version "-ga.tar.xz"))
-              (file-name (string-append name "-" version ".tar.bz2"))
+              (file-name (string-append name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0di91nnms2iq1svgq72r5y17am17r4vh2lq43k0bkcwpc84d6nd8"))
+                "1prvqy0ysz0999wrhsrbz6vrknpqfihl9l74l16ph93g89dqi5ia"))
               (modules '((guix build utils)))
               (snippet
-               '(for-each delete-file (find-files "." ".*.(bin|exe|jar)$")))))
+               '(for-each delete-file (find-files "." "\\.(bin|exe|jar)$")))))
     (build-system gnu-build-system)
     (outputs '("out" "jdk" "doc"))
     (arguments
@@ -1851,8 +1851,7 @@ new Date();"))
                        (format (current-error-port)
                                "warning: failed to substitute: ~a~%"
                                file))))
-                 (find-files "."
-                             "\\.c$|\\.h$")))))
+                 (find-files "." "\\.c$|\\.h$")))))
           (add-before 'build 'write-source-revision-file
             (lambda _
               (with-output-to-file ".src-rev"
@@ -1879,7 +1878,7 @@ new Date();"))
                        ,@make-flags))))
           (replace 'install
             (lambda _
-              (let ((images (car (find-files "build" ".*-server-release"
+              (let ((images (car (find-files "build" "-server-release"
                                              #:directories? #t))))
                 (copy-recursively (string-append images "/images/jdk")
                                   #$output:jdk)
@@ -1913,7 +1912,7 @@ new Date();"))
                   (invoke "unzip" archive))
                 (delete-file archive)
                 (with-directory-excursion dir
-                  (let ((char-data-files (find-files "." "CharacterData.*")))
+                  (let ((char-data-files (find-files "." "CharacterData")))
                     (for-each (lambda (file)
                                 (substitute* file
                                   (((string-append "This file was generated "
@@ -1924,7 +1923,7 @@ new Date();"))
                                                   "file"))))
                               char-data-files)))
                 (with-directory-excursion dir
-                  (let ((files (find-files "." ".*" #:directories? #t)))
+                  (let ((files (find-files "." #:directories? #t)))
                     (apply invoke "zip" "-0" "-X" archive files))))))
           (add-after 'strip-character-data-timestamps 'remove-extraneous-files
             (lambda* (#:key outputs #:allow-other-keys)
@@ -1949,7 +1948,7 @@ new Date();"))
                               (invoke "unzip" archive))
                             (delete-file archive)
                             (for-each (compose repack-archive canonicalize-path)
-                                      (find-files dir "(ct.sym|\\.jar)$"))
+                                      (find-files dir "(ct\\.sym|\\.jar)$"))
                             (let ((reset-file-timestamp
                                    (lambda (file)
                                      (let ((s (lstat file)))
@@ -1959,7 +1958,7 @@ new Date();"))
                               (for-each reset-file-timestamp
                                         (find-files dir #:directories? #t)))
                             (with-directory-excursion dir
-                              (let ((files (find-files "." ".*" #:directories? #t)))
+                              (let ((files (find-files "." #:directories? #t)))
                                 (apply invoke "zip" "-0" "-X" archive files)))))))
                 (for-each repack-archive
                           (find-files #$output:doc "\\.zip$"))
@@ -2019,6 +2018,7 @@ new Date();"))
            libxtst))
     (native-inputs
      (list autoconf
+           bash                     ; not bash-minimal, needs ulimit
            openjdk10
            `(,openjdk10 "jdk")
            gnu-make-4.2
@@ -2100,8 +2100,8 @@ blacklisted.certs.pem"
                   "#! java BlacklistedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk13
-  (make-openjdk openjdk12 "13.0.7"
-                "0wrrr0d7lz1v8qqm752mn4gz5l2vpl2kmx4ac3ysvk4mljc924hp"))
+  (make-openjdk openjdk12 "13.0.13"
+                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"))
 
 (define-public openjdk14
   (make-openjdk
@@ -2119,8 +2119,8 @@ blacklisted.certs.pem"
 
 (define-public openjdk15
   (make-openjdk
-   openjdk14 "15.0.3"
-   "168cr08nywp0q3vyj8njkhsmmnyd8rz9r58hk4xhzdzc6bdfkl1i"
+   openjdk14 "15.0.9"
+   "1k3x06fv89l84ysjsyw8s89q8blghq85m6xjzv373x6297ln8n7a"
    (source (origin
              (inherit (package-source base))
              (modules '())
@@ -2137,13 +2137,13 @@ blacklisted.certs.pem"
       (append `(,openjdk14 "jdk"))))))
 
 (define-public openjdk16
-  (make-openjdk openjdk15 "16.0.1"
-                "1ggddsbsar4dj2fycfqqqagqil7prhb30afvq6933rz7pa9apm2f"))
+  (make-openjdk openjdk15 "16.0.2"
+                "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"))
 
 (define-public openjdk17
   (make-openjdk
-   openjdk16 "17.0.3"
-   "0slmd6ww947gxpp4yr2wmr5z975bg86qh7zqfp2radf2q77ql65b"
+   openjdk16 "17.0.5"
+   "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
@@ -2155,8 +2155,8 @@ blacklisted.certs.pem"
                  (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))))))))
 
 (define-public openjdk18
-  (make-openjdk openjdk17 "18"
-                "1bv6bdhkmwvn10l0xy8yi9xibds640hs5zsvx0jp7wrxa3qw4qy8"))
+  (make-openjdk openjdk17 "18.0.2"
+                "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
 ;;; Convenience alias to point to the latest version of OpenJDK.
 (define-public openjdk openjdk18)

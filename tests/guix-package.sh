@@ -149,11 +149,11 @@ cat > "$module_dir/foo.scm"<<EOF
   #:use-module (gnu packages base))
 
 (define-public deprecated
-  (deprecated-package "fileutils" coreutils))
+  (deprecated-package "fileutils-is-the-old-name" coreutils))
 EOF
 
 guix build -L "$module_dir" -e '(@ (foo) deprecated)' -n
-test "`guix package -L "$module_dir" -s ^fileutils$ | grep ^name:`" = ""
+test "`guix package -L "$module_dir" -s ^fileutils-is-the-old-name$ | grep ^name:`" = ""
 
 rm -rf "$module_dir"
 

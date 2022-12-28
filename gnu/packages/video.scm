@@ -167,6 +167,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages perl-check)
   #:use-module (gnu packages perl-web)
+  #:use-module (gnu packages php)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages popt)
@@ -273,7 +274,7 @@
            python-wrapper))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            freetype
            imagemagick
            lame
@@ -450,7 +451,7 @@ as a joint effort between the BBC and Fluendo.")
      (list gettext-minimal doxygen pkg-config))
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            gtk+-2
            lame
            libdv
@@ -1102,7 +1103,7 @@ H.264 (MPEG-4 AVC) video streams.")
 (define-public pipe-viewer
   (package
     (name "pipe-viewer")
-    (version "0.2.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -1112,7 +1113,7 @@ H.264 (MPEG-4 AVC) video streams.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c2v4pj86442sp71ndjmvd2bl1grp6g9ya2ywdaihq1f2djk6jxl"))))
+        (base32 "0ka5az3aq2khql9nlxnrbkbs7afmp07r2fkx5pvmh6mqnriaimq3"))))
     (build-system perl-build-system)
     (arguments
      `(#:imported-modules
@@ -1854,7 +1855,7 @@ audio/video codec library.")
                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
                (setenv "LD_LIBRARY_PATH" path)))))))))
 
-(define-public ffmpeg ffmpeg-4)
+(define-public ffmpeg ffmpeg-5)
 
 (define-public ffmpeg-for-stepmania
   (hidden-package
@@ -1901,7 +1902,7 @@ audio/video codec library.")
     (native-inputs
      (list pkg-config))
     (inputs
-     (list ffmpeg libjpeg-turbo libpng gvfs))
+     (list ffmpeg-4 libjpeg-turbo libpng gvfs))
     (arguments
      `(#:configure-flags (list "-DENABLE_GIO=ON" "-DENABLE_THUMBNAILER=ON")))
     (home-page "https://github.com/dirkvdb/ffmpegthumbnailer")
@@ -2081,7 +2082,7 @@ streaming protocols.")
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cdparanoia" ,cdparanoia)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("giflib" ,giflib)
@@ -2406,6 +2407,38 @@ To load this plugin, specify the following option when starting mpv:
     (description "libvpx is a codec for the VP8/VP9 video compression format.")
     (license license:bsd-3)
     (home-page "https://www.webmproject.org/")))
+
+(define-public orf-dl
+  (let ((commit "2dbbe7ef4e0efe0f3c1d59c503108e22d9065999")
+        (revision "1"))
+    (package
+      (name "orf-dl")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tpoechtrager/orf_dl")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1w413miy01cm7rzb5c6wwfdnc2sqv87cvxwikafgrkswpimvdjsk"))))
+      (build-system copy-build-system)
+      (arguments
+       (list #:install-plan #~`(("orf_dl.php" "bin/orf-dl"))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-source
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "orf_dl.php"
+                       (("ffmpeg")
+                        (search-input-file inputs "bin/ffmpeg"))))))))
+      (inputs (list php ffmpeg))
+      (home-page "https://github.com/tpoechtrager/orf_dl")
+      (synopsis "Download videos from tvthek.orf.at")
+      (description "This package provides a PHP-based command line application
+to download videos from Austria's national television broadcaster.")
+      (license license:gpl2+))))
 
 (define-public youtube-dl
   (package
@@ -3002,7 +3035,7 @@ capabilities.")
 (define-public vapoursynth
   (package
     (name "vapoursynth")
-    (version "53")
+    (version "61")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3011,7 +3044,7 @@ capabilities.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qcsfkpkry0cmvi60khjwvfz4fqhy23nqmn4pb9qrwll26sn9dcr"))))
+                "0v0dp3hydqzam0dp2d9zbrccrsvhy6n61s4v7ca2qbw69vpsm594"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -3026,12 +3059,12 @@ capabilities.")
                (wrap-program (string-append out "/bin/vspipe")
                  `("PYTHONPATH" ":" = (,site)))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("cython" ,python-cython)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("yasm" ,yasm)))
+     (list autoconf
+           automake
+           python-cython
+           libtool
+           pkg-config
+           yasm))
     (inputs
      (list ffmpeg libass python tesseract-ocr zimg))
     (home-page "http://www.vapoursynth.com/")
@@ -3259,6 +3292,7 @@ tools, XML authoring components, and an extensible plug-in based API.")
        ,@(package-arguments mlt)))
     (inputs
      (modify-inputs (package-inputs mlt)
+       (replace "ffmpeg" ffmpeg-4)
        (replace "gtk+" gtk+-2)))))
 
 (define-public v4l-utils
@@ -3372,7 +3406,7 @@ be used for realtime video capture via Linux-specific APIs.")
       bash-minimal
       curl
       eudev
-      ffmpeg
+      ffmpeg-4
       fontconfig
       freetype
       glib
@@ -3642,7 +3676,7 @@ making @dfn{screencasts}.")
     ;; As a result, they are omitted. Please add them back if problems appear.
     (inputs
      (list alsa-lib
-           ffmpeg
+           ffmpeg-4
            glu
            jack-1
            libxi
@@ -3835,7 +3869,7 @@ supported players in addition to this package.")
     (inputs
      `(("bzip2" ,bzip2)
        ("dbus-glib" ,dbus-glib)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("fontconfig" ,fontconfig)
        ("freetype" ,freetype)
        ("glib" ,glib)
@@ -4276,7 +4310,7 @@ and ITU-T H.222.0.")
     (inputs
      (list zlib))
     (propagated-inputs
-     (list ffmpeg))
+     (list ffmpeg-4))
     (native-inputs
      (list pkg-config))
     (synopsis "Cross-platform wrapper around ffmpeg/libav")
@@ -4511,7 +4545,7 @@ It counts more than 100 plugins.")
 (define-public motion
   (package
     (name "motion")
-    (version "4.3.2")
+    (version "4.5.0")
     (home-page "https://motion-project.github.io/")
     (source (origin
               (method git-fetch)
@@ -4520,19 +4554,13 @@ It counts more than 100 plugins.")
                     (commit (string-append "release-" version))))
               (sha256
                (base32
-                "09xs815jsivcilpmnrx2jkcxirj4lg5kp99fkr0p2sdxw03myi95"))
+                "1rqy98g3xjjzjxiw8j3qdka0rbhcgzgczz6qgj157ck9116j18dq"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf automake gettext-minimal pkg-config))
     (inputs
-     `(("libjpeg" ,libjpeg-turbo)
-       ("ffmpeg" ,ffmpeg)
-       ("libmicrohttpd" ,libmicrohttpd)
-       ("sqlite" ,sqlite)))
+     (list libjpeg-turbo ffmpeg libmicrohttpd sqlite))
     (arguments
      '(#:phases (modify-phases %standard-phases
                   (replace 'bootstrap
@@ -4712,7 +4740,7 @@ create smoother and stable videos.")
      (list alsa-lib zlib))
     (propagated-inputs                  ;all referenced in installed headers
      (list cppzmq
-           ffmpeg
+           ffmpeg-4
            imagemagick
            jsoncpp
            libopenshot-audio
@@ -4820,7 +4848,7 @@ transitions, and effects and then export your film to many common formats.")
 (define-public shotcut
   (package
     (name "shotcut")
-    (version "22.11.25")
+    (version "22.12.21")
     (source
      (origin
        (method git-fetch)
@@ -4829,7 +4857,7 @@ transitions, and effects and then export your film to many common formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "01qv0lb57kgmi5shcnhjwf47vqvbyjndxx6v7ha3sh4x5r8x0mrn"))))
+        (base32 "1hchnywsrkvnz07r2i1cffg1a8zi59pcpswz8x93a0rdc42hlk3d"))))
     (build-system qt-build-system)
     (arguments
      `(#:tests? #f                      ;there are no tests
@@ -4937,7 +4965,7 @@ speed and correctness.")
            "01qbcgfl3g9kfwn1jf1z9pdj3bvf5lmg71d1vwkcllc2az24bjqp"))))
       (build-system meson-build-system)
       (native-inputs (list libdrm pkg-config))
-      (inputs (list ffmpeg pulseaudio wayland wayland-protocols))
+      (inputs (list ffmpeg-4 pulseaudio wayland wayland-protocols))
       (home-page "https://github.com/atomnuker/wlstream")
       (synopsis "Screen capture tool for Wayland sessions")
       (description "Wlstream is a screen capture tool for recording audio and
