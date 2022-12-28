@@ -43,6 +43,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
@@ -81,6 +82,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
@@ -461,7 +463,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.0.1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -469,7 +471,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "0s0xwp5n4jhzdhbmsg02dlsc503jfznpwqn3rnipg687q3h83vsz"))))
+        (base32 "1y8sn7yyqyg1n82byaw5csjr8a6m7g6839krq9k9zc79vxzr3c0q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
@@ -526,10 +528,11 @@ photographic equipment.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("python" ,python-wrapper)
+       ("python-wrapper" ,python-wrapper)
        ("ruby" ,ruby)))
     (inputs
-     (list cairo
+     (list bash-minimal
+           cairo
            colord-gtk ;optional, for color profile support
            cups ;optional, for printing support
            curl
@@ -557,6 +560,7 @@ photographic equipment.")
            libwebp ;optional, for WebP support
            libxml2
            libxslt
+           libheif
            lua-5.4 ;optional, for plugins
            opencl-icd-loader ;optional, for OpenCL support
            openexr ;optional, for EXR import/export
@@ -564,6 +568,7 @@ photographic equipment.")
            osm-gps-map ;optional, for geotagging view
            pugixml
            python-jsonschema
+           sdl2
            sqlite))
     (home-page "https://www.darktable.org")
     (synopsis "Virtual lighttable and darkroom for photographers")
