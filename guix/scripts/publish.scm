@@ -4,7 +4,7 @@
 ;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2021, 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -375,14 +375,28 @@ References: ~a~%"
                                            compression)))
                  compressions))))
 
+;; Custom header to indicate that baking is in progress.
+(declare-opaque-header! "X-Baking")
+
 (define* (not-found request
-                    #:key (phrase "Resource not found")
+                    #:key
+                    baking?
+                    (phrase "Resource not found")
                     ttl)
   "Render 404 response for REQUEST."
+  (format #t "-> ~a ~a: 404~a~%"
+          (request-method request)
+          (uri-path (request-uri request))
+          (if baking? " (baking)" ""))
   (values (build-response #:code 404
-                          #:headers (if ttl
-                                        `((cache-control (max-age . ,ttl)))
-                                        '()))
+                          #:headers
+                          (append
+                           (if ttl
+                               `((cache-control (max-age . ,ttl)))
+                               '())
+                           (if baking?
+                               '((x-baking . "1"))
+                               '())))
           (string-append phrase ": "
                          (uri-path (request-uri request)))))
 
@@ -587,6 +601,7 @@ requested using POOL."
                                #:nar-path nar-path
                                #:compressions compressions)
                (not-found request
+                          #:baking? #t
                           #:phrase "We're baking it"
                           #:ttl 300)))          ;should be available within 5m
           (else
