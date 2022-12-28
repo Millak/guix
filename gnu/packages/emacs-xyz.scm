@@ -10167,7 +10167,7 @@ interface.")
   (let ((commit "004cee6b8e01f8eb0cb1c683d0a637b14890600f"))
     (package
       (name "emacs-orderless")
-      (version "0.8")
+      (version "1.0")
       (source
        (origin
          (method git-fetch)
