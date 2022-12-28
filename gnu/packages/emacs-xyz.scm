@@ -693,6 +693,33 @@ editing @file{.hgignore} files used by the Mercurial version control
 system.")
       (license license:gpl3+))))
 
+(define-public emacs-hsluv
+  (package
+    (name "emacs-hsluv")
+    (version "20181127.1206")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hsluv/hsluv-emacs.git")
+                    (commit "c3bc5228e30d66e7dee9ff1a0694c2b976862fc0")))
+              (sha256
+               (base32
+                "19q8qlq4s2kfydpadkq1zd92611dvq7dr8vlhlbd9gplzpx7dhfd"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-seq))
+    (home-page "https://github.com/hsluv/hsluv-emacs")
+    (synopsis "HSLuv color space conversions")
+    (description
+     "This package provides an elisp implementation of the HSLUV colorspace
+conversions documented on @url{http://www.hsluv.org/}.  HSLuv is a
+human-friendly alternative to HSL.  CIELUV is a color space designed for
+perceptual uniformity based on human experiments.  When accessed by polar
+coordinates, it becomes functionally similar to HSL with a single problem: its
+chroma component doesn't fit into a specific range.  HSLuv extends CIELUV with
+a new saturation component that allows you to span all the available chroma as
+a neat percentage.")
+    (license license:expat)))
+
 (define-public emacs-platformio-mode
   (package
     (name "emacs-platformio-mode")
