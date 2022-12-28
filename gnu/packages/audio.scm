@@ -2463,6 +2463,49 @@ synchronous execution of all clients, and low latency operation.")
     ;; Most files are under GPLv2+, but some headers are under LGPLv2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public jacktrip
+  (package
+    (name "jacktrip")
+    (version "1.6.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jacktrip/jacktrip/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0719ng799kingv0y9yk07bvnmprk25c09ph3yaia5dhapg0jz17m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "qmake"
+                     (string-append "PREFIX="
+                                    (assoc-ref outputs "out"))
+                     "-config" "novs"
+                     "-config" "noupdater"
+                     "jacktrip.pro"))))))
+    (inputs
+     (list jack-2
+           python
+           python-jinja2
+           python-pyyaml
+           qtbase-5
+           rtaudio))
+    (native-inputs
+     (list pkg-config qtbase-5)) ;for qmake
+    (home-page "https://jacktrip.github.io/jacktrip/")
+    (synopsis "Multi-machine audio system for network music performance")
+    (description
+     "JackTrip is a multi-machine audio system used for network music
+performance over the Internet.  It supports any number of channels (as many as
+the computer/network can handle) of bidirectional, high quality, uncompressed
+audio signal streaming.")
+    (license (list license:gpl3+ license:lgpl3 license:expat))))
+
 (define-public jalv
   (package
     (name "jalv")
