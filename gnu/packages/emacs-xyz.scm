@@ -30176,6 +30176,28 @@ challenge the three computer opponents in one player mode.  You can
 even train opponent slimes.")
     (license license:gpl3+)))
 
+(define-public emacs-syslog-mode
+  (package
+    (name "emacs-syslog-mode")
+    (version "20210910.1952")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vapniks/syslog-mode.git")
+                    (commit "072664784dae41a573a9de8d178bf577b7526b82")))
+              (sha256
+               (base32
+                "04ddpn6il6mh1f992x3fxl6yljryghi51q4845lx08cbc74wnfz0"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-hide-lines emacs-ov emacs-hsluv))
+    (home-page "https://github.com/vapniks/syslog-mode")
+    (synopsis "Major-mode for viewing log files and strace output")
+    (description "This library provides a major-mode for viewing syslog and
+strace files.  You can highlight and filter the lines of the file by regular
+expressions and by timestamp, view notes associated with files, extract text,
+count matches, etc.")
+    (license license:gpl3+)))
+
 (define-public emacs-systemd-mode
   (package
     (name "emacs-systemd-mode")
