@@ -168,6 +168,7 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
@@ -3090,7 +3091,7 @@ instrument or MIDI file player.")
 (define-public zynaddsubfx
   (package
     (name "zynaddsubfx")
-    (version "3.0.5")
+    (version "3.0.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3098,7 +3099,7 @@ instrument or MIDI file player.")
                     version "/zynaddsubfx-" version ".tar.bz2"))
               (sha256
                (base32
-                "0qwzg14h043rmyf9jqdylxhyfy4sl0vsr0gjql51wjhid0i34ivl"))))
+                "1bkirvcg0lz1i7ypnz3dyh218yhrqpnijxs8n3wlgwbcixvn1lfb"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -3111,8 +3112,7 @@ instrument or MIDI file player.")
             (substitute* "src/CMakeLists.txt"
               (("-msse -msse2 -mfpmath=sse") "")
               (("-march=(athlon64|core2)" flag)
-               (string-append flag " -msse -msse2 -mfpmath=sse")))
-            #t)))))
+               (string-append flag " -msse -msse2 -mfpmath=sse"))))))))
     (inputs
      (list liblo
            ntk
@@ -3120,11 +3120,13 @@ instrument or MIDI file player.")
            alsa-lib
            jack-1
            fftw
+           fftwf
            minixml
            libxpm
            zlib))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           ruby))
     (home-page "http://zynaddsubfx.sf.net/")
     (synopsis "Software synthesizer")
     (description
