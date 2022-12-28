@@ -46,26 +46,36 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
@@ -73,6 +83,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -1863,3 +1875,90 @@ for large btrfs filesystems.  It is an offline dedupe combined with an
 incremental data scan capability to minimize time data spends on disk from
 write to dedupe.")
     (license license:gpl3+)))
+
+(define-public dwarfs
+  (package
+    (name "dwarfs")
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              ;; The release archive is needed so that version.h is included.
+              (uri (string-append "https://github.com/mhx/dwarfs/releases/download/v"
+                                  version "/dwarfs-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1kncxf85gsj3anck8ccjmxn2azp5ifqbgkiky2kharmvphkbmfcv"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   ;; Prefer system libraries instead of submodules.
+                   ;; TODO: Package fbthrift.
+                   ;; TODO: Can we use Guix own folly?  There is no CMake option for it.
+                   ;; TODO: Package parallel-hashmap.
+                   (for-each delete-file-recursively
+                             '(;; "fbthrift"
+                               ;; "folly"
+                               ;; "parallel-hashmap"
+                               "xxHash"
+                               "zstd"))))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ; TODO: 1 test fails because 'modprobe fuse' needs privileged access.
+       #:configure-flags
+       (list "-DPREFER_SYSTEM_ZSTD=ON"
+             "-DPREFER_SYSTEM_XXHASH=ON"
+             "-DPREFER_SYSTEM_GTEST=ON"
+             "-DWITH_TESTS=ON"
+             ;; Disable man pages since ronn fails to run without hpricot.
+             "-DWITH_MAN_PAGES=OFF")))
+    (native-inputs
+     (list
+      ;; FIXME: Building with ronn fails because hpricot is missing from Guix.
+      folly googletest libdwarf libevent pkg-config))
+    (inputs
+     (list
+      boost
+      double-conversion
+      fmt
+      fuse-3
+      gflags
+      jemalloc
+      libarchive
+      libunwind
+      lz4
+      openssl
+      xxhash
+      xz
+      `(,zstd "lib")))
+    (home-page "https://github.com/mhx/dwarfs")
+    (synopsis "Fast high compression read-only file system")
+    (description "DwarFS is a read-only file system with a focus on achieving
+very high compression ratios in particular for very redundant data.
+
+DwarFS also doesn't compromise on speed and for some cases it is on par with
+or performs better than SquashFS.  For the primary use case, DwarFS
+compression is an order of magnitude better than SquashFS compression, it's 6
+times faster to build the file system, it's typically faster to access files
+on DwarFS and it uses less CPU resources.
+
+Distinct features of DwarFS are:
+
+@itemize
+
+@item Clustering of files by similarity using a similarity hash function.  This
+makes it easier to exploit the redundancy across file boundaries.
+
+@item Segmentation analysis across file system blocks in order to reduce the
+size of the uncompressed file system.  This saves memory when using the
+compressed file system and thus potentially allows for higher cache hit rates
+as more data can be kept in the cache.
+
+@item Highly multi-threaded implementation.  Both the file system creation tool
+as well as the FUSE driver are able to make good use of the many cores of your
+system.
+
+@item Optional experimental Python scripting support to provide custom
+filtering and ordering functionality.
+
+@end itemize\n")
+    (license license:gpl3)))
