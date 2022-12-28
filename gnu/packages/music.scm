@@ -6058,17 +6058,18 @@ short-time Fourier transform, available as LV2 audio plugin and JACK client.")
         (base32 "128h9x7yzhy6q6l0fqk2zd6l48wgs2lhf2pzbiba6h3n6l9n555b"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no "check" target
-       #:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             "LIBZITACONVOLVER=-lzita-convolver"
-             (string-append "FONTFILE="
-                            (assoc-ref %build-inputs "font-dejavu")
-                            "/share/fonts/truetype/DejaVuSans-Bold.ttf")
-             (string-append "CC=" ,(cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))
+     (list
+      #:tests? #f                      ; no "check" target
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output)
+              "LIBZITACONVOLVER=-lzita-convolver"
+              (string-append "FONTFILE="
+                             #$(this-package-native-input "font-dejavu")
+                             "/share/fonts/truetype/DejaVuSans-Bold.ttf")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+        (delete 'configure))))
     (inputs
      (list cairo
            fftwf
