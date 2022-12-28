@@ -81,7 +81,7 @@
 ;;; Copyright © 2020, 2021, 2022 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Marco Grassi <marco.au.grassi98@protonmail.com>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
-;;; Copyright © 2020, 2021 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2020-2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
@@ -26637,6 +26637,52 @@ stored playlists.")
      "The navigel package is a library that makes it simpler for Emacs Lisp
 developers to define user-interfaces based on tablists (also known as
 tabulated-lists).")
+    (license license:gpl3+)))
+
+(define-public emacs-eat
+  (package
+    (name "emacs-eat")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/akib/emacs-eat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0zs1fwbapgsap8vai97f1inginb896gl15kyjm521nvaywk4rc12"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove generated terminfo database.
+            (delete-file-recursively "terminfo")))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:include #~(cons* "^term/"
+                         "^terminfo/"
+                         "^integration/"
+                         "\\.ti$"
+                         %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build-info
+            (lambda _
+              (invoke "make" "info")))
+          (add-before 'install 'build-terminfo-database
+            (lambda _
+              (invoke "make" "terminfo"))))))
+    (native-inputs
+     (list ncurses texinfo))
+    (home-page "https://codeberg.org/akib/emacs-eat")
+    (synopsis "Terminal emulator in Emacs")
+    (description
+     "Eat (Emulate A Terminal) is a terminal emulator in Emacs, written in
+pure Elisp.  It has features like complete mouse support and shell
+integration.")
     (license license:gpl3+)))
 
 (define-public emacs-vterm
