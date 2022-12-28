@@ -5614,6 +5614,12 @@ add a meta-data file @file{.guix-channel} that contains:
   (directory "guix"))
 @end lisp
 
+The modules must be @b{underneath} the specified directory, as the
+@code{directory} changes Guile's @code{load-path}.  For example, if
+@file{.guix-channel} has @code{(directory "base")}, then a module
+defined as @code{(define-module (gnu packages fun))} must be located at
+@code{base/gnu/packages/fun.scm}.
+
 @node Declaring Channel Dependencies
 @section Declaring Channel Dependencies
 
