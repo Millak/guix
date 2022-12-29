@@ -224,6 +224,8 @@
                                          "x64")
                                         ((? (cut string-prefix? "powerpc64" <>))
                                          "ppc64")
+                                        ((? (cut string-prefix? "riscv64" <>))
+                                         "riscv64")
                                         (_ "unsupported"))))
                                  ''()))
                     (flags (cons (string-append "--prefix=" prefix)
