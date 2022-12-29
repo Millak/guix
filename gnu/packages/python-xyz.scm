@@ -3160,7 +3160,7 @@ Prefix) - Encode and decode data structures.")
     (native-inputs
      `(("python-nose" ,python-nose)
        ("gtk+" ,gtk+)
-       ("xvfb" ,xorg-server)
+       ("xvfb" ,xorg-server-for-tests)
        ("dbus" ,dbus)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
        ("gobject-introspection" ,gobject-introspection)))
