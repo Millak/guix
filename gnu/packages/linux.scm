@@ -61,6 +61,7 @@
 ;;; Copyright © 2021 Olivier Dion <olivier.dion@polymtl.ca>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021 Ryan Sundberg <ryan@arctype.co>
 ;;; Copyright © 2022 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;; Copyright © 2022 Rene Saavedra <nanuui@protonmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
@@ -9465,6 +9466,44 @@ extended BPF (Berkeley Packet Filters), formally known as eBPF, a new feature
 that was first added to Linux 3.15.  Much of what BCC uses requires Linux 4.1
 and above.")
     (license license:asl2.0)))
+
+(define-public bpftool
+  (package
+    (name "bpftool")
+    (version (package-version linux-libre))
+    (source (package-source linux-libre))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ;This package has no tests.
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure)
+                  (replace 'build
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      (invoke "make" "-C" "tools/bpf/bpftool"
+                              ,(string-append "CC=" (cc-for-target)))))
+                  (replace 'install
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out")))
+                        (mkdir-p (string-append out "/sbin"))
+                        (mkdir-p (string-append out
+                                  "/share/bash-completion/completions"))
+                        (invoke "make"
+                                (string-append "prefix=" out)
+                                (string-append
+                                 "bash_compdir=" out
+                                 "/share/bash-completion/completions")
+                                "-C" "tools/bpf/bpftool"
+                                "install")))))))
+    (inputs (list elfutils                        ;provides libelf
+                  readline libcap zlib))
+    (native-inputs (list bison python-3))
+    ;; This tool does not have a proper web page.
+    (home-page
+     "https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/bpf/bpftool")
+    (synopsis "Tool for inspection and manipulation of eBPF programs and maps")
+    (description "@command{bpftool} allows for inspection and simple
+modification of BPF objects on the system.")
+    (license (package-license linux-libre))))
 
 (define-public bpftrace
   (package
