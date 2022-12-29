@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -760,7 +760,7 @@ site} for more information."
                                                (bluetooth-configuration-enable-adv-mon-interleave-scan
                                                 config))
                                           1 0))
-   
+
    "\n[GATT]"
    "\nCache = " (symbol->string (bluetooth-configuration-cache config))
    "\nKeySize = " (number->string (bluetooth-configuration-key-size config))
@@ -1540,6 +1540,11 @@ rules."
                              (compose list
                                       (package-direct-input-selector
                                        "efl")
+                                      enlightenment-package))
+          (service-extension udev-service-type
+                             (compose list
+                                      (package-direct-input-selector
+                                        "ddcutil")
                                       enlightenment-package))
           (service-extension setuid-program-service-type
                              enlightenment-setuid-programs)
