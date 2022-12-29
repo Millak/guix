@@ -3158,12 +3158,12 @@ Prefix) - Encode and decode data structures.")
     (propagated-inputs
      (list python-pygobject python-pycairo python-pyatspi))
     (native-inputs
-     `(("python-nose" ,python-nose)
-       ("gtk+" ,gtk+)
-       ("xvfb" ,xorg-server-for-tests)
-       ("dbus" ,dbus)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list python-nose
+           gtk+
+           xorg-server-for-tests
+           dbus
+           gsettings-desktop-schemas
+           gobject-introspection))
     (home-page "https://gitlab.com/dogtail/dogtail/")
     (synopsis "GUI test tool and automation framework written in Python")
     (description
