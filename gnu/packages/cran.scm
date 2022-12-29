@@ -4073,13 +4073,13 @@ data store designed for maximum speed.")
 (define-public r-mapdata
   (package
     (name "r-mapdata")
-    (version "2.3.0")
+    (version "2.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mapdata" version))
               (sha256
                (base32
-                "0xnxh73rgcq55zrw81a2bq8yd67bxc2rafp4shf6nyrqj04iip0y"))))
+                "1m2r4c8f7fp900g3sdjbfxxnxjla86hn75jd8hi96ms188p0j8b0"))))
     (properties `((upstream-name . "mapdata")))
     (build-system r-build-system)
     (propagated-inputs (list r-maps))
