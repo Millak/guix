@@ -491,6 +491,22 @@ RGB animations.")
        (sha256
         (base32 "0hm0cm4m4hk1jjy7kddg613mynvwlii3kp8al0j9v3c6mcx3p4mx"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-udev-rules
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move the udev rules to their expected location in Guix
+              ;; System, so they can be more easily used.
+              (let ((rules.d (string-append #$output "/lib/udev/rules.d")))
+                (mkdir-p (dirname rules.d))
+                (rename-file (string-append #$output "/share/ddcutil/data")
+                             rules.d)
+                ;; Patch a reference to the ddcutil command.
+                (substitute* (string-append rules.d "/45-ddcutil-usb.rules")
+                  (("/usr/bin/ddcutil")
+                   (search-input-file outputs "bin/ddcutil")))))))))
     (native-inputs
      (list pkg-config))
     (inputs
@@ -498,9 +514,9 @@ RGB animations.")
            glib
            kmod
            i2c-tools
-           libdrm ; enhanced diagnostics
-           libusb ; support USB monitors
-           libx11 ; enhanced diagnostics
+           libdrm                       ;enhanced diagnostics
+           libusb                       ;support USB monitors
+           libx11                       ;enhanced diagnostics
            libxrandr
            zlib))
     (home-page "https://www.ddcutil.com/")
@@ -519,7 +535,11 @@ communicate over USB as per the USB Monitor Control Class Specification.
 One particular use case is in colour profile management.  Monitor calibration
 is relative to the monitor colour settings currently in effect, e.g. red gain.
 ddcutil allows colour-related settings to be saved at the time a monitor is
-calibrated, and restored when the calibration is applied.")
+calibrated, and restored when the calibration is applied.
+
+This package includes udev rules that can be used by adding this package to
+the @code{rules} field of the @code{udev-configuration} record.  It gives
+read/write access to i2c devices to users in the @samp{i2c} group.")
     (license (list license:bsd-3        ; FindDDCUtil.cmake
                    license:gpl2+))))    ; everything else
 
