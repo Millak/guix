@@ -8047,7 +8047,7 @@ converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
-    (version "1.0.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8056,7 +8056,7 @@ converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09j8cavbhqqdxjqrkwbc40g8p0i49zf3184rpjm5p2rjbprcghcc"))))
+                "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/andybalholm/cascadia"))
