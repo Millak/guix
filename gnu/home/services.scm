@@ -313,7 +313,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files}, and further processed during activation.")))
+@file{~/.guix-home/files}, and further processed during activation.")))
 
 (define xdg-configuration-files-directory ".config")
 
@@ -334,7 +334,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/.config}, and further processed during activation.")))
+@file{~/.guix-home/files/.config}, and further processed during activation.")))
 
 (define xdg-data-files-directory ".local/share")
 
@@ -355,7 +355,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/.local/share}, and further processed during
+@file{~/.guix-home/files/.local/share}, and further processed during
 activation.")))
 
 
