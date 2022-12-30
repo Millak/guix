@@ -4933,9 +4933,7 @@ transitions, and effects and then export your film to many common formats.")
                  `("PATH" ":" prefix
                    ,(list (string-append mlt "/bin"))))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+     (list pkg-config python-wrapper qttools-5))
     (inputs
      (list bash-minimal
            ffmpeg
