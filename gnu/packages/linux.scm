@@ -127,6 +127,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages libunwind)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages llvm)
@@ -8460,6 +8461,38 @@ text-mode or graphical applications that don't use a display server.
 Also included is @command{fbgrab}, a wrapper around @command{fbcat} that
 emulates the behaviour of Gunnar Monell's older fbgrab utility.")
     (license license:gpl2)))
+
+(define-public fbgrab
+  (package
+    (name "fbgrab")
+    (version "1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/GunnarMonell/fbgrab")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1npn7l8jg0nhjraybjl38v8635zawzmn06ql3hs3vhci1vi1r90r"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "DESTDIR=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'strip-/usr-prefix
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("/usr") ""))))
+                        (delete 'configure))))
+    (inputs (list libpng zlib))
+    (home-page "https://github.com/GunnarMonell/fbgrab")
+    (synopsis "Linux framebuffer screenshot/conversion utility")
+    (description "FBGrab is a framebuffer screenshot program that captures the
+Linux framebuffer and converts it to a PNG image.  It can also convert a
+framebuffer dump file (copy) to a PNG image.")
+    (license license:gpl2)))   ;GPL 2.0 only (per SPDX identifier in fbgrab.c)
 
 (define-public libcgroup
   (package
