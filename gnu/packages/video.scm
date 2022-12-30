@@ -4834,10 +4834,12 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            font-dejavu
            libopenshot
            python
-           python-pyqt
+           python-pyqt-without-qtwebkit
+           python-pyqtwebengine
            python-pyzmq
            python-requests
-           qtsvg-5))
+           qtsvg-5
+           qtwebengine-5))
     (arguments
      `(#:modules ((guix build python-build-system)
                   (guix build qt-utils)
@@ -4867,10 +4869,16 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                       #t))
                   (add-after 'install 'wrap-program
                     (lambda* (#:key outputs inputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
+                      (let ((out (assoc-ref outputs "out"))
+                            (qtwebengine-process-path
+                             (search-input-file
+                              inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                         (wrap-qt-program "openshot-qt"
-                                         #:output out #:inputs inputs))
-                      #t)))))
+                                         #:output out #:inputs inputs)
+                        ;; Help the program discover QtWebEngine at runtime.
+                        (wrap-program (string-append out "/bin/openshot-qt")
+                          `("QTWEBENGINEPROCESS_PATH" =
+                            (,qtwebengine-process-path)))))))))
     (home-page "https://www.openshot.org/")
     (synopsis "Video editor")
     (description "OpenShot takes your videos, photos, and music files and
