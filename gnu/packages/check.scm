@@ -2672,6 +2672,24 @@ pragmas to control it from within your code.  Additionally, it is
 possible to write plugins to add your own checks.")
     (license license:gpl2+)))
 
+(define-public python-setuptools-lint
+  (package
+    (name "python-setuptools-lint")
+    (version "0.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "setuptools-lint" version))
+              (sha256
+               (base32
+                "16a1ac5n7k7sx15cnk03gw3fmslab3a7m74dc45rgpldgiff3577"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-pylint))
+    (home-page "https://github.com/johnnoone/setuptools-pylint")
+    (synopsis "Run pylint with @command{python setup.py lint}")
+    (description "This package expose pylint as a lint command into
+setup.py.")
+    (license license:bsd-3)))
+
 (define-public python-paramunittest
   (package
     (name "python-paramunittest")
