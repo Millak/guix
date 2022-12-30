@@ -4943,9 +4943,6 @@ transitions, and effects and then export your film to many common formats.")
            frei0r-plugins
            jack-1
            ladspa
-           lame
-           libvpx
-           libx264
            mlt
            pulseaudio
            qtbase-5
@@ -4955,7 +4952,6 @@ transitions, and effects and then export your film to many common formats.")
            qtquickcontrols-5
            qtquickcontrols2-5
            qtsvg-5
-           qtwebkit
            qtwebsockets-5
            qtx11extras
            sdl2))
