@@ -12710,6 +12710,31 @@ known and yet unknown splice junctions.  Circular-to-linear ratios of circRNAs
 can be calculated, and a number of descriptive plots easily generated.")
     (license license:artistic2.0)))
 
+(define-public r-domultibarheatmap
+  (let ((commit "9e65afa0aa69fee631c61b7bf3e7742632c9cb95")
+        (revision "1"))
+    (package
+      (name "r-domultibarheatmap")
+      (version (git-version "0.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/elliefewings/DoMultiBarHeatmap")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0q9mrc6md08aff6hhzlw3igvv3w7pr1wildzm8i0km9xvbi9iyy9"))))
+      (properties `((upstream-name . "DoMultiBarHeatmap")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-ggplot2 r-magrittr r-rlang r-seurat))
+      (home-page "https://github.com/elliefewings/DoMultiBarHeatmap")
+      (synopsis "Produce heatmap from a Seurat object with multiple annotation bars")
+      (description "This package builds on Seurat's @code{Doheatmap} function
+code to produce a heatmap from a Seurat object with multiple annotation
+bars.")
+      (license license:cc0))))
+
 (define-public r-doubletfinder
   (let ((commit "554097ba4e2c0ed7c28dc7f0b5b75277f3a50551")
         (revision "1"))
