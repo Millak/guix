@@ -293,6 +293,33 @@ material design.  It is mostly flat using a colorful palette with some
 shadows, highlights, and gradients for some depth.")
     (license license:gpl3+)))
 
+(define-public flat-remix-gnome-theme
+  (package
+    (name "flat-remix-gnome-theme")
+    (version "20221107-1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gnome")
+         ;; This commit adds GtkSourceView 5 theme, for GNOME Text Editor.
+         (commit "b5616efc515e9f1417436e67d94718db7529a2ba")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10fgdz8hz8rd7aj4vb3bvl8khzb2fvaia7n00gi0x19yvnnh36pr"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan
+       `(("share" "/")
+         ("themes" "/share/"))))
+    (home-page "https://drasite.com/flat-remix-gnome")
+    (synopsis "GNOME shell theme with material design")
+    (description "Flat Remix GNOME is a GNOME shell theme inspired by material
+design.  It is mostly flat using a colorful palette with some shadows,
+highlights, and gradients for some depth.")
+    (license license:gpl3+)))
+
 (define-public gnome-plots
   (package
     (name "gnome-plots")
