@@ -266,6 +266,33 @@ is mostly flat using a colorful palette with some shadows, highlights, and
 gradients for some depth.")
     (license license:gpl3+)))
 
+(define-public flat-remix-gtk-theme
+  (package
+    (name "flat-remix-gtk-theme")
+    (version "20220627")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix-gtk")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1kwahlrcm9rfsrd97q9lsbfz5390qafwbv78zl6j2vqgqnxhpwng"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix-gtk")
+    (synopsis "GTK application theme with material design")
+    (description "Flat Remix GTK is a GTK application theme inspired by
+material design.  It is mostly flat using a colorful palette with some
+shadows, highlights, and gradients for some depth.")
+    (license license:gpl3+)))
+
 (define-public gnome-plots
   (package
     (name "gnome-plots")
