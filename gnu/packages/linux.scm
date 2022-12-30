@@ -8464,7 +8464,8 @@ relevant @file{/dev/vcs*} file(s).")
     (synopsis "Take a screenshot of the contents of the Linux framebuffer")
     (description
      "fbcat saves the contents of the Linux framebuffer (@file{/dev/fb*}), or
-a dump therof.  It supports a wide range of drivers and pixel formats.
+a dump thereof.  It supports a wide range of drivers and pixel formats.
+
 @command{fbcat} can take screenshots of virtually any application that can be
 made to write its output to the framebuffer, including (but not limited to)
 text-mode or graphical applications that don't use a display server.
