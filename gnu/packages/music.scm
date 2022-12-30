@@ -2178,6 +2178,47 @@ Editor.  It is compatible with Power Tab Editor 1.7 and Guitar Pro.")
 users to select LV2 plugins and run them with jalv.")
     (license license:public-domain)))
 
+(define-public petri-foo
+  (package
+    (name "petri-foo")
+    (version "0.1.87")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/petri-foo/Source"
+                                  "/petri-foo-" version ".tar.bz2"))
+              (sha256
+                (base32
+                 "0b25iicgn8c42487fdw32ycfrll1pm2zjgy5djvgw6mfcaa4gizh"))
+              (modules '((guix build utils)))
+              ;; https://github.com/petri-foo/Petri-Foo/pull/43
+              (snippet '(begin
+                          (substitute* "gui/gui.c"
+                            (("#include \\\"waveform\\.h\\\"")
+                             (string-append
+                               "#include \"waveform.h\""
+                               "\n\nGtkRecentManager *recent_manager;")))
+                          (substitute* "gui/gui.h"
+                            (("GtkRecentManager \\*recent_manager;")
+                             "extern GtkRecentManager *recent_manager;"))))))
+    (build-system cmake-build-system)
+    (arguments (list #:tests? #f)) ;no test target
+    (native-inputs (list pkg-config))
+    (inputs (list alsa-lib
+                  glib
+                  jack-1
+                  libgnomecanvas
+                  liblo
+                  libsamplerate
+                  libsndfile
+                  libxml2
+                  openssl))
+    (home-page "https://petri-foo.sourceforge.net/")
+    (synopsis "Audio sampler for JACK")
+    (description
+     "Petri-Foo is a fork of the Specimen sampler project intended to run under
+a JACK session.")
+    (license license:gpl2)))
+
 (define-public mixxx
   (package
     (name "mixxx")
