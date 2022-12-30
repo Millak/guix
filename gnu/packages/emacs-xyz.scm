@@ -29012,7 +29012,7 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-counsel-tramp
   (package
     (name "emacs-counsel-tramp")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method git-fetch)
@@ -29021,7 +29021,7 @@ well as an option for visually flashing evaluated s-expressions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18qlwyjqxap2qfbz14ma6yqp4p3v4q2y8idc355s4szjdd2as2lr"))))
+        (base32 "02dhchmyaqv6855mafjxizzgpl32rmnwdmw0nbm6rkckr13cgjl1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-counsel))
