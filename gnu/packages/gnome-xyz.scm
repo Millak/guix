@@ -239,6 +239,33 @@ simple and consistent.")
 and a few extra features.")
     (license license:gpl3)))
 
+(define-public flat-remix-icon-theme
+  (package
+    (name "flat-remix-icon-theme")
+    (version "20220525")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/daniruiz/flat-remix")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ygazxccqf7hn1hxnf1mmsp17gm1m4hpcandfz9v5ijrgkd1m596"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f                      ; no included tests
+       #:make-flags `(,(string-append "PREFIX=" (assoc-ref %outputs "out")))
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (home-page "https://drasite.com/flat-remix")
+    (synopsis "Icon theme with material design")
+    (description "Flat Remix is an icon theme inspired by material design.  It
+is mostly flat using a colorful palette with some shadows, highlights, and
+gradients for some depth.")
+    (license license:gpl3+)))
+
 (define-public gnome-plots
   (package
     (name "gnome-plots")
