@@ -33,6 +33,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 receive)
   #:use-module (web uri)
   #:use-module (guix memoization)
@@ -473,13 +474,13 @@ the pkg-config tool."
                         "(Makevars.*|configure.*)"))
 
 (define (source-dir->dependencies dir)
-  "Guess dependencies of R package source in DIR and return (INPUTS
-NATIVE-INPUTS)."
-  (list
-    (if (directory-needs-zlib? dir) '("zlib") '())
-    (append
-      (if (directory-needs-pkg-config? dir) '("pkg-config") '())
-      (if (directory-needs-fortran? dir) '("gfortran") '()))))
+  "Guess dependencies of R package source in DIR and return two values: a list
+of package names for INPUTS and another list of names of NATIVE-INPUTS."
+  (values
+   (if (directory-needs-zlib? dir) '("zlib") '())
+   (append
+       (if (directory-needs-pkg-config? dir) '("pkg-config") '())
+       (if (directory-needs-fortran? dir) '("gfortran") '()))))
 
 (define (source->dependencies source tarball?)
   "SOURCE-DIR->DEPENDENCIES, but for directories and tarballs as indicated
@@ -543,9 +544,8 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                                                            (hg? 'hg)
                                                            (else #f))))
          (tarball?   (not (or git? hg?)))
-         (source-inputs-all (source->dependencies source tarball?))
-         (source-inputs (car source-inputs-all))
-         (source-native-inputs (cadr source-inputs-all))
+         (source-inputs source-native-inputs
+          (source->dependencies source tarball?))
          (sysdepends (append
                       source-inputs
                       (filter (lambda (name)
