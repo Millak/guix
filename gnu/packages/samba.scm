@@ -324,12 +324,14 @@ Desktops into Active Directory environments using the winbind daemon.")
 (define-public samba/fixed-patched
   (package
     (inherit samba/fixed)
-    (version "4.15.13")
+    ;; This is 4.15.13, but we need to trim the store file name to have
+    ;; the same length as the one we are grafting above.
+    (version "4.15.A")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/samba/stable/"
-                           "samba-" version ".tar.gz"))
+                           "samba-4.15.13.tar.gz"))
        (sha256
         (base32 "0s29vzn5f42vjhx6h25c7v67n14ymqxn8glqa97d0rajd99y64n4"))))))
 
