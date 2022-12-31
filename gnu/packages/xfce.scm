@@ -1111,8 +1111,10 @@ for and start applications.")
      ;; Default font that applications such as IceCat require.
      (list font-dejavu))
     (native-search-paths
-     ;; For finding panel plugins.
-     (package-native-search-paths xfce4-panel))
+     ;; For finding panel and thunar plugins.
+     (append
+      (package-native-search-paths xfce4-panel)
+      (package-native-search-paths thunar)))
     (home-page "https://www.xfce.org/")
     (synopsis "Desktop environment (meta-package)")
     (description
