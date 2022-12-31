@@ -3221,8 +3221,7 @@ ASCII text files using Gmsh's own scripting language.")
              ((@@ (guix build python-build-system) call-setuppy)
               "build_ext"
               (list (string-append "--sip-dir="
-                                   (assoc-ref inputs "python-pyqt")
-                                   "/share/sip"))
+                                   (search-input-directory inputs "share/sip")))
               #t)))
          ;; Ensure that icons are found at runtime.
          (add-after 'install 'wrap-executable
@@ -3240,7 +3239,7 @@ ASCII text files using Gmsh's own scripting language.")
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
-           python-pyqt
+           python-pyqt-without-qtwebkit
            qtbase-5
            qtsvg-5))
     (propagated-inputs
