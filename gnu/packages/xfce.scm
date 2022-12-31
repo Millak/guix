@@ -728,6 +728,8 @@ like appearance, display, keyboard and mouse settings.")
                (base32
                 "15rjbr9gdiqzpvy97vz8s9hhr35zvl2kr4q6iwxq0gwza4wfl0pl"))))
     (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--with-custom-thunarx-dirs-enabled")))
     (native-inputs
      (list pkg-config intltool))
     (inputs
@@ -741,6 +743,10 @@ like appearance, display, keyboard and mouse settings.")
            pcre
            xfce4-panel
            startup-notification))
+    (native-search-paths
+     (list (search-path-specification
+            (variable "THUNARX_DIRS")
+            (files (list "lib/thunarx-3")))))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce file manager")
     (description
