@@ -12256,6 +12256,34 @@ called \"American Soundex\" used for US census data, and current maintained by
 the National Archives and Records Administration (NARA).")
     (license license:perl-license)))
 
+(define-public perl-text-wrapi18n
+  (package
+    (name "perl-text-wrapi18n")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KU/KUBOTA/Text-WrapI18N-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "12548qc99ms12yp5j26076p0zazjfv1b618h5k8r5iy2y0brmljb"))))
+    (build-system perl-build-system)
+    (inputs (list perl-text-charwidth))
+    (home-page "https://metacpan.org/pod/Text::WrapI18N")
+    (synopsis "Line wrapping for multibyte, fullwidth, combining
+characters and so on")
+    (description
+     "This module intends to be a better Text::Wrap module.  This
+module is needed to support multibyte character encodings such as UTF-8,
+EUC-JP, EUC-KR, GB2312, and Big5.  This module also supports characters with
+irregular widths, such as combining characters (which occupy zero columns on
+terminal, like diacritical marks in UTF-8) and fullwidth characters (which
+occupy two columns on terminal, like most of east Asian characters).  Also,
+minimal handling of languages which doesn't use whitespaces between
+words (like Chinese and Japanese) is supported.")
+    (license (package-license perl))))
+
 (define-public perl-regexp-pattern
   (package
     (name "perl-regexp-pattern")
