@@ -1467,7 +1467,7 @@ core or CPU.")
 (define-public xfce4-eyes-plugin
   (package
    (name "xfce4-eyes-plugin")
-   (version "4.5.1")
+   (version "4.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1476,7 +1476,7 @@ core or CPU.")
                                   "/xfce4-eyes-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "1iaszzkagl1mb0cdafrvlfjnjklhhs9y90517par34sjiqbq1dsd"))))
+                "092kmv2i0flg3zg622q0id70mz1kvlz27y12i5y3nfdsi1fz03xd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
