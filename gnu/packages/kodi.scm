@@ -487,7 +487,7 @@ plug-in system.")
         `(cons "-DCORE_PLATFORM_NAME=wayland"
                (delete "-DCORE_PLATFORM_NAME=x11" ,flags)))))
     (inputs
-     (modify-inputs (package-input kodi)
+     (modify-inputs (package-inputs kodi)
        (prepend (list libinput
                       libxkbcommon
                       waylandpp
