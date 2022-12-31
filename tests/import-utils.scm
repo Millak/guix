@@ -67,12 +67,12 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
                     #:repo 'repo
                     #:repo->guix-package
                     (match-lambda*
-                      (("foo" #:version #f #:repo 'repo)
+                      (("foo" #:repo 'repo . rest)
                        (values '(package
                                   (name "foo")
                                   (inputs `(("bar" ,bar))))
                                '("bar")))
-                      (("bar" #:version #f #:repo 'repo)
+                      (("bar" #:repo 'repo . rest)
                        (values '(package
                                   (name "bar"))
                                '())))
@@ -84,7 +84,7 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
                     #:repo 'repo
                     #:repo->guix-package
                     (match-lambda*
-                      (("foo" #:version #f #:repo 'repo)
+                      (("foo" #:repo 'repo . rest)
                        (values #f '())))
                     #:guix-name identity))
 
@@ -96,12 +96,12 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
                     #:repo 'repo
                     #:repo->guix-package
                     (match-lambda*
-                      (("foo" #:version #f #:repo 'repo)
+                      (("foo" #:repo 'repo . rest)
                        (values '(package
                                   (name "foo")
                                   (inputs `(("bar" ,bar))))
                                '("bar")))
-                      (("bar" #:version #f #:repo 'repo)
+                      (("bar" #:repo 'repo . rest)
                        (values #f '())))
                     #:guix-name identity))
 
