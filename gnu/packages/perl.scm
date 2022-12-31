@@ -11581,6 +11581,28 @@ supersede Perl's builtin @code{T_PTROBJ} with something that is extensible
 neither visible nor modifiable from Perl space).")
     (license (package-license perl))))
 
+(define-public perl-xs-parse-keyword
+  (package
+    (name "perl-xs-parse-keyword")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/XS-Parse-Keyword-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0nnr8akkxb2h2y3d5r51pr84vvxkq89ynmi9azkbnn79jmbcbgvq"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-simple))
+    (home-page "https://metacpan.org/dist/XS-Parse-Keyword")
+    (synopsis "XS functions to assist in parsing keyword syntax")
+    (description
+     "This module provides some XS functions to assist in writing
+syntax modules that provide new perl-visible syntax, primarily for authors of
+keyword plugins using the @code{PL_keyword_plugin} hook mechanism.")
+    (license (package-license perl))))
+
 (define-public perl-yaml
   (package
     (name "perl-yaml")
