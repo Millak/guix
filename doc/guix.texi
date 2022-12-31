@@ -9130,8 +9130,8 @@ Packages can be cross-built, and if a specific architecture or operating
 system is desired then the keywords @code{#:goarch} and @code{#:goos}
 can be used to force the package to be built for that architecture and
 operating system.  The combinations known to Go can be found
-@url{"https://golang.org/doc/install/source#environment", in their
-documentation}.
+@url{https://golang.org/doc/install/source#environment,
+in their documentation}.
 @end defvr
 
 @defvr {Scheme Variable} glib-or-gtk-build-system
