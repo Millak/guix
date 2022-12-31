@@ -98,29 +98,20 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 (define-public nyacc
   (package
     (inherit nyacc-0.99)
-    (version "1.07.4")
+    (version "1.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1kr3b88sx0g9zy52algxqpvnkjm76qdyld7pasbbajkph2zhcj92"))
+                "1vrz3pnlr3njwk6ksz85slcwawi8ngiqbw94wd9x3mgv85vsfmys"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "configure"
                   (("GUILE_GLOBAL_SITE=\\$prefix.*")
                    "GUILE_GLOBAL_SITE=\
 $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; See https://savannah.nongnu.org/bugs/index.php?60474
-         (add-after 'unpack 'fix-60474
-           (lambda _
-             (substitute* "module/nyacc/lang/c99/parser.scm"
-               (("\\(memq \\(car stmt\\) '\\(include include-next\\)\\)")
-                "(memq (car stmt) '(include include-next define))")))))))
     (inputs (list guile-3.0))
     (propagated-inputs (list guile-bytestructures))
     (description
