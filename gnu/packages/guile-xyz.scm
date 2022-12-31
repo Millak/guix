@@ -1020,6 +1020,38 @@ It has a nice, simple s-expression based syntax.")
     (name "guile2.2-sjson")
     (inputs (list guile-2.2))))
 
+(define-public guile-scheme-json-rpc
+  (let ((commit "45ae6890f6619286f5679f88c094c88127b54c4a")
+        (revision "0")
+        (version "0.2.11"))
+    (package
+      (name "guile-scheme-json-rpc")
+      (version (git-version version revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/rgherdt/scheme-json-rpc.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w4m8xx8yyj0rv0q57mjr8ja87l7yikscj33i3ck26wg7230ppa5"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:phases (modify-phases %standard-phases
+                    (add-after 'unpack 'change-to-guile-dir
+                      (lambda _
+                        (chdir "guile"))))))
+      (inputs (list guile-3.0 guile-json-3))
+      (native-inputs (list pkg-config))
+      (synopsis "Library providing JSON-RPC capability in Scheme")
+      (description
+       "This library implements parts of the
+@uref{https://www.jsonrpc.org/specification,JSON-RPC specification}, allowing
+for calling methods on remote servers by exchanging JSON objects.")
+      (home-page "https://codeberg.org/rgherdt/scheme-json-rpc/")
+      (license license:expat))))
+
 (define-public guile-squee
   (let ((commit "a151fd006fa819945ca1d4749b173854269b9f70")
         (revision "3"))
