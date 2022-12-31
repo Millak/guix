@@ -1241,6 +1241,8 @@ interactive environment for the functional language Haskell.")
 
 (define-public ghc-8 ghc-8.10)
 
+(define-public ghc ghc-8)
+
 (define-public ghc-9.0
   (package
     (inherit ghc-8.10)
@@ -1277,6 +1279,51 @@ interactive environment for the functional language Haskell.")
             (file-pattern ".*\\.conf\\.d$")
             (file-type 'directory))))))
 
-(define-public ghc ghc-8)
+(define-public ghc-9.2
+  ;; Use 8.10 to shorten the build chain.
+  (let ((base ghc-8.10))
+    (package
+      (inherit base)
+      (name "ghc-next")
+      (version "9.2.5")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://www.haskell.org/ghc/dist/" version
+                                    "/ghc-" version "-src.tar.xz"))
+                (sha256
+                 (base32
+                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+             ;; File Common.hs has been moved to src/ in this release.
+             (replace 'fix-cc-reference
+               (lambda _
+                 (substitute* "utils/hsc2hs/src/Common.hs"
+                   (("\"cc\"") "\"gcc\""))))))))
+      (native-inputs
+       `(;; GHC 9.2 must be built with GHC >= 8.6.
+         ("ghc-bootstrap" ,base)
+         ("ghc-testsuite"
+          ,(origin
+             (method url-fetch)
+             (uri (string-append
+                    "https://www.haskell.org/ghc/dist/"
+                    version "/ghc-" version "-testsuite.tar.xz"))
+             (sha256
+              (base32
+               "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))))
+         ,@(filter (match-lambda
+                     (("ghc-bootstrap" . _) #f)
+                     (("ghc-testsuite" . _) #f)
+                     (_ #t))
+                   (package-native-inputs base))))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "GHC_PACKAGE_PATH")
+              (files (list (string-append "lib/ghc-" version)))
+              (file-pattern ".*\\.conf\\.d$")
+              (file-type 'directory)))))))
 
 ;;; haskell.scm ends here
