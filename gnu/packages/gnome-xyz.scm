@@ -1189,7 +1189,7 @@ of windows.")
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20220405")
+    (version "20221218")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,11 +1198,11 @@ of windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gjwf75sg4xyfypb08qiy2cmqyr2mamjc4i46ifrq7snj15gy608"))))
+                "0yznqjz1a1mcwks8z7pybgzrjiwg978bfpdmkaq926wy82qslngd"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags
-       '("-Dthemes=gnome-shell,gtk2,gtk3,metacity,plank,unity,xfwm")
+       '("-Dthemes=gnome-shell,gtk2,gtk3,gtk4,metacity,plank,unity,xfwm")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-home   ;placate Inkscape
@@ -1217,6 +1217,7 @@ of windows.")
            pkg-config
            python
            sassc/libsass-3.5))
+    (inputs (list gtk-engines)) ;for gtk+-2 to work properly
     (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
