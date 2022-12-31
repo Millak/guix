@@ -48,8 +48,7 @@
       (list autoconf-wrapper
             automake
             libtool
-            ucd-next ; required for tests
-            ))
+            ucd))
     (arguments
      `(#:parallel-tests? #f  ; parallel tests cause non-deterministic
                              ; build failures
