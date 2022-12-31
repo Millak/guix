@@ -4308,7 +4308,7 @@ over, or update a value in arbitrary data structures.")
 (define-public guile-xapian
   (package
     (name "guile-xapian")
-    (version "0.2.1")
+    (version "0.3.0")
     (home-page "https://git.systemreboot.net/guile-xapian")
     (source
      (origin
@@ -4318,7 +4318,7 @@ over, or update a value in arbitrary data structures.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1i2bk06abl1984xgrr3hzzhknqkxjysfpd82drzlgp291hmq40w1"))))
+         "0k18navsd0rqx2zbqgvhzscvbls2sxs9k06n195s4bvyd50acfm5"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
@@ -4331,6 +4331,8 @@ over, or update a value in arbitrary data structures.")
            libtool
            pkg-config
            swig))
+    (propagated-inputs
+     (list guile-lib))
     (synopsis "Guile bindings for Xapian")
     (description "@code{guile-xapian} provides Guile bindings for Xapian, a
 search engine library.  Xapian is a highly adaptable toolkit which allows
