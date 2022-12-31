@@ -2947,7 +2947,7 @@ using a system-independent interface.")
            python-ly
            python-poppler-qt5
            python-pyportmidi
-           python-pyqt
+           python-pyqt-without-qtwebkit
            python-sip))
     (home-page "https://www.frescobaldi.org/")
     (synopsis "LilyPond sheet music text editor")
