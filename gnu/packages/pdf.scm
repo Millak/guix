@@ -184,7 +184,10 @@ information.")
                    (,(string-append qtbase "/lib/qt5/plugins/platforms"))))
                #t))))))
     (inputs
-     (list python-pypdf2 python-pyqt python-poppler-qt5 qtbase-5))
+     (list python-poppler-qt5
+           python-pypdf2
+           python-pyqt-without-qtwebkit
+           qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
     (description "@command{flyer-composer} can be used to prepare one- or
