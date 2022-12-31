@@ -599,7 +599,12 @@ to obtain the Guix package name corresponding to the upstream name."
     (not (null? (find-packages-by-name (guix-name name) version))))
 
   (define (lookup-node name version)
-    (let* ((package dependencies (apply repo->guix-package (cons name rest)))
+    (let* ((pre post (break (cut eq? #:version <>) rest))
+           (post* (match post
+                    ((#:version v . more) more)
+                    (_ post)))
+           (args (append pre (list #:version version) post*))
+           (package dependencies (apply repo->guix-package (cons* name args)))
            (normalized-deps (map (match-lambda
                                    ((name version) (list name version))
                                    (name (list name #f))) dependencies)))
