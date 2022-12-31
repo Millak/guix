@@ -946,6 +946,12 @@ features playback of local media files, DVD/CD and live streams.")
                (base32
                 "1x5saijxykxmn2hksf4qvaj965b6i0wy62z9hgrc2vvwmxbmkrbq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "CFLAGS=-I"
+                             #$(this-package-input "libxfce4ui")
+                             "/include/xfce4"))))
     (native-inputs
      (list pkg-config intltool))
     (inputs
