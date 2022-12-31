@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -10469,6 +10470,27 @@ used to justify strings to various alignment styles.")
     (synopsis "Extract delimited text sequences from strings")
     (description "The Text::Balanced module can be used to extract delimited
 text sequences from strings.")
+    (license (package-license perl))))
+
+(define-public perl-text-charwidth
+  (package
+    (name "perl-text-charwidth")
+    (version "0.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KU/KUBOTA/Text-CharWidth-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1y040wiqx78pnr0wxbjhpzjxm2a9qiqq479gzn4qwcyrzpsdbpmb"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/dist/Text-CharWidth")
+    (synopsis "Get number of occupied columns of a string on terminal")
+    (description
+     "With this module, you can calculate terminal character
+widths that vary by locale.  This module supplies features similar to
+wcwidth(3) and wcswidth(3) in C language.")
     (license (package-license perl))))
 
 (define-public perl-text-csv
