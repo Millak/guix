@@ -1301,7 +1301,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
 (define-public materia-theme
   (package
     (name "materia-theme")
-    (version "20200916")
+    (version "20210322")
     (source
       (origin
         (method git-fetch)
@@ -1312,7 +1312,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "0qaxxafsn5zd2ysgr0jyv5j73360mfdmxyd55askswlsfphssn74"))))
+            "1fsicmcni70jkl4jb3fvh7yv0v9jhb8nwjzdq8vfwn256qyk0xvl"))))
     (build-system meson-build-system)
     (native-inputs
      (list gtk+ sassc))
