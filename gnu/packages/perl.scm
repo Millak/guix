@@ -9997,6 +9997,30 @@ mechanism.  The module augments the standard Perl syntax with two new
 statements: @code{switch} and @code{case}.")
     (license (package-license perl))))
 
+(define-public perl-syntax-keyword-try
+  (package
+    (name "perl-syntax-keyword-try")
+    (version "0.28")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/Syntax-Keyword-Try-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1j02z9w0p9a77maf62cy5324vmc01hks0bfm5qjidc50hafmzbfc"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (inputs (list perl-xs-parse-keyword))
+    (home-page "https://metacpan.org/pod/Syntax::Keyword::Try")
+    (synopsis "Try/catch/finally syntax for perl")
+    (description
+     "This module provides a syntax plugin that implements
+exception-handling semantics in a form familiar to users of other
+languages, being built on a block labeled with the @code{try} keyword,
+followed by at least one of a @code{catch} or @code{finally} block.")
+    (license (package-license perl))))
+
 (define-public perl-sys-cpu
   (package
     (name "perl-sys-cpu")
