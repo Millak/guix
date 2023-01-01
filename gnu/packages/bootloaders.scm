@@ -575,6 +575,7 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
     (build-system gnu-build-system)
     (arguments
      (list
+      #:modules `(,@%gnu-build-system-modules (srfi srfi-26))
       #:make-flags
       #~(list (string-append "CC=" #$(cc-for-target))
               ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
@@ -590,7 +591,15 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                              "tests/run_tests.sh")
                 (("pkg-config")
                  #$(pkg-config-for-target)))))
-          (delete 'configure))))        ;no configure script
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'install-doc
+            (lambda _
+              (with-directory-excursion "Documentation"
+                (for-each (cut install-file <> (string-append
+                                                #$output "/share/doc/dtc/"))
+                          '("dts-format.txt"
+                            "dt-object-internal.txt"
+                            "manual.txt"))))))))
     (native-inputs
      (append
       (list bison
