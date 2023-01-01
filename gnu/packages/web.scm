@@ -59,6 +59,7 @@
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -147,6 +148,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunistring)
@@ -8063,6 +8065,48 @@ concurrency, and return status.")
     (description "gmnisrv is a simple Gemini protocol server written in C.")
     (license (list license:gpl3+
                    license:bsd-3)))) ;; for ini.c and ini.h
+
+(define-public vger
+  (package
+    (name "vger")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://tildegit.org/solene/vger")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jiwzn5dqadwq4ih3vzld66yq23gqsf7281sllh29bf6kmf9dz2k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("\\binstall -o root -g wheel vger ")
+                      "install vger ")
+                     (("\\binstall -o root -g wheel vger\\.8 ")
+                      "install -m 644 vger.8 "))))
+               (add-before 'install 'make-install-dirs
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin"))
+                   (mkdir-p (string-append #$output "/man/man8")))))))
+    (inputs
+     (list libbsd))
+    (home-page "https://tildegit.org/solene/vger")
+    (synopsis "Gemini protocol server")
+    (description "Vger is a Gemini protocol server that supports chroots,
+virtualhosts, CGI, default language choice, redirections and MIME-type
+detection.  It delegates TLS support to an external daemon, for example
+@command{stunnel} on @command{inetd}.")
+    (license license:bsd-2)))
 
 (define-public libzim
   (package
