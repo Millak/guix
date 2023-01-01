@@ -14,7 +14,7 @@
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Jesse Gildersleve <jessejohngildersleve@protonmail.com>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
@@ -70,6 +70,7 @@
   #:use-module (guix build-system asdf)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages base)
   #:use-module (gnu packages c)
   #:use-module (gnu packages compression)
@@ -13104,6 +13105,46 @@ cross-platform audio playback.")
 
 (define-public cl-out123
   (sbcl-package->cl-source-package sbcl-cl-out123))
+
+(define-public sbcl-cl-portaudio
+  (let ((commit "c50cd061c25216a736f684e45101f5c0188a384f")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-portaudio")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/filonenko-mikhail/cl-portaudio")
+               (commit commit)))
+         (file-name (git-file-name "cl-portaudio" version))
+         (sha256
+          (base32 "177c6bgf30caj5qpzfnzhbamax7c5zm2p4911mw7fay94vjs7zyb"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list portaudio sbcl-cffi sbcl-ffa))
+      (arguments
+       (list #:tests? #f ; Tests need access to sound cards
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-paths
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (substitute* "src/portaudio.lisp"
+                       (("libportaudio\\.so")
+                        (search-input-file inputs "/lib/libportaudio.so"))))))))
+      (synopsis "Common Lisp bindings to portaudio")
+      (description
+       "This package provides audio input and output functions to Common Lisp
+using bindings to the portaudio library.")
+      (home-page "https://github.com/filonenko-mikhail/cl-portaudio")
+      (license license:expat))))
+
+(define-public cl-portaudio
+  (sbcl-package->cl-source-package sbcl-cl-portaudio))
+
+(define-public ecl-cl-portaudio
+  (sbcl-package->ecl-package sbcl-cl-portaudio))
 
 (define-public sbcl-cl-random-forest
   (let ((commit "fedb36ce99bb6f4d7e3a7dd6d8b058f331308f91")
