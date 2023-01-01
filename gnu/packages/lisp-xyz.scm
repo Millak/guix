@@ -4036,6 +4036,38 @@ package.")
 (define-public ecl-cffi-c-ref
   (sbcl-package->ecl-package sbcl-cffi-c-ref))
 
+(define-public sbcl-ffa
+  (let ((commit "b7012f51c4c37d1e759ff9cf78cea178504d8e07")
+        (revision "1"))
+    (package
+      (name "sbcl-ffa")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/tpapp/ffa")
+               (commit commit)))
+         (file-name (git-file-name "cl-ffa" version))
+         (sha256
+          (base32 "0l7kqcjp3sn1129hpwq6zhjqc0ydx9gc53z7k13i38x3z1asap7a"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi sbcl-cl-utilities sbcl-iterate sbcl-metabang-bind))
+      (synopsis "Foreign friendly arrays for Common Lisp")
+      (description
+       "This package provides a macro that allows foreign functions to access
+the contents of the array at a given pointer, using the best available method
+given the Common Lisp implementation.")
+      (home-page "https://cliki.net/ffa")
+      (license license:llgpl))))
+
+(define-public cl-ffa
+  (sbcl-package->cl-source-package sbcl-ffa))
+
+(define-public ecl-ffa
+  (sbcl-package->ecl-package sbcl-ffa))
+
 (define-public sbcl-cl-sqlite
   (package
     (name "sbcl-cl-sqlite")
