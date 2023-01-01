@@ -3363,7 +3363,9 @@ visualization, matrix manipulation.")
            pango
            tbb
            eudev
-           wxwidgets
+           ;; prusa-slicer 2.5 segfaults on startup with wxwidgets 3.2
+           ;; See https://github.com/prusa3d/PrusaSlicer/issues/8299
+           wxwidgets-3.0
            zlib))
     (home-page "https://www.prusa3d.com/prusaslicer/")
     (synopsis "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)")
