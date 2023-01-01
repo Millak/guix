@@ -574,25 +574,23 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                 "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-
-             ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
-             (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "SETUP_PREFIX=" (assoc-ref %outputs "out"))
-             "INSTALL=install")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-pkg-config
-           (lambda _
-             (substitute* '("Makefile"
-                            "tests/run_tests.sh")
-               (("pkg-config")
-                ,(pkg-config-for-target)))))
-         (delete 'configure))))         ; no configure script
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "PREFIX=" #$output)
+              (string-append "SETUP_PREFIX=" #$output)
+              "INSTALL=install")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pkg-config
+            (lambda _
+              (substitute* '("Makefile"
+                             "tests/run_tests.sh")
+                (("pkg-config")
+                 #$(pkg-config-for-target)))))
+          (delete 'configure))))        ;no configure script
     (native-inputs
      (append
       (list bison
