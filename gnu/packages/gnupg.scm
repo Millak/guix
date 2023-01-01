@@ -94,15 +94,15 @@
 (define-public libgpg-error
   (package
     (name "libgpg-error")
-    (version "1.45")
+    (version "1.46")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "mirror://gnupg/libgpg-error/libgpg-error-"
-                           version ".tar.bz2"))
-       (sha256
-        (base32
-         "09haz1kk48b8q0hd58g98whylah0fp121yfgjms7pzsbzgj8w3sp"))))
+      (method url-fetch)
+      (uri (string-append "mirror://gnupg/libgpg-error/libgpg-error-"
+                          version ".tar.bz2"))
+      (sha256
+       (base32
+        "1396h4f9z9awzkkyb6iwspy2rmxb8nr47pj8fzrmxgkb4ij1mqdp"))))
     (build-system gnu-build-system)
     (arguments
      (cond
@@ -110,6 +110,7 @@
        (list
         #:modules '((guix build gnu-build-system)
                     (guix build utils))
+        #:configure-flags #~(list "--enable-install-gpg-error-config")
         #:phases
         #~(modify-phases %standard-phases
             ;; If this is left out, some generated header
