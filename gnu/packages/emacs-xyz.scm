@@ -3780,7 +3780,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -3789,7 +3789,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6ixw7gsx1g7x2xpj5ilslrjrlp6x2ynzh731hs3yf3n281715b"))))
+        (base32 "1855wi6ghi42ngjq3qyjr3p1nc57s257v9c98wqmb2n6vca5p2lp"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
