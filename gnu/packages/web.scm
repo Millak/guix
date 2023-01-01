@@ -7474,6 +7474,73 @@ object.  It's meant as a replacement for @code{HTML::Lint}, which is written
 in Perl but is not nearly as capable as @code{HTML::Tidy}.")
     (license license:artistic2.0)))
 
+(define-public gophernicus
+  ;; Contains some unreleased fixes.
+  (let ((commit "da3390089c2a856db1ab2e3bd9751b9a9101a33a")
+        (revision "0"))
+    (package
+      (name "gophernicus")
+      (version (git-version "3.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gophernicus/gophernicus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a7kpymwqcsqzszdxvcqppbg61bpyg9f7raj783pldm4kf2wjyij"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f                ; No tests
+             #:configure-flags
+             ;; Listener and hostname used only in configuration files, which
+             ;; we don't install.
+             ;; This is what's done in the release.sh script.
+             #~(list "--listener=none" "--hostname=HOSTNAME")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-version
+                   (lambda _
+                     (substitute* "Makefile.in"
+                       (("^(VERSION += ).*" _ prefix)
+                        (string-append prefix #$version "\n")))
+                     ;; This is done in the release.sh script.
+                     (substitute* "README.md"
+                       (("^(This release: Version )DEVEL\\b.*" _ prefix)
+                        (string-append prefix #$version "\n"))
+                       (("^NOTE: The master branch is rolling Development\\b.*")
+                        ""))))
+                 (replace 'configure
+                   ;; The configure script is hand-written, not from GNU autotools.
+                   (lambda* (#:key configure-flags #:allow-other-keys)
+                     (setenv "CC" #$(cc-for-target))
+                     (setenv "HOSTCC" "gcc")
+                     (apply invoke "./configure"
+                            (string-append "--prefix=" #$output)
+                            configure-flags))))))
+      ;; TODO: Make configure script find libwrap.
+      ;;(inputs
+      ;; (list tcp-wrappers))
+      (home-page "https://gophernicus.org/")
+      (synopsis "Gopher protocol server")
+      (description
+       "Gophernicus is a Gopher protocol server.  Its features include:
+@itemize
+@item written with security in mind;
+@item automatically generated Gopher menus;
+@item gophertags for virtually renaming directories;
+@item personal gopherspaces, located in @file{~/public_gopher/};
+@item virtual hosting;
+@item CGI support;
+@item output filtering and PHP support;
+@item charset support and conversions;
+@item selector rewriting;
+@item session tracking and statistics;
+@item TLS/SSL and proxy support.
+@end itemize")
+      (license license:bsd-2))))
+
 (define-public geomyidae
   (package
     (name "geomyidae")
