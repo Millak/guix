@@ -30464,7 +30464,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "3.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -30473,7 +30473,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1468y1ra4w4ihq68mfvddyijppj5sz143aawzg2nxdzphy9a84l2"))))
+        (base32 "16m8y56jyf44rj541fqb243pmbz9bk5py5zl1xhzal4fsk5bsfrg"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -30490,17 +30490,19 @@ Emacs that integrate with major modes like Org-mode.")
               (install-file "doc/modus-themes.info"
                             (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/modus-themes/")
-    (synopsis "Accessible themes (WCAG AAA)")
+    (synopsis "Accessible themes for Emacs (WCAG AAA standard)")
     (description
      "The Modus themes are designed for accessible readability.  They conform
 with the highest standard for color contrast between any given combination of
 background and foreground values.  This corresponds to the WCAG AAA standard,
 which specifies a minimum rate of distance in relative luminance of 7:1.
 
-Modus Operandi (modus-operandi) is a light theme, while Modus
-Vivendi (modus-vivendi) is dark.  Each theme’s color palette is designed to
-meet the needs of the numerous interfaces that are possible in the Emacs
-computing environment.")
+The Modus themes consist of six themes.  Modus Operandi is a light theme,
+while Modus Vivendi is dark.  Modus Operandi Tinted and Modus Vivendi Tinted
+are variants of the two main themes.  They slightly tone down the intensity of
+the background and provide a bit more color variety.  Modus Operandi
+Deuteranopia and its companion Modus Vivendi Deuteranopia are optimized for
+users with red-green color deficiency.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
