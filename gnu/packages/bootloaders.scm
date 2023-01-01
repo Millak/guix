@@ -573,18 +573,6 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                (base32
                 "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (append
-      (list bison
-            flex
-            libyaml
-            pkg-config
-            swig)
-      (if (member (%current-system) (package-supported-systems valgrind))
-          (list valgrind)
-          '())))
-    (inputs
-     (list python))
     (arguments
      `(#:make-flags
        (list (string-append "CC=" ,(cc-for-target))
@@ -605,6 +593,18 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                (("pkg-config")
                 ,(pkg-config-for-target)))))
          (delete 'configure))))         ; no configure script
+    (native-inputs
+     (append
+      (list bison
+            flex
+            libyaml
+            pkg-config
+            swig)
+      (if (member (%current-system) (package-supported-systems valgrind))
+          (list valgrind)
+          '())))
+    (inputs
+     (list python))
     (home-page "https://www.devicetree.org")
     (synopsis "Compiles device tree source files")
     (description "@command{dtc} compiles
