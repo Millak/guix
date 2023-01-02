@@ -444,14 +444,12 @@ needed.")
                (("default-goal: libs test") "default-goal: libs")
                (("all: libs shared-libs test") "all: libs shared-libs")
                ;; Work around upstream bug.
-               (("\\$\\(prefix\\)\\/\\$\\(libdir\\)") "$(libdir)"))
-             #t))
+               (("\\$\\(prefix\\)\\/\\$\\(libdir\\)") "$(libdir)"))))
          (add-before 'check 'pre-check
            (lambda _
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
-             (setenv "CC" ,(cc-for-target))
-             #t)))))
+             (setenv "CC" ,(cc-for-target)))))))
     (home-page "https://gtkd.org/")
     (synopsis "D binding and OO wrapper of GTK+")
     (description "This package provides bindings to GTK+ for D.")
