@@ -52,7 +52,7 @@
 ;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
@@ -4884,6 +4884,31 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
                 "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))))
+
+(define-public python-docx
+  (package
+    (name "python-docx")
+    (version "0.8.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-docx" version))
+              (sha256
+               (base32
+                "1i7bxghb7knlyjain101qg1jmmz2b6qj03bi3vfxhvcml0rx418i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list behave
+           python-flake8
+           python-mock
+           python-pyparsing
+           python-pytest))
+    (propagated-inputs
+     (list python-lxml))
+    (home-page "https://github.com/python-openxml/python-docx/")
+    (synopsis "Python library to create and modify Microsoft Word documents")
+    (description "This Python library can be used to create and update
+Microsoft Word (.docx) documents.")
+    (license license:expat)))
 
 (define-public python-restructuredtext-lint
   (package
