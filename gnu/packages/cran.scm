@@ -20462,14 +20462,14 @@ package.")
 (define-public r-yulab-utils
   (package
     (name "r-yulab-utils")
-    (version "0.0.5")
+    (version "0.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yulab.utils" version))
        (sha256
         (base32
-         "0sq5wc0mp84h6fs4wa2smvf7dcn0p0xarzb2ljvqc3p4vb2lvkbf"))))
+         "09bvj97xz9gishyhi1dzpjfl70v7xag8952fqfp60h18s6w52flp"))))
     (properties `((upstream-name . "yulab.utils")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=yulab.utils")
