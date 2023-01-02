@@ -413,14 +413,14 @@ needed.")
 (define-public gtkd
   (package
     (name "gtkd")
-    (version "3.9.0")
+    (version "3.10.0")
     (source
      (origin
       (method url-fetch/zipbomb)
       (uri (string-append "https://gtkd.org/Downloads/sources/GtkD-"
                           version ".zip"))
       (sha256
-       (base32 "0qv8qlpwwb1d078pnrf0a59vpbkziyf53cf9p6m8ms542wbcxllp"))))
+       (base32 "0vc5ssb3ar02mg2pngmdi1xg4qjaya8332a9mk0sv97x6b4ddy3g"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("unzip" ,unzip)
@@ -446,10 +446,11 @@ needed.")
                ;; Work around upstream bug.
                (("\\$\\(prefix\\)\\/\\$\\(libdir\\)") "$(libdir)"))
              #t))
-         (add-before 'check 'prepare-x
+         (add-before 'check 'pre-check
            (lambda _
              (system "Xvfb :1 &")
              (setenv "DISPLAY" ":1")
+             (setenv "CC" ,(cc-for-target))
              #t)))))
     (home-page "https://gtkd.org/")
     (synopsis "D binding and OO wrapper of GTK+")
