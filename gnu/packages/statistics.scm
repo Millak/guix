@@ -4318,17 +4318,17 @@ It uses and relies on grid graphics and formal (S4) classes and methods.")
 (define-public r-purrr
   (package
     (name "r-purrr")
-    (version "0.3.5")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "purrr" version))
        (sha256
         (base32
-         "1vzwajjw9h6jg5l82j7nkf3iraqmzwzh40s7q6wkq14awzbnqf52"))))
+         "1hm6lylx05s43rdk9q7xqdcydz495aim16c7xlw94lyw7v5l81kz"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-magrittr r-rlang))
+     (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/hadley/purrr")
