@@ -4720,13 +4720,13 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 (define-public r-rcppde
   (package
     (name "r-rcppde")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppDE" version))
               (sha256
                (base32
-                "1i9jj595nqpb16y22z2b8fcf0gq1fg0pbiisbd837p1cyw4nff69"))))
+                "1846pl9gxikycdvwfgy1gw41z0fx4ycjp5p4295v8k2pgvlqw8sa"))))
     (properties `((upstream-name . "RcppDE")))
     (build-system r-build-system)
     (propagated-inputs
