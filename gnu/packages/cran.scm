@@ -34629,19 +34629,18 @@ between them.")
 (define-public r-keras
   (package
     (name "r-keras")
-    (version "2.9.0")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keras" version))
        (sha256
         (base32
-         "06513d1fp7cxk4v03xm9lhgj6xmp9dqqvw3lnzwbzjwdkfj948yc"))))
+         "19r11mlxpdl09f7sfwzflnjhx2a6jgm57hjzg81pk8kprk4w7lvp"))))
     (properties `((upstream-name . "keras")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis
-           r-generics
+     (list r-generics
            r-glue
            r-magrittr
            r-r6
