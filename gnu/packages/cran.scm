@@ -34598,14 +34598,14 @@ Tensorflow graphs.")
 (define-public r-tensorflow
   (package
     (name "r-tensorflow")
-    (version "2.9.0")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tensorflow" version))
        (sha256
         (base32
-         "12c6ndxx4g6fqjakpzp9pgl29ghswhqyr6q9jahpk0cawizh2znj"))))
+         "1nqb3vgsw1xrpi1skw6yqwgdri3i8d9np0jylzfj7plizx63z64b"))))
     (properties `((upstream-name . "tensorflow")))
     (build-system r-build-system)
     (inputs (list tensorflow))
