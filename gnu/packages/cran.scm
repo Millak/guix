@@ -31437,14 +31437,14 @@ thinking for the fun stuff.")
 (define-public r-tokenizers
   (package
     (name "r-tokenizers")
-    (version "0.2.3")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tokenizers" version))
        (sha256
         (base32
-         "01s2bx35r8kc7c68jnhcbrk963v2mhd21gmf630w7i4xnx46nvb2"))))
+         "0a8wm4cff3hrll991h2rimw79kpf2jsn78y7yksdk8m18931wmr4"))))
     (properties `((upstream-name . "tokenizers")))
     (build-system r-build-system)
     (propagated-inputs
