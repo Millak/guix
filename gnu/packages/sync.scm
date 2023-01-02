@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015-2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2020, 2022-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -366,7 +366,7 @@ silently and reliably flow across to every other.")
 (define-public onedrive
   (package
     (name "onedrive")
-    (version "2.4.21")
+    (version "2.4.22")
     (source
       (origin
         (method git-fetch)
@@ -375,7 +375,7 @@ silently and reliably flow across to every other.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "04rnkc6ap9mkghvlj102f2gvnjqg3bs4vw9q3wm869fsflnm3599"))))
+         (base32 "1lh915rs3zjfgdjhn35bhnn6zfknj4xd86s5jj3wznifj4f5kn7w"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -391,16 +391,12 @@ silently and reliably flow across to every other.")
        #:phases
        #~(modify-phases %standard-phases
          (add-after 'unpack 'link-to-external-libraries
-           (lambda* (#:key inputs #:allow-other-keys)
-             (setenv "DCFLAGS" (string-append
-                                 ;; The default linker is ld.gold.
-                                 "--linker=\"\" "
-                                 ;; Only link necessary libraries.
-                                 "-L--as-needed "))))
+           (lambda _
+             ;; Only link necessary libraries.
+             (setenv "DCFLAGS" "-L--as-needed")))
          (add-after 'configure 'adjust-makefile
            (lambda _
              (substitute* "Makefile"
-               (("-L/gnu") "-Wl,-rpath=/gnu")
                (("-O ") "-O2 "))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
