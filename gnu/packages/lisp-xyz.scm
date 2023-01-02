@@ -23,7 +23,7 @@
 ;;; Copyright © 2020, 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
-;;; Copyright © 2021, 2022 André A. Gomes <andremegafone@gmail.com>
+;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
 ;;; Copyright © 2021, 2022 Cage <cage-dev@twistfold.it>
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
@@ -11082,6 +11082,46 @@ them as PNG files.")
 
 (define-public ecl-hdf5-cffi
   (sbcl-package->ecl-package sbcl-hdf5-cffi))
+
+(define-public sbcl-history-tree
+  (package
+    (name "sbcl-history-tree")
+    (version "0.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/history-tree")
+             (commit version)))
+       (file-name (git-file-name "cl-history-tree" version))
+       (sha256
+        (base32 "0z4mfgswfbpkh496qqk130yk6d0q0q5imqybw9n58aq4ygfhibhz"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list
+      sbcl-alexandria
+      sbcl-custom-hash-table
+      sbcl-local-time
+      sbcl-hu.dwim.defclass-star
+      sbcl-trivial-package-local-nicknames))
+    (native-inputs (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/history-tree")
+    (synopsis "Store the history of a browser's visited paths")
+    (description
+     "This data structure can be used to store the history of visited paths or
+URLs with a file or web browser, in a way that no “forward” element is ever
+forgotten.
+
+The history tree is “global” in the sense that multiple owners (e.g. tabs) can
+have overlapping histories.  On top of that, an owner can spawn another one,
+starting from one of its nodes (typically when you open a URL in a new tab).")
+    (license license:bsd-3)))
+
+(define-public cl-history-tree
+  (sbcl-package->cl-source-package sbcl-history-tree))
+
+(define-public ecl-history-tree
+  (sbcl-package->ecl-package sbcl-history-tree))
 
 (define-public sbcl-cl-randist
   (package
