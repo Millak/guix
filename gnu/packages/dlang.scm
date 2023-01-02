@@ -423,10 +423,10 @@ needed.")
        (base32 "0vc5ssb3ar02mg2pngmdi1xg4qjaya8332a9mk0sv97x6b4ddy3g"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("unzip" ,unzip)
-       ("ldc" ,ldc)
-       ("pkg-config" ,pkg-config)
-       ("xorg-server-for-tests" ,xorg-server-for-tests)))
+     (list unzip
+           ldc
+           pkg-config
+           xorg-server-for-tests))
     (arguments
      `(#:test-target "test"
        #:make-flags
