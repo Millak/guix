@@ -286,6 +286,30 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
     (license license:silofl1.1)))
 
+(define-public font-carlito
+  (let ((commit "64cab86c9b602088697294736b86f2831f3f44be")
+        (revision "0"))
+    (package
+      (name "font-carlito")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/carlito")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02wy8vs5m4whm5apl3p6cpz0qa9jwjj9qi219zjspiszha2ivssz"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/carlito")
+      (synopsis "Free alternative to Calibri")
+      (description
+       "Carlito is a font designed by Łukasz Dziedzic derived from
+Lato (also designed by Łukasz Dziedzic) that is metric-compatible with
+Calibri.")
+      (license license:silofl1.1))))
+
 (define-public font-gfs-ambrosia
   ;; Based on
   ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
