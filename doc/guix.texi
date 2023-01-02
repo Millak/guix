@@ -41130,6 +41130,7 @@ services)}.
 * SSH: Secure Shell.                                   Setting up the secure shell client.
 * Desktop: Desktop Home Services.                      Services for graphical environments.
 * Guix: Guix Home Services.                            Services for Guix.
+* Fonts: Fonts Home Services.                          Services for managing User's fonts.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -42011,6 +42012,35 @@ A typical extension for adding a channel might look like this:
                  (channel
                   (name 'variant-packages)
                   (url "https://example.org/variant-packages.git"))))
+@end lisp
+@end defvar
+
+@node Fonts Home Services
+@subsection Fonts Home Services
+
+The @code{(gnu home services fontutils)} module provides services for
+user-specific Fontconfig setup.  The
+@uref{https://www.freedesktop.org/wiki/Software/fontconfig,Fontconfig}
+library is used by many applications to access fonts on the system.
+
+@defvar home-fontconfig-service-type
+This is the service type for generating configurations for Fontconfig.
+Its associated value is a list of strings (or gexps) pointing to fonts
+locations.
+
+Generally, it is better to extend this service than to directly
+configure it, as its default value is the default Guix Home's profile
+font installation path (@file{~/.guix-home/profile/share/fonts}).  If
+you configure this service directly, be sure to include the above
+directory.
+
+A typical extension for adding an additional font directory might look
+like this:
+
+@lisp
+(simple-service 'additional-fonts-service
+                home-fontconfig-service-type
+                (list "~/.nix-profile/share/fonts"))
 @end lisp
 @end defvar
 

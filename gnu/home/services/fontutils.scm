@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,6 +22,7 @@
   #:use-module (gnu home services)
   #:use-module (gnu packages fontutils)
   #:use-module (guix gexp)
+  #:use-module (srfi srfi-1)
 
   #:export (home-fontconfig-service-type))
 
@@ -33,15 +35,17 @@
 ;;;
 ;;; Code:
 
-(define (add-fontconfig-config-file he-symlink-path)
+(define (add-fontconfig-config-file directories)
   `(("fontconfig/fonts.conf"
      ,(mixed-text-file
        "fonts.conf"
-       "<?xml version='1.0'?>
+       (apply string-append
+              `("<?xml version='1.0'?>
 <!DOCTYPE fontconfig SYSTEM 'fonts.dtd'>
-<fontconfig>
-  <dir>~/.guix-home/profile/share/fonts</dir>
-</fontconfig>"))))
+<fontconfig>\n" ,@(map (lambda (directory)
+                         (string-append "  <dir>" directory "</dir>\n"))
+                       directories)
+                "</fontconfig>\n"))))))
 
 (define (regenerate-font-cache-gexp _)
   `(("profile/share/fonts"
@@ -59,7 +63,9 @@
                        (service-extension
                         home-profile-service-type
                         (const (list fontconfig)))))
-                (default-value #f)
+                (compose concatenate)
+                (extend append)
+                (default-value '("~/.guix-home/profile/share/fonts"))
                 (description
                  "Provides configuration file for fontconfig and make
 fc-* utilities aware of font packages installed in Guix Home's profile.")))
