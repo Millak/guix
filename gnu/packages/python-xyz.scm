@@ -23569,7 +23569,7 @@ tool).")
      (list python-entrypoints
            python-numpy
            python-msgpack
-           python-typing-extensions-next))
+           python-typing-extensions))
     (native-inputs
      (list python-cython python-pytest python-setuptools-scm))
     (home-page "https://github.com/zarr-developers/numcodecs")
