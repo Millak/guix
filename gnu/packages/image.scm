@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -2181,8 +2181,9 @@ This package can be used to create @code{favicon.ico} files for web sites.")
       #:phases
       #~(modify-phases %standard-phases
           (replace 'check
-            (lambda _
-              (invoke "./aviftest" "../source/tests/data")))
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./aviftest" "../source/tests/data"))))
           (add-after 'install 'install-readme
             (lambda _
               (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
