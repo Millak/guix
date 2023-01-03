@@ -171,19 +171,12 @@ for tweening, preventing the need to hand-draw each frame.")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/synfigstudio-" version
-                                  ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/synfigstudio-" version ".tar.gz"))
               (sha256
                (base32
-                "1ql92kh9z8w2j9yi3pr7hn7wh2r2j35xynwv9xlwyd7niackgykn"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "src/synfigapp/pluginmanager.cpp"
-                    (("xmlpp::Node\\* n =")    "const xmlpp::Node* n =")
-                    (("xmlpp::Node::NodeList") "xmlpp::Node::const_NodeList"))
-                  #t))))
+                "07xjgs1qw0rwpihpcspj92rzwy5zizi86l9x2x7w6sysrj0wd4w8"))))
     (build-system gnu-build-system)
     (arguments
      (list
