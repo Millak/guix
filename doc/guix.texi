@@ -34907,27 +34907,24 @@ How often to run the node cleaning job.  The default is once per day, at
 
 The @code{(gnu services version-control)} module provides a service to
 allow remote access to local Git repositories.  There are three options:
-the @code{git-daemon-service}, which provides access to repositories via
+the @code{git-daemon-service-type}, which provides access to repositories via
 the @code{git://} unsecured TCP-based protocol, extending the
 @code{nginx} web server to proxy some requests to
 @code{git-http-backend}, or providing a web interface with
 @code{cgit-service-type}.
 
-@deffn {Scheme Procedure} git-daemon-service [#:config (git-daemon-configuration)]
-
-Return a service that runs @command{git daemon}, a simple TCP server to
+@defvar git-daemon-service-type
+Type for a service that runs @command{git daemon}, a simple TCP server to
 expose repositories over the Git protocol for anonymous access.
 
-The optional @var{config} argument should be a
-@code{<git-daemon-configuration>} object, by default it allows read-only
-access to exported@footnote{By creating the magic file
-@file{git-daemon-export-ok} in the repository directory.} repositories under
-@file{/srv/git}.
-
-@end deffn
+The value for this service type is a @code{<git-daemon-configuration>}
+record, by default it allows read-only access to exported@footnote{By
+creating the magic file @file{git-daemon-export-ok} in the repository
+directory.} repositories under @file{/srv/git}.
+@end defvar
 
 @deftp {Data Type} git-daemon-configuration
-Data type representing the configuration for @code{git-daemon-service}.
+Data type representing the configuration for @code{git-daemon-service-type}.
 
 @table @asis
 @item @code{package} (default: @code{git})
@@ -34964,8 +34961,8 @@ Whether to listen on an alternative port, which defaults to 9418.
 If not empty, only allow access to this list of directories.
 
 @item @code{extra-options} (default: @code{'()})
-Extra options will be passed to @command{git daemon}, please run
-@command{man git-daemon} for more information.
+Extra options that will be passed to @command{git daemon}.@footnote{Run
+@command{man git-daemon} for more information.}
 
 @end table
 @end deftp
