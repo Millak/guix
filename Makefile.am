@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+# Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 # Copyright © 2013 Andreas Enge <andreas@enge.fr>
 # Copyright © 2015, 2017 Alex Kost <alezost@gmail.com>
 # Copyright © 2016, 2018 Mathieu Lirzin <mthl@gnu.org>
@@ -289,6 +289,7 @@ MODULES =					\
   guix/import/print.scm				\
   guix/import/pypi.scm				\
   guix/import/stackage.scm			\
+  guix/import/test.scm   			\
   guix/import/texlive.scm   			\
   guix/import/utils.scm				\
   guix/scripts.scm				\
@@ -599,6 +600,7 @@ SH_TESTS =					\
   tests/guix-authenticate.sh			\
   tests/guix-environment.sh			\
   tests/guix-environment-container.sh		\
+  tests/guix-refresh.sh				\
   tests/guix-shell.sh				\
   tests/guix-shell-export-manifest.sh		\
   tests/guix-graph.sh				\
