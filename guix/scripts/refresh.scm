@@ -183,9 +183,31 @@ specified with `--select'.\n"))
   (newline)
   (show-bug-report-information))
 
+
+;;;
+;;; Utilities.
+;;;
+
+(define-record-type <update-spec>
+  (%update-spec package version)
+  update?
+  (package update-spec-package)
+  (version update-spec-version))
+
+(define* (update-spec package #:optional version)
+  (%update-spec package version))
+
+(define (update-specification->update-spec spec)
+  "Given SPEC, a package name like \"guile@2.0=2.0.8\", return a <update>
+record with two fields: the package to upgrade, and the target version."
+  (match (string-rindex spec #\=)
+    (#f  (update-spec (specification->package spec) #f))
+    (idx (update-spec (specification->package (substring spec 0 idx))
+                      (substring spec (1+ idx))))))
+
 (define (options->update-specs opts)
-  "Return the list of packages requested by OPTS, honoring options like
-'--recursive'."
+  "Return the list of <update-spec> records requested by OPTS, honoring
+options like '--recursive'."
   (define core-package?
     (let* ((input->package (match-lambda
                              ((name (? package? package) _ ...) package)
@@ -220,60 +242,43 @@ update would trigger a complete rebuild."
         (_
          (cons package lst)))))
 
-  (define args-packages
-    ;; Packages explicitly passed as command-line arguments.
-    (match (filter-map (match-lambda
+  (define update-specs
+    ;; Update specs explicitly passed as command-line arguments.
+    (match (append-map (match-lambda
                          (('argument . spec)
                           ;; Take either the specified version or the
                           ;; latest one.
-                          (update-specification->update-spec spec))
+                          (list (update-specification->update-spec spec)))
                          (('expression . exp)
-                          (read/eval-package-expression exp))
-                         (_ #f))
+                          (list (update-spec (read/eval-package-expression exp))))
+                         (('manifest . manifest)
+                          (map update-spec (packages-from-manifest manifest)))
+                         (_
+                          '()))
                        opts)
       (()                                         ;default to all packages
        (let ((select? (match (assoc-ref opts 'select)
                         ('core core-package?)
                         ('non-core (negate core-package?))
                         (_ (const #t)))))
-         (fold-packages (lambda (package result)
-                          (if (select? package)
-                              (keep-newest package result)
-                              result))
-                        '())))
+         (map update-spec
+              (fold-packages (lambda (package result)
+                               (if (select? package)
+                                   (keep-newest package result)
+                                   result))
+                             '()))))
       (some                                       ;user-specified packages
        some)))
 
-  (define packages
-    (match (assoc-ref opts 'manifest)
-      (#f args-packages)
-      ((? string? file) (packages-from-manifest file))))
-
   (if (assoc-ref opts 'recursive?)
-      (mlet %store-monad ((edges (node-edges %bag-node-type
-                                             (all-packages))))
-        (return (node-transitive-edges packages edges)))
+      (mlet* %store-monad ((edges (node-edges %bag-node-type (all-packages)))
+                           (packages -> (node-transitive-edges
+                                         (map update-spec-package update-specs)
+                                         edges)))
+        ;; FIXME: The 'version' field of each update spec is lost.
+        (return (map update-spec packages)))
       (with-monad %store-monad
-        (return packages))))
-
-
-;;;
-;;; Utilities.
-;;;
-
-(define-record-type <update-spec>
-  (update-spec package version)
-  update?
-  (package update-spec-package)
-  (version update-spec-version))
-
-(define (update-specification->update-spec spec)
-  "Given SPEC, a package name like \"guile@2.0=2.0.8\", return a <update>
-record with two fields: the package to upgrade, and the target version."
-  (match (string-rindex spec #\=)
-    (#f  (update-spec (specification->package spec) #f))
-    (idx (update-spec (specification->package (substring spec 0 idx))
-                      (substring spec (1+ idx))))))
+        (return update-specs))))
 
 
 ;;;
