@@ -23,6 +23,7 @@
 (define-module (gnu packages animation)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -185,17 +186,16 @@ for tweening, preventing the need to hand-draw each frame.")
                   #t))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This fixes the file chooser crash that happens with GTK 3.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share")))
-               (wrap-program (string-append out "/bin/synfigstudio")
-                 `("XDG_DATA_DIRS" ":" prefix (,gtk-share)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This fixes the file chooser crash that happens with GTK 3.
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((gtk (assoc-ref inputs "gtk+"))
+                     (gtk-share (string-append gtk "/share")))
+                (wrap-program (string-append #$output "/bin/synfigstudio")
+                  `("XDG_DATA_DIRS" ":" prefix (,gtk-share)))))))))
     (inputs
      (list gtkmm-3 gtk+ libsigc++ synfig))
     (native-inputs
