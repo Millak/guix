@@ -2172,11 +2172,9 @@ This package can be used to create @code{favicon.ico} files for web sites.")
      (list
       #:configure-flags
       #~(list "-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
-              #$@(if (string-prefix? "x86_64"
-                                     (or (%current-target-system)
-                                         (%current-system)))
-                     '("-DAVIF_CODEC_RAV1E=ON")
-                     '())
+              #$@(if (this-package-input "rav1e")
+                   '("-DAVIF_CODEC_RAV1E=ON")
+                   '())
               "-DAVIF_BUILD_TESTS=ON" "-DAVIF_BUILD_APPS=ON")
       #:phases
       #~(modify-phases %standard-phases
