@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -455,3 +455,35 @@ argument of the function (modify-linux)."
 flash a memory card with an operating system image suitable for the Raspberry
 Pi single board computer.")
     (license license:asl2.0)))
+
+(define-public waveshare-dtoverlays
+  (let ((commit "6ea99d4afb4776fdb008708f3f30df1de6fc24e3")
+        (revision "0"))
+    (package
+      (name "waveshare-dtoverlays")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/swkim01/waveshare-dtoverlays")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (modules '((guix build utils)))
+                ;; Delete pre-compiled device tree overlay binary files.
+                (snippet '(for-each delete-file (find-files "." "\\.dtbo$")))
+                (sha256
+                 (base32
+                  "1c30wnlinicwlivlri25wns6x8nx7asf5fh2zqxkzr9h1jsxbzwz"))))
+      (build-system gnu-build-system)
+      (arguments (list #:tests? #f      ;no test suite
+                       #:make-flags #~(list (string-append "PREFIX="
+                                                           #$output))
+                       #:phases #~(modify-phases %standard-phases
+                                    (delete 'configure))))
+      (native-inputs (list dtc))
+      (home-page "https://github.com/swkim01/waveshare-dtoverlays/")
+      (synopsis "Device tree overlays for WaveShare SpotPear TFT LCDs")
+      (description "This package contains device tree overlay binaries to
+support the WaveShare SpotPear @acronym{TFT, Thin-Film Transistor}
+@acronym{LCDs, Liquid Crystal Display} on the Raspberry Pi.")
+      (license license:gpl3+))))
