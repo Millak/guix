@@ -171,6 +171,13 @@ dictionaries, including personal ones.")
                      (base32
                       "1svls9p7rsfi3hs0afh0cssj006qb4v1ik2yzqgj8hm10c6as2sm")))
 
+(define-public aspell-dict-bn
+  (aspell-dictionary "bn" "Bengali"
+                     #:version "0.01.1-1"
+                     #:sha256
+                     (base32
+                      "1nc02jd67iggirwxnhdvlvaqm0xfyks35c4psszzj3dhzv29qgxh")))
+
 (define-public aspell-dict-ca
   (let ((version "2.5.0")
         (sha256
