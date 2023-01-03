@@ -34534,7 +34534,16 @@ package.")
          "0cx5k0mzn6bm8ff58yrqz3hjidxcawxgqbpijnynvin1m4395i4j"))))
     (properties `((upstream-name . "qs")))
     (build-system r-build-system)
-    (inputs (list zlib))
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Our zstd is at 1.5.0, but this package bundles 1.5.2.
+         (add-after 'unpack 'use-older-zstd
+           (lambda _
+             (substitute* "configure"
+               (("100502") "100500")))))))
+    (inputs (list lz4 zlib (list zstd "lib")))
     (propagated-inputs
      (list r-rapiserialize r-rcpp r-stringfish))
     (native-inputs
