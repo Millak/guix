@@ -2202,11 +2202,8 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                           (list avifenc* avifdec*))))))))
     (inputs
      (append
-      ;; XXX: rav1e depends on rust, which currently only works on x86_64.
-      ;; See also the related configure flag when changing this.
-      (if (string-prefix? "x86_64" (or (%current-target-system)
-                                       (%current-system)))
-          (list rav1e) '())
+      (if (member (%current-system) (package-transitive-supported-systems rav1e))
+        (list rav1e) '())
       (list dav1d libaom zlib libpng libjpeg-turbo)))
     (outputs (list "out"
                    "tools"))  ; avifenc & avifdec
