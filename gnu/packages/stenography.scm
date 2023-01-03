@@ -28,12 +28,13 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages bash)
-  #:use-module (gnu packages qt)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages wxwidgets))
 
 (define-public python-plover-stroke
@@ -85,7 +86,9 @@
             (lambda* (#:key inputs #:allow-other-keys)
               (wrap-program (string-append #$output "/bin/plover")
                 `("QT_PLUGIN_PATH" prefix
-                  ,(list (search-input-directory inputs "/lib/qt5/plugins/")))))))))
+                  (,(search-input-directory inputs "/lib/qt5/plugins/")))
+                `("LD_LIBRARY_PATH" prefix
+                  (,(string-append #$(this-package-input "dbus") "/lib")))))))))
     (native-inputs
      (list python-babel
            python-mock
@@ -94,6 +97,7 @@
            python-pytest-xvfb))
     (inputs
      (list bash-minimal
+           dbus
            python-appdirs
            python-dbus
            python-hidapi
