@@ -123,68 +123,37 @@ C++ @dfn{Standard Template Library} (STL).")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/synfig-" version
-                                  ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/synfig-" version ".tar.gz"))
               (sha256
                (base32
-                "1vy27kl68sbg41sfasa58k3p2nc1xfalvzk3k9gich9h90rpnpsz"))))
+                "01kgfmjfjk5y0v9ldmxzc8zzvbiaakz7nzg4hkj24gj3j6h8566d"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       ;; The Boost library path is taken from the value of BOOST_LDFLAGS.
-       (list (string-append "BOOST_LDFLAGS=-L"
-                            (assoc-ref %build-inputs "boost")
-                            "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-boost-build-error
-           ;; A chain of Boost headers leads to this error: "make_array" is
-           ;; not a member of "boost::serialization".  This can be avoided by
-           ;; loading the "array_wrapper" header first.
-           (lambda _
-             (substitute* "src/synfig/valuenodes/valuenode_dynamic.cpp"
-               (("#include <boost/numeric/odeint/integrate/integrate.hpp>" match)
-                (string-append
-                 "#include <boost/serialization/array_wrapper.hpp>\n" match)))
-             #t))
-         (add-after 'unpack 'adapt-to-libxml++-changes
-          (lambda _
-            (substitute* "configure"
-              (("libxml\\+\\+-2\\.6") "libxml++-3.0"))
-            (substitute* (append (find-files "src/modules/" "\\.cpp$")
-                                 (find-files "src/synfig/" "\\.(cpp|h)$"))
-              (("add_child\\(") "add_child_element(")
-              (("get_child_text\\(") "get_first_child_text(")
-              (("set_child_text\\(") "set_first_child_text(")
-              (("remove_child\\(") "remove_node("))
-            (substitute* "src/modules/mod_svg/svg_parser.cpp"
-              (("xmlpp::Node::NodeList") "xmlpp::Node::const_NodeList"))
-            #t)))))
     (inputs
-     `(("boost" ,boost)
-       ("ffmpeg" ,ffmpeg)
-       ("libdv" ,libdv)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libmng" ,libmng)
-       ("zlib" ,zlib)))
-    ;; synfig.pc lists the following as required: Magick++ freetype2
-    ;; fontconfig fftw OpenEXR ETL glibmm-2.4 giomm-2.4 libxml++-3.0 sigc++-2.0
-    ;; cairo pango pangocairo mlt++
+     (list boost
+           libdv
+           libjpeg-turbo
+           libpng
+           libmng
+           zlib))
+    ;; synfig.pc lists the following as required: Magick++ libavcodec
+    ;; libavformat libswscale freetype2 fontconfig OpenEXR ETL glibmm-2.4
+    ;; giomm-2.4 libxml++-2.6 sigc++-2.0 cairo fftw3 pango pangocairo mlt++
     (propagated-inputs
-     `(("cairo" ,cairo)
-       ("etl" ,etl)
-       ("fftw" ,fftw)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glibmm" ,glibmm)
-       ("imagemagick" ,imagemagick)
-       ("libxml++" ,libxml++)
-       ("libsigc++" ,libsigc++)
-       ("mlt" ,mlt-6)
-       ("openexr" ,openexr-2)
-       ("pango" ,pango)))
+     (list cairo
+           etl
+           ffmpeg-4
+           fftw
+           fontconfig
+           freetype
+           glibmm-2.64
+           imagemagick
+           libxml++-2
+           libsigc++
+           mlt-6
+           openexr-2
+           pango))
     (native-inputs
      (list intltool pkg-config))
     (home-page "https://www.synfig.org")
