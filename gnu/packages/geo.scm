@@ -2826,6 +2826,36 @@ coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
     (license license:expat)))
 
+(define-public python-haversine
+  (package
+    (name "python-haversine")
+    (version "2.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    ;; There are no tests in the PyPi archive.
+                    (url "https://github.com/mapado/haversine")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0inxyj5n4jzgg5xiadqx9sk83gdx5ff989l9s04smdzbd3b8c0c8"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-numpy))
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (replace 'check
+                  (lambda* (#:key tests? inputs #:allow-other-keys)
+                    (when tests?
+                      (invoke "pytest")))))))
+    (home-page "https://github.com/mapado/haversine")
+    (synopsis "Calculate the distance between 2 points on Earth")
+    (description "This package provides functions to calculate the
+distance in various units between two points on Earth using their
+latitude and longitude.")
+    (license license:expat)))
+
 (define-public gplates
   (package
     (name "gplates")
