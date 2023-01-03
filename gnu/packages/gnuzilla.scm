@@ -70,8 +70,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages fonts)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages libevent)
-  #:use-module (gnu packages libreoffice)  ;for hunspell
   #:use-module (gnu packages image)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages pulseaudio)
