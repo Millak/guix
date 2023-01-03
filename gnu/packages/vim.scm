@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -692,7 +692,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.8.1")
+    (version "0.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -701,7 +701,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "08qyni2qg63ghxl50am97pajdhkp05s1cglis3mlvkxx3pvzkrli"))))
+                "1jjw9a42l7wrziki2qznn7wiw5r59n4hs9i6g2hxnjyzixpg9xvl"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
