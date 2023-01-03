@@ -340,7 +340,7 @@ path to the repository."
                     (sha256 (base32 ,(guix-hash-url temp)))))))
         'no-source-information)))
 
-(define* (opam->guix-package name #:key (repo 'opam) version)
+(define* (opam->guix-package name #:key (repo 'opam) version #:allow-other-keys)
   "Import OPAM package NAME from REPOSITORY (a directory name) or, if
 REPOSITORY is #f, from the official OPAM repository.  Return a 'package' sexp
 or #f on failure."

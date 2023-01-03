@@ -62,6 +62,7 @@
 ;;; Copyright © 2022 Bird <birdsite@airmail.cc>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4711,7 +4712,7 @@ create smoother and stable videos.")
 (define-public libopenshot
   (package
     (name "libopenshot")
-    (version "0.2.7")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4720,7 +4721,7 @@ create smoother and stable videos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i9bsn8gklm1mvj60l3d3xrxdgy8svpxjfqcwsr308j5zjn30pv8"))
+                "0q2899hbaqwh1gxyl9x84l116g82glk0wmr3r1xvfwb107m3mvx9"))
               (modules '((guix build utils)))
               (snippet '(begin
                           ;; Allow overriding of the python installation dir
@@ -4746,6 +4747,7 @@ create smoother and stable videos.")
            libopenshot-audio
            qtbase-5
            qtmultimedia-5
+           qtsvg-5
            zeromq))
     (arguments
      `(#:configure-flags
@@ -4774,7 +4776,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
 (define-public openshot
   (package
     (name "openshot")
-    (version "2.6.1")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4783,7 +4785,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0pa8iwl217503bjlqg2zlrw5lxyq5hvxrf5apxrh3843hj1w1myv"))
+                "1az59whx9sga6m8m2c3ndfls5h07r0jn4jipnyxckpxl32vpd147"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4795,10 +4797,12 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            font-dejavu
            libopenshot
            python
-           python-pyqt
+           python-pyqt-without-qtwebkit
+           python-pyqtwebengine
            python-pyzmq
            python-requests
-           qtsvg-5))
+           qtsvg-5
+           qtwebengine-5))
     (arguments
      `(#:modules ((guix build python-build-system)
                   (guix build qt-utils)
@@ -4820,12 +4824,6 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                           (("fonts") "share/fonts/truetype")
                           (("[A-Za-z_-]+.ttf") "DejaVuSans.ttf")))
                       #t))
-                  ;; https://github.com/OpenShot/openshot-qt/issues/4502
-                  (add-before 'ensure-no-mtimes-pre-1980 'fix-symbolic-link
-                    (lambda _
-                      (delete-file "images/Humanity/actions/custom/razor_line_with_razor.png")
-                      (symlink "../../../../src/timeline/media/images/razor_line_with_razor.png"
-                               "images/Humanity/actions/custom/razor_line_with_razor.png")))
                   (add-before 'install 'set-tmp-home
                     (lambda _
                       ;; src/classes/info.py "needs" to create several
@@ -4834,10 +4832,16 @@ API.  It includes bindings for Python, Ruby, and other languages.")
                       #t))
                   (add-after 'install 'wrap-program
                     (lambda* (#:key outputs inputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
+                      (let ((out (assoc-ref outputs "out"))
+                            (qtwebengine-process-path
+                             (search-input-file
+                              inputs "/lib/qt5/libexec/QtWebEngineProcess")))
                         (wrap-qt-program "openshot-qt"
-                                         #:output out #:inputs inputs))
-                      #t)))))
+                                         #:output out #:inputs inputs)
+                        ;; Help the program discover QtWebEngine at runtime.
+                        (wrap-program (string-append out "/bin/openshot-qt")
+                          `("QTWEBENGINEPROCESS_PATH" =
+                            (,qtwebengine-process-path)))))))))
     (home-page "https://www.openshot.org/")
     (synopsis "Video editor")
     (description "OpenShot takes your videos, photos, and music files and
@@ -4892,9 +4896,7 @@ transitions, and effects and then export your film to many common formats.")
                  `("PATH" ":" prefix
                    ,(list (string-append mlt "/bin"))))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python-wrapper" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+     (list pkg-config python-wrapper qttools-5))
     (inputs
      (list bash-minimal
            ffmpeg
@@ -4902,9 +4904,6 @@ transitions, and effects and then export your film to many common formats.")
            frei0r-plugins
            jack-1
            ladspa
-           lame
-           libvpx
-           libx264
            mlt
            pulseaudio
            qtbase-5
@@ -4914,7 +4913,6 @@ transitions, and effects and then export your film to many common formats.")
            qtquickcontrols-5
            qtquickcontrols2-5
            qtsvg-5
-           qtwebkit
            qtwebsockets-5
            qtx11extras
            sdl2))
@@ -5600,7 +5598,7 @@ for details on how to change this.")
 (define-public svtplay-dl
   (package
     (name "svtplay-dl")
-    (version "4.14")
+    (version "4.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5609,7 +5607,7 @@ for details on how to change this.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1wdrdszalvhv80m5jizbvjz4jc08acmbpxcsslyfb5cwh842in8m"))))
+                "0yjxmvldskw4pji3lg69pbx05izvxahz9my7z5p31mkiz6v33dmx"))))
     (build-system python-build-system)
     (inputs (list ffmpeg python-pyaml python-requests python-pysocks
                   python-cryptography))

@@ -5,6 +5,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
              (ice-9 format)
              (ice-9 regex)
              (ice-9 match)
+             (ice-9 rdelim)
              (guix ui)
              (git))
 
@@ -623,14 +625,38 @@ and REV-END, two git revision strings."
      (const 0))
     files))
 
+(define (git-patch->commit-id file)
+  "Parse the commit ID from the first line of FILE, a patch produced with git."
+  (call-with-input-file file
+    (lambda (port)
+      (let ((m (string-match "^From ([0-9a-f]{40})" (read-line port))))
+        (unless m
+          (error "invalid patch file:" file))
+        (match:substring m 1)))))
+
+(define (git-patch->revisions file)
+  "Return the start and end revisions of FILE, a patch file produced with git."
+  (let* ((rev-end (git-patch->commit-id file))
+         (rev-start (string-append rev-end "^")))
+    (list rev-start rev-end)))
+
 
 (define (main . args)
   (match args
     (("cc" . team-names)
      (apply cc (map find-team team-names)))
+    (("cc-members" patch-file)
+     (unless (file-exists? patch-file)
+       (error "patch file does not exist:" patch-file))
+     (apply main "cc-members" (git-patch->revisions patch-file)))
     (("cc-members" rev-start rev-end)
      (apply cc (find-team-by-scope
                 (diff-revisions rev-start rev-end))))
+    (("get-maintainer" patch-file)
+     (apply main "list-members"
+            (map (compose symbol->string team-id)
+                 (find-team-by-scope (apply diff-revisions
+                                            (git-patch->revisions patch-file))))))
     (("list-teams" . args)
      (list-teams))
     (("list-members" . team-names)
@@ -643,9 +669,15 @@ and REV-END, two git revision strings."
              "Usage: etc/teams.scm <command> [<args>]
 
 Commands:
-  cc <team-name>            get git send-email flags for cc-ing <team-name>
-  cc-members <start> <end>  cc teams related to files changed between revisions
-  list-teams                list teams and their members
-  list-members <team-name>  list members belonging to <team-name>~%"))))
+  cc <team-name>
+      get git send-email flags for cc-ing <team-name>
+  cc-members <start> <end> | patch
+      cc teams related to files changed between revisions or in a patch file
+  list-teams
+      list teams and their members
+  list-members <team-name>
+      list members belonging to <team-name>
+  get-maintainer <patch>
+      compatibility mode with Linux get_maintainer.pl~%"))))
 
 (apply main (cdr (command-line)))

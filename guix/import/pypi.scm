@@ -492,7 +492,7 @@ VERSION, SOURCE-URL, HOME-PAGE, SYNOPSIS, DESCRIPTION, and LICENSE."
 
 (define pypi->guix-package
   (memoize
-   (lambda* (package-name #:key repo version)
+   (lambda* (package-name #:key version #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME from pypi.org, and return the
 `package' s-expression corresponding to that package, or #f on failure."
      (let* ((project (pypi-fetch package-name))

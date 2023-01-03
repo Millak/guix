@@ -1766,3 +1766,27 @@ and modifying @acronym{UDF, Universal Disk Format} file systems.
 and other optical media.  It supports read-only media (DVD/CD-R)
 and rewritable media that wears out (DVD/CD-RW).")
     (license license:gpl2+)))
+
+(define-public fuse-overlayfs
+  (package
+    (name "fuse-overlayfs")
+    (version "1.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/fuse-overlayfs")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "085hrz0nrdsjfjci0z2qfyqrydn8wwdp790dx2x67hwdw1kib3wp"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list fuse-3))
+    (home-page "https://github.com/containers/fuse-overlayfs")
+    (synopsis "FUSE implementation of overlayfs")
+    (description "This package provides an implementation of overlay+shiftfs
+in FUSE for rootless containers.")
+    (license license:gpl3)))

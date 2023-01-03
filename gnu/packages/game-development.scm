@@ -1194,93 +1194,61 @@ interface (API).")
 (define-public python-pygame
   (package
     (name "python-pygame")
-    (version "1.9.4")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pygame" version))
               (sha256
                (base32
-                "1dn0nb86jl7yr8709cncxdr0yrmviqakw7zx3g8jbbwrr60if3bh"))))
+                "0g6j79naab7583kymf1bgxc5l5c9h5laq887rmvh8vw8iyifrl6n"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                ; tests require pygame to be installed first
-       #:phases
-       (modify-phases %standard-phases
-         ;; Set the paths to the dependencies manually because
-         ;; the configure script does not allow passing them as
-         ;; parameters.  This also means we can skip the configure
-         ;; phase.
-         (add-before 'build 'set-library-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((sdl-ref   (assoc-ref inputs "sdl"))
-                   (font-ref  (assoc-ref inputs "sdl-ttf"))
-                   (image-ref (assoc-ref inputs "sdl-image"))
-                   (mixer-ref (assoc-ref inputs "sdl-mixer"))
-                   (smpeg-ref (assoc-ref inputs "libsmpeg"))
-                   (png-ref   (assoc-ref inputs "libpng"))
-                   (jpeg-ref  (assoc-ref inputs "libjpeg"))
-                   (freetype-ref (assoc-ref inputs "freetype"))
-                   (v4l-ref   (assoc-ref inputs "v4l-utils"))
-                   (out-ref   (assoc-ref outputs "out")))
-               (substitute* "Setup.in"
-                 (("SDL = -I/usr/include/SDL")
-                  (string-append "SDL = -I" sdl-ref "/include/SDL -I.")))
-               (substitute* "Setup.in"
-                 (("FONT = -lSDL_ttf")
-                  (string-append "FONT = -I" font-ref "/include/SDL -L"
-                                 font-ref "/lib -lSDL_ttf")))
-               (substitute* "Setup.in"
-                 (("IMAGE = -lSDL_image")
-                  (string-append "IMAGE = -I" image-ref "/include/SDL -L"
-                                 image-ref "/lib -lSDL_image")))
-               (substitute* "Setup.in"
-                 (("MIXER = -lSDL_mixer")
-                  (string-append "MIXER = -I" mixer-ref "/include/SDL -L"
-                                 mixer-ref "/lib -lSDL_mixer")))
-               (substitute* "Setup.in"
-                 (("SMPEG = -lsmpeg")
-                  (string-append "SMPEG = -I" smpeg-ref "/include/smpeg -L"
-                                 smpeg-ref "/lib -lsmpeg")))
-               (substitute* "Setup.in"
-                 (("PNG = -lpng")
-                  (string-append "PNG = -I" png-ref "/include -L"
-                                 png-ref "/lib -lpng")))
-               (substitute* "Setup.in"
-                 (("JPEG = -ljpeg")
-                  (string-append "JPEG = -I" jpeg-ref "/include -L"
-                                 jpeg-ref "/lib -ljpeg")))
-
-               (substitute* "Setup.in"
-                 (("FREETYPE = -lfreetype")
-                  (string-append "FREETYPE = -I" freetype-ref "/include/freetype2 -L"
-                                 freetype-ref "/lib -lfreetype")))
-
-               (substitute* "Setup.in"
-                 (("^pypm") "#pypm"))
-               ;; Create a path to a header file provided by v4l-utils.
-               (system* "mkdir" "linux")
-               (system* "ln" "--symbolic"
-                        (string-append v4l-ref "/include/libv4l1-videodev.h")
-                        "linux/videodev.h")
-               (system* "ln" "--symbolic" "Setup.in" "Setup")))))))
+     (list
+      #:tests? #f                 ; tests require pygame to be installed first
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-config
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("origincdirs = \\[.*\\]")
+                 "origincdirs = os.environ['C_INCLUDE_PATH'].split(\":\")")
+                (("ORIGLIBDIRS") "LIBRARY_PATH")
+                (("incdirs = \\[\\]") "incdirs = origincdirs")
+                (("libdirs = \\[\\]") "libdirs = origlibdirs"))))
+          (add-after 'unpack 'fix-sdl2-headers
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h")
+                (("SDL_image.h") "SDL2/SDL_image.h")
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/imageext.c"
+                (("SDL_image.h") "SDL2/SDL_image.h"))
+              (substitute* "src_c/font.h"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h"))
+              (substitute* "src_c/mixer.h"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/_sdl2/mixer.c"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h")))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     `(("freetype" ,freetype)
-       ("sdl" ,sdl)
-       ("sdl-image" ,sdl-image)
-       ("sdl-mixer" ,sdl-mixer)
-       ("sdl-ttf" ,sdl-ttf)
-       ("sdl-gfx" ,sdl-gfx)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libX11" ,libx11)
-       ("libsmpeg" ,libsmpeg)
-       ("portmidi" ,portmidi)
-       ("v4l-utils" ,v4l-utils)))
+     (list freetype
+           sdl2
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf
+           sdl2-gfx
+           libjpeg-turbo
+           libpng
+           libx11
+           libsmpeg
+           portmidi
+           v4l-utils))
     (home-page "https://www.pygame.org")
     (synopsis "SDL wrapper for Python")
     (description "Pygame is a set of Python modules designed for writing games.
-Pygame adds functionality on top of the excellent SDL library. This allows you
-to create fully featured games and multimedia programs in the python language.")
+It adds functionality on top of the SDL library, allowing you to create games
+and multimedia programs in the Python language.")
     (license (list license:bsd-2
                    ;; python numeric license as listed by Debian looks like
                    ;; an Expat-style license with a warranty disclaimer for

@@ -5614,6 +5614,18 @@ add a meta-data file @file{.guix-channel} that contains:
   (directory "guix"))
 @end lisp
 
+The modules must be @b{underneath} the specified directory, as the
+@code{directory} changes Guile's @code{load-path}.  For example, if
+@file{.guix-channel} has @code{(directory "base")}, then a module
+defined as @code{(define-module (gnu packages fun))} must be located at
+@code{base/gnu/packages/fun.scm}.
+
+Doing this allows for only parts of a repository to be used as a
+channel, as Guix expects valid Guile modules when pulling.  For
+instance, @command{guix deploy} machine configuration files are not
+valid Guile modules, and treating them as such would make @command{guix
+pull} fail.
+
 @node Declaring Channel Dependencies
 @section Declaring Channel Dependencies
 
@@ -13486,6 +13498,10 @@ references to package variables.  This is useful when generated package
 definitions are to be appended to existing user modules, as the list of
 used package modules need not be changed.  The default is
 @option{--style=variable}.
+
+When @option{--prefix=license:} is added, the importer will prefix
+license atoms with @code{license:}, allowing a prefixed import of
+@code{(guix licenses)}.
 
 When @option{--archive=bioconductor} is added, metadata is imported from
 @uref{https://www.bioconductor.org/, Bioconductor}, a repository of R

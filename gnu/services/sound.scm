@@ -204,17 +204,13 @@ computed-file object~%") file))))
                   '()
                   `(("default.pa.d" ,(extra-script-files->file-union
                                       extra-script-files))))
-            ,@(if (null? daemon-conf)
-                  '()
-                  `(("daemon.conf"
-                     ,(apply mixed-text-file "daemon.conf"
-                             "default-script-file = " default-script-file "\n"
-                             (map pulseaudio-conf-entry daemon-conf)))))
-            ,@(if (null? client-conf)
-                  '()
-                  `(("client.conf"
-                     ,(apply mixed-text-file "client.conf"
-                             (map pulseaudio-conf-entry client-conf))))))))))))
+            ("daemon.conf"
+             ,(apply mixed-text-file "daemon.conf"
+                     "default-script-file = /etc/pulse/default.pa\n"
+                     (map pulseaudio-conf-entry daemon-conf)))
+            ("client.conf"
+             ,(apply mixed-text-file "client.conf"
+                     (map pulseaudio-conf-entry client-conf))))))))))
 
 (define pulseaudio-service-type
   (service-type

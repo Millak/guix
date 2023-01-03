@@ -23,6 +23,7 @@
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -183,7 +184,10 @@ information.")
                    (,(string-append qtbase "/lib/qt5/plugins/platforms"))))
                #t))))))
     (inputs
-     (list python-pypdf2 python-pyqt python-poppler-qt5 qtbase-5))
+     (list python-poppler-qt5
+           python-pypdf2
+           python-pyqt-without-qtwebkit
+           qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
     (description "@command{flyer-composer} can be used to prepare one- or
@@ -1201,6 +1205,35 @@ information for every pixel as the input.")
     (description
       "fbida contains a few applications for viewing and editing images on
 the framebuffer.")
+    (license license:gpl2+)))
+
+(define-public pdfcrack
+  (package
+    (name "pdfcrack")
+    (version "0.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/pdfcrack/pdfcrack/"
+                                  "pdfcrack-" version "/"
+                                  "pdfcrack-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d751n38cbagxqpw6ncvf3jfv7zhxl3fwh5nms2bjp6diyqjk2vv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure) ;no configure script
+                        (replace 'install
+                          (lambda _
+                            (install-file "pdfcrack"
+                                          (string-append #$output "/bin")))))))
+    (home-page "https://pdfcrack.sourceforge.net/")
+    (synopsis "Password recovery tool for PDF files")
+    (description "PDFCrack is a simple tool for recovering passwords from PDF
+documents that use the standard security handler.")
     (license license:gpl2+)))
 
 (define-public pdf2svg

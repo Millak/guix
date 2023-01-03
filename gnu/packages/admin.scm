@@ -2608,14 +2608,14 @@ characters can be replaced as well, as can UTF-8 characters.")
 (define-public tree
   (package
     (name "tree")
-    (version "2.0.4")
+    (version "2.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://mama.indstate.edu/users/ice/tree/src/tree-"
                     version ".tgz"))
               (sha256
-               (base32 "0x7s9wxvf83fw4qah16kapswl2277pybw3d514zrlms9g0cr5smh"))))
+               (base32 "1xmbxgx72w7ddjlqsx1yys076hp3h7ll968bhdmdrc7jpwswaq01"))))
     (build-system gnu-build-system)
     (arguments
      (list

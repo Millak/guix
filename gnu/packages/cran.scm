@@ -17,7 +17,7 @@
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2019 Nicolò Balzarotti <anothersms@gmail.com>
-;;; Copyright © 2019, 2020, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
+;;; Copyright © 2019, 2020, 2021, 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019 Arne Babenhauserheide <arne_bab@web.de>
 ;;; Copyright © 2019, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Todor Kondić <tk.code@protonmail.com>
@@ -1123,6 +1123,61 @@ easy to create functions that are isolated from their environment.  These
 isolated functions, also called crates, print to the console with their total
 size and can be easily tested locally before being sent to a remote.")
     (license license:gpl3)))
+
+(define-public r-climaemet
+  (package
+    (name "r-climaemet")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "climaemet" version))
+              (sha256
+               (base32
+                "1z0i8iz7f32kns8j1yb3sp2m0zhl4pgp4bf52aiqykjp9i791dqm"))))
+    (properties `((upstream-name . "climaemet")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggplot2
+           r-httr
+           r-jsonlite
+           r-rappdirs
+           r-readr
+           r-rlang
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://ropenspain.github.io/climaemet/")
+    (synopsis "Climate AEMET Tools")
+    (description
+     "This package provides tools to download the climatic data of the Spanish
+Meteorological Agency (AEMET) directly from R using their API and create
+scientific graphs (climate charts, trend analysis of climate time series,
+temperature and precipitation anomalies maps, warming stripes graphics,
+climatograms, etc.).")
+    (license license:gpl3)))
+
+(define-public r-climatol
+  (package
+    (name "r-climatol")
+    (version "3.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "climatol" version))
+              (sha256
+               (base32
+                "0p3nk4n7izj0cmmqd9apa1gix5lfdzp08ydy0n7rkl5kbkmrkb6n"))))
+    (properties `((upstream-name . "climatol")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mapdata r-maps))
+    (home-page "http://www.climatol.eu/")
+    (synopsis "Climate tools")
+    (description
+     "This package provides functions for the quality control, homogenization
+and missing data infilling of climatological series, and to obtain
+climatological summaries and grids from the results.  Also functions to draw
+wind-roses and Walter&Lieth climate diagrams are included.")
+    (license license:gpl2+)))
 
 (define-public r-clipr
   (package
@@ -4015,6 +4070,26 @@ work well on small screens.")
 data store designed for maximum speed.")
     (license license:asl2.0)))
 
+(define-public r-mapdata
+  (package
+    (name "r-mapdata")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "mapdata" version))
+              (sha256
+               (base32
+                "1m2r4c8f7fp900g3sdjbfxxnxjla86hn75jd8hi96ms188p0j8b0"))))
+    (properties `((upstream-name . "mapdata")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-maps))
+    (home-page "https://cran.r-project.org/package=mapdata")
+    (synopsis "Extra map databases")
+    (description
+     "This is a supplement to the @code{maps} package providing the larger
+and/or higher-resolution databases.")
+    (license license:gpl2)))
+
 (define-public r-maps
   (package
     (name "r-maps")
@@ -4645,13 +4720,13 @@ and Francois (2011, JSS), and the book by Eddelbuettel (2013, Springer); see
 (define-public r-rcppde
   (package
     (name "r-rcppde")
-    (version "0.1.6")
+    (version "0.1.7")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RcppDE" version))
               (sha256
                (base32
-                "1i9jj595nqpb16y22z2b8fcf0gq1fg0pbiisbd837p1cyw4nff69"))))
+                "1846pl9gxikycdvwfgy1gw41z0fx4ycjp5p4295v8k2pgvlqw8sa"))))
     (properties `((upstream-name . "RcppDE")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5776,14 +5851,14 @@ data).  Weighted versions of MLE, MME and QME are available.")
 (define-public r-energy
   (package
     (name "r-energy")
-    (version "1.7-10")
+    (version "1.7-11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "energy" version))
        (sha256
         (base32
-         "19xyw5bkyzfk22gly2ca2nsznqnrhaq4a77727kr1k26bj3y8gal"))))
+         "04b55ckmaqbnlpifg4w7smvly03kqycklvbg9x8d4yf902q8z7y2"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-boot r-gsl r-rcpp))
@@ -6181,6 +6256,38 @@ to access PostgreSQL database systems.")
     ;; under the PostgreSQL license.
     (license license:gpl2)))
 
+(define-public r-rpostgres
+  (package
+    (name "r-rpostgres")
+    (version "1.4.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RPostgres" version))
+       (sha256
+        (base32
+         "1z6diaq4kwinl97d1v9cb96j8mrkj2s2v4ml1vykgy1jqi40dk69"))))
+    (properties `((upstream-name . "RPostgres")))
+    (build-system r-build-system)
+    (inputs (list postgresql))
+    (propagated-inputs
+     (list r-bit64
+           r-blob
+           r-dbi
+           r-hms
+           r-lubridate
+           r-plogr
+           r-rcpp
+           r-withr))
+    (native-inputs
+     (list pkg-config r-knitr))
+    (home-page "https://rpostgres.r-dbi.org")
+    (synopsis "Rcpp Interface to PostgreSQL")
+    (description
+     "This package provides a fully @code{DBI}-compliant @code{Rcpp}-backed
+interface to @code{PostgreSQL}, a relational database.")
+    (license license:gpl3)))
+
 (define-public r-linprog
   (package
     (name "r-linprog")
@@ -6269,14 +6376,14 @@ multivariate and 5 functional classification problems are included.")
 (define-public r-gower
   (package
     (name "r-gower")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gower" version))
        (sha256
         (base32
-         "0p9qx9aafkdm7wibfwk59jzw6vspsff6zwp84bc40lg0myxbf737"))))
+         "1z0mhfp8xp7rk9i820pkvspm6mwih24g6b5rqs63m37sbs79ssi9"))))
     (build-system r-build-system)
     (home-page "https://github.com/markvanderloo/gower")
     (synopsis "Gower's distance")
@@ -7367,14 +7474,14 @@ multivariate function estimation using smoothing splines.")
 (define-public r-cli
   (package
     (name "r-cli")
-    (version "3.4.1")
+    (version "3.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "cli" version))
        (sha256
         (base32
-         "0kklv5zy9rhly8fr7fdl3dlm3hr81yvbqd5cdz38b1lbzpxmwn0w"))))
+         "1p3gzq30f7hpr3v2s555z18r0y57zq2h03kijv7rl48lqzbnrjwc"))))
     (build-system r-build-system)
     (home-page "https://github.com/r-lib/cli#readme")
     (synopsis "Helpers for developing command line interfaces")
@@ -7641,13 +7748,13 @@ iVAT).")
 (define-public r-xfun
   (package
     (name "r-xfun")
-    (version "0.35")
+    (version "0.36")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "xfun" version))
        (sha256
-        (base32 "04x6y7f3f105fzxn2kzmvfz0zqf2v28g8aqnsln6q9n4lm74vz45"))))
+        (base32 "1vk930bn7rp2qp8yvmd9d3lgi10rgf20n62jr3lfwi6hf7jhs5x8"))))
     (build-system r-build-system)
     ;; knitr itself depends on xfun
     #;
@@ -7812,6 +7919,28 @@ Phytophthora infestans.  It includes a variant file, a sequence file and an
 annotation file.  This package is intended to be used as example data for
 packages that work with genomic data.")
    (license license:gpl2+)))
+
+(define-public r-piton
+  (package
+    (name "r-piton")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "piton" version))
+       (sha256
+        (base32 "1krf6zi238m275nxjlpyayv8y2drbgs2kg19dpkqm0lmlz5y5ar8"))))
+    (properties `((upstream-name . "piton")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (home-page "https://github.com/Ironholds/piton")
+    (synopsis "Parsing expression grammars in Rcpp")
+    (description
+     "This package provides a wrapper around the Parsing Expression Grammar
+Template Library, a C++11 library for generating parsing expression grammars,
+that makes it accessible within Rcpp.  With this, developers can implement
+their own grammars and easily expose them in R packages.")
+    (license license:expat)))
 
 (define-public r-uuid
   (package
@@ -10928,14 +11057,14 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.4.4")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "1h6fcqw4bg644lwr5jggphyxp2d0ycya9q869z8099a50gc6h03f"))))
+         "19kms5pjgb5mjqyqzgnpykd5divbkrs5apz8z27ivgw78iizsqh6"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-r6 r-uuid r-xml2 r-zip))
@@ -17380,6 +17509,33 @@ library.")
 profiling R code.")
     (license license:gpl3)))
 
+(define-public r-prospectr
+  (package
+    (name "r-prospectr")
+    (version "0.2.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "prospectr" version))
+              (sha256
+               (base32
+                "1p53hcgcs2p09zhc2n7byjzrgvcgz6w7q00mlsn4kmnz7l4p7rrm"))))
+    (properties `((upstream-name . "prospectr")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-foreach
+           r-iterators
+           r-lifecycle
+           r-mathjaxr
+           r-rcpp
+           r-rcpparmadillo))
+    (home-page "https://github.com/l-ramirez-lopez/prospectr")
+    (synopsis "Functions for processing and sample selection of spectroscopic data")
+    (description
+     "@code{prospectr} provides miscellaneous functions to preprocess
+spectroscopic data and conduct representative sample selection, or calibration
+sampling.")
+    (license license:expat)))
+
 (define-public r-protviz
   (package
     (name "r-protviz")
@@ -18961,6 +19117,26 @@ methods.")
     ;; Any version of the GPL
     (license license:gpl2+)))
 
+(define-public r-unglue
+  (package
+    (name "r-unglue")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "unglue" version))
+       (sha256
+        (base32 "0w8ld4xllx0lj1jz8i2sj92f8136hlwri1d8ldpg1ymxj7aw93vg"))))
+    (properties `((upstream-name . "unglue")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=unglue")
+    (synopsis "Extract matched substrings using a pattern")
+    (description
+     "This package lets you use syntax inspired by the package @code{glue} to
+extract matched substrings in a more intuitive and compact way than by using
+standard regular expressions.")
+    (license license:gpl3)))
+
 (define-public r-untb
   (package
     (name "r-untb")
@@ -20286,14 +20462,14 @@ package.")
 (define-public r-yulab-utils
   (package
     (name "r-yulab-utils")
-    (version "0.0.5")
+    (version "0.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "yulab.utils" version))
        (sha256
         (base32
-         "0sq5wc0mp84h6fs4wa2smvf7dcn0p0xarzb2ljvqc3p4vb2lvkbf"))))
+         "09bvj97xz9gishyhi1dzpjfl70v7xag8952fqfp60h18s6w52flp"))))
     (properties `((upstream-name . "yulab.utils")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/package=yulab.utils")
@@ -24732,6 +24908,34 @@ dissimilarity useful for clustering mixed data, and, optionally, perform the
 clustering.")
     (license license:gpl2+)))
 
+(define-public r-treemap
+  (package
+    (name "r-treemap")
+    (version "2.4-3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "treemap" version))
+       (sha256
+        (base32 "1fg8gygw38x7msn32barx2irvcv8flm6wqvipnbj1qkh9w89y3q4"))))
+    (properties `((upstream-name . "treemap")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-colorspace
+           r-data-table
+           r-ggplot2
+           r-gridbase
+           r-igraph
+           r-rcolorbrewer
+           r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=treemap")
+    (synopsis "Treemap visualization")
+    (description
+     "A treemap is a space-filling visualization of hierarchical structures.
+This package offers great flexibility to draw treemaps.")
+    (license license:gpl3+)))
+
 (define-public r-acrosstic
   (package
     (name "r-acrosstic")
@@ -27330,14 +27534,14 @@ output in R.")
 (define-public r-bdgraph
   (package
     (name "r-bdgraph")
-    (version "2.71")
+    (version "2.72")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "BDgraph" version))
        (sha256
         (base32
-         "1lihsbliq7f91ywdq5cabzd5fbyhb10h62ss3n2l7i2fdglb77d1"))))
+         "1kc3icd7glivbjlhl9fbmxqza5w2x000w0w8ii8np9gjrhdwrybw"))))
     (properties `((upstream-name . "BDgraph")))
     (build-system r-build-system)
     (propagated-inputs
@@ -28174,14 +28378,14 @@ Encyclopedia of Integer Sequences} (OEIS) in the function help page.")
 (define-public r-isoband
   (package
     (name "r-isoband")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "isoband" version))
        (sha256
         (base32
-         "18s3mdzl9y8v5fpvdy6iyqp3j57kw8bwhgan94373xjkaya61r17"))))
+         "0qfzkkvh4a97qlifhdqjgdnzmnph93qqyqsv5gg8cnxl8crj54vn"))))
     (properties `((upstream-name . "isoband")))
     (build-system r-build-system)
     (native-inputs
@@ -29935,14 +30139,14 @@ formal inference.")
 (define-public r-gaston
   (package
     (name "r-gaston")
-    (version "1.5.8")
+    (version "1.5.9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "gaston" version))
        (sha256
         (base32
-         "1pv37csq3gvkld7hfxgbq72n35gx1wg3bvrcvzzzf0qsfb6g42cc"))))
+         "1f4pr5s4p4rw1smvsh2gwjxp7hh43j1fpadl286ma9i62kirpyq7"))))
     (properties `((upstream-name . "gaston")))
     (build-system r-build-system)
     (inputs (list zlib))
@@ -30278,14 +30482,14 @@ censored data.")
 (define-public r-flexsurv
   (package
     (name "r-flexsurv")
-    (version "2.2")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexsurv" version))
        (sha256
         (base32
-         "0244amsyf2izih6008n2535r3ddksgdnys8pyslrcb1c09spmjrw"))))
+         "1xqsihvrb8b5mzkr3mhg0ydm8kkcw1k0kgp6ndyavw8yahl059as"))))
     (properties `((upstream-name . "flexsurv")))
     (build-system r-build-system)
     (propagated-inputs
@@ -31233,14 +31437,14 @@ thinking for the fun stuff.")
 (define-public r-tokenizers
   (package
     (name "r-tokenizers")
-    (version "0.2.3")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tokenizers" version))
        (sha256
         (base32
-         "01s2bx35r8kc7c68jnhcbrk963v2mhd21gmf630w7i4xnx46nvb2"))))
+         "0a8wm4cff3hrll991h2rimw79kpf2jsn78y7yksdk8m18931wmr4"))))
     (properties `((upstream-name . "tokenizers")))
     (build-system r-build-system)
     (propagated-inputs
@@ -31297,20 +31501,20 @@ vignettes in all common formats.")
 (define-public r-tidytext
   (package
     (name "r-tidytext")
-    (version "0.3.4")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidytext" version))
        (sha256
         (base32
-         "0mk75wdiy4mixj1xlksw9ns4ajlj8ak90sgchjcg1zb90qp7gg56"))))
+         "1ywx4zhx1a0r1lyd11w3cbz33silpx5m1sk9rd3kvj21wvfdramk"))))
     (properties `((upstream-name . "tidytext")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
            r-generics
-           r-hunspell
            r-janeaustenr
            r-lifecycle
            r-matrix
@@ -32499,13 +32703,13 @@ annealing.")
 (define-public r-mlr3tuning
   (package
     (name "r-mlr3tuning")
-    (version "0.17.1")
+    (version "0.17.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mlr3tuning" version))
               (sha256
                (base32
-                "03habi7dm5xgwfb4zjn9nhvyym46qcljy31jz32fxalsap1mk9jb"))))
+                "1w08bwk843nfs3d810lnfh3wmd7gkq9141m7lcn9ail2x4ib91bb"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbotk
@@ -34394,14 +34598,14 @@ Tensorflow graphs.")
 (define-public r-tensorflow
   (package
     (name "r-tensorflow")
-    (version "2.9.0")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tensorflow" version))
        (sha256
         (base32
-         "12c6ndxx4g6fqjakpzp9pgl29ghswhqyr6q9jahpk0cawizh2znj"))))
+         "1nqb3vgsw1xrpi1skw6yqwgdri3i8d9np0jylzfj7plizx63z64b"))))
     (properties `((upstream-name . "tensorflow")))
     (build-system r-build-system)
     (inputs (list tensorflow))
@@ -34425,19 +34629,18 @@ between them.")
 (define-public r-keras
   (package
     (name "r-keras")
-    (version "2.9.0")
+    (version "2.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "keras" version))
        (sha256
         (base32
-         "06513d1fp7cxk4v03xm9lhgj6xmp9dqqvw3lnzwbzjwdkfj948yc"))))
+         "19r11mlxpdl09f7sfwzflnjhx2a6jgm57hjzg81pk8kprk4w7lvp"))))
     (properties `((upstream-name . "keras")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ellipsis
-           r-generics
+     (list r-generics
            r-glue
            r-magrittr
            r-r6

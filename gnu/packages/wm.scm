@@ -56,7 +56,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
-;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022, 2023 Trevor Richards <trev@trevdev.ca>
 ;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
@@ -2357,6 +2357,25 @@ PNG files.")
 interface[fn:dbus-spec].  It shows notifications using stumpwm:message
 by default.")
     (license license:gpl3+)))
+
+(define-public sbcl-stumpwm-battery-portable
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-battery-portable")
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-cl-ppcre
+           (list stumpwm "lib")))
+    (arguments
+     '(#:asd-systems '("battery-portable")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "modeline/battery-portable"))))))
+    (synopsis "Battery level indicator for StumpWM")
+    (description "This module provides a battery level indicator for the
+modeline.  It can be displayed in the modeline with %B.")
+    (license (list license:expat license:gpl3+))))
 
 (define-public lemonbar
   (package

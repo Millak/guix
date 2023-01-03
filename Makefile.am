@@ -689,6 +689,7 @@ EXTRA_DIST +=						\
   etc/guix-install.sh					\
   etc/historical-authorizations				\
   etc/news.scm						\
+  etc/kernels-manifest.scm				\
   etc/release-manifest.scm				\
   etc/source-manifest.scm				\
   etc/system-tests.scm					\

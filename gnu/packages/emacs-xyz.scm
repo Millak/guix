@@ -14,7 +14,7 @@
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2019 Alex Griffin <a@ajgrf.com>
-;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016, 2017, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2016-2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
@@ -81,7 +81,7 @@
 ;;; Copyright © 2020, 2021, 2022 Niklas Eklund <niklas.eklund@posteo.net>
 ;;; Copyright © 2020 Marco Grassi <marco.au.grassi98@protonmail.com>
 ;;; Copyright © 2020 Tomás Ortín Fernández <tomasortin@mailbox.org>
-;;; Copyright © 2020, 2021 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2020-2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2020 Adam Kandur <rndd@tuta.io>
 ;;; Copyright © 2020 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
@@ -261,7 +261,7 @@
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
-    (version "0.28.1")
+    (version "0.28.2")
     (source
      (origin
        (method git-fetch)
@@ -270,7 +270,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "111as99278vbv6pwj8rpl308g327f8iznnrz71mngl6d5mr0xpa1"))))
+        (base32 "01sif1pw3shhdzcg9vidc2j5cqmrgjh5kynicf5mh3kmlvvsg9k6"))))
     (build-system emacs-build-system)
     (arguments
      '(#:phases
@@ -647,6 +647,26 @@ current buffer.")
        "Abstract Emacs Lisp framework for tree navigation.")
       (license license:gpl3+))))
 
+(define-public emacs-hide-lines
+  (package
+    (name "emacs-hide-lines")
+    (version "20210513.1636")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vapniks/hide-lines.git")
+                    (commit "f0828c15e50db5eddb905de783e7683b04d1eca3")))
+              (sha256
+               (base32
+                "1pw0wp1pzy6snycvz12nj0q7jxxj07h3lqas184w44nhrira7qhj"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/vapniks/hide-lines")
+    (synopsis "Commands for hiding lines based on a regexp")
+    (description
+     "This package provides commands to hide lines based on a regular
+expression.")
+    (license license:gpl3+)))
+
 (define-public emacs-hgignore-mode
   ;; From 2021-03-14.
   ;; No releases available.
@@ -672,6 +692,33 @@ current buffer.")
 editing @file{.hgignore} files used by the Mercurial version control
 system.")
       (license license:gpl3+))))
+
+(define-public emacs-hsluv
+  (package
+    (name "emacs-hsluv")
+    (version "20181127.1206")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hsluv/hsluv-emacs.git")
+                    (commit "c3bc5228e30d66e7dee9ff1a0694c2b976862fc0")))
+              (sha256
+               (base32
+                "19q8qlq4s2kfydpadkq1zd92611dvq7dr8vlhlbd9gplzpx7dhfd"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-seq))
+    (home-page "https://github.com/hsluv/hsluv-emacs")
+    (synopsis "HSLuv color space conversions")
+    (description
+     "This package provides an elisp implementation of the HSLUV colorspace
+conversions documented on @url{http://www.hsluv.org/}.  HSLuv is a
+human-friendly alternative to HSL.  CIELUV is a color space designed for
+perceptual uniformity based on human experiments.  When accessed by polar
+coordinates, it becomes functionally similar to HSL with a single problem: its
+chroma component doesn't fit into a specific range.  HSLuv extends CIELUV with
+a new saturation component that allows you to span all the available chroma as
+a neat percentage.")
+    (license license:expat)))
 
 (define-public emacs-platformio-mode
   (package
@@ -3733,7 +3780,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
 (define-public emacs-cape
   (package
     (name "emacs-cape")
-    (version "0.11")
+    (version "0.12")
     (source
      (origin
        (method git-fetch)
@@ -3742,7 +3789,7 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0z6ixw7gsx1g7x2xpj5ilslrjrlp6x2ynzh731hs3yf3n281715b"))))
+        (base32 "1855wi6ghi42ngjq3qyjr3p1nc57s257v9c98wqmb2n6vca5p2lp"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/cape")
     (synopsis "Completion at point extensions for Emacs")
@@ -7412,14 +7459,14 @@ user.")
 (define-public emacs-subed
   (package
     (name "emacs-subed")
-    (version "1.0.28")
+    (version "1.0.29")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.nongnu.org/nongnu/subed-"
                                   version ".tar"))
               (sha256
                (base32
-                "0z1bxg5sqvvm9zblbjyfp5llq0v1pkjq9c7ygais8ad68ck1b51f"))))
+                "0q2sfdypj929y4fllk97rsb2bxm9a1izjy1f0z2viz5hz0hpqp26"))))
     (arguments
      (list
       #:tests? #t
@@ -8053,7 +8100,7 @@ features:
 (define-public emacs-company-math
   (package
     (name "emacs-company-math")
-    (version "1.5")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -8062,10 +8109,10 @@ features:
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "010p3rhb7win6ndx3ilz2lcg69d2qyxfvpi0hcid2srzxffpwn3i"))))
+        (base32 "1pj10i7ml5d2spcmf8035ngcq5zc6rs3lqx09d0qj6bsghglr6j3"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-math-symbol-lists emacs-company))
+     (list emacs-company emacs-math-symbol-lists))
     (home-page "https://github.com/vspinu/company-math")
     (synopsis "Completion backends for math symbols and @code{LaTeX} tags")
     (description
@@ -10167,7 +10214,7 @@ interface.")
   (let ((commit "004cee6b8e01f8eb0cb1c683d0a637b14890600f"))
     (package
       (name "emacs-orderless")
-      (version "0.8")
+      (version "1.0")
       (source
        (origin
          (method git-fetch)
@@ -10366,6 +10413,37 @@ call.")
       (synopsis "Bridge for Tempel templates with Eglot")
       (description "This package is an adapter to use the Tempel templating
 library with Eglot instead of Yasnippet.")
+      (license license:gpl3+))))
+
+(define-public emacs-consult-xdg-recent-files
+  (let ((commit "593023ffb99a368152ebd4e739488fa560bdfdea")
+        (revision "0"))
+    (package
+      (name "emacs-consult-xdg-recent-files")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/hrehfeld/consult-xdg-recent-files")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0nd23n67dmlflw52dc1rbhy04mc9ymydnsmvfr75hqb7sznn3343"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-consult))
+      (home-page "https://github.com/hrehfeld/consult-xdg-recent-files")
+      (synopsis "Include files used by other programs than Emacs in Consult")
+      (description
+       "This package provides the ability to include files used by other
+programs in the candidate lists of commands like @code{consult-recent-file}
+and @code{consult-buffer}.  This allows to use the same interface for file
+opening.
+
+On systems that comply with the XDG specification, these files are listed in
+the file @file{recently-used.xbel}, which is found in the directory
+@file{~/.local/share} or the location described by the environment variable
+@code{XDG_DATA_HOME}.")
       (license license:gpl3+))))
 
 (define-public emacs-consult-yasnippet
@@ -15471,7 +15549,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "0.5")
+    (version "0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -15480,7 +15558,7 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1za73zszj373r8pxf89cwwfrwsf8dy6nxciw11adcccrm92xwdsz"))))
+                "1jgsjhrfdd72a0na4s1qp8yc24mbgrpxkv8yqac0vgqipg98cdg6"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/tempel")
     (synopsis "Simple templates for Emacs")
@@ -15488,6 +15566,29 @@ been adapted to also work with mu4e.")
      "Tempel is a tiny template package for Emacs, which uses the syntax of
 the Emacs Tempo library.  You may also write your templates in Lisp.")
     (license license:gpl3+)))
+
+(define-public emacs-tempel-collection
+  (let ((commit "cd9529b2a2fdfd49010117d2a1fc49adf9725051")
+        (revision "0"))
+    (package
+      (name "emacs-tempel-collection")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/Crandel/tempel-collection")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02x6jq5k7fa46ni64qf8wrmkay6zfbmkildb727zs6wchmyg2znn"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-tempel))
+      (home-page "https://github.com/Crandel/tempel-collection")
+      (synopsis "Collection of TempEl templates")
+      (description "This package provides a collection of templates for
+the Emacs TempEl package.")
+      (license license:gpl3+))))
 
 (define-public emacs-yasnippet
   (package
@@ -16502,13 +16603,13 @@ containing words from the Rime project.")
 (define-public emacs-pyim
   (package
     (name "emacs-pyim")
-    (version "5.2.8")
+    (version "5.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/pyim-" version ".tar"))
        (sha256
-        (base32 "1klarzr5lfga09ysq3c7gkgmzl6r08gpl4519x5damxd82x4r3y2"))))
+        (base32 "0blsz344jq1zx4qs73zinb8fhh2a35k5nx12i2wn76902qx2qc6j"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-async emacs-popup emacs-posframe emacs-xr))
@@ -17916,7 +18017,7 @@ multiplexer.")
 (define-public emacs-plz
   (package
     (name "emacs-plz")
-    (version "0.2.1")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -17925,7 +18026,7 @@ multiplexer.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0p0xd532xa8icysyxwqk481lr9xanmp68gf97fd9n2936gp12chv"))))
+        (base32 "1ack4rajjdmb3fqz5v394rqpvn9mfvbkrxra27yrcqz97mma1ki7"))))
     (build-system emacs-build-system)
     (inputs (list curl))
     (arguments
@@ -22179,7 +22280,7 @@ powerful Org contents.")
 (define-public emacs-org-re-reveal
   (package
     (name "emacs-org-re-reveal")
-    (version "3.16.1")
+    (version "3.17.0")
     (source
      (origin
        (method git-fetch)
@@ -22188,7 +22289,7 @@ powerful Org contents.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jzr7xlzinhfb0197anbkrr5zrs13f7kyznr5q3zyxdndhg6a53n"))))
+        (base32 "1bp3kz2awy2mizs59qsa2yl7wfa0197fklnramzifz6z2zv5kbrx"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-htmlize emacs-org))
@@ -26458,7 +26559,7 @@ comments.")
 (define-public emacs-libmpdel
   (package
     (name "emacs-libmpdel")
-    (version "1.3.1")
+    (version "2.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -26467,7 +26568,7 @@ comments.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0fsg2si7afrnsz91i0ziza6nbc4ds9kpnr2z71wf6896zb1afhfx"))))
+                "03bavca89cf7dsjmg7hb48qnvca41ndiij33iw5yjjhbq1zyj8r4"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -26538,13 +26639,57 @@ developers to define user-interfaces based on tablists (also known as
 tabulated-lists).")
     (license license:gpl3+)))
 
+(define-public emacs-eat
+  (package
+    (name "emacs-eat")
+    (version "0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/akib/emacs-eat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0zs1fwbapgsap8vai97f1inginb896gl15kyjm521nvaywk4rc12"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; Remove generated terminfo database.
+            (delete-file-recursively "terminfo")))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:include #~(cons* "^term/"
+                         "^terminfo/"
+                         "^integration/"
+                         "\\.ti$"
+                         %default-include)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'build-info
+            (lambda _
+              (invoke "make" "info")))
+          (add-before 'install 'build-terminfo-database
+            (lambda _
+              (invoke "make" "terminfo"))))))
+    (native-inputs
+     (list ncurses texinfo))
+    (home-page "https://codeberg.org/akib/emacs-eat")
+    (synopsis "Terminal emulator in Emacs")
+    (description
+     "Eat (Emulate A Terminal) is a terminal emulator in Emacs, written in
+pure Elisp.  It has features like complete mouse support and shell
+integration.")
+    (license license:gpl3+)))
+
 (define-public emacs-vterm
-  (let ((version "0.0.1")
-        (revision "1")
-        (commit "b44723552f86407d528c4a6c8057382c061b008e"))
+  (let ((commit "e19dc2bb9859a75616bf068c341a540d0d329e4d"))
     (package
       (name "emacs-vterm")
-      (version (git-version version revision commit))
+      (version "0.0.2")
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -26553,7 +26698,7 @@ tabulated-lists).")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0rq2skwylvc7s4vfpbbsdykws4akyp9sc6xgrh2ql5yydhhnv2h3"))))
+                  "0iqlzpy83ra6xz406fmddfj72bmkdb5b1j59m1dbxf3wxn55320d"))))
       (build-system emacs-build-system)
       (arguments
        `(#:modules ((guix build emacs-build-system)
@@ -28911,7 +29056,7 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-counsel-tramp
   (package
     (name "emacs-counsel-tramp")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method git-fetch)
@@ -28920,7 +29065,7 @@ well as an option for visually flashing evaluated s-expressions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18qlwyjqxap2qfbz14ma6yqp4p3v4q2y8idc355s4szjdd2as2lr"))))
+        (base32 "02dhchmyaqv6855mafjxizzgpl32rmnwdmw0nbm6rkckr13cgjl1"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-counsel))
@@ -28933,14 +29078,14 @@ well as an option for visually flashing evaluated s-expressions.")
 (define-public emacs-tramp
   (package
     (name "emacs-tramp")
-    (version "2.5.4")
+    (version "2.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "tramp-" version ".tar"))
        (sha256
-        (base32 "1ap2niqskbj81xqhdi4lzh3646g9rwh3iw5qgyl3fw7cfq945fsl"))))
+        (base32 "1y58k0qdc9i3av61p9ks7hg5vynsi2zslv5mswcbd1wf23iggr7c"))))
     (build-system emacs-build-system)
     (arguments
      (list
@@ -30075,6 +30220,28 @@ challenge the three computer opponents in one player mode.  You can
 even train opponent slimes.")
     (license license:gpl3+)))
 
+(define-public emacs-syslog-mode
+  (package
+    (name "emacs-syslog-mode")
+    (version "20210910.1952")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vapniks/syslog-mode.git")
+                    (commit "072664784dae41a573a9de8d178bf577b7526b82")))
+              (sha256
+               (base32
+                "04ddpn6il6mh1f992x3fxl6yljryghi51q4845lx08cbc74wnfz0"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-hide-lines emacs-ov emacs-hsluv))
+    (home-page "https://github.com/vapniks/syslog-mode")
+    (synopsis "Major-mode for viewing log files and strace output")
+    (description "This library provides a major-mode for viewing syslog and
+strace files.  You can highlight and filter the lines of the file by regular
+expressions and by timestamp, view notes associated with files, extract text,
+count matches, etc.")
+    (license license:gpl3+)))
+
 (define-public emacs-systemd-mode
   (package
     (name "emacs-systemd-mode")
@@ -30295,7 +30462,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "3.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method git-fetch)
@@ -30304,7 +30471,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1468y1ra4w4ihq68mfvddyijppj5sz143aawzg2nxdzphy9a84l2"))))
+        (base32 "16m8y56jyf44rj541fqb243pmbz9bk5py5zl1xhzal4fsk5bsfrg"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
@@ -30321,17 +30488,19 @@ Emacs that integrate with major modes like Org-mode.")
               (install-file "doc/modus-themes.info"
                             (string-append #$output "/share/info")))))))
     (home-page "https://protesilaos.com/modus-themes/")
-    (synopsis "Accessible themes (WCAG AAA)")
+    (synopsis "Accessible themes for Emacs (WCAG AAA standard)")
     (description
      "The Modus themes are designed for accessible readability.  They conform
 with the highest standard for color contrast between any given combination of
 background and foreground values.  This corresponds to the WCAG AAA standard,
 which specifies a minimum rate of distance in relative luminance of 7:1.
 
-Modus Operandi (modus-operandi) is a light theme, while Modus
-Vivendi (modus-vivendi) is dark.  Each theme’s color palette is designed to
-meet the needs of the numerous interfaces that are possible in the Emacs
-computing environment.")
+The Modus themes consist of six themes.  Modus Operandi is a light theme,
+while Modus Vivendi is dark.  Modus Operandi Tinted and Modus Vivendi Tinted
+are variants of the two main themes.  They slightly tone down the intensity of
+the background and provide a bit more color variety.  Modus Operandi
+Deuteranopia and its companion Modus Vivendi Deuteranopia are optimized for
+users with red-green color deficiency.")
     (license (list license:gpl3+
                    license:fdl1.3+)))) ; GFDLv1.3+ for the manual
 
@@ -30832,7 +31001,7 @@ icon support, git integration, and several other utilities.")
 (define-public emacs-mood-line
   (package
     (name "emacs-mood-line")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -30841,7 +31010,7 @@ icon support, git integration, and several other utilities.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g29di2g8w8639z8d73kq9x2p8krzmjfn1bqd5jsv28v77j80k8h"))))
+        (base32 "1j2fjsqbv2f7m1hrrb18gl4cj4kn749xkvpm2p82d7rh4a37q2pr"))))
     (build-system emacs-build-system)
     (home-page "https://gitlab.com/jessieh/mood-line")
     (synopsis "Minimal mode-line for Emacs")
@@ -34039,7 +34208,7 @@ Fennel code within Emacs.")
 (define-public emacs-org-modern
   (package
    (name "emacs-org-modern")
-   (version "0.6")
+   (version "0.7")
    (source
      (origin
        (method git-fetch)
@@ -34047,7 +34216,7 @@ Fennel code within Emacs.")
              (url "https://github.com/minad/org-modern")
              (commit version)))
        (sha256
-        (base32 "03zpwb475rpbhq1s6101clj0j9mcxdg033clvvybp0p7hm4inwaz"))
+        (base32 "0bqps8dpvqd2dfw3bamnnf1ikvd48vn8hgb08975f0wski54xh5n"))
        (file-name (git-file-name name version))))
    (build-system emacs-build-system)
    (home-page "https://github.com/minad/org-modern")
@@ -34152,7 +34321,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "0.8")
+    (version "0.9")
     (home-page "https://github.com/minad/osm")
     (source (origin
               (method git-fetch)
@@ -34162,7 +34331,7 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "039ac364f00slx1dxxgsgfcr4x47v9ymn8arcs0fyhdhw7jnky5j"))))
+                "0iacf3mqjq8vfhd0nyzry0spishyvn92zgd55ivqxb9xfdr3lx9x"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases

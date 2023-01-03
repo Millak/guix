@@ -52,7 +52,7 @@
 ;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Luther Thompson <lutheroto@gmail.com>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2015, 2018 Pjotr Prins <pjotr.guix@thebird.nl>
@@ -3158,12 +3158,12 @@ Prefix) - Encode and decode data structures.")
     (propagated-inputs
      (list python-pygobject python-pycairo python-pyatspi))
     (native-inputs
-     `(("python-nose" ,python-nose)
-       ("gtk+" ,gtk+)
-       ("xvfb" ,xorg-server)
-       ("dbus" ,dbus)
-       ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gobject-introspection" ,gobject-introspection)))
+     (list python-nose
+           gtk+
+           xorg-server-for-tests
+           dbus
+           gsettings-desktop-schemas
+           gobject-introspection))
     (home-page "https://gitlab.com/dogtail/dogtail/")
     (synopsis "GUI test tool and automation framework written in Python")
     (description
@@ -4884,6 +4884,31 @@ via commands such as @command{rst2man}, as well as supporting Python code.")
                 "0ja8q6mdj6xv62jjw3phv8j5nfqi5x8hnfy4pqfcjcgz4b34k8sl"))))
     ;; tests contain Python 2 syntax.
     (arguments '(#:tests? #false))))
+
+(define-public python-docx
+  (package
+    (name "python-docx")
+    (version "0.8.11")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-docx" version))
+              (sha256
+               (base32
+                "1i7bxghb7knlyjain101qg1jmmz2b6qj03bi3vfxhvcml0rx418i"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list behave
+           python-flake8
+           python-mock
+           python-pyparsing
+           python-pytest))
+    (propagated-inputs
+     (list python-lxml))
+    (home-page "https://github.com/python-openxml/python-docx/")
+    (synopsis "Python library to create and modify Microsoft Word documents")
+    (description "This Python library can be used to create and update
+Microsoft Word (.docx) documents.")
+    (license license:expat)))
 
 (define-public python-restructuredtext-lint
   (package
@@ -18887,13 +18912,13 @@ numbers, real numbers, mixed types and more, and comes with a shell command
 (define-public glances
   (package
   (name "glances")
-  (version "3.1.7")
+  (version "3.3.0.4")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "Glances" version))
       (sha256
-        (base32 "020vb38qrb0m3sdr7xjr43cmcfxpnyg4hmb97wgxsa9zvwsjwa5x"))
+        (base32 "0klyyxqc7cbrf1i741304i3rrwan19qm2v58xmrlgqsmxac542la"))
       (modules '((guix build utils)))
       (snippet
        '(begin
@@ -18907,7 +18932,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
           #t))))
   (build-system python-build-system)
   (propagated-inputs
-   (list python-future python-psutil))
+   (list python-defusedxml python-future python-packaging python-psutil))
   (home-page "https://github.com/nicolargo/glances")
   (synopsis "Cross-platform curses-based monitoring tool")
   (description
@@ -23542,7 +23567,7 @@ tool).")
      (list python-entrypoints
            python-numpy
            python-msgpack
-           python-typing-extensions-next))
+           python-typing-extensions))
     (native-inputs
      (list python-cython python-pytest python-setuptools-scm))
     (home-page "https://github.com/zarr-developers/numcodecs")

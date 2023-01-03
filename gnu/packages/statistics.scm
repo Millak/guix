@@ -1450,13 +1450,13 @@ adapted for other output formats, such as HTML or LaTeX.")
 (define-public r-formatr
   (package
     (name "r-formatr")
-    (version "1.12")
+    (version "1.13")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "formatR" version))
               (sha256
                (base32
-                "12wch1774113nlrc0lihfn5rbh4hln9sg6dv6zc2bvyb8fzyyllb"))))
+                "09z5wvbhrr2s2d196cxwzvjn0qr6pf4czrfqwdzqgqrdpwrxq1xj"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
@@ -1472,13 +1472,13 @@ There is also a Shiny app as a user interface in this package.")
 (define-public r-highr
   (package
     (name "r-highr")
-    (version "0.9")
+    (version "0.10")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "highr" version))
               (sha256
                (base32
-                "0kgdv2vf1lz3b5kbal9s83gg6812nw7fvrq0rkyr0v4k1lwi3zxy"))))
+                "0yrlpjs8qzq1d7iy4gypnf4x1gvxq6vaghkdh1kfv433yqgvqmgc"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-xfun))
@@ -1930,14 +1930,14 @@ side.")
 (define-public r-locfit
   (package
     (name "r-locfit")
-    (version "1.5-9.6")
+    (version "1.5-9.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "locfit" version))
        (sha256
         (base32
-         "0xilf6gp3m8xla2fvxr491j31pvim707mnhswvm9yxnb0d09xs0y"))))
+         "1zvsa7hvnp0pvjyy0nnrg8bdv8gv4l23jb66wkc0kipvi78grra8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
@@ -2968,13 +2968,13 @@ a column in data frame.")
 (define-public r-rsqlite
   (package
     (name "r-rsqlite")
-    (version "2.2.19")
+    (version "2.2.20")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "RSQLite" version))
               (sha256
                (base32
-                "11jzg3ywzaql3zwp7cwql1nilz8pvbz903whyh0d447rs0xnn3vj"))))
+                "1km7rg2yg3lmjz7lplypw61sx78mykyksgbdq3j5kjpcvirdbdaj"))))
     (properties `((upstream-name . "RSQLite")))
     (build-system r-build-system)
     (propagated-inputs
@@ -4318,17 +4318,17 @@ It uses and relies on grid graphics and formal (S4) classes and methods.")
 (define-public r-purrr
   (package
     (name "r-purrr")
-    (version "0.3.5")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "purrr" version))
        (sha256
         (base32
-         "1vzwajjw9h6jg5l82j7nkf3iraqmzwzh40s7q6wkq14awzbnqf52"))))
+         "1hm6lylx05s43rdk9q7xqdcydz495aim16c7xlw94lyw7v5l81kz"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-magrittr r-rlang))
+     (list r-cli r-lifecycle r-magrittr r-rlang r-vctrs))
     (native-inputs
      (list r-knitr))
     (home-page "https://github.com/hadley/purrr")

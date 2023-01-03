@@ -326,7 +326,8 @@ the hash of the Cabal file."
 (define* (hackage->guix-package package-name #:key
                                 (include-test-dependencies? #t)
                                 (port #f)
-                                (cabal-environment '()))
+                                (cabal-environment '())
+                                #:allow-other-keys)
   "Fetch the Cabal file for PACKAGE-NAME from hackage.haskell.org, or, if the
 called with keyword parameter PORT, from PORT.  Return the `package'
 S-expression corresponding to that package, or #f on failure.
@@ -353,7 +354,7 @@ respectively."
 
 (define* (hackage-recursive-import package-name . args)
   (recursive-import package-name
-                    #:repo->guix-package (lambda* (name #:key repo version)
+                    #:repo->guix-package (lambda* (name #:key version #:allow-other-keys)
                                            (apply hackage->guix-package/m
                                                   (cons name args)))
                     #:guix-name hackage-name->package-name))

@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Arjan Adriaanse <arjan@adriaan.se>
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -731,7 +732,7 @@ purposes developed at Queen Mary, University of London.")
 (define-public ardour
   (package
     (name "ardour")
-    (version "7.1")
+    (version "7.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -748,7 +749,7 @@ purposes developed at Queen Mary, University of London.")
 namespace ARDOUR { const char* revision = \"" version "\" ; const char* date = \"\"; }")))))
               (sha256
                (base32
-                "11ca9xpzmzafl8xl0r0w32lxjqwy532hfd2bzb0d73bdpngpvcbq"))
+                "1gv0wkzyx59lbnaf5iz9yva4akrd2zkhsmdk8wda3wz06zmk4w1r"))
               (file-name (string-append name "-" version))))
     (build-system waf-build-system)
     (arguments
@@ -2462,6 +2463,49 @@ synchronous execution of all clients, and low latency operation.")
      (list pkg-config))
     ;; Most files are under GPLv2+, but some headers are under LGPLv2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
+
+(define-public jacktrip
+  (package
+    (name "jacktrip")
+    (version "1.6.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jacktrip/jacktrip/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "0719ng799kingv0y9yk07bvnmprk25c09ph3yaia5dhapg0jz17m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (invoke "qmake"
+                     (string-append "PREFIX="
+                                    (assoc-ref outputs "out"))
+                     "-config" "novs"
+                     "-config" "noupdater"
+                     "jacktrip.pro"))))))
+    (inputs
+     (list jack-2
+           python
+           python-jinja2
+           python-pyyaml
+           qtbase-5
+           rtaudio))
+    (native-inputs
+     (list pkg-config qtbase-5)) ;for qmake
+    (home-page "https://jacktrip.github.io/jacktrip/")
+    (synopsis "Multi-machine audio system for network music performance")
+    (description
+     "JackTrip is a multi-machine audio system used for network music
+performance over the Internet.  It supports any number of channels (as many as
+the computer/network can handle) of bidirectional, high quality, uncompressed
+audio signal streaming.")
+    (license (list license:gpl3+ license:lgpl3 license:expat))))
 
 (define-public jalv
   (package
@@ -4936,7 +4980,7 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
-    (version "0.2.2")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4945,7 +4989,7 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "03dygh85riljk7dpn5a5a0d22a2kz45fs13gzwqgnbzzr1k17p2y"))))
+                "1y3apyn71ysks88bv71knjvk832imnbpbb8mgib3q9b8pvdmjw3g"))))
     (build-system cmake-build-system)
     (inputs
      (list alsa-lib

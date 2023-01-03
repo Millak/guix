@@ -17,6 +17,7 @@
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2021 Stefan <stefan-guix@vodafonemail.de>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -62,12 +63,16 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages valgrind)
   #:use-module (gnu packages virtualization)
   #:use-module (gnu packages xorg)
+  #:use-module (gnu packages python-web)
+  #:use-module (gnu packages python-xyz)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system trivial)
   #:use-module (guix download)
   #:use-module (guix gexp)
@@ -638,7 +643,11 @@ tree binary files.  These are board description files used by Linux and BSD.")
                (list %u-boot-rockchip-inno-usb-patch
                      %u-boot-allow-disabling-openssl-patch
                      %u-boot-sifive-prevent-relocating-initrd-fdt
-                     %u-boot-rk3399-enable-emmc-phy-patch))
+                     %u-boot-rk3399-enable-emmc-phy-patch
+                     (search-patch "u-boot-infodocs-target.patch")
+                     (search-patch "u-boot-patman-fix-help.patch")
+                     (search-patch "u-boot-patman-local-conf.patch")
+                     (search-patch "u-boot-patman-get-maintainer.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -668,6 +677,42 @@ tree binary files.  These are board description files used by Linux and BSD.")
     (description "U-Boot is a bootloader used mostly for ARM boards.  It
 also initializes the boards (RAM etc).")
     (license license:gpl2+)))
+
+;;; This is very similar to the linux-libre-documentation package, since it
+;;; reuses the same Makefile-based build system.
+(define-public u-boot-documentation
+  (package
+    (inherit u-boot)
+    (name "u-boot-documentation")
+    (arguments
+     (list
+      #:make-flags #~(list "HOSTCC=gcc"
+                           ;; Avoid treating Sphinx warnings as errors.
+                           "SPHINXOPTS=")
+      #:tests? #f
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (apply invoke "make" "infodocs" make-flags)))
+                   (replace 'install
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (let* ((info-dir (string-append #$output "/share/info"))
+                              (info (string-append info-dir
+                                                   "/DasUBoot.info.gz")))
+                         (with-directory-excursion "doc/output"
+                           (apply invoke "make" "-C" "texinfo" "install-info"
+                                  (string-append "infodir=" info-dir)
+                                  make-flags))))))))
+    (native-inputs
+     (modify-inputs (package-native-inputs u-boot)
+       (append fontconfig
+               python-sphinx
+               texinfo
+               which)))
+    (synopsis "U-Boot documentation")
+    (description "This package provides the documentation for U-Boot, as an
+Info manual.")))
 
 (define-public u-boot-tools
   (package
@@ -776,6 +821,34 @@ def test_ctrl_c"))
                   (package-description u-boot)
                   "  This package provides board-independent tools "
                   "of U-Boot."))))
+
+;;; This is packaged separately, as it can be used in other contexts than for
+;;; U-Boot development.
+(define-public patman
+  (package
+    (inherit u-boot)
+    (name "patman")
+    (build-system pyproject-build-system)
+    (arguments
+     ;; The test suite strongly relies on the git metadata being available (23
+     ;; failed, 14 passed).
+     (list
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "tools/patman"))))))
+    (inputs (list python-pygit2 python-requests))
+    (synopsis "Patch automation tool")
+    (description "Patman is a patch automation script which:
+@itemize
+@item Creates patches directly from your branch
+@item Cleans them up by removing unwanted tags
+@item Inserts a cover letter with change lists
+@item Runs the patches through automated checks
+@item Optionally emails them out to selected people.
+@end itemize")))
 
 (define*-public (make-u-boot-package board triplet
                                      #:key
@@ -890,17 +963,23 @@ appended to the package description."
 (define-public u-boot-malta
   (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
 
-(define-public u-boot-am335x-evm-boneblack
-  (make-u-boot-package
-   "am335x_evm" "arm-linux-gnueabihf"
-   ;; Patch out other device trees to build an image small enough to fit
-   ;; within typical partitioning schemes where the first partition begins at
-   ;; sector 2048.
-   #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
-   #:name-suffix "-boneblack"
-   #:append-description "This U-Boot is built for the BeagleBone Black, which
-was removed upstream, adjusted from the am335x_evm build with several device
-trees removed so that it fits within common partitioning schemes."))
+(define-public u-boot-am335x-boneblack
+  (let ((base (make-u-boot-package
+               "am335x_evm" "arm-linux-gnueabihf"
+               ;; Patch out other device trees to build an image small enough
+               ;; to fit within typical partitioning schemes where the first
+               ;; partition begins at sector 2048.
+               #:configs '("CONFIG_OF_LIST=\"am335x-evm am335x-boneblack\"")
+               #:append-description
+               "This U-Boot is built for the BeagleBone Black, which was
+removed upstream, adjusted from the am335x_evm build with several device trees
+removed so that it fits within common partitioning schemes.")))
+    (package
+      (inherit base)
+      ;; The name is not derived from the board name on purpose, as the config
+      ;; is modified per the comment above, parting from the default
+      ;; am335x_evm configuration.
+      (name "u-boot-am335x-boneblack"))))
 
 (define-public u-boot-am335x-evm
   (make-u-boot-package "am335x_evm" "arm-linux-gnueabihf"))

@@ -234,7 +234,7 @@ build-system, and DEPENDENCIES the inputs for the package."
           (fold (lambda (a b)
                   (if (version>? a b) a b)) (car versions) versions)))))
 
-(define* (hexpm->guix-package package-name #:key repo version)
+(define* (hexpm->guix-package package-name #:key version #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from hexpms.io, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 When VERSION is specified, attempt to fetch that version; otherwise fetch the

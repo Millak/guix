@@ -384,8 +384,8 @@ to open the application in a web browser, for offline usage.")
        (method url-fetch)
        (uri (list
              ;; XXX: Upstream does not exist anymore.
-             (string-append "http://www.bipede.fr/downloads/logiciels/"
-                            "ToutEnClic-" version "-src.zip")
+             ;; (string-append "http://www.bipede.fr/downloads/logiciels/"
+             ;;                "ToutEnClic-" version "-src.zip")
              (string-append "https://archive.org/download/tout-en-clic-" version
                             "-src/ToutEnClic-" version "-src.zip")))
        (sha256

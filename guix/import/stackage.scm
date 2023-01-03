@@ -109,7 +109,8 @@
              (lts-version %default-lts-version)
              (packages
               (stackage-lts-packages
-               (stackage-lts-info-fetch lts-version))))
+               (stackage-lts-info-fetch lts-version)))
+             #:allow-other-keys)
      "Fetch Cabal file for PACKAGE-NAME from hackage.haskell.org.  The retrieved
 version corresponds to the version of PACKAGE-NAME specified in the LTS-VERSION
 release at stackage.org.  Return the `package' S-expression corresponding to
@@ -126,7 +127,7 @@ included in the Stackage LTS release."
 
 (define (stackage-recursive-import package-name . args)
   (recursive-import package-name
-                    #:repo->guix-package (lambda* (name #:key repo version)
+                    #:repo->guix-package (lambda* (name #:key version #:allow-other-keys)
                                            (apply stackage->guix-package (cons name args)))
                     #:guix-name hackage-name->package-name))
 

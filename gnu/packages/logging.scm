@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
@@ -251,6 +251,20 @@ library.")
        (file-name (git-file-name "spdlog" version))
        (sha256
         (base32 "02xz017ba9fssm1rp1fcfld7h79awbr6fqai9dxaqp02akp3davk"))))))
+
+(define-public spdlog-for-kodi
+  (package
+    (inherit spdlog)
+    (version "1.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/gabime/spdlog")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "spdlog" version))
+       (sha256
+        (base32 "0dn44r3xbw1w0bk9yflnxkh3rzdq2bpxkks44skfmqig0rsj1f1x"))))))
 
 (define-public rsyslog
   (package

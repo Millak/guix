@@ -79,7 +79,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url "http://another-site/foo-2.tar.gz")
       (and (pk 'u update)
            (equal? (upstream-source-version update) "2")
@@ -104,7 +104,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url
         (string-append (%local-url) "/foo-2.tar.gz"))
       (and (pk 'u update)
@@ -135,7 +135,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url
         (string-append (%local-url) "/foo-2.tar.gz"))
       (define expected-signature-url

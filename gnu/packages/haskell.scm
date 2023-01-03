@@ -63,6 +63,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system haskell)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
@@ -1241,6 +1242,8 @@ interactive environment for the functional language Haskell.")
 
 (define-public ghc-8 ghc-8.10)
 
+(define-public ghc ghc-8)
+
 (define-public ghc-9.0
   (package
     (inherit ghc-8.10)
@@ -1277,6 +1280,155 @@ interactive environment for the functional language Haskell.")
             (file-pattern ".*\\.conf\\.d$")
             (file-type 'directory))))))
 
-(define-public ghc ghc-8)
+(define-public ghc-9.2
+  ;; Use 8.10 to shorten the build chain.
+  (let ((base ghc-8.10))
+    (package
+      (inherit base)
+      (name "ghc-next")
+      (version "9.2.5")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://www.haskell.org/ghc/dist/" version
+                                    "/ghc-" version "-src.tar.xz"))
+                (sha256
+                 (base32
+                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+             ;; File Common.hs has been moved to src/ in this release.
+             (replace 'fix-cc-reference
+               (lambda _
+                 (substitute* "utils/hsc2hs/src/Common.hs"
+                   (("\"cc\"") "\"gcc\""))))))))
+      (native-inputs
+       `(;; GHC 9.2 must be built with GHC >= 8.6.
+         ("ghc-bootstrap" ,base)
+         ("ghc-testsuite"
+          ,(origin
+             (method url-fetch)
+             (uri (string-append
+                    "https://www.haskell.org/ghc/dist/"
+                    version "/ghc-" version "-testsuite.tar.xz"))
+             (sha256
+              (base32
+               "19ha0hidrijawy53vm2r0sgml5zkl8126mqy7p0pyacmw3k7913l"))))
+         ,@(filter (match-lambda
+                     (("ghc-bootstrap" . _) #f)
+                     (("ghc-testsuite" . _) #f)
+                     (_ #t))
+                   (package-native-inputs base))))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "GHC_PACKAGE_PATH")
+              (files (list (string-append "lib/ghc-" version)))
+              (file-pattern ".*\\.conf\\.d$")
+              (file-type 'directory)))))))
+
+;; 9.4 is the last version to support the make-based build system,
+;; but it boot with 9.2, only 9.0 is supported.
+(define ghc-bootstrap-for-9.4 ghc-9.0)
+
+;; We need two extra dependencies built with ghc-bootstrap-for-9.4,
+;; which are duplicated here from haskell-xyz to make sure the
+;; bootstraping process always works.
+(define ghc-alex-bootstrap-for-9.4
+  (hidden-package
+    (package
+     (name "ghc-alex")
+     (version "3.2.6")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (hackage-uri "alex" version))
+        (sha256
+         (base32
+          "042lrkn0dbpjn5ivj6j26jzb1fwrj8c1aj18ykxja89isg0hiali"))))
+     (build-system haskell-build-system)
+     (arguments
+       (list #:tests? #f
+             #:haskell ghc-bootstrap-for-9.4))
+     (native-inputs
+      (list which))
+     (home-page "https://www.haskell.org/alex/")
+     (synopsis
+      "Tool for generating lexical analysers in Haskell")
+     (description
+      "Alex is a tool for generating lexical analysers in Haskell.  It takes a
+ description of tokens based on regular expressions and generates a Haskell
+ module containing code for scanning text efficiently.  It is similar to the
+ tool lex or flex for C/C++.")
+     (license license:bsd-3))))
+
+(define ghc-happy-bootstrap-for-9.4
+  (hidden-package
+    (package
+     (name "ghc-happy")
+     (version "1.20.0")
+     (source
+      (origin
+        (method url-fetch)
+        (uri (hackage-uri "happy" version))
+        (sha256
+         (base32
+          "1346r2x5ravs5fqma65bzjragqbb2g6v41wz9maknwm2jf7kl79v"))))
+     (build-system haskell-build-system)
+     (arguments
+       (list #:haskell ghc-bootstrap-for-9.4
+             #:tests? #f))
+     (home-page "https://hackage.haskell.org/package/happy")
+     (synopsis "Parser generator for Haskell")
+     (description "Happy is a parser generator for Haskell.  Given a grammar
+ specification in BNF, Happy generates Haskell code to parse the grammar.
+ Happy works in a similar way to the yacc tool for C.")
+     (license license:bsd-3))))
+
+(define-public ghc-9.4
+  ;; Inherit from 9.2, which added a few fixes, but boot from 9.0 (see above).
+  (let ((base ghc-9.2))
+    (package
+      (inherit base)
+      (name "ghc-next")
+      (version "9.4.4")
+      (source (origin
+                (method url-fetch)
+                (uri (string-append "https://www.haskell.org/ghc/dist/" version
+                                    "/ghc-" version "-src.tar.xz"))
+                (sha256
+                 (base32
+                  "1qk7rlqf02s3b6m6sqqngmjq1mxnrz88h159lz6k25gddmdg5kp8"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+             ;; Files don’t exist any more.
+             (delete 'skip-tests)))))
+      (native-inputs
+       `(;; GHC 9.4 must be built with GHC >= 9.0.
+         ("ghc-bootstrap" ,ghc-bootstrap-for-9.4)
+         ("ghc-testsuite"
+          ,(origin
+             (method url-fetch)
+             (uri (string-append
+                    "https://www.haskell.org/ghc/dist/"
+                    version "/ghc-" version "-testsuite.tar.xz"))
+             (sha256
+              (base32
+               "04p2lawxxg3nyv6frzhyjyh3arhqqyh5ka3alxa2pxhcd2hdcja3"))))
+         ("ghc-alex" ,ghc-alex-bootstrap-for-9.4)
+         ("ghc-happy" ,ghc-happy-bootstrap-for-9.4)
+         ,@(filter (match-lambda
+                     (("ghc-bootstrap" . _) #f)
+                     (("ghc-testsuite" . _) #f)
+                     (_ #t))
+                   (package-native-inputs base))))
+      (native-search-paths
+       (list (search-path-specification
+              (variable "GHC_PACKAGE_PATH")
+              (files (list (string-append "lib/ghc-" version)))
+              (file-pattern ".*\\.conf\\.d$")
+              (file-type 'directory)))))))
 
 ;;; haskell.scm ends here

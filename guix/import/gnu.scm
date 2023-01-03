@@ -109,7 +109,8 @@ download policy (see 'download-tarball' for details.)"
        #f))))
 
 (define* (gnu->guix-package name
-                            #:key (key-download 'interactive))
+                            #:key (key-download 'interactive)
+                            #:allow-other-keys)
   "Return the package declaration for NAME as an s-expression.  Use
 KEY-DOWNLOAD as the OpenPGP key download policy (see 'download-tarball' for
 details.)"
