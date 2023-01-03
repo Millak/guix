@@ -907,6 +907,26 @@ input/output delimiter.  When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.")
     (license license:x11)))
 
+(define-public python-bcbio-gff
+  (package
+    (name "python-bcbio-gff")
+    (version "0.6.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bcbio-gff" version))
+              (sha256
+               (base32
+                "1pm1szyxabhn8jismrj9cjhf88ajgcmm39f0cgf36iagw5qakprl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-biopython python-six))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/chapmanb/bcbb/tree/master/gff")
+    (synopsis "Read and write GFF files with Biopython integration")
+    (description
+     "This package lets you read and write files in Generic Feature
+Format (GFF) with Biopython integration.")
+    (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
+
 (define-public python-cellbender
   (package
     (name "python-cellbender")
