@@ -883,7 +883,8 @@ string to fetch a specific version."
   (upstream-updater
    (name 'gnu)
    (description "Updater for GNU packages")
-   (pred gnu-hosted?)
+   (pred (lambda (package)
+           (false-if-networking-error (gnu-hosted? package))))
    (import import-gnu-release)))
 
 (define %gnu-ftp-updater
@@ -893,8 +894,9 @@ string to fetch a specific version."
    (name 'gnu-ftp)
    (description "Updater for GNU packages only available via FTP")
    (pred (lambda (package)
-           (and (not (gnu-hosted? package))
-                (pure-gnu-package? package))))
+           (false-if-networking-error
+            (and (not (gnu-hosted? package))
+                 (pure-gnu-package? package)))))
    (import import-release*)))
 
 (define %savannah-updater
