@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -92,7 +92,7 @@ rendering vector based animations and art in realtime.")
     (license license:expat)))
 
 ;; ETL, synfig, and Synfig Studio are updated in tandem.
-(define synfig-version "1.2.2")
+(define synfig-version "1.4.4")
 
 (define-public etl
   (package
@@ -100,12 +100,15 @@ rendering vector based animations and art in realtime.")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/ETL-" version ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/ETL-" version ".tar.gz"))
               (sha256
                (base32
-                "12sd8pz8l5xcxcmapkvih3brihdhdb6xmxisr9a415lydid9rh8d"))))
+                "1jnahpxvrdxrll7b7av3zxabm5j3nlz6m3vg4sib2278v1wf91yc"))))
     (build-system gnu-build-system)
+    (inputs (list glibmm-2.64))
+    (native-inputs (list pkg-config))
     (home-page "https://www.synfig.org")
     (synopsis "Extended C++ template library")
     (description
