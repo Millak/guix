@@ -1,0 +1,53 @@
+From 2d129502354da4fe39dac13463ea742f8026ab91 Mon Sep 17 00:00:00 2001
+From: Sughosha <sughosha@proton.me>
+Date: Tue, 3 Jan 2023 22:15:09 +0100
+Subject: [PATCH] Link libs and fix jnetlib.
+
+---
+ WDL/eel2/Makefile    | 2 +-
+ WDL/jnetlib/Makefile | 2 +-
+ WDL/swell/Makefile   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/WDL/eel2/Makefile b/WDL/eel2/Makefile
+index ac2e41f1..0ffca97a 100644
+--- a/WDL/eel2/Makefile
++++ b/WDL/eel2/Makefile
+@@ -153,7 +153,7 @@ gen-lex:  # the output of this, lex.nseel.c, is unused because we have a handwri
+ 	$(CXX) $(CXXFLAGS) -c -o $@ $^
+ 
+ loose_eel: loose_eel.o $(OBJS) $(OBJS2)
+-	g++ -o $@ $^ $(CXXFLAGS) $(LFLAGS)
++	g++ -o $@ $^ $(CXXFLAGS) $(LFLAGS) -lGL
+ 
+ clean:
+ 	-rm -f -- loose_eel loose_eel.o $(OBJS)
+diff --git a/WDL/jnetlib/Makefile b/WDL/jnetlib/Makefile
+index 10d9fe8a..85570c5a 100644
+--- a/WDL/jnetlib/Makefile
++++ b/WDL/jnetlib/Makefile
+@@ -7,7 +7,7 @@ CC = gcc
+ CPP = g++
+ CXX = g++
+ 
+-OBJS = asyncdns.o connection.o httpget.o httpserv.o listen.o util.o sercon.o
++OBJS = asyncdns.o connection.o httpget.o httpserv.o listen.o util.o
+ 
+ jnl.a: ${OBJS}
+ 	-rm -f jnl.a
+diff --git a/WDL/swell/Makefile b/WDL/swell/Makefile
+index 9e7e2d87..8e98a543 100644
+--- a/WDL/swell/Makefile
++++ b/WDL/swell/Makefile
+@@ -167,7 +167,7 @@ libSwell$(DLL_EXT): $(OBJS)
+ 	$(CXX) -shared -o $@ $(CFLAGS) $(LFLAGS) $^ $(LINKEXTRA)
+ 
+ test: $(OBJS) test.o
+-	$(CXX) -o test $(CFLAGS) $(LFLAGS) $^ $(LINKEXTRA)
++	$(CXX) -o test $(CFLAGS) $(LFLAGS) $^ $(LINKEXTRA) -lpthread -ldl $(shell $(PKG_CONFIG) --libs gtk+-3.0 freetype2) -lfontconfig -lGL -lXi -lX11
+ 
+ libSwell.colortheme: swell-gdi-generic.cpp $(SWELL_HEADERS)
+ 	$(CXX) $(CFLAGS) -o make-theme -DSWELL__MAKE_THEME swell-gdi-generic.cpp -lpthread
+-- 
+2.38.1
+
