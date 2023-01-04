@@ -27,6 +27,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages search)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system python)
@@ -36,6 +37,68 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp))
+
+(define-public sugar-datastore
+  (package
+    (name "sugar-datastore")
+    (version "0.120")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/sugar-datastore")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wf33w6dm26i8a1zpb40339fj3l9vxjznagls9bc845nld318sqc"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      `(,@%glib-or-gtk-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      '((guix build glib-or-gtk-build-system)
+        ((guix build python-build-system) #:prefix python:)
+        (guix build utils))
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "autogen.sh"
+               (("^\"\\$srcdir/configure" m)
+                (string-append "#" m)))))
+         (add-after 'unpack 'patch-reference-to-du
+           (lambda _
+             (substitute* "src/carquinyol/datastore.py"
+               (("/usr/bin/du") (which "du")))))
+         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (for-each
+              (lambda (executable)
+                (wrap-program executable
+                  `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                         ,(python:site-packages inputs outputs)))
+                  `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+              (list (search-input-file outputs "bin/copy-from-journal")
+                    (search-input-file outputs "bin/copy-to-journal")
+                    (search-input-file outputs "bin/datastore-service"))))))))
+    (inputs
+     (list python
+           sugar-toolkit-gtk3))
+    (propagated-inputs
+     (list python-dbus
+           python-pygobject
+           python-xapian-bindings))
+    (native-inputs
+     (list autoconf automake
+           libtool
+           pkg-config))
+    (home-page "https://www.sugarlabs.org/")
+    (synopsis "Service for Sugar activities to store and retrieve data")
+    (description "Sugar Datastore provides activities with a way to store data
+and metadata, and the journal with querying and full text search.")
+    (license license:gpl2+)))
 
 (define-public sugar-toolkit-gtk3
   (package
