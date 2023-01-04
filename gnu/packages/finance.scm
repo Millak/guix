@@ -32,6 +32,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -350,7 +351,8 @@ and dynamically with report tools based on filtering and graphical charts.")
              (let ((examples (string-append (assoc-ref outputs "out")
                                             "/share/doc/ledger/examples")))
                (install-file "test/input/sample.dat" examples)
-               (install-file "test/input/demo.ledger" examples))
+               (install-file "test/input/demo.ledger" examples)
+               (install-file "contrib/report" examples))
              #t))
          (add-after 'build 'build-doc
            (lambda _ (invoke "make" "doc")))
