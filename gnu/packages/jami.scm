@@ -583,10 +583,6 @@ P2P-DHT.")
     (license license:gpl3+)))
 
 ;;; Remove when 2023 comes.
-(define-public jami-gnome
-  (deprecated-package "jami-gnome" jami))
-
-;;; Remove when 2023 comes.
 (define-public jami-qt
   (deprecated-package "jami-qt" jami))
 
