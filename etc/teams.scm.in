@@ -528,6 +528,10 @@ importer."
                        "iyzsong@envs.net")
   games localization)
 
+(define-member (person "Vagrant Cascadian"
+                       "vagrant@reproducible-builds.org")
+  reproduciblebuilds)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
