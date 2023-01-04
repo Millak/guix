@@ -582,10 +582,6 @@ It supports the SIP and IAX protocols, as well as decentralized calling using
 P2P-DHT.")
     (license license:gpl3+)))
 
-;;; Remove when 2023 comes.
-(define-public jami-qt
-  (deprecated-package "jami-qt" jami))
-
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.
   (let ((revision "0")
