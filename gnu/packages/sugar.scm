@@ -28,6 +28,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages time)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -195,6 +196,8 @@ and metadata, and the journal with querying and full text search.")
 
            ;; This package is used as a Python library by users, so these must
            ;; be propagated.
+           python-pycairo
+           python-dateutil
            python-dbus
            python-decorator
            python-pygobject
