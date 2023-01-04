@@ -201,6 +201,7 @@ library
         ('base32
          (? string? hash)))))
     ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
     ('inputs ('list 'ghc-http))
     ('home-page "http://test.org")
     ('synopsis (? string?))
@@ -241,6 +242,7 @@ library
         ('base32
          (? string? hash)))))
     ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
     ('inputs ('list 'ghc-b 'ghc-http))
     ('native-inputs ('list 'ghc-haskell-gi))
     ('home-page "http://test.org")
@@ -471,6 +473,7 @@ library
         ('base32
          (? string? hash)))))
     ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
     ('inputs ('list 'ghc-c))
     ('home-page "http://test.org")
     ('synopsis (? string?))
@@ -520,6 +523,7 @@ executable cabal
         ('base32
          (? string? hash)))))
     ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
     ('inputs ('list 'ghc-http))
     ('arguments
      ('quasiquote
@@ -610,6 +614,7 @@ executable cabal
         ('base32
          (? string? hash)))))
     ('build-system 'haskell-build-system)
+    ('properties '(quote ((upstream-name . "foo"))))
     ('inputs ('list 'ghc-http))
     ('home-page "http://test.org")
     ('synopsis (? string?))

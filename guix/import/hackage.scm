@@ -314,6 +314,7 @@ the hash of the Cabal file."
                          (bytevector->nix-base32-string (file-sha256 tarball))
                          "failed to download tar archive")))))
         (build-system haskell-build-system)
+        (properties '((upstream-name . ,name)))
         ,@(maybe-inputs 'inputs dependencies)
         ,@(maybe-inputs 'native-inputs native-dependencies)
         ,@(maybe-arguments)
