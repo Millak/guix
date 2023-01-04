@@ -10869,6 +10869,28 @@ traditional read alignments) and massively-parallel stochastic collapsed
 variational inference.")
     (license license:gpl3+)))
 
+(define-public scallop
+  (package
+    (name "scallop")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/Kingsford-Group/scallop"
+                                  "/releases/download/v" version
+                                  "/scallop-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ylkhr5hsmw7bsdszrjz9yqknsijh2fl5n6rjqmdmcdky5hkr7mh"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list boost htslib))
+    (home-page "https://github.com/Kingsford-Group/scallop")
+    (synopsis "Reference-based transcriptome assembler for RNA-seq")
+    (description "Scallop is a reference-based transcript assembler.  Scallop
+features its high accuracy in assembling multi-exon transcripts as well as
+lowly expressed transcripts.")
+    (license license:bsd-3)))
+
 (define-public python-fanc
   (package
     (name "python-fanc")
