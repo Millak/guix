@@ -489,10 +489,10 @@ plug-in system.")
                (delete "-DCORE_PLATFORM_NAME=x11" ,flags)))))
     (inputs
      (modify-inputs (package-inputs kodi)
-       (prepend (list libinput
-                      libxkbcommon
-                      waylandpp
-                      wayland-protocols))))
+       (prepend libinput
+                libxkbcommon
+                waylandpp
+                wayland-protocols)))
     (synopsis "Kodi with Wayland rendering backend")))
 
 (define-public kodi-cli
