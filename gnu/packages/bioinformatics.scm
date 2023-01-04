@@ -230,6 +230,10 @@ structure of the predicted RNA.")
                (base32
                 "14lw571vbks138i0lj66qjdbk8iwa817x2zbpzij61vv1gdgfbn5"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list jsoncpp zlib))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/pezmaster31/bamtools")
