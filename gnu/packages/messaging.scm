@@ -37,6 +37,7 @@
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3459,6 +3460,23 @@ for notification of events.")
 Discord.")
     (home-page "https://github.com/taylordotfish/harmony")
     (license license:gpl3+)))
+
+(define-public python-pypresence
+  (package
+    (name "python-pypresence")
+    (version "4.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pypresence" version))
+              (sha256
+               (base32
+                "0rp09lfxbc3syd1rhbai2516c3wyfxkzrsw8v4bd57qqr2cay7b9"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/qwertyquerty/pypresence")
+    (synopsis "Discord RPC client")
+    (description "This package provides @code{python-pypresence}, a Discord
+RPC client written in Python.")
+    (license license:expat)))
 
 (define-public pn
   (package
