@@ -2235,91 +2235,90 @@ capabilities.")
     (license license:gpl3+)))
 
 (define-public guile-g-golf
-  (let ((commit   "1824633d37da3794f349d6829e9dac2cf89adaa8")
-        (revision "1010"))
-    (package
-      (name "guile-g-golf")
-      (version (git-version "0.1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/git/g-golf.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0ncpqv6pbsx9fjmdzvzbjljnhqgw9pynqy9vr9aq35nb7rzrhfdf"))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:configure-flags
-        #~(list "--with-guile-site=no")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'fix-guile-site-directory
-              (lambda _
-                (substitute* "configure.ac"
-                  (("SITEDIR=.*$")
-                   "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\";\n")
-                  (("SITECCACHEDIR=\"\\$libdir/g-golf/")
-                   "SITECCACHEDIR=\"$libdir/"))))
-            (add-before 'configure 'tests-work-arounds
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; In build environment, There is no /dev/tty
-                (substitute* "test-suite/tests/gobject.scm"
-                  (("/dev/tty") "/dev/null"))))
-            (add-before 'configure 'substitute-libs
-              (lambda* (#:key inputs outputs #:allow-other-keys)
-                (define (get lib)
-                  (search-input-file inputs (string-append "lib/" lib ".so")))
+  (package
+    (name "guile-g-golf")
+    (version "0.8.0-a.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/g-golf.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1lszlssa6k8dhhya5px271gfzas7fyy1iwjqmlxibz5vdirzi565"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--with-guile-site=no")
+      #:parallel-build? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-guile-site-directory
+            (lambda _
+              (substitute* "configure.ac"
+                (("SITEDIR=.*$")
+                 "SITEDIR=\"$datadir/guile/site/$GUILE_EFFECTIVE_VERSION\";\n")
+                (("SITECCACHEDIR=\"\\$libdir/g-golf/")
+                 "SITECCACHEDIR=\"$libdir/"))))
+          (add-before 'configure 'tests-work-arounds
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; In build environment, There is no /dev/tty
+              (substitute* "test-suite/tests/gobject.scm"
+                (("/dev/tty") "/dev/null"))))
+          (add-before 'configure 'substitute-libs
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (define (get lib)
+                (search-input-file inputs (string-append "lib/" lib ".so")))
 
-                (let* ((libgi      (get "libgirepository-1.0"))
-                       (libglib    (get "libglib-2.0"))
-                       (libgobject (get "libgobject-2.0"))
-                       (libg-golf (string-append #$output "/lib/libg-golf")))
-                  (substitute* "g-golf/init.scm"
-                    (("libgirepository-1.0") libgi)
-                    (("libglib-2.0") libglib)
-                    (("libgobject-2.0") libgobject)
-                    (("\\(dynamic-link \"libg-golf\"\\)")
-                     (format #f "~s"
-                             `(catch #t
-                                (lambda ()
-                                  (dynamic-link "libg-golf"))
-                                (lambda _
-                                  (dynamic-link ,libg-golf))))))
-                  (setenv "GUILE_AUTO_COMPILE" "0")
-                  #t)))
-            (add-before 'check 'start-xorg-server
-              (lambda* (#:key inputs #:allow-other-keys)
-                ;; The test suite requires a running X server.
-                (system "Xvfb :1 &")
-                (setenv "DISPLAY" ":1")
-                #t)))))
-      (inputs
-       (list guile-3.0 guile-lib glib))
-      (native-inputs
-       (list autoconf
-             automake
-             texinfo
-             gettext-minimal
-             libtool
-             pkg-config
-             ;; required for tests
-             gtk+
-             clutter
-             xorg-server-for-tests))
-      (propagated-inputs
-       (list gobject-introspection))
-      (home-page "https://www.gnu.org/software/g-golf/")
-      (synopsis "Guile bindings for GObject Introspection")
-      (description
-       "G-Golf (Gnome: (Guile Object Library for)) is a library for developing
+              (let* ((libgi      (get "libgirepository-1.0"))
+                     (libglib    (get "libglib-2.0"))
+                     (libgobject (get "libgobject-2.0"))
+                     (libg-golf (string-append #$output "/lib/libg-golf")))
+                (substitute* "g-golf/init.scm"
+                  (("libgirepository-1.0") libgi)
+                  (("libglib-2.0") libglib)
+                  (("libgobject-2.0") libgobject)
+                  (("\\(dynamic-link \"libg-golf\"\\)")
+                   (format #f "~s"
+                           `(catch #t
+                              (lambda ()
+                                (dynamic-link "libg-golf"))
+                              (lambda _
+                                (dynamic-link ,libg-golf))))))
+                (setenv "GUILE_AUTO_COMPILE" "0")
+                #t)))
+          (add-before 'check 'start-xorg-server
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; The test suite requires a running X server.
+              (system "Xvfb :1 &")
+              (setenv "DISPLAY" ":1")
+              #t)))))
+    (inputs
+     (list guile-3.0 guile-lib glib-next))
+    (native-inputs
+     (list autoconf
+           automake
+           texinfo
+           gettext-minimal
+           libtool
+           pkg-config
+           ;; required for tests
+           gtk+
+           clutter
+           xorg-server-for-tests))
+    (propagated-inputs
+     (list gobject-introspection-next))
+    (home-page "https://www.gnu.org/software/g-golf/")
+    (synopsis "Guile bindings for GObject Introspection")
+    (description
+     "G-Golf (Gnome: (Guile Object Library for)) is a library for developing
 modern applications in Guile Scheme.  It comprises a direct binding to the
 GObject Introspection API and higher-level functionality for importing Gnome
 libraries and making GObject classes (and methods) available in Guile's
 object-oriented programming system, GOOPS.")
-      (license license:lgpl3+))))
+    (license license:lgpl3+)))
 
 (define-public g-golf
   (deprecated-package "g-golf" guile-g-golf))
