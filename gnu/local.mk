@@ -582,6 +582,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/stenography.scm			\
   %D%/packages/storage.scm			\
   %D%/packages/suckless.scm			\
+  %D%/packages/sugar.scm			\
   %D%/packages/swig.scm				\
   %D%/packages/sync.scm			\
   %D%/packages/syncthing.scm			\
