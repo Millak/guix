@@ -39,6 +39,7 @@
        (sha256
         (base32 "1by2d84fbckspczddl4npfsf89q6nprmbg0i5g8yr1psp0fpl4ab"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "dhall")))
     (inputs
      (list ghc-aeson
            ghc-aeson-pretty

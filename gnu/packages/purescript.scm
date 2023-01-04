@@ -45,6 +45,7 @@
        (sha256
         (base32 "06f318hdah076vkviw1ryyg2p0gpbabsp8lbm5x03f2qv92n9j1n"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "purescript")))
     (inputs
      (list ghc-glob
            ghc-aeson
@@ -141,6 +142,7 @@ expressive types, inspired by Haskell and compiling to JavaScript.")
         (sha256
           (base32 "0r3f5lr9lrv9wpgkwj6nyl42lvxryj2lvr1w7ld4gki8ylq24n8g"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "purescript-cst")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases

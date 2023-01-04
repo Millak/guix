@@ -47,6 +47,7 @@
        (sha256
         (base32 "0yjjbhc593ylrm4mq4j01nkdvh7xqsg5in30wxj4y53vf5hkggp5"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "Agda")))
     (inputs
      (list ghc-aeson
            ghc-alex

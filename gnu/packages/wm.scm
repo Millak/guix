@@ -816,6 +816,7 @@ manager and a system tray.")
                 "04qspdz9w6xpw1npcmx2zx0595wc68q985pv4i0hvp32zillvdqy"))
               (patches (search-patches "xmonad-next-dynamic-linking.patch"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "xmonad")))
     (inputs (list ghc-data-default-class ghc-setlocale ghc-x11))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
@@ -885,6 +886,7 @@ tiled on several screens.")
                (base32
                 "0gdphjn5ll5lkb2psdsb34563wsz6g0y2gg3z8cj4jy8lvbbv808"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "xmobar")))
     (native-inputs
      (list ghc-hspec hspec-discover))
     (inputs
@@ -958,6 +960,7 @@ particular, it displays commonly-chosen options before uncommon ones.")
        (sha256
         (base32 "11g1cyfgfvcmz35qhgi9wzxrk3br8m8b7qy3jvph4nnf6aj13wvy"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "xmonad-contrib")))
     (propagated-inputs (list ghc-random ghc-x11 ghc-utf8-string ghc-x11-xft xmonad-next))
     (native-inputs (list ghc-quickcheck ghc-hspec))
     (home-page "https://xmonad.org")

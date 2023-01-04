@@ -55,6 +55,7 @@
         (base32
          "1m9sx6gr9y9yxvkmcap8xsks8cnhznvma1mrfl39zljkv005azms"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tagsoup")))
     (native-inputs
      (list ghc-quickcheck))
     (home-page "https://github.com/ndmitchell/tagsoup")
@@ -84,6 +85,7 @@ for screen-scraping.")
         (base32
          "10rmdasb7mypbwxdj2mhr810vqhkakpik7hyd8fvj60hng8r8zvh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cookie")))
     (inputs
      (list ghc-old-locale
            ghc-blaze-builder
@@ -110,6 +112,7 @@ for screen-scraping.")
                (base32
                 "0vj4hpaa30jz7c702xpsfvqaqdxz28zslsqnsfx6bf6dpwvck1wh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "curl")))
     (inputs
      (list curl))
     (home-page "https://hackage.haskell.org/package/curl")
@@ -132,6 +135,7 @@ This package provides a Haskell binding to libcurl.")
         (base32
          "19dgdimpzr7pxk7pqvyin6j87gmvnf0rm35gzhmna8qr835wy3sr"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "httpd-shed")))
     (inputs
      (list ghc-network-bsd ghc-network-uri ghc-network))
     (home-page "https://hackage.haskell.org/package/httpd-shed")
@@ -155,6 +159,7 @@ requests, and the library is intended for implementing Ajax APIs.")
         (base32
          "05j00b9nqmwh9zaq9y9x50k81v2pd3j7a71kd91zlnbl8xk4m2jf"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-types")))
     (native-inputs
      (list ghc-doctest ghc-hspec ghc-quickcheck ghc-quickcheck-instances
            hspec-discover))
@@ -180,6 +185,7 @@ both client and server code).")
         (base32
          "0bgyj3ahqlyg0jw6qsm2sncp8mklc4h0dj91s043vb3ig01iq2fn"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "HTTP")))
     (native-inputs
      (list ghc-httpd-shed ghc-hunit ghc-test-framework
            ghc-test-framework-hunit))
@@ -232,6 +238,7 @@ responses coming back.")
                (base32
                 "12j7vkpkm2djws6ny7vm2324c7916d0iaf1mbvf4mfjxzy2w7imv"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-client")))
     ;; Tests require access to the web.
     (arguments `(#:tests? #f))
     (inputs
@@ -274,6 +281,7 @@ for more user-friendly packages.")
                (base32
                 "03f8p9gxdzl6slyw1r6vpv2dqhsyjvbaawbjv75kaq0vlj3gz7xi"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-client-tls")))
     ;; Tests require Internet access
     (arguments `(#:tests? #f))
     (inputs
@@ -304,6 +312,7 @@ libraries, such as http-conduit.")
        (sha256
         (base32 "1vfm9qc3zr0rmq2ddgyg13i67020cdk8xqhyzfc2zcn1km2p6r85"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-client-restricted")))
     (inputs
      (list ghc-http-client
            ghc-http-client-tls
@@ -335,6 +344,7 @@ servers on localhost or only allow connections to a specific server.")
         (base32
          "1lzlrj2flcnz3k5kfhf11nk5n8m6kcya0lkwrsnzxgfr3an27y9j"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-date")))
     (inputs
      (list ghc-attoparsec))
     (native-inputs
@@ -359,6 +369,7 @@ Date in Haskell.")
         (base32
          "13c2z35gdimncgpyg5dn5cpjvd83rbrigc8b40crg36678m0k0d1"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http2")))
     (inputs
      (list ghc-aeson
            ghc-aeson-pretty
@@ -402,6 +413,7 @@ and HPACK.  Currently HTTP/2 16 framing and HPACK 10 is supported.")
         (base32
          "1bj24phbcb7s3k6v48l5gk82m3m23j8zy9l7c5ccxp3ghn9z5gng"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-conduit")))
     ;; FIXME: `httpLbs TLS` in test-suite `test` fails with
     ;; ConnectionFailure getProtocolByName: does not exist (no such protocol
     ;; name: tcp)
@@ -461,6 +473,7 @@ which allow you to avoid direct usage of conduits.")
         (base32
          "1a6i5njf85b2lhg8m83njagcf09wih5q2irnyb2890s724qr277v"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-reverse-proxy")))
     (inputs
      (list ghc-case-insensitive
            ghc-http-types
@@ -502,6 +515,7 @@ approach performs full request/response parsing via WAI and http-conduit.")
         (base32
          "1y19h9v0cq1fl17ywcyyvd6419fhgyw2s0yk0ki8z60021adcx2m"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai")))
     (inputs
      (list ghc-bytestring-builder
            ghc-unix-compat
@@ -533,6 +547,7 @@ communication between web applications and web servers.")
         (base32
          "0hbm7if28p6qa36cgpyq6i569275si53z9gsl2g1z8x09z3xiyz2"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-logger")))
     (arguments `(#:tests? #f)) ; FIXME: Tests cannot find libraries exported
                                ; by propagated-inputs.
     (inputs
@@ -566,6 +581,7 @@ communication between web applications and web servers.")
         (base32
          "1avf7bjcsbs8l6klp5kkd0cd2dc5n0j0a2yf8813pnwfn5b7qyd4"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-extra")))
     (inputs
      (list ghc-ansi-terminal
            ghc-base64-bytestring
@@ -607,6 +623,7 @@ functionality.")
         (base32
          "07yn41rn2skd5p3wqqa09wa761vj7ibl8l19gh4bi4i8slxhk417"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-conduit")))
     (inputs
      (list ghc-conduit ghc-http-types ghc-wai ghc-blaze-builder))
     (home-page "https://github.com/yesodweb/wai")
@@ -630,6 +647,7 @@ Haskell's Web Application Interface (WAI).")
         (base32
          "0z0f18yc6zlwh29c6175ivfcin325lvi4irpvv0n3cmq7vi0k0ql"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "bsb-http-chunked")))
     (arguments
      `(;; XXX: As of 0.0.4, one property test ("Identical output as Blaze")
        ;; fails on i686-linux.
@@ -666,6 +684,7 @@ transfers.")
        (sha256
         (base32 "0v54ca3wpa79gdyiikwhbv9h8b5vr3d60piq3ndb2v7s7fi1qpm0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "warp")))
     (inputs
      (list ghc-async
            ghc-auto-update
@@ -717,6 +736,7 @@ based WAI (Web Application Interface in Haskell).")
         (base32
           "134kb5nz668f4xrr5g98g7fc1bwb3ri6q433a1i6asjkniwpy85s"))))
   (build-system haskell-build-system)
+  (properties '((upstream-name . "tls-session-manager")))
   (inputs
     (list ghc-auto-update ghc-clock ghc-psqueues ghc-tls))
   (home-page "https://hackage.haskell.org/package/tls-session-manager")
@@ -739,6 +759,7 @@ limitation, automatic pruning, energy saving and replay resistance.")
         (base32
          "0b9viw26ymzq4q8snfddz3w59sqcf5ankxnw6f99iacxjhk6zs6m"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "warp-tls")))
     (inputs
      (list ghc-cryptonite
            ghc-data-default-class
@@ -770,6 +791,7 @@ a WAI handler, via the native Haskell TLS implementation.")
         (base32
          "1b92a41l2var1ccg350mh2bjmb2plb6d79yzvmlwkd41nifmmi44"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "websockets")))
     (inputs
      (list ghc-attoparsec
            ghc-base64-bytestring
@@ -820,6 +842,7 @@ See also:
         (base32
          "0b2xmdsrsqpssyib53wbr6r8hf75789ndyyanv37sv99iyqcwz4i"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-websockets")))
     (inputs
      (list ghc-wai ghc-case-insensitive ghc-network ghc-websockets
            ghc-http-types))
@@ -846,6 +869,7 @@ See also:
         (base32
          "1d72s3a6520iwwc1wbn9v2znqgbw6a5wwzb23iq8ny9ccnjyx1dk"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "xss-sanitize")))
     (inputs
      (list ghc-tagsoup ghc-utf8-string ghc-css-text ghc-network-uri))
     (native-inputs
@@ -872,6 +896,7 @@ attacks.")
         (base32
          "0ynd9f4hn2sfwqzbsa0y7phmxq8za7jiblpjwx0ry8b372zhgxaz"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "css-text")))
     (inputs
      (list ghc-attoparsec ghc-hspec ghc-quickcheck))
     (home-page "https://www.yesodweb.com/")
@@ -893,6 +918,7 @@ Haskell.")
                (base32
                 "1lkipa4v73z3l5lqs6sdhl898iq41kyxv2jb9agsajzgd58l6cha"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "mime-types")))
     (home-page "https://github.com/yesodweb/wai")
     (synopsis "Basic MIME type handling types and functions")
     (description
@@ -914,6 +940,7 @@ Haskell.")
         (base32
          "0q9hmfii62kc82ijlg238fxrzxhsivn42x5wd6ffcr9xldg4jd8c"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "html")))
     (home-page
      "https://hackage.haskell.org/package/html")
     (synopsis "HTML combinator library")
@@ -936,6 +963,7 @@ documents.")
         (base32
          "09bwrdam3y47kqllgg6w098ghqb8jb10dp4wxirsvx5ddpx9zpi6"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "html-conduit")))
     (inputs
      (list ghc-resourcet
            ghc-conduit
@@ -970,6 +998,7 @@ entity decoding bugfixes applied.")
         (base32
          "0k1r1hddjgqighazcazxrx6xfhvy2gm8il8l82ainv3cai13yl30"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "blaze-html")))
     (arguments
      `(#:tests? #f ; TODO: Depends on quickcheck<2.14
        #:cabal-revision
@@ -999,6 +1028,7 @@ entity decoding bugfixes applied.")
         (base32
          "1s5z4bgb5150h6a4cjf5vh8dmyrn6ilh29gh05999v6jwd5w6q83"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "aeson")))
     (arguments
      `(#:tests? #f ; FIXME: testing libraries are missing.
        #:cabal-revision
@@ -1054,6 +1084,7 @@ naming: in Greek mythology, Aeson was the father of Jason.)")
                (base32
                 "021az9az6xik9c9s3rnar5fr1lgy2h3igibf5ixnc7ps3m2lzg2x"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "aeson-pretty")))
     (inputs
      (list ghc-aeson
            ghc-base-compat
@@ -1086,6 +1117,7 @@ essentially the opposite of pretty-printing.")
                (base32
                 "0dpklq2xdhrkg1rdc7zfdjnzm6c3qxx2i1xskrqdxpqi84ffnlyh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "aeson-qq")))
     (inputs
      (list ghc-base-compat
            ghc-attoparsec
@@ -1118,6 +1150,7 @@ of a JSON value into a @code{Data.Aeson.Value}.")
         (base32
          "09vkyrhwak3bmpfsqcd2az8hfqqkxyhg468hv5avgisy0nzh3w38"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "aeson-better-errors")))
     (inputs
      (list ghc-aeson
            ghc-unordered-containers
@@ -1151,6 +1184,7 @@ good error messages when parsing fails.  See also
         (base32
          "0p6n4knxpjv70nbl6cmd6x7gkdjsjqp4ya7fz00bfrqp7jvhlivn"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "multipart")))
     (inputs
      (list ghc-stringsearch))
     (home-page
@@ -1175,6 +1209,7 @@ good error messages when parsing fails.  See also
         (base32
          "0lj2h701af12539p957rw24bxr07mfqd5r4h52i42f43ax165767"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "uri-encode")))
     (inputs
      (list ghc-utf8-string ghc-network-uri))
     (home-page "https://hackage.haskell.org/package/uri-encode")
@@ -1196,6 +1231,7 @@ good error messages when parsing fails.  See also
         (base32
          "0vx3sivcsld76058925hym2j6hm3g71f0qjr7v59f1g2afgx82q8"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "path-pieces")))
     (native-inputs (list ghc-hunit ghc-hspec ghc-quickcheck))
     (home-page "https://github.com/yesodweb/path-pieces")
     (synopsis "Used in Yesod to automatically marshall data in the request path")
@@ -1217,6 +1253,7 @@ Haskell data types to and from route pieces.")
         (base32
          "1jdqdk0rz2wnvw735clnj8jh0a9rkrbqjg7vk3w6wczdql6cm0pq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "skein")))
     (inputs (list ghc-cereal ghc-tagged ghc-crypto-api))
     (native-inputs (list ghc-hspec))
     (home-page "https://github.com/yesodweb/path-pieces")
@@ -1243,6 +1280,7 @@ This Haskell package uses bindings to the optimized C implementation of Skein.")
         (base32
          "0s6h4ykj16mpf7nlw2iqn2ji0p8g1fn5ni0s7yqaili6vv2as5ar"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "clientsession")))
     (inputs (list ghc-cereal
                   ghc-tagged
                   ghc-crypto-api
@@ -1276,6 +1314,7 @@ avoid any issues with characters.")
         (base32
          "0wmh7ip318p89lyy6k5mvxkkpq43knp41wlq9iaf3icz0ahqdmb7"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod-core")))
     (inputs (list ghc-wai
                   ghc-extra
                   ghc-shakespeare
@@ -1345,6 +1384,7 @@ functions, widgets, etc.")
         (base32
          "102xmp7n08sk1g5rv31jpln2v9kqf1zsqsnmi83mnhmgggcbj1k4"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod-persistent")))
     (arguments `(#:tests? #f)) ; FIXME: hspec-discover not available in PATH.
     (inputs (list ghc-yesod-core
                   ghc-persistent
@@ -1376,6 +1416,7 @@ from Yesod.")
           (base32
             "170gby381h5pg9njn908cyx2931yiv79x3rc5npg2rd74kif06vi"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod-form")))
     (inputs
       (list ghc-yesod-core
             ghc-yesod-persistent
@@ -1417,6 +1458,7 @@ providing richtext field using Nic editor.")
         (base32
          "13r0ispprj41kgn2rkc7zhy1rxfmgpjbmdlnys15h0ihhh3zhw2f"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod")))
     (inputs
      (list ghc-yesod-core
            ghc-yesod-persistent
@@ -1456,6 +1498,7 @@ whereas most of the core code lives in @code{ghc-yesod-core}.")
         (base32
          "0jm98jddbsd60jc2bz8wa71rslagbaqf00ia7fvfsaiaa54nk0r8"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hxt-charproperties")))
     (home-page "https://github.com/UweSchmidt/hxt")
     (synopsis "Character properties and classes for XML and Unicode")
     (description
@@ -1479,6 +1522,7 @@ supported Unicode version is 7.0.0")
         (base32
          "0rj48cy8z4fl3zpg5bpa458kqr83adav6jnqv4i71dclpprj6n3v"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hxt-unicode")))
     (inputs
      (list ghc-hxt-charproperties))
     (home-page
@@ -1506,6 +1550,7 @@ ignored.")
         (base32
          "0ynrf65m7abq2fjnarlwq6i1r99pl89npibxx05rlplcgpybrdmr"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hxt-regex-xmlschema")))
     (inputs
      (list ghc-hxt-charproperties ghc-hunit))
     (home-page "https://wiki.haskell.org/Regular_expressions_for_XML_Schema")
@@ -1531,6 +1576,7 @@ derivations of regular expressions.")
         (base32
          "1n9snbdl46x23ka7bbsls1vsn0plpmfmbpbl0msjfm92fkk2yq7g"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hxt")))
     (outputs '("out" "static" "doc"))
     (inputs
      (list ghc-hxt-charproperties ghc-hxt-unicode ghc-hxt-regex-xmlschema
@@ -1553,6 +1599,7 @@ introduces a more general approach for processing XML with Haskell.")
                (base32
                 "0wlq9s01icalnvjkkilx5zaqp3ff4v5limj1xy8i18qpzjspqdsh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hxt-xpath")))
     (inputs (list ghc-hxt))
     (home-page "https://github.com/UweSchmidt/hxt")
     (synopsis "The XPath modules for HXT")
@@ -1575,6 +1622,7 @@ from them.  Some primitives have both a functional and an arrow interface.")
         (base32
          "1xpbnfac0fqa5r670ggwm4kq3cmz9jpaw9bx40j9w9qiw6xi4i28"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-common")))
     (inputs
      (list ghc-base64-bytestring
            ghc-blaze-builder
@@ -1604,6 +1652,7 @@ pipes-http re-export this package's types and functions.")
         (base32
          "03xdcb0v735xdrkjlm1w56mskh3x08cbsjrcd7wn4li65ixc20xa"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "http-streams")))
     (inputs
      (list ghc-attoparsec
            ghc-base64-bytestring
@@ -1640,6 +1689,7 @@ deal with the result.")
         (base32
          "0zxdhx4wk70bkn71574lyz3zhq79yy98rv05r4564rd100xw3fqs"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "snap-core")))
     (arguments
      `(#:tests? #f ; TODO: Fail to compile.
        #:cabal-revision
@@ -1691,6 +1741,7 @@ contains the core definitions and types for the Snap framework.")
         (base32
          "0w4yv9a5ilpma0335ariwap2iscmdbaaif88lq3cm7px910nyc4j"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "snap-server")))
     (inputs
      (list ghc-attoparsec
            ghc-blaze-builder
@@ -1744,6 +1795,7 @@ protocol.")
         (base32
          "16q68jzbs7kp07dnq8cprdcc8fd41rim38039vg0w4x11lgniq70"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "js-jquery")))
     (arguments `(#:tests? #f)) ; tests do network IO
     (home-page "https://github.com/ndmitchell/js-jquery")
     (synopsis "Obtain minified jQuery code")
@@ -1770,6 +1822,7 @@ users (e.g. Debian).")
         (base32
          "0yjyzqh3qzhy5h3nql1fckw0gcfb0f4wj9pm85nafpfqp2kg58hv"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "js-flot")))
     (inputs
      (list ghc-http))
     (home-page "https://github.com/ndmitchell/js-flot")
@@ -1796,6 +1849,7 @@ requirements of downstream users (e.g. Debian).")
         (base32
          "0nc5rnvrzl9m3pinmdq234m80qkf4jszbdqnd567f7lh09yiqw9n"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "happstack-server")))
     (inputs
      (list ghc-network
            ghc-network-bsd
@@ -1840,6 +1894,7 @@ cookies, serving files, and more.")
         (base32
          "0988snmx3bylpw3kcq8hsgji8idc6xcrcfp275qjv3apfdgc9rp0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "sendfile")))
     (inputs (list ghc-network))
     (home-page
      "https://hub.darcs.net/stepcut/sendfile")
@@ -1862,6 +1917,7 @@ cookies, serving files, and more.")
          (base32
           "07mjff8aqwabx8yhq8bd7jpnarkkrjqss8h8s2wkfmfj808fllmf"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "scalpel-core")))
     (inputs
      (list ghc-data-default
            ghc-fail
@@ -1894,6 +1950,7 @@ non-Haskell dependencies.")
          (base32
           "04hhvk0yjxha3yg6n9fxivrz97hpjjiiblnj0bvs5myax1ggkjch"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "scalpel")))
     (inputs
      (list ghc-scalpel-core
            ghc-case-insensitive
@@ -1925,6 +1982,7 @@ declarative and monadic interface.")
         (base32
          "0kz8xpcd5syg5s4qa2qq8ylaxjhabj127w42may46vv6i0q1bf8a"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "sourcemap")))
     (inputs
      (list ghc-aeson ghc-unordered-containers ghc-attoparsec
            ghc-utf8-string))
@@ -1957,6 +2015,7 @@ proposed by Google and Mozilla here
         (base32
          "0s6igb54cxm2jywgc3sq53f52gcsc39wd3g78yisfzvl9jm3d86i"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "language-javascript")))
     (inputs
      (list ghc-blaze-builder ghc-utf8-string))
     (native-inputs
@@ -1984,6 +2043,7 @@ as frontend to hjsmin.")
         (base32
          "0wvygg3rdbxzrmr61a9w6ddv9pfric85ih8hnxyk0ydzn7i59abs"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "bower-json")))
     (inputs
      (list ghc-aeson ghc-aeson-better-errors ghc-scientific
            ghc-transformers ghc-unordered-containers))
@@ -2008,6 +2068,7 @@ Bower's package manifest file, bower.json.")
        (sha256
         (base32 "1isvi4fahq70lzxfz23as7qzkc01g7kba568l6flrgd0j1984fsy"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "DAV")))
     (inputs
      (list ghc-case-insensitive
            ghc-data-default
@@ -2044,6 +2105,7 @@ Authoring and Versioning (WebDAV) extensions to HTTP as well an executable,
         (base32
          "1xgy7dzhqjgllqcpyyxs0spdg6vlz2c1sjvni7w7qnsf0ckyw2l8"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod-test")))
     (inputs
      (list ghc-hunit
            ghc-aeson
@@ -2090,6 +2152,7 @@ HTML responses using CSS selectors.")
         (base32
          "138gd5482psq0wbm8s1az672lksi7vbavq6ayiyjkliivf6xpry8"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-app-static")))
     (inputs
      (list ghc-wai
            ghc-http-types
@@ -2132,6 +2195,7 @@ helper functions and datatypes for use outside of WAI.")
         (base32
          "1r2p5rjdjr25j3w4s57q5hxw2c3ymw12x7ms18yvglnq2ivr9fc1"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hjsmin")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2163,6 +2227,7 @@ syntactic elements, without changing the semantics.")
         (base32
          "18f5hm9ncvkzl8bkn39cg841z0k5iqs5w45afsyk9y6k98pjd54p"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "yesod-static")))
     (inputs
      (list ghc-async
            ghc-attoparsec
@@ -2206,6 +2271,7 @@ for the Yesod Web Framework.")
         (base32
          "1ifqgyc1ccig5angh5l1iq7vyms4lvi8wzvysg5dw82nml49n02m"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-handler-launch")))
     (inputs
      (list ghc-wai ghc-warp ghc-http-types ghc-streaming-commons
            ghc-async))
@@ -2229,6 +2295,7 @@ server no longer receives pings, it shuts down.")
         (base32
          "10gv3jjlkcb13031frr818p56v2s0qf6dqjsfpwlhwdxdssvx5r5"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "wai-cors")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -2273,6 +2340,7 @@ aims to be compliant with @url{https://www.w3.org/TR/cors}.")
         (sha256
           (base32 "0w3dmwk03j4n01xkiq8m4sqa27bskh239mpw7m4ihjmkxqcwc5gl"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "network-run")))
     (inputs (list ghc-network))
     (home-page "https://hackage.haskell.org/package/network-run")
     (synopsis "Simple network runner library")

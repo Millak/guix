@@ -56,6 +56,7 @@
         (base32
          "0h9mllhw9cd0rn34xhj8grwmbny7z7hpd8qmp9lfcdj0s4qx9vx8"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-ant-xml")))
     (inputs
      (list ghc-generic-deriving ghc-xml ghc-tagged ghc-tasty))
     (home-page
@@ -83,6 +84,7 @@ framework.")
         (base32
          "0csgwn3vch0jnpqyyfnrfjq4z0dpl67imh5a7byll3hhlyidgjym"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-smallcheck")))
     (inputs
      (list ghc-tasty ghc-smallcheck ghc-async ghc-tagged))
     (home-page "https://documentup.com/feuerbach/tasty")
@@ -105,6 +107,7 @@ Haskell test framework.")
         (base32
          "0i1i78587znqzwps49milyr5n2k388ld2kr9ysz1vw8gcw51qq49"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-quickcheck")))
     (inputs
      (list ghc-quickcheck
            ghc-tagged
@@ -134,6 +137,7 @@ Haskell test framework.")
         (base32
          "1nskavqgfxx1cw7q6c0cmizlwj54rnlv93yhgssaa77gv1nbvwpn"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-golden")))
     (inputs
      (list ghc-async
            ghc-optparse-applicative
@@ -167,6 +171,7 @@ contains the correct result for the test.")
         (base32
          "0574hbqzxzyv6vsk5kzbf04kz58y0iy8x9ydcj4b8fpncgmgy63g"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty")))
     (inputs
      (list ghc-tagged
            ghc-regex-tdfa
@@ -196,6 +201,7 @@ and any other types of tests into a single test suite.")
         (base32
          "0cy49z8n124xh2ra2482vfy5if1n6d9lbdjma2zg1mxfj0k0zyfb"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-hedgehog")))
     (inputs
      (list ghc-tagged ghc-tasty ghc-hedgehog))
     (native-inputs
@@ -223,6 +229,7 @@ framework}.")
         (base32
          "02s82ijs2ringqxsqbm7m3vcy5brmwxa617azxv0v2phi3rdkjvl"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-hspec")))
     (inputs
      (list ghc-hspec
            ghc-hspec-core
@@ -257,6 +264,7 @@ framework}.")
         (base32
          "0gz6zz3w7s44pymw33xcxnawryl27zk33766sab96nz2xh91kvxp"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-hunit")))
     (inputs
      (list ghc-call-stack-boot ghc-tasty))
     (home-page "http://documentup.com/feuerbach/tasty")
@@ -277,6 +285,7 @@ test framework.")
                (base32
                 "14yvlpli6cv6bn3kh8mlfp4x1l6ns4fvmfv6hmj75cvxyzq029d7"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-kat")))
     (inputs
      (list ghc-tasty ghc-tasty-quickcheck ghc-tasty-hunit))
     (home-page "https://github.com/vincenthz/tasty-kat")
@@ -299,6 +308,7 @@ tasty.")
         (base32
          "0wa73ihkjcxi50lgpdzwwdx7s903lqi79hw7hxlvhbcvdly1cq53"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-lua")))
     (inputs
      (list ghc-file-embed ghc-hslua ghc-tasty))
     (native-inputs
@@ -323,6 +333,7 @@ from Lua.")
         (base32
          "0b2ivrw2257m4cy4rjnkwqlarh83j1y3zywnmaqqqbvy667sqnj3"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-th")))
     (inputs
      (list ghc-haskell-src-exts ghc-tasty ghc-tasty-hunit))
     (home-page "https://github.com/bennofs/tasty-th")
@@ -347,6 +358,7 @@ test-framework.")
                (base32
                 "0sccp5zx9v2rx741nbmgd8mzjhy5m4v74hk26d23xz93ph8aqx7s"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-rerun")))
     (inputs
      (list ghc-optparse-applicative ghc-reducers ghc-split ghc-tagged
            ghc-tasty))
@@ -372,6 +384,7 @@ been added since previous test run.")
         (base32
          "0zlgxs24d54byfhvwdg85xk1572zpjs71bjlxxrxcvralrfcq1yb"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-expected-failure")))
     (arguments `(#:tests? #f)) ; TODO: Loops.
 ;    (native-inputs
 ;     `(("ghc-tasty-hunit" ,ghc-tasty-hunit)
@@ -404,6 +417,7 @@ development.")
         (base32
          "0ihqbarl2ddrfgq3mq09lswwn8213qpw13g49qxs5mjkcm6gbk3h"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-instances")))
     (arguments
      `(#:cabal-revision
        ("2" "1lsa3pbg4ljlk29fhm3mdklnx3hwffyga1nr5krbpcyc3ywq8fq8")))
@@ -444,6 +458,7 @@ provided by the Haskell Platform.")
         (base32
          "0s43s1bzbg3gwsjgm7fpyksd1339f0m26dlw2famxwyzgvm0a80k"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-unicode")))
     (inputs (list ghc-quickcheck))
     (home-page
      "https://github.com/bos/quickcheck-unicode")
@@ -467,6 +482,7 @@ testing Unicode-related software.")
         (base32
          "08k4v7pkgjf30pv5j2dfv1gqv6hclxlniyq2sps8zq4zswcr2xzv"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-io")))
     (inputs
      (list ghc-quickcheck ghc-hunit))
     (home-page
@@ -491,6 +507,7 @@ use HUnit assertions as QuickCheck properties.")
         (base32
          "1wrnrm9sq4s0bly0q58y80g4153q45iglqa34xsi2q3bd62nqyyq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "QuickCheck")))
     (inputs
      (list ghc-random ghc-splitmix-bootstrap))
     (home-page "https://github.com/nick8325/quickcheck")
@@ -516,6 +533,7 @@ expressed in Haskell, using combinators defined in the QuickCheck library.")
        (sha256
         (base32 "1kyam4cy7qmnizjwjm8jamq43w7f0fs6ljfplwj0ib6wi2kjh0wv"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-assertions")))
     (native-inputs
      (list ghc-hspec))
     (inputs
@@ -541,6 +559,7 @@ HUnit.")
         (base32
          "1hhacrzam6b8f10hyldmjw8pb7frdxh04rfg3farxcxwbnhwgbpm"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "test-framework")))
     (arguments
      `(#:tests? #f  ; FIXME: Tests do not build.
        #:cabal-revision
@@ -581,6 +600,7 @@ reporting and test statistics output.")
         (base32
          "1y0b6vg8nfm43v90lxxcydhi6qlxhfy4vpxbzm5ic2w55bh8xjwm"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "test-framework-hunit")))
     (arguments
      `(#:cabal-revision
        ("3" "0i9mlalv7cl1iq43ld5myrnpszq5rxmd79hk495dcb08rglhgl3z")))
@@ -606,6 +626,7 @@ reporting and test statistics output.")
         (base32
          "0ngf9vvby4nrdf1i7dxf5m9jn0g2pkq32w48xdr92n9hxka7ixn9"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "test-framework-quickcheck2")))
     (arguments
      `(#:cabal-revision
        ("3" "0mglqfimla4vvv80mg08aj76zf4993wmngqlirh05h8i9nmgv6lh")))
@@ -632,6 +653,7 @@ package.")
        (sha256
         (base32 "1xpgpk1gp4w7w46b4rhj80fa0bcyz8asj2dcjb5x1c37b7rw90b0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "test-framework-smallcheck")))
     (inputs
      (list ghc-smallcheck ghc-test-framework))
     (home-page "https://github.com/Bodigrim/smallcheck")
@@ -655,6 +677,7 @@ test-framework.  New projects should use ghc-tasty-smallcheck instead.")
         (base32
          "12lw7yj02jb9s0i7rb98jjam43j2h0gzmnbj9zi933fx7sg0sy4b"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "test-framework-th")))
     (inputs
      (list ghc-test-framework ghc-language-haskell-extract
            ghc-haskell-src-exts ghc-regex-posix))
@@ -687,6 +710,7 @@ using Template Haskell")
         (base32
          "1as4sw5y39c3zrmr6sb8zbw74c9gdn4401y0dx45ih7zf6457dxh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "HUnit")))
     (inputs
      ;; We cannot use ghc-call-stack there, because it depends on
      ;; ghc-nanospec, which depends on ghc-hunit.
@@ -712,6 +736,7 @@ JUnit tool for Java.")
         (base32
          "13yzvd3b679skvs1insk4s0wc4zvmz6hs38kc8q0j6vzqq06smqa"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec-discover")))
     (native-inputs
      (list ghc-quickcheck ghc-hspec-meta))
     (home-page "https://hspec.github.io/")
@@ -733,6 +758,7 @@ runs Hspec tests.")
         (base32
          "12k9yp5gznrda449ir60d5wv3xl7nnyffkb5mhfc0svw9f8lxlv1"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec-core")))
     (arguments `(#:tests? #f)) ; FIXME: testing libraries are missing.
     (inputs
      (list ghc-setenv
@@ -763,6 +789,7 @@ be used to extend Hspec's functionality.")
         (base32
          "0sfj0n2hy1r8ifysgbcmfdygcd7vyzr13ldkcp0l2ml337f8j0si"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec-meta")))
     (inputs
      (list ghc-quickcheck
            ghc-hunit
@@ -791,6 +818,7 @@ used to test the in-development version of Hspec.")
         (base32
          "0z0lwrmrqkglr78n6k2c36n4h68142bh785ys0x4jaibjshvs6rw"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec")))
     (outputs '("out" "static" "doc"))
     (inputs
      (list ghc-hspec-core
@@ -819,6 +847,7 @@ Haskell, inspired by the Ruby library RSpec.")
                (base32
                 "0hhzxaa3fxz5mk5qcsrnfr98a7bn3szx2ydgr0x9mbqmm1jg06rc"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec-contrib")))
     (inputs
      (list ghc-hspec-core ghc-hunit ghc-hspec ghc-quickcheck))
     (native-inputs
@@ -843,6 +872,7 @@ Haskell, inspired by the Ruby library RSpec.")
         (base32
          "1vxl9zazbaapijr6zmcj72j9wf7ka1pirrjbwddwwddg3zm0g5l1"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hspec-expectations")))
     ;; Tests depend on ghc-nanospec.
     (arguments '(#:tests? #f))
     (inputs (list ghc-hunit))
@@ -866,6 +896,7 @@ Haskell, inspired by the Ruby library RSpec.")
         (base32
          "1rcmhl9bhyfvanalnf1r86wkx6rq6wdvagnw1h011jcnnb1cq56g"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "nanospec")))
     (inputs
      (list ghc-hspec ghc-silently))
     (home-page "https://github.com/hspec/nanospec#readme")
@@ -889,6 +920,7 @@ minimal dependencies.")
         (base32
          "19wqignlq90qwpam01hnmmrxaxh5lkax9l1l6rlbi4a07nvp1dnz"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "crypto-cipher-tests")))
     (inputs (list ghc-quickcheck
                   ghc-hunit
                   ghc-test-framework
@@ -919,6 +951,7 @@ implementations of cryptographic ciphers.")
         (base32
          "1qsqs8lmxa3wmw228cwi98vvvh9hqbc9d43i1sy2c9igw9xlhfi6"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hedgehog")))
     (inputs
      (list ghc-ansi-terminal
            ghc-async
@@ -959,6 +992,7 @@ To get started quickly, see the examples:
         (base32
          "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cabal-doctest")))
     (arguments
      `(#:cabal-revision
        ("2" "05v1awad3d1wvc763xcgvxm4n6n7bs7byc6s14kdbw35zcaddlcb")))
@@ -984,6 +1018,7 @@ configuration.  This library provides the common bits for writing custom
           (base32
             "1wh2n95n39ivv6kbqn42vbzrj8zagsmk6f2al2qj40bg5kgdl2q5"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "testing-type-modifiers")))
     (home-page "https://hackage.haskell.org/package/testing-type-modifiers")
     (synopsis "Data type modifiers for property based testing")
     (description "Property based testing libraries such as QuickCheck tend to
@@ -1006,6 +1041,7 @@ testing frameworks.")
           (base32
             "1v2qzzpf1s008g7q6q67glf7vbm1pkpq4rc3ii74f4g6vhfx610r"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "testing-feat")))
     (inputs
       (list ghc-quickcheck ghc-size-based ghc-testing-type-modifiers
             ghc-semigroups))
@@ -1032,6 +1068,7 @@ random testing, and hybrids of the two.")
         (base32
          "0qz1npyycj4bvyly9xmjbnhw569l52h38gx02rk0r7zhapw83aig"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "inspection-testing")))
     (home-page
      "https://github.com/nomeata/inspection-testing")
     (synopsis "GHC plugin to do inspection testing")
@@ -1072,6 +1109,7 @@ examples and more information.")
         (sha256
           (base32 "19iw15mvb7gws3ljdxqwsbb4pmfc0sfflf8szgmrhiqr3k82mqv2"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-classes")))
     (inputs
       (list ghc-quickcheck
             ghc-primitive
@@ -1116,6 +1154,7 @@ constraints more cleanly.")
         (sha256
           (base32 "16c6gq4cqpkwnq1pzkhm6r7mrwk4an50ha5w77bmiia2qkhla6ch"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "quickcheck-classes-base")))
     (inputs
       (list ghc-quickcheck
             ghc-contravariant
@@ -1157,6 +1196,7 @@ these constraints more cleanly.")
         (sha256
           (base32 "1vswam0dhw52dihgnzirh18gqs8rj8h6jd7pl6y1mg2f9f9zmih2"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "doctest-lib")))
     (home-page "https://hub.darcs.net/thielema/doctest-lib/")
     (synopsis "Parts of doctest exposed as library")
     (description
@@ -1177,6 +1217,7 @@ these constraints more cleanly.")
         (sha256
           (base32 "1g3c7yrqq2mwqbmvs8vkx1a3cf0p0x74b7fnn344dsk7bsfpgv0x"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "doctest-exitcode-stdio")))
     (inputs
       (list ghc-doctest-lib ghc-quickcheck ghc-semigroups))
     (home-page "https://hub.darcs.net/thielema/doctest-exitcode-stdio/")
@@ -1200,6 +1241,7 @@ environment.")
         (sha256
           (base32 "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cabal-doctest")))
     (arguments
       `(#:cabal-revision
         ("2" "05v1awad3d1wvc763xcgvxm4n6n7bs7byc6s14kdbw35zcaddlcb")))
@@ -1223,6 +1265,7 @@ environment.")
         (sha256
           (base32 "0nvh2k8iqqkanmp7lpwd3asimyarzisly8wavbdahcxryn0j4xb7"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-silver")))
     (inputs
       (list ghc-ansi-terminal
             ghc-async

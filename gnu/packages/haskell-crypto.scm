@@ -47,6 +47,7 @@
                (base32
                 "1a119qxhxhr0yn37r26dkydm6g5kykdkx98ghb59i4ipa6i95vkq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "asn1-types")))
     (inputs
      (list ghc-memory ghc-hourglass))
     (home-page "https://github.com/vincenthz/hs-asn1-types")
@@ -69,6 +70,7 @@ format.")
                (base32
                 "02nsr30h5yic1mk7znf0q4z3n560ip017n60hg7ya25rsfmxxy6r"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "asn1-encoding")))
     (inputs
      (list ghc-hourglass ghc-asn1-types))
     (native-inputs
@@ -93,6 +95,7 @@ supports for high level forms of ASN1 (BER, and DER).")
                (base32
                 "17pk8y3nwv9b9i5j15qlmwi7fmq9ab2z4kfpjk2rvcrh9lsf27wg"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "asn1-parse")))
     (inputs
      (list ghc-asn1-types ghc-asn1-encoding))
     (home-page "https://github.com/vincenthz/hs-asn1")
@@ -116,6 +119,7 @@ when ASN1 pattern matching is not convenient.")
         (base32
          "19bsmkqkpnvh01b77pmyarx00fic15j4hvg4pzscrj4prskrx2i9"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "crypto-api")))
     (inputs (list ghc-cereal ghc-tagged ghc-entropy))
     (home-page "https://github.com/TomMD/crypto-api")
     (synopsis "Provides generic interface for cryptographic operations
@@ -145,6 +149,7 @@ algorithm (ex: padding) is within scope of this package.")
         (base32
          "0w3j43jdrlj28jryp18hc6q84nkl2yf4vs1hhgrsk7gb9kfyqjpl"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "crypto-api-tests")))
     (outputs '("out" "static" "doc"))
     (inputs (list ghc-test-framework-quickcheck2
                   ghc-crypto-api
@@ -174,6 +179,7 @@ for common cryptographic algorithms are included.")
         (base32
          "1yr2iyb779znj79j3fq4ky8l1y8a600a2x1fx9p5pmpwq5zq93y2"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptohash")))
     (inputs
      (list ghc-byteable
            ghc-cryptonite
@@ -206,6 +212,7 @@ that hides the C implementation.")
         (base32
          "018g13hkmq5782i24b4518hcd926fl6x6fh5hd7b9wlxwc5dn21v"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptohash-md5")))
     (native-inputs (list ghc-base16-bytestring ghc-puremd5 ghc-tasty
                          ghc-tasty-hunit ghc-tasty-quickcheck))
     (home-page "https://github.com/hvr/cryptohash-md5")
@@ -227,6 +234,7 @@ that hides the C implementation.")
         (base32
          "1aqdxdhxhl9jldh951djpwxx8z7gzaqspxl7iwpl84i5ahrsyy9w"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptohash-sha1")))
     (arguments
      `(#:cabal-revision
        ("6" "10rpxrmqgwihmplczglwxf5q3l13z9j3kvi065z884y4dymmnkgc")
@@ -258,6 +266,7 @@ the C implementation.")
         (base32
          "1xkb7iqplbw4fy1122p79xf1zcb7k44rl0wmfj1q06l7cdqxr9vk"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptohash-sha256")))
     (arguments
      `(#:cabal-revision
        ("1" "1hyzqv30rpj920ddnr0zypyjjlh52vyp2d140pn2byayj820rkgs")
@@ -289,6 +298,7 @@ the C implementation.")
                (base32
                 "13xhp3hshb8x06bw37kp16c9jpjmgfn06nkj9drz745fv8f04fnq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptonite")))
     ;; FIXME: tests are broken.
     ;; See https://github.com/haskell-crypto/cryptonite/issues/260
     (arguments '(#:tests? #f))
@@ -321,6 +331,7 @@ generators, and more.")
         (base32
          "1l5383l5pvp018rj3vabrppnzcqrr2g0dvgvmsrbjdn02wzab5jm"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "digest")))
     (arguments
      `(#:extra-directories ("zlib")))
     (inputs
@@ -348,6 +359,7 @@ are implemented as FFI bindings to efficient code from zlib.")
        (sha256
         (base32 "0qmzz0zgad13zl0kjrxz6cxg8ckn2w8saas2a2j72vbafpzmkixd"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "entropy")))
     (home-page "https://github.com/TomMD/entropy")
     (synopsis "Provides platform independent entropy source for Haskell")
     (description "This Haskell package provides a platform independent method
@@ -366,6 +378,7 @@ to obtain cryptographically strong entropy.")
                (base32
                 "1m7qjsxrd8m88cvkqmr8kscril500j2a9y0iynvksjyjkhdlq33p"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "pem")))
     (inputs
      (list ghc-basement ghc-memory))
     (native-inputs
@@ -392,6 +405,7 @@ Mail} (PEM) format.")
         (base32
          "0qwkvxwi9wh6knn69rg2hvc8ngmv1if77kmpcnp0xqr0l30fwavq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "pureMD5")))
     (inputs (list ghc-cereal ghc-crypto-api ghc-tagged))
     (native-inputs (list ghc-crypto-api-tests ghc-quickcheck
                          ghc-test-framework ghc-test-framework-quickcheck2
@@ -415,6 +429,7 @@ interface.")
                (base32
                 "0i4b2wjisivdy72synal711ywhx05mfqfba5n65rk8qidggm1nbb"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "SHA")))
     (native-inputs
      (list ghc-quickcheck ghc-test-framework
            ghc-test-framework-quickcheck2))
@@ -441,6 +456,7 @@ libraries, like OpenSSL.")
                (base32
                 "1j67c35g8334jx7x32hh6awhr43dplp0qwal5gnlkmx09axzrc5i"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "x509")))
     (inputs
      (list ghc-memory
            ghc-hourglass
@@ -470,6 +486,7 @@ libraries, like OpenSSL.")
                (base32
                 "1y8yyr1i95jkllg8k0z54k5v4vachp848clc07m33xpxidn3b1lp"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "x509-store")))
     (inputs
      (list ghc-pem ghc-asn1-types ghc-asn1-encoding ghc-cryptonite
            ghc-x509))
@@ -495,6 +512,7 @@ collections, certificates, revocation lists, and exception lists.")
                (base32
                 "16yihzljql3z8w5rgdl95fv3hgk7yd86kbl9b3glllsark5j2hzr"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "x509-validation")))
     (inputs
      (list ghc-memory
            ghc-byteable
@@ -528,6 +546,7 @@ list validation.")
                (base32
                 "06a4m9c7vlr9nhp9gmqbb46arf0yj1dkdm4nip03hzy67spdmp20"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "x509-system")))
     (inputs
      (list ghc-pem ghc-x509 ghc-x509-store))
     (home-page "https://github.com/vincenthz/hs-certificate")
@@ -551,6 +570,7 @@ for X.509 certificates.")
         (base32
          "03qa1i1kj07pfrxsi7fiaqnnd0vi94jd4jfswbmnm4gp1nvzcwr0"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "crypto-cipher-types")))
     (inputs (list ghc-byteable ghc-securemem))
     (home-page "https://github.com/vincenthz/hs-crypto-cipher")
     (synopsis "Generic cryptography cipher types for Haskell")
@@ -572,6 +592,7 @@ for symmetric ciphers.")
         (base32
          "05ahz6kjq0fl1w66gpiqy0vndli5yx1pbsbw9ni3viwqas4p3cfk"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cipher-aes")))
     (inputs (list ghc-byteable ghc-securemem ghc-crypto-cipher-types))
     (native-inputs (list ghc-quickcheck ghc-test-framework
                          ghc-test-framework-quickcheck2
@@ -609,6 +630,7 @@ AES-NI available, or you'll need to use a different implementation.")
         (base32
          "0139kbbb2h7vshf68y3fvjda29lhj7jjwl4vq78w4y8k8hc7l2hp"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "crypto-random")))
     (inputs (list ghc-securemem ghc-vector))
     (home-page "https://github.com/vincenthz/hs-crypto-random")
     (synopsis "Simple cryptographic random related types for Haskell")
@@ -630,6 +652,7 @@ abstraction for CPRNGs.")
         (base32
          "1wr15kbmk1g3l8a75n0iwbzqg24ixv78slwzwb2q6rlcvq0jlnb4"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cprng-aes")))
     (inputs (list ghc-byteable ghc-crypto-random ghc-cipher-aes))
     (home-page "https://github.com/vincenthz/hs-cprng-aes")
     (synopsis "Crypto Pseudo Random Number Generator using AES in counter mode
@@ -674,6 +697,7 @@ percent.
         (base32
          "0v8msqvgzimhs7p5ri25hrb1ni2wvisl5rmdxy89fc59py79b9fq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "ed25519")))
     (arguments
      `(#:cabal-revision
        ("3" "1yidh86ymzwmp2b449pwim6vvfcs1qgkkncbixw1zmb7wj6v167v")
@@ -702,6 +726,7 @@ guidelines.")
                (base32
                 "0j1rxxq5lzs584nk19610mk7mmsqqkgfxw2qj74ibb1zsk7baj4a"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "tls")))
     (inputs
      (list ghc-cereal
            ghc-data-default-class
@@ -743,6 +768,7 @@ extensions.")
         (base32
          "0ysdfl8ck3nzhx597fa13dqf31jq5gzwajlak6r91jajks9w0dl5"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "HsOpenSSL")))
     (arguments
      `(#:extra-directories ("openssl")))
     (inputs
@@ -773,6 +799,7 @@ implementation of SSL.")
         (base32
          "10pnnpzgb5xr811kc9qdk7h2cgn6hk2yiyhnzz8f8p0fjzc0pwjm"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "openssl-streams")))
     (inputs
      (list ghc-hsopenssl ghc-io-streams ghc-network))
     (native-inputs
@@ -797,6 +824,7 @@ networking using OpenSSL (by way of HsOpenSSL).")
         (base32
          "1bldcmda4xh52mw1wfrjljv8crhw3al7v7kv1j0vidvr7ymnjpbh"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cryptonite-conduit")))
     (inputs
      (list ghc-conduit
            ghc-conduit-extra

@@ -237,6 +237,7 @@ line client and a client based on Qt.")
             (lambda _
               (install-file "hledger.info" (string-append #$output "/share/info"))
               (install-file "hledger.1" (string-append #$output "/man/man1")))))))
+    (properties '((upstream-name . "hledger")))
     (inputs
      (list ghc-ansi-terminal
            ghc-base-compat-batteries
@@ -1981,6 +1982,7 @@ generate a variety of reports from them, and provides a web interface.")
         (base32
          "0ivszqcypw0j2wn4r7fv7dqm1pvr0b1y6rqpxagzyk8cxn3ic9g2"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hledger-web")))
     (arguments
      `(#:tests? #f ; TODO: fail.
        #:cabal-revision

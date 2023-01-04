@@ -72,6 +72,7 @@
         (base32
          "1sn5g71sx8xa4ggyk49m661iip6zrzl65vb87l16l31kf79bbm7w"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "apply-refact")))
     (inputs
      (list ghc-refact
            ghc-exactprint
@@ -109,6 +110,7 @@ library.  It is primarily used with HLint's @code{--refactor} flag.")
       (sha256
        (base32 "1c0cc256bha97aj7l0lf76l5swlnmwcqppiz8l4cl5xgba4mwmd0"))))
    (build-system haskell-build-system)
+   (properties '((upstream-name . "cabal-install")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -155,6 +157,7 @@ installation of Haskell libraries and programs.")
         (base32
          "17wi7fma2qaqdm1hwgaam3fd140v9bpa8ky0wg708h1pqc5v2nbz"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "cpphs")))
     (inputs
      (list ghc-polyparse ghc-old-locale ghc-old-time))
     (home-page "https://projects.haskell.org/cpphs/")
@@ -192,6 +195,7 @@ unlit literate code files; and an option to turn off macro-expansion.")
              (("__TIME__") "\"00:00:00\""))
            #t))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "darcs")))
     (arguments
      `(#:tests? #f ; TODO: Needs QuickCheck ==2.13.*, and more…
        #:configure-flags '("-fpkgconfig" "-fcurl" "-flibiconv" "-fthreaded"
@@ -288,6 +292,7 @@ unique algebra of patches called @url{http://darcs.net/Theory,Patchtheory}.
        (sha256
         (base32 "0yqc1pkfajnr56gnh43sbj50r7c3r41b2jfz07ivgl6phi4frjbq"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "ghcid")))
     (inputs
      (list ghc-extra ghc-ansi-terminal ghc-cmdargs ghc-fsnotify
            ghc-terminal-size))
@@ -316,6 +321,7 @@ to @code{cabal repl}).")
        (sha256
         (base32 "06b5gnj0dxiz7lkc75xmmzi50svwbqhs5az01lfmw27r3ibcicpm"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "git-annex")))
     (arguments
      `(#:configure-flags
        '("--flags=-Android -Webapp")
@@ -524,6 +530,7 @@ used to keep a folder in sync between computers.")
         (base32
          "0z6gxndrh7blzapkdn6fq1pkbkjlmbgjbq9ydnvy2wm00fb3v73g"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hlint")))
     (inputs
      (list ghc-unordered-containers
            ghc-yaml
@@ -563,6 +570,7 @@ unwanted suggestions, and to add your own custom suggestions.")
         (base32
          "1xacx2f33x1a4qlv25f8rlmb4wi0cjfzrj22nlnkrd0knghik3m7"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hoogle")))
     (inputs
      (list ghc-quickcheck
            ghc-aeson
@@ -615,6 +623,7 @@ or by approximate type signature.")
         (base32
          "079jwph4bwllfp03yfr26s5zc6m6kw3nhb1cggrifh99haq34cr4"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "hscolour")))
     (home-page "https://hackage.haskell.org/package/hscolour")
     (synopsis "Script to colourise Haskell code")
     (description "HSColour is a small Haskell script to colourise Haskell
@@ -698,6 +707,7 @@ Wayland, and Linux console environments alike.")
        (sha256
         (base32 "1ispgl8rc2scr6v8bb6sks7px856jf61x74zj2iyddrn5qamkb3n"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "nixfmt")))
     (inputs
      (list ghc-megaparsec ghc-parser-combinators ghc-cmdargs
            ghc-safe-exceptions))
@@ -765,6 +775,7 @@ Haskell.")
         (base32
          "10y9zi22m6hf13c9h8zd9vg7mljpwbw0r3djb6r80bna701fdf6c"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "Raincat")))
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -808,6 +819,7 @@ is programmed in Haskell.")
          (base32
           "0apzrvf99rskj4dbmn57jjxrsf19j436s8a09m950df5aws3a0wj"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "scroll")))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -884,7 +896,7 @@ that cause a shell to behave strangely and counter-intuitively.
 advanced user's otherwise working script to fail under future circumstances.
 @end enumerate")
     ;; CVE-2021-28794 is for a completely different, unofficial add-on.
-    (properties `((lint-hidden-cve . ("CVE-2021-28794"))))
+    (properties `((lint-hidden-cve . ("CVE-2021-28794")) (upstream-name . "ShellCheck")))
     (license license:gpl3+)))
 
 (define-public shelltestrunner
@@ -899,6 +911,7 @@ advanced user's otherwise working script to fail under future circumstances.
                (base32
                 "1a5kzqbwg6990249ypw0cx6cqj6663as1kbj8nzblcky8j6kbi6b"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "shelltestrunner")))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
@@ -954,6 +967,7 @@ output, stderr, and exit status.")
         (base32
          "0x9w3zh1lzp6l5xj3mynnlr0fzb5mbv0wwpfxp8fr6bk0jcrzjwf"))))
     (build-system haskell-build-system)
+    (properties '((upstream-name . "stylish-haskell")))
     (inputs
      (list ghc-aeson
            ghc-file-embed
