@@ -52,7 +52,6 @@
             hackage-recursive-import
             %hackage-updater
 
-            guix-package->hackage-name
             hackage-name->package-name
             hackage-fetch
             hackage-source-url
@@ -125,17 +124,6 @@ version is returned."
   (if (string-prefix? package-name-prefix name)
       (string-downcase name)
       (string-append package-name-prefix (string-downcase name))))
-
-(define guix-package->hackage-name
-  (let ((uri-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage)/package/([^/]+)/.*"))
-        (name-rx (make-regexp "(.*)-[0-9\\.]+")))
-    (lambda (package)
-      "Given a Guix package name, return the corresponding Hackage name."
-      (let* ((source-url (and=> (package-source package) origin-uri))
-             (name (match:substring (regexp-exec uri-rx source-url) 2)))
-        (match (regexp-exec name-rx name)
-          (#f name)
-          (m (match:substring m 1)))))))
 
 (define (read-cabal-and-hash port)
   "Read a Cabal file from PORT and return it and its hash in nix-base32
@@ -371,7 +359,7 @@ respectively."
      (formatted-message
       (G_ "~a updater doesn't support updating to a specific version, sorry.")
       "hackage")))
-  (let* ((hackage-name (guix-package->hackage-name package))
+  (let* ((hackage-name (package-upstream-name* package))
          (cabal-meta (hackage-fetch hackage-name)))
     (match cabal-meta
       (#f

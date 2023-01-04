@@ -149,7 +149,7 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
          (formatted-message
           (G_ "~a updater doesn't support updating to a specific version, sorry.")
           "stackage")))
-      (let* ((hackage-name (guix-package->hackage-name pkg))
+      (let* ((hackage-name (package-upstream-name* pkg))
              (version (lts-package-version (packages) hackage-name))
              (name-version (hackage-name-version hackage-name version)))
         (match (and=> name-version hackage-fetch)
@@ -173,7 +173,7 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
        (false-if-networking-error
         (let ((packages (stackage-lts-packages
                          (stackage-lts-info-fetch %default-lts-version)))
-              (hackage-name (guix-package->hackage-name package)))
+              (hackage-name (package-upstream-name* package)))
           (find (lambda (package)
                   (string=? (stackage-package-name package) hackage-name))
                 packages)))))
