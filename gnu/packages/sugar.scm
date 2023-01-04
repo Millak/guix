@@ -19,16 +19,21 @@
 (define-module (gnu packages sugar)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -39,6 +44,105 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp))
+
+(define-public sugar
+  (package
+    (name "sugar")
+    (version "0.120")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/sugar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0imhaj49n7ain33kmrqk19rzlfr50m84fbc011vgg1010ddp3vdw"))))
+    (build-system glib-or-gtk-build-system)
+    (arguments
+     (list
+      #:imported-modules
+      `(,@%glib-or-gtk-build-system-modules
+        (guix build python-build-system))
+      #:modules
+      '((guix build glib-or-gtk-build-system)
+        ((guix build python-build-system) #:prefix python:)
+        (guix build utils))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "autogen.sh"
+                (("^\"\\$srcdir/configure" m)
+                 (string-append "#" m)))))
+          (add-after 'unpack 'fix-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "bin/sugar.in"
+                (("exec python3")
+                 (string-append "exec " (which "python3"))))
+              (substitute* "extensions/cpsection/datetime/model.py"
+                (("/usr/share/zoneinfo/zone.tab")
+                 (search-input-file inputs "/share/zoneinfo/zone.tab")))
+              (substitute* "extensions/cpsection/modemconfiguration/model.py"
+                (("/usr/share/zoneinfo/iso3166.tab")
+                 (search-input-file inputs "/share/zoneinfo/iso3166.tab"))
+                (("/usr/share/mobile-broadband-provider-info")
+                 (dirname
+                  (search-input-file inputs
+                                     "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
+              ;; TODO: these locations should be set to places that exist on
+              ;; Guix System.
+              #;
+              (substitute* "extensions/cpsection/background/model.py"
+                (("\\('/usr', 'share', 'backgrounds'\\)")
+                 "('TODO')"))
+              #;
+              (substitute* "src/jarabe/view/viewhelp.py"
+                (("/usr/share/sugar/activities/Help.activity")
+                 "TODO"))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (for-each
+               (lambda (executable)
+                 (wrap-program executable
+                   `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                          ,(python:site-packages inputs outputs)))
+                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+               (find-files (string-append #$output "/bin") "^sugar.*")))))))
+    (inputs
+     (list gtk+
+           mobile-broadband-provider-info
+           python
+           sugar-artwork
+           sugar-datastore
+           sugar-toolkit-gtk3
+           tzdata))
+    (propagated-inputs
+     (list gstreamer
+           gtk+
+           gtksourceview-3
+           libsoup-minimal-2
+           libwnck
+           libxklavier
+           network-manager
+           telepathy-glib
+           webkitgtk-with-libsoup2
+           python-gwebsockets))
+    (native-inputs
+     (list autoconf automake
+           gettext-minimal
+           intltool
+           (list glib "bin")
+           libtool
+           pkg-config
+           python-empy))
+    (home-page "https://www.sugarlabs.org/")
+    (synopsis "Sugar GTK shell")
+    (description "Sugar is the desktop environment component of a worldwide
+effort to provide every child with an equal opportunity for a quality
+education.  Available in more than twenty-five languages, Sugar Activities are
+used every school day by children in more than forty countries.")
+    (license license:gpl3+)))
 
 (define-public sugar-artwork
   (package
