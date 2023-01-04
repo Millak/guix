@@ -30,6 +30,7 @@
   #:use-module (gnu packages search)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -37,6 +38,47 @@
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (guix gexp))
+
+(define-public sugar-artwork
+  (package
+    (name "sugar-artwork")
+    (version "0.120")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/sugar-artwork")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1mjydyx7kbk429s3kswfb8x7g5smjwnai924avwxab1kjsjjksm9"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "--without-gtk2")
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-build-system
+           (lambda _
+             (substitute* "autogen.sh"
+               (("^\"\\$srcdir/configure" m)
+                (string-append "#" m))))))))
+    (inputs (list cairo gtk+))
+    (native-inputs
+     (list autoconf automake
+           icon-naming-utils
+           libtool
+           pkg-config
+           python
+           python-empy
+           xcursorgen))
+    (home-page "https://www.sugarlabs.org/")
+    (synopsis "Sugar icons and themes")
+    (description "Sugar Artwork provides icons, and GTK+ CSS to build
+activities and other Sugar components.")
+    (license (list license:lgpl2.1+
+                   license:asl2.0))))
 
 (define-public sugar-datastore
   (package
