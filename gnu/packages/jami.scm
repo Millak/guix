@@ -490,10 +490,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
-;;; Remove when 2023 comes.
-(define-public libring
-  (deprecated-package "libring" libjami))
-
 (define-public jami
   (package
     (name "jami")
