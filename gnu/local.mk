@@ -7,7 +7,7 @@
 # Copyright © 2016, 2017, 2018 Kei Kebreau <kkebreau@posteo.net>
 # Copyright © 2016, 2017 Rene Saavedra <rennes@openmailbox.org>
 # Copyright © 2016 Adonay "adfeno" Felipe Nogueira <https://libreplanet.org/wiki/User:Adfeno> <adfeno@openmailbox.org>
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
 # Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
@@ -1900,8 +1900,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/tk-find-library.patch			\
   %D%/packages/patches/tla2tools-build-xml.patch		\
   %D%/packages/patches/tlf-support-hamlib-4.2+.patch		\
-  gnu/packages/patches/tootle-glib-object-naming.patch		\
-  gnu/packages/patches/tootle-reason-phrase.patch		\
+  %D%/packages/patches/tootle-glib-object-naming.patch		\
+  %D%/packages/patches/tootle-reason-phrase.patch		\
   %D%/packages/patches/transcode-ffmpeg.patch	\
   %D%/packages/patches/transfig-gcc10-fno-common.patch		\
   %D%/packages/patches/transmission-honor-localedir.patch	\
