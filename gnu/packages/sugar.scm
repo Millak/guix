@@ -75,15 +75,21 @@
                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (inputs
      (list alsa-lib
-           gdk-pixbuf
-           gobject-introspection
            libice
-           (librsvg-for-system)
            libsm
            libx11
            libxfixes
            libxi
-           python
+           python))
+    (propagated-inputs
+     ;; The gi typelib files are needed by users of this library.
+     (list gdk-pixbuf
+           gobject-introspection
+           gtk+
+           (librsvg-for-system)
+
+           ;; This package is used as a Python library by users, so these must
+           ;; be propagated.
            python-dbus
            python-decorator
            python-pygobject
@@ -93,7 +99,6 @@
            gettext-minimal
            glib
            (list glib "bin")
-           gtk+
            intltool
            libtool
            pkg-config))
