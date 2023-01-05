@@ -1,8 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -475,10 +475,13 @@ cache."
      (catch 'system-error
        (lambda ()
          (when emulate-fhs?
-           ;; When running in a container with EMULATE-FHS?, override $PATH
+           ;; When running in a container with EMULATE-FHS?, augment $PATH
            ;; (optional, but to better match FHS expectations), and generate
            ;; /etc/ld.so.cache.
-           (setenv "PATH" "/bin:/usr/bin:/sbin:/usr/sbin")
+           (setenv "PATH" (string-append "/bin:/usr/bin:/sbin:/usr/sbin"
+                                         (if (getenv "PATH")
+                                             (string-append ":" (getenv "PATH"))
+                                             "")))
            (invoke "ldconfig" "-X"))
          (apply execlp program program args))
        (lambda _
