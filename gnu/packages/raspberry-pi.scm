@@ -428,6 +428,41 @@ also provides the @command{dtmerge}, @command{dtoverlay}, @command{dtparam},
 @command{raspivid} and @command{tvservice} commands, among others.")
       (license license:bsd-3))))
 
+(define-public rpi-fbcp
+  ;; There are no release nor tag; use the latest commit.
+  (let ((revision "0")
+        (commit "af8d32246c23cb23e4030e6588668a14341f5ddc"))
+    (package
+      (name "rpi-fbcp")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/tasanakorn/rpi-fbcp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10wym2jckicxm5iwqgby6gbhkznyi1q8x41v0qahzv71x85xpsl5"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              ;; There is no installation target.
+              (lambda _
+                (install-file "fbcp" (string-append #$output "/bin")))))))
+      (inputs (list raspberrypi-userland))
+      (home-page "https://github.com/tasanakorn/rpi-fbcp")
+      (synopsis "Mirror primary to secondary frame buffer on Raspberry Pi")
+      (description "The @command{fbcp} command provided by this package can be
+used to copy the primary frame buffer to the secondary frame buffer of a
+Raspberry Pi.  It can for example mirror the primary HDMI output to a
+secondary LCD display connected to the Raspberry Pi board.")
+      (license license:expat))))
+
 (define-public rpi-imager
   (package
     (name "rpi-imager")
