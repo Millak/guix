@@ -652,9 +652,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
                      (search-patch "u-boot-infodocs-target.patch")
-                     (search-patch "u-boot-patman-fix-help.patch")
-                     (search-patch "u-boot-patman-local-conf.patch")
-                     (search-patch "u-boot-patman-get-maintainer.patch")))
+                     (search-patch "u-boot-patman-guix-integration.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
