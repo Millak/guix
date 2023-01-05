@@ -14324,6 +14324,7 @@ for compatibility with an upgraded @code{flex} package.
 @table @code
 
 @item --list-transitive
+@itemx --T
 List all the packages which one or more packages depend upon.
 
 @example
