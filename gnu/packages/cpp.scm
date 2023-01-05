@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2377,3 +2378,52 @@ queues, resource pools, strings, etc.
 @item And more.
 @end itemize")
       (license license:zlib))))
+
+(define-public ftxui
+  (package
+    (name "ftxui")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ArthurSonzogni/FTXUI")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "10a4yw2h29kixxyhll6cvrwyscsvz9asxry857a9l8nqvbhs946s"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest))
+    (arguments
+     (list #:configure-flags
+           #~(list "-DFTXUI_BUILD_TESTS:BOOL=ON"
+                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cmake-tests
+                 (lambda _
+                   (substitute* "cmake/ftxui_test.cmake"
+                     (("NOT googletest_POPULATED")
+                      "FALSE"))
+                   ;; Disable benchmarks for a while as they require bundled Google
+                   ;; benchmark and when the 'googlebenchmark' is unbundled, there's
+                   ;; a CMake configuration error.
+                   (substitute* "cmake/ftxui_benchmark.cmake"
+                     (("NOT WIN32")
+                      "FALSE")))) )))
+    (home-page "https://github.com/ArthurSonzogni/FTXUI")
+    (synopsis "C++ Functional Terminal User Interface")
+    (description
+     "Functional Terminal (X) User interface (FTXUI) is a simple C++ library for
+terminal based user interfaces.
+
+Main features:
+@itemize
+@item Functional style.
+@item Keyboard & mouse navigation.
+@item Support for UTF8 and fullwidth chars.
+@item Support for animations.
+@item Support for drawing.
+@item No dependencies.
+@end itemize")
+    (license license:expat)))
