@@ -20106,8 +20106,8 @@ This variable is a list of the server addresses defined in
 
 @deftp {Data Type} openntpd-configuration
 @table @asis
-@item @code{openntpd} (default: @code{(file-append openntpd "/sbin/ntpd")})
-The openntpd executable to use.
+@item @code{openntpd} (default: @code{openntpd})
+The openntpd package to use.
 @item @code{listen-on} (default: @code{'("127.0.0.1" "::1")})
 A list of local IP addresses or hostnames the ntpd daemon should listen on.
 @item @code{query-from} (default: @code{'()})
