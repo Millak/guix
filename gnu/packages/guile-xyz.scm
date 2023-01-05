@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
@@ -4685,7 +4685,7 @@ errors.")
       (inputs
        (list guile-3.0 avahi))
       (native-inputs
-       (list autoconf automake libtool pkg-config texinfo))
+       (list autoconf automake libtool pkg-config texinfo guile-3.0))
       (synopsis "Guile bindings to Avahi")
       (description
        "This package provides bindings for Avahi.  It allows programmers to
