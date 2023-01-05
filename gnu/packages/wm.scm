@@ -809,8 +809,7 @@ manager and a system tray.")
     (synopsis "Tiling window manager")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://hackage/package/xmonad/"
-                                  "xmonad-" version ".tar.gz"))
+              (uri (hackage-uri "xmonad" version))
               (sha256
                (base32
                 "04qspdz9w6xpw1npcmx2zx0595wc68q985pv4i0hvp32zillvdqy"))
@@ -854,8 +853,7 @@ tiled on several screens.")
     (version "0.15")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://hackage/package/xmonad/"
-                                  "xmonad-" version ".tar.gz"))
+              (uri (hackage-uri "xmonad" version))
               (sha256
                (base32
                 "0a7rh21k9y6g8fwkggxdxjns2grvvsd5hi2ls4klmqz5xvk4hyaa"))
@@ -880,8 +878,7 @@ tiled on several screens.")
     (version "0.44.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/xmobar/"
-                                  "xmobar-" version ".tar.gz"))
+              (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
                 "0gdphjn5ll5lkb2psdsb34563wsz6g0y2gg3z8cj4jy8lvbbv808"))))
@@ -955,8 +952,7 @@ particular, it displays commonly-chosen options before uncommon ones.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://hackage/package/xmonad-contrib/"
-                           "xmonad-contrib-" version ".tar.gz"))
+       (uri (hackage-uri "xmonad-contrib" version))
        (sha256
         (base32 "11g1cyfgfvcmz35qhgi9wzxrk3br8m8b7qy3jvph4nnf6aj13wvy"))))
     (build-system haskell-build-system)
@@ -978,8 +974,7 @@ tiling window manager for X.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://hackage/package/xmonad-contrib/"
-                           "xmonad-contrib-" version ".tar.gz"))
+       (uri (hackage-uri "xmonad-contrib" version))
        (sha256
         (base32 "1pddgkvnbww28wykncc7j0yb0lv15bk7xnnhdcbrwkxzw66w6wmd"))))
     (arguments

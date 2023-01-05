@@ -40,9 +40,7 @@
     (version "0.3.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "asn1-types/asn1-types-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "asn1-types" version))
               (sha256
                (base32
                 "1a119qxhxhr0yn37r26dkydm6g5kykdkx98ghb59i4ipa6i95vkq"))))
@@ -63,9 +61,7 @@ format.")
     (version "0.9.6")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "asn1-encoding/asn1-encoding-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "asn1-encoding" version))
               (sha256
                (base32
                 "02nsr30h5yic1mk7znf0q4z3n560ip017n60hg7ya25rsfmxxy6r"))))
@@ -88,9 +84,7 @@ supports for high level forms of ASN1 (BER, and DER).")
     (version "0.9.5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "asn1-parse/asn1-parse-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "asn1-parse" version))
               (sha256
                (base32
                 "17pk8y3nwv9b9i5j15qlmwi7fmq9ab2z4kfpjk2rvcrh9lsf27wg"))))
@@ -112,9 +106,7 @@ when ASN1 pattern matching is not convenient.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "crypto-api-" version "/"
-                           "crypto-api-" version ".tar.gz"))
+       (uri (hackage-uri "crypto-api" version))
        (sha256
         (base32
          "19bsmkqkpnvh01b77pmyarx00fic15j4hvg4pzscrj4prskrx2i9"))))
@@ -142,9 +134,7 @@ algorithm (ex: padding) is within scope of this package.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "crypto-api-tests-" version "/"
-                           "crypto-api-tests-" version ".tar.gz"))
+       (uri (hackage-uri "crypto-api-tests" version))
        (sha256
         (base32
          "0w3j43jdrlj28jryp18hc6q84nkl2yf4vs1hhgrsk7gb9kfyqjpl"))))
@@ -172,9 +162,7 @@ for common cryptographic algorithms are included.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/cryptohash/cryptohash-"
-             version ".tar.gz"))
+       (uri (hackage-uri "cryptohash" version))
        (sha256
         (base32
          "1yr2iyb779znj79j3fq4ky8l1y8a600a2x1fx9p5pmpwq5zq93y2"))))
@@ -205,9 +193,7 @@ that hides the C implementation.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cryptohash-md5-" version "/"
-                           "cryptohash-md5-" version ".tar.gz"))
+       (uri (hackage-uri "cryptohash-md5" version))
        (sha256
         (base32
          "018g13hkmq5782i24b4518hcd926fl6x6fh5hd7b9wlxwc5dn21v"))))
@@ -227,9 +213,7 @@ that hides the C implementation.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cryptohash-sha1-" version "/"
-                           "cryptohash-sha1-" version ".tar.gz"))
+       (uri (hackage-uri "cryptohash-sha1" version))
        (sha256
         (base32
          "1aqdxdhxhl9jldh951djpwxx8z7gzaqspxl7iwpl84i5ahrsyy9w"))))
@@ -259,9 +243,7 @@ the C implementation.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cryptohash-sha256-" version "/"
-                           "cryptohash-sha256-" version ".tar.gz"))
+       (uri (hackage-uri "cryptohash-sha256" version))
        (sha256
         (base32
          "1xkb7iqplbw4fy1122p79xf1zcb7k44rl0wmfj1q06l7cdqxr9vk"))))
@@ -291,9 +273,7 @@ the C implementation.")
     (version "0.29")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "cryptonite/cryptonite-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "cryptonite" version))
               (sha256
                (base32
                 "13xhp3hshb8x06bw37kp16c9jpjmgfn06nkj9drz745fv8f04fnq"))))
@@ -323,10 +303,7 @@ generators, and more.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/digest/digest-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "digest" version))
        (sha256
         (base32
          "1l5383l5pvp018rj3vabrppnzcqrr2g0dvgvmsrbjdn02wzab5jm"))))
@@ -353,9 +330,7 @@ are implemented as FFI bindings to efficient code from zlib.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "entropy-" version "/"
-                           "entropy-" version ".tar.gz"))
+       (uri (hackage-uri "entropy" version))
        (sha256
         (base32 "0qmzz0zgad13zl0kjrxz6cxg8ckn2w8saas2a2j72vbafpzmkixd"))))
     (build-system haskell-build-system)
@@ -372,8 +347,7 @@ to obtain cryptographically strong entropy.")
     (version "0.2.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "pem/pem-" version ".tar.gz"))
+              (uri (hackage-uri "pem" version))
               (sha256
                (base32
                 "1m7qjsxrd8m88cvkqmr8kscril500j2a9y0iynvksjyjkhdlq33p"))))
@@ -398,9 +372,7 @@ Mail} (PEM) format.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "pureMD5-" version "/"
-                           "pureMD5-" version ".tar.gz"))
+       (uri (hackage-uri "pureMD5" version))
        (sha256
         (base32
          "0qwkvxwi9wh6knn69rg2hvc8ngmv1if77kmpcnp0xqr0l30fwavq"))))
@@ -423,8 +395,7 @@ interface.")
     (version "1.6.4.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "SHA/SHA-" version ".tar.gz"))
+              (uri (hackage-uri "SHA" version))
               (sha256
                (base32
                 "0i4b2wjisivdy72synal711ywhx05mfqfba5n65rk8qidggm1nbb"))))
@@ -450,8 +421,7 @@ libraries, like OpenSSL.")
     (version "1.7.5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "x509/x509-" version ".tar.gz"))
+              (uri (hackage-uri "x509" version))
               (sha256
                (base32
                 "1j67c35g8334jx7x32hh6awhr43dplp0qwal5gnlkmx09axzrc5i"))))
@@ -479,9 +449,7 @@ libraries, like OpenSSL.")
     (version "1.6.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "x509-store/x509-store-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "x509-store" version))
               (sha256
                (base32
                 "1y8yyr1i95jkllg8k0z54k5v4vachp848clc07m33xpxidn3b1lp"))))
@@ -505,9 +473,7 @@ collections, certificates, revocation lists, and exception lists.")
     (version "1.6.11")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "x509-validation/x509-validation-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "x509-validation" version))
               (sha256
                (base32
                 "16yihzljql3z8w5rgdl95fv3hgk7yd86kbl9b3glllsark5j2hzr"))))
@@ -539,9 +505,7 @@ list validation.")
     (version "1.6.6")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "x509-system/x509-system-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "x509-system" version))
               (sha256
                (base32
                 "06a4m9c7vlr9nhp9gmqbb46arf0yj1dkdm4nip03hzy67spdmp20"))))
@@ -563,9 +527,7 @@ for X.509 certificates.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "crypto-cipher-types-" version "/"
-                           "crypto-cipher-types-" version ".tar.gz"))
+       (uri (hackage-uri "crypto-cipher-types" version))
        (sha256
         (base32
          "03qa1i1kj07pfrxsi7fiaqnnd0vi94jd4jfswbmnm4gp1nvzcwr0"))))
@@ -585,9 +547,7 @@ for symmetric ciphers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cipher-aes-" version "/"
-                           "cipher-aes-" version ".tar.gz"))
+       (uri (hackage-uri "cipher-aes" version))
        (sha256
         (base32
          "05ahz6kjq0fl1w66gpiqy0vndli5yx1pbsbw9ni3viwqas4p3cfk"))))
@@ -623,9 +583,7 @@ AES-NI available, or you'll need to use a different implementation.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "crypto-random-" version "/"
-                           "crypto-random-" version ".tar.gz"))
+       (uri (hackage-uri "crypto-random" version))
        (sha256
         (base32
          "0139kbbb2h7vshf68y3fvjda29lhj7jjwl4vq78w4y8k8hc7l2hp"))))
@@ -645,9 +603,7 @@ abstraction for CPRNGs.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cprng-aes-" version "/"
-                           "cprng-aes-" version ".tar.gz"))
+       (uri (hackage-uri "cprng-aes" version))
        (sha256
         (base32
          "1wr15kbmk1g3l8a75n0iwbzqg24ixv78slwzwb2q6rlcvq0jlnb4"))))
@@ -690,9 +646,7 @@ percent.
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/ed25519/ed25519-"
-             version ".tar.gz"))
+       (uri (hackage-uri "ed25519" version))
        (sha256
         (base32
          "0v8msqvgzimhs7p5ri25hrb1ni2wvisl5rmdxy89fc59py79b9fq"))))
@@ -720,8 +674,7 @@ guidelines.")
     (version "1.5.5")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "tls/tls-" version ".tar.gz"))
+              (uri (hackage-uri "tls" version))
               (sha256
                (base32
                 "0j1rxxq5lzs584nk19610mk7mmsqqkgfxw2qj74ibb1zsk7baj4a"))))
@@ -762,8 +715,7 @@ extensions.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "HsOpenSSL/HsOpenSSL-" version ".tar.gz"))
+       (uri (hackage-uri "HsOpenSSL" version))
        (sha256
         (base32
          "0ysdfl8ck3nzhx597fa13dqf31jq5gzwajlak6r91jajks9w0dl5"))))
@@ -792,9 +744,7 @@ implementation of SSL.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "openssl-streams/openssl-streams-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "openssl-streams" version))
        (sha256
         (base32
          "10pnnpzgb5xr811kc9qdk7h2cgn6hk2yiyhnzz8f8p0fjzc0pwjm"))))
@@ -817,9 +767,7 @@ networking using OpenSSL (by way of HsOpenSSL).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cryptonite-conduit/cryptonite-conduit-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "cryptonite-conduit" version))
        (sha256
         (base32
          "1bldcmda4xh52mw1wfrjljv8crhw3al7v7kv1j0vidvr7ymnjpbh"))))

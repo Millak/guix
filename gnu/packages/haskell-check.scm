@@ -48,10 +48,7 @@
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-ant-xml/tasty-ant-xml-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty-ant-xml" version))
        (sha256
         (base32
          "0h9mllhw9cd0rn34xhj8grwmbny7z7hpd8qmp9lfcdj0s4qx9vx8"))))
@@ -76,10 +73,7 @@ framework.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-smallcheck/tasty-smallcheck-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty-smallcheck" version))
        (sha256
         (base32
          "0csgwn3vch0jnpqyyfnrfjq4z0dpl67imh5a7byll3hhlyidgjym"))))
@@ -100,9 +94,7 @@ Haskell test framework.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-quickcheck/"
-             "tasty-quickcheck-" version ".tar.gz"))
+       (uri (hackage-uri "tasty-quickcheck" version))
        (sha256
         (base32
          "0i1i78587znqzwps49milyr5n2k388ld2kr9ysz1vw8gcw51qq49"))))
@@ -129,10 +121,7 @@ Haskell test framework.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-golden/tasty-golden-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty-golden" version))
        (sha256
         (base32
          "1nskavqgfxx1cw7q6c0cmizlwj54rnlv93yhgssaa77gv1nbvwpn"))))
@@ -163,10 +152,7 @@ contains the correct result for the test.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty/tasty-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty" version))
        (sha256
         (base32
          "0574hbqzxzyv6vsk5kzbf04kz58y0iy8x9ydcj4b8fpncgmgy63g"))))
@@ -195,8 +181,7 @@ and any other types of tests into a single test suite.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "tasty-hedgehog/tasty-hedgehog-" version ".tar.gz"))
+       (uri (hackage-uri "tasty-hedgehog" version))
        (sha256
         (base32
          "0cy49z8n124xh2ra2482vfy5if1n6d9lbdjma2zg1mxfj0k0zyfb"))))
@@ -221,10 +206,7 @@ framework}.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-hspec/tasty-hspec-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty-hspec" version))
        (sha256
         (base32
          "02s82ijs2ringqxsqbm7m3vcy5brmwxa617azxv0v2phi3rdkjvl"))))
@@ -256,10 +238,7 @@ framework}.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-hunit/tasty-hunit-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "tasty-hunit" version))
        (sha256
         (base32
          "0gz6zz3w7s44pymw33xcxnawryl27zk33766sab96nz2xh91kvxp"))))
@@ -279,8 +258,7 @@ test framework.")
     (version "0.0.3")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "tasty-kat/tasty-kat-" version ".tar.gz"))
+              (uri (hackage-uri "tasty-kat" version))
               (sha256
                (base32
                 "14yvlpli6cv6bn3kh8mlfp4x1l6ns4fvmfv6hmj75cvxyzq029d7"))))
@@ -302,8 +280,7 @@ tasty.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "tasty-lua/tasty-lua-" version ".tar.gz"))
+       (uri (hackage-uri "tasty-lua" version))
        (sha256
         (base32
          "0wa73ihkjcxi50lgpdzwwdx7s903lqi79hw7hxlvhbcvdly1cq53"))))
@@ -326,9 +303,7 @@ from Lua.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/tasty-th/tasty-th-"
-             version ".tar.gz"))
+       (uri (hackage-uri "tasty-th" version))
        (sha256
         (base32
          "0b2ivrw2257m4cy4rjnkwqlarh83j1y3zywnmaqqqbvy667sqnj3"))))
@@ -351,9 +326,7 @@ test-framework.")
     (version "1.1.18")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://hackage.haskell.org/package/tasty-rerun/"
-                    "tasty-rerun-" version ".tar.gz"))
+              (uri (hackage-uri "tasty-rerun" version))
               (sha256
                (base32
                 "0sccp5zx9v2rx741nbmgd8mzjhy5m4v74hk26d23xz93ph8aqx7s"))))
@@ -377,9 +350,7 @@ been added since previous test run.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "tasty-expected-failure/tasty-expected-failure-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "tasty-expected-failure" version))
        (sha256
         (base32
          "0zlgxs24d54byfhvwdg85xk1572zpjs71bjlxxrxcvralrfcq1yb"))))
@@ -409,10 +380,7 @@ development.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/"
-             "quickcheck-instances/quickcheck-instances-"
-             version ".tar.gz"))
+       (uri (hackage-uri "quickcheck-instances" version))
        (sha256
         (base32
          "0ihqbarl2ddrfgq3mq09lswwn8213qpw13g49qxs5mjkcm6gbk3h"))))
@@ -451,9 +419,7 @@ provided by the Haskell Platform.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/quickcheck-unicode/"
-             "quickcheck-unicode-" version ".tar.gz"))
+       (uri (hackage-uri "quickcheck-unicode" version))
        (sha256
         (base32
          "0s43s1bzbg3gwsjgm7fpyksd1339f0m26dlw2famxwyzgvm0a80k"))))
@@ -474,10 +440,7 @@ testing Unicode-related software.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/quickcheck-io/quickcheck-io-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "quickcheck-io" version))
        (sha256
         (base32
          "08k4v7pkgjf30pv5j2dfv1gqv6hclxlniyq2sps8zq4zswcr2xzv"))))
@@ -499,10 +462,7 @@ use HUnit assertions as QuickCheck properties.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/QuickCheck/QuickCheck-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "QuickCheck" version))
        (sha256
         (base32
          "1wrnrm9sq4s0bly0q58y80g4153q45iglqa34xsi2q3bd62nqyyq"))))
@@ -527,9 +487,7 @@ expressed in Haskell, using combinators defined in the QuickCheck library.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "quickcheck-assertions/"
-                           "quickcheck-assertions-" version ".tar.gz"))
+       (uri (hackage-uri "quickcheck-assertions" version))
        (sha256
         (base32 "1kyam4cy7qmnizjwjm8jamq43w7f0fs6ljfplwj0ib6wi2kjh0wv"))))
     (build-system haskell-build-system)
@@ -553,8 +511,7 @@ HUnit.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/test-framework/"
-                           "test-framework-" version ".tar.gz"))
+       (uri (hackage-uri "test-framework" version))
        (sha256
         (base32
          "1hhacrzam6b8f10hyldmjw8pb7frdxh04rfg3farxcxwbnhwgbpm"))))
@@ -593,9 +550,7 @@ reporting and test statistics output.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "test-framework-hunit/test-framework-hunit-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "test-framework-hunit" version))
        (sha256
         (base32
          "1y0b6vg8nfm43v90lxxcydhi6qlxhfy4vpxbzm5ic2w55bh8xjwm"))))
@@ -619,9 +574,7 @@ reporting and test statistics output.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "test-framework-quickcheck2/"
-                           "test-framework-quickcheck2-" version ".tar.gz"))
+       (uri (hackage-uri "test-framework-quickcheck2" version))
        (sha256
         (base32
          "0ngf9vvby4nrdf1i7dxf5m9jn0g2pkq32w48xdr92n9hxka7ixn9"))))
@@ -647,9 +600,7 @@ package.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "test-framework-smallcheck/"
-                           "test-framework-smallcheck-" version ".tar.gz"))
+       (uri (hackage-uri "test-framework-smallcheck" version))
        (sha256
         (base32 "1xpgpk1gp4w7w46b4rhj80fa0bcyz8asj2dcjb5x1c37b7rw90b0"))))
     (build-system haskell-build-system)
@@ -670,9 +621,7 @@ test-framework.  New projects should use ghc-tasty-smallcheck instead.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "test-framework-th-" version "/"
-                           "test-framework-th-" version ".tar.gz"))
+       (uri (hackage-uri "test-framework-th" version))
        (sha256
         (base32
          "12lw7yj02jb9s0i7rb98jjam43j2h0gzmnbj9zi933fx7sg0sy4b"))))
@@ -704,8 +653,7 @@ using Template Haskell")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/HUnit/"
-                           "HUnit-" version ".tar.gz"))
+       (uri (hackage-uri "HUnit" version))
        (sha256
         (base32
          "1as4sw5y39c3zrmr6sb8zbw74c9gdn4401y0dx45ih7zf6457dxh"))))
@@ -729,9 +677,7 @@ JUnit tool for Java.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hspec-discover/hspec-discover-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "hspec-discover" version))
        (sha256
         (base32
          "13yzvd3b679skvs1insk4s0wc4zvmz6hs38kc8q0j6vzqq06smqa"))))
@@ -752,8 +698,7 @@ runs Hspec tests.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/hspec-core/"
-                           "hspec-core-" version ".tar.gz"))
+       (uri (hackage-uri "hspec-core" version))
        (sha256
         (base32
          "12k9yp5gznrda449ir60d5wv3xl7nnyffkb5mhfc0svw9f8lxlv1"))))
@@ -783,8 +728,7 @@ be used to extend Hspec's functionality.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/hspec-meta/"
-                           "hspec-meta-" version ".tar.gz"))
+       (uri (hackage-uri "hspec-meta" version))
        (sha256
         (base32
          "0sfj0n2hy1r8ifysgbcmfdygcd7vyzr13ldkcp0l2ml337f8j0si"))))
@@ -812,8 +756,7 @@ used to test the in-development version of Hspec.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/hspec/"
-                           "hspec-" version ".tar.gz"))
+       (uri (hackage-uri "hspec" version))
        (sha256
         (base32
          "0z0lwrmrqkglr78n6k2c36n4h68142bh785ys0x4jaibjshvs6rw"))))
@@ -840,9 +783,7 @@ Haskell, inspired by the Ruby library RSpec.")
     (version "0.5.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "hspec-contrib/hspec-contrib-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "hspec-contrib" version))
               (sha256
                (base32
                 "0hhzxaa3fxz5mk5qcsrnfr98a7bn3szx2ydgr0x9mbqmm1jg06rc"))))
@@ -865,9 +806,7 @@ Haskell, inspired by the Ruby library RSpec.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hspec-expectations/hspec-expectations-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "hspec-expectations" version))
        (sha256
         (base32
          "1vxl9zazbaapijr6zmcj72j9wf7ka1pirrjbwddwwddg3zm0g5l1"))))
@@ -889,9 +828,7 @@ Haskell, inspired by the Ruby library RSpec.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "nanospec/nanospec-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "nanospec" version))
        (sha256
         (base32
          "1rcmhl9bhyfvanalnf1r86wkx6rq6wdvagnw1h011jcnnb1cq56g"))))
@@ -913,9 +850,7 @@ minimal dependencies.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "crypto-cipher-tests-" version "/"
-                           "crypto-cipher-tests-" version ".tar.gz"))
+       (uri (hackage-uri "crypto-cipher-tests" version))
        (sha256
         (base32
          "19wqignlq90qwpam01hnmmrxaxh5lkax9l1l6rlbi4a07nvp1dnz"))))
@@ -943,10 +878,7 @@ implementations of cryptographic ciphers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hedgehog/hedgehog-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "hedgehog" version))
        (sha256
         (base32
          "1qsqs8lmxa3wmw228cwi98vvvh9hqbc9d43i1sy2c9igw9xlhfi6"))))
@@ -985,9 +917,7 @@ To get started quickly, see the examples:
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "cabal-doctest/cabal-doctest-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "cabal-doctest" version))
        (sha256
         (base32
          "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
@@ -1011,9 +941,7 @@ configuration.  This library provides the common bits for writing custom
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://hackage.haskell.org/package/"
-                            "testing-type-modifiers/testing-type-modifiers-"
-                            version ".tar.gz"))
+        (uri (hackage-uri "testing-type-modifiers" version))
         (sha256
           (base32
             "1wh2n95n39ivv6kbqn42vbzrj8zagsmk6f2al2qj40bg5kgdl2q5"))))
@@ -1035,8 +963,7 @@ testing frameworks.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append "https://hackage.haskell.org/package/"
-                            "testing-feat/testing-feat-" version ".tar.gz"))
+        (uri (hackage-uri "testing-feat" version))
         (sha256
           (base32
             "1v2qzzpf1s008g7q6q67glf7vbm1pkpq4rc3ii74f4g6vhfx610r"))))
@@ -1061,9 +988,7 @@ random testing, and hybrids of the two.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/inspection-testing/"
-             "inspection-testing-" version ".tar.gz"))
+       (uri (hackage-uri "inspection-testing" version))
        (sha256
         (base32
          "0qz1npyycj4bvyly9xmjbnhw569l52h38gx02rk0r7zhapw83aig"))))
@@ -1102,10 +1027,7 @@ examples and more information.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/quickcheck-classes/quickcheck-classes-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "quickcheck-classes" version))
         (sha256
           (base32 "19iw15mvb7gws3ljdxqwsbb4pmfc0sfflf8szgmrhiqr3k82mqv2"))))
     (build-system haskell-build-system)
@@ -1147,10 +1069,7 @@ constraints more cleanly.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/quickcheck-classes-base/quickcheck-classes-base-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "quickcheck-classes-base" version))
         (sha256
           (base32 "16c6gq4cqpkwnq1pzkhm6r7mrwk4an50ha5w77bmiia2qkhla6ch"))))
     (build-system haskell-build-system)
@@ -1189,10 +1108,7 @@ these constraints more cleanly.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/doctest-lib/doctest-lib-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "doctest-lib" version))
         (sha256
           (base32 "1vswam0dhw52dihgnzirh18gqs8rj8h6jd7pl6y1mg2f9f9zmih2"))))
     (build-system haskell-build-system)
@@ -1210,10 +1126,7 @@ these constraints more cleanly.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/doctest-exitcode-stdio/doctest-exitcode-stdio-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "doctest-exitcode-stdio" version))
         (sha256
           (base32 "1g3c7yrqq2mwqbmvs8vkx1a3cf0p0x74b7fnn344dsk7bsfpgv0x"))))
     (build-system haskell-build-system)
@@ -1234,10 +1147,7 @@ environment.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/cabal-doctest/cabal-doctest-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "cabal-doctest" version))
         (sha256
           (base32 "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
     (build-system haskell-build-system)
@@ -1258,10 +1168,7 @@ environment.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/tasty-silver/tasty-silver-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "tasty-silver" version))
         (sha256
           (base32 "0nvh2k8iqqkanmp7lpwd3asimyarzisly8wavbdahcxryn0j4xb7"))))
     (build-system haskell-build-system)

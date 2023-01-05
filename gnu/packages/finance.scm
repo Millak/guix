@@ -221,10 +221,7 @@ line client and a client based on Qt.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hledger/hledger-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "hledger" version))
        (sha256
         (base32
          "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
@@ -1976,8 +1973,7 @@ generate a variety of reports from them, and provides a web interface.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hledger-web/hledger-web-" version ".tar.gz"))
+       (uri (hackage-uri "hledger-web" version))
        (sha256
         (base32
          "0ivszqcypw0j2wn4r7fv7dqm1pvr0b1y6rqpxagzyk8cxn3ic9g2"))))

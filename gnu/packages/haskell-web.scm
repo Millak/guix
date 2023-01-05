@@ -49,8 +49,7 @@
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/tagsoup/"
-                           "tagsoup-" version ".tar.gz"))
+       (uri (hackage-uri "tagsoup" version))
        (sha256
         (base32
          "1m9sx6gr9y9yxvkmcap8xsks8cnhznvma1mrfl39zljkv005azms"))))
@@ -77,10 +76,7 @@ for screen-scraping.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/cookie/cookie-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "cookie" version))
        (sha256
         (base32
          "10rmdasb7mypbwxdj2mhr810vqhkakpik7hyd8fvj60hng8r8zvh"))))
@@ -106,8 +102,7 @@ for screen-scraping.")
     (version "1.3.8")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://hackage/package/curl/curl-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "curl" version))
               (sha256
                (base32
                 "0vj4hpaa30jz7c702xpsfvqaqdxz28zslsqnsfx6bf6dpwvck1wh"))))
@@ -129,8 +124,7 @@ This package provides a Haskell binding to libcurl.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/httpd-shed/"
-                           "httpd-shed-" version ".tar.gz"))
+       (uri (hackage-uri "httpd-shed" version))
        (sha256
         (base32
          "19dgdimpzr7pxk7pqvyin6j87gmvnf0rm35gzhmna8qr835wy3sr"))))
@@ -153,8 +147,7 @@ requests, and the library is intended for implementing Ajax APIs.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/http-types/"
-                           "http-types-" version ".tar.gz"))
+       (uri (hackage-uri "http-types" version))
        (sha256
         (base32
          "05j00b9nqmwh9zaq9y9x50k81v2pd3j7a71kd91zlnbl8xk4m2jf"))))
@@ -179,8 +172,7 @@ both client and server code).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/HTTP/"
-                           "HTTP-" version ".tar.gz"))
+       (uri (hackage-uri "HTTP" version))
        (sha256
         (base32
          "0bgyj3ahqlyg0jw6qsm2sncp8mklc4h0dj91s043vb3ig01iq2fn"))))
@@ -231,9 +223,7 @@ responses coming back.")
     (version "0.7.11")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "http-client/http-client-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "http-client" version))
               (sha256
                (base32
                 "12j7vkpkm2djws6ny7vm2324c7916d0iaf1mbvf4mfjxzy2w7imv"))))
@@ -274,9 +264,7 @@ for more user-friendly packages.")
     (version "0.3.6.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "http-client-tls/http-client-tls-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "http-client-tls" version))
               (sha256
                (base32
                 "03f8p9gxdzl6slyw1r6vpv2dqhsyjvbaawbjv75kaq0vlj3gz7xi"))))
@@ -337,9 +325,7 @@ servers on localhost or only allow connections to a specific server.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "http-date-" version "/"
-                           "http-date-" version ".tar.gz"))
+       (uri (hackage-uri "http-date" version))
        (sha256
         (base32
          "1lzlrj2flcnz3k5kfhf11nk5n8m6kcya0lkwrsnzxgfr3an27y9j"))))
@@ -362,9 +348,7 @@ Date in Haskell.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "http2-" version "/"
-                           "http2-" version ".tar.gz"))
+       (uri (hackage-uri "http2" version))
        (sha256
         (base32
          "13c2z35gdimncgpyg5dn5cpjvd83rbrigc8b40crg36678m0k0d1"))))
@@ -406,9 +390,7 @@ and HPACK.  Currently HTTP/2 16 framing and HPACK 10 is supported.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "http-conduit-" version "/" "http-conduit-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "http-conduit" version))
        (sha256
         (base32
          "1bj24phbcb7s3k6v48l5gk82m3m23j8zy9l7c5ccxp3ghn9z5gng"))))
@@ -466,9 +448,7 @@ which allow you to avoid direct usage of conduits.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/http-reverse-proxy/"
-             "http-reverse-proxy-" version ".tar.gz"))
+       (uri (hackage-uri "http-reverse-proxy" version))
        (sha256
         (base32
          "1a6i5njf85b2lhg8m83njagcf09wih5q2irnyb2890s724qr277v"))))
@@ -507,10 +487,7 @@ approach performs full request/response parsing via WAI and http-conduit.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/wai/wai-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "wai" version))
        (sha256
         (base32
          "1y19h9v0cq1fl17ywcyyvd6419fhgyw2s0yk0ki8z60021adcx2m"))))
@@ -539,10 +516,7 @@ communication between web applications and web servers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/wai-logger/wai-logger-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "wai-logger" version))
        (sha256
         (base32
          "0hbm7if28p6qa36cgpyq6i569275si53z9gsl2g1z8x09z3xiyz2"))))
@@ -573,10 +547,7 @@ communication between web applications and web servers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/wai-extra/wai-extra-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "wai-extra" version))
        (sha256
         (base32
          "1avf7bjcsbs8l6klp5kkd0cd2dc5n0j0a2yf8813pnwfn5b7qyd4"))))
@@ -616,9 +587,7 @@ functionality.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "wai-conduit-" version "/"
-                           "wai-conduit-" version ".tar.gz"))
+       (uri (hackage-uri "wai-conduit" version))
        (sha256
         (base32
          "07yn41rn2skd5p3wqqa09wa761vj7ibl8l19gh4bi4i8slxhk417"))))
@@ -639,10 +608,7 @@ Haskell's Web Application Interface (WAI).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/"
-             "bsb-http-chunked/bsb-http-chunked-"
-             version ".tar.gz"))
+       (uri (hackage-uri "bsb-http-chunked" version))
        (sha256
         (base32
          "0z0f18yc6zlwh29c6175ivfcin325lvi4irpvv0n3cmq7vi0k0ql"))))
@@ -678,9 +644,7 @@ transfers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "warp-" version "/" "warp-" version
-                           ".tar.gz"))
+       (uri (hackage-uri "warp" version))
        (sha256
         (base32 "0v54ca3wpa79gdyiikwhbv9h8b5vr3d60piq3ndb2v7s7fi1qpm0"))))
     (build-system haskell-build-system)
@@ -728,10 +692,7 @@ based WAI (Web Application Interface in Haskell).")
   (source
     (origin
       (method url-fetch)
-      (uri (string-append
-            "https://hackage.haskell.org/package/"
-            "tls-session-manager/tls-session-manager-"
-             version ".tar.gz"))
+      (uri (hackage-uri "tls-session-manager" version))
       (sha256
         (base32
           "134kb5nz668f4xrr5g98g7fc1bwb3ri6q433a1i6asjkniwpy85s"))))
@@ -752,9 +713,7 @@ limitation, automatic pruning, energy saving and replay resistance.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "warp-tls-" version "/"
-                           "warp-tls-" version ".tar.gz"))
+       (uri (hackage-uri "warp-tls" version))
        (sha256
         (base32
          "0b9viw26ymzq4q8snfddz3w59sqcf5ankxnw6f99iacxjhk6zs6m"))))
@@ -783,10 +742,7 @@ a WAI handler, via the native Haskell TLS implementation.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/websockets/websockets-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "websockets" version))
        (sha256
         (base32
          "1b92a41l2var1ccg350mh2bjmb2plb6d79yzvmlwkd41nifmmi44"))))
@@ -834,10 +790,7 @@ See also:
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://hackage/package/wai-websockets/wai-websockets-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "wai-websockets" version))
        (sha256
         (base32
          "0b2xmdsrsqpssyib53wbr6r8hf75789ndyyanv37sv99iyqcwz4i"))))
@@ -862,9 +815,7 @@ See also:
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/xss-sanitize/xss-sanitize-"
-             version ".tar.gz"))
+       (uri (hackage-uri "xss-sanitize" version))
        (sha256
         (base32
          "1d72s3a6520iwwc1wbn9v2znqgbw6a5wwzb23iq8ny9ccnjyx1dk"))))
@@ -888,10 +839,7 @@ attacks.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/css-text/css-text-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "css-text" version))
        (sha256
         (base32
          "0ynd9f4hn2sfwqzbsa0y7phmxq8za7jiblpjwx0ry8b372zhgxaz"))))
@@ -911,9 +859,7 @@ Haskell.")
     (version "0.1.0.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "mime-types/mime-types-"
-                                  version ".tar.gz"))
+              (uri (hackage-uri "mime-types" version))
               (sha256
                (base32
                 "1lkipa4v73z3l5lqs6sdhl898iq41kyxv2jb9agsajzgd58l6cha"))))
@@ -932,10 +878,7 @@ Haskell.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/html/html-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "html" version))
        (sha256
         (base32
          "0q9hmfii62kc82ijlg238fxrzxhsivn42x5wd6ffcr9xldg4jd8c"))))
@@ -956,9 +899,7 @@ documents.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/html-conduit/"
-             "html-conduit-" version ".tar.gz"))
+       (uri (hackage-uri "html-conduit" version))
        (sha256
         (base32
          "09bwrdam3y47kqllgg6w098ghqb8jb10dp4wxirsvx5ddpx9zpi6"))))
@@ -991,9 +932,7 @@ entity decoding bugfixes applied.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "blaze-html/blaze-html-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "blaze-html" version))
        (sha256
         (base32
          "0k1r1hddjgqighazcazxrx6xfhvy2gm8il8l82ainv3cai13yl30"))))
@@ -1020,10 +959,7 @@ entity decoding bugfixes applied.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/aeson/aeson-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "aeson" version))
        (sha256
         (base32
          "1s5z4bgb5150h6a4cjf5vh8dmyrn6ilh29gh05999v6jwd5w6q83"))))
@@ -1077,9 +1013,7 @@ naming: in Greek mythology, Aeson was the father of Jason.)")
     (version "0.8.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append
-                    "https://hackage.haskell.org/package/aeson-pretty/aeson-pretty-"
-                    version ".tar.gz"))
+              (uri (hackage-uri "aeson-pretty" version))
               (sha256
                (base32
                 "021az9az6xik9c9s3rnar5fr1lgy2h3igibf5ixnc7ps3m2lzg2x"))))
@@ -1111,8 +1045,7 @@ essentially the opposite of pretty-printing.")
     (version "0.8.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://hackage.haskell.org/package/"
-                                  "aeson-qq/aeson-qq-" version ".tar.gz"))
+              (uri (hackage-uri "aeson-qq" version))
               (sha256
                (base32
                 "0dpklq2xdhrkg1rdc7zfdjnzm6c3qxx2i1xskrqdxpqi84ffnlyh"))))
@@ -1142,10 +1075,7 @@ of a JSON value into a @code{Data.Aeson.Value}.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://hackage/package/aeson-better-errors/aeson-better-errors-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "aeson-better-errors" version))
        (sha256
         (base32
          "09vkyrhwak3bmpfsqcd2az8hfqqkxyhg468hv5avgisy0nzh3w38"))))
@@ -1176,10 +1106,7 @@ good error messages when parsing fails.  See also
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/multipart/multipart-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "multipart" version))
        (sha256
         (base32
          "0p6n4knxpjv70nbl6cmd6x7gkdjsjqp4ya7fz00bfrqp7jvhlivn"))))
@@ -1202,9 +1129,7 @@ good error messages when parsing fails.  See also
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/uri-encode/uri-encode-"
-             version ".tar.gz"))
+       (uri (hackage-uri "uri-encode" version))
        (sha256
         (base32
          "0lj2h701af12539p957rw24bxr07mfqd5r4h52i42f43ax165767"))))
@@ -1224,9 +1149,7 @@ good error messages when parsing fails.  See also
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "path-pieces-" version "/"
-                           "path-pieces-" version ".tar.gz"))
+       (uri (hackage-uri "path-pieces" version))
        (sha256
         (base32
          "0vx3sivcsld76058925hym2j6hm3g71f0qjr7v59f1g2afgx82q8"))))
@@ -1246,9 +1169,7 @@ Haskell data types to and from route pieces.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "skein-" version "/"
-                           "skein-" version ".tar.gz"))
+       (uri (hackage-uri "skein" version))
        (sha256
         (base32
          "1jdqdk0rz2wnvw735clnj8jh0a9rkrbqjg7vk3w6wczdql6cm0pq"))))
@@ -1273,9 +1194,7 @@ This Haskell package uses bindings to the optimized C implementation of Skein.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "clientsession-" version "/"
-                           "clientsession-" version ".tar.gz"))
+       (uri (hackage-uri "clientsession" version))
        (sha256
         (base32
          "0s6h4ykj16mpf7nlw2iqn2ji0p8g1fn5ni0s7yqaili6vv2as5ar"))))
@@ -1307,9 +1226,7 @@ avoid any issues with characters.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "yesod-core-" version "/"
-                           "yesod-core-" version ".tar.gz"))
+       (uri (hackage-uri "yesod-core" version))
        (sha256
         (base32
          "0wmh7ip318p89lyy6k5mvxkkpq43knp41wlq9iaf3icz0ahqdmb7"))))
@@ -1377,9 +1294,7 @@ functions, widgets, etc.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "yesod-persistent-" version "/"
-                           "yesod-persistent-" version ".tar.gz"))
+       (uri (hackage-uri "yesod-persistent" version))
        (sha256
         (base32
          "102xmp7n08sk1g5rv31jpln2v9kqf1zsqsnmi83mnhmgggcbj1k4"))))
@@ -1408,10 +1323,7 @@ from Yesod.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/yesod-form/yesod-form-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "yesod-form" version))
         (sha256
           (base32
             "170gby381h5pg9njn908cyx2931yiv79x3rc5npg2rd74kif06vi"))))
@@ -1451,9 +1363,7 @@ providing richtext field using Nic editor.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/yesod/yesod-"
-             version ".tar.gz"))
+       (uri (hackage-uri "yesod" version))
        (sha256
         (base32
          "13r0ispprj41kgn2rkc7zhy1rxfmgpjbmdlnys15h0ihhh3zhw2f"))))
@@ -1491,9 +1401,7 @@ whereas most of the core code lives in @code{ghc-yesod-core}.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hxt-charproperties/hxt-charproperties-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "hxt-charproperties" version))
        (sha256
         (base32
          "0jm98jddbsd60jc2bz8wa71rslagbaqf00ia7fvfsaiaa54nk0r8"))))
@@ -1514,10 +1422,7 @@ supported Unicode version is 7.0.0")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hxt-unicode/hxt-unicode-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "hxt-unicode" version))
        (sha256
         (base32
          "0rj48cy8z4fl3zpg5bpa458kqr83adav6jnqv4i71dclpprj6n3v"))))
@@ -1543,9 +1448,7 @@ ignored.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hxt-regex-xmlschema/hxt-regex-xmlschema-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "hxt-regex-xmlschema" version))
        (sha256
         (base32
          "0ynrf65m7abq2fjnarlwq6i1r99pl89npibxx05rlplcgpybrdmr"))))
@@ -1568,10 +1471,7 @@ derivations of regular expressions.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hxt/hxt-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "hxt" version))
        (sha256
         (base32
          "1n9snbdl46x23ka7bbsls1vsn0plpmfmbpbl0msjfm92fkk2yq7g"))))
@@ -1616,8 +1516,7 @@ from them.  Some primitives have both a functional and an arrow interface.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "http-common/http-common-" version ".tar.gz"))
+       (uri (hackage-uri "http-common" version))
        (sha256
         (base32
          "1xpbnfac0fqa5r670ggwm4kq3cmz9jpaw9bx40j9w9qiw6xi4i28"))))
@@ -1646,8 +1545,7 @@ pipes-http re-export this package's types and functions.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "http-streams/http-streams-" version ".tar.gz"))
+       (uri (hackage-uri "http-streams" version))
        (sha256
         (base32
          "03xdcb0v735xdrkjlm1w56mskh3x08cbsjrcd7wn4li65ixc20xa"))))
@@ -1683,8 +1581,7 @@ deal with the result.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "snap-core/snap-core-" version ".tar.gz"))
+       (uri (hackage-uri "snap-core" version))
        (sha256
         (base32
          "0zxdhx4wk70bkn71574lyz3zhq79yy98rv05r4564rd100xw3fqs"))))
@@ -1735,8 +1632,7 @@ contains the core definitions and types for the Snap framework.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "snap-server/snap-server-" version ".tar.gz"))
+       (uri (hackage-uri "snap-server" version))
        (sha256
         (base32
          "0w4yv9a5ilpma0335ariwap2iscmdbaaif88lq3cm7px910nyc4j"))))
@@ -1788,9 +1684,7 @@ protocol.")
      (origin
        (method url-fetch)
        (uri
-        (string-append
-         "https://hackage.haskell.org/package/js-jquery/js-jquery-"
-         version ".tar.gz"))
+        (hackage-uri "js-jquery" version))
        (sha256
         (base32
          "16q68jzbs7kp07dnq8cprdcc8fd41rim38039vg0w4x11lgniq70"))))
@@ -1815,9 +1709,7 @@ users (e.g. Debian).")
      (origin
        (method url-fetch)
        (uri
-        (string-append
-         "https://hackage.haskell.org/package/js-flot/js-flot-"
-         version ".tar.gz"))
+        (hackage-uri "js-flot" version))
        (sha256
         (base32
          "0yjyzqh3qzhy5h3nql1fckw0gcfb0f4wj9pm85nafpfqp2kg58hv"))))
@@ -1842,9 +1734,7 @@ requirements of downstream users (e.g. Debian).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/happstack-server/happstack-server-"
-             version ".tar.gz"))
+       (uri (hackage-uri "happstack-server" version))
        (sha256
         (base32
          "0nc5rnvrzl9m3pinmdq234m80qkf4jszbdqnd567f7lh09yiqw9n"))))
@@ -1887,9 +1777,7 @@ cookies, serving files, and more.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/sendfile/sendfile-"
-             version ".tar.gz"))
+       (uri (hackage-uri "sendfile" version))
        (sha256
         (base32
          "0988snmx3bylpw3kcq8hsgji8idc6xcrcfp275qjv3apfdgc9rp0"))))
@@ -1910,9 +1798,7 @@ cookies, serving files, and more.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/scalpel-core/"
-               "scalpel-core-" version ".tar.gz"))
+        (uri (hackage-uri "scalpel-core" version))
         (sha256
          (base32
           "07mjff8aqwabx8yhq8bd7jpnarkkrjqss8h8s2wkfmfj808fllmf"))))
@@ -1943,9 +1829,7 @@ non-Haskell dependencies.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/scalpel/"
-               "scalpel-" version ".tar.gz"))
+        (uri (hackage-uri "scalpel" version))
         (sha256
          (base32
           "04hhvk0yjxha3yg6n9fxivrz97hpjjiiblnj0bvs5myax1ggkjch"))))
@@ -1974,10 +1858,7 @@ declarative and monadic interface.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/sourcemap/sourcemap-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "sourcemap" version))
        (sha256
         (base32
          "0kz8xpcd5syg5s4qa2qq8ylaxjhabj127w42may46vv6i0q1bf8a"))))
@@ -2007,10 +1888,7 @@ proposed by Google and Mozilla here
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/language-javascript/language-javascript-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "language-javascript" version))
        (sha256
         (base32
          "0s6igb54cxm2jywgc3sq53f52gcsc39wd3g78yisfzvl9jm3d86i"))))
@@ -2035,10 +1913,7 @@ as frontend to hjsmin.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://hackage/package/bower-json/bower-json-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "bower-json" version))
        (sha256
         (base32
          "0wvygg3rdbxzrmr61a9w6ddv9pfric85ih8hnxyk0ydzn7i59abs"))))
@@ -2063,8 +1938,7 @@ Bower's package manifest file, bower.json.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/DAV/DAV-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "DAV" version))
        (sha256
         (base32 "1isvi4fahq70lzxfz23as7qzkc01g7kba568l6flrgd0j1984fsy"))))
     (build-system haskell-build-system)
@@ -2099,8 +1973,7 @@ Authoring and Versioning (WebDAV) extensions to HTTP as well an executable,
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "yesod-test/yesod-test-" version ".tar.gz"))
+       (uri (hackage-uri "yesod-test" version))
        (sha256
         (base32
          "1xgy7dzhqjgllqcpyyxs0spdg6vlz2c1sjvni7w7qnsf0ckyw2l8"))))
@@ -2145,9 +2018,7 @@ HTML responses using CSS selectors.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "wai-app-static/wai-app-static-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "wai-app-static" version))
        (sha256
         (base32
          "138gd5482psq0wbm8s1az672lksi7vbavq6ayiyjkliivf6xpry8"))))
@@ -2189,8 +2060,7 @@ helper functions and datatypes for use outside of WAI.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "hjsmin/hjsmin-" version ".tar.gz"))
+       (uri (hackage-uri "hjsmin" version))
        (sha256
         (base32
          "1r2p5rjdjr25j3w4s57q5hxw2c3ymw12x7ms18yvglnq2ivr9fc1"))))
@@ -2221,8 +2091,7 @@ syntactic elements, without changing the semantics.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "yesod-static/yesod-static-" version ".tar.gz"))
+       (uri (hackage-uri "yesod-static" version))
        (sha256
         (base32
          "18f5hm9ncvkzl8bkn39cg841z0k5iqs5w45afsyk9y6k98pjd54p"))))
@@ -2264,9 +2133,7 @@ for the Yesod Web Framework.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "wai-handler-launch/wai-handler-launch-"
-                           version ".tar.gz"))
+       (uri (hackage-uri "wai-handler-launch" version))
        (sha256
         (base32
          "1ifqgyc1ccig5angh5l1iq7vyms4lvi8wzvysg5dw82nml49n02m"))))
@@ -2289,8 +2156,7 @@ server no longer receives pings, it shuts down.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "wai-cors/wai-cors-" version ".tar.gz"))
+       (uri (hackage-uri "wai-cors" version))
        (sha256
         (base32
          "10gv3jjlkcb13031frr818p56v2s0qf6dqjsfpwlhwdxdssvx5r5"))))
@@ -2333,10 +2199,7 @@ aims to be compliant with @url{https://www.w3.org/TR/cors}.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/network-run/network-run-"
-               version
-               ".tar.gz"))
+        (uri (hackage-uri "network-run" version))
         (sha256
           (base32 "0w3dmwk03j4n01xkiq8m4sqa27bskh239mpw7m4ihjmkxqcwc5gl"))))
     (build-system haskell-build-system)

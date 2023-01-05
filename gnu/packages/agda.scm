@@ -41,9 +41,7 @@
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/Agda/Agda-"
-             version ".tar.gz"))
+       (uri (hackage-uri "Agda" version))
        (sha256
         (base32 "0yjjbhc593ylrm4mq4j01nkdvh7xqsg5in30wxj4y53vf5hkggp5"))))
     (build-system haskell-build-system)

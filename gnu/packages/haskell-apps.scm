@@ -65,9 +65,7 @@
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/apply-refact/apply-refact-"
-             version ".tar.gz"))
+       (uri (hackage-uri "apply-refact" version))
        (sha256
         (base32
          "1sn5g71sx8xa4ggyk49m661iip6zrzl65vb87l16l31kf79bbm7w"))))
@@ -101,10 +99,7 @@ library.  It is primarily used with HLint's @code{--refactor} flag.")
    (source
     (origin
      (method url-fetch)
-      (uri (string-append
-            "https://hackage.haskell.org/package/cabal-install/cabal-install-"
-            version
-            ".tar.gz"))
+      (uri (hackage-uri "cabal-install" version))
       (patches (search-patches "cabal-install-base16-bytestring1.0.patch"
                                "cabal-install-ghc8.10.patch"))
       (sha256
@@ -150,9 +145,7 @@ installation of Haskell libraries and programs.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/" name "/"
-             name "-" version ".tar.gz"))
+       (uri (hackage-uri "cpphs" version))
        (sha256
         (base32
          "17wi7fma2qaqdm1hwgaam3fd140v9bpa8ky0wg708h1pqc5v2nbz"))))
@@ -181,8 +174,7 @@ unlit literate code files; and an option to turn off macro-expansion.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/darcs/"
-                           "darcs-" version ".tar.gz"))
+       (uri (hackage-uri "darcs" version))
        (sha256
         (base32
          "07dygwh6p4fsrlgxmq6r7yvxmf4n2y04izzd30jzqgs0pi9645p4"))
@@ -287,8 +279,7 @@ unique algebra of patches called @url{http://darcs.net/Theory,Patchtheory}.
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/ghcid/"
-                           "ghcid-" version ".tar.gz"))
+       (uri (hackage-uri "ghcid" version))
        (sha256
         (base32 "0yqc1pkfajnr56gnh43sbj50r7c3r41b2jfz07ivgl6phi4frjbq"))))
     (build-system haskell-build-system)
@@ -316,8 +307,7 @@ to @code{cabal repl}).")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://hackage.haskell.org/package/"
-                           "git-annex/git-annex-" version ".tar.gz"))
+       (uri (hackage-uri "git-annex" version))
        (sha256
         (base32 "06b5gnj0dxiz7lkc75xmmzi50svwbqhs5az01lfmw27r3ibcicpm"))))
     (build-system haskell-build-system)
@@ -523,9 +513,7 @@ used to keep a folder in sync between computers.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/" name
-             "/" name "-" version ".tar.gz"))
+       (uri (hackage-uri "hlint" version))
        (sha256
         (base32
          "0z6gxndrh7blzapkdn6fq1pkbkjlmbgjbq9ydnvy2wm00fb3v73g"))))
@@ -563,9 +551,7 @@ unwanted suggestions, and to add your own custom suggestions.")
      (origin
        (method url-fetch)
        (uri
-        (string-append
-         "https://hackage.haskell.org/package/hoogle/hoogle-"
-         version ".tar.gz"))
+        (hackage-uri "hoogle" version))
        (sha256
         (base32
          "1xacx2f33x1a4qlv25f8rlmb4wi0cjfzrj22nlnkrd0knghik3m7"))))
@@ -615,10 +601,7 @@ or by approximate type signature.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/hscolour/hscolour-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "hscolour" version))
        (sha256
         (base32
          "079jwph4bwllfp03yfr26s5zc6m6kw3nhb1cggrifh99haq34cr4"))))
@@ -700,10 +683,7 @@ Wayland, and Linux console environments alike.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/nixfmt/nixfmt-"
-             version
-             ".tar.gz"))
+       (uri (hackage-uri "nixfmt" version))
        (sha256
         (base32 "1ispgl8rc2scr6v8bb6sks7px856jf61x74zj2iyddrn5qamkb3n"))))
     (build-system haskell-build-system)
@@ -769,8 +749,7 @@ Haskell.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://hackage/package/Raincat/"
-                           "Raincat-" version ".tar.gz"))
+       (uri (hackage-uri "Raincat" version))
        (sha256
         (base32
          "10y9zi22m6hf13c9h8zd9vg7mljpwbw0r3djb6r80bna701fdf6c"))))
@@ -812,9 +791,7 @@ is programmed in Haskell.")
     (source
       (origin
         (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/scroll/scroll-"
-               version ".tar.gz"))
+        (uri (hackage-uri "scroll" version))
         (sha256
          (base32
           "0apzrvf99rskj4dbmn57jjxrsf19j436s8a09m950df5aws3a0wj"))))
@@ -858,9 +835,7 @@ too slow and you'll get wound up in the scroll and crushed.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "https://hackage.haskell.org/package/ShellCheck/ShellCheck-"
-             version ".tar.gz"))
+       (uri (hackage-uri "ShellCheck" version))
        (sha256
         (base32 "071k2gc8rzpg9lwq9g10c9xx0zm1wcgsf8v4n1csj9fm56vy7gmb"))
        (file-name (string-append name "-" version ".tar.gz"))))
@@ -905,8 +880,7 @@ advanced user's otherwise working script to fail under future circumstances.
     (version "1.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://hackage/package/shelltestrunner-"
-                                  version "/shelltestrunner-" version ".tar.gz"))
+              (uri (hackage-uri "shelltestrunner" version))
               (sha256
                (base32
                 "1a5kzqbwg6990249ypw0cx6cqj6663as1kbj8nzblcky8j6kbi6b"))))
@@ -960,9 +934,7 @@ output, stderr, and exit status.")
      (origin
        (method url-fetch)
        (uri
-        (string-append
-         "https://hackage.haskell.org/package/stylish-haskell/"
-         "stylish-haskell-" version ".tar.gz"))
+        (hackage-uri "stylish-haskell" version))
        (sha256
         (base32
          "0x9w3zh1lzp6l5xj3mynnlr0fzb5mbv0wwpfxp8fr6bk0jcrzjwf"))))
