@@ -37,8 +37,10 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages tls)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system qt)
@@ -374,6 +376,57 @@ argument of the function (modify-linux)."
   (make-raspi-defconfig
    "arm64" "bcmrpi3_defconfig"
    "1bfnl4p0ddx3200dg91kmh2pln36w95y05x1asc312kixv0jgd81"))
+
+(define-public raspberrypi-userland
+  ;; There are no release nor tag; use the latest commit.
+  (let ((revision "0")
+        (commit "54fd97ae4066a10b6b02089bc769ceed328737e0"))
+    (package
+      (name "raspberrypi-userland")
+      (version (git-version "0.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/raspberrypi/userland")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "01853x2kx36vcm1wd0p20v72kw2p4xhnzp36jivh06mhma9b3h2v"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no test suite
+        #:configure-flags #~(list (string-append "-DVMCS_INSTALL_PREFIX="
+                                                 #$output))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-paths
+              (lambda _
+                (substitute* "interface/khronos/ext/egl_khr_image_client.c"
+                  (("/opt/vc/lib/libvcsm.so")
+                   (string-append #$output "/lib/libvcsm.so")))))
+            (add-after 'unpack 'disable-hello_pi
+              (lambda _
+                ;; Do not build hello_pi, which installs 32 MiB of binaries
+                ;; and source files to src/.
+                (substitute* "host_applications/linux/CMakeLists.txt"
+                  ((".*add_subdirectory\\(apps/hello_pi).*")
+                   ""))
+                (substitute* "makefiles/cmake/vmcs.cmake"
+                  (("install.*host_applications/linux/apps/hello_pi" all)
+                   (string-append "# " all))
+                  ((".*DESTINATION \\$\\{VMCS_INSTALL_PREFIX}/src)" all)
+                   (string-append "# " all))))))))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/raspberrypi/userland/")
+      (supported-systems (list "armhf-linux" "aarch64-linux"))
+      (synopsis "Raspberry Pi GPU-related libraries")
+      (description "This package package contains libraries to interface to
+EGL, mmal, GLESv2, vcos, openmaxil, vchiq_arm, bcm_host, VFC and OpenVG.  It
+also provides the @command{dtmerge}, @command{dtoverlay}, @command{dtparam},
+@command{raspivid} and @command{tvservice} commands, among others.")
+      (license license:bsd-3))))
 
 (define-public rpi-imager
   (package
