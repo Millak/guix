@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-05-16 18:18+0000\n"
+"PO-Revision-Date: 2022-12-23 15:30+0000\n"
 "Last-Translator: Jan Kuparinen <copper_fin@hotmail.com>\n"
 "Language-Team: Finnish <https://translate.fedoraproject.org/projects/guix/guix/fi/>\n"
 "Language: fi\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.15\n"
 
 #: gnu.scm:81
 #, scheme-format
 msgid "module ~a not found"
-msgstr ""
+msgstr "moduulia ~a ei löydy"
 
 #: gnu.scm:99
 msgid ""
@@ -680,7 +680,7 @@ msgstr ""
 
 #: gnu/services/samba.scm:266
 msgid "Web Service Discovery Daemon"
-msgstr ""
+msgstr "Verkkopalvelun etsintädemoni"
 
 #: gnu/services/version-control.scm:177
 msgid ""
@@ -915,22 +915,19 @@ msgid "image lacks a partition with the 'boot' flag"
 msgstr ""
 
 #: gnu/system/image.scm:357
-#, fuzzy, scheme-format
-#| msgid "unsupported source type"
+#, scheme-format
 msgid "unsupported image type: ~a"
-msgstr "lähdetyyppi ei tuettu"
+msgstr "ei tuettu levykuvatyyppi: ~a"
 
 #: gnu/system/image.scm:375 gnu/system/image.scm:394
-#, fuzzy, scheme-format
-#| msgid "unsupported source type"
+#, scheme-format
 msgid "unsupported partition type: ~a"
-msgstr "lähdetyyppi ei tuettu"
+msgstr "ei tuettu osion tyyppi: ~a"
 
 #: gnu/system/image.scm:972
-#, fuzzy, scheme-format
-#| msgid "unsupported source type"
+#, scheme-format
 msgid "~a: unsupported image format"
-msgstr "lähdetyyppi ei tuettu"
+msgstr "~a: levykuvaformaattia ei tueta"
 
 #: gnu/system/image.scm:1002
 #, scheme-format
@@ -1412,10 +1409,9 @@ msgstr ""
 #. TRANSLATORS: The two placeholders are the manufacturer
 #. and name of a PCI device.
 #: gnu/installer/hardware.scm:88
-#, fuzzy, scheme-format
-#| msgid "Network service"
+#, scheme-format
 msgid "~a ~a (networking device)"
-msgstr "Verkkopalvelut"
+msgstr "~a ~a (verkkolaite)"
 
 #: gnu/installer/newt.scm:58
 msgid "Press <F1> for installation parameters."
@@ -1952,7 +1948,7 @@ msgstr ""
 
 #: gnu/installer/newt/partition.scm:704
 msgid "Manual partitioning"
-msgstr ""
+msgstr "Manuaalinen osiointi"
 
 #: gnu/installer/newt/partition.scm:729
 msgid "No root mount point found."
@@ -2143,10 +2139,8 @@ msgid "Hardware support warning"
 msgstr ""
 
 #: gnu/installer/newt/welcome.scm:163
-#, fuzzy
-#| msgid "Installation failed"
 msgid "Previous installation failed"
-msgstr "Asennus epäonnistui"
+msgstr "Edellinen asennus epäonnistui"
 
 #: gnu/installer/newt/welcome.scm:166
 msgid "It seems that the previous installation exited unexpectedly and generated a core dump.  Do you want to continue or to report the failure first?"
@@ -2414,10 +2408,9 @@ msgid "~a: invalid system type; must be a string"
 msgstr ""
 
 #: gnu/machine/ssh.scm:129
-#, fuzzy, scheme-format
-#| msgid "~a: unknown styling~%"
+#, scheme-format
 msgid "~a: unknown system type"
-msgstr "~a: tuntematon muotoilu~%"
+msgstr "~a: tuntematon järjestelmätyyppi"
 
 #: gnu/machine/ssh.scm:135 guix/ui.scm:2225
 #, scheme-format
@@ -3863,7 +3856,7 @@ msgstr ""
 
 #: guix/scripts/install.scm:71
 msgid "install packages"
-msgstr ""
+msgstr "asenna paketteja"
 
 #: guix/scripts/remove.scm:30
 msgid ""
@@ -5638,10 +5631,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: guix/scripts/challenge.scm:326
-#, fuzzy, scheme-format
-#| msgid "failed to create directory ~a: ~s~%"
+#, scheme-format
 msgid "failed to delete '~a': ~a~%"
-msgstr "hakemiston luonti epäonnistui ~a: ~s~%"
+msgstr "\"~a\":n poistaminen epäonnistui: ~a~%"
 
 #: guix/scripts/challenge.scm:407
 #, scheme-format
@@ -6679,7 +6671,7 @@ msgstr ""
 #: guix/ui.scm:366 guix/ui.scm:417 guix/ui.scm:425 guix/ui.scm:429
 #, scheme-format
 msgid "failed to load '~a': ~a~%"
-msgstr ""
+msgstr "\"~a\":n lataaminen epäonnistui: ~a~%"
 
 #: guix/ui.scm:375
 #, scheme-format
@@ -7086,7 +7078,7 @@ msgstr ""
 
 #: guix/ui.scm:1518
 msgid "documentation"
-msgstr ""
+msgstr "dokumentaatio"
 
 #: guix/ui.scm:1519
 msgid "shared libraries"
@@ -7106,7 +7098,7 @@ msgstr ""
 
 #: guix/ui.scm:1557
 msgid "everything"
-msgstr ""
+msgstr "kaikki"
 
 #: guix/ui.scm:1940
 #, scheme-format
@@ -9191,10 +9183,8 @@ msgid "~a: invalid input simplification policy~%"
 msgstr ""
 
 #: guix/scripts/style.scm:399
-#, fuzzy
-#| msgid "Available updaters:~%"
 msgid "Available styling rules:\n"
-msgstr "Saatavilla olevat päivitykset:~%"
+msgstr "Saatavilla olevat muotoilusäännöt:\n"
 
 #: guix/scripts/style.scm:400
 msgid "- format: Format the given package definition(s)\n"

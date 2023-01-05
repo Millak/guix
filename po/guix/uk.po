@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the GNU guix package.
 # Andrij Mizyk <andmizyk@gmail.com>, 2022.
 # Yuri Chornoivan <yurchor@ukr.net>, 2022.
-# two <two@envs.net>, 2022.
+# two <two@envs.net>, 2022, 2023.
 # Kyrylo Husarov <husarovkyrylo@gmail.com>, 2022.
+# Illia Demianchuk <illialoo99@gmail.com>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-10-16 18:50+0000\n"
+"PO-Revision-Date: 2023-01-02 20:20+0000\n"
 "Last-Translator: two <two@envs.net>\n"
 "Language-Team: Ukrainian <https://translate.fedoraproject.org/projects/guix/guix/uk/>\n"
 "Language: uk\n"
@@ -19,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -89,7 +90,7 @@ msgstr "~A: для пакета не знайдено версію ~a~%"
 #: gnu/packages.scm:496 gnu/packages.scm:513
 #, scheme-format
 msgid "~A: unknown package~%"
-msgstr "~A: невідомий пакунок~%"
+msgstr "~A: невідомий пакет~%"
 
 #: gnu/packages.scm:552
 #, scheme-format
@@ -321,18 +322,24 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"Заповніть @file{/etc/fstab} на основі заданих об'єктів\n"
+"файлової системи."
 
 #: gnu/services/base.scm:348
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"Подбайте про синхронізацію вашої кореневої файлової системи\n"
+"та її перемонтування у режимі тільки для читання при вимкненні системи."
 
 #: gnu/services/base.scm:542
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"Надайте служби Shepherd для підключення та відключення заданих\n"
+"файлових систем, а також відповідні записи в @file{/etc/fstab}."
 
 #: gnu/services/base.scm:640
 msgid ""
@@ -340,16 +347,21 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
+"Введіть у генератор псевдовипадкових чисел\n"
+"(RNG) @file{/dev/urandom} значення, записане при\n"
+"останньому вимкненні системи."
 
 #: gnu/services/base.scm:672
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
+"Запустіть демон генератора випадкових чисел @command{rngd}\n"
+"для передачі ентропії в пул ядра."
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "Ініціалізуйте ім'я хоста машини."
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
@@ -2648,8 +2660,9 @@ msgstr "Ви мали на увазі @code{~a}?~%"
 #, scheme-format
 msgid "Your Guix installation is ~a day old.\n"
 msgid_plural "Your Guix installation is ~a days old.\n"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Вашій копії Guix ~a день.\n"
+msgstr[1] "Вашій копії Guix ~a дні.\n"
+msgstr[2] "Вашій копії Guix ~a днів.\n"
 
 #: guix/scripts.scm:258
 #, scheme-format
@@ -2657,6 +2670,8 @@ msgid ""
 "Consider running 'guix pull' followed by\n"
 "'~a' to get up-to-date packages and security updates.\n"
 msgstr ""
+"Будь ласка зробіть 'guix pull', а потім\n"
+"'~a', щоб отримати останні пакунки та оновлення безпеки.\n"
 
 #: guix/scripts.scm:322
 #, scheme-format
@@ -3016,7 +3031,7 @@ msgstr ""
 #: guix/scripts/build.scm:661
 #, scheme-format
 msgid "package ~a does not support ~a~%"
-msgstr ""
+msgstr "пакунок ~a не підтримує ~a~%"
 
 #: guix/scripts/build.scm:680
 #, scheme-format
@@ -3035,21 +3050,21 @@ msgstr ""
 #: guix/scripts/build.scm:789 guix/scripts/challenge.scm:540
 #, scheme-format
 msgid "no arguments specified, nothing to do~%"
-msgstr ""
+msgstr "аргументів не надано, робити нічого~%"
 
 #. TRANSLATORS: The goal is to emit "warning:" followed by a short phrase;
 #. "~a" is a placeholder for that phrase.
 #: guix/diagnostics.scm:157
 msgid "warning: "
-msgstr ""
+msgstr "зауваження: "
 
 #: guix/diagnostics.scm:159
 msgid "error: "
-msgstr ""
+msgstr "помилка: "
 
 #: guix/diagnostics.scm:262
 msgid "<unknown location>"
-msgstr ""
+msgstr "<невідоме місце>"
 
 #: guix/diagnostics.scm:324
 #, scheme-format
@@ -3126,10 +3141,9 @@ msgid "Would you like to add this key to keyring '~a'?~%"
 msgstr ""
 
 #: guix/graph.scm:348
-#, fuzzy, scheme-format
-#| msgid "~A: unknown package~%"
+#, scheme-format
 msgid "~a: unknown graph backend"
-msgstr "~A: невідомий пакунок~%"
+msgstr "~a: невідомий бекенд для графів~%"
 
 #. TRANSLATORS: 'modify-phases' is a Scheme syntax
 #. and should not be translated.
@@ -3199,7 +3213,7 @@ msgstr ""
 #: guix/lint.scm:456
 #, scheme-format
 msgid "invalid description: ~s"
-msgstr ""
+msgstr "некоректний опис: ~s"
 
 #: guix/lint.scm:527
 #, scheme-format
@@ -3271,12 +3285,12 @@ msgstr ""
 #: guix/lint.scm:843
 #, scheme-format
 msgid "~a: TLS certificate error: ~a"
-msgstr ""
+msgstr "~a: помилка сертифікату TLS: ~a"
 
 #: guix/lint.scm:848
 #, scheme-format
 msgid "~a: TLS error in '~a': ~a~%"
-msgstr ""
+msgstr "~a: помилка TLS у '~a': ~a~%"
 
 #: guix/lint.scm:859 guix/ui.scm:817 guix/scripts/offload.scm:194
 #, scheme-format
@@ -3339,7 +3353,7 @@ msgstr ""
 #: guix/lint.scm:1052
 #, scheme-format
 msgid "~a: empty patch"
-msgstr ""
+msgstr "~a: пуста латка"
 
 #: guix/lint.scm:1061
 #, scheme-format
@@ -3371,12 +3385,12 @@ msgstr ""
 #: guix/lint.scm:1286 guix/lint.scm:1331
 #, scheme-format
 msgid "URL should be '~a'"
-msgstr ""
+msgstr "URL мав бути '~a'"
 
 #: guix/lint.scm:1324
 #, scheme-format
 msgid "while accessing '~a'"
-msgstr ""
+msgstr "коли відвідували '~a'"
 
 #. TRANSLATORS: check and #:tests? are a
 #. Scheme symbol and keyword respectively
@@ -3445,7 +3459,7 @@ msgstr ""
 #: guix/lint.scm:1598
 #, scheme-format
 msgid "'~a' returned ~a"
-msgstr ""
+msgstr "'~a' повернуло ~a"
 
 #. TRANSLATORS: "Software Heritage" is a proper noun
 #. that must remain untranslated.  See
@@ -3681,7 +3695,7 @@ msgstr ""
 #: guix/scripts/download.scm:192
 #, scheme-format
 msgid "~a: download failed~%"
-msgstr ""
+msgstr "~a: завантаження не вдалося~%"
 
 #: guix/scripts/package.scm:132
 #, scheme-format
@@ -3696,7 +3710,7 @@ msgstr ""
 #: guix/scripts/package.scm:165
 #, scheme-format
 msgid "nothing to be done~%"
-msgstr ""
+msgstr "нічого робити~%"
 
 #: guix/scripts/package.scm:270
 #, scheme-format
@@ -3919,7 +3933,7 @@ msgstr ""
 #: guix/scripts/package.scm:919
 #, scheme-format
 msgid "~a~@[@~a~]: package not found~%"
-msgstr ""
+msgstr "~a~@[@~a~]: пакунок не знайдено~%"
 
 #: guix/scripts/package.scm:966 guix/scripts/pull.scm:726
 #, scheme-format
@@ -4002,7 +4016,7 @@ msgstr "Утиліта оновлення пакетів GitHub"
 #: guix/scripts/search.scm:75
 #, scheme-format
 msgid "missing arguments: no regular expressions to search for~%"
-msgstr ""
+msgstr "недостатньо аргументів: немає регулярних виразів, щоб шукати~%"
 
 #: guix/scripts/show.scm:31
 msgid ""
@@ -4307,7 +4321,7 @@ msgstr ""
 #: guix/scripts/hash.scm:211
 #, scheme-format
 msgid "no arguments specified~%"
-msgstr ""
+msgstr "аргументів не надано~%"
 
 #: guix/scripts/import.scm:62
 msgid ""
@@ -4374,7 +4388,7 @@ msgstr ""
 #: guix/scripts/import/stackage.scm:130 guix/scripts/import/texlive.scm:101
 #, scheme-format
 msgid "too few arguments~%"
-msgstr ""
+msgstr "замало аргументів~%"
 
 #: guix/scripts/import/minetest.scm:117 guix/scripts/import/cran.scm:122
 #: guix/scripts/import/elpa.scm:112 guix/scripts/import/cpan.scm:89
@@ -4386,7 +4400,7 @@ msgstr ""
 #: guix/scripts/import/texlive.scm:103
 #, scheme-format
 msgid "too many arguments~%"
-msgstr ""
+msgstr "забагато аргументів~%"
 
 #: guix/scripts/import/cran.scm:45
 msgid ""
@@ -4444,13 +4458,15 @@ msgstr ""
 #: guix/scripts/import/elpa.scm:107
 #, scheme-format
 msgid "failed to download package '~a'~%"
-msgstr ""
+msgstr "не вдалося завантажити пакунок '~a'~%"
 
 #: guix/scripts/pull.scm:85
 msgid ""
 "Usage: guix pull [OPTION]...\n"
 "Download and deploy the latest version of Guix.\n"
 msgstr ""
+"Використання: guix pull [КЛЮЧ]...\n"
+"Завантажити та розгорнути останню версію Guix.\n"
 
 #: guix/scripts/pull.scm:87 guix/scripts/time-machine.scm:53
 msgid ""
@@ -4539,7 +4555,7 @@ msgstr "    ~a у ~a~%"
 #: guix/scripts/pull.scm:296
 #, scheme-format
 msgid "    commit ~a~%"
-msgstr ""
+msgstr "    коміт ~a~%"
 
 #: guix/scripts/pull.scm:334
 #, scheme-format
@@ -4641,8 +4657,9 @@ msgstr ""
 #, scheme-format
 msgid "Building from this channel:~%"
 msgid_plural "Building from these channels:~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Будуємо з цього каналу:~%"
+msgstr[1] "Будуємо з цих каналів:~%"
+msgstr[2] "Будуємо з цих каналів:~%"
 
 #: guix/scripts/substitute.scm:87
 #, scheme-format
@@ -4657,7 +4674,7 @@ msgstr ""
 #: guix/scripts/substitute.scm:229
 #, scheme-format
 msgid "TLS error in procedure '~a': ~a~%"
-msgstr ""
+msgstr "Помилка TLS у процедурі '~a': ~a~%"
 
 #: guix/scripts/substitute.scm:240
 msgid ""
@@ -4932,7 +4949,7 @@ msgstr ""
 
 #: guix/scripts/system.scm:553 guix/scripts/home.scm:800
 msgid "  packages:\n"
-msgstr ""
+msgstr "  пакунки:\n"
 
 #: guix/scripts/system.scm:633
 #, scheme-format
@@ -5548,7 +5565,7 @@ msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "store item"
-msgstr ""
+msgstr "елемент сховища"
 
 #: guix/scripts/size.scm:92
 msgid "total"
@@ -6115,7 +6132,7 @@ msgstr ""
 
 #: guix/scripts/weather.scm:247
 msgid "  ~,1h MiB on disk (uncompressed)~%"
-msgstr ""
+msgstr "  ~,1h МіБ на диску (не стиснено)~%"
 
 #: guix/scripts/weather.scm:250
 msgid "  ~,3h seconds per request (~,1h seconds in total)~%"
@@ -6230,7 +6247,7 @@ msgstr ""
 
 #: guix/scripts/describe.scm:54 guix/scripts/processes.scm:291
 msgid "The available formats are:\n"
-msgstr ""
+msgstr "Доступні формати:\n"
 
 #: guix/scripts/describe.scm:65 guix/scripts/processes.scm:324
 #, scheme-format
@@ -6297,12 +6314,12 @@ msgstr ""
 #: guix/scripts/describe.scm:167
 #, scheme-format
 msgid "  branch: ~a~%"
-msgstr ""
+msgstr "  вітка: ~a~%"
 
 #: guix/scripts/describe.scm:168
 #, scheme-format
 msgid "  commit: ~a~%"
-msgstr ""
+msgstr "  коміт: ~a~%"
 
 #: guix/scripts/describe.scm:228
 #, scheme-format
@@ -6312,12 +6329,12 @@ msgstr ""
 #: guix/scripts/describe.scm:231
 #, scheme-format
 msgid "    branch: ~a~%"
-msgstr ""
+msgstr "    вітка: ~a~%"
 
 #: guix/scripts/describe.scm:233
 #, scheme-format
 msgid "    commit: ~a~%"
-msgstr ""
+msgstr "    коміт: ~a~%"
 
 #: guix/scripts/describe.scm:281
 msgid "describe the channel revisions currently used"
@@ -6526,10 +6543,9 @@ msgid "exec failed with status ~d~%"
 msgstr ""
 
 #: guix/transformations.scm:157
-#, fuzzy, scheme-format
-#| msgid "ambiguous package specification `~a'~%"
+#, scheme-format
 msgid "invalid source replacement specification: ~s"
-msgstr "двозначна специфікація пакету `~a'~%"
+msgstr "неоднозначний опис заміни джерела коду: «~s»~%"
 
 #: guix/transformations.scm:189 guix/transformations.scm:257
 #, scheme-format
@@ -6601,7 +6617,7 @@ msgstr ""
 #: guix/transformations.scm:775
 #, scheme-format
 msgid "cannot authenticate source of '~a', version ~a~%"
-msgstr ""
+msgstr "не можемо автентифікувати джерело '~a', версії ~a~%"
 
 #: guix/transformations.scm:862
 #, scheme-format
@@ -6661,6 +6677,9 @@ msgid ""
 "      --with-patch=PACKAGE=FILE\n"
 "                         add FILE to the list of patches of PACKAGE"
 msgstr ""
+"\n"
+"      --with-patch=ПАКУНОК=ФАЙЛ\n"
+"                         додати ФАЙЛ у список латок ПАКУНКУ"
 
 #: guix/transformations.scm:915
 msgid ""
@@ -6756,12 +6775,12 @@ msgstr "підказка: "
 
 #: guix/ui.scm:325
 msgid "Did you forget a @code{use-modules} form?"
-msgstr ""
+msgstr "Ви забули форму @code{use-modules}?"
 
 #: guix/ui.scm:327
 #, scheme-format
 msgid "Did you forget @code{(use-modules ~a)}?"
-msgstr ""
+msgstr "Ви забули @code{(use-modules ~a)}?"
 
 #: guix/ui.scm:337
 #, scheme-format
@@ -6776,12 +6795,12 @@ msgstr ""
 #: guix/ui.scm:351
 #, scheme-format
 msgid "module name ~a does not match file name '~a'~%"
-msgstr ""
+msgstr "ім'я модулю ~a не збігається з іменем файлу '~a'~%"
 
 #: guix/ui.scm:355
 #, scheme-format
 msgid "~a: file is empty~%"
-msgstr ""
+msgstr "~a: файл пустий~%"
 
 #: guix/ui.scm:366 guix/ui.scm:417 guix/ui.scm:425 guix/ui.scm:429
 #, scheme-format
@@ -6801,13 +6820,13 @@ msgstr ""
 #: guix/ui.scm:381
 #, scheme-format
 msgid "~s: ~a~%"
-msgstr ""
+msgstr "~s: ~a~%"
 
 #: guix/ui.scm:389 guix/ui.scm:420 guix/ui.scm:774 guix/ui.scm:824
 #: guix/ui.scm:875
 #, scheme-format
 msgid "~a~%"
-msgstr ""
+msgstr "~a~%"
 
 #: guix/ui.scm:397 guix/ui.scm:884
 #, scheme-format
@@ -6842,29 +6861,28 @@ msgstr ""
 #. locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
 #: guix/ui.scm:525
 msgid "(C)"
-msgstr ""
+msgstr "©"
 
 #: guix/ui.scm:526
 msgid "the Guix authors\n"
 msgstr "автор(к)и Guix\n"
 
 #: guix/ui.scm:527
-#, fuzzy
 msgid ""
 "License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\n"
 "This is free software: you are free to change and redistribute it.\n"
 "There is NO WARRANTY, to the extent permitted by law.\n"
 msgstr ""
 "Ліцензія GPLv3+: GNU GPL версії 3 або більше <http://gnu.org/licenses/gpl.html>\n"
-"Це вільне програмне забезпечення: ви маєте свободу змінювати та поширювати її.\n"
-"There is NO WARRANTY, to the extent permitted by law.\n"
+"Це вільне програмне забезпечення: ви маєте свободу змінювати та поширювати його.\n"
+"На цю програму НЕ НАДАЄТЬСЯ ГАРАНТІЇ, В МЕЖАХ ДОЗВОЛЕНИХ ЗАКОНОДАВСТВОМ.\n"
 
 #. TRANSLATORS: The placeholder indicates the bug-reporting address for this
 #. package.  Please add another line saying "Report translation bugs to
 #. ...\n" with the address for translation bugs (typically your translation
 #. team's web or email address).
 #: guix/ui.scm:539
-#, fuzzy, scheme-format
+#, scheme-format
 msgid ""
 "\n"
 "Report bugs to: ~a."
@@ -6899,17 +6917,17 @@ msgstr "https://guix.gnu.org/uk/help/"
 #: guix/ui.scm:601
 #, scheme-format
 msgid "'~a' is not a valid regular expression: ~a~%"
-msgstr ""
+msgstr "'~a' не є коректним регулярним виразом: ~a~%"
 
 #: guix/ui.scm:607
 #, scheme-format
 msgid "~a: invalid number~%"
-msgstr ""
+msgstr "~a: некоректне число~%"
 
 #: guix/ui.scm:625
 #, scheme-format
 msgid "invalid number: ~a~%"
-msgstr ""
+msgstr "некоректне число: ~a~%"
 
 #: guix/ui.scm:648
 #, scheme-format
@@ -6993,7 +7011,7 @@ msgstr ""
 #: guix/ui.scm:769
 #, scheme-format
 msgid "failed to connect to `~a': ~a~%"
-msgstr ""
+msgstr "не вдалося з'єднатися з «~a»: ~a~%"
 
 #: guix/ui.scm:777
 #, scheme-format
@@ -7023,24 +7041,24 @@ msgstr ""
 #: guix/ui.scm:872
 #, scheme-format
 msgid "syntax error: ~a~%"
-msgstr ""
+msgstr "синтаксична помилка: ~a~%"
 
 #: guix/ui.scm:896
 #, scheme-format
 msgid "expression ~s does not evaluate to a package~%"
-msgstr ""
+msgstr "з виразу ~s не виходить накунок~%"
 
 #: guix/ui.scm:923
 msgid "at least ~,1h MB needed but only ~,1h MB available in ~a~%"
-msgstr ""
+msgstr "треба хоча б ~,1h МБ але доступно тільки ~,1h МБ у ~a~%"
 
 #: guix/ui.scm:1033
 #, scheme-format
 msgid "The following derivation would be built:~%"
 msgid_plural "The following derivations would be built:~%"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Наступну деривацію буде побудовано:~%"
+msgstr[1] "Наступні деривації буде побудовано:~%"
+msgstr[2] "Наступні деривації буде побудовано:~%"
 
 #. TRANSLATORS: "MB" is for "megabyte"; it
 #. should be translated to the corresponding
@@ -7096,7 +7114,7 @@ msgstr[2] ""
 #. abbreviation.
 #: guix/ui.scm:1106
 msgid "~:[~,1h MB will be downloaded:~%~;~]"
-msgstr ""
+msgstr "~:[~,1h МБ буде завантажено:~%~;~]"
 
 #: guix/ui.scm:1115
 #, scheme-format
@@ -7124,7 +7142,7 @@ msgstr[1] ""
 #. translated to the corresponding abbreviation.
 #: guix/ui.scm:1140
 msgid "~:[~,1h MB will be downloaded~%~;~]"
-msgstr ""
+msgstr "~:[~,1h МБ буде завантажено~%~;~]"
 
 #: guix/ui.scm:1144
 msgid "~:[~h item will be downloaded~%~;~]"
@@ -7134,7 +7152,7 @@ msgstr[1] ""
 
 #: guix/ui.scm:1263
 msgid "(dependencies or package changed)"
-msgstr ""
+msgstr "(пакунок або залежності змінилися)"
 
 #: guix/ui.scm:1282
 #, scheme-format
@@ -7147,8 +7165,9 @@ msgstr[1] ""
 #, scheme-format
 msgid "The following package will be removed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be removed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Наступний пакунок буде видалено:~%~{~a~%~}~%"
+msgstr[1] "Наступні пакети буде видалено:~%~{~a~%~}~%"
+msgstr[2] "Наступні пакети буде видалено:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1300
 #, scheme-format
@@ -7175,8 +7194,9 @@ msgstr[1] ""
 #, scheme-format
 msgid "The following package will be upgraded:~%~{~a~%~}~%"
 msgid_plural "The following packages will be upgraded:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Наступний пакунок буде оновлено:~%~{~a~%~}~%"
+msgstr[1] "Наступні пакунок буде оновлено:~%~{~a~%~}~%"
+msgstr[2] "Наступні пакунки буде оновлено:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1334
 #, scheme-format
@@ -7189,8 +7209,9 @@ msgstr[1] ""
 #, scheme-format
 msgid "The following package will be installed:~%~{~a~%~}~%"
 msgid_plural "The following packages will be installed:~%~{~a~%~}~%"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Наступний пакунки буде встановлено:~%~{~a~%~}~%"
+msgstr[1] "Наступні пакунки буде встановлено:~%~{~a~%~}~%"
+msgstr[2] "Наступні пакунки буде встановлено:~%~{~a~%~}~%"
 
 #: guix/ui.scm:1457
 #, scheme-format
@@ -7318,7 +7339,7 @@ msgstr "guix: ~a: команду не знайдено~%"
 #: guix/ui.scm:2259
 #, scheme-format
 msgid "guix: missing command name~%"
-msgstr "guix: немає імені команди"
+msgstr "guix: немає імені команди~%"
 
 #: guix/ui.scm:2267
 #, scheme-format
@@ -7430,7 +7451,7 @@ msgstr[1] ""
 #: guix/status.scm:527
 #, scheme-format
 msgid "build of ~a failed"
-msgstr ""
+msgstr "не вдалося зібрати ~a"
 
 #: guix/status.scm:531
 #, scheme-format
@@ -7440,17 +7461,17 @@ msgstr ""
 #: guix/status.scm:534
 #, scheme-format
 msgid "View build log at '~a'."
-msgstr ""
+msgstr "Див. журнал збирання у '~a'."
 
 #: guix/status.scm:539
 #, scheme-format
 msgid "substituting ~a..."
-msgstr ""
+msgstr "замінюємо ~a..."
 
 #: guix/status.scm:544
 #, scheme-format
 msgid "downloading from ~a ..."
-msgstr ""
+msgstr "завантажуємо з ~a ..."
 
 #: guix/status.scm:570
 #, scheme-format
@@ -7484,12 +7505,12 @@ msgstr ""
 #: guix/http-client.scm:141
 #, scheme-format
 msgid "following redirection to `~a'...~%"
-msgstr ""
+msgstr "переходимо за перенаправленням `~a'...~%"
 
 #: guix/http-client.scm:162
 #, scheme-format
 msgid "~a: HTTP download failed: ~a (~s)"
-msgstr ""
+msgstr "~a: завантаження за HTTP не вдалося: ~a (~s)"
 
 #: guix/nar.scm:173
 msgid "signature is not a valid s-expression"
@@ -7497,11 +7518,11 @@ msgstr ""
 
 #: guix/nar.scm:182
 msgid "invalid signature"
-msgstr ""
+msgstr "некоректний підпис"
 
 #: guix/nar.scm:186
 msgid "invalid hash"
-msgstr ""
+msgstr "некоректний хеш"
 
 #: guix/nar.scm:194
 msgid "unauthorized public key"
@@ -7568,7 +7589,7 @@ msgstr ""
 
 #: guix/channels.scm:362
 msgid "Authenticating channel '~a', commits ~a to ~a (~h new commits)...~%"
-msgstr ""
+msgstr "Автентифікуємо канал '~a', коміти від ~a до ~a (~h нових комітів)...~%"
 
 #: guix/channels.scm:427
 #, scheme-format
@@ -7615,7 +7636,7 @@ msgstr ""
 #: guix/channels.scm:537
 #, scheme-format
 msgid "Updating channel '~a' from Git repository at '~a'...~%"
-msgstr ""
+msgstr "Оновлюємо канал '~a' зі сховища Git '~a'...~%"
 
 #: guix/channels.scm:558
 #, scheme-format
@@ -7649,10 +7670,9 @@ msgid "no SHA256 hash for origin"
 msgstr ""
 
 #: guix/packages.scm:566
-#, fuzzy, scheme-format
-#| msgid "~a: invalid locale name"
+#, scheme-format
 msgid "~s: invalid package license~%"
-msgstr "~a: неправильна назва локалі"
+msgstr "~a: незрозуміла ліцензія пакунку~%"
 
 #: guix/profiles.scm:518
 #, scheme-format
@@ -7958,7 +7978,7 @@ msgstr ""
 #: guix/scripts/archive.scm:257
 #, scheme-format
 msgid "no arguments specified; creating an empty archive~%"
-msgstr ""
+msgstr "не надано аргументів: створюємо пустий архів~%"
 
 #: guix/scripts/archive.scm:262
 #, scheme-format
@@ -8010,7 +8030,7 @@ msgstr ""
 #: guix/scripts/archive.scm:416
 #, scheme-format
 msgid "either '--export' or '--import' must be specified~%"
-msgstr ""
+msgstr "має бути надано '--export' або '--import'~%"
 
 #: guix/scripts/discover.scm:37
 msgid ""
@@ -8164,7 +8184,7 @@ msgstr ""
 
 #: guix/scripts/environment.scm:136
 msgid "This command is deprecated in favor of 'guix shell'.\n"
-msgstr ""
+msgstr "Ця команда застаріла. Користуйтеся 'guix shell'.\n"
 
 #: guix/scripts/environment.scm:140
 msgid ""
@@ -8346,7 +8366,7 @@ msgstr ""
 #: guix/scripts/environment.scm:1060 guix/scripts/shell.scm:292
 #, scheme-format
 msgid "no packages specified; creating an empty environment~%"
-msgstr ""
+msgstr "не надано пакетів; створюємо пусте середовище~%"
 
 #: guix/scripts/environment.scm:1099
 #, scheme-format
@@ -8518,12 +8538,16 @@ msgid ""
 "\n"
 "      --url=URL          use the Git repository at URL"
 msgstr ""
+"\n"
+"      --url=URL          використати сховище Git за URL"
 
 #: guix/scripts/time-machine.scm:57
 msgid ""
 "\n"
 "      --commit=COMMIT    use the specified COMMIT"
 msgstr ""
+"\n"
+"      --commit=КОМІТ    використати наданий КОМІТ"
 
 #: guix/scripts/time-machine.scm:59
 msgid ""
@@ -9188,12 +9212,17 @@ msgid ""
 "Build an environment that includes PACKAGES and execute COMMAND or an\n"
 "interactive shell in that environment.\n"
 msgstr ""
+"Використання: guix shell [КЛЮЧ] ПАКУНКИ... [-- КОМАНДА...]\n"
+"Побудувати середовище яке включає ПАКУНКИ та виконати КОМАНДУ або\n"
+"інтерактивний командний рядок у ньому.\n"
 
 #: guix/scripts/shell.scm:60
 msgid ""
 "\n"
 "  -D, --development      include the development inputs of the next package"
 msgstr ""
+"\n"
+"  -D, --development      включити вхідні пакунки для розробки наступного пакунку"
 
 #: guix/scripts/shell.scm:62
 msgid ""

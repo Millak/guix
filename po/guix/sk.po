@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-08-22 16:19+0000\n"
+"PO-Revision-Date: 2022-12-15 23:21+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://translate.fedoraproject.org/projects/guix/guix/sk/>\n"
 "Language: sk\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.14.2\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -318,18 +318,24 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"Naplniť @file{/etc/fstab} na základe zadaných položiek\n"
+"súborového systému."
 
 #: gnu/services/base.scm:348
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"Postarať sa o zosúladenie koreňového systému súborov\n"
+"a o jeho znovupripojenie len na čítanie pri vypínaní systému."
 
 #: gnu/services/base.scm:542
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"Poskytnúť služby Shepherda pre pripájanie a odpájanie daných\n"
+"súborových systémov, ako aj príslušných zápisov v @file{/etc/fstab}."
 
 #: gnu/services/base.scm:640
 msgid ""
@@ -337,20 +343,25 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
+"Použiť hodnotu zaznamenanú pri poslednom vypnutí systému\n"
+"ako počiatočné číslo pre generátor pseudonáhodných čísel (RNG)\n"
+"@file{/dev/urandom} ."
 
 #: gnu/services/base.scm:672
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
+"Spustiť démona na generovanie náhodných čísel @command{rngd} pre\n"
+"poskytnutie entropie zásobníku jadra."
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "Nastaviť názov hostiteľa pre tento počítač."
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "Uistiť sa, že virtuálne príkazové riadky Linuxu používajú UTF-8."
 
 #: gnu/services/base.scm:744
 msgid ""
@@ -358,6 +369,9 @@ msgid ""
 "@code{keyboard-layout} field of @code{operating-system}.}  Load the given list\n"
 "of console keymaps with @command{loadkeys}."
 msgstr ""
+"@emph{Táto služba je zastaraná a bola nahradená poľom\n"
+"@code{keyboard-layout} v @code{operating-system}.}  Daný zoznam rozložení\n"
+"klávesnice pre príkazový riadok možno načítať pomocou @command{loadkeys}."
 
 #: gnu/services/base.scm:804
 msgid ""
@@ -376,6 +390,20 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
+"Nainštalovať zadané písma do uvedených TTY (písma sa nastavujú pre každý\n"
+"virtuálny príkazový riadok zvlášť).  Hodnota služby je zoznam dvojíc TTY/písmo.\n"
+"Použiť možno názov písma poskytnutý balíkom @code{kbd} alebo akýkoľvek platný\n"
+"parameter príkazu @command{setfont} ako v nasledujúcom príklade:\n"
+"\n"
+"@example\n"
+"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
+"  (\"tty2\" . ,(file-append\n"
+"                 font-tamzen\n"
+"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
+"  (\"tty3\" . ,(file-append\n"
+"                 font-terminus\n"
+"                 \"/share/consolefonts/ter-132n\"))) ; pre HDPI\n"
+"@end example\n"
 
 #: gnu/services/base.scm:856
 msgid ""

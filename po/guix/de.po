@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: guix 1.2.0-pre3\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-11-26 11:04+0000\n"
+"PO-Revision-Date: 2022-12-09 21:22+0000\n"
 "Last-Translator: Florian Pelz <pelzflorian@pelzflorian.de>\n"
 "Language-Team: German <https://translate.fedoraproject.org/projects/guix/guix/de/>\n"
 "Language: de\n"
@@ -323,47 +323,47 @@ msgstr "~a: Ungültiger Locale-Name"
 msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
-msgstr ""
+msgstr "Fügt in @file{/etc/fstab} Einträge für die angegebenen Dateisystemobjekte ein."
 
 #: gnu/services/base.scm:348
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
-msgstr ""
+msgstr "Beim Herunterfahren synchronisiert dieser Dienst das Wurzeldateisystem und bindet es nur lesbar neu ein."
 
 #: gnu/services/base.scm:542
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
-msgstr ""
+msgstr "Stellt Shepherd-Dienste bereit, um die angegebenen Dateisysteme ein- und auszuhängen, sowie entsprechende @file{/etc/fstab}-Einträge."
 
 #: gnu/services/base.scm:640
 msgid ""
 "Seed the @file{/dev/urandom} pseudo-random number\n"
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
-msgstr ""
+msgstr "Legt den Startwert (Seed) des Pseudozufallszahlengenerators @file{/dev/urandom} anhand des beim Herunterfahren abgespeicherten Werts fest."
 
 #: gnu/services/base.scm:672
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
-msgstr ""
+msgstr "Den Zufallszahlengenerator-Daemon @command{rngd} ausführen, der den Entropie-Pool des Kernels speist."
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "Den Rechnernamen der Maschine initialisieren."
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "Stellt sicher, dass die virtuellen Terminals von Linux im UTF-8-Modus laufen."
 
 #: gnu/services/base.scm:744
 msgid ""
 "@emph{This service is deprecated in favor of the\n"
 "@code{keyboard-layout} field of @code{operating-system}.}  Load the given list\n"
 "of console keymaps with @command{loadkeys}."
-msgstr ""
+msgstr "@emph{Anstelle dieses veralteten Dienstes sollte das Feld @code{keyboard-layout} von @code{operating-system} verwendet werden.} Lädt mit @command{loadkeys} aus der übergebenen Liste die Tastenzuordnungen („Keymaps“) für die Konsole."
 
 #: gnu/services/base.scm:804
 msgid ""
@@ -382,69 +382,80 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
+"Installiert die angegebenen Schriftarten auf den festgelegten TTYs (auf dem Linux-Kernel werden Schriftarten für jede virtuelle Konsole einzeln festgelegt). Als Wert nimmt dieser Dienst eine Liste von Paaren aus TTY und Schriftart. Als Schriftart kann der Name einer vom @code{kbd}-Paket zur Verfügung gestellten Schriftart oder ein beliebiges gültiges Argument für @command{setfont} dienen. Ein Beispiel:\n"
+"\n"
+"@example\n"
+"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
+"  (\"tty2\" . ,(file-append\n"
+"                 font-tamzen\n"
+"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
+"  (\"tty3\" . ,(file-append\n"
+"                 font-terminus\n"
+"                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
+"@end example\n"
 
 #: gnu/services/base.scm:856
 msgid ""
 "Provide a console log-in service as specified by its\n"
 "configuration value, a @code{login-configuration} object."
-msgstr ""
+msgstr "Ein Dienst zur Anmeldung auf der Konsole entsprechend seinem Konfigurationswert, einem @code{login-configuration}-Objekt."
 
 #: gnu/services/base.scm:1128
 msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
-msgstr ""
+msgstr "Ermöglicht das Anmelden auf der Konsole mit dem Programm @command{agetty}."
 
 #: gnu/services/base.scm:1193
 msgid ""
 "Provide console login using the @command{mingetty}\n"
 "program."
-msgstr ""
+msgstr "Ermöglicht das Anmelden auf der Konsole mit dem Programm @command{mingetty}."
 
 #: gnu/services/base.scm:1411
 msgid ""
 "Runs libc's @dfn{name service cache daemon} (nscd) with the\n"
 "given configuration---an @code{<nscd-configuration>} object.  @xref{Name\n"
 "Service Switch}, for an example."
-msgstr ""
+msgstr "Den @dfn{Name Service Cache Daemon} (nscd) der GNU-C-Bibliothek mit der übergebenen Konfiguration laufen lassen – einem @code{<nscd-configuration>}-Objekt.  @xref{Name Service Switch} für ein Beispiel."
 
 #: gnu/services/base.scm:1450
 msgid ""
 "Run the syslog daemon, @command{syslogd}, which is\n"
 "responsible for logging system messages."
-msgstr ""
+msgstr "Den Syslog-Daemon, @command{syslogd}, ausführen, womit Protokollnachrichten des Systems festgehalten werden."
 
 #: gnu/services/base.scm:1516
 msgid ""
 "Install the specified resource usage limits by populating\n"
 "@file{/etc/security/limits.conf} and using the @code{pam_limits}\n"
 "authentication module."
-msgstr ""
+msgstr "Installiert die festgelegten Beschränkungen der Nutzung der Systemressourcen. Dazu werden sie in @file{/etc/security/limits.conf} eingetragen und das PAM-Modul @code{pam_limits} wird benutzt."
 
 #: gnu/services/base.scm:1876
 msgid "Run the build daemon of GNU@tie{}Guix, aka. @command{guix-daemon}."
-msgstr ""
+msgstr "Führt den Erstellungsdaemon von GNU@tie{}Guix aus, auch bekannt als @command{guix-daemon}."
 
 #: gnu/services/base.scm:2049
 msgid ""
 "Add a Shepherd service running @command{guix publish}, a\n"
 "command that allows you to share pre-built binaries with others over HTTP."
-msgstr ""
+msgstr "Fügt einen Shepherd-Dienst hinzu, um @command{guix publish} auszuführen. Durch diesen Befehl können Sie vorerstellte Binärdateien mit anderen Maschinen über HTTP teilen."
 
 #: gnu/services/base.scm:2253
 msgid ""
 "Run @command{udev}, which populates the @file{/dev}\n"
 "directory dynamically.  Get extra rules from the packages listed in the\n"
 "@code{rules} field of its value, @code{udev-configuration} object."
-msgstr ""
+msgstr "@command{udev} ausführen, um Geräte dynamisch im @file{/dev}-Verzeichnis anzulegen. Zusätzliche Regeln kommen aus den Paketen, die im Feld @code{rules} des Wertes, einem @code{udev-configuration}-Objekt, aufgeführt sind."
 
 #: gnu/services/base.scm:2281
 msgid "This service adds udev rules."
-msgstr ""
+msgstr "Mit diesem Dienst werden udev-Regeln hinzugefügt."
 
 #: gnu/services/base.scm:2371
 msgid "Turn on the virtual memory swap area."
-msgstr ""
+msgstr "Einen Swap-Bereich zum virtuellen Speicher anschalten."
 
 #: gnu/services/base.scm:2413
 msgid ""
@@ -452,34 +463,33 @@ msgid ""
 "command-line options.  GPM allows users to use the mouse in the console,\n"
 "notably to select, copy, and paste text.  The default options use the\n"
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
-msgstr ""
+msgstr "GPM ausführen, den @dfn{General-Purpose Mouse Daemon}, mit den ausgewählten Befehlszeilenoptionen. GPM fügt Mausunterstützung in der Konsole hinzu: Benutzern wird ermöglicht, damit Text auszuwählen, zu kopieren und einzufügen. Nach Vorgabe kommt das @code{ps2}-Protokoll zum Einsatz, das sowohl bei USB- als auch PS/2-Mäusen funktioniert."
 
 #: gnu/services/base.scm:2486
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
-msgstr ""
+msgstr "@command{kmscon}, ein virtuelles Terminal bzw.@: Terminalemulator, das auf dem in Linux eingebauten @dfn{Kernel Mode Setting} (KMS) aufsetzt."
 
 #: gnu/services/base.scm:2503
 #, scheme-format
 msgid "address '~a' lacks a network mask"
-msgstr ""
+msgstr "Adresse „~a“ fehlt die Netzwerkmaske"
 
 #: gnu/services/base.scm:2509
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
-msgstr ""
+msgstr "Schreiben Sie z.B. @samp{\"~a/24\"} für eine 24-Bit-Netzwerkmaske."
 
 #: gnu/services/base.scm:2589
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr ""
+msgstr "Netzwerk-Links werden auf GNU/Hurd derzeit ignoriert~%"
 
 #: gnu/services/base.scm:2614
-#, fuzzy, scheme-format
-#| msgid "importing file or directory '~a'...~%"
+#, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr "Datei oder Verzeichnis „~a“ wird importiert …~%"
+msgstr "Netzwerkroute für „~a“ wird ignoriert~%"
 
 #: gnu/services/base.scm:2798
 msgid ""
@@ -487,7 +497,7 @@ msgid ""
 "with the given IP address, gateway, netmask, and so on.  The value for\n"
 "services of this type is a list of @code{static-networking} objects, one per\n"
 "network interface."
-msgstr ""
+msgstr "Beim Starten werden die festgelegten Netzwerkschnittstellen aktiviert mit der angegebenen IP-Adresse, Netzwerkzugang (Gateway), Netzmaske und so weiter. Als Wert für Dienste dieses Typs fungiert eine Liste von @code{static-networking}-Objekten, eines je Netzwerkschnittstelle."
 
 #: gnu/services/base.scm:3166
 msgid ""
@@ -495,19 +505,19 @@ msgid ""
 "system including @code{greetd} PAM service, @code{pam-mount} module to\n"
 "mount/unmount /run/user/<uid> directory for user and @code{greetd}\n"
 "login manager daemon."
-msgstr ""
+msgstr "Stellt die Infrastruktur zum Anmelden am System zur Verfügung, einschließlich eines @code{greetd}-PAM-Dienstes, eines @code{pam-mount}-Moduls zum Einbinden oder Aushängen des Verzeichnisses /run/user/<UID> für Benutzer und einschließlich eines @code{greetd}-Daemons zur Anmeldeverwaltung."
 
 #: gnu/services/certbot.scm:159
 #, scheme-format
 msgid "~a may need to be run~%"
-msgstr ""
+msgstr "Vielleicht müssen Sie ~a ausführen~%"
 
 #: gnu/services/certbot.scm:209
 msgid ""
 "Automatically renew @url{https://letsencrypt.org, Let's\n"
 "Encrypt} HTTPS certificates by adjusting the nginx web server configuration\n"
 "and periodically invoking @command{certbot}."
-msgstr ""
+msgstr "HTTPS-Zertifikate von @url{https://letsencrypt.org, Let’s Encrypt} automatisch erneuern. Dazu wird die Konfiguration des Nginx-Webservers angepasst und regelmäßig @command{certbot} aufgerufen."
 
 #: gnu/services/configuration.scm:96
 #, scheme-format
@@ -522,30 +532,30 @@ msgstr "Für GRAMMAR muss 'infix oder 'suffix angegeben werden, aber angegeben w
 #: gnu/services/file-sharing.scm:74
 #, scheme-format
 msgid "salt value must be a string of ~d characters"
-msgstr ""
+msgstr "Als Salt-Wert muss eine Zeichenkette mit ~d Zeichen verwendet werden"
 
 #: gnu/services/file-sharing.scm:670
 #, scheme-format
 msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-msgstr ""
+msgstr "Wait-period abgelaufen; transmission-daemon wird abgewürgt (PID ~a).~%"
 
 #: gnu/services/file-sharing.scm:673
 msgid ""
 "(If you see this message regularly, you may need to increase the value\n"
 "of 'stop-wait-period' in the service configuration.)\n"
-msgstr ""
+msgstr "(Wenn Sie diese Meldung oft sehen, müssen Sie vielleicht den Wert von „stop-wait-period“ in der Konfiguration des Dienstes erhöhen.)\n"
 
 #: gnu/services/file-sharing.scm:687
 msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr ""
+msgstr "Der Dienst transmission-daemon wurde angewiesen, seine Datei mit Einstellungen neuzuladen."
 
 #: gnu/services/file-sharing.scm:689
 msgid "Service transmission-daemon is not running."
-msgstr ""
+msgstr "Der Dienst transmission-daemon läuft nicht."
 
 #: gnu/services/file-sharing.scm:793
 msgid "Share files using the BitTorrent protocol."
-msgstr ""
+msgstr "Dateien über das BitTorrent-Protokoll teilen."
 
 #: gnu/services/networking.scm:325
 #, scheme-format
@@ -751,7 +761,7 @@ msgstr "Web Service Discovery Daemon"
 msgid ""
 "Expose Git repositories over the insecure @code{git://} TCP-based\n"
 "protocol."
-msgstr ""
+msgstr "Git-Repositorys über das unsichere, TCP-basierte @code{git://}-Protokoll anbieten."
 
 #: gnu/services/version-control.scm:414
 msgid ""
@@ -759,13 +769,13 @@ msgid ""
 "By default, the @code{git} user is used, but this is configurable.\n"
 "Additionally, Gitolite can integrate with with tools like gitweb or cgit to\n"
 "provide a web interface to view selected repositories."
-msgstr ""
+msgstr "Richtet @command{gitolite} ein, ein Werkzeug zum Anbieten von Git-Repositorys, das Zugriff über SSH ermöglicht. Vorgegeben ist, das @code{git}-Benutzerkonto zu benutzen, aber das ist einstellbar. Des Weiteren kann Gitolite mit Werkzeugen wie gitweb oder cgit ausgestattet werden, um eine Web-Oberfläche zum Ansehen einzelner Repositorys anzubieten."
 
 #: gnu/services/version-control.scm:520
 msgid ""
 "Run Gitile, a small Git forge.  Expose public repositories\n"
 "on the web."
-msgstr ""
+msgstr "Gitile ausführen, eine kleine Git-„Forge“. Es ermöglicht den Zugriff auf öffentliche Repositorys über das Web."
 
 #: gnu/home/services.scm:138
 msgid ""
@@ -2524,6 +2534,10 @@ msgid ""
 ";; under their own account: use 'guix search KEYWORD' to search\n"
 ";; for packages and 'guix install PACKAGE' to install a package.\n"
 msgstr ""
+";; Systemweit installierte Pakete. Man kann Pakete auch\n"
+";; nur für das eigene Benutzerkonto installieren: Verwenden Sie\n"
+";; 'guix search SCHLÜSSELWORT', um nach Paketen zu suchen, und\n"
+";; 'guix install PAKET', um ein Paket zu installieren.\n"
 
 #: gnu/installer/services.scm:199
 msgid ""
@@ -2603,13 +2617,12 @@ msgstr "run-command-in-installer nicht festgelegt"
 #: gnu/machine/ssh.scm:122
 #, scheme-format
 msgid "~a: invalid system type; must be a string"
-msgstr ""
+msgstr "~a: Ungültiger Systemtyp; geben Sie eine Zeichenkette an"
 
 #: gnu/machine/ssh.scm:129
-#, fuzzy, scheme-format
-#| msgid "~a: unknown node type~%"
+#, scheme-format
 msgid "~a: unknown system type"
-msgstr "~a: Unbekannter Knotentyp~%"
+msgstr "~a: Unbekannter Systemtyp"
 
 #: gnu/machine/ssh.scm:135 guix/ui.scm:2225
 #, scheme-format
