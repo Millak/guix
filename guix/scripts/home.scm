@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -171,7 +171,7 @@ Some ACTIONS support additional ARGS.\n"))
                    (alist-cons 'dry-run? #t result)))
          (option '(#\V "version") #f #f
                  (lambda args
-                   (show-version-and-exit "guix show")))
+                   (show-version-and-exit "guix home")))
          (option '(#\v "verbosity") #t #f
                  (lambda (opt name arg result)
                    (let ((level (string->number* arg)))
