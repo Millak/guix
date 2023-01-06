@@ -30310,6 +30310,7 @@ even train opponent slimes.")
               (uri (git-reference
                     (url "https://github.com/vapniks/syslog-mode.git")
                     (commit "072664784dae41a573a9de8d178bf577b7526b82")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "04ddpn6il6mh1f992x3fxl6yljryghi51q4845lx08cbc74wnfz0"))))
