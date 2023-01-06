@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -1475,25 +1475,26 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
 (define-public guile-email
   (package
     (name "guile-email")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://guile-email.systemreboot.net/releases/guile-email-"
-             version ".tar.lz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.systemreboot.net/guile-email")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rc8r0fgvflnyq5ckl7ii8sghpsgpkzxa8vskjr1ak2kyar6m35k"))
-       (patches
-        (search-patches "guile-email-fix-tests.patch"))))
+         "0q98r460yr75gyxg06zrrixwazncd9nxl2pgr68mff2wf41f291h"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config lzip))
+     (list texinfo))
     (inputs
      (list guile-3.0))
     (arguments
-     '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (home-page "https://guile-email.systemreboot.net")
     (synopsis "Guile email parser")
     (description "guile-email is a collection of email utilities implemented
@@ -1527,7 +1528,12 @@ format.")
     (inherit guile-email)
     (name "guile2.2-email")
     (inputs (modify-inputs (package-inputs guile-email)
-              (replace "guile" guile-2.2)))))
+              (replace "guile" guile-2.2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-email)
+       ((#:make-flags make-flags '())
+        #~(cons "guile_effective_version=2.2"
+                #$make-flags))))))
 
 (define-public guile-newra
   ;; There has been no release let.
