@@ -74,6 +74,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gcc)
@@ -1112,6 +1113,39 @@ Google's C++ code base.")
     (description "The Parsing Expression Grammar Template Library (PEGTL) is
 a zero-dependency C++ header-only parser combinator library for creating
 parsers according to a Parsing Expression Grammar (PEG).")
+    (license license:expat)))
+
+(define-public psascan
+  (package
+    (name "psascan")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.cs.helsinki.fi/group"
+                                  "/pads/software/pSAscan"
+                                  "/pSAscan-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "1cphk4gf202nzkxz6jdjzls4zy27055gwpm0r8cn99gr6c8548cy"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir (lambda _ (chdir "src")))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "psascan"
+                            (string-append #$output "/bin")))))))
+    (inputs (list libdivsufsort))
+    (home-page "https://www.cs.helsinki.fi/group/pads/pSAscan.html")
+    (synopsis "Parallel external memory suffix array construction")
+    (description "This package contains an implementation of the parallel
+external-memory suffix array construction algorithm called pSAscan.  The
+algorithm is based on the sequential external-memory suffix array construction
+algorithm called SAscan.")
     (license license:expat)))
 
 (define-public cxxopts
