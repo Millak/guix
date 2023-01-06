@@ -14345,9 +14345,9 @@ phase + query phase).")
                (substitute* "scripts/read_info_histograms.sh"
                  (("awk") (which "gawk"))))))))
       (inputs
-       `(("gawk" ,gawk)                 ;for read_info_histograms.sh
-         ("python" ,python-2)           ;required for histogram.py
-         ("zlib" ,zlib)))
+       (list gawk                       ;for read_info_histograms.sh
+             python-2                   ;required for histogram.py
+             zlib))
       (home-page "https://github.com/rrwick/Filtlong/")
       (synopsis "Tool for quality filtering of Nanopore and PacBio data")
       (description
