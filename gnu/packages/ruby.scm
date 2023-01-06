@@ -13625,15 +13625,15 @@ though the later has not yet been packaged for Guix.")
 (define-public anystyle
   (package
     (name "anystyle")
-    (version "1.3.1")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/inukshuk/anystyle-cli")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "1bazzms04cra8516q7vydmcm31yd0a7si1pxk4waffqy7lh0pksg"))
+                "0yigfyn0n255nc53nx40yqak11dm4fva46hx5db177jh7mnksjd6"))
               (file-name (git-file-name name version))))
     (build-system ruby-build-system)
     (propagated-inputs
