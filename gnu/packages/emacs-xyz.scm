@@ -702,6 +702,7 @@ system.")
               (uri (git-reference
                     (url "https://github.com/hsluv/hsluv-emacs.git")
                     (commit "c3bc5228e30d66e7dee9ff1a0694c2b976862fc0")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "19q8qlq4s2kfydpadkq1zd92611dvq7dr8vlhlbd9gplzpx7dhfd"))))
