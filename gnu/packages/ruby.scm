@@ -7686,43 +7686,32 @@ variable length integers (varint) in Ruby Protocol Buffers.")
 (define-public ruby-ruby-prof
   (package
     (name "ruby-ruby-prof")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby-prof" version))
        (sha256
         (base32
-         "1r3xalp91l07m0cwllcxjzg6nkviiqnxkcbgg5qnzsdji6rgy65m"))))
+         "09n13bzm1p956z318xx1v7ikqdp2i971v7p3kwf3170axz368ccy"))))
     (build-system ruby-build-system)
     (arguments
-      ;; It is unclear why the tests fail on i686-linux
+      ;; FIXME: Investigate why the tests fail on i686-linux.
      `(#:tests? ,(not (or (%current-target-system)
                           (target-x86-32?)))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-rakefile
-           ;; This fixes the following error: "NameError: uninitialized
-           ;; constant Bundler::GemHelper" (see:
-           ;; https://github.com/ruby-prof/ruby-prof/issues/274).
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*require \"bundler/setup\".*" all)
-                (string-append all "  require 'bundler/gem_tasks'\n")))
-             #t))
          ;; The LineNumbersTest test fails non-deterministically (see:
          ;; https://github.com/ruby-prof/ruby-prof/issues/276).
          (add-after 'extract-gemspec 'delete-flaky-test
            (lambda _
              (delete-file "test/line_number_test.rb")
              (substitute* "ruby-prof.gemspec"
-               (("\"test/line_number_test\\.rb\"\\.freeze, ") ""))
-             #t))
+               (("\"test/line_number_test\\.rb\"\\.freeze, ") ""))))
          (add-before 'check 'compile
           (lambda _
             (invoke "rake" "compile"))))))
-    (native-inputs
-     (list bundler ruby-minitest ruby-rake-compiler ruby-rdoc))
+    (native-inputs (list bundler ruby-minitest ruby-rake-compiler ruby-rdoc))
     (synopsis "Fast code profiler for Ruby")
     (description "RubyProf is a fast code profiler for Ruby.  Its features
 include:
