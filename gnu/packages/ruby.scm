@@ -20,7 +20,7 @@
 ;;; Copyright © 2019 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2019 Diego N. Barbato <dnbarbato@posteo.de>
 ;;; Copyright © 2019 Brett Gilio <brettg@posteo.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Holgr Peters <holger.peters@posteo.de>
@@ -4324,25 +4324,37 @@ client protocol.")
 (define-public ruby-minitest
   (package
     (name "ruby-minitest")
-    (version "5.14.4")
+    (version "5.17.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))
+                "1kjy67qajw4rnkbjs5jyk7kc3lyhz5613fwj1i8f6ppdk4zampy0"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-hoe))
+    (native-inputs (list ruby-hoe))
+    (home-page "https://github.com/seattlerb/minitest")
     (synopsis "Small test suite library for Ruby")
     (description "Minitest provides a complete suite of Ruby testing
 facilities supporting TDD, BDD, mocking, and benchmarking.")
-    (home-page "https://github.com/seattlerb/minitest")
     (license license:expat)))
+
+(define-public ruby-minitest-5.14
+  (package
+    (inherit ruby-minitest)
+    (name "ruby-minitest-5.14")
+    (version "")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest" version))
+              (sha256
+               (base32
+                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))))
 
 ;; This is the last release of Minitest 4, which is used by some packages.
 (define-public ruby-minitest-4
-  (package (inherit ruby-minitest)
+  (package
+    (inherit ruby-minitest)
     (version "4.7.5")
     (source (origin
               (method url-fetch)
@@ -4354,16 +4366,14 @@ facilities supporting TDD, BDD, mocking, and benchmarking.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-unsupported-method
-          (lambda _
-            (substitute* "Rakefile"
-              (("self\\.rubyforge_name = .*") ""))
-            #t))
+           (lambda _
+             (substitute* "Rakefile"
+               (("self\\.rubyforge_name = .*") ""))))
          (add-after 'build 'exclude-failing-tests
            (lambda _
              ;; Some tests are failing on Ruby 2.4 due to the deprecation of
              ;; Fixnum.
-             (delete-file "test/minitest/test_minitest_spec.rb")
-             #t)))))))
+             (delete-file "test/minitest/test_minitest_spec.rb"))))))))
 
 (define-public ruby-minitest-around
   (package
@@ -6600,8 +6610,7 @@ with PostgreSQL 9.0 and later.")
              ;; provided.
              (substitute* "minitest"
                (("load File\\.expand_path\\(\"bundle\".*") "")
-               (("require \"bundler/setup\".*") "")))
-           #t))))
+               (("require \"bundler/setup\".*") "")))))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -6610,8 +6619,7 @@ with PostgreSQL 9.0 and later.")
            (lambda _
              (substitute* "test/commands/where_test.rb"
                (("unless /cygwin\\|mswin\\|mingw\\|darwin/.*")
-                "unless true\n"))
-             #t))
+                "unless true\n"))))
          (add-before 'build 'compile
            (lambda _
              (invoke "rake" "compile")))
@@ -6623,12 +6631,15 @@ with PostgreSQL 9.0 and later.")
                 "finish_inside_autoloaded_files"))))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list bundler
            ruby-chandler
-           ruby-minitest
+           ;; Using minitest 5.17 would cause 5 new bug failures.  This is
+           ;; probably related to
+           ;; https://github.com/deivid-rodriguez/byebug/pull/837.  Use
+           ;; minitest 5.14 until this is resolved and released.
+           ruby-minitest-5.14
            ruby-pry
            ruby-rake-compiler
            ruby-rubocop
