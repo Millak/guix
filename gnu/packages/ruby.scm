@@ -10886,6 +10886,42 @@ support the tests found in Prawn, a pure Ruby PDF generation library.")
 functionality from Prawn.")
     (license license:gpl3+)))
 
+(define-public ruby-prawn-dev
+  (package
+    (name "ruby-prawn-dev")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "prawn-dev" version))
+              (sha256
+               (base32
+                "1hbzzgm0nwc6h8pyv8h9xx068bf676rispxcz4a0sm8nykz54z4x"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'drop-rubocop-dependency
+            ;; Rubocop depends on Prawn.  Remove it to avoid the
+            ;; dependency cycle when using this tool to build
+            ;; Prawn components.
+            (lambda _
+              (substitute* "lib/prawn/dev/tasks.rb"
+                (("require 'rubocop/rake_task'")
+                 "")
+                (("RuboCop::RakeTask.new")
+                 ""))
+              (substitute* ".gemspec"
+                ((".*add.*dependency.*(rubocop|simplecov).*")
+                 "")))))))
+    (propagated-inputs (list ruby-rake ruby-rspec ruby-yard))
+    (synopsis "Shared tools for Prawn projects development")
+    (description "Prawn-dev contains tools to aid the development of the
+various Prawn projects.")
+    (home-page "https://prawnpdf.org/")
+    (license license:expat)))
+
 (define-public ruby-prawn
   ;; There hasn't been a new release since 2017/03/17.
   (let ((revision "1")
