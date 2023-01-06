@@ -1261,7 +1261,7 @@ syntax to the minimum while remaining clear.")
 (define-public ruby-asciidoctor
   (package
     (name "ruby-asciidoctor")
-    (version "2.0.16")
+    (version "2.0.18")
     (source
      (origin
        (method git-fetch)               ;the gem release lacks a Rakefile
@@ -1271,7 +1271,7 @@ syntax to the minimum while remaining clear.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "086i17v9rxx0sxac26xp8c5v75jqba6rqjlk57x94qjvrh8vzyw2"))))
+         "1mpk3y69lqz9ywfkjmr40dm3mkabrnf92bb011qq1axj73yyrajv"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "test:all"
@@ -1282,26 +1282,25 @@ syntax to the minimum while remaining clear.")
              (delete-file "Gemfile")
              (substitute* "asciidoctor.gemspec"
                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                (string-append stripped "\n")))
-             #t)))))
+                (string-append stripped "\n"))))))))
     (native-inputs
-     (list ruby-erubi
-           ruby-erubis
-           ruby-minitest
-           ruby-nokogiri
-           ruby-asciimath
+     (list ruby-asciimath
            ruby-coderay
            ruby-cucumber
+           ruby-erubis
            ruby-haml
+           ruby-minitest
+           ruby-nokogiri
+           ruby-open-uri-cached
            ruby-rouge
            ruby-rspec-expectations
            ruby-simplecov
            ruby-slim
-           ruby-tilt))
+           ruby-tilt
+           ruby-erubi))
     (synopsis "Converter from AsciiDoc content to other formats")
     (description "Asciidoctor is a text processor and publishing toolchain for
-converting AsciiDoc content to HTML5, DocBook 5 (or 4.5), PDF, and other
-formats.")
+converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
