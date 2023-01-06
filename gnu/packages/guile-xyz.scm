@@ -1535,27 +1535,6 @@ Extensions) compliant email messages and reading emails from the mbox
 format.")
     (license license:agpl3+)))
 
-(define-public guile-email-latest
-  (let ((commit "ea60bb902d3677d5c653851c7aa6afbbf710140e")
-        (revision "2"))
-    (package
-      (inherit guile-email)
-      (name "guile-email-latest")
-      (version (git-version "0.2.2" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.systemreboot.net/guile-email")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1g4rn7ai3nfxmpppc8qbpv8b18wnsld29y5xa58cv9b8pf3pbwnj"))))
-      (arguments '())
-      (native-inputs
-       (list pkg-config autoconf automake texinfo)))))
-
 (define-public guile2.2-email
   (package
     (inherit guile-email)

@@ -17,7 +17,7 @@
 ;;; Copyright © 2016, 2017 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -4072,7 +4072,7 @@ It is a replacement for the @command{urlview} program.")
                     `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                       (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
-       (list guile-email-latest
+       (list guile-email
              guile-fibers
              guile-gcrypt
              guile-json-4
