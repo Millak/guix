@@ -214,14 +214,16 @@ given Haskell package."
         (() #t)                         ;done
         ((id . tail)
          (if (not (vhash-assoc id seen))
-             (let ((dep-conf  (string-append src  "/" id ".conf"))
-                   (dep-conf* (string-append dest "/" id ".conf")))
-               (unless (file-exists? dep-conf*)
-                 (unless (file-exists? dep-conf)
+             (let* ((dep-conf  (string-append src  "/" id ".conf"))
+                    (dep-conf* (string-append dest "/" id ".conf"))
+                    (dep-conf-exists? (file-exists? dep-conf))
+                    (dep-conf*-exists? (file-exists? dep-conf*))
+                    (next-tail (append lst (if dep-conf-exists? (conf-depends dep-conf) '()))))
+               (unless dep-conf*-exists?
+                 (unless dep-conf-exists?
                    (error (format #f "File ~a does not exist. This usually means the dependency ~a is missing. Was checking conf-file ~a." dep-conf id conf-file)))
-                 (copy-file dep-conf dep-conf*) ;XXX: maybe symlink instead?
-                 (loop (vhash-cons id #t seen)
-                       (append lst (conf-depends dep-conf)))))
+                 (copy-file dep-conf dep-conf*)) ;XXX: maybe symlink instead?
+                (loop (vhash-cons id #t seen) next-tail))
              (loop seen tail))))))
 
   (define (install-config-file conf-file dest output:doc output:lib)
