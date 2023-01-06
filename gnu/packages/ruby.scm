@@ -1316,7 +1316,7 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
 (define-public ruby-asciidoctor-multipage
   (package
     (name "ruby-asciidoctor-multipage")
-    (version "0.0.15")
+    (version "0.0.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1325,7 +1325,7 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01qqkf00cp4sj82brz8kl02pjirydafwgld3z166slysiq78d1c5"))))
+                "0rnz7qxdw5qbi3qjplihhk468kv690njdi06yllgylc75k62ar1p"))))
     (propagated-inputs (list ruby-asciidoctor ruby-slim))
     (build-system ruby-build-system)
     (arguments
@@ -1335,8 +1335,7 @@ converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
                       (delete-file "Gemfile")
                       (substitute* "asciidoctor-multipage.gemspec"
                         (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                         (string-append stripped "
-"))) #t)))))
+                         (string-append stripped "\n"))))))))
     (synopsis
      "Asciidoctor extension for generating HTML output using multiple pages")
     (description
