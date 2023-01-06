@@ -6365,7 +6365,7 @@ multibyte strings, internationalization, time zones, and testing.")
 (define-public ruby-sanitize
   (package
     (name "ruby-sanitize")
-    (version "5.1.0")
+    (version "6.0.0")
     (home-page "https://github.com/rgrove/sanitize")
     (source (origin
               (method git-fetch)
@@ -6375,15 +6375,12 @@ multibyte strings, internationalization, time zones, and testing.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "ruby-sanitize-system-libxml.patch"))
               (sha256
                (base32
-                "0lj0q9yhjp0q0in5majkshnki07mw8m2vxgndx4m5na6232aszl0"))))
+                "0p1a28vx95vscy9xzzyyddzgb9496x42a5i2ka39cpxbl5f3gkl0"))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-crass ruby-nokogiri ruby-nokogumbo))
-    (native-inputs
-     (list ruby-minitest))
+    (propagated-inputs (list ruby-crass ruby-nokogiri))
+    (native-inputs (list ruby-minitest))
     (synopsis "Whitelist-based HTML and CSS sanitizer")
     (description
      "Sanitize is a whitelist-based HTML and CSS sanitizer.  Given a list of
