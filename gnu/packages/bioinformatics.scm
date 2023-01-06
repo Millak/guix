@@ -14417,21 +14417,21 @@ choosing which reads pass the filter.")
                                          `("PERL5LIB" ":" prefix (,perl5lib))))
                           (find-files scripts "\\.pl"))))))))
     (inputs
-     `(("guile" ,guile-3.0) ; for wrappers
-       ("eigen" ,eigen)
-       ("hdf5" ,hdf5)
-       ("htslib" ,htslib)
-       ("minimap2" ,minimap2)
-       ("perl" ,perl)
-       ("bioperl" ,bioperl-minimal)
-       ("perl-getopt-long" ,perl-getopt-long)
-       ("python" ,python-wrapper)
-       ("python-biopython" ,python-biopython)
-       ("python-numpy" ,python-numpy)
-       ("python-pysam" ,python-pysam)
-       ("python-scikit-learn" , python-scikit-learn)
-       ("python-scipy" ,python-scipy)
-       ("zlib" ,zlib)))
+     (list guile-3.0                    ;for wrappers
+           eigen
+           hdf5
+           htslib
+           minimap2
+           perl
+           bioperl-minimal
+           perl-getopt-long
+           python-wrapper
+           python-biopython
+           python-numpy
+           python-pysam
+           python-scikit-learn
+           python-scipy
+           zlib))
     (native-inputs (list cmake-minimal))
     (home-page "https://github.com/jts/nanopolish")
     (synopsis "Signal-level analysis of Oxford Nanopore sequencing data")
