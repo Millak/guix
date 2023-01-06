@@ -6358,34 +6358,9 @@ multibyte strings, internationalization, time zones, and testing.")
      "Crass is a pure Ruby CSS parser based on the CSS Syntax Level 3 spec.")
     (license license:expat)))
 
+;;; The ruby-nokogumbo package has been absorbed into ruby-nokogiri.
 (define-public ruby-nokogumbo
-  (package
-    (name "ruby-nokogumbo")
-    (version "2.0.2")
-    (source (origin
-              ;; We use the git reference, because there's no Rakefile in the
-              ;; published gem and the tarball on Github is outdated.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rubys/nokogumbo")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1qg0iyw450lw6d0j1ghzg79a6l60nm1m4qmrzwzybi585861jxcx"))))
-    (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-rake-compiler))
-    (inputs
-     (list gumbo-parser))
-    (propagated-inputs
-     (list ruby-nokogiri))
-    (synopsis "Ruby bindings to the Gumbo HTML5 parser")
-    (description
-     "Nokogumbo allows a Ruby program to invoke the Gumbo HTML5 parser and
-access the result as a Nokogiri parsed document.")
-    (home-page "https://github.com/rubys/nokogumbo/")
-    (license license:asl2.0)))
+  (deprecated-package "ruby-nokogumbo" ruby-nokogiri))
 
 (define-public ruby-sanitize
   (package
