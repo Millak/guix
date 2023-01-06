@@ -5062,11 +5062,19 @@ to reproduce user environments.")
     (arguments
      ;; Tests fail because Nokogiri can only test with an installed extension,
      ;; and also because many test framework dependencies are missing.
-     `(#:tests? #f
-       #:gem-flags (list "--" "--use-system-libraries"
-                         (string-append "--with-xml2-include="
-                                        (assoc-ref %build-inputs "libxml2")
-                                        "/include/libxml2" ))))
+     (list
+      #:tests? #f
+      #:gem-flags #~(list "--" "--use-system-libraries"
+                          (string-append "--with-xml2-include="
+                                         #$(this-package-input "libxml2")
+                                         "/include/libxml2" ))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; This build log captures non-deterministic file names (see:
+              ;; https://github.com/sparklemotion/nokogiri/issues/2755).
+              (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
     (native-inputs (list ruby-hoe))
     (inputs (list zlib libxml2 libxslt))
     (propagated-inputs (list ruby-mini-portile-2 ruby-pkg-config))
