@@ -34148,6 +34148,49 @@ wraps GNU Global calls and integration to editor using this API with
 project.el and xref.el.")
       (license license:gpl3+))))
 
+(define-public emacs-citre
+  (package
+    (name "emacs-citre")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/universal-ctags/citre/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "168z6yidh2nxkmdlx9cqdzzb7achxdipnbk5pj9787m9bp1sdpkd"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-external-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "citre-ctags.el"
+                ("citre-ctags-program"
+                 (search-input-file inputs "/bin/ctags")))
+              (emacs-substitute-variables "citre-readtags.el"
+                ("citre-readtags-program"
+                 (search-input-file inputs "/bin/readtags")))
+              (emacs-substitute-variables "citre-global.el"
+                ("citre-gtags-program"
+                 (search-input-file inputs "/bin/gtags")))
+              (emacs-substitute-variables "citre-global.el"
+                ("citre-global-program"
+                 (search-input-file inputs "/bin/global"))))))))
+    (inputs (list global universal-ctags))
+    (home-page "https://github.com/universal-ctags/citre")
+    (synopsis "Ctags IDE on the True Editor")
+    (description
+     "Citre is an advanced Ctags (or actually, readtags) frontend for
+Emacs. It offers Completion At Point, Xref and Imenu integration.  It also
+prodites a Completing Read UI for jumping to definition and a powerful code
+reading tool that lets you go down the rabbit hole without leaving current
+buffer.")
+    (license license:gpl3+)))
+
 (define-public emacs-seq
   (package
     (name "emacs-seq")
