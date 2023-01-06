@@ -1823,14 +1823,14 @@ system by Donald E.  Knuth.")
 (define-public ruby-open-uri-cached
   (package
     (name "ruby-open-uri-cached")
-    (version "0.0.5")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "open-uri-cached" version))
        (sha256
         (base32
-         "13xy2vhrgz9mdxhklw5fszhamsdxh8ysf3l40g92hqm4hm288wap"))))
+         "03v0if3jlvbclnd6jgjk94fbhf0h2fq1wxr0mbx7018sxzm0biwr"))))
     (build-system ruby-build-system)
     (arguments
      `(#:tests? #f))                    ;no test suite
