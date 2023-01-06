@@ -321,14 +321,14 @@ to ring buffers shared with a consumer daemon.")
 (define-public lttng-tools
   (package
     (name "lttng-tools")
-    (version "2.13.8")
+    (version "2.13.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://lttng.org/files/lttng-tools/"
                                   "lttng-tools-" version ".tar.bz2"))
               (sha256
                (base32
-                "1h9x6mmqrxrbgivll3g81l7a9f7ggjmcgwr01f9r01r6kdbmksdi"))))
+                "0dzk13d0hdzll8hk9qmj5lipmfa2h8zkl801dchp1kq8nsaxr54d"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags '("--enable-python-bindings")
