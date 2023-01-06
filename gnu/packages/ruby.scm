@@ -5038,25 +5038,26 @@ to reproduce user environments.")
     (license license:expat)))
 
 (define-public ruby-mini-portile-2
-  (package (inherit ruby-mini-portile)
-    (version "2.4.0")
+  (package
+    (inherit ruby-mini-portile)
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mini_portile2" version))
               (sha256
                (base32
-                "15zplpfw3knqifj9bpf604rb3wc1vhq6363pd6lvhayng8wql5vy"))))))
+                "1af4yarhbbx62f7qsmgg5fynrik0s36wjy3difkawy536xg343mp"))))))
 
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.12.5")
+    (version "1.13.10")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "nokogiri" version))
               (sha256
                (base32
-                "1v02g7k7cxiwdcahvlxrmizn3avj2q6nsjccgilq1idc89cr081b"))))
+                "0n79k78c5vdcyl0m3y3l5x9kxl6xf5lgriwi2vd665qmdkr01vnk"))))
     (build-system ruby-build-system)
     (arguments
      ;; Tests fail because Nokogiri can only test with an installed extension,
@@ -5066,29 +5067,14 @@ to reproduce user environments.")
                          (string-append "--with-xml2-include="
                                         (assoc-ref %build-inputs "libxml2")
                                         "/include/libxml2" ))))
-    (native-inputs
-     (list ruby-hoe))
-    (inputs
-     (list zlib libxml2 libxslt))
-    (propagated-inputs
-     (list ruby-mini-portile-2.6.1 ruby-pkg-config))
+    (native-inputs (list ruby-hoe))
+    (inputs (list zlib libxml2 libxslt))
+    (propagated-inputs (list ruby-mini-portile-2 ruby-pkg-config))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
     (home-page "http://www.nokogiri.org/")
     (license license:expat)))
-
-;; nokogiri requires this version exactly.
-(define-public ruby-mini-portile-2.6.1
-  (package
-    (inherit ruby-mini-portile)
-    (version "2.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "mini_portile2" version))
-              (sha256
-               (base32
-                "1lvxm91hi0pabnkkg47wh1siv56s6slm2mdq1idfm86dyfidfprq"))))))
 
 (define-public ruby-method-source
   (package
