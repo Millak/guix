@@ -14191,10 +14191,9 @@ datasets.")
                (("MINIMAP2_VERSION = .*")
                 (string-append "MINIMAP2_VERSION = "
                                ,(package-version minimap2) "\n")))
-             (invoke "make" "NGLess/Dependencies/Versions.hs")
-             #t))
+             (invoke "make" "NGLess/Dependencies/Versions.hs")))
          (add-after 'create-Versions.hs 'create-cabal-file
-           (lambda _ (invoke "hpack") #t))
+           (lambda _ (invoke "hpack")))
          ;; These tools are expected to be installed alongside ngless.
          (add-after 'install 'link-tools
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -14206,8 +14205,7 @@ datasets.")
                (symlink (search-input-file inputs "/bin/samtools")
                         (string-append bin "ngless-" ,version "-samtools"))
                (symlink (search-input-file inputs "/bin/bwa")
-                        (string-append bin "ngless-" ,version "-bwa"))
-               #t))))))
+                        (string-append bin "ngless-" ,version "-bwa"))))))))
     (inputs
      (list prodigal
            bwa
