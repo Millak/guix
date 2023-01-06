@@ -655,6 +655,7 @@ current buffer.")
               (uri (git-reference
                     (url "https://github.com/vapniks/hide-lines.git")
                     (commit "f0828c15e50db5eddb905de783e7683b04d1eca3")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
                 "1pw0wp1pzy6snycvz12nj0q7jxxj07h3lqas184w44nhrira7qhj"))))
