@@ -1274,15 +1274,24 @@ syntax to the minimum while remaining clear.")
          "1mpk3y69lqz9ywfkjmr40dm3mkabrnf92bb011qq1axj73yyrajv"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "test:all"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'strip-version-requirements
-           (lambda _
-             (delete-file "Gemfile")
-             (substitute* "asciidoctor.gemspec"
-               (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                (string-append stripped "\n"))))))))
+     (list
+      #:test-target "test:all"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'strip-version-requirements
+            (lambda _
+              (delete-file "Gemfile")
+              (substitute* "asciidoctor.gemspec"
+                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                 (string-append stripped "\n")))))
+          (add-after 'install 'install-man-page
+            (lambda* (#:key outputs #:allow-other-keys)
+              (install-file (search-input-file
+                             outputs (string-append "lib/ruby/vendor_ruby/"
+                                                    "gems/asciidoctor-"
+                                                    #$version
+                                                    "/man/asciidoctor.1"))
+                            (string-append #$output "/share/man/man1")))))))
     (native-inputs
      (list ruby-asciimath
            ruby-coderay
