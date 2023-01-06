@@ -7882,7 +7882,7 @@ This package is not compatible with a TTY.")
 (define-public emacs-company-posframe
   (package
     (name "emacs-company-posframe")
-    (version "0.5.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7891,7 +7891,7 @@ This package is not compatible with a TTY.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05ays6xkqbxcfplvx7wfc2slflmwc3aw7vkixvabk0ilvisndvgm"))))
+                "03kj8yxd4y9aw86b6y6z5l9y76q5gjyiyhi5120nx1a8cwbd9g4a"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company emacs-posframe))
