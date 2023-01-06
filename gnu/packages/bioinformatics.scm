@@ -14533,50 +14533,49 @@ is a Cython wrapper for FIt-SNE.")
                 "1wb94bcc006qq86x77z2rz0lc8m9f1kpnw6gdhjfg9bdaqf56rm3"))))
     (build-system ant-build-system)
     (arguments
-     `(#:build-target "dist"
-       #:tests? #f ; there are none
-       #:make-flags
-       ,#~(list (string-append "-Dmpijar="
-                               #$(this-package-input "java-openmpi")
-                               "/lib/mpi.jar"))
-       #:modules ((guix build ant-build-system)
+     (list
+      #:build-target "dist"
+      #:tests? #f ; there are none
+      #:make-flags
+      #~(list (string-append "-Dmpijar="
+                             #$(this-package-input "java-openmpi")
+                             "/lib/mpi.jar"))
+      #:modules '((guix build ant-build-system)
                   (guix build utils)
                   (guix build java-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-jni-library
-           (lambda _
-             (with-directory-excursion "jni"
-               (invoke "make" "-f" "makefile.linux"))))
-         ;; There is no install target
-         (replace 'install (install-jars "dist"))
-         (add-after 'install 'install-scripts-and-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "calcmem.sh"
-               (("\\| awk ") (string-append "| " (which "awk") " ")))
-             (let* ((scripts (find-files "." "\\.sh$"))
-                    (out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/bbmap"))
-                    (jni (string-append out "/lib/jni")))
-               (substitute* scripts
-                 (("\\$DIR\"\"docs") doc)
-                 (("^CP=.*")
-                  (string-append "CP=" out "/share/java/BBTools.jar\n"))
-                 (("^NATIVELIBDIR.*")
-                  (string-append "NATIVELIBDIR=" jni "\n"))
-                 (("CMD=\"java")
-                  (string-append "CMD=\"" (which "java"))))
-               (for-each (lambda (script) (install-file script bin)) scripts)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-jni-library
+            (lambda _
+              (with-directory-excursion "jni"
+                (invoke "make" "-f" "makefile.linux"))))
+          ;; There is no install target
+          (replace 'install (install-jars "dist"))
+          (add-after 'install 'install-scripts-and-documentation
+            (lambda _
+              (substitute* "calcmem.sh"
+                (("\\| awk ") (string-append "| " (which "awk") " ")))
+              (let* ((scripts (find-files "." "\\.sh$"))
+                     (bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/bbmap"))
+                     (jni (string-append #$output "/lib/jni")))
+                (substitute* scripts
+                  (("\\$DIR\"\"docs") doc)
+                  (("^CP=.*")
+                   (string-append "CP=" #$output "/share/java/BBTools.jar\n"))
+                  (("^NATIVELIBDIR.*")
+                   (string-append "NATIVELIBDIR=" jni "\n"))
+                  (("CMD=\"java")
+                   (string-append "CMD=\"" (which "java"))))
+                (for-each (lambda (script) (install-file script bin)) scripts)
 
-               ;; Install JNI library
-               (install-file "jni/libbbtoolsjni.so" jni)
+                ;; Install JNI library
+                (install-file "jni/libbbtoolsjni.so" jni)
 
-               ;; Install documentation
-               (install-file "docs/readme.txt" doc)
-               (copy-recursively "docs/guides" doc))
-             #t)))
-       #:jdk ,openjdk11))
+                ;; Install documentation
+                (install-file "docs/readme.txt" doc)
+                (copy-recursively "docs/guides" doc)))))
+       #:jdk openjdk11))
     (inputs
      (list gawk java-eclipse-jdt-core java-eclipse-jdt-compiler-apt
            java-openmpi))
