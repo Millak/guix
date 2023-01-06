@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2016, 2019, 2020, 2021 Eraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
@@ -1536,6 +1536,37 @@ format.")
     (name "guile2.2-email")
     (inputs (modify-inputs (package-inputs guile-email)
               (replace "guile" guile-2.2)))))
+
+(define-public guile-newra
+  ;; There has been no release let.
+  (let ((commit "266e72ef433cab44f60f8595e2435247b225d457")
+        (revision "0"))
+    (package
+      (name "guile-newra")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://notabug.org/lloda/guile-newra")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0g1fk6fp7ym54183bc9f6g5wqfazlkwwvb67swfi94j4sns0l9dk"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "mod"
+        #:compile-flags '(list "--r6rs")))
+      ;; guile-3.0 fails to compile with --r6rs
+      (inputs (list guile-3.0-latest))
+      (home-page "https://notabug.org/lloda/guile-newra")
+      (synopsis "Scheme replacement for Guile's array system")
+      (description
+       "guile-newra (newra) wants to replace the current (3.0) Guile array
+system, which is almost entirely implemented in C.  The new implementation
+should be at least as fast.")
+      (license license:gpl3+))))
 
 (define-public guile-newt
   (package
