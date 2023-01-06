@@ -11233,6 +11233,31 @@ Ruby yaml library.")
     (home-page "https://github.com/Pryz/yaml-lint")
     (license license:expat)))
 
+(define-public ruby-matrix
+  (package
+    (name "ruby-matrix")
+    (version "0.4.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/matrix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1asxr0jzh39lk5f8a9wm5avykrcy0v2wgd1bl3cszjczh99xy5k2"))))
+    (build-system ruby-build-system)
+    (synopsis "@code{Matrix} and @code{Vector} classes implementation for Ruby")
+    (description "This Ruby library provides an implementation of the
+@code{Matrix} and @code{Vector} classes.  The @code{Matrix} class represents a
+mathematical matrix.  It provides methods for creating matrices, operating on
+them arithmetically and algebraically, and determining their mathematical
+properties (trace, rank, inverse, determinant, eigensystem, etc.).  The
+@code{Vector} class represents a mathematical vector, which is useful in its
+own right, and also constitutes a row or column of a @code{Matrix}.")
+    (home-page "https://github.com/ruby/matrix")
+    (license license:bsd-2)))
+
 (define-public ruby-mercenary
   (package
     (name "ruby-mercenary")
