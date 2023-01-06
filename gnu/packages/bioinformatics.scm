@@ -14321,29 +14321,28 @@ phase + query phase).")
           (base32 "1xr92r820x8qlkcr3b57iw223yq8vjgyi42jr79w2xgw47qzr575"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; no check target
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (scripts (string-append out "/share/filtlong/scripts")))
-                 (install-file "bin/filtlong" bin)
-                 (install-file "scripts/histogram.py" scripts)
-                 (install-file "scripts/read_info_histograms.sh" scripts))))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (path (getenv "GUIX_PYTHONPATH")))
-                 (wrap-program (string-append out
-                                              "/share/filtlong/scripts/histogram.py")
-                   `("GUIX_PYTHONPATH" ":" prefix (,path))))))
-           (add-before 'check 'patch-tests
-             (lambda _
-               (substitute* "scripts/read_info_histograms.sh"
-                 (("awk") (which "gawk"))))))))
+       (list
+        #:tests? #f                    ; no check target
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (scripts (string-append #$output "/share/filtlong/scripts")))
+                  (install-file "bin/filtlong" bin)
+                  (install-file "scripts/histogram.py" scripts)
+                  (install-file "scripts/read_info_histograms.sh" scripts))))
+            (add-after 'install 'wrap-program
+              (lambda _
+                (let ((path (getenv "GUIX_PYTHONPATH")))
+                  (wrap-program (string-append #$output
+                                               "/share/filtlong/scripts/histogram.py")
+                    `("GUIX_PYTHONPATH" ":" prefix (,path))))))
+            (add-before 'check 'patch-tests
+              (lambda _
+                (substitute* "scripts/read_info_histograms.sh"
+                  (("awk") (which "gawk"))))))))
       (inputs
        (list gawk                       ;for read_info_histograms.sh
              python-2                   ;required for histogram.py
