@@ -9719,40 +9719,30 @@ binary-to-text encoding.  The main modern use of Ascii85 is in PostScript and
 (define-public ruby-ttfunk
   (package
     (name "ruby-ttfunk")
-    (version "1.6.2.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
-       ;; fetch from github as the gem does not contain testing code
+       ;; Fetch from github as the gem does not contain testing code.
        (uri (git-reference
-              (url "https://github.com/prawnpdf/ttfunk")
-              (commit version)))
+             (url "https://github.com/prawnpdf/ttfunk")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rsf4j6s97wbcnjbvmmh6xrc7imw4g9lrlcvn945wh400lc8r53z"))))
+         "1jyxn928mpyb1sikjd93s3v8fmh33232pq41ziaph513j7am6fi5"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'remove-ssh
-           (lambda _
-             ;; remove dependency on an ssh key pair that doesn't exist
-             (substitute* "ttfunk.gemspec"
-               (("spec.signing_key.*") ""))
-             #t))
-         (add-before 'check 'remove-rubocop
-           (lambda _
-             ;; remove rubocop as a dependency as not needed for testing
-             (substitute* "ttfunk.gemspec"
-               (("spec.add_development_dependency\\('rubocop'.*") ""))
-             (substitute* "Rakefile"
-               (("require 'rubocop/rake_task'") "")
-               (("RuboCop::RakeTask.new") ""))
-             #t)))))
-    (native-inputs
-     (list ruby-rspec ruby-yard bundler))
+     (list #:test-target "spec"         ;avoid the rubocop target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-missing-key-directive
+                 ;; This seem to be a common problem in Ruby projects (see:
+                 ;; https://github.com/prawnpdf/ttfunk/issues/99).
+                 (lambda _
+                   (substitute* "ttfunk.gemspec"
+                     ((".*spec.signing_key.*") "")))))))
+    (native-inputs (list ruby-prawn-dev))
     (synopsis "Font metrics parser for the Prawn PDF generator")
     (description
      "TTFunk is a TrueType font parser written in pure Ruby.  It is used as
