@@ -1348,14 +1348,14 @@ configurable levels.")
 (define-public ruby-prawn-icon
   (package
     (name "ruby-prawn-icon")
-    (version "2.5.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "prawn-icon" version))
        (sha256
         (base32
-         "1ivkdf8rdf92hhy97vbmc2a4w97vcvqd58jcj4z9hz3hfsb1526w"))))
+         "049k42bqy4iq9hddf7jah83b6qr8ka63w1d63illh1mf4f4dihdk"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "spec"
@@ -1365,8 +1365,7 @@ configurable levels.")
                       (substitute* '("Rakefile" "spec/spec_helper.rb")
                         ((".*[Bb]undler.*") "")
                         (("^require 'rubocop.*") "")
-                        (("^RuboCop.*") ""))
-                      #t)))))
+                        (("^RuboCop.*") "")))))))
     (native-inputs
      (list ruby-pdf-inspector ruby-pdf-reader ruby-rspec ruby-simplecov))
     (propagated-inputs
