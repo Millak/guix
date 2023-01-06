@@ -30125,6 +30125,28 @@ a re-write of the Insidious Big Brother Database (BBDB) using Emacs
 Lisp's (relatively new) EIEIO object oriented libraries.")
     (license license:gpl3+)))
 
+(define-public emacs-ebdb-i18n-chn
+  (package
+    (name "emacs-ebdb-i18n-chn")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/"
+                           "ebdb-i18n-chn-" version ".tar"))
+       (sha256
+        (base32 "06ii9xi2y157vfbhx75mn80ash22d1xgcyp9kzz1s0lkxwlv74zj"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-ebdb emacs-pyim))
+    (home-page "https://elpa.gnu.org/packages/ebdb-i18n-chn.html")
+    (synopsis "China-specific internationalization support for EBDB")
+    (description
+     "EBDB-i18n-Chn makes EBDB nicer to use with China-based contacts, both
+for handling Chinese characters, and for formatting of phones and addresses.
+Be aware that using this library will incur a non-neglible slowdown at load
+time.  It shouldn't have any real impact on search and completion times.")
+    (license license:gpl3+)))
+
 (define-public emacs-refactor
   (package
     (name "emacs-refactor")
