@@ -75,6 +75,7 @@
     "exceptions"
     "filepath"
     "ghc"
+    "ghc-bignum"
     "ghc-boot"
     "ghc-boot-th"
     "ghc-compact"
