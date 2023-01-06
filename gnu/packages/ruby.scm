@@ -13312,23 +13312,21 @@ export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
 (define-public ruby-unicode-scripts
   (package
     (name "ruby-unicode-scripts")
-    (version "1.7.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "unicode-scripts" version))
               (sha256
                (base32
-                "1k7kbfk806zam129bp7pdiqkfb5hn51x149irzvjhs4xf22m4yvi"))))
+                "0rl6mn908yryhrg8j3mmna54gnrid2nph2kym00lbz6jwdih2a1b"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-minitest))
-    (arguments
-     (list #:test-target "spec"))
+    (native-inputs (list ruby-minitest))
+    (arguments (list #:test-target "spec"))
     (home-page "https://github.com/janlelis/unicode-scripts")
     (synopsis "Unicode script classification library")
-    (description
-     "This gem provides a simple interface for classifying Ruby strings using
-the Unicode @code{Script} and @code{Script_Extensions} properties.")
+    (description "This gem provides a simple interface for classifying Ruby
+strings using the Unicode @code{Script} and @code{Script_Extensions}
+properties.")
     (license license:expat)))
 
 (define-public ruby-citeproc
