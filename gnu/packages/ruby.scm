@@ -10859,13 +10859,13 @@ support the tests found in Prawn, a pure Ruby PDF generation library.")
 (define-public ruby-pdf-core
   (package
     (name "ruby-pdf-core")
-    (version "0.8.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "pdf-core" version))
               (sha256
                (base32
-                "15d6m99bc8bbzlkcg13qfpjjzphfg5x905pjbfygvpcxsm8gnsvg"))))
+                "1fz0yj4zrlii2j08kaw11j769s373ayz8jrdhxwwjzmm28pqndjg"))))
     (build-system ruby-build-system)
     (arguments
      ; No test target
