@@ -14171,41 +14171,42 @@ datasets.")
        (patches (search-patches "ngless-unliftio.patch"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:haddock? #f ; The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
-                     ; error: parse error on input import
-                     ; import Options.Applicative
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-Versions.hs
-           (lambda _
-             (substitute* "Makefile"
-               (("BWA_VERSION = .*")
-                (string-append "BWA_VERSION = "
-                               ,(package-version bwa) "\n"))
-               (("SAM_VERSION = .*")
-                (string-append "SAM_VERSION = "
-                               ,(package-version samtools) "\n"))
-               (("PRODIGAL_VERSION = .*")
-                (string-append "PRODIGAL_VERSION = "
-                               ,(package-version prodigal) "\n"))
-               (("MINIMAP2_VERSION = .*")
-                (string-append "MINIMAP2_VERSION = "
-                               ,(package-version minimap2) "\n")))
-             (invoke "make" "NGLess/Dependencies/Versions.hs")))
-         (add-after 'create-Versions.hs 'create-cabal-file
-           (lambda _ (invoke "hpack")))
-         ;; These tools are expected to be installed alongside ngless.
-         (add-after 'install 'link-tools
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (symlink (search-input-file inputs "/bin/prodigal")
-                        (string-append bin "ngless-" ,version "-prodigal"))
-               (symlink (search-input-file inputs "/bin/minimap2")
-                        (string-append bin "ngless-" ,version "-minimap2"))
-               (symlink (search-input-file inputs "/bin/samtools")
-                        (string-append bin "ngless-" ,version "-samtools"))
-               (symlink (search-input-file inputs "/bin/bwa")
-                        (string-append bin "ngless-" ,version "-bwa"))))))))
+     (list
+      #:haddock? #f    ;The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
+                       ;error: parse error on input import
+                       ;import Options.Applicative
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-Versions.hs
+            (lambda _
+              (substitute* "Makefile"
+                (("BWA_VERSION = .*")
+                 (string-append "BWA_VERSION = "
+                                #$(package-version bwa) "\n"))
+                (("SAM_VERSION = .*")
+                 (string-append "SAM_VERSION = "
+                                #$(package-version samtools) "\n"))
+                (("PRODIGAL_VERSION = .*")
+                 (string-append "PRODIGAL_VERSION = "
+                                #$(package-version prodigal) "\n"))
+                (("MINIMAP2_VERSION = .*")
+                 (string-append "MINIMAP2_VERSION = "
+                                #$(package-version minimap2) "\n")))
+              (invoke "make" "NGLess/Dependencies/Versions.hs")))
+          (add-after 'create-Versions.hs 'create-cabal-file
+            (lambda _ (invoke "hpack")))
+          ;; These tools are expected to be installed alongside ngless.
+          (add-after 'install 'link-tools
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin/")))
+                (symlink (search-input-file inputs "/bin/prodigal")
+                         (string-append bin "ngless-" #$version "-prodigal"))
+                (symlink (search-input-file inputs "/bin/minimap2")
+                         (string-append bin "ngless-" #$version "-minimap2"))
+                (symlink (search-input-file inputs "/bin/samtools")
+                         (string-append bin "ngless-" #$version "-samtools"))
+                (symlink (search-input-file inputs "/bin/bwa")
+                         (string-append bin "ngless-" #$version "-bwa"))))))))
     (inputs
      (list prodigal
            bwa
