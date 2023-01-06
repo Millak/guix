@@ -14332,21 +14332,18 @@ phase + query phase).")
                       (scripts (string-append out "/share/filtlong/scripts")))
                  (install-file "bin/filtlong" bin)
                  (install-file "scripts/histogram.py" scripts)
-                 (install-file "scripts/read_info_histograms.sh" scripts))
-               #t))
+                 (install-file "scripts/read_info_histograms.sh" scripts))))
            (add-after 'install 'wrap-program
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
                       (path (getenv "GUIX_PYTHONPATH")))
                  (wrap-program (string-append out
                                               "/share/filtlong/scripts/histogram.py")
-                   `("GUIX_PYTHONPATH" ":" prefix (,path))))
-               #t))
+                   `("GUIX_PYTHONPATH" ":" prefix (,path))))))
            (add-before 'check 'patch-tests
              (lambda _
                (substitute* "scripts/read_info_histograms.sh"
-                 (("awk") (which "gawk")))
-               #t)))))
+                 (("awk") (which "gawk"))))))))
       (inputs
        `(("gawk" ,gawk)                 ;for read_info_histograms.sh
          ("python" ,python-2)           ;required for histogram.py
