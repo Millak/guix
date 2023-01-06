@@ -11565,7 +11565,7 @@ characteristics.")
 (define-public ruby-html-proofer
   (package
     (name "ruby-html-proofer")
-    (version "3.18.5")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -11575,22 +11575,35 @@ characteristics.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pxb0fajb3l3lm7sqj548qwl7vx6sx3jy7n4cns9d4lqx7s9r9xb"))))
+         "01ksss3ikppc45z2q33bx8bb9785bqlp1rdqascaqg9mhs392adk"))))
     (build-system ruby-build-system)
     (arguments
-     `(;; FIXME: Tests depend on rubocop-standard.
-       #:tests? #f))
-    (native-inputs
-     (list ruby-awesome-print
-           ruby-redcarpet
-           ruby-rspec
-           ruby-rubocop
-           ruby-rubocop-performance
-           ruby-pry-byebug))
+     (list
+      ;; Tests require vcr, which is under the Hippocratic license, which is
+      ;; not a free software license (see:
+      ;; https://www.gnu.org/licenses/license-list.html#hippocratic).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "html-proofer.gemspec"
+                (("required_ruby_version = \\[\">= 3.1\"")
+                 "required_ruby_version = [\">= 2.6\""))))
+          (replace 'replace-git-ls-files
+            (lambda _
+              ;; The html-proofer.gemspec file contains 'all_files = %x(git
+              ;; ls-files -z).split("\x0")', but the original phase matches on
+              ;; `git ls-files -z`.
+              ;; TODO: Improve ruby-build-system patterns on core-updates.
+              (substitute* "html-proofer.gemspec"
+                (("git ls-files -z")
+                 "find . -type f -not -regex '.*\\.gem$' -print0 \
+| sort -z | cut -zc3-")))))))
     (propagated-inputs
      (list ruby-addressable
            ruby-mercenary
-           ruby-nokogumbo
+           ruby-nokogiri
            ruby-parallel
            ruby-rainbow
            ruby-typhoeus
