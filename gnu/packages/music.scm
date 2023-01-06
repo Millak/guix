@@ -44,7 +44,7 @@
 ;;; Copyright © 2021 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
-;;; Copyright © 2022 Sughosha <sughosha@disroot.org>
+;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -174,6 +174,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages stb)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
@@ -3557,6 +3558,71 @@ analogue-like user interface.")
       (description "mod-host is an LV2 plugin host for JACK, controllable via
 socket or command line.")
       (license license:gpl3+))))
+
+(define-public synthpod
+  (package
+    (name "synthpod")
+    (version "0.1.6507")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.open-music-kontrollers.ch/lv2/synthpod")
+                    ;; Version is not tagged but mentioned in VERSION file.
+                    (commit "6e84a075ea8fea95094dcbc2b30f968717a81960")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1chazkdxjgjzfxqmlk4ywhilkj9l3bybd9xghjg9r67df2diqhbs"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-references
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* '("bin/synthpod_ui"
+                             "bin/synthpod_d2tk")
+                (("lv2info") (search-input-file inputs "/bin/lv2info"))
+                ((" synthpod_sandbox_x11")
+                 (string-append " " #$output "/bin/synthpod_sandbox_x11")))
+              (substitute* "bin/synthpod_bin.c"
+                (("%s/.lv2") (string-append #$output "/lib/lv2"))
+                ((", home_dir") ""))))
+          (add-before 'check 'set-home-directory
+            (lambda _
+              ;; Tests fail with: Fontconfig error: No writable cache
+              ;; directories
+              (setenv "HOME" "/tmp"))))))
+    (inputs
+     (list alsa-lib
+           cairo
+           eudev
+           freetype
+           font-fira-code
+           font-fira-sans
+           fontconfig
+           glew
+           glu
+           jack-2
+           libvterm
+           libevdev
+           libinput
+           libvterm
+           lilv ;for lv2info
+           lv2
+           pixman
+           sratom
+           xcb-util
+           xcb-util-wm
+           xcb-util-xrm
+           zita-alsa-pcmi))
+    (native-inputs (list pkg-config))
+    (home-page "https://open-music-kontrollers.ch/lv2/synthpod/")
+    (synopsis "Nonlinear LV2 plugin container")
+    (description
+     "Synthpod is an LV2 host.  It can be run as a standalone app and be used
+as a tool for live performances or general audio and event filtering.")
+    (license (list license:artistic2.0 license:gpl3+))))
 
 (define-public curseradio
   (let ((commit "1bd4bd0faeec675e0647bac9a100b526cba19f8d")
