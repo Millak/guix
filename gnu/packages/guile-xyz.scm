@@ -934,7 +934,7 @@ that augment Guile's support for handling files and their names.")
 (define-public guile-syntax-highlight
   (package
     (name "guile-syntax-highlight")
-    (version "0.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/"
@@ -943,15 +943,7 @@ that augment Guile's support for handling files and their names.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1p771kq15x83483m23bhah1sz6vkalg3drm7x279f4j1cxligkzi"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure"
-                    (("2\\.2 2\\.0")
-                     "3.0 2.2 2.0"))
-                  #t))))
+                "0q4nz10l66hx1lyf83qyhkkz1bi6i860662a7kslc4d61w08qnk9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
