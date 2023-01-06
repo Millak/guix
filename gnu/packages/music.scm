@@ -2560,44 +2560,64 @@ reverb effects.")
                 "1pff51imfgmgqzc6mdgwd1v9fci0a8hj85fnkdsvkdzbnxdzvs9r"))))
     (build-system cmake-build-system)
     (arguments
-     (list #:tests? #f                            ;no test suite
-           #:phases
-           #~(modify-phases %standard-phases
-               (replace 'install
-                 (lambda _
-                   (let* ((bin (string-append #$output "/bin"))
-                          (lib (string-append #$output "/lib"))
-                          (share (string-append #$output "/share"))
-                          (clap (string-append lib "/clap"))
-                          (vst3 (string-append lib "/vst3")))
-                     (with-directory-excursion
-                         "PaulXStretch_artefacts/RelWithDebInfo"
-                       (install-file "Standalone/paulxstretch" bin)
-                       (install-file "CLAP/PaulXStretch.clap" clap)
-                       (mkdir-p vst3)
-                       (copy-recursively "VST3" vst3)
-                       (install-file (string-append
-                                      #$source
-                                      "/linux/paulxstretch.desktop")
-                                     (string-append share "/applications"))
-                       (install-file
-                        (string-append
-                         #$source
-                         "/images/paulxstretch_icon_1024_rounded.png")
-                        (string-append share "/pixmaps")))))))))
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "deps/juce/extras/Projucer/Source/ProjectSaving/\
+jucer_ProjectExport_CodeBlocks.h"
+                (("/usr/include/freetype2")
+                 (search-input-directory inputs "/include/freetype2")))
+              (substitute*
+                  "deps/juce/modules/juce_graphics/native/juce_linux_Fonts.cpp"
+                (("/etc/fonts")
+                 (search-input-directory inputs "/etc/fonts")))
+              (substitute*
+                  "deps/juce/modules/juce_gui_basics/native/x11/\
+juce_linux_XWindowSystem.cpp"
+                (("/usr/bin/dconf")
+                 (search-input-file inputs "/bin/dconf"))
+                (("/usr/bin/gsettings")
+                 (search-input-file inputs "/bin/gsettings")))))
+          (replace 'install
+            (lambda _
+              (let* ((lib (string-append #$output "/lib"))
+                     (share (string-append #$output "/share"))
+                     (clap (string-append lib "/clap"))
+                     (vst3 (string-append lib "/vst3")))
+                (with-directory-excursion
+                    "PaulXStretch_artefacts/RelWithDebInfo"
+                  (install-file "Standalone/paulxstretch"
+                                (string-append #$output "/bin"))
+                  (install-file "CLAP/PaulXStretch.clap" clap)
+                  (mkdir-p vst3)
+                  (copy-recursively "VST3" vst3)
+                  (install-file (string-append
+                                 #$source
+                                 "/linux/paulxstretch.desktop")
+                                (string-append share "/applications"))
+                  (install-file (string-append
+                                 #$source
+                                 "/images/paulxstretch_icon_1024_rounded.png")
+                                (string-append share "/pixmaps")))))))))
     (home-page "https://sonosaurus.com/paulxstretch/")
     (native-inputs (list pkg-config))
     (inputs (list alsa-lib
                   curl
+                  dconf
                   fftwf
+                  fontconfig
                   freetype
+                  `(,glib "bin")
                   jack-1
                   libx11
                   libxcursor
                   libxext
                   libxinerama
                   libxrandr))
-    (supported-systems '("x86_64-linux"))         ;pffft.c uses SIMD code
+    (supported-systems '("x86_64-linux")) ;pffft.c uses SIMD code
     (synopsis "Audio timestretching application and plugin")
     (description
      "PaulXStretch is an application/plugin is based on the PaulStretch
