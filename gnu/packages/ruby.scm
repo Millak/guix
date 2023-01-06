@@ -1401,31 +1401,27 @@ Style Sheets (CSS) rule sets in Ruby.")
 (define-public ruby-prawn-svg
   (package
     (name "ruby-prawn-svg")
-    (version "0.30.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "prawn-svg" version))
        (sha256
         (base32
-         "0df3l49cy3xpwi0b73hmi2ykbjg9kjwrvhk0k3z7qhh5ghmmrn77"))))
+         "0mbxzw7r7hv43db9422flc24ib9d8bdy1nasbni2h998jc5a5lb6"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'do-not-use-bundler
                     (lambda _
                       (substitute* "spec/spec_helper.rb"
-                        ((".*[Bb]undler.*") ""))
-                      #t))
+                        ((".*[Bb]undler.*") ""))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
-                        (invoke "rspec" "-Ilib" "-rprawn-svg"))
-                      #t)))))
-    (native-inputs
-     (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-css-parser ruby-prawn))
+                        (invoke "rspec" "-Ilib" "-rprawn-svg")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-css-parser ruby-prawn))
     (synopsis "SVG renderer for the Prawn PDF library")
     (description "This library allows rendering Scalable Vector Graphics (SVG)
 graphics directly into a Portable Document Format (PDF) document using the
