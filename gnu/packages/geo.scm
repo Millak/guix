@@ -1281,7 +1281,7 @@ extension.")
 (define-public tegola
   (package
     (name "tegola")
-    (version "0.7.0")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1290,20 +1290,13 @@ extension.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0agqj1b7l41m0imvxjriw44jcpa99mhq1z1vbsfzjhcr94zhwmfr"))))
+                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-spatial/tegola/cmd/tegola"
        #:unpack-path "github.com/go-spatial/tegola"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-version
-           (lambda _
-             (with-directory-excursion "src/github.com/go-spatial/tegola"
-               (substitute* '("cmd/tegola/cmd/root.go"
-                              "cmd/tegola_lambda/main.go")
-                 (("version not set") ,version)))
-             #t)))))
+       #:build-flags '(,(string-append "-ldflags=-X github.com/go-spatial/tegola/internal/build.Version=" version))
+       #:install-source? #f))
     (home-page "https://tegola.io")
     (synopsis "Vector tile server for maps")
     (description "Tegola is a free vector tile server written in Go.  Tegola
