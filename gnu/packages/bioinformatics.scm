@@ -14358,91 +14358,89 @@ choosing which reads pass the filter.")
                      license:asl2.0))))) ;histogram.py
 
 (define-public nanopolish
-  ;; The recommended way to install is to clone the git repository
-  ;; <https://github.com/jts/nanopolish#installing-a-particular-release>.
-  ;; Also, the differences between release and current version seem to be
-  ;; significant.
-  (let ((commit "6331dc4f15b9dfabb954ba3fae9d76b6c3ca6377")
-        (revision "1"))
-    (package
-      (name "nanopolish")
-      (version (git-version "0.11.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jts/nanopolish")
-               (commit commit)
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "15ikl3d37y49pwd7vx36xksgsqajhf24q7qqsnpl15dqqyy5qgbc"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (delete-file-recursively "htslib")
-             #t))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags
-         `("HDF5=noinstall" "EIGEN=noinstall" "HTS=noinstall" "CC=gcc")
-         #:tests? #f                    ; no check target
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'find-eigen
-             (lambda* (#:key inputs #:allow-other-keys)
-               (setenv "CPATH"
-                       (string-append
-                        (search-input-directory inputs "/include/eigen3")
-                        ":" (or (getenv "CPATH") "")))))
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (scripts (string-append out "/share/nanopolish/scripts")))
+  (package
+    (name "nanopolish")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jts/nanopolish")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ha9v5ia0qrwgav0956cfc7n64wjm9a9w3rvkg21g37a994yixg5"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: unbundle slow5lib
+        '(begin (for-each delete-file-recursively
+                          '("htslib" "minimap2"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "HDF5=noinstall"
+              "EIGEN=noinstall"
+              "HTS=noinstall"
+              "MINIMAP2=noinstall"
+              (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                    ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-eigen
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "/include/eigen3")
+                       ":" (or (getenv "CPATH") "")))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (scripts (string-append #$output "/share/nanopolish/scripts")))
 
-                 (install-file "nanopolish" bin)
-                 (for-each (lambda (file) (install-file file scripts))
-                           (find-files "scripts" ".*"))
-                 #t)))
-           (add-after 'install 'wrap-programs
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((pythonpath (getenv "GUIX_PYTHONPATH"))
-                     (perl5lib (getenv "PERL5LIB"))
-                     (scripts (string-append (assoc-ref outputs "out")
-                                             "/share/nanopolish/scripts"))
-                     (guile (search-input-file inputs "bin/guile")))
-                 (for-each (lambda (file)
-                             (wrap-program file `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
-                           (find-files scripts "\\.py"))
-                 (for-each (lambda (file)
-                             (wrap-script file #:guile guile
-                                          `("PERL5LIB" ":" prefix (,perl5lib))))
-                           (find-files scripts "\\.pl"))))))))
-      (inputs
-       `(("guile" ,guile-3.0) ; for wrappers
-         ("eigen" ,eigen)
-         ("hdf5" ,hdf5)
-         ("htslib" ,htslib)
-         ("perl" ,perl)
-         ("bioperl" ,bioperl-minimal)
-         ("perl-getopt-long" ,perl-getopt-long)
-         ("python" ,python-wrapper)
-         ("python-biopython" ,python-biopython)
-         ("python-numpy" ,python-numpy)
-         ("python-pysam" ,python-pysam)
-         ("python-scikit-learn" , python-scikit-learn)
-         ("python-scipy" ,python-scipy)
-         ("zlib" ,zlib)))
-      (home-page "https://github.com/jts/nanopolish")
-      (synopsis "Signal-level analysis of Oxford Nanopore sequencing data")
-      (description
-       "This package analyses the Oxford Nanopore sequencing data at signal-level.
+                (install-file "nanopolish" bin)
+                (for-each (lambda (file) (install-file file scripts))
+                          (find-files "scripts" ".*")))))
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pythonpath (getenv "GUIX_PYTHONPATH"))
+                    (perl5lib (getenv "PERL5LIB"))
+                    (scripts (string-append #$output "/share/nanopolish/scripts"))
+                    (guile (search-input-file inputs "bin/guile")))
+                (for-each (lambda (file)
+                            (wrap-program file `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
+                          (find-files scripts "\\.py"))
+                (for-each (lambda (file)
+                            (wrap-script file #:guile guile
+                                         `("PERL5LIB" ":" prefix (,perl5lib))))
+                          (find-files scripts "\\.pl"))))))))
+    (inputs
+     `(("guile" ,guile-3.0) ; for wrappers
+       ("eigen" ,eigen)
+       ("hdf5" ,hdf5)
+       ("htslib" ,htslib)
+       ("minimap2" ,minimap2)
+       ("perl" ,perl)
+       ("bioperl" ,bioperl-minimal)
+       ("perl-getopt-long" ,perl-getopt-long)
+       ("python" ,python-wrapper)
+       ("python-biopython" ,python-biopython)
+       ("python-numpy" ,python-numpy)
+       ("python-pysam" ,python-pysam)
+       ("python-scikit-learn" , python-scikit-learn)
+       ("python-scipy" ,python-scipy)
+       ("zlib" ,zlib)))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/jts/nanopolish")
+    (synopsis "Signal-level analysis of Oxford Nanopore sequencing data")
+    (description
+     "This package analyses the Oxford Nanopore sequencing data at signal-level.
 Nanopolish can calculate an improved consensus sequence for a draft genome
 assembly, detect base modifications, call SNPs (Single nucleotide
 polymorphisms) and indels with respect to a reference genome and more.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public cnvkit
   (package
