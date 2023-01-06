@@ -14523,14 +14523,14 @@ is a Cython wrapper for FIt-SNE.")
 (define-public bbmap
   (package
     (name "bbmap")
-    (version "38.90")
+    (version "39.01")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://sourceforge/bbmap/BBMap_" version ".tar.gz"))
               (sha256
                (base32
-                "1wb94bcc006qq86x77z2rz0lc8m9f1kpnw6gdhjfg9bdaqf56rm3"))))
+                "1rlkw2mlkn699dk9n5lnigmvwq3zr2f8hnq9plx7zi1h06jqsq4q"))))
     (build-system ant-build-system)
     (arguments
      (list
