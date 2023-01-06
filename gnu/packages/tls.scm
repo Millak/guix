@@ -51,6 +51,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system trivial)
+  #:use-module (guix build-system meson)
   #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (gnu packages compression)
   #:use-module (gnu packages)
@@ -207,12 +208,16 @@ living in the same process.")
                            "download/" version "/p11-kit-" version ".tar.xz"))
        (sha256
         (base32 "1y5fm9gwhkh902r26p90qf1g2h1ziqrk4hgf9i9sxm2wzlz7ignq"))))
+    (build-system meson-build-system)
     (arguments
      ;; Use the default certificates so that users such as flatpak find them.
      ;; See <https://issues.guix.gnu.org/49957>.
      (substitute-keyword-arguments (package-arguments p11-kit)
        ((#:configure-flags flags ''())
-        ''("--with-trust-paths=/etc/ssl/certs/ca-certificates.crt"))))))
+        ''("-Dtrust_paths=/etc/ssl/certs/ca-certificates.crt"))
+       ;; p11-kit is still on gnu-build-system.
+       ((#:phases gnu-phases)
+        '%standard-phases)))))
 
 (define-public gnutls
   (package
