@@ -34186,11 +34186,11 @@ project.el and xref.el.")
                  (search-input-file inputs "/bin/global"))))))))
     (inputs (list global universal-ctags))
     (home-page "https://github.com/universal-ctags/citre")
-    (synopsis "Ctags IDE on the True Editor")
+    (synopsis "Ctags IDE on Emacs")
     (description
      "Citre is an advanced Ctags (or actually, readtags) frontend for
 Emacs. It offers Completion At Point, Xref and Imenu integration.  It also
-prodites a Completing Read UI for jumping to definition and a powerful code
+provides a Completing Read UI for jumping to definition and a powerful code
 reading tool that lets you go down the rabbit hole without leaving current
 buffer.")
     (license license:gpl3+)))
