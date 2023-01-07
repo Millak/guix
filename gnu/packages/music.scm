@@ -527,7 +527,7 @@ playing your music.")
      `(("gettext" ,gettext-minimal)
        ("googletest" ,googletest)
        ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools-5)
+       ("qtlinguist" ,qttools)
        ("xorg-server" ,xorg-server-for-tests)))
     (inputs
      (list alsa-lib
@@ -546,7 +546,7 @@ playing your music.")
            libmtp
            protobuf
            pulseaudio
-           qtbase-5
+           qtbase
            qtx11extras
            sqlite
            taglib))
