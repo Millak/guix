@@ -19216,35 +19216,6 @@ working with Portable Executable (PE) files.  It makes to most information
 from the header, as well as section details and data available.")
     (license license:expat)))
 
-(define-public python-pyev
-  (package
-    (name "python-pyev")
-    (version "0.9.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyev" version))
-        (sha256
-         (base32
-          "0rf603lc0s6zpa1nb25vhd8g4y337wg2wyz56i0agsdh7jchl0sx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libev (search-input-file inputs "/lib/libev.so.4")))
-               (substitute* "setup.py"
-                 (("libev_dll_name = find_library\\(\\\"ev\\\"\\)")
-                  (string-append "libev_dll_name = \"" libev "\"")))))))))
-    (inputs
-     (list libev))
-    (home-page "https://github.com/gabrielfalcao/pyev")
-    (synopsis "Python libev interface")
-    (description "Pyev provides a Python interface to libev.")
-    (license license:gpl3)))
-
 (define-public python-imagesize
   (package
     (name "python-imagesize")
