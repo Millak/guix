@@ -2,6 +2,7 @@
 ;;; Copyright © 2019, 2020, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -213,27 +214,31 @@ in Python.")
     (license license:isc)))
 
 (define-public castget
-  (package
-    (name "castget")
-    (version "2.0.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/mlj/castget")
-             (commit (string-append "rel_" (string-replace-substring
-                                            version "." "_")))))
-       (sha256
-        (base32 "1129x64rw587q3sdpa3lrgs0gni5f0siwbvmfz8ya4zkbhgi2ik7"))
-       (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf automake libtool pkg-config ronn-ng))
-    (inputs (list curl glib id3lib libxml2))
-    (synopsis "Command line podcast downloader")
-    (description
-     "castget is a simple, command-line based RSS enclosure downloader.  It is
+  ;; Since ronn-ng uses a newer ruby-nokogiri, the test suite would fail on a
+  ;; free call with the error: "free(): invalid pointer".  Use the latest
+  ;; commit, which is immune to that problem.
+  (let ((revision "0")
+        (commit "da9727de1b9e4e636be21bf07c73eb41f5d8439b"))
+    (package
+      (name "castget")
+      (version (git-version "2.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/mlj/castget")
+               (commit commit)))
+         (sha256
+          (base32 "0d5ji21af5mfj1xa90v4hp104c1ipy076175kp7nzz1c4sxdadff"))
+         (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (native-inputs
+       (list autoconf automake libtool pkg-config ronn-ng))
+      (inputs (list curl glib taglib libxml2))
+      (synopsis "Command line podcast downloader")
+      (description
+       "castget is a simple, command-line based RSS enclosure downloader.  It is
 primarily intended for automatic, unattended downloading of podcasts.  It uses
 libcurl for the download process.")
-    (license license:lgpl2.1+)
-    (home-page "https://castget.johndal.com")))
+      (license license:lgpl2.1+)
+      (home-page "https://castget.johndal.com"))))
