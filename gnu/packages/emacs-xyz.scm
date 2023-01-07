@@ -34170,7 +34170,11 @@ project.el and xref.el.")
             (lambda* (#:key inputs #:allow-other-keys)
               (emacs-substitute-variables "citre-ctags.el"
                 ("citre-ctags-program"
-                 (search-input-file inputs "/bin/ctags")))
+                 ;; XXX: Do not use SEARCH-INPUT-FILE in this place, for it
+                 ;; will get ctags of emacs-minimal instead of
+                 ;; universal-ctags.
+                 (string-append #$(this-package-input "universal-ctags")
+                                "/bin/ctags")))
               (emacs-substitute-variables "citre-readtags.el"
                 ("citre-readtags-program"
                  (search-input-file inputs "/bin/readtags")))
