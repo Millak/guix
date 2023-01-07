@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
-;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022, 2023 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Riku Viitanen <riku.viitanen0@gmail.com>
@@ -477,7 +477,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.10")
+    (version "1.0.12")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -486,7 +486,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1v27s55l64xcl7q6p0iljv2fpibhfcl1wj319vlp4b8pcp1wny1p"))
+                "1jpws1iidxcg3mlja4fqxqlck9yn2v8dwwmzgxx056x1q7sr942w"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
