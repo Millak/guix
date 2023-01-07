@@ -1967,6 +1967,7 @@ Databricks REST APIs.")
          "102hy2qisvjxp5s0v9lvwqi4f2dk0dhns40vjgn008yxc7k0h3cr"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; No tests.
+    (propagated-inputs (list python-openid python-six))
     (home-page "https://github.com/puiterwijk/python-openid-cla/")
     (synopsis "Implementation of the OpenID CLA extension for python-openid")
     (description "@code{openid-cla} is an implementation of the OpenID
