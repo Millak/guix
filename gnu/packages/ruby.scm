@@ -8057,6 +8057,36 @@ variable length integers (varint) in Ruby Protocol Buffers.")
     (home-page "https://github.com/liquidm/varint")
     (license license:bsd-3)))
 
+;;; Note: Do NOT update to a newer version; this is the last commit that is
+;;; still licensed as free software, the project having switched to the
+;;; Hippocratic license afterward (see:
+;;; https://github.com/vcr/vcr/issues/959).
+(define-public ruby-vcr-expat
+  (let ((revision "0")
+        (commit-dont-touch "842b2bf89099dc91f2c643d0d85d1abd54eb7e85")) ;
+    (package
+      (name "ruby-vcr-expat")
+      (version (git-version "5.0.0" revision commit-dont-touch))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vcr/vcr")
+                      (commit commit-dont-touch)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02mzifd2655kjh35bbry01n66jjcjrsw6ncqlybfkjcaqrw2zalv"))))
+      (build-system ruby-build-system)
+      (arguments (list #:tests? #f))    ;avoid all dependencies
+      (home-page "https://github.com/vcr/vcr")
+      (synopsis "HTTP interaction recorder [old version]")
+      (description "Record your test suite's HTTP interactions and replay them
+during future test runs for fast, deterministic, accurate tests.  This is an
+older version of VCR that is free software under the Expat license.  The
+project later switched to the Hippocratic license, which is non-free.
+@emph{Do not use it in new free software projects}.")
+      (license license:expat))))
+
 (define-public ruby-ruby-prof
   (package
     (name "ruby-ruby-prof")
