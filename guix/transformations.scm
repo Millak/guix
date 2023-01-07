@@ -772,6 +772,9 @@ is #f, the latest known upstream version."
            p)
           ((string=? (upstream-source-version source)
                      (package-version p))
+           (unless version
+             (info (G_ "~a is already the latest version of '~a'~%")
+                   (package-version p) (package-name p)))
            p)
           (else
            (when (version>? (package-version p)
