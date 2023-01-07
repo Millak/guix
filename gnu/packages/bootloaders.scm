@@ -1555,10 +1555,12 @@ order to add a suitable bootloader menu entry.")
 
                   ;; cdrtools' mkisofs will silently ignore a missing isolinux.bin!
                   ;; Luckily xorriso is more strict.
-                  (string-append "ISOLINUX_BIN=" syslinux
-                                 "/share/syslinux/isolinux.bin")
-                  (string-append "SYSLINUX_MBR_DISK_PATH=" syslinux
-                                 "/share/syslinux/isohdpfx.bin")
+                  #$@(if (or (target-x86-64?) (target-x86?))
+                         '((string-append "ISOLINUX_BIN=" syslinux
+                                          "/share/syslinux/isolinux.bin")
+                           (string-append "SYSLINUX_MBR_DISK_PATH=" syslinux
+                                          "/share/syslinux/isohdpfx.bin"))
+                         '())
 
                   ;; Build reproducibly.
                   (string-append "BUILD_ID_CMD=echo -n " (build-id #$output))
@@ -1611,7 +1613,11 @@ order to add a suitable bootloader menu entry.")
               (lambda _ (chdir ".."))))
         #:tests? #f))                  ; no test suite
       (native-inputs
-       (list perl syslinux xorriso))
+       (append (if (or (target-x86-64?) (target-x86?))
+                   ;; Syslinux only supports i686 and x86_64.
+                   (list syslinux)
+                   '())
+               (list perl xorriso)))
       (home-page "https://ipxe.org")
       (synopsis "PXE-compliant network boot firmware")
       (description "iPXE is a network boot firmware.  It provides a full PXE
