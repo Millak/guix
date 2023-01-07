@@ -1,6 +1,6 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
@@ -25,6 +25,56 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "137b91f03bbb7f1df71cf10c4f79ae57fbcea400")
+        (title
+         (en "New @option{--with-version} package transformation option")
+         (fr "Nouvelle option de transformation @option{--with-version}"))
+        (body
+         (en "The new @option{--with-version} package transformation option
+generalizes @option{--with-latest}: it gets the specified upstream release of
+a package and uses it instead of the currently-packaged version.
+
+For example, the command below would spawn GNOME Clocks built against GTK
+4.7.0, skipping its test suite:
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more info.")
+         (de "Die neue Paketumwandlungsoption @option{--with-version}
+verallgemeinert @option{--with-latest}: Mit ihr kann man angeben, welche
+vom Anbieter veröffentlichte Version man anstelle der derzeit im Paket
+vorgegebenen haben möchte.
+
+Zum Beispiel kann mit folgendem Befehl ein für die GTK-Version 4.7.0
+erstelltes GNOME Clocks aufgerufen werden, wobei der Testkatalog dafür
+übersprungen wird.
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets
+@option{--with-version} généralise @option{--with-latest} : elle permet de
+spécifier quelle version amont d'un logiciel utiliser à la place de celle
+actuellement fournie.
+
+Par exemple, la commande ci-dessous démarre GNOME Clocks construit avec GTK
+4.7.0, sans lancer sa suite de tests :
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Voir @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus de détails.")))
 
  (entry (commit "9ea37eb9f5329c213757bbfe5d9241cde8433858")
         (title
