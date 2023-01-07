@@ -18482,6 +18482,10 @@ herd set-http-proxy guix-daemon
 @item @code{tmpdir} (default: @code{#f})
 A directory path where the @command{guix-daemon} will perform builds.
 
+@item @code{environment} (default: @code{'()})
+Environment variables to be set before starting the daemon, as a list of
+@code{key=value} strings.
+
 @end table
 @end deftp
 
