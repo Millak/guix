@@ -8073,8 +8073,9 @@ vintage!):
                 "0lappv4slgb5spyqbh6yl5r013zv72yqg2pcl30mginf3wdqd8k9"))))))
 @end lisp
 
-The example above corresponds to what the @option{--with-source} package
-transformation option does.  Essentially @code{hello-2.2} preserves all
+The example above corresponds to what the @option{--with-version}
+or @option{--with-source} package transformations option do.
+Essentially @code{hello-2.2} preserves all
 the fields of @code{hello}, except @code{version} and @code{source},
 which it overrides.  Note that the original @code{hello} variable is
 still there, in the @code{(gnu packages base)} module, unchanged.  When
@@ -12740,7 +12741,9 @@ Coreutils in the dependency graph is rebuilt.
 
 @cindex upstream, latest version
 @item --with-latest=@var{package}
-So you like living on the bleeding edge?  This option is for you!  It
+@itemx --with-version=@var{package}=@var{version}
+So you like living on the bleeding edge?  The @option{--with-latest}
+option is for you!  It
 replaces occurrences of @var{package} in the dependency graph with its
 latest upstream version, as reported by @command{guix refresh}
 (@pxref{Invoking guix refresh}).
@@ -12756,6 +12759,26 @@ of Guile-JSON:
 guix build guix --with-latest=guile-json
 @end example
 
+The @option{--with-version} works similarly except that it lets you
+specify that you want precisely @var{version}, assuming that version
+exists upstream.  For example, to spawn a development environment with
+SciPy built against version 1.22.4 of NumPy (skipping its test suite
+because hey, we're not gonna wait this long), you would run:
+
+@example
+guix shell python python-scipy --with-version=python-numpy=1.22.4
+@end example
+
+@quotation Warning
+Because they depend on source code published at a given point in time on
+upstream servers, deployments made with @option{--with-latest} and
+@option{--with-version} may be non-reproducible: source might disappear
+or be modified in place on the servers.
+
+To deploy old software versions without compromising on reproducibility,
+@ref{Invoking guix time-machine, @command{guix time-machine}}.
+@end quotation
+
 There are limitations.  First, in cases where the tool cannot or does
 not know how to authenticate source code, you are at risk of running
 malicious code; a warning is emitted in this case.  Second, this option
@@ -12764,10 +12787,10 @@ which is not always sufficient: there might be additional dependencies
 that need to be added, patches to apply, and more generally the quality
 assurance work that Guix developers normally do will be missing.
 
-You've been warned!  In all the other cases, it's a snappy way to stay
-on top.  We encourage you to submit patches updating the actual package
-definitions once you have successfully tested an upgrade
-(@pxref{Contributing}).
+You've been warned!  When those limitations are acceptable, it's a
+snappy way to stay on top.  We encourage you to submit patches updating
+the actual package definitions once you have successfully tested an
+upgrade with @option{--with-latest} (@pxref{Contributing}).
 
 @cindex test suite, skipping
 @item --without-tests=@var{package}

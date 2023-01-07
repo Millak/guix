@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -496,6 +496,23 @@
                (t (options->transformation
                    `((with-latest . "foo")))))
           (package-version (t p)))))
+
+(test-equal "options->transformation, with-version"
+  "1.0"
+  (mock ((guix upstream) %updaters
+         (delay (list (upstream-updater
+                       (name 'dummy)
+                       (pred (const #t))
+                       (description "")
+                       (import (const (upstream-source
+                                         (package "foo")
+                                         (version "1.0")
+                                         (urls '("http://example.org")))))))))
+        (let* ((p0 (dummy-package "foo" (version "7.7")))
+               (p1 (dummy-package "bar" (inputs (list p0))))
+               (t  (options->transformation
+                    `((with-version . "foo=1.0")))))
+          (package-version (lookup-package-input (t p1) "foo")))))
 
 (test-equal "options->transformation, tune"
   '(cpu-tuning . "superfast")

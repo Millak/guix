@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -757,35 +757,69 @@ additional patches."
         (rewrite obj)
         obj)))
 
+(define* (package-with-upstream-version p #:optional version)
+  "Return package P changed to use the given upstream VERSION or, if VERSION
+is #f, the latest known upstream version."
+  (let ((source (package-latest-release p #:version version)))
+    (cond ((not source)
+           (if version
+               (warning
+                (G_ "could not find version ~a of '~a' upstream~%")
+                version (package-name p))
+               (warning
+                (G_ "could not determine latest upstream release of '~a'~%")
+                (package-name p)))
+           p)
+          ((string=? (upstream-source-version source)
+                     (package-version p))
+           p)
+          (else
+           (when (version>? (package-version p)
+                            (upstream-source-version source))
+             (warning (G_ "using ~a ~a, which is older than the packaged \
+version (~a)~%")
+                      (package-name p)
+                      (upstream-source-version source)
+                      (package-version p)))
+
+           (unless (pair? (upstream-source-signature-urls source))
+             (warning (G_ "cannot authenticate source of '~a', version ~a~%")
+                      (package-name p)
+                      (upstream-source-version source)))
+
+           ;; TODO: Take 'upstream-source-input-changes' into account.
+           (package
+             (inherit p)
+             (version (upstream-source-version source))
+             (source source))))))
+
 (define (transform-package-latest specs)
   "Return a procedure that rewrites package graphs such that those in SPECS
 are replaced by their latest upstream version."
-  (define (package-with-latest-upstream p)
-    (let ((source (package-latest-release p)))
-      (cond ((not source)
-             (warning
-              (G_ "could not determine latest upstream release of '~a'~%")
-              (package-name p))
-             p)
-            ((string=? (upstream-source-version source)
-                       (package-version p))
-             p)
-            (else
-             (unless (pair? (upstream-source-signature-urls source))
-               (warning (G_ "cannot authenticate source of '~a', version ~a~%")
-                        (package-name p)
-                        (upstream-source-version source)))
-
-             ;; TODO: Take 'upstream-source-input-changes' into account.
-             (package
-               (inherit p)
-               (version (upstream-source-version source))
-               (source source))))))
-
   (define rewrite
     (package-input-rewriting/spec
      (map (lambda (spec)
-            (cons spec package-with-latest-upstream))
+            (cons spec package-with-upstream-version))
+          specs)))
+
+  (lambda (obj)
+    (if (package? obj)
+        (rewrite obj)
+        obj)))
+
+(define (transform-package-version specs)
+  "Return a procedure that rewrites package graphs such that those in SPECS
+are replaced by the specified upstream version."
+  (define rewrite
+    (package-input-rewriting/spec
+     (map (lambda (spec)
+            (match (string-tokenize spec %not-equal)
+              ((spec version)
+               (cons spec (cut package-with-upstream-version <> version)))
+              (_
+               (raise (formatted-message
+                       (G_ "~a: invalid upstream version specification")
+                       spec)))))
           specs)))
 
   (lambda (obj)
@@ -809,7 +843,8 @@ are replaced by their latest upstream version."
     (with-debug-info . ,transform-package-with-debug-info)
     (without-tests . ,transform-package-tests)
     (with-patch  . ,transform-package-patches)
-    (with-latest . ,transform-package-latest)))
+    (with-latest . ,transform-package-latest)
+    (with-version . ,transform-package-version)))
 
 (define (transformation-procedure key)
   "Return the transformation procedure associated with KEY, a symbol such as
@@ -881,6 +916,8 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
                   (parser 'with-patch))
           (option '("with-latest") #t #f
                   (parser 'with-latest))
+          (option '("with-version") #t #f
+                  (parser 'with-version))
 
           (option '("help-transform") #f #f
                   (lambda _
@@ -915,6 +952,9 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
   (display (G_ "
       --with-latest=PACKAGE
                          use the latest upstream release of PACKAGE"))
+  (display (G_ "
+      --with-version=PACKAGE=VERSION
+                         use the given upstream VERSION of PACKAGE"))
   (display (G_ "
       --with-c-toolchain=PACKAGE=TOOLCHAIN
                          build PACKAGE and its dependents with TOOLCHAIN"))
