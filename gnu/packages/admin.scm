@@ -5675,7 +5675,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.84.1")
+    (version "1.92.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5684,7 +5684,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jmqvz1rdqrsr4l0bv3ik1jla0xnbdvcmnw9892acvfs3wsmliyc"))))
+                "0n8xajr9s0y7a43is24q0f9nznmr2sjhlhgg9fpyx4s4nr3s5yqw"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
