@@ -1629,7 +1629,7 @@ bindings for Python, Java, OCaml and more.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir-and-fix-setup-py
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (chdir "bindings/python")
              ;; Do not build the library again, because we already have it.
              (substitute* "setup.py" ((".*   build_libraries.*") ""))
@@ -1637,8 +1637,13 @@ bindings for Python, Java, OCaml and more.")
              ;; library.
              (substitute* "capstone/__init__.py"
                (("pkg_resources.resource_filename.*")
-                (string-append "'" (assoc-ref %build-inputs "capstone") "/lib',\n")))
-             #t)))))))
+                (string-append "'" (dirname (search-input-file
+                                             inputs "lib/libcapstone.so"))
+                               "',\n")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "check")))))))))
 
 
 (define-public python-esptool-3.0
