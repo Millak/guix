@@ -2,7 +2,7 @@
 ;;; Copyright © 2015 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -100,6 +100,18 @@ facilitate packaging Python projects, where packaging includes:
                    license:expat        ;six, appdirs, pyparsing
                    license:asl2.0       ;packaging is dual ASL2/BSD-2
                    license:bsd-2))))
+
+;; This is the last version with use_2to3 support.
+(define-public python-setuptools-57
+  (package
+    (inherit python-setuptools)
+    (version "57.5.0")
+    (source (origin
+              (inherit (package-source python-setuptools))
+              (uri (pypi-uri "setuptools" version))
+              (sha256
+               (base32
+                "091sp8lrin7qllrhhx7y0iiv5gdb1d3l8a1ip5knk77ma1njdlyr"))))))
 
 (define-public python-wheel
   (package
