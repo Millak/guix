@@ -2133,7 +2133,7 @@ users and in some situations.")
 (define-public guile-udev
   (package
     (name "guile-udev")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2142,22 +2142,19 @@ users and in some situations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xvh4wscxmiqm8lnmfyh5cjzn89kv2wslkfvqvcjhinzpnpbg91x"))))
+                "1q1snj8gz2bvqw2v2jvwlzn5xfh7f7wlp922isnzismrp4adc918"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           libtool
-           texinfo
-           pkg-config
-           which))
-    (inputs
-     (list guile-3.0 eudev))
+    (native-inputs (list autoconf
+                         automake
+                         gettext-minimal
+                         libtool
+                         texinfo
+                         pkg-config
+                         which))
+    (inputs (list guile-3.0 eudev))
     (home-page "https://github.com/artyom-poptsov/guile-udev")
     (synopsis "Guile bindings to libudev")
-    (description
-     "Guile-Udev provides GNU Guile bindings to libudev.")
+    (description "Guile-Udev provides GNU Guile bindings to libudev.")
     (license license:gpl3+)))
 
 (define-public guile-sly
