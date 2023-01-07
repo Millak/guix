@@ -7808,7 +7808,6 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
                (base32
                 "0wxv63cqrw7pd5vg5hwh48bf326766x6mzz1qw8shhkrycr43fks"))))
      (build-system emacs-build-system)
-     (propagated-inputs (list emacs-nadvice))
      (home-page "https://git.sr.ht/~pkal/compat")
      (synopsis "Emacs Lisp Compatibility Library")
      (description
@@ -29557,7 +29556,7 @@ programming in Emacs Lisp easy and fun.")
         (base32 "1g0wc2kp15ra323b4rxvdh58q9c4h7m20grw6a0cs53m7l9xi62f"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-fsm emacs-nadvice emacs-soap-client emacs-url-http-ntlm))
+     (list emacs-fsm emacs-soap-client emacs-url-http-ntlm))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
     (synopsis "Exchange integration")
     (description "This package provides Exchange integration for Emacs.")
