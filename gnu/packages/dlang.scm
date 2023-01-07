@@ -432,8 +432,8 @@ needed.")
        #:make-flags
        `("DC=ldc2"
          ,(string-append "prefix=" (assoc-ref %outputs "out"))
-         ,(string-append "libdir=" (assoc-ref %outputs "out")
-                         "/lib"))
+         ,(string-append "libdir=" (assoc-ref %outputs "out") "/lib")
+         "pkgconfigdir=lib/pkgconfig")
        #:phases
        (modify-phases %standard-phases
          (delete 'configure)
