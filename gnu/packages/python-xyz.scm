@@ -27145,6 +27145,12 @@ be necessary when using @code{cmd}.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-queue-import
+           (lambda _
+             ;; Adjust Queue import for Python 3.  Remove for versions >=0.4.0.
+             (substitute* "tests/threadsafety.py"
+               (("from Queue import Queue")
+                "from queue import Queue"))))
          (add-before 'build 'qualify-libtidy
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((libtidy (search-input-file inputs "/lib/libtidy.so")))
