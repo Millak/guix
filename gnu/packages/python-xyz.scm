@@ -22128,13 +22128,7 @@ functions by partial application of operators.")
        (sha256
         (base32 "1s98vkjnq3zq71737hn8xa15kssvmy1sfzsll3vrlv53902418mw"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test"))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-whatever))
     (home-page "https://github.com/Suor/funcy")
