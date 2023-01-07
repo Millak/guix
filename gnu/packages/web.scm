@@ -8169,6 +8169,48 @@ in mind.  It has features such as:
 @end itemize")
     (license license:isc)))
 
+(define-public kiln
+  (package
+    (name "kiln")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~adnano/kiln")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lvzv46hn80gffw47mcc28iahwqng7pvg500s9jlrq6mhr4k5ih4"))))
+    (build-system go-build-system)
+    (arguments
+     (list
+      #:import-path "git.sr.ht/~adnano/kiln"
+      #:install-source? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-man
+            (lambda _
+              (let ((man1 (string-append #$output "/share/man/man1")))
+                (system (string-append
+                         "scdoc"
+                         "< src/git.sr.ht/~adnano/kiln/docs/kiln.1.scd"
+                         "> kiln.1"))
+                (install-file "kiln.1" man1)))))))
+    (native-inputs
+     (list scdoc))
+    (propagated-inputs
+     (list go-github-com-google-shlex
+           go-github-com-pelletier-go-toml
+           go-gopkg-in-yaml-v3))
+    (home-page "https://kiln.adnano.co/")
+    (synopsis "Simple static site generator")
+    (description
+     "Kiln takes a different approach to building static sites.
+Instead of packing all functionality into kiln itself, the core is lightweight
+and can be extended with the use of external commands.")
+    (license license:expat)))
+
 (define-public siege
   (package
     (name "siege")
