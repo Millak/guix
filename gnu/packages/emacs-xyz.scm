@@ -20735,40 +20735,49 @@ interactive commands and functions, such as @code{completing-read}.")
     (license license:gpl3+)))
 
 (define-public emacs-org-ql
-  (package
-    (name "emacs-org-ql")
-    (version "0.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/alphapapa/org-ql")
-                    (commit version)))
-              (sha256
-               (base32
-                "0iamqv5j43ngj1xdqr36rkgk9lqpk9bg8y531jsldnvwzrp3srpf"))
-              (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash
-           emacs-f
-           emacs-helm
-           emacs-helm-org
-           emacs-org
-           emacs-org-super-agenda
-           emacs-ov
-           emacs-peg
-           emacs-ts
-           emacs-s))
-    (native-inputs
-     (list emacs-buttercup emacs-with-simulated-input))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("buttercup" "-L" ".")))
-    (home-page "https://github.com/alphapapa/org-ql/")
-    (synopsis "Query language for Org buffers")
-    (description "This package provides a Lispy query language for Org
+  (let ((commit "29533525c39e0e243912bb3c807412e4bc3e804e")
+        (revision "0"))
+    (package
+      (name "emacs-org-ql")
+      (version (git-version "0.6.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/alphapapa/org-ql")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "01zc2mrlr197r0h2xjgzg88fy74lqbw0hv60jw08ihs0yw7n56y7"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "buttercup" "-L" ".")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-test
+              (lambda _
+                (substitute* "tests/test-org-ql.el"
+                  (("can't be linked to") "can’t be linked to")))))))
+      (native-inputs
+       (list emacs-buttercup emacs-with-simulated-input))
+      (propagated-inputs
+       (list emacs-dash
+             emacs-f
+             emacs-helm
+             emacs-helm-org
+             emacs-org
+             emacs-org-super-agenda
+             emacs-ov
+             emacs-peg
+             emacs-s
+             emacs-ts))
+      (home-page "https://github.com/alphapapa/org-ql/")
+      (synopsis "Query language for Org buffers")
+      (description "This package provides a Lispy query language for Org
 files, allowing for actions to be performed based on search criteria.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-bing-dict
   (package
