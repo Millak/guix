@@ -28191,7 +28191,7 @@ the 2nd element of the pair is the password.
 Darkstat is a packet sniffer that captures network traffic, calculates
 statistics about usage, and serves reports over HTTP.
 
-@defvar {Scheme Variable} darkstat-service-type
+@defvar darkstat-service-type
 This is the service type for the
 @uref{https://unix4lyfe.org/darkstat/, darkstat}
 service,  its value must be a @code{darkstat-configuration} record as in
@@ -28236,7 +28236,7 @@ provided by the Linux kernel available for the Prometheus monitoring system.
 This service should be deployed on all physical nodes and virtual machines,
 where monitoring these statistics is desirable.
 
-@defvar {Scheme variable} prometheus-node-exporter-service-type
+@defvar prometheus-node-exporter-service-type
 This is the service type for the
 @uref{https://github.com/prometheus/node_exporter/, prometheus-node-exporter}
 service, its value must be a @code{prometheus-node-exporter-configuration}.
@@ -28281,7 +28281,7 @@ and display results, and optionally @ref{zabbix-agent,
 data sources are supported, such as @ref{prometheus-node-exporter,
 Prometheus Node Exporter}).
 
-@defvar {Scheme variable} zabbix-server-service-type
+@defvar zabbix-server-service-type
 This is the service type for the Zabbix server service.  Its value must be a
 @code{zabbix-server-configuration} record, shown below.
 @end defvar
@@ -28367,7 +28367,7 @@ with custom
 @uref{https://www.zabbix.com/documentation/current/en/manual/config/items/userparameters,
 @dfn{user parameters}}.
 
-@defvar {Scheme variable} zabbix-agent-service-type
+@defvar zabbix-agent-service-type
 This is the service type for the Zabbix agent service.  Its value must be a
 @code{zabbix-agent-configuration} record, shown below.
 @end defvar
@@ -28444,7 +28444,7 @@ to run on the same machine as the Zabbix server.  This service works by
 extending the @ref{PHP-FPM} and @ref{NGINX} services with the configuration
 necessary for loading the Zabbix user interface.
 
-@defvar {Scheme variable} zabbix-front-end-service-type
+@defvar zabbix-front-end-service-type
 This is the service type for the Zabbix web frontend.  Its value must be a
 @code{zabbix-front-end-configuration} record, shown below.
 @end defvar
@@ -31464,7 +31464,7 @@ Xvnc is a VNC server that spawns its own X window server; which means it
 can run on headless servers.  The Xvnc implementations provided by the
 @code{tigervnc-server} and @code{turbovnc} aim to be fast and efficient.
 
-@defvar {Scheme Variable} xvnc-service-type
+@defvar xvnc-service-type
 
 The @code{xvnc-server-type} service can be configured via the
 @code{xvnc-configuration} record, documented below.  A second virtual
@@ -32167,7 +32167,7 @@ can also act as an Active Directory Domain Controller (AD DC) for other
 hosts in an heterougenious network with different types of Computer
 systems.
 
-@defvar {Scheme variable} samba-service-type
+@defvar samba-service-type
 
 The service type to enable the samba services @code{samba}, @code{nmbd},
 @code{smbd} and @code{winbindd}.  By default this service type does not
@@ -36351,7 +36351,7 @@ Service type for the joycond service.
 based tactical strategy game, with several single player campaigns, and
 multiplayer games (both networked and local).
 
-@defvar {Scheme Variable} wesnothd-service-type
+@defvar wesnothd-service-type
 Service type for the wesnothd service.  Its value must be a
 @code{wesnothd-configuration} object.  To run wesnothd in the default
 configuration, instantiate it as:
@@ -36382,7 +36382,7 @@ The @code{(gnu services pam-mount)} module provides a service allowing
 users to mount volumes when they log in.  It should be able to mount any
 volume format supported by the system.
 
-@defvar {Scheme Variable} pam-mount-service-type
+@defvar pam-mount-service-type
 Service type for PAM Mount support.
 @end defvar
 
@@ -36477,7 +36477,7 @@ There is a script to run the coordinator component of the Guix Build
 Coordinator, but the Guix service uses a custom Guile script instead, to
 provide better integration with G-expressions used in the configuration.
 
-@defvar {Scheme Variable} guix-build-coordinator-service-type
+@defvar guix-build-coordinator-service-type
 Service type for the Guix Build Coordinator.  Its value must be a
 @code{guix-build-coordinator-configuration} object.
 @end defvar
@@ -36526,7 +36526,7 @@ The Guile package with which to run the Guix Build Coordinator.
 @end table
 @end deftp
 
-@defvar {Scheme Variable} guix-build-coordinator-agent-service-type
+@defvar guix-build-coordinator-agent-service-type
 Service type for a Guix Build Coordinator agent.  Its value must be a
 @code{guix-build-coordinator-agent-configuration} object.
 @end defvar
@@ -36652,7 +36652,7 @@ type below assists in running this script.  This is an additional tool
 that may be useful when building derivations contained within an
 instance of the Guix Data Service.
 
-@defvar {Scheme Variable} guix-build-coordinator-queue-builds-service-type
+@defvar guix-build-coordinator-queue-builds-service-type
 Service type for the
 guix-build-coordinator-queue-builds-from-guix-data-service script.  Its
 value must be a @code{guix-build-coordinator-queue-builds-configuration}
@@ -36705,7 +36705,7 @@ packages, derivations and lint warnings.
 The data is stored in a PostgreSQL database, and available through a web
 interface.
 
-@defvar {Scheme Variable} guix-data-service-type
+@defvar guix-data-service-type
 Service type for the Guix Data Service.  Its value must be a
 @code{guix-data-service-configuration} object.  The service optionally
 extends the getmail service, as the guix-commits mailing list is used to
@@ -36753,7 +36753,7 @@ Extra command line options for @code{guix-data-service-process-jobs}.
 The @uref{https://git.cbaines.net/guix/nar-herder/about/,Nar Herder} is
 a utility for managing a collection of nars.
 
-@defvar {Scheme Variable} nar-herder-type
+@defvar nar-herder-type
 Service type for the Guix Data Service.  Its value must be a
 @code{nar-herder-configuration} object.  The service optionally
 extends the getmail service, as the guix-commits mailing list is used to
