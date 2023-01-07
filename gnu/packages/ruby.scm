@@ -12280,6 +12280,27 @@ characteristics.")
     (home-page "https://github.com/sinatra/mustermann")
     (license license:expat)))
 
+(define-public ruby-prettier-print
+  (package
+    (name "ruby-prettier-print")
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby-syntax-tree/prettier_print")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00cg40jc0il1hpsrpsrqwhsxmx7day9lxp1ksrm08zxzsrz9ykqz"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-simplecov))
+    (synopsis "Compatible and featureful implementation of @code{prettyprint}")
+    (description "This package provides a drop-in replacement for the
+@code{prettyprint} gem, with more functionality.")
+    (home-page "https://github.com/ruby-syntax-tree/prettier_print")
+    (license license:expat)))
+
 (define-public ruby-html-proofer
   (package
     (name "ruby-html-proofer")
