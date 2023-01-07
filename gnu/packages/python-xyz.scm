@@ -22064,8 +22064,8 @@ filters can be used to process the data as it passes through.")
     (license license:asl2.0)))
 
 (define-public python-gyp
-  (let ((commit "5e2b3ddde7cda5eb6bc09a5546a76b00e49d888f")
-        (revision "0"))
+  (let ((commit "9d09418933ea2f75cc416e5ce38d15f62acd5c9a")
+        (revision "1"))
     (package
       (name "python-gyp")
       ;; Google does not release versions,
@@ -22082,8 +22082,9 @@ filters can be used to process the data as it passes through.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0fr7nxcrk292djmxzpcjaphnsd123k31gp8jnd91vwknhq6snmv9"))))
+           "0ay99rc5msqjpjl7fy1l69f8mvn08wnh2pgr08ijdih9z88xaa5x"))))
       (build-system python-build-system)
+      (propagated-inputs (list python-six))
       (home-page "https://gyp.gsrc.io/")
       (synopsis "GYP is a Meta-Build system")
       (description
