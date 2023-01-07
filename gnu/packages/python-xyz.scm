@@ -15847,8 +15847,8 @@ fast xml and html manipulation.")
        ;; whatever) so this transformation needs to be done before the tests
        ;; can be run.  Maybe we could add a build step to transform beforehand
        ;; but it could be annoying/difficult.
-       ;; We can enable tests for the Python 2 version, though, and do below.
        #:tests? #f))
+    (native-inputs (list python-setuptools-57)) ;for use_2to3 support
     (home-page "https://bitbucket.org/runeh/anyjson/")
     (synopsis
      "Wraps best available JSON implementation in a common interface")

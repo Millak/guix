@@ -16782,7 +16782,7 @@ for the analysis and visualization of raw nanopore signal.")
                                          "/vcf/test")))))))
       (native-inputs
        ;; Older setuptools is needed for use_2to3.
-       (list python-cython python-setuptools-for-tensorflow))
+       (list python-cython python-setuptools-57))
       (propagated-inputs
        (list python-pysam python-rpy2))
       (home-page "https://github.com/jamescasbon/PyVCF")
