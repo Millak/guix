@@ -18701,7 +18701,7 @@ The GPM package to use.
 @end deftp
 
 @anchor{guix-publish-service-type}
-@deffn {Scheme Variable} guix-publish-service-type
+@defvar guix-publish-service-type
 This is the service type for @command{guix publish} (@pxref{Invoking
 guix publish}).  Its value must be a @code{guix-publish-configuration}
 object, as described below.
@@ -18709,7 +18709,7 @@ object, as described below.
 This assumes that @file{/etc/guix} already contains a signing key pair as
 created by @command{guix archive --generate-key} (@pxref{Invoking guix
 archive}).  If that is not the case, the service will fail to start.
-@end deffn
+@end defvar
 
 @deftp {Data Type} guix-publish-configuration
 Data type representing the configuration of the @code{guix publish}
@@ -19746,7 +19746,7 @@ option is set to @code{#t}, otherwise it will use wpa-supplicant.
 @end deftp
 
 @cindex Connman
-@deffn {Scheme Variable} connman-service-type
+@defvar connman-service-type
 This is the service type to run @url{https://01.org/connman,Connman},
 a network connection manager.
 
@@ -19760,7 +19760,7 @@ Its value must be an
 @end lisp
 
 See below for details about @code{connman-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} connman-configuration
 Data Type representing the configuration of connman.
@@ -20189,7 +20189,7 @@ IP addresses, @code{ntpd} will calculate a median constraint from all of them.
 @end deftp
 
 @cindex inetd
-@deffn {Scheme variable} inetd-service-type
+@defvar inetd-service-type
 This service runs the @command{inetd} (@pxref{inetd invocation,,,
 inetutils, GNU Inetutils}) daemon.  @command{inetd} listens for
 connections on internet sockets, and lazily starts the specified server
@@ -20226,7 +20226,7 @@ gateway @code{hostname}:
 @end lisp
 
 See below for more details about @code{inetd-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} inetd-configuration
 Data type representing the configuration of @command{inetd}.
@@ -20427,7 +20427,7 @@ You might want an rsync daemon if you have files that you want available
 so anyone (or just yourself) can download existing files or upload new
 files.
 
-@deffn {Scheme Variable} rsync-service-type
+@defvar rsync-service-type
 This is the service type for the @uref{https://rsync.samba.org, rsync} daemon,
 The value for this service type is a
 @command{rsync-configuration} record as in this example:
@@ -20447,7 +20447,7 @@ The value for this service type is a
 @end lisp
 
 See below for details about @code{rsync-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} rsync-configuration
 Data type representing the configuration for @code{rsync-service}.
@@ -20533,7 +20533,7 @@ You might want a syncthing daemon if you have files between two or more
 computers and want to sync them in real time, safely protected from
 prying eyes.
 
-@deffn {Scheme Variable} syncthing-service-type
+@defvar syncthing-service-type
 This is the service type for the @uref{https://syncthing.net/,
 syncthing} daemon, The value for this service type is a
 @command{syncthing-configuration} record as in this example:
@@ -20573,7 +20573,7 @@ directory is @file{$HOME} of the specified Syncthing @code{user}.
 
 @end table
 @end deftp
-@end deffn
+@end defvar
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
@@ -20617,7 +20617,7 @@ The other options should be self-descriptive.
 
 @cindex SSH
 @cindex SSH server
-@deffn {Scheme Variable} openssh-service-type
+@defvar openssh-service-type
 This is the type for the @uref{http://www.openssh.org, OpenSSH} secure
 shell daemon, @command{sshd}.  Its value must be an
 @code{openssh-configuration} record as in this example:
@@ -20642,7 +20642,7 @@ example:
                    (const `(("charlie"
                              ,(local-file "charlie.pub")))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} openssh-configuration
 This is the configuration record for OpenSSH's @command{sshd}.
@@ -20849,7 +20849,7 @@ Whether to enable password-based authentication.
 @end deftp
 
 @cindex AutoSSH
-@deffn {Scheme Variable} autossh-service-type
+@defvar autossh-service-type
 This is the type for the @uref{https://www.harding.motd.ca/autossh,
 AutoSSH} program that runs a copy of @command{ssh} and monitors it,
 restarting it as necessary should it die or stop passing traffic.
@@ -20873,7 +20873,7 @@ system's @code{services} field:
           (user "pino")
           (ssh-options (list "-T" "-N" "-L" "8081:localhost:8081" "remote.net"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} autossh-configuration
 This data type represents the configuration of an AutoSSH service.
@@ -20929,7 +20929,7 @@ may cause undefined behaviour.
 @end deftp
 
 @cindex WebSSH
-@deffn {Scheme Variable} webssh-service-type
+@defvar webssh-service-type
 This is the type for the @uref{https://webssh.huashengdun.org/, WebSSH}
 program that runs a web SSH client.  WebSSH can be run manually from the
 command-line by passing arguments to the binary @command{wssh} from the
@@ -20966,7 +20966,7 @@ for HTTPS connection, add this call to the operating system's
                      (body '("root /var/www;")))
                     (nginx-server-configuration-locations %webssh-configuration-nginx))))))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} webssh-configuration
 Data type representing the configuration for @code{webssh-service}.
@@ -21083,11 +21083,11 @@ This is a list of domains to browse.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} openvswitch-service-type
+@defvar openvswitch-service-type
 This is the type of the @uref{https://www.openvswitch.org, Open vSwitch}
 service, whose value should be an @code{openvswitch-configuration}
 object.
-@end deffn
+@end defvar
 
 @deftp {Data Type} openvswitch-configuration
 Data type representing the configuration of Open vSwitch, a multilayer
@@ -21267,7 +21267,7 @@ Address of the API endpoint, in ‘multiaddress’ format.
 @end deftp
 
 @cindex keepalived
-@deffn {Scheme Variable} keepalived-service-type
+@defvar keepalived-service-type
 This is the type for the @uref{https://www.keepalived.org/, Keepalived}
 routing software, @command{keepalived}.  Its value must be an
 @code{keepalived-configuration} record as in this example for master
@@ -21316,7 +21316,7 @@ vrrp_instance my-group @{
   @}
 @}
 @end example
-@end deffn
+@end defvar
 
 @node Unattended Upgrades
 @subsection Unattended Upgrades
@@ -22073,14 +22073,14 @@ The @code{(gnu services cups)} module provides a Guix service definition
 for the CUPS printing service.  To add printer support to a Guix
 system, add a @code{cups-service} to the operating system definition:
 
-@deffn {Scheme Variable} cups-service-type
+@defvar cups-service-type
 The service type for the CUPS print server.  Its value should be a valid
 CUPS configuration (see below).  To use the default settings, simply
 write:
 @lisp
 (service cups-service-type)
 @end lisp
-@end deffn
+@end defvar
 
 The CUPS configuration controls the basic things about your CUPS
 installation: what interfaces it listens on, what to do if a print job
@@ -23030,7 +23030,7 @@ The Xfce package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} mate-desktop-service-type
+@defvar mate-desktop-service-type
 This is the type of the service that runs the @uref{https://mate-desktop.org/,
 MATE desktop environment}.  Its value is a @code{mate-desktop-configuration}
 object (see below).
@@ -23038,7 +23038,7 @@ object (see below).
 This service adds the @code{mate} package to the system
 profile, and extends polkit with the actions from
 @code{mate-settings-daemon}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} mate-desktop-configuration
 Configuration record for the MATE desktop environment.
@@ -23049,14 +23049,14 @@ The MATE package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} lxqt-desktop-service-type
+@defvar lxqt-desktop-service-type
 This is the type of the service that runs the @uref{https://lxqt-project.org,
 LXQt desktop environment}.  Its value is a @code{lxqt-desktop-configuration}
 object (see below).
 
 This service adds the @code{lxqt} package to the system
 profile.
-@end deffn
+@end defvar
 
 @deftp {Data Type} lxqt-desktop-configuration
 Configuration record for the LXQt desktop environment.
@@ -23067,10 +23067,10 @@ The LXQT package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} enlightenment-desktop-service-type
+@defvar enlightenment-desktop-service-type
 Return a service that adds the @code{enlightenment} package to the system
 profile, and extends dbus with actions from @code{efl}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} enlightenment-desktop-service-configuration
 @table @asis
@@ -23313,14 +23313,14 @@ file-systems in read and write fashion, you'll need to have
 @code{ntfs-3g} installed system-wide.
 @end deffn
 
-@deffn {Scheme Variable} colord-service-type
+@defvar colord-service-type
 This is the type of the service that runs @command{colord}, a system
 service with a D-Bus
 interface to manage the color profiles of input and output devices such as
 screens and scanners.  It is notably used by the GNOME Color Manager graphical
 tool.  See @uref{https://www.freedesktop.org/software/colord/, the colord web
 site} for more information.
-@end deffn
+@end defvar
 
 @cindex scanner access
 @defvar sane-service-type
@@ -23408,7 +23408,7 @@ powered automatically at boot, which can be useful when using a
 bluetooth keyboard or mouse.
 @end deffn
 
-@deffn {Scheme Variable} bluetooth-service-type
+@defvar bluetooth-service-type
 This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
 Stack} (BlueZ) system, which generates the @file{/etc/bluetooth/main.conf}
 configuration file.  The value for this type is a @command{bluetooth-configuration}
@@ -23419,7 +23419,7 @@ record as in this example:
 @end lisp
 
 See below for details about @code{bluetooth-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} bluetooth-configuration
 Data type representing the configuration for @code{bluetooth-service}.
@@ -23962,7 +23962,7 @@ The @code{(gnu services sound)} module provides a service to configure the
 Advanced Linux Sound Architecture (ALSA) system, which makes PulseAudio the
 preferred ALSA output driver.
 
-@deffn {Scheme Variable} alsa-service-type
+@defvar alsa-service-type
 This is the type for the @uref{https://alsa-project.org/, Advanced Linux Sound
 Architecture} (ALSA) system, which generates the @file{/etc/asound.conf}
 configuration file.  The value for this type is a @command{alsa-configuration}
@@ -23973,7 +23973,7 @@ record as in this example:
 @end lisp
 
 See below for details about @code{alsa-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} alsa-configuration
 Data type representing the configuration for @code{alsa-service}.
@@ -24031,7 +24031,7 @@ pcm.!default @{
 See @uref{https://www.alsa-project.org/main/index.php/Asoundrc} for the
 details.
 
-@deffn {Scheme Variable} pulseaudio-service-type
+@defvar pulseaudio-service-type
 This is the type for the  @uref{https://www.pulseaudio.org/, PulseAudio}
 sound server.  It exists to allow system overrides of the default settings
 via @code{pulseaudio-configuration}, see below.
@@ -24050,7 +24050,7 @@ detailed below.  In the (admittedly unlikely) case, that you find yourself
 without a @code{pulseaudio} package, consider enabling it through the
 @code{alsa-service-type} above.
 @end quotation
-@end deffn
+@end defvar
 
 @deftp {Data Type} pulseaudio-configuration
 Data type representing the configuration for @code{pulseaudio-service}.
@@ -24107,7 +24107,7 @@ above example to modify the existing @code{pulseaudio-service-type} via
 
 @end deftp
 
-@deffn {Scheme Variable} ladspa-service-type
+@defvar ladspa-service-type
 This service sets the @var{LADSPA_PATH} variable, so that programs, which
 respect it, e.g. PulseAudio, can load LADSPA plugins.
 
@@ -24122,7 +24122,7 @@ The following example will setup the service to enable modules from the
 See @uref{http://plugin.org.uk/ladspa-swh/docs/ladspa-swh.html} for the
 details.
 
-@end deffn
+@end defvar
 
 @node Database Services
 @subsection Database Services
@@ -24293,7 +24293,7 @@ here}.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} postgresql-role-service-type
+@defvar postgresql-role-service-type
 This service allows to create PostgreSQL roles and databases after
 PostgreSQL service start.  Here is an example of its use.
 
@@ -24315,7 +24315,7 @@ example:
                            (name "alice")
                            (create-database? #t))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} postgresql-role
 PostgreSQL manages database access permissions using the concept of
@@ -25878,7 +25878,7 @@ could instantiate a dovecot service like this:
 
 @subsubheading OpenSMTPD Service
 
-@deffn {Scheme Variable} opensmtpd-service-type
+@defvar opensmtpd-service-type
 This is the type of the @uref{https://www.opensmtpd.org, OpenSMTPD}
 service, whose value should be an @code{opensmtpd-configuration} object
 as in this example:
@@ -25888,7 +25888,7 @@ as in this example:
          (opensmtpd-configuration
            (config-file (local-file "./my-smtpd.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} opensmtpd-configuration
 Data type representing the configuration of opensmtpd.
@@ -25922,7 +25922,7 @@ executed: @command{smtpctl}, @command{sendmail}, @command{send-mail},
 @cindex MTA (mail transfer agent)
 @cindex SMTP
 
-@deffn {Scheme Variable} exim-service-type
+@defvar exim-service-type
 This is the type of the @uref{https://exim.org, Exim} mail transfer
 agent (MTA), whose value should be an @code{exim-configuration} object
 as in this example:
@@ -25932,7 +25932,7 @@ as in this example:
          (exim-configuration
            (config-file (local-file "./my-exim.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 In order to use an @code{exim-service-type} service you must also have a
 @code{mail-aliases-service-type} service present in your
@@ -25960,10 +25960,10 @@ variables.
 @cindex IMAP
 @cindex POP
 
-@deffn {Scheme Variable} getmail-service-type
+@defvar getmail-service-type
 This is the type of the @uref{http://pyropus.ca/software/getmail/, Getmail}
 mail retriever, whose value should be an @code{getmail-configuration}.
-@end deffn
+@end defvar
 
 Available @code{getmail-configuration} fields are:
 
@@ -26251,7 +26251,7 @@ Defaults to @samp{()}.
 @cindex email aliases
 @cindex aliases, for email addresses
 
-@deffn {Scheme Variable} mail-aliases-service-type
+@defvar mail-aliases-service-type
 This is the type of the service which provides @code{/etc/aliases},
 specifying how to deliver mail to users on this system.
 
@@ -26260,7 +26260,7 @@ specifying how to deliver mail to users on this system.
          '(("postmaster" "bob")
            ("bob" "bob@@example.com" "bob@@example2.com")))
 @end lisp
-@end deffn
+@end defvar
 
 The configuration for a @code{mail-aliases-service-type} service is an
 association list denoting how to deliver mail that comes to this
@@ -26277,7 +26277,7 @@ deliver mail to @code{bob@@example.com} and @code{bob@@example2.com}).
 @subsubheading GNU Mailutils IMAP4 Daemon
 @cindex GNU Mailutils IMAP4 Daemon
 
-@deffn {Scheme Variable} imap4d-service-type
+@defvar imap4d-service-type
 This is the type of the GNU Mailutils IMAP4 Daemon (@pxref{imap4d,,,
 mailutils, GNU Mailutils Manual}), whose value should be an
 @code{imap4d-configuration} object as in this example:
@@ -26287,7 +26287,7 @@ mailutils, GNU Mailutils Manual}), whose value should be an
          (imap4d-configuration
            (config-file (local-file "imap4d.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} imap4d-configuration
 Data type representing the configuration of @command{imap4d}.
@@ -26308,10 +26308,10 @@ Mailutils Manual}, for details.
 @cindex CalDAV
 @cindex CardDAV
 
-@deffn {Scheme Variable} radicale-service-type
+@defvar radicale-service-type
 This is the type of the @uref{https://radicale.org, Radicale} CalDAV/CardDAV
 server whose value should be a @code{radicale-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} radicale-configuration
 Data type representing the configuration of @command{radicale}.
@@ -26340,7 +26340,7 @@ services:
 
 @subsubheading Prosody Service
 
-@deffn {Scheme Variable} prosody-service-type
+@defvar prosody-service-type
 This is the type for the @uref{https://prosody.im, Prosody XMPP
 communication server}.  Its value must be a @code{prosody-configuration}
 record as in this example:
@@ -26363,7 +26363,7 @@ record as in this example:
 
 See below for details about @code{prosody-configuration}.
 
-@end deffn
+@end defvar
 
 By default, Prosody does not need much configuration.  Only one
 @code{virtualhosts} field is needed: it specifies the domain you wish
@@ -27292,7 +27292,7 @@ Transmission's headless variant, @command{transmission-daemon}, as a
 system service, allowing users to share files via BitTorrent even when
 they are not logged in.
 
-@deffn {Scheme Variable} transmission-daemon-service-type
+@defvar transmission-daemon-service-type
 The service type for the Transmission Daemon BitTorrent client. Its
 value must be a @code{transmission-daemon-configuration} object as in
 this example:
@@ -27324,7 +27324,7 @@ this example:
           (alt-speed-time-end
            (+ (* 60 (+ 12 5)) 30))))  ; 5:30 pm
 @end lisp
-@end deffn
+@end defvar
 
 Once the service is started, users can interact with the daemon through
 its Web interface (at @code{http://localhost:9091/}) or by using the
@@ -29297,7 +29297,7 @@ the nginx web server, and also a fastcgi wrapper daemon.
 
 @subsubheading Apache HTTP Server
 
-@deffn {Scheme Variable} httpd-service-type
+@defvar httpd-service-type
 Service type for the @uref{https://httpd.apache.org/,Apache HTTP} server
 (@dfn{httpd}).  The value for this service type is a
 @code{httpd-configuration} record.
@@ -29325,7 +29325,7 @@ the configuration.
                                           "DocumentRoot /srv/http/www.example.com")
                                        "\n")))))
 @end lisp
-@end deffn
+@end defvar
 
 The details for the @code{httpd-configuration}, @code{httpd-module},
 @code{httpd-config-file} and @code{httpd-virtualhost} record types are
@@ -29480,7 +29480,7 @@ of strings and G-expressions.
 @anchor{NGINX}
 @subsubheading NGINX
 
-@deffn {Scheme Variable} nginx-service-type
+@defvar nginx-service-type
 Service type for the @uref{https://nginx.org/,NGinx} web server.  The
 value for this service type is a @code{<nginx-configuration>} record.
 
@@ -29505,7 +29505,7 @@ blocks, as in this example:
                         (root "/srv/http/extra-website")
                         (try-files (list "$uri" "$uri/index.html")))))
 @end lisp
-@end deffn
+@end defvar
 
 At startup, @command{nginx} has not yet read its configuration file, so
 it uses a default file to log error messages.  If it fails to load its
@@ -30393,7 +30393,7 @@ more information on X.509 certificates.
 The @uref{https://git.sr.ht/~sircmpwn/gmnisrv, gmnisrv} program is a
 simple @uref{https://gemini.circumlunar.space/, Gemini} protocol server.
 
-@deffn {Scheme Variable} gmnisrv-service-type
+@defvar gmnisrv-service-type
 This is the type of the gmnisrv service, whose value should be a
 @code{gmnisrv-configuration} object, as in this example:
 
@@ -30402,7 +30402,7 @@ This is the type of the gmnisrv service, whose value should be a
          (gmnisrv-configuration
            (config-file (local-file "./my-gmnisrv.ini"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} gmnisrv-configuration
 Data type representing the configuration of gmnisrv.
@@ -30429,7 +30429,7 @@ The @uref{gemini://qwertqwefsday.eu/agate.gmi, Agate}
 program is a simple @uref{https://gemini.circumlunar.space/, Gemini}
 protocol server written in Rust.
 
-@deffn {Scheme Variable} agate-service-type
+@defvar agate-service-type
 This is the type of the agate service, whose value should be an
 @code{agate-service-type} object, as in this example:
 
@@ -30457,7 +30457,7 @@ Of course, you'll have to replace @i{example.com} with your own domain
 name, and then point the Agate configuration towards the path of the
 generated key and certificate.
 
-@end deffn
+@end defvar
 
 @deftp {Data Type} agate-configuration
 Data type representing the configuration of Agate.
@@ -30741,7 +30741,7 @@ and one slave, is:
                    %base-services)))
 @end lisp
 
-@deffn {Scheme Variable} knot-service-type
+@defvar knot-service-type
 This is the type for the Knot DNS server.
 
 Knot DNS is an authoritative DNS server, meaning that it can serve multiple
@@ -30753,7 +30753,7 @@ masters, and will serve it as an authoritative server.  From the point of view
 of a resolver, there is no difference between master and slave.
 
 The following data types are used to configure the Knot DNS server:
-@end deffn
+@end defvar
 
 @deftp {Data Type} knot-key-configuration
 Data type representing a key.
@@ -31162,7 +31162,7 @@ The list of knot-zone-configuration used by this configuration.
 
 @subsubheading Knot Resolver Service
 
-@deffn {Scheme Variable} knot-resolver-service-type
+@defvar knot-resolver-service-type
 This is the type of the knot resolver service, whose value should be
 an @code{knot-resolver-configuration} object as in this example:
 
@@ -31178,7 +31178,7 @@ cache.size = 100 * MB
 @end lisp
 
 For more information, refer its @url{https://knot-resolver.readthedocs.io/en/stable/config-overview.html, manual}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} knot-resolver-configuration
 Data type representing the configuration of knot-resolver.
@@ -31200,7 +31200,7 @@ Number of milliseconds for @code{kres-cache-gc} to periodically trim the cache.
 
 @subsubheading Dnsmasq Service
 
-@deffn {Scheme Variable} dnsmasq-service-type
+@defvar dnsmasq-service-type
 This is the type of the dnsmasq service, whose value should be an
 @code{dnsmasq-configuration} object as in this example:
 
@@ -31210,7 +31210,7 @@ This is the type of the dnsmasq service, whose value should be an
            (no-resolv? #t)
            (servers '("192.168.1.1"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dnsmasq-configuration
 Data type representing the configuration of dnsmasq.
@@ -32604,7 +32604,7 @@ monitoring tool, as it will apply custom settings each time a new power
 source is detected.  More information can be found at
 @uref{https://linrunner.de/en/tlp/tlp.html, TLP home page}.
 
-@deffn {Scheme Variable} tlp-service-type
+@defvar tlp-service-type
 The service type for the TLP tool.  The default settings are optimised
 for battery life on most systems, but you can tweak them to your heart's
 content by adding a valid @code{tlp-configuration}:
@@ -32614,7 +32614,7 @@ content by adding a valid @code{tlp-configuration}:
           (cpu-scaling-governor-on-ac (list "performance"))
           (sched-powersave-on-bat? #t)))
 @end lisp
-@end deffn
+@end defvar
 
 Each parameter definition is preceded by its type; for example,
 @samp{boolean foo} indicates that the @code{foo} parameter should be
@@ -33286,7 +33286,7 @@ services.
 virtualization management system.  This daemon runs on host servers
 and performs required management tasks for virtualized guests.
 
-@deffn {Scheme Variable} libvirt-service-type
+@defvar libvirt-service-type
 This is the type of the @uref{https://libvirt.org, libvirt daemon}.
 Its value must be a @code{libvirt-configuration}.
 
@@ -33296,7 +33296,7 @@ Its value must be a @code{libvirt-configuration}.
           (unix-sock-group "libvirt")
           (tls-port "16555")))
 @end lisp
-@end deffn
+@end defvar
 
 @c Auto-generated with (generate-libvirt-documentation)
 Available @code{libvirt-configuration} fields are:
@@ -33853,7 +33853,7 @@ standalone daemon, the main @code{libvirtd} daemon can be restarted without
 risk of losing logs.  The @code{virtlogd} daemon has the ability to re-exec()
 itself upon receiving @code{SIGUSR1}, to allow live upgrades without downtime.
 
-@deffn {Scheme Variable} virtlog-service-type
+@defvar virtlog-service-type
 This is the type of the virtlog daemon.
 Its value must be a @code{virtlog-configuration}.
 
@@ -33862,7 +33862,7 @@ Its value must be a @code{virtlog-configuration}.
          (virtlog-configuration
           (max-clients 1000)))
 @end lisp
-@end deffn
+@end defvar
 
 @deftypevar {@code{libvirt} parameter} package libvirt
 Libvirt package.
@@ -36854,7 +36854,7 @@ space and provides a more responsive and configurable alternative to the
 in-kernel OOM killer.  It is useful to prevent the system from becoming
 unresponsive when it runs out of memory.
 
-@deffn {Scheme Variable} earlyoom-service-type
+@defvar earlyoom-service-type
 The service type for running @command{earlyoom}, the Early OOM daemon.
 Its value must be a @code{earlyoom-configuration} object, described
 below.  The service can be instantiated in its default configuration
@@ -36863,7 +36863,7 @@ with:
 @lisp
 (service earlyoom-service-type)
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} earlyoom-configuration
 This is the configuration record for the @code{earlyoom-service-type}.
@@ -36913,7 +36913,7 @@ modules at boot.  This is especially useful for modules that don't
 autoload and need to be manually loaded, as is the case with
 @code{ddcci}.
 
-@deffn {Scheme Variable} kernel-module-loader-service-type
+@defvar kernel-module-loader-service-type
 The service type for loading loadable kernel modules at boot with
 @command{modprobe}.  Its value must be a list of strings representing
 module names.  For example loading the drivers provided by
@@ -36939,7 +36939,7 @@ parameters, can be done as follow:
                    %base-services))
   (kernel-loadable-modules (list ddcci-driver-linux)))
 @end lisp
-@end deffn
+@end defvar
 
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
@@ -37031,7 +37031,7 @@ memory.  The Linux Kernel documentation has more information about
 @uref{https://www.kernel.org/doc/html/latest/admin-guide/blockdev/zram.html,zram}
 devices.
 
-@deffn {Scheme Variable} zram-device-service-type
+@defvar zram-device-service-type
 This service creates the zram block device, formats it as swap and
 enables it as a swap device.  The service's value is a
 @code{zram-device-configuration} record.
@@ -37064,7 +37064,7 @@ up not being used much for the reasons described there.
 @end table
 
 @end deftp
-@end deffn
+@end defvar
 
 @node Hurd Services
 @subsection Hurd Services
@@ -37246,10 +37246,10 @@ The @uref{https://linuxwacom.github.io/, inputattach} service allows you to
 use input devices such as Wacom tablets, touchscreens, or joysticks with the
 Xorg display server.
 
-@deffn {Scheme Variable} inputattach-service-type
+@defvar inputattach-service-type
 Type of a service that runs @command{inputattach} on a device and
 dispatches events from it.
-@end deffn
+@end defvar
 
 @deftp {Data Type} inputattach-configuration
 @table @asis
