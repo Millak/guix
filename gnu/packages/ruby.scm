@@ -12226,6 +12226,27 @@ development kit for Ruby.")
     (home-page "https://github.com/mtsmfm/language_server-protocol-ruby")
     (license license:expat)))
 
+(define-public ruby-subprocess
+  (package
+    (name "ruby-subprocess")
+    (version "1.5.6")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "subprocess" version))
+              (sha256
+               (base32
+                "0v49ahfx9b75qg42sl8a3l367g2vihc16g8z5f2raxpxjl1wh2s2"))))
+    (build-system ruby-build-system)
+    ;; Do not run the test suite, as there its test dependency ruby-sord would
+    ;; introduce a cycle with ruby-sorbet-runtime.
+    (arguments (list #:tests? #f))
+    (native-inputs (list ruby-minitest ruby-pry))
+    (synopsis "Ruby library to control and communicate with spawned processes")
+    (description "This Ruby library is controlling and communicating with
+spawned processes.  It is designed after Python's @code{subprocess} module.")
+    (home-page "https://github.com/stripe/subprocess")
+    (license license:expat)))
+
 (define-public ruby-syntax-tree
   (package
     (name "ruby-syntax-tree")
