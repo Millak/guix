@@ -12226,6 +12226,44 @@ development kit for Ruby.")
     (home-page "https://github.com/mtsmfm/language_server-protocol-ruby")
     (license license:expat)))
 
+(define-public ruby-syntax-tree
+  (package
+    (name "ruby-syntax-tree")
+    (version "6.1.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby-syntax-tree/syntax_tree")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0356lgvqp22nkqlrgszf7myfdg4arclg278awh34zyby1cx6hb2k"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; The tests rely on the Gem being installed, so move the check
+          ;; phase after the install phase.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "GEM_PATH" (string-append
+                                  #$output "/lib/ruby/vendor_ruby:"
+                                  (getenv "GEM_PATH")))
+              (when tests?
+                (invoke "rake" "test")))))))
+    (native-inputs (list ruby-rubocop-ast ruby-simplecov))
+    (propagated-inputs (list ruby-prettier-print))
+    (synopsis "Fast Ruby parser and formatter")
+    (description "Syntax Tree is a suite of tools built on top of the internal
+CRuby parser.  It provides the ability to generate a syntax tree from source,
+as well as the tools necessary to inspect and manipulate that syntax tree.  It
+can be used to build formatters, linters, language servers, and more.")
+    (home-page "https://github.com/ruby-syntax-tree/syntax_tree")
+    (license license:expat)))
+
 (define-public ruby-mustache
   (package
     (name "ruby-mustache")
