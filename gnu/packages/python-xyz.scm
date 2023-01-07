@@ -22106,13 +22106,7 @@ files, and Makefiles.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1q7ajgqjfivxqsqgnhp4lc4p6jxyh4zprcsdbpd6dw54inaf0av5"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-        (replace 'check
-          (lambda _
-            (invoke "py.test"))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/Suor/whatever")
