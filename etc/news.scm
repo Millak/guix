@@ -26,6 +26,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
+        (title
+          (en "Linux-libre 4.9 removed due to end of upstream support"))
+        (body
+          (en "The linux-libre 4.9 kernel series has reach the end of its life,
+and is no longer supported upstream.  For this reason, it has been removed from
+GNU Guix.")))
+
  (entry (commit "dfc6957a5af7d179d4618eb19d4f555c519bc6f2")
         (title
          (en "New @code{customize-linux} procedure")
