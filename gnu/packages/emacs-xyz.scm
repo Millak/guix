@@ -7794,24 +7794,21 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
     (license license:gpl3+)))
 
 (define-public emacs-compat
-  (let ((commit "8a32564247ad3baee571252a2004c3d347962d01")) ;version bump
-    (package
-     (name "emacs-compat")
-     (version "29.1.0.1")
-     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~pkal/compat")
-                    (commit commit)))
-              (file-name (git-file-name name version))
+  (package
+    (name "emacs-compat")
+    (version "29.1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/"
+                                  "compat-" version ".tar"))
               (sha256
                (base32
-                "0wxv63cqrw7pd5vg5hwh48bf326766x6mzz1qw8shhkrycr43fks"))))
-     (build-system emacs-build-system)
-     (home-page "https://git.sr.ht/~pkal/compat")
-     (synopsis "Emacs Lisp Compatibility Library")
-     (description
-      "To allow for the usage of Emacs functions and macros that are defined
+                "0b371rilcbkjmb1fdaib7fnrngkm1q7xdmv15a3xvmpalvfwmrwc"))))
+    (build-system emacs-build-system)
+    (home-page "https://git.sr.ht/~pkal/compat")
+    (synopsis "Emacs Lisp Compatibility Library")
+    (description
+     "To allow for the usage of Emacs functions and macros that are defined
 in newer versions of Emacs, @code{compat.el} provides definitions that
 are installed ONLY if necessary.  These reimplementations of functions
 and macros are at least subsets of the actual implementations.  Be
