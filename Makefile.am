@@ -428,8 +428,6 @@ AUX_FILES =						\
   gnu/packages/aux-files/linux-libre/4.14-arm.conf	\
   gnu/packages/aux-files/linux-libre/4.14-i686.conf	\
   gnu/packages/aux-files/linux-libre/4.14-x86_64.conf	\
-  gnu/packages/aux-files/linux-libre/4.9-i686.conf	\
-  gnu/packages/aux-files/linux-libre/4.9-x86_64.conf	\
   gnu/packages/aux-files/pack-audit.c			\
   gnu/packages/aux-files/python/sanity-check.py		\
   gnu/packages/aux-files/python/sanity-check-next.py	\

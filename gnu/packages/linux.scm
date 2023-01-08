@@ -588,21 +588,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.337")
-(define-public linux-libre-4.9-gnu-revision "gnu1")
-(define deblob-scripts-4.9
-  (linux-libre-deblob-scripts
-   linux-libre-4.9-version
-   linux-libre-4.9-gnu-revision
-   (base32 "0nai5m4rbh37qaj1xf2qj7656l2gacfh0847q5d07y22b048fq5n")
-   (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
-(define-public linux-libre-4.9-pristine-source
-  (let ((version linux-libre-4.9-version)
-        (hash (base32 "1imkn3dbxsr35br79sp9s2r9hy1xqvsm652icbsf6rn7apnam1ak")))
-    (make-linux-libre-source version
-                             (%upstream-linux-source version hash)
-                             deblob-scripts-4.9)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -669,10 +654,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-4.14-source
   (source-with-patches linux-libre-4.14-pristine-source
-                       (list %boot-logo-patch)))
-
-(define-public linux-libre-4.9-source
-  (source-with-patches linux-libre-4.9-pristine-source
                        (list %boot-logo-patch)))
 
 
@@ -786,11 +767,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-4.14-version
                              linux-libre-4.14-gnu-revision
                              linux-libre-4.14-source))
-
-(define-public linux-libre-headers-4.9
-  (make-linux-libre-headers* linux-libre-4.9-version
-                             linux-libre-4.9-gnu-revision
-                             linux-libre-4.9-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1157,13 +1133,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      linux-libre-4.14-source
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "powerpc64le-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-4.9
-  (make-linux-libre* linux-libre-4.9-version
-                     linux-libre-4.9-gnu-revision
-                     linux-libre-4.9-source
-                     '("x86_64-linux" "i686-linux" "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of

@@ -57,7 +57,6 @@
             %test-linux-libre-5.4
             %test-linux-libre-4.19
             %test-linux-libre-4.14
-            %test-linux-libre-4.9
             %test-halt
             %test-root-unmount
             %test-cleanup
@@ -583,9 +582,6 @@ functionality tests, using the given KERNEL.")
 
 (define %test-linux-libre-4.14
   (test-basic-os linux-libre-4.14))
-
-(define %test-linux-libre-4.9
-  (test-basic-os linux-libre-4.9))
 
 
 ;;;
