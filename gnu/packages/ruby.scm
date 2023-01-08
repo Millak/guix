@@ -10468,6 +10468,45 @@ patterns.")
 concurrent-ruby gem when running under the Matz's Ruby Interpreter (MRI, also
 known as CRuby).")))
 
+(define-public ruby-concurrent-ruby-edge
+  (package
+    (inherit ruby-concurrent-ruby)
+    (name "ruby-concurrent-ruby-edge")
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-unwanted-gemspecs
+            (lambda _
+              (for-each delete-file
+                        '("concurrent-ruby.gemspec"
+                          "concurrent-ruby-ext.gemspec"))))
+          ;; The tests rely on the Gem being installed, so move the check
+          ;; phase after the install phase.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))
+              (when tests?
+                (invoke "rake" "ci")))))))
+    (native-inputs
+     (list ruby-rake-compiler
+           ruby-rake-compiler-dock
+           ruby-rspec
+           ruby-timecop
+           ruby-yard))
+    (propagated-inputs
+     (list ruby-concurrent-ruby ruby-concurrent-ruby-ext))
+    (synopsis "Edge features and additions to the @code{concurrent-ruby} gem")
+    (description "The @code{concurrent-ruby-edge} gem includes
+@code{concurrent-ruby} features that are under active development and may
+change frequently.  They are expected not to keep backward
+compatibility (there may also lack tests and documentation), although semantic
+versions are obeyed though.  Features developed in @code{concurrent-ruby-edge}
+are expected to move to @code{concurrent-ruby} when final.")))
+
 (define-public ruby-pkg-config
   (package
     (name "ruby-pkg-config")
