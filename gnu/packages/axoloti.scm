@@ -33,11 +33,11 @@
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages java)
   #:use-module (gnu packages java-graphics)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages textutils)
-  #:use-module (gnu packages version-control)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages version-control))
 
 ;; XXX The patch does not apply to libusb 1.0.24.
 ;; See https://github.com/axoloti/axoloti/issues/464

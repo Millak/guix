@@ -110,6 +110,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages java)
   #:use-module (gnu packages java-compression)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages libffi)
