@@ -1520,6 +1520,7 @@ format.")
          (sha256
           (base32
            "1g4rn7ai3nfxmpppc8qbpv8b18wnsld29y5xa58cv9b8pf3pbwnj"))))
+      (arguments '())
       (native-inputs
        (list pkg-config autoconf automake texinfo)))))
 
