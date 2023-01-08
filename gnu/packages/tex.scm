@@ -8315,15 +8315,18 @@ and Karl Berry.")
 (define-public lyx
   (package
     (name "lyx")
-    (version "2.3.6.1")
+    (version "2.3.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://ftp.lyx.org/pub/lyx/stable/"
-                                  (version-major+minor version) ".x/"
-                                  "lyx-" version ".tar.xz"))
+              ;; XXX: Upstream version is 2.3.7, but they released a suffixed
+              ;; tarball.  This can probably be removed after next release.
+              (uri (let ((suffix "-1"))
+                     (string-append "https://ftp.lyx.org/pub/lyx/stable/"
+                                    (version-major+minor version) ".x/"
+                                    "lyx-" version suffix ".tar.xz")))
               (sha256
                (base32
-                "0y7sx804ral14py5jwmb3icvyd6rsw806dfclw0qx28r6iix5gn6"))
+                "1vfq30big55038bcymh83xh9dqp9wn0gnw0f6644xcw6zdj8igir"))
               (modules '((guix build utils)))
               (snippet
                '(begin
