@@ -2565,8 +2565,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                     ;; Delete included gradle jar
                     (delete-file-recursively "gradle/wrapper")
                     ;; Delete pre-built native libraries
-                    (delete-file-recursively "libs")
-                    #t))))
+                    (delete-file-recursively "libs")))))
       (build-system ant-build-system)
       (arguments
        `(#:make-flags '("-file" "build/build.xml")
@@ -2582,8 +2581,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
              (lambda _
                (substitute* "build/build.xml"
                  (("\"jar-test\" depends=\"clean, ")
-                  "\"jar-test\" depends=\""))
-               #t))
+                  "\"jar-test\" depends=\""))))
            (add-after 'unpack 'unpack-build-resources
              (lambda* (#:key inputs #:allow-other-keys)
                (copy-recursively (assoc-ref inputs "build-resources")
@@ -2600,8 +2598,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                  (("<build-info.*") "")
                  (("\\$\\{revision.number\\}")
                   ,(number->string revision))
-                 (("\\$\\{version.number\\}") ,base-version))
-               #t))
+                 (("\\$\\{version.number\\}") ,base-version))))
            (add-after 'unpack-build-resources 'fix-dependencies
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "../build_resources/ant/build-common.xml"
@@ -2651,8 +2648,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                  ;; Remove leftovers from removing @Friend
                  (substitute* "h5ar/HDF5ArchiverTest.java"
                    (("\\{ HDF5Archiver.class, IdCache.class, LinkRecord.class \\}\\)")
-                    "")))
-               #t))
+                    "")))))
            (add-before 'configure 'build-native-library
              (lambda* (#:key inputs #:allow-other-keys)
                (let ((jdk  (assoc-ref inputs "jdk"))
@@ -2677,14 +2673,12 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                                    ,(string-append hdf5 "/lib/libhdf5.a")
                                    "-o" "libjhdf5.so" "-lz")))
                  (install-file "source/c/libjhdf5.so"
-                               (string-append "libs/native/jhdf5/" dir))
-                 #t)))
+                               (string-append "libs/native/jhdf5/" dir)))))
            ;; In the "check" phase we only build the test executable.
            (add-after 'check 'run-tests
              (lambda _
                (invoke "java" "-jar" "targets/dist/sis-jhdf5-test.jar")
-               (delete-file "targets/dist/sis-jhdf5-test.jar")
-               #t))
+               (delete-file "targets/dist/sis-jhdf5-test.jar")))
            (replace 'install
              (install-jars "targets/dist")))))
       (inputs
