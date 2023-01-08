@@ -9078,16 +9078,16 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.3.56")
+    (version "0.3.63")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/PipeWire/pipewire")
+                    (url "https://gitlab.freedesktop.org/pipewire/pipewire")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
+                "1pkngynvhxc6iyv75gsyqjy18ky4si9dhvpavb9xwq5xj71nj0hr"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -9112,7 +9112,6 @@ types and interfaces and translates so that the X server can use them.")
                   libva
                   pulseaudio
                   sbc
-                  sdl2
                   vulkan-headers
                   vulkan-loader))
     (home-page "https://pipewire.org/")
