@@ -5228,34 +5228,34 @@ NetSurf project.")
                          (find-files bin))
                #t))))))
     (native-inputs
-     `(("which" ,which)
-       ("gettext" ,gettext-minimal)
-       ("subversion" ,subversion)
-       ("git" ,git)
-       ("bazaar" ,bazaar)
-       ("cvs" ,cvs)
-       ("mercurial" ,mercurial)))
+     (list which
+           gettext-minimal
+           subversion
+           git
+           bazaar
+           cvs
+           mercurial))
     (inputs
-     `(("python" ,python-wrapper)
-       ("perl-authen-passphrase" ,perl-authen-passphrase)
-       ("perl-cgi-simple" ,perl-cgi-simple)
-       ("perl-db-file" ,perl-db-file)
-       ("perl-file-mimeinfo" ,perl-file-mimeinfo)
-       ("perl-html-tagset" ,perl-html-tagset)
-       ("perl-image-magick" ,perl-image-magick)
-       ("perl-ipc-run" ,perl-ipc-run)
-       ("perl-lwpx-paranoidagent" ,perl-lwpx-paranoidagent)
-       ("perl-xml-feed" ,perl-xml-feed)
-       ("perl-xml-sax" ,perl-xml-sax)
-       ("perl-xml-twig" ,perl-xml-twig)
-       ("perl-yaml-tiny" ,perl-yaml-tiny)
+     (list python-wrapper
+           perl-authen-passphrase
+           perl-cgi-simple
+           perl-db-file
+           perl-file-mimeinfo
+           perl-html-tagset
+           perl-image-magick
+           perl-ipc-run
+           perl-lwpx-paranoidagent
+           perl-xml-feed
+           perl-xml-sax
+           perl-xml-twig
+           perl-yaml-tiny
 
-       ;; Ikiwiki loads po4a as a library, and thus needs the po4a dependencies
-       ;; available.  Duplicate them here.
-       ;; XXX: It would be ideal to hard code these in po4a somehow.
-       ("perl-syntax-keyword-try" ,perl-syntax-keyword-try)
-       ("perl-xs-parse-keyword" ,perl-xs-parse-keyword)
-       ("po4a" ,po4a)))
+           ;; Ikiwiki loads po4a as a library, and thus needs the po4a dependencies
+           ;; available.  Duplicate them here.
+           ;; XXX: It would be ideal to hard code these in po4a somehow.
+           perl-syntax-keyword-try
+           perl-xs-parse-keyword
+           po4a))
     (propagated-inputs
      (list perl-cgi-formbuilder
            perl-cgi-session
