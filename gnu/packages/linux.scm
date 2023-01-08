@@ -9110,11 +9110,18 @@ types and interfaces and translates so that the X server can use them.")
                   gstreamer
                   jack-2
                   ldacbt
+                  libfdk
+                  libfreeaptx
+                  libsndfile
+                  libusb
+                  openssl ; raop sink
                   libva
                   pulseaudio
+                  readline ; for pw-cli
                   sbc
                   vulkan-headers
-                  vulkan-loader))
+                  vulkan-loader
+                  webrtc-audio-processing))
     (home-page "https://pipewire.org/")
     (synopsis "Server and user space API to deal with multimedia pipelines")
     (description
