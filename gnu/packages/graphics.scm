@@ -2136,7 +2136,7 @@ a complete and conforming implementation of the OpenXR API made by Khronos.")
 (define-public azpainter
   (package
     (name "azpainter")
-    (version "3.0.5")
+    (version "3.0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2145,7 +2145,7 @@ a complete and conforming implementation of the OpenXR API made by Khronos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iplp3p8pw9q44kb43hrk89sv2aff6bdy9fk58j2v6k5lqbk6kvf"))))
+                "0lk74drrksk340fzyzvrq0ixwj498adshbp505cj163qsqnndj7y"))))
     (build-system gnu-build-system) ;actually a home grown build system
     (arguments
      (list #:tests? #f
