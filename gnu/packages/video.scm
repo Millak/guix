@@ -3457,7 +3457,7 @@ be used for realtime video capture via Linux-specific APIs.")
       mbedtls-apache
       mesa
       pciutils
-      pipewire-0.3
+      pipewire
       pulseaudio
       python
       qtbase-5

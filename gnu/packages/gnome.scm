@@ -8118,7 +8118,7 @@ to display dialog boxes from the commandline and shell scripts.")
            ;; theme to please libxcursor.
            adwaita-icon-theme
            libxcursor                   ;for XCURSOR_PATH
-           pipewire-0.3
+           pipewire
            python
            python-dbus
            python-dbusmock
@@ -8160,7 +8160,7 @@ to display dialog boxes from the commandline and shell scripts.")
            libxkbfile
            libxrandr
            libxtst
-           pipewire-0.3
+           pipewire
            startup-notification
            sysprof
            upower

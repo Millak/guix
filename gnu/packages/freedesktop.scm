@@ -1372,7 +1372,7 @@ compositor.")
            mtdev
            linux-pam
            pango
-           pipewire-0.3
+           pipewire
            wayland-protocols-next
            xorg-server-xwayland))
     (propagated-inputs
@@ -2693,7 +2693,7 @@ compatible with the well-known scripts of the same name.")
        ("libportal" ,libportal)
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
-       ("pipewire" ,pipewire-0.3)
+       ("pipewire" ,pipewire)
        ("fuse" ,fuse-3)))
     (arguments
      `(#:configure-flags
@@ -2866,7 +2866,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
                   grim
                   iniparser
                   libinih
-                  pipewire-0.3
+                  pipewire
                   slurp
                   wayland
                   wayland-protocols))

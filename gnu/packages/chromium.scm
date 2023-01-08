@@ -941,7 +941,7 @@
            opus+custom
            pango
            pciutils
-           pipewire-0.3
+           pipewire
            pulseaudio
            qtbase-5
            re2

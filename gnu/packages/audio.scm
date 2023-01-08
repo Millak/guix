@@ -6017,7 +6017,7 @@ and DSD streams.")
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib
                   libxkbcommon
-                  pipewire-0.3
+                  pipewire
                   qtbase
                   qtsvg))
     (native-inputs (list pkg-config))

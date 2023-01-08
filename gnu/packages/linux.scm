@@ -28,7 +28,7 @@
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2018, 2020 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2020, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Manuel Graf <graf@init.at>
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
@@ -9078,7 +9078,7 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.2.7")
+    (version "0.3.56")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9087,23 +9087,34 @@ types and interfaces and translates so that the X server can use them.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q5wrqnhhs6r49p8yvkw1pl0cnsd4rndxy4h5lvdydwgf1civcwc"))
-              (patches (search-patches "pipewire-0.2.7-fno-common.patch"))))
+                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
     (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("-Dsystemd=false")))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
+              "-Dsystemd=disabled"
+              "-Dsession-managers=[]"
+              "-Dman=enabled")))
     (native-inputs
-     (list pkg-config))
-    (inputs
-     (list alsa-lib
-           dbus
-           eudev
-           ffmpeg-4
-           gstreamer
-           gst-plugins-base
-           libva
-           sbc
-           sdl2))
+     (list pkg-config
+           python-docutils))
+    (inputs (list alsa-lib
+                  avahi
+                  bluez
+                  dbus
+                  eudev
+                  ffmpeg
+                  gst-plugins-base
+                  gstreamer
+                  jack-2
+                  ldacbt
+                  libva
+                  pulseaudio
+                  sbc
+                  sdl2
+                  vulkan-headers
+                  vulkan-loader))
     (home-page "https://pipewire.org/")
     (synopsis "Server and user space API to deal with multimedia pipelines")
     (description
@@ -9116,40 +9127,6 @@ with supporting Flatpak applications being the primary goal.  Alongside Wayland
 and Flatpak we expect PipeWire to provide a core building block for the future
 of Linux application development.")
     (license license:lgpl2.0+)))
-
-(define-public pipewire-0.3
-  (package
-    (inherit pipewire)
-    (name "pipewire")
-    (version "0.3.56")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PipeWire/pipewire")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
-              "-Dsystemd=disabled"
-              "-Dsession-managers=[]"
-              "-Dman=enabled")))
-    (native-inputs
-     (modify-inputs (package-native-inputs pipewire)
-       (prepend python-docutils)))
-    (inputs (modify-inputs (package-inputs pipewire)
-              (replace "ffmpeg" ffmpeg)
-              (prepend avahi
-                       bluez
-                       jack-2
-                       ldacbt
-                       pulseaudio
-                       vulkan-loader
-                       vulkan-headers)))))
 
 (define-public wireplumber
   (package
@@ -9172,7 +9149,7 @@ of Linux application development.")
     (native-inputs
      (list `(,glib "bin")
            pkg-config))
-    (inputs (list dbus elogind glib lua pipewire-0.3))
+    (inputs (list dbus elogind glib lua pipewire))
     (home-page "https://gitlab.freedesktop.org/pipewire/wireplumber")
     (synopsis "Session / policy manager implementation for PipeWire")
     (description "WirePlumber is a modular session / policy manager for

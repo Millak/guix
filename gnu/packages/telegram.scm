@@ -338,7 +338,7 @@
               openh264
               openssl
               opus
-              pipewire-0.3
+              pipewire
               protobuf))
        (synopsis "WebRTC support for Telegram Desktop")
        (description "WebRTC-for-Telegram-Desktop is a custom WebRTC fork by
