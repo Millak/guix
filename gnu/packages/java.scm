@@ -2558,7 +2558,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
       (inputs
        (list java-cisd-base))
       (native-inputs
-       `(("ecj" ,java-ecj-3.5)
+       `(("ecj" ,java-ecj)
          ("build-resources"
           ,(origin
              (method svn-fetch)
