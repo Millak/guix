@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
 ;;; Copyright © 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2019-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2019 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
@@ -69,6 +69,7 @@
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages linux)
@@ -57752,19 +57753,22 @@ Rust bindings.")
 (define-public rust-tectonic-bridge-graphite2-0.2
   (package
     (name "rust-tectonic-bridge-graphite2")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bridge_graphite2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1qsq337y4p3z832kmn2xcaj6xh3z6ngr0izn4jgdjrymnsq1ac81"))))
+        (base32 "1lkpqxz0y7m2ib1g0k850g2d7g6z8062niaw7vgvql33f2n94xkr"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list graphite2))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Expose the graphite2 library to Rust/Cargo")
     (description
@@ -57824,28 +57828,31 @@ bindings.")
 bindings.")
     (license license:expat)))
 
-(define-public rust-tectonic-bundles-0.2
+(define-public rust-tectonic-bundles-0.3
   (package
     (name "rust-tectonic-bundles")
-    (version "0.2.0")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_bundles" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17wwgfcl5nzvgzil7ayi42ljjkx9ffv4c35v6ywcmzdhk9zhki2f"))))
+        (base32 "1ccykccvddvx31h1dfkzdxsnqhgyls21ks2qbvad09m1jzqzl5nj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-flate2" ,rust-flate2-1)
         ("rust-fs2" ,rust-fs2-0.4)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
-        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.3)
+        ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-zip" ,rust-zip-0.5))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list openssl zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "Tectonic ``bundle'' (support file collection) implementations")
     (description
@@ -57904,21 +57911,20 @@ providing whatever fiddly features are needed to enable the Tectonic build
 process.")
     (license license:expat)))
 
-(define-public rust-tectonic-docmodel-0.1
+(define-public rust-tectonic-docmodel-0.2
   (package
     (name "rust-tectonic-docmodel")
-    (version "0.1.2")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_docmodel" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b5vdqcnjbbda6am0mb7qyxyc6pn8v0pqz0w10xia87ycyyfflxw"))))
+        (base32 "1z3yhw7h11a5xggi3bjip3kz1931mjl5gi53vx2zwd89rg99373y"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-toml" ,rust-toml-0.5))))
@@ -57987,21 +57993,20 @@ document model, including the @file{Tectonic.toml} file.")
 output to HTML.")
     (license license:expat)))
 
-(define-public rust-tectonic-engine-xetex-0.2
+(define-public rust-tectonic-engine-xetex-0.4
   (package
     (name "rust-tectonic-engine-xetex")
-    (version "0.2.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xetex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1kn9gxkgf3jbwif14n1kmp869s4b69khhc7iwm78qqpmy79lrhkw"))))
+        (base32 "1ckx9sg1nwyghg7142zk5x75g32f4s19psk6c50y0n0ikf5xq9sd"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
@@ -58010,8 +58015,16 @@ output to HTML.")
         ("rust-tectonic-bridge-harfbuzz" ,rust-tectonic-bridge-harfbuzz-0.2)
         ("rust-tectonic-cfg-support" ,rust-tectonic-cfg-support-0.1)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-pdf-io" ,rust-tectonic-pdf-io-0.1)
-        ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1))))
+        ("rust-tectonic-pdf-io" ,rust-tectonic-pdf-io-0.4)
+        ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.2))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fontconfig
+           freetype
+           graphite2
+           icu4c
+           zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "XeTeX engine as a reusable crate")
     (description
@@ -58019,27 +58032,29 @@ output to HTML.")
 engine as a reusable crate.")
     (license license:expat)))
 
-(define-public rust-tectonic-engine-xdvipdfmx-0.1
+(define-public rust-tectonic-engine-xdvipdfmx-0.4
   (package
     (name "rust-tectonic-engine-xdvipdfmx")
-    (version "0.1.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_engine_xdvipdfmx" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "00kjsxzlzlc8lmh8mhb5v6iw1lb7rq09ski2mjzlyw604dcq1k3p"))))
+        (base32 "0ajmb9pcq5pak28z4bhsnxfgfy9hpr1mm02bp6ph16nvdn8m2ir1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.16)
-        ("rust-cc" ,rust-cc-1)
+     `(#:cargo-inputs
+       (("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
-        ("rust-tectonic-pdf-io" ,rust-tectonic-pdf-io-0.1))))
+        ("rust-tectonic-pdf-io" ,rust-tectonic-pdf-io-0.4))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libpng zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "@code{xdvipdfmx} program as a reusable crate")
     (description
@@ -58192,23 +58207,22 @@ streams.")
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.1)
         ("rust-thiserror" ,rust-thiserror-1))))))
 
-(define-public rust-tectonic-pdf-io-0.1
+(define-public rust-tectonic-pdf-io-0.4
   (package
     (name "rust-tectonic-pdf-io")
-    (version "0.1.0")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_pdf_io" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ry5g6vh54i8ih8rjlz3ci7b8gi4irsllg34pv57mcwrhwcikg6x"))))
+        (base32 "0rmk31n96r299k5j2ydyqryzywn2dbfbnl1rwh0lx86zaqac9qcn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
         ("rust-tectonic-bridge-flate" ,rust-tectonic-bridge-flate-0.1)
         ("rust-tectonic-cfg-support" ,rust-tectonic-cfg-support-0.1)
         ("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
@@ -58287,29 +58301,36 @@ types for reporting status messages to a user.")
 used by XeTeX and Tectonic.")
     (license license:expat)))
 
-(define-public rust-tectonic-xetex-layout-0.1
+(define-public rust-tectonic-xetex-layout-0.2
   (package
     (name "rust-tectonic-xetex-layout")
-    (version "0.1.0")
+    (version "0.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic_xetex_layout" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "063fq6bhhqac30bg6vmcfpd9zikn0p6rd189avz0f34ka4mir0yi"))))
+        (base32 "102z52hhazz2b2qsbr93dn2y4q0103s548ixzws40il7imzg99ly"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1)
-        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.1)
+        ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
         ("rust-tectonic-bridge-freetype2" ,rust-tectonic-bridge-freetype2-0.2)
         ("rust-tectonic-bridge-graphite2" ,rust-tectonic-bridge-graphite2-0.2)
         ("rust-tectonic-bridge-harfbuzz" ,rust-tectonic-bridge-harfbuzz-0.2)
         ("rust-tectonic-bridge-icu" ,rust-tectonic-bridge-icu-0.2)
         ("rust-tectonic-cfg-support" ,rust-tectonic-cfg-support-0.1)
         ("rust-tectonic-dep-support" ,rust-tectonic-dep-support-0.1))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list fontconfig
+           freetype
+           graphite2
+           icu4c
+           zlib))
     (home-page "https://tectonic-typesetting.github.io/")
     (synopsis "XeTeX's font loading and layout interface encapsulation")
     (description

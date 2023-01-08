@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
@@ -1314,14 +1314,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.8.2")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "041v887a3aybrkn5fnrjwy95wxfk4npl6lj8ar8dnidjmfh92bka"))))
+        (base32 "1q4mz2c32gfypx33zlzgd1q9h4322jrk13fzvsf8h676ylclqzpc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
@@ -1341,18 +1341,17 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
-        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.2)
-        ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.1)
+        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.3)
+        ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.2)
         ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
         ("rust-tectonic-engine-spx2html" ,rust-tectonic-engine-spx2html-0.1)
-        ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.1)
-        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.2)
+        ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.4)
+        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.4)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
         ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
-        ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-toml" ,rust-toml-0.5)
