@@ -4904,6 +4904,7 @@ sample library.")
            pulseaudio                   ; required by rtaudio
            qtbase-5
            qtsvg-5
+           qtwayland-5
            rtaudio
            rubberband
            sord))
