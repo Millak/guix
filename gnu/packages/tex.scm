@@ -58,6 +58,7 @@
   #:use-module (guix svn-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
@@ -69,7 +70,6 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages libreoffice)
@@ -8359,8 +8359,10 @@ and Karl Berry.")
                    (with-output-to-file "src/tests/check_layout.cmake"
                      (const #t)))))))
     (inputs
-     (list boost
-           hunspell ; Note: Could also use aspell instead.
+     ;; XXX: Aspell library is properly detected during build, but hunspell
+     ;; isn't.  So we use the former here.
+     (list aspell
+           boost
            libx11
            mythes
            python
