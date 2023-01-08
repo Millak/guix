@@ -89,6 +89,7 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix gexp)
+  #:use-module (guix modules)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages xml)
@@ -12336,6 +12337,56 @@ as well as the tools necessary to inspect and manipulate that syntax tree.  It
 can be used to build formatters, linters, language servers, and more.")
     (home-page "https://github.com/ruby-syntax-tree/syntax_tree")
     (license license:expat)))
+
+(define sorbet-version "0.5.10610.20230106174520-1fa668010")
+
+(define sorbet-monorepo
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/sorbet/sorbet")
+          (commit sorbet-version)))
+    (file-name (string-append "sorbet-" sorbet-version "-checkout"))
+    (sha256
+     (base32
+      "0f21dl06alxwn6xgdxyrkd58plmmsv04z2bcls9ld4cfzsrs5537"))))
+
+(define (make-sorbet-gem-source gem)
+  "Return the source of GEM, a sub-directory."
+  (computed-file
+   (string-append "ruby-sorbet-" gem "-" sorbet-version "-checkout")
+   (with-imported-modules (source-module-closure '((guix build utils)))
+     #~(begin
+         (use-modules (guix build utils))
+         (copy-recursively (string-append #$sorbet-monorepo
+                                          "/gems/sorbet-" #$gem)
+                           #$output)))))
+
+(define-public ruby-sorbet-runtime
+  (package
+    (name "ruby-sorbet-runtime")
+    (version sorbet-version)
+    (source (make-sorbet-gem-source "runtime"))
+    (build-system ruby-build-system)
+    ;; 25 out of 841 tests currently fail, seemingly due to invalid
+    ;; assumptions about file names in the build environment (see:
+    ;; https://github.com/sorbet/sorbet/issues/6650).
+    (arguments (list #:tests? #f))
+    (native-inputs
+     (list ruby-minitest
+           ruby-mocha
+           ruby-rubocop
+           ruby-rubocop-performance
+           ruby-concurrent-ruby
+           ruby-pry
+           ruby-pry-byebug
+           ruby-parser
+           ruby-subprocess))
+    (synopsis "Runtime type checking component for Sorbet")
+    (description "Sorbet's runtime type checking component.  Sorbet is a
+powerful type checker for Ruby.")
+    (home-page "https://sorbet.org")
+    (license license:asl2.0)))
 
 (define-public ruby-mustache
   (package
