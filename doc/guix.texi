@@ -113,6 +113,7 @@ Copyright @copyright{} 2022⁠–⁠2023 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
+Copyright @copyright{} 2023 Karl Hallsby
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -4316,6 +4317,25 @@ The command to install its documentation is:
 @example
 guix install glib:doc
 @end example
+
+While the colon syntax works for command-line specification of package
+outputs, it will not work when using a package @emph{variable} in Scheme
+code.  For example, to add the documentation of @code{glib} to the
+globally installed packages of an @code{operating-system} (see
+@ref{operating-system Reference}), a list of two items, the first one
+being the package @emph{variable} and the second one the name of the
+output to select (a string), must be used instead:
+
+@lisp
+(use-modules (gnu packages glib))
+;; glib-with-documentation is the Guile symbol for the glib package
+(operating-system
+ ...
+ (packages
+  (append
+   (list (list glib-with-documentation "doc"))
+         %base-packages)))
+@end lisp
 
 Some packages install programs with different ``dependency footprints''.
 For instance, the WordNet package installs both command-line tools and
