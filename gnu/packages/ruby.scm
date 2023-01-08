@@ -435,6 +435,25 @@ packaging native C and Java extensions in Ruby.")
     (home-page "https://github.com/rake-compiler/rake-compiler")
     (license license:expat)))
 
+(define-public ruby-rake-compiler-dock
+  (package
+    (name "ruby-rake-compiler-dock")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "rake-compiler-dock" version))
+              (sha256
+               (base32
+                "0yr5f72irvhmnk12q7bbr4qw0xwy7diqkbcvb4lygjbg7rvk3k8k"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))      ;test suite requires docker
+    (synopsis "Cross compiler environment for building Ruby gems")
+    (description "The code{rake-compiler-dock} gem provides a cross compiler
+environment for building gems on a variety of platforms (GNU/Linux, JRuby,
+Windows and Mac).")
+    (home-page "https://github.com/rake-compiler/rake-compiler-dock")
+    (license license:expat)))
+
 (define-public ruby-rsync
   (package
     (name "ruby-rsync")
