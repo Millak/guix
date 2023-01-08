@@ -2493,10 +2493,6 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
       (arguments
        `(#:make-flags '("-file" "build/build.xml")
          #:tests? #f ; there are no tests
-         ;; There are weird build failures with JDK8, such as: "The type
-         ;; java.io.ObjectInputStream cannot be resolved. It is indirectly
-         ;; referenced from required .class files"
-         #:jdk ,icedtea-7
          #:modules ((guix build ant-build-system)
                     (guix build utils)
                     (guix build java-utils)
