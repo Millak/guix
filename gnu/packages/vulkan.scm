@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;; Copyright © 2022 dan <i@dan.games>
@@ -235,8 +235,6 @@ interpretation of the specifications for these languages.")
                              (dirname (dirname
                                        (search-input-directory
                                         %build-inputs "include/vulkan"))))
-              (string-append "-DGOOGLETEST_INSTALL_DIR="
-                             (getcwd) "/source/external/googletest")
               "-DBUILD_TESTS=ON")
        #:phases
        #~(modify-phases %standard-phases
@@ -248,14 +246,19 @@ interpretation of the specifications for these languages.")
                  (substitute* "loader/vulkan.pc.in"
                    (("^includedir=.*")
                     (string-append "includedir=" vulkan-headers "\n"))))))
-           (add-after 'unpack 'unpack-googletest
-             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-               (let ((gtest (search-input-directory (or native-inputs inputs)
-                                                    "googletest")))
-                 (copy-recursively (dirname gtest)
-                                   "external/googletest")))))))
+           (add-after 'unpack 'use-system-googletest
+             (lambda _
+               ;; Inform the build system that googletest is already built.
+               (substitute* "CMakeLists.txt"
+                 ((".*if\\(TARGET gtest\\)")
+                  (string-append "    find_package(GTest REQUIRED)\n"
+                                 "    if(true)")))
+               ;; Use the namespaced variable.
+               (substitute* "tests/framework/CMakeLists.txt"
+                 (("PUBLIC gtest ")
+                  "PUBLIC GTest::gtest ")))))))
     (native-inputs
-     (list (package-source googletest)
+     (list googletest
            libxrandr
            pkg-config
            python
