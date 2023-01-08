@@ -1293,7 +1293,7 @@ types are supported.")
                (base32
                 "0044c105r3q9vpl17pv3phl1b79kjm1llhkakqgiasixyav01blh"))))
     (build-system guile-build-system)
-    (inputs (list guile-2.2))
+    (inputs (list guile-3.0))
     (arguments
      (list
       #:scheme-file-regexp "^aa-tree\\.scm"
