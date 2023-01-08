@@ -2553,8 +2553,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
                  (("\\$\\{version.number\\}") ,base-version)
                  ;; Don't use custom ant tasks.
                  (("recursive-jar") "jar")
-                 (("<project-classpath.*") ""))
-               #t))
+                 (("<project-classpath.*") ""))))
            (replace 'install (install-jars "targets/dist")))))
       (inputs
        (list java-cisd-base))
