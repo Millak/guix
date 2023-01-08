@@ -7,7 +7,7 @@
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -283,14 +283,14 @@ propagated by default) such as @code{gst-plugins-good} and
   (package
     (inherit webkitgtk)
     (name "webkitgtk")
-    (version "2.38.2")                  ;webkit2gtk5
+    (version "2.38.3")                  ;webkit2gtk5
     (source (origin
               (inherit (package-source webkitgtk))
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0gpy17lwsv5x0xl7p7nf1xqsg8c4yxmd3b4wv6s87xaijs4q5szk"))))
+               (base32 "0njac0878ksh53gn50phly1vzvj08q7g5aclncv6k324xp8h3w21"))))
     (build-system cmake-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
