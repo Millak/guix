@@ -9612,6 +9612,9 @@ easy, safe, and automatic.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:test-options (list ,@(if (target-riscv64?)
+                                `("--timeout-multiplier" "5")
+                                '()))
        #:configure-flags
        ;; Otherwise, the RUNPATH will lack the final path component.
        (list (string-append "-Dc_link_args=-Wl,-rpath="
