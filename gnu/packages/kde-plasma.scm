@@ -1242,7 +1242,7 @@ KDE Frameworks components.")
                   libglvnd ; For OpenGLES
                   libinput
                   libxkbcommon
-                  pipewire-0.3
+                  pipewire
                   plasma-framework
                   plasma-wayland-protocols
                   qtbase-5
@@ -1657,7 +1657,7 @@ the KDE Plasma 5 desktop.")
                   libxtst
                   networkmanager-qt
                   phonon
-                  pipewire-0.3
+                  pipewire
                   plasma-framework
                   plasma-wayland-protocols
                   pulseaudio
@@ -2319,7 +2319,7 @@ sensors, process information and other system resources.")
                   libxtst
                   networkmanager-qt
                   phonon
-                  pipewire-0.3
+                  pipewire
                   plasma-framework
                   plasma-workspace-wallpapers
                   plasma-wayland-protocols
