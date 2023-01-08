@@ -1924,7 +1924,6 @@ videoformats depend on the configuration flags of ffmpeg.")
                     "https://download.videolan.org/pub/videolan/vlc/"
                     (car (string-split version #\-))
                     "/vlc-" version ".tar.xz"))
-              (patches (search-patches "vlc-dav1d-compat.patch"))
               (sha256
                (base32
                 "1v7db9icrb12yz7banq2wvpjpvqfrj031yj1kf5smn35qcwl82ap"))))
