@@ -8330,8 +8330,7 @@ and Karl Berry.")
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "3rdparty")
-                  #t))))
+                  (delete-file-recursively "3rdparty")))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
@@ -8352,8 +8351,8 @@ and Karl Berry.")
                                   "src/support/filetools.cpp")
                      (("\"python ")
                       (string-append "\""
-                                     (assoc-ref inputs "python")
-                                     "/bin/python3 ")))))
+                                     (search-input-file inputs "/bin/python3")
+                                     " ")))))
                (add-after 'unpack 'add-missing-test-file
                  (lambda _
                    ;; Create missing file that would cause tests to fail.
@@ -8369,7 +8368,7 @@ and Karl Berry.")
            qtsvg-5
            zlib))
     (propagated-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-fonts-ec)))))
+     (list (texlive-updmap.cfg (list texlive-fonts-ec))))
     (native-inputs
      (list python pkg-config))
     (home-page "https://www.lyx.org/")
