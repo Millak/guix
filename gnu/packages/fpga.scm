@@ -150,77 +150,75 @@ For synthesis, the compiler generates netlists in the desired format.")
               (file-name (git-file-name name version))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (substitute* "Makefile"
-                    (("ABCREV = .*") "ABCREV = default\n"))
-                  #t))))
+               #~(begin
+                   (substitute* "Makefile"
+                     (("ABCREV = .*") "ABCREV = default\n"))))))
     (build-system gnu-build-system)
     (arguments
-     `(#:test-target "test"
-       #:make-flags (list "CC=gcc"
-                          "CXX=g++"
-                          (string-append "PREFIX=" %output))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'fix-paths
-           (lambda _
-             (substitute* "./passes/cmds/show.cc"
-               (("exec xdot") (string-append "exec " (which "xdot")))
-               (("dot -") (string-append (which "dot") " -"))
-               (("fuser") (which "fuser")))
-             #t))
-         (replace 'configure
-           (lambda* (#:key inputs (make-flags '()) #:allow-other-keys)
-             (apply invoke "make" "config-gcc" make-flags)))
-         (add-after 'configure 'prepare-abc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((sourceabc (assoc-ref inputs "abc"))
-                    (sourcebin (string-append sourceabc "/bin"))
-                    (source (string-append sourcebin "/abc")))
-                   (mkdir-p "abc")
-                   (call-with-output-file "abc/Makefile"
-                     (lambda (port)
-                       (format port ".PHONY: all\nall:\n\tcp -f abc abc-default\n")))
-                   (copy-file source "abc/abc")
-                   (invoke "chmod" "+w" "abc/abc"))))
+     (list
+      #:test-target "test"
+      #:make-flags #~(list "CC=gcc"
+                           "CXX=g++"
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "./passes/cmds/show.cc"
+                (("exec xdot")
+                 (string-append "exec " (search-input-file inputs
+                                                           "/bin/xdot")))
+                (("dot -")
+                 (string-append (search-input-file inputs "/bin/dot") " -"))
+                (("fuser")
+                 (search-input-file inputs "/bin/fuser")))))
+          (replace 'configure
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "config-gcc" make-flags)))
+          (add-after 'configure 'prepare-abc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (mkdir-p "abc")
+              (call-with-output-file "abc/Makefile"
+                (lambda (port)
+                  (format port ".PHONY: all\nall:\n\tcp -f abc abc-default\n")))
+              (copy-file (search-input-file inputs "/bin/abc") "abc/abc")
+              (invoke "chmod" "+w" "abc/abc")))
           (add-before 'check 'fix-iverilog-references
-             (lambda* (#:key inputs native-inputs #:allow-other-keys)
-               (let* ((xinputs (or native-inputs inputs))
-                      (xdirname (assoc-ref xinputs "iverilog"))
-                      (iverilog (string-append xdirname "/bin/iverilog")))
-                     (substitute* '("./manual/CHAPTER_StateOfTheArt/synth.sh"
-                                    "./manual/CHAPTER_StateOfTheArt/validate_tb.sh"
-                                    "./techlibs/ice40/tests/test_bram.sh"
-                                    "./techlibs/ice40/tests/test_ffs.sh"
-                                    "./techlibs/xilinx/tests/bram1.sh"
-                                    "./techlibs/xilinx/tests/bram2.sh"
-                                    "./tests/bram/run-single.sh"
-                                    "./tests/realmath/run-test.sh"
-                                    "./tests/simple/run-test.sh"
-                                    "./tests/techmap/mem_simple_4x1_runtest.sh"
-                                    "./tests/tools/autotest.sh"
-                                    "./tests/vloghtb/common.sh")
-                        (("if ! which iverilog") "if ! true")
-                        (("iverilog ") (string-append iverilog " "))
-                        (("iverilog_bin=\".*\"") (string-append "iverilog_bin=\""
-                                                                iverilog "\"")))
-                     #t))))))
+            (lambda* (#:key inputs native-inputs #:allow-other-keys)
+              (let ((iverilog (search-input-file (or native-inputs inputs)
+                                                 "/bin/iverilog")))
+                (substitute* '("./manual/CHAPTER_StateOfTheArt/synth.sh"
+                               "./manual/CHAPTER_StateOfTheArt/validate_tb.sh"
+                               "./techlibs/ice40/tests/test_bram.sh"
+                               "./techlibs/ice40/tests/test_ffs.sh"
+                               "./techlibs/xilinx/tests/bram1.sh"
+                               "./techlibs/xilinx/tests/bram2.sh"
+                               "./tests/bram/run-single.sh"
+                               "./tests/realmath/run-test.sh"
+                               "./tests/simple/run-test.sh"
+                               "./tests/techmap/mem_simple_4x1_runtest.sh"
+                               "./tests/tools/autotest.sh"
+                               "./tests/vloghtb/common.sh")
+                  (("if ! which iverilog") "if ! true")
+                  (("iverilog ") (string-append iverilog " "))
+                  (("iverilog_bin=\".*\"") (string-append "iverilog_bin=\""
+                                                          iverilog "\"")))))))))
     (native-inputs
-     (list pkg-config
-           python
-           bison
+     (list bison
            flex
            gawk ; for the tests and "make" progress pretty-printing
-           tcl ; tclsh for the tests
-           iverilog)) ; for the tests
+           iverilog ; for the tests
+           pkg-config
+           python
+           tcl)) ; tclsh for the tests
     (inputs
-     (list tcl
-           readline
-           libffi
+     (list abc
            graphviz
+           libffi
            psmisc
-           xdot
-           abc))
+           readline
+           tcl
+           xdot))
     (propagated-inputs
      (list z3)) ; should be in path for yosys-smtbmc
     (home-page "https://yosyshq.net/yosys/")
