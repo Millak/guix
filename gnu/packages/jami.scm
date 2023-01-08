@@ -487,10 +487,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
-;;; Remove when 2023 comes.
-(define-public libring
-  (deprecated-package "libring" libjami))
-
 (define-public jami
   (package
     (name "jami")
@@ -582,14 +578,6 @@ centralized server and leaves the power of privacy in the hands of the user.
 It supports the SIP and IAX protocols, as well as decentralized calling using
 P2P-DHT.")
     (license license:gpl3+)))
-
-;;; Remove when 2023 comes.
-(define-public jami-gnome
-  (deprecated-package "jami-gnome" jami))
-
-;;; Remove when 2023 comes.
-(define-public jami-qt
-  (deprecated-package "jami-qt" jami))
 
 (define-public jami-docs
   ;; There aren't any tags, so use the latest commit.

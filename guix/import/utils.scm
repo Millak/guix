@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -54,10 +54,12 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-71)
   #:export (factorize-uri
 
             flatten
+            false-if-networking-error
 
             url-fetch
             guix-hash-url
@@ -121,6 +123,26 @@ of the string VERSION is replaced by the symbol 'version."
     ((elem memo)
      (cons elem memo)))
    '() lst))
+
+(define (call-with-networking-exception-handler thunk)
+  "Invoke THUNK, returning #f if one of the usual networking exception is
+thrown."
+  (catch #t
+    (lambda ()
+      (guard (c ((http-get-error? c) #f))
+        (thunk)))
+    (lambda (key . args)
+      ;; Return false and move on upon connection failures and bogus HTTP
+      ;; servers.
+      (unless (memq key '(gnutls-error tls-certificate-error
+                                       system-error getaddrinfo-error
+                                       bad-header bad-header-component))
+        (apply throw key args))
+      #f)))
+
+(define-syntax-rule (false-if-networking-error exp)
+  "Evaluate EXP, returning #f if a networking-related exception is thrown."
+  (call-with-networking-exception-handler (lambda () exp)))
 
 (define (url-fetch url file-name)
   "Save the contents of URL to FILE-NAME.  Return #f on failure."

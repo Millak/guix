@@ -49,6 +49,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system maven)
+  #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages attr)
@@ -8693,6 +8694,26 @@ sources by ANTLR.")
     (synopsis "ANTL C++ runtime library")
     (description "This package contains the C++ runtime library used with C++
 generated sources by ANTLR.")))
+
+(define-public java-antlr4-runtime-python
+  (package
+    (inherit java-antlr4-runtime)
+    (name "java-antlr4-runtime-python")
+    (outputs '("out"))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; tests require antlr
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "runtime/Python3"))))))
+    (native-inputs (list pkg-config))
+    (inputs (list `(,util-linux "lib"))) ; libuuid
+    (synopsis "ANTLR Python runtime library")
+    (description "This package contains the Python runtime library used with
+Python generated sources by ANTLR.")))
 
 (define-public antlr4
   (package

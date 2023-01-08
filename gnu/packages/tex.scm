@@ -58,6 +58,7 @@
   #:use-module (guix svn-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages aspell)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
@@ -8314,20 +8315,22 @@ and Karl Berry.")
 (define-public lyx
   (package
     (name "lyx")
-    (version "2.3.6.1")
+    (version "2.3.7")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://ftp.lyx.org/pub/lyx/stable/"
-                                  (version-major+minor version) ".x/"
-                                  "lyx-" version ".tar.xz"))
+              ;; XXX: Upstream version is 2.3.7, but they released a suffixed
+              ;; tarball.  This can probably be removed after next release.
+              (uri (let ((suffix "-1"))
+                     (string-append "https://ftp.lyx.org/pub/lyx/stable/"
+                                    (version-major+minor version) ".x/"
+                                    "lyx-" version suffix ".tar.xz")))
               (sha256
                (base32
-                "0y7sx804ral14py5jwmb3icvyd6rsw806dfclw0qx28r6iix5gn6"))
+                "1vfq30big55038bcymh83xh9dqp9wn0gnw0f6644xcw6zdj8igir"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "3rdparty")
-                  #t))))
+                  (delete-file-recursively "3rdparty")))))
     (build-system qt-build-system)
     (arguments
      (list #:configure-flags
@@ -8348,16 +8351,18 @@ and Karl Berry.")
                                   "src/support/filetools.cpp")
                      (("\"python ")
                       (string-append "\""
-                                     (assoc-ref inputs "python")
-                                     "/bin/python3 ")))))
+                                     (search-input-file inputs "/bin/python3")
+                                     " ")))))
                (add-after 'unpack 'add-missing-test-file
                  (lambda _
                    ;; Create missing file that would cause tests to fail.
                    (with-output-to-file "src/tests/check_layout.cmake"
                      (const #t)))))))
     (inputs
-     (list boost
-           hunspell ; Note: Could also use aspell instead.
+     ;; XXX: Aspell library is properly detected during build, but hunspell
+     ;; isn't.  So we use the former here.
+     (list aspell
+           boost
            libx11
            mythes
            python
@@ -8365,7 +8370,7 @@ and Karl Berry.")
            qtsvg-5
            zlib))
     (propagated-inputs
-     `(("texlive" ,(texlive-updmap.cfg (list texlive-fonts-ec)))))
+     (list (texlive-updmap.cfg (list texlive-fonts-ec))))
     (native-inputs
      (list python pkg-config))
     (home-page "https://www.lyx.org/")

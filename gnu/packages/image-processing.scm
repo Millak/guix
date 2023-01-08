@@ -1748,3 +1748,31 @@ segmentation.")
       "Image and video labeling tool supporting different shapes like
 polygons, rectangles, circles, lines, points and VOC/COCO export.")
     (license license:gpl3+)))
+
+(define-public charls
+  (package
+    (name "charls")
+    (version "2.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/team-charls/charls/")
+                    (commit (string-append version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g3f1rfimk30rqmi7ic4i5vfphyqbbpsyyhwqq1iss9wjwaz2vs5"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DCMAKE_BUILD_TYPE:STRING=Release"
+                           "-DBUILD_SHARED_LIBS=On")))
+    (native-inputs (list git pkg-config))
+    (home-page "https://github.com/team-charls/charls")
+    (synopsis "Library for using JPEG-LS compliant images")
+    (description
+     "CharLS is a codec library that can be used to build applications that
+can handle JPEG-LS compliant images.  In the application you are writing you
+can call the CharLS codec and pass it images (sometimes called raster bitmaps),
+ to have them encoded to JPEG-LS, or JPEG-LS streams, which CharLS will decode
+to images.")
+    (license license:bsd-3)))

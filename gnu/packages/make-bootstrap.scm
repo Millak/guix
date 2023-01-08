@@ -748,6 +748,12 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                  "guile-default-utf8.patch"
                                  "guile-linux-syscalls.patch")))
 
+(define %guile-static-3.0
+  (make-guile-static guile-3.0-latest
+                     '("guile-2.2-default-utf8.patch"
+                       "guile-3.0-linux-syscalls.patch"
+                       "guile-3.0-relocatable.patch")))
+
 (define* (make-guile-static-stripped static-guile)
   (package
     (inherit static-guile)
@@ -796,11 +802,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 (define %guile-static-stripped
   ;; A stripped static Guile 3.0 binary, for use in initrds
   ;; and during bootstrap.
-  (make-guile-static-stripped
-   (make-guile-static guile-3.0
-                      '("guile-2.2-default-utf8.patch"
-                        "guile-3.0-linux-syscalls.patch"
-                        "guile-3.0-relocatable.patch"))))
+  (make-guile-static-stripped %guile-static-3.0))
 
 (define (tarball-package pkg)
   "Return a package containing a tarball of PKG."

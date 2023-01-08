@@ -38,12 +38,12 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
   #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libevent)
-  #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lxqt)
@@ -338,7 +338,7 @@
               openh264
               openssl
               opus
-              pipewire-0.3
+              pipewire
               protobuf))
        (synopsis "WebRTC support for Telegram Desktop")
        (description "WebRTC-for-Telegram-Desktop is a custom WebRTC fork by

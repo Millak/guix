@@ -28,7 +28,7 @@
 ;;; Copyright © 2017 nee <nee-git@hidamari.blue>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
-;;; Copyright © 2018, 2020 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2020, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2018 Manuel Graf <graf@init.at>
 ;;; Copyright © 2018, 2019 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2018 Vasile Dumitrascu <va511e@yahoo.com>
@@ -480,7 +480,22 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;; The current "stable" kernels. That is, the most recently released major
 ;; versions that are still supported upstream.
 
-(define-public linux-libre-6.0-version "6.0.16")
+(define-public linux-libre-6.1-version "6.1.4")
+(define-public linux-libre-6.1-gnu-revision "gnu")
+(define deblob-scripts-6.1
+  (linux-libre-deblob-scripts
+   linux-libre-6.1-version
+   linux-libre-6.1-gnu-revision
+   (base32 "0p1cg5khpp8xkfaqy0cnp1m273z3xiz0m97rkrkggz9gr2klrjym")
+   (base32 "0va28vs359r0rfmzh8pw58055kgd8sb62gi78vrg9p8wmj4s87v6")))
+(define-public linux-libre-6.1-pristine-source
+  (let ((version linux-libre-6.1-version)
+        (hash (base32 "17jmli5ddc3i0ryjq2y4f0m5wmfhpppiz3b0m60k7c8blr7zda4a")))
+   (make-linux-libre-source version
+                            (%upstream-linux-source version hash)
+                            deblob-scripts-6.1)))
+
+(define-public linux-libre-6.0-version "6.0.18")
 (define-public linux-libre-6.0-gnu-revision "gnu")
 (define deblob-scripts-6.0
   (linux-libre-deblob-scripts
@@ -490,7 +505,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "16g2bin3xay30zfss1vlb7pwcss5giaxaksp4v1gk05wn51wjrqr")))
 (define-public linux-libre-6.0-pristine-source
   (let ((version linux-libre-6.0-version)
-        (hash (base32 "1r2wf3hf7yxl7lxma7plyi8pk3dmlsrpm763rf0g1h8ilsy72844")))
+        (hash (base32 "0ncljhhc6frjb9l6zpr4nk2yhj854d3gdizn6a6qsl8ij9ln3dls")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-6.0)))
@@ -513,7 +528,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.15)))
 
-(define-public linux-libre-5.10-version "5.10.161")
+(define-public linux-libre-5.10-version "5.10.162")
 (define-public linux-libre-5.10-gnu-revision "gnu1")
 (define deblob-scripts-5.10
   (linux-libre-deblob-scripts
@@ -523,7 +538,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0a96g4pjdgwvxn2wpz6rfc8nwdlkw138r9pp66kvfrrn08i313ii")))
 (define-public linux-libre-5.10-pristine-source
   (let ((version linux-libre-5.10-version)
-        (hash (base32 "0ya04njrxr4d37zkxvivmn5f0bdvcb504pyp9ahwz8nqpk8gdaks")))
+        (hash (base32 "05yjgp1la5flwqji9b6j7nbdgg5fwzv2ph536v4f9pzza3y01i1f")))
    (make-linux-libre-source version
                             (%upstream-linux-source version hash)
                             deblob-scripts-5.10)))
@@ -573,7 +588,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.336")
+(define-public linux-libre-4.9-version "4.9.337")
 (define-public linux-libre-4.9-gnu-revision "gnu1")
 (define deblob-scripts-4.9
   (linux-libre-deblob-scripts
@@ -583,7 +598,7 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
    (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
 (define-public linux-libre-4.9-pristine-source
   (let ((version linux-libre-4.9-version)
-        (hash (base32 "032hgfvn7za2v49jjc3pdzx0cfglrmjkbl2d3pz857yc0q9y2v8z")))
+        (hash (base32 "1imkn3dbxsr35br79sp9s2r9hy1xqvsm652icbsf6rn7apnam1ak")))
     (make-linux-libre-source version
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.9)))
@@ -615,6 +630,12 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (inherit source)
     (patches (append (origin-patches source)
                      patches))))
+
+(define-public linux-libre-6.1-source
+  (source-with-patches linux-libre-6.1-pristine-source
+                       (list %boot-logo-patch
+                             %linux-libre-arm-export-__sync_icache_dcache-patch
+                             (search-patch "linux-libre-infodocs-target.patch"))))
 
 (define-public linux-libre-6.0-source
   (source-with-patches linux-libre-6.0-pristine-source
@@ -730,6 +751,11 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
     (synopsis "GNU Linux-Libre kernel headers")
     (description "Headers of the Linux-Libre kernel.")
     (license license:gpl2)))
+
+(define-public linux-libre-headers-6.1
+  (make-linux-libre-headers* linux-libre-6.1-version
+                             linux-libre-6.1-gnu-revision
+                             linux-libre-6.1-source))
 
 (define-public linux-libre-headers-6.0
   (make-linux-libre-headers* linux-libre-6.0-version
@@ -1070,6 +1096,14 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 ;;;
 ;;; Generic kernel packages.
 ;;;
+
+(define-public linux-libre-6.1
+  (make-linux-libre* linux-libre-6.1-version
+                     linux-libre-6.1-gnu-revision
+                     linux-libre-6.1-source
+                     '("x86_64-linux" "i686-linux" "armhf-linux"
+                       "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
+                     #:configuration-file kernel-config))
 
 (define-public linux-libre-6.0
   (make-linux-libre* linux-libre-6.0-version
@@ -9044,32 +9078,50 @@ types and interfaces and translates so that the X server can use them.")
 (define-public pipewire
   (package
     (name "pipewire")
-    (version "0.2.7")
+    (version "0.3.63")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/PipeWire/pipewire")
+                    (url "https://gitlab.freedesktop.org/pipewire/pipewire")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q5wrqnhhs6r49p8yvkw1pl0cnsd4rndxy4h5lvdydwgf1civcwc"))
-              (patches (search-patches "pipewire-0.2.7-fno-common.patch"))))
+                "1pkngynvhxc6iyv75gsyqjy18ky4si9dhvpavb9xwq5xj71nj0hr"))))
     (build-system meson-build-system)
     (arguments
-     '(#:configure-flags '("-Dsystemd=false")))
+     (list
+      #:configure-flags
+      #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
+              "-Dsystemd=disabled"
+              "-Dsession-managers=[]"
+              "-Dsysconfdir=/etc"
+              "-Dman=enabled")))
     (native-inputs
-     (list pkg-config))
-    (inputs
-     (list alsa-lib
-           dbus
-           eudev
-           ffmpeg-4
-           gstreamer
-           gst-plugins-base
-           libva
-           sbc
-           sdl2))
+     (list pkg-config
+           python-docutils))
+    (inputs (list alsa-lib
+                  avahi
+                  bluez
+                  dbus
+                  eudev
+                  ffmpeg
+                  gst-plugins-base
+                  gstreamer
+                  jack-2
+                  ldacbt
+                  libfdk
+                  libfreeaptx
+                  libsndfile
+                  libusb
+                  openssl ; raop sink
+                  libva
+                  pulseaudio
+                  readline ; for pw-cli
+                  sbc
+                  vulkan-headers
+                  vulkan-loader
+                  webrtc-audio-processing))
     (home-page "https://pipewire.org/")
     (synopsis "Server and user space API to deal with multimedia pipelines")
     (description
@@ -9083,44 +9135,10 @@ and Flatpak we expect PipeWire to provide a core building block for the future
 of Linux application development.")
     (license license:lgpl2.0+)))
 
-(define-public pipewire-0.3
-  (package
-    (inherit pipewire)
-    (name "pipewire")
-    (version "0.3.56")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/PipeWire/pipewire")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "066g4ri2k8pdflclvr2919f6x98gmqrqyj1xyiingw2nn2pwgcf1"))))
-    (arguments
-     (list
-      #:configure-flags
-      #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
-              "-Dsystemd=disabled"
-              "-Dsession-managers=[]"
-              "-Dman=enabled")))
-    (native-inputs
-     (modify-inputs (package-native-inputs pipewire)
-       (prepend python-docutils)))
-    (inputs (modify-inputs (package-inputs pipewire)
-              (replace "ffmpeg" ffmpeg)
-              (prepend avahi
-                       bluez
-                       jack-2
-                       ldacbt
-                       pulseaudio
-                       vulkan-loader
-                       vulkan-headers)))))
-
 (define-public wireplumber
   (package
     (name "wireplumber")
-    (version "0.4.11")
+    (version "0.4.13")
     (source
      (origin
        (method git-fetch)
@@ -9130,7 +9148,7 @@ of Linux application development.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09pg5cki1xn9bwn3bcjdc54z7b4iqkk1dhn560qyjcglq8xg7nnw"))))
+        (base32 "07psjb7rxsigwnwnzmw2y767vhyyha7cn8i8dgq80rzhwgl0sgv7"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dsystemd=disabled"
@@ -9138,7 +9156,7 @@ of Linux application development.")
     (native-inputs
      (list `(,glib "bin")
            pkg-config))
-    (inputs (list dbus elogind glib lua pipewire-0.3))
+    (inputs (list dbus elogind glib lua pipewire))
     (home-page "https://gitlab.freedesktop.org/pipewire/wireplumber")
     (synopsis "Session / policy manager implementation for PipeWire")
     (description "WirePlumber is a modular session / policy manager for

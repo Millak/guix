@@ -12,15 +12,15 @@ msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-10-17 19:19+0000\n"
-"Last-Translator: Tobias Geerinckx-Rice <fedora@tobias.gr>\n"
+"PO-Revision-Date: 2022-12-24 17:58+0000\n"
+"Last-Translator: Vanhoorne Michael <michaeltjevanhoorne@gmail.com>\n"
 "Language-Team: Dutch <https://translate.fedoraproject.org/projects/guix/guix/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -344,7 +344,7 @@ msgstr ""
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "Initialiseer de hostnaam van de machine."
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."

@@ -4,21 +4,22 @@
 # Sebastian Rasmussen <sebras@gmail.com>, 2019, 2020.
 # Xinglu Chen <public@yoctocell.xyz>, 2021, 2022.
 # Thomas Kaellman <thokall@me.com>, 2022.
+# Simon Josefsson <simon@josefsson.org>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: guix 1.2.0-pre2\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-09-18 11:19+0000\n"
-"Last-Translator: Thomas Kaellman <thokall@me.com>\n"
+"PO-Revision-Date: 2022-12-25 23:20+0000\n"
+"Last-Translator: Simon Josefsson <simon@josefsson.org>\n"
 "Language-Team: Swedish <https://translate.fedoraproject.org/projects/guix/guix/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #: gnu.scm:81
@@ -3913,7 +3914,7 @@ msgid ""
 "Usage: guix package [OPTION]...\n"
 "Install, remove, or upgrade packages in a single transaction.\n"
 msgstr ""
-"Användning: guis package [FLAGGA]…\n"
+"Användning: guix package [FLAGGA]…\n"
 "Installera, ta bort eller uppgradera paket i en enstaka transaktion.\n"
 
 #: guix/scripts/package.scm:433
@@ -4166,9 +4167,9 @@ msgid ""
 "Install the given PACKAGES.\n"
 "This is an alias for 'guix package -i'.\n"
 msgstr ""
-"Användning: gui install [FLAGGA] PAKET…\n"
+"Användning: guix install [FLAGGA] PAKET…\n"
 "Installera givna PAKET.\n"
-"Detta är ett alias för ”guis package -i”.\n"
+"Detta är ett alias för ”guix package -i”.\n"
 
 #: guix/scripts/install.scm:71
 #, fuzzy

@@ -193,6 +193,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages jupyter)
   #:use-module (gnu packages kerberos)
   #:use-module (gnu packages libevent)
@@ -3931,6 +3932,8 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
 (define-public python-jsonschema-next
   (package
     (inherit python-jsonschema)
+    ;; XXX: Update to the latest version requires new build system - Hatch
+    ;; https://hatch.pypa.io/
     (version "4.5.1")
     (source
      (origin
@@ -3938,25 +3941,9 @@ compare, diff, and patch JSON and JSON-like structures in Python.")
        (uri (pypi-uri "jsonschema" version))
        (sha256
         (base32 "1z0x22691jva7lwfcfh377jdmlz68zhiawxzl53k631l34k8hvbw"))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments python-jsonschema)
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            ;; XXX: PEP 517 manual build/install procedures copied from
-            ;; python-isort.
-            (replace 'build
-              (lambda _
-                ;; ZIP does not support timestamps before 1980.
-                (setenv "SOURCE_DATE_EPOCH" "315532800")
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-            (replace 'install
-              (lambda* (#:key outputs #:allow-other-keys)
-                (let ((whl (car (find-files "dist" "\\.whl$"))))
-                  (invoke "pip" "--no-cache-dir" "--no-input"
-                          "install" "--no-deps" "--prefix" #$output whl))))))))
-    (native-inputs (list python-pypa-build
-                         python-setuptools-scm
-                         python-twisted))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-setuptools-scm python-twisted))
     (propagated-inputs
      (list python-attrs
            python-importlib-metadata
@@ -14512,6 +14499,46 @@ config files.")
     (home-page "https://github.com/DiffSK/configobj")
     (license license:bsd-3)))
 
+(define-public python-omegaconf
+  (package
+    (name "python-omegaconf")
+    (version "2.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/omry/omegaconf")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet #~(begin
+                           (delete-file-recursively "build_helpers/bin")
+                           (substitute* "build_helpers/build_helpers.py"
+                             (("java") "antlr4")
+                             (("\"-jar\",") "")
+                             (("str\\(build_dir / \"bin\" / \"antlr.*\"\\),") ""))))
+              (sha256
+               (base32
+                "00rw1rkjycn0jdg3jmar6jdxb1pcb21jclm5g1921s9z8f5ii5dh"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'loosen-requirements
+                 (lambda _
+                   (substitute* "requirements/base.txt"
+                     (("antlr4-python3-runtime==")
+                      "antlr4-python3-runtime>=")))))))
+    (propagated-inputs (list java-antlr4-runtime-python
+                             python-pydevd
+                             python-pyyaml))
+    (native-inputs (list icedtea antlr4 python-pytest python-pytest-mock))
+    (home-page "https://github.com/omry/omegaconf")
+    (synopsis "Flexible configuration system")
+    (description "OmegaConf is a hierarchical configuration system and
+supports merging configurations from multiple sources.  It provides a
+consistent API regardless of how the configuration was created.")
+    (license license:bsd-3)))
+
 (define-public python-configargparse
   (package
     (name "python-configargparse")
@@ -15845,8 +15872,8 @@ fast xml and html manipulation.")
        ;; whatever) so this transformation needs to be done before the tests
        ;; can be run.  Maybe we could add a build step to transform beforehand
        ;; but it could be annoying/difficult.
-       ;; We can enable tests for the Python 2 version, though, and do below.
        #:tests? #f))
+    (native-inputs (list python-setuptools-57)) ;for use_2to3 support
     (home-page "https://bitbucket.org/runeh/anyjson/")
     (synopsis
      "Wraps best available JSON implementation in a common interface")
@@ -18101,7 +18128,7 @@ characters, mouse support, and auto suggestions.")
              (setenv "HOME" "/tmp"))))))
     (propagated-inputs
      (list python-click python-future python-six))
-    (home-page "https://github.com/amperser/proselint")
+    (home-page "http://proselint.com/")
     (synopsis "Linter for prose")
     (description "@code{python-proselint} is a linter for English prose, that
 scans through a file and detects issues.")
@@ -19213,35 +19240,6 @@ OpenSSH Server for example.")
 working with Portable Executable (PE) files.  It makes to most information
 from the header, as well as section details and data available.")
     (license license:expat)))
-
-(define-public python-pyev
-  (package
-    (name "python-pyev")
-    (version "0.9.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "pyev" version))
-        (sha256
-         (base32
-          "0rf603lc0s6zpa1nb25vhd8g4y337wg2wyz56i0agsdh7jchl0sx"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f ; no test suite
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libev (search-input-file inputs "/lib/libev.so.4")))
-               (substitute* "setup.py"
-                 (("libev_dll_name = find_library\\(\\\"ev\\\"\\)")
-                  (string-append "libev_dll_name = \"" libev "\"")))))))))
-    (inputs
-     (list libev))
-    (home-page "https://github.com/gabrielfalcao/pyev")
-    (synopsis "Python libev interface")
-    (description "Pyev provides a Python interface to libev.")
-    (license license:gpl3)))
 
 (define-public python-imagesize
   (package
@@ -22091,8 +22089,8 @@ filters can be used to process the data as it passes through.")
     (license license:asl2.0)))
 
 (define-public python-gyp
-  (let ((commit "5e2b3ddde7cda5eb6bc09a5546a76b00e49d888f")
-        (revision "0"))
+  (let ((commit "9d09418933ea2f75cc416e5ce38d15f62acd5c9a")
+        (revision "1"))
     (package
       (name "python-gyp")
       ;; Google does not release versions,
@@ -22109,8 +22107,9 @@ filters can be used to process the data as it passes through.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0fr7nxcrk292djmxzpcjaphnsd123k31gp8jnd91vwknhq6snmv9"))))
+           "0ay99rc5msqjpjl7fy1l69f8mvn08wnh2pgr08ijdih9z88xaa5x"))))
       (build-system python-build-system)
+      (propagated-inputs (list python-six))
       (home-page "https://gyp.gsrc.io/")
       (synopsis "GYP is a Meta-Build system")
       (description
@@ -22132,13 +22131,7 @@ files, and Makefiles.")
        (file-name (git-file-name name version))
        (sha256
         (base32 "1q7ajgqjfivxqsqgnhp4lc4p6jxyh4zprcsdbpd6dw54inaf0av5"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-        (replace 'check
-          (lambda _
-            (invoke "py.test"))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest))
     (home-page "https://github.com/Suor/whatever")
@@ -22160,13 +22153,7 @@ functions by partial application of operators.")
        (sha256
         (base32 "1s98vkjnq3zq71737hn8xa15kssvmy1sfzsll3vrlv53902418mw"))
        (file-name (git-file-name name version))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "py.test"))))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-whatever))
     (home-page "https://github.com/Suor/funcy")
@@ -27172,6 +27159,12 @@ be necessary when using @code{cmd}.")
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-queue-import
+           (lambda _
+             ;; Adjust Queue import for Python 3.  Remove for versions >=0.4.0.
+             (substitute* "tests/threadsafety.py"
+               (("from Queue import Queue")
+                "from queue import Queue"))))
          (add-before 'build 'qualify-libtidy
            (lambda* (#:key inputs #:allow-other-keys)
              (let ((libtidy (search-input-file inputs "/lib/libtidy.so")))

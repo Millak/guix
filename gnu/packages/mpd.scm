@@ -164,7 +164,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                   libsndfile
                   libvorbis
                   opus
-                  pipewire-0.3
+                  pipewire
                   pulseaudio
                   sqlite
                   zlib))

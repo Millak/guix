@@ -3,7 +3,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016-2018, 2021-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2018, 2021-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2016, 2017 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -573,6 +573,33 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
                (base32
                 "0xm38h31jb29xfh2sfyk48d8wdfq4b8lmb412zx9vjr35izjb9iq"))))
     (build-system gnu-build-system)
+    (arguments
+     (list
+      #:modules `(,@%gnu-build-system-modules (srfi srfi-26))
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
+              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
+              (string-append "PREFIX=" #$output)
+              (string-append "SETUP_PREFIX=" #$output)
+              "INSTALL=install")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pkg-config
+            (lambda _
+              (substitute* '("Makefile"
+                             "tests/run_tests.sh")
+                (("pkg-config")
+                 #$(pkg-config-for-target)))))
+          (delete 'configure)           ;no configure script
+          (add-before 'build 'install-doc
+            (lambda _
+              (with-directory-excursion "Documentation"
+                (for-each (cut install-file <> (string-append
+                                                #$output "/share/doc/dtc/"))
+                          '("dts-format.txt"
+                            "dt-object-internal.txt"
+                            "manual.txt"))))))))
     (native-inputs
      (append
       (list bison
@@ -585,26 +612,6 @@ The SUBDIR argument defaults to \"efi/Guix\", as it is also the case for
           '())))
     (inputs
      (list python))
-    (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-
-             ;; /bin/fdt{get,overlay,put} need help finding libfdt.so.1.
-             (string-append "LDFLAGS=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib")
-
-             (string-append "PREFIX=" (assoc-ref %outputs "out"))
-             (string-append "SETUP_PREFIX=" (assoc-ref %outputs "out"))
-             "INSTALL=install")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-pkg-config
-           (lambda _
-             (substitute* '("Makefile"
-                            "tests/run_tests.sh")
-               (("pkg-config")
-                ,(pkg-config-for-target)))))
-         (delete 'configure))))         ; no configure script
     (home-page "https://www.devicetree.org")
     (synopsis "Compiles device tree source files")
     (description "@command{dtc} compiles
@@ -1515,99 +1522,102 @@ order to add a suitable bootloader menu entry.")
                   "1pkf1n1c0rdlzfls8fvjvi1sd9xjd9ijqlyz3wigr70ijcv6x8i9"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:modules ((guix build utils)
+       (list
+        #:modules `((guix build utils)
                     (guix build gnu-build-system)
                     (guix base32)
                     (ice-9 string-fun)
                     (ice-9 regex)
                     (rnrs bytevectors))
-         #:imported-modules ((guix base32)
+        #:imported-modules `((guix base32)
                              ,@%gnu-build-system-modules)
-         #:make-flags
-         ;; XXX: 'BUILD_ID' is used to determine when another ROM in the
-         ;; system contains identical code in order to save space within the
-         ;; legacy BIOS option ROM area, which is extremely limited in size.
-         ;; It is supposed to be collision-free across all ROMs, to do so we
-         ;; use the truncated output hash of the package.
-         (let ((build-id
-                (lambda (out)
-                  (let* ((nix-store (string-append
-                                     (or (getenv "NIX_STORE") "/gnu/store")
-                                     "/"))
-                         (filename
-                          (string-replace-substring out nix-store ""))
-                         (hash (match:substring (string-match "[0-9a-z]{32}"
-                                                              filename)))
-                         (bv (nix-base32-string->bytevector hash)))
-                    (format #f "0x~x"
-                            (bytevector-u32-ref bv 0 (endianness big))))))
-               (out (assoc-ref %outputs "out"))
-               (syslinux (assoc-ref %build-inputs "syslinux")))
-           (list "ECHO_E_BIN_ECHO=echo"
-                 "ECHO_E_BIN_ECHO_E=echo -e"
+        #:make-flags
+        ;; XXX: 'BUILD_ID' is used to determine when another ROM in the
+        ;; system contains identical code in order to save space within the
+        ;; legacy BIOS option ROM area, which is extremely limited in size.
+        ;; It is supposed to be collision-free across all ROMs, to do so we
+        ;; use the truncated output hash of the package.
+        #~(let ((build-id
+                 (lambda (out)
+                   (let* ((nix-store (string-append
+                                      (or (getenv "NIX_STORE") "/gnu/store")
+                                      "/"))
+                          (filename
+                           (string-replace-substring out nix-store ""))
+                          (hash (match:substring (string-match "[0-9a-z]{32}"
+                                                               filename)))
+                          (bv (nix-base32-string->bytevector hash)))
+                     (format #f "0x~x"
+                             (bytevector-u32-ref bv 0 (endianness big))))))
+                (syslinux #$(this-package-native-input "syslinux")))
+            (list "ECHO_E_BIN_ECHO=echo"
+                  "ECHO_E_BIN_ECHO_E=echo -e"
 
-                 ;; cdrtools' mkisofs will silently ignore a missing isolinux.bin!
-                 ;; Luckily xorriso is more strict.
-                 (string-append "ISOLINUX_BIN=" syslinux
-                                "/share/syslinux/isolinux.bin")
-                 (string-append "SYSLINUX_MBR_DISK_PATH=" syslinux
-                                "/share/syslinux/isohdpfx.bin")
+                  ;; cdrtools' mkisofs will silently ignore a missing isolinux.bin!
+                  ;; Luckily xorriso is more strict.
+                  #$@(if (or (target-x86-64?) (target-x86?))
+                         '((string-append "ISOLINUX_BIN=" syslinux
+                                          "/share/syslinux/isolinux.bin")
+                           (string-append "SYSLINUX_MBR_DISK_PATH=" syslinux
+                                          "/share/syslinux/isohdpfx.bin"))
+                         '())
 
-                 ;; Build reproducibly.
-                 (string-append "BUILD_ID_CMD=echo -n " (build-id out))
-                 (string-append "BUILD_TIMESTAMP=" ,timestamp)
-                 "everything"))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'enter-source-directory
-             (lambda _ (chdir "src") #t))
-           (add-after 'enter-source-directory 'set-version
-             (lambda _
-               ;; When not building from a git checkout, iPXE encodes the
-               ;; version as "1.0.0+".  Use the package version instead.
-               (substitute* "Makefile"
-                 (("^VERSION[[:blank:]]+=.*")
-                  (string-append "VERSION = " ,(package-version this-package)
-                                 "-guix\n")))))
-           (add-after 'enter-source-directory 'set-options
-             (lambda _
-               (substitute* "config/general.h"
-                 (("^//(#define PING_CMD.*)" _ uncommented) uncommented)
-                 (("^//(#define IMAGE_TRUST_CMD.*)" _ uncommented)
-                  uncommented)
-                 (("^#undef.*(DOWNLOAD_PROTO_HTTPS.*)" _ option)
-                  (string-append "#define " option))
-                 (("^#undef.*(DOWNLOAD_PROTO_NFS.*)" _ option)
-                  (string-append "#define " option)))
-               #t))
-           (delete 'configure)          ; no configure script
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (ipxe (string-append out "/lib/ipxe"))
-                      (exts-re
-                       "\\.(efi|efirom|iso|kkpxe|kpxe|lkrn|mrom|pxe|rom|usb)$")
-                      (dirs '("bin" "bin-i386-linux" "bin-x86_64-pcbios"
-                              "bin-x86_64-efi" "bin-x86_64-linux" "bin-i386-efi"))
-                      (files (apply append
-                                    (map (lambda (dir)
-                                           (find-files dir exts-re)) dirs))))
-                 (for-each (lambda (file)
-                             (let* ((subdir (dirname file))
-                                    (fn (basename file))
-                                    (tgtsubdir (cond
-                                                ((string=? "bin" subdir) "")
-                                                ((string-prefix? "bin-" subdir)
-                                                 (string-drop subdir 4)))))
-                               (install-file file
-                                             (string-append ipxe "/" tgtsubdir))))
-                           files))
-               #t))
-           (add-after 'install 'leave-source-directory
-             (lambda _ (chdir "..") #t)))
-         #:tests? #f))                  ; no test suite
+                  ;; Build reproducibly.
+                  (string-append "BUILD_ID_CMD=echo -n " (build-id #$output))
+                  (string-append "BUILD_TIMESTAMP=" #$timestamp)
+                  "everything"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'enter-source-directory
+              (lambda _ (chdir "src")))
+            (add-after 'enter-source-directory 'set-version
+              (lambda _
+                ;; When not building from a git checkout, iPXE encodes the
+                ;; version as "1.0.0+".  Use the package version instead.
+                (substitute* "Makefile"
+                  (("^VERSION[[:blank:]]+=.*")
+                   (string-append "VERSION = " #$(package-version this-package)
+                                  "-guix\n")))))
+            (add-after 'enter-source-directory 'set-options
+              (lambda _
+                (substitute* "config/general.h"
+                  (("^//(#define PING_CMD.*)" _ uncommented) uncommented)
+                  (("^//(#define IMAGE_TRUST_CMD.*)" _ uncommented)
+                   uncommented)
+                  (("^#undef.*(DOWNLOAD_PROTO_HTTPS.*)" _ option)
+                   (string-append "#define " option))
+                  (("^#undef.*(DOWNLOAD_PROTO_NFS.*)" _ option)
+                   (string-append "#define " option)))))
+            (delete 'configure)         ; no configure script
+            (replace 'install
+              (lambda _
+                (let* ((ipxe (string-append #$output "/lib/ipxe"))
+                       (exts-re
+                        "\\.(efi|efirom|iso|kkpxe|kpxe|lkrn|mrom|pxe|rom|usb)$")
+                       (dirs '("bin" "bin-i386-linux" "bin-x86_64-pcbios"
+                               "bin-x86_64-efi" "bin-x86_64-linux" "bin-i386-efi"))
+                       (files (apply append
+                                     (map (lambda (dir)
+                                            (find-files dir exts-re)) dirs))))
+                  (for-each (lambda (file)
+                              (let* ((subdir (dirname file))
+                                     (fn (basename file))
+                                     (tgtsubdir (cond
+                                                 ((string=? "bin" subdir) "")
+                                                 ((string-prefix? "bin-" subdir)
+                                                  (string-drop subdir 4)))))
+                                (install-file file
+                                              (string-append ipxe "/" tgtsubdir))))
+                            files))))
+            (add-after 'install 'leave-source-directory
+              (lambda _ (chdir ".."))))
+        #:tests? #f))                  ; no test suite
       (native-inputs
-       (list perl syslinux xorriso))
+       (append (if (or (target-x86-64?) (target-x86?))
+                   ;; Syslinux only supports i686 and x86_64.
+                   (list syslinux)
+                   '())
+               (list perl xorriso)))
       (home-page "https://ipxe.org")
       (synopsis "PXE-compliant network boot firmware")
       (description "iPXE is a network boot firmware.  It provides a full PXE

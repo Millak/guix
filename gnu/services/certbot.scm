@@ -148,7 +148,7 @@
 (define (certbot-renewal-jobs config)
   (list
    ;; Attempt to renew the certificates twice per day, at a random minute
-   ;; within the hour.  See https://certbot.eff.org/all-instructions/.
+   ;; within the hour.  See https://eff-certbot.readthedocs.io/.
    #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
           #$(certbot-command config))))
 

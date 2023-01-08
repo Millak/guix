@@ -33,6 +33,7 @@
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
+;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9996,6 +9997,30 @@ mechanism.  The module augments the standard Perl syntax with two new
 statements: @code{switch} and @code{case}.")
     (license (package-license perl))))
 
+(define-public perl-syntax-keyword-try
+  (package
+    (name "perl-syntax-keyword-try")
+    (version "0.28")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/Syntax-Keyword-Try-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1j02z9w0p9a77maf62cy5324vmc01hks0bfm5qjidc50hafmzbfc"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build))
+    (inputs (list perl-xs-parse-keyword))
+    (home-page "https://metacpan.org/pod/Syntax::Keyword::Try")
+    (synopsis "Try/catch/finally syntax for perl")
+    (description
+     "This module provides a syntax plugin that implements
+exception-handling semantics in a form familiar to users of other
+languages, being built on a block labeled with the @code{try} keyword,
+followed by at least one of a @code{catch} or @code{finally} block.")
+    (license (package-license perl))))
+
 (define-public perl-sys-cpu
   (package
     (name "perl-sys-cpu")
@@ -10469,6 +10494,27 @@ used to justify strings to various alignment styles.")
     (synopsis "Extract delimited text sequences from strings")
     (description "The Text::Balanced module can be used to extract delimited
 text sequences from strings.")
+    (license (package-license perl))))
+
+(define-public perl-text-charwidth
+  (package
+    (name "perl-text-charwidth")
+    (version "0.04")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KU/KUBOTA/Text-CharWidth-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "1y040wiqx78pnr0wxbjhpzjxm2a9qiqq479gzn4qwcyrzpsdbpmb"))))
+    (build-system perl-build-system)
+    (home-page "https://metacpan.org/dist/Text-CharWidth")
+    (synopsis "Get number of occupied columns of a string on terminal")
+    (description
+     "With this module, you can calculate terminal character
+widths that vary by locale.  This module supplies features similar to
+wcwidth(3) and wcswidth(3) in C language.")
     (license (package-license perl))))
 
 (define-public perl-text-csv
@@ -11559,6 +11605,28 @@ supersede Perl's builtin @code{T_PTROBJ} with something that is extensible
 neither visible nor modifiable from Perl space).")
     (license (package-license perl))))
 
+(define-public perl-xs-parse-keyword
+  (package
+    (name "perl-xs-parse-keyword")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/P/PE/PEVANS/XS-Parse-Keyword-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0nnr8akkxb2h2y3d5r51pr84vvxkq89ynmi9azkbnn79jmbcbgvq"))))
+    (build-system perl-build-system)
+    (native-inputs (list perl-module-build perl-test-simple))
+    (home-page "https://metacpan.org/dist/XS-Parse-Keyword")
+    (synopsis "XS functions to assist in parsing keyword syntax")
+    (description
+     "This module provides some XS functions to assist in writing
+syntax modules that provide new perl-visible syntax, primarily for authors of
+keyword plugins using the @code{PL_keyword_plugin} hook mechanism.")
+    (license (package-license perl))))
+
 (define-public perl-yaml
   (package
     (name "perl-yaml")
@@ -12211,6 +12279,34 @@ Russell and Margaret Odell, patented in 1918 and 1922, as well as a variation
 called \"American Soundex\" used for US census data, and current maintained by
 the National Archives and Records Administration (NARA).")
     (license license:perl-license)))
+
+(define-public perl-text-wrapi18n
+  (package
+    (name "perl-text-wrapi18n")
+    (version "0.06")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/K/KU/KUBOTA/Text-WrapI18N-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "12548qc99ms12yp5j26076p0zazjfv1b618h5k8r5iy2y0brmljb"))))
+    (build-system perl-build-system)
+    (inputs (list perl-text-charwidth))
+    (home-page "https://metacpan.org/pod/Text::WrapI18N")
+    (synopsis "Line wrapping for multibyte, fullwidth, combining
+characters and so on")
+    (description
+     "This module intends to be a better Text::Wrap module.  This
+module is needed to support multibyte character encodings such as UTF-8,
+EUC-JP, EUC-KR, GB2312, and Big5.  This module also supports characters with
+irregular widths, such as combining characters (which occupy zero columns on
+terminal, like diacritical marks in UTF-8) and fullwidth characters (which
+occupy two columns on terminal, like most of east Asian characters).  Also,
+minimal handling of languages which doesn't use whitespaces between
+words (like Chinese and Japanese) is supported.")
+    (license (package-license perl))))
 
 (define-public perl-regexp-pattern
   (package

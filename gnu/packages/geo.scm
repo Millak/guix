@@ -1468,16 +1468,16 @@ map, geocoding with Nominatim, or general analysis.")
 (define-public tippecanoe
   (package
     (name "tippecanoe")
-    (version "1.36.0")
+    (version "2.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mapbox/tippecanoe")
+             (url "https://github.com/felt/tippecanoe")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lbmhly4ivnqc6qk1k3sdqvsg6x3nfd8gnjx846bhqj4wag3f88m"))))
+        (base32 "1q2snvsbs10l9pjydid3zxkidlha5hav8gvb0p731m2pwg3xw0qr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

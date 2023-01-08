@@ -145,11 +145,11 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages libidn)
-  #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -1917,7 +1917,7 @@ videoformats depend on the configuration flags of ffmpeg.")
 (define-public vlc
   (package
     (name "vlc")
-    (version "3.0.17.4")
+    (version "3.0.18")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1927,7 +1927,7 @@ videoformats depend on the configuration flags of ffmpeg.")
               (patches (search-patches "vlc-dav1d-compat.patch"))
               (sha256
                (base32
-                "0cs1vnv91mg7p6253v6wms3zlz91xzphpwaw14dmrd2gibc64nlc"))))
+                "1v7db9icrb12yz7banq2wvpjpvqfrj031yj1kf5smn35qcwl82ap"))))
     (build-system gnu-build-system)
     (native-inputs
      (list flex bison gettext-minimal pkg-config))
@@ -3420,7 +3420,7 @@ be used for realtime video capture via Linux-specific APIs.")
       mbedtls-apache
       mesa
       pciutils
-      pipewire-0.3
+      pipewire
       pulseaudio
       python
       qtbase-5

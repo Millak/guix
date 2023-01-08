@@ -558,11 +558,10 @@ configuration language which makes it trivial to write your own themes.")
       (license license:gpl3+))))
 
 (define-public emacs-inspector
-  (let ((commit "0e89d28558f57db4519f154bb72ce617a8c6265d")
-        (revision "0"))
+  (let ((commit "f02263e1b670bd4fe706c7b07a523fc9718a55f6")) ;version bump
     (package
       (name "emacs-inspector")
-      (version (git-version "0.8" revision commit))
+      (version "0.10")
       (source
        (origin
          (uri (git-reference
@@ -570,7 +569,7 @@ configuration language which makes it trivial to write your own themes.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "0n72sqn29b5sya686cicgp40mkk5x5821b7bw4zs6dcl82cyij5n"))
+          (base32 "1k2dy2z73cn8j784rvcmk9i43xw9g1rcqqmqrl38kv655l62vgz0"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -1161,8 +1160,8 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl3+))))
 
 (define-public emacs-magit
-  (let ((commit "36059e0b881cb1465cb5ad0099e55e00845a8222")
-        (revision "0"))
+  (let ((commit "b908c79b44f5c282eec44f19fc1d9967f041dd5c")
+        (revision "1"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1174,7 +1173,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "12r5z7jbqh74rb9763smh4sblswzwi41wybzcvsy0zhw2r8lpmzv"))))
+          (base32 "1wybli5xrxkn8b7d7nm7h44avip9pjc24ig73hh15xg2wjm90zzc"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -7797,18 +7796,15 @@ variables, and so on.  The mode also allows you to execute Tup commands.")
 (define-public emacs-compat
   (package
     (name "emacs-compat")
-    (version "28.1.2.2")
+    (version "29.1.1.0")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://git.sr.ht/~pkal/compat")
-                    (commit version)))
-              (file-name (git-file-name name version))
+              (method url-fetch)
+              (uri (string-append "https://elpa.gnu.org/packages/"
+                                  "compat-" version ".tar"))
               (sha256
                (base32
-                "1c1pr6zzvgfbsclp1fyx911d4qvihz8hw5mp7g0l0df2rlpypdzw"))))
+                "0b371rilcbkjmb1fdaib7fnrngkm1q7xdmv15a3xvmpalvfwmrwc"))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-nadvice))
     (home-page "https://git.sr.ht/~pkal/compat")
     (synopsis "Emacs Lisp Compatibility Library")
     (description
@@ -7882,7 +7878,7 @@ This package is not compatible with a TTY.")
 (define-public emacs-company-posframe
   (package
     (name "emacs-company-posframe")
-    (version "0.5.0")
+    (version "0.7.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7891,7 +7887,7 @@ This package is not compatible with a TTY.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05ays6xkqbxcfplvx7wfc2slflmwc3aw7vkixvabk0ilvisndvgm"))))
+                "03kj8yxd4y9aw86b6y6z5l9y76q5gjyiyhi5120nx1a8cwbd9g4a"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-company emacs-posframe))
@@ -10124,28 +10120,25 @@ them easier to distinguish from other, less important buffers.")
     (license license:expat)))
 
 (define-public emacs-embark
-  ;; XXX: Upstream did not tag last release.  Use commit matching version
-  ;; bump.
-  (let ((commit "09da327d43793f0b30114ee80d82ef587124462a"))
-    (package
-      (name "emacs-embark")
-      (version "0.18")
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/oantolin/embark")
-               (commit commit)))
-         (sha256
-          (base32 "0drzsa9rzjy0548pa161cf1d71lnyjri31rkwyjray9gy2adbnhv"))
-         (file-name (git-file-name name version))))
-      (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-avy emacs-consult))
-      (home-page "https://github.com/oantolin/embark")
-      (synopsis "Emacs mini-buffer actions rooted in keymaps")
-      (description
-       "This package provides a sort of right-click contextual menu for Emacs
+  (package
+    (name "emacs-embark")
+    (version "0.19")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/oantolin/embark")
+             (commit version)))
+       (sha256
+        (base32 "05c8p7rqv9p8p3nhgcjfr66hpsqazhnhwsnfdapxd9z7wrybqbg5"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-avy emacs-consult))
+    (home-page "https://github.com/oantolin/embark")
+    (synopsis "Emacs mini-buffer actions rooted in keymaps")
+    (description
+     "This package provides a sort of right-click contextual menu for Emacs
 offering you relevant @emph{actions} to use on a @emph{target} determined by
 the context.
 
@@ -10159,7 +10152,7 @@ get offered actions like deleting, copying, renaming, visiting in another
 window, running a shell command on the file, etc.  For buffers the actions
 include switching to or killing the buffer.  For package names the actions
 include installing, removing or visiting the homepage.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-prescient
   (package
@@ -10248,7 +10241,7 @@ style, or as multiple word prefixes.")
 (define-public emacs-consult
   (package
     (name "emacs-consult")
-    (version "0.29")
+    (version "0.31")
     (source
      (origin
        (method git-fetch)
@@ -10256,7 +10249,7 @@ style, or as multiple word prefixes.")
              (url "https://github.com/minad/consult")
              (commit version)))
        (sha256
-        (base32 "11wk1511hj8m9rmccgq4fb8x7vlr9pi00a9h285lxwj1bdmy9dlz"))
+        (base32 "0ckyn4sdhc9dykbbdiin75jxza883dqa3g4mvf8qgsnzlqcjvvg6"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-compat))
@@ -12940,7 +12933,7 @@ generated by Org mode (or Markdown mode) is left untouched.")
 (define-public emacs-visual-fill-column
   (package
     (name "emacs-visual-fill-column")
-    (version "2.5")
+    (version "2.5.1")
     (source
      (origin
        (method git-fetch)
@@ -12949,7 +12942,7 @@ generated by Org mode (or Markdown mode) is left untouched.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "168wiywaffhhn7j4nfbnq4lfxpxl0x17z9ckk3nwkpaz45d9a2q6"))))
+        (base32 "0006x7vbwrx4w3b51aajzds0qaw3zb3b2wmj0c3j0anlrmyb37yz"))))
     (build-system emacs-build-system)
     (home-page "https://codeberg.org/joostkremers/visual-fill-column")
     (synopsis "Fill-column for visual-line-mode")
@@ -16373,7 +16366,7 @@ constructs.")
 (define-public emacs-cnfonts
   (package
     (name "emacs-cnfonts")
-    (version "0.9.1")
+    (version "1.0.0")
     (source
      (origin
        (method git-fetch)
@@ -16382,13 +16375,45 @@ constructs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11d44lf0m0kbzq1mvyqkl4aprys0xqaarp08nij57xnynin1rynx"))))
+        (base32 "1vim429ikgsh7zvh521af39xgmm6qb3fc3pwb51458fj010gf8pj"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/tumashu/cnfonts")
     (synopsis "Emacs Chinese fonts setup tool")
     (description "cnfonts is a Chinese fonts setup tool, allowing for easy
 configuration of Chinese fonts.")
     (license license:gpl2+)))
+
+(define-public emacs-cal-china-x
+  (let ((revision "0")
+        (commit  "94005e678a1d2522b7a00299779f40c5c77286b8"))
+    (package
+      (name "emacs-cal-china-x")
+      (version (git-version "2.6b" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/xwl/cal-china-x")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dy9awy5y990wz925rdn95gn23ywarwbvkqq0l0xms1br1v8kxc6"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/xwl/cal-china-x")
+      (synopsis "Chinese localization, lunar/horoscope/zodiac info and more")
+      (description
+       "Cal-China-X provides additional features for Emacs' Cal-China package:
+
+@itemize
+@item Chinese localizations.
+@item Display holiday, lunar, horoscope, zodiac, solar term info on mode line.
+@item Define holidays using holiday-lunar, holiday-solar-term.
+@item Highlight holidays based on different priorities.
+@item Add cal-china-x-chinese-holidays, cal-china-x-japanese-holidays.
+@item custom week diary (like weeks in school).
+@end itemize")
+      (license license:gpl3+))))
 
 (define-public emacs-boon
   (package
@@ -16592,6 +16617,9 @@ function to be used by other frontend programs.")
          (sha256
           (base32 "0fzyh8qmicq2vy9j1ca708ir67dpxp1cwjaw0sw469p24cvj12yy"))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:include #~(cons "pyim-basedict.pyim" %default-include)))
       (propagated-inputs
        (list emacs-pyim))
       (home-page "https://github.com/tumashu/pyim-basedict")
@@ -20703,40 +20731,49 @@ interactive commands and functions, such as @code{completing-read}.")
     (license license:gpl3+)))
 
 (define-public emacs-org-ql
-  (package
-    (name "emacs-org-ql")
-    (version "0.6.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/alphapapa/org-ql")
-                    (commit version)))
-              (sha256
-               (base32
-                "0iamqv5j43ngj1xdqr36rkgk9lqpk9bg8y531jsldnvwzrp3srpf"))
-              (file-name (git-file-name name version))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash
-           emacs-f
-           emacs-helm
-           emacs-helm-org
-           emacs-org
-           emacs-org-super-agenda
-           emacs-ov
-           emacs-peg
-           emacs-ts
-           emacs-s))
-    (native-inputs
-     (list emacs-buttercup emacs-with-simulated-input))
-    (arguments
-     `(#:tests? #t
-       #:test-command '("buttercup" "-L" ".")))
-    (home-page "https://github.com/alphapapa/org-ql/")
-    (synopsis "Query language for Org buffers")
-    (description "This package provides a Lispy query language for Org
+  (let ((commit "29533525c39e0e243912bb3c807412e4bc3e804e")
+        (revision "0"))
+    (package
+      (name "emacs-org-ql")
+      (version (git-version "0.6.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/alphapapa/org-ql")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "01zc2mrlr197r0h2xjgzg88fy74lqbw0hv60jw08ihs0yw7n56y7"))
+                (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "buttercup" "-L" ".")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'check 'fix-test
+              (lambda _
+                (substitute* "tests/test-org-ql.el"
+                  (("can't be linked to") "can’t be linked to")))))))
+      (native-inputs
+       (list emacs-buttercup emacs-with-simulated-input))
+      (propagated-inputs
+       (list emacs-dash
+             emacs-f
+             emacs-helm
+             emacs-helm-org
+             emacs-org
+             emacs-org-super-agenda
+             emacs-ov
+             emacs-peg
+             emacs-s
+             emacs-ts))
+      (home-page "https://github.com/alphapapa/org-ql/")
+      (synopsis "Query language for Org buffers")
+      (description "This package provides a Lispy query language for Org
 files, allowing for actions to be performed based on search criteria.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-bing-dict
   (package
@@ -21995,6 +22032,30 @@ key again.")
 within Emacs.")
       (license license:gpl3+))))
 
+(define-public emacs-ibrowse
+  (let* ((commit "7e4a2987fc63861514b441f65db2008da5949ef2")
+         (revision "0"))
+    (package
+      (name "emacs-ibrowse")
+      (version (git-version "0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.sr.ht/~ngraves/ibrowse.el")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "15661xgjxdxk1p0g87dsas9jd9v7g64y6n9irlbyzww09gjsjwwd"))))
+      (build-system emacs-build-system)
+      (inputs (list sqlite))
+      (propagated-inputs (list emacs-embark emacs-marginalia))
+      (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
+      (synopsis "Interact with your browser from emacs")
+      (description "This package provides some commands to act on the browser
+tabs, history, or bookmarks from Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-ibuffer-projectile
   (package
     (name "emacs-ibuffer-projectile")
@@ -22573,26 +22634,24 @@ functions.")
     (license license:gpl3+)))
 
 (define-public emacs-benchmark-init
-  (let ((commit "02435560415bbadbcf5051fb7042880549170e7e")
-        (revision "1"))
-    (package
-      (name "emacs-benchmark-init")
-      (version (git-version "1.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/dholm/benchmark-init-el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "19375vamhld4xm2qrdmhlp2nczfvalmz9x6ahl23zwkilr8n1nbw"))))
-      (build-system emacs-build-system)
-      (home-page "https://github.com/dholm/benchmark-init-el")
-      (synopsis "Benchmark Emacs @code{require} and @code{load} calls")
-      (description "@code{benchmark-init} provides a way to keep track of where
+  (package
+    (name "emacs-benchmark-init")
+    (version "1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dholm/benchmark-init-el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "19375vamhld4xm2qrdmhlp2nczfvalmz9x6ahl23zwkilr8n1nbw"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/dholm/benchmark-init-el")
+    (synopsis "Benchmark Emacs @code{require} and @code{load} calls")
+    (description "@code{benchmark-init} provides a way to keep track of where
 time is being spent during Emacs startup in order to optimize startup time.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-magit-gerrit
   (package
@@ -29494,7 +29553,7 @@ programming in Emacs Lisp easy and fun.")
         (base32 "1g0wc2kp15ra323b4rxvdh58q9c4h7m20grw6a0cs53m7l9xi62f"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     (list emacs-fsm emacs-nadvice emacs-soap-client emacs-url-http-ntlm))
+     (list emacs-fsm emacs-soap-client emacs-url-http-ntlm))
     (home-page "https://elpa.gnu.org/packages/excorporate.html")
     (synopsis "Exchange integration")
     (description "This package provides Exchange integration for Emacs.")
@@ -30069,6 +30128,28 @@ federated microblogging social network.")
      "EBDB is a contact management/addressbook package for Emacs.  It's
 a re-write of the Insidious Big Brother Database (BBDB) using Emacs
 Lisp's (relatively new) EIEIO object oriented libraries.")
+    (license license:gpl3+)))
+
+(define-public emacs-ebdb-i18n-chn
+  (package
+    (name "emacs-ebdb-i18n-chn")
+    (version "1.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://elpa.gnu.org/packages/"
+                           "ebdb-i18n-chn-" version ".tar"))
+       (sha256
+        (base32 "06ii9xi2y157vfbhx75mn80ash22d1xgcyp9kzz1s0lkxwlv74zj"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-ebdb emacs-pyim))
+    (home-page "https://elpa.gnu.org/packages/ebdb-i18n-chn.html")
+    (synopsis "China-specific internationalization support for EBDB")
+    (description
+     "EBDB-i18n-Chn makes EBDB nicer to use with China-based contacts, both
+for handling Chinese characters, and for formatting of phones and addresses.
+Be aware that using this library will incur a non-neglible slowdown at load
+time.  It shouldn't have any real impact on search and completion times.")
     (license license:gpl3+)))
 
 (define-public emacs-refactor
@@ -34071,6 +34152,53 @@ executed.")
 wraps GNU Global calls and integration to editor using this API with
 project.el and xref.el.")
       (license license:gpl3+))))
+
+(define-public emacs-citre
+  (package
+    (name "emacs-citre")
+    (version "0.3.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/universal-ctags/citre/")
+             (commit (string-append "v" version))))
+       (sha256
+        (base32 "168z6yidh2nxkmdlx9cqdzzb7achxdipnbk5pj9787m9bp1sdpkd"))
+       (file-name (git-file-name name version))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'set-external-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (emacs-substitute-variables "citre-ctags.el"
+                ("citre-ctags-program"
+                 ;; XXX: Do not use SEARCH-INPUT-FILE in this place, for it
+                 ;; will get ctags of emacs-minimal instead of
+                 ;; universal-ctags.
+                 (string-append #$(this-package-input "universal-ctags")
+                                "/bin/ctags")))
+              (emacs-substitute-variables "citre-readtags.el"
+                ("citre-readtags-program"
+                 (search-input-file inputs "/bin/readtags")))
+              (emacs-substitute-variables "citre-global.el"
+                ("citre-gtags-program"
+                 (search-input-file inputs "/bin/gtags")))
+              (emacs-substitute-variables "citre-global.el"
+                ("citre-global-program"
+                 (search-input-file inputs "/bin/global"))))))))
+    (inputs (list global universal-ctags))
+    (home-page "https://github.com/universal-ctags/citre")
+    (synopsis "Ctags IDE on Emacs")
+    (description
+     "Citre is an advanced Ctags (or actually, readtags) frontend for
+Emacs. It offers Completion At Point, Xref and Imenu integration.  It also
+provides a Completing Read UI for jumping to definition and a powerful code
+reading tool that lets you go down the rabbit hole without leaving current
+buffer.")
+    (license license:gpl3+)))
 
 (define-public emacs-seq
   (package

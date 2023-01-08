@@ -4032,27 +4032,6 @@ is designed to have a low barrier to entry.")
 (Redis Queue).")
     (license license:expat)))
 
-(define-public python-trollius-redis
-  (package
-    (name "python-trollius-redis")
-    (version "0.1.4")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "trollius_redis" version))
-        (sha256
-         (base32
-          "0k3vypszmgmaipgw9xscvgm79h2zd6p6ci8gdp5sxl6g5kbqr9fy"))))
-    (build-system python-build-system)
-    ;; TODO: Tests require packaging 'hiredis'.
-    (arguments '(#:tests? #f))
-    (home-page "https://github.com/benjolitz/trollius-redis")
-    (synopsis "Port of asyncio-redis to trollius")
-    (description "@code{trollius-redis} is a Redis client for Python
-  trollius.  It is an asynchronous IO (PEP 3156) implementation of the
-  Redis protocol.")
-    (license license:bsd-2)))
-
 (define-public python-sqlparse
   (package
     (name "python-sqlparse")

@@ -121,9 +121,12 @@
     ;; Use our own tool chain for that.
     (native-inputs `(("cross-gcc" ,(cross-gcc
                                     "xtensa-elf"
-                                    #:xbinutils (cross-binutils "xtensa-elf"
-                                                                binutils-2.33)))
-                     ("cross-binutils" ,(cross-binutils "xtensa-elf" binutils-2.33))
+                                    #:xbinutils (cross-binutils
+                                                 "xtensa-elf"
+                                                 #:binutils binutils-2.33)))
+                     ("cross-binutils" ,(cross-binutils
+                                         "xtensa-elf"
+                                         #:binutils binutils-2.33))
                      ("cmake" ,cmake-minimal)
                      ("perl" ,perl)))
     (home-page "https://wireless.wiki.kernel.org/en/users/Drivers/ath9k_htc")

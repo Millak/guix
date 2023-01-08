@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -73,6 +74,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages dlang)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -87,6 +89,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
@@ -1309,6 +1312,64 @@ while also supporting native scrolling and @command{tmux} control mode
 
 (define-public wterm
   (deprecated-package "wterm" foot))
+
+(define-public tilix
+  (package
+    (name "tilix")
+    (version "1.9.5")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/gnunn1/tilix")
+               (commit version)))
+        (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ij3ix6yhi8hicxvglrxjyyv8bch9birrgsr8ml6jfh3hvk4pxdh"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-env-variables
+           (lambda _
+             (setenv "CC" ,(cc-for-target))))
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") (which "true"))
+               (("update-desktop-database") (which "true"))))))))
+    (inputs
+     (list dbus
+           dconf
+           gsettings-desktop-schemas
+           gtk+
+           gtkd
+           ldc
+           libsecret
+           libunwind
+           vte))
+    (native-inputs
+     (list appstream
+           gettext-minimal
+           (list glib "bin")
+           ldc
+           pkg-config))
+    (home-page "https://gnunn1.github.io/tilix-web/")
+    (synopsis "Tiling terminal emulator")
+    (description "Tilix is a tiling terminal emulator following the
+Gnome Human Interface Guidelines.  Its features include:
+@enumerate
+@item Layout terminals in any fashion by splitting them horizontally or
+vertically.
+@item Terminals can be re-arranged using drag and drop both within and between
+windows.
+@item Terminals can be detached into a new window via drag and drop.
+@item Input can be synchronized between terminals so commands typed in one
+terminal are replicated to the others.
+@item Supports notifications when processes are completed out of view.
+@end enumerate")
+    (license license:mpl2.0)))
 
 (define-public tio
   (package

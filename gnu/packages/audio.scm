@@ -17,7 +17,7 @@
 ;;; Copyright © 2018, 2019, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2018, 2021 Thorsten Wilms <t_w_@freenet.de>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2018 Brendan Tildesley <mail@brendan.scot>
+;;; Copyright © 2018, 2022 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2019, 2021 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -4977,6 +4977,37 @@ library supports sample rates up to 96 kHz and up to eight channels (7.1
     (license (license:fsf-free "https://github.com/mstorsjo/fdk-aac/blob/master/NOTICE"
                                "https://www.gnu.org/licenses/license-list.html#fdk"))))
 
+(define-public libfreeaptx
+  (package
+    (name "libfreeaptx")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/iamthehorker/libfreeaptx")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1fm5041nd08yzg0m9474g0943lb3x54zmn59b53nhvxan8x22ibq"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests.
+           #:make-flags
+           #~(list
+              (string-append "PREFIX=" #$output)
+              (string-append "LDFLAGS=" "-Wl,-rpath=" #$output "/lib")
+              (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (home-page "https://github.com/iamthehorker/libfreeaptx")
+    (synopsis "aptX codec library")
+    (description "libfreeaptx is an implementation of the Audio Processing
+Technology codecs aptX and aptX HD, mainly intended for use with an A2DP
+bluetooth profile.")
+    (license license:lgpl2.1+)))
+
 (define-public libopenshot-audio
   (package
     (name "libopenshot-audio")
@@ -6017,7 +6048,7 @@ and DSD streams.")
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib
                   libxkbcommon
-                  pipewire-0.3
+                  pipewire
                   qtbase
                   qtsvg))
     (native-inputs (list pkg-config))

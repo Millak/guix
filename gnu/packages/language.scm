@@ -835,29 +835,6 @@ string can be easily inferred by a human just by reading the identifier.")
 done by Gudrun Putze-Meier.")
     (license license:perl-license)))
 
-(define* (tegaki-release-uri proj version
-                             #:optional (ext "tar.gz"))
-  (string-append "https://github.com/tegaki/tegaki/releases/download"
-                 "/v" version "/" proj "-" version "." ext))
-
-(define remove-pre-compiled-files
-  (lambda exts
-    "Return snippet for removing pre-compiled files matching one of the
-extensions in EXTS."
-    `(begin (for-each delete-file
-                      (find-files "."
-                                  (lambda (name _)
-                                    (any (cut string-suffix? <> name)
-                                         (map (cut string-append "." <>)
-                                              ',exts)))))
-            #t)))
-
-;;; modules required for the above snippet
-(define remove-pre-compiled-files-modules
-  '((guix build utils)
-    (srfi srfi-1)
-    (srfi srfi-26)))
-
 (define-public link-grammar
   (package
     (name "link-grammar")

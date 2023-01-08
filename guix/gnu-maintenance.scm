@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2010-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2010-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2012, 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
@@ -43,6 +43,7 @@
   #:use-module (guix records)
   #:use-module (guix upstream)
   #:use-module (guix packages)
+  #:autoload   (guix import utils) (false-if-networking-error)
   #:autoload   (zlib) (call-with-gzip-input-port)
   #:autoload   (htmlprag) (html->sxml)            ;from Guile-Lib
   #:export (gnu-package-name
@@ -871,28 +872,19 @@ string to fetch a specific version."
                         ""
                         (dirname (uri-path uri))))
          (package   (package-upstream-name package)))
-    (catch #t
-      (lambda ()
-        (guard (c ((http-get-error? c) #f))
-          (import-html-release package
-                               #:version version
-                               #:base-url base
-                               #:directory directory)))
-      (lambda (key . args)
-        ;; Return false and move on upon connection failures and bogus HTTP
-        ;; servers.
-        (unless (memq key '(gnutls-error tls-certificate-error
-                                         system-error getaddrinfo-error
-                                         bad-header bad-header-component))
-          (apply throw key args))
-        #f))))
+    (false-if-networking-error
+     (import-html-release package
+                          #:version version
+                          #:base-url base
+                          #:directory directory))))
 
 (define %gnu-updater
   ;; This is for everything at ftp.gnu.org.
   (upstream-updater
    (name 'gnu)
    (description "Updater for GNU packages")
-   (pred gnu-hosted?)
+   (pred (lambda (package)
+           (false-if-networking-error (gnu-hosted? package))))
    (import import-gnu-release)))
 
 (define %gnu-ftp-updater
@@ -902,8 +894,9 @@ string to fetch a specific version."
    (name 'gnu-ftp)
    (description "Updater for GNU packages only available via FTP")
    (pred (lambda (package)
-           (and (not (gnu-hosted? package))
-                (pure-gnu-package? package))))
+           (false-if-networking-error
+            (and (not (gnu-hosted? package))
+                 (pure-gnu-package? package)))))
    (import import-release*)))
 
 (define %savannah-updater

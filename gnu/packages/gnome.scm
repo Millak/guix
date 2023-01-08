@@ -11,7 +11,7 @@
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Jochem Raat <jchmrt@riseup.net>
 ;;; Copyright © 2016, 2017, 2019 Kei Kebreau <kkebreau@posteo.net>
@@ -7429,6 +7429,47 @@ principles are simplicity and standards compliance.")
 of running programs and invoke methods on those interfaces.")
     (license license:gpl2+)))
 
+(define-public d-spy
+  (package
+    (name "d-spy")
+    (version "1.4.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/" name "/"
+                                  (version-major+minor version) "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0wk7i3vyq4a98g29ms7vz3wy8xkk3pgw48g0fm65qk32xa679s7a"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-gtk-update-icon-cache
+            ;; Don't create 'icon-theme.cache'.
+            (lambda _
+              (substitute* "meson.build"
+                (("gtk_update_icon_cache: true")
+                 "gtk_update_icon_cache: false")))))))
+    (native-inputs
+     (list desktop-file-utils           ; for update-desktop-database
+           `(,glib "bin")
+           gettext-minimal
+           gobject-introspection
+           pkg-config))
+    (inputs
+     (list gtk
+           libadwaita))
+    (home-page "https://gitlab.gnome.org/GNOME/d-spy")
+    (synopsis "D-Bus debugger")
+    (description
+     "D-Spy is a tool to explore and test end-points and interfaces of running
+programs via D-Bus.  It also ships a library for integration into development
+environments.")
+    (license license:gpl2+)))
+
 (define-public yelp-xsl
   (package
     (name "yelp-xsl")
@@ -8077,7 +8118,7 @@ to display dialog boxes from the commandline and shell scripts.")
            ;; theme to please libxcursor.
            adwaita-icon-theme
            libxcursor                   ;for XCURSOR_PATH
-           pipewire-0.3
+           pipewire
            python
            python-dbus
            python-dbusmock
@@ -8119,7 +8160,7 @@ to display dialog boxes from the commandline and shell scripts.")
            libxkbfile
            libxrandr
            libxtst
-           pipewire-0.3
+           pipewire
            startup-notification
            sysprof
            upower
@@ -9571,6 +9612,9 @@ easy, safe, and automatic.")
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
+       #:test-options (list ,@(if (target-riscv64?)
+                                `("--timeout-multiplier" "5")
+                                '()))
        #:configure-flags
        ;; Otherwise, the RUNPATH will lack the final path component.
        (list (string-append "-Dc_link_args=-Wl,-rpath="
@@ -9596,12 +9640,12 @@ easy, safe, and automatic.")
                  (("/etc/asciidoc[^']+")
                   file)))))
          (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
+           (lambda* (#:key tests? test-options #:allow-other-keys)
              (when tests?
                ;; Some tests expect to write to $HOME.
                (setenv "HOME" "/tmp")
-               (invoke "dbus-run-session" "--" "meson" "test"
-                       "--print-errorlogs")))))))
+               (apply invoke "dbus-run-session" "--" "meson" "test"
+                      "--print-errorlogs" test-options)))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -13160,7 +13204,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.6.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
@@ -13170,7 +13214,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ppd9cl16zwqsmpy0pry43qsfrm2xal77y4339qwbnas74gcl1wh"))))
+         "0pgls9lfmgx1wgk7navvr44hdp6ziac19979lkqw2a09jn8y6xxa"))))
     (build-system meson-build-system)
     (arguments
      (list

@@ -24,6 +24,7 @@
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -230,6 +231,10 @@ structure of the predicted RNA.")
                (base32
                 "14lw571vbks138i0lj66qjdbk8iwa817x2zbpzij61vv1gdgfbn5"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      '(list "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list jsoncpp zlib))
     (native-inputs (list pkg-config))
     (home-page "https://github.com/pezmaster31/bamtools")
@@ -906,6 +911,26 @@ also adds a few built-in functions and a command line option to use TAB as the
 input/output delimiter.  When the new functionality is not used, bioawk is
 intended to behave exactly the same as the original BWK awk.")
     (license license:x11)))
+
+(define-public python-bcbio-gff
+  (package
+    (name "python-bcbio-gff")
+    (version "0.6.9")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bcbio-gff" version))
+              (sha256
+               (base32
+                "1pm1szyxabhn8jismrj9cjhf88ajgcmm39f0cgf36iagw5qakprl"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-biopython python-six))
+    (native-inputs (list python-pytest))
+    (home-page "https://github.com/chapmanb/bcbb/tree/master/gff")
+    (synopsis "Read and write GFF files with Biopython integration")
+    (description
+     "This package lets you read and write files in Generic Feature
+Format (GFF) with Biopython integration.")
+    (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
 (define-public python-cellbender
   (package
@@ -10849,6 +10874,28 @@ traditional read alignments) and massively-parallel stochastic collapsed
 variational inference.")
     (license license:gpl3+)))
 
+(define-public scallop
+  (package
+    (name "scallop")
+    (version "0.10.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/Kingsford-Group/scallop"
+                                  "/releases/download/v" version
+                                  "/scallop-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ylkhr5hsmw7bsdszrjz9yqknsijh2fl5n6rjqmdmcdky5hkr7mh"))))
+    (build-system gnu-build-system)
+    (inputs
+     (list boost htslib))
+    (home-page "https://github.com/Kingsford-Group/scallop")
+    (synopsis "Reference-based transcriptome assembler for RNA-seq")
+    (description "Scallop is a reference-based transcript assembler.  Scallop
+features its high accuracy in assembling multi-exon transcripts as well as
+lowly expressed transcripts.")
+    (license license:bsd-3)))
+
 (define-public python-fanc
   (package
     (name "python-fanc")
@@ -14125,43 +14172,42 @@ datasets.")
        (patches (search-patches "ngless-unliftio.patch"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:haddock? #f ; The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
-                     ; error: parse error on input import
-                     ; import Options.Applicative
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'create-Versions.hs
-           (lambda _
-             (substitute* "Makefile"
-               (("BWA_VERSION = .*")
-                (string-append "BWA_VERSION = "
-                               ,(package-version bwa) "\n"))
-               (("SAM_VERSION = .*")
-                (string-append "SAM_VERSION = "
-                               ,(package-version samtools) "\n"))
-               (("PRODIGAL_VERSION = .*")
-                (string-append "PRODIGAL_VERSION = "
-                               ,(package-version prodigal) "\n"))
-               (("MINIMAP2_VERSION = .*")
-                (string-append "MINIMAP2_VERSION = "
-                               ,(package-version minimap2) "\n")))
-             (invoke "make" "NGLess/Dependencies/Versions.hs")
-             #t))
-         (add-after 'create-Versions.hs 'create-cabal-file
-           (lambda _ (invoke "hpack") #t))
-         ;; These tools are expected to be installed alongside ngless.
-         (add-after 'install 'link-tools
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((bin (string-append (assoc-ref outputs "out") "/bin/")))
-               (symlink (search-input-file inputs "/bin/prodigal")
-                        (string-append bin "ngless-" ,version "-prodigal"))
-               (symlink (search-input-file inputs "/bin/minimap2")
-                        (string-append bin "ngless-" ,version "-minimap2"))
-               (symlink (search-input-file inputs "/bin/samtools")
-                        (string-append bin "ngless-" ,version "-samtools"))
-               (symlink (search-input-file inputs "/bin/bwa")
-                        (string-append bin "ngless-" ,version "-bwa"))
-               #t))))))
+     (list
+      #:haddock? #f    ;The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
+                       ;error: parse error on input import
+                       ;import Options.Applicative
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'create-Versions.hs
+            (lambda _
+              (substitute* "Makefile"
+                (("BWA_VERSION = .*")
+                 (string-append "BWA_VERSION = "
+                                #$(package-version bwa) "\n"))
+                (("SAM_VERSION = .*")
+                 (string-append "SAM_VERSION = "
+                                #$(package-version samtools) "\n"))
+                (("PRODIGAL_VERSION = .*")
+                 (string-append "PRODIGAL_VERSION = "
+                                #$(package-version prodigal) "\n"))
+                (("MINIMAP2_VERSION = .*")
+                 (string-append "MINIMAP2_VERSION = "
+                                #$(package-version minimap2) "\n")))
+              (invoke "make" "NGLess/Dependencies/Versions.hs")))
+          (add-after 'create-Versions.hs 'create-cabal-file
+            (lambda _ (invoke "hpack")))
+          ;; These tools are expected to be installed alongside ngless.
+          (add-after 'install 'link-tools
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((bin (string-append #$output "/bin/")))
+                (symlink (search-input-file inputs "/bin/prodigal")
+                         (string-append bin "ngless-" #$version "-prodigal"))
+                (symlink (search-input-file inputs "/bin/minimap2")
+                         (string-append bin "ngless-" #$version "-minimap2"))
+                (symlink (search-input-file inputs "/bin/samtools")
+                         (string-append bin "ngless-" #$version "-samtools"))
+                (symlink (search-input-file inputs "/bin/bwa")
+                         (string-append bin "ngless-" #$version "-bwa"))))))))
     (inputs
      (list prodigal
            bwa
@@ -14276,36 +14322,32 @@ phase + query phase).")
           (base32 "1xr92r820x8qlkcr3b57iw223yq8vjgyi42jr79w2xgw47qzr575"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; no check target
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (scripts (string-append out "/share/filtlong/scripts")))
-                 (install-file "bin/filtlong" bin)
-                 (install-file "scripts/histogram.py" scripts)
-                 (install-file "scripts/read_info_histograms.sh" scripts))
-               #t))
-           (add-after 'install 'wrap-program
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (path (getenv "GUIX_PYTHONPATH")))
-                 (wrap-program (string-append out
-                                              "/share/filtlong/scripts/histogram.py")
-                   `("GUIX_PYTHONPATH" ":" prefix (,path))))
-               #t))
-           (add-before 'check 'patch-tests
-             (lambda _
-               (substitute* "scripts/read_info_histograms.sh"
-                 (("awk") (which "gawk")))
-               #t)))))
+       (list
+        #:tests? #f                    ; no check target
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin"))
+                      (scripts (string-append #$output "/share/filtlong/scripts")))
+                  (install-file "bin/filtlong" bin)
+                  (install-file "scripts/histogram.py" scripts)
+                  (install-file "scripts/read_info_histograms.sh" scripts))))
+            (add-after 'install 'wrap-program
+              (lambda _
+                (let ((path (getenv "GUIX_PYTHONPATH")))
+                  (wrap-program (string-append #$output
+                                               "/share/filtlong/scripts/histogram.py")
+                    `("GUIX_PYTHONPATH" ":" prefix (,path))))))
+            (add-before 'check 'patch-tests
+              (lambda _
+                (substitute* "scripts/read_info_histograms.sh"
+                  (("awk") (which "gawk"))))))))
       (inputs
-       `(("gawk" ,gawk)                 ;for read_info_histograms.sh
-         ("python" ,python-2)           ;required for histogram.py
-         ("zlib" ,zlib)))
+       (list gawk                     ;for read_info_histograms.sh
+             python-wrapper           ;required for histogram.py
+             zlib))
       (home-page "https://github.com/rrwick/Filtlong/")
       (synopsis "Tool for quality filtering of Nanopore and PacBio data")
       (description
@@ -14317,91 +14359,89 @@ choosing which reads pass the filter.")
                      license:asl2.0))))) ;histogram.py
 
 (define-public nanopolish
-  ;; The recommended way to install is to clone the git repository
-  ;; <https://github.com/jts/nanopolish#installing-a-particular-release>.
-  ;; Also, the differences between release and current version seem to be
-  ;; significant.
-  (let ((commit "6331dc4f15b9dfabb954ba3fae9d76b6c3ca6377")
-        (revision "1"))
-    (package
-      (name "nanopolish")
-      (version (git-version "0.11.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/jts/nanopolish")
-               (commit commit)
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "15ikl3d37y49pwd7vx36xksgsqajhf24q7qqsnpl15dqqyy5qgbc"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (delete-file-recursively "htslib")
-             #t))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:make-flags
-         `("HDF5=noinstall" "EIGEN=noinstall" "HTS=noinstall" "CC=gcc")
-         #:tests? #f                    ; no check target
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'find-eigen
-             (lambda* (#:key inputs #:allow-other-keys)
-               (setenv "CPATH"
-                       (string-append
-                        (search-input-directory inputs "/include/eigen3")
-                        ":" (or (getenv "CPATH") "")))))
-           (delete 'configure)
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (bin (string-append out "/bin"))
-                      (scripts (string-append out "/share/nanopolish/scripts")))
+  (package
+    (name "nanopolish")
+    (version "0.14.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jts/nanopolish")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ha9v5ia0qrwgav0956cfc7n64wjm9a9w3rvkg21g37a994yixg5"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; TODO: unbundle slow5lib
+        '(begin (for-each delete-file-recursively
+                          '("htslib" "minimap2"))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags
+      #~(list "HDF5=noinstall"
+              "EIGEN=noinstall"
+              "HTS=noinstall"
+              "MINIMAP2=noinstall"
+              (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                    ; no check target
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'find-eigen
+            (lambda* (#:key inputs #:allow-other-keys)
+              (setenv "CPATH"
+                      (string-append
+                       (search-input-directory inputs "/include/eigen3")
+                       ":" (or (getenv "CPATH") "")))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (let ((bin (string-append #$output "/bin"))
+                    (scripts (string-append #$output "/share/nanopolish/scripts")))
 
-                 (install-file "nanopolish" bin)
-                 (for-each (lambda (file) (install-file file scripts))
-                           (find-files "scripts" ".*"))
-                 #t)))
-           (add-after 'install 'wrap-programs
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((pythonpath (getenv "GUIX_PYTHONPATH"))
-                     (perl5lib (getenv "PERL5LIB"))
-                     (scripts (string-append (assoc-ref outputs "out")
-                                             "/share/nanopolish/scripts"))
-                     (guile (search-input-file inputs "bin/guile")))
-                 (for-each (lambda (file)
-                             (wrap-program file `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
-                           (find-files scripts "\\.py"))
-                 (for-each (lambda (file)
-                             (wrap-script file #:guile guile
-                                          `("PERL5LIB" ":" prefix (,perl5lib))))
-                           (find-files scripts "\\.pl"))))))))
-      (inputs
-       `(("guile" ,guile-3.0) ; for wrappers
-         ("eigen" ,eigen)
-         ("hdf5" ,hdf5)
-         ("htslib" ,htslib)
-         ("perl" ,perl)
-         ("bioperl" ,bioperl-minimal)
-         ("perl-getopt-long" ,perl-getopt-long)
-         ("python" ,python-wrapper)
-         ("python-biopython" ,python-biopython)
-         ("python-numpy" ,python-numpy)
-         ("python-pysam" ,python-pysam)
-         ("python-scikit-learn" , python-scikit-learn)
-         ("python-scipy" ,python-scipy)
-         ("zlib" ,zlib)))
-      (home-page "https://github.com/jts/nanopolish")
-      (synopsis "Signal-level analysis of Oxford Nanopore sequencing data")
-      (description
-       "This package analyses the Oxford Nanopore sequencing data at signal-level.
+                (install-file "nanopolish" bin)
+                (for-each (lambda (file) (install-file file scripts))
+                          (find-files "scripts" ".*")))))
+          (add-after 'install 'wrap-programs
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((pythonpath (getenv "GUIX_PYTHONPATH"))
+                    (perl5lib (getenv "PERL5LIB"))
+                    (scripts (string-append #$output "/share/nanopolish/scripts"))
+                    (guile (search-input-file inputs "bin/guile")))
+                (for-each (lambda (file)
+                            (wrap-program file `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
+                          (find-files scripts "\\.py"))
+                (for-each (lambda (file)
+                            (wrap-script file #:guile guile
+                                         `("PERL5LIB" ":" prefix (,perl5lib))))
+                          (find-files scripts "\\.pl"))))))))
+    (inputs
+     (list guile-3.0                    ;for wrappers
+           eigen
+           hdf5
+           htslib
+           minimap2
+           perl
+           bioperl-minimal
+           perl-getopt-long
+           python-wrapper
+           python-biopython
+           python-numpy
+           python-pysam
+           python-scikit-learn
+           python-scipy
+           zlib))
+    (native-inputs (list cmake-minimal))
+    (home-page "https://github.com/jts/nanopolish")
+    (synopsis "Signal-level analysis of Oxford Nanopore sequencing data")
+    (description
+     "This package analyses the Oxford Nanopore sequencing data at signal-level.
 Nanopolish can calculate an improved consensus sequence for a draft genome
 assembly, detect base modifications, call SNPs (Single nucleotide
 polymorphisms) and indels with respect to a reference genome and more.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public cnvkit
   (package
@@ -14484,60 +14524,59 @@ is a Cython wrapper for FIt-SNE.")
 (define-public bbmap
   (package
     (name "bbmap")
-    (version "38.90")
+    (version "39.01")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://sourceforge/bbmap/BBMap_" version ".tar.gz"))
               (sha256
                (base32
-                "1wb94bcc006qq86x77z2rz0lc8m9f1kpnw6gdhjfg9bdaqf56rm3"))))
+                "1rlkw2mlkn699dk9n5lnigmvwq3zr2f8hnq9plx7zi1h06jqsq4q"))))
     (build-system ant-build-system)
     (arguments
-     `(#:build-target "dist"
-       #:tests? #f ; there are none
-       #:make-flags
-       ,#~(list (string-append "-Dmpijar="
-                               #$(this-package-input "java-openmpi")
-                               "/lib/mpi.jar"))
-       #:modules ((guix build ant-build-system)
+     (list
+      #:build-target "dist"
+      #:tests? #f ; there are none
+      #:make-flags
+      #~(list (string-append "-Dmpijar="
+                             #$(this-package-input "java-openmpi")
+                             "/lib/mpi.jar"))
+      #:modules '((guix build ant-build-system)
                   (guix build utils)
                   (guix build java-utils))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'build 'build-jni-library
-           (lambda _
-             (with-directory-excursion "jni"
-               (invoke "make" "-f" "makefile.linux"))))
-         ;; There is no install target
-         (replace 'install (install-jars "dist"))
-         (add-after 'install 'install-scripts-and-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "calcmem.sh"
-               (("\\| awk ") (string-append "| " (which "awk") " ")))
-             (let* ((scripts (find-files "." "\\.sh$"))
-                    (out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin"))
-                    (doc (string-append out "/share/doc/bbmap"))
-                    (jni (string-append out "/lib/jni")))
-               (substitute* scripts
-                 (("\\$DIR\"\"docs") doc)
-                 (("^CP=.*")
-                  (string-append "CP=" out "/share/java/BBTools.jar\n"))
-                 (("^NATIVELIBDIR.*")
-                  (string-append "NATIVELIBDIR=" jni "\n"))
-                 (("CMD=\"java")
-                  (string-append "CMD=\"" (which "java"))))
-               (for-each (lambda (script) (install-file script bin)) scripts)
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'build 'build-jni-library
+            (lambda _
+              (with-directory-excursion "jni"
+                (invoke "make" "-f" "makefile.linux"))))
+          ;; There is no install target
+          (replace 'install (install-jars "dist"))
+          (add-after 'install 'install-scripts-and-documentation
+            (lambda _
+              (substitute* "calcmem.sh"
+                (("\\| awk ") (string-append "| " (which "awk") " ")))
+              (let* ((scripts (find-files "." "\\.sh$"))
+                     (bin (string-append #$output "/bin"))
+                     (doc (string-append #$output "/share/doc/bbmap"))
+                     (jni (string-append #$output "/lib/jni")))
+                (substitute* scripts
+                  (("\\$DIR\"\"docs") doc)
+                  (("^CP=.*")
+                   (string-append "CP=" #$output "/share/java/BBTools.jar\n"))
+                  (("^NATIVELIBDIR.*")
+                   (string-append "NATIVELIBDIR=" jni "\n"))
+                  (("CMD=\"java")
+                   (string-append "CMD=\"" (which "java"))))
+                (for-each (lambda (script) (install-file script bin)) scripts)
 
-               ;; Install JNI library
-               (install-file "jni/libbbtoolsjni.so" jni)
+                ;; Install JNI library
+                (install-file "jni/libbbtoolsjni.so" jni)
 
-               ;; Install documentation
-               (install-file "docs/readme.txt" doc)
-               (copy-recursively "docs/guides" doc))
-             #t)))
-       #:jdk ,openjdk11))
+                ;; Install documentation
+                (install-file "docs/readme.txt" doc)
+                (copy-recursively "docs/guides" doc)))))
+       #:jdk openjdk11))
     (inputs
      (list gawk java-eclipse-jdt-core java-eclipse-jdt-compiler-apt
            java-openmpi))
@@ -16744,7 +16783,7 @@ for the analysis and visualization of raw nanopore signal.")
                                          "/vcf/test")))))))
       (native-inputs
        ;; Older setuptools is needed for use_2to3.
-       (list python-cython python-setuptools-for-tensorflow))
+       (list python-cython python-setuptools-57))
       (propagated-inputs
        (list python-pysam python-rpy2))
       (home-page "https://github.com/jamescasbon/PyVCF")
@@ -17728,6 +17767,42 @@ alignment algorithm.  It completes MashMap with a high-performance alignment
 module capable of computing base-level alignments for very large sequences.")
     (home-page "https://github.com/ekg/wfmash")
     (license license:expat)))
+
+(define-public gdcm
+  (package
+    (name "gdcm")
+    (version "2.8.9")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/malaterre/gdcm")
+                    (commit (string-append "v" version))
+                    (recursive? #t)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1j8mjnxcwn2xvzhf25lv4dbawxbgc4im1crh8081li7i4mbwswaj"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DGDCM_BUILD_TESTING=true"
+              (string-append "-DCMAKE_CTEST_ARGUMENTS=-E;"
+                             "'TestFileMetaInformation"
+                             "|TestElement2"
+                             "|TestSCUValidation"
+                             "|TestEcho"
+                             "|TestFind'"))))
+    (home-page "http://gdcm.sourceforge.net/wiki/index.php/Main_Page")
+    (synopsis "Grassroots DICOM library")
+    (description
+     "Grassroots DICOM (GDCM) is an implementation of the DICOM standard
+designed to be open source so that researchers may access clinical data
+directly.  GDCM includes a file format definition and a network communications
+protocol, both of which should be extended to provide a full set of tools for
+a researcher or small medical imaging vendor to interface with an existing
+medical database.")
+    (license license:bsd-2)))
 
 (define-public wiggletools
   (package

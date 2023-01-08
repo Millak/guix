@@ -5,26 +5,27 @@
 # Adam Kandur <rndd@tuta.io>, 2021.
 # Iosilevitch Mihail <yosik@cock.li>, 2021.
 # Eugene Klimov <lipklim@mailbox.org>, 2021.
-# Igor Gorbounov <igor.gorbounov@gmail.com>, 2021.
+# Igor Gorbounov <igor.gorbounov@gmail.com>, 2021, 2022.
 # Helge Kim <helge@keemail.me>, 2021.
 # Olga Smirnova <mistresssilvara@hotmail.com>, 2022.
 # Nikita Epifanov <nikgreens@protonmail.com>, 2022.
 # A D <drozdov@portalenergy.tech>, 2022.
+# Illia Demianchuk <illialoo99@gmail.com>, 2022.
 #: guix/diagnostics.scm:158
 msgid ""
 msgstr ""
 "Project-Id-Version: GNU guix\n"
 "Report-Msgid-Bugs-To: bug-guix@gnu.org\n"
 "POT-Creation-Date: 2022-11-21 03:18+0000\n"
-"PO-Revision-Date: 2022-11-10 17:19+0000\n"
-"Last-Translator: A D <drozdov@portalenergy.tech>\n"
+"PO-Revision-Date: 2022-12-24 17:58+0000\n"
+"Last-Translator: Illia Demianchuk <illialoo99@gmail.com>\n"
 "Language-Team: Russian <https://translate.fedoraproject.org/projects/guix/guix/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15\n"
 
 #: gnu.scm:81
 #, scheme-format
@@ -280,7 +281,9 @@ msgid ""
 "guix pull\n"
 "@end example"
 msgstr ""
-"Скорее всего это значит данная версия Guix старее чем  та что создана @file{~a}. Чтобы адресовать это, вы должны обновить Guix:\n"
+"Возможная причина этого в том, что текущая версия\n"
+"Guix старее, чем та, что создана @file{~a}. В этом случае \n"
+"необходимо обновить Guix:\n"
 "\n"
 "@example\n"
 "guix pull\n"
@@ -325,18 +328,24 @@ msgid ""
 "Populate the @file{/etc/fstab} based on the given file\n"
 "system objects."
 msgstr ""
+"Заполните @file{/etc/fstab} на основе заданных объектов \n"
+"файловой системы."
 
 #: gnu/services/base.scm:348
 msgid ""
 "Take care of syncing the root file\n"
 "system and of remounting it read-only when the system shuts down."
 msgstr ""
+"Позаботьтесь о синхронизации корневой файловой системы \n"
+"и о ее перемонтировании в режиме только для чтения при выключении системы."
 
 #: gnu/services/base.scm:542
 msgid ""
 "Provide Shepherd services to mount and unmount the given\n"
 "file systems, as well as corresponding @file{/etc/fstab} entries."
 msgstr ""
+"Предоставьте службы Shepherd для подключения и отключения заданных \n"
+"файловых систем, а также соответствующие записи в @file{/etc/fstab}."
 
 #: gnu/services/base.scm:640
 msgid ""
@@ -344,20 +353,25 @@ msgid ""
 "generator (RNG) with the value recorded when the system was last shut\n"
 "down."
 msgstr ""
+"Введите в генератор псевдослучайных чисел (RNG) @file{/dev/urandom}\n"
+"значение, записанное при последнем выключении\n"
+"системы."
 
 #: gnu/services/base.scm:672
 msgid ""
 "Run the @command{rngd} random number generation daemon to\n"
 "supply entropy to the kernel's pool."
 msgstr ""
+"Запустите демон генерации случайных чисел @command{rngd} для\n"
+"передачи энтропии в пул ядра."
 
 #: gnu/services/base.scm:701
 msgid "Initialize the machine's host name."
-msgstr ""
+msgstr "Установите имя узла машины."
 
 #: gnu/services/base.scm:731
 msgid "Ensure the Linux virtual terminals run in UTF-8 mode."
-msgstr ""
+msgstr "Убедитесь, что виртуальные терминалы Linux работают в режиме UTF-8."
 
 #: gnu/services/base.scm:744
 msgid ""
@@ -365,6 +379,9 @@ msgid ""
 "@code{keyboard-layout} field of @code{operating-system}.}  Load the given list\n"
 "of console keymaps with @command{loadkeys}."
 msgstr ""
+"@emph{Эта служба устарела, вместо нее используется\n"
+"поле @code{keyboard-layout} в @code{operating-system}.}   Загрузите данный\n"
+"список раскладок консоли с помощью @command{loadkeys}."
 
 #: gnu/services/base.scm:804
 msgid ""
@@ -383,24 +400,44 @@ msgid ""
 "                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
 "@end example\n"
 msgstr ""
+"Устанавливает указанные шрифты на указанных TTY (шрифты индивидуально для\n"
+"каждой виртуальной консоли GNU/Linux).  Значение этого сервиса это список\n"
+"пар tty/font.  В качестве шрифта может использоваться имя шрифта, предоставленного\n"
+"пакетом @code{kbd} или любой допустимый аргумент для @command{setfont}. Например:\n"
+"\n"
+"@example\n"
+"`((\"tty1\" . \"LatGrkCyr-8x16\")\n"
+"  (\"tty2\" . ,(file-append\n"
+"                 font-tamzen\n"
+"                 \"/share/kbd/consolefonts/TamzenForPowerline10x20.psf\"))\n"
+"  (\"tty3\" . ,(file-append\n"
+"                 font-terminus\n"
+"                 \"/share/consolefonts/ter-132n\"))) ; for HDPI\n"
+"@end example\n"
 
 #: gnu/services/base.scm:856
 msgid ""
 "Provide a console log-in service as specified by its\n"
 "configuration value, a @code{login-configuration} object."
 msgstr ""
+"Предоставляет сервис для входа в консоль в соответствии\n"
+"со значением её конфигурации, объекте @code{login-configuration}"
 
 #: gnu/services/base.scm:1128
 msgid ""
 "Provide console login using the @command{agetty}\n"
 "program."
 msgstr ""
+"Позволяет войти в консоль с помощью\n"
+"программы @command{agetty}."
 
 #: gnu/services/base.scm:1193
 msgid ""
 "Provide console login using the @command{mingetty}\n"
 "program."
 msgstr ""
+"Позволяет войти в консоль с помощью\n"
+"программы @command{mingetty}."
 
 #: gnu/services/base.scm:1411
 msgid ""
@@ -441,11 +478,11 @@ msgstr ""
 
 #: gnu/services/base.scm:2281
 msgid "This service adds udev rules."
-msgstr ""
+msgstr "Этот сервис добавляет правила udev."
 
 #: gnu/services/base.scm:2371
 msgid "Turn on the virtual memory swap area."
-msgstr ""
+msgstr "Включить виртуальную память swap."
 
 #: gnu/services/base.scm:2413
 msgid ""
@@ -454,32 +491,38 @@ msgid ""
 "notably to select, copy, and paste text.  The default options use the\n"
 "@code{ps2} protocol, which works for both USB and PS/2 mice."
 msgstr ""
+"Запуск GPM, демона мыши общего назначения, с данными\n"
+"параметрами командной строки.  GPM позволяет пользователям использовать мышь в консоли,\n"
+"в частности, выделение, копирование и вставка текста.  Параметры по умолчанию используют\n"
+"@code{ps2} протокол, который работает с USB и PS/2 мышью."
 
 #: gnu/services/base.scm:2486
 msgid ""
 "Start the @command{kmscon} virtual terminal emulator for the\n"
 "Linux @dfn{kernel mode setting} (KMS)."
 msgstr ""
+"Запуск @command{kmscon} эмулятора виртуального терминала для\n"
+"Linux @dfn{kernel mode setting} (KMS)."
 
 #: gnu/services/base.scm:2503
 #, scheme-format
 msgid "address '~a' lacks a network mask"
-msgstr ""
+msgstr "для адреса '~a' не определена маска сети"
 
 #: gnu/services/base.scm:2509
 #, scheme-format
 msgid "Write, say, @samp{\"~a/24\"} for a 24-bit network mask."
-msgstr ""
+msgstr "Введите, скажем, @samp{\"~a/24\"} для 24-битной маски сети."
 
 #: gnu/services/base.scm:2589
 #, scheme-format
 msgid "network links are currently ignored on GNU/Hurd~%"
-msgstr ""
+msgstr "сетевые линки в данный момент не используются в GNU/Hurd~%"
 
 #: gnu/services/base.scm:2614
 #, scheme-format
 msgid "ignoring network route for '~a'~%"
-msgstr ""
+msgstr "игнорируется сетевой маршрут для '~a'~%"
 
 #: gnu/services/base.scm:2798
 msgid ""
@@ -488,6 +531,10 @@ msgid ""
 "services of this type is a list of @code{static-networking} objects, one per\n"
 "network interface."
 msgstr ""
+"Включить определённые сетевые интерфейсы при запуске,\n"
+"с заданным IP адресом, шлюзом, сетевой маской, и так далее.  Значение для\n"
+"сервисов этого типа является список @code{static-networking} объектов, по одному на\n"
+"сетевой интерфейс."
 
 #: gnu/services/base.scm:3166
 msgid ""
@@ -496,11 +543,15 @@ msgid ""
 "mount/unmount /run/user/<uid> directory for user and @code{greetd}\n"
 "login manager daemon."
 msgstr ""
+"Предоставляет необходимую инфраструктуру для логирования в\n"
+"систему, включая @code{greetd} PAM сервис, @code{pam-mount} модуль для\n"
+"mount/unmount /run/user/<uid> директории для пользователя и @code{greetd}\n"
+"демона менеджера логирования."
 
 #: gnu/services/certbot.scm:159
 #, scheme-format
 msgid "~a may need to be run~%"
-msgstr ""
+msgstr "~a возможно должен быть запущен~%"
 
 #: gnu/services/certbot.scm:209
 msgid ""
@@ -508,49 +559,54 @@ msgid ""
 "Encrypt} HTTPS certificates by adjusting the nginx web server configuration\n"
 "and periodically invoking @command{certbot}."
 msgstr ""
+"Обновить автоматически @url{https://letsencrypt.org, Let's\n"
+"Encrypt} HTTPS сертификтаты настроив конфигурацию веб сервера nginx\n"
+"и периодически запуская @command{certbot}."
 
 #: gnu/services/configuration.scm:96
 #, scheme-format
 msgid "invalid value ~s for field '~a'"
-msgstr "неправильное значение ~s для строки '~a'"
+msgstr "неверное значение ~s для строки '~a'"
 
 #: gnu/services/configuration.scm:418
 #, scheme-format
 msgid "The GRAMMAR value must be 'infix or 'suffix, but ~a provided."
-msgstr "ГРАММАТИКА должна быть 'infix или 'suffix, но указано ~a."
+msgstr "ГРАММАТИКА должна быть 'infix или 'suffix, но приведена ~a."
 
 #: gnu/services/file-sharing.scm:74
 #, scheme-format
 msgid "salt value must be a string of ~d characters"
-msgstr ""
+msgstr "значение соли - строка из ~d символов"
 
 #: gnu/services/file-sharing.scm:670
 #, scheme-format
 msgid "Wait period expired; killing transmission-daemon (pid ~a).~%"
-msgstr ""
+msgstr "Истёк период ожидания; закрывается transmission-daemon (pid ~a).~%"
 
 #: gnu/services/file-sharing.scm:673
 msgid ""
 "(If you see this message regularly, you may need to increase the value\n"
 "of 'stop-wait-period' in the service configuration.)\n"
 msgstr ""
+"(Если вы периодически видите это сообщение, возможно вам необходимо увеличить значение\n"
+"'stop-wait-period' в конфигурации сервиса.)\n"
 
 #: gnu/services/file-sharing.scm:687
 msgid "Service transmission-daemon has been asked to reload its settings file."
-msgstr ""
+msgstr "У сервиса transmission-daemon была запрошена повторная загрузка его файла настроек."
 
 #: gnu/services/file-sharing.scm:689
 msgid "Service transmission-daemon is not running."
-msgstr ""
+msgstr "Сервис transmission-daemon не запущен."
 
 #: gnu/services/file-sharing.scm:793
 msgid "Share files using the BitTorrent protocol."
-msgstr ""
+msgstr "Поделиться файлами используя протокол BitTorrent."
 
 #: gnu/services/networking.scm:325
 #, scheme-format
 msgid "'dhcp-client' service now expects a 'dhcp-client-configuration' record~%"
-msgstr "сервис 'dhcp-client' теперь ожидает записи 'dhcp-client-configuration'~%"
+msgstr "сервис 'dhcp-client' теперь ожидает строку 'dhcp-client-configuration'~%"
 
 #: gnu/services/networking.scm:327
 msgid ""
@@ -594,6 +650,9 @@ msgid ""
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr ""
+"Запустите @command{ntpd}, the Network Time Protocol (NTP)\n"
+"демон, реализацию @uref{http://www.openntpd.org, OpenNTPD}.  \n"
+"Демон будет синхронизировать системные часы с часами данных серверов."
 
 #: gnu/services/networking.scm:774
 msgid ""
@@ -601,6 +660,9 @@ msgid ""
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr ""
+"Запустите @command{inetd}, @dfn{Internet superserver}.  Он отвечает за \n"
+"прослушивание интернет сокетов и запуск соответствующих сервисов \n"
+"по запросу."
 
 #: gnu/services/networking.scm:896
 msgid ""
@@ -630,12 +692,12 @@ msgid ""
 msgstr ""
 
 #: gnu/services/networking.scm:1325
-#, fuzzy
-#| msgid "Connman network connection manager"
 msgid ""
 "Run @url{https://01.org/connman,Connman},\n"
 "a network connection manager."
-msgstr "Connman для управления сетевыми соединениями"
+msgstr ""
+"Запустите @url{https://01.org/connman,Connman},\n"
+"менеджер сетевых соединений."
 
 #: gnu/services/networking.scm:1348
 msgid ""
@@ -5633,7 +5695,7 @@ msgstr ""
 
 #: guix/scripts/size.scm:92
 msgid "store item"
-msgstr ""
+msgstr "элемент хранилища"
 
 #: guix/scripts/size.scm:92
 msgid "total"

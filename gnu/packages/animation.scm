@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pkill -9 <pkill9@runbox.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -23,6 +23,7 @@
 (define-module (gnu packages animation)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
@@ -92,7 +93,7 @@ rendering vector based animations and art in realtime.")
     (license license:expat)))
 
 ;; ETL, synfig, and Synfig Studio are updated in tandem.
-(define synfig-version "1.2.2")
+(define synfig-version "1.4.4")
 
 (define-public etl
   (package
@@ -100,12 +101,15 @@ rendering vector based animations and art in realtime.")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/ETL-" version ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/ETL-" version ".tar.gz"))
               (sha256
                (base32
-                "12sd8pz8l5xcxcmapkvih3brihdhdb6xmxisr9a415lydid9rh8d"))))
+                "1jnahpxvrdxrll7b7av3zxabm5j3nlz6m3vg4sib2278v1wf91yc"))))
     (build-system gnu-build-system)
+    (inputs (list glibmm-2.64))
+    (native-inputs (list pkg-config))
     (home-page "https://www.synfig.org")
     (synopsis "Extended C++ template library")
     (description
@@ -120,68 +124,37 @@ C++ @dfn{Standard Template Library} (STL).")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/synfig-" version
-                                  ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/synfig-" version ".tar.gz"))
               (sha256
                (base32
-                "1vy27kl68sbg41sfasa58k3p2nc1xfalvzk3k9gich9h90rpnpsz"))))
+                "01kgfmjfjk5y0v9ldmxzc8zzvbiaakz7nzg4hkj24gj3j6h8566d"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:configure-flags
-       ;; The Boost library path is taken from the value of BOOST_LDFLAGS.
-       (list (string-append "BOOST_LDFLAGS=-L"
-                            (assoc-ref %build-inputs "boost")
-                            "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-boost-build-error
-           ;; A chain of Boost headers leads to this error: "make_array" is
-           ;; not a member of "boost::serialization".  This can be avoided by
-           ;; loading the "array_wrapper" header first.
-           (lambda _
-             (substitute* "src/synfig/valuenodes/valuenode_dynamic.cpp"
-               (("#include <boost/numeric/odeint/integrate/integrate.hpp>" match)
-                (string-append
-                 "#include <boost/serialization/array_wrapper.hpp>\n" match)))
-             #t))
-         (add-after 'unpack 'adapt-to-libxml++-changes
-          (lambda _
-            (substitute* "configure"
-              (("libxml\\+\\+-2\\.6") "libxml++-3.0"))
-            (substitute* (append (find-files "src/modules/" "\\.cpp$")
-                                 (find-files "src/synfig/" "\\.(cpp|h)$"))
-              (("add_child\\(") "add_child_element(")
-              (("get_child_text\\(") "get_first_child_text(")
-              (("set_child_text\\(") "set_first_child_text(")
-              (("remove_child\\(") "remove_node("))
-            (substitute* "src/modules/mod_svg/svg_parser.cpp"
-              (("xmlpp::Node::NodeList") "xmlpp::Node::const_NodeList"))
-            #t)))))
     (inputs
-     `(("boost" ,boost)
-       ("ffmpeg" ,ffmpeg)
-       ("libdv" ,libdv)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libmng" ,libmng)
-       ("zlib" ,zlib)))
-    ;; synfig.pc lists the following as required: Magick++ freetype2
-    ;; fontconfig fftw OpenEXR ETL glibmm-2.4 giomm-2.4 libxml++-3.0 sigc++-2.0
-    ;; cairo pango pangocairo mlt++
+     (list boost
+           libdv
+           libjpeg-turbo
+           libpng
+           libmng
+           zlib))
+    ;; synfig.pc lists the following as required: Magick++ libavcodec
+    ;; libavformat libswscale freetype2 fontconfig OpenEXR ETL glibmm-2.4
+    ;; giomm-2.4 libxml++-2.6 sigc++-2.0 cairo fftw3 pango pangocairo mlt++
     (propagated-inputs
-     `(("cairo" ,cairo)
-       ("etl" ,etl)
-       ("fftw" ,fftw)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("glibmm" ,glibmm)
-       ("imagemagick" ,imagemagick)
-       ("libxml++" ,libxml++)
-       ("libsigc++" ,libsigc++)
-       ("mlt" ,mlt-6)
-       ("openexr" ,openexr-2)
-       ("pango" ,pango)))
+     (list cairo
+           etl
+           ffmpeg-4
+           fftw
+           fontconfig
+           freetype
+           glibmm-2.64
+           imagemagick
+           libxml++-2
+           libsigc++
+           mlt-6
+           openexr-2
+           pango))
     (native-inputs
      (list intltool pkg-config))
     (home-page "https://www.synfig.org")
@@ -198,32 +171,24 @@ for tweening, preventing the need to hand-draw each frame.")
     (version synfig-version)
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://sourceforge/synfig/releases/"
-                                  version "/source/synfigstudio-" version
-                                  ".tar.gz"))
+              (uri (string-append "https://github.com/synfig/synfig"
+                                  "/releases/download/v" version
+                                  "/synfigstudio-" version ".tar.gz"))
               (sha256
                (base32
-                "1ql92kh9z8w2j9yi3pr7hn7wh2r2j35xynwv9xlwyd7niackgykn"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "src/synfigapp/pluginmanager.cpp"
-                    (("xmlpp::Node\\* n =")    "const xmlpp::Node* n =")
-                    (("xmlpp::Node::NodeList") "xmlpp::Node::const_NodeList"))
-                  #t))))
+                "07xjgs1qw0rwpihpcspj92rzwy5zizi86l9x2x7w6sysrj0wd4w8"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         ;; This fixes the file chooser crash that happens with GTK 3.
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (gtk (assoc-ref inputs "gtk+"))
-                    (gtk-share (string-append gtk "/share")))
-               (wrap-program (string-append out "/bin/synfigstudio")
-                 `("XDG_DATA_DIRS" ":" prefix (,gtk-share)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This fixes the file chooser crash that happens with GTK 3.
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((gtk (assoc-ref inputs "gtk+"))
+                     (gtk-share (string-append gtk "/share")))
+                (wrap-program (string-append #$output "/bin/synfigstudio")
+                  `("XDG_DATA_DIRS" ":" prefix (,gtk-share)))))))))
     (inputs
      (list gtkmm-3 gtk+ libsigc++ synfig))
     (native-inputs

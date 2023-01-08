@@ -40,6 +40,7 @@
   #:use-module (gnu packages graphics)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages maths)
@@ -47,6 +48,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-science)
@@ -935,6 +937,108 @@ provides the necessary tools and data structures for cases where the
 forward model is implemented in @code{fenics} or
 @url{https://firedrakeproject.org,firedrake}.")
     (license license:lgpl3)))
+
+(define %commonroad-dont-install-license-at-root
+  #~(substitute* "setup.py"
+      (("data_files=\\[\\('.', \\['LICENSE.txt'\\]\\)\\],")
+       "")))
+
+(define-public python-commonroad-vehicle-models
+  (package
+    (name "python-commonroad-vehicle-models")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "commonroad-vehicle-models" version))
+              (sha256
+               (base32
+                "13jg0cys7y4n7rg548w6mxk9g10gd5qxmj4ynrlriczpffqy6kc7"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup.py
+                 (lambda _
+                   #$%commonroad-dont-install-license-at-root)))))
+    (propagated-inputs (list python-numpy python-omegaconf))
+    (home-page "https://commonroad.in.tum.de/")
+    (synopsis "CommonRoad vehicle models")
+    (description "This package provides vehicle models used in CommonRoad
+benchmarks.  Varying abstraction levels are used ranging from kinematic single
+track models to multi-body models.")
+    (license license:bsd-3)))
+
+(define-public python-commonroad-io
+  (package
+    (name "python-commonroad-io")
+    (version "2022.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "commonroad-io" version))
+              (sha256
+               (base32
+                "1cj9zj567mca8xb8sx9h3nnl2cccv6vh8h73imgpq61cimk9mvas"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup.py
+                 (lambda _
+                   #$%commonroad-dont-install-license-at-root)))))
+    (propagated-inputs (list python-commonroad-vehicle-models
+                             python-iso3166
+                             python-lxml
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-omegaconf
+                             python-pillow
+                             python-protobuf
+                             python-rtree
+                             python-scipy
+                             python-shapely
+                             python-tqdm))
+    (native-inputs (list python-lxml python-pytest))
+    (home-page "https://commonroad.in.tum.de/")
+    (synopsis "Read, write, and visualize CommonRoad scenarios.")
+    (description "This package provides methods to read, write, and visualize
+CommonRoad scenarios and planning problems.  It can be used as a framework for
+implementing motion planning algorithms to solve CommonRoad Benchmarks
+and is the basis for other tools of the CommonRoad Framework.")
+    (license license:bsd-3)))
+
+(define-public python-commonroad-route-planner
+  (package
+    (name "python-commonroad-route-planner")
+    (version "2022.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.lrz.de/tum-cps/commonroad-route-planner")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xn0l7bzmj56d4mlqacvbl8mdvsffkg2fn2lzfmis5jl4vp99ipf"))))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-setup.py
+                 (lambda _
+                   #$%commonroad-dont-install-license-at-root)))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-commonroad-io
+                             python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-setuptools
+                             python-shapely))
+    (home-page "https://gitlab.lrz.de/tum-cps/commonroad-route-planner")
+    (synopsis "Route planner for CommonRoad scenarios")
+    (description "This package provides functions for route planning, that is
+finding sequences that lead from a given start lanelet to some goal
+lanelet(s).")
+    (license license:bsd-3)))
 
 (define-public sumo
   (package

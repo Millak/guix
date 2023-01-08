@@ -310,7 +310,8 @@ Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute.
 @i{Scheme at a Glance}}, by Steve Litt.
 
 @item
-@uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html,
+@c There used to be a copy at mitpress.mit.edu but it vanished.
+@uref{https://sarabander.github.io/sicp/,
 @i{Structure and Interpretation of Computer Programs}}, by Harold
 Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known
 as ``SICP'', this book is a reference.
@@ -321,9 +322,6 @@ You can also install it and read it from your computer:
 guix install sicp info-reader
 info sicp
 @end example
-
-An @uref{https://sarabander.github.io/sicp/, unofficial ebook} is also
-available.
 
 @end itemize
 

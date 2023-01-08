@@ -479,7 +479,8 @@ plug-in system.")
                    license:bsd-2))))     ;xbmc/freebsd
 
 (define-public kodi/wayland
-  (package/inherit kodi
+  (package
+    (inherit kodi)
     (name "kodi-wayland")
     (arguments
      (substitute-keyword-arguments (package-arguments kodi)
@@ -488,10 +489,10 @@ plug-in system.")
                (delete "-DCORE_PLATFORM_NAME=x11" ,flags)))))
     (inputs
      (modify-inputs (package-inputs kodi)
-       (prepend (list libinput
-                      libxkbcommon
-                      waylandpp
-                      wayland-protocols))))
+       (prepend libinput
+                libxkbcommon
+                waylandpp
+                wayland-protocols)))
     (synopsis "Kodi with Wayland rendering backend")))
 
 (define-public kodi-cli

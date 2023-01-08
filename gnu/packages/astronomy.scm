@@ -47,6 +47,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
@@ -356,7 +357,7 @@ made to get a better separation of core libraries and applications.
 (define-public cfitsio
   (package
     (name "cfitsio")
-    (version "3.49")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -364,18 +365,29 @@ made to get a better separation of core libraries and applications.
              "http://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/"
              "cfitsio-" version ".tar.gz"))
        (sha256
-        (base32 "1cyl1qksnkl3cq1fzl4dmjvkd6329b57y9iqyv44wjakbh6s4rav"))))
+        (base32 "128qsv2q0f0g714ahlsixiikvvbwxi9bg9q9pcr5cd3f7wdkv9gb"))))
     (build-system gnu-build-system)
-    ;; XXX Building with curl currently breaks wcslib.  It doesn't use
-    ;; pkg-config and hence won't link with -lcurl.
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda _
-             (substitute* "Makefile.in" (("/bin/") ""))
-             #t)))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-bzip2=" #$(this-package-input "bzip2")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "Makefile.in" (("/bin/") ""))))
+          (delete 'check)
+          ;; TODO: Testing steps are sourced from docs/fitsio.pdf, implement
+          ;; the logic in Guile in the future.
+          (add-after 'install 'post-install-check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "make" "testprog")
+                (with-output-to-file "testprog.lis" (lambda _(invoke "./testprog")))
+                (invoke "diff" "-r" "testprog.lis" "testprog.out")
+                (invoke "cmp" "-l" "testprog.fit" "testprog.std")))))))
+    (native-inputs (list gfortran))
+    (inputs (list bzip2 curl zlib))
     (home-page "https://heasarc.gsfc.nasa.gov/fitsio/fitsio.html")
     (synopsis "Library for reading and writing FITS files")
     (description "CFITSIO provides simple high-level routines for reading and
@@ -384,18 +396,18 @@ programmer from the internal complexities of the FITS format. CFITSIO also
 provides many advanced features for manipulating and filtering the information
 in FITS files.")
     (license (license:non-copyleft "file://License.txt"
-                          "See License.txt in the distribution."))))
+                                   "See License.txt in the distribution."))))
 
 (define-public python-fitsio
   (package
     (name "python-fitsio")
-    (version "1.1.7")
+    (version "1.1.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "fitsio" version))
        (sha256
-        (base32 "0q8siijys9kmjnqvyipjgh6hkhf4fwvr1swhsf4if211i9b0m1xy"))
+        (base32 "1y80hgvlkjz1bijfyb2j03853yc1kc63yrf9ab7as31ad2r6kxb1"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove the bundled cfitsio
@@ -419,13 +431,8 @@ in FITS files.")
                  (("self.system_fitsio_libdir = None") "pass")
                  (("self.use_system_fitsio") "True")
                  (("self.system_fitsio_includedir") includedir)
-                 (("self.system_fitsio_libdir") libdir)))))
-         (add-after 'unpack 'skip-bzip2-test
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; The bzip2 test fails because Guix' cfitsio
-             ;; is built without bzip2 support.
-             (substitute* "fitsio/test.py"
-               (("'SKIP_BZIP_TEST' in os.environ") "True")))))))
+                 (("self.system_fitsio_libdir") libdir))))))))
+    (inputs (list curl-minimal))
     (propagated-inputs
      (list python-numpy cfitsio))
     (home-page "https://github.com/esheldon/fitsio")
@@ -519,7 +526,7 @@ feature detection and cosmetic corrections.")
 (define-public wcslib
   (package
     (name "wcslib")
-    (version "7.5")
+    (version "7.12")
     (source
      (origin
        (method url-fetch)
@@ -527,26 +534,26 @@ feature detection and cosmetic corrections.")
              "ftp://ftp.atnf.csiro.au/pub/software/wcslib/wcslib-" version
              ".tar.bz2"))
        (sha256
-        (base32 "1536gmcpm6pckn9xrb6j8s4pm1vryjhzvhfaj9wx3jwxcpbdy0dw"))))
+        (base32 "1m3bx6gh5w3c7vvsqcki0x20mg8lilg13m0i8nh7za89w58dxy4w"))))
     (inputs
      (list cfitsio))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-cfitsiolib="
-                            (assoc-ref %build-inputs "cfitsio") "/lib")
-             (string-append "--with-cfitsioinc="
-                            (assoc-ref %build-inputs "cfitsio") "/include"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-/bin/sh
-           (lambda _
-             (substitute* "makedefs.in"
-               (("/bin/sh") "sh"))
-             #t))
-         (delete 'install-license-files)) ; installed by ‘make install’
-       ;; Parallel execution of the test suite is not supported.
-       #:parallel-tests? #f))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-cfitsiolib="
+                             #$(this-package-input "cfitsio") "/lib")
+              (string-append "--with-cfitsioinc="
+                             #$(this-package-input "cfitsio") "/include"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'install-license-files) ; installed by ‘make install’
+          (add-before 'configure 'patch-/bin/sh
+            (lambda _
+              (substitute* "makedefs.in"
+                (("/bin/sh") "sh")))))))
+    ;; TODO: Fix build with gfortran and pack missing optional pgplot.
+    ;; (inputs (list gfortran pgplot))
     (home-page "https://www.atnf.csiro.au/people/mcalabre/WCS")
     (synopsis "Library which implements the FITS WCS standard")
     (description "The FITS \"World Coordinate System\" (@dfn{WCS}) standard
@@ -976,25 +983,23 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.1")
+    (version "5.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "0zkv3ddzlxx21i796azfbqxrqnsxn83vsczscv577iyzxp3v5c8x"))
+        (base32 "10dxjim60ch4qznqa5s63q936mkvy95p0k26kcwzv43hmybdcjxs"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove Python bundles.
            (with-directory-excursion "astropy/extern"
              (for-each delete-file-recursively '("ply" "configobj")))
-           ;; Remove cextern bundles and leave the wcslib bundle.  Astropy
-           ;; upgrades to different versions of wcslib every few releases
-           ;; and tests break every upgrade.
-           ;; TODO: unbundle wcslib.
+           ;; Remove cextern bundles. Check bundled versions against available
+           ;; in Guix in the future update of astropy.
            (with-directory-excursion "cextern"
-             (for-each delete-file-recursively '("cfitsio" "expat")))
+             (for-each delete-file-recursively '("cfitsio" "expat" "wcslib")))
            #t))))
     (build-system python-build-system)
     (arguments
@@ -1002,10 +1007,8 @@ accurately in real time at any rate desired.")
        (modify-phases %standard-phases
          (add-after 'unpack 'preparations
            (lambda _
-             ;; Use our own libraries in place of bundles, with the
-             ;; exception of wcslib.
-             (setenv "ASTROPY_USE_SYSTEM_CFITSIO" "1")
-             (setenv "ASTROPY_USE_SYSTEM_EXPAT" "1")
+             ;; Use our own libraries in place of bundles.
+             (setenv "ASTROPY_USE_SYSTEM_ALL" "1")
              ;; Some tests require a writable home.
              (setenv "HOME" "/tmp")
              ;; Relax xfail tests.
@@ -1052,7 +1055,7 @@ accurately in real time at any rate desired.")
            python-sgp4
            python-skyfield))
     (inputs
-     (list cfitsio expat))
+     (list cfitsio expat wcslib))
     (propagated-inputs
      (list python-configobj
            python-numpy
@@ -1976,7 +1979,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
 (define-public indi
   (package
     (name "indi")
-    (version "1.9.3")
+    (version "1.9.9")
     (source
      (origin
        (method git-fetch)
@@ -1985,10 +1988,12 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0c7md288d3g2vf0m1ai6x2l4j4rmlasc4rya92phvd4ynf8vcki2"))))
+        (base32 "1vfcas59nlw8v7n6qhxhcm4isf5wk0crip5rmsallq3bsv3zznfr"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
+     ;; TODO: fix failing tests on aarch64-system.
+     `(#:tests? ,(not (or (%current-target-system) (target-aarch64?)))
+       #:configure-flags
        (let ((out (assoc-ref %outputs "out")))
          (list
           "-DINDI_BUILD_UNITTESTS=ON"
@@ -2013,6 +2018,7 @@ floating-point (no compression, LZW- or ZIP-compressed), FITS 8-bit, 16-bit,
            curl
            fftw
            gsl
+           libev
            libjpeg-turbo
            libnova
            libtiff

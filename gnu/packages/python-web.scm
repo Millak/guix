@@ -5,7 +5,7 @@
 ;;; Copyright © 2016, 2017 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2020 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2019-2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2017, 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -93,6 +93,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages groff)
@@ -1966,6 +1967,7 @@ Databricks REST APIs.")
          "102hy2qisvjxp5s0v9lvwqi4f2dk0dhns40vjgn008yxc7k0h3cr"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; No tests.
+    (propagated-inputs (list python-openid python-six))
     (home-page "https://github.com/puiterwijk/python-openid-cla/")
     (synopsis "Implementation of the OpenID CLA extension for python-openid")
     (description "@code{openid-cla} is an implementation of the OpenID
@@ -1985,6 +1987,7 @@ contributor license agreement extension for python-openid.")
          "05zrh78alav24rxkbqlpbad6d3x2nljk6z6j7kflxf3vdqa7w969"))))
     (build-system python-build-system)
     (arguments '(#:tests? #f)) ; No tests.
+    (propagated-inputs (list python-openid python-six))
     (home-page "https://github.com/puiterwijk/python-openid-teams/")
     (synopsis "Implementation of the OpenID teams extension for python-openid")
     (description
@@ -3611,6 +3614,26 @@ library.")
     (description "GRequests is a Python library that allows you to use
 @code{Requests} with @code{Gevent} to make asynchronous HTTP Requests easily")
     (license license:bsd-2)))
+
+(define-public python-gwebsockets
+  (package
+    (name "python-gwebsockets")
+    (version "0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "gwebsockets" version))
+              (sha256
+               (base32
+                "0kgq7wssz0mrhxdafkfc9prj0qjv9z0lyivyqvjvjnnypg54di7m"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-pygobject))
+    (home-page "https://github.com/sugarlabs/gwebsockets")
+    (synopsis "GLib based websockets server")
+    (description "This package provides a websocket server written in Python.
+It uses GIO for network communication and hence it easily integrates with the
+GLib mainloop.")
+    (license license:asl2.0)))
 
 (define-public python-dpkt
   (package

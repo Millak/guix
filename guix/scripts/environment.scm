@@ -601,7 +601,12 @@ environment~%")))
       (match (vhash-assoc "PS1" actual)
         (#f #f)
         ((_ . str)
-         (when (and (getenv "PS1") (string=? str (getenv "PS1")))
+         (when (and (getenv "PS1") (string=? str (getenv "PS1"))
+
+                    ;; 'PS1' might be conditional on 'GUIX_ENVIRONMENT', as
+                    ;; shown in the hint below.
+                    (not (or (string-contains str "$GUIX_ENVIRONMENT")
+                             (string-contains str "${GUIX_ENVIRONMENT"))))
            (warning (G_ "'PS1' is the same in sub-shell~%"))
            (display-hint (G_ "Consider setting a different prompt for
 environment shells to make them distinguishable.
@@ -610,10 +615,7 @@ If you are using Bash, you can do that by adding these lines to
 @file{~/.bashrc}:
 
 @example
-if [ -n \"$GUIX_ENVIRONMENT\" ]
-then
-  export PS1=\"\\u@@\\h \\w [env]\\$ \"
-fi
+PS1='\\u@@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
 @end example
 "))))))
 

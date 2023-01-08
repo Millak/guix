@@ -103,6 +103,7 @@
 (define-public zlib
   (package
     (name "zlib")
+    (replacement zlib-1.2.12)
     (version "1.2.11")
     (source
      (origin
@@ -163,6 +164,21 @@ triple the file size in extreme cases.)  zlib's memory footprint is also
 independent of the input data and can be reduced, if necessary, at some cost
 in compression.")
     (license license:zlib)))
+
+(define-public zlib-1.2.12
+  (package
+    (inherit zlib)
+    (version "1.2.12")
+    (source
+     (origin
+      (method url-fetch)
+      (uri (list (string-append "http://zlib.net/zlib-"
+                                 version ".tar.gz")
+                 (string-append "mirror://sourceforge/libpng/zlib/"
+                                version "/zlib-" version ".tar.gz")))
+      (sha256
+       (base32
+        "1n9na4fq4wagw1nzsfjr6wyly960jfa94460ncbf6p1fac44i14i"))))))
 
 (define-public minizip
   (package

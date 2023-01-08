@@ -20,7 +20,7 @@
 ;;; Copyright © 2019 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2019 Diego N. Barbato <dnbarbato@posteo.de>
 ;;; Copyright © 2019 Brett Gilio <brettg@posteo.de>
-;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Holgr Peters <holger.peters@posteo.de>
@@ -1261,7 +1261,7 @@ syntax to the minimum while remaining clear.")
 (define-public ruby-asciidoctor
   (package
     (name "ruby-asciidoctor")
-    (version "2.0.16")
+    (version "2.0.18")
     (source
      (origin
        (method git-fetch)               ;the gem release lacks a Rakefile
@@ -1271,44 +1271,52 @@ syntax to the minimum while remaining clear.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "086i17v9rxx0sxac26xp8c5v75jqba6rqjlk57x94qjvrh8vzyw2"))))
+         "1mpk3y69lqz9ywfkjmr40dm3mkabrnf92bb011qq1axj73yyrajv"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "test:all"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'extract-gemspec 'strip-version-requirements
-           (lambda _
-             (delete-file "Gemfile")
-             (substitute* "asciidoctor.gemspec"
-               (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                (string-append stripped "\n")))
-             #t)))))
+     (list
+      #:test-target "test:all"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'strip-version-requirements
+            (lambda _
+              (delete-file "Gemfile")
+              (substitute* "asciidoctor.gemspec"
+                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                 (string-append stripped "\n")))))
+          (add-after 'install 'install-man-page
+            (lambda* (#:key outputs #:allow-other-keys)
+              (install-file (search-input-file
+                             outputs (string-append "lib/ruby/vendor_ruby/"
+                                                    "gems/asciidoctor-"
+                                                    #$version
+                                                    "/man/asciidoctor.1"))
+                            (string-append #$output "/share/man/man1")))))))
     (native-inputs
-     (list ruby-erubi
-           ruby-erubis
-           ruby-minitest
-           ruby-nokogiri
-           ruby-asciimath
+     (list ruby-asciimath
            ruby-coderay
            ruby-cucumber
+           ruby-erubis
            ruby-haml
+           ruby-minitest
+           ruby-nokogiri
+           ruby-open-uri-cached
            ruby-rouge
            ruby-rspec-expectations
            ruby-simplecov
            ruby-slim
-           ruby-tilt))
+           ruby-tilt
+           ruby-erubi))
     (synopsis "Converter from AsciiDoc content to other formats")
     (description "Asciidoctor is a text processor and publishing toolchain for
-converting AsciiDoc content to HTML5, DocBook 5 (or 4.5), PDF, and other
-formats.")
+converting AsciiDoc content to HTML5, DocBook 5, PDF, and other formats.")
     (home-page "https://asciidoctor.org")
     (license license:expat)))
 
 (define-public ruby-asciidoctor-multipage
   (package
     (name "ruby-asciidoctor-multipage")
-    (version "0.0.15")
+    (version "0.0.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1317,7 +1325,7 @@ formats.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "01qqkf00cp4sj82brz8kl02pjirydafwgld3z166slysiq78d1c5"))))
+                "0rnz7qxdw5qbi3qjplihhk468kv690njdi06yllgylc75k62ar1p"))))
     (propagated-inputs (list ruby-asciidoctor ruby-slim))
     (build-system ruby-build-system)
     (arguments
@@ -1327,8 +1335,7 @@ formats.")
                       (delete-file "Gemfile")
                       (substitute* "asciidoctor-multipage.gemspec"
                         (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                         (string-append stripped "
-"))) #t)))))
+                         (string-append stripped "\n"))))))))
     (synopsis
      "Asciidoctor extension for generating HTML output using multiple pages")
     (description
@@ -1341,14 +1348,14 @@ configurable levels.")
 (define-public ruby-prawn-icon
   (package
     (name "ruby-prawn-icon")
-    (version "2.5.0")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "prawn-icon" version))
        (sha256
         (base32
-         "1ivkdf8rdf92hhy97vbmc2a4w97vcvqd58jcj4z9hz3hfsb1526w"))))
+         "049k42bqy4iq9hddf7jah83b6qr8ka63w1d63illh1mf4f4dihdk"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "spec"
@@ -1358,8 +1365,7 @@ configurable levels.")
                       (substitute* '("Rakefile" "spec/spec_helper.rb")
                         ((".*[Bb]undler.*") "")
                         (("^require 'rubocop.*") "")
-                        (("^RuboCop.*") ""))
-                      #t)))))
+                        (("^RuboCop.*") "")))))))
     (native-inputs
      (list ruby-pdf-inspector ruby-pdf-reader ruby-rspec ruby-simplecov))
     (propagated-inputs
@@ -1395,31 +1401,27 @@ Style Sheets (CSS) rule sets in Ruby.")
 (define-public ruby-prawn-svg
   (package
     (name "ruby-prawn-svg")
-    (version "0.30.0")
+    (version "0.32.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "prawn-svg" version))
        (sha256
         (base32
-         "0df3l49cy3xpwi0b73hmi2ykbjg9kjwrvhk0k3z7qhh5ghmmrn77"))))
+         "0mbxzw7r7hv43db9422flc24ib9d8bdy1nasbni2h998jc5a5lb6"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
                   (add-after 'unpack 'do-not-use-bundler
                     (lambda _
                       (substitute* "spec/spec_helper.rb"
-                        ((".*[Bb]undler.*") ""))
-                      #t))
+                        ((".*[Bb]undler.*") ""))))
                   (replace 'check
                     (lambda* (#:key tests? #:allow-other-keys)
                       (when tests?
-                        (invoke "rspec" "-Ilib" "-rprawn-svg"))
-                      #t)))))
-    (native-inputs
-     (list ruby-rspec))
-    (propagated-inputs
-     (list ruby-css-parser ruby-prawn))
+                        (invoke "rspec" "-Ilib" "-rprawn-svg")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-css-parser ruby-prawn))
     (synopsis "SVG renderer for the Prawn PDF library")
     (description "This library allows rendering Scalable Vector Graphics (SVG)
 graphics directly into a Portable Document Format (PDF) document using the
@@ -1816,14 +1818,14 @@ system by Donald E.  Knuth.")
 (define-public ruby-open-uri-cached
   (package
     (name "ruby-open-uri-cached")
-    (version "0.0.5")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "open-uri-cached" version))
        (sha256
         (base32
-         "13xy2vhrgz9mdxhklw5fszhamsdxh8ysf3l40g92hqm4hm288wap"))))
+         "03v0if3jlvbclnd6jgjk94fbhf0h2fq1wxr0mbx7018sxzm0biwr"))))
     (build-system ruby-build-system)
     (arguments
      `(#:tests? #f))                    ;no test suite
@@ -1837,7 +1839,7 @@ web pages.")
 (define-public ruby-asciidoctor-pdf
   (package
     (name "ruby-asciidoctor-pdf")
-    (version "1.6.1")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)               ;no test suite in the distributed gem
@@ -1847,52 +1849,49 @@ web pages.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1iyfy6n9d3rkyrfjmnnfb44c76mq1larmkv1x8n6p5nbm33wb9sf"))))
+         "07krhpj2ylz7h7hy8vg0js8yv828qxh3mkhx0bsrfh0p24xwbjrm"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-tests
-           ;; Two tests module fail for unknown reasons, *only* when
-           ;; ran in the build container (see:
-           ;; https://github.com/asciidoctor/asciidoctor-pdf/issues/1725#issuecomment-658777965).
-           (lambda _
-             (delete-file "spec/audio_spec.rb")
-             (delete-file "spec/video_spec.rb")))
-         (add-after 'extract-gemspec 'strip-version-requirements
-           (lambda _
-             (substitute* "asciidoctor-pdf.gemspec"
-               (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
-                (string-append stripped "\n")))))
-         ;; The tests rely on the Gem being installed, so move the check phase
-         ;; after the install phase.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key outputs tests? #:allow-other-keys)
-             (let ((new-gem (string-append (assoc-ref outputs "out")
-                                           "/lib/ruby/vendor_ruby")))
-               (setenv "GEM_PATH"
-                       (string-append (getenv "GEM_PATH") ":" new-gem))
-               (when tests?
-                 (invoke "rspec" "-t" "~visual" "-t" "~cli" "-t" "~network"))))))))
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'strip-version-requirements
+            (lambda _
+              (substitute* "asciidoctor-pdf.gemspec"
+                (("(.*add_.*dependency '[_A-Za-z0-9-]+').*" _ stripped)
+                 (string-append stripped "\n")))))
+          ;; The tests rely on the Gem being installed, so move the check
+          ;; phase after the install phase.
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))
+              (when tests?
+                (invoke "rspec" "-t" "~visual" "-t" "~cli"
+                        "-t" "~network")))))))
     (native-inputs
-     (list ruby-chunky-png ruby-coderay ruby-pdf-inspector ruby-rouge
+     (list ruby-chunky-png
+           ruby-coderay
+           ruby-pdf-inspector
+           ruby-rouge
            ruby-rspec))
     (propagated-inputs
-     `(("ruby-asciidoctor" ,ruby-asciidoctor)
-       ("ruby-concurrent-ruby" ,ruby-concurrent)
-       ("ruby-open-uri-cached" ,ruby-open-uri-cached)
-       ("ruby-prawn" ,ruby-prawn)
-       ("ruby-prawn-icon" ,ruby-prawn-icon)
-       ("ruby-prawn-svg" ,ruby-prawn-svg)
-       ("ruby-prawn-table" ,ruby-prawn-table)
-       ("ruby-prawn-templates" ,ruby-prawn-templates)
-       ("ruby-safe-yaml" ,ruby-safe-yaml)
-       ("ruby-text-hyphen" ,ruby-text-hyphen)
-       ("ruby-thread-safe" ,ruby-thread-safe)
-       ("ruby-treetop" ,ruby-treetop)
-       ("ruby-ttfunk" ,ruby-ttfunk)))
+     (list ruby-asciidoctor
+           ruby-concurrent
+           ruby-open-uri-cached
+           ruby-prawn
+           ruby-prawn-icon
+           ruby-prawn-svg
+           ruby-prawn-table
+           ruby-prawn-templates
+           ruby-safe-yaml
+           ruby-text-hyphen
+           ruby-thread-safe
+           ruby-treetop
+           ruby-ttfunk))
     (synopsis"AsciiDoc to Portable Document Format (PDF)} converter")
     (description "Asciidoctor PDF is an extension for Asciidoctor that
 converts AsciiDoc documents to Portable Document Format (PDF) using the Prawn
@@ -4324,25 +4323,37 @@ client protocol.")
 (define-public ruby-minitest
   (package
     (name "ruby-minitest")
-    (version "5.14.4")
+    (version "5.17.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "minitest" version))
               (sha256
                (base32
-                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))
+                "1kjy67qajw4rnkbjs5jyk7kc3lyhz5613fwj1i8f6ppdk4zampy0"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-hoe))
+    (native-inputs (list ruby-hoe))
+    (home-page "https://github.com/seattlerb/minitest")
     (synopsis "Small test suite library for Ruby")
     (description "Minitest provides a complete suite of Ruby testing
 facilities supporting TDD, BDD, mocking, and benchmarking.")
-    (home-page "https://github.com/seattlerb/minitest")
     (license license:expat)))
+
+(define-public ruby-minitest-5.14
+  (package
+    (inherit ruby-minitest)
+    (name "ruby-minitest-5.14")
+    (version "")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest" version))
+              (sha256
+               (base32
+                "19z7wkhg59y8abginfrm2wzplz7py3va8fyngiigngqvsws6cwgl"))))))
 
 ;; This is the last release of Minitest 4, which is used by some packages.
 (define-public ruby-minitest-4
-  (package (inherit ruby-minitest)
+  (package
+    (inherit ruby-minitest)
     (version "4.7.5")
     (source (origin
               (method url-fetch)
@@ -4354,16 +4365,14 @@ facilities supporting TDD, BDD, mocking, and benchmarking.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'remove-unsupported-method
-          (lambda _
-            (substitute* "Rakefile"
-              (("self\\.rubyforge_name = .*") ""))
-            #t))
+           (lambda _
+             (substitute* "Rakefile"
+               (("self\\.rubyforge_name = .*") ""))))
          (add-after 'build 'exclude-failing-tests
            (lambda _
              ;; Some tests are failing on Ruby 2.4 due to the deprecation of
              ;; Fixnum.
-             (delete-file "test/minitest/test_minitest_spec.rb")
-             #t)))))))
+             (delete-file "test/minitest/test_minitest_spec.rb"))))))))
 
 (define-public ruby-minitest-around
   (package
@@ -5029,57 +5038,51 @@ to reproduce user environments.")
     (license license:expat)))
 
 (define-public ruby-mini-portile-2
-  (package (inherit ruby-mini-portile)
-    (version "2.4.0")
+  (package
+    (inherit ruby-mini-portile)
+    (version "2.8.1")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "mini_portile2" version))
               (sha256
                (base32
-                "15zplpfw3knqifj9bpf604rb3wc1vhq6363pd6lvhayng8wql5vy"))))))
+                "1af4yarhbbx62f7qsmgg5fynrik0s36wjy3difkawy536xg343mp"))))))
 
 (define-public ruby-nokogiri
   (package
     (name "ruby-nokogiri")
-    (version "1.12.5")
+    (version "1.13.10")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "nokogiri" version))
               (sha256
                (base32
-                "1v02g7k7cxiwdcahvlxrmizn3avj2q6nsjccgilq1idc89cr081b"))))
+                "0n79k78c5vdcyl0m3y3l5x9kxl6xf5lgriwi2vd665qmdkr01vnk"))))
     (build-system ruby-build-system)
     (arguments
      ;; Tests fail because Nokogiri can only test with an installed extension,
      ;; and also because many test framework dependencies are missing.
-     `(#:tests? #f
-       #:gem-flags (list "--" "--use-system-libraries"
-                         (string-append "--with-xml2-include="
-                                        (assoc-ref %build-inputs "libxml2")
-                                        "/include/libxml2" ))))
-    (native-inputs
-     (list ruby-hoe))
-    (inputs
-     (list zlib libxml2 libxslt))
-    (propagated-inputs
-     (list ruby-mini-portile-2.6.1 ruby-pkg-config))
+     (list
+      #:tests? #f
+      #:gem-flags #~(list "--" "--use-system-libraries"
+                          (string-append "--with-xml2-include="
+                                         #$(this-package-input "libxml2")
+                                         "/include/libxml2" ))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'delete-mkmf.log
+            (lambda _
+              ;; This build log captures non-deterministic file names (see:
+              ;; https://github.com/sparklemotion/nokogiri/issues/2755).
+              (for-each delete-file (find-files #$output "^mkmf\\.log$")))))))
+    (native-inputs (list ruby-hoe))
+    (inputs (list zlib libxml2 libxslt))
+    (propagated-inputs (list ruby-mini-portile-2 ruby-pkg-config))
     (synopsis "HTML, XML, SAX, and Reader parser for Ruby")
     (description "Nokogiri (鋸) parses and searches XML/HTML, and features
 both CSS3 selector and XPath 1.0 support.")
     (home-page "http://www.nokogiri.org/")
     (license license:expat)))
-
-;; nokogiri requires this version exactly.
-(define-public ruby-mini-portile-2.6.1
-  (package
-    (inherit ruby-mini-portile)
-    (version "2.6.1")
-    (source (origin
-              (method url-fetch)
-              (uri (rubygems-uri "mini_portile2" version))
-              (sha256
-               (base32
-                "1lvxm91hi0pabnkkg47wh1siv56s6slm2mdq1idfm86dyfidfprq"))))))
 
 (define-public ruby-method-source
   (package
@@ -6355,39 +6358,14 @@ multibyte strings, internationalization, time zones, and testing.")
      "Crass is a pure Ruby CSS parser based on the CSS Syntax Level 3 spec.")
     (license license:expat)))
 
+;;; The ruby-nokogumbo package has been absorbed into ruby-nokogiri.
 (define-public ruby-nokogumbo
-  (package
-    (name "ruby-nokogumbo")
-    (version "2.0.2")
-    (source (origin
-              ;; We use the git reference, because there's no Rakefile in the
-              ;; published gem and the tarball on Github is outdated.
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/rubys/nokogumbo")
-                    (commit (string-append "v" version))))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1qg0iyw450lw6d0j1ghzg79a6l60nm1m4qmrzwzybi585861jxcx"))))
-    (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-rake-compiler))
-    (inputs
-     (list gumbo-parser))
-    (propagated-inputs
-     (list ruby-nokogiri))
-    (synopsis "Ruby bindings to the Gumbo HTML5 parser")
-    (description
-     "Nokogumbo allows a Ruby program to invoke the Gumbo HTML5 parser and
-access the result as a Nokogiri parsed document.")
-    (home-page "https://github.com/rubys/nokogumbo/")
-    (license license:asl2.0)))
+  (deprecated-package "ruby-nokogumbo" ruby-nokogiri))
 
 (define-public ruby-sanitize
   (package
     (name "ruby-sanitize")
-    (version "5.1.0")
+    (version "6.0.0")
     (home-page "https://github.com/rgrove/sanitize")
     (source (origin
               (method git-fetch)
@@ -6397,15 +6375,12 @@ access the result as a Nokogiri parsed document.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
-              (patches (search-patches "ruby-sanitize-system-libxml.patch"))
               (sha256
                (base32
-                "0lj0q9yhjp0q0in5majkshnki07mw8m2vxgndx4m5na6232aszl0"))))
+                "0p1a28vx95vscy9xzzyyddzgb9496x42a5i2ka39cpxbl5f3gkl0"))))
     (build-system ruby-build-system)
-    (propagated-inputs
-     (list ruby-crass ruby-nokogiri ruby-nokogumbo))
-    (native-inputs
-     (list ruby-minitest))
+    (propagated-inputs (list ruby-crass ruby-nokogiri))
+    (native-inputs (list ruby-minitest))
     (synopsis "Whitelist-based HTML and CSS sanitizer")
     (description
      "Sanitize is a whitelist-based HTML and CSS sanitizer.  Given a list of
@@ -6600,8 +6575,7 @@ with PostgreSQL 9.0 and later.")
              ;; provided.
              (substitute* "minitest"
                (("load File\\.expand_path\\(\"bundle\".*") "")
-               (("require \"bundler/setup\".*") "")))
-           #t))))
+               (("require \"bundler/setup\".*") "")))))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases
@@ -6610,8 +6584,7 @@ with PostgreSQL 9.0 and later.")
            (lambda _
              (substitute* "test/commands/where_test.rb"
                (("unless /cygwin\\|mswin\\|mingw\\|darwin/.*")
-                "unless true\n"))
-             #t))
+                "unless true\n"))))
          (add-before 'build 'compile
            (lambda _
              (invoke "rake" "compile")))
@@ -6623,12 +6596,15 @@ with PostgreSQL 9.0 and later.")
                 "finish_inside_autoloaded_files"))))
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t)))))
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list bundler
            ruby-chandler
-           ruby-minitest
+           ;; Using minitest 5.17 would cause 5 new bug failures.  This is
+           ;; probably related to
+           ;; https://github.com/deivid-rodriguez/byebug/pull/837.  Use
+           ;; minitest 5.14 until this is resolved and released.
+           ruby-minitest-5.14
            ruby-pry
            ruby-rake-compiler
            ruby-rubocop
@@ -7676,43 +7652,32 @@ variable length integers (varint) in Ruby Protocol Buffers.")
 (define-public ruby-ruby-prof
   (package
     (name "ruby-ruby-prof")
-    (version "1.4.3")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "ruby-prof" version))
        (sha256
         (base32
-         "1r3xalp91l07m0cwllcxjzg6nkviiqnxkcbgg5qnzsdji6rgy65m"))))
+         "09n13bzm1p956z318xx1v7ikqdp2i971v7p3kwf3170axz368ccy"))))
     (build-system ruby-build-system)
     (arguments
-      ;; It is unclear why the tests fail on i686-linux
+      ;; FIXME: Investigate why the tests fail on i686-linux.
      `(#:tests? ,(not (or (%current-target-system)
                           (target-x86-32?)))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'patch-rakefile
-           ;; This fixes the following error: "NameError: uninitialized
-           ;; constant Bundler::GemHelper" (see:
-           ;; https://github.com/ruby-prof/ruby-prof/issues/274).
-           (lambda _
-             (substitute* "Rakefile"
-               ((".*require \"bundler/setup\".*" all)
-                (string-append all "  require 'bundler/gem_tasks'\n")))
-             #t))
          ;; The LineNumbersTest test fails non-deterministically (see:
          ;; https://github.com/ruby-prof/ruby-prof/issues/276).
          (add-after 'extract-gemspec 'delete-flaky-test
            (lambda _
              (delete-file "test/line_number_test.rb")
              (substitute* "ruby-prof.gemspec"
-               (("\"test/line_number_test\\.rb\"\\.freeze, ") ""))
-             #t))
+               (("\"test/line_number_test\\.rb\"\\.freeze, ") ""))))
          (add-before 'check 'compile
           (lambda _
             (invoke "rake" "compile"))))))
-    (native-inputs
-     (list bundler ruby-minitest ruby-rake-compiler ruby-rdoc))
+    (native-inputs (list bundler ruby-minitest ruby-rake-compiler ruby-rdoc))
     (synopsis "Fast code profiler for Ruby")
     (description "RubyProf is a fast code profiler for Ruby.  Its features
 include:
@@ -9701,40 +9666,30 @@ binary-to-text encoding.  The main modern use of Ascii85 is in PostScript and
 (define-public ruby-ttfunk
   (package
     (name "ruby-ttfunk")
-    (version "1.6.2.1")
+    (version "1.7.0")
     (source
      (origin
        (method git-fetch)
-       ;; fetch from github as the gem does not contain testing code
+       ;; Fetch from github as the gem does not contain testing code.
        (uri (git-reference
-              (url "https://github.com/prawnpdf/ttfunk")
-              (commit version)))
+             (url "https://github.com/prawnpdf/ttfunk")
+             (commit version)))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0rsf4j6s97wbcnjbvmmh6xrc7imw4g9lrlcvn945wh400lc8r53z"))))
+         "1jyxn928mpyb1sikjd93s3v8fmh33232pq41ziaph513j7am6fi5"))))
     (build-system ruby-build-system)
     (arguments
-     `(#:test-target "spec"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'remove-ssh
-           (lambda _
-             ;; remove dependency on an ssh key pair that doesn't exist
-             (substitute* "ttfunk.gemspec"
-               (("spec.signing_key.*") ""))
-             #t))
-         (add-before 'check 'remove-rubocop
-           (lambda _
-             ;; remove rubocop as a dependency as not needed for testing
-             (substitute* "ttfunk.gemspec"
-               (("spec.add_development_dependency\\('rubocop'.*") ""))
-             (substitute* "Rakefile"
-               (("require 'rubocop/rake_task'") "")
-               (("RuboCop::RakeTask.new") ""))
-             #t)))))
-    (native-inputs
-     (list ruby-rspec ruby-yard bundler))
+     (list #:test-target "spec"         ;avoid the rubocop target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-missing-key-directive
+                 ;; This seem to be a common problem in Ruby projects (see:
+                 ;; https://github.com/prawnpdf/ttfunk/issues/99).
+                 (lambda _
+                   (substitute* "ttfunk.gemspec"
+                     ((".*spec.signing_key.*") "")))))))
+    (native-inputs (list ruby-prawn-dev))
     (synopsis "Font metrics parser for the Prawn PDF generator")
     (description
      "TTFunk is a TrueType font parser written in pure Ruby.  It is used as
@@ -10851,13 +10806,13 @@ support the tests found in Prawn, a pure Ruby PDF generation library.")
 (define-public ruby-pdf-core
   (package
     (name "ruby-pdf-core")
-    (version "0.8.1")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "pdf-core" version))
               (sha256
                (base32
-                "15d6m99bc8bbzlkcg13qfpjjzphfg5x905pjbfygvpcxsm8gnsvg"))))
+                "1fz0yj4zrlii2j08kaw11j769s373ayz8jrdhxwwjzmm28pqndjg"))))
     (build-system ruby-build-system)
     (arguments
      ; No test target
@@ -10868,49 +10823,86 @@ support the tests found in Prawn, a pure Ruby PDF generation library.")
 functionality from Prawn.")
     (license license:gpl3+)))
 
+(define-public ruby-prawn-dev
+  (package
+    (name "ruby-prawn-dev")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "prawn-dev" version))
+              (sha256
+               (base32
+                "1hbzzgm0nwc6h8pyv8h9xx068bf676rispxcz4a0sm8nykz54z4x"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no test suite
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'drop-rubocop-dependency
+            ;; Rubocop depends on Prawn.  Remove it to avoid the
+            ;; dependency cycle when using this tool to build
+            ;; Prawn components.
+            (lambda _
+              (substitute* "lib/prawn/dev/tasks.rb"
+                (("require 'rubocop/rake_task'")
+                 "")
+                (("RuboCop::RakeTask.new")
+                 ""))
+              (substitute* ".gemspec"
+                ((".*add.*dependency.*(rubocop|simplecov).*")
+                 "")))))))
+    (propagated-inputs (list ruby-rake ruby-rspec ruby-yard))
+    (synopsis "Shared tools for Prawn projects development")
+    (description "Prawn-dev contains tools to aid the development of the
+various Prawn projects.")
+    (home-page "https://prawnpdf.org/")
+    (license license:expat)))
+
 (define-public ruby-prawn
   ;; There hasn't been a new release since 2017/03/17.
-  (let ((revision "1")
-        (commit "d980247be8a00e7c59cd4e5785e3aa98f9856db1"))
-    (package
-      (name "ruby-prawn")
-      (version (git-version "2.2.2" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/prawnpdf/prawn")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "0mcmvf22h8il93yq48v9f31qpy27pvjxgv9172p0f4x9lqy0imwr"))))
-      (build-system ruby-build-system)
-      (arguments
-       `(#:phases
-         (modify-phases %standard-phases
-           (add-before 'build 'drop-signing-key-requirement
-             (lambda _
-               (substitute* "prawn.gemspec"
-                 (("spec.signing_key =.*")
-                  "spec.signing_key = nil"))
-               #t))
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 ;; The Prawn manual test fails (see:
-                 ;; https://github.com/prawnpdf/prawn/issues/1163), so exclude
-                 ;; it.
-                 (invoke "rspec" "--exclude-pattern" "prawn_manual_spec.rb"))
-               #t)))))
-      (propagated-inputs
-       (list ruby-pdf-core ruby-ttfunk))
-      (native-inputs
-       (list ruby-pdf-inspector ruby-prawn-manual-builder ruby-rspec
-             ruby-simplecov ruby-yard))
-      (home-page "https://prawnpdf.org/api-docs/2.0/")
-      (synopsis "PDF generation for Ruby")
-      (description "Prawn is a pure Ruby PDF generation library.")
-      (license %prawn-project-licenses))))
+  (package
+    (name "ruby-prawn")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/prawnpdf/prawn")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1h1gww12wcdscij0lnd21p9zcbwrwc3miini5ppannc2birmj9ja"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'drop-signing-key-requirement
+            (lambda _
+              (substitute* "prawn.gemspec"
+                (("spec.signing_key =.*")
+                 "spec.signing_key = nil"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                ;; The Prawn manual test fails (see:
+                ;; https://github.com/prawnpdf/prawn/issues/1163), so exclude
+                ;; it.
+                (invoke "rspec"
+                        "--exclude-pattern" "prawn_manual_spec.rb")))))))
+    (propagated-inputs
+     (list ruby-matrix
+           ruby-pdf-core
+           ruby-ttfunk))
+    (native-inputs
+     (list ruby-pdf-inspector
+           ruby-prawn-manual-builder
+           ruby-prawn-dev))
+    (home-page "https://prawnpdf.org/api-docs/2.0/")
+    (synopsis "PDF generation for Ruby")
+    (description "Prawn is a pure Ruby PDF generation library.")
+    (license %prawn-project-licenses)))
 
 (define-public ruby-prawn-table
   (package
@@ -11188,6 +11180,31 @@ YAML.load suitable for accepting user input in Ruby applications.")
 Ruby yaml library.")
     (home-page "https://github.com/Pryz/yaml-lint")
     (license license:expat)))
+
+(define-public ruby-matrix
+  (package
+    (name "ruby-matrix")
+    (version "0.4.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/matrix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1asxr0jzh39lk5f8a9wm5avykrcy0v2wgd1bl3cszjczh99xy5k2"))))
+    (build-system ruby-build-system)
+    (synopsis "@code{Matrix} and @code{Vector} classes implementation for Ruby")
+    (description "This Ruby library provides an implementation of the
+@code{Matrix} and @code{Vector} classes.  The @code{Matrix} class represents a
+mathematical matrix.  It provides methods for creating matrices, operating on
+them arithmetically and algebraically, and determining their mathematical
+properties (trace, rank, inverse, determinant, eigensystem, etc.).  The
+@code{Vector} class represents a mathematical vector, which is useful in its
+own right, and also constitutes a row or column of a @code{Matrix}.")
+    (home-page "https://github.com/ruby/matrix")
+    (license license:bsd-2)))
 
 (define-public ruby-mercenary
   (package
@@ -11545,7 +11562,7 @@ characteristics.")
 (define-public ruby-html-proofer
   (package
     (name "ruby-html-proofer")
-    (version "3.18.5")
+    (version "5.0.3")
     (source
      (origin
        (method git-fetch)
@@ -11555,22 +11572,35 @@ characteristics.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1pxb0fajb3l3lm7sqj548qwl7vx6sx3jy7n4cns9d4lqx7s9r9xb"))))
+         "01ksss3ikppc45z2q33bx8bb9785bqlp1rdqascaqg9mhs392adk"))))
     (build-system ruby-build-system)
     (arguments
-     `(;; FIXME: Tests depend on rubocop-standard.
-       #:tests? #f))
-    (native-inputs
-     (list ruby-awesome-print
-           ruby-redcarpet
-           ruby-rspec
-           ruby-rubocop
-           ruby-rubocop-performance
-           ruby-pry-byebug))
+     (list
+      ;; Tests require vcr, which is under the Hippocratic license, which is
+      ;; not a free software license (see:
+      ;; https://www.gnu.org/licenses/license-list.html#hippocratic).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'extract-gemspec 'relax-requirements
+            (lambda _
+              (substitute* "html-proofer.gemspec"
+                (("required_ruby_version = \\[\">= 3.1\"")
+                 "required_ruby_version = [\">= 2.6\""))))
+          (replace 'replace-git-ls-files
+            (lambda _
+              ;; The html-proofer.gemspec file contains 'all_files = %x(git
+              ;; ls-files -z).split("\x0")', but the original phase matches on
+              ;; `git ls-files -z`.
+              ;; TODO: Improve ruby-build-system patterns on core-updates.
+              (substitute* "html-proofer.gemspec"
+                (("git ls-files -z")
+                 "find . -type f -not -regex '.*\\.gem$' -print0 \
+| sort -z | cut -zc3-")))))))
     (propagated-inputs
      (list ruby-addressable
            ruby-mercenary
-           ruby-nokogumbo
+           ruby-nokogiri
            ruby-parallel
            ruby-rainbow
            ruby-typhoeus
@@ -13301,23 +13331,21 @@ export/conversion to formats such as YAML, JSON, CSL, and XML (BibTeXML).")
 (define-public ruby-unicode-scripts
   (package
     (name "ruby-unicode-scripts")
-    (version "1.7.0")
+    (version "1.8.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "unicode-scripts" version))
               (sha256
                (base32
-                "1k7kbfk806zam129bp7pdiqkfb5hn51x149irzvjhs4xf22m4yvi"))))
+                "0rl6mn908yryhrg8j3mmna54gnrid2nph2kym00lbz6jwdih2a1b"))))
     (build-system ruby-build-system)
-    (native-inputs
-     (list ruby-minitest))
-    (arguments
-     (list #:test-target "spec"))
+    (native-inputs (list ruby-minitest))
+    (arguments (list #:test-target "spec"))
     (home-page "https://github.com/janlelis/unicode-scripts")
     (synopsis "Unicode script classification library")
-    (description
-     "This gem provides a simple interface for classifying Ruby strings using
-the Unicode @code{Script} and @code{Script_Extensions} properties.")
+    (description "This gem provides a simple interface for classifying Ruby
+strings using the Unicode @code{Script} and @code{Script_Extensions}
+properties.")
     (license license:expat)))
 
 (define-public ruby-citeproc
@@ -13616,15 +13644,15 @@ though the later has not yet been packaged for Guix.")
 (define-public anystyle
   (package
     (name "anystyle")
-    (version "1.3.1")
+    (version "1.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/inukshuk/anystyle-cli")
-                    (commit version)))
+                    (commit (string-append "v" version))))
               (sha256
                (base32
-                "1bazzms04cra8516q7vydmcm31yd0a7si1pxk4waffqy7lh0pksg"))
+                "0yigfyn0n255nc53nx40yqak11dm4fva46hx5db177jh7mnksjd6"))
               (file-name (git-file-name name version))))
     (build-system ruby-build-system)
     (propagated-inputs

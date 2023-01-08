@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
-;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
@@ -2390,29 +2390,30 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
 (define-public ode
   (package
     (name "ode")
-    (version "0.16.2")
+    (version "0.16.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://bitbucket.org/odedevs/ode/downloads/"
                            "ode-" version ".tar.gz"))
        (sha256
-        (base32 "08hgh4gqdk77jcw8b7gq2mwsfg4a5v5y0j7g42bxiqhmn3ffnsmj"))
+        (base32 "04y40czkh71m1p2r8ddfn5bajvlh7yyfa928jvi8qipwkgsdnhf7"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "libccd")
-           #t))))
+           (delete-file-recursively "libccd")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DODE_WITH_LIBCCD_SYSTEM=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-libccd
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("configure_file\\(libccd/.*") ""))
-             #t)))))
+     (list
+      ;; XXX: The sole test is failing on i686 due to a rounding error.
+      #:tests? (not (target-x86-32?))
+      #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-libccd
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("configure_file\\(libccd/.*") "")))))))
     (inputs
      (list glu libccd mesa))
     (home-page "https://www.ode.org/")

@@ -295,7 +295,7 @@ subplots, multiple-axes, polar charts, and bubble charts.")
         (base32 "0sx53l555rwq0z7if8agirjgw4ddp8r9b949wwz8vlig03sjvfmp"))))
     (build-system python-build-system)
     (native-inputs
-     (list python-setuptools))          ;for use_2to3 support
+     (list python-setuptools-57))       ;for use_2to3 support
     (propagated-inputs
      (list python-networkx python-numpy))
     (home-page "https://github.com/taynaud/python-louvain")

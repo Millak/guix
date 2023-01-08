@@ -3,7 +3,7 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Xinglu Chem <public@yoctocell.xyz>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -170,12 +170,13 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
 (define (stackage-lts-package? package)
   "Return whether PACKAGE is available on the default Stackage LTS release."
   (and (hackage-package? package)
-       (let ((packages (stackage-lts-packages
-                        (stackage-lts-info-fetch %default-lts-version)))
-             (hackage-name (guix-package->hackage-name package)))
-         (find (lambda (package)
-                 (string=? (stackage-package-name package) hackage-name))
-               packages))))
+       (false-if-networking-error
+        (let ((packages (stackage-lts-packages
+                         (stackage-lts-info-fetch %default-lts-version)))
+              (hackage-name (guix-package->hackage-name package)))
+          (find (lambda (package)
+                  (string=? (stackage-package-name package) hackage-name))
+                packages)))))
 
 (define %stackage-updater
   (upstream-updater

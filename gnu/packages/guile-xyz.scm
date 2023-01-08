@@ -1,9 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017, 2022 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Alex Sassmannshausen <alex@pompo.co>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Erik Edrosa <erik.edrosa@gmail.com>
 ;;; Copyright © 2016, 2019, 2020, 2021 Eraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017, 2021 Alex Kost <alezost@gmail.com>
@@ -17,7 +17,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2017, 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2019 swedebugia <swedebugia@riseup.net>
@@ -934,7 +934,7 @@ that augment Guile's support for handling files and their names.")
 (define-public guile-syntax-highlight
   (package
     (name "guile-syntax-highlight")
-    (version "0.1")
+    (version "0.2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/"
@@ -943,15 +943,7 @@ that augment Guile's support for handling files and their names.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1p771kq15x83483m23bhah1sz6vkalg3drm7x279f4j1cxligkzi"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Allow builds with Guile 3.0.
-                  (substitute* "configure"
-                    (("2\\.2 2\\.0")
-                     "3.0 2.2 2.0"))
-                  #t))))
+                "0q4nz10l66hx1lyf83qyhkkz1bi6i860662a7kslc4d61w08qnk9"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -1483,25 +1475,26 @@ tracker's SOAP service, such as @url{https://bugs.gnu.org}.")
 (define-public guile-email
   (package
     (name "guile-email")
-    (version "0.2.2")
+    (version "0.3.0")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append
-             "https://guile-email.systemreboot.net/releases/guile-email-"
-             version ".tar.lz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.systemreboot.net/guile-email")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rc8r0fgvflnyq5ckl7ii8sghpsgpkzxa8vskjr1ak2kyar6m35k"))
-       (patches
-        (search-patches "guile-email-fix-tests.patch"))))
+         "0q98r460yr75gyxg06zrrixwazncd9nxl2pgr68mff2wf41f291h"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config lzip))
+     (list texinfo))
     (inputs
      (list guile-3.0))
     (arguments
-     '(#:make-flags '("GUILE_AUTO_COMPILE=0"))) ; to prevent guild warnings
+     (list #:make-flags #~(list (string-append "prefix=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
     (home-page "https://guile-email.systemreboot.net")
     (synopsis "Guile email parser")
     (description "guile-email is a collection of email utilities implemented
@@ -1527,6 +1520,7 @@ format.")
          (sha256
           (base32
            "1g4rn7ai3nfxmpppc8qbpv8b18wnsld29y5xa58cv9b8pf3pbwnj"))))
+      (arguments '())
       (native-inputs
        (list pkg-config autoconf automake texinfo)))))
 
@@ -1535,7 +1529,43 @@ format.")
     (inherit guile-email)
     (name "guile2.2-email")
     (inputs (modify-inputs (package-inputs guile-email)
-              (replace "guile" guile-2.2)))))
+              (replace "guile" guile-2.2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments guile-email)
+       ((#:make-flags make-flags '())
+        #~(cons "guile_effective_version=2.2"
+                #$make-flags))))))
+
+(define-public guile-newra
+  ;; There has been no release let.
+  (let ((commit "266e72ef433cab44f60f8595e2435247b225d457")
+        (revision "0"))
+    (package
+      (name "guile-newra")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://notabug.org/lloda/guile-newra")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0g1fk6fp7ym54183bc9f6g5wqfazlkwwvb67swfi94j4sns0l9dk"))))
+      (build-system guile-build-system)
+      (arguments
+       (list
+        #:source-directory "mod"
+        #:compile-flags '(list "--r6rs")))
+      ;; guile-3.0 fails to compile with --r6rs
+      (inputs (list guile-3.0-latest))
+      (home-page "https://notabug.org/lloda/guile-newra")
+      (synopsis "Scheme replacement for Guile's array system")
+      (description
+       "guile-newra (newra) wants to replace the current (3.0) Guile array
+system, which is almost entirely implemented in C.  The new implementation
+should be at least as fast.")
+      (license license:gpl3+))))
 
 (define-public guile-newt
   (package
@@ -2104,7 +2134,7 @@ users and in some situations.")
 (define-public guile-udev
   (package
     (name "guile-udev")
-    (version "0.2.3")
+    (version "0.2.4")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2113,22 +2143,19 @@ users and in some situations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xvh4wscxmiqm8lnmfyh5cjzn89kv2wslkfvqvcjhinzpnpbg91x"))))
+                "1q1snj8gz2bvqw2v2jvwlzn5xfh7f7wlp922isnzismrp4adc918"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list autoconf
-           automake
-           gettext-minimal
-           libtool
-           texinfo
-           pkg-config
-           which))
-    (inputs
-     (list guile-3.0 eudev))
+    (native-inputs (list autoconf
+                         automake
+                         gettext-minimal
+                         libtool
+                         texinfo
+                         pkg-config
+                         which))
+    (inputs (list guile-3.0 eudev))
     (home-page "https://github.com/artyom-poptsov/guile-udev")
     (synopsis "Guile bindings to libudev")
-    (description
-     "Guile-Udev provides GNU Guile bindings to libudev.")
+    (description "Guile-Udev provides GNU Guile bindings to libudev.")
     (license license:gpl3+)))
 
 (define-public guile-sly
@@ -4685,7 +4712,7 @@ errors.")
       (inputs
        (list guile-3.0 avahi))
       (native-inputs
-       (list autoconf automake libtool pkg-config texinfo))
+       (list autoconf automake libtool pkg-config texinfo guile-3.0))
       (synopsis "Guile bindings to Avahi")
       (description
        "This package provides bindings for Avahi.  It allows programmers to
