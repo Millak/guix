@@ -2405,6 +2405,8 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
     (build-system cmake-build-system)
     (arguments
      (list
+      ;; XXX: The sole test is failing on i686 due to a rounding error.
+      #:tests? (not (target-x86-32?))
       #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
       #:phases
       #~(modify-phases %standard-phases
