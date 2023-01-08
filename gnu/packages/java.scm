@@ -1742,27 +1742,24 @@ build process and its dependencies, whereas Make uses Makefile format.")
     (arguments
      (substitute-keyword-arguments (package-arguments ant/java8)
        ((#:phases phases)
-        `(modify-phases ,phases
-           (add-after 'unpack 'link-junit
-             (lambda* (#:key inputs #:allow-other-keys)
-               (for-each (lambda (file)
-                           (symlink file
-                                    (string-append "lib/optional/"
-                                                   (basename file))))
-                         (find-files (assoc-ref inputs "java-junit")
-                                     "\\.jar$"))
-               #t))
-           (add-after 'build 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out   (assoc-ref outputs "out"))
-                      (share (string-append out "/share/java"))
-                      (bin   (string-append out "/bin"))
-                      (lib   (string-append out "/lib")))
-                 (mkdir-p share)
-                 (install-file (string-append lib "/ant-junit.jar") share)
-                 (delete-file-recursively bin)
-                 (delete-file-recursively lib)
-                 #t)))))))
+        #~(modify-phases #$phases
+            (add-after 'unpack 'link-junit
+              (lambda* (#:key inputs #:allow-other-keys)
+                (for-each (lambda (file)
+                            (symlink file
+                                     (string-append "lib/optional/"
+                                                    (basename file))))
+                          (find-files (assoc-ref inputs "java-junit")
+                                      "\\.jar$"))))
+            (add-after 'build 'install
+              (lambda _
+                (let ((share (string-append #$output "/share/java"))
+                      (bin   (string-append #$output "/bin"))
+                      (lib   (string-append #$output "/lib")))
+                  (mkdir-p share)
+                  (install-file (string-append lib "/ant-junit.jar") share)
+                  (delete-file-recursively bin)
+                  (delete-file-recursively lib))))))))
     (inputs
      (modify-inputs (package-inputs ant/java8)
        (prepend java-junit)))))
