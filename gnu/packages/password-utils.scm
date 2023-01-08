@@ -197,6 +197,7 @@ human.")
            qrencode
            qtbase-5
            qtsvg-5
+           qtwayland-5
            qtx11extras
            quazip-0                     ; XC_KEESHARE
            readline
