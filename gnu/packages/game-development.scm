@@ -2401,18 +2401,17 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "libccd")
-           #t))))
+           (delete-file-recursively "libccd")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DODE_WITH_LIBCCD_SYSTEM=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-libccd
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("configure_file\\(libccd/.*") ""))
-             #t)))))
+     (list
+      #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-libccd
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("configure_file\\(libccd/.*") "")))))))
     (inputs
      (list glu libccd mesa))
     (home-page "https://www.ode.org/")
