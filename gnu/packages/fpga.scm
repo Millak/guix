@@ -147,12 +147,7 @@ For synthesis, the compiler generates netlists in the desired format.")
               (sha256
                 (base32
                    "0lb9r055h8y1vj2z8gm4ip0v06j5mk7f9zx9gi67kkqb7g4rhjli"))
-              (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               #~(begin
-                   (substitute* "Makefile"
-                     (("ABCREV = .*") "ABCREV = default\n"))))))
+              (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -175,14 +170,10 @@ For synthesis, the compiler generates netlists in the desired format.")
           (replace 'configure
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "make" "config-gcc" make-flags)))
-          (add-after 'configure 'prepare-abc
-            (lambda* (#:key inputs #:allow-other-keys)
-              (mkdir-p "abc")
-              (call-with-output-file "abc/Makefile"
-                (lambda (port)
-                  (format port ".PHONY: all\nall:\n\tcp -f abc abc-default\n")))
-              (copy-file (search-input-file inputs "/bin/abc") "abc/abc")
-              (invoke "chmod" "+w" "abc/abc")))
+          (add-after 'configure 'use-external-abc
+            (lambda _
+              (substitute* '("./Makefile")
+                (("ABCEXTERNAL \\?=") "ABCEXTERNAL = abc"))))
           (add-before 'check 'fix-iverilog-references
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (let ((iverilog (search-input-file (or native-inputs inputs)
@@ -202,7 +193,15 @@ For synthesis, the compiler generates netlists in the desired format.")
                   (("if ! which iverilog") "if ! true")
                   (("iverilog ") (string-append iverilog " "))
                   (("iverilog_bin=\".*\"") (string-append "iverilog_bin=\""
-                                                          iverilog "\"")))))))))
+                                                          iverilog "\""))))))
+          (add-after 'install 'add-symbolic-link
+            (lambda* (#:key inputs #:allow-other-keys)
+              ;; Previously this package provided a copy of the "abc"
+              ;; executable in its output, named "yosys-abc".  Create a
+              ;; symbolic link so any external uses of that name continue to
+              ;; work.
+              (symlink (search-input-file inputs "/bin/abc")
+                       (string-append #$output "/bin/yosys-abc")))))))
     (native-inputs
      (list bison
            flex
@@ -212,15 +211,15 @@ For synthesis, the compiler generates netlists in the desired format.")
            python
            tcl)) ; tclsh for the tests
     (inputs
-     (list abc
-           graphviz
+     (list graphviz
            libffi
            psmisc
            readline
            tcl
            xdot))
     (propagated-inputs
-     (list z3)) ; should be in path for yosys-smtbmc
+     (list abc
+           z3)) ; should be in path for yosys-smtbmc
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
