@@ -13142,8 +13142,7 @@ Git version control system, providing repository access routines, support for
 network protocols, and core version control algorithms.")
     (license license:edl1.0)))
 
-;; For axoloti.  This package can still be built with icedtea-7, which is
-;; currently used as the default JDK.
+;; For axoloti.
 (define-public java-jgit-4.2
   (package (inherit java-jgit)
     (version "4.2.0.201601211800-r")
@@ -13159,8 +13158,6 @@ network protocols, and core version control algorithms.")
     (build-system ant-build-system)
     (arguments
      (substitute-keyword-arguments (package-arguments java-jgit)
-       ;; Build for default JDK.
-       ((#:jdk _) icedtea-7)
        ((#:phases phases)
         `(modify-phases ,phases
            (add-after 'unpack 'use-latest-javaewah-API
