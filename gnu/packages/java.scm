@@ -13163,8 +13163,7 @@ network protocols, and core version control algorithms.")
            (add-after 'unpack 'use-latest-javaewah-API
              (lambda _
                (substitute* "src/org/eclipse/jgit/internal/storage/file/BitmapIndexImpl.java"
-                 (("wordinbits") "WORD_IN_BITS"))
-               #t))))))
+                 (("wordinbits") "WORD_IN_BITS"))))))))
     (inputs
      (list java-javaewah java-jsch java-slf4j-api))))
 
