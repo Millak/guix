@@ -10,7 +10,7 @@
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 nikita <nikita@n0.is>
 ;;; Copyright © 2017 Rodger Fox <thylakoid@openmailbox.org>
-;;; Copyright © 2017–2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017–2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2017, 2018, 2019, 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -5018,7 +5018,7 @@ specification and header.")
 (define-public rosegarden
   (package
     (name "rosegarden")
-    (version "22.12")
+    (version "22.12.1")
     (source
      (origin
        (method url-fetch)
@@ -5026,7 +5026,7 @@ specification and header.")
                            (version-major+minor version) "/"
                            "rosegarden-" version ".tar.bz2"))
        (sha256
-        (base32 "061xy3flmj7bllibkp5wzdycvghfxvyzdr9g9yrr5q3m70a7wznz"))))
+        (base32 "01ljv4rkglicvx7fd6d5chi8k6wia5d6374gf20rgi75grzs59vy"))))
     (build-system cmake-build-system)
     (arguments
      (list
