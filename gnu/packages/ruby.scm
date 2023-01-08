@@ -10474,6 +10474,44 @@ patterns.")
     (home-page "http://www.concurrent-ruby.com")
     (license license:expat)))
 
+(define-public ruby-concurrent-ruby
+  (package
+    (name "ruby-concurrent-ruby")
+    (version "1.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference       ;for tests
+                    (url "https://github.com/ruby-concurrency/concurrent-ruby")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vz4rl0nplq14dk9nx45g59i1sk2h53w1mjlrdiyjf780q4a1i38"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:tests? #f  ;the test suite is run in ruby-concurrent-ruby-edge
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'delete-unwanted-gemspecs
+                     (lambda _
+                       (for-each delete-file
+                                 '("concurrent-ruby-ext.gemspec"
+                                   "concurrent-ruby-edge.gemspec"))))
+                   (add-after 'unpack 'do-not-install-concurrent_ruby.jar
+                     (lambda _
+                       ;; This file is only built when building the Java
+                       ;; extension.
+                       (substitute* "concurrent-ruby.gemspec"
+                         (("'lib/concurrent-ruby/concurrent/concurrent_ruby.jar'")
+                          "")))))))
+    (synopsis "Concurrency library for Ruby")
+    (description "Concurrent Ruby includes concurrency tools such as agents,
+futures, promises, thread pools, actors, supervisors, and more.  It is
+inspired by Erlang, Clojure, Go, JavaScript, actors, and classic concurrency
+patterns.")
+    (home-page "https://github.com/ruby-concurrency/concurrent-ruby")
+    (license license:expat)))
+
 (define-public ruby-pkg-config
   (package
     (name "ruby-pkg-config")
