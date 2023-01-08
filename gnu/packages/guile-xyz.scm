@@ -1293,7 +1293,23 @@ types are supported.")
                (base32
                 "0044c105r3q9vpl17pv3phl1b79kjm1llhkakqgiasixyav01blh"))))
     (build-system guile-build-system)
-    (native-inputs (list guile-2.2))
+    (inputs (list guile-2.2))
+    (arguments
+     (list
+      #:scheme-file-regexp "^aa-tree\\.scm"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install-documentation 'check
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((guile      #$(this-package-input "guile"))
+                     (effective  (target-guile-effective-version guile))
+                     (go-dir     (string-append #$output "/lib/guile/"
+                                                effective "/site-ccache/")))
+                (invoke (search-input-file inputs "/bin/guile")
+                        "--no-auto-compile"
+                        "-C" go-dir
+                        "-c" (string-append
+                              "(load \"" (getcwd) "/test-aa-tree.scm\")"))))))))
     ;; https://savannah.nongnu.org/projects/guile-aa-tree
     (home-page "https://qlfiles.net/guile-aa-tree/")
     (synopsis "AA tree data structure for Guile")
