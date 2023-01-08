@@ -2571,7 +2571,6 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
        `(#:make-flags '("-file" "build/build.xml")
          #:build-target "jar-all"
          #:test-target "jar-test"
-         #:jdk ,icedtea-8
          #:phases
          (modify-phases %standard-phases
            ;; FIXME: this build phase fails.
