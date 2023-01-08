@@ -4625,6 +4625,24 @@ is to be run.")
     (home-page "https://github.com/seattlerb/minitest-focus")
     (license license:expat)))
 
+(define-public ruby-minitest-power-assert
+  (package
+    (name "ruby-minitest-power-assert")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest-power_assert" version))
+              (sha256
+               (base32
+                "1dazl6nbxjvvmi5jamrsygkz396s29b7cd841ni6qy4izk8jd9b7"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-minitest ruby-power-assert))
+    (synopsis "Power Assert implementation for Minitest")
+    (description "This gem provides a Power Assert implementation for
+Minitest.  It is inspired by the @code{test-unit-power_assert} gem.")
+    (home-page "https://github.com/hsbt/minitest-power_assert")
+    (license license:bsd-2)))
+
 (define-public ruby-minitest-pretty-diff
   ;; Use git reference because gem is out of date and does not contain testing
   ;; script.  There are no releases on GitHub.
