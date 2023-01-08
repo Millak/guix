@@ -11397,6 +11397,68 @@ own right, and also constitutes a row or column of a @code{Matrix}.")
     (home-page "https://github.com/ruby/matrix")
     (license license:bsd-2)))
 
+(define-public ruby-m
+  (package
+    (name "ruby-m")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/qrush/m")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1aycfc8l1bsln1y300fv75fknn4amjcvc4rm2kd8hb6cqivjq5rg"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'sanitize-dependencies
+            (lambda _
+              (delete-file "Gemfile")
+              (delete-file "Gemfile.lock")
+              ;; Rocco is unmaintained as of 2023/01/08; avoid depending on
+              ;; it.
+              (substitute* "m.gemspec"
+                ;; The rdiscount and rocco dependencies are used for
+                ;; generating the documentation.
+                ((".*rdiscount.*") "")
+                ((".*rocco.*") "")
+                ((".*appraisal.*") "")
+                ((".*coveralls.*") ""))
+              (substitute* "Rakefile"
+                ;; ruby-appraisal is not packaged, and is used to test against
+                ;; various dependencies; circumvent its use.
+                ((".*require 'appraisal'.*") "")
+                ((".*require 'coveralls'.*") "")
+                (("appraisal [:graphic:]+ rake")
+                 "rake")
+                (("Coveralls.push!") ""))))
+          (add-before 'replace-git-ls-files 'pre-replace-git-ls-files
+            (lambda _
+              (substitute* "m.gemspec"
+                (("git ls-files -- bin/\\*")
+                 "find bin -type f -not -regex '.*\\.gem$' | sort")
+                (("git ls-files -- \\{test,spec,features}/\\*")
+                 "find test -type f -not -regex '.*\\.gem$' | sort"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (setenv "GEM_PATH" (string-append
+                                  (getenv "GEM_PATH") ":"
+                                  #$output "/lib/ruby/vendor_ruby"))
+              (when tests?
+                (invoke "rake" "test")))))))
+    (native-inputs (list ruby-activesupport))
+    (propagated-inputs (list ruby-method-source ruby-rake))
+    (synopsis "Ruby test runner that can run tests by line number")
+    (description "@code{m} stands for metal, a better test/unit and
+@code{minitest} test runner that can run tests by line number.")
+    (home-page "https://github.com/qrush/m")
+    (license license:expat)))
+
 (define-public ruby-mercenary
   (package
     (name "ruby-mercenary")
