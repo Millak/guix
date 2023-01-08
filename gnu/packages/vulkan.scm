@@ -240,6 +240,14 @@ interpretation of the specifications for these languages.")
               "-DBUILD_TESTS=ON")
        #:phases
        #~(modify-phases %standard-phases
+           (add-after 'unpack 'fix-pkg-config-file
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((vulkan-headers (dirname (search-input-directory
+                                               inputs "include/vulkan"))))
+                 ;; Ensure the pkg-config file refers to vulkan-headers.
+                 (substitute* "loader/vulkan.pc.in"
+                   (("^includedir=.*")
+                    (string-append "includedir=" vulkan-headers "\n"))))))
            (add-after 'unpack 'unpack-googletest
              (lambda* (#:key native-inputs inputs #:allow-other-keys)
                (let ((gtest (search-input-directory (or native-inputs inputs)
