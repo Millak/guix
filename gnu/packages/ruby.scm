@@ -74,6 +74,7 @@
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages node)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
@@ -14301,6 +14302,28 @@ implemented in pure Ruby.")
      "This gem extends @code{ruby-rdf} with several common @acronym{RDF,
 Resource Description Framework} vocabularies.")
     (license license:unlicense)))
+
+(define-public ruby-rdiscount
+  (package
+    (name "ruby-rdiscount")
+    (version "2.2.7")
+    (source (origin
+              (method git-fetch)        ;for the full test suite
+              (uri (git-reference
+                    (url "https://github.com/davidfstr/rdiscount")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1lpfxq3gv0dgmnki9jgfnc8n9k4x9vyq9miqdxv6g4kp90qyfifc"))))
+    (build-system ruby-build-system)
+    (native-inputs (list perl))
+    (synopsis "Discount Markdown Processor for Ruby")
+    (description "Discount is an implementation of John Gruber's Markdown
+markup language in C.  It implements all of the language described in the
+markdown syntax document and passes the Markdown 1.0 test suite.")
+    (home-page "https://dafoster.net/projects/rdiscount/")
+    (license license:bsd-3)))
 
 (define-public ruby-bibtex-ruby
   (package
