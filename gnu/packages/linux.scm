@@ -9095,6 +9095,7 @@ types and interfaces and translates so that the X server can use them.")
       #~(list (string-append "-Dudevrulesdir=" #$output "/lib/udev/rules.d")
               "-Dsystemd=disabled"
               "-Dsession-managers=[]"
+              "-Dsysconfdir=/etc"
               "-Dman=enabled")))
     (native-inputs
      (list pkg-config
