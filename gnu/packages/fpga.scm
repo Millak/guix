@@ -141,7 +141,7 @@ For synthesis, the compiler generates netlists in the desired format.")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://github.com/cliffordwolf/yosys")
+                    (url "https://github.com/YosysHQ/yosys")
                     (commit (string-append "yosys-" version))
                     (recursive? #t))) ; for the ‘iverilog’ submodule
               (sha256
@@ -223,7 +223,7 @@ For synthesis, the compiler generates netlists in the desired format.")
            abc))
     (propagated-inputs
      (list z3)) ; should be in path for yosys-smtbmc
-    (home-page "http://www.clifford.at/yosys/")
+    (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
     (license license:isc)))
