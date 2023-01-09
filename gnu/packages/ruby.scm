@@ -7963,14 +7963,15 @@ notes.")
     (build-system ruby-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'sanitize-dependencies
+                    (lambda _
+                      (substitute* "Rakefile"
+                        ((".*chandler/tasks.*") ""))))
                   (add-before 'check 'set-home
                     (lambda _
-                      (setenv "HOME" (getcwd))
-                      #t)))))
-    (native-inputs
-     (list ruby-chandler ruby-rubocop ruby-simplecov))
-    (propagated-inputs
-     (list ruby-byebug ruby-pry))
+                      (setenv "HOME" (getcwd)))))))
+    (native-inputs (list ruby-rubocop ruby-simplecov))
+    (propagated-inputs (list ruby-byebug ruby-pry))
     (synopsis "Step-by-step debugging and stack navigation in Pry")
     (description "This package adds step-by-step debugging and stack
 navigation capabilities to @code{pry}, using @code{byebug}.")
