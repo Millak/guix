@@ -6078,14 +6078,14 @@ these progress updates.")
 (define-public r-lava
   (package
     (name "r-lava")
-    (version "1.7.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "lava" version))
        (sha256
         (base32
-         "092y5v5mp9a9mqia47fqh22br31crp8w5b4ks2y15242ydlxly1h"))))
+         "0r7panw0pb9xi10navih9796r08yc5l6j914pfn8wzlm4mfwr7bs"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-future-apply r-numderiv r-progressr r-squarem r-survival))
