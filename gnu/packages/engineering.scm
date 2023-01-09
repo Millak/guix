@@ -2323,10 +2323,7 @@ engineers for reverse engineers.")
     (native-inputs
      (list automatic-component-toolkit googletest pkg-config))
     (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("libzip" ,libzip)
-       ("libressl" ,libressl)
-       ("zlib" ,zlib)))
+     (list `(,util-linux "lib") libzip libressl zlib))
     (synopsis "Implementation of the 3D Manufacturing Format (3MF) file standard")
     (description
      "Lib3MF is a C++ implementation of the 3D Manufacturing Format (3MF) file
