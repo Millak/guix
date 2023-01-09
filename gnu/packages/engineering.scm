@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -81,6 +81,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -2299,15 +2300,28 @@ engineers for reverse engineers.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))))
+        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; Delete pre-compiled ACT.
+          (delete-file-recursively "AutomaticComponentToolkit/bin")))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_INCLUDED_ZLIB=0"
                                "-DUSE_INCLUDED_LIBZIP=0"
                                "-DUSE_INCLUDED_GTEST=0"
-                               "-DUSE_INCLUDED_SSL=0")))
+                               "-DUSE_INCLUDED_SSL=0")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'provide-act
+                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                      (let ((act (search-input-file (or native-inputs inputs)
+                                                    "bin/act"))
+                            (dir "AutomaticComponentToolkit/bin"))
+                        (mkdir-p dir)
+                        (symlink act (string-append dir "/act.linux"))))))))
     (native-inputs
-     (list googletest pkg-config))
+     (list automatic-component-toolkit googletest pkg-config))
     (inputs
      `(("libuuid" ,util-linux "lib")
        ("libzip" ,libzip)
