@@ -993,6 +993,37 @@ expectations and mocks frameworks.")
     (propagated-inputs
      (list ruby-rspec-core-2 ruby-rspec-mocks-2 ruby-rspec-expectations-2))))
 
+(define-public ruby-rspec-debug
+  (package
+    (name "ruby-rspec-debug")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ko1/rspec-debug")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "125p1zxjznkk765nyqvkksw8x1nbm7xk4sjc1wza2fyp5hvyiddn"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'extract-gemspec 'relax-dependencies
+                          (lambda _
+                            (substitute* "Gemfile"
+                              (("~>") ">=")))))))
+    (native-inputs (list ruby-rspec))
+    (propagated-inputs (list ruby-debug))
+    (synopsis "Invoke Ruby debugger when spec fails")
+    (description "This package can be used to have the execution stopped for
+inspection in the Ruby debugger upon encountering a failure.  To use it, set
+the @env{RSPEC_DEBUG} environment variable to @samp{true} then invoke the
+@command{rspec} command as usual.")
+    (home-page "https://github.com/ko1/rspec-debug")
+    (license license:expat)))
+
 ;; Bundler is yet another source of circular dependencies, so we must disable
 ;; its test suite as well.
 (define-public bundler
