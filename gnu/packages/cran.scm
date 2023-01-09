@@ -12077,14 +12077,14 @@ visualization and candidate genes around SNPs.")
 (define-public r-precrec
   (package
     (name "r-precrec")
-    (version "0.12.9")
+    (version "0.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "precrec" version))
        (sha256
         (base32
-         "1dfz2rqx2ww2l5r40ahg0qdj3rjrwiwh427mw7j5ynhpcj21j2qm"))))
+         "04pyqwc4p3bzwfcf7a74nkh7b2001053jagzvz9ghpyj380f66x8"))))
     (properties `((upstream-name . "precrec")))
     (build-system r-build-system)
     (propagated-inputs
@@ -12093,6 +12093,7 @@ visualization and candidate genes around SNPs.")
            r-ggplot2
            r-gridextra
            r-rcpp
+           r-rlang
            r-withr))
     (native-inputs (list r-knitr))
     (home-page "https://evalclass.github.io/precrec/")
