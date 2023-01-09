@@ -36062,13 +36062,13 @@ options for aggregating multi-layer rasters.")
 (define-public r-bien
   (package
     (name "r-bien")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "BIEN" version))
         (sha256
-          (base32 "0s98n6zbf48vssd3h63k6kashcxv1kawcb026n0ngsfpc5dv6i48"))))
+          (base32 "17zrj5ckxaz4mdbgywxi8kf51ssbf2md1d2azf30dh96kzc2ayps"))))
     (properties `((upstream-name . "BIEN")))
     (build-system r-build-system)
     (native-inputs
@@ -36080,11 +36080,9 @@ options for aggregating multi-layer rasters.")
             r-fasterize
             r-foreach
             r-raster
-            r-rgdal
-            r-rgeos
             r-rpostgresql
             r-sf
-            r-sp))
+            r-terra))
     (home-page "https://cran.r-project.org/package=BIEN")
     (synopsis "Tools for accessing the BIEN database")
     (description
