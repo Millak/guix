@@ -10644,6 +10644,41 @@ more robust and work for non rails projects.")
     (home-page "https://github.com/danmayer/code_statistics")
     (license license:expat)))
 
+(define-public ruby-ruby2-keywords
+  (package
+    (name "ruby-ruby2-keywords")
+    (version "0.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ruby/ruby2_keywords")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1jhqb152zfr2yrxj6j8rzakkwdkg5viggwnnqrrfxwwy63msdi97"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-extraneous-rake-files
+            (lambda _
+              (for-each delete-file '("rakelib/changelogs.rake"
+                                      "rakelib/epoch.rake"
+                                      "rakelib/version.rake"))))
+          (add-after 'extract-gemspec 'adjust-files
+            (lambda _
+              (substitute* "ruby2_keywords.gemspec"
+                ;; This file is not present in the git checkout.
+                ((".*\"ChangeLog\",.*") "")))))))
+    (synopsis "Shim library for Module#ruby2_keywords")
+    (description "Provides empty @code{Module#ruby2_keywords} method, for the
+forward source-level compatibility against @command{ruby2.7} and
+@command{ruby3}.")
+    (home-page "https://github.com/ruby/ruby2_keywords")
+    (license license:bsd-2)))
+
 (define-public ruby-rubypants
   (package
     (name "ruby-rubypants")
