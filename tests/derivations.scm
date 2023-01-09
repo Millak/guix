@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -256,6 +256,21 @@
       (build-derivations %store (list drv))
       #f)))
 
+(test-assert "'download' built-in builder, no fixed-output hash"
+  ;; 'guix perform-download' should bail out with a message saying "not a
+  ;; fixed-output derivation".
+  (with-http-server '((200 "This should not be downloaded."))
+    (let* ((drv (derivation %store "download-without-hash"
+                            "builtin:download" '()
+                            #:env-vars `(("url"
+                                          . ,(object->string (%local-url))))
+                            #:hash-algo 'sha256
+                            #:hash #f)))
+      (guard (c ((store-protocol-error? c)
+                 (string-contains (store-protocol-error-message c) "failed")))
+        (build-derivations %store (list drv))
+        #f))))
+
 (test-assert "'download' built-in builder, check mode"
   ;; Make sure rebuilding the 'builtin:download' derivation in check mode
   ;; works.  See <http://bugs.gnu.org/25089>.
@@ -315,6 +330,13 @@
                                  #:sources (list builder)
                                  #:hash hash #:hash-algo 'sha256)))
     (fixed-output-derivation? drv)))
+
+(test-assert "fixed-output-derivation?, no hash"
+  ;; A derivation that has #:hash-algo and #:hash #f is *not* fixed-output.
+  (let* ((drv (derivation %store "not-quite-fixed"
+                          "builtin:download" '()
+                          #:hash #f #:hash-algo 'sha256)))
+    (not (fixed-output-derivation? drv))))
 
 (test-equal "fixed-output derivation"
   '(sha1 sha256 sha512)
@@ -542,6 +564,22 @@
          (drv*    (call-with-input-file (derivation-file-name drv)
                     read-derivation)))
     (equal? drv* drv)))
+
+(test-assert "read-derivation with hash = #f"
+  ;; Passing #:hash-algo together with #:hash #f is accepted and #:hash-algo
+  ;; is preserved.  However it is not a fixed-output derivation.  It used to
+  ;; be that 'read-derivation' would incorrectly return #vu8() instead of #f
+  ;; for the hash in this case:
+  ;; <https://lists.gnu.org/archive/html/guix-devel/2023-01/msg00040.html>.
+  (let* ((drv1 (derivation %store "almost-fixed-output"
+                           "builtin:download" '()
+                           #:env-vars `(("url" . "http://example.org"))
+                           #:hash-algo 'sha256
+                           #:hash #f))
+         (drv2 (call-with-input-file (derivation-file-name drv1)
+                 read-derivation)))
+    (and (not (eq? drv1 drv2))             ;ensure memoization doesn't kick in
+         (equal? drv1 drv2))))
 
 (test-assert "multiple-output derivation, derivation-path->output-path"
   (let* ((builder    (add-text-to-store %store "builder.sh"

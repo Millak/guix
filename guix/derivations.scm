@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017 Mathieu Lirzin <mthl@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -484,17 +484,21 @@ things as appropriate and is thus more efficient."
     (fold-right (lambda (output result)
                   (match output
                     ((name path "" "")
+                     ;; Regular derivation.
                      (alist-cons name
                                  (make-derivation-output path #f #f #f)
                                  result))
                     ((name path hash-algo hash)
-                     ;; fixed-output
+                     ;; Fixed-output, unless HASH is the empty string (in that
+                     ;; case, HASH-ALGO must be preserved despite being
+                     ;; unused).
                      (let* ((rec? (string-prefix? "r:" hash-algo))
                             (algo (string->symbol
                                    (if rec?
                                        (string-drop hash-algo 2)
                                        hash-algo)))
-                            (hash (base16-string->bytevector hash)))
+                            (hash (and (not (string-null? hash))
+                                       (base16-string->bytevector hash))))
                        (alist-cons name
                                    (make-derivation-output path algo
                                                            hash rec?)
