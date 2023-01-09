@@ -84,8 +84,9 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
                    home-environment-variables-service-type
                    `(("TODAY" . "26 messidor")
                      ("SHELL" . ,(file-append bash "/bin/bash"))
-                     ("BUILDHOSTTIME" . ,#~(strftime "%c"
-                                            (localtime (current-time))))
+                     ("BUILDHOST_TIME" . ,#~(strftime "%c"
+                                             (localtime (current-time))))
+                     ("STRING_WITH_ESCAPES" . "chars: \" /\\")
                      ("LITERAL" . ,(literal-string "${abc}"))))
 
    (simple-service 'home-bash-service-extension-test
@@ -156,6 +157,8 @@ EOF
 
     ( . "${HOME}/.guix-home/setup-environment"; test "$TODAY" = "26 messidor" )
     ( . "${HOME}/.guix-home/setup-environment"; test "$LITERAL" = '${abc}' )
+    ( . "${HOME}/.guix-home/setup-environment";
+      test "$STRING_WITH_ESCAPES" = "chars: \" /\\")
     ( . "${HOME}/.guix-home/setup-environment";
       echo "$SHELL" | grep "/gnu/store/.*/bin/bash" )
 

@@ -192,7 +192,7 @@ ensures variable values are properly quoted."
               (list->string (string-fold-right
                              (lambda (chr lst)
                                (if (memq chr quoted-chars)
-                                   (append (list chr #\\) lst)
+                                   (append (list #\\ chr) lst)
                                    (cons chr lst)))
                              '()
                              value))))
