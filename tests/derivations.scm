@@ -396,6 +396,18 @@
                         (call-with-input-file p get-bytevector-all))
                 (bytevector? (query-path-hash %store p)))))))
 
+(test-assert "fixed-output derivation, invalid hash size"
+  (guard (c ((store-protocol-error? c)
+             (string-contains-ci (store-protocol-error-message c)
+                                 "invalid SHA512 hash")))
+    (derivation %store "download-with-invalid-hash"
+                "builtin:download" '()
+                #:env-vars `(("url"
+                              . ,(object->string "http://example.org")))
+                #:hash-algo 'sha512
+                #:hash #vu8(1 2 3))
+    #f))
+
 (test-assert "derivation with a fixed-output input"
   ;; A derivation D using a fixed-output derivation F doesn't has the same
   ;; output path when passed F or F', as long as F and F' have the same output
