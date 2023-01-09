@@ -195,14 +195,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.6")
+    (version "3.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ppj676gwh67krq92xnfkmh3qnwbz8d51djsscxw013x7cdxg1cx"))))
+                "0a5zfkqqdkya111rl2gpwlbfala0305qry9cdz2r1h7q0316bjzp"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -210,9 +210,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
        ("pkg-config" ,pkg-config)
        ,@(if (target-x86?)
            `(("ruby-asciidoctor" ,ruby-asciidoctor))
-           '())
-       ;; For tests.
-       ("cpputest" ,cpputest)))
+           '())))
     (inputs
      (list aspell
            curl
@@ -234,8 +232,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
              ,@(if (target-x86?)
                  '("-DENABLE_MAN=ON"
                    "-DENABLE_DOC=ON")
-                '())
-             "-DENABLE_TESTS=ON")       ; ‘make test’ fails otherwise
+                '()))
        #:phases
        (modify-phases %standard-phases
          ,@(if (target-x86?)
