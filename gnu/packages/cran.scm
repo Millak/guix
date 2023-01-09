@@ -259,13 +259,13 @@ automatically pruning objects to maintain the constraints.")
 (define-public r-collections
   (package
     (name "r-collections")
-    (version "0.3.6")
+    (version "0.3.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "collections" version))
        (sha256
-        (base32 "19y7nds67700zy6354s1i0aglgjylzv65psccz5x3ih8f48sakr3"))))
+        (base32 "003zlp5s2ilq3pq0imlp7p46jkfihwzg1hkkgk7378ikcbwnz17z"))))
     (properties `((upstream-name . "collections")))
     (build-system r-build-system)
     (home-page "https://github.com/randy3k/collections")
