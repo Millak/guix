@@ -7845,13 +7845,13 @@ to variables on the left-hand side of the assignment.")
 (define-public r-zlog
   (package
     (name "r-zlog")
-    (version "1.0.0")
+    (version "1.0.2")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "zlog" version))
               (sha256
                (base32
-                "1d5j31p0h3rrn230087h3ngpvwknlisjv0f1qdbicdj9m177spci"))))
+                "0fi9aqrmikdg5ibwhn82kslj4lxih03vm27jmi14m73h09yy4in5"))))
     (properties `((upstream-name . "zlog")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
