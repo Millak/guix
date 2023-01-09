@@ -6950,6 +6950,10 @@ with PostgreSQL 9.0 and later.")
     (arguments
      `(#:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'sanitize-dependencies
+           (lambda _
+             (substitute* "Rakefile"
+               ((".*chandler/tasks.*") ""))))
          (add-after 'unpack 'skip-tmp-path-sensitive-test
            (lambda _
              (substitute* "test/commands/where_test.rb"
@@ -6969,7 +6973,6 @@ with PostgreSQL 9.0 and later.")
              (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list bundler
-           ruby-chandler
            ;; Using minitest 5.17 would cause 5 new bug failures.  This is
            ;; probably related to
            ;; https://github.com/deivid-rodriguez/byebug/pull/837.  Use
