@@ -4416,7 +4416,7 @@ Ruby, but can be used for all programs.")
 (define-public ruby-maxitest
   (package
     (name "ruby-maxitest")
-    (version "3.6.0")
+    (version "4.4.1")
     (home-page "https://github.com/grosser/maxitest")
     (source (origin
               ;; Pull from git because the gem does not contain tests.
@@ -4427,7 +4427,7 @@ Ruby, but can be used for all programs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "07b3j0bv3dx5j42jlvpvl07aaxplyi6wq688y3jl8y528ww2hjz8"))))
+                "0l646lgrgsfgg9qh05b8a3jd43kgrmr6xzbdvyspmdlhchk1qszg"))))
     (build-system ruby-build-system)
     (arguments
      '(#:test-target "default"
@@ -4436,27 +4436,24 @@ Ruby, but can be used for all programs.")
                     (lambda _
                       (substitute* "maxitest.gemspec"
                         (("`git ls-files lib/ bin/ MIT-LICENSE Readme.md`")
-                         "`find lib/ bin/ MIT-LICENSE Readme.md -type f | sort`"))
-                      #t))
+                         "`find lib/ bin/ MIT-LICENSE Readme.md -type f | sort`"))))
                   (add-before 'check 'remove-version-constraints
                     (lambda _
                       ;; Don't use specific versions of dependencies, instead
                       ;; take whatever is available in Guix.
-                      (delete-file "Gemfile.lock")
-                      #t))
+                      (delete-file "Gemfile.lock")))
                   (add-before 'check 'add-mtest-on-PATH
                     (lambda _
                       ;; Tests use 'mtest' which is not automatically added on
                       ;; PATH.
                       (setenv "PATH" (string-append (getcwd) "/bin:"
-                                                    (getenv "PATH")))
-                      #t)))))
+                                                    (getenv "PATH"))))))))
     (native-inputs
-     `(("ps" ,procps)
-       ("ruby-bump" ,ruby-bump)
-       ("ruby-byebug" ,ruby-byebug)
-       ("ruby-rspec" ,ruby-rspec)
-       ("ruby-wwtd" ,ruby-wwtd)))
+     (list procps
+           ruby-bump
+           ruby-byebug
+           ruby-rspec
+           ruby-wwtd))
     (propagated-inputs
      (list ruby-minitest))
     (synopsis "Minitest with extra features")
