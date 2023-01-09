@@ -1,5 +1,5 @@
 # GNU Guix --- Functional package management for GNU
-# Copyright © 2021 Andrew Tropin <andrew@trop.in>
+# Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 # Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
 # Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
 #
@@ -62,6 +62,7 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
              (gnu home)
              (gnu home services)
              (gnu home services shells)
+             (gnu packages bash)
              (gnu services))
 
 (home-environment
@@ -82,6 +83,9 @@ trap 'chmod -Rf +w "$test_directory"; rm -rf "$test_directory"' EXIT
    (simple-service 'add-environment-variable
                    home-environment-variables-service-type
                    `(("TODAY" . "26 messidor")
+                     ("SHELL" . ,(file-append bash "/bin/bash"))
+                     ("BUILDHOSTTIME" . ,#~(strftime "%c"
+                                            (localtime (current-time))))
                      ("LITERAL" . ,(literal-string "${abc}"))))
 
    (simple-service 'home-bash-service-extension-test
@@ -149,8 +153,11 @@ EOF
 # the content of bashrc-test-config.sh"
     grep -q "the content of ~/.config/test.conf" "${HOME}/.config/test.conf"
     grep '^export PS1="\$GUIX_ENVIRONMENT λ "$' "${HOME}/.bash_profile"
+
     ( . "${HOME}/.guix-home/setup-environment"; test "$TODAY" = "26 messidor" )
     ( . "${HOME}/.guix-home/setup-environment"; test "$LITERAL" = '${abc}' )
+    ( . "${HOME}/.guix-home/setup-environment";
+      echo "$SHELL" | grep "/gnu/store/.*/bin/bash" )
 
     # This one should still be here.
     grep "stay around" "$HOME/.config/random-file"
