@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -6563,30 +6563,20 @@ The following service daemons are also provided:
 (define-public perftest
   (package
     (name "perftest")
-    (version "4.4-0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/linux-rdma/perftest/releases/download/v"
-                           version "/perftest-" version ".g0927198.tar.gz"))
-       (sha256
-        (base32 "11ix4h0rrmqqyi84y55a9xnkvwsmwq0sywr46hvxzm4rqz4ma8vq"))))
+    (version "4.5-0.20")
+    (home-page "https://github.com/linux-rdma/perftest")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hrpzmkz1kq4jwpy6b5fl8073iy7dllcq2hfzdw6waaf5920vd64"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-header-paths
-           (lambda _
-             (substitute* '("src/raw_ethernet_fs_rate.c"
-                            "src/raw_ethernet_resources.c"
-                            "src/raw_ethernet_resources.h"
-                            "src/raw_ethernet_send_burst_lat.c"
-                            "src/raw_ethernet_send_bw.c"
-                            "src/raw_ethernet_send_lat.c")
-               (("/usr/include/netinet/ip.h") "netinet/ip.h"))
-             #t)))))
-    (inputs (list rdma-core))
-    (home-page "https://github.com/linux-rdma/perftest/")
+    (native-inputs
+     (list autoconf automake libtool))
+    (inputs (list pciutils rdma-core))
     (synopsis "Open Fabrics Enterprise Distribution (OFED) Performance Tests")
     (description "This is a collection of tests written over uverbs intended for
 use as a performance micro-benchmark. The tests may be used for hardware or
