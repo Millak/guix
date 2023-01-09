@@ -26328,13 +26328,13 @@ finding peaks in spectra, converting humidity measures.")
 (define-public r-qqconf
   (package
     (name "r-qqconf")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "qqconf" version))
               (sha256
                (base32
-                "11sh0q5bwmqdygqd1gspx7xc5mysj18whz11afnz6s1m820snhhw"))))
+                "1vvw79l8nqpqvmfpff5khgdjbs1s2q5ylg72lvkihd2qfk0d8cf5"))))
     (properties `((upstream-name . "qqconf")))
     (build-system r-build-system)
     (inputs (list fftw))
