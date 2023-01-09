@@ -13887,24 +13887,24 @@ requests.")
     (name "ruby-bandwidth-iris")
     (version "5.1.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (rubygems-uri "ruby-bandwidth-iris" version))
-        (sha256
-          (base32 "1hmrxs0dif6fw5npyzcshk4nq9qr2kbmnx7mdjr5v1nhzlfr0678"))))
+     (origin
+       (method url-fetch)
+       (uri (rubygems-uri "ruby-bandwidth-iris" version))
+       (sha256
+        (base32 "1hmrxs0dif6fw5npyzcshk4nq9qr2kbmnx7mdjr5v1nhzlfr0678"))))
     (build-system ruby-build-system)
     (arguments
      ;; XXX: Tests don't require helper for some reason, so all fail.
      `(#:tests? #f))
     (native-inputs
      (list ruby-rspec
-            ruby-yard))
+           ruby-yard))
     (propagated-inputs
      (list ruby-activesupport
-            ruby-builder
-            ruby-faraday
-            ruby-faraday-middleware
-            ruby-nori))
+           ruby-builder
+           ruby-faraday
+           ruby-faraday-middleware
+           ruby-nori))
     (home-page "https://github.com/Bandwidth/ruby-bandwidth-iris")
     (synopsis "Gem for integrating to Bandwidth's Iris API")
     (description "Bandwidth IRIS is a Ruby SDK for Bandwidth Phone Number
