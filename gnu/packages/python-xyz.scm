@@ -132,6 +132,7 @@
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1452,6 +1453,35 @@ It implements many functionalities offered by command line tools such as: ps,
 top, lsof, netstat, ifconfig, who, df, kill, free, nice, ionice, iostat,
 iotop, uptime, pidof, tty, taskset, pmap.")
     (license license:bsd-3)))
+
+(define-public python-scapy
+  (package
+    (name "python-scapy")
+    (version "2.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scapy" version))
+              (sha256
+               (base32
+                "1hpbbmpcn4dwj3z7i7sz4cnbpkaf57p7mvl3p84x9n2gflmhq9jv"))))
+    (arguments
+     '(#:tests? #f)) ; There is a test directory, but apparently no
+                     ; automatic testing framework.
+    ;; The package has more optional dependencies such as ipython and
+    ;; matplotlib. If functionality is missing, these should be added.
+    ;; See
+    ;; https://scapy.readthedocs.io/en/latest/installation.html#optional-dependencies
+    (build-system python-build-system)
+    (home-page "https://scapy.net")
+    (synopsis "Python network packet crafting library")
+    (description
+     "Scapy is a Python library and executable for interactively
+manipulating network packets.  It can forge or decode packets of a number
+of protocols, send them on the wire, capture them, store or read them
+using pcap files, match requests and replies, and so on.
+It can handle tasks such as scanning, tracerouting, probing, unit tests,
+attacks or network discovery.")
+    (license license:gpl2)))
 
 (define-public python-shapely
   (package
