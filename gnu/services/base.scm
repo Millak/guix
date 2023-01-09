@@ -198,6 +198,7 @@
             guix-configuration-generate-substitute-key?
             guix-configuration-extra-options
             guix-configuration-log-file
+            guix-configuration-environment
 
             guix-extension
             guix-extension?
@@ -1654,7 +1655,9 @@ archive' public keys, with GUIX."
   (http-proxy       guix-http-proxy               ;string | #f
                     (default #f))
   (tmpdir           guix-tmpdir                   ;string | #f
-                    (default #f)))
+                    (default #f))
+  (environment      guix-configuration-environment  ;list of strings
+                    (default '())))
 
 (define %default-guix-configuration
   (guix-configuration))
@@ -1710,7 +1713,7 @@ proxy of 'guix-daemon'...~%")
     (guix build-group build-accounts authorize-key? authorized-keys
           use-substitutes? substitute-urls max-silent-time timeout
           log-compression discover? extra-options log-file
-          http-proxy tmpdir chroot-directories)
+          http-proxy tmpdir chroot-directories environment)
     (list (shepherd-service
            (documentation "Run the Guix daemon.")
            (provision '(guix-daemon))
@@ -1799,7 +1802,8 @@ proxy of 'guix-daemon'...~%")
                            (if proxy
                                (list (string-append "http_proxy=" proxy)
                                      (string-append "https_proxy=" proxy))
-                               '()))
+                               '())
+                           '#$environment)
 
                    #:log-file #$log-file))))
            (stop #~(make-kill-destructor))))))

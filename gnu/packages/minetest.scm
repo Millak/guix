@@ -472,6 +472,31 @@ bunnies, chickens, cows, kittens, rats, sheep, warthogs, penguins and pandas.")
     (license (list license:cc0 license:expat))
     (properties `((upstream-name . "TenPlus1/mobs_animal")))))
 
+(define-public minetest-mobs-monster
+  (package
+    (name "minetest-mobs-monster")
+    ;; Upstream does not use version numbers, so use the release title
+    ;; from ContentDB instead;
+    (version "2022-12-10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://notabug.org/TenPlus1/mobs_monster")
+             (commit "1b197f9ae136179a764ef45824464b667ade52e6")))
+       (sha256
+        (base32 "15g8acrzvsiccxchfmgjhyf2lmkbrpdjqv3v7hmqz7xqypi8wm3h"))
+       (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (propagated-inputs (list minetest-mobs))
+    (home-page "https://notabug.org/TenPlus1/mobs_monster")
+    (synopsis "Add monsters with Mobs Redo on minetest")
+    (description
+     "This Minetest mod adds many types of monsters to Minetest, that live on the
+surface or deep underground.")
+    (license license:expat)
+    (properties `((upstream-name . "TenPlus1/mobs_monster")))))
+
 (define-public minetest-pipeworks
   (package
     (name "minetest-pipeworks")
@@ -769,3 +794,25 @@ build your island in the sky.  Every 30 seconds you will receive a random
 block or item from the oneblock to expand the island!")
     (license license:gpl3+)
     (properties `((upstream-name . "NO11/oneblock")))))
+
+(define-public minetest-wielded-light
+  (package
+    (name "minetest-wielded-light")
+    (version "2022-06-24")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/minetest-mods/wielded_light")
+                    (commit "b5236562af9772dff8522fe2bda5b5f738e81b88")))
+              (sha256
+               (base32
+                "0m5rf8wkc9iq04xppjfva9d83qmhlnx8fibdbi2d3pkwwl6p2y5c"))
+              (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (home-page (minetest-topic 19378))
+    (synopsis "Adds shining for wielded and dropped items")
+    (description
+     "With this Minetest extension, all bright nodes lighten the player
+environment if wielded.")
+    (license license:gpl3+)
+    (properties `((upstream-name . "bell07/wielded_light")))))

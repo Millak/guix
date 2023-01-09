@@ -26,6 +26,7 @@
   #:use-module (guix build-system ant)
   #:use-module (gnu packages)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages xml))
 
 (define java-groovy-bootstrap

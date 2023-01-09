@@ -15,7 +15,7 @@
 ;;; Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016-2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2016-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2016, 2018 Rene Saavedra <pacoon@protonmail.com>
 ;;; Copyright © 2016 Carlos Sánchez de La Lama <csanchezdll@gmail.com>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
@@ -588,21 +588,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
                              (%upstream-linux-source version hash)
                              deblob-scripts-4.14)))
 
-(define-public linux-libre-4.9-version "4.9.337")
-(define-public linux-libre-4.9-gnu-revision "gnu1")
-(define deblob-scripts-4.9
-  (linux-libre-deblob-scripts
-   linux-libre-4.9-version
-   linux-libre-4.9-gnu-revision
-   (base32 "0nai5m4rbh37qaj1xf2qj7656l2gacfh0847q5d07y22b048fq5n")
-   (base32 "0bib3641dbcqdkx3anna3caxnsg3nw9cnmhcklq0s93g3m57041h")))
-(define-public linux-libre-4.9-pristine-source
-  (let ((version linux-libre-4.9-version)
-        (hash (base32 "1imkn3dbxsr35br79sp9s2r9hy1xqvsm652icbsf6rn7apnam1ak")))
-    (make-linux-libre-source version
-                             (%upstream-linux-source version hash)
-                             deblob-scripts-4.9)))
-
 (define %boot-logo-patch
   ;; Linux-Libre boot logo featuring Freedo and a gnu.
   (origin
@@ -669,10 +654,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 
 (define-public linux-libre-4.14-source
   (source-with-patches linux-libre-4.14-pristine-source
-                       (list %boot-logo-patch)))
-
-(define-public linux-libre-4.9-source
-  (source-with-patches linux-libre-4.9-pristine-source
                        (list %boot-logo-patch)))
 
 
@@ -786,11 +767,6 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
   (make-linux-libre-headers* linux-libre-4.14-version
                              linux-libre-4.14-gnu-revision
                              linux-libre-4.14-source))
-
-(define-public linux-libre-headers-4.9
-  (make-linux-libre-headers* linux-libre-4.9-version
-                             linux-libre-4.9-gnu-revision
-                             linux-libre-4.9-source))
 
 ;; The following package is used in the early bootstrap, and thus must be kept
 ;; stable and with minimal build requirements.
@@ -1157,13 +1133,6 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
                      linux-libre-4.14-source
                      '("x86_64-linux" "i686-linux" "armhf-linux"
                        "powerpc64le-linux")
-                     #:configuration-file kernel-config))
-
-(define-public linux-libre-4.9
-  (make-linux-libre* linux-libre-4.9-version
-                     linux-libre-4.9-gnu-revision
-                     linux-libre-4.9-source
-                     '("x86_64-linux" "i686-linux" "powerpc64le-linux")
                      #:configuration-file kernel-config))
 
 ;; Linux-Libre-LTS points to the *newest* released long-term support version of
@@ -6594,30 +6563,20 @@ The following service daemons are also provided:
 (define-public perftest
   (package
     (name "perftest")
-    (version "4.4-0.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/linux-rdma/perftest/releases/download/v"
-                           version "/perftest-" version ".g0927198.tar.gz"))
-       (sha256
-        (base32 "11ix4h0rrmqqyi84y55a9xnkvwsmwq0sywr46hvxzm4rqz4ma8vq"))))
+    (version "4.5-0.20")
+    (home-page "https://github.com/linux-rdma/perftest")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hrpzmkz1kq4jwpy6b5fl8073iy7dllcq2hfzdw6waaf5920vd64"))))
     (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-header-paths
-           (lambda _
-             (substitute* '("src/raw_ethernet_fs_rate.c"
-                            "src/raw_ethernet_resources.c"
-                            "src/raw_ethernet_resources.h"
-                            "src/raw_ethernet_send_burst_lat.c"
-                            "src/raw_ethernet_send_bw.c"
-                            "src/raw_ethernet_send_lat.c")
-               (("/usr/include/netinet/ip.h") "netinet/ip.h"))
-             #t)))))
-    (inputs (list rdma-core))
-    (home-page "https://github.com/linux-rdma/perftest/")
+    (native-inputs
+     (list autoconf automake libtool))
+    (inputs (list pciutils rdma-core))
     (synopsis "Open Fabrics Enterprise Distribution (OFED) Performance Tests")
     (description "This is a collection of tests written over uverbs intended for
 use as a performance micro-benchmark. The tests may be used for hardware or

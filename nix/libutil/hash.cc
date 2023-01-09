@@ -76,8 +76,11 @@ string printHash(const Hash & hash)
 Hash parseHash(HashType ht, const string & s)
 {
     Hash hash(ht);
-    if (s.length() != hash.hashSize * 2)
-        throw Error(format("invalid hash `%1%'") % s);
+    if (s.length() != hash.hashSize * 2) {
+	string algo = gcry_md_algo_name(ht);
+        throw Error(format("invalid %1% hash '%2%' (%3% bytes but expected %4%)")
+		    % algo % s % (s.length() / 2) % hash.hashSize);
+    }
     for (unsigned int i = 0; i < hash.hashSize; i++) {
         string s2(s, i * 2, 2);
         if (!isxdigit(s2[0]) || !isxdigit(s2[1]))

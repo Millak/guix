@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
   #:use-module (guix build-system haskell)
   #:use-module (gnu packages)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-check)
@@ -327,6 +329,13 @@ to @code{cabal repl}).")
              (copy-file "Utility/Shell.hs" "/tmp/Shell.hs")
              (substitute* "Utility/Shell.hs"
                (("/bin/sh") (which "sh")))))
+         (add-before 'configure 'patch-webapp
+           (lambda _
+             ;; Replace loose references to xdg-open so that 'git annex
+             ;; webapp' runs without making the user also install xdg-utils.
+             (substitute* '("Assistant/WebApp/DashBoard.hs"
+                            "Utility/WebApp.hs")
+               (("xdg-open") (which "xdg-open")))))
          (add-before 'configure 'factor-setup
            (lambda _
              ;; Factor out necessary build logic from the provided
@@ -471,7 +480,8 @@ to @code{cabal repl}).")
            ghc-yesod-core
            ghc-yesod-form
            ghc-yesod-static
-           rsync))
+           rsync
+           xdg-utils))
     (propagated-inputs
      (list git))
     (native-inputs

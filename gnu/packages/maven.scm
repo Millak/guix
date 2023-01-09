@@ -32,9 +32,9 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages maven-parent-pom)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
 (define-public maven-resolver-api

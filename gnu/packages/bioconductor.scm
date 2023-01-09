@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
@@ -4997,13 +4997,13 @@ only one command.")
 (define-public r-biocparallel
   (package
     (name "r-biocparallel")
-    (version "1.32.4")
+    (version "1.32.5")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BiocParallel" version))
               (sha256
                (base32
-                "1m4i27zx3ajwygwp38lrxf36rs575dkaxxc6jawpj1kzn7whi5ym"))))
+                "1yd6ln9cl3dcvfziar52fkvqi2lzm31l7j21r1rwl1mpkz0xapir"))))
     (properties
      `((upstream-name . "BiocParallel")))
     (build-system r-build-system)
@@ -5118,13 +5118,13 @@ effort and encourages consistency.")
 (define-public r-bsgenome
   (package
     (name "r-bsgenome")
-    (version "1.66.1")
+    (version "1.66.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "BSgenome" version))
               (sha256
                (base32
-                "1gzpvajw5n3qmym3312qaks450sq3w456kj4gqwaabgpjxbq7frm"))))
+                "0p75c52sw464bdqz7dyda9h8k2wsxdpdxxhya5awh977xaly90pf"))))
     (properties
      `((upstream-name . "BSgenome")))
     (build-system r-build-system)
@@ -5811,13 +5811,13 @@ genomic intervals.  In addition, it can use BAM or BigWig files as input.")
 (define-public r-genomeinfodb
   (package
     (name "r-genomeinfodb")
-    (version "1.34.4")
+    (version "1.34.6")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "GenomeInfoDb" version))
               (sha256
                (base32
-                "1nskqmlar85zg96c1fbacl7dqg6r0gl814rc7yh482y4wgmwyg0r"))))
+                "123kp69fmy5pbqh0j6qxdkvkm4g9pdwzms01i8qnix3m1b9j597w"))))
     (properties
      `((upstream-name . "GenomeInfoDb")))
     (build-system r-build-system)
@@ -6483,14 +6483,14 @@ in SNV base substitution data.")
 (define-public r-msnbase
   (package
     (name "r-msnbase")
-    (version "2.24.0")
+    (version "2.24.2")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "MSnbase" version))
        (sha256
         (base32
-         "16apm4qn7sbv06pk2i8k5z7qgkv0yq0h8ri32vikdplqxxh7h0cz"))))
+         "0jdq41rhn9qyhxfihvrgim76fzdrycc02wjsjdrff42gmray49w7"))))
     (properties `((upstream-name . "MSnbase")))
     (build-system r-build-system)
     (propagated-inputs
@@ -9916,14 +9916,14 @@ multiplication and calculation of row/column sums or means.")
 (define-public r-batchelor
   (package
     (name "r-batchelor")
-    (version "1.14.0")
+    (version "1.14.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "batchelor" version))
        (sha256
         (base32
-         "1cdpq8zfn718qmsqjp79siddh3kzag4a90p276v261xbjvrxavjv"))))
+         "1yj84ba6px14hbqg8526527vfcxmzvmly34f7hba4vybdm1jscfm"))))
     (properties `((upstream-name . "batchelor")))
     (build-system r-build-system)
     (propagated-inputs
@@ -13629,38 +13629,31 @@ for other R packages to compile and link against.")
 (define-public r-flowworkspace
   (package
     (name "r-flowworkspace")
-    (version "4.10.0")
+    (version "4.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowWorkspace" version))
        (sha256
         (base32
-         "07w2pnnzmivfc621c8pvndqrn1k245cwjrb0nnk2i85i3si4j9c3"))))
+         "0jmbfclkfm0n2mshk94906kivii7awlskf7l7ydn8ki8wrpzxqg4"))))
     (properties `((upstream-name . "flowWorkspace")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-aws-s3
-           r-aws-signature
-           r-bh
+     (list r-bh
            r-biobase
            r-biocgenerics
+           r-cpp11
            r-cytolib
            r-data-table
            r-delayedarray
-           r-digest
            r-dplyr
            r-flowcore
            r-ggplot2
            r-graph
-           r-lattice
-           r-latticeextra
            r-matrixstats
            r-ncdfflow
            r-rbgl
-           r-rcpp
-           r-rcpparmadillo
-           r-rcppparallel
            r-rgraphviz
            r-rhdf5lib
            r-rprotobuflib
@@ -14646,14 +14639,14 @@ arrays based on fast wavelet-based functional models.")
 (define-public r-variancepartition
   (package
     (name "r-variancepartition")
-    (version "1.28.0")
+    (version "1.28.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "variancePartition" version))
        (sha256
         (base32
-         "1mn91r0yrhz08m3vs2h3i35rcbxyc7sdfknmk6vcw1z75znjsnpl"))))
+         "0ypw3ckaf4qll83rl2bjzfc7g2m4v0n2mq645ppyfga8wv8kwssy"))))
     (properties
      `((upstream-name . "variancePartition")))
     (build-system r-build-system)
@@ -14674,6 +14667,7 @@ arrays based on fast wavelet-based functional models.")
            r-pbkrtest
            r-progress
            r-rdpack
+           r-remacor
            r-reshape2
            r-rhpcblasctl
            r-rlang
@@ -15614,13 +15608,13 @@ functionality.")
 (define-public r-biocviews
   (package
     (name "r-biocviews")
-    (version "1.66.1")
+    (version "1.66.2")
     (source (origin
               (method url-fetch)
               (uri (bioconductor-uri "biocViews" version))
               (sha256
                (base32
-                "1xplkzm29v6aysfhb6kf2nnmvc37jmcvv6vsgbx8z8qccn96jk02"))))
+                "0fdxlixwf4d3p1prq37cgfvaiym44h2yd4bym6wp4dl8h648v99y"))))
     (properties
      `((upstream-name . "biocViews")))
     (build-system r-build-system)
@@ -15860,14 +15854,14 @@ analytics on packages.")
 (define-public r-biocset
   (package
     (name "r-biocset")
-    (version "1.12.0")
+    (version "1.12.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "BiocSet" version))
        (sha256
         (base32
-         "197cy5gdlvac7jqwb4dm4dbqfms2nvc3paqs75nsg9mpp1h5z8l8"))))
+         "1cqp5m6yic5vsp8k05r50sx2cmi9cwzxfmlswcjw28nascq3gpv0"))))
     (properties `((upstream-name . "BiocSet")))
     (build-system r-build-system)
     (propagated-inputs

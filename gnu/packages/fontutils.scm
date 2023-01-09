@@ -146,6 +146,7 @@ them as it goes.")
        (uri (pypi-uri "afdko" version))
        (sha256
         (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
+       (patches (search-patches "python-afdko-suppress-copyright-test.patch"))
        (modules '((guix build utils)))
        (snippet
         #~(begin

@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -81,6 +81,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -2290,7 +2291,7 @@ engineers for reverse engineers.")
 (define-public lib3mf
   (package
     (name "lib3mf")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
       (method git-fetch)
@@ -2299,20 +2300,48 @@ engineers for reverse engineers.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))))
+        "05zqvnzmi7j8rhp2mrskvxf1bxl7kb4c72dfx4y86219i1hx7i2q"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; Delete pre-compiled ACT.
+          (delete-file-recursively "AutomaticComponentToolkit/bin")
+
+          ;; Remove bundled software.  Preserve cpp-base64 as it has been
+          ;; modified and cannot easily be unbundled.
+          (for-each delete-file-recursively
+                    '("Include/Libraries/libzip"
+                      "Include/Libraries/zlib"
+                      "Source/Libraries/libzip"
+                      "Source/Libraries/zlib"))
+
+          ;; Adjust header includes such that system headers are found.
+          (substitute* '("Include/Common/OPC/NMR_OpcPackageReader.h"
+                         "Include/Common/Platform/NMR_ImportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ExportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ImportStream_Compressed.h"
+                         "Include/Common/Platform/NMR_ExportStream_Compressed.h"
+                         "Source/Common/Platform/NMR_PortableZIPWriterEntry.cpp")
+            (("Libraries/libzip/") "")
+            (("Libraries/zlib/") ""))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_INCLUDED_ZLIB=0"
                                "-DUSE_INCLUDED_LIBZIP=0"
                                "-DUSE_INCLUDED_GTEST=0"
-                               "-DUSE_INCLUDED_SSL=0")))
+                               "-DUSE_INCLUDED_SSL=0")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'provide-act
+                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                      (let ((act (search-input-file (or native-inputs inputs)
+                                                    "bin/act"))
+                            (dir "AutomaticComponentToolkit/bin"))
+                        (mkdir-p dir)
+                        (symlink act (string-append dir "/act.linux"))))))))
     (native-inputs
-     (list googletest pkg-config))
+     (list automatic-component-toolkit googletest pkg-config))
     (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("libzip" ,libzip)
-       ("libressl" ,libressl)
-       ("zlib" ,zlib)))
+     (list `(,util-linux "lib") libzip libressl zlib))
     (synopsis "Implementation of the 3D Manufacturing Format (3MF) file standard")
     (description
      "Lib3MF is a C++ implementation of the 3D Manufacturing Format (3MF) file

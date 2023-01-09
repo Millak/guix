@@ -19,7 +19,7 @@
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017-2018, 2020-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017, 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -5230,28 +5230,34 @@ NetSurf project.")
                          (find-files bin))
                #t))))))
     (native-inputs
-     `(("which" ,which)
-       ("gettext" ,gettext-minimal)
-       ("subversion" ,subversion)
-       ("git" ,git)
-       ("bazaar" ,bazaar)
-       ("cvs" ,cvs)
-       ("mercurial" ,mercurial)))
+     (list which
+           gettext-minimal
+           subversion
+           git
+           bazaar
+           cvs
+           mercurial))
     (inputs
-     `(("python" ,python-wrapper)
-       ("perl-authen-passphrase" ,perl-authen-passphrase)
-       ("perl-cgi-simple" ,perl-cgi-simple)
-       ("perl-db-file" ,perl-db-file)
-       ("perl-file-mimeinfo" ,perl-file-mimeinfo)
-       ("perl-html-tagset" ,perl-html-tagset)
-       ("perl-image-magick" ,perl-image-magick)
-       ("perl-ipc-run" ,perl-ipc-run)
-       ("perl-lwpx-paranoidagent" ,perl-lwpx-paranoidagent)
-       ("perl-xml-feed" ,perl-xml-feed)
-       ("perl-xml-sax" ,perl-xml-sax)
-       ("perl-xml-twig" ,perl-xml-twig)
-       ("perl-yaml-tiny" ,perl-yaml-tiny)
-       ("po4a" ,po4a)))
+     (list python-wrapper
+           perl-authen-passphrase
+           perl-cgi-simple
+           perl-db-file
+           perl-file-mimeinfo
+           perl-html-tagset
+           perl-image-magick
+           perl-ipc-run
+           perl-lwpx-paranoidagent
+           perl-xml-feed
+           perl-xml-sax
+           perl-xml-twig
+           perl-yaml-tiny
+
+           ;; Ikiwiki loads po4a as a library, and thus needs the po4a dependencies
+           ;; available.  Duplicate them here.
+           ;; XXX: It would be ideal to hard code these in po4a somehow.
+           perl-syntax-keyword-try
+           perl-xs-parse-keyword
+           po4a))
     (propagated-inputs
      (list perl-cgi-formbuilder
            perl-cgi-session

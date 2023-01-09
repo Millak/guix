@@ -1138,14 +1138,14 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
 (define-public r-sendmailr
   (package
     (name "r-sendmailr")
-    (version "1.3-1")
+    (version "1.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sendmailR" version))
        (sha256
         (base32
-         "1vxs9pdz1qbm7gzzigmvn5ybglakj4fska8dfj94azdvpkijs6hx"))))
+         "0yyxxzhm88xipk68vzqxcckcpjgl9lajnqyxxbkp1i29jcpfgdfa"))))
     (properties `((upstream-name . "sendmailR")))
     (build-system r-build-system)
     (propagated-inputs
@@ -5038,13 +5038,13 @@ Wall Street Journal, among others.  This package also provides
 (define-public r-statmod
   (package
     (name "r-statmod")
-    (version "1.4.37")
+    (version "1.5.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "statmod" version))
               (sha256
                (base32
-                "04v9nynv3lakhnd7b17v5syrlnscrxml71jnd3r93chckskwillh"))))
+                "1jbf07h0mnncn2qp4wcw5bnbvsw3lizpd3cg0cpb8mcxn3wkw76n"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/statmod")
     (native-inputs
@@ -5521,14 +5521,14 @@ of the points.")
 (define-public r-fpc
   (package
     (name "r-fpc")
-    (version "2.2-9")
+    (version "2.2-10")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fpc" version))
        (sha256
         (base32
-         "0f7sfmpcycr9y7cy5gasyjm2ardxa62kglqms92mcr68jrp01c19"))))
+         "1lj7j74yx747iic1hcngzbym0sqxppja8bxw64m0j6na5s7m9d4r"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-class

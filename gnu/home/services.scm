@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
@@ -192,7 +192,7 @@ ensures variable values are properly quoted."
               (list->string (string-fold-right
                              (lambda (chr lst)
                                (if (memq chr quoted-chars)
-                                   (append (list chr #\\) lst)
+                                   (append (list #\\ chr) lst)
                                    (cons chr lst)))
                              '()
                              value))))
@@ -212,7 +212,9 @@ ensures variable values are properly quoted."
                   "")
                  ((key . #t)
                   #~(string-append "export " #$key "\n"))
-                 ((key . (? string? value))
+                 ((key . (or (? string? value)
+                             (? file-like? value)
+                             (? gexp? value)))
                   #~(string-append "export " #$key "="
                                    (shell-double-quote #$value)
                                    "\n"))
