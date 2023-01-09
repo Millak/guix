@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -141,6 +141,11 @@ expressions."
       (p 4))
   (+ x y))"
                    #:max-width 11)
+
+(test-pretty-print "\
+(begin
+  1+ 1- 123/ 456*
+  (1+ 41))")
 
 (test-pretty-print "\
 (lambda (x y)
