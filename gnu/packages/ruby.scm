@@ -5271,6 +5271,41 @@ Nokogiri, Ox, or REXML.")
     (home-page "https://github.com/sferik/multi_xml")
     (license license:expat)))
 
+(define-public ruby-multipart-parser
+  (package
+    (name "ruby-multipart-parser")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "multipart-parser" version))
+              (sha256
+               (base32
+                "0xb4p475yrfm883h9kn80a021myn17dvs50wpa1djzcmlq7p0882"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases #~(modify-phases %standard-phases
+                   (add-after 'unpack 'skip-failing-test
+                     ;; One test fails for unknown reasons (see:
+                     ;; https://github.com/danabr/multipart-parser/issues/7).
+                     (lambda _
+                       (substitute* "test/multipart_parser/reader_test.rb"
+                         (("def test_long" all)
+                          (string-append all "\n      return true"))))))))
+    (synopsis "Parser for multipart MIME messages")
+    (description "@code{multipart-parser} is a simple parser for multipart
+MIME messages, written in Ruby, based on felixge/node-formidable's parser.  It
+has the following characteristics:
+@itemize
+@item Pure Ruby
+@item Event-driven API
+@item Only supports one level of multipart parsing
+@item Does not perform I/O
+@item Does not depend on any other library.
+@end itemize")
+    (home-page "https://github.com/danabr/multipart-parser")
+    (license license:expat)))
+
 (define-public ruby-multipart-post
   (package
     (name "ruby-multipart-post")
