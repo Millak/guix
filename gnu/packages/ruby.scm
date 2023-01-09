@@ -13828,6 +13828,29 @@ Nokogiri implementations.")
 Faraday-based API wrappers.")
     (license license:expat)))
 
+(define-public ruby-faraday-multipart
+  (package
+    (name "ruby-faraday-multipart")
+    (version "1.0.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lostisland/faraday-multipart")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ywxhff40a688n50lxrn4d8y096l8sbrwp1jfz4zd3kdiiygclka"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "spec"))
+    (native-inputs (list ruby-faraday ruby-multipart-parser ruby-rspec))
+    (propagated-inputs (list ruby-multipart-post))
+    (synopsis "Multipart-post requests extension for Faraday")
+    (description "This Ruby gem extends Faraday to perform multipart-post
+requests.")
+    (home-page "https://github.com/lostisland/faraday-multipart")
+    (license license:expat)))
+
 (define-public ruby-bandwidth-iris
   (package
     (name "ruby-bandwidth-iris")
