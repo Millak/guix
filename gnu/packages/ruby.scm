@@ -8695,6 +8695,48 @@ software development workflow.")
     (native-inputs
      '())))
 
+(define-public ruby-covered
+  (package
+    (name "ruby-covered")
+    (version "0.20.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "covered" version))
+              (sha256
+               (base32
+                "04fpj493jn23ah5fq93956a5h2xj3z0hrckvc26fxcfsg5pbwypa"))))
+    (build-system ruby-build-system)
+    (arguments
+    ;; XXX: The test suite is disabled to avoid dependency cycles with
+    ;; ruby-samovar, through ruby-bake.
+     (list #:tests? #f
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'relax-requirements
+                 (lambda _
+                   (substitute* ".gemspec"
+                     (("\">= 3.2\"")
+                      "\">= 2.7\"")))))))
+    (propagated-inputs (list ruby-console ruby-msgpack))
+    (synopsis "Modern approach to code coverage in Ruby")
+    (description "Covered uses modern Ruby features to generate comprehensive
+coverage, including support for templates which are compiled into Ruby.  It
+has the following features:
+@itemize
+@item
+Incremental coverage -- if you run your full test suite, and the run a subset,
+it will still report the correct coverage - so you can incrementally work on
+improving coverage.
+@item
+Integration with RSpec, Minitest, Travis & Coveralls - no need to configure
+anything - out of the box support for these platforms.
+@item
+It supports coverage of views -- templates compiled to Ruby code can be
+tracked for coverage reporting.
+@end itemize")
+    (home-page "https://github.com/ioquatix/covered")
+    (license license:expat)))
+
 (define-public ruby-coveralls
   (package
     (name "ruby-coveralls")
