@@ -2291,7 +2291,7 @@ engineers for reverse engineers.")
 (define-public lib3mf
   (package
     (name "lib3mf")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
       (method git-fetch)
@@ -2300,7 +2300,7 @@ engineers for reverse engineers.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))
+        "05zqvnzmi7j8rhp2mrskvxf1bxl7kb4c72dfx4y86219i1hx7i2q"))
       (modules '((guix build utils)))
       (snippet
        '(begin
