@@ -4153,6 +4153,33 @@ to check for the presence of header files, constants, and so on.")
     (home-page "https://github.com/djberg96/mkmf-lite")
     (license license:asl2.0)))
 
+(define-public ruby-msgpack
+  (package
+    (name "ruby-msgpack")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/msgpack/msgpack-ruby")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08wi853nv02clrdwx8s6dg9lmcyzq5fk84l4rb94pglps76rlvz7"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "spec"))
+    (native-inputs
+     (list ruby-rake-compiler
+           ruby-ruby-memcheck
+           ruby-rspec
+           ruby-yard))
+    (synopsis "Efficient object serialization library for Ruby")
+    (description "MessagePack is a binary-based efficient object serialization
+library.  It enables to exchange structured objects between many languages
+like JSON.  Unlike JSON, it is very fast and small.")
+    (home-page "https://msgpack.org/")
+    (license license:asl2.0)))
+
 (define-public ruby-mspec
   (package
     (name "ruby-mspec")
