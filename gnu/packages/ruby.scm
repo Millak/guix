@@ -3940,6 +3940,30 @@ It allows writing tests, checking results and automated testing in Ruby.")
     (home-page "https://test-unit.github.io/")
     (license (list license:psfl license:ruby))))
 
+(define-public ruby-mapping
+  (package
+    (name "ruby-mapping")
+    (version "1.1.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ioquatix/mapping")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0yhmqp8mprjqf9m7wzc4hhi50qbfax86r89w852csns0ijaffjjs"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "spec"))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Map model objects based on their class to a given output model")
+    (description "The @code{mapping} gem maps model objects based on their
+class to a given output model.  It is useful for versioning external
+interfaces (e.g. JSON APIs) or processing structured data from one format to
+another.")
+    (home-page "https://github.com/ioquatix/mapping")
+    (license license:expat)))
+
 (define-public ruby-markaby
   (package
     (name "ruby-markaby")
