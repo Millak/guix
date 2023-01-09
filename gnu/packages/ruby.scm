@@ -12160,6 +12160,27 @@ Unicode formatted tables.")
 logic in Jekyll.  It calculates and generates the pagination pages.")
     (license license:expat)))
 
+(define-public ruby-faraday-net-http
+  (package
+    (name "ruby-faraday-net-http")
+    (version "3.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "faraday-net_http" version))
+              (sha256
+               (base32
+                "13byv3mp1gsjyv8k0ih4612y6vw5kqva6i03wcg4w2fqpsd950k8"))))
+    (build-system ruby-build-system)
+    ;; Do not run the test suite here as it would introduce a dependency cycle
+    ;; with ruby-faraday, which uses it as part of its test suite.
+    (arguments (list #:tests? #f))
+    (synopsis "Faraday adapter for Net::HTTP")
+    (description "This gem is a Faraday adapter for the @code{Net::HTTP}
+library.  Faraday is an HTTP client library that provides a common interface
+over many adapters.")
+    (home-page "https://github.com/lostisland/faraday-net_http")
+    (license license:expat)))
+
 (define-public ruby-faraday
   (package
     (name "ruby-faraday")
