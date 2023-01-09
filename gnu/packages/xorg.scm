@@ -6181,14 +6181,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.3.4")
+    (version "4.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1rh4wx4af27xjcxdxrw950wkydgkvm5p3aaiqfmdij6sh6i14xcl"))
+        (base32 "03ypmkh5f1ygag3wnq776dn8gpy3aq8f0xv40ab5rjisix7lgfwg"))
        (patches (search-patches "xpra-4.2-systemd-run.patch"
                                 "xpra-4.2-install_libs.patch"))))
     (build-system python-build-system)
@@ -6207,6 +6207,7 @@ basic eye-candy effects.")
               ("libxdamage" ,libxdamage)
               ("libxext" ,libxext)
               ("libxres" ,libxres)
+              ("lz4" ,lz4)
               ("gtk+" ,gtk+)
               ("python-pycairo" ,python-pycairo)
               ("python-pygobject" ,python-pygobject)
