@@ -4533,6 +4533,27 @@ conversion to (X)HTML.")
     (home-page "https://github.com/vmg/redcarpet")
     (license license:expat)))
 
+(define-public ruby-reline
+  (package
+    (name "ruby-reline")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/reline")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1papa4f4prjml9qk6yydi4k5a4zgbzmxmbhd8fz9kfg1i34s35cw"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-io-console))
+    (synopsis "GNU Readline or Editline implementation in Ruby")
+    (description "Reline is a pure Ruby alternative GNU Readline or Editline
+implementation.")
+    (home-page "https://github.com/ruby/reline")
+    (license (list license:bsd-2 license:ruby)))) ;dual license
+
 (define-public ruby-rerun
   (package
   (name "ruby-rerun")
