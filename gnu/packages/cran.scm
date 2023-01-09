@@ -14612,6 +14612,31 @@ vector giving the index of the cluster each observation belongs to.")
 algorithms, clusterings, and individual clusters.")
     (license license:expat)))
 
+(define-public r-clustergeneration
+  (package
+    (name "r-clustergeneration")
+    (version "1.3.7")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "clusterGeneration" version))
+              (sha256
+               (base32
+                "0p1dwl08bf20h7pnspnsycrp3v48nm2miwcnlklyc4gdyzc2jksk"))))
+    (properties `((upstream-name . "clusterGeneration")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-mass))
+    (home-page "https://cran.r-project.org/package=clusterGeneration")
+    (synopsis "Random cluster generation (with specified degree of separation)")
+    (description
+     "The clusterGeneration package provides functions for generating random
+clusters, generating random covariance/correlation matrices, calculating a
+separation index (data and population version) for pairs of clusters or
+cluster distributions, and 1-D and 2-D projection plots to visualize clusters.
+The package also contains a function to generate random clusters based on
+factorial designs with factors such as degree of separation, number of
+clusters, number of variables, number of noisy variables.")
+    (license license:gpl2+)))
+
 (define-public r-tweedie
   (package
     (name "r-tweedie")
