@@ -13629,38 +13629,31 @@ for other R packages to compile and link against.")
 (define-public r-flowworkspace
   (package
     (name "r-flowworkspace")
-    (version "4.10.0")
+    (version "4.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "flowWorkspace" version))
        (sha256
         (base32
-         "07w2pnnzmivfc621c8pvndqrn1k245cwjrb0nnk2i85i3si4j9c3"))))
+         "0jmbfclkfm0n2mshk94906kivii7awlskf7l7ydn8ki8wrpzxqg4"))))
     (properties `((upstream-name . "flowWorkspace")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-aws-s3
-           r-aws-signature
-           r-bh
+     (list r-bh
            r-biobase
            r-biocgenerics
+           r-cpp11
            r-cytolib
            r-data-table
            r-delayedarray
-           r-digest
            r-dplyr
            r-flowcore
            r-ggplot2
            r-graph
-           r-lattice
-           r-latticeextra
            r-matrixstats
            r-ncdfflow
            r-rbgl
-           r-rcpp
-           r-rcpparmadillo
-           r-rcppparallel
            r-rgraphviz
            r-rhdf5lib
            r-rprotobuflib
