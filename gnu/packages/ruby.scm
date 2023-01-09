@@ -513,6 +513,33 @@ an extensible architecture with a swappable backend.")
     (home-page "https://github.com/ruby-i18n/i18n")
     (license license:expat)))
 
+(define-public ruby-io-console
+  (package
+    (name "ruby-io-console")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/io-console/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0gwxrp29b6awkid1sf85sbh529mnq6hb86m8c2443cm6nc4vr8qb"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'delete-rakelib-files
+                          (lambda _
+                            ;; These depend on git and other extraneous
+                            ;; dependencies, and are loaded by rake.
+                            (delete-file-recursively "rakelib"))))))
+    (native-inputs (list ruby-rake-compiler))
+    (synopsis "Console capabilities library for IO instances")
+    (description "IO.console adds console capabilities to Ruby IO instances.")
+    (home-page "https://github.com/ruby/io-console")
+    (license license:bsd-2)))
+
 (define-public ruby-iruby
   (package
     (name "ruby-iruby")
