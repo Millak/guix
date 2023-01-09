@@ -7905,14 +7905,14 @@ top of Faraday.")
 (define-public ruby-octokit
   (package
     (name "ruby-octokit")
-    (version "4.18.0")
+    (version "6.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "octokit" version))
        (sha256
         (base32
-         "0zvfr9njmj5svi39fcsi2b0g7pcxb0vamw9dlyas8bg814jlzhi6"))))
+         "03i37mdhwlm5y6piqaby0izrhda9m5ggbrmm62ww3ln2l86h78l2"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f))          ;no test suite in the gem release
     (propagated-inputs
