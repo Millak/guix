@@ -6932,14 +6932,14 @@ clustered data.")
 (define-public r-mitml
   (package
     (name "r-mitml")
-    (version "0.4-3")
+    (version "0.4-4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mitml" version))
        (sha256
         (base32
-         "00i18nnvrdrg91crgcp2a431xs71cawaip3xkqk2myv0iav3xga9"))))
+         "12mgjvifpprzlpjbcybd08fkps0kdxim45saan4cng4lc4klh880"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-haven r-jomo r-pan))
