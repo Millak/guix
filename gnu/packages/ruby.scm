@@ -11758,6 +11758,44 @@ serves JavaScript, CoffeeScript, CSS, LESS, Sass, and SCSS.")
     (home-page "https://github.com/rails/sprockets")
     (license license:expat)))
 
+(define-public ruby-language-server-protocol
+  (package
+    (name "ruby-language-server-protocol")
+    (version "3.17.0.3")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/mtsmfm/language_server-protocol-ruby")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0f2g301fz99c6nkca39s9227brlycznv8a9r4b4i99rg25m91lc6"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "language_server-protocol.gemspec"
+                (("git ls-files -z([^`]*)" _ files)
+                 (string-append "find " files
+                                " -type f -not -regex '.*\\.gem$'"
+                                " -print0 | sort -z"))))))))
+    (native-inputs
+     (list ruby-activesupport
+           ruby-benchmark-ips
+           ruby-m
+           ruby-minitest
+           ruby-minitest-power-assert
+           ruby-pry-byebug))
+    (synopsis "Language Server Protocol (LSP) development kit for Ruby")
+    (description "This package provides a Language Server Protocol (LSP)
+development kit for Ruby.")
+    (home-page "https://github.com/mtsmfm/language_server-protocol-ruby")
+    (license license:expat)))
+
 (define-public ruby-mustache
   (package
     (name "ruby-mustache")
