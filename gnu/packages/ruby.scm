@@ -540,6 +540,27 @@ an extensible architecture with a swappable backend.")
     (home-page "https://github.com/ruby/io-console")
     (license license:bsd-2)))
 
+(define-public ruby-irb
+  (package
+    (name "ruby-irb")
+    (version "1.6.3")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "irb" version))
+              (sha256
+               (base32
+                "1h9s07n5v3z029v18924ws9vdkdc80n6llp9ccx77yg1krv2g0f3"))))
+    (build-system ruby-build-system)
+    ;; XXX: Disable the test suite, as it requires debug, which requires this
+    ;; package (dependency cycle).
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-reline))
+    (synopsis "Ruby command-line tool for REPL (Read Eval Print Loop)")
+    (description "IRB is an interactive Ruby command-line tool for REPL (Read
+Eval Print Loop).")
+    (home-page "https://github.com/ruby/irb")
+    (license license:bsd-2)))
+
 (define-public ruby-iruby
   (package
     (name "ruby-iruby")
