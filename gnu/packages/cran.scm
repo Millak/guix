@@ -2802,6 +2802,38 @@ particularly easy to create complete web applications using httpuv alone.")
     ;; obtained here: https://github.com/rstudio/httpuv/blob/master/LICENSE
     (license license:gpl3+)))
 
+(define-public r-httr2
+  (package
+    (name "r-httr2")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "httr2" version))
+              (sha256
+               (base32
+                "1gzjsw3w7c3rsp3gb9rdbfmmnmd2sq09s3wza49730gp84jvc6jx"))))
+    (properties `((upstream-name . "httr2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cli
+           r-curl
+           r-glue
+           r-magrittr
+           r-openssl
+           r-r6
+           r-rappdirs
+           r-rlang
+           r-withr))
+    (native-inputs (list r-knitr))
+    (home-page "https://httr2.r-lib.org")
+    (synopsis "Perform HTTP requests and process the responses")
+    (description
+     "This package provides tools for creating and modifying HTTP requests,
+then performing them and processing the results.  @code{httr2} is a
+re-imagining of @code{httr} that uses a pipe-based interface and solves more
+of the problems that API wrapping packages face.")
+    (license license:expat)))
+
 (define-public r-jsonlite
   (package
     (name "r-jsonlite")
