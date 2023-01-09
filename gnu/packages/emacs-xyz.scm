@@ -34900,8 +34900,8 @@ Emacs.")
 (define-public emacs-semi-epg
   ;; No release since Dec 24, 2003.
   (let ((version "1.14.6")
-        (revision "241")
-        (commit "ac3e726ca94ed245c25881ec8d7177d0d834ea6a"))
+        (revision "242")
+        (commit "7d8df0ef2f483e2dc063a72099295f467e6bc2c8"))
     (package
       (name "emacs-semi-epg")
       (version (git-version version revision commit))
@@ -34913,7 +34913,7 @@ Emacs.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1bg07y6svvg1mmlr455x3j1anjp3wbv27s6b2inp294rbwprm41n"))))
+                  "01dn91xjcl7p5rnbgyh5l4kdlqx31s0gw5vh7hhcapbiq8rihmjd"))))
       (build-system emacs-build-system)
       (propagated-inputs (list emacs-bbdb-vcard emacs-flim-lb))
       (home-page "https://www.emacswiki.org/emacs/WanderLust")
