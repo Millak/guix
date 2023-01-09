@@ -2305,7 +2305,25 @@ engineers for reverse engineers.")
       (snippet
        '(begin
           ;; Delete pre-compiled ACT.
-          (delete-file-recursively "AutomaticComponentToolkit/bin")))))
+          (delete-file-recursively "AutomaticComponentToolkit/bin")
+
+          ;; Remove bundled software.  Preserve cpp-base64 as it has been
+          ;; modified and cannot easily be unbundled.
+          (for-each delete-file-recursively
+                    '("Include/Libraries/libzip"
+                      "Include/Libraries/zlib"
+                      "Source/Libraries/libzip"
+                      "Source/Libraries/zlib"))
+
+          ;; Adjust header includes such that system headers are found.
+          (substitute* '("Include/Common/OPC/NMR_OpcPackageReader.h"
+                         "Include/Common/Platform/NMR_ImportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ExportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ImportStream_Compressed.h"
+                         "Include/Common/Platform/NMR_ExportStream_Compressed.h"
+                         "Source/Common/Platform/NMR_PortableZIPWriterEntry.cpp")
+            (("Libraries/libzip/") "")
+            (("Libraries/zlib/") ""))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_INCLUDED_ZLIB=0"
