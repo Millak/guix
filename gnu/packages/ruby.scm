@@ -10403,77 +10403,6 @@ call.")
     (home-page "https://github.com/travisjeffery/timecop")
     (license license:expat)))
 
-(define-public ruby-concurrent
-  (package
-    (name "ruby-concurrent")
-    (version "1.1.5")
-    (source
-     (origin
-       (method git-fetch)
-       ;; Download from GitHub because the rubygems version does not contain
-       ;; Rakefile.
-       (uri (git-reference
-             (url "https://github.com/ruby-concurrency/concurrent-ruby")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "193q2k47vk7qdvv9hlhmmdxgy91xl4imapyk1ijdg9vgf46knyzj"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:test-target "ci"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'replace-git-ls-files 'remove-extra-gemspecs
-           (lambda _
-             ;; Delete extra gemspec files so 'first-gemspec' chooses the
-             ;; correct one.
-             (delete-file "concurrent-ruby-edge.gemspec")
-             (delete-file "concurrent-ruby-ext.gemspec")
-             #t))
-         (replace 'replace-git-ls-files
-           (lambda _
-             ;; XXX: The default substitution made by this phase is not fully
-             ;; compatible with "git ls-files".  The latter produces file names
-             ;; such as "lib/foo", whereas ruby-build-system uses "find . [...]"
-             ;; which gives "./lib/foo".  That difference in turn breaks the
-             ;; comparison against a glob pattern in this script.
-             (substitute* "concurrent-ruby.gemspec"
-               (("git ls-files") "find * -type f | sort"))
-             #t))
-         (add-before 'build 'remove-jar-from-gemspec
-           (lambda _
-             ;; The gemspec wants to include a JAR file that we do not build
-             ;; nor need.
-             (substitute* "concurrent-ruby.gemspec"
-               (("'lib/concurrent/concurrent_ruby.jar'")
-                ""))
-             #t))
-         (add-before 'build 'remove-rake_compiler_dock-dependency
-           (lambda _
-             ;; This library is only used when building for non-MRI targets.
-             (substitute* "Rakefile"
-               (("require 'rake_compiler_dock'")
-                ""))
-             #t))
-         (add-before 'check 'remove-timecop-dependency
-           ;; Remove timecop-dependent tests as having timecop as a depedency
-           ;; causes circular depedencies.
-           (lambda _
-             (delete-file "spec/concurrent/executor/timer_set_spec.rb")
-             (delete-file "spec/concurrent/scheduled_task_spec.rb")
-             #t)))))
-    (native-inputs
-     (list ruby-rake-compiler ruby-rspec))
-    (synopsis "Concurrency tools for Ruby")
-    (description
-     "This library provides modern concurrency tools including agents,
-futures, promises, thread pools, actors, supervisors, and more.  It is
-inspired by Erlang, Clojure, Go, JavaScript, actors and classic concurrency
-patterns.")
-    (home-page "http://www.concurrent-ruby.com")
-    (license license:expat)))
-
 (define-public ruby-concurrent-ruby
   (package
     (name "ruby-concurrent-ruby")
@@ -10511,6 +10440,12 @@ inspired by Erlang, Clojure, Go, JavaScript, actors, and classic concurrency
 patterns.")
     (home-page "https://github.com/ruby-concurrency/concurrent-ruby")
     (license license:expat)))
+
+;;; The 'gem' is called 'concurrent-ruby'; reversing its name was confusing
+;;; and failed to be picked by the gem importer (which led to this newer
+;;; package).
+(define-public ruby-concurrent
+  (deprecated-package "ruby-concurrent" ruby-concurrent-ruby))
 
 (define-public ruby-pkg-config
   (package
