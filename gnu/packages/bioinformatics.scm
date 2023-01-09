@@ -7689,6 +7689,38 @@ sequence.")
     (supported-systems '("i686-linux" "x86_64-linux"))
     (license license:bsd-3)))
 
+(define-public r-gg3d
+  (let ((commit "ffdd837d30c1671cd0895db94bdd7b1594dbfcb0")
+        (revision "1"))
+    (package
+      (name "r-gg3d")
+      (version (git-version "0.0.0.9000" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/AckerDWM/gg3D")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0vz5laj5vz9m1jzb7h7q9f37zjmxwhylhaidlsg61r57wpxvjr3p"))))
+      (properties `((upstream-name . "gg3D")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-dplyr
+             r-ggplot2
+             r-magrittr
+             r-plot3d
+             r-plyr
+             r-scales))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/AckerDWM/gg3D")
+      (synopsis "3D perspective plots for ggplot2")
+      (description
+       "This package adds 3D perspective plotting of points, paths, and line,
+3D perspective axes, 3D perspective annotations, and wireframe plots.")
+      (license license:gpl3+))))
+
 (define-public r-gutils
   (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
         (revision "1"))
