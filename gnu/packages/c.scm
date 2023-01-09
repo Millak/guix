@@ -70,8 +70,8 @@
   #:use-module (gnu packages xml))
 
 (define-public c-intro-and-ref
-  (let ((revision "0")
-        (commit "f88559678feeb1391a0e9c7cf060c4429ef22ffc"))
+  (let ((revision "1")
+        (commit "47e5a234a7c036392e0f9e1e8e48ff3e6855840d"))
     (package
       (name "c-intro-and-ref")
       (version (git-version "0.0.0" revision commit))
@@ -83,7 +83,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0c08h8k7wkn5lw0jqnnaayx55d3vf1q11pgsixfw31i58rnwa5y2"))))
+                  "0aza4vvlg2w0ss6n5xp741ycvg16d041c1x87yh5hpnzcb6y0ii3"))))
       (build-system copy-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
