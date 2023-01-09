@@ -12406,14 +12406,14 @@ a library of prediction algorithms to be used in the super learner.")
 (define-public r-drtmle
   (package
     (name "r-drtmle")
-    (version "1.1.1")
+    (version "1.1.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "drtmle" version))
        (sha256
         (base32
-         "12vplpz9bg5444jy29mbdr70hqby073vb3iw76v2csrwy3ws3f21"))))
+         "0qvdxzvpi7a66gx61v6fj31zy4y5cid18g4qgv5lir7qc74rbbx0"))))
     (properties `((upstream-name . "drtmle")))
     (build-system r-build-system)
     (propagated-inputs
