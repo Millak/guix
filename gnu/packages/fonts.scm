@@ -939,6 +939,37 @@ all languages with a consistent look and aesthetic.  Its goal is to properly
 display all Unicode symbols.")
     (license license:silofl1.1)))
 
+(define-public font-google-noto-emoji
+  (package
+    (name "font-google-noto-emoji")
+    (version "2.038")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/noto-emoji")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1rgmcc6nqq805iqr8kvxxlk5cf50q714xaxk3ld6rjrd69kb8ix9"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unsupported
+            (lambda* _
+              (delete-file "fonts/NotoColorEmoji_WindowsCompatible.ttf")
+              (delete-file "fonts/Noto-COLRv1-noflags.ttf")
+              (delete-file "fonts/Noto-COLRv1.ttf"))))))
+    (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
+    (synopsis "Font for rendering color emoji characters")
+    (description
+     "This package provides the color emoji font from the Google Noto font
+family.")
+    (license license:silofl1.1)))
+
 (define-public font-google-noto-sans-cjk
   (package
     (name "font-google-noto-sans-cjk")
