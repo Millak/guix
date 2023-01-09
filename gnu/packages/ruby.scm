@@ -10447,6 +10447,27 @@ patterns.")
 (define-public ruby-concurrent
   (deprecated-package "ruby-concurrent" ruby-concurrent-ruby))
 
+(define-public ruby-concurrent-ruby-ext
+  (package
+    (inherit ruby-concurrent-ruby)
+    (name "ruby-concurrent-ruby-ext")
+    (arguments
+     (list
+      #:tests? #f                      ;tested as part of concurrent-ruby-edge
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-unwanted-gemspecs
+            (lambda _
+              (for-each delete-file
+                        '("concurrent-ruby.gemspec"
+                          "concurrent-ruby-edge.gemspec")))))))
+    (native-inputs (list ruby-rake-compiler))
+    (propagated-inputs (list ruby-concurrent-ruby))
+    (synopsis "C extensions for concurrent-ruby")
+    (description "This package provides C extensions to optimize the
+concurrent-ruby gem when running under the Matz's Ruby Interpreter (MRI, also
+known as CRuby).")))
+
 (define-public ruby-pkg-config
   (package
     (name "ruby-pkg-config")
