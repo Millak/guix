@@ -5269,6 +5269,27 @@ URIs using the normal URI.parse method.")
     (home-page "https://github.com/dball/data_uri")
     (license license:expat)))
 
+(define-public ruby-debug
+  (package
+    (name "ruby-debug")
+    (version "1.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "debug" version))
+              (sha256
+               (base32
+                "0x59508j69w9p275gabysv521n210pd3n060gqfgsiqjms1h0ldf"))))
+    (build-system ruby-build-system)
+    (arguments (list #:test-target "test_all"))
+    (propagated-inputs (list ruby-irb ruby-reline))
+    (synopsis "Debugging functionality for Ruby")
+    (description "Debugging functionality for Ruby.  This is completely
+rewritten debug.rb which was contained by the ancient Ruby versions.  It is
+included with Ruby itself, but this package is made available so that the
+latest version can be made available independently from Ruby.")
+    (home-page "https://github.com/ruby/debug")
+    (license license:bsd-2)))
+
 (define-public ruby-deep-merge
   (package
     (name "ruby-deep-merge")
