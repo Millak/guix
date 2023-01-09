@@ -12184,23 +12184,30 @@ over many adapters.")
 (define-public ruby-faraday
   (package
     (name "ruby-faraday")
-    (version "0.15.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "faraday" version))
-       (sha256
-        (base32
-         "0s72m05jvzc1pd6cw1i289chas399q0a14xrwg4rvkdwy7bgzrh0"))))
+    (version "2.7.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/lostisland/faraday")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0ya6jqa7ryr4i62mmzjjxzd8i8y0pyw0cbhifd758rs6lvkzmxa3"))))
     (build-system ruby-build-system)
-    (arguments
-     '(#:tests? #f))
-    (propagated-inputs
-     (list ruby-multipart-post))
+    (arguments (list #:test-target "spec"))
+    (native-inputs
+     (list ruby-coveralls
+           ruby-faraday-net-http
+           ruby-pry
+           ruby-rack
+           ruby-rspec
+           ruby-simplecov
+           ruby-webmock))
+    (propagated-inputs (list ruby-ruby2-keywords))
     (synopsis "Ruby HTTP/REST API client library")
-    (description
-     "Faraday is a HTTP/REST API client library which provides a common
-interface over different adapters.")
+    (description "Faraday is a HTTP/REST API client library which provides a
+common interface over different adapters.")
     (home-page "https://github.com/lostisland/faraday")
     (license license:expat)))
 
