@@ -7885,14 +7885,14 @@ for FFI.")
 (define-public ruby-sawyer
   (package
     (name "ruby-sawyer")
-    (version "0.8.2")
+    (version "0.9.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "sawyer" version))
        (sha256
         (base32
-         "0yrdchs3psh583rjapkv33mljdivggqn99wkydkjdckcjn43j3cz"))))
+         "1jks1qjbmqm8f9kvwa81vqj39avaj9wdnzc531xm29a55bb74fps"))))
     (build-system ruby-build-system)
     (propagated-inputs
      (list ruby-addressable ruby-faraday))
