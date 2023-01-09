@@ -18985,6 +18985,36 @@ can also be used to join clusters obtained from affinity propagation.  Various
 plotting functions are available for analyzing clustering results.")
     (license license:gpl2+)))
 
+(define-public r-remacor
+  (package
+    (name "r-remacor")
+    (version "0.0.11")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "remaCor" version))
+              (sha256
+               (base32
+                "0hhk1zrjz6sxg219h9ca7jya0vc8dmrvwaddajkcdns6bv3rj1km"))))
+    (properties `((upstream-name . "remaCor")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-clustergeneration
+           r-ggplot2
+           r-mvtnorm
+           r-rdpack
+           r-reshape2
+           r-runit))
+    (native-inputs (list r-knitr))
+    (home-page "https://diseaseneurogenomics.github.io/remaCor/")
+    (synopsis "Random effects meta-analysis for correlated test statistics")
+    (description
+     "Meta-analysis is widely used to summarize estimated effects sizes across
+multiple statistical tests.  Standard fixed and random effect meta-analysis
+methods assume that the estimated of the effect sizes are statistically
+independent.  Here we relax this assumption and enable meta-analysis when the
+correlation matrix between effect size estimates is known.")
+    (license license:artistic2.0)))
+
 (define-public r-rematch2
   (package
     (name "r-rematch2")
