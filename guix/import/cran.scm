@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
@@ -732,12 +732,12 @@ s-expression corresponding to that package, or #f on failure."
   (define latest-version
     (latest-bioconductor-package-version upstream-name))
 
-  (and version
+  (and latest-version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
         (version latest-version)
-        (urls (bioconductor-uri upstream-name version))
+        (urls (bioconductor-uri upstream-name latest-version))
         (input-changes
          (changed-inputs
           pkg
