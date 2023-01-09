@@ -7941,17 +7941,29 @@ top of Faraday.")
   (package
     (name "ruby-octokit")
     (version "6.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "octokit" version))
-       (sha256
-        (base32
-         "03i37mdhwlm5y6piqaby0izrhda9m5ggbrmm62ww3ln2l86h78l2"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/octokit/octokit.rb")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01njrd17bz28mlsa8hi9gad7s6d1d0vpyn0g66p3d42zgplr9qkq"))))
     (build-system ruby-build-system)
-    (arguments '(#:tests? #f))          ;no test suite in the gem release
-    (propagated-inputs
-     (list ruby-faraday ruby-sawyer))
+    (native-inputs
+     (list ruby-faraday-multipart
+           ruby-jwt
+           ruby-mime-types
+           ruby-multi-json
+           ruby-netrc
+           ruby-pry-byebug
+           ruby-rbnacl
+           ruby-rspec
+           ruby-simplecov
+           ruby-webmock
+           ruby-vcr-expat))
+    (propagated-inputs (list ruby-faraday ruby-sawyer))
     (synopsis "Ruby toolkit for the GitHub API")
     (description "Octokit wraps the GitHub API in a flat API client that
 follows Ruby conventions and requires little knowledge of REST.")
