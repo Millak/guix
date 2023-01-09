@@ -1138,14 +1138,14 @@ designed by Cynthia Brewer as described at http://colorbrewer2.org")
 (define-public r-sendmailr
   (package
     (name "r-sendmailr")
-    (version "1.3-1")
+    (version "1.3-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "sendmailR" version))
        (sha256
         (base32
-         "1vxs9pdz1qbm7gzzigmvn5ybglakj4fska8dfj94azdvpkijs6hx"))))
+         "0yyxxzhm88xipk68vzqxcckcpjgl9lajnqyxxbkp1i29jcpfgdfa"))))
     (properties `((upstream-name . "sendmailR")))
     (build-system r-build-system)
     (propagated-inputs
