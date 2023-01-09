@@ -6881,6 +6881,30 @@ documents and fragments.  It's built on top of Nokogiri and libxml2.")
 (define-public ruby-nokogumbo
   (deprecated-package "ruby-nokogumbo" ruby-nokogiri))
 
+(define-public ruby-samovar
+  (package
+    (name "ruby-samovar")
+    (version "2.1.4")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ioquatix/samovar")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05pc5xlbv44anx0sfqssh0xhxg297bvl5slsl7k1vnka4k5fhax6"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-covered ruby-rspec))
+    (propagated-inputs (list ruby-console ruby-mapping))
+    (synopsis "Flexible option parser for Ruby")
+    (description "Samovar is a modern framework for building command-line
+tools and applications.  It provides a declarative class-based DSL for
+building command-line parsers that include automatic documentation generation.
+It helps you keep your functionality clean and isolated where possible.")
+    (home-page "https://github.com/ioquatix/samovar")
+    (license license:expat)))
+
 (define-public ruby-sanitize
   (package
     (name "ruby-sanitize")
