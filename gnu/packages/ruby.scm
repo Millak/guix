@@ -2173,6 +2173,34 @@ format.")
     (home-page "https://github.com/nicksieger/ci_reporter")
     (license license:expat)))
 
+(define-public ruby-console
+  (package
+    (name "ruby-console")
+    (version "1.16.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "console" version))
+              (sha256
+               (base32
+                "0y1bv3kd1l9p0k5n3anvvjxdrcq113pyngz2g29i9mvdgbbx7kq2"))))
+    (build-system ruby-build-system)
+    ;; XXX: Disable test suite to avoid dependency cycles with ruby-samovar.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-fiber-local))
+    (synopsis "Console logging library for Ruby")
+    (description "This gem provides beautiful console logging for Ruby
+applications.  It implements fast, buffered log output and has the following
+features:
+@itemize
+@item Thread safe global logger with per-fiber context
+@item Carry along context with nested loggers
+@item Enable/disable log levels per class
+@item Detailed logging of exceptions
+@item Beautiful logging to the terminal or structured logging using JSON.
+@end itemize")
+    (home-page "https://github.com/socketry/console")
+    (license license:expat)))
+
 (define-public ruby-contracts
   (package
     (name "ruby-contracts")
