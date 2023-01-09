@@ -7949,7 +7949,7 @@ notes.")
 (define-public ruby-pry-byebug
   (package
     (name "ruby-pry-byebug")
-    (version "3.9.0")
+    (version "3.10.1")
     (source
      (origin
        (method git-fetch)
@@ -7959,7 +7959,7 @@ notes.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1kchrwccai92068p50zyd6mh524ywqnm0jw5g3lks7iwmf0xkmgc"))))
+         "0z8rhvmr9qmlbk8c8h6jbig5qd5xbdg9qihvx3g0cv1whqzbfikq"))))
     (build-system ruby-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
