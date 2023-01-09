@@ -9217,6 +9217,42 @@ definitions.")
     (home-page "https://github.com/discourse/mini_mime")
     (license license:expat)))
 
+(define-public ruby-fileutils
+  (package
+    (name "ruby-fileutils")
+    (version "1.7.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ruby/fileutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0m68gaqclnc2wflilmrnr19kky2gr6fjf6k3yq02sf9scs281kid"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-problematic-tests
+            (lambda _
+              (substitute* "test/fileutils/test_fileutils.rb"
+                ;; The 'test_chown' tests depends on /etc/groups, which
+                ;; doesn't exist in the build environment.
+                (("def test_chown.*" all)
+                 (string-append all "    return true\n"))
+                ;; The 'test_cp_r_dev' expects a RuntimeError to be raised
+                ;; when copying a char device to a directory, but this is not
+                ;; triggered in the build environment, for reasons unknown.
+                (("def test_cp_r_dev.*" all)
+                 (string-append all "    return true\n"))))))))
+    (synopsis "Ruby utility libray to manipulate files")
+    (description "The FileUtils Ruby library includes Several file utility
+methods for copying, moving, removing, etc.")
+    (home-page "https://github.com/ruby/fileutils")
+    (license license:bsd-2)))
+
 (define-public ruby-fivemat
   (package
     (name "ruby-fivemat")
