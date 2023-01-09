@@ -615,6 +615,51 @@ interface for those who are accustomed to the ircII way of doing things.")
 building block for other projects.")
     (license license:expat)))
 
+(define-public chathistorysync
+  (package
+    (name "chathistorysync")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~emersion/chathistorysync")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "03dxr178wnicggx0k95wvyzgyk4s4g0adbi2z0md517a5qd1lh23"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "git.sr.ht/~emersion/chathistorysync"
+           #:install-source? #f ; chathistorysync is an end-user application.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'build 'doc
+                 (lambda _
+                   (with-directory-excursion
+                       "src/git.sr.ht/~emersion/chathistorysync"
+                     (invoke "sh" "-c"
+                             "scdoc <chathistorysync.1.scd >chathistorysync.1"))))
+               (add-after 'install 'install-doc
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (with-directory-excursion
+                         "src/git.sr.ht/~emersion/chathistorysync"
+                       (install-file
+                        "chathistorysync.1"
+                        (string-append out "/share/man/man1")))))))))
+    (inputs
+     (list go-golang-org-x-sys
+           go-golang-org-x-term
+           go-golang-org-x-crypto
+           go-gopkg-in-irc-v3))
+    (native-inputs (list scdoc))
+    (home-page "https://git.sr.ht/~emersion/chathistorysync")
+    (synopsis "Synchronization tool for IRC chat history")
+    (description
+     "This package provides a synchronization tool for IRC chat history.")
+    (license license:agpl3)))
+
 (define-public litterbox
   (package
     (name "litterbox")
