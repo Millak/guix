@@ -12198,13 +12198,14 @@ over many adapters.")
     (arguments (list #:test-target "spec"))
     (native-inputs
      (list ruby-coveralls
-           ruby-faraday-net-http
            ruby-pry
            ruby-rack
            ruby-rspec
            ruby-simplecov
            ruby-webmock))
-    (propagated-inputs (list ruby-ruby2-keywords))
+    ;; Propagate faraday-net-http as this is the default adapter used, and
+    ;; many Ruby projects assumes it is available.
+    (propagated-inputs (list ruby-ruby2-keywords ruby-faraday-net-http))
     (synopsis "Ruby HTTP/REST API client library")
     (description "Faraday is a HTTP/REST API client library which provides a
 common interface over different adapters.")
