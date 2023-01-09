@@ -5,7 +5,7 @@
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019–2022 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2019–2023 Florian Pelz <pelzflorian@pelzflorian.de>
 ;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
@@ -28,11 +28,15 @@
 
  (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
         (title
-          (en "Linux-libre 4.9 removed due to end of upstream support"))
+          (en "Linux-libre 4.9 removed due to end of upstream support")
+          (de "Linux-libre 4.9 wurde entfernt"))
         (body
           (en "The linux-libre 4.9 kernel series has reach the end of its life,
 and is no longer supported upstream.  For this reason, it has been removed from
-GNU Guix.")))
+GNU Guix.")
+          (de "Vom Kernel @code{linux-libre} wird die 4.9-Versionsreihe keine
+Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
+aus GNU Guix entfernt worden.")))
 
  (entry (commit "dfc6957a5af7d179d4618eb19d4f555c519bc6f2")
         (title
