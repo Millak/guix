@@ -12,7 +12,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -58,6 +58,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
@@ -79,6 +80,44 @@
   #:use-module (gnu packages xml))
 
 ;;; Tools to deal with source code: metrics, cross-references, etc.
+
+(define-public automatic-component-toolkit
+  (package
+    (name "automatic-component-toolkit")
+    (version "1.6.0")
+    (home-page "https://github.com/Autodesk/AutomaticComponentToolkit")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r0sbw82cf9dbcj3vgnbd4sc1lklzvijic2z5wgkvs21azcm0yzh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #false              ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'build
+                 (lambda _
+                   (setenv "HOME" "/tmp")
+                   (invoke "bash" "Build/build.sh")))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (copy-file "act.linux"
+                                (string-append #$output "/bin/act"))))))))
+    (native-inputs (list go))
+    (synopsis "Automatically generate software components")
+    (description
+     "The Automatic Component Toolkit (@dfn{ACT}) is a code generator that
+takes an instance of an Interface Description Language (@dfn{IDL}) file and
+generates a thin C89-API, implementation stubs, and language bindings of your
+desired software component.")
+    (license license:bsd-2)))
 
 (define-public cflow
   (package
