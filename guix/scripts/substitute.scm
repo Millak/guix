@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2018 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
@@ -706,10 +706,12 @@ substitutes may be unavailable\n")))))
                             (string-drop option=value (+ 1 equal-sign))))))
                  (string-tokenize newline-separated %not-newline)))))
 
-(define (find-daemon-option option)
-  "Return the value of build daemon option OPTION, or #f if it could not be
+(define find-daemon-option
+  (let ((options (delay (daemon-options))))
+    (lambda (option)
+      "Return the value of build daemon option OPTION, or #f if it could not be
 found."
-  (assoc-ref (daemon-options) option))
+      (assoc-ref (force options) option))))
 
 (define %default-substitute-urls
   (match (and=> (or (find-daemon-option "untrusted-substitute-urls") ;client
