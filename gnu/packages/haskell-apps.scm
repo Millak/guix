@@ -50,6 +50,7 @@
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -335,7 +336,11 @@ to @code{cabal repl}).")
              ;; webapp' runs without making the user also install xdg-utils.
              (substitute* '("Assistant/WebApp/DashBoard.hs"
                             "Utility/WebApp.hs")
-               (("xdg-open") (which "xdg-open")))))
+               (("xdg-open") (which "xdg-open")))
+             ;; Also replace loose references to lsof.
+             (substitute* "Assistant/Threads/Watcher.hs"
+               (("\"lsof\"")
+                (string-append "\"" (which "lsof") "\"")))))
          (add-before 'configure 'factor-setup
            (lambda _
              ;; Factor out necessary build logic from the provided
@@ -480,6 +485,7 @@ to @code{cabal repl}).")
            ghc-yesod-core
            ghc-yesod-form
            ghc-yesod-static
+           lsof
            rsync
            xdg-utils))
     (propagated-inputs
