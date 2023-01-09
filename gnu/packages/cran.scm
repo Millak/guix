@@ -11089,17 +11089,17 @@ references and Rd files.")
 (define-public r-officer
   (package
     (name "r-officer")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "officer" version))
        (sha256
         (base32
-         "19kms5pjgb5mjqyqzgnpykd5divbkrs5apz8z27ivgw78iizsqh6"))))
+         "1r885h8ma2py3idxkki2bnsbcimrw36qd6km2bhyhlav79n7bh4w"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-r6 r-uuid r-xml2 r-zip))
+     (list r-openssl r-r6 r-uuid r-xml2 r-zip))
     (home-page "https://davidgohel.github.io/officer")
     (synopsis "Manipulation of Word and PowerPoint documents")
     (description
