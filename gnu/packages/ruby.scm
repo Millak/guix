@@ -3718,6 +3718,43 @@ interface for Ruby programs.")
     ;; Some parts are covered by the Ruby license, see file headers.
     (license (list license:expat license:ruby))))
 
+(define-public ruby-fiber-local
+  (package
+    (name "ruby-fiber-local")
+    (version "1.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/socketry/fiber-local")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0pp5b81h0lysdnphgprkixh1az0fkrgir5sbcp0mm8arxf3f8m90"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'extract-gemspec 'sanitize-dependencies
+                 (lambda _
+                   ;; This pulls in extraneous maintenance dependencies.
+                   (delete-file "gems.rb")
+                   ;; Depending on ruby-covered would introduce a dependency
+                   ;; cycle with it.
+                   (substitute* '("fiber-local.gemspec" "spec/spec_helper.rb")
+                     ((".*covered.*") ""))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Ruby module to simplify fiber-local state management")
+    (description "This package provides a class-level mixin to make managing
+fiber-local state easy.  It provides easy access to a fiber-local state from a
+fiber, and defaults to a shared thread-local state.")
+    (home-page "https://github.com/socketry/fiber-local")
+    (license license:expat)))
+
 (define-public ruby-net-http-persistent
   (package
     (name "ruby-net-http-persistent")
