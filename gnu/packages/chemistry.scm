@@ -435,7 +435,8 @@ interactions, but since GROMACS is extremely fast at calculating the nonbonded
 interactions (that usually dominate simulations) many groups are also using it
 for research on non-biological systems, e.g. polymers.  GROMACS supports all the
 usual algorithms you expect from a modern molecular dynamics implementation.")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties '((tunable? . #t)))))
 
 (define-public openbabel
   (package
