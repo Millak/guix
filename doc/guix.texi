@@ -31436,7 +31436,7 @@ guix shell tigervnc-client -- vncviewer localhost:5910
 @end example
 
 The following configuration combines XDMCP and Inetd to allow multiple
-users to concurrently use the remote system, login in graphically via
+users to concurrently use the remote system and login graphically via
 the GDM display manager:
 
 @lisp
