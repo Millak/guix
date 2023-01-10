@@ -119,6 +119,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
+;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1193,7 +1194,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                 ;; the root of the project for the emacs-build-system.
                 (for-each (lambda (f)
                             (install-file f "lisp"))
-                          (find-files "Documentation" "\\.info$"))))
+                          (find-files "docs" "\\.info$"))))
             (add-after 'build-info-manual 'set-magit-version
               (lambda _
                 (make-file-writable "lisp/magit.el")
