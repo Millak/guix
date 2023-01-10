@@ -370,55 +370,53 @@ stored with user-specified precision.")
               (patches (search-patches "gromacs-tinyxml2.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DGMX_DEVELOPER_BUILD=on" ; Needed to run tests
-             ;; Unbundling
-             "-DGMX_USE_LMFIT=EXTERNAL"
-             "-DGMX_BUILD_OWN_FFTW=off"
-             "-DGMX_EXTERNAL_BLAS=on"
-             "-DGMX_EXTERNAL_LAPACK=on"
-             "-DGMX_EXTERNAL_TNG=on"
-             "-DGMX_EXTERNAL_ZLIB=on"
-             "-DGMX_EXTERNAL_TINYXML2=on"
-             (string-append "-DTinyXML2_DIR="
-                            (assoc-ref %build-inputs "tinyxml2"))
-             ;; Workaround for cmake/FindSphinx.cmake version parsing that does
-             ;; not understand the guix-wrapped `sphinx-build --version' answer
-             (string-append "-DSPHINX_EXECUTABLE_VERSION="
-                            ,(package-version python-sphinx)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fixes
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Still bundled: part of gromacs, source behind registration
-             ;; but free software anyways
-             ;;(delete-file-recursively "src/external/vmd_molfile")
-             ;; Still bundled: threads-based OpenMPI-compatible fallback
-             ;; designed to be bundled like that
-             ;;(delete-file-recursively "src/external/thread_mpi")
-             ;; Unbundling
-             (delete-file-recursively "src/external/lmfit")
-             (delete-file-recursively "src/external/clFFT")
-             (delete-file-recursively "src/external/fftpack")
-             (delete-file-recursively "src/external/build-fftw")
-             (delete-file-recursively "src/external/tng_io")
-             (delete-file-recursively "src/external/tinyxml2")
-             (delete-file-recursively "src/external/googletest")
-             (copy-recursively (assoc-ref inputs "googletest-source")
-                               "src/external/googletest")
-             ;; This test warns about the build host hardware, disable
-             (substitute* "src/gromacs/hardware/tests/hardwaretopology.cpp"
-               (("TEST\\(HardwareTopologyTest, HwlocExecute\\)")
-                "void __guix_disabled()"))
-             #t)))))
+     (list #:configure-flags
+           #~(list "-DGMX_DEVELOPER_BUILD=on"     ; Needed to run tests
+                   ;; Unbundling
+                   "-DGMX_USE_LMFIT=EXTERNAL"
+                   "-DGMX_BUILD_OWN_FFTW=off"
+                   "-DGMX_EXTERNAL_BLAS=on"
+                   "-DGMX_EXTERNAL_LAPACK=on"
+                   "-DGMX_EXTERNAL_TNG=on"
+                   "-DGMX_EXTERNAL_ZLIB=on"
+                   "-DGMX_EXTERNAL_TINYXML2=on"
+                   (string-append "-DTinyXML2_DIR="
+                                  #$(this-package-input "tinyxml2"))
+                   ;; Workaround for cmake/FindSphinx.cmake version parsing that does
+                   ;; not understand the guix-wrapped `sphinx-build --version' answer
+                   (string-append "-DSPHINX_EXECUTABLE_VERSION="
+                                  #$(package-version python-sphinx)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fixes
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Still bundled: part of gromacs, source behind registration
+                   ;; but free software anyways
+                   ;;(delete-file-recursively "src/external/vmd_molfile")
+                   ;; Still bundled: threads-based OpenMPI-compatible fallback
+                   ;; designed to be bundled like that
+                   ;;(delete-file-recursively "src/external/thread_mpi")
+                   ;; Unbundling
+                   (delete-file-recursively "src/external/lmfit")
+                   (delete-file-recursively "src/external/clFFT")
+                   (delete-file-recursively "src/external/fftpack")
+                   (delete-file-recursively "src/external/build-fftw")
+                   (delete-file-recursively "src/external/tng_io")
+                   (delete-file-recursively "src/external/tinyxml2")
+                   (delete-file-recursively "src/external/googletest")
+                   (copy-recursively #$(package-source googletest)
+                                     "src/external/googletest")
+                   ;; This test warns about the build host hardware, disable
+                   (substitute* "src/gromacs/hardware/tests/hardwaretopology.cpp"
+                     (("TEST\\(HardwareTopologyTest, HwlocExecute\\)")
+                      "void __guix_disabled()")))))))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("googletest-source" ,(package-source googletest))
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python-pygments" ,python-pygments)
-       ("python-sphinx" ,python-sphinx)))
+     (list doxygen
+           graphviz
+           pkg-config
+           python
+           python-pygments
+           python-sphinx))
     (inputs
      (list fftwf
            `(,hwloc-2 "lib")
