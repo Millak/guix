@@ -343,14 +343,14 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "1.9a")
+    (version "2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0pci8crcgm33zb58y7ky2aydzyqsirj8ri8ik1zdlz6npadbjj9h"))))
+                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
