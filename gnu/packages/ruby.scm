@@ -3748,6 +3748,50 @@ output.")
     (home-page "https://github.com/whitequark/bacon-colored_output")
     (license license:expat)))
 
+(define-public ruby-bake
+  (package
+    (name "ruby-bake")
+    (version "0.18.2")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/ioquatix/bake")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19yi1fxzz9n580gig3p3j6nxbgcfcassa6b0q07jkqrzxdqn7xhn"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'sanitize-dependencies
+                 (lambda _
+                   ;; These dependencies are not needed to build and run tests
+                   ;; and contain circular dependencies.
+                   (substitute* "gems.rb"
+                     ((".*'bake-modernize'.*") "")
+                     ((".*'bake-gem'.*") "")
+                     ((".*'bake-github-pages'.*") "")
+                     ((".*'utopia-project'.*") ""))))
+               (add-before 'build 'drop-signing-key-requirement
+                 (lambda _
+                   (substitute* "bake.gemspec"
+                     (("spec.signing_key =.*")
+                      "spec.signing_key = nil"))))
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "rspec")))))))
+    (native-inputs (list ruby-covered ruby-rspec))
+    (propagated-inputs (list ruby-samovar))
+    (synopsis "Replacement for rake with a simpler syntax")
+    (description "Bake is a task execution tool, inspired by Rake, but
+codifying many of the use cases which are typically implemented in an ad-hoc
+manner.")
+    (home-page "https://github.com/ioquatix/bake")
+    (license license:expat)))
+
 (define-public ruby-connection-pool
   (package
     (name "ruby-connection-pool")
