@@ -357,14 +357,14 @@ stored with user-specified precision.")
 (define-public gromacs
   (package
     (name "gromacs")
-    (version "2020.2")
+    (version "2022.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.gromacs.org/pub/gromacs/gromacs-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1wyjgcdl30wy4hy6jvi9lkq53bqs9fgfq6fri52dhnb3c76y8rbl"))
+                "15vjwasxjq0h18dmzacjkdim51zrvr0ni42hbc30557j5xhbw4f5"))
               ;; Our version of tinyxml2 is far newer than the bundled one and
               ;; require fixing `testutils' code. See patch header for more info
               (patches (search-patches "gromacs-tinyxml2.patch"))))
