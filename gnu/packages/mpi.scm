@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
@@ -143,7 +143,7 @@ bind processes, and much more.")
   ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
-    (version "2.8.0")
+    (version "2.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.open-mpi.org/release/hwloc/v"
@@ -151,7 +151,7 @@ bind processes, and much more.")
                                   "/hwloc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1ha23yqfx9kfxm5fcj9m0fnyf0r2k6p4k88xxqishclcsky752il"))))
+                "11v8hnl6fdsdbm3wnz5gg88f2ghixjyl7jlfmywj293ab5iyjw10"))))
 
     ;; libnuma is no longer needed.
     (inputs (modify-inputs (package-inputs hwloc-1)
@@ -167,6 +167,10 @@ bind processes, and much more.")
                (substitute* "tests/hwloc/linux-libnuma.c"
                  (("numa_available\\(\\)")
                   "-1"))))
+           (add-before 'check 'skip-test-that-requires-/sys
+             (lambda _
+               ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
+               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
            (add-before 'check 'skip-test-that-fails-on-qemu
              (lambda _
                ;; Skip test that fails on emulated hardware due to QEMU bug:
@@ -383,6 +387,15 @@ only provides @code{MPI_THREAD_FUNNELED}.")))
      ;; compare stdout, such as that of 'hdf5-parallel-openmpi'.  Thus, tell
      ;; UCX to not emit those warnings.
      (setenv "UCX_LOG_LEVEL" "error")
+
+     ;; Starting from 2.9.0, hwloc fails when /sys is unavailable:
+     ;;
+     ;;  [hwloc/linux] failed to find sysfs cpu topology directory, aborting linux discovery.
+     ;;
+     ;; This in turn breaks Open MPI users.  To work around it, define a fake
+     ;; topology with 4 cores.  That silently disables CPU binding, though
+     ;; 'get_cpubind' will report there's no binding.
+     (setenv "HWLOC_SYNTHETIC" "4")
      #t))
 
 (define-public python-mpi4py
