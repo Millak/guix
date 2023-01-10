@@ -898,32 +898,26 @@ is not available for Guile 2.0.")
 (define-public guile-filesystem
   (package
     (name "guile-filesystem")
-    (version "0.1.0")
+    (version "0.2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url "https://gitlab.com/leoprikler/guile-filesystem.git")
+                    (url "https://gitlab.com/lilyp/guile-filesystem")
                     (commit version)))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1shmkc0y9r2sj3kw7hrsnamnp7y8xifkhf3m3rnfxczqg63k67vy"))))
+                "0waiaxcha584d0dc15nvs6gxh4clrfm2bwjidjsbqajgb03l4ngm"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config texinfo))
     (inputs
      (list guile-3.0))
-    (home-page "https://gitlab.com/leoprikler/guile-filesystem")
+    (home-page "https://gitlab.com/lilyp/guile-filesystem")
     (synopsis "Complementary library to Guile's built-in file system procedures")
     (description "@code{guile-filesystem} provides a set of utility functions,
 that augment Guile's support for handling files and their names.")
     (license license:lgpl3+)))
-
-(define-public guile2.0-filesystem
-  (package
-    (inherit guile-filesystem)
-    (name "guile2.0-filesystem")
-    (inputs (list guile-2.0))))
 
 (define-public guile2.2-filesystem
   (package
