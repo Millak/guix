@@ -1360,7 +1360,7 @@ commands.")
 (define-public lite-xl
   (package
     (name "lite-xl")
-    (version "2.0.5")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1369,15 +1369,15 @@ commands.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0l2i9mvbkc4kqkwk2p17zd1rlm5v41acdyp2xivi53p2hkj4x6pf"))
+                "1pnmax68hvk1ry4bjsxwq4qimfn55pai8jlljw6jiqzcmh4mp7xm"))
               (modules '((guix build utils)))
               (snippet '(substitute* "meson.build"
-                          (("dependency\\('lua5\\.2',")
-                           "dependency('lua-5.2',")))))
+                          (("dependency\\('lua5\\.4',")
+                           "dependency('lua-5.4',")))))
     (build-system meson-build-system)
     (inputs (list agg
                   freetype
-                  lua-5.2
+                  lua-5.4
                   pcre2
                   reproc
                   sdl2))
