@@ -366,7 +366,7 @@ silently and reliably flow across to every other.")
 (define-public onedrive
   (package
     (name "onedrive")
-    (version "2.4.22")
+    (version "2.4.23")
     (source
       (origin
         (method git-fetch)
@@ -375,7 +375,7 @@ silently and reliably flow across to every other.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1lh915rs3zjfgdjhn35bhnn6zfknj4xd86s5jj3wznifj4f5kn7w"))))
+         (base32 "1nj4g1rbbg6g9kw1k89dmjg4mnyh5q1b3wbjhrayvnjmssx66yn8"))))
     (build-system gnu-build-system)
     (arguments
      (list
