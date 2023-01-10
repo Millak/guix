@@ -3792,6 +3792,28 @@ manner.")
     (home-page "https://github.com/ioquatix/bake")
     (license license:expat)))
 
+(define-public ruby-bake-test
+  (package
+    (name "ruby-bake-test")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "bake-test" version))
+              (sha256
+               (base32
+                "1p6kfpncj0s4zyynrrq6c735jvh0dnwyv7kfqym4rpyka4f85qdp"))))
+    (build-system ruby-build-system)
+    ;; XXX: Disable the test suite to avoid a circular dependency with
+    ;; ruby-sus.
+    (arguments (list #:tests? #f))
+    (propagated-inputs (list ruby-bake))
+    (synopsis "Test suite automatic runner for Ruby")
+    (description "@command{bake-test} automatically discovers how to run local
+test suites for Ruby projects.  It supports @command{rspec}, @command{sus}, as
+well as @samp{rake}.")
+    (home-page "https://github.com/ioquatix/bake-test")
+    (license license:expat)))
+
 (define-public ruby-connection-pool
   (package
     (name "ruby-connection-pool")
