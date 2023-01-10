@@ -587,14 +587,14 @@ interface for those who are accustomed to the ircII way of doing things.")
 (define-public litterbox
   (package
     (name "litterbox")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.causal.agency/litterbox/snapshot/litterbox-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ll5d18slngdg2qhaxkvrcq2p1admh0h7sr06wx8347ka0vvrgjl"))))
+        (base32 "1ag5x7h71pxjaaf4b561rwdqr05zzywkc0p3jf2yhg3lbjkjrc7z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.
