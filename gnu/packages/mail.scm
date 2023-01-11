@@ -4684,7 +4684,7 @@ means--it's all programmable).")
 (define-public rss2email
   (package
     (name "rss2email")
-    (version "3.13.1")
+    (version "3.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4693,21 +4693,26 @@ means--it's all programmable).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g1yr3v3ibdh2jqil64fbdbplx5m2yzxr893fqfkwcc5c7fbwl4d"))))
+                "0rmcwvf8whf49qq5rgp5hhmhfjli1vhjlc7fjhj24gyy1kkjir2k"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "test"
-                 ;; Skip networking tests
-                 (substitute* "test.py"
-                   (("( *)class (:?TestSend|TestFetch).*" match indent)
-                    (string-append indent "@unittest.skip(\"Networking stuff skipped\")\n"
-                                   indent match)))
-                 (invoke "python" "-m" "unittest"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  ;; Skip networking tests
+                  (substitute* "test.py"
+                    (("( *)class (:?TestSend|TestFetch).*" match indent)
+                     (string-append indent
+                                    "@unittest.skip(\"Networking stuff skipped\")\n"
+                                    indent match)))
+                  (invoke "python" "-m" "unittest")))))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (install-file "r2e.1" (string-append #$output "share/man/man1")))))))
     (inputs
      (list python-feedparser python-html2text))
     (home-page "https://github.com/rss2email/rss2email")
