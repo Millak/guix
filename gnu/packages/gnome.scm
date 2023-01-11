@@ -7872,7 +7872,7 @@ javascript engine and the GObject introspection framework.")
 (define-public gedit
   (package
     (name "gedit")
-    (version "42.2")
+    (version "44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7880,7 +7880,7 @@ javascript engine and the GObject introspection framework.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1jlgzihi4ywvlr4xj2vbnnxzar8j3mwj0jcn8jp6dh0a3w8jjqiw"))))
+                "1nlgbnagahymb8l41kgz3nwc4p9cj3zx39428z6zik44fa6kfqh4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7916,6 +7916,7 @@ javascript engine and the GObject introspection framework.")
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-mkenums, etc.
            gobject-introspection
+           gtk-doc
            intltool
            itstool
            libxml2
@@ -7924,6 +7925,7 @@ javascript engine and the GObject introspection framework.")
            vala))
     (inputs
      (list adwaita-icon-theme
+           amtk
            bash-minimal
            glib
            gsettings-desktop-schemas
@@ -7933,7 +7935,8 @@ javascript engine and the GObject introspection framework.")
            libpeas
            libsoup
            python
-           python-pygobject))
+           python-pygobject
+           tepl))
     (home-page "https://wiki.gnome.org/Apps/Gedit")
     (synopsis "GNOME text editor")
     (description "While aiming at simplicity and ease of use, gedit is a
