@@ -12646,7 +12646,7 @@ card sheets that you’ll find at most office supply stores.")
 (define-public gnome-latex
   (package
     (name "gnome-latex")
-    (version "3.41.2")
+    (version "3.44.0")
     (source
      (origin
        (method url-fetch)
@@ -12654,7 +12654,7 @@ card sheets that you’ll find at most office supply stores.")
                            (version-major+minor version)  "/"
                            "gnome-latex-" version ".tar.xz"))
        (sha256
-        (base32 "0cynhmrn99f4f3kddczsc58ak4b9sv2zkfbcyz7z16848nhz047k"))))
+        (base32 "0i77m431ilbaprcwcnnzfckr1g9bfc03lslnqw0yvir8pm057gc8"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal
