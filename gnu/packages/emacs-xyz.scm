@@ -18355,7 +18355,7 @@ with specific output formats.")
         (commit "7e76d754e1632b4fc9a024fa393c3fc837bcc86b"))
     (package
       (name "emacs-enh-ruby-mode")
-      (version (git-version "2019111" revision commit))
+      (version (git-version "20191111" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
