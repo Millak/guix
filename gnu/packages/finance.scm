@@ -227,6 +227,14 @@ line client and a client based on Qt.")
         (base32
          "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
     (build-system haskell-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "hledger.info" (string-append #$output "/share/info"))
+              (install-file "hledger.1" (string-append #$output "/man/man1")))))))
     (inputs
      (list ghc-ansi-terminal
            ghc-base-compat-batteries
