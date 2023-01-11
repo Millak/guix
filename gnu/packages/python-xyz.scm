@@ -4277,6 +4277,40 @@ modules.  It creates a special virtual environment such that @command{pip} or
 work on your part.")
     (license license:expat)))
 
+(define-public python-virtualenv-clone
+  (package
+    (name "python-virtualenv-clone")
+    (version "0.5.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/edwardgeorge/virtualenv-clone")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0p0d1y3axvjfnxlgwjx2374gikc8bmc82g0m7yashihbikh7pcxa"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (delete-file "tox.ini")
+                              (invoke "pytest" "-vvv" "tests")))))))
+    (native-inputs (list python-pytest
+                         python-tox
+                         python-virtualenv
+                         python-coverage
+                         python-wheel
+                         python-tomli
+                         python-hypothesis))
+    (home-page "https://github.com/edwardgeorge/virtualenv-clone")
+    (synopsis "Clone a non-relocatable virtualenv cleanly")
+    (description
+     "Clone non-relocatable virtualenvs without breaking site-packages.")
+    (license license:expat)))
+
 (define-public python-uc-micro-py
   (package
     (name "python-uc-micro-py")
