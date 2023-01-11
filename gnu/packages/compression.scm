@@ -2326,7 +2326,7 @@ decompression is a little bit slower.")
 (define-public upx
   (package
     (name "upx")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
@@ -2334,7 +2334,7 @@ decompression is a little bit slower.")
                            version "/upx-" version "-src.tar.xz"))
        (sha256
         (base32
-         "1sinky0rq40q2qqzly99c5hdd6ilz2bxlbqla9lg0rafhbw3iyga"))))
+         "1471nxzrbv8sw2pmxn817q5l40sr0l7v7bpvw829iai95s73q03p"))))
     (build-system cmake-build-system)
     (home-page "https://upx.github.io/")
     (synopsis "Compression tool for executables")
