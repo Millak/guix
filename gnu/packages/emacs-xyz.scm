@@ -31,7 +31,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Mike Gerwitz <mtg@gnu.org>
-;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018 Sohom Bhattacharjee <soham.bhattacharjee15@gmail.com>
 ;;; Copyright © 2018, 2019 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018, 2019, 2020, 2021 Pierre Neidhardt <mail@ambrevar.xyz>
@@ -18348,6 +18348,43 @@ This package aims to produce a versatile generic core which can process
 a fontified buffer and pass the data to any number of backends which can deal
 with specific output formats.")
     (license license:gpl3+)))
+
+(define-public emacs-enh-ruby-mode
+  ;; The latest tag is from 2019.
+  (let ((revision "0")
+        (commit "7e76d754e1632b4fc9a024fa393c3fc837bcc86b"))
+    (package
+      (name "emacs-enh-ruby-mode")
+      (version (git-version "2019111" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/zenspider/enhanced-ruby-mode")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gc2kgvnzq6m6hswcvsd4c00xywi2phdnr121r53kvsv46avrq9z"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list #:include #~(cons "^ruby/" %default-include)
+             #:tests? #t
+             #:test-command ''("rake" "test:all")
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'set-default-ruby
+                            (lambda* (#:key inputs #:allow-other-keys)
+                              (emacs-substitute-variables "enh-ruby-mode.el"
+                                ("enh-ruby-program"
+                                 (search-input-file inputs "bin/ruby"))))))))
+      (native-inputs (list ruby-rake))
+      (inputs (list ruby))
+      (home-page "https://github.com/zenspider/Enhanced-Ruby-Mode")
+      (synopsis "Emacs major mode for editing Ruby files")
+      (description "@code{enh-ruby-mode} is a major mode providing syntax
+highlighting, navigation and indentation capabilities for editing Ruby source
+files.  It parses the source files using Ruby's builtin @code{Ripper} class
+and performs syntax checks on them.")
+      (license license:ruby))))
 
 (define-public emacs-inheritenv
   (package
