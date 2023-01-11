@@ -10,7 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 André Batista <nandre@riseup.net>
-;;; Copyright © 2021-2022 Danial Behzadi <dani.behzi@ubuntu.com>
+;;; Copyright © 2021-2023 Danial Behzadi <dani.behzi@ubuntu.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
 ;;;
@@ -38,6 +38,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages libevent)
@@ -434,15 +435,15 @@ Potential client and exit connections are scrubbed of sensitive information.")
 (define-public tractor
   (package
     (name "tractor")
-    (version "4.0")
+    (version "4.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "traxtor" version))
        (sha256
         (base32
-         "107iwkhw9rxbp4samlcw24gdvgqh23rd7z60lrl1b4iljmhqjvcs"))))
-    (build-system python-build-system)
+         "1542g6alycwlmvndxcijzn4d5lgycmxxb78gqd8qwgm9kw0fnr3q"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list (list glib "bin")))       ; for glib-compile-schemas.
     (inputs
@@ -454,12 +455,21 @@ Potential client and exit connections are scrubbed of sensitive information.")
            python-termcolor))
     (arguments
      (list
+      #:tests? #f                   ; no test suite.
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'install 'install-man-page
             (lambda _
               (let ((man1 (string-append #$output "/share/man/man1")))
                 (install-file "tractor/man/tractor.1" man1))))
+          (add-after 'install 'install-bash-completion
+            (lambda _
+              (mkdir "bash-completion")
+              (rename-file "tractor/tractor-completion"
+                           "bash-completion/tractor")
+              (let ((bash-completion
+                      (string-append #$output "/share/bash-completion/completions")))
+                (install-file "bash-completion/tractor" bash-completion))))
           (add-after 'install 'install-gschema
             (lambda _
               (let ((schemas (string-append #$output "/share/glib-2.0/schemas")))
