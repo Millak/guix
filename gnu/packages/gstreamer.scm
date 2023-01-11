@@ -356,8 +356,7 @@ playback by a single audio device.  You can also pre-load samples, and play them
 back without having to send all the data for the sound.  Network transparency is
 also built in, so you can play sounds on one machine, and listen to them on
 another.")
-    (home-page "https://web.archive.org/web/20160528230227/
-http://www.tux.org/~ricdude/overview.html")
+    (home-page "https://web.archive.org/web/20160528230227/http://www.tux.org/~ricdude/overview.html")
     (license
      (list
       ;; Libraries.

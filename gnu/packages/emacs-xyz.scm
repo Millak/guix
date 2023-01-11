@@ -29556,7 +29556,7 @@ advice system without dropping support for Emacs<24.4.")
        (sha256
         (base32 "0ajv6l1p8dinnlybwzvv4c2i6291is6isjxb2h4apg27g66qbcki"))))
     (build-system emacs-build-system)
-    (home-page "httpa://elpa.gnu.org/packages/soap-client.html")
+    (home-page "https://elpa.gnu.org/packages/soap-client.html")
     (synopsis "Access SOAP web services")
     (description
      "This package provides a SOAP client to access web services.")
