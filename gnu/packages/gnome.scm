@@ -6216,7 +6216,7 @@ which are easy to play with the aid of a mouse.")
 (define-public amtk
   (package
     (name "amtk")
-    (version "5.5.1")
+    (version "5.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/amtk/"
@@ -6224,7 +6224,7 @@ which are easy to play with the aid of a mouse.")
                                   "amtk-" version ".tar.xz"))
               (sha256
                (base32
-                "176vplk3inf0pp0prma8478hp0yhziq0krp5a9l47hg22z86v2gc"))))
+                "0a1j2ynsa2nx1rzd55mdyp35d89zd9rfxd9ld4lsqal7bjw1a0fm"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection
