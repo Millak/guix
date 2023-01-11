@@ -6243,7 +6243,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
 (define-public devhelp
   (package
     (name "devhelp")
-    (version "41.3")
+    (version "43.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6251,7 +6251,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rxn6kciyfdhnjrcjyf02cn3rki2xgwb4wrg5plbzjvpqasq66ml"))))
+                "016xhpz16b9b13y7wnvkllymb4s2fb6ixvw190204bir0pyyxkk3"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -6260,8 +6260,9 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (propagated-inputs
      (list gsettings-desktop-schemas))
     (native-inputs
