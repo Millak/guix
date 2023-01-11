@@ -1048,7 +1048,7 @@ between different kinds of computer systems.")
 (define-public tepl
   (package
     (name "tepl")
-    (version "6.1.2")
+    (version "6.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1058,7 +1058,7 @@ between different kinds of computer systems.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "16x14j3nvsjj7jb2qmxpzygnlcy7sd7p6skv0sqshkwdlp4jxzha"))))
+         "08bkp3wrvmcks0082lfw4a0ian9c6j68rdb43px0bkyhd43b4mjy"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
