@@ -6521,23 +6521,23 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                 "1rah0v9gq9rksqd2c17nmydsxcjz178n7m2y4ricwlf5pq1b2yfi"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests
+     `(#:tests? #f                      ;no tests
+
        ;; Upstream uses the "ninja" build system and encourage distros
        ;; to do the same for consistency.
        #:configure-flags (list "-GNinja"
 
                                ,@(if (%current-target-system)
-                                   `((string-append
-                                       "-DPKG_CONFIG_EXECUTABLE="
-                                       (search-input-file
+                                     `((string-append
+                                        "-DPKG_CONFIG_EXECUTABLE="
+                                        (search-input-file
                                          %build-inputs
                                          (string-append "/bin/"
                                                         ,(pkg-config-for-target)))))
-                                   '())
+                                     '())
                                (string-append "-DRST2MAN_EXECUTABLE="
-                                              (assoc-ref %build-inputs
-                                                         "python-docutils")
-                                              "/bin/rst2man.py"))
+                                              (search-input-file
+                                               %build-inputs "/bin/rst2man.py")))
        #:phases
        (modify-phases %standard-phases
          (replace 'build
@@ -6548,13 +6548,9 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
            (lambda _
              (invoke "ninja" "install"))))))
     (native-inputs
-     `(("ninja" ,ninja)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("python-docutils" ,python-docutils)))     ;for 'rst2man'
+     (list ninja pkg-config python-wrapper python-docutils)) ;for 'rst2man'
     (inputs
-     `(("libnl" ,libnl)
-       ("udev" ,eudev)))
+     (list libnl eudev))
     (home-page "https://github.com/linux-rdma/rdma-core")
     (synopsis "Utilities and libraries for working with RDMA devices")
     (description
