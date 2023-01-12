@@ -36087,7 +36087,7 @@ implementation (which is unstable / requires nightly).")
 (define-public rust-nom-7
   (package
     (name "rust-nom")
-    (version "7.1.1")
+    (version "7.1.2")
     (source
      (origin
        (method url-fetch)
@@ -36096,29 +36096,16 @@ implementation (which is unstable / requires nightly).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0djc3lq5xihnwhrvkc4bj0fd58sjf632yh6hfiw545x355d3x458"))))
+         "132lkkqd8hcbmpb90hncwknr7rn6knfq7774d679k74iqilpfl75"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Tests require example directory, not included in tarball.
        #:cargo-inputs
        (("rust-memchr" ,rust-memchr-2)
-        ("rust-minimal-lexical" ,rust-minimal-lexical-0.2)
-        ("rust-version-check" ,rust-version-check-0.9))
+        ("rust-minimal-lexical" ,rust-minimal-lexical-0.2))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
-        ("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-jemallocator" ,rust-jemallocator-0.3)
-        ("rust-proptest" ,rust-proptest-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'configure 'override-jemalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((jemalloc (assoc-ref inputs "jemalloc")))
-               (setenv "JEMALLOC_OVERRIDE"
-                       (string-append jemalloc "/lib/libjemalloc_pic.a")))
-             #t)))))
-    (native-inputs
-     (list jemalloc))
+       (("rust-doc-comment" ,rust-doc-comment-0.3)
+        ("rust-proptest" ,rust-proptest-1))))
     (home-page "https://github.com/Geal/nom")
     (synopsis
      "Byte-oriented, zero-copy, parser combinators library")
@@ -36161,7 +36148,8 @@ combinators library.")
              (let ((jemalloc (assoc-ref inputs "jemalloc")))
                (setenv "JEMALLOC_OVERRIDE"
                        (string-append jemalloc "/lib/libjemalloc_pic.a")))
-             #t)))))))
+             #t)))))
+    (native-inputs (list jemalloc))))
 
 (define-public rust-nom-5
   (package
