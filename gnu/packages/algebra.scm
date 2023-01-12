@@ -685,7 +685,7 @@ binary.")
              (patches (search-patches "bc-fix-cross-compilation.patch"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list automake autoconf ed flex texinfo))
+     (list automake autoconf ed flex readline texinfo))
     (inputs
      (list readline))
     (arguments
