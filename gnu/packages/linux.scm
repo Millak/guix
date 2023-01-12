@@ -6510,7 +6510,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
 (define-public rdma-core
   (package
     (name "rdma-core")
-    (version "33.1")
+    (version "44.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/linux-rdma/rdma-core"
@@ -6518,7 +6518,7 @@ from the ntfs-3g package.  It is meant to be used in initrds.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1rah0v9gq9rksqd2c17nmydsxcjz178n7m2y4ricwlf5pq1b2yfi"))))
+                "12w5v74wz1akac09frw7qk1yd06b00239zh7bvbvqyzjc0g61mi5"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f                      ;no tests
