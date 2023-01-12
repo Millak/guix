@@ -51575,14 +51575,14 @@ fragment of code.")
 (define-public rust-serde-1
   (package
     (name "rust-serde")
-    (version "1.0.148")
+    (version "1.0.152")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1p62a9n1527bv3k0fmjgny1ps12mr90v3qbn0rnis6d09fxn8gz5"))))
+        (base32 "1ysykpc4a9f1yn7zikdwhyfs0bpa7mlc8vsm7sl4glr1606iyzdv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
