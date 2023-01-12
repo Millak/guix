@@ -3202,6 +3202,30 @@ rmarkdown, etc.) depend on this package to avoid bundling redundant copies of
 jQuery.")
     (license license:expat)))
 
+(define-public r-jqr
+  (package
+    (name "r-jqr")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "jqr" version))
+              (sha256
+               (base32
+                "1a91zcjxdilhqdyr2lipnwc35f90h0wyqlbg0vw9ay7sq6llxgs9"))))
+    (properties `((upstream-name . "jqr")))
+    (build-system r-build-system)
+    (inputs (list jq))
+    (propagated-inputs (list r-lazyeval r-magrittr))
+    (native-inputs (list pkg-config))
+    (home-page "https://docs.ropensci.org/jqr/")
+    (synopsis "R client for jq, a JSON Processor")
+    (description
+     "This package provides an R client for @command{jq}, a JSON processor.
+@command{jq} allows the following with JSON data: index into, parse, do
+calculations, cut up and filter, change key names and values, perform
+conditionals and comparisons, and more.")
+    (license license:expat)))
+
 (define-public r-sass
   (package
     (name "r-sass")
