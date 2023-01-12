@@ -425,6 +425,7 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/mingw.scm			\
   %D%/packages/microcom.scm			\
   %D%/packages/moe.scm				\
+  %D%/packages/mold.scm				\
   %D%/packages/motti.scm			\
   %D%/packages/monitoring.scm			\
   %D%/packages/moreutils.scm			\
