@@ -36118,7 +36118,7 @@ combinators library.")
   (package
     (inherit rust-nom-7)
     (name "rust-nom")
-    (version "6.0.1")
+    (version "6.2.1")
     (source
      (origin
        (method url-fetch)
@@ -36127,11 +36127,18 @@ combinators library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1w0ppq112myzwk23c8m0wmq0nv73xvn0g9gl2kfm83aadgylq0w8"))))
+         "19h3l5hajpcszwl6nzcmgs4mpng73ifn6akslq7n4g1s12wm2p4w"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Allow any version of memchr 2.
+           (substitute* "Cargo.toml"
+             ((">=2.0, <2.4") "2.0"))))))
     (arguments
      `(#:tests? #f  ; Tests require example directory, not included in tarball.
        #:cargo-inputs
        (("rust-bitvec" ,rust-bitvec-0.19)
+        ("rust-funty" ,rust-funty-1)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-lexical-core" ,rust-lexical-core-0.7)
         ("rust-memchr" ,rust-memchr-2)
