@@ -39115,11 +39115,12 @@ unparking.")
         (base32 "13r2xk7mnxfc5g0g6dkdxqdqad99j7s7z8zhzz4npw5r0g0v4hip"))))
     (build-system cargo-build-system)
     (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-instant" ,rust-instant-0.1)
-             ("rust-lock-api" ,rust-lock-api-0.4)
-             ("rust-parking-lot-core" ,rust-parking-lot-core-0.8))))
+     (list #:cargo-inputs
+           `(("rust-lock-api" ,rust-lock-api-0.4)
+             ("rust-parking-lot-core" ,rust-parking-lot-core-0.9))
+           #:cargo-development-inputs
+           `(("rust-bincode" ,rust-bincode-1)
+             ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/Amanieu/parking_lot")
     (synopsis
      "Efficient implementations of the standard synchronization primitives")
