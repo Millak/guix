@@ -51710,7 +51710,7 @@ fragment of code.")
 (define-public rust-serde-bytes-0.11
   (package
     (name "rust-serde-bytes")
-    (version "0.11.5")
+    (version "0.11.8")
     (source
      (origin
        (method url-fetch)
@@ -51718,11 +51718,10 @@ fragment of code.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fcb6sw8wkrj4ylm118wkb31hw124nkjnqyhbgqnd8w85zfhgbhn"))))
+        (base32 "06a8lv3x1zm1ynzq6xri4k46zklnzh62i6y47w4rjvxkypzwb3bi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-bincode" ,rust-bincode-1)
