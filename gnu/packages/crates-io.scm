@@ -31336,7 +31336,7 @@ by inspecting the system for user preference.")
 (define-public rust-lock-api-0.4
   (package
     (name "rust-lock-api")
-    (version "0.4.5")
+    (version "0.4.9")
     (source
      (origin
        (method url-fetch)
@@ -31344,11 +31344,12 @@ by inspecting the system for user preference.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "028izfyraynijd9h9x5miv1vmg6sjnw1v95wgm7f4xlr7h4lsaki"))))
+         "1py41vk243hwk345nhkn5nw0bd4m03gzjmprdjqq6rg5dwv12l23"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-owning-ref" ,rust-owning-ref-0.4)
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-owning-ref" ,rust-owning-ref-0.4)
         ("rust-scopeguard" ,rust-scopeguard-1)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/Amanieu/parking_lot")
