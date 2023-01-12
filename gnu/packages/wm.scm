@@ -309,14 +309,14 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.20.1")
+    (version "4.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1rpwdgykcvmrmdz244f0wm7446ih1dcw8rlc1hm1c7cc42pyrq93"))))
+                "0jrya4rhh46sivlmqaqc4n9abpp1yn1ajhi616gn75cxwl8rjqr8"))))
     (build-system meson-build-system)
     (arguments
      `(;; The test suite requires the unpackaged Xephyr X server.
@@ -346,7 +346,7 @@ commands would.")
            xmlto
            perl-pod-simple
            libx11
-           pcre
+           pcre2
            startup-notification
            pango
            cairo))
