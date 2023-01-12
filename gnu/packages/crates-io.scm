@@ -46324,14 +46324,14 @@ memory to speed up reallocation.")
 (define-public rust-regex-1
   (package
     (name "rust-regex")
-    (version "1.6.0")
+    (version "1.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "regex" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "12wqvyh4i75j7pc8sgvmqh4yy3qaj4inc4alyv1cdf3lf4kb6kjc"))))
+        (base32 "0czp6hxg02lm02hvlhp9xjkd65cjcagw119crnaznwd5idsabaj8"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
