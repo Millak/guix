@@ -11317,21 +11317,28 @@ CMAKE environmental variable is set.")
 (define-public rust-codespan-reporting-0.11
   (package
     (name "rust-codespan-reporting")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "codespan-reporting" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "04wwbn2c5rcfz3zn4kj7nyvpj37hn5cxh0m8w1r3af4ak6w45kn6"))))
+        (base32 "0vkfay0aqk73d33kh79k1kqxx06ka22894xhqi89crnc6c6jff1m"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1)
         ("rust-termcolor" ,rust-termcolor-1)
-        ("rust-unicode-width" ,rust-unicode-width-0.1))))
+        ("rust-unicode-width" ,rust-unicode-width-0.1))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-insta" ,rust-insta-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-peg" ,rust-peg-0.6)
+        ("rust-rustyline" ,rust-rustyline-6)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-unindent" ,rust-unindent-0.1))))
     (home-page "https://github.com/brendanzab/codespan")
     (synopsis "Beautiful diagnostic reporting for text-based programming languages")
     (description
