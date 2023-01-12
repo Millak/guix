@@ -15119,7 +15119,7 @@ attributes.")
 (define-public rust-cxx-1
   (package
     (name "rust-cxx")
-    (version "1.0.49")
+    (version "1.0.86")
     (source
       (origin
         (method url-fetch)
@@ -15128,7 +15128,7 @@ attributes.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0xj29zzd45bkk797902h22kppzmrzm7v9a2wijfiqr964vhrldk5"))))
+          "0yc5gz723hiwqk7waygj63655fh5vzq3551p1j2wyzc06xf0glai"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f  ; Cannot compile cxx-test-suite.
@@ -15179,7 +15179,7 @@ attributes.")
 (define-public rust-cxx-build-1
   (package
     (name "rust-cxx-build")
-    (version "1.0.49")
+    (version "1.0.86")
     (source
       (origin
         (method url-fetch)
@@ -15188,7 +15188,7 @@ attributes.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0shmkgv3cnh06ws1p555znj1hh23phynaz73rgnz95gradsdwnwg"))))
+          "0w5a2wdkdh44gmi0psynaazx4j7d1947sr7nyaccayxjc4gjhi2h"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -15200,7 +15200,8 @@ attributes.")
         ("rust-scratch" ,rust-scratch-1)
         ("rust-syn" ,rust-syn-1))
        #:cargo-development-inputs
-       (("rust-cxx-gen" ,rust-cxx-gen-0.7)
+       (("rust-cxx" ,rust-cxx-1)
+        ("rust-cxx-gen" ,rust-cxx-gen-0.7)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))
     (home-page "https://cxx.rs")
     (synopsis "C++ code generator")
@@ -15239,7 +15240,7 @@ crate into a Cargo build.")
 (define-public rust-cxx-gen-0.7
   (package
     (name "rust-cxx-gen")
-    (version "0.7.49")
+    (version "0.7.86")
     (source
       (origin
         (method url-fetch)
@@ -15248,12 +15249,11 @@ crate into a Cargo build.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "08v366jxd2vc8jc2cbvrga0866pwfcaq6hl8yylfx0vhs2n53j53"))))
+          "1z08a3c4xpnz91a4nc2b4f2kbmadjrrimr8awx1k4g0rmjdmq5mr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1)
-        ("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
+       (("rust-codespan-reporting" ,rust-codespan-reporting-0.11)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
         ("rust-syn" ,rust-syn-1))))
@@ -15309,7 +15309,7 @@ crate into higher level tools.")
 (define-public rust-cxxbridge-flags-1
   (package
     (name "rust-cxxbridge-flags")
-    (version "1.0.49")
+    (version "1.0.86")
     (source
       (origin
         (method url-fetch)
@@ -15318,7 +15318,7 @@ crate into higher level tools.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "18cv8a8sgyiwfqspdyfq18jizf0rlhg90ibdl0zp8jhcv498s6gr"))))
+          "073qx3gnf8df9xzfy9xfcz9b79m0638x4a0isfq2fb527g4hpdb1"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/dtolnay/cxx")
     (synopsis "Compiler configuration of the `cxx` crate")
@@ -15344,7 +15344,7 @@ crate (implementation detail).")
 (define-public rust-cxxbridge-macro-1
   (package
     (name "rust-cxxbridge-macro")
-    (version "1.0.49")
+    (version "1.0.86")
     (source
       (origin
         (method url-fetch)
@@ -15353,7 +15353,7 @@ crate (implementation detail).")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0gkwvihw74dh8p3fz3552wnxanrpwmwfy38ylz2z8knjq0y8y4v3"))))
+          "19c7pjvjll72yb9wyrmpdylwqglizn8kayww8qcm24b2gvd1zrir"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
