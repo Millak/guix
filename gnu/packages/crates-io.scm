@@ -52215,7 +52215,7 @@ by dynamically growing the stack.")
 (define-public rust-serde-test-1
   (package
     (name "rust-serde-test")
-    (version "1.0.113")
+    (version "1.0.152")
     (source
      (origin
        (method url-fetch)
@@ -52224,10 +52224,11 @@ by dynamically growing the stack.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "02s7zjs12m5abk13j5farc00rzissk1anpl015vawpzz914jsan3"))))
+         "17pdigm0w1wvch7vpnk13199wn3gmkb0883l0hr53qv75l6j249n"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f                  ; Requires a newer rust
+       #:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
        (("rust-serde" ,rust-serde-1)
