@@ -894,11 +894,11 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'set-env
-              (lambda _
-                #$@(if (not (string-prefix? "aarch64" (%current-system)))
-                       #~((setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-"))
-                       #~())))
+            #$@(if (string-prefix? "aarch64" (%current-system))
+                   '()
+                   '((add-before 'configure 'set-env
+                       (lambda _
+                         (setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-")))))
             (replace 'build
               (lambda _
                 (invoke "build" "-a" "AARCH64" "-t" "GCC49"
