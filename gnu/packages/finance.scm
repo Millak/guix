@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -873,9 +873,38 @@ the Monero command line client and daemon.")
                                      "\";")))))
                (replace 'install
                  (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (install-file "../build/bin/monero-wallet-gui" bin))))
+                   ;; Binary
+                   (let ((dir (string-append #$output "/bin")))
+                     (mkdir-p dir)
+                     (install-file "../build/bin/monero-wallet-gui" dir))
+                   ;; Icons
+                   (for-each
+                    (lambda (size)
+                      (let ((dir (string-append #$output
+                                                "/share/icons/hicolor/"
+                                                size
+                                                "/apps")))
+                        (mkdir-p dir)
+                        (copy-file (string-append "../source/images/appicons/"
+                                                  size ".png")
+                                   (string-append dir
+                                                  "/monero-gui.png"))))
+                    '("16x16" "24x24" "32x32" "48x48"
+                      "64x64" "96x96" "128x128" "256x256"))
+                   ;; Menu entry file
+                   (let ((dir (string-append #$output "/share/applications")))
+                     (mkdir-p dir)
+                     (call-with-output-file
+                         (string-append dir "/monero-gui.desktop")
+                       (lambda (port)
+                         (format port
+                                 "[Desktop Entry]~@
+                                  Type=Application~@
+                                  Name=Monero wallet~@
+                                  Exec=~a/bin/monero-wallet-gui~@
+                                  Icon=monero-gui~@
+                                  Categories=Office;Finance;~%"
+                                 #$output))))))
                (add-after 'qt-wrap 'install-monerod-link
                  ;; The monerod program must be available so that
                  ;; monero-wallet-gui can start a Monero daemon if necessary.
