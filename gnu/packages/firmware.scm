@@ -926,11 +926,11 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'set-env
-              (lambda _
-                #$@(if (not (string-prefix? "armhf" (%current-system)))
-                       #~((setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-"))
-                       #~())))
+            #$@(if (string-prefix? "armhf" (%current-system))
+                   '()
+                   '((add-before 'configure 'set-env
+                       (lambda _
+                         (setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-")))))
             (replace 'build
               (lambda _
                 (invoke "build" "-a" "ARM" "-t" "GCC49"
