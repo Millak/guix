@@ -52290,21 +52290,23 @@ by dynamically growing the stack.")
 (define-public rust-serde-urlencoded-0.7
   (package
     (name "rust-serde-urlencoded")
-    (version "0.7.0")
+    (version "0.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_urlencoded" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1s9wnjrak5a0igfhcghhz51kvi7n010j5rs9lmhd5hfrz2kmgypd"))))
+        (base32 "1zgklbdaysj3230xivihs30qi5vkhigg323a9m62k8jwf4a1qjfk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-form-urlencoded" ,rust-form-urlencoded-1)
-        ("rust-itoa" ,rust-itoa-0.4)
+        ("rust-itoa" ,rust-itoa-1)
         ("rust-ryu" ,rust-ryu-1)
-        ("rust-serde" ,rust-serde-1))))
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/nox/serde_urlencoded")
     (synopsis "`x-www-form-urlencoded` meets Serde")
     (description
