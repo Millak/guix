@@ -22,6 +22,8 @@
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system trivial)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages c)
   #:use-module (gnu packages digest)
   #:use-module (gnu packages tbb)
@@ -81,3 +83,41 @@
 It is designed to increase developer productivity by reducing build time,
 especially in rapid debug-edit-rebuild cycles.")
     (license license:agpl3)))
+
+(define* (make-mold-wrapper mold #:key mold-as-ld?)
+  "Return a MOLD wrapper.  When MOLD-AS-LD? is true, create a 'ld' symlink that
+points to 'mold'."
+  (package
+    (inherit mold)
+    (name (if mold-as-ld? "mold-as-ld-wrapper" "mold-wrapper"))
+    (source #f)
+    (native-inputs '())
+    (inputs (list (make-ld-wrapper "ld.mold-wrapper" #:binutils mold
+                                   #:linker "ld.mold")
+                  (make-ld-wrapper "mold-wrapper" #:binutils mold #:linker
+                                   "mold")))
+    (propagated-inputs '())
+    (build-system trivial-build-system)
+    (arguments
+     (list #:builder
+           #~(let ((ld.mold (string-append #$(this-package-input
+                                              "ld.mold-wrapper")
+                                           "/bin/ld.mold"))
+                   (mold (string-append #$(this-package-input "mold-wrapper")
+                                        "/bin/mold")))
+               (mkdir #$output)
+               (mkdir (string-append #$output "/bin"))
+               (symlink ld.mold (string-append #$output "/bin/ld.mold"))
+               (symlink mold (string-append #$output "/bin/mold"))
+               (when #$mold-as-ld?
+                 (symlink ld.mold (string-append #$output "/bin/ld"))))))
+    (synopsis "Mold linker wrapper")
+    (description "This is a linker wrapper for Mold; like @code{ld-wrapper}, it
+wraps the linker to add any missing @code{-rpath} flags, and to detect any
+misuse of libraries outside of the store.")))
+
+(define-public mold-wrapper
+  (make-mold-wrapper mold))
+
+(define-public mold-as-ld-wrapper
+  (make-mold-wrapper mold #:mold-as-ld? #t))
