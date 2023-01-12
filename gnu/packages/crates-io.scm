@@ -52388,23 +52388,24 @@ for later processing.")
 (define-public rust-serde-yaml-0.8
   (package
     (name "rust-serde-yaml")
-    (version "0.8.17")
+    (version "0.8.26")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "serde_yaml" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "08xvb5zxz3x5dgx0fy1q0aq9aa9fibcvi75333wnnwk1mga4wr8m"))))
+        (base32 "06y7gxy312mink8nsnmci9cw0ykpgsdcxmayg0snmdbnnwrp92jp"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-dtoa" ,rust-dtoa-0.4)
-        ("rust-linked-hash-map" ,rust-linked-hash-map-0.5)
+       (("rust-indexmap" ,rust-indexmap-1)
+        ("rust-ryu" ,rust-ryu-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-yaml-rust" ,rust-yaml-rust-0.4))
        #:cargo-development-inputs
-       (("rust-indoc" ,rust-indoc-1)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-indoc" ,rust-indoc-1)
         ("rust-serde-derive" ,rust-serde-derive-1))))
     (home-page "https://github.com/dtolnay/serde-yaml")
     (synopsis "YAML support for Serde")
