@@ -2932,7 +2932,7 @@ that:
       (inputs
        (list openssl))
       (arguments
-       `(#:configure-flags '("-DBUILD_TEST=1")
+       `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON" "-DBUILD_TEST=1")
          #:phases
          (modify-phases %standard-phases
            (replace 'check
