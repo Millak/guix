@@ -52188,7 +52188,7 @@ of a C-like enum.")
 (define-public rust-serde-stacker-0.1
   (package
     (name "rust-serde-stacker")
-    (version "0.1.4")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
@@ -52197,7 +52197,7 @@ of a C-like enum.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1qlfpy0nmxrvahz4hs9p1y84rb0vy6mbxn1lfgvq6fryls8j7jgl"))))
+         "1zgwd22cswfsjsxmnpf97nw5fzyv0s6mif5blbb948q7qgskvxrm"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
