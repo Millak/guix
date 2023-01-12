@@ -989,7 +989,7 @@ Format (GFF) with Biopython integration.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12q22va7rbc3sx9ygc6p6hh6xw9wbqjmhba5h5gb836p5xplj5fa"))))
+         "0h9d9pznffdbya631hkk7b7jwjrgx5saqssar1d42qbyvdji3hgy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
