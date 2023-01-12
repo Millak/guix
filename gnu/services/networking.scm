@@ -18,7 +18,8 @@
 ;;; Copyright © 2021 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2022, 2023 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1265,6 +1266,8 @@ wireless networking."))))
   (connman      connman-configuration-connman
                 (default connman))
   (disable-vpn? connman-configuration-disable-vpn?
+                (default #f))
+  (iwd?         connman-configuration-iwd?
                 (default #f)))
 
 (define (connman-activation config)
@@ -1281,18 +1284,21 @@ wireless networking."))))
   (and
    (connman-configuration? config)
    (let ((connman      (connman-configuration-connman config))
-         (disable-vpn? (connman-configuration-disable-vpn? config)))
+         (disable-vpn? (connman-configuration-disable-vpn? config))
+         (iwd?         (connman-configuration-iwd? config)))
      (list (shepherd-service
             (documentation "Run Connman")
             (provision '(networking))
             (requirement
-             '(user-processes dbus-system loopback wpa-supplicant))
+             (append '(user-processes dbus-system loopback)
+                     (if iwd? '(iwd) '())))
             (start #~(make-forkexec-constructor
                       (list (string-append #$connman
                                            "/sbin/connmand")
                             "--nodaemon"
                             "--nodnsproxy"
-                            #$@(if disable-vpn? '("--noplugin=vpn") '()))
+                            #$@(if disable-vpn? '("--noplugin=vpn") '())
+                            #$@(if iwd? '("--wifi=iwd_agent") '()))
 
                       ;; As connman(8) notes, when passing '-n', connman
                       ;; "directs log output to the controlling terminal in
