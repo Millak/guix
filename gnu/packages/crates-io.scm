@@ -63874,14 +63874,14 @@ the Trust-DNS client to use rustls for TLS.")
 (define-public rust-trybuild-1
   (package
     (name "rust-trybuild")
-    (version "1.0.54")
+    (version "1.0.75")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "trybuild" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0gzxbal0zdjnwilsisgbm59c242gvym8dafwsl5s8b5nhvzl6hzh"))))
+        (base32 "1wylxysdpbjz3cddaxvjnfk8vadi05chdivwg9l878c7b8hjq8gi"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
