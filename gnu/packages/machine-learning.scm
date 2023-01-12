@@ -2910,7 +2910,7 @@ that:
     (license license:expat)))
 
 (define-public gloo
-  (let ((version "0.0.0") ; no proper version tag
+  (let ((version "0.0.0")                         ; no proper version tag
         (commit "c22a5cfba94edf8ea4f53a174d38aa0c629d070f")
         (revision "1"))
     (package
@@ -2930,15 +2930,22 @@ that:
       (native-inputs
        (list googletest))
       (inputs
-       (list openssl))
+       (append (list openssl)
+               (if (supported-package? rdma-core)
+                   (list rdma-core)
+                   '())))
       (arguments
-       `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON" "-DBUILD_TEST=1")
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "make" "gloo_test")))))))
+       (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                   "-DBUILD_TEST=1"
+                                   #$@(if (this-package-input "rdma-core")
+                                          #~("-DUSE_IBVERBS=ON")
+                                          #~()))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "make" "gloo_test")))))))
       (synopsis "Collective communications library")
       (description
        "Gloo is a collective communications library.  It comes with a
