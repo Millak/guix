@@ -52096,7 +52096,7 @@ data.  This crate provides a wrapper that works with any existing Serde
 (define-public rust-serde-path-to-error-0.1
   (package
     (name "rust-serde-path-to-error")
-    (version "0.1.4")
+    (version "0.1.9")
     (source
       (origin
         (method url-fetch)
@@ -52104,12 +52104,10 @@ data.  This crate provides a wrapper that works with any existing Serde
         (file-name
           (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32
-            "0n5ilbsxvi174m2fd506ivd43kws0yh523li1xz0zqh60ngi1xj2"))))
+         (base32 "0hbkdhmz82hwx5bxasym776f74jlvnivsx00l4qi7jb3nli4zc16"))))
     (build-system cargo-build-system)
     (arguments
-      `(#:skip-build? #t
-        #:cargo-inputs
+      `(#:cargo-inputs
         (("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-serde-derive" ,rust-serde-derive-1)
