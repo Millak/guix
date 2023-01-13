@@ -29509,14 +29509,14 @@ implementation of Windows NT and LanManager compatible password encryption.")
 (define-public emacs-nadvice
   (package
     (name "emacs-nadvice")
-    (version "0.3")
+    (version "0.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "nadvice-" version ".el"))
        (sha256
-        (base32 "0gi3csnxbs8h7iy0scsl35sic3gv90swa89hhdjwb7qvpirfdcgw"))))
+        (base32 "0ac7zxi04gzcd5hz81lib1db3c6a7xmwkb381ljxvaha1mlzp1k0"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/nadvice.html")
     (synopsis "Forward compatibility for Emacs-24.4's nadvice")
