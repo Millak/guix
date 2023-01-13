@@ -2838,7 +2838,7 @@ serializations such as ASN.1 and MessagePack.")
 (define-public unrar-free
   (package
     (name "unrar-free")
-    (version "0.1.1")
+    (version "0.1.3")
     (source
      (origin
        (method git-fetch)
@@ -2847,7 +2847,7 @@ serializations such as ASN.1 and MessagePack.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0l9xdygk8ki8471lmg8xkb58zq07cb9hy44pqz1hlyhgsvrb6vss"))))
+        (base32 "12idmr5rjmw7dg2mi6250q599nywrirgc8553353a4swf5n1pmx4"))))
     (build-system gnu-build-system)
     (inputs
      `(("libarchive" ,libarchive)))
