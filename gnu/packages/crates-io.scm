@@ -13842,24 +13842,26 @@ message passing.")
 (define-public rust-crossbeam-epoch-0.9
   (package
     (name "rust-crossbeam-epoch")
-    (version "0.9.1")
+    (version "0.9.13")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam-epoch" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17anyfg5azjpmcfidq6wn4phj9h0a0zqcxksi33w44akz4wsgam1"))))
+        (base32 "0nlxkmx3q93jvsshnmwaiich6bf7ddq1jzhzmaw4pxrf9hgsza81"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-const-fn" ,rust-const-fn-0.4)
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-memoffset" ,rust-memoffset-0.6)
-        ("rust-scopeguard" ,rust-scopeguard-1))))
+        ("rust-loom" ,rust-loom-0.5)
+        ("rust-memoffset" ,rust-memoffset-0.7)
+        ("rust-scopeguard" ,rust-scopeguard-1))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-rustversion" ,rust-rustversion-1))))
     (home-page
      "https://github.com/crossbeam-rs/crossbeam/tree/master/crossbeam-epoch")
     (synopsis "Epoch-based garbage collection")
