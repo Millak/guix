@@ -315,7 +315,8 @@ or false to signal an error."
                                  (%current-system))))
   "Return the name of Glibc's dynamic linker for SYSTEM."
   ;; See the 'SYSDEP_KNOWN_INTERPRETER_NAMES' cpp macro in libc.
-  (let ((platform (lookup-platform-by-system system)))
+  (let ((platform (false-if-platform-not-found
+                   (lookup-platform-by-system system))))
     (cond
      ((platform? platform)
       (platform-glibc-dynamic-linker platform))
