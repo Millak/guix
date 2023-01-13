@@ -13675,24 +13675,25 @@ criterion.")
 (define-public rust-crossbeam-0.8
   (package
     (name "rust-crossbeam")
-    (version "0.8.0")
+    (version "0.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "crossbeam" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "103xnwzkk1zd9kiy6f0f131ap433qfkc757wyrha5bxa7pmsc0gx"))))
+        (base32 "0b0s0ans81ja6gm7awlaw3k2rqywzmhq4mm9ra8yaak16q6sy098"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
         ("rust-crossbeam-epoch" ,rust-crossbeam-epoch-0.9)
         ("rust-crossbeam-queue" ,rust-crossbeam-queue-0.3)
-        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))))
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/crossbeam-rs/crossbeam")
     (synopsis "Tools for concurrent programming in Rust")
     (description "This package provides tools for concurrent programming.")
