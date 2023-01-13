@@ -11,6 +11,7 @@
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 # Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 # Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
+# Copyright © 2023 Andrew Tropin <andrew@trop.in>
 #
 # This file is part of GNU Guix.
 #
@@ -549,15 +550,19 @@ export PATH="$_GUIX_PROFILE/bin${PATH:+:}$PATH"
 # searches 'Info-default-directory-list'.
 export INFOPATH="$_GUIX_PROFILE/share/info:$INFOPATH"
 
-# GUIX_PROFILE: User's default profile
-# Prefer the one from 'guix home' if it exists.
+# GUIX_PROFILE: User's default profile and home profile
+GUIX_PROFILE="$HOME/.guix-profile"
+[ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
+[ -L "$GUIX_PROFILE" ] || \
+GUIX_LOCPATH="$GUIX_PROFILE/lib/locale:${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+
 GUIX_PROFILE="$HOME/.guix-home/profile"
-[ -L $GUIX_PROFILE ] || GUIX_PROFILE="$HOME/.guix-profile"
-[ -L $GUIX_PROFILE ] || return
-GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
+[ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
+[ -L "$GUIX_PROFILE" ] || \
+GUIX_LOCPATH="$GUIX_PROFILE/lib/locale:${GUIX_LOCPATH:+:}$GUIX_LOCPATH"
+
 export GUIX_LOCPATH
 
-[ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
 EOF
 }
 
