@@ -782,12 +782,13 @@ corresponding UPSTREAM-SOURCE (an origin), using the given DEBLOB-SCRIPTS."
 ;;;
 
 (define* (kernel-config arch #:key variant)
-  "Return the absolute file name of the Linux-Libre build configuration file
-for ARCH and optionally VARIANT, or #f if there is no such configuration."
+  "Return a file-like object of the Linux-Libre build configuration file for
+ARCH and optionally VARIANT, or #f if there is no such configuration."
   (let* ((name (string-append (if variant (string-append variant "-") "")
                               (if (string=? "i386" arch) "i686" arch) ".conf"))
-         (file (string-append "linux-libre/" name)))
-    (search-auxiliary-file file)))
+         (file (string-append "linux-libre/" name))
+         (config (search-auxiliary-file file)))
+    (and config (local-file config))))
 
 (define %default-extra-linux-options
   `(;; Make the kernel config available at /proc/config.gz
@@ -895,8 +896,9 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
 (define* (make-linux-libre version gnu-revision hash-string supported-systems
                            #:key
                            (extra-version #f)
-                           ;; A function that takes an arch and a variant.
-                           ;; See kernel-config for an example.
+                           ;; A function that takes an arch and a variant, and
+                           ;; return a file-like object.  See kernel-config
+                           ;; for an example.
                            (configuration-file #f)
                            (defconfig "defconfig")
                            (extra-options %default-extra-linux-options)
@@ -980,8 +982,20 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       #$(and extra-version
                              (string-append "-" extra-version)))))
           (replace 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((config (assoc-ref inputs "kconfig")))
+            (lambda _
+              (let ((config
+                     #$(match (let ((arch (platform-linux-architecture
+                                           (lookup-platform-by-target-or-system
+                                            (or (%current-target-system)
+                                                (%current-system))))))
+                                (and configuration-file arch
+                                     (configuration-file
+                                      arch
+                                      #:variant (version-major+minor version))))
+                         (#f            ;no config for this platform
+                          #f)
+                         ((? file-like? config)
+                          config))))
                 ;; Use a custom kernel configuration file or a default
                 ;; configuration file.
                 (if config
@@ -989,15 +1003,15 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                       (copy-file config ".config")
                       (chmod ".config" #o666))
                     (invoke "make" #$defconfig))
-                ;; Appending works even when the option wasn't in the
-                ;; file.  The last one prevails if duplicated.
+                ;; Appending works even when the option wasn't in the file.
+                ;; The last one prevails if duplicated.
                 (let ((port (open-file ".config" "a"))
                       (extra-configuration #$(config->string extra-options)))
                   (display extra-configuration port)
                   (close-port port))
                 (invoke "make" "oldconfig"))))
           (replace 'install
-            (lambda* (#:key inputs #:allow-other-keys)
+            (lambda _
               (let ((moddir (string-append #$output "/lib/modules"))
                     (dtbdir (string-append #$output "/lib/dtbs")))
                 ;; Install kernel image, kernel configuration and link map.
@@ -1012,11 +1026,11 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                 ;; Install kernel modules
                 (mkdir-p moddir)
                 (invoke "make"
-                        ;; Disable depmod because the Guix system's
-                        ;; module directory is an union of potentially
-                        ;; multiple packages.  It is not possible to use
-                        ;; depmod to usefully calculate a dependency
-                        ;; graph while building only one of them.
+                        ;; Disable depmod because the Guix system's module
+                        ;; directory is an union of potentially multiple
+                        ;; packages.  It is not possible to use depmod to
+                        ;; usefully calculate a dependency graph while
+                        ;; building only one of them.
                         "DEPMOD=true"
                         (string-append "MODULE_DIR=" moddir)
                         (string-append "INSTALL_PATH=" #$output)
@@ -1029,8 +1043,8 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                        (version (match versions
                                   ((x) x))))
                   ;; There are symlinks to the build and source directory.
-                  ;; Both will point to target /tmp/guix-build* and thus
-                  ;; not be useful in a profile.  Delete the symlinks.
+                  ;; Both will point to target /tmp/guix-build* and thus not
+                  ;; be useful in a profile.  Delete the symlinks.
                   (false-if-file-not-found
                    (delete-file
                     (string-append moddir "/" version "/build")))
@@ -1038,29 +1052,16 @@ for ARCH and optionally VARIANT, or #f if there is no such configuration."
                    (delete-file
                     (string-append moddir "/" version "/source"))))))))))
     (native-inputs
-     `(("perl" ,perl)
-       ("bc" ,bc)
-       ("openssl" ,openssl)
-       ("elfutils" ,elfutils)        ;needed to enable CONFIG_STACK_VALIDATION
-       ("flex" ,flex)
-       ("bison" ,bison)
-
-       ;; These are needed to compile the GCC plugins.
-       ("gmp" ,gmp)
-       ("mpfr" ,mpfr)
-       ("mpc" ,mpc)
-       ,@(match (let ((arch (platform-linux-architecture
-                             (lookup-platform-by-target-or-system
-                              (or (%current-target-system)
-                                  (%current-system))))))
-                  (and configuration-file arch
-                       (configuration-file
-                        arch
-                        #:variant (version-major+minor version))))
-           (#f                          ;no config for this platform
-            '())
-           ((? string? config)
-            `(("kconfig" ,config))))))
+     (list perl
+           bc
+           openssl
+           elfutils                  ;needed to enable CONFIG_STACK_VALIDATION
+           flex
+           bison
+           ;; These are needed to compile the GCC plugins.
+           gmp
+           mpfr
+           mpc))
     (home-page "https://www.gnu.org/software/linux-libre/")
     (synopsis "100% free redistribution of a cleaned Linux kernel")
     (description "GNU Linux-Libre is a free (as in freedom) variant of the
