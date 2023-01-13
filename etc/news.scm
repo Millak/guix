@@ -28,10 +28,19 @@
 
  (entry (commit "ce8a34bc9ab89f31f107383ba791954864aed372")
         (title
-          (en "Linux-libre kernel updated to 6.1"))
+         (en "Linux-libre kernel updated to 6.1")
+         (de "Linux-libre-Kernel wird auf 6.1 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.1")
+         (pt "Kernel linux-libre atualizado para 6.1"))
         (body
-          (en "The default version of the linux-libre kernel has been updated to
-              the 6.1 release series.")))
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.1 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.1-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.1.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.1.")))
 
  (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
         (title
