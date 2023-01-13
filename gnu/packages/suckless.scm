@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2015 Dmitry Bogatov <KAction@gnu.org>
-;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2015, 2023 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -547,7 +547,13 @@ point surf to another URI by setting its XProperties.")
                   (add-before 'build 'patch-farbfeld
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "config.def.h"
-                        (("2ff") (search-input-file inputs "/bin/2ff"))))))
+                        (("2ff") (search-input-file inputs "/bin/2ff")))))
+                  (add-after 'install 'install-doc
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (doc (string-append out "/share/doc/" ,name "-"
+                                                 ,(package-version this-package))))
+                        (install-file "README.md" doc)))))
        #:tests? #f                                ;no test suite
        #:make-flags
        (let ((pkg-config (lambda (flag)
