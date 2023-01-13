@@ -33680,14 +33680,14 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 (define-public emacs-xref
   (package
     (name "emacs-xref")
-    (version "1.6.0")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xref-"
                            version ".tar"))
        (sha256
-        (base32 "0vqs2l4gypdx475yi0yic0mnsg1f9nm698gi90kh7xfcpmkfcgb4"))))
+        (base32 "0z9kpbnrdh9y9qlj2fa64v660biakvw6x3z9klqa47qcx8gbyqp6"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
