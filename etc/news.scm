@@ -26,6 +26,13 @@
 (channel-news
  (version 0)
 
+ (entry (commit "ce8a34bc9ab89f31f107383ba791954864aed372")
+        (title
+          (en "Linux-libre kernel updated to 6.1"))
+        (body
+          (en "The default version of the linux-libre kernel has been updated to
+              the 6.1 release series.")))
+
  (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
         (title
           (en "Linux-libre 4.9 removed due to end of upstream support")
