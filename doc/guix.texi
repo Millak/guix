@@ -21844,7 +21844,7 @@ disable security:
 @end lisp
 
 Or to set a PasswordFile for the classic (unsecure) VncAuth
-mecanism:
+mechanism:
 
 @lisp
 (vnc-server-command (file-append tigervnc-server "/bin/Xvnc"
@@ -21880,9 +21880,7 @@ Available @code{lightdm-gtk-greeter-configuration} fields are:
 @item @code{lightdm-gtk-greeter} (default: @code{lightdm-gtk-greeter}) (type: file-like)
 The lightdm-gtk-greeter package to use.
 
-@item @code{assets} @
-(default: @code{(adwaita-icon-theme gnome-themes-extrahicolor-icon-theme)}) @
-(type: list-of-file-likes)
+@item @code{assets} (default: @code{(adwaita-icon-theme gnome-themes-extra hicolor-icon-theme)}) (type: list-of-file-likes)
 The list of packages complementing the greeter, such as package
 providing icon themes.
 
@@ -21908,8 +21906,7 @@ The background image to use.
 Enable accessibility support through the Assistive Technology Service
 Provider Interface (AT-SPI).
 
-@item @code{a11y-states} @
-(default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
+@item @code{a11y-states} (default: @code{(contrast font keyboard reader)}) (type: list-of-a11y-states)
 The accessibility features to enable, given as list of symbols.
 
 @item @code{reader} (type: maybe-file-like)
@@ -21943,8 +21940,7 @@ The type of the seat, either the @code{local} or @code{xremote} symbol.
 @item @code{autologin-user} (type: maybe-string)
 The username to automatically log in with by default.
 
-@item @code{greeter-session} @
-(default: @code{lightdm-gtk-greeter}) (type: greeter-session)
+@item @code{greeter-session} (default: @code{lightdm-gtk-greeter}) (type: greeter-session)
 The greeter session to use, specified as a symbol.  Currently, only
 @code{lightdm-gtk-greeter} is supported.
 
