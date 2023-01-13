@@ -7043,6 +7043,9 @@ useful errors on failure.")
         (base32
          "134dl5qhjxsj2mcmrx9f3m0iys0n5mjfpz9flj8zn8d2jir43776"))))
     (build-system dune-build-system)
+    (arguments
+     ;; Cyclic dependency with ocaml-ppx-jane
+     `(#:tests? #f))
     (propagated-inputs
      (list ocaml-base
            ocaml-ppx-here
