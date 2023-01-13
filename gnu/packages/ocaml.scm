@@ -664,8 +664,6 @@ for day to day programming.")
                (base32
                 "1lvrmpscbk1kjv5ag5bzlzv520xk5zw2haf6q7chvz98gcm9g0hk"))))
     (build-system dune-build-system)
-    (arguments
-     '(#:test-target "."))
     (propagated-inputs (list ocaml-extlib))
     (native-inputs (list ocaml-ounit2))
     (home-page "https://www.mancoosi.org/cudf/")
@@ -855,8 +853,7 @@ the opam file format.")
                 "1mw535zsw7xlvpgwnk1dan76z3f7lh5imlg0s6kdyhfg0iqisjd7"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-before 'build 'pre-build
            (lambda* (#:key inputs make-flags #:allow-other-keys)
@@ -1628,8 +1625,7 @@ for speed and space economy.")
                 "1mi1vh4qgscnb470qwidccaqd068j1bqlz6pf6wddk21paliwnqb"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "test.t"
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'make-writable
            (lambda _
@@ -1699,8 +1695,6 @@ archive(native) = \"frontc.cmxa\""))))
        (sha256
         (base32 "1r0m5p1dd06lbgfxqdpl1ya4vb8252z7hqkvdi9k444g4rx2ay3p"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-alcotest ocaml-ounit ocaml-ppxlib))
     (native-inputs
@@ -1744,8 +1738,6 @@ instances and printing them.")
                (base32
                 "04ghjshh6104xyglm0db9kv90m62qla5f4bfrlndv6dsvgw3rdjl"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (propagated-inputs
      `(("ounit" ,ocaml-ounit)
        ("qcheck" ,ocaml-qcheck)))
@@ -1771,8 +1763,6 @@ to use -- to sophisticated random generation of test cases.")
                (base32
                 "1m09cmn3vrk3gdm60fb730qsygcfyxsyv7gl9xfzck08q1x2x9qx"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (native-inputs
      `(("ocamlbuild" ,ocamlbuild)
        ("qtest" ,ocaml-qtest)))
@@ -2047,8 +2037,7 @@ functions to the next and/or previous version.")
                   "07lnj4yzwvwyh5fhpp1dxrys4ddih15jhgqjn59pmgxinbnddi66"))))
       (build-system dune-build-system)
       (arguments
-       `(#:test-target "."
-         #:package "ppx_tools_versioned"))
+       `(#:package "ppx_tools_versioned"))
       (propagated-inputs
        (list ocaml-migrate-parsetree))
       (properties `((upstream-name . "ppx_tools_versioned")))
@@ -2167,8 +2156,7 @@ bitsrings in Erlang style as primitives to the language.")))
                 "166laj8qk7466sdl037c6cjs4ac571hglw4l5qpyll6df07h6a7q"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:dune ,dune-bootstrap))
+     `(#:dune ,dune-bootstrap))
     (properties `((ocaml4.09-variant . ,(delay ocaml4.09-result))
                   (ocaml5.0-variant . ,(delay ocaml5.0-result))))
     (home-page "https://github.com/janestreet/result")
@@ -2183,8 +2171,7 @@ defined in this library.")
     (inherit ocaml-result)
     (name "ocaml4.09-result")
     (arguments
-     `(#:test-target "."
-       #:dune ,ocaml4.09-dune-bootstrap
+     `(#:dune ,ocaml4.09-dune-bootstrap
        #:ocaml ,ocaml-4.09
        #:findlib ,ocaml4.09-findlib))))
 
@@ -2193,8 +2180,7 @@ defined in this library.")
     (inherit ocaml-result)
     (name "ocaml5.0-result")
     (arguments
-     `(#:test-target "."
-       #:dune ,ocaml5.0-dune-bootstrap
+     `(#:dune ,ocaml5.0-dune-bootstrap
        #:ocaml ,ocaml-5.0
        #:findlib ,ocaml5.0-findlib))))
  
@@ -2331,8 +2317,7 @@ coexistence with the old (version 2) SQLite and its OCaml wrapper
          "0y2hlqlmqs7r4y5mfzc5qdv7gdp3wxbwpz458vf7fj4593vg94cf"))))
     (build-system dune-build-system)
     (arguments
-     `(#:package "csv"
-       #:test-target "."))
+     `(#:package "csv"))
     (home-page "https://github.com/Chris00/ocaml-csv")
     (synopsis "Pure OCaml functions to read and write CSV")
     (description
@@ -2570,7 +2555,6 @@ immutability.")
     (build-system dune-build-system)
     (arguments
      `(#:package "alcotest"
-       #:test-target "."
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-test-format
@@ -2615,8 +2599,7 @@ simple (yet expressive) query language to select the tests to run.")
                  (base32
                   "1frwi185z4aadmaf0vp8xk5227nyg7nmh28ijj5l7ncjr5slvhz8"))))
       (arguments
-       `(#:package "alcotest"
-         #:test-target "."))
+       `(#:package "alcotest"))
       (properties '()))))
 
 (define-public ocaml-ppx-tools
@@ -2689,8 +2672,6 @@ lets the client choose the concrete timeline.")
         (sha256 (base32
                   "1bg5vagklq6yfxsvcnj2i76xis8hb59088hkic82smyrxdjd1kjs"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (native-inputs
      (list autoconf automake ocaml-alcotest which))
     (propagated-inputs (list openssl))
@@ -2760,7 +2741,6 @@ Typical applications are searches, schedulers and caches.")
         (sha256 (base32
                  "1qj32bcw1in7s6raxdvbmjr3lvj99iwv98x1ar9cwxp4zf8ybfss"))))
     (build-system dune-build-system)
-    (arguments `(#:test-target "."))
     (native-inputs (list ocaml-crowbar ocaml-monolith ocaml-fmt))
     (synopsis "Efficient integer types on 64-bit architectures for OCaml")
     (description
@@ -2811,8 +2791,7 @@ to which allows adding and looking up bindings in a type safe manner.")
        (sha256 (base32
                 "118raxdwv6pn5b152ffdhmwdi0l4wlwflcj2nmckfmm7v1z2fq4s"))))
     (build-system dune-build-system)
-    (arguments `(#:package "eio"
-                 #:test-target "."))
+    (arguments `(#:package "eio"))
     (propagated-inputs (list ocaml-bigstringaf
                              ocaml-cstruct
                              ocaml-lwt
@@ -2837,8 +2816,7 @@ OCaml with fibers.")
   (package
     (inherit ocaml-eio)
     (name "ocaml-eio-luv")
-    (arguments `(#:package "eio_luv"
-                 #:test-target "."))
+    (arguments `(#:package "eio_luv"))
     (propagated-inputs (list ocaml-eio ocaml-luv))
     (native-inputs (list ocaml-mdx))
     (synopsis "Libuv-based backend for Ocaml Eio")
@@ -2863,7 +2841,6 @@ OCaml with fibers.")
         (sha256 (base32
                  "0k70y7nb2wrk2yql0pwnrhsp1x7k9ld4gd8iihbv6r34kcm3a5m1"))))
     (build-system dune-build-system)
-    (arguments `(#:test-target "."))
     (propagated-inputs
      (list ocaml-cstruct
            ocaml-fmt
@@ -2884,8 +2861,7 @@ OCaml with fibers.")
   (package
     (inherit ocaml-eio)
     (name "ocaml-eio-linux")
-    (arguments `(#:package "eio_linux"
-                 #:test-target "."))
+    (arguments `(#:package "eio_linux"))
     (propagated-inputs
      (list ocaml-eio
            ocaml-uring
@@ -2908,7 +2884,6 @@ OCaml with fibers.")
     (inherit ocaml-eio)
     (name "ocaml-eio-main")
     (arguments `(#:package "eio_main"
-                 #:test-target "."
                  ;; tests require network
                  #:tests? #f))
     (propagated-inputs
@@ -3243,8 +3218,7 @@ representation of the data.")
                 "1z5nw5wljvcqp8q07h336bbvf9paynia0jsdh4486hlkbmr1ask1"))))
     (build-system dune-build-system)
     (arguments
-     `(#:package "gen"
-       #:test-target "."))
+     `(#:package "gen"))
     (propagated-inputs
      (list ocaml-odoc ocaml-seq))
     (native-inputs
@@ -3504,8 +3478,6 @@ without a complete in-memory representation of the data.")
          (base32
           "1dvcl108ir9nqkk4mjm9xhhj4p9dx9bmg8bnms54fizs1x3x8ar3"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (propagated-inputs
      (list ocaml-cmdliner))
     (home-page "https://www.typerex.org/ocp-indent.html")
@@ -3729,7 +3701,6 @@ many additional enhancements, including:
         (sha256
          (base32 "0d0vdfjgjzf1y6wkd714d8b0piv1z9qav5ahsapynqzk4b4ahhnp"))))
     (build-system dune-build-system)
-    (arguments `(#:test-target "tests"))
     (home-page "https://github.com/Chris00/ocaml-benchmark")
     (synopsis "Benchmark running times of code")
     (description
@@ -4070,8 +4041,6 @@ standard iterator type starting from 4.07.")
        (sha256
         (base32 "1g0vmpx6ylv8m0w77zarn215pgb4czc6gcpb2fi5da1s307zwr0w"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-seq))
     (native-inputs
@@ -4094,8 +4063,7 @@ standard iterator type starting from 4.07.")
     (package
       (inherit ocaml-re)
       (arguments
-       `(#:test-target "."
-         #:phases
+       `(#:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-dune-version
              (lambda _
@@ -4116,8 +4084,6 @@ standard iterator type starting from 4.07.")
                 "1klj4g451s7m5r8bxmwc1rpvngpqdm40csnx9smgc06pwy2fax2c"))
               (file-name (git-file-name name version))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (native-inputs
      `(("cppo" ,ocaml-cppo)))
     (home-page "https://github.com/OCamlPro/ocplib-endian")
@@ -4144,8 +4110,7 @@ big- and little-endian, with their unsafe counter-parts.")
                 "0dpbirs6lzp0bclr3wcw407jjspll7iy66z18zks3mjccvlxd21w"))))
     (build-system dune-build-system)
     (arguments
-     `(#:package "cstruct"
-       #:test-target "."))
+     `(#:package "cstruct"))
     (propagated-inputs
      (list ocaml-bigarray-compat))
     (native-inputs
@@ -4188,8 +4153,6 @@ writing to these structures, and they are accessed via the Bigarray module.")
                (base32
                 "0xnl5wxd2qrba7phm3mdrjwd2kk26kb17dv94ciwp49ljcj28qc1"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      `(("ocaml-bigarray-compat" ,ocaml-bigarray-compat)
        ("cstruct" ,ocaml-cstruct)))
@@ -4213,8 +4176,7 @@ writing to these structures, and they are accessed via the Bigarray module.")
         (base32 "004knljxqxn9zq0rnq7q7wxl4nwlzydm8p9f5cqkl8il5yl5zkjm"))))
     (build-system dune-build-system)
     (arguments
-     `(#:package "ezjsonm"
-       #:test-target "."))
+     `(#:package "ezjsonm"))
     (native-inputs (list ocaml-alcotest js-of-ocaml node))
     (propagated-inputs (list ocaml-jsonm ocaml-uutf ocaml-sexplib0 ocaml-hex))
     (home-page "https://github.com/mirage/ezjsonm/")
@@ -4241,8 +4203,7 @@ JSON.")
         (base32
          "1bgkc66cq00mgnkz3i535srwzwc4cpdsv0mly5dzvvq33451xwf0"))))
     (build-system dune-build-system)
-    (arguments '(#:package "uri"
-                 #:test-target "."))
+    (arguments '(#:package "uri"))
     (propagated-inputs
      (list ocaml-stringext ocaml-angstrom))
     (native-inputs
@@ -4268,8 +4229,7 @@ JSON.")
         (base32 "1ppbav41mszpjcl0zi3fyg958cxyfs57i7kvha4ds9ydn89bjmrh"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-before 'build 'update-deprecated
            (lambda _
@@ -4624,8 +4584,7 @@ the plugins facilitate extensibility, and the frontends serve as entry points.")
                 "0chn7ldqb3wyf95yhmsxxq65cif56smgz1mhhc7m0dpwmyq1k97h"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "camomile-test"
-       #:tests? #f ; Tests fail, see https://github.com/yoriyuki/Camomile/issues/82
+     `(#:tests? #f ; Tests fail, see https://github.com/yoriyuki/Camomile/issues/82
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-usr-share
@@ -4692,8 +4651,6 @@ function that follows the prototype of POSIX's wcwidth.")
            ocaml-uucp
            ocaml-uuseg
            ocaml-odoc))
-    (arguments
-     `(#:test-target "."))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-zed))))
     (synopsis "Abstract engine for text edition in OCaml")
     (description
@@ -4741,8 +4698,6 @@ capabilities, Zed provides macro recording and cursor management facilities.")
                (base32
                 "1pkamblc6h0rsbk901cqn3xr9gqa3g8wrwyx5zryaqvb2xpbhp8b"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-logs
            ocaml-lwt
@@ -4796,8 +4751,6 @@ instead of bindings to a C library.")
        (sha256
         (base32 "1pcix3h9f7is06581iax4i08zkd6sv8y5hy1vvxhqhcsd9z0qfl3"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (native-inputs
      (list ocaml-cppo))
     (propagated-inputs
@@ -4852,8 +4805,6 @@ sensitive completion, colors, and more.")
                (base32
                 "052qnc23vmxp90yympjz9q6lhqw98gs1yvb3r15kcbi1j678l51h"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (properties `((upstream-name . "ANSITerminal")))
     (home-page "https://github.com/Chris00/ANSITerminal")
     (synopsis
@@ -5078,8 +5029,6 @@ cross-platform SDL C library.")
         (base32
          "1dsr3s88kgmcg3najhc29cwfvsxa2plvjws1127fz75kmn15np28"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (inputs (list gmp ocaml-cmdliner ocaml-z3 z3))
     (native-inputs (list ocaml-menhir))
     (synopsis "Proof-checker for the λΠ-calculus modulo theory, an extension of
@@ -5233,8 +5182,6 @@ collection.")
         (base32
          "1viyws3igy49hfaj4jaiwm4iggck9zdn7r3g6kh1n4zxphqk57yk"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (native-inputs
      (list ocamlbuild ocaml-findlib))
     (home-page "https://rlepigre.github.io/ocaml-bindlib/")
@@ -5261,8 +5208,6 @@ or quantified formulas.")
         (base32
          "1vi58zdxchpw6ai0bz9h2ggcmg8kv57yk6qbx82lh47s5wb3mz5y"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-stdlib-shims))
     (synopsis "Parsing library based on Earley Algorithm")
@@ -5287,8 +5232,6 @@ is also support for writing OCaml syntax extensions in a camlp4 style.")
                 "1aqmkpjv5jk95lc2m3qyyrhw8ra7n9wj8pv3bfc83l737zv0hjn1"))
               (file-name (git-file-name name version))))
     (build-system dune-build-system)
-    (arguments
-     '(#:test-target "."))
     (synopsis "Timed references for imperative state")
     (description "Timed references for imperative state.  This module provides
 an alternative type for references (or mutable cells) supporting undo/redo
@@ -5353,8 +5296,7 @@ than yojson), with 25-35% space savings.")
          "1habsh00ihjhk1g1csxqg3hj8izk5zvgc7wm579wyjw35vzcmwr1"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:package "yojson"))
+     `(#:package "yojson"))
     (propagated-inputs (list ocaml-seq))
     (native-inputs (list ocaml-alcotest ocaml-cppo))
     (synopsis "Low-level JSON library for OCaml")
@@ -5504,8 +5446,7 @@ Atom.")
          "1l5zkkkg8sglsihrbf10ivq9s8xzl1y6ag89i4jqpnmi4m43fy34"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:phases
+     `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-gsl-directory
            (lambda* (#:key inputs #:allow-other-keys)
@@ -5898,8 +5839,6 @@ a more consistent API.")
         (base32
          "1wqcnw4wi6pfjjhixpakckm03dpj990259za432804471a6spm2j"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-ppx-derivers ocaml-ppxlib ocaml-result))
     (native-inputs
@@ -6975,7 +6914,6 @@ position.")
      (janestreet-origin "ppx_cold" version
                         "13gqmfw2sq80anag9bwpm35600l1fnfn7mh9cbj1291k84rsx7wb"))
     (build-system dune-build-system)
-    (arguments `(#:test-target "tests"))
     (propagated-inputs
      (list ocaml-base ocaml-ppxlib))
     (properties `((upstream-name . "ppx_cold")))
@@ -7163,8 +7101,6 @@ packages.")
         (sha256
           (base32 "1q1lzykpm83ra4l5jh4rfddhd3c96kx4s4rvx0w4b51z1qk56zam"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs (list ocaml-base ocaml-typerep ocaml-ppxlib))
     (properties `((upstream-name . "ppx_typerep_conv")
                   (ocaml4.07-variant . ,(delay ocaml4.07-ppx-typerep-conv))))
@@ -7230,8 +7166,6 @@ from type definitions.")
        (sha256
         (base32 "1as0v0x8c9ilyhngax55lvwyyi4a2wshyan668v0f2s1608cwb1l"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (propagated-inputs (list ocaml-base ocaml-ppxlib))
     (properties `((upstream-name . "ppx_stable")))
     (home-page "https://github.com/janestreet/ppx_stable")
@@ -7249,8 +7183,6 @@ conversion functions between almost identical types.")
       "ppx_base" version
       "181w7y2has8jsrqdsvd08q5nhnkx523vwsk3lg0cjix55qssvfyn"))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-ppx-compare
            ocaml-ppx-cold
@@ -7406,8 +7338,6 @@ nodes for lazily rendering log messages.")
         (sha256
           (base32 "0sb5i4v7p9df2bxk66rjs30k9fqdrwsq1jgykjv6wyrx2d9bv955"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (propagated-inputs (list ocaml-base ocaml-ppxlib))
     (properties `((upstream-name . "ppx_disable_unused_warnings")))
     (home-page "https://github.com/janestreet/ppx_disable_unused_warnings")
@@ -7430,8 +7360,6 @@ nodes for lazily rendering log messages.")
         (sha256
           (base32 "1p6847gdfnnj6qpa4yh57s6wwpsl7rfgy0q7993chz24h9mhz5lk"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
       (list ocaml-base-quickcheck
             ocaml-ppx-assert
@@ -7624,8 +7552,7 @@ types provided by Base.")
                 "0afhzm08l9v883fhpqqh2lmy7az609pxif40bp7x1sk8c0yszqsh"))))
     (build-system dune-build-system)
     (arguments
-     `(#:test-target "."
-       #:ocaml ,ocaml-4.07
+     `(#:ocaml ,ocaml-4.07
        #:findlib ,ocaml4.07-findlib
        #:dune ,ocaml4.07-dune))
     (home-page "https://github.com/janestreet/jane-street-headers")
@@ -8098,8 +8025,7 @@ then run the Bisect_ppx report tool on the generated visitation files.")
       (native-inputs
        `(("ocaml-ounit2" ,ocaml-ounit2)))
       (arguments
-       `(#:test-target "."
-         ;; tests require git and network
+       `(;; tests require git and network
          #:tests? #f))
       (properties '((upstream-name . "bisect_ppx"))))))
 
@@ -8238,8 +8164,6 @@ language understood by ocamldoc.")
         (base32
          "07ljbin9dsclsqh24p7haqjccz1w828sf5xfwlzl298d4a6zsbhs"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (propagated-inputs
      (list fftw fftwf))
     (native-inputs
@@ -8299,8 +8223,6 @@ convenience functions for vectors and matrices.")
                (base32
                 "06ag9b88ihhr7yd3s9l0ac7ysig02fmlmsswybbsvz71ni0mb105"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "tests"))
     (inputs
      `(("cairo" ,cairo)
        ("gtk+-2" ,gtk+-2)
@@ -8471,8 +8393,7 @@ support for Mparser.")))
                 "0rhdr89w7yj8pkga5xc7iqmqvrs28034wb7sm7vx7faaxczwjifn"))))
     (build-system dune-build-system)
     (arguments
-     `(#:package "lablgtk3"
-       #:test-target "."))
+     `(#:package "lablgtk3"))
     (propagated-inputs
      (list ocaml-cairo2 ocaml-camlp-streams))
     (inputs
@@ -8497,8 +8418,7 @@ generate OCaml code from .glade files), libpanel, librsvg and quartz.")
     (propagated-inputs (list lablgtk3))
     (native-inputs (list gtksourceview-3 pkg-config))
     (arguments
-     `(#:package "lablgtk3-sourceview3"
-       #:test-target "."))
+     `(#:package "lablgtk3-sourceview3"))
     (synopsis "OCaml interface to GTK+ gtksourceview library")
     (description "This package provides the lablgtk interface to the
 GTK+ gtksourceview library.")))
@@ -8760,8 +8680,6 @@ a uniform style.")
         (base32
          "188j9awxg99vrp2l3rqfmdxdazq5xrjmg1wf62vfqsks9sff6wqx"))))
     (build-system dune-build-system)
-    (arguments
-     '(#:test-target "."))
     (propagated-inputs
      (list ocaml-bigarray-compat))
     (native-inputs
@@ -8893,8 +8811,7 @@ OCaml compilers.")
     (build-system dune-build-system)
     (arguments
      ;; Only build the base angstrom package.
-     '(#:package "angstrom"
-       #:test-target "."))
+     '(#:package "angstrom"))
     (propagated-inputs
      (list ocaml-bigstringaf))
     (native-inputs
@@ -8941,8 +8858,7 @@ up to OCaml 4.08.")
     (inherit ocaml-uri)
     (name "ocaml-uri-sexp")
     (arguments
-     '(#:package "uri-sexp"
-       #:test-target "."))
+     '(#:package "uri-sexp"))
     (propagated-inputs
       (list ocaml-uri ocaml-ppx-sexp-conv ocaml-sexplib0))
     (native-inputs (list ocaml-ounit))
@@ -8964,9 +8880,7 @@ up to OCaml 4.08.")
           (base32
             "074xis3wmr76gadh1ffmfzjfx13mw4kr2s6rkwqwzcl6l85n9x2z"))))
     (build-system dune-build-system)
-    (arguments
-     '(#:package "cohttp"
-       #:test-target "cohttp_test/src"))
+    (arguments '(#:package "cohttp"))
     (propagated-inputs
       (list ocaml-re
             ocaml-uri
@@ -8976,7 +8890,10 @@ up to OCaml 4.08.")
             ocaml-stringext
             ocaml-base64))
     (native-inputs
-      (list ocaml-fmt ocaml-jsonm ocaml-alcotest))
+     (list ocaml-fmt
+           ocaml-jsonm
+           ocaml-alcotest
+           ocaml-crowbar))
     (home-page "https://github.com/mirage/ocaml-cohttp")
     (synopsis "OCaml library for HTTP clients and servers")
     (description
@@ -9000,8 +8917,8 @@ libraries.")
         (base32 "14ig69iyc9yzniclfsc6cz9g9zqp96bs66y6dy4rzrm78s81w6i1"))))
     (build-system dune-build-system)
     (arguments
-     `(#:tests? #f ;tests assume ocaml 4.13
-       #:test-target "."))
+     ;;tests assume ocaml 4.13
+     `(#:tests? #f))
     (propagated-inputs
      (list ocaml-ppxlib
            ocaml-uchar
@@ -9074,7 +8991,6 @@ repeated forking and is much faster.")
         (base32
          "1b6jj4ivl9ni8kba7wls4xsqdy8nm7q9mnx9347jvb99dmmlj5mc"))))
     (build-system dune-build-system)
-    (arguments `(#:test-target "."))
     (propagated-inputs (list ocaml-afl-persistent ocaml-pprint ocaml-seq))
     (home-page "https://gitlab.inria.fr/fpottier/monolith")
     (synopsis "Framework for testing an OCaml library using afl-fuzz")
@@ -9125,8 +9041,6 @@ document and by the text width.")
         (base32
          "11f3kiw58g8njx15akx16xcplzvzdw9y6c4jpyfxylkxws4g0f6j"))))
     (build-system dune-build-system)
-    (arguments
-     `(#:test-target "."))
     (propagated-inputs
      (list ocaml-ocplib-endian
            ocaml-cmdliner

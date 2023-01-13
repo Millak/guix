@@ -42,13 +42,13 @@
                    build-flags)))
   #t)
 
-(define* (check #:key (test-flags '()) (test-target "test") tests?
+(define* (check #:key (test-flags '()) tests?
                 (jbuild? #f) (package #f) (dune-release-flags '())
                 #:allow-other-keys)
   "Test the given package."
   (when tests?
     (let ((program (if jbuild? "jbuilder" "dune")))
-      (apply invoke program "runtest" test-target
+      (apply invoke program "runtest"
              (append (if package (list "-p" package)
                          dune-release-flags)
                      test-flags))))
