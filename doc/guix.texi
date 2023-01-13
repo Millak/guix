@@ -36277,6 +36277,25 @@ like to serve.
 @node Game Services
 @subsection Game Services
 
+@subsubheading Joycond service
+@cindex joycond
+The joycond service allows the pairing of Nintendo joycon game
+controllers over Bluetooth. (@pxref{Desktop Services} for setting up
+Bluetooth.)
+
+@deftp {Data Type} joycond-configuration
+Data type representing the configuration of @command{joycond}.
+
+@table @asis
+@item @code{package} (default: @code{joycond})
+The joycond package to use.
+@end table
+@end deftp
+
+@defvar joycond-service-type
+Service type for the joycond service.
+@end defvar
+
 @subsubheading The Battle for Wesnoth Service
 @cindex wesnothd
 @uref{https://wesnoth.org, The Battle for Wesnoth} is a fantasy, turn
