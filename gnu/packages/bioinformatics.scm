@@ -16732,20 +16732,20 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "458e647b503c3472b0b98c0aeca934f452e039ee")
-        (revision "2"))
+  (let ((commit "af4142724b72574d957f7fe3d422ed5828ec3ad0")
+        (revision "1"))
     (package
       (name "r-signac")
-      (version (git-version "1.6.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/timoast/signac/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1hgwpgighkvfkai80n4d2252s4sdpa4faag4ncdiylicl5wa7lbj"))))
+      (version (git-version "1.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/timoast/signac/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ps0lp1dcy20r6lakil6ih81m04r0s6fnirvfjf01sfs0gsyddww"))))
       (properties `((upstream-name . "Signac")))
       (build-system r-build-system)
       (inputs (list zlib))
@@ -16758,27 +16758,22 @@ translates between different variant encodings.")
              r-future-apply
              r-genomeinfodb
              r-genomicranges
-             r-ggforce
              r-ggplot2
-             r-ggrepel
-             r-ggseqlogo
              r-iranges
              r-irlba
-             r-lsa
              r-matrix
              r-patchwork
              r-pbapply
-             r-qlcmatrix
              r-rcpp
              r-rcpproll
              r-rsamtools
              r-s4vectors
              r-scales
-             r-seurat
              r-seuratobject
              r-stringi
              r-tidyr
-             r-tidyselect))
+             r-tidyselect
+             r-vctrs))
       (home-page "https://github.com/timoast/signac/")
       (synopsis "Analysis of single-cell chromatin data")
       (description
