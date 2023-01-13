@@ -36,6 +36,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2832,4 +2833,34 @@ serializations such as ASN.1 and MessagePack.")
     (home-page "http://oldhome.schmorp.de/marc/fcrackzip.html")
     (synopsis "Zip password cracker")
     (description "Fcrackzip is a Zip file password cracker.")
+    (license license:gpl2+)))
+
+(define-public unrar-free
+  (package
+    (name "unrar-free")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/bgermann/unrar-free")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0l9xdygk8ki8471lmg8xkb58zq07cb9hy44pqz1hlyhgsvrb6vss"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libarchive" ,libarchive)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://gitlab.com/bgermann/unrar-free")
+    (synopsis "Extract files from RAR archives")
+    (description
+     "@code{unrar-free} is a free software version of the non-free @code{unrar}
+utility.  This program is a simple command-line front-end to libarchive, and can
+list and extract not only RAR archives but also other formats supported by
+libarchive.  It does not rival the non-free @code{unrar} in terms of features,
+but special care has been taken to ensure it meets most user's needs.")
     (license license:gpl2+)))
