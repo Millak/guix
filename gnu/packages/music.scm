@@ -6069,7 +6069,7 @@ It can also play and mix samples.")
 (define-public mamba
   (package
    (name "mamba")
-   (version "2.1")
+   (version "2.3")
    (source
     (origin
       (method git-fetch)
@@ -6081,7 +6081,7 @@ It can also play and mix samples.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1bq6sqsij3cdwcsj3wpsnivi4c7jl4l5gwfywhqnib70v60smdja"))))
+        "12w85i86jbnihd7w81vhvg8hkn7r32hyk9m1pdh3bd44dcz34gqf"))))
    (build-system gnu-build-system)
    (arguments
     `(#:tests? #f  ; no "check" target
@@ -6102,7 +6102,7 @@ It can also play and mix samples.")
           libsmf
           libx11))
    (native-inputs
-    (list pkg-config))
+    (list pkg-config xxd))
    (home-page "https://github.com/brummer10/Mamba")
    (synopsis "Virtual MIDI keyboard and MIDI file player/recorder for JACK")
    (description "Mamba is a virtual MIDI keyboard and MIDI file
