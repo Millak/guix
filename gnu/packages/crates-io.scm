@@ -13821,7 +13821,7 @@ message passing.")
   (package
     (inherit rust-crossbeam-deque-0.8)
     (name "rust-crossbeam-deque")
-    (version "0.7.3")
+    (version "0.7.4")
     (source
      (origin
        (method url-fetch)
@@ -13830,7 +13830,7 @@ message passing.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "11c2c0x5grdba3ah3g94yn6b8s47xi8qwm85h8hq5vmf9nbsy0lz"))))
+         "1v99xcdjk4zixvxnq7pssip670mlyhw1ma3qc88ca11jxnfz43y2"))))
     (arguments
      `(#:cargo-inputs
        (("rust-crossbeam-epoch" ,rust-crossbeam-epoch-0.8)
