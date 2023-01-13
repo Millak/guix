@@ -34,6 +34,7 @@
   #:autoload   (texinfo) (texi-fragment->stexi)
   #:autoload   (texinfo serialize) (stexi->texi)
   #:use-module (ice-9 curried-definitions)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
@@ -370,6 +371,8 @@ DEFAULT."
                      (cond
                       ((package? val)
                        (symbol->string (package->symbol val)))
+                      (((list-of package?) val)
+                       (format #f "(~{~a~^ ~})" (map package->symbol val)))
                       (else (str val))))
 
                    `(entry (% (heading
