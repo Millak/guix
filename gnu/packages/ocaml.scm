@@ -5939,6 +5939,36 @@ ppx_deriving and ppx_type_conv to inter-operate gracefully when linked
 as part of the same ocaml-migrate-parsetree driver.")
     (license license:bsd-3)))
 
+(define-public ocaml-cinaps
+  ;; The commit removes the unused dependency of ocaml-ppx-jane. We need to
+  ;; use this as we would otherwise have a dependency loop between
+  ;; ocaml-ppxlib and ocaml-ppx-jane.
+  (let ((commit "d974bb2db3ab1ab14e81f989b5bdb609462bff47")
+        (revision "0"))
+    (package
+      (name "ocaml-cinaps")
+      (version (git-version "0.15.1" revision commit))
+      (home-page "https://github.com/ocaml-ppx/cinaps")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url home-page)
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "00kb04vqlnk1pynqjhna5qhn8790ab17baxf4na5py1l1h1js8qx"))))
+      (build-system dune-build-system)
+      (propagated-inputs (list ocaml-re))
+      (synopsis "Trivial metaprogramming tool for OCaml")
+      (description
+       "Cinaps is a trivial Metaprogramming tool using the OCaml toplevel.  It is based
+on the same idea as expectation tests.  The user writes some OCaml code inside
+special comments and cinaps makes sure that what follows is what is printed by
+the OCaml code.")
+      (license license:expat))))
+
 (define-public ocaml-ppxlib
   (package
     (name "ocaml-ppxlib")
