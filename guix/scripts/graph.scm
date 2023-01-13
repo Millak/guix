@@ -569,6 +569,12 @@ Emit a representation of the dependency graph of PACKAGE...\n"))
   (category packaging)
   (synopsis "view and query package dependency graphs")
 
+  (define (shorter? str1 str2)
+    (< (string-length str1) (string-length str2)))
+
+  (define length-sorted
+    (cut sort <> shorter?))
+
   (with-error-handling
     (define opts
       (parse-command-line args %options
@@ -603,8 +609,12 @@ Emit a representation of the dependency graph of PACKAGE...\n"))
                                            (node-type-convert type)
                                            (reverse items))))
             (if (assoc-ref opts 'path?)
+                ;; Sort by string length such that, in case of multiple
+                ;; outputs, the shortest one (which corresponds to "out") is
+                ;; picked (yup, a hack).
                 (match nodes
-                  (((node1 _ ...) (node2 _ ...))
+                  (((= length-sorted (node1 _ ...))
+                    (= length-sorted (node2 _ ...)))
                    (display-path node1 node2 type))
                   (_
                    (leave (G_ "'--path' option requires exactly two \
