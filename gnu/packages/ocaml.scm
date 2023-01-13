@@ -6003,14 +6003,14 @@ the OCaml code.")
                (("  \"(Some ppx-es.*)\")" _ m)
                 (string-append " \"" m "\"."))))))))
     (propagated-inputs
-     (list ocaml-base
-           ocaml-compiler-libs
-           ocaml-migrate-parsetree
-           ocaml-stdlib-shims
+     (list ocaml-compiler-libs
            ocaml-ppx-derivers
-           ocaml-stdio
-           ocaml-result
-           ocaml-sexplib0))
+           ocaml-sexplib0
+           ocaml-stdlib-shims))
+    (native-inputs
+     (list ocaml-stdio
+           ocaml-cinaps
+           ocaml-base))
     (properties `((ocaml4.07-variant . ,(delay ocaml4.07-ppxlib))))
     (synopsis
      "Base library and tools for ppx rewriters")
