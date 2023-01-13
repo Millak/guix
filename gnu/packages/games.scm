@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -7931,7 +7931,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -7941,7 +7941,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kvfv2ra0jq1ggf4apsx1j1xhrhjz3fn1j8p4q3a9c4m19fq4qzr"))))
+        (base32 "1ll5a6ldc2khagwrkb3z84rp7cf1hb83lw0yc1di481xgr6f960q"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
