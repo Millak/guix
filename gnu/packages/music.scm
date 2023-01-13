@@ -6098,7 +6098,7 @@ It can also play and mix samples.")
           fluidsynth
           jack-1
           liblo
-          libsigc++
+          libsigc++-2
           libsmf
           libx11))
    (native-inputs
