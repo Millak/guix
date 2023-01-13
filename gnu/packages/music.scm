@@ -6084,14 +6084,13 @@ It can also play and mix samples.")
         "12w85i86jbnihd7w81vhvg8hkn7r32hyk9m1pdh3bd44dcz34gqf"))))
    (build-system gnu-build-system)
    (arguments
-    `(#:tests? #f  ; no "check" target
-      #:make-flags
-      (list (string-append "PREFIX="
-                           (assoc-ref %outputs "out"))
-            (string-append "CC=" ,(cc-for-target)))
-      #:phases
-      (modify-phases %standard-phases
-        (delete 'configure))))
+    (list #:tests? #f  ; no "check" target
+          #:make-flags
+          #~(list (string-append "PREFIX=" #$output)
+                  (string-append "CC=" #$(cc-for-target)))
+          #:phases
+          #~(modify-phases %standard-phases
+              (delete 'configure))))
    (inputs
     (list alsa-lib
           cairo
