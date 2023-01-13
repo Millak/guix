@@ -13753,7 +13753,7 @@ message passing.")
   (package
     (inherit rust-crossbeam-channel-0.5)
     (name "rust-crossbeam-channel")
-    (version "0.4.2")
+    (version "0.4.4")
     (source
       (origin
         (method url-fetch)
@@ -13762,7 +13762,7 @@ message passing.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0qd05n5bcwafkmbzq1lspwrfi29xnzlw46qarg1sl0lwj68qdvfc"))))
+          "11zvmp8p94vaqp4xyhzymw8xndnpwq12x5qgvxkway7lprygwlxi"))))
     (arguments
      `(#:cargo-inputs
         (("rust-crossbeam-utils" ,rust-crossbeam-utils-0.7)
