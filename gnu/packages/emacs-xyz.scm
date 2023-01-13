@@ -16098,10 +16098,10 @@ actually changing the buffer's text.")
 
 (define-public emacs-diff-hl
   ;;; XXX: Latest release is not tagged.  Use commit matching version bump.
-  (let ((commit "37b00f3bad841e131d69442a89cbebc3041d996b"))
+  (let ((commit "8f2e4eb345f0639c8fc41e3f7576f77ba6987655"))
     (package
       (name "emacs-diff-hl")
-      (version "1.9.0")
+      (version "1.9.1")
       (source
        (origin
          (method git-fetch)
@@ -16110,7 +16110,7 @@ actually changing the buffer's text.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0s3fcwk6c99n2q25bf0a33lphr9mcrxmvr5wz8qsj86jfbyi1is1"))))
+          (base32 "1c265083zyqi33sf3mpkk1n7pyfkrzxg4dacx0b787ypbj1sls16"))))
       (build-system emacs-build-system)
       (home-page "https://github.com/dgutov/diff-hl")
       (synopsis
