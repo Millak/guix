@@ -598,7 +598,7 @@ Emit a representation of the dependency graph of PACKAGE...\n"))
 
         (run-with-store store
           ;; XXX: Since grafting can trigger unsolicited builds, disable it.
-          (mlet %store-monad ((_     (set-grafting #f))
+          (mlet %store-monad ((_g    (set-grafting #f))
                               (nodes (mapm %store-monad
                                            (node-type-convert type)
                                            (reverse items))))
