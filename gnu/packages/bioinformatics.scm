@@ -18084,8 +18084,16 @@ module capable of computing base-level alignments for very large sequences.")
                (base32
                 "1rf0p7dnakjry0fa6ax1h762bn0l5n6ibfdxn077mjvwgpqan51l"))))
     (build-system cmake-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-HOME
+            ;; The build spams ‘Fontconfig error: No writable cache
+            ;; directories’ in a seemingly endless loop otherwise.
+            (lambda _
+              (setenv "HOME" "/tmp"))))
       #:configure-flags
       #~(list "-DGDCM_BUILD_TESTING=true"
               (string-append "-DCMAKE_CTEST_ARGUMENTS=-E;"
@@ -18096,7 +18104,13 @@ module capable of computing base-level alignments for very large sequences.")
                              "|TestAnonymizer4"
                              "|TestPrinter1"
                              "|TestEcho"
-                             "|TestFind'"))))
+                             "|TestFind'")
+              "-DGDCM_DOCUMENTATION:BOOL=ON"
+              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
+              (string-append "-DGDCM_INSTALL_DOC_DIR="
+                             #$output:doc "/share/doc/" #$name)
+              "-DGDCM_BUILD_DOCBOOK_MANPAGES:BOOL=OFF"))) ; TODO: need ‘xsl-ns’
+    (native-inputs (list doxygen graphviz))
     (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
     (synopsis "Grassroots DICOM library")
     (description
