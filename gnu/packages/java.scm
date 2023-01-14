@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -12914,18 +12914,17 @@ static code analysis or code manipulation.")))
     (name "java-logback-core")
     (version "1.2.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/qos-ch/logback/archive/v_"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/qos-ch/logback/")
+                    (commit (string-append "v_" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x6ga74yfgm94cfx98gybakbrlilx8i2gn6dx13l40kasmys06mi"))
+                "055jbfpg3l5qw7pw2snkdag0gjkb4vcxfg9110cqqyc40k2nd17z"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "logback-access/lib")
-                  #t))))
+               '(delete-file-recursively "logback-access/lib"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "logback.jar"
