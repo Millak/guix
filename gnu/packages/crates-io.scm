@@ -15945,7 +15945,7 @@ hexadecimal, base32, and base64.")
 (define-public rust-data-url-0.1
   (package
     (name "rust-data-url")
-    (version "0.1.0")
+    (version "0.1.1")
     (source
       (origin
         (method url-fetch)
@@ -15954,7 +15954,7 @@ hexadecimal, base32, and base64.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "176wa1n8h71iwyaxhar4sqwrgrvb5sxk26az0fy88vnxrsffjgyk"))))
+          "14z15yiyklp5dv0k0q6pd83irrn0y8hj9y3fj17akkrbf37byc1s"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
