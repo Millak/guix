@@ -31365,11 +31365,10 @@ REPL appropriate to the current major mode.")
 
 (define-public emacs-liberime
   (let ((commit "cc9eb9812fd6f68e78ed6a0c0a85da7a18765753")
-        (revision "0")
-        (version "0.0.6"))
+        (revision "0"))
     (package
       (name "emacs-liberime")
-      (version (git-version (string-append "v" version) revision commit))
+      (version (git-version "0.0.6" revision commit))
       (source
        (origin
          (method git-fetch)
