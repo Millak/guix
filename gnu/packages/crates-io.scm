@@ -32211,7 +32211,7 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
 (define-public rust-markup5ever-0.10
   (package
     (name "rust-markup5ever")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
       (origin
         (method url-fetch)
@@ -32220,19 +32220,16 @@ algorithms.  It supports CBC block cipher mode, PKCS5 padding and 64, 128,
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1aqxl1lsc8s6ycsw5ibwynadnb9qpiab4ggwgdq9pjlnjdk8vqxa"))))
+          "1zf8iq2czd6kz99fjs3pgf5c17lfz75ds31khkfiqbc50gxl0kx2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-phf" ,rust-phf-0.8)
-        ("rust-string-cache" ,rust-string-cache-0.8)
-        ("rust-tendril" ,rust-tendril-0.4)
         ("rust-phf-codegen" ,rust-phf-codegen-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5))))
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
+        ("rust-tendril" ,rust-tendril-0.4))))
     (home-page "https://github.com/servo/html5ever")
     (synopsis "Common code for xml5ever and html5ever")
     (description
