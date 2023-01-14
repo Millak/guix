@@ -18049,6 +18049,10 @@ administrator's choice; reconfiguring does @emph{not} change their name.
 @item @code{home-directory}
 This is the name of the home directory for the account.
 
+@item @code{home-directory-permissions} (default: @code{#o700})
+The permission bits for the home directory.  By default, full access is
+granted to the user account and all other access is denied.
+
 @item @code{create-home-directory?} (default: @code{#t})
 Indicates whether the home directory of this account should be created
 if it does not exist yet.
