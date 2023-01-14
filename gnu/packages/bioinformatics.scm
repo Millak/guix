@@ -17841,7 +17841,7 @@ module capable of computing base-level alignments for very large sequences.")
 (define-public gdcm
   (package
     (name "gdcm")
-    (version "2.8.9")
+    (version "3.0.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17851,7 +17851,7 @@ module capable of computing base-level alignments for very large sequences.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j8mjnxcwn2xvzhf25lv4dbawxbgc4im1crh8081li7i4mbwswaj"))))
+                "1w78cmm9q7aavs7svdkl4dgilcqk4yazci9m6x7icrssb7cj991i"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -17863,7 +17863,7 @@ module capable of computing base-level alignments for very large sequences.")
                              "|TestSCUValidation"
                              "|TestEcho"
                              "|TestFind'"))))
-    (home-page "http://gdcm.sourceforge.net/wiki/index.php/Main_Page")
+    (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
     (synopsis "Grassroots DICOM library")
     (description
      "Grassroots DICOM (GDCM) is an implementation of the DICOM standard
@@ -17872,7 +17872,7 @@ directly.  GDCM includes a file format definition and a network communications
 protocol, both of which should be extended to provide a full set of tools for
 a researcher or small medical imaging vendor to interface with an existing
 medical database.")
-    (license license:bsd-2)))
+    (license license:bsd-3)))
 
 (define-public wiggletools
   (package
