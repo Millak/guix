@@ -375,36 +375,7 @@ many programming languages.")
     (license license:bsd-3)))
 
 (define-public i3-gaps
-  (package
-    (inherit i3-wm)
-    (name "i3-gaps")
-    (version "4.20.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Airblader/i3")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
-    (home-page "https://github.com/Airblader/i3")
-    (synopsis "Tiling window manager with gaps")
-    (description
-     "i3-gaps is a fork of i3wm, a tiling window manager
-for X11.  It is kept up to date with upstream, adding a few additional
-features such as gaps between windows.
-
-i3 is a tiling X11 window manager that dynamically manages tiled, stacked,
-and tabbed window layouts.
-
-i3 primarily targets advanced users.  Windows are managed manually and
-organised inside containers, which can be split vertically or horizontally,
-and optionally resized.
-
-i3 uses a plain-text configuration file, and can be extended and controlled
-from many programming languages.")
-    (license license:bsd-3)))
+  (deprecated-package "i3-gaps" i3-wm))
 
 (define-public i3lock
   (package
