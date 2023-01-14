@@ -1317,9 +1317,9 @@ Linux kernel.  It has been modified to remove all non-free binary blobs.")
 (define-public linux-libre-with-bpf
   (let ((base-linux-libre
          (make-linux-libre*
-          linux-libre-6.0-version
-          linux-libre-6.0-gnu-revision
-          linux-libre-6.0-source
+          linux-libre-6.1-version
+          linux-libre-6.1-gnu-revision
+          linux-libre-6.1-source
           '("x86_64-linux" "i686-linux" "armhf-linux"
             "aarch64-linux" "powerpc64le-linux" "riscv64-linux")
           #:extra-version "bpf"
