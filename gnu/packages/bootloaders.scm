@@ -965,9 +965,6 @@ appended to the package description."
                   uboot-files)
                  #t)))))))))
 
-(define-public u-boot-malta
-  (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
-
 (define-public u-boot-am335x-boneblack
   (let ((base (make-u-boot-package
                "am335x_evm" "arm-linux-gnueabihf"
