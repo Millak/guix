@@ -26686,7 +26686,7 @@ music.")
 (define-public emacs-mpdel
   (package
     (name "emacs-mpdel")
-    (version "2.0.0")
+    (version "2.1.0")
     (source
      (origin
        (method git-fetch)
@@ -26696,7 +26696,7 @@ music.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wg48z0g6qqsd38r2ydba8dp7cq72cnkzshmhj6900xak6f5ywfd"))))
+         "00ajjb9iawva3g7i1y6bz4d4ny3cv5rby6vgkwiy2xkprzxi8900"))))
     (build-system emacs-build-system)
     (propagated-inputs
      (list emacs-libmpdel emacs-navigel))
