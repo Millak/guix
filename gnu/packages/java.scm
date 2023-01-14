@@ -12942,9 +12942,7 @@ static code analysis or code manipulation.")))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'chdir
-           (lambda _
-             (chdir "logback-core")
-             #t)))))
+           (lambda _ (chdir "logback-core"))))))
     (inputs
      (list java-javax-mail
            java-javaee-servletapi
