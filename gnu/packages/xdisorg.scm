@@ -77,6 +77,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system go)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
@@ -107,6 +108,7 @@
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
@@ -128,6 +130,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages syncthing)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages xml)
@@ -2921,6 +2924,48 @@ to find all available clips and launches @command{dmenu} (or @command{rofi},
 depending on the value of @code{CM_LAUNCHER}) to let the user select a clip.
 After selection, the clip is put onto the PRIMARY and CLIPBOARD X selections.")
       (license license:public-domain))))
+
+(define-public clipman
+  (package
+    (name "clipman")
+    (version "1.6.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://github.com/yory8/" name "/"))
+                    (commit (string-append "v" version))))
+              (sha256 (base32
+                        "0b9kvj0dif4221dy6c1npknhhjxvbc4kygzhwxjirpwjws0yv6v9"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/yory8/clipman"
+           #:install-source? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-before 'build 'patch
+                          (lambda _
+                            (substitute* "src/github.com/yory8/clipman/main.go"
+                              (("gopkg.in/alecthomas/kingpin.v2")
+                               "github.com/alecthomas/kingpin")
+                              (("\"wl-copy\"")
+                               (string-append "\"" (which "wl-copy") "\"")))))
+                        (delete 'install-license-files))))
+    (native-inputs (list go-github-com-alecthomas-template
+                         go-github-com-alecthomas-units))
+    (inputs (list go-github-com-kballard-go-shellquote
+                  go-github-com-alecthomas-kingpin
+                  libnotify
+                  wl-clipboard))
+    (synopsis "Basic clipboard manager with support for persisting copy buffers")
+    (description
+     "A clipboard manager for Wayland that relies on an external selector,
+such as @code{wofi}, @code{bemenu}, @code{dmenu}, or @code{rofi}.
+
+Run the binary in your session by adding @command{exec wl-paste -t text --watch
+clipman store} (or @command{exec wl-paste -t text --watch clipman store 1>>
+PATH/TO/LOGFILE 2>&1 &} to log errors) at the beginning of wherever you
+initialize programs.")
+    (home-page "https://github.com/yory8/clipman")
+    (license license:gpl3)))
 
 (define-public kbdd
   (package
