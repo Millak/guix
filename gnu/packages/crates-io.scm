@@ -9599,7 +9599,7 @@ box''.")
   (package
     (inherit rust-cast-0.3)
     (name "rust-cast")
-    (version "0.2.3")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
@@ -9608,12 +9608,11 @@ box''.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1c5z7zryj0zwnhdgs6rw5dfvnlwc1vm19jzrlgx5055alnwk952b"))))
+         "16p3bqi3qad1qdjgjc1r0x72iinj1aw2k8fw5zx2l51s52sdl92c"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-rustc-version" ,rust-rustc-version-0.2))
+     `(#:cargo-inputs
+       (("rust-rustc-version" ,rust-rustc-version-0.4))
        #:cargo-development-inputs
        (("rust-quickcheck" ,rust-quickcheck-0.9))))))
 
