@@ -68505,7 +68505,7 @@ including a line breaking iterator.")
 (define-public rust-xml5ever-0.16
   (package
     (name "rust-xml5ever")
-    (version "0.16.1")
+    (version "0.16.2")
     (source
       (origin
         (method url-fetch)
@@ -68514,7 +68514,7 @@ including a line breaking iterator.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0nbapmdrn4zqry5p01l2mmbb48fcq0gga377p1c4lkb1x3k546qb"))))
+          "0rfqys8yyigkzrqcrn5c6r10v42pwxahccyyzhc293px30w1cd4j"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
