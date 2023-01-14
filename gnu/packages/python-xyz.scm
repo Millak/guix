@@ -965,13 +965,13 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.19.2")
+    (version "0.20.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pint" version))
               (sha256
                (base32
-                "1bsbiikm9i4saqc6mc3minkmrgnsgcg734agsvd7icqhyngrim71"))))
+                "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest
