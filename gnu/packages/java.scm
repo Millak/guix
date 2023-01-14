@@ -12947,18 +12947,18 @@ static code analysis or code manipulation.")))
              (chdir "logback-core")
              #t)))))
     (inputs
-     `(("java-javax-mail" ,java-javax-mail)
-       ("servlet" ,java-javaee-servletapi)
-       ("java-commons-compiler" ,java-commons-compiler)
-       ("java-janino" ,java-janino)))
+     (list java-javax-mail
+           java-javaee-servletapi
+           java-commons-compiler
+           java-janino))
     (native-inputs
-     `(("java-junit" ,java-junit)
-       ("java-hamcrest-core" ,java-hamcrest-core)
-       ("java-mockito-1" ,java-mockito-1)
-       ("java-cglib" ,java-cglib)
-       ("java-asm" ,java-asm)
-       ("java-objenesis" ,java-objenesis)
-       ("java-joda-time" ,java-joda-time)))
+     (list java-junit
+           java-hamcrest-core
+           java-mockito-1
+           java-cglib
+           java-asm
+           java-objenesis
+           java-joda-time))
     (home-page "https://logback.qos.ch")
     (synopsis "Logging for java")
     (description "Logback is intended as a successor to the popular log4j project.
