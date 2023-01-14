@@ -45951,14 +45951,14 @@ Rust.")
 (define-public rust-rayon-core-1
   (package
     (name "rust-rayon-core")
-    (version "1.9.1")
+    (version "1.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rayon-core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "13kdcnqp2p1a5a3amamfjpnm7ay463vq4dfxy4rrh9shr3i210fp"))))
+        (base32 "1lvavqk42lmll47q008j8y6nw54f3sfvcjlbaa26iaq0bnpi1i6a"))))
     (build-system cargo-build-system)
     (arguments
      ;; One of the tests attempts to overflow the stack, but the compiler has
@@ -45968,12 +45968,11 @@ Rust.")
        (("rust-crossbeam-channel" ,rust-crossbeam-channel-0.5)
         ("rust-crossbeam-deque" ,rust-crossbeam-deque-0.8)
         ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
-        ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-num-cpus" ,rust-num-cpus-1))
        #:cargo-development-inputs
        (("rust-libc" ,rust-libc-0.2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-rand-xorshift" ,rust-rand-xorshift-0.2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3)
         ("rust-scoped-tls" ,rust-scoped-tls-1))))
     (home-page "https://github.com/rayon-rs/rayon")
     (synopsis "Core APIs for Rayon")
