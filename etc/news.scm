@@ -26,6 +26,14 @@
 (channel-news
  (version 0)
 
+ (entry (commit "9ea37eb9f5329c213757bbfe5d9241cde8433858")
+        (title
+         (en "Linux-libre 6.0 removed due to end of upstream support"))
+        (body
+         (en "The linux-libre 6.0 kernel series has reached the end of
+             its life, and no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")))
+
  (entry (commit "ce8a34bc9ab89f31f107383ba791954864aed372")
         (title
          (en "Linux-libre kernel updated to 6.1")
