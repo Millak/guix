@@ -45264,7 +45264,7 @@ distributions.")
 (define-public rust-rand-hc-0.3
   (package
     (name "rust-rand-hc")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -45272,11 +45272,10 @@ distributions.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0wra6ar22zdjkry9dsq1mg620m4h3qb9s8rfykkz4im4crqfz41i"))))
+        (base32 "1rwpykyvhkxs4jvqdja3mzp9dqaqamzn113cxaigs9z2dmcry7nm"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-rand-core" ,rust-rand-core-0.6))))
     (home-page "https://crates.io/crates/rand_hc")
     (synopsis "HC128 random number generator")
