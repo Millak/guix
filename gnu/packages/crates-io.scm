@@ -22177,7 +22177,7 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
 (define-public rust-futf-0.1
   (package
     (name "rust-futf")
-    (version "0.1.4")
+    (version "0.1.5")
     (source
      (origin
        (method url-fetch)
@@ -22186,7 +22186,7 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0fxc18bnabird5jl941nsd6d25vq8cn8barmz4d30dlkzbiir73w"))))
+         "0hvqk2r7v4fnc34hvc3vkri89gn52d5m9ihygmwn75l1hhp0whnz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
