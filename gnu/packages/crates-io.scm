@@ -58945,7 +58945,7 @@ directories.")
 (define-public rust-tendril-0.4
   (package
     (name "rust-tendril")
-    (version "0.4.1")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
@@ -58954,11 +58954,10 @@ directories.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0fsx7blrrzgca8aa2yqy8zxyi8s7amskhgkk1ml5sbaqyalyszvh"))))
+         "1c3vip59sqwxn148i714nmkrvjzbk7105vj0h92s6r64bw614jnj"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-encoding" ,rust-encoding-0.2)
         ("rust-encoding-rs" ,rust-encoding-rs-0.8)
         ("rust-futf" ,rust-futf-0.1)
