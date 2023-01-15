@@ -2723,7 +2723,7 @@ for wayland conceptually based on the X11 window manager
 (define-public libucl
   (package
     (name "libucl")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2732,8 +2732,7 @@ for wayland conceptually based on the X11 window manager
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1h52ldxankyhbbm1qbqz1f2q0j03c1b4mig7343bs3mc6fpm18gf"))))
+        (base32 "1j8npymjhcnzbwhx1wggr88148cga921438flf1sn7mw1b9dr55f"))))
     (native-inputs
      (list autoconf automake pkg-config libtool))
     (build-system gnu-build-system)
