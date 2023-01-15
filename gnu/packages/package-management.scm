@@ -493,8 +493,7 @@ also a distribution thereof.  It includes a virtual machine image.  Besides
 the usual package management features, it also supports transactional
 upgrades and roll-backs, per-user profiles, and much more.  It is based on
 the Nix package manager.")
-      (license license:gpl3+)
-      (properties '((ftp-server . "alpha.gnu.org"))))))
+      (license license:gpl3+))))
 
 (define* (channel-source->package source #:key commit)
   "Return a package for the given channel SOURCE, a lowerable object."
