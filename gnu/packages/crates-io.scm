@@ -56345,7 +56345,7 @@ developed as part of the Servo project.")
 (define-public rust-string-cache-codegen-0.5
   (package
     (name "rust-string-cache-codegen")
-    (version "0.5.1")
+    (version "0.5.2")
     (source
       (origin
         (method url-fetch)
@@ -56354,12 +56354,12 @@ developed as part of the Servo project.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "15vbk5i7kkj5bbx7f0fi477js4svw5py39gi4rk74anj35g8wk7j"))))
+          "1249fafaa7r3m67zxcbcw1bddanygv13r3209bvlzgi2ny4h5cvb"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-phf-generator" ,rust-phf-generator-0.8)
-        ("rust-phf-shared" ,rust-phf-shared-0.8)
+       (("rust-phf-generator" ,rust-phf-generator-0.10)
+        ("rust-phf-shared" ,rust-phf-shared-0.10)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1))))
     (home-page "https://github.com/servo/string-cache")
