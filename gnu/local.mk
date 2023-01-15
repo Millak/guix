@@ -955,8 +955,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/breezy-fix-gio.patch			\
   %D%/packages/patches/byobu-writable-status.patch		\
   %D%/packages/patches/bubblewrap-fix-locale-in-tests.patch	\
-  %D%/packages/patches/cabal-install-base16-bytestring1.0.patch		\
-  %D%/packages/patches/cabal-install-ghc8.10.patch		\
   %D%/packages/patches/cairo-CVE-2018-19876.patch		\
   %D%/packages/patches/cairo-CVE-2020-35492.patch		\
   %D%/packages/patches/calibre-no-updates-dialog.patch		\
@@ -1200,6 +1198,8 @@ dist_patch_DATA =						\
   %D%/packages/patches/geoclue-config.patch			\
   %D%/packages/patches/ghc-8.0-fall-back-to-madv_dontneed.patch	\
   %D%/packages/patches/ghc-testsuite-dlopen-pie.patch		\
+  %D%/packages/patches/ghc-bloomfilter-ghc9.2.patch	\
+  %D%/packages/patches/ghc-bytestring-handle-ghc9.patch	\
   %D%/packages/patches/ghc-language-haskell-extract-ghc-8.10.patch	\
   %D%/packages/patches/ghostscript-no-header-id.patch		\
   %D%/packages/patches/ghostscript-no-header-uuid.patch		\
@@ -1576,7 +1576,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/nix-dont-build-html-doc.diff		\
   %D%/packages/patches/nfs4-acl-tools-0.3.7-fixpaths.patch	\
   %D%/packages/patches/ngircd-handle-zombies.patch		\
-  %D%/packages/patches/ngless-unliftio.patch		\
   %D%/packages/patches/network-manager-plugin-path.patch	\
   %D%/packages/patches/network-manager-meson.patch		\
   %D%/packages/patches/nginx-socket-cloexec.patch		\
@@ -2012,7 +2011,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xfce4-settings-defaults.patch		\
   %D%/packages/patches/xgboost-use-system-dmlc-core.patch       \
   %D%/packages/patches/xmonad-dynamic-linking.patch		\
-  %D%/packages/patches/xmonad-next-dynamic-linking.patch	\
   %D%/packages/patches/xnnpack-system-libraries.patch		\
   %D%/packages/patches/xplanet-1.3.1-cxx11-eof.patch		\
   %D%/packages/patches/xplanet-1.3.1-libdisplay_DisplayOutput.cpp.patch	\

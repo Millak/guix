@@ -30,108 +30,76 @@
 (define-public dhall
   (package
     (name "dhall")
-    (version "1.39.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "dhall" version))
-       (sha256
-        (base32 "1by2d84fbckspczddl4npfsf89q6nprmbg0i5g8yr1psp0fpl4ab"))))
+    (version "1.41.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "dhall" version))
+              (sha256
+               (base32
+                "14m5rrvkid76qnvg0l14xw1mnqclhip3gjrz20g1lp4fd5p056ka"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "dhall")))
-    (inputs
-     (list ghc-aeson
-           ghc-aeson-pretty
-           ghc-ansi-terminal
-           ghc-atomic-write-0.2.0.7
-           ghc-case-insensitive
-           ghc-cborg
-           ghc-cborg-json
-           ghc-contravariant
-           ghc-data-fix
-           ghc-diff
-           ghc-dotgen
-           ghc-either
-           ghc-exceptions
-           ghc-half
-           ghc-hashable
-           ghc-lens-family-core
-           ghc-megaparsec
-           ghc-memory
-           ghc-mmorph
-           ghc-network-uri
-           ghc-optparse-applicative
-           ghc-parsers
-           ghc-parser-combinators
-           ghc-prettyprinter
-           ghc-prettyprinter-ansi-terminal
-           ghc-pretty-simple
-           ghc-profunctors
-           ghc-pretty-simple
-           ghc-repline
-           ghc-serialise
-           ghc-scientific
-           ghc-text-manipulate
-           ghc-th-lift-instances
-           ghc-transformers-compat
-           ghc-unordered-containers
-           ghc-uri-encode
-           ghc-vector
-           ghc-cryptonite
-           ghc-http-types
-           ghc-http-client
-           ghc-http-client-tls))
-    (native-inputs
-     (list ghc-foldl
-           ghc-generic-random-1.3.0.1
-           ghc-quickcheck
-           ghc-quickcheck-instances
-           ghc-semigroups
-           ghc-special-values
-           ghc-spoon
-           ghc-tasty
-           ghc-tasty-expected-failure
-           ghc-tasty-hunit
-           ghc-tasty-quickcheck
-           ghc-tasty-silver
-           ghc-turtle
-           ghc-mockery
-           ghc-doctest))
+    (inputs (list ghc-aeson
+                  ghc-aeson-pretty
+                  ghc-ansi-terminal
+                  ghc-atomic-write
+                  ghc-base16-bytestring
+                  ghc-case-insensitive
+                  ghc-cborg
+                  ghc-cborg-json
+                  ghc-contravariant
+                  ghc-data-fix
+                  ghc-diff
+                  ghc-dotgen
+                  ghc-either
+                  ghc-half
+                  ghc-hashable
+                  ghc-indexed-traversable
+                  ghc-lens-family-core
+                  ghc-megaparsec
+                  ghc-mmorph
+                  ghc-network-uri
+                  ghc-optparse-applicative
+                  ghc-parsers
+                  ghc-parser-combinators
+                  ghc-prettyprinter
+                  ghc-prettyprinter-ansi-terminal
+                  ghc-pretty-simple
+                  ghc-profunctors
+                  ghc-repline
+                  ghc-serialise
+                  ghc-scientific
+                  ghc-text-manipulate
+                  ghc-text-short
+                  ghc-th-lift-instances
+                  ghc-unordered-containers
+                  ghc-uri-encode
+                  ghc-vector
+                  ghc-cryptohash-sha256
+                  ghc-http-types
+                  ghc-http-client
+                  ghc-http-client-tls))
+    (native-inputs (list ghc-foldl
+                         ghc-generic-random
+                         ghc-quickcheck
+                         ghc-quickcheck-instances
+                         ghc-special-values
+                         ghc-spoon
+                         ghc-system-filepath
+                         ghc-tasty
+                         ghc-tasty-expected-failure
+                         ghc-tasty-hunit
+                         ghc-tasty-quickcheck
+                         ghc-tasty-silver
+                         ghc-temporary
+                         ghc-turtle
+                         ghc-mockery
+                         ghc-doctest))
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'remove-network-tests
-           (lambda _
-             (with-directory-excursion "dhall-lang/tests"
-               (for-each
-                delete-file
-                '("import/success/customHeadersA.dhall"
-                  "import/success/noHeaderForwardingA.dhall"
-                  "import/success/unit/RemoteAsTextA.dhall"
-                  "import/success/unit/SimpleRemoteA.dhall"
-                  "import/success/unit/asLocation/RemoteChain1A.dhall"
-                  "import/success/unit/asLocation/RemoteChain2A.dhall"
-                  "import/success/unit/asLocation/RemoteChain3A.dhall"
-                  "import/success/unit/asLocation/RemoteChainEnvA.dhall"
-                  "import/success/unit/asLocation/RemoteChainMissingA.dhall"
-                  "type-inference/success/CacheImportsA.dhall"
-                  "type-inference/success/CacheImportsCanonicalizeA.dhall")))
-             (substitute* "src/Dhall/Tutorial.hs"
-               (((string-append
-                  "-- >>> input auto "
-                  "\"https://raw.githubusercontent.com/dhall-lang"
-                  "/dhall-haskell/18e4e9a18dc53271146df3ccf5b4177c3552236b/"
-                  "examples/True\" :: IO Bool"))
-                "")
-               (((string-append
-                  "-- >>> input auto "
-                  "\"False == "
-                  "https://raw.githubusercontent.com/dhall-lang"
-                  "/dhall-haskell/18e4e9a18dc53271146df3ccf5b4177c3552236b/"
-                  "examples/True\" :: IO Bool"))
-                ""))
-             #t)))))
-    (home-page "https://dhall-lang.org/")
+     `(#:tests? #f ; Tries to access httpbin.org
+       #:cabal-revision ("4"
+                         "0innb3cn98ynb8bd83jdyrm64ij7wcvajg5qcwzdwbyzpr62anfx")))
+    (home-page "http://hackage.haskell.org/package/dhall")
     (synopsis "Configuration language guaranteed to terminate")
     (description
      "Dhall is an explicitly typed configuration language that is not Turing

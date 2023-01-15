@@ -61,29 +61,27 @@
 (define-public apply-refact
   (package
     (name "apply-refact")
-    (version "0.9.3.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "apply-refact" version))
-       (sha256
-        (base32
-         "1sn5g71sx8xa4ggyk49m661iip6zrzl65vb87l16l31kf79bbm7w"))))
+    (version "0.10.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "apply-refact" version))
+              (sha256
+               (base32
+                "129bf8n66kpwh5420rxprngg43bqr2agyd8q8d7l49k2rxsjl1fb"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "apply-refact")))
-    (inputs
-     (list ghc-refact
-           ghc-exactprint
-           ghc-syb
-           ghc-extra
-           ghc-uniplate
-           ghc-filemanip
-           ghc-unix-compat
-           ghc-optparse-applicative))
-    (native-inputs
-     (list ghc-tasty ghc-tasty-golden ghc-tasty-expected-failure
-           ghc-silently))
-    (home-page "https://hackage.haskell.org/package/apply-refact")
+    (inputs (list ghc-refact
+                  ghc-exactprint
+                  ghc-paths
+                  ghc-extra
+                  ghc-syb
+                  ghc-filemanip
+                  ghc-uniplate
+                  ghc-unix-compat
+                  ghc-optparse-applicative))
+    (native-inputs (list ghc-tasty ghc-tasty-golden ghc-tasty-expected-failure
+                         ghc-silently))
+    (home-page "https://github.com/mpickering/apply-refact")
     (synopsis "Perform refactorings specified by the refact library")
     (description
      "This package lets you perform refactorings specified by the refact
@@ -94,43 +92,36 @@ library.  It is primarily used with HLint's @code{--refactor} flag.")
 ;; update this packages after updating GHC.
 (define-public cabal-install
  (package
-  (name "cabal-install")
-   (version "3.2.0.0")
-   (source
-    (origin
-     (method url-fetch)
-      (uri (hackage-uri "cabal-install" version))
-      (patches (search-patches "cabal-install-base16-bytestring1.0.patch"
-                               "cabal-install-ghc8.10.patch"))
-      (sha256
-       (base32 "1c0cc256bha97aj7l0lf76l5swlnmwcqppiz8l4cl5xgba4mwmd0"))))
+   (name "cabal-install")
+   (version "3.6.2.0")
+   (source (origin
+             (method url-fetch)
+             (uri (hackage-uri "cabal-install" version))
+             (sha256
+              (base32
+               "0dihpm4h3xh13vnpvwflnb7v614qdvljycc6ffg5cvhwbwfrxyfw"))))
    (build-system haskell-build-system)
    (properties '((upstream-name . "cabal-install")))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'update-constraints
-           (lambda _
-             (substitute* "cabal-install.cabal"
-               (("(base|base16-bytestring|random)\\s+[^,]+" all dep)
-                dep)))))))
-   (inputs
-    (list ghc-async
-          ghc-base16-bytestring
-          ghc-cryptohash-sha256
-          ghc-echo
-          ghc-edit-distance
-          ghc-hackage-security
-          ghc-hashable
-          ghc-http
-          ghc-network-uri
-          ghc-network
-          ghc-random
-          ghc-resolv
-          ghc-tar
-          ghc-zip-archive
-          ghc-zlib))
-   (home-page "https://www.haskell.org/cabal/")
+   (inputs (list ghc-async
+                 ghc-base16-bytestring
+                 ghc-cryptohash-sha256
+                 ghc-echo
+                 ghc-edit-distance
+                 ghc-hashable
+                 ghc-http
+                 ghc-network-uri
+                 ghc-random
+                 ghc-tar
+                 ghc-zlib
+                 ghc-hackage-security
+                 ghc-regex-base
+                 ghc-regex-posix
+                 ghc-resolv
+                 ghc-lukko))
+   (arguments
+    `(#:cabal-revision ("2"
+                        "1kpgyfl5njxp4c8ax5ziag1bhqvph3h0pn660v3vpxalz8d1j6xv")))
+   (home-page "http://www.haskell.org/cabal/")
    (synopsis "Command-line interface for Cabal and Hackage")
    (description
     "The cabal command-line program simplifies the process of managing
@@ -153,6 +144,9 @@ installation of Haskell libraries and programs.")
     (properties '((upstream-name . "cpphs")))
     (inputs
      (list ghc-polyparse ghc-old-locale ghc-old-time))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1f8jzs8zdh4wwbcq8fy6qqxkv75ypnvsm4yzw49wpr3b9vpnzlha")))
     (home-page "https://projects.haskell.org/cpphs/")
     (synopsis "Liberalised re-implementation of cpp, the C pre-processor")
     (description "Cpphs is a re-implementation of the C pre-processor that is
@@ -170,14 +164,14 @@ unlit literate code files; and an option to turn off macro-expansion.")
 (define-public darcs
   (package
     (name "darcs")
-    (version "2.16.4")
+    (version "2.16.5")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "darcs" version))
        (sha256
         (base32
-         "07dygwh6p4fsrlgxmq6r7yvxmf4n2y04izzd30jzqgs0pi9645p4"))
+         "0ar4markr71l9hzrbgcz4q37cf2rf3936i6qi8p827p36v96qg6n"))
        (modules '((guix build utils)))
        ;; Remove time-dependent code for reproducibility.
        (snippet
@@ -203,57 +197,50 @@ unlit literate code files; and an option to turn off macro-expansion.")
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "darcs.cabal"
-               (("(constraints)\\s+[^,]+" all dep)
-                dep)
-               (("(cryptonite)\\s+[^,]+" all dep)
+               (("(attoparsec|base|bytestring|constraints|cryptonite|hashable|memory|regex-tdfa|time)\\s+[^,]+" all dep)
                 dep)))))))
-    (inputs
-     (list ghc-cmdargs
-           ghc-split
-           ghc-test-framework-quickcheck2
-           ghc-test-framework-hunit
-           ghc-test-framework
-           ghc-quickcheck
-           ghc-constraints
-           ghc-findbin
-           ghc-hunit
-           ghc-cryptonite
-           ghc-http-conduit
-           ghc-http-types
-           ghc-async
-           ghc-attoparsec
-           ghc-base16-bytestring
-           ghc-bytestring-builder
-           ghc-cryptohash
-           ghc-data-ordlist
-           ghc-fgl
-           ghc-system-filepath
-           ghc-graphviz
-           ghc-hashable
-           ghc-html
-           ghc-mmap
-           ghc-old-time
-           ghc-random
-           ghc-regex-applicative
-           ghc-regex-compat-tdfa
-           ghc-sandi
-           ghc-shelly
-           ghc-tar
-           ghc-transformers-compat
-           ghc-unix-compat
-           ghc-utf8-string
-           ghc-vector
-           ghc-zip-archive
-           ghc-zlib
-           ghc-http
-           curl
-           ghc
-           ncurses
-           perl
-           ghc-network
-           ghc-network-uri))
-    (native-inputs
-     (list pkg-config))
+    (inputs (list ghc-regex-base
+                  ghc-regex-tdfa
+                  ghc-regex-applicative
+                  ghc-fgl
+                  ghc-html
+                  ghc-memory
+                  ghc-cryptonite
+                  ghc-base16-bytestring
+                  ghc-utf8-string
+                  ghc-vector
+                  ghc-tar
+                  ghc-data-ordlist
+                  ghc-attoparsec
+                  ghc-zip-archive
+                  ghc-async
+                  ghc-constraints
+                  ghc-unix-compat
+                  ghc-old-time
+                  ghc-temporary
+                  ghc-hashable
+                  ghc-mmap
+                  ghc-zlib
+                  ghc-network-uri
+                  ghc-network
+                  ghc-conduit
+                  ghc-http-conduit
+                  ghc-http-types
+                  curl))
+    (native-inputs (list ghc-cmdargs
+                         ghc-findbin
+                         ghc-quickcheck
+                         ghc-leancheck
+                         ghc-hunit
+                         ghc-test-framework
+                         ghc-test-framework-hunit
+                         ghc-test-framework-quickcheck2
+                         ghc-test-framework-leancheck
+                         ghc-monad-control
+                         ghc-system-filepath
+                         ghc-system-fileio
+                         ghc-transformers-base
+                         pkg-config))
     (home-page "http://darcs.net")
     (synopsis "Distributed Revision Control System")
     (description
@@ -509,36 +496,39 @@ used to keep a folder in sync between computers.")
 (define-public hlint
   (package
     (name "hlint")
-    (version "3.2.7")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hlint" version))
-       (sha256
-        (base32
-         "0z6gxndrh7blzapkdn6fq1pkbkjlmbgjbq9ydnvy2wm00fb3v73g"))))
+    (version "3.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hlint" version))
+              (sha256
+               (base32
+                "0bkk03c9hacvfd73dk89g4r81b50g7pjgw5pavldali4qwss34cz"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hlint")))
-    (inputs
-     (list ghc-unordered-containers
-           ghc-yaml
-           ghc-vector
-           ghc-data-default
-           ghc-file-embed
-           ghc-utf8-string
-           cpphs
-           ghc-filepattern
-           ghc-lib-parser-ex
-           hscolour
-           ghc-cmdargs
-           ghc-uniplate
-           ghc-ansi-terminal
-           ghc-extra
-           ghc-refact
-           ghc-aeson))
-    (home-page "https://github.com/ndmitchell/hlint")
+    (inputs (list ghc-unordered-containers
+                  ghc-vector
+                  ghc-file-embed
+                  ghc-utf8-string
+                  ghc-data-default
+                  cpphs
+                  ghc-cmdargs
+                  ghc-uniplate
+                  ghc-ansi-terminal
+                  ghc-extra
+                  ghc-refact
+                  ghc-aeson
+                  ghc-deriving-aeson
+                  ghc-filepattern
+                  ghc-lib-parser-ex
+                  hscolour
+                  ghc-yaml))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1rdaffg5n179yfcn5zjwjb0bki09qy13gz2ijky455y9pbaz8yz9")))
+    (home-page "https://github.com/ndmitchell/hlint#readme")
     (synopsis "Suggest improvements for Haskell source code")
-    (description "HLint reads Haskell programs and suggests changes that
+    (description
+     "HLint reads Haskell programs and suggests changes that
 hopefully make them easier to read.  HLint also makes it easy to disable
 unwanted suggestions, and to add your own custom suggestions.")
     (license license:bsd-3)))
@@ -546,50 +536,50 @@ unwanted suggestions, and to add your own custom suggestions.")
 (define-public hoogle
   (package
     (name "hoogle")
-    (version "5.0.18.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (hackage-uri "hoogle" version))
-       (sha256
-        (base32
-         "1xacx2f33x1a4qlv25f8rlmb4wi0cjfzrj22nlnkrd0knghik3m7"))))
+    (version "5.0.18.3")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hoogle" version))
+              (sha256
+               (base32
+                "0v6k75w0an9pqgb7a6cicnpf9rz77xd2lmxfbafc5l4f99jg83bn"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hoogle")))
-    (inputs
-     (list ghc-quickcheck
-           ghc-aeson
-           ghc-blaze-html
-           ghc-blaze-markup
-           ghc-cmdargs
-           ghc-conduit
-           ghc-conduit-extra
-           ghc-connection
-           ghc-extra
-           ghc-foundation
-           ghc-old-locale
-           ghc-haskell-src-exts
-           ghc-http-conduit
-           ghc-http-types
-           ghc-js-flot
-           ghc-js-jquery
-           ghc-mmap
-           ghc-process-extras
-           ghc-resourcet
-           ghc-storable-tuple
-           ghc-tar
-           ghc-uniplate
-           ghc-utf8-string
-           ghc-vector
-           ghc-wai
-           ghc-wai-logger
-           ghc-warp
-           ghc-warp-tls
-           ghc-zlib))
+    (inputs (list ghc-quickcheck
+                  ghc-aeson
+                  ghc-blaze-html
+                  ghc-blaze-markup
+                  ghc-cmdargs
+                  ghc-conduit
+                  ghc-conduit-extra
+                  ghc-connection
+                  ghc-extra
+                  ghc-foundation
+                  ghc-old-locale
+                  ghc-hashable
+                  ghc-haskell-src-exts
+                  ghc-http-conduit
+                  ghc-http-types
+                  ghc-js-flot
+                  ghc-js-jquery
+                  ghc-mmap
+                  ghc-process-extras
+                  ghc-resourcet
+                  ghc-storable-tuple
+                  ghc-tar
+                  ghc-uniplate
+                  ghc-utf8-string
+                  ghc-vector
+                  ghc-wai
+                  ghc-wai-logger
+                  ghc-warp
+                  ghc-warp-tls
+                  ghc-zlib
+                  ghc-semigroups))
     (home-page "https://hoogle.haskell.org/")
     (synopsis "Haskell API Search")
-    (description "Hoogle is a Haskell API search engine, which allows
+    (description
+     "Hoogle is a Haskell API search engine, which allows
 you to search many standard Haskell libraries by either function name,
 or by approximate type signature.")
     (license license:bsd-3)))
@@ -617,90 +607,89 @@ and mIRC chat codes.")
     (license license:bsd-3)))
 
 (define-public kmonad
-  (package
-    (name "kmonad")
-    (version "0.4.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/david-janssen/kmonad")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1rp880zxvrznx0y1k464wjrds441dpsz94syhrkaw5dnmxf74yjd"))))
-    (build-system haskell-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'haddock)             ; Haddock fails to generate docs
-         (add-after 'install 'install-udev-rules
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (rules (string-append out "/lib/udev/rules.d")))
-               (mkdir-p rules)
-               (call-with-output-file (string-append rules "/70-kmonad.rules")
-                 (lambda (port)
-                   (display
-                    (string-append
-                     "KERNEL==\"uinput\", MODE=\"0660\", "
-                     "GROUP=\"input\", OPTIONS+=\"static_node=uinput\"\n")
-                    port)))
-               #t)))
-         (add-after 'install-udev-rules 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/kmonad-" ,version)))
-               (install-file "README.md" doc)
-               (copy-recursively "doc" doc)
-               (copy-recursively "keymap" (string-append doc "/keymap"))
-               #t))))))
-    (inputs
-     (list ghc-cereal
-           ghc-exceptions
-           ghc-hashable
-           ghc-lens
-           ghc-megaparsec
-           ghc-optparse-applicative
-           ghc-resourcet
-           ghc-rio
-           ghc-unagi-chan
-           ghc-unliftio
-           ghc-unordered-containers))
-    (home-page "https://github.com/david-janssen/kmonad")
-    (synopsis "Advanced keyboard manager")
-    (description "KMonad is a keyboard remapping utility that supports
+  ;; Project is active, but no new releases exist. Pick current master
+  ;; HEAD as of 2023-01-08.
+  (let ((commit "a0af5b8b3f085adb2c09ca52374a53566c25194c")
+        (revision "1"))
+    (package
+      (name "kmonad")
+      (version (git-version "0.4.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/david-janssen/kmonad")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "00qmmk1lgadhh32dqi530xm18v79ndcm7rrxvdsf827vicv2nhw1"))))
+      (build-system haskell-build-system)
+      (arguments
+       `(#:haddock? #f ; Haddock fails to generate docs
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-git-path
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/KMonad/Args/TH.hs"
+                 (("\"git\"")
+                  (string-append "\"" (search-input-file inputs "/bin/git") "\"")))))
+           (add-after 'install 'install-udev-rules
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (rules (string-append out "/lib/udev/rules.d")))
+                 (mkdir-p rules)
+                 (call-with-output-file (string-append rules "/70-kmonad.rules")
+                   (lambda (port)
+                     (display
+                      (string-append
+                       "KERNEL==\"uinput\", MODE=\"0660\", "
+                       "GROUP=\"input\", OPTIONS+=\"static_node=uinput\"\n")
+                      port)))
+                 #t)))
+           (add-after 'install-udev-rules 'install-documentation
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (doc (string-append out "/share/doc/kmonad-" ,version)))
+                 (install-file "README.md" doc)
+                 (copy-recursively "doc" doc)
+                 (copy-recursively "keymap" (string-append doc "/keymap"))
+                 #t))))))
+      (inputs
+       (list ghc-cereal
+             ghc-exceptions
+             ghc-lens
+             ghc-megaparsec
+             ghc-optparse-applicative
+             ghc-resourcet
+             ghc-rio
+             ghc-unliftio
+             ghc-unordered-containers
+             ghc-template-haskell))
+      (native-inputs (list ghc-hspec hspec-discover git))
+      (home-page "https://github.com/david-janssen/kmonad")
+      (synopsis "Advanced keyboard manager")
+      (description "KMonad is a keyboard remapping utility that supports
 advanced functionality, such as custom keymap layers and modifiers, macros,
 and conditional mappings that send a different keycode when tapped or held.
 By operating at a lower level than most similar tools, it supports X11,
 Wayland, and Linux console environments alike.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public nixfmt
   (package
     (name "nixfmt")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "nixfmt" version))
        (sha256
-        (base32 "1ispgl8rc2scr6v8bb6sks7px856jf61x74zj2iyddrn5qamkb3n"))))
+        (base32 "0rxi8zrd2xr72w673nvgnhb0g3r7rssc1ahlhz8rmdpc6c1a82wl"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "nixfmt")))
     (inputs
      (list ghc-megaparsec ghc-parser-combinators ghc-cmdargs
            ghc-safe-exceptions))
-    (arguments
-     `(#:cabal-revision
-       ("1" "1hsj0jh6siph3afd9c2wii09sffl48rzqv653n4clpd8qy0rn48d")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'update-constraints
-           (lambda _
-             (substitute* "nixfmt.cabal"
-               (("(base|megaparsec)\\s+[^,]+" all dep)
-                dep)))))))
     (home-page "https://github.com/serokell/nixfmt")
     (synopsis "Opinionated formatter for Nix")
     (description
@@ -711,16 +700,16 @@ formatting by forgetting all existing formatting during parsing.")
 (define-public greenclip
   (package
     (name "greenclip")
-    (version "3.4")
+    (version "4.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/erebe/greenclip")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1baw360dcnyavacf7a8v6wq4m5g6bcmyybkckv4cz7r4xl5p3qws"))))
+        (base32 "10r485q055ci29fmpsjy55n1yqfil53cvdxldlzw2n6mpynmckyv"))))
     (build-system haskell-build-system)
     (native-inputs
      (list pkg-config))
@@ -734,6 +723,7 @@ formatting by forgetting all existing formatting during parsing.")
            ghc-microlens
            ghc-microlens-mtl
            ghc-protolude
+           ghc-tomland
            ghc-vector
            ghc-wordexp))
     (home-page "https://github.com/erebe/greenclip")
@@ -929,34 +919,31 @@ output, stderr, and exit status.")
 (define-public stylish-haskell
   (package
     (name "stylish-haskell")
-    (version "0.13.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (hackage-uri "stylish-haskell" version))
-       (sha256
-        (base32
-         "0x9w3zh1lzp6l5xj3mynnlr0fzb5mbv0wwpfxp8fr6bk0jcrzjwf"))))
+    (version "0.14.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "stylish-haskell" version))
+              (sha256
+               (base32
+                "17w92v0qnwj7m6yqdq5cxbr04xiz0yfnnyx5q54218wdl7n5lf6d"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "stylish-haskell")))
-    (inputs
-     (list ghc-aeson
-           ghc-file-embed
-           ghc-haskell-src-exts
-           ghc-semigroups
-           ghc-syb
-           ghc-hsyaml
-           ghc-hsyaml-aeson
-           ghc-lib-parser
-           ghc-strict
-           ghc-optparse-applicative
-           ghc-hunit
-           ghc-test-framework
-           ghc-test-framework-hunit))
-    (home-page "https://github.com/jaspervdj/stylish-haskell")
+    (inputs (list ghc-aeson
+                  ghc-file-embed
+                  ghc-regex-tdfa
+                  ghc-syb
+                  ghc-hsyaml-aeson
+                  ghc-hsyaml
+                  ghc-semigroups
+                  ghc-lib-parser-ex
+                  ghc-strict
+                  ghc-optparse-applicative))
+    (native-inputs (list ghc-hunit ghc-random ghc-test-framework
+                         ghc-test-framework-hunit))
+    (home-page "https://github.com/haskell/stylish-haskell")
     (synopsis "Haskell code prettifier")
-    (description "Stylish-haskell is a Haskell code prettifier.  The goal is
+    (description
+     "Stylish-haskell is a Haskell code prettifier.  The goal is
 not to format all of the code in a file, to avoid \"getting in the way\".
 However, this tool can e.g. clean up import statements and help doing various
 tasks that get tedious very quickly.  It can

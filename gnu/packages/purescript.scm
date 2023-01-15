@@ -34,79 +34,67 @@
 (define-public purescript
   (package
     (name "purescript")
-    (version "0.14.5")
+    (version "0.15.7")
     (source
      (origin
        (method url-fetch)
        (uri (hackage-uri "purescript" version))
        (sha256
-        (base32 "06f318hdah076vkviw1ryyg2p0gpbabsp8lbm5x03f2qv92n9j1n"))))
+        (base32 "1krjkgmxpfqf5a1jqs7qbg6r7ball1464zw6vgrdfzl9057c6l4f"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "purescript")))
-    (inputs
-     (list ghc-glob
-           ghc-aeson
-           ghc-aeson-better-errors
-           ghc-aeson-pretty
-           ghc-ansi-terminal
-           ghc-base-compat
-           ghc-blaze-html
-           ghc-bower-json
-           ghc-boxes
-           ghc-cborg
-           ghc-cheapskate
-           ghc-clock
-           ghc-cryptonite
-           ghc-data-ordlist
-           ghc-dlist
-           ghc-edit-distance
-           ghc-file-embed
-           ghc-fsnotify
-           ghc-happy
-           ghc-language-javascript
-           ghc-lifted-async
-           ghc-lifted-base
-           ghc-memory
-           ghc-microlens-platform
-           ghc-monad-control
-           ghc-monad-logger
-           ghc-network
-           ghc-parallel
-           ghc-pattern-arrows
-           ghc-protolude
-           ghc-purescript-cst
-           ghc-regex-tdfa
-           ghc-safe
-           ghc-scientific
-           ghc-semialign
-           ghc-semigroups
-           ghc-serialise
-           ghc-sourcemap
-           ghc-split
-           ghc-stringsearch
-           ghc-syb
-           ghc-these
-           ghc-transformers-base
-           ghc-transformers-compat
-           ghc-unordered-containers
-           ghc-utf8-string
-           ghc-vector
-           ghc-ansi-wl-pprint
-           ghc-http-types
-           ghc-network
-           ghc-optparse-applicative-0.15.1.0 ; XXX: needs specific version
-           ghc-wai
-           ghc-wai-websockets
-           ghc-warp
-           ghc-websockets))
-    (native-inputs
-     (list ghc-happy
-           ghc-hunit
-           ghc-hspec
-           hspec-discover
-           ghc-tasty
-           ghc-tasty-golden
-           ghc-tasty-hspec))
+    (inputs (list ghc-aeson
+                  ghc-aeson-better-errors
+                  ghc-ansi-terminal
+                  ghc-blaze-html
+                  ghc-bower-json
+                  ghc-boxes
+                  ghc-cborg
+                  ghc-serialise
+                  ghc-cheapskate
+                  ghc-clock
+                  ghc-cryptonite
+                  ghc-data-ordlist
+                  ghc-dlist
+                  ghc-edit-distance
+                  ghc-file-embed
+                  ghc-glob
+                  ghc-language-javascript
+                  ghc-lens
+                  ghc-lifted-async
+                  ghc-lifted-base
+                  ghc-memory
+                  ghc-monad-control
+                  ghc-monad-logger
+                  ghc-monoidal-containers
+                  ghc-parallel
+                  ghc-pattern-arrows
+                  ghc-protolude
+                  ghc-regex-tdfa
+                  ghc-safe
+                  ghc-scientific
+                  ghc-semigroups
+                  ghc-semialign
+                  ghc-sourcemap
+                  ghc-stringsearch
+                  ghc-these
+                  ghc-transformers-base
+                  ghc-utf8-string
+                  ghc-vector
+                  ghc-witherable
+                  ghc-ansi-wl-pprint
+                  ghc-network
+                  ghc-optparse-applicative
+                  ghc-gitrev))
+    (native-inputs (list ghc-generic-random
+                         ghc-hspec
+                         ghc-hunit
+                         ghc-newtype
+                         ghc-quickcheck
+                         ghc-regex-base
+                         ghc-split
+                         ghc-typed-process
+                         ghc-happy))
     (arguments
      `(;; Tests require npm
        #:tests? #f
@@ -116,7 +104,7 @@
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "purescript.cabal"
-               (("\\b(ansi-terminal|cryptonite|dlist|language-javascript)\\s+[^,]+" all dep)
+               (("\\b(language-javascript|process)\\s+[^,]+" all dep)
                 dep)))))))
     (home-page "https://www.purescript.org/")
     (synopsis "Haskell inspired programming language compiling to JavaScript")
@@ -125,39 +113,3 @@
 expressive types, inspired by Haskell and compiling to JavaScript.")
     (license license:bsd-3)))
 
-(define-public ghc-purescript-cst
-  (package
-    (name "ghc-purescript-cst")
-    (version "0.4.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (hackage-uri "purescript-cst" version))
-        (sha256
-          (base32 "0r3f5lr9lrv9wpgkwj6nyl42lvxryj2lvr1w7ld4gki8ylq24n8g"))))
-    (build-system haskell-build-system)
-    (properties '((upstream-name . "purescript-cst")))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'update-constraints
-           (lambda _
-             (substitute* "purescript-cst.cabal"
-               (("\\b(dlist)\\s+[^,]+" all dep)
-                dep)))))))
-    (inputs
-      (list ghc-aeson
-            ghc-base-compat
-            ghc-dlist
-            ghc-microlens
-            ghc-protolude
-            ghc-scientific
-            ghc-semigroups
-            ghc-serialise
-            ghc-vector))
-    (native-inputs (list ghc-happy))
-    (home-page "https://www.purescript.org/")
-    (synopsis "PureScript Programming Language Concrete Syntax Tree")
-    (description
-     "This package implements parser for the PureScript programming language.")
-    (license license:bsd-3)))

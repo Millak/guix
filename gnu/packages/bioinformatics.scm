@@ -14823,110 +14823,121 @@ datasets.")
 (define-public ngless
   (package
     (name "ngless")
-    (version "1.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/ngless-toolkit/ngless.git")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "0pb9f6b0yk9p4cdwiym8r190q1bcdiwvc7i2s6rw54qgi8r3g6pj"))
-       (patches (search-patches "ngless-unliftio.patch"))))
+    (version "1.5.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "NGLess" version))
+              (sha256
+               (base32
+                "0pljyrlpr9r3cl5311dhgxdl8y40szyi4vprn34i3piy0qrldymi"))))
     (build-system haskell-build-system)
     (arguments
-     (list
-      #:haddock? #f    ;The haddock phase fails with: NGLess/CmdArgs.hs:20:1:
-                       ;error: parse error on input import
-                       ;import Options.Applicative
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'create-Versions.hs
-            (lambda _
-              (substitute* "Makefile"
-                (("BWA_VERSION = .*")
-                 (string-append "BWA_VERSION = "
-                                #$(package-version bwa) "\n"))
-                (("SAM_VERSION = .*")
-                 (string-append "SAM_VERSION = "
-                                #$(package-version samtools) "\n"))
-                (("PRODIGAL_VERSION = .*")
-                 (string-append "PRODIGAL_VERSION = "
-                                #$(package-version prodigal) "\n"))
-                (("MINIMAP2_VERSION = .*")
-                 (string-append "MINIMAP2_VERSION = "
-                                #$(package-version minimap2) "\n")))
-              (invoke "make" "NGLess/Dependencies/Versions.hs")))
-          (add-after 'create-Versions.hs 'create-cabal-file
-            (lambda _ (invoke "hpack")))
-          ;; These tools are expected to be installed alongside ngless.
-          (add-after 'install 'link-tools
-            (lambda* (#:key inputs #:allow-other-keys)
-              (let ((bin (string-append #$output "/bin/")))
-                (symlink (search-input-file inputs "/bin/prodigal")
-                         (string-append bin "ngless-" #$version "-prodigal"))
-                (symlink (search-input-file inputs "/bin/minimap2")
-                         (string-append bin "ngless-" #$version "-minimap2"))
-                (symlink (search-input-file inputs "/bin/samtools")
-                         (string-append bin "ngless-" #$version "-samtools"))
-                (symlink (search-input-file inputs "/bin/bwa")
-                         (string-append bin "ngless-" #$version "-bwa"))))))))
-    (inputs
-     (list prodigal
-           bwa
-           samtools
-           minimap2
-           ghc-aeson
-           ghc-ansi-terminal
-           ghc-async
-           ghc-atomic-write
-           ghc-bytestring-lexing
-           ghc-conduit
-           ghc-conduit-algorithms
-           ghc-conduit-extra
-           ghc-configurator
-           ghc-convertible
-           ghc-data-default
-           ghc-diagrams-core
-           ghc-diagrams-lib
-           ghc-diagrams-svg
-           ghc-double-conversion
-           ghc-edit-distance
-           ghc-either
-           ghc-errors
-           ghc-extra
-           ghc-filemanip
-           ghc-file-embed
-           ghc-gitrev
-           ghc-hashtables
-           ghc-http-conduit
-           ghc-inline-c
-           ghc-inline-c-cpp
-           ghc-int-interval-map
-           ghc-missingh
-           ghc-optparse-applicative
-           ghc-regex
-           ghc-safe
-           ghc-safeio
-           ghc-strict
-           ghc-tar
-           ghc-tar-conduit
-           ghc-unliftio
-           ghc-unliftio-core
-           ghc-vector
-           ghc-yaml
-           ghc-zlib))
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "NGLess.cabal"
+               (("\\b(base)\\s+[^,]+" all dep)
+                dep))))
+         (add-after 'unpack 'create-Versions.hs
+           (lambda _
+             (substitute* "NGLess/Dependencies/Versions.hs"
+               (("bwaVersion = .+")
+                (string-append "bwaVersion = \""
+                               ,(package-version bwa) "\""))
+               (("samtoolsVersion = .+")
+                (string-append "samtoolsVersion = \""
+                               ,(package-version samtools) "\""))
+               (("prodigalVersion = .+")
+                (string-append "prodigalVersion = \""
+                               ,(package-version prodigal) "\""))
+               (("megahitVersion = .+")
+                (string-append "megahitVersion = \""
+                               ,(package-version megahit) "\""))
+               (("minimap2Version = .+")
+                (string-append "minimap2Version = \""
+                               ,(package-version minimap2) "\"")))))
+         ;; See NGLess/FileManagement.hs.
+         (add-after 'install 'wrap-program
+             (lambda* (#:key inputs outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (bwa (search-input-file inputs "/bin/bwa"))
+                      (samtools (search-input-file inputs "/bin/samtools"))
+                      (prodigal (search-input-file inputs "/bin/prodigal"))
+                      (minimap2 (search-input-file inputs "/bin/minimap2"))
+                      (megahit (search-input-file inputs "/bin/megahit")))
+                 (wrap-program (string-append out "/bin/ngless")
+                   `("NGLESS_BWA_BIN" " " = (,bwa))
+                   `("NGLESS_SAMTOOLS_BIN" " " = (,samtools))
+                   `("NGLESS_PRODIGAL_BIN" " " = (,prodigal))
+                   `("NGLESS_MINIMAP2_BIN" " " = (,minimap2))
+                   `("NGLESS_MEGAHIT_BIN" " " = (,megahit))))))
+          ;; Sanity check.
+          (add-after 'wrap-program 'check-install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((ngless (string-append (assoc-ref outputs "out") "/bin/ngless")))
+                 (invoke ngless "--check-install")))))))
+    (inputs (list prodigal
+                  bwa
+                  samtools
+                  minimap2
+                  megahit
+                  ghc-missingh
+                  ghc-aeson
+                  ghc-ansi-terminal
+                  ghc-async
+                  ghc-atomic-write
+                  ghc-bytestring-lexing
+                  ghc-conduit
+                  ghc-conduit-algorithms
+                  ghc-conduit-extra
+                  ghc-configurator
+                  ghc-convertible
+                  ghc-data-default
+                  ghc-edit-distance
+                  ghc-either
+                  ghc-errors
+                  ghc-extra
+                  ghc-file-embed
+                  ghc-filemanip
+                  ghc-hashable
+                  ghc-hashtables
+                  ghc-hostname
+                  ghc-http-client
+                  ghc-http-conduit
+                  ghc-inline-c
+                  ghc-inline-c-cpp
+                  ghc-int-interval-map
+                  ghc-network
+                  ghc-optparse-applicative
+                  ghc-primitive
+                  ghc-random-shuffle
+                  ghc-regex
+                  ghc-resourcet
+                  ghc-safe
+                  ghc-stm-chans
+                  ghc-stm-conduit
+                  ghc-strict
+                  ghc-tar
+                  ghc-tar-conduit
+                  ghc-unix-compat
+                  ghc-unliftio
+                  ghc-unliftio-core
+                  ghc-vector
+                  ghc-vector-algorithms
+                  ghc-yaml
+                  ghc-zlib
+                  ghc-bzlib-conduit
+                  ghc-double-conversion
+                  ghc-safeio))
     (propagated-inputs
      (list r-r6 r-hdf5r r-iterators r-itertools r-matrix))
-    (native-inputs
-     (list ghc-hpack
-           ghc-quickcheck
-           ghc-test-framework
-           ghc-test-framework-hunit
-           ghc-test-framework-quickcheck2
-           ghc-test-framework-th))
+    (native-inputs (list ghc-hunit
+                         ghc-quickcheck
+                         ghc-tasty
+                         ghc-tasty-hunit
+                         ghc-tasty-quickcheck
+                         ghc-tasty-th))
     (home-page "https://ngless.embl.de/")
     (synopsis "DSL for processing next-generation sequencing data")
     (description "Ngless is a domain-specific language for

@@ -1262,71 +1262,74 @@ assembler, PEG) is less than 1MB.")
     (license license:expat)))
 
 (define-public carp
-  (package
-    (name "carp")
-    (version "0.5.5")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/carp-lang/Carp")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "14jdnv0ljqvpr9ych1plfw7hp5q57a8j1bv8h3v345x06z783d07"))))
-    (build-system haskell-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; Carp looks inside the sources checkout to know where to
-               ;; find its core libraries and other files.
-               ;; Carp emits C code and tries to compile it with an external
-               ;; C compiler. On Linux it defaults to Clang.
-               (add-after 'install 'wrap-programs
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (define (wrap-carp-program program)
-                     (wrap-program (string-append
-                                    #$output "/bin/" program)
-                       `("CARP_DIR" prefix
-                         (#$(package-source this-package)))
-                       `("PATH" prefix
-                         ,(list (dirname
-                                 (search-input-file inputs "bin/clang"))
-                                (dirname
-                                 (search-input-file inputs "bin/ld"))))
-                       `("C_INCLUDE_PATH" prefix
-                         ,(list (dirname
-                                 (search-input-directory
-                                  inputs "include/linux"))
-                                (dirname
-                                 (search-input-file
-                                  inputs "include/stdlib.h"))))))
-
-                   (for-each wrap-carp-program
-                             (list "carp"
-                                   "carp-header-parse")))))))
-    (inputs
-     (list bash-minimal
-           clang
-           ghc-blaze-markup
-           ghc-blaze-html
-           ghc-split
-           ghc-ansi-terminal
-           ghc-cmark
-           ghc-edit-distance
-           ghc-hashable
-           ghc-open-browser
-           ghc-optparse-applicative))
-    (native-inputs
-     (list ghc-hunit))
-    (home-page "https://carp-lang.org/")
-    (synopsis "Statically typed Lisp without a garbage collector")
-    (description
-     "@code{carp} is a Lisp-like programming language that compiles to
+  ;; Release 0.5.5 does not support GHC 9.2.
+  (let ((commit "339722325ec607091f6035866ebedea2b69080fe")
+        (revision "1"))
+    (package
+      (name "carp")
+      (version (git-version "0.5.5" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/carp-lang/Carp")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w0j3imi4270dsmrh96spsc9xllsk5rrh817l80q1nyay9p53xwd"))))
+      (build-system haskell-build-system)
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 ;; Carp looks inside the sources checkout to know where to
+                 ;; find its core libraries and other files.
+                 ;; Carp emits C code and tries to compile it with an external
+                 ;; C compiler. On Linux it defaults to Clang.
+                 (add-after 'install 'wrap-programs
+                   (lambda* (#:key inputs #:allow-other-keys)
+                     (define (wrap-carp-program program)
+                       (wrap-program (string-append
+                                      #$output "/bin/" program)
+                         `("CARP_DIR" prefix
+                           (#$(package-source this-package)))
+                         `("PATH" prefix
+                           ,(list (dirname
+                                   (search-input-file inputs "bin/clang"))
+                                  (dirname
+                                   (search-input-file inputs "bin/ld"))))
+                         `("C_INCLUDE_PATH" prefix
+                           ,(list (dirname
+                                   (search-input-directory
+                                    inputs "include/linux"))
+                                  (dirname
+                                   (search-input-file
+                                    inputs "include/stdlib.h"))))))
+  
+                     (for-each wrap-carp-program
+                               (list "carp"
+                                     "carp-header-parse")))))))
+      (inputs
+       (list bash-minimal
+             clang
+             ghc-blaze-markup
+             ghc-blaze-html
+             ghc-split
+             ghc-ansi-terminal
+             ghc-cmark
+             ghc-edit-distance
+             ghc-hashable
+             ghc-open-browser
+             ghc-optparse-applicative))
+      (native-inputs
+       (list ghc-hunit))
+      (home-page "https://carp-lang.org/")
+      (synopsis "Statically typed Lisp without a garbage collector")
+      (description
+       "@code{carp} is a Lisp-like programming language that compiles to
 C.  It features inferred static typing, macros, automatic memory
 management without a garbage collector, a REPL, and straightforward
 integration with code written in C.")
-    (license license:asl2.0)))
+      (license license:asl2.0))))
 (define-public lisp-repl-core-dumper
   (package
     (name "lisp-repl-core-dumper")

@@ -70,7 +70,7 @@
           (add-before 'configure 'update-constraints
             (lambda _
               (substitute* "elm.cabal"
-                (("(ansi-terminal|containers|network|http-client|language-glsl)\\s+[^,]+" all dep)
+                (("(ansi-terminal|bytestring|containers|network|HTTP|http-client|language-glsl)\\s+[^,]+" all dep)
                  dep)))))))
     (inputs
      (list ghc-ansi-terminal

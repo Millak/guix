@@ -217,14 +217,13 @@ line client and a client based on Qt.")
 (define-public hledger
   (package
     (name "hledger")
-    (version "1.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hledger" version))
-       (sha256
-        (base32
-         "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
+    (version "1.27.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hledger" version))
+              (sha256
+               (base32
+                "0qdg87m7ys2ykqqq32p7h7aw827w4f5bcqx4dspxxq6zqlvzddqb"))))
     (build-system haskell-build-system)
     (arguments
      (list
@@ -235,34 +234,34 @@ line client and a client based on Qt.")
               (install-file "hledger.info" (string-append #$output "/share/info"))
               (install-file "hledger.1" (string-append #$output "/man/man1")))))))
     (properties '((upstream-name . "hledger")))
-    (inputs
-     (list ghc-ansi-terminal
-           ghc-base-compat-batteries
-           ghc-cmdargs
-           ghc-data-default
-           ghc-decimal
-           ghc-diff
-           ghc-hashable
-           ghc-hledger-lib
-           ghc-lucid
-           ghc-math-functions
-           ghc-megaparsec
-           ghc-old-time
-           ghc-regex-tdfa
-           ghc-safe
-           ghc-aeson
-           ghc-extra
-           ghc-tasty
-           ghc-timeit
-           ghc-shakespeare
-           ghc-split
-           ghc-tabular
-           ghc-temporary
-           ghc-unordered-containers
-           ghc-utf8-string
-           ghc-utility-ht
-           ghc-wizards))
-    (home-page "https://hledger.org")
+    (inputs (list ghc-decimal
+                  ghc-diff
+                  ghc-aeson
+                  ghc-ansi-terminal
+                  ghc-breakpoint
+                  ghc-cmdargs
+                  ghc-data-default
+                  ghc-extra
+                  ghc-githash
+                  ghc-hashable
+                  ghc-hledger-lib
+                  ghc-lucid
+                  ghc-math-functions
+                  ghc-megaparsec
+                  ghc-microlens
+                  ghc-regex-tdfa
+                  ghc-safe
+                  ghc-shakespeare
+                  ghc-split
+                  ghc-tabular
+                  ghc-tasty
+                  ghc-temporary
+                  ghc-timeit
+                  ghc-unordered-containers
+                  ghc-utf8-string
+                  ghc-utility-ht
+                  ghc-wizards))
+    (home-page "http://hledger.org")
     (synopsis "Command-line interface for the hledger accounting system")
     (description
      "The command-line interface for the hledger accounting system.  Its basic
@@ -1969,59 +1968,63 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public hledger-web
   (package
     (name "hledger-web")
-    (version "1.21")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hledger-web" version))
-       (sha256
-        (base32
-         "0ivszqcypw0j2wn4r7fv7dqm1pvr0b1y6rqpxagzyk8cxn3ic9g2"))))
+    (version "1.27.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hledger-web" version))
+              (sha256
+               (base32
+                "151dxci7dld8626dzw823sr3d9iaac92wfzbfcbdz4jh9f7n07wa"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hledger-web")))
+    (inputs (list ghc-decimal
+                  ghc-aeson
+                  ghc-base64
+                  ghc-blaze-html
+                  ghc-blaze-markup
+                  ghc-breakpoint
+                  ghc-case-insensitive
+                  ghc-clientsession
+                  ghc-cmdargs
+                  ghc-conduit
+                  ghc-conduit-extra
+                  ghc-data-default
+                  ghc-extra
+                  ghc-hjsmin
+                  hledger
+                  ghc-hledger-lib
+                  ghc-hspec
+                  ghc-http-client
+                  ghc-http-conduit
+                  ghc-http-types
+                  ghc-megaparsec
+                  ghc-network
+                  ghc-shakespeare
+                  ghc-unix-compat
+                  ghc-unordered-containers
+                  ghc-utf8-string
+                  ghc-wai
+                  ghc-wai-cors
+                  ghc-wai-extra
+                  ghc-wai-handler-launch
+                  ghc-warp
+                  ghc-yaml
+                  ghc-yesod
+                  ghc-yesod-core
+                  ghc-yesod-form
+                  ghc-yesod-static
+                  ghc-yesod-test))
     (arguments
-     `(#:tests? #f ; TODO: fail.
-       #:cabal-revision
-       ("1" "1hnw10ibhbafbsfj5lzlxwjg4cjnqr5bb51n6mqbi30qqabgq78x")))
-    (inputs
-     (list ghc-aeson
-           ghc-blaze-html
-           ghc-blaze-markup
-           ghc-case-insensitive
-           ghc-clientsession
-           ghc-cmdargs
-           ghc-conduit-extra
-           ghc-conduit
-           ghc-data-default
-           ghc-decimal
-           ghc-extra
-           ghc-hjsmin
-           ghc-hledger-lib
-           ghc-hspec
-           ghc-http-client
-           ghc-http-conduit
-           ghc-http-types
-           ghc-megaparsec
-           ghc-network
-           ghc-shakespeare
-           ghc-unix-compat
-           ghc-unordered-containers
-           ghc-utf8-string
-           ghc-wai-cors
-           ghc-wai-extra
-           ghc-wai
-           ghc-wai-handler-launch
-           ghc-warp
-           ghc-yaml
-           ghc-yesod-core
-           ghc-yesod-form
-           ghc-yesod
-           ghc-yesod-static
-           ghc-yesod-test
-           hledger))
-    (home-page "https://hledger.org")
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; Tests write to $HOME.
+               (add-before 'check 'set-home
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (home-page "http://hledger.org")
     (synopsis "Web-based user interface for the hledger accounting system")
-    (description "This package provides a simple Web-based User
+    (description
+     "This package provides a simple Web-based User
 Interface (UI) for the hledger accounting system.  It can be used as a
 local, single-user UI, or as a multi-user UI for viewing, adding, and
 editing on the Web.")

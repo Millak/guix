@@ -90,25 +90,19 @@ Haskell test framework.")
 (define-public ghc-tasty-quickcheck
   (package
     (name "ghc-tasty-quickcheck")
-    (version "0.10.1.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty-quickcheck" version))
-       (sha256
-        (base32
-         "0i1i78587znqzwps49milyr5n2k388ld2kr9ysz1vw8gcw51qq49"))))
+    (version "0.10.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-quickcheck" version))
+              (sha256
+               (base32
+                "1qnc6rdvjvlw08q6sln2n98rvj0s0pp689h6w4z58smjbn0lr25l"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-quickcheck")))
-    (inputs
-     (list ghc-quickcheck
-           ghc-tagged
-           ghc-tasty
-           ghc-random
-           ghc-ansi-terminal
-           ghc-tasty-hunit
-           ghc-pcre-light))
-    (home-page "http://documentup.com/feuerbach/tasty")
+    (inputs (list ghc-tagged ghc-tasty ghc-random ghc-quickcheck
+                  ghc-optparse-applicative))
+    (native-inputs (list ghc-tasty-hunit ghc-pcre-light))
+    (home-page "https://github.com/UnkindPartition/tasty")
     (synopsis "QuickCheck support for the Tasty test framework")
     (description "This package provides QuickCheck support for the Tasty
 Haskell test framework.")
@@ -117,26 +111,23 @@ Haskell test framework.")
 (define-public ghc-tasty-golden
   (package
     (name "ghc-tasty-golden")
-    (version "2.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty-golden" version))
-       (sha256
-        (base32
-         "1nskavqgfxx1cw7q6c0cmizlwj54rnlv93yhgssaa77gv1nbvwpn"))))
+    (version "2.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-golden" version))
+              (sha256
+               (base32
+                "03klnxn9rcv0l7fl4w8q6s59fzl1328j1wzwi1za4gb0l90vadwb"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-golden")))
-    (inputs
-     (list ghc-async
-           ghc-optparse-applicative
-           ghc-tagged
-           ghc-tasty
-           ghc-temporary
-           ghc-unix-compat))
+    (inputs (list ghc-tasty
+                  ghc-typed-process
+                  ghc-optparse-applicative
+                  ghc-temporary
+                  ghc-tagged
+                  ghc-async))
     (native-inputs (list ghc-tasty-hunit))
-    (home-page
-     "https://github.com/feuerbach/tasty-golden")
+    (home-page "https://github.com/UnkindPartition/tasty-golden")
     (synopsis "Golden tests support for tasty")
     (description
      "This package provides support for @code{golden testing}.  A @dfn{golden
@@ -148,28 +139,20 @@ contains the correct result for the test.")
 (define-public ghc-tasty
   (package
     (name "ghc-tasty")
-    (version "1.4.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty" version))
-       (sha256
-        (base32
-         "0574hbqzxzyv6vsk5kzbf04kz58y0iy8x9ydcj4b8fpncgmgy63g"))))
+    (version "1.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty" version))
+              (sha256
+               (base32
+                "006bf4gyc30i2gvb17hj1mzrh1kwnwf7l050x3f72wi6c2axl87l"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty")))
-    (inputs
-     (list ghc-tagged
-           ghc-regex-tdfa
-           ghc-optparse-applicative
-           ghc-unbounded-delays
-           ghc-async
-           ghc-ansi-terminal
-           ghc-clock-bootstrap
-           ghc-wcwidth-bootstrap))
-    (home-page "http://documentup.com/feuerbach/tasty")
+    (inputs (list ghc-tagged ghc-optparse-applicative ghc-ansi-terminal))
+    (home-page "https://github.com/UnkindPartition/tasty")
     (synopsis "Modern and extensible testing framework")
-    (description "Tasty is a modern testing framework for Haskell.  It lets
+    (description
+     "Tasty is a modern testing framework for Haskell.  It lets
 you combine your unit tests, golden tests, QuickCheck/SmallCheck properties,
 and any other types of tests into a single test suite.")
     (license license:expat)))
@@ -177,23 +160,21 @@ and any other types of tests into a single test suite.")
 (define-public ghc-tasty-hedgehog
   (package
     (name "ghc-tasty-hedgehog")
-    (version "1.1.0.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty-hedgehog" version))
-       (sha256
-        (base32
-         "0cy49z8n124xh2ra2482vfy5if1n6d9lbdjma2zg1mxfj0k0zyfb"))))
+    (version "1.3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-hedgehog" version))
+              (sha256
+               (base32
+                "1iq452mvd9wc9pfmjsmm848jwp3cvsk1faf2mlr21vcs0yaxvq3m"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-hedgehog")))
-    (inputs
-     (list ghc-tagged ghc-tasty ghc-hedgehog))
-    (native-inputs
-     (list ghc-tasty-expected-failure))
+    (inputs (list ghc-tagged ghc-tasty ghc-hedgehog))
+    (native-inputs (list ghc-tasty-expected-failure))
     (home-page "https://github.com/qfpl/tasty-hedgehog")
     (synopsis "Integration for tasty and hedgehog")
-    (description "This package provides the means for integrating the
+    (description
+     "This package provides the means for integrating the
 @url{https://hackage.haskell.org/package/hedgehog, hedgehog testing library}
 with the @url{https://hackage.haskell.org/package/tasty, tasty testing
 framework}.")
@@ -202,31 +183,27 @@ framework}.")
 (define-public ghc-tasty-hspec
   (package
     (name "ghc-tasty-hspec")
-    (version "1.1.6")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty-hspec" version))
-       (sha256
-        (base32
-         "02s82ijs2ringqxsqbm7m3vcy5brmwxa617azxv0v2phi3rdkjvl"))))
+    (version "1.2.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-hspec" version))
+              (sha256
+               (base32
+                "0ibl2xi6mmqad2mriz67nb7pjwwvjik385amp24j9kc7a7zkx091"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-hspec")))
-    (inputs
-     (list ghc-hspec
-           ghc-hspec-core
-           ghc-quickcheck
-           ghc-tagged
-           ghc-tasty
-           ghc-tasty-smallcheck
-           ghc-tasty-quickcheck))
+    (inputs (list ghc-hspec
+                  ghc-hspec-core
+                  ghc-quickcheck
+                  ghc-tasty
+                  ghc-tasty-smallcheck
+                  ghc-tasty-quickcheck
+                  ghc-tagged))
     (arguments
-     `(#:cabal-revision
-       ("1" "0za15rg0szacxq9yfxxjzddr77ai7ng5827a20pj9dr5anjlnajj")))
-    (home-page
-     "https://github.com/mitchellwrosen/tasty-hspec")
-    (synopsis
-     "Hspec support for the Tasty test framework")
+     `(#:cabal-revision ("1"
+                         "0a6r4gzxzp6n90z0nif7ha7p7am57hs48i54i2y4z9kgjv6lnvll")))
+    (home-page "https://github.com/mitchellwrosen/tasty-hspec")
+    (synopsis "Hspec support for the Tasty test framework")
     (description
      "This package provides a Tasty provider for Hspec test suites.")
     (license license:bsd-3)))
@@ -276,21 +253,23 @@ tasty.")
 (define-public ghc-tasty-lua
   (package
     (name "ghc-tasty-lua")
-    (version "0.2.3.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "tasty-lua" version))
-       (sha256
-        (base32
-         "0wa73ihkjcxi50lgpdzwwdx7s903lqi79hw7hxlvhbcvdly1cq53"))))
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-lua" version))
+              (sha256
+               (base32
+                "1vnyvgcjsvqhwwyqkbgqksr9ppj5whiihpwcqkg33sl7jj3ysdwv"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-lua")))
-    (inputs
-     (list ghc-file-embed ghc-hslua ghc-tasty))
-    (native-inputs
-     (list ghc-tasty-hunit))
-    (home-page "https://github.com/hslua/tasty-lua")
+    (inputs (list ghc-hslua-core
+                  ghc-hslua-marshalling
+                  ghc-lua-arbitrary
+                  ghc-tasty
+                  ghc-quickcheck
+                  ghc-file-embed))
+    (native-inputs (list ghc-tasty-hunit))
+    (home-page "https://github.com/hslua/hslua")
     (synopsis "Write tests in Lua, integrate into tasty")
     (description "This package gives users the ability to define tasty tests
 from Lua.")
@@ -335,6 +314,9 @@ test-framework.")
     (inputs
      (list ghc-optparse-applicative ghc-reducers ghc-split ghc-tagged
            ghc-tasty))
+    (arguments
+     `(#:cabal-revision ("3"
+                         "0091arn90cx5rzn5n2bpb9alzybwraf9yj7hb0bwdfyamzpf3pkb")))
     (home-page "https://github.com/ocharles/tasty-rerun")
     (synopsis "Run tests by filtering the test tree")
     (description "This package adds the ability to run tests by filtering the
@@ -376,37 +358,35 @@ development.")
 (define-public ghc-quickcheck-instances
   (package
     (name "ghc-quickcheck-instances")
-    (version "0.3.25.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "quickcheck-instances" version))
-       (sha256
-        (base32
-         "0ihqbarl2ddrfgq3mq09lswwn8213qpw13g49qxs5mjkcm6gbk3h"))))
+    (version "0.3.28")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "quickcheck-instances" version))
+              (sha256
+               (base32
+                "1jycijv7gaj6qrkp219nllrdv9zd0ifp0mb0rch430fm95xin4f4"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "quickcheck-instances")))
-    (arguments
-     `(#:cabal-revision
-       ("2" "1lsa3pbg4ljlk29fhm3mdklnx3hwffyga1nr5krbpcyc3ywq8fq8")))
-    (inputs
-     (list ghc-case-insensitive
-           ghc-data-fix
-           ghc-hashable
-           ghc-integer-logarithms
-           ghc-old-time
-           ghc-quickcheck
-           ghc-scientific
-           ghc-splitmix
-           ghc-strict
-           ghc-tagged
-           ghc-these
-           ghc-time-compat
-           ghc-transformers-compat
-           ghc-unordered-containers
-           ghc-uuid-types
-           ghc-vector))
-    (home-page "https://github.com/aslatter/qc-instances")
+    (inputs (list ghc-quickcheck
+                  ghc-splitmix
+                  ghc-case-insensitive
+                  ghc-data-fix
+                  ghc-hashable
+                  ghc-integer-logarithms
+                  ghc-old-time
+                  ghc-onetuple
+                  ghc-primitive
+                  ghc-scientific
+                  ghc-strict
+                  ghc-tagged
+                  ghc-these
+                  ghc-time-compat
+                  ghc-transformers-compat
+                  ghc-unordered-containers
+                  ghc-uuid-types
+                  ghc-vector
+                  ghc-text-short))
+    (home-page "https://github.com/haskellari/qc-instances")
     (synopsis "Common quickcheck instances")
     (description "This package provides QuickCheck instances for types
 provided by the Haskell Platform.")
@@ -521,8 +501,8 @@ HUnit.")
      `(#:tests? #f  ; FIXME: Tests do not build.
        #:cabal-revision
        ("6" "0wbq9wiaag69nsqxwijzhs5y1hb9kbpkp1x65dvx158cxp8i9w9r")))
-    (native-inputs
-     (list ghc-hunit ghc-quickcheck))
+    ;(native-inputs
+    ; (list ghc-hunit ghc-quickcheck))
     (inputs
      `(("ghc-ansi-terminal" ,ghc-ansi-terminal)
        ("ghc-ansi-wl-pprint" ,ghc-ansi-wl-pprint)
@@ -673,19 +653,17 @@ JUnit tool for Java.")
 (define-public hspec-discover
   (package
     (name "hspec-discover")
-    (version "2.7.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hspec-discover" version))
-       (sha256
-        (base32
-         "13yzvd3b679skvs1insk4s0wc4zvmz6hs38kc8q0j6vzqq06smqa"))))
+    (version "2.9.7")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hspec-discover" version))
+              (sha256
+               (base32
+                "0536kdxjw6p8b6gcwvmr22jbmb6cgzbddi0fkd01b2m847z37sb5"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec-discover")))
-    (native-inputs
-     (list ghc-quickcheck ghc-hspec-meta))
-    (home-page "https://hspec.github.io/")
+    (native-inputs (list ghc-quickcheck ghc-hspec-meta ghc-mockery-bootstrap))
+    (home-page "http://hspec.github.io/")
     (synopsis "Automatically discover and run Hspec tests")
     (description "hspec-discover is a tool which automatically discovers and
 runs Hspec tests.")
@@ -694,28 +672,28 @@ runs Hspec tests.")
 (define-public ghc-hspec-core
   (package
     (name "ghc-hspec-core")
-    (version "2.7.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hspec-core" version))
-       (sha256
-        (base32
-         "12k9yp5gznrda449ir60d5wv3xl7nnyffkb5mhfc0svw9f8lxlv1"))))
+    (version "2.9.7")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hspec-core" version))
+              (sha256
+               (base32
+                "040rzqiqwkp373jjpij8lkmv08pp2ya92zzcf95bw8px215rp08n"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec-core")))
-    (arguments `(#:tests? #f)) ; FIXME: testing libraries are missing.
-    (inputs
-     (list ghc-setenv
-           ghc-ansi-terminal
-           ghc-clock
-           ghc-quickcheck-io
-           ghc-hunit
-           ghc-quickcheck
-           ghc-hspec-expectations
-           ghc-silently
-           ghc-tf-random))
-    (home-page "https://hspec.github.io/")
+    (inputs (list ghc-hunit
+                  ghc-quickcheck
+                  ghc-ansi-terminal
+                  ghc-call-stack
+                  ghc-clock
+                  ghc-hspec-expectations
+                  ghc-quickcheck-io
+                  ghc-random
+                  ghc-setenv
+                  ghc-tf-random))
+    (native-inputs (list ghc-base-orphans-bootstrap ghc-hspec-meta
+                         ghc-silently-bootstrap ghc-temporary))
+    (home-page "http://hspec.github.io/")
     (synopsis "Testing framework for Haskell")
     (description "This library exposes internal types and functions that can
 be used to extend Hspec's functionality.")
@@ -724,26 +702,23 @@ be used to extend Hspec's functionality.")
 (define-public ghc-hspec-meta
   (package
     (name "ghc-hspec-meta")
-    (version "2.7.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hspec-meta" version))
-       (sha256
-        (base32
-         "0sfj0n2hy1r8ifysgbcmfdygcd7vyzr13ldkcp0l2ml337f8j0si"))))
+    (version "2.9.3")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hspec-meta" version))
+              (sha256
+               (base32
+                "1raxwpsmcijl3x2h5naw6aydhbiknxvhj3x7v384bi1rqi51ainm"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec-meta")))
-    (inputs
-     (list ghc-quickcheck
-           ghc-hunit
-           ghc-ansi-terminal
-           ghc-clock
-           ghc-hspec-expectations
-           ghc-setenv
-           ghc-random
-           ghc-quickcheck-io))
-    (home-page "https://hspec.github.io/")
+    (inputs (list ghc-quickcheck
+                  ghc-ansi-terminal
+                  ghc-call-stack-boot
+                  ghc-clock
+                  ghc-quickcheck-io
+                  ghc-random
+                  ghc-setenv))
+    (home-page "http://hspec.github.io/")
     (synopsis "Version of Hspec to test Hspec itself")
     (description "This library provides a stable version of Hspec which is
 used to test the in-development version of Hspec.")
@@ -752,26 +727,18 @@ used to test the in-development version of Hspec.")
 (define-public ghc-hspec
   (package
     (name "ghc-hspec")
-    (version "2.7.10")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hspec" version))
-       (sha256
-        (base32
-         "0z0lwrmrqkglr78n6k2c36n4h68142bh785ys0x4jaibjshvs6rw"))))
+    (version "2.9.7")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hspec" version))
+              (sha256
+               (base32
+                "092sfqjkargxxszp9jjqa8ldjz0xv34jwn6k21q59ys5ckvsrpc1"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec")))
-    (outputs '("out" "static" "doc"))
-    (inputs
-     (list ghc-hspec-core
-           hspec-discover
-           ghc-hspec-expectations
-           ghc-quickcheck
-           ghc-hunit
-           ghc-stringbuilder
-           ghc-hspec-meta))
-    (home-page "https://hspec.github.io/")
+    (inputs (list ghc-quickcheck ghc-hspec-core hspec-discover
+                  ghc-hspec-expectations))
+    (home-page "http://hspec.github.io/")
     (synopsis "Testing Framework for Haskell")
     (description "This library provides the Hspec testing framework for
 Haskell, inspired by the Ruby library RSpec.")
@@ -780,23 +747,21 @@ Haskell, inspired by the Ruby library RSpec.")
 (define-public ghc-hspec-contrib
   (package
     (name "ghc-hspec-contrib")
-    (version "0.5.1")
+    (version "0.5.1.1")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "hspec-contrib" version))
               (sha256
                (base32
-                "0hhzxaa3fxz5mk5qcsrnfr98a7bn3szx2ydgr0x9mbqmm1jg06rc"))))
+                "1nyb5n2jiq920yyf3flzyxrs5xpfyppl3jn18zhviyysjjk5drpx"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hspec-contrib")))
-    (inputs
-     (list ghc-hspec-core ghc-hunit ghc-hspec ghc-quickcheck))
-    (native-inputs
-     (list hspec-discover))
-    (home-page "https://hspec.github.io/")
+    (inputs (list ghc-hunit ghc-hspec-core))
+    (native-inputs (list ghc-quickcheck ghc-hspec hspec-discover))
+    (arguments (list #:tests? #f)) ; Tests fail to compile.
+    (home-page "http://hspec.github.io/")
     (synopsis "Contributed functionality for Hspec")
-    (description
-     "This package provides contributed Hspec extensions.")
+    (description "This package provides contributed Hspec extensions.")
     (license license:expat)))
 
 (define-public ghc-hspec-expectations
@@ -834,14 +799,22 @@ Haskell, inspired by the Ruby library RSpec.")
          "1rcmhl9bhyfvanalnf1r86wkx6rq6wdvagnw1h011jcnnb1cq56g"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "nanospec")))
-    (inputs
-     (list ghc-hspec ghc-silently))
+    (inputs (list ghc-silently-bootstrap))
+    (native-inputs (list ghc-hspec))
     (home-page "https://github.com/hspec/nanospec#readme")
     (synopsis "Lightweight implementation of a subset of Hspec's API")
     (description
      "Nanospec is a lightweight implementation of a subset of Hspec's API with
 minimal dependencies.")
     (license license:expat)))
+
+(define-public ghc-nanospec-bootstrap
+  (package
+    (inherit ghc-nanospec)
+    (name "ghc-nanospec-bootstrap")
+    (arguments '(#:tests? #f))
+    (native-inputs '())
+    (properties '((hidden? #t)))))
 
 (define-public ghc-crypto-cipher-tests
   (package
@@ -874,31 +847,29 @@ implementations of cryptographic ciphers.")
 (define-public ghc-hedgehog
   (package
     (name "ghc-hedgehog")
-    (version "1.0.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "hedgehog" version))
-       (sha256
-        (base32
-         "1qsqs8lmxa3wmw228cwi98vvvh9hqbc9d43i1sy2c9igw9xlhfi6"))))
+    (version "1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hedgehog" version))
+              (sha256
+               (base32
+                "0dbk75hk6hqpzkjdlpw3s63qhm42kqigij33p321by6xndb59jg1"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "hedgehog")))
-    (inputs
-     (list ghc-ansi-terminal
-           ghc-async
-           ghc-concurrent-output
-           ghc-erf
-           ;("ghc-exceptions" ,ghc-exceptions)
-           ghc-lifted-async
-           ghc-mmorph
-           ghc-monad-control
-           ghc-pretty-show
-           ghc-primitive
-           ghc-random
-           ghc-resourcet
-           ghc-transformers-base
-           ghc-wl-pprint-annotated))
+    (inputs (list ghc-ansi-terminal
+                  ghc-async
+                  ghc-barbies
+                  ghc-concurrent-output
+                  ghc-erf
+                  ghc-lifted-async
+                  ghc-mmorph
+                  ghc-monad-control
+                  ghc-pretty-show
+                  ghc-primitive
+                  ghc-random
+                  ghc-resourcet
+                  ghc-transformers-base
+                  ghc-wl-pprint-annotated))
     (home-page "https://hedgehog.qa")
     (synopsis "Property-based testing in the spirt of QuickCheck")
     (description
@@ -910,29 +881,40 @@ To get started quickly, see the examples:
 @uref{https://github.com/hedgehogqa/haskell-hedgehog/tree/master/hedgehog-example}")
     (license license:bsd-3)))
 
+;; Deprecated. Don’t use.
 (define-public cabal-doctest
   (package
     (name "cabal-doctest")
-    (version "1.0.8")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "cabal-doctest" version))
-       (sha256
-        (base32
-         "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
+    (version "1.0.9")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "cabal-doctest" version))
+              (sha256
+               (base32
+                "0wxs0xkspc80h0g8ks792lrzldxvcnhc9rja1j0k678ijs20hmjm"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "cabal-doctest")))
     (arguments
-     `(#:cabal-revision
-       ("2" "05v1awad3d1wvc763xcgvxm4n6n7bs7byc6s14kdbw35zcaddlcb")))
-    (home-page "https://github.com/phadej/cabal-doctest")
+     `(#:cabal-revision ("2"
+                         "0868js0qgfhvmyw4hjzrvmlzyqsm8dfsbmqhybxb90x44xi3r0i1")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'update-constraints
+           (lambda _
+             (substitute* "cabal-doctest.cabal"
+               (("\\b(Cabal|base)\\s+[^,]+" all dep)
+                dep)))))))
+    (home-page "https://github.com/haskellari/cabal-doctest")
     (synopsis "Setup.hs helper for running doctests")
     (description
      "To properly work, the @code{doctest} package needs plenty of
 configuration.  This library provides the common bits for writing custom
 @file{Setup.hs} files.")
     (license license:bsd-3)))
+
+;; Deprecated. Don’t use.
+(define-public ghc-cabal-doctest
+  (deprecated-package "ghc-cabal-doctest" cabal-doctest))
 
 (define-public ghc-testing-type-modifiers
   (package
@@ -959,22 +941,20 @@ testing frameworks.")
 (define-public ghc-testing-feat
   (package
     (name "ghc-testing-feat")
-    (version "1.1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (hackage-uri "testing-feat" version))
-        (sha256
-          (base32
-            "1v2qzzpf1s008g7q6q67glf7vbm1pkpq4rc3ii74f4g6vhfx610r"))))
+    (version "1.1.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "testing-feat" version))
+              (sha256
+               (base32
+                "14d6licgrkiw36xj1cshnqxcbx5iwzxwq731xlb1wb5n2sw8ijf2"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "testing-feat")))
-    (inputs
-      (list ghc-quickcheck ghc-size-based ghc-testing-type-modifiers
-            ghc-semigroups))
-    (home-page "https://github.com/JonasDuregard/testing-feat")
+    (inputs (list ghc-quickcheck ghc-size-based ghc-testing-type-modifiers))
+    (home-page "https://github.com/size-based/testing-feat")
     (synopsis "Functional Enumeration of Algebraic Types")
-    (description "Feat (Functional Enumeration of Algebraic Types)
+    (description
+     "Feat (Functional Enumeration of Algebraic Types)
 provides enumerations as functions from natural numbers to
 values (similar to @code{toEnum} but for any algebraic data type).  This
 can be used for SmallCheck-style systematic testing, QuickCheck-style
@@ -984,18 +964,16 @@ random testing, and hybrids of the two.")
 (define-public ghc-inspection-testing
   (package
     (name "ghc-inspection-testing")
-    (version "0.4.6.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "inspection-testing" version))
-       (sha256
-        (base32
-         "0qz1npyycj4bvyly9xmjbnhw569l52h38gx02rk0r7zhapw83aig"))))
+    (version "0.4.6.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "inspection-testing" version))
+              (sha256
+               (base32
+                "0mxff0v3ciccbk4b8kxnh4752fzbwn7213qd8xji0csv6gi2w83y"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "inspection-testing")))
-    (home-page
-     "https://github.com/nomeata/inspection-testing")
+    (home-page "https://github.com/nomeata/inspection-testing")
     (synopsis "GHC plugin to do inspection testing")
     (description
      "Some carefully crafted libraries make promises to their users beyond
@@ -1133,6 +1111,9 @@ these constraints more cleanly.")
     (properties '((upstream-name . "doctest-exitcode-stdio")))
     (inputs
       (list ghc-doctest-lib ghc-quickcheck ghc-semigroups))
+    (arguments
+     `(#:cabal-revision ("1"
+                         "1065s8bch6zhl6mc8nhvfpwd1irmjd04z7xgycbpihc14x4ijim3")))
     (home-page "https://hub.darcs.net/thielema/doctest-exitcode-stdio/")
     (synopsis "Run Doctests in a @code{Cabal.Test.exitcode-stdio} environment")
     (description
@@ -1140,59 +1121,56 @@ these constraints more cleanly.")
 environment.")
     (license license:bsd-3)))
 
-(define-public ghc-cabal-doctest
-  (package
-    (name "ghc-cabal-doctest")
-    (version "1.0.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (hackage-uri "cabal-doctest" version))
-        (sha256
-          (base32 "03if74imlhhk7m56nci5f1wclniwqdmwl4hl177040j1gnlac9i0"))))
-    (build-system haskell-build-system)
-    (properties '((upstream-name . "cabal-doctest")))
-    (arguments
-      `(#:cabal-revision
-        ("2" "05v1awad3d1wvc763xcgvxm4n6n7bs7byc6s14kdbw35zcaddlcb")))
-    (home-page "https://github.com/phadej/cabal-doctest")
-    (synopsis "@file{Setup.hs} helper for Doctests running")
-    (description
-      "This package provides helpers for running Doctests in @file{Setup.hs}.")
-    (license license:bsd-3)))
-
 (define-public ghc-tasty-silver
   (package
     (name "ghc-tasty-silver")
-    (version "3.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (hackage-uri "tasty-silver" version))
-        (sha256
-          (base32 "0nvh2k8iqqkanmp7lpwd3asimyarzisly8wavbdahcxryn0j4xb7"))))
+    (version "3.3.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-silver" version))
+              (sha256
+               (base32
+                "13j0zs0ciijv9q2nncna1gbgsgw2g7xc228hzmqic1750n3ybz9m"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "tasty-silver")))
-    (inputs
-      (list ghc-ansi-terminal
-            ghc-async
-            ghc-optparse-applicative
-            ghc-process-extras
-            ghc-regex-tdfa
-            ghc-semigroups
-            ghc-tagged
-            ghc-tasty
-            ghc-temporary))
-    (native-inputs
-     (list ghc-tasty-hunit ghc-silently))
+    (inputs (list ghc-ansi-terminal
+                  ghc-async
+                  ghc-optparse-applicative
+                  ghc-process-extras
+                  ghc-regex-tdfa
+                  ghc-silently
+                  ghc-tagged
+                  ghc-tasty
+                  ghc-temporary
+                  ghc-semigroups))
+    (native-inputs (list ghc-tasty-hunit))
     (home-page "https://github.com/phile314/tasty-silver")
     (synopsis "Fancy test runner, including support for golden tests")
     (description
-      "This package provides a fancy test runner and support for @dfn{golden
+     "This package provides a fancy test runner and support for @dfn{golden
 testing}.  A golden test is an IO action that writes its result to a file.  To
 pass the test, this output file should be identical to the corresponding
 ``golden'' file, which contains the correct result for the test.  The test
 runner allows filtering tests using regexes, and to interactively inspect the
 result of golden tests.")
+    (license license:expat)))
+
+(define-public ghc-tasty-inspection-testing
+  (package
+    (name "ghc-tasty-inspection-testing")
+    (version "0.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "tasty-inspection-testing" version))
+              (sha256
+               (base32
+                "0p46w44f19w7lvdzyg3vq6qzix0rjp8p23ilxz82dviq38lgmifp"))))
+    (build-system haskell-build-system)
+    (properties '((upstream-name . "tasty-inspection-testing")))
+    (inputs (list ghc-inspection-testing ghc-tasty))
+    (home-page "https://github.com/Bodigrim/tasty-inspection-testing")
+    (synopsis "Inspection testing support for tasty")
+    (description
+     "Integrate @@inspection-testing@@ into @@tasty@@ test suites.")
     (license license:expat)))
 

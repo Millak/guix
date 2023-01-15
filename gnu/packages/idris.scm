@@ -99,7 +99,7 @@
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "idris.cabal"
-               (("(aeson|ansi-terminal|haskeline|megaparsec|optparse-applicative)\\s+[^,]+" all dep)
+               (("(aeson|ansi-terminal|bytestring|haskeline|libffi|megaparsec|network|optparse-applicative)\\s+[^,]+" all dep)
                 dep))))
          (add-before 'configure 'set-cc-command
            (lambda _

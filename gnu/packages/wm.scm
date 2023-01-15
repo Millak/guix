@@ -801,40 +801,26 @@ background wallpaper manager with transparency support, a simple session
 manager and a system tray.")
     (license license:lgpl2.0)))
 
-
-(define-public xmonad-next
+(define-public xmonad
   (package
-    (name "xmonad-next")
-    (version "0.17.0")
-    (synopsis "Tiling window manager")
+    (name "xmonad")
+    (version "0.17.1")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmonad" version))
               (sha256
                (base32
-                "04qspdz9w6xpw1npcmx2zx0595wc68q985pv4i0hvp32zillvdqy"))
-              (patches (search-patches "xmonad-next-dynamic-linking.patch"))))
+                "1apqwyqmc51gamfgsvlanzqqig9qvjss89ibcamhnha1gs1k4jl8"))
+              (patches (search-patches "xmonad-dynamic-linking.patch"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad")))
-    (inputs (list ghc-data-default-class ghc-setlocale ghc-x11))
+    (inputs (list ghc-x11 ghc-data-default-class ghc-setlocale))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (add-after 'install 'install-xsession
-                 (lambda _
-                   (let ((xsessions (string-append #$output "/share/xsessions")))
-                     (mkdir-p xsessions)
-                     (call-with-output-file (string-append xsessions
-                                                           "/xmonad.desktop")
-                       (lambda (port)
-                         (format port "~
-                    [Desktop Entry]~@
-                    Name=~a~@
-                    Comment=~a~@
-                    Exec=~a/bin/xmonad~@
-                    Type=Application~%" #$name #$synopsis #$output)))))))))
-    (home-page "https://xmonad.org")
+     `(#:cabal-revision ("2"
+                         "1rgwrnyb7kijzl2mqm8ks2nydh37q5vkbg4400rg9n6x13w2r9b3")))
+    (home-page "http://xmonad.org")
+    (synopsis "Tiling window manager")
     (description
      "Xmonad is a tiling window manager for X.  Windows are arranged
 automatically to tile the screen without gaps or overlap, maximising screen
@@ -846,42 +832,16 @@ used on each workspace.  Xinerama is fully supported, allowing windows to be
 tiled on several screens.")
     (license license:bsd-3)))
 
-(define-public xmonad
-  (package
-    (inherit xmonad-next)
-    (name "xmonad")
-    (version "0.15")
-    (source (origin
-              (method url-fetch)
-              (uri (hackage-uri "xmonad" version))
-              (sha256
-               (base32
-                "0a7rh21k9y6g8fwkggxdxjns2grvvsd5hi2ls4klmqz5xvk4hyaa"))
-              (patches (search-patches "xmonad-dynamic-linking.patch"))))
-    (inputs
-     (list ghc-extensible-exceptions
-           ghc-data-default
-           ghc-quickcheck
-           ghc-semigroups
-           ghc-setlocale
-           ghc-utf8-string
-           ghc-x11))
-    (native-inputs '())
-    (arguments
-     `(#:cabal-revision
-       ("1" "0yqh96qqphllr0zyz5j93cij5w2qvf39xxnrb52pz0qz3pywz9wd")
-       ,@(package-arguments xmonad-next)))))
-
 (define-public xmobar
   (package
     (name "xmobar")
-    (version "0.44.2")
+    (version "0.46")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "xmobar" version))
               (sha256
                (base32
-                "0gdphjn5ll5lkb2psdsb34563wsz6g0y2gg3z8cj4jy8lvbbv808"))))
+                "0glpiq7c0qwfcxnc2flgzj7afm5m1a9ghzwwcq7f8q27m21kddrd"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmobar")))
     (native-inputs
@@ -904,6 +864,8 @@ tiled on several screens.")
            ghc-timezone-olson
            ghc-x11
            ghc-x11-xft
+           ghc-cairo
+           ghc-pango
            libxpm))
     (arguments
      `(#:configure-flags (list "--flags=all_extensions")
@@ -945,52 +907,29 @@ Unlike dmenu, it mangles the input before it presents its choices.  In
 particular, it displays commonly-chosen options before uncommon ones.")
     (license license:bsd-3)))
 
-(define-public ghc-xmonad-contrib-next
+(define-public ghc-xmonad-contrib
   (package
-    (name "ghc-xmonad-contrib-next")
-    (version "0.17.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "xmonad-contrib" version))
-       (sha256
-        (base32 "11g1cyfgfvcmz35qhgi9wzxrk3br8m8b7qy3jvph4nnf6aj13wvy"))))
+    (name "ghc-xmonad-contrib")
+    (version "0.17.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "xmonad-contrib" version))
+              (sha256
+               (base32
+                "0lwj8xkyaw6h0rv3lz2jdqrwzz7yghfmnhpndygkb3wgyhvq6dxb"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "xmonad-contrib")))
-    (propagated-inputs (list ghc-random ghc-x11 ghc-utf8-string ghc-x11-xft xmonad-next))
+    (inputs (list ghc-random ghc-x11 xmonad ghc-utf8-string ghc-x11-xft))
     (native-inputs (list ghc-quickcheck ghc-hspec))
-    (home-page "https://xmonad.org")
+    (arguments
+     `(#:cabal-revision ("1"
+                         "0dc9nbn0kaw98rgpi1rq8np601zjhdr1y0ydg6yb82wwaqawql6z")))
+    (home-page "https://xmonad.org/")
     (synopsis "Third party extensions for xmonad")
     (description
      "Third party tiling algorithms, configurations, and scripts to Xmonad, a
 tiling window manager for X.")
     (license license:bsd-3)))
-
-(define-public ghc-xmonad-contrib
-  (package
-    (inherit ghc-xmonad-contrib-next)
-    (name "ghc-xmonad-contrib")
-    (version "0.16")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (hackage-uri "xmonad-contrib" version))
-       (sha256
-        (base32 "1pddgkvnbww28wykncc7j0yb0lv15bk7xnnhdcbrwkxzw66w6wmd"))))
-    (arguments
-     `(#:cabal-revision
-       ("1" "0vimkby2gq6sgzxzbvz67caba609xqlv2ii2gi8a1cjrnn6ib011")
-       ,@(package-arguments ghc-xmonad-contrib-next)))
-    (native-inputs '())
-    (propagated-inputs
-     (list ghc-old-time
-           ghc-random
-           ghc-utf8-string
-           ghc-extensible-exceptions
-           ghc-semigroups
-           ghc-x11
-           ghc-x11-xft
-           xmonad))))
 
 (define-public evilwm
   (package
