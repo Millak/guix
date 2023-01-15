@@ -17851,7 +17851,7 @@ module capable of computing base-level alignments for very large sequences.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1w78cmm9q7aavs7svdkl4dgilcqk4yazci9m6x7icrssb7cj991i"))))
+                "1rf0p7dnakjry0fa6ax1h762bn0l5n6ibfdxn077mjvwgpqan51l"))))
     (build-system cmake-build-system)
     (arguments
      (list
