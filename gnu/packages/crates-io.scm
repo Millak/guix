@@ -45029,20 +45029,22 @@ useful types and distributions, and some randomness-related algorithms.")
 (define-public rust-rand-chacha-0.3
   (package
     (name "rust-rand-chacha")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rand_chacha" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03df2xh5nbdvwr17qm3sviaxa95r8yhm1nil2pr0pqf90p7ka9z1"))))
+        (base32 "123x2adin558xbhvqb8w4f6syjsdkmqff8cxwhmjacpsl1ihmhg6"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-ppv-lite86" ,rust-ppv-lite86-0.2)
-        ("rust-rand-core" ,rust-rand-core-0.6))))
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-json" ,rust-serde-json-1))))
     (home-page "https://crates.io/crates/rand_chacha")
     (synopsis "ChaCha random number generator")
     (description
