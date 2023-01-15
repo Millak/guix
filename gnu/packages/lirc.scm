@@ -83,7 +83,15 @@
              (substitute* "doc/Makefile.in"
                (("^vardocs_DATA =.*") "vardocs_DATA =\n")
                (("^varimage_DATA =.*") "varimage_DATA =\n"))
-             #t)))))
+             #t))
+         (add-after 'unpack 'omit-pip-sourceball
+           ;; ‘make install’ invokes ’setup.py sdist’, which has no known (to
+           ;; nckx) way to enforce mtimes.  The utility of this is questionable,
+           ;; IMO: let's disable it entirely & listen for complaints, if any.
+           (lambda _
+             (substitute* "Makefile.in"
+               (("(PYTHON_TARBALL.*=).*" _ tarball=)
+                (string-append tarball= "\n"))))))))
     (native-inputs
      (list pkg-config libxslt))
     (inputs
