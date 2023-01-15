@@ -2900,7 +2900,7 @@ which do not support it.")
 (define-public berry
   (package
     (name "berry")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
       (origin
         (method git-fetch)
@@ -2909,7 +2909,7 @@ which do not support it.")
           (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1qyq3g0m7rb9gpk1i5kfy9nr8sqivjiilbi4g0nw4d400rblvkbj"))))
+          (base32 "0ygqzgi7ncc6whvwdifds2cq9cllq9fhiqnigx859hbdnf453hn4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.
