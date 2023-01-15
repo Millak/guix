@@ -34,7 +34,7 @@
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2022-2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2166,15 +2166,23 @@ This package can be used to create @code{favicon.ico} files for web sites.")
     (build-system cmake-build-system)
     (arguments
      (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  (srfi srfi-26))
       #:configure-flags
       #~(list "-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
               #$@(if (this-package-input "rav1e")
                    '("-DAVIF_CODEC_RAV1E=ON")
                    '())
               "-DAVIF_BUILD_TESTS=ON" "-DAVIF_ENABLE_GTEST=ON"
-              "-DAVIF_BUILD_APPS=ON")
+              "-DAVIF_BUILD_APPS=ON" "-DAVIF_BUILD_GDK_PIXBUF=ON")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-thumbnailer
+            (lambda _
+              (substitute* "contrib/gdk-pixbuf/avif.thumbnailer.in"
+                (("@CMAKE_INSTALL_FULL_BINDIR@/gdk-pixbuf-thumbnailer")
+                 (string-append #$gdk-pixbuf "/bin/gdk-pixbuf-thumbnailer")))))
           (add-after 'install 'install-readme
             (lambda _
               (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
@@ -2184,23 +2192,46 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               (let* ((avifenc  (string-append #$output       "/bin/avifenc"))
                      (avifenc* (string-append #$output:tools "/bin/avifenc"))
                      (avifdec  (string-append #$output       "/bin/avifdec"))
-                     (avifdec* (string-append #$output:tools "/bin/avifdec")))
+                     (avifdec* (string-append #$output:tools "/bin/avifdec"))
+
+                     (thumbnailer    (string-append
+                                      #$output
+                                      "/share/thumbnailers/avif.thumbnailer"))
+                     (thumbnailer*   (string-append
+                                      #$output:pixbuf-loader
+                                      "/share/thumbnailers/avif.thumbnailer"))
+                     (pixbuf-loader  (string-append
+                                      #$output
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+                                      "libpixbufloader-avif.so"))
+                     (pixbuf-loader* (string-append
+                                      #$output:pixbuf-loader
+                                      "/lib/gdk-pixbuf-2.0/2.10.0/loaders/"
+                                      "libpixbufloader-avif.so")))
                 (mkdir-p (string-append #$output:tools "/bin"))
+                (for-each (compose mkdir-p
+                                   (cut string-append
+                                        #$output:pixbuf-loader <>))
+                          '("/share/thumbnailers"
+                            "/lib/gdk-pixbuf-2.0/2.10.0/loaders/"))
 
                 (for-each (lambda (old new)
                             (copy-file old new)
                             (delete-file old)
                             (chmod new #o555))
-                          (list avifenc avifdec)
-                          (list avifenc* avifdec*))))))))
-    (native-inputs (list googletest))
+                          (list avifenc avifdec
+                                thumbnailer pixbuf-loader)
+                          (list avifenc* avifdec*
+                                thumbnailer* pixbuf-loader*))))))))
+    (native-inputs (list googletest pkg-config))
     (inputs
      (append
       (if (member (%current-system) (package-transitive-supported-systems rav1e))
         (list rav1e) '())
-      (list dav1d libaom zlib libpng libjpeg-turbo)))
+      (list dav1d libaom zlib libpng libjpeg-turbo gdk-pixbuf)))
     (outputs (list "out"
-                   "tools"))  ; avifenc & avifdec
+                   "tools"  ; avifenc & avifdec
+                   "pixbuf-loader"))
     (synopsis "Encode and decode AVIF files")
     (description "Libavif is a C implementation of @acronym{AVIF, the AV1 Image
 File Format}.  It can encode and decode all YUV formats and bit depths supported
