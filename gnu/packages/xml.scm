@@ -87,7 +87,7 @@
 (define-public libxmlb
   (package
     (name "libxmlb")
-    (version "0.3.9")
+    (version "0.3.10")
     (source
      (origin
        (method git-fetch)
@@ -97,7 +97,7 @@
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n6ffza134sj9ck9nbngdhq8kvbsk5mvjqki3ph4xc283b1ywr71"))))
+        (base32 "1q7kizfgbvs02fdnvz09yjyy3v1dpbxl7xf1gx056mbnlib6faxs"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t))
