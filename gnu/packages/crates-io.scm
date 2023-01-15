@@ -38718,7 +38718,7 @@ normally prevent moving a type that has been borrowed from.")
 (define-public rust-packed-simd-2-0.3
   (package
     (name "rust-packed-simd-2")
-    (version "0.3.6")
+    (version "0.3.8")
     (source
      (origin
        (method url-fetch)
@@ -38726,21 +38726,17 @@ normally prevent moving a type that has been borrowed from.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1i8hmhsyzqsas2rhxg088mcwvzljrqhvf8lfz8b1dj6g2rkw1h3i"))
+        (base32 "10p2bm0p57shg3arlpfwm6z0bbnlkyr4g0dlkmpwvz6qaba4r4d1"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Unpin the dependencies.
            (substitute* "Cargo.toml"
-             (("=0.2.73") "^0.2.73")
-             (("=0.3.23") "^0.3.23"))
-           #t))))
+             (("version = \"=") "version = \"^"))))))
     (build-system cargo-build-system)
     (arguments
-     `(#:tests? #f  ; error[E0432]: unresolved import `packed_simd`
-       #:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-core-arch" ,rust-core-arch-0.1)
         ("rust-libm" ,rust-libm-0.1)
         ("rust-sleef-sys" ,rust-sleef-sys-0.1))
@@ -38753,8 +38749,7 @@ normally prevent moving a type that has been borrowed from.")
        (modify-phases %standard-phases
          (add-after 'unpack 'enable-unstable-features
            (lambda _
-             (setenv "RUSTC_BOOTSTRAP" "1")
-             #t)))))
+             (setenv "RUSTC_BOOTSTRAP" "1"))))))
     (home-page "https://github.com/rust-lang-nursery/packed_simd")
     (synopsis "Portable Packed SIMD vectors")
     (description "Portable Packed SIMD vectors.")
