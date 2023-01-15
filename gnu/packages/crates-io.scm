@@ -18165,7 +18165,7 @@ Rust.")
 (define-public rust-dtoa-0.4
   (package
     (name "rust-dtoa")
-    (version "0.4.4")
+    (version "0.4.8")
     (source
       (origin
         (method url-fetch)
@@ -18173,9 +18173,8 @@ Rust.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0phbm7i0dpn44gzi07683zxaicjap5064w62pidci4fhhciv8mza"))))
+          "1c5j0wz118dhrczx6spc5za7dnbfxablr4adyahg9aknrsc9i2an"))))
     (build-system cargo-build-system)
-    (arguments '(#:skip-build? #t))
     (home-page "https://github.com/dtolnay/dtoa")
     (synopsis "Fast functions for printing floating-point primitives")
     (description "This crate provides fast functions for printing
