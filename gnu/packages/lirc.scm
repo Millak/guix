@@ -63,16 +63,14 @@
              ;; Correct the faulty assumption that systemd support should be
              ;; hard-wired when a build host's /proc/version contains "Ubuntu".
              (substitute* "configure"
-               (("kernelversion=.*") "kernelversion=irrelevant\n"))
-             #t))
+               (("kernelversion=.*") "kernelversion=irrelevant\n"))))
          (add-after 'unpack 'patch-lirc-make-devinput
            (lambda* (#:key inputs #:allow-other-keys)
              ;; 'lirc-make-devinput' script assumes that linux headers
              ;; are placed in "/usr/...".
              (let ((headers (assoc-ref inputs "kernel-headers")))
                (substitute* "tools/lirc-make-devinput"
-                 (("/usr/include") (string-append headers "/include"))))
-             #t))
+                 (("/usr/include") (string-append headers "/include"))))))
          (add-after 'unpack 'patch-doc/Makefile.in
            (lambda _
              ;; Lirc wants to install several images and a useless html page
@@ -82,8 +80,7 @@
              ;; "share/doc/lirc/images/" anyway).
              (substitute* "doc/Makefile.in"
                (("^vardocs_DATA =.*") "vardocs_DATA =\n")
-               (("^varimage_DATA =.*") "varimage_DATA =\n"))
-             #t))
+               (("^varimage_DATA =.*") "varimage_DATA =\n"))))
          (add-after 'unpack 'omit-pip-sourceball
            ;; ‘make install’ invokes ’setup.py sdist’, which has no known (to
            ;; nckx) way to enforce mtimes.  The utility of this is questionable,
