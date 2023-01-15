@@ -45189,30 +45189,25 @@ tools for implementation.")
 (define-public rust-rand-distr-0.4
   (package
     (name "rust-rand-distr")
-    (version "0.4.2")
+    (version "0.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rand_distr" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0brd2946xfapm2bmhmczfbwck041x7khsfhqxw1f24kxis7m8kcn"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           (substitute* "Cargo.toml"
-             ;; The resolver feature is not supported by our versions of Cargo.
-             (("resolver = \"2\".*") ""))))))
+        (base32 "0cgfwg3z0pkqhrl0x90c77kx70r6g9z4m6fxq9v0h2ibr2dhpjrj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-average" ,rust-average-0.13)
-        ("rust-num-traits" ,rust-num-traits-0.2)
+       (("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-special" ,rust-special-0.8))
+        ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-rand-pcg" ,rust-rand-pcg-0.3))))
+       (("rust-average" ,rust-average-0.13)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-pcg" ,rust-rand-pcg-0.3)
+        ("rust-special" ,rust-special-0.8))))
     (home-page "https://rust-random.github.io/book/")
     (synopsis "Sampling from random number distributions")
     (description "This package provides tool for sampling from random number
