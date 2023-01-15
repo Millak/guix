@@ -1264,7 +1264,7 @@ quickly by using all your CPU cores and hardware acceleration.")
 (define-public minisign
   (package
     (name "minisign")
-    (version "0.10")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
@@ -1273,7 +1273,7 @@ quickly by using all your CPU cores and hardware acceleration.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gi5z03w9sg72vyjs94y0mhkzz7bbhyzcg92mgmd9r2ydpi5gads"))))
+        (base32 "1vv2bhhsyhlpnjclfa7gkqgd9xi3jfcdrss7abbdxvvflyrwdk5i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no test suite
