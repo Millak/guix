@@ -2153,7 +2153,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
 (define-public libavif
   (package
     (name "libavif")
-    (version "0.9.2")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2162,7 +2162,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1yxmgjlxm1srm98zyj79bj8r8vmg67daqnq0ggcvxknq54plkznk"))))
+                "02zmb62g0yx6rfz4w1isyzfrckv5i7dzyz26rp2mspbx9w6v8j4r"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2171,13 +2171,10 @@ This package can be used to create @code{favicon.ico} files for web sites.")
               #$@(if (this-package-input "rav1e")
                    '("-DAVIF_CODEC_RAV1E=ON")
                    '())
-              "-DAVIF_BUILD_TESTS=ON" "-DAVIF_BUILD_APPS=ON")
+              "-DAVIF_BUILD_TESTS=ON" "-DAVIF_ENABLE_GTEST=ON"
+              "-DAVIF_BUILD_APPS=ON")
       #:phases
       #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "./aviftest" "../source/tests/data"))))
           (add-after 'install 'install-readme
             (lambda _
               (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
@@ -2196,6 +2193,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                             (chmod new #o555))
                           (list avifenc avifdec)
                           (list avifenc* avifdec*))))))))
+    (native-inputs (list googletest))
     (inputs
      (append
       (if (member (%current-system) (package-transitive-supported-systems rav1e))
@@ -2208,8 +2206,7 @@ This package can be used to create @code{favicon.ico} files for web sites.")
 File Format}.  It can encode and decode all YUV formats and bit depths supported
 by AOM, including with alpha.")
     (home-page "https://github.com/AOMediaCodec/libavif")
-    (license (list license:bsd-2    ; libavif itself
-                   license:expat)))) ; cJSON in the test suite
+    (license (list license:bsd-2))))
 
 (define-public libheif
   (package
