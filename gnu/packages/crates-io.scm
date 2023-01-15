@@ -30516,7 +30516,7 @@ functions and static variables these libraries contain.")
 (define-public rust-libm-0.2
   (package
     (name "rust-libm")
-    (version "0.2.1")
+    (version "0.2.6")
     (source
      (origin
        (method url-fetch)
@@ -30525,7 +30525,7 @@ functions and static variables these libraries contain.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0akh56sh51adhagmk9l84dyrlz60gv8ri05xhr13i1b18czkpmy7"))))
+         "1ywg7jfcgfv4jypxi3f6rpf7n9509ky695bfzy1fqhms7ymhi09l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
