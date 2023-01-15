@@ -19121,7 +19121,7 @@ encodings.")
 (define-public rust-encoding-rs-0.8
   (package
     (name "rust-encoding-rs")
-    (version "0.8.28")
+    (version "0.8.31")
     (source
      (origin
        (method url-fetch)
@@ -19130,7 +19130,7 @@ encodings.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0rf0r99q4kgjrx22kx7pjyjg4lm21599y3ggvy3hzj2spi7h5pw0"))))
+         "0azc6rblf75vd862ymjahdfch27j1sshb7zynshrx7ywi5an6llq"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
