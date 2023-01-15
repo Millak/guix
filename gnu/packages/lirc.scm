@@ -38,14 +38,14 @@
 (define-public lirc
   (package
     (name "lirc")
-    (version "0.10.1")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/lirc/LIRC/" version
                                   "/lirc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1whlyifvvc7w04ahq07nnk1h18wc8j7c6wnvlb6mszravxh3qxcb"))
+                "0ai27l6hxfgkwvkqa3fy1b1gqzw2y10md030y5ig4748fj1fqi1x"))
               (patches (search-patches "lirc-localstatedir.patch"
                                        "lirc-reproducible-build.patch"))))
     (build-system gnu-build-system)
@@ -91,7 +91,10 @@
            (lambda _
              (substitute* "Makefile.in"
                (("(PYTHON_TARBALL.*=).*" _ tarball=)
-                (string-append tarball= "\n"))))))))
+                (string-append tarball= "\n")))))
+         (add-before 'configure 'build-reproducibly
+           (lambda _
+             (setenv "LIRC_IRDB_CACHE_ID" "build time"))))))
     (native-inputs
      (list pkg-config libxslt))
     (inputs
