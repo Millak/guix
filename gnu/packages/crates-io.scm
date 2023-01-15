@@ -45092,18 +45092,17 @@ useful types and distributions, and some randomness-related algorithms.")
 (define-public rust-rand-core-0.6
   (package
     (name "rust-rand-core")
-    (version "0.6.2")
+    (version "0.6.4")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "rand_core" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1rvas1afjvd2827b8mf2ilg78h3ksl9npkrdds3wbw9x33mndkrl"))))
+        (base32 "0b4j2v4cb5krak1pv6kakv4sz6xcwbrmy2zckc32hsigbrwy82zc"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-getrandom" ,rust-getrandom-0.2)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://rust-random.github.io/book")
