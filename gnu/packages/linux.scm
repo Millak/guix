@@ -6969,7 +6969,7 @@ the @code{mce-inject} module loaded if it exists.")
 (define-public mcelog
   (package
     (name "mcelog")
-    (version "190")
+    (version "191")
     (source
      (origin
        (method git-fetch)
@@ -6978,7 +6978,7 @@ the @code{mce-inject} module loaded if it exists.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1466zkbxgjg8ik0gd9vwsjiwg0yg7g8ra4bw3lg3ypla2kiydy4q"))
+        (base32 "0vx0lziw6g20vh42ngs66fiq2bm714llx5xx6f0m1hbjcihi1afy"))
        (modules '((guix build utils)))
        (snippet
         `(begin
