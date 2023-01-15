@@ -6548,7 +6548,7 @@ output.")
 (define-public console-setup
   (package
     (name "console-setup")
-    (version "1.210")
+    (version "1.212")
     (source
      (origin
        (method git-fetch)
@@ -6556,7 +6556,7 @@ output.")
              (url "https://salsa.debian.org/installer-team/console-setup.git")
              (commit version)))
        (sha256
-        (base32 "0c8wps1q6a3ylywnvgv198x1k2dxjngsgscr3ajhaiq8hvr6x79n"))
+        (base32 "1g1riswqalhk95i81xmy4dzwp1wwfiapjjiv0x06cp8bnc2rdxbq"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
