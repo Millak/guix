@@ -40,6 +40,7 @@
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2777,6 +2778,38 @@ compensation, (de)interleaving, and byte-swapping
     (synopsis "Bindings for PortAudio v19")
     (description "This package provides bindings for PortAudio v19, the
 cross-platform audio input/output stream library.")
+    (license license:expat)))
+
+(define-public python-pulsectl
+  (package
+    (name "python-pulsectl")
+    (version "22.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pulsectl" version))
+              (sha256
+               (base32
+                "115ha1cwpd2r84ssnxdbr59hgs0jbx0lz3xpqli64kmxxqf4w5yc"))))
+    (build-system python-build-system)
+    (inputs (list pulseaudio))
+    (arguments
+     `(#:tests? #f                      ; tests try to communicate with PulseAudio
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "pulsectl/_pulsectl.py"
+               (("libpulse.so.0")
+                (string-append (search-input-file inputs "/lib/libpulse.so.0")))))))))
+    (home-page "https://github.com/mk-fg/python-pulse-control")
+    (synopsis
+     "Python bindings for mixer-like controls in PulseAudio")
+    (description
+     "This package provides a Python high-level interface and ctypes-based
+bindings for PulseAudio (libpulse), to use in simple synchronous code.
+This wrapper is mostly for mixer-like controls and introspection-related
+operations, as opposed to e.g. submitting sound samples to play and
+player-like clients.")
     (license license:expat)))
 
 (define-public python-pyliblo
