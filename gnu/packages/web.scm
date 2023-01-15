@@ -4927,7 +4927,7 @@ time strings.")
 (define-public go-github-com-itchyny-gojq
   (package
     (name "go-github-com-itchyny-gojq")
-    (version "0.12.9")
+    (version "0.12.11")
     (source
        (origin
          (method git-fetch)
@@ -4936,7 +4936,7 @@ time strings.")
                (commit (string-append "v" version))))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1m4zchhhi2428r1v0qz08drac4s63mag1pwcqzsf6n495yc3g0h0"))))
+          (base32 "1dqmnxnipi497nx9x10ifack09w41579svryss5q2w5wxy0pg764"))))
     (build-system go-build-system)
     (inputs
      (list go-github-com-google-go-cmp-cmp
