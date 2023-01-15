@@ -7825,7 +7825,7 @@ of a system that deprecates the old ip_queue/libipq mechanism.")
 (define-public conntrack-tools
   (package
     (name "conntrack-tools")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method url-fetch)
@@ -7833,8 +7833,7 @@ of a system that deprecates the old ip_queue/libipq mechanism.")
                            "conntrack-tools/files/"
                            "conntrack-tools-" version ".tar.bz2"))
        (sha256
-        (base32
-         "0psx41bclqrh4514yzq03rvs3cq3scfpd1v4kkyxnic2hk65j22r"))))
+        (base32 "0pabq97rpci3z1bdc54cyhc3b9w86m4nnlbzsp7905p8az7yp789"))))
     (build-system gnu-build-system)
     (native-inputs (list bison flex pkg-config))
     (inputs (list libtirpc
