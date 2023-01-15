@@ -16085,7 +16085,7 @@ verifying the contents.")
 (define-public rust-decimal-2
   (package
     (name "rust-decimal")
-    (version "2.0.4")
+    (version "2.1.0")
     (source
       (origin
         (method url-fetch)
@@ -16094,7 +16094,7 @@ verifying the contents.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1vb3i8vg1dxrw3kzbfiag3gg7rdjd73z80mwbwkq60vnphiqfig6"))))
+          "0k8ij9brz6kdk7j4hq916s85qrplpy3ixs9v9h1ibsxsj5zbg2js"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
