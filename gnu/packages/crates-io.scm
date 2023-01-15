@@ -56289,7 +56289,7 @@ configurable byte storage.")
 (define-public rust-string-cache-0.8
   (package
     (name "rust-string-cache")
-    (version "0.8.0")
+    (version "0.8.4")
     (source
       (origin
         (method url-fetch)
@@ -56298,13 +56298,14 @@ configurable byte storage.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "12i0synp8l0qpnzi5qki4pjq3jx28ykikyffjjjg6fsfxddwfh19"))))
+          "020ahbx93gp85s3k3k5c342j10ml0b77i4q4hri180xmlavr8d11"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
-        ("rust-phf-shared" ,rust-phf-shared-0.8)
+       (("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.12)
+        ("rust-phf-shared" ,rust-phf-shared-0.10)
         ("rust-precomputed-hash" ,rust-precomputed-hash-0.1)
         ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/servo/string-cache")
