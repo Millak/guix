@@ -65891,7 +65891,7 @@ Unix users and groups.")
 (define-public rust-utf-8-0.7
   (package
     (name "rust-utf-8")
-    (version "0.7.5")
+    (version "0.7.6")
     (source
      (origin
        (method url-fetch)
@@ -65900,7 +65900,7 @@ Unix users and groups.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1iw5rp4i3mfi9k51picbr5bgjqhjcmnxx7001clh5ydq31y2zr05"))))
+         "1a9ns3fvgird0snjkd3wbdhwd3zdpc2h5gpyybrfr6ra5pkqxk09"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://github.com/SimonSapin/rust-utf8")
