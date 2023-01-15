@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
 ;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -67,6 +68,7 @@
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -2949,7 +2951,7 @@ user interaction (e.g.  measuring distances).")
 (define-public volctl
   (package
     (name "volctl")
-    (version "0.8.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/buzz/volctl")
@@ -2957,26 +2959,26 @@ user interaction (e.g.  measuring distances).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cx27j83pz2qffnzb85fbl1x6pp3irv1kbw7g1hri7kaw6ky4xiz"))))
+                "0fz80w3ywq54jn4v31frfdj01s5g9lz6v9cd7hpg3kirca0zisln"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pulse (assoc-ref inputs "pulseaudio"))
-                   (xfixes (assoc-ref inputs "libxfixes")))
-               (substitute* "volctl/lib/xwrappers.py"
-                 (("libXfixes.so")
-                  (string-append xfixes "/lib/libXfixes.so")))
-               (substitute* "volctl/lib/pulseaudio.py"
-                 (("libpulse.so.0")
-                  (string-append pulse "/lib/libpulse.so.0")))
-               #t))))))
+             (substitute* "volctl/xwrappers.py"
+               (("libXfixes.so")
+                (string-append (search-input-file inputs
+                                                  "/lib/libXfixes.so")))))))))
     (inputs
-     (list gtk+ libxfixes pulseaudio))
+     (list libxfixes))
     (propagated-inputs
-     (list python-click python-pycairo python-pygobject python-pyyaml))
+     (list python-click
+           python-pycairo
+           python-pygobject
+           python-pyyaml
+           python-pulsectl
+           gtk+))
     (home-page "https://buzz.github.io/volctl/")
     (synopsis "Per-application volume control and on-screen display")
     (description "Volctl is a PulseAudio-enabled tray icon volume control and
