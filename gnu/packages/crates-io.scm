@@ -40624,21 +40624,22 @@ and graph algorithms.")
 (define-public rust-phf-0.10
   (package
     (name "rust-phf")
-    (version "0.10.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "phf" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "17s0k0z1rjczk37cpbmn718h7dkqci1kk9w2spbmjjwc06qkvz5r"))))
+        (base32 "0naj8n5nasv5hj5ldlva3cl6y3sv7zp3kfgqylhbrg55v3mg3fzs"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f          ; Doc tests fail.
        #:cargo-inputs
        (("rust-phf-macros" ,rust-phf-macros-0.10)
         ("rust-phf-shared" ,rust-phf-shared-0.10)
-        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5))))
+        ("rust-proc-macro-hack" ,rust-proc-macro-hack-0.5)
+        ("rust-serde" ,rust-serde-1))))
     (home-page "https://github.com/sfackler/rust-phf")
     (synopsis "Runtime support for perfect hash function data structures")
     (description "This package provides runtime support for perfect hash
