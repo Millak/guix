@@ -40432,7 +40432,7 @@ algorithm.")
 (define-public rust-pest-2
   (package
     (name "rust-pest")
-    (version "2.1.3")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -40441,13 +40441,16 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0lry80bm90x47nq71wxq83kjrm9ashpz4kbm92p90ysdx4m8gx0h"))))
+         "02n3b2hv9ciysybs9qzxza25gp8493dd7r8b57kfkxwi9nhb8ms2"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-serde" ,rust-serde-1)
+       (("rust-bytecount" ,rust-bytecount-0.6)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-thiserror" ,rust-thiserror-1)
         ("rust-ucd-trie" ,rust-ucd-trie-0.1))))
     (home-page "https://pest.rs/")
     (synopsis "The Elegant Parser")
@@ -40457,7 +40460,7 @@ algorithm.")
 (define-public rust-pest-derive-2
   (package
     (name "rust-pest-derive")
-    (version "2.1.0")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -40466,7 +40469,7 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1l5jfa6ril71cw5nsiw0r45br54dd8cj2r1nc2d1wq6wb3jilgc3"))))
+         "19m0wd2lcg6d2halnlfcgl0mfpgjy5a29q875vk6bp8c7cwxl714"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40481,7 +40484,7 @@ algorithm.")
 (define-public rust-pest-generator-2
   (package
     (name "rust-pest-generator")
-    (version "2.1.1")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -40490,7 +40493,7 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1h3z8jccki87mn7gppy4292s1ah98z4md998w5pd04jpkclwz7vv"))))
+         "0z52iw9g9jcg8v7d56s9m49cbl1k5wsxax1wjl1666f8v0s3dda6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -40508,7 +40511,7 @@ algorithm.")
 (define-public rust-pest-meta-2
   (package
     (name "rust-pest-meta")
-    (version "2.1.2")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -40517,14 +40520,14 @@ algorithm.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0iymvrh7lcfi8iarkgq0hwgarr00np3l4xg4bx42rmvgi6czshyz"))))
+         "0lbskklh77xnyk1yr8c387l80s37s30lrfv636s7hild58rz3x0f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-maplit" ,rust-maplit-1)
+       (("rust-once-cell" ,rust-once-cell-1)
         ("rust-pest" ,rust-pest-2)
-        ("rust-sha-1" ,rust-sha-1-0.8))))
+        ("rust-sha2" ,rust-sha2-0.10))))
     (home-page "https://pest.rs")
     (synopsis "Pest meta language parser and validator")
     (description
