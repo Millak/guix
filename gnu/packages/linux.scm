@@ -2873,7 +2873,7 @@ Both commands are targeted at system administrators.")
 (define-public bolt
   (package
     (name "bolt")
-    (version "0.9.4")
+    (version "0.9.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2882,7 +2882,7 @@ Both commands are targeted at system administrators.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w66shv7ra8yrhr0byifahbq25wi8qfsm3rifz0j31l7cmnys3js"))))
+                "1b9z0sfrz6bj0mddng9s0dx59g9239zmrl03hxx2x88mb7r0wmcg"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags '(list "--localstatedir=/var")
