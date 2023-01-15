@@ -19673,7 +19673,7 @@ deserialized from environment variables.")
 (define-public rust-erased-serde-0.3
   (package
     (name "rust-erased-serde")
-    (version "0.3.11")
+    (version "0.3.24")
     (source
      (origin
        (method url-fetch)
@@ -19682,16 +19682,17 @@ deserialized from environment variables.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1lgkpkk7nx6f24gmr3psyj8d2avc9701r9jyw1i4ssp10lbnv2yq"))))
+         "0zdaj96bf39h75rkdxkd1znik97s3j7m8ppgbxxfq5y0h59n1jp4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (;("rust-serde-cbor" ,rust-serde-cbor-0.9)
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde-cbor" ,rust-serde-cbor-0.11)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-serde-json" ,rust-serde-json-1))))
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-trybuild" ,rust-trybuild-1))))
     (home-page "https://github.com/dtolnay/erased-serde")
     (synopsis "Type-erased Serialize and Serializer traits")
     (description
