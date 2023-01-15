@@ -96,6 +96,9 @@ devices on various operating systems.")
       (sha256
        (base32 "09q8w00djrkaxbiklcgjwya1w0n3aqavsz06fl0ixv1x9x47d339"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
