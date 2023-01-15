@@ -226,8 +226,7 @@ command line, without displaying a keyboard at all.")
                   ;; pages (this is equivalent to 'gzip --no-name'.)
                   (substitute* "setup.py"
                     (("gzip\\.open\\(gzfile, 'w', 9\\)")
-                     "gzip.GzipFile('', 'wb', 9, open(gzfile, 'wb'), 0.)"))
-                  #t))))
+                     "gzip.GzipFile('', 'wb', 9, open(gzfile, 'wb'), 0.)"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -236,15 +235,13 @@ command line, without displaying a keyboard at all.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "screenlayout/xrandr.py"
                (("\"xrandr\"") (string-append "\"" (assoc-ref inputs "xrandr")
-                                              "/bin/xrandr\"")))
-             #t))
+                                              "/bin/xrandr\"")))))
          (add-after 'install 'wrap-gi-typelib
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append out "/bin/arandr")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))
        #:tests? #f)) ;no tests
     (inputs `(("gtk+" ,gtk+)
               ("pycairo" ,python-pycairo)
