@@ -32518,7 +32518,7 @@ parallelize and optimize.")
   (package
     (inherit rust-matrixmultiply-0.3)
     (name "rust-matrixmultiply")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
       (origin
         (method url-fetch)
@@ -32526,13 +32526,13 @@ parallelize and optimize.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "13s7nfd3dfcsrixld2lk8c563ih5xzczl2w36hprfc016rkfrxyl"))))
+          "1hc4vp19x823xgkm374wsxnzmqbjhmyaj5nr0lhm9k9i02x0cs4i"))))
     (arguments
      `(#:cargo-inputs
        (("rust-rawpointer" ,rust-rawpointer-0.2))
        #:cargo-development-inputs
        (("rust-bencher" ,rust-bencher-0.1)
-        ("rust-itertools" ,rust-itertools-0.7))))))
+        ("rust-itertools" ,rust-itertools-0.8))))))
 
 (define-public rust-matrixmultiply-0.1
   (package
