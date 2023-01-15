@@ -448,6 +448,7 @@ GTK and also enables xwidgets.")))
        ((#:phases phases)
         #~(modify-phases #$phases
             (delete 'set-libgccjit-path)
+            (delete 'patch-compilation-driver)
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
     (inputs (list ncurses coreutils gzip))
