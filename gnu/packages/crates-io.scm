@@ -37211,7 +37211,7 @@ directly.")
   (package
     (inherit rust-num-rational-0.3)
     (name "rust-num-rational")
-    (version "0.2.3")
+    (version "0.2.4")
     (source
      (origin
        (method url-fetch)
@@ -37220,7 +37220,7 @@ directly.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "18q3vq3xldhaj0z3f92am8f59m1awywgdj28c7wvx0bcksgwfkfs"))))
+         "1vsaz96chxcgpqd5a0dq8hb3b4sj6dnlhwmpbkf4mx6vnls0202w"))))
     (arguments
      `(#:cargo-inputs
        (("rust-num-bigint" ,rust-num-bigint-0.2)
