@@ -623,14 +623,14 @@ hours.")
 (define-public klavaro
   (package
     (name "klavaro")
-    (version "3.13")
+    (version "3.14")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/klavaro/klavaro-"
                             version ".tar.bz2"))
         (sha256
-         (base32 "0z6c3lqikk50mkz3ipm93l48qj7b98lxyip8y6ndg9y9k0z0n878"))))
+         (base32 "1avdwpmd7jmdkrwzsxd8s8qg0sqj2avcv620jvk11i81sd4pw647"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
