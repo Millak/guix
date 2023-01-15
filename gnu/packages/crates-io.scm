@@ -45468,7 +45468,7 @@ generator based on timing jitter.")
 (define-public rust-rand-pcg-0.3
   (package
     (name "rust-rand-pcg")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
       (origin
         (method url-fetch)
@@ -45476,7 +45476,7 @@ generator based on timing jitter.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1w47awndfhgcc31zbji66pwndqmc6lsyairqi9b17f82f19riqbx"))))
+          "0gn79wzs5b19iivybwa09wv4lhi4kbcqciasiqqynggnr8cd1jjr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
