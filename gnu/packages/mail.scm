@@ -1613,7 +1613,7 @@ pairs have previously synchronized.")
 (define-public getmail6
   (package
     (name "getmail6")
-    (version "6.18.9")
+    (version "6.18.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1622,7 +1622,7 @@ pairs have previously synchronized.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ch5hagkpybmkgg2wbb2mids3nbmjqgdqjhczzz7pvj4hx2m8fdb"))))
+                "0dr2grcxnn21prv6dj8sd9c68zs1fxy00wc676rnghcs4yfnb78h"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;tests require docker
     (home-page "https://github.com/getmail6/getmail6")
