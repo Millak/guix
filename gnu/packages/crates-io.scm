@@ -54407,7 +54407,7 @@ I/O programming.")
 (define-public rust-smallvec-1
   (package
     (name "rust-smallvec")
-    (version "1.9.0")
+    (version "1.10.0")
     (source
      (origin
        (method url-fetch)
@@ -54416,14 +54416,16 @@ I/O programming.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1lfss4vs5z5njm3ac9c499s5m1gphzm5a7gxcbw1zncpjmsdpl1g"))))
+         "1q2k15fzxgwjpcdv3f323w24rbbfyv711ayz85ila12lg7zbw1x5"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-arbitrary" ,rust-arbitrary-1)
         ("rust-serde" ,rust-serde-1))
        #:cargo-development-inputs
-       (("rust-bincode" ,rust-bincode-1))))
+       (("rust-bincode" ,rust-bincode-1)
+        ("rust-debugger-test" ,rust-debugger-test-0.1)
+        ("rust-debugger-test-parser" ,rust-debugger-test-parser-0.1))))
     (home-page "https://github.com/servo/rust-smallvec")
     (synopsis "Small vector optimization")
     (description
