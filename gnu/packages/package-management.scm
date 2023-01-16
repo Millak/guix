@@ -1691,8 +1691,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "5acfcc0a9d99d78a167c365534aa5bf592f5625e")
-        (revision "9"))
+  (let ((commit "8d219e49c8f1623bdd3622f8c024c40acb0004c2")
+        (revision "10"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1703,7 +1703,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1mxdkay3l1la7b6m0455s8cansd6qcdhv0k231aik0ayhbck8kby"))
+                  "0bxhwmfywy03iqmy7a039xr4cb9vfjsqpj7w5ybhmiqhf0yv9hpa"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1735,10 +1735,11 @@ in an isolated environment, in separate namespaces.")
                                          "guix"
                                          "guile-lib"
                                          "guile-lzlib"
+                                         "guile-zstd"
                                          "guile-prometheus"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         "guile-fibers")))
+                                         "guile-fibers-next")))
                       (wrap-program file
                         `("GUILE_LOAD_PATH" ":" prefix
                           (,scm ,(string-join
@@ -1771,10 +1772,11 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-prometheus
              guile-lib
              guile-lzlib
+             guile-zstd
              guile-sqlite3))
       (inputs
        (list bash-minimal
@@ -1783,10 +1785,11 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-prometheus
              guile-lib
              guile-lzlib
+             guile-zstd
              guile-sqlite3
              guile-gnutls))
       (home-page "https://git.cbaines.net/guix/nar-herder")
