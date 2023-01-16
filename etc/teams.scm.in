@@ -424,10 +424,6 @@ importer."
         #:scope (list "gnu/packages/diffoscope.scm")))
 
 
-(define-member (person "Thiago Jung Bauermann"
-                       "bauermann@kolabnow.com")
-  embedded-bootstrap translations)
-
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
   science)
