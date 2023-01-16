@@ -12793,7 +12793,7 @@ upstream servers, deployments made with @option{--with-latest} and
 or be modified in place on the servers.
 
 To deploy old software versions without compromising on reproducibility,
-@ref{Invoking guix time-machine, @command{guix time-machine}}.
+@pxref{Invoking guix time-machine, @command{guix time-machine}}.
 @end quotation
 
 There are limitations.  First, in cases where the tool cannot or does
