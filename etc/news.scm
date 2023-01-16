@@ -29,6 +29,7 @@
  (entry (commit "137b91f03bbb7f1df71cf10c4f79ae57fbcea400")
         (title
          (en "New @option{--with-version} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-version}")
          (fr "Nouvelle option de transformation @option{--with-version}"))
         (body
          (en "The new @option{--with-version} package transformation option
