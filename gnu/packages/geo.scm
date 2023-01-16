@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -2738,6 +2738,51 @@ architecture.")
       license:opl1.0+
       license:public-domain
       license:qwt1.0))))
+
+(define-public splat
+  (package
+    (name "splat")
+    (version "1.5.0b3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hoche/splat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10djwjwb1pvznr0fjwnxdm5d961f3yngispb4zj9hyzdgq1xh217"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete pre-compiled libraries.
+           (delete-file-recursively "vstudio")))))
+    (build-system gnu-build-system)
+    (inputs
+     (list bzip2 libjpeg-turbo libpng zlib))
+    (arguments
+     (list #:tests? #f ; No test suite.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-installation-scripts
+                 (lambda _
+                   (substitute* (list "install" "utils/install")
+                     (("/usr/local")
+                      #$output)
+                     (("whoami=`whoami`")
+                      "whoami=root"))))
+               (delete 'configure)
+               (add-before 'install 'create-bin-directory
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin")))))))
+    (synopsis "Signal propagation and coverage analysis tool")
+    (description
+     "The SPLAT (Signal Propagation, Loss, And Terrain) program can use the
+Longley-Rice path loss and coverage prediction using the Irregular Terrain
+Model to predict the behaviour and reliability of radio links, and to predict
+path loss.")
+    (home-page "https://www.qsl.net/kd2bd/splat.html")
+    (license license:gpl2+)))
 
 (define-public python-geographiclib
   (package
