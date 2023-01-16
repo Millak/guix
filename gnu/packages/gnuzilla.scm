@@ -477,8 +477,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "102.6.0-guix0-preview1")
-(define %icecat-build-id "20221213000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "102.7.0-guix0-preview1")
+(define %icecat-build-id "20230117000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -500,11 +500,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1zhggzrk7lgip8jm37idh22qks76kmjy4yqy2qi63mvnv2j58cfj"))))
+              "1ahl66x8chnsz80capqa5ivyrqhc50s91zrcgz1jxd7w2ws61957"))))
 
-         (upstream-icecat-base-version "102.6.0") ; maybe older than base-version
+         (upstream-icecat-base-version "102.7.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "b6260130b9808f550bdb35061af2d7962109a181")
+         (gnuzilla-commit "7f76da3cfd5d04fa38d894f6ea6ac5f2fd0ea837")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -516,7 +516,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "19v443w43jbcl9m5kl52nfai7hs4j07nf2ad9ggca7b2b0cz89b4"))))
+              "19i66qvwzgllgnlw270bxphymybjj1qb5hdznqi4i2dcgpcrq77l"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
