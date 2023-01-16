@@ -31235,10 +31235,11 @@ Fish-style truncated directories in eshell and various modelines.")
     (license license:gpl3+)))
 
 (define-public emacs-org-present
-  (let ((commit "d13acd70eff6a1608bc991920232146a0de76b21"))
+  (let ((commit "4ec04e1b77dea76d7c30066ccf3200d2e0b7bee9")
+        (revision "1"))
     (package
       (name "emacs-org-present")
-      (version "0.0.1")
+      (version (git-version "0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -31248,15 +31249,16 @@ Fish-style truncated directories in eshell and various modelines.")
          (file-name (git-file-name name version))
          (sha256
           (base32
-           "0jz8xiny3rv9ql0p623byz32pip1b82j2c2nyfz2wd114kiabb6q"))))
+           "0bcrgwc80968zx52lwg71cs7v2yrygynzbnrakxdja1l5a6h3xy6"))))
       (build-system emacs-build-system)
-      (synopsis "Ultra-minimalist presentation minor-mode for Emacs org-mode")
-      (description "Org-present is an extremely minimalist presentation tool
-for Emacs org-mode.  Simply layout your presentation with each slide under a
-top-level header, start the minor mode with @code{org-present}, and page through
-each slide with left/right keys.")
+      (propagated-inputs (list emacs-org))
+      (synopsis "Minimalist presentation minor-mode for Emacs Org mode")
+      (description "Org Present is a minimalist presentation tool for Emacs
+Org mode.  Simply layout your presentation with each slide under a top-level
+header, start the minor mode, and page through each slide with Left and Right
+keys.")
       (home-page "https://github.com/rlister/org-present")
-      (license license:gpl2))))
+      (license license:gpl3+))))
 
 (define-public emacs-fullframe
   (package
