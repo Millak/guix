@@ -124,18 +124,18 @@ the WPE-flavored port of WebKit.")
 engine that uses Wayland for graphics output.")
     (license license:bsd-2)))
 
-(define %webkit-version "2.36.8")       ;webkit2gtk4
+(define %webkit-version "2.38.3")
 
 (define-public webkitgtk
   (package
-    (name "webkitgtk")
+    (name "webkitgtk")                  ; webkit2gtk4
     (version %webkit-version)
     (source (origin
               (method url-fetch)
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0dq4s0rw3cmsxlv22pc38qdsq4wx2yyq9wgsi4wgw243y9mzpn8a"))
+               (base32 "0njac0878ksh53gn50phly1vzvj08q7g5aclncv6k324xp8h3w21"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -166,6 +166,11 @@ engine that uses Wayland for graphics output.")
       #:make-flags #~(list "-j" (number->string (max 2 (parallel-job-count))))
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'build 'set-CC
+            (lambda _
+              ;; Some Perl scripts check for the CC environment variable, else
+              ;; use /usr/bin/gcc.
+              (setenv "CC" #$(cc-for-target))))
           (add-after 'unpack 'configure-bubblewrap-store-directory
             (lambda _
               ;; This phase works in tandem with
@@ -189,12 +194,6 @@ engine that uses Wayland for graphics output.")
                 ;; the pkg-config search to locate headers.
                 (("pkg_check_modules\\(PC_SYSTEMD QUIET libsystemd")
                  "pkg_check_modules(PC_SYSTEMD QUIET libelogind"))))
-          (add-after 'unpack 'patch-gtk-doc-scan
-            (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (substitute* (find-files "Source" "\\.sgml$")
-                (("http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd")
-                 (search-input-file (or native-inputs inputs)
-                                    "xml/dtd/docbook/docbookx.dtd")))))
           (add-after 'unpack 'embed-absolute-wpebackend-reference
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((wpebackend-fdo (assoc-ref inputs "wpebackend-fdo")))
@@ -223,9 +222,7 @@ engine that uses Wayland for graphics output.")
            perl
            pkg-config
            python-wrapper
-           ;; These are required to build the documentation.
-           gtk-doc/stable
-           docbook-xml
+           gi-docgen
            ruby))
     (propagated-inputs
      (list gtk+ libsoup))
@@ -282,33 +279,13 @@ propagated by default) such as @code{gst-plugins-good} and
 (define-public webkitgtk-next
   (package
     (inherit webkitgtk)
-    (name "webkitgtk")
-    (version "2.38.3")                  ;webkit2gtk5
-    (source (origin
-              (inherit (package-source webkitgtk))
-              (method url-fetch)
-              (uri (string-append "https://www.webkitgtk.org/releases/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32 "0njac0878ksh53gn50phly1vzvj08q7g5aclncv6k324xp8h3w21"))))
-    (build-system cmake-build-system)
+    (name "webkitgtk-next")             ; webkit2gtk5
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
         #~(cons* "-DENABLE_INTROSPECTION=ON"
                  "-DUSE_GTK4=ON"
-                 (delete "-DENABLE_GTKDOC=ON" #$flags)))
-       ((#:phases phases)
-        #~(modify-phases #$phases
-            (add-before 'build 'set-CC
-              (lambda _
-                ;; Some Perl scripts check for the CC environment variable, else
-                ;; use /usr/bin/gcc.
-                (setenv "CC" "gcc")))))))
-    (native-inputs
-     (modify-inputs (package-native-inputs webkitgtk)
-       (delete "docbook-xml" "gtk-doc")
-       (append gi-docgen)))
+                 (delete "-DENABLE_GTKDOC=ON" #$flags)))))
     (propagated-inputs
      (modify-inputs (package-propagated-inputs webkitgtk)
        (replace "gtk+" gtk)))
@@ -340,7 +317,7 @@ propagated by default) such as @code{gst-plugins-good} and
               (uri (string-append "https://wpewebkit.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "1svmvj96c0lhdhs7fndgwchkvv4wyb7gwd4d3fbd1chhr54s6hld"))))
+               (base32 "160456k4yiml0zn2fxba9qwp94dvvn93z9rqs2qa2lvjxig0gn8x"))))
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
