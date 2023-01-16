@@ -17541,21 +17541,20 @@ Genomics with R\".")
       (license license:gpl3))))
 
 (define-public r-cytonorm
-  (let ((commit "e4b9d343ee65db3c422800f1db3e77c25abde987")
+  (let ((commit "166f9ff3d692278241018c2846cb4f86ab16065b")
         (revision "1"))
     (package
       (name "r-cytonorm")
-      (version (git-version "0.0.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/saeyslab/CytoNorm")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0h2rdy15i4zymd4dv60n5w0frbsdbmzpv99dgm0l2dn041qv7fah"))))
+      (version (git-version "0.0.10" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saeyslab/CytoNorm")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0vbqy3b26j1zqmwgqx59kkn9pm2m0qwlcppskvahrxcwrj6m1s5y"))))
       (properties `((upstream-name . "CytoNorm")))
       (build-system r-build-system)
       (propagated-inputs
