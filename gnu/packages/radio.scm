@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -1026,6 +1026,29 @@ satellites.")
 using GNU Radio and the Qt GUI toolkit.")
     (home-page "https://gqrx.dk/")
     (license license:gpl3+)))
+
+(define-public gqrx-scanner
+  (package
+    (name "gqrx-scanner")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neural75/gqrx-scanner")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ar8kqfrd768l6y4kqgq3467xckrrpaq8zlwzz5l7lp8r41w5plr"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ; No test suite
+    (synopsis "Frequency scanner for Gqrx")
+    (description
+     "This package provides a frequency scanner for the Gqrx software-defined
+radio receiver.")
+    (home-page "https://github.com/neural75/gqrx-scanner")
+    (license license:expat)))
 
 (define-public fldigi
   (package
