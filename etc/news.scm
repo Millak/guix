@@ -40,7 +40,7 @@ For example, the command below would spawn GNOME Clocks built against GTK
 4.7.0, skipping its test suite:
 
 @example
-guix shell gnome-clocks --with-version=gtk=4.7.0 \
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
   --without-tests=gtk -- gnome-clocks
 @end example
 
@@ -55,7 +55,7 @@ erstelltes GNOME Clocks aufgerufen werden, wobei der Testkatalog dafür
 übersprungen wird.
 
 @example
-guix shell gnome-clocks --with-version=gtk=4.7.0 \
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
   --without-tests=gtk -- gnome-clocks
 @end example
 
@@ -70,7 +70,7 @@ Par exemple, la commande ci-dessous démarre GNOME Clocks construit avec GTK
 4.7.0, sans lancer sa suite de tests :
 
 @example
-guix shell gnome-clocks --with-version=gtk=4.7.0 \
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
   --without-tests=gtk -- gnome-clocks
 @end example
 
