@@ -3024,6 +3024,28 @@ an interactive shell, and look up definitions and documentation as well as
 code completion and project management support.")
     (license license:gpl3+)))
 
+(define-public emacs-auto-compile
+  (package
+    (name "emacs-auto-compile")
+    (version "1.7.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emacscollective/auto-compile.git")
+                    (commit version)))
+              (sha256
+               (base32
+                "1njnyilv6lxnbvi6yrgzg6qjhf6vgh4fpag4hav1j45718y6kd31"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-compat emacs-packed))
+    (home-page "https://github.com/emacscollective/auto-compile")
+    (synopsis "Automatically compile Emacs Lisp libraries")
+    (description
+     "This package provides two minor modes which automatically recompile
+Emacs Lisp source files.  Together, these modes guarantee that Emacs never
+loads outdated byte code files.")
+    (license license:gpl3+)))
+
 (define-public emacs-auto-sudoedit
   (package
     (name "emacs-auto-sudoedit")
