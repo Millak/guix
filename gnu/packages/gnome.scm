@@ -4634,6 +4634,15 @@ gnome-terminal, but can also be used to embed a console/terminal in games,
 editors, IDEs, etc.")
     (license license:lgpl2.1+)))
 
+(define-public vte-with-gtk-4
+  (package/inherit vte
+    (name "vte-with-gtk4")
+    (arguments (substitute-keyword-arguments (package-arguments vte)
+                 ((#:configure-flags flags #~'())
+                  #~(cons* "-Dgtk4=true" "-Dgtk3=false" #$flags))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs vte)
+                         (replace "gtk+" gtk)))))
+
 (define-public vte-ng
   (package
     (inherit vte)
