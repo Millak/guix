@@ -251,6 +251,7 @@
   #:use-module (gnu packages erlang)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages libcanberra)
+  #:use-module (gnu packages wget)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
@@ -24936,6 +24937,42 @@ versions of third party libraries or @code{C++} standards.")
 for C++ code that uses OpenVDB and needs to be build against multiple
 incompatible versions of it.")
    (license license:gpl3+)))
+
+(define-public emacs-org-board
+  (let ((commit "1393bd46d11a81328ed4fb8471831415a3efe224")
+        (revision "1"))
+    (package
+      (name "emacs-org-board")
+      (version (git-version "1138" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/charlesroelli/org-board")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "1kryrg988c3sbxyp1sdgc6xdv2iz6kiflpzn2rw4z3l4grzab53b"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-wget-location
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "org-board.el"
+                  ("org-board-wget-program"
+                   (search-input-file inputs "/bin/wget"))))))))
+      (inputs
+       (list wget))
+      (propagated-inputs
+       (list emacs-org emacs-ztree))
+      (home-page "https://github.com/charlesroelli/org-board")
+      (synopsis "Bookmarking and web archival system for Org mode")
+      (description
+       "Org Board is a bookmarking and web archival system for Emacs Org mode.
+It archives your bookmarks so that you can access them even when you're not
+online, or when the site hosting them goes down.")
+      (license license:gpl2+))))
 
 (define-public emacs-org-brain
   (package
