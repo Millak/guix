@@ -194,7 +194,7 @@ editors.")
 (define-public fcitx5-gtk
   (package
     (name "fcitx5-gtk")
-    (version "5.0.19")
+    (version "5.0.21")
     (source
      (origin
        (method url-fetch)
@@ -202,7 +202,7 @@ editors.")
                            "/fcitx5-gtk/fcitx5-gtk-"
                            version ".tar.xz"))
        (sha256
-        (base32 "007ls91jfbs3anvcfbza1pjbbsi7q5nrw7f3nzdbyngsl3nj6k37"))))
+        (base32 "04909s99nng835qaycsbhwkmml4prhvpg3r3b39ranqyjy4m4dqj"))))
     (build-system cmake-build-system)
     (arguments
      (list
