@@ -662,8 +662,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                 "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
     (build-system  gnu-build-system)
     (native-inputs
-     (list bc
-           bison
+     (list bison
            dtc
            gnutls
            flex
@@ -672,9 +671,6 @@ tree binary files.  These are board description files used by Linux and BSD.")
            perl
            pkg-config                   ;for 'make menuconfig'
            python
-           python-coverage
-           python-pycryptodomex
-           python-pytest
            swig
            (list util-linux "lib")))
     (home-page "https://www.denx.de/wiki/U-Boot/")
@@ -725,7 +721,7 @@ Info manual.")))
     (name "u-boot-tools")
     (native-inputs
      (modify-inputs (package-native-inputs u-boot)
-       (prepend sdl2)))
+       (prepend python-coverage python-pycryptodomex python-pytest sdl2)))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
