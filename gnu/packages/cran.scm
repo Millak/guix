@@ -31,7 +31,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Magali Lemes <magalilemes00@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -9213,6 +9213,27 @@ facilitate data exploration.")
      "This package provides tools for generating random assignments for common
 experimental designs and random samples for common sampling designs.")
     (license license:expat)))
+
+(define-public r-roptim
+  (package
+    (name "r-roptim")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "roptim" version))
+              (sha256
+               (base32
+                "11h6qdi0rsv0bpps6nxkzzapan284q0gldzkmgx3ww5kvnic5w3y"))))
+    (properties `((upstream-name . "roptim")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (home-page "https://github.com/ypan1988/roptim/")
+    (synopsis "General purpose optimization in R using C++")
+    (description
+     "This package performs optimization in R using C++.  A unified wrapper
+interface is provided to call C functions of the five optimization algorithms
+('Nelder-Mead', BFGS', CG', L-BFGS-B and SANN') underlying @code{optim()}.")
+    (license license:gpl2+)))
 
 (define-public r-base64url
   (package
