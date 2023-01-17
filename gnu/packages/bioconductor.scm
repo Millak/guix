@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2019, 2020, 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2019, 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -7395,6 +7395,43 @@ handling of doublets/multiplets in single-cell RNA sequencing data (i.e.
 multiple cells captured within the same droplet or reaction volume).  It
 includes methods formerly found in the scran package, and the new fast and
 comprehensive scDblFinder method.")
+    (license license:gpl3)))
+
+;; This is a CRAN package, but it depends on packages from Bioconductor.
+(define-public r-scistreer
+  (package
+    (name "r-scistreer")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "scistreer" version))
+              (sha256
+               (base32
+                "0cdp26ngfp5rxa21nqnj6j2098f6996368g4msb3shh7n75np4s9"))))
+    (properties `((upstream-name . "scistreer")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape
+                             r-dplyr
+                             r-ggplot2
+                             r-ggtree
+                             r-igraph
+                             r-paralleldist
+                             r-patchwork
+                             r-phangorn
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rcppparallel
+                             r-reshape2
+                             r-rhpcblasctl
+                             r-stringr
+                             r-tidygraph))
+    (home-page "https://github.com/kharchenkolab/scistreer")
+    (synopsis "Maximum-likelihood perfect phylogeny Inference at scale")
+    (description
+     "This package provides fast maximum-likelihood phylogeny inference from
+noisy single-cell data using the ScisTree algorithm proposed by
+@code{doi.org/10.1093/bioinformatics/btz676, Yufeng Wu (2019)}.  It makes the
+method applicable to massive single-cell datasets (>10,000 cells).")
     (license license:gpl3)))
 
 (define-public r-scmap
