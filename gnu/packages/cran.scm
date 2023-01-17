@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Sandeep Subramanian <sandeepsubramanian94@gmail.com>
 ;;; Copyright © 2018 Charlie Ritter <chewzeirta@posteo.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2018, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2020-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Laura Lazzati <laura.lazzati.15@gmail.com>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
@@ -9312,6 +9312,34 @@ and thus are safe to use in URLs or for file names.  The package also comes
 with a simple base32 encoder/decoder suited for case insensitive file
 systems.")
     (license license:gpl3)))
+
+(define-public r-baseline
+  (package
+    (name "r-baseline")
+    (version "1.3-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "baseline" version))
+              (sha256
+               (base32
+                "1kl68zvyi2zd73jy3axrvrymwn4y6l4pd62nz0fciwbgkjhz3yyx"))))
+    (properties `((upstream-name . "baseline")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gwidgets2tcltk ;for GUI
+           r-limsolve
+           r-sparsem))
+    (home-page "https://github.com/khliland/baseline/")
+    (synopsis "Baseline correction of spectra")
+    (description
+     "This package is a collection of baseline correction algorithms.  Beside
+those it provides a framework and a Tcl/Tk enabled GUI for optimizing baseline
+algorithm parameters.  Typical use is the removal of the background effects from
+spectra, which are originating from various types of spectroscopy and spectrometry.
+Also, there is a possibility of optimizing this with regard to regression or
+classification results.  Correction methods include polynomial fitting, weighted
+local smoothers and many more.")
+    (license license:gpl2)))
 
 (define-public r-radiant-data
   (package
