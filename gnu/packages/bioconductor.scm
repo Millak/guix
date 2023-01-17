@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Peter Lo <peterloleungyau@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2020-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
@@ -7842,6 +7842,46 @@ and clustering.  It is flexible enough to handle arbitrarily many branching
 events and allows for the incorporation of prior knowledge through supervised
 graph construction.")
    (license license:artistic2.0)))
+
+;; This is a CRAN package but it depends on a bionconductor package.
+(define-public r-speaq
+  (package
+    (name "r-speaq")
+    (version "2.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "speaq" version))
+              (sha256
+               (base32
+                "0z9a3nbfazphp090c6hg892vjq7jp4g4cij3s5wbs1q567inbmlk"))))
+    (properties `((upstream-name . "speaq")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-cluster
+           r-data-table
+           r-dosnow
+           r-foreach
+           r-ggplot2
+           r-gridextra
+           r-impute
+           r-massspecwavelet
+           r-missforest
+           r-reshape2
+           r-rfast
+           r-rvest
+           r-xml2))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=speaq")
+    (synopsis "Tools for nuclear magnetic resonance spectra alignment")
+    (description
+     "This package helps with @acronym{NMR, Nuclear Magnetic Resonance} spectroscopy
+data analysis as easy as possible.  It only requires a small set of functions to
+perform an entire analysis.  Speaq offers the possibility of raw spectra alignment
+and quantitation but also an analysis based on features whereby the spectra are
+converted to peaks which are then grouped and turned into features.  These features
+can be processed with any number of statistical tools either included in speaq
+or available elsewhere on CRAN.")
+    (license license:asl2.0)))
 
 (define-public r-stager
   (package
