@@ -10352,6 +10352,28 @@ Tooltips and color gradients can be mapped to nodes using a numeric column in
 the source data frame.")
     (license license:gpl3+)))
 
+(define-public r-rapiclient
+  (package
+    (name "r-rapiclient")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rapiclient" version))
+              (sha256
+               (base32
+                "1pm4kdga2nz1cpmchdb0ad8gr3bqfm84b1kl32cyc0x3x5rr2syz"))))
+    (properties `((upstream-name . "rapiclient")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-httr r-jsonlite r-yaml))
+    (home-page "https://github.com/bergant/rapiclient")
+    (synopsis "Dynamic OpenAPI/Swagger client")
+    (description
+     "This package lets you access services specified in OpenAPI (formerly
+Swagger) format.  It is not a code generator.  The client is generated
+dynamically as a list of R functions.")
+    (license license:expat)))
+
 (define-public r-rappdirs
   (package
     (name "r-rappdirs")
