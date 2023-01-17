@@ -15302,6 +15302,36 @@ isosurfaces.")
     ;; Any version of the GPL.
     (license (list license:gpl2+ license:gpl3+))))
 
+(define-public r-missforest
+  (package
+    (name "r-missforest")
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "missForest" version))
+              (sha256
+               (base32
+                "13c38hpl60ca1kwyv61cxsla6ccmsj4qzp0vrxcq7b827fh5aw21"))))
+    (properties `((upstream-name . "missForest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dorng
+           r-foreach
+           r-iterators
+           r-itertools
+           r-randomforest))
+    (home-page "https://github.com/stekhoven/missForest")
+    (synopsis "Nonparametric missing value imputation using Random Forest")
+    (description
+     "The function @code{missForest} in this package is used to impute missing
+values, particularly in the case of mixed-type data.  It uses a random forest
+trained on the observed values of a data matrix to predict the missing values.
+It can be used to impute continuous and/or categorical data, including complex
+interactions and non-linear relations.  It yields an @acronym{OOB, out-of-bag}
+imputation error estimate without the need of a test set or elaborate cross-
+validation.  It can be run in parallel to save computation time.")
+    (license license:gpl2+)))
+
 (define-public r-ks
   (package
     (name "r-ks")
