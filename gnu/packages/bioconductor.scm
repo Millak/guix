@@ -2619,6 +2619,59 @@ mapped reads).  It is currently designed for un-stranded paired-end RNA-seq
 data.")
     (license license:gpl2+)))
 
+(define-public r-alpsnmr
+  (package
+    (name "r-alpsnmr")
+    (version "4.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "AlpsNMR" version))
+              (sha256
+               (base32
+                "1y4qqc6l8flv5ns4qwzjwmcykm6zcm4jg097mn8xyp7mnxymy7pl"))))
+    (properties `((upstream-name . "AlpsNMR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-baseline
+           r-biocparallel
+           r-dplyr
+           r-fs
+           r-future
+           r-generics
+           r-ggplot2
+           r-glue
+           r-htmltools
+           r-magrittr
+           r-matrixstats
+           r-mixomics
+           r-pcapp
+           r-purrr
+           r-readxl
+           r-reshape2
+           r-rlang
+           r-rmarkdown
+           r-scales
+           r-signal
+           r-speaq
+           r-stringr
+           r-tibble
+           r-tidyr
+           r-tidyselect
+           r-vctrs))
+    (native-inputs (list r-knitr))
+    (home-page "https://sipss.github.io/AlpsNMR/")
+    (synopsis "Automated spectral processing system for NMR")
+    (description
+     "This package reads Bruker @acronym{NMR, Nuclear Magnetic Resonance} data
+directories both zipped and unzipped.  It provides automated and efficient
+signal processing for untargeted NMR metabolomics.  It is able to interpolate
+the samples, detect outliers, exclude regions, normalize, detect peaks, align
+the spectra, integrate peaks, manage metadata and visualize the spectra.
+After spectra processing, it can apply multivariate analysis on extracted
+data.  Efficient plotting with 1-D data is also available.  Basic reading of
+1D ACD/Labs exported JDX samples is also available.")
+    (license license:expat)))
+
 (define-public r-altcdfenvs
   (package
     (name "r-altcdfenvs")
