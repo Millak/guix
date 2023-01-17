@@ -6750,6 +6750,73 @@ proteowizard library for mzML and mzIdentML.  The netCDF reading code has
 previously been used in XCMS.")
     (license license:artistic2.0)))
 
+;; This is a CRAN package, but it depends on a Bioconductor package.
+(define-public r-numbat
+  (package
+    (name "r-numbat")
+    (version "1.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "numbat" version))
+              (sha256
+               (base32
+                "1jkz24j99cd333mvisp8x5swwr0iyix1kc962d2yx3mv5cn28xdb"))))
+    (properties `((upstream-name . "numbat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ape
+                             r-catools
+                             r-data-table
+                             r-dendextend
+                             r-dplyr
+                             r-genomicranges
+                             r-ggplot2
+                             r-ggraph
+                             r-ggtree
+                             r-glue
+                             r-igraph
+                             r-iranges
+                             r-logger
+                             r-magrittr
+                             r-matrix
+                             r-optparse
+                             r-paralleldist
+                             r-patchwork
+                             r-pryr
+                             r-purrr
+                             r-r-utils
+                             r-rcpp
+                             r-rcpparmadillo
+                             r-rhpcblasctl
+                             r-roptim
+                             r-scales
+                             r-scistreer
+                             r-stringr
+                             r-tibble
+                             r-tidygraph
+                             r-tidyr
+                             r-vcfr
+                             r-zoo))
+    (home-page "https://github.com/kharchenkolab/numbat")
+    (synopsis "Haplotype-aware CNV analysis from scRNA-Seq")
+    (description
+     "This package provides a computational method that infers copy number
+variations (CNV) in cancer scRNA-seq data and reconstructs the tumor
+phylogeny.  It integrates signals from gene expression, allelic ratio, and
+population haplotype structures to accurately infer allele-specific CNVs in
+single cells and reconstruct their lineage relationship.  It does not require
+tumor/normal-paired DNA or genotype data, but operates solely on the donor
+scRNA-data data (for example, 10x Cell Ranger output).  It can be used to:
+
+@enumerate
+@item detect allele-specific copy number variations from single-cells
+@item differentiate tumor versus normal cells in the tumor microenvironment
+@item infer the clonal architecture and evolutionary history of profiled tumors
+@end enumerate
+
+For details on the method see @url{https://doi.org/10.1038/s41587-022-01468-y,
+Gao et al in Nature Biotechnology 2022}.")
+    (license license:expat)))
+
 (define-public r-organism-dplyr
   (package
     (name "r-organism-dplyr")

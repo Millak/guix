@@ -9232,7 +9232,7 @@ experimental designs and random samples for common sampling designs.")
     (description
      "This package performs optimization in R using C++.  A unified wrapper
 interface is provided to call C functions of the five optimization algorithms
-('Nelder-Mead', BFGS', CG', L-BFGS-B and SANN') underlying @code{optim()}.")
+(Nelder-Mead, BFGS, CG, L-BFGS-B and SANN) underlying @code{optim()}.")
     (license license:gpl2+)))
 
 (define-public r-base64url
