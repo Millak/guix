@@ -5302,8 +5302,7 @@ it won't take longer to install 15 machines than it would to install just 2.")
                  (install-file "greetd-ipc.7" man7)
                  (install-file "agreety.1" man1))))))))
     (native-inputs
-     `(("linux-pam" ,linux-pam)
-       ("scdoc" ,scdoc)))
+     (list linux-pam scdoc))
     (synopsis "Minimal and flexible login manager daemon")
     (description
      "greetd is a minimal and flexible login manager daemon
