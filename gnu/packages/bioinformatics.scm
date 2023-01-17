@@ -17604,6 +17604,28 @@ interest.")
       ;; Any version of the GPL
       (license license:gpl3+))))
 
+(define-public python-vireosnp
+  (package
+    (name "python-vireosnp")
+    (version "0.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "vireoSNP" version))
+              (sha256
+               (base32
+                "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (home-page "https://github.com/huangyh09/vireoSNP")
+    (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
+    (description
+     "This package provides a deconvolution based on Single Nucleotide
+Position (SNP) for multiplexed scRNA-seq data.  The name vireo stand for
+Variational Inference for Reconstructing Ensemble Origin by expressed SNPs in
+multiplexed scRNA-seq data and follows the clone identification from
+single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
+    (license license:asl2.0)))
+
 (define-public ccwl
   (package
     (name "ccwl")
