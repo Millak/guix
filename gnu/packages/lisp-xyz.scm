@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020, 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
@@ -85,6 +85,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -10283,6 +10284,63 @@ Common Lisp.  It uses the libuv library as backend.")
 
 (define-public ecl-cl-async
   (sbcl-package->ecl-package sbcl-cl-async))
+
+(define-public sbcl-classimp
+  (let ((commit "d82a14c59bc733f89a1ea0b3447ebedddce5756e")
+        (revision "0"))
+    (package
+      (name "sbcl-classimp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/3b/classimp")
+               (commit commit)))
+         (file-name (git-file-name "cl-classimp" version))
+         (sha256
+          (base32 "0pbnz6cf1zb2ayk4kbw0gphjb8nflnjns2rwhv86jz0kf0z1hqha"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-assimp-lib-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "library.lisp"
+                  (("libassimp.so.5" _)
+                   (search-input-file inputs "/lib/libassimp.so.5.0.0"))))))))
+      (inputs
+       (list assimp-5.0
+             sbcl-cffi
+             sbcl-split-sequence))
+      (home-page "https://github.com/3b/classimp")
+      (synopsis "Common Lisp CFFI bindings for Open Asset Import Library")
+      (description
+       "This package provides CFFI bindings to the @acronym{ASSIMP, Asset
+Import} library for Common Lisp.")
+      (license license:expat))))
+
+;; FIXME: The cl and ecl packages get the latest version of assimp as
+;; dependency instead of the one specified in the sbcl package. Specifying
+;; the dependencies explicitly works around the issue.
+(define-public cl-classimp
+  (let ((pkg (sbcl-package->cl-source-package sbcl-classimp)))
+    (package
+      (inherit pkg)
+      (inputs
+       (list assimp-5.0
+             cl-cffi
+             cl-split-sequence)))))
+
+(define-public ecl-classimp
+  (let ((pkg (sbcl-package->ecl-package sbcl-classimp)))
+    (package
+      (inherit pkg)
+      (inputs
+       (list assimp-5.0
+             ecl-cffi
+             ecl-split-sequence)))))
 
 (define-public sbcl-blackbird
   (let ((commit "d361f81c1411dec07f6c2dcb11c78f7aea9aaca8")
