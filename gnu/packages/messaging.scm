@@ -2670,15 +2670,15 @@ replacement.")
 (define-public tdlib
   (package
     (name "tdlib")
-    (version "1.8.4")
+    (version "1.8.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tdlib/td")
-             (commit "7eabd8ca60de025e45e99d4e5edd39f4ebd9467e")))
+             (commit "c8acf63e02e84f9c5053a4cef253a219dfbe870c")))
        (sha256
-        (base32 "1chs0ibghjj275v9arsn3k68ppblpm7ysqk0za9kya5vdnldlld5"))
+        (base32 "17dkav9mjgmv844zlil8fq3m1pf221b3jv30cq1s1iw6k5k02371"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
