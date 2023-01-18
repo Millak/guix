@@ -9912,6 +9912,74 @@ atomic access.")
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))
 
+(define-public gofumpt
+  (package
+    (name "gofumpt")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/gofumpt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13ahi8q1a9h4dj6a7xp95c79d5svz5p37b6z91aswbq043qd417k"))
+              (modules '((guix build utils)))
+              (snippet `(let ((fixed-version (string-append ,version
+                                                            " (GNU Guix)")))
+                          ;; Gofumpt formats Go files, and therefore modifies
+                          ;; them. To help the developers diagnose issues, it
+                          ;; replaces any occurrence of a `//gofumpt:diagnose`
+                          ;; comment with some debugging information which
+                          ;; includes the module version. In the event gofumpt
+                          ;; was built without module support, it falls back
+                          ;; to a string "(devel)". Since our build system
+                          ;; does not yet support modules, we'll inject our
+                          ;; version string instead, since this is more
+                          ;; helpful.
+                          (substitute* "internal/version/version.go"
+                            (("^const fallbackVersion.+")
+                             (format #f "const fallbackVersion = \"~a\"~%"
+                                     fixed-version)))
+                          ;; These tests rely on `//gofumpt:diagnose` comments
+                          ;; being replaced with fixed information injected
+                          ;; from the test scripts, but this requires a binary
+                          ;; compiled as a Go module. Since we can't do this
+                          ;; yet, modify the test scripts with the version
+                          ;; string we're injecting.
+                          (delete-file "testdata/script/diagnose.txtar")
+                          (substitute* (find-files "testdata/script/"
+                                                   "\\.txtar$")
+                            (("v0.0.0-20220727155840-8dda8068d9f3")
+                             fixed-version)
+                            (("(devel)")
+                             fixed-version)
+                            (("v0.3.2-0.20220627183521-8dda8068d9f3")
+                             fixed-version))))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/gofumpt"
+       #:go ,go-1.19))
+    (native-inputs (list go-gopkg-in-errgo-fmt-errors))
+    (propagated-inputs (list go-github-com-pkg-diff
+                             go-github-com-kr-text
+                             go-github-com-kr-pretty
+                             go-golang-org-x-tools
+                             go-golang-org-x-sys
+                             go-golang-org-x-sync
+                             go-golang-org-x-mod
+                             go-github-com-rogpeppe-go-internal
+                             go-github-com-google-go-cmp-cmp
+                             go-github-com-frankban-quicktest))
+    (home-page "https://mvdan.cc/gofumpt/")
+    (synopsis "Formats Go files with a stricter ruleset than gofmt")
+    (description
+     "Enforce a stricter format than @code{gofmt}, while being backwards compatible.
+That is, @code{gofumpt} is happy with a subset of the formats that
+@code{gofmt} is happy with.")
+    (license license:bsd-3)))
+
 (define-public unparam
   (package
     (name "unparam")
