@@ -3006,6 +3006,20 @@ for the Go language.")
 the @url{https://vuln.go.dev,Go Vulnerability Database}.")
     (license license:bsd-3)))
 
+(define-public go-golang-org-x-vuln
+  (package
+    (inherit govulncheck)
+    (name "go-golang-org-x-vuln")
+    (arguments
+     `(#:import-path "golang.org/x/vuln"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs govulncheck))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
