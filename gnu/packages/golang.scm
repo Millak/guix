@@ -7024,28 +7024,27 @@ colorized or SGR defined output to the standard output.")
 (define-public go-github-com-google-go-cmp-cmp
   (package
     (name "go-github-com-google-go-cmp-cmp")
-    (version "0.5.2")
+    (version "0.5.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/google/go-cmp")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/google/go-cmp")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qchy411jm9q2l9mf7x3ry2ycaqp9xdhf2nx14qrpzcxfigv2705"))))
+                "0a13m7l1jrysa7mrlmra8y7n83zcnb23yjyg3a609p8i9lxkh1wm"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/go-cmp/cmp"
        #:unpack-path "github.com/google/go-cmp"))
-    (propagated-inputs
-     (list go-golang-org-x-xerrors))
     (synopsis "Determine equality of values in Go")
-    (description "This package provides a more powerful and safer
-alternative to @code{reflect.DeepEqual} for comparing whether two values
-are semantically equal in Go (for writing tests).")
-    (home-page "https://godoc.org/github.com/google/go-cmp/cmp")
-    (license license:asl2.0)))
+    (description
+     "This package is intended to be a more powerful and safer
+alternative to @@code{reflect.DeepEqual} for comparing whether two values are
+semantically equal.")
+    (home-page "https://github.com/google/go-cmp")
+    (license license:bsd-3)))
 
 (define-public go-github-com-google-uuid
   (package
