@@ -9147,7 +9147,7 @@ the necessary APIs to build a wide array of higher-level primitives.")
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
-    (version "1.6.1")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9156,7 +9156,7 @@ the necessary APIs to build a wide array of higher-level primitives.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00j2vpp1bsggdvw1winkz23mg0q6drjiir5q0k49pmqx1sh7106l"))))
+                "0bh08k8fy1qcc0vzyv0xkg0sx5kjx348zd1dpjmp3rbrr6xrpaaw"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rogpeppe/go-internal"
@@ -9165,6 +9165,8 @@ the necessary APIs to build a wide array of higher-level primitives.")
        #:phases
        (modify-phases %standard-phases
          (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-pkg-diff))
     (home-page "https://github.com/rogpeppe/go-internal/")
     (synopsis "Internal packages from the Go standard library")
     (description "This repository factors out an opinionated selection of
