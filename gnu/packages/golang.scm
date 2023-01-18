@@ -2855,6 +2855,33 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-golang-org-x-exp
+  (package
+    (name "go-golang-org-x-exp")
+    (version "0.0.0-20221004215720-b9f4876ce741")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/exp")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "030b929xyg8dpp6f4qbyg63msi6zgzj9sqmvnyphfcrjkqf7nr41"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/exp"
+       ;; Source-only package
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (home-page "https://golang.org/x/exp")
+    (synopsis "Experimental and deprecated Go packages")
+    (description
+     "This subrepository holds experimental and deprecated (in the @code{old}
+directory) packages.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-tools
   (let ((commit "8b927904ee0dec805c89aaf9172f4459296ed6e8")
         (revision "0"))
