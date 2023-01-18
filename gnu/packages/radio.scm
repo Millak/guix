@@ -2816,7 +2816,7 @@ Navigation Satellite System.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.10.4")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2825,7 +2825,7 @@ Navigation Satellite System.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1svxdfb5snxs2y1dwyb0j10ill9ribj4hw1rk023866yzn2zd0l9"))))
+                "1xbp4ica6bgsiwc57wzm8744dqik2fw77kh1gb8s3sa1q9my2vlx"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests
