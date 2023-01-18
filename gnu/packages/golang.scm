@@ -9835,6 +9835,20 @@ atomic access.")
 be used as both a binary and a library.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-xurls
+  (package
+    (inherit xurls)
+    (name "go-mvdan-cc-xurls")
+    (arguments
+     `(#:import-path "mvdan.cc/xurls"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs xurls))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
         (revision "0"))
