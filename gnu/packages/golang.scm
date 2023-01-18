@@ -10052,27 +10052,26 @@ tools with similar semantics.")
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dominikh/go-tools")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17li8jbw3cpn59kpcl3j3r2an4wkx3fc81xn0j4xgbjpkxh9493n"))))
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dominikh/go-tools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "honnef.co/go/tools"
        #:tests? #f
        ;; Source-only package
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
-    (propagated-inputs
-     (list go-golang-org-x-tools go-github-com-kisielk-gotool
-           go-github-com-burntsushi-toml))
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-exp go-golang-org-x-tools
+                             go-golang-org-x-mod go-github-com-kisielk-gotool
+                             go-github-com-burntsushi-toml))
     (home-page "https://honnef.co/go/tools")
     (synopsis "Staticcheck advanced Go linter")
     (description
