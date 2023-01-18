@@ -9873,6 +9873,20 @@ atomic access.")
     (description "Reports unused function parameters and results in Go code.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-unparam
+  (package
+    (inherit unparam)
+    (name "go-mvdan-cc-unparam")
+    (arguments
+     `(#:import-path "github.com/mvdan/unparam"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs unparam))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public xurls
   (package
     (name "xurls")
