@@ -8585,6 +8585,32 @@ file system operations.")
 legal Go source code, and returns an error when detects that it cannot.")
     (license license:expat)))
 
+(define-public go-github-com-jba-templatecheck
+  (package
+    (name "go-github-com-jba-templatecheck")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jba/templatecheck")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12iwkidz4p6wdl65jfddqxls80mv879k2rpb42dj7y4dja5advlc"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jba/templatecheck"))
+    (propagated-inputs (list go-github-com-google-safehtml))
+    (home-page "https://github.com/jba/templatecheck")
+    (synopsis "Checks Go templates for problems")
+    (description
+     "Package templatecheck checks Go templates for problems.  It can detect
+many errors that are normally caught only during execution.  Use templatecheck
+in tests to find template errors early, and along template execution paths
+that might only rarely be reached.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-go-context
   (let ((commit "d14ea06fba99483203c19d92cfcd13ebe73135f4")
         (revision "1"))
