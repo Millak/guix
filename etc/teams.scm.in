@@ -255,9 +255,16 @@ asdf-build-system."
                       "guix/scripts/import/go.scm"
                       "tests/go.scm")))
 
-(define-team embedded-bootstrap
-  (team 'embedded-bootstrap
-        #:name "Embedded / Bootstrap"))
+(define-team bootstrap
+  (team 'bootstrap
+        #:name "Bootstrap"
+        #:scope (list "gnu/packages/mes.scm")))
+
+(define-team embedded
+  (team 'embedded
+        #:name "Embedded"
+        #:scope (list "gnu/packages/bootloaders.scm"
+                      "gnu/packages/firmware.scm")))
 
 (define-team rust
   (team 'rust
@@ -480,7 +487,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Ludovic Courtès"
                        "ludo@gnu.org")
-  core home embedded-bootstrap mentors)
+  core home embedded bootstrap mentors)
 
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
@@ -500,7 +507,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "Efraim Flashner"
                        "efraim@flashner.co.il")
-  embedded-bootstrap julia rust science)
+  embedded bootstrap julia rust science)
 
 (define-member (person "jgart"
                        "jgart@dismail.de")
