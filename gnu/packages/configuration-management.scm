@@ -97,7 +97,7 @@
            go-golang-org-x-net
            go-golang-org-x-oauth2
            go-github-com-rogpeppe-go-internal
-           gopkg-in-errgo-fmt-errors))
+           go-gopkg-in-errgo-fmt-errors))
     (home-page "https://www.chezmoi.io/")
     (synopsis "Personal configuration files manager")
     (description "This package helps to manage personal configuration files

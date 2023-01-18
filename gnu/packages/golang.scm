@@ -9190,9 +9190,9 @@ Included are the following:
 @end itemize\n")
     (license license:bsd-3)))
 
-(define-public gopkg-in-errgo-fmt-errors
+(define-public go-gopkg-in-errgo-fmt-errors
   (package
-    (name "gopkg-in-errgo-fmt-errors")
+    (name "go-gopkg-in-errgo-fmt-errors")
     (version "2.1.0")
     (source (origin
               (method git-fetch)
@@ -9205,7 +9205,7 @@ Included are the following:
                 "065mbihiy7q67wnql0bzl9y1kkvck5ivra68254zbih52jxwrgr2"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "gopkg.in/errgo.v2/fmt/errors"
+     `(#:import-path "gopkg.in/errgo.v2"
        #:tests? #f
        ;; Source-only package
        #:phases
