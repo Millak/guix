@@ -9848,6 +9848,31 @@ atomic access.")
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))
 
+(define-public unparam
+  (package
+    (name "unparam")
+    (version "0.0.0-20221223090309-7455f1af531d")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/unparam")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wynf0b32azxljncw5fh9bwkxpdflvf9q1z16wyj432566yjh12c"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/unparam"
+       #:go ,go-1.19))
+    (inputs (list go-golang-org-x-sys go-golang-org-x-mod
+                  go-github-com-pkg-diff go-golang-org-x-tools
+                  go-github-com-rogpeppe-go-internal))
+    (home-page "https://mvdan.cc/unparam/")
+    (synopsis "Find unused parameters in Go")
+    (description "Reports unused function parameters and results in Go code.")
+    (license license:bsd-3)))
+
 (define-public xurls
   (package
     (name "xurls")
