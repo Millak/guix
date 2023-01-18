@@ -11089,6 +11089,35 @@ production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-go-cmdtest
+  (let ((commit "55ab3332a786118933ddf71544aae14951ba9bc5")
+        (revision "0"))
+    (package
+      (name "go-github-com-google-go-cmdtest")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/google/go-cmdtest")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10kswvbdwissjb5mr0ys4b3ppxkxlpklqg7cr2z7rv21g2vwczbl"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/google/go-cmdtest"))
+      (propagated-inputs (list go-github-com-google-renameio
+                               go-github-com-google-go-cmp-cmp))
+      (home-page "https://github.com/google/go-cmdtest")
+      (synopsis "Testing for your CLI")
+      (description
+       "The cmdtest package simplifies testing of command-line interfaces.  It
+provides a simple, cross-platform, shell-like language to express command
+execution.  It can compare actual output with the expected output, and can
+also update a file with new \"golden\" output that is deemed correct.")
+      (license license:asl2.0))))
+
 (define-public go-github-com-google-safehtml
   (package
     (name "go-github-com-google-safehtml")
