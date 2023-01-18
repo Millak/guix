@@ -888,6 +888,61 @@ primitives for SDR (Software Defined Radio).")
     (home-page "https://osmocom.org/projects/libosmo-dsp")
     (license license:gpl2+)))
 
+(define-public gr-dsd
+  ;; The bundled DSD has been modified to bypass the soundcard.
+  (let ((commit "f9b99360b9b15a568befec1b8cc262f7806898e9")
+        (revision "0"))
+    (package
+      (name "gr-dsd")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/argilo/gr-dsd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1axxb8jdbjbf69csp17gpfis8id66ijjrqp2wbyvz1p66m0svldr"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list cppunit
+             doxygen
+             pkg-config
+             pybind11
+             python-numpy))
+      (inputs
+       (list boost
+             gmp
+             gnuradio
+             itpp
+             libsndfile
+             log4cpp
+             spdlog
+             volk))
+      (arguments
+       (list ;; Tests fail with:
+             ;;   from dsd import dsd_block_ff
+             ;;   ModuleNotFoundError: No module named 'dsd'
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-itpp-detection
+                   (lambda _
+                     (substitute* "dsd/cmake/FindITPP.cmake"
+                       (("libitpp\\.dll")
+                        "itpp_debug")))))))
+      (synopsis "GNU Radio block for Digital Speech Decoder")
+      (description
+       "This package provides a GNU Radio block interfacing with Digital
+Speech Decoder (DSD) to decode several digital voice protocols, like D-STAR,
+DMR, NXDN, P25, etc.")
+      (home-page "https://github.com/argilo/gr-dsd")
+      (license (list license:bsd-3
+                     license:gpl2
+                     license:gpl3+
+                     license:isc)))))
+
 (define-public gr-iqbal
   ;; No tag for version supporting Gnuradio 3.9; use commit.
   (let ((commit "fbee239a6fb36dd2fb564f6e6a0d393c4bc844db")
