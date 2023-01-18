@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
 ;;; Copyright © 2014, 2016, 2018 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2017, 2018 Mark H Weaver <mhw@netris.org>
@@ -453,6 +453,16 @@ without requiring the source code to be rewritten.")
        (substitute-keyword-arguments (package-arguments guile-3.0)
          ((#:phases phases '%standard-phases)
           `(modify-phases ,phases
+             (add-before 'bootstrap 'set-version
+               (lambda _
+                 ;; Tell 'git-version-gen' what version this is, or it will
+                 ;; just pick "UNKNOWN", making it unusable as a replacement
+                 ;; for 'guile-3.0'.  XXX: This is inaccurate when using
+                 ;; '--with-branch' but using (package-version this-package)
+                 ;; wouldn't give us a valid version string.
+                 (call-with-output-file ".tarball-version"
+                   (lambda (port)
+                     (display ,version port)))))
              (add-before 'check 'skip-failing-tests
                (lambda _
                  (substitute* "test-suite/standalone/test-out-of-memory"
