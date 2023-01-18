@@ -3500,6 +3500,40 @@ of Bioconductor.")
 packages.")
     (license license:artistic2.0)))
 
+(define-public r-breakpointr
+  (package
+    (name "r-breakpointr")
+    (version "1.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "breakpointR" version))
+              (sha256
+               (base32
+                "0j1f43lhgkapjyxlil9fflqh9nf3andhmvirdcv45y60wvljn4gx"))))
+    (properties `((upstream-name . "breakpointR")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-breakpointrdata
+           r-cowplot
+           r-doparallel
+           r-foreach
+           r-genomeinfodb
+           r-genomicalignments
+           r-genomicranges
+           r-ggplot2
+           r-gtools
+           r-iranges
+           r-rsamtools
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/daewoooo/BreakPointR")
+    (synopsis "Find breakpoints in Strand-seq data")
+    (description
+     "This package implements functions for finding breakpoints, plotting and
+export of Strand-seq data.")
+    (license license:expat)))
+
 (define-public r-cardelino
   (package
     (name "r-cardelino")
