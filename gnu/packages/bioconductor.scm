@@ -1291,6 +1291,26 @@ from Illumina 450k methylation arrays.")
 biscuiteer.")
     (license license:gpl3)))
 
+(define-public r-breakpointrdata
+  (package
+    (name "r-breakpointrdata")
+    (version "1.16.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "breakpointRdata" version 'experiment))
+              (sha256
+               (base32
+                "0f23i4ynb4vgn22c3d2l64z92rzv3qnwd4j8qyvalklrxkwilhfn"))))
+    (properties `((upstream-name . "breakpointRdata")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/daewoooo/breakpointRdata")
+    (synopsis "Strand-seq data for demonstration purposes")
+    (description
+     "This package is a collection of Strand-seq data.  The main purpose is to
+demonstrate functionalities of the @code{breakpointR} package.")
+    (license license:expat)))
+
 (define-public r-celldex
   (package
     (name "r-celldex")
