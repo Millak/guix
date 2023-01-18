@@ -3190,28 +3190,27 @@ time.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-mod
-  (let ((commit "0f08993efd8a8ec67e75bcccf86b0e1569b0ab0a")
+  (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
         (revision "0"))
     (package
       (name "go-golang-org-x-mod")
-      (version (git-version "0.5.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/golang/mod")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0pl0jc5jvg7hxj4z66zg6kglnq5g7li09f3k9klwvyr4jx5dw88k"))))
+      (version (git-version "0.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/golang/mod")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14r24fq3kn84k2y2jvvg8hwpy52a3q429pimrdwl5zwknbr2awmh"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "golang.org/x/mod/"
          #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
+         #:phases (modify-phases %standard-phases
+                    ;; Source-only package
+                    (delete 'build))))
       (home-page "https://golang.org/x/mod")
       (synopsis "Tools to work directly with Go module mechanics")
       (description
