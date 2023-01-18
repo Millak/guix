@@ -8779,30 +8779,26 @@ temporal directories.")
     (license license:asl2.0)))
 
 (define-public go-github-com-pkg-diff
-  (let ((commit "531926345625d489a6b56f860a569e68245ace36")
-        (revision "1"))
-    (package
-      (name "go-github-com-pkg-diff")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/pkg/diff")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1770m7qhww6lm0wj1v3mhv6hwa2v92p4w2fqxj1xyrg5dd58d944"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/pkg/diff"))
-      (native-inputs
-       (list go-github-com-sergi-go-diff))
-      (home-page "https://github.com/pkg/diff/")
-      (synopsis "Create and print diffs")
-      (description
-       "This package provides a Go library to create and print diffs.")
-      (license license:bsd-3))))
+  (package
+    (name "go-github-com-pkg-diff")
+    (version "0.0.0-20210226163009-20ebb0f2a09e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pkg/diff")
+                    (commit "20ebb0f2a09e612109b224b32f79370409108bcc")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g3dzgwhz4fx3ddpsv7fsa4r1v5clsp2lbw2qrkdk9y1vc5gi8yi"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/pkg/diff"))
+    (home-page "https://github.com/pkg/diff/")
+    (synopsis "Create and print diffs")
+    (description
+     "This package provides a Go library to create and print diffs.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-twpayne-go-shell
   (package
