@@ -3020,6 +3020,52 @@ the @url{https://vuln.go.dev,Go Vulnerability Database}.")
     (native-inputs '())
     (inputs '())))
 
+(define-public gopls
+  (package
+    (name "gopls")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/tools")
+                    (commit (string-append "gopls/v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l9y1rp7x51s6dnjn227fhdlnz4z1h41jn3x1aq49qki241w7m73"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/tools/gopls"
+       #:unpack-path "golang.org/x/tools"
+       #:install-source? #f
+       #:phases (modify-phases %standard-phases
+                  (add-before 'unpack 'override-tools
+                    (lambda _
+                      (delete-file-recursively "src/golang.org/x/tools"))))))
+    (propagated-inputs (list go-github-com-google-go-cmp-cmp
+                             go-github-com-jba-printsrc
+                             go-github-com-jba-templatecheck
+                             go-github-com-sergi-go-diff
+                             go-golang-org-x-mod
+                             go-golang-org-x-sync
+                             go-golang-org-x-sys
+                             go-golang-org-x-text
+                             go-gopkg-in-yaml-v3
+                             go-honnef-co-go-tools
+                             go-github-com-burntsushi-toml
+                             go-github-com-google-safehtml
+                             go-golang-org-x-exp
+                             go-mvdan-cc-gofumpt
+                             go-golang-org-x-vuln
+                             go-mvdan-cc-xurls))
+    (home-page "https://golang.org/x/tools/gopls")
+    (synopsis "Official language server for the Go language")
+    (description
+     "Pronounced ``Go please'', this is the official Go language server
+developed by the Go team.  It provides IDE features to any LSP-compatible
+editor.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
