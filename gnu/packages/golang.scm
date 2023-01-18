@@ -9980,6 +9980,20 @@ That is, @code{gofumpt} is happy with a subset of the formats that
 @code{gofmt} is happy with.")
     (license license:bsd-3)))
 
+(define-public go-mvdan-cc-gofumpt
+  (package
+    (inherit gofumpt)
+    (name "go-mvdan-cc-gofumpt")
+    (arguments
+     `(#:import-path "mvdan.cc/gofumpt"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs gofumpt))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public unparam
   (package
     (name "unparam")
