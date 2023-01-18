@@ -2956,6 +2956,56 @@ for the Go language.")
       (home-page "https://go.googlesource.com/crypto/")
       (license license:bsd-3))))
 
+(define-public govulncheck
+  (package
+    (name "govulncheck")
+    (version "0.0.0-20221229164908-ebf31f7dc3ef")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/vuln")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w055g90k7anrrcvfrsqklxzl9pl0vqdiwpayj9f0brwys9xhj7d"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/vuln"
+       #:go ,go-1.19
+       #:install-source? #f
+       #:phases ,#~(modify-phases %standard-phases
+                     (add-after 'unpack 'remove-go-mod-tidy
+                       (lambda _
+                         (substitute* "src/golang.org/x/vuln/checks.bash"
+                           (("go mod tidy")
+                            #$(file-append coreutils-minimal "/bin/true")))))
+                     (replace 'build
+                       (lambda arguments
+                         (apply (assoc-ref %standard-phases
+                                           'build)
+                                `(,@arguments #:import-path
+                                  "golang.org/x/vuln/cmd/govulncheck")))))))
+    (native-inputs (list coreutils-minimal))
+    (inputs (list go-golang-org-x-sys
+                  go-github-com-google-renameio
+                  go-github-com-burntsushi-toml
+                  go-mvdan-cc-unparam
+                  go-honnef-co-go-tools
+                  go-golang-org-x-tools
+                  go-golang-org-x-sync
+                  go-golang-org-x-mod
+                  go-golang-org-x-exp
+                  go-github-com-google-go-cmp-cmp
+                  go-github-com-google-go-cmdtest
+                  go-github-com-client9-misspell))
+    (home-page "https://golang.org/x/vuln")
+    (synopsis "Go Vulnerability Management")
+    (description
+     "This repository contains packages for accessing and analyzing data from
+the @url{https://vuln.go.dev,Go Vulnerability Database}.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-protonmail-go-crypto
   (package
     (name "go-github-com-protonmail-go-crypto")
