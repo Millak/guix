@@ -1522,7 +1522,9 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (source (origin
              (method url-fetch)
              (uri (qt-urls name version))
-             (patches (search-patches "qtwayland-gcc-11.patch"))
+             (patches (search-patches "qtwayland-gcc-11.patch"
+                                      "qtwayland-dont-recreate-callbacks.patch"
+                                      "qtwayland-cleanup-callbacks.patch"))
              (sha256
               (base32
                "0yy8qf9kn15iqsxi2r7jbcsc0vsdyfz7bbxmfn4i9qmz1yvg0jgr"))))
