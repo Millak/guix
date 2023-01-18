@@ -10965,6 +10965,31 @@ production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
 
+(define-public go-github-com-google-safehtml
+  (package
+    (name "go-github-com-google-safehtml")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/safehtml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j2xjy8xrk9y9k6bqpvimj84i6hg1wwsyvwsb0axhmp49cmnrp86"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/safehtml"))
+    (propagated-inputs `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+    (home-page "https://github.com/google/safehtml")
+    (synopsis "Safe HTML for Go")
+    (description
+     "Package safehtml provides immutable string-like types which represent values
+that are guaranteed to be safe, by construction or by escaping or sanitization,
+to use in various HTML contexts and with various DOM APIs.")
+    (license license:bsd-3)))
+
 (define-public go-github-com-google-shlex
   (package
     (name "go-github-com-google-shlex")
