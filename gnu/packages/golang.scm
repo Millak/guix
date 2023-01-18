@@ -4852,6 +4852,20 @@ source files.  A neutral variety of English is used by default, but a US or UK
 locale can be selected.")
     (license license:expat)))
 
+(define-public go-github-com-client9-misspell
+  (package
+    (inherit misspell)
+    (name "go-github-com-client9-misspell")
+    (arguments
+     `(#:import-path "github.com/client9/misspell"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs misspell))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public go-github-com-stevedonovan-luar
   (let ((commit "22d247e5366095f491cd83edf779ee99a78f5ead")
         (revision "0"))
