@@ -2883,35 +2883,45 @@ directory) packages.")
     (license license:bsd-3)))
 
 (define-public go-golang-org-x-tools
-  (let ((commit "8b927904ee0dec805c89aaf9172f4459296ed6e8")
-        (revision "0"))
-    (package
-      (name "go-golang-org-x-tools")
-      (version (git-version "0.1.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/tools")
-                      (commit commit)))
-                (file-name (string-append "go.googlesource.com-tools-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "0iinb70xhcjsddgi42ia1n745lx2ibnjdm6m2v666qrk3876vpck"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "golang.org/x/tools"
+  (package
+    (name "go-golang-org-x-tools")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "08kx2nndq3sr6xai7403mbsqvz5shxmp2icylfr2fmwagr59cb2n"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; gopls versions are tagged separately, and it is a
+           ;; separate Guix package.
+           (delete-file-recursively "gopls")))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/tools"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
          ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (synopsis "Tools that support the Go programming language")
-      (description "This package provides miscellaneous tools that support the
+         (delete 'build))))
+    (propagated-inputs
+     (list
+      go-github-com-yuin-goldmark
+      go-golang-org-x-mod
+      go-golang-org-x-net
+      go-golang-org-x-sys))
+    (synopsis "Tools that support the Go programming language")
+    (description "This package provides miscellaneous tools that support the
 Go programming language.")
-      (home-page "https://go.googlesource.com/tools/")
-      (license license:bsd-3))))
+    (home-page "https://go.googlesource.com/tools/")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-crypto
   (let ((commit "2aa609cf4a9d7d1126360de73b55b6002f9e052a")
