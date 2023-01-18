@@ -3,7 +3,7 @@
 ;;; Copyright © 2014, 2015, 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2018, 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2015, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019 Alex Vong <alexvong1995@gmail.com>
@@ -1505,7 +1505,7 @@ quality and performance.")
         (base32 "1jhy8qzfp4ydbxs9qd9km7k5wq8r4s2vq20r1q07lgld8l4x93i5"))))
     (build-system gnu-build-system)
     (native-inputs
-     (list pkg-config))
+     (list config pkg-config))
     (inputs
      (list libdrm
            libx11
@@ -1527,6 +1527,14 @@ quality and performance.")
       #~(list (string-append "dummy_drv_video_ladir=" #$output "/lib/dri"))
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'update-config-scripts
+             (lambda* (#:key native-inputs inputs #:allow-other-keys)
+               (for-each (lambda (file)
+                               (install-file
+                                 (search-input-file
+                                   (or native-inputs inputs)
+                                   (string-append "/bin/" file)) "."))
+                         '("config.guess" "config.sub"))))
           (add-before 'build 'fix-dlopen-paths
             (lambda _
               (substitute* "va/drm/va_drm_auth_x11.c"
