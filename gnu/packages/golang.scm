@@ -9803,6 +9803,38 @@ atomic access.")
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))
 
+(define-public xurls
+  (package
+    (name "xurls")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/xurls")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b040nbk1vwlk1qljavh8w8fn2r243q700n6gr8j2asmnz0xq84p"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/xurls/v2"
+       #:unpack-path "mvdan.cc/xurls/v2"
+       #:phases (modify-phases %standard-phases
+                  (replace 'build
+                    (lambda arguments
+                      (apply (assoc-ref %standard-phases
+                                        'build)
+                             `(,@arguments #:import-path
+                               "mvdan.cc/xurls/v2/cmd/xurls")))))))
+    (inputs (list go-golang-org-x-sync go-github-com-rogpeppe-go-internal))
+    (home-page "https://mvdan.cc/xurls/v2/")
+    (synopsis "Extracts URLs from text")
+    (description
+     "Xurls extracts urls from plain text using regular expressions.  It can
+be used as both a binary and a library.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
         (revision "0"))
