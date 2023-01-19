@@ -929,7 +929,7 @@ Makefiles, JSON Compilation Database, and experimentally Ninja.")
               (with-directory-excursion "lib"
                 ;; See the compile-command buffer-local variable in
                 ;; lib/gen-uni-tables.c
-                (invoke #+(file-append gcc "/bin/gcc") "-O" "-Wall" "gen-uni-tables.c"
+                (invoke "gcc" "-O" "-Wall" "gen-uni-tables.c"
                         "-Iunictype" "-o" "gen-uni-tables")
                 (apply invoke
                        "./gen-uni-tables"
