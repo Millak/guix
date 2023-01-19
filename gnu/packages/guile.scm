@@ -477,7 +477,8 @@ without requiring the source code to be rewritten.")
                   flex
                   gnu-gettext
                   texinfo
-                  gperf)))
+                  gperf)
+         (replace "self" this-package)))
       (synopsis "Development version of GNU Guile"))))
 
 (define* (make-guile-readline guile #:optional (name "guile-readline"))
