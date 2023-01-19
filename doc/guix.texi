@@ -15997,9 +15997,9 @@ $ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
 @end example
 
 The major benefit of cross-compilation is that there are no performance
-penaly compared to emulation using QEMU.  There are however higher risks
-that some packages fail to cross-compile because few users are using
-this mechanism extensively.
+penalty compared to emulation using QEMU.  There are however higher
+risks that some packages fail to cross-compile because fewer users are
+using this mechanism extensively.
 
 @node Native Builds
 @section Native Builds
