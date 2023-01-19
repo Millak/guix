@@ -2070,6 +2070,52 @@ using @code{clang-rename}.")))
 ;;; LLVM variants.
 ;;;
 
+(define-public llvm-for-mesa
+  ;; Note: update the 'clang' input of mesa-opencl when bumping this.
+  (let ((base-llvm llvm-15))
+    (package
+      (inherit base-llvm)
+      (name "llvm-for-mesa")
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-llvm)
+         ((#:modules modules '((guix build cmake-build-system)
+                               (guix build utils)))
+          `((ice-9 regex)
+            (srfi srfi-1)
+            (srfi srfi-26)
+            ,@modules))
+         ((#:configure-flags cf ''())
+          #~(cons*
+              ;; AMDGPU is needed by the vulkan drivers.
+              #$(string-append "-DLLVM_TARGETS_TO_BUILD="
+                               (system->llvm-target) ";AMDGPU")
+              ;; Skipping tools and utils decreases the output by ~100 MiB.
+              "-DLLVM_BUILD_TOOLS=NO"
+              (remove (cut string-match
+                           "-DLLVM_(TARGETS_TO_BUILD|INSTALL_UTILS).*" <>)
+                      #$cf)))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'delete-static-libraries
+                ;; If these are just relocated then llvm-config can't find them.
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (for-each delete-file
+                            (find-files (string-append
+                                          (assoc-ref outputs "out") "/lib")
+                                        "\\.a$"))))
+              ;; llvm-config is how mesa and others find the various
+              ;; libraries and headers they use.
+              (add-after 'install 'build-and-install-llvm-config
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let ((out (assoc-ref outputs "out")))
+                    (substitute*
+                      "tools/llvm-config/CMakeFiles/llvm-config.dir/link.txt"
+                      (((string-append (getcwd) "/build/lib"))
+                       (string-append out "/lib")))
+                    (invoke "make" "llvm-config")
+                    (install-file "bin/llvm-config"
+                                  (string-append out "/bin"))))))))))))
+
 (define make-ocaml-llvm
   ;; Make it a memoizing procedure so its callers below don't end up defining
   ;; two equal-but-not-eq "ocaml-llvm" packages for the default LLVM.
