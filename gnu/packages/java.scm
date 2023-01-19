@@ -13006,7 +13006,7 @@ This module lays the groundwork for the other two modules.")
                                             (find-files (assoc-ref inputs input)
                                                         ".*.jar"))
                                           '("java-logback-core" "java-slf4j-api"
-                                            "java-commons-compiler" "servlet"
+                                            "java-commons-compiler" "java-javaee-servletapi"
                                             "groovy")))
                        ":"))
              (apply invoke "groovyc" "-d" "build/classes" "-j"
