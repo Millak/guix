@@ -2676,9 +2676,9 @@ replacement.")
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tdlib/td")
-             (commit "c8acf63e02e84f9c5053a4cef253a219dfbe870c")))
+             (commit "ef4c3902fe082b83192d578af7a0bb956a917fed")))
        (sha256
-        (base32 "17dkav9mjgmv844zlil8fq3m1pf221b3jv30cq1s1iw6k5k02371"))
+        (base32 "1pi53v8qjl0lzann99pv90i4qx2lbjz10rvnwzkbqbn932y3j3gg"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
