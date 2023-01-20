@@ -23,7 +23,7 @@
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -7985,6 +7985,47 @@ tasks.")
       (description "This is a package for the discovery of communities in
 Pore-C concatemers.")
       (license license:gpl3))))
+
+(define-public r-doubletcollection
+  (let ((commit "c0d62f1853942ee6a087eaf7b000d9e4261e2dfd")
+        (revision "1"))
+    (package
+      (name "r-doubletcollection")
+      (version (git-version "1.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xnnba1984/DoubletCollection")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02cvibyc2nwc4037ramm5cskjwyrb9ib9hkrfhmvhbslkn5ixz1v"))))
+      (properties `((upstream-name . "DoubletCollection")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics
+                               r-doubletfinder
+                               r-gam
+                               r-ggplot2
+                               r-ggthemes
+                               r-mast
+                               r-mclust
+                               r-prroc
+                               r-reticulate
+                               r-scales
+                               r-scdblfinder
+                               r-scds
+                               r-seurat
+                               r-singlecellexperiment
+                               r-slingshot
+                               r-summarizedexperiment))
+      (home-page "https://github.com/xnnba1984/DoubletCollection")
+      (synopsis "Tool for finding doublets in scRNA-seq data")
+      (description
+       "This is an R package that integrates the installation of
+doublet-detection methods.  In addition, this tool is used for execution and
+benchmark of those eight mentioned methods.")
+      (license license:gpl3+))))
 
 (define-public r-pando
   (package
