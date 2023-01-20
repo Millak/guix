@@ -1685,8 +1685,7 @@ This package just includes the agent component.")))
            python-ipython
            python-ipykernel))
     (inputs
-     `(("guix" ,guix)
-       ("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))))
+     (list guix (lookup-package-native-input guix "guile")))
     (propagated-inputs
      (list guile-json-4 guile-simple-zmq guile-gcrypt))
     (synopsis "Guix kernel for Jupyter")
