@@ -478,7 +478,7 @@ playing your music.")
 (define-public strawberry
   (package
     (name "strawberry")
-    (version "1.0.12")
+    (version "1.0.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -487,7 +487,7 @@ playing your music.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jpws1iidxcg3mlja4fqxqlck9yn2v8dwwmzgxx056x1q7sr942w"))
+                "0q8pmf7vr5yxzvfmw86f3m462s8ixaixwdv1z9x9ldkj5rqz45sf"))
               (modules '((guix build utils)
                          (ice-9 regex)))
               (snippet
@@ -548,7 +548,6 @@ playing your music.")
            protobuf
            pulseaudio
            qtbase
-           qtx11extras
            sqlite
            taglib))
     (home-page "https://www.strawberrymusicplayer.org/")
