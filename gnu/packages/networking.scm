@@ -111,6 +111,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -4572,7 +4573,7 @@ implementations.")
        (base32
         "09bx8mz9jdq94i0mpmjbc7dis0klvjx85lml5mp3d36dwm21gim9"))))
    (build-system gnu-build-system)
-   (inputs (list sqlite))
+   (inputs (list sqlite gd))
    (native-inputs (list pkg-config check))
    (arguments
     (list
