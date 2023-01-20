@@ -103,8 +103,6 @@ and parameters ~s~%"
                    "--enable-shared"
                    "--enable-executable-dynamic"
                    "--ghc-option=-fPIC"
-                   ,(string-append "--ghc-option=-optl=-Wl,-rpath=" (or lib out)
-                                   "/lib/$compiler/$pkg-$version")
                    ,@configure-flags)))
     ;; Cabal errors if GHC_PACKAGE_PATH is set during 'configure', so unset
     ;; and restore it.
