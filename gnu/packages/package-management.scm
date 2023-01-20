@@ -1666,8 +1666,16 @@ This package just includes the agent component.")))
                    "\",\n\t\t\""))
                  (("guix-jupyter-kernel.scm")
                   (string-append out "/share/guile/site/3.0/"
-                                 "guix-jupyter-kernel.scm")))
-               #t))))))
+                                 "guix-jupyter-kernel.scm"))))))
+         (add-before 'check 'define-home
+           (lambda _
+             ;; IPython goes awry when HOME points to a non-existent
+             ;; directory:
+             ;;
+             ;; IPython/paths.py:70: UserWarning: IPython parent '/homeless-shelter' is not a writable location, using a temp directory.
+             ;;
+             ;; This in turn leads to test failures, so define HOME.
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list autoconf
            automake
