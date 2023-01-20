@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2021 Nicolas Vallet <nls.vallet@gmail.com>
+;;; Copyright © 2023 Navid Afkhami <Navid.Afkhami@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7781,6 +7782,34 @@ analysis, primarily intended for re-use inside higher-level packages.  It
 includes a function to create a cluster-level minimum spanning tree and data
 structures to hold pseudotime inference results.")
     (license license:gpl3)))
+
+(define-public r-scds
+  (package
+    (name "r-scds")
+    (version "1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "scds" version))
+              (sha256
+               (base32
+                "0zdf9yf5s0l8ma7d8yhi7bjd964yj84f5h6aq2p0sypjlnc515hd"))))
+    (properties `((upstream-name . "scds")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dplyr
+                             r-matrix
+                             r-proc
+                             r-s4vectors
+                             r-singlecellexperiment
+                             r-summarizedexperiment
+                             r-xgboost))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/scds")
+    (synopsis "In-silico doublet annotation for single cell RNA sequencing data")
+    (description
+     "This is an R package for doublet annotation of single cell RNA
+sequencing data.  @code{scds} provides methods to annotate doublets in
+scRNA-seq data computationally.")
+    (license license:expat)))
 
 (define-public r-slingshot
   (package
