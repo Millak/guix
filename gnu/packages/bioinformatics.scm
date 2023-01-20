@@ -18092,6 +18092,9 @@ module capable of computing base-level alignments for very large sequences.")
                              "'TestFileMetaInformation"
                              "|TestElement2"
                              "|TestSCUValidation"
+                             "|TestWriter"
+                             "|TestAnonymizer4"
+                             "|TestPrinter1"
                              "|TestEcho"
                              "|TestFind'"))))
     (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
