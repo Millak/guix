@@ -547,7 +547,7 @@ album-experience.")
 (define-public mpdevil
   (package
     (name "mpdevil")
-    (version "1.7.0")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -555,7 +555,7 @@ album-experience.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1va8fqlz8qb68gvacnzmp4asnipi11316n1cv2wb41sml9d7v00j"))))
+               (base32 "04dzxyv176w5sm4j85j7fbh42nk9wsyz5s005kj9cjwsrzrnxlbk"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -568,7 +568,12 @@ album-experience.")
                 (wrap-program prog
                   `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
-    (inputs (list bash-minimal gtk+ python python-mpd2 python-pygobject))
+    (inputs (list bash-minimal
+                  gtk+
+                  python
+                  python-mpd2
+                  python-pycairo
+                  python-pygobject))
     (native-inputs (list `(,glib "bin")))
     (home-page "https://github.com/SoongNoonien/mpdevil")
     (synopsis "Music browser for the MPD")
