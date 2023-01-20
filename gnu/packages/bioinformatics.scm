@@ -8216,6 +8216,38 @@ clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
 
+(define-public r-tsis
+  (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
+        (revision "1"))
+    (package
+      (name "r-tsis")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wyguo/TSIS")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17c8i25iwhldvs3c51m0wny40iffm8szzijalpwrxhzbv0xa94rb"))))
+      (properties `((upstream-name . "TSIS")))
+      (build-system r-build-system)
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wyguo/TSIS")
+      (synopsis "Time-series isoform switch of alternative splicing")
+      (description
+       "TSIS is used for detecting transcript isoform switches in time-series
+data.  Transcript isoform switches occur when a pair of alternatively spliced
+isoforms reverse the order of their relative expression levels.  TSIS
+characterizes the transcript switch by defining the isoform switch time-points
+for any pair of transcript isoforms within a gene.  In addition, this tool
+describes the switch using five different features or metrics.  Also it
+filters the results with user’s specifications and visualizes the results
+using different plots for the user to examine further details of the
+switches.")
+      (license license:gpl3))))
+
 (define-public r-umi4cpackage
   (let ((commit "88b07d896a137418ba6c31c2474b9dbe1d86fc20")
         (revision "1"))
