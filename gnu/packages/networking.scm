@@ -4575,15 +4575,16 @@ implementations.")
    (inputs (list sqlite))
    (native-inputs (list pkg-config check))
    (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'disable-id-tests
-          (lambda _
-            (substitute*
-                '("Makefile" "tests/vnstat_tests.c")
-              (("tests/id_tests.c \\$") "\\")
-              (("tests/id_tests.h h") "h")
-              (("^.*id_tests.*$") "")))))))
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'check 'disable-id-tests
+           (lambda _
+             (substitute*
+                 '("Makefile" "tests/vnstat_tests.c")
+               (("tests/id_tests.c \\$") "\\")
+               (("tests/id_tests.h h") "h")
+               (("^.*id_tests.*$") "")))))))
    (home-page "https://humdi.net/vnstat/")
    (synopsis "Network traffic monitoring tool")
    (description "vnStat is a console-based network traffic monitor that keeps
