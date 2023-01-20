@@ -9,7 +9,7 @@
 ;;; Copyright © 2019 Evan Straw <evan.straw99@gmail.com>
 ;;; Copyright © 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Lars-Dominik Braun <lars@6xq.net>
-;;; Copyright © 2020–2022 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2020–2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2021 Noah Evans <noah@nevans.me>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -444,27 +444,30 @@ other MPD frontends.")
     (build-system gnu-build-system)
     ;; Manually wrap the binary, because we’re not using python-build-system.
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-program
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out         (assoc-ref outputs "out"))
-                   (python-path (getenv "GUIX_PYTHONPATH")))
-               (wrap-program (string-append out "/bin/mpDris2")
-                 `("GUIX_PYTHONPATH" ":" prefix (,python-path)))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-program
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((python-path (getenv "GUIX_PYTHONPATH")))
+                (wrap-program (string-append #$output "/bin/mpDris2")
+                  `("GUIX_PYTHONPATH" ":" prefix (,python-path)))))))))
     (inputs
-     (list python-mpd2 python-dbus python-pygobject python))             ; Sets GUIX_PYTHONPATH.
-    ;; For bootstrapping.
+     (list bash-minimal
+           python
+           python-dbus
+           python-mpd2
+           python-mutagen
+           python-pygobject))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("which" ,which)
-       ("intltool" ,intltool)))
+     (list autoconf
+           automake
+           gettext-minimal
+           intltool
+           which))
     (synopsis "MPRIS V2.1 support for MPD")
-    (description "Client for the Music Player Daemon providing MPRIS 2
-support")
+    (description "mpDris2 is a client for the Music Player Daemon providing
+MPRIS 2 support.")
     (home-page "https://github.com/eonpatapon/mpDris2")
     (license license:gpl3+)))
 
