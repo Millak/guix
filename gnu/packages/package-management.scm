@@ -1665,8 +1665,8 @@ This package just includes the agent component.")))
                          "-s")
                    "\",\n\t\t\""))
                  (("guix-jupyter-kernel.scm")
-                  (string-append out "/share/guile/site/3.0/"
-                                 "guix-jupyter-kernel.scm"))))))
+                  (string-append out "/share/guile/site/" effective
+                                 "/guix-jupyter-kernel.scm"))))))
          (add-before 'check 'define-home
            (lambda _
              ;; IPython goes awry when HOME points to a non-existent
