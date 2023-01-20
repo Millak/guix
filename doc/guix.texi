@@ -31481,7 +31481,8 @@ on the remote machine on display number 10, and it could be displayed
 locally via the @command{vncviewer} command:
 @example
 # Start xclock on the remote machine.
-ssh -L5910:localhost:5910 -- guix shell xclock -- env DISPLAY=:10 xclock
+ssh -L5910:localhost:5910 @var{your-host} -- guix shell xclock \
+    -- env DISPLAY=:10 xclock
 # Access it via VNC.
 guix shell tigervnc-client -- vncviewer localhost:5910
 @end example
