@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3575,6 +3576,38 @@ programs on your current machine or on other machines.")
      "This OBS plugin allows you to capture the screen on wlroots-based
 Wayland compositors.")
     (license license:gpl3+)))
+
+(define-public obs-vkcapture
+  (package
+    (name "obs-vkcapture")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nowrep/obs-vkcapture")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18v15bfzm31qkpwipvbqgzak4z6f2hhq6mnz2bvhwnv57whirln6"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list mesa
+                  obs
+                  libx11
+                  libxcb
+                  vulkan-headers
+                  vulkan-loader
+                  wayland))
+    (home-page "https://github.com/nowrep/obs-vkcapture")
+    (synopsis "OBS plugin for Vulkan/OpenGL game capture on Linux")
+    (description
+     "This OBS plugin lets you record an OpenGL or Vulkan
+game by adding the Game Capture source to your scene and starting an
+application with @code{obs-gamecapture}.")
+    (license license:gpl2)))
 
 (define-public libvdpau
   (package
