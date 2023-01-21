@@ -21157,11 +21157,11 @@ Citar note support:
     (license license:gpl3)))
 
 (define-public emacs-helm-bibtex
-  (let ((commit "aa775340ba691d2322948bfdc6a88158568a1399")
-        (revision "3"))
+  (let ((commit "8ebf50d5bd368082d0b7ab79d26a52f372cdef98")
+        (revision "1"))
     (package
       (name "emacs-helm-bibtex")
-      (version (git-version "2.0.0" revision commit))
+      (version (git-version "2.0.1" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -21170,7 +21170,7 @@ Citar note support:
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "1d3mc17ga09m41i06khghlvixr6gsiacifnhdbrfnp0w5592aprk"))))
+          (base32 "1x6nfkprj95cp4ldb485v13hrkd7rvzp750d9xz80vk76gpvaw3l"))))
       (build-system emacs-build-system)
       (propagated-inputs
        (list emacs-helm
