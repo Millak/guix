@@ -11451,19 +11451,19 @@ photo-booth-like software, such as Cheese.")
                (base32
                 "02vzcvk2s6cwvdw6v6qmlq3znamy6zwv7l6nlbqjfwrj7i54qmvl"))))
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             ;; Don't create 'icon-theme.cache'
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))))
-         (add-after 'install 'wrap-cheese
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/cheese")
-               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 (lambda _
+                   ;; Don't create 'icon-theme.cache'.
+                   (substitute* "meson_post_install.py"
+                     (("gtk-update-icon-cache") (which "true")))))
+               (add-after 'install 'wrap-cheese
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/cheese")
+                     `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
+                       (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (build-system meson-build-system)
     (native-inputs
      (list docbook-xsl
