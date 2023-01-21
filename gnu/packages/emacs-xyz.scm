@@ -120,6 +120,7 @@
 ;;; Copyright © 2022 Thiago Jung Bauermann <bauermann@kolabnow.com>
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -15516,28 +15517,29 @@ a (typically) noncontiguous set of text.")
     (license license:gpl3+)))
 
 (define-public emacs-mu4e-alert
-  (package
-    (name "emacs-mu4e-alert")
-    (version "1.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/iqbalansari/mu4e-alert")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1nvsfbfsma59ilf7c3vjngnmx3aapwvvvaafdy5szm5r6lkicqvg"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-alert emacs-s emacs-ht mu))
-    (home-page "https://github.com/iqbalansari/mu4e-alert")
-    (synopsis "Desktop notification for mu4e")
-    (description
-     "This package provides desktop notifications for mu4e.
-Additionally it can display the number of unread emails in the
-mode-line.")
-    (license license:gpl3+)))
+  (let ((commit "3c9af8c7994df0a1a4f0703552ea3beffb485ace")
+        (revision "0"))
+    (package
+      (name "emacs-mu4e-alert")
+      (version (git-version "1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/xzz53/mu4e-alert")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13li5pqqkzj7dwgpnngnk1ff46i100qw9xknlimpy2vf2k5yqv3y"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-alert emacs-ht emacs-s mu))
+      (home-page "https://github.com/xzz53/mu4e-alert")
+      (synopsis "Desktop notifications and mode line display for mu4e")
+      (description
+       "This package provides desktop notifications for mu4e.
+Additionally it can display the number of unread emails in the mode line.")
+      (license license:gpl3+))))
 
 (define-public emacs-mu4e-jump-to-list
   (let ((commit "358bba003543b49ffa266e503e54aebd0ebe614b")
