@@ -31180,6 +31180,31 @@ language they are written in.")
 fish-completion.  It can be used in both Eshell and M-x shell.")
     (license license:gpl3+)))
 
+(define-public emacs-helm-themes
+  (let ((version "0.05")
+        (commit "92ee3ad4edf1d068feb0822a05638db99b50a7c0")
+        (revision "1"))
+    (package
+      (name "emacs-helm-themes")
+      (version (git-version version revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/helm-themes")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1p62gg8nnb6kmb9mk66230p0ap0zwwzhzdxr3j34z5ls574vr6s7"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-helm))
+      (home-page "https://github.com/emacsorphanage/helm-themes")
+      (synopsis "Emacs theme selection with Helm interface")
+      (description
+       "Helm Themes provide an Emacs theme selection with Helm interface.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-switch-to-repl
   (package
     (name "emacs-helm-switch-to-repl")
