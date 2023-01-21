@@ -111,6 +111,7 @@ MODULES =					\
   guix/derivations.scm				\
   guix/grafts.scm				\
   guix/repl.scm					\
+  guix/rpm.scm					\
   guix/transformations.scm			\
   guix/inferior.scm				\
   guix/describe.scm				\
@@ -535,6 +536,7 @@ SCM_TESTS =					\
   tests/pypi.scm				\
   tests/read-print.scm				\
   tests/records.scm				\
+  tests/rpm.scm					\
   tests/scripts.scm				\
   tests/search-paths.scm			\
   tests/services.scm				\

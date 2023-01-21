@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;;
@@ -67,6 +67,7 @@
 
             self-contained-tarball
             debian-archive
+            rpm-archive
             docker-image
             squashfs-image
 
@@ -856,6 +857,166 @@ Section: misc
 
 
 ;;;
+;;; RPM archive format.
+;;;
+(define* (rpm-archive name profile
+                      #:key target
+                      (profile-name "guix-profile")
+                      entry-point
+                      (compressor (first %compressors))
+                      deduplicate?
+                      localstatedir?
+                      (symlinks '())
+                      archiver
+                      (extra-options '()))
+  "Return a RPM archive (.rpm) containing a store initialized with the closure
+of PROFILE, a derivation.  The archive contains /gnu/store.  SYMLINKS must be
+a list of (SOURCE -> TARGET) tuples denoting symlinks to be added to the pack.
+ARCHIVER and ENTRY-POINT are not used.  RELOCATABLE?, PREIN-FILE, POSTIN-FILE,
+PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
+  (when entry-point
+    (warning (G_ "entry point not supported in the '~a' format~%") 'rpm))
+
+  (define root (populate-profile-root profile
+                                      #:profile-name profile-name
+                                      #:target target
+                                      #:localstatedir? localstatedir?
+                                      #:deduplicate? deduplicate?
+                                      #:symlinks symlinks))
+
+  (define payload
+    (let* ((raw-cpio-file-name "payload.cpio")
+           (compressed-cpio-file-name (string-append raw-cpio-file-name
+                                                     (compressor-extension
+                                                      compressor))))
+      (computed-file compressed-cpio-file-name
+        (with-imported-modules (source-module-closure
+                                '((guix build utils)
+                                  (guix cpio)
+                                  (guix rpm)))
+          #~(begin
+              (use-modules (guix build utils)
+                           (guix cpio)
+                           (guix rpm)
+                           (srfi srfi-1))
+
+              ;; Make sure non-ASCII file names are properly handled.
+              #+(set-utf8-locale profile)
+
+              (define %root (if #$localstatedir? "." #$root))
+
+              (when #$localstatedir?
+                ;; Fix the permission of the Guix database file, which was made
+                ;; read-only when copied to the store in populate-profile-root.
+                (copy-recursively #$root %root)
+                (chmod (string-append %root "/var/guix/db/db.sqlite") #o644))
+
+              (call-with-output-file #$raw-cpio-file-name
+                (lambda (port)
+                  (with-directory-excursion %root
+                    ;; The first "." entry is discarded.
+                    (write-cpio-archive
+                     (remove fhs-directory?
+                             (cdr (find-files "." #:directories? #t)))
+                     port))))
+              (when #+(compressor-command compressor)
+                (apply invoke (append #+(compressor-command compressor)
+                                      (list #$raw-cpio-file-name))))
+              (copy-file #$compressed-cpio-file-name #$output)))
+        #:local-build? #f)))            ;allow offloading
+
+  (define build
+    (with-extensions (list guile-gcrypt)
+      (with-imported-modules `(((guix config) => ,(make-config.scm))
+                               ,@(source-module-closure
+                                  `((gcrypt hash)
+                                    (guix build utils)
+                                    (guix profiles)
+                                    (guix rpm))
+                                  #:select? not-config?))
+        #~(begin
+            (use-modules (gcrypt hash)
+                         (guix build utils)
+                         (guix profiles)
+                         (guix rpm)
+                         (ice-9 binary-ports)
+                         (ice-9 match)  ;for manifest->friendly-name
+                         (ice-9 optargs)
+                         (rnrs bytevectors)
+                         (srfi srfi-1))
+
+            (define machine-type
+              (and=> (or #$target %host-type)
+                     (lambda (triplet)
+                       (first (string-split triplet #\-)))))
+
+            #$(procedure-source manifest->friendly-name)
+
+            (define manifest (profile-manifest #$profile))
+
+            (define single-entry        ;manifest entry
+              (match (manifest-entries manifest)
+                ((entry)
+                 entry)
+                (_ #f)))
+
+            (define name
+              (or (and=> single-entry manifest-entry-name)
+                  (manifest->friendly-name manifest)))
+
+            (define version
+              (or (and=> single-entry manifest-entry-version) "0.0.0"))
+
+            (define lead
+              (generate-lead (string-append name "-" version)
+                             #:target (or #$target %host-type)))
+
+            (define payload-digest
+              (bytevector->hex-string (file-sha256 #$payload)))
+
+            (let-keywords '#$extra-options #f ((relocatable? #f)
+                                               (prein-file #f)
+                                               (postin-file #f)
+                                               (preun-file #f)
+                                               (postun-file #f))
+
+              (let ((header (generate-header name version
+                                             payload-digest
+                                             #$root
+                                             #$(compressor-name compressor)
+                                             #:target (or #$target %host-type)
+                                             #:relocatable? relocatable?
+                                             #:prein-file prein-file
+                                             #:postin-file postin-file
+                                             #:preun-file preun-file
+                                             #:postun-file postun-file)))
+
+                (define header-sha256
+                  (bytevector->hex-string (sha256 (u8-list->bytevector header))))
+
+                (define payload-size (stat:size (stat #$payload)))
+
+                (define header+compressed-payload-size
+                  (+ (length header) payload-size))
+
+                (define signature
+                  (generate-signature header-sha256
+                                      header+compressed-payload-size))
+
+                ;; Serialize the archive components to a file.
+                (call-with-input-file #$payload
+                  (lambda (in)
+                    (call-with-output-file #$output
+                      (lambda (out)
+                        (put-bytevector out (assemble-rpm-metadata lead
+                                                                   signature
+                                                                   header))
+                        (sendfile out in payload-size)))))))))))
+
+  (gexp->derivation (string-append name ".rpm") build))
+
+  
+;;;
 ;;; Compiling C programs.
 ;;;
 
@@ -1187,7 +1348,8 @@ last resort for relocation."
   `((tarball . ,self-contained-tarball)
     (squashfs . ,squashfs-image)
     (docker  . ,docker-image)
-    (deb . ,debian-archive)))
+    (deb . ,debian-archive)
+    (rpm . ,rpm-archive)))
 
 (define (show-formats)
   ;; Print the supported pack formats.
@@ -1201,18 +1363,22 @@ last resort for relocation."
   docker        Tarball ready for 'docker load'"))
   (display (G_ "
   deb           Debian archive installable via dpkg/apt"))
+  (display (G_ "
+  rpm           RPM archive installable via rpm/yum"))
   (newline))
 
+(define (required-option symbol)
+  "Return an SYMBOL option that requires a value."
+  (option (list (symbol->string symbol)) #t #f
+          (lambda (opt name arg result . rest)
+            (apply values
+                   (alist-cons symbol arg result)
+                   rest))))
+
 (define %deb-format-options
-  (let ((required-option (lambda (symbol)
-                           (option (list (symbol->string symbol)) #t #f
-                                   (lambda (opt name arg result . rest)
-                                     (apply values
-                                            (alist-cons symbol arg result)
-                                            rest))))))
-    (list (required-option 'control-file)
-          (required-option 'postinst-file)
-          (required-option 'triggers-file))))
+  (list (required-option 'control-file)
+        (required-option 'postinst-file)
+        (required-option 'triggers-file)))
 
 (define (show-deb-format-options)
   (display (G_ "
@@ -1228,6 +1394,32 @@ last resort for relocation."
   (display (G_ "
       --triggers-file=FILE
                          Embed the provided triggers FILE"))
+  (newline)
+  (exit 0))
+
+(define %rpm-format-options
+  (list (required-option 'prein-file)
+        (required-option 'postin-file)
+        (required-option 'preun-file)
+        (required-option 'postun-file)))
+
+(define (show-rpm-format-options)
+  (display (G_ "
+      --help-rpm-format  list options specific to the RPM format")))
+
+(define (show-rpm-format-options/detailed)
+  (display (G_ "
+      --prein-file=FILE
+                         Embed the provided prein script"))
+  (display (G_ "
+      --postin-file=FILE
+                         Embed the provided postin script"))
+  (display (G_ "
+      --preun-file=FILE
+                         Embed the provided preun script"))
+  (display (G_ "
+      --postun-file=FILE
+                         Embed the provided postun script"))
   (newline)
   (exit 0))
 
@@ -1307,7 +1499,12 @@ last resort for relocation."
                  (lambda args
                    (show-deb-format-options/detailed)))
 
+         (option '("help-rpm-format") #f #f
+                 (lambda args
+                   (show-rpm-format-options/detailed)))
+
          (append %deb-format-options
+                 %rpm-format-options
                  %transformation-options
                  %standard-build-options
                  %standard-cross-build-options
@@ -1325,6 +1522,7 @@ Create a bundle of PACKAGE.\n"))
   (show-transformation-options-help)
   (newline)
   (show-deb-format-options)
+  (show-rpm-format-options)
   (newline)
   (display (G_ "
   -f, --format=FORMAT    build a pack in the given FORMAT"))
@@ -1483,6 +1681,16 @@ Create a bundle of PACKAGE.\n"))
                                            (process-file-arg opts 'postinst-file)
                                            #:triggers-file
                                            (process-file-arg opts 'triggers-file)))
+                                    ('rpm
+                                     (list #:relocatable? relocatable?
+                                           #:prein-file
+                                           (process-file-arg opts 'prein-file)
+                                           #:postin-file
+                                           (process-file-arg opts 'postin-file)
+                                           #:preun-file
+                                           (process-file-arg opts 'preun-file)
+                                           #:postun-file
+                                           (process-file-arg opts 'postun-file)))
                                     (_ '())))
                    (target      (assoc-ref opts 'target))
                    (bootstrap?  (assoc-ref opts 'bootstrap?))

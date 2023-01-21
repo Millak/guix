@@ -6896,6 +6896,7 @@ such file or directory'' message.
 @end quotation
 
 @item deb
+@cindex Debian, build a .deb package with guix pack
 This produces a Debian archive (a package with the @samp{.deb} file
 extension) containing all the specified binaries and symbolic links,
 that can be installed on top of any dpkg-based GNU(/Linux) distribution.
@@ -6912,7 +6913,8 @@ guix pack -f deb -C xz -S /usr/bin/hello=bin/hello hello
 Because archives produced with @command{guix pack} contain a collection
 of store items and because each @command{dpkg} package must not have
 conflicting files, in practice that means you likely won't be able to
-install more than one such archive on a given system.
+install more than one such archive on a given system.  You can
+nonetheless pack as many Guix packages as you want in one such archive.
 @end quotation
 
 @quotation Warning
@@ -6921,6 +6923,48 @@ that it does @emph{not} know about.  It is unwise to install
 Guix-produced @samp{.deb} files on a system where @file{/gnu/store} is
 shared by other software, such as a Guix installation or other, non-deb
 packs.
+@end quotation
+
+@item rpm
+@cindex RPM, build an RPM archive with guix pack
+This produces an RPM archive (a package with the @samp{.rpm} file
+extension) containing all the specified binaries and symbolic links,
+that can be installed on top of any RPM-based GNU/Linux distribution.
+The RPM format embeds checksums for every file it contains, which the
+@command{rpm} command uses to validate the integrity of the archive.
+
+Advanced RPM-related options are revealed via the
+@option{--help-rpm-format} option.  These options allow embedding
+maintainer scripts that can run before or after the installation of the
+RPM archive, for example.
+
+The RPM format supports relocatable packages via the @option{--prefix}
+option of the @command{rpm} command, which can be handy to install an
+RPM package to a specific prefix.
+
+@example
+guix pack -f rpm -R -C xz -S /usr/bin/hello=bin/hello hello
+@end example
+
+@example
+sudo rpm --install --prefix=/opt /gnu/store/...-hello.rpm
+@end example
+
+@quotation Note
+Contrary to Debian packages, conflicting but @emph{identical} files in
+RPM packages can be installed simultaneously, which means multiple
+@command{guix pack}-produced RPM packages can usually be installed side
+by side without any problem.
+@end quotation
+
+@quotation Warning
+@command{rpm} assumes ownership of any files contained in the pack,
+which means it will remove @file{/gnu/store} upon uninstalling a
+Guix-generated RPM package, unless the RPM package was installed with
+the @option{--prefix} option of the @command{rpm} command.  It is unwise
+to install Guix-produced @samp{.rpm} packages on a system where
+@file{/gnu/store} is shared by other software, such as a Guix
+installation or other, non-rpm packs.
 @end quotation
 
 @end table
