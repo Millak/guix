@@ -11466,8 +11466,8 @@ photo-booth-like software, such as Cheese.")
                        (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (build-system meson-build-system)
     (native-inputs
-     (list docbook-xsl
-           docbook-xml-4.3
+     (list docbook-xml-4.3
+           docbook-xsl
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
@@ -11479,19 +11479,19 @@ photo-booth-like software, such as Cheese.")
            vala))
     (propagated-inputs
      (list bash-minimal
-           gnome-video-effects
            clutter
            clutter-gst
            clutter-gtk
-           libcanberra
            gdk-pixbuf
            glib
-           gstreamer))
+           gnome-video-effects
+           gstreamer
+           libcanberra))
     (inputs
      (list gnome-desktop
+           gst-plugins-bad
            gst-plugins-base
            gst-plugins-good
-           gst-plugins-bad
            gtk+
            libx11
            libxtst))
