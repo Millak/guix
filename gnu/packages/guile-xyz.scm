@@ -4400,7 +4400,10 @@ models and also supports a rich set of boolean query operators.")
     (name "guile2.2-xapian")
     (inputs
      (modify-inputs (package-inputs guile-xapian)
-       (replace "guile" guile-2.2)))))
+       (replace "guile" guile-2.2)))
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs guile-xapian)
+       (replace "guile-lib" guile2.2-lib)))))
 
 (define-public guile-torrent
   (package
