@@ -2729,8 +2729,7 @@ DKIM and/or DomainKeys.")
                               "perl-mailtools"
                               "perl-mime-tools"
                               "perl-net-dns"
-                              "perl-timedate"))
-               #t))))))
+                              "perl-timedate"))))))))
     (inputs
      (list perl
            perl-crypt-openssl-rsa
