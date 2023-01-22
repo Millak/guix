@@ -984,13 +984,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.1.1")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "10dxjim60ch4qznqa5s63q936mkvy95p0k26kcwzv43hmybdcjxs"))
+        (base32 "08xc6brs7xwiqchhsjq8l10p6qc5p68cfxps7s889spqfyh2gbpn"))
        (modules '((guix build utils)))
        (snippet
         '(begin
