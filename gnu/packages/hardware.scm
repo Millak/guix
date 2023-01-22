@@ -897,15 +897,22 @@ can scan as much of your RAM as possible for hardware defects.")
 (define-public memtester
   (package
     (name "memtester")
-    (version "4.5.1")
+    (version "4.6.0")
     (source
      (origin
        (method url-fetch)
        ;; Even the latest release is available under 'old-versions/'.
-       (uri (string-append "http://pyropus.ca/software/memtester/old-versions/"
-                           "memtester-" version ".tar.gz"))
+       (uri (list
+             (string-append "https://pyropus.ca/software/memtester/old-versions/"
+                            "memtester-" version ".tar.gz")
+             ;; XXX ‘pyropus.ca’ redirects to ‘pyropus.ca.’.  Valid, but wreaks
+             ;; havoc with Guile's Web stack & TLS verification.
+             ;; Remove this random mirror when that changes.
+             (string-append "https://ftp.dimensiondata.com/mirrors/"
+                            "ftp.gentoo.org/distfiles/3e/"
+                            "memtester-" version ".tar.gz")))
        (sha256
-        (base32 "0issrasdihav8jgsqb49cfyj0v564z8k9lyg2jrq9h3n4lwc4pqw"))))
+        (base32 "0bmv7n7gj02pda8mwif08xk63xc20r65q1pr099fz30cx2vlxzn9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
