@@ -2428,9 +2428,10 @@ Wacom-style graphics tablets.")
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (list "src/dependency.py" "src/exif.py")
-               (("'exiftool'")
-                (string-append "'" (search-input-file inputs "/bin/exiftool") "'")))))
+             (substitute* (list "src/dependency.py"
+                                "src/exif.py")
+               (("'exiftool")
+                (string-append "'" (search-input-file inputs "bin/exiftool"))))))
          (add-before 'install 'check
            (lambda _
              (invoke "pytest")))
