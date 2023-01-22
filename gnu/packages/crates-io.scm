@@ -49845,7 +49845,7 @@ deserialization framework.")
 (define-public rust-ryu-1
   (package
     (name "rust-ryu")
-    (version "1.0.3")
+    (version "1.0.12")
     (source
       (origin
         (method url-fetch)
@@ -49853,15 +49853,15 @@ deserialization framework.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0xlx9ybzncrb7d6r9533g8ydlg6mr252pfzl4g9cqaqkpvk24mjk"))))
+          "1ppcgnyfs12p545bl7762jp9b11rlzmgb7yzrr5lnzb8xm1rfjvv"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-no-panic" ,rust-no-panic-0.1))
        #:cargo-development-inputs
        (("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-rand-xorshift" ,rust-rand-xorshift-0.2))))
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rand-xorshift" ,rust-rand-xorshift-0.3))))
     (home-page "https://github.com/dtolnay/ryu")
     (synopsis "Fast floating point to string conversion")
     (description
