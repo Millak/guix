@@ -2743,7 +2743,7 @@ DKIM and/or DomainKeys.")
            perl-net-server
            perl-socket6
            perl-timedate))
-    (home-page "http://dkimproxy.sourceforge.net/")
+    (home-page "https://dkimproxy.sourceforge.net")
     (synopsis "SMTP proxy to sign and verify Internet mail with DKIM headers")
     (description
      "DKIMproxy is an SMTP proxy that signs and verifies Internet mail using the
