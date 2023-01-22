@@ -75,7 +75,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "224")
+    (version "233")
     (source
      (origin
        (method git-fetch)
@@ -84,7 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qdivsf4yygg2az5018pw0q4169zas3hfqjydd0q3bhdrfpl0q4q"))
+        (base32 "1m6fc7k8cd7ahra05vqccw1fdbjj6d20vr3q8v67ynnyih5nmbnb"))
        (patches
         (search-patches "diffoscope-fix-llvm-test.patch"))))
     (build-system python-build-system)
@@ -160,7 +160,7 @@
              python-pytest
              python-chardet
              python-h5py
-             python-pypdf2
+             python-pypdf
              python-progressbar33
 
              abootimg
@@ -195,6 +195,7 @@
              libarchive
              llvm-9
              lz4
+             lzip
              ocaml
              odt2txt
              openssh
