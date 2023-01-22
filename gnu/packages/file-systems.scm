@@ -935,14 +935,14 @@ All of this is accomplished without a centralized metadata server.")
 (define-public libeatmydata
   (package
     (name "libeatmydata")
-    (version "130")
+    (version "131")        ; also update the "debian-files" input if available
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.flamingspork.com/projects/libeatmydata/"
                            "libeatmydata-" version ".tar.gz"))
        (sha256
-        (base32 "1h212l2s0g3pv6q96d94dk7kpp9qzyxqydrrcgyp7zqjwvbiqws8"))))
+        (base32 "1i5bp9a2vmljci3ihzlxf8482106di2ayy1lpr0qb8rq472sh66g"))))
     (build-system gnu-build-system)
     (arguments
      ;; All tests pass---but only if the host kernel allows PTRACE_TRACEME.
@@ -981,10 +981,12 @@ All of this is accomplished without a centralized metadata server.")
     (native-inputs
      `(("debian-files"                  ; for the man page
         ,(origin
+           ;; Debian being what it is, its version can lag behind a bit.  This
+           ;; is tolerable as the man page is general and the command stable.
            (method url-fetch)
            (uri (string-append "https://deb.debian.org/debian/pool/main/"
-                               "libe/libeatmydata/libeatmydata_" version
-                               "-2.debian.tar.xz"))
+                               "libe/libeatmydata/libeatmydata_130-2"
+                               ".debian.tar.xz"))
            (sha256
             (base32 "1sg9g1nv3wl9ymzz33ig4ns563npkbxj67a64m7p34cc813jl95w"))))
        ;; For the test suite.
