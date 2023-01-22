@@ -2807,6 +2807,27 @@ serializations such as ASN.1 and MessagePack.")
     (license license:expat)
     (home-page "https://github.com/PJK/libcbor")))
 
+(define-public lzfse
+  (package
+    (name "lzfse")
+    (version "1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/lzfse/lzfse")
+             (commit (string-append "lzfse-" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mfh6y6vpvxsdwmqmfbkqkwvxc0pz2dqqc72c6fk9sbsrxxaghd5"))))
+    (build-system cmake-build-system)
+    (home-page "https://github.com/lzfse/lzfse")
+    (synopsis "LZFSE compression library and command line tool")
+    (description "LZFSE is a Lempel-Ziv style data compression algorithm using
+Finite State Entropy coding.  It targets similar compression rates at higher
+compression and decompression speed compared to Deflate using Zlib.")
+    (license license:bsd-3)))
+
 (define-public fcrackzip
   (package
     (name "fcrackzip")
