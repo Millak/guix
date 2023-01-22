@@ -1260,6 +1260,35 @@ documents that use the standard security handler.")
 converter using the Poppler and Cairo libraries.")
     (license license:gpl2+)))
 
+(define-public python-pypdf
+  (package
+    (name "python-pypdf")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/py-pdf/pypdf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qwvjr694sabfblx22zd54b9ny40f2gbv3bv6q43myrlxwvvisk6"))
+              (patches (search-patches
+                        "python-pypdf-annotate-tests-appropriately.patch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-flit))
+    (propagated-inputs (list python-typing-extensions))
+    (home-page "https://github.com/py-pdf/pypdf")
+    (arguments
+     (list
+      ;; Disable tests that use the network and non-free assets.
+      #:test-flags #~(list "-m" "not external and not samples")))
+    (synopsis "Python PDF library")
+    (description
+     "This package provides a PDF library capable of splitting, merging,
+cropping, and transforming PDF files.")
+    (license license:bsd-3)))
+
 (define-public python-pypdf2
   (package
     (name "python-pypdf2")
