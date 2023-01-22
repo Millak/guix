@@ -944,7 +944,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.10")
+    (version "6.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -952,7 +952,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0pz8d96imc0q3nh7npr5zf0jkzi94wchvw57spcrgqfac9yrld3q"))
+                "1bhzmgs921wv1pc0mpyigmpp630086kmpifc3a91cbkv4xf0akkq"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1051,7 +1051,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06aw8f1pnh63dscv2bkii0cpr2m5yc4baka3avszsxnv8mqn0hwx"))))
+                "0f191ifzgl2k196ph7ljip97s17gq8bsfkn1s3aza1qaafhg7acd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
