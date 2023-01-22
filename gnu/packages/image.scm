@@ -213,14 +213,12 @@ library.  It supports almost all PNG features and is extensible.")
                        apng.gz)
                (invoke "sh" "-c"
                        (string-append "gunzip < " apng.gz " > the-patch"))
-               (apply-patch "the-patch")
-               #t)))
+               (apply-patch "the-patch"))))
          (add-before 'configure 'no-checks
            (lambda _
              (substitute* "Makefile.in"
                (("^scripts/symbols.chk") "")
-               (("check: scripts/symbols.chk") ""))
-             #t)))))
+               (("check: scripts/symbols.chk") "")))))))
     (inputs
      `(("apng" ,(origin
                   (method url-fetch)
