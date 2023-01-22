@@ -3147,6 +3147,32 @@ defined in RFC 2425 and RFC 2426 to/from The Insidious Big Brother Database
 shine on top of your cursor so you know where it is.")
     (license license:gpl3+)))
 
+(define-public emacs-paradox
+  (let ((commit "96401577ed02f433debe7604e49afd478e9eda61")) ;version bump
+    (package
+      (name "emacs-paradox")
+      (version "2.5.5")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Malabarba/paradox")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0v9hmvq6bcr2hwlb09ldsd6pjl19ri5n2hl2bs3x52fqjj6fdzzn"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-hydra emacs-let-alist emacs-seq emacs-spinner))
+      (home-page "https://github.com/Malabarba/paradox")
+      (synopsis "Paradox is an extension to Emacs packages menu")
+      (description
+       "Paradox is a project for modernizing Emacs' Package menu.  It provides
+improved appearance, mode-line information, GitHub integration,
+customizability and asynchronous upgrading.")
+      (license license:gpl2+))))
+
 (define-public emacs-carp
   (let ((commit "17d3d84963434233997626850195f205882bf0df")
         (revision "0"))
