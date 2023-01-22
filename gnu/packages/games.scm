@@ -6578,7 +6578,7 @@ becoming difficult enough to tax even the brightest of minds.")
            (sha256
             (base32
              "169p0yqh2gxvhdilvjc2ld8aap7lv2nhkhkg4i1hlmgc6pxpkjgh"))))))
-    (home-page "http://fillets.sourceforge.net/")
+    (home-page "https://fillets.sourceforge.net")
     (synopsis "Puzzle game")
     (description "Fish Fillets NG is strictly a puzzle game.  The goal in
 every of the seventy levels is always the same: find a safe way out.  The fish
