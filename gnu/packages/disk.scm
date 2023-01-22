@@ -917,7 +917,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "73")
+    (version "75")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -926,14 +926,19 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19kp1ly74bj7gavs03q7caci0lqr0rsi5y45zx5m8in4h19xk1kb"))))
+                "0i3fmda285qnwnmkxzwji5ffz123yrq9dpcwzg922qpysir7zq40"))))
     (build-system meson-build-system)
     (arguments
+     ;; The test suite runs but SKIPs all tests: do not consider this tested!
      (list #:configure-flags
            #~(list (string-append "-Drootprefix=" #$output)
+                   (string-append "-Dlibdir=" #$output "/lib")
                    (string-append "-Dbashcompletiondir=" #$output
                                   "/share/bash-completion/completions")
                    (string-append "-Dsysconfdir=" #$output "/etc")
+                   (string-append "-Diniparserdir="
+                                  #$(this-package-input "iniparser")
+                                  "/include")
                    "-Dasciidoctor=disabled" ; use docbook-xsl instead
                    "-Dsystemd=disabled")
            #:phases
