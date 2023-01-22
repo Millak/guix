@@ -824,7 +824,7 @@ specific SMBIOS tables.")
 (define-public memtest86+
   (package
     (name "memtest86+")
-    (version "6.00")
+    (version "6.01")
     (source
      (origin
        (method git-fetch)
@@ -833,7 +833,7 @@ specific SMBIOS tables.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0fv605blaf4z0jyl1wp37x5x014dkp0z0a0fh114ws62fhnhdnlv"))
+        (base32 "1axf8y3nppyskcysypqpkjl0sxz39f1x0v4syplx35qj3y2kq1h4"))
        (patches
         (search-patches "memtest86+-build-reproducibly.patch"))))
     (build-system gnu-build-system)
