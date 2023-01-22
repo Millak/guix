@@ -717,6 +717,27 @@ differential abundance analysis of zero-inflated high-dimensional
 compositional data.")
     (license license:gpl3)))
 
+(define-public r-gwidgets2
+  (package
+    (name "r-gwidgets2")
+    (version "1.0-9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gWidgets2" version))
+              (sha256
+               (base32
+                "1ifljpdazzmwf3mgkg9g76365n2cmw8dd3da161fpvw84xxyznfl"))))
+    (properties `((upstream-name . "gWidgets2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-digest))
+    (home-page "https://github.com/gWidgets3/gWidgets2")
+    (synopsis "Rewrite of gWidgets API for simplified GUI construction")
+    (description
+     "This package provides a re-implementation of the @code{gWidgets} API.
+The API is defined in this package.  A second, toolkit-specific package is
+required to use it.")
+    (license license:gpl3+)))
+
 (define-public r-ids
   (package
     (name "r-ids")
