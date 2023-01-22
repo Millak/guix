@@ -524,7 +524,7 @@ rdiff-backup is easy to use and settings have sensible defaults.")
 (define-public rsnapshot
   (package
     (name "rsnapshot")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -532,7 +532,7 @@ rdiff-backup is easy to use and settings have sensible defaults.")
              "https://github.com/rsnapshot/rsnapshot/releases/download/"
              version "/rsnapshot-" version ".tar.gz"))
        (sha256
-        (base32 "0yc5k2fhm54ypxgm1fsaf8vrg5b7qbvbsqk371n6baf592vprjy1"))))
+        (base32 "0hl2ncld0xkwlnv1cqjmmnld2nlp65alkkdacs11wl95r80mxdqh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
