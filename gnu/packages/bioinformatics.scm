@@ -1103,6 +1103,43 @@ protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
 
+(define-public python-phylophlan
+  (package
+    (name "python-phylophlan")
+    (version "3.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biobakery/phylophlan")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wz70xzxqx2sf5flmf45m15jq027dqijfaj1r51pl50w5x6dkawx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;there are no tests
+    (propagated-inputs
+     (list python-biopython
+           python-dendropy
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-seaborn))
+    (home-page "https://github.com/biobakery/phylophlan")
+    (synopsis
+     "Phylogenetic analysis of microbial isolates and genomes from metagenomes")
+    (description
+     "This package is an integrated pipeline for large-scale phylogenetic
+profiling of genomes and metagenomes.  PhyloPhlAn is an accurate, rapid, and
+easy-to-use method for large-scale microbial genome characterization and
+phylogenetic analysis at multiple levels of resolution.  This software package
+can assign both genomes and @acronym{MAGs, metagenome-assembled genomes} to
+@acronym{SGBs, species-level genome bins}.  PhyloPhlAn can reconstruct
+strain-level phylogenies using clade- specific maximally informative
+phylogenetic markers, and can also scale to very large phylogenies comprising
+>17,000 microbial species.")
+    (license license:expat)))
+
 (define-public python-pybedtools
   (package
     (name "python-pybedtools")
