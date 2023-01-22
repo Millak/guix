@@ -812,7 +812,7 @@ of a the system to know what users are logged in, and where.")
 (define-public basu
   (package
     (name "basu")
-    (version "0.2.0")
+    (version "0.2.1")
     (home-page "https://git.sr.ht/~emersion/basu")
     (source
      (origin
@@ -823,7 +823,7 @@ of a the system to know what users are logged in, and where.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h23n7wg18xc7xwldca18wi00iajyliixwicqyvv38qx831d8q18"))))
+        (base32 "054mg6f9aqi0i3i3w8fc37qnns1vng3qq5b8nfd9g51wi8h891nc"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
