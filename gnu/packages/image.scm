@@ -2434,7 +2434,12 @@ Wacom-style graphics tablets.")
                 (string-append "'" (search-input-file inputs "bin/exiftool"))))))
          (add-before 'install 'check
            (lambda _
-             (invoke "pytest")))
+             ;; Test without PATH to make sure ‘exiftool’ is properly found.
+             (let ((path (getenv "PATH"))
+                   (pytest (which "pytest")))
+               (setenv "PATH" "")
+               (invoke pytest)
+               (setenv "PATH" path))))
          (add-after 'install 'install-bin
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
