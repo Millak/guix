@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -1020,6 +1020,42 @@ Format (GFF) with Biopython integration.")
      "CellBender is a software package for eliminating technical artifacts
 from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
     (license license:bsd-3)))
+
+(define-public python-cmseq
+  (package
+    (name "python-cmseq")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "CMSeq" version))
+              (sha256
+               (base32
+                "0p6a99c299m5wi2z57dgqz52m1z3nfr8mv7kdnk2jvl2p9nql0wk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are no tests
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-samtools-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cmseq/cmseq.py"
+               (("'samtools'")
+                (string-append "'" (search-input-file inputs "/bin/samtools") "'"))))))))
+    (inputs (list samtools))
+    (propagated-inputs
+     (list python-bcbio-gff/biopython-1.73
+           python-biopython-1.73
+           python-numpy
+           python-pandas
+           python-pysam
+           python-scipy))
+    (home-page "https://github.com/SegataLab/cmseq/")
+    (synopsis "Set of utilities on sequences and BAM files")
+    (description
+     "CMSeq is a set of commands to provide an interface to .bam files for coverage
+and sequence consensus.")
+    (license license:expat)))
 
 (define-public python-htsget
   (package
