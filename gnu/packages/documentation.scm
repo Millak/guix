@@ -251,7 +251,7 @@ and to some extent D.")
     (build-system gnu-build-system)
     (native-inputs
      (list flex gettext-minimal))
-    (home-page "http://docpp.sourceforge.net/")
+    (home-page "https://docpp.sourceforge.net")
     (synopsis "Documentation system for C, C++, IDL, and Java")
     (description
      "DOC++ is a documentation system for C, C++, IDL, and Java.  It can
