@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -7710,7 +7710,7 @@ compressed JSON header blocks.
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7719,7 +7719,7 @@ compressed JSON header blocks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l856d1vr63ns1sp9fm6v97p71mx00769k6lwzqzppsb9clksnwp"))))
+                "1g1sd5d6fhrblqk3rc8hzkk1sxyiilbb45kdgbrfg7ccd1sbic30"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -7744,9 +7744,11 @@ compressed JSON header blocks.
                     (bs       (assoc-ref inputs "guile-bytestructures"))
                     (json     (assoc-ref inputs "guile-json"))
                     (zlib     (assoc-ref inputs "guile-zlib"))
+                    (syntax   (assoc-ref inputs "guile-syntax-highlight"))
                     (guile-cm (assoc-ref inputs
                                          "guile-commonmark"))
-                    (deps (list guile gcrypt git bs zlib guile-cm guix json))
+                    (deps (list guile gcrypt git bs zlib guile-cm
+                                syntax guix json))
                     (effective
                      (read-line
                       (open-pipe* OPEN_READ
@@ -7776,6 +7778,7 @@ compressed JSON header blocks.
            guile-zlib
            guile-commonmark
            guile-json-4
+           guile-syntax-highlight
            bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")

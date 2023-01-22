@@ -30322,14 +30322,15 @@ Data type for the hpcguix-web service configuration.
 @table @asis
 @item @code{specs}
 A gexp (@pxref{G-Expressions}) specifying the hpcguix-web service
-configuration.  The main items available in this spec are:
+configuration as an @code{hpcguix-web-configuration} record.  The main
+fields of that record type are:
 
 @table @asis
 @item @code{title-prefix} (default: @code{"hpcguix | "})
 The page title prefix.
 
 @item @code{guix-command} (default: @code{"guix"})
-The @command{guix} command.
+The @command{guix} command to use in examples that appear on HTML pages.
 
 @item @code{package-filter-proc} (default: @code{(const #t)})
 A procedure specifying how to filter packages that are displayed.
@@ -30369,10 +30370,9 @@ A typical hpcguix-web service declaration looks like this:
 (service hpcguix-web-service-type
          (hpcguix-web-configuration
           (specs
-           #~(define site-config
-               (hpcweb-configuration
-                (title-prefix "Guix-HPC - ")
-                (menu '(("/about" "ABOUT"))))))))
+           #~(hpcweb-configuration
+              (title-prefix "Guix-HPC - ")
+              (menu '(("/about" "ABOUT")))))))
 @end lisp
 
 @quotation Note
