@@ -1420,13 +1420,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "0p95bxxw4dgd16rh1yj7zvfbijk52dqvqj20nj6q8kr5ms08acl0"))))
+        (base32 "08wsg9kxnki5pz8gdp81bq06jdmsip382fl02rvnr96cvzr7wf3m"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
