@@ -53,6 +53,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
@@ -41008,18 +41009,28 @@ function data structures.")
   (package
     (inherit rust-pin-project-1)
     (name "rust-pin-project")
-    (version "0.4.22")
+    (version "0.4.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "05wwxy46j9z27ibbiisjqk0rivf0z00h4al1f92mwjp9pz6sdqqj"))))
+        (base32 "0nlxmsiq39bc73iryh92yslrp2jzlkdjjxd7rv5sjzpflljgkw1y"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            (substitute* "Cargo.toml"
+              (("version = \"=") "version = \"^"))))))
     (arguments
-     `(#:tests? #f ; XXX: Fix-me.
-       #:cargo-inputs
-       (("rust-pin-project-internal" ,rust-pin-project-internal-0.4))))))
+     `(#:cargo-inputs
+       (("rust-pin-project-internal" ,rust-pin-project-internal-0.4))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-ryu" ,rust-ryu-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-trybuild" ,rust-trybuild-1))))))
 
 (define-public rust-pin-project-auxiliary-macro-0.0
   (package
@@ -41068,20 +41079,22 @@ crate.")
   (package
     (inherit rust-pin-project-internal-1)
     (name "rust-pin-project-internal")
-    (version "0.4.22")
+    (version "0.4.30")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1xxac6f3ip45zqbfcmmk748ywjw9sbavz1fcswvqgn3rrx2zs3va"))))
+        (base32 "07p6mwz6kz317a6n3p93yk4llj939ihqdz7d1mwl7gmyx468s745"))))
     (arguments
-     `(#:tests? #f ; XXX: Fix-me.
+     `(#:tests? #f ; XXX: Doc tests fail.
        #:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))))
+        ("rust-syn" ,rust-syn-1))
+       #:cargo-development-inputs
+       (("rust-rustversion" ,rust-rustversion-1))))))
 
 (define-public rust-pin-project-lite-0.2
   (package
