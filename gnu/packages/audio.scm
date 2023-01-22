@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
-;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -2511,17 +2511,26 @@ audio signal streaming.")
 (define-public jalv
   (package
     (name "jalv")
-    (version "1.6.6")
+    (version "1.6.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/jalv-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "05lycfq0f06zjp5xqvzjz9hx9kmqx72yng1lghh76hv63dw43lcj"))))
-    (build-system waf-build-system)
+                "1q8mzjv577vdi64s47gd4pg0ydzxvs32cwrb1d64v90f52qpgbpd"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f))                    ; no check target
+     `(#:tests? #f                      ; no check target
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'build-PIC
+           ;; The default -fPIE #errors when combined with our Qt packages.
+           ;; Work around the broken meson.build script clobbering c_args.
+           (lambda _
+             (substitute* "meson.build"
+               (("'-DZIX_STATIC'" match)
+                (string-append match ", '-fPIC'"))))))))
     (inputs
      (list lv2
            lilv
