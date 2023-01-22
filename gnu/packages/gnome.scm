@@ -7755,7 +7755,7 @@ share them with others via social networking and more.")
     (description "File Roller is an archive manager for the GNOME desktop
 environment that allows users to view, unpack, and create compressed archives
 such as gzip tarballs.")
-    (home-page "http://fileroller.sourceforge.net/")
+    (home-page "https://fileroller.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public gnome-session
