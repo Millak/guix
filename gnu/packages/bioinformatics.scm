@@ -1057,6 +1057,30 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 and sequence consensus.")
     (license license:expat)))
 
+(define-public python-hclust2
+  (package
+    (name "python-hclust2")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hclust2" version))
+              (sha256
+               (base32
+                "0v89n2g42d7jhgfs8glf06apgxx6aswp3mfisgnhm518cv8z2rwn"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;there are no tests
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
+    (home-page "https://github.com/SegataLab/hclust2/")
+    (synopsis "Plotting heat-maps for publications")
+    (description
+     "Hclust2 is a handy tool for plotting heat-maps with several useful options
+to produce high quality figures that can be used in publications.")
+    (license license:expat)))
+
 (define-public python-htsget
   (package
    (name "python-htsget")
