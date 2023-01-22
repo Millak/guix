@@ -30320,10 +30320,10 @@ The service type for @code{hpcguix-web}.
 Data type for the hpcguix-web service configuration.
 
 @table @asis
-@item @code{specs}
-A gexp (@pxref{G-Expressions}) specifying the hpcguix-web service
-configuration as an @code{hpcguix-web-configuration} record.  The main
-fields of that record type are:
+@item @code{specs} (default: @code{#f})
+Either @code{#f} or a gexp (@pxref{G-Expressions}) specifying the
+hpcguix-web service configuration as an @code{hpcguix-web-configuration}
+record.  The main fields of that record type are:
 
 @table @asis
 @item @code{title-prefix} (default: @code{"hpcguix | "})
