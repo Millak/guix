@@ -1212,7 +1212,7 @@ generators of mostly elementary and occasionally exotic nature.")
 (define-public iir
   (package
     (name "iir")
-    (version "1.9.3")
+    (version "1.9.4")
     (source
      (origin
        (method git-fetch)
@@ -1221,7 +1221,7 @@ generators of mostly elementary and occasionally exotic nature.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wbh804as740kjvmyaqx4rwvwwrbwh0fnj979dvv1ljlx1p50bk0"))))
+        (base32 "1fqxn0qlvykpk9hiliivmkjjcz3g1bp83yd0zfm82r14abkjbj2g"))))
     (build-system cmake-build-system)
     (arguments
      (list
