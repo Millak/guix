@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017, 2018, 2019 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2016 Adriano Peluso <catonano@gmail.com>
@@ -1318,6 +1318,28 @@ process, passing on the arguments as command line arguments.")
     (description
      "Magit-annex adds a few git-annex operations to the Magit interface.")
     (license license:gpl3+)))
+
+(define-public emacs-malyon
+  (package
+    (name "emacs-malyon")
+    (version "20161204")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/speedenator/malyon/")
+                    (commit "0d9882650720b4a791556f5e2d917388965d6fc0")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0an1yvp0p624rxd8n5phiwvznw35ripqhlwzwyv2bw7lc1rscllr"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/speedenator/malyon")
+    (synopsis "Z-machine interpreter")
+    (description
+     "Malyon is a Z-machine interpreter for playing text-based adventure
+games.  Malyon plays version 3 (.z3), version 5 (.z5), and version 8 (.z8) z
+code files.")
+    (license license:expat)))
 
 (define-public emacs-mct
   (package
