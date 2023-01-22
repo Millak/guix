@@ -11460,10 +11460,14 @@ photo-booth-like software, such as Cheese.")
                    (substitute* "meson_post_install.py"
                      (("gtk-update-icon-cache") (which "true")))))
                (add-after 'install 'wrap-cheese
-                 (lambda* (#:key outputs #:allow-other-keys)
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
                    (wrap-program (search-input-file outputs "bin/cheese")
-                     `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                       (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+                     `("GST_PLUGIN_SYSTEM_PATH" prefix
+                       (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                     `("GST_PRESET_PATH" prefix
+                       (,(dirname (search-input-file inputs
+                                                     "share/gstreamer-1.0\
+/presets/GstVP8Enc.prs"))))))))))
     (build-system meson-build-system)
     (native-inputs
      (list docbook-xml-4.3
