@@ -294,7 +294,7 @@ various formats, including @code{json}.")
 (define-public libzen
   (package
     (name "libzen")
-    (version "0.4.39")
+    (version "0.4.40")
     (source (origin
               (method url-fetch)
               ;; Warning: This source has proved unreliable 1 time at least.
@@ -305,7 +305,7 @@ various formats, including @code{json}.")
                                   "libzen_" version ".tar.bz2"))
               (sha256
                (base32
-                "1rwaxmid9iv65n0y6xlcyxxydsvihjni9ldxpg6pbqz43amp49xx"))))
+                "17pnp5i1ppcxhxnfs9qlkzzy35h23pkdwhsgpbqdkf8lab2f4hsm"))))
     (native-inputs
      (list autoconf automake libtool))
     (build-system gnu-build-system)
