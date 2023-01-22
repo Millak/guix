@@ -738,6 +738,36 @@ The API is defined in this package.  A second, toolkit-specific package is
 required to use it.")
     (license license:gpl3+)))
 
+(define-public r-gwidgets2tcltk
+  (package
+    (name "r-gwidgets2tcltk")
+    (version "1.0-8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gWidgets2tcltk" version))
+              (sha256
+               (base32
+                "02ic4avpa33dnqsnm1mzg7ci1psngk1p169pqf259szf6v39qf8h"))))
+    (properties `((upstream-name . "gWidgets2tcltk")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'start-x-server
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1"))))))
+    (propagated-inputs (list r-digest r-gwidgets2 r-memoise))
+    (native-inputs
+     (list xorg-server-for-tests))
+    (home-page "https://github.com/jverzani/gWidgets2tcltk")
+    (synopsis "Toolkit implementation of gWidgets2 for tcltk")
+    (description "This package is a port of the @code{gWidgets2} API for the
+@code{tcltk} package.")
+    (license license:gpl2+)))
+
 (define-public r-ids
   (package
     (name "r-ids")
