@@ -133,7 +133,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.5")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
@@ -142,7 +142,7 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "1hh41r82a2p7anyadfsp9lmylrrj1a6gknx2g4w6ha97riifs5fb"))))
+        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
     (build-system meson-build-system)
     (arguments
      (list
