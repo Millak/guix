@@ -11482,8 +11482,7 @@ photo-booth-like software, such as Cheese.")
            pkg-config
            vala))
     (propagated-inputs
-     (list bash-minimal
-           clutter
+     (list clutter
            clutter-gst
            clutter-gtk
            gdk-pixbuf
@@ -11492,7 +11491,8 @@ photo-booth-like software, such as Cheese.")
            gstreamer
            libcanberra))
     (inputs
-     (list gnome-desktop
+     (list bash-minimal
+           gnome-desktop
            gst-plugins-bad
            gst-plugins-base
            gst-plugins-good
