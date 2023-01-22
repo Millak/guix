@@ -423,7 +423,7 @@ required structures.")
            libtool
            pkg-config
            texinfo
-           gnutls                 ;XXX: 'guile-snarf' invokes the native 'cpp'
+           gnutls-latest          ;XXX: 'guile-snarf' invokes the native 'cpp'
            guile-3.0
            (gnulib-checkout
             #:version "2022-12-06"
