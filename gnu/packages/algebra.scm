@@ -464,7 +464,9 @@ GCDs, factoring, solving linear systems, and evaluating special
 functions.  In addition, FLINT provides various low-level routines for
 fast arithmetic.")
    (license license:lgpl2.1+)
-   (home-page "http://flintlib.org/")))
+   (home-page "http://flintlib.org/")
+   (properties
+    '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
 (define-public arb
   (package
