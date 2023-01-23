@@ -113,8 +113,8 @@
                         (("\\[\"getfacl\",")
                          (string-append "[\"" (which "getfacl") "\",")))))
                   (add-after 'build 'build-man-page
-                    (lambda* (#:key (make-flags '()) #:allow-other-keys)
-                      (apply invoke "make" "-C" "doc" make-flags)))
+                    (lambda _
+                      (invoke "make" "-C" "doc")))
                   (add-before 'check 'writable-test-data
                     (lambda _
                       ;; Tests may need write access to tests directory.
