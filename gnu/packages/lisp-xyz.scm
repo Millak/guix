@@ -32,7 +32,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022, 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
@@ -848,6 +848,69 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
 
 (define-public cl-adopt
   (sbcl-package->cl-source-package sbcl-adopt))
+
+(define-public sbcl-clingon
+  (let ((commit "4b99dcb4eb4433118a95f5b4ca49ae32b0a57492")
+        (revision "0"))
+    (package
+      (name "sbcl-clingon")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dnaeon/clingon")
+               (commit commit)))
+         (file-name (git-file-name "cl-clingon" version))
+         (sha256
+          (base32 "1nn1zs8n6rsys9s791y6sarpy3416aq848mkfr767g5s5y44ij7j"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rove))
+      (inputs
+       (list sbcl-bobbin
+             sbcl-cl-reexport
+             sbcl-split-sequence
+             sbcl-with-user-abort))
+      (home-page "https://github.com/dnaeon/clingon")
+      (synopsis "Command-line option parsing library for Common Lisp")
+      (description
+       "@code{clingon} is a command-line option parsing library for Common
+Lisp.  Its features include:
+@itemize
+@item Support for subcommands
+@item Support for command aliases
+@item Support for short and long options
+@item Related options may be grouped into categories
+@item Short options may be collapsed into a single argument, as in
+@option{-xyz}
+@item Long options support the notations @option{--long-opt arg} and
+@option{--long-opt=arg}
+@item Automatic generation of help/usage information for commands and
+subcommands
+@item Out-of-the-box support for @option{--version} and @option{--help}
+@item Support for various kinds of options including string, integer,
+boolean, switch, enum, list, counter, filepath, etc.
+@item Subcommands can look up global options defined in parent commands
+@item Support for required options
+@item Options can be initialized via environment variables
+@item Single interface for creating options using @code{CLINGON:MAKE-OPTION}
+@item Generate documentation for your command-line application
+@item Support for @code{pre-hook} and @code{post-hook} actions for commands,
+which allow invoking functions before and after the respective handler of the
+command is executed
+@item Support for Bash and Zsh completions
+@item Extensibility, so if you don't find something you need you can extend it
+by developing a new option kind, or even a new mechanism for initializing
+options, e.g., by looking up an external key/value store
+@end itemize")
+      (license license:bsd-2))))
+
+(define-public cl-clingon
+  (sbcl-package->cl-source-package sbcl-clingon))
+
+(define-public ecl-clingon
+  (sbcl-package->ecl-package sbcl-clingon))
 
 (define-public sbcl-cl-irc
   (let ((commit "963823537c7bfcda2edd4c44d172192da6722175")
