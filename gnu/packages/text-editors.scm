@@ -89,6 +89,7 @@
   #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages slang)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages terminals)
   #:use-module (gnu packages texinfo)
@@ -1391,3 +1392,39 @@ easy to modify and extend, or to use without doing either.
 The aim of Lite XL compared to lite is to be more user-friendly, improve the
 quality of font rendering, and reduce CPU usage.")
     (license license:expat)))
+
+(define-public jed
+  (package
+    (name "jed")
+    (version "0.99-19")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://www.jedsoft.org/releases/jed/jed-"
+                                  version ".tar.bz2"))
+              (sha256
+               (base32
+                "0qspdc6wss43wh1a8fddvf62xyhld5p7hl75grv4d95h5z73k8wp"))
+              (modules '((guix build utils)))
+              (snippet #~(begin
+                           (substitute* "src/Makefile.in"
+                             (("/bin/cp")
+                              "cp"))
+                           (substitute* "configure"
+                             (("TERMCAP=-ltermcap")
+                              "TERMCAP="))))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list (string-append "--with-slang="
+                                  #$(this-package-input "slang")))
+           ;; jed provides no tests
+           #:tests? #f))
+    (inputs (list slang))
+    (home-page "https://www.jedsoft.org/jed/")
+    (synopsis "Programmer's editor using S-Lang scripting for configuration")
+    (description
+     "Jed is a powerful programmer's editor using the S-Lang scripting language
+for configuration and extensibility.  It provides emulation modes for the
+key bindings of many editors (including Emacs and WordStar), and has syntax
+highlighting for dozens of languages.  Jed is very small and fast.")
+    (license license:gpl2+)))
