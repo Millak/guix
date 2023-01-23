@@ -14138,7 +14138,8 @@ the updater for @uref{https://crates.io, Crates} packages.
 the updater for @uref{https://launchpad.net, Launchpad} packages.
 @item generic-html
 a generic updater that crawls the HTML page where the source tarball of
-the package is hosted, when applicable.
+the package is hosted, when applicable, or the HTML page specified by
+the @code{release-monitoring-url} property of the package.
 
 @item generic-git
 a generic updater for packages hosted on Git repositories.  It tries to
