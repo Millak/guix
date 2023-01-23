@@ -1357,7 +1357,7 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "2.4.0")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1365,18 +1365,11 @@ Escape key when Left Control is pressed and released on its own.")
                     "libwacom-" version "/libwacom-" version ".tar.xz"))
               (sha256
                (base32
-                "056l5dndd8654bmwlxxhvx8082s7pp9bg0wm68zb56iz3rv25l6h"))))
+                "13x978gzyw28cqd985m5smiqgza0xp3znb1s0msmn8vmjjlwqxi3"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--default-library=shared")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'fix-tests
-                     (lambda _
-                       ;; Do not attempt to run systemd-specific commands.
-                       (substitute* "test/test_udev_rules.py"
-                         (("(systemd-hwdb|systemctl)")
-                          "true")))))))
+      #:configure-flags #~(list "--default-library=shared")))
     (native-inputs
      (list pkg-config
            ;; For tests.
@@ -1391,9 +1384,9 @@ Escape key when Left Control is pressed and released on its own.")
      ;; libwacom.pc 'Requires' these:
      (list glib libgudev))
     (home-page "https://linuxwacom.github.io/")
-    (synopsis "Helper library for Wacom tablet settings")
+    (synopsis "Helper library for graphics tablet settings")
     (description
-     "Libwacom is a library to help implement Wacom tablet settings.  It is
+     "Libwacom is a library to help implement graphics tablet settings.  It is
 intended to be used by client-programs that need model identification.  It is
 already being used by the gnome-settings-daemon and the GNOME Control Center
 Wacom tablet applet.")
