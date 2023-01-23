@@ -8419,6 +8419,35 @@ can contain any kind of values.")
 (define-public ecl-bst
   (sbcl-package->ecl-package sbcl-bst))
 
+(define-public sbcl-trivial-octet-streams
+  (let ((commit "bc5d398b18549fd42e9c2a365df28ad865f1b85d")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-octet-streams")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/trivial-octet-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-octet-streams" version))
+         (sha256
+          (base32 "0ysnsarlzynb7jf4b63b6kkxjancxc66jwmn0sb3vxyh87siiv6n"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/sharplispers/trivial-octet-streams")
+      (synopsis "In-memory octet streams for Common Lisp")
+      (description
+       "TRIVIAL-OCTET-STREAMS is a Common Lisp library implementing in-memory
+octet streams analogous to string streams.")
+      (license license:bsd-3))))
+
+(define-public cl-trivial-octet-streams
+  (sbcl-package->cl-source-package sbcl-trivial-octet-streams))
+
+(define-public ecl-trivial-octet-streams
+  (sbcl-package->ecl-package sbcl-trivial-octet-streams))
+
 (define-public sbcl-cl-octet-streams
   (package
     (name "sbcl-cl-octet-streams")
