@@ -18032,8 +18032,8 @@ abstract, final and singleton classes.")
   (sbcl-package->cl-source-package sbcl-abstract-classes))
 
 (define-public sbcl-coalton
-  (let ((commit "012f6c8db6d73df16f7729090a12a929fb82db17")
-        (revision "2"))
+  (let ((commit "ba758062bdc7c316438198601f43900c51df25d8")
+        (revision "3"))
     (package
       (name "sbcl-coalton")
       (version (git-version "0.0.1" revision commit))
@@ -18043,9 +18043,9 @@ abstract, final and singleton classes.")
          (uri (git-reference
                (url "https://github.com/coalton-lang/coalton")
                (commit commit)))
-         (file-name (git-file-name "coalton" version))
+         (file-name (git-file-name "cl-coalton" version))
          (sha256
-          (base32 "1j3d12vyyn7y9nz2an4xmaa5si0jbxbwq7y61hq2b7vk376zvw18"))))
+          (base32 "08sxfla1gyf9pczylaq1cn2j1nr2gzc9w0pk6aarsa4q2770zhf7"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiasco))
@@ -18053,10 +18053,9 @@ abstract, final and singleton classes.")
        (list sbcl-alexandria
              sbcl-float-features
              sbcl-fset
-             sbcl-global-vars
              sbcl-json-streams
-             sbcl-serapeum
-             sbcl-trivia))
+             sbcl-split-sequence
+             sbcl-trivial-garbage))
       (home-page "https://coalton-lang.github.io")
       (synopsis "Dialect of ML in Common Lisp")
       (description
