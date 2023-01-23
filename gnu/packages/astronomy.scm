@@ -1309,13 +1309,13 @@ the easy construction of interactive matplotlib widget based animations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "129n268wnziprrv09f7y6f98cj1vh1bzp7ygsna10h3ilnjplkq1"))))
+        (base32 "0w4kxl6aqjp2wv396krw30kwg6cmmska8gvgpihm2i2zxyzz39vd"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
