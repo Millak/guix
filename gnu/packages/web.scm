@@ -13,7 +13,7 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -5026,15 +5026,16 @@ playback of HTTP request/response traces.")
 (define-public woof
   (package
     (name "woof")
-    (version "2012-05-31")
+    (version "20220202")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.home.unix-ag.org/simon/woof-"
-                    version ".py"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simon-budig/woof")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wjmjhpg6xlid33yi59j47q2qadz20sijrqsjahj30vngz856hyq"))))
+                "0rm8xs5dhy42jhjpx30vwnvps2rnmrh8scfr89j6dnihc6mpjkmn"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -5047,11 +5048,10 @@ playback of HTTP request/response traces.")
                 (python (assoc-ref %build-inputs "python")))
            (mkdir-p bin)
            (with-directory-excursion bin
-             (copy-file source "woof")
-             (patch-shebang "woof" (list (string-append python "/bin")))
-             (chmod "woof" #o555))
+             (copy-file (in-vicinity source "woof") "woof")
+             (patch-shebang "woof" (list (string-append python "/bin"))))
            #t))))
-    (inputs `(("python" ,python-2)))
+    (inputs (list python))
     (home-page "http://www.home.unix-ag.org/simon/woof.html")
     (synopsis "Single file web server")
     (description "Woof (Web Offer One File) is a small simple web server that
