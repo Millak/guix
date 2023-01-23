@@ -142,94 +142,94 @@
                       (let* ((out (assoc-ref outputs "out"))
                              (man (string-append out "/share/man/man1")))
                         (install-file "doc/diffoscope.1" man)))))))
-    (inputs (list rpm ;for rpm-python
+    (inputs (list rpm                   ;for rpm-python
                   python-debian
                   python-libarchive-c
                   python-magic
                   python-tlsh
-                  acl ;for getfacl
-                  coreutils ;for stat
-                  diffutils ;for diff
+                  acl                   ;for getfacl
+                  coreutils             ;for stat
+                  diffutils             ;for diff
                   xxd))
     (native-inputs
      (append
-       (list help2man
+      (list help2man
 
-             ;; Below are packages used for tests.
-             binwalk
-             python-pytest
-             python-chardet
-             python-h5py
-             python-pypdf
-             python-progressbar33
+            ;; Below are packages used for tests.
+            binwalk
+            python-pytest
+            python-chardet
+            python-h5py
+            python-pypdf
+            python-progressbar33
 
-             abootimg
-             bdb
-             binutils
-             bzip2
-             cdrtools
-             colord
-             cpio
-             docx2txt
-             dtc
-             e2fsprogs
-             ffmpeg
+            abootimg
+            bdb
+            binutils
+            bzip2
+            cdrtools
+            colord
+            cpio
+            docx2txt
+            dtc
+            e2fsprogs
+            ffmpeg
 
-             ;; XXX: Must be the same version as python-magic uses;
-             ;; remove when 'file' is updated.
-             file-next)
+            ;; XXX: Must be the same version as python-magic uses;
+            ;; remove when 'file' is updated.
+            file-next)
 
-       (match (%current-system)
-              ;; fpc is only available on x86 currently.
-              ((or "x86_64-linux" "i686-linux")
-               (list fpc))
-              (_ '()))
+      (match (%current-system)
+        ;; fpc is only available on x86 currently.
+        ((or "x86_64-linux" "i686-linux")
+         (list fpc))
+        (_ '()))
 
-       (list gettext-minimal
-             ghostscript
-             `(,giflib "bin")
-             gnumeric
-             gnupg
-             hdf5
-             imagemagick
-             libarchive
-             llvm-9
-             lz4
-             lzip
-             ocaml
-             odt2txt
-             openssh
-             openssl
-             pgpdump
-             poppler
-             python-jsbeautifier
-             r-minimal
-             rpm
-             sng
-             sqlite
-             squashfs-tools
-             tcpdump
-             unzip
-             wabt
-             xxd
-             xz
-             zip
-             zstd)
+      (list gettext-minimal
+            ghostscript
+            `(,giflib "bin")
+            gnumeric
+            gnupg
+            hdf5
+            imagemagick
+            libarchive
+            llvm-9
+            lz4
+            lzip
+            ocaml
+            odt2txt
+            openssh
+            openssl
+            pgpdump
+            poppler
+            python-jsbeautifier
+            r-minimal
+            rpm
+            sng
+            sqlite
+            squashfs-tools
+            tcpdump
+            unzip
+            wabt
+            xxd
+            xz
+            zip
+            zstd)
 
-       ;; Also for tests.  The test suite skips tests when these are missing.
-       (match (%current-system)
-         ;; ghc is only available on x86 currently.
-         ((or "x86_64-linux" "i686-linux")
-          (list ghc))
-         (_ '()))
-       (match (%current-system)
-         ;; openjdk and dependent packages are only
-         ;; available on x86_64 currently.
-         ((or "x86_64-linux")
-          (list enjarify)
-          ;; No unversioned openjdk available.
-          (list `(,openjdk12 "jdk")))
-         (_ '()))))
+      ;; Also for tests.  The test suite skips tests when these are missing.
+      (match (%current-system)
+        ;; ghc is only available on x86 currently.
+        ((or "x86_64-linux" "i686-linux")
+         (list ghc))
+        (_ '()))
+      (match (%current-system)
+        ;; openjdk and dependent packages are only
+        ;; available on x86_64 currently.
+        ((or "x86_64-linux")
+         (list enjarify)
+         ;; No unversioned openjdk available.
+         (list `(,openjdk12 "jdk")))
+        (_ '()))))
     (home-page "https://diffoscope.org/")
     (synopsis "Compare files, archives, and directories in depth")
     (description
