@@ -49,6 +49,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake) ;for MPD
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -81,7 +82,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xiph))
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml))
 
 (define-public libmpdclient
   (package
@@ -144,41 +146,50 @@ interfacing MPD in the C, C++ & Objective C languages.")
                  (string-append "_" all)))
               (substitute* "meson.build"
                 (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
-    (inputs (list ao
-                  alsa-lib
-                  avahi
-                  boost
-                  curl
-                  elogind
-                  ffmpeg
-                  flac
-                  fmt
-                  glib
-                  icu4c
-                  ;; The LAME decoder comes from FFmpeg, but is added here so that
-                  ;; configure picks up the LAME encoder.
-                  lame
-                  libid3tag
-                  libmpdclient
-                  libsamplerate
-                  libsndfile
-                  libvorbis
-                  opus
-                  pipewire
-                  pulseaudio
-                  sqlite
-                  zlib))
+    (inputs (append
+             (if (target-linux?) (list liburing) '())
+             (list ao
+                   alsa-lib
+                   avahi
+                   boost
+                   chromaprint
+                   curl
+                   elogind
+                   expat
+                   ffmpeg
+                   flac
+                   fmt
+                   glib
+                   icu4c
+                   ;; The LAME decoder comes from FFmpeg, but is added here so that
+                   ;; configure picks up the LAME encoder.
+                   lame
+                   libgme
+                   libid3tag
+                   libmpdclient
+                   libnfs
+                   libopenmpt
+                   libsamplerate
+                   libshout
+                   libsndfile
+                   libvorbis
+                   opus
+                   pcre2
+                   pipewire
+                   pulseaudio
+                   soxr
+                   sqlite
+                   yajl
+                   zlib
+                   zziplib)))
     (native-inputs (list cmake pkg-config python-sphinx))
     ;; Missing optional inputs:
-    ;;   yajl
     ;;   libcdio_paranoia
     ;;   libmms
     ;;   libadplug
     ;;   libaudiofile
     ;;   faad2
     ;;   fluidsynth
-    ;;   libgme
-    ;;   libshout
     ;;   libmpg123
     ;;   libmodplug
     ;;   libmpcdec
