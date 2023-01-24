@@ -1295,7 +1295,10 @@ interactive environment for the functional language Haskell.")
              (replace 'fix-cc-reference
                (lambda _
                  (substitute* "utils/hsc2hs/src/Common.hs"
-                   (("\"cc\"") "\"gcc\""))))))))
+                   (("\"cc\"") "\"gcc\""))))))
+         ;; Increase verbosity, so running the test suite does not time out on CI.
+         ((#:make-flags make-flags ''())
+          #~(cons "VERBOSE=4" #$make-flags))))
       (native-inputs
        `(;; GHC 9.2 must be built with GHC >= 8.6.
          ("ghc-bootstrap" ,base)
