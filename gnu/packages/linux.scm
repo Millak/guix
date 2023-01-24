@@ -9532,7 +9532,7 @@ provides user-space tools for creating EROFS file systems.")
 (define-public rasdaemon
   (package
     (name "rasdaemon")
-    (version "0.6.8")
+    (version "0.7.0")
     (source
      (origin
        (method git-fetch)
@@ -9541,7 +9541,7 @@ provides user-space tools for creating EROFS file systems.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0r0339mg4rc12p63iiq2kwdqn1zjakyiv014i2a2l9s8v5rjik41"))))
+        (base32 "1a3ycx1g2zyshlna9fg8c9329m8wia42vkmlh2awfab0ngwi3g50"))))
     (native-inputs (list autoconf automake libtool))
     (inputs (list perl perl-dbd-sqlite sqlite dmidecode kmod))
     (arguments
