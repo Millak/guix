@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -975,6 +975,13 @@ intended to behave exactly the same as the original BWK awk.")
      "This package lets you read and write files in Generic Feature
 Format (GFF) with Biopython integration.")
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
+
+(define-public python-bcbio-gff/biopython-1.73
+  (package
+    (inherit python-bcbio-gff)
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-bcbio-gff)
+       (replace "python-biopython" python-biopython-1.73)))))
 
 (define-public python-cellbender
   (package
