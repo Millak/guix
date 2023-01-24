@@ -10584,26 +10584,28 @@ placed at the margin of the minibuffer for your completion candidates.")
     (license license:gpl3+)))
 
 (define-public emacs-smartparens
-  (package
-    (name "emacs-smartparens")
-    (version "1.11.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/Fuco1/smartparens")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0zij2f2rjjym98w68jkp10n1ckpfprlkk217c3fg16hz5nq4vnm6"))))
-    (build-system emacs-build-system)
-    (propagated-inputs
-     (list emacs-dash emacs-markdown-mode))
-    (home-page "https://github.com/Fuco1/smartparens")
-    (synopsis "Paredit-like insertion, wrapping and navigation with user
+  (let ((commit "7afd647395018a26633673ed92ce7a9cb3ccb8f2")
+        (revision "0"))
+    (package
+      (name "emacs-smartparens")
+      (version (git-version "1.11.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Fuco1/smartparens")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0ihvz1w2ggjplk604cdd5alxcq2iy3nm95m7wb6vncrbyb6v0ad2"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-dash emacs-markdown-mode))
+      (home-page "https://github.com/Fuco1/smartparens")
+      (synopsis "Paredit-like insertion, wrapping and navigation with user
 defined pairs")
-    (description
-     "Smartparens is a minor mode for Emacs that deals with parens pairs
+      (description
+       "Smartparens is a minor mode for Emacs that deals with parens pairs
 and tries to be smart about it.  It started as a unification effort to
 combine functionality of several existing packages in a single,
 compatible and extensible way to deal with parentheses, delimiters, tags
@@ -10611,7 +10613,7 @@ and the like.  Some of these packages include autopair, textmate,
 wrap-region, electric-pair-mode, paredit and others.  With the basic
 features found in other packages it also brings many improvements as
 well as completely new features.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-dumbparens
   ;; There are no releases.
