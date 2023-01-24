@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
@@ -854,7 +854,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.17.1.1")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -862,36 +862,25 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0lpkdp55assxf04dvfvwnmfmm6z4q5phkgfli1cwqn4nfxy0all7"))))
+                "0m250plyananjn0790xmwy6kixmxcdj5iyy2ybnk1aw7f4nia5ra"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-external-db" ;use the system's bdb
-                           "--enable-python")
+     '(#:configure-flags '("--enable-python")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'fix-lua-check
                     (lambda _
                       (substitute* "configure"
-                        (("lua >= 5.3")
-                         "lua-5.3 >= 5.3"))))
-                  (add-before 'configure 'set-nss-library-path
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((nss (assoc-ref inputs "nss")))
-                        (setenv "LIBRARY_PATH"
-                                (string-append (getenv "LIBRARY_PATH") ":"
-                                               nss "/lib/nss"))))))))
+                        (("lua >= ?.?")
+                         "lua-5.3 >= 5.3")))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python))
     (inputs
-     (list bdb
-           bzip2
-           cpio
+     (list bzip2
            file
            libarchive
            libgcrypt
            lua
-           nspr
-           nss
-           python
            sqlite
            xz
            zlib))
