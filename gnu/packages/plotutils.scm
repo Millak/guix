@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -30,10 +30,13 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages bash)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages image)
   #:use-module (gnu packages ghostscript)
@@ -269,14 +272,14 @@ colors, styles, options and details.")
 (define-public asymptote
   (package
     (name "asymptote")
-    (version "2.83")
+    (version "2.84")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/asymptote/"
                            version "/asymptote-" version ".src.tgz"))
        (sha256
-        (base32 "18w8nf0p1b3h74sk1b7w96kq5gcaq09idi4771ini7p594gsfg7y"))
+        (base32 "1nycdmlhs3r1qj5miww19683qqjf4hihsjwzwjj1q4mq0hnp0rb7"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled RapidJSON.
@@ -289,11 +292,14 @@ colors, styles, options and details.")
     (native-inputs
      (list autoconf
            automake
+           bison
            boost
            cmake
            emacs-minimal
+           flex
            ghostscript                  ;for tests
            perl
+           pkg-config
            rapidjson
            texinfo                      ;for generating documentation
            (texlive-updmap.cfg
@@ -317,7 +323,9 @@ colors, styles, options and details.")
                   texlive-latex-parskip
                   texlive-tex-texinfo))))
     (inputs
-     (list fftw
+     (list bash-minimal
+           eigen
+           fftw
            freeglut
            glew
            glm
@@ -393,7 +401,7 @@ colors, styles, options and details.")
             (lambda _
               (setenv "HOME" "/tmp")))
           (add-after 'install 'install-Emacs-data
-            (lambda* (#:key outputs #:allow-other-keys)
+            (lambda _
               ;; Install related Emacs libraries into an appropriate location.
               (let ((lisp-dir
                      (string-append #$output "/share/emacs/site-lisp")))
@@ -407,7 +415,7 @@ colors, styles, options and details.")
                 (wrap-program
                     (string-append #$output "/share/asymptote/GUI/xasy.py")
                   `("GUIX_PYTHONPATH" ":" prefix (,path)))))))))
-    (home-page "http://asymptote.sourceforge.net")
+    (home-page "https://asymptote.sourceforge.io")
     (synopsis "Script-based vector graphics language")
     (description
      "Asymptote is a powerful descriptive vector graphics language for
