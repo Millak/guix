@@ -581,16 +581,6 @@ aimed particularly at dealing efficiently with network protocols and
 complicated text/binary file formats.")
     (license license:bsd-3)))
 
-(define-public ghc-attoparsec-bootstrap
-  (package
-    (inherit ghc-attoparsec)
-    (name "ghc-attoparsec-bootstrap")
-    (arguments `(#:tests? #f))
-    (inputs
-     `(("ghc-scientific" ,ghc-scientific-bootstrap)))
-    (native-inputs '())
-    (properties '((hidden? #t)))))
-
 (define-public ghc-attoparsec-iso8601
   (package
     (name "ghc-attoparsec-iso8601")
@@ -5825,14 +5815,6 @@ minimal overhead.  No FFI required.")
 in migrated modules.")
     (license license:expat)))
 
-(define-public ghc-integer-logarithms-bootstrap
-  (package
-    (inherit ghc-integer-logarithms)
-    (name "ghc-integer-logarithms-bootstrap")
-    (arguments `(#:tests? #f))
-    (native-inputs '())
-    (properties '((hidden? #t)))))
-
 (define-public ghc-interpolate
   (package
     (name "ghc-interpolate")
@@ -8052,27 +8034,6 @@ easily work with command-line options.")
 command line options in Haskell.")
     (license license:bsd-3)))
 
-(define-public ghc-optparse-applicative-0.15.1.0
-  (package
-    (inherit ghc-optparse-applicative)
-    (name "ghc-optparse-applicative")
-    (version "0.15.1.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "https://hackage.haskell.org/package/optparse-applicative/optparse-applicative-"
-               version
-               ".tar.gz"))
-        (sha256
-          (base32 "1ws6y3b3f6hsgv0ff0yp6lw4hba1rps4dnvry3yllng0s5gngcsd"))))
-    (inputs
-      (list ghc-transformers-compat ghc-ansi-wl-pprint))
-    (native-inputs (list ghc-quickcheck))
-    (arguments
-      `(#:cabal-revision
-        ("1" "0zmhqkd96v2z1ilhqdkd9z4jgsnsxb8yi2479ind8m5zm9363zr9")))))
-
 (define-public ghc-jira-wiki-markup
   (package
     (name "ghc-jira-wiki-markup")
@@ -10178,18 +10139,6 @@ and space efficient.  They are represented using
 @uref{https://en.wikipedia.org/wiki/Scientific_notation, scientific
 notation}.")
     (license license:bsd-3)))
-
-(define-public ghc-scientific-bootstrap
-  (package
-    (inherit ghc-scientific)
-    (name "ghc-scientific-bootstrap")
-    (arguments `(#:tests? #f))
-    (inputs
-     `(("ghc-integer-logarithms" ,ghc-integer-logarithms-bootstrap)
-       ("ghc-hashable" ,ghc-hashable)
-       ("ghc-primitive" ,ghc-primitive)))
-    (native-inputs '())
-    (properties '((hidden? #t)))))
 
 (define-public ghc-sdl
   (package
@@ -13423,14 +13372,6 @@ native wcwidth and a command line tool to examine the widths assigned by it.
 The command line tool can compile a width table to Haskell code that assigns
 widths to the Char type.")
     (license license:bsd-3)))
-
-(define-public ghc-wcwidth-bootstrap
-  (package
-    (inherit ghc-wcwidth)
-    (name "ghc-wcwidth-bootstrap")
-    (inputs
-     (list ghc-setlocale ghc-utf8-string ghc-attoparsec-bootstrap))
-    (properties '((hidden? #t)))))
 
 (define-public ghc-weigh
   (package
