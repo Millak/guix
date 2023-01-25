@@ -56,7 +56,8 @@
         (base32 "1rdg3xp3js9xadclk3cdypkscm5wahgsfmm4ldcw3xswzhw6ri8w"))
        (patches
         (search-patches "elm-reactor-static-files.patch"
-                        "elm-offline-package-registry.patch"))))
+                        "elm-offline-package-registry.patch"
+                        "elm-ghc9.2.patch"))))
     (build-system haskell-build-system)
     (arguments
      (list
