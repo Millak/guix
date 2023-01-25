@@ -103,14 +103,14 @@ is on expressing the content semantically, avoiding physical markup commands.")
 (define-public texinfo-7
   (package
     (inherit texinfo)
-    (version "7.0.1")
+    (version "7.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/texinfo/texinfo-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1cn6na6vgz6nhda0f5naiysx5sqhw3azi81qk6hah1yqnbyj3lmw"))))))
+                "1balvbkdlwa8zwnzp4irkixq1zhps2wr6njmwj4ilgiqc4rfq4gj"))))))
 
 (define-public texinfo-5
   (package (inherit texinfo)
