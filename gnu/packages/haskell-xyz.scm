@@ -8342,18 +8342,15 @@ building up, manipulating and serialising @code{Pandoc} structures.")
 (define-public ghc-parsec
   (package
     (name "ghc-parsec")
-    (version "3.1.14.0")
+    (version "3.1.15.0")
     (source (origin
               (method url-fetch)
               (uri (hackage-uri "parsec" version))
               (sha256
                (base32
-                "132waj2cpn892midbhpkfmb74qq83v0zv29v885frlp1gvh94b67"))))
+                "1v8zs8zv1rk16lag2yqaxfwanjpgnh4gxw1vd70py0n04d20z0lq"))))
     (build-system haskell-build-system)
-    (native-inputs (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
-    (arguments
-     `(#:cabal-revision
-       ("4" "0p65q054iaz2117a5qk1428dic4sb41acclys9k00zna24ks7iq3")))
+    (native-inputs (list ghc-tasty ghc-tasty-hunit))
     (home-page "https://github.com/haskell/parsec")
     (synopsis "Monadic parser combinators")
     (description "Parsec is designed from scratch as an industrial-strength
