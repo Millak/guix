@@ -440,10 +440,7 @@ the list result in @code{#t} when applying PRED? on them."
   (list-of string?))
 
 (define alist?
-  (match-lambda
-    (() #t)
-    ((head . tail) (and (pair? head) (alist? tail)))
-    (_ #f)))
+  (list-of pair?))
 
 (define serialize-file-like empty-serializer)
 
