@@ -165,7 +165,7 @@
             bdb
             binutils
             bzip2
-            cdrtools
+            cdrkit-libre
             colord
             cpio
             docx2txt
