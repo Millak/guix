@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@reproducible-builds.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,9 +84,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1m6fc7k8cd7ahra05vqccw1fdbjj6d20vr3q8v67ynnyih5nmbnb"))
-       (patches
-        (search-patches "diffoscope-fix-llvm-test.patch"))))
+        (base32 "1m6fc7k8cd7ahra05vqccw1fdbjj6d20vr3q8v67ynnyih5nmbnb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -193,7 +191,7 @@
             hdf5
             imagemagick
             libarchive
-            llvm-9
+            llvm
             lz4
             lzip
             ocaml
