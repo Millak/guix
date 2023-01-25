@@ -591,6 +591,9 @@ FILE."
 (set! execlp
   (error-reporting-wrapper execlp (filename . args) filename))
 
+(set! mkdir
+  (error-reporting-wrapper mkdir (directory . args) directory))
+
 (define (make-regexp* regexp . flags)
   "Like 'make-regexp' but error out if REGEXP is invalid, reporting the error
 nicely."
