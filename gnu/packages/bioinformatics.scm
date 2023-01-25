@@ -7012,6 +7012,38 @@ Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
 
+(define-public python-slamdunk
+  (package
+    (name "python-slamdunk")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/t-neumann/slamdunk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lv3h5k2pn1pz35kz0wk5xmricxzy8qscs2y7nwh0k6x4pn0m0s5"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-biopython
+           python-intervaltree
+           python-joblib
+           python-pandas
+           python-pybedtools
+           python-pysam))
+    (native-inputs
+     (list python-cython python-pytest))
+    (home-page "https://t-neumann.github.io/slamdunk/")
+    (synopsis "Streamline SLAM-seq analysis with high sensitivity")
+    (description "SlamDunk is a fully automated tool for automated, robust,
+scalable and reproducible SLAMseq data analysis.  Diagnostic plotting features
+and a MultiQC plugin will make your SLAMseq data ready for immediate QA and
+interpretation.")
+    (license license:agpl3+)))
+
 (define-public python-taggd
   (package
     (name "python-taggd")
