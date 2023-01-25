@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -2366,6 +2366,8 @@ especially for creating reverb effects.  It supports impulse responses with 1,
 2 or 4 channels, in any soundfile format supported by libsndfile.")
     (license license:gpl2+)))
 
+;; Packages depending on JACK should always prefer jack-2.
+;; JACK1 is provided for legacy applications
 (define-public jack-1
   (package
     (name "jack")
@@ -2411,9 +2413,8 @@ synchronous execution of all clients, and low latency operation.")
     ;; licensed under the LGPL in order to allow for proprietary usage.
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-;; Packages depending on JACK should always prefer jack-1.  Both jack-1 and
-;; jack-2 implement the same API.  JACK2 is provided primarily as a client
-;; program for users who might benefit from the D-BUS features.
+;; Packages depending on JACK should always prefer jack-2.  Both jack-1 and
+;; jack-2 implement the same API.
 (define-public jack-2
   (package
     (inherit jack-1)
