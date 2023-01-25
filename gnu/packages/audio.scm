@@ -2466,6 +2466,36 @@ synchronous execution of all clients, and low latency operation.")
     ;; Most files are under GPLv2+, but some headers are under LGPLv2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public jack-example-tools
+  (package
+    (name "jack-example-tools")
+    (version "3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/jack-example-tools")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x684clxqib1bq3zvvrqlh7hb3arb1bf672xyx1jbwv76dcmm5mh"))))
+    (build-system meson-build-system)
+    (inputs
+     (list alsa-lib
+           jack-2
+           libsndfile
+           opus
+           readline))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/jackaudio/jack-example-tools")
+    (synopsis "Tools for JACK connections")
+    (description "This package provides tools for managing JACK connections
+and testing or configuring the JACK session.  Tools include @code{jack_lsp},
+@code{jack_connect}, and @code{jack_transport}.")
+    ;; Most files are under GPLv2+, but zalsa is GPLv3+.
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public jacktrip
   (package
     (name "jacktrip")
