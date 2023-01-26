@@ -2600,6 +2600,41 @@ for Guile\".  It provides the following modules:
     ;; details.
     (license license:gpl3+)))
 
+(define-public guile-simple-iterators
+  (let ((commit "50f16a2b2aa57e657e52e19fb3c35bdc182cfa36")
+        (revision "0"))
+    (package
+      (name "guile-simple-iterators")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/dustyweb/guile-simple-iterators")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "1m1wirlnfwmp5a4rpszd5qsbwabz4ji033w6p2714p1r524ylah8"))))
+      (build-system guile-build-system)
+      (native-inputs (list guile-3.0))
+      (home-page "https://gitlab.com/dustyweb/guile-simple-iterators")
+      (synopsis "Simple iterators for Guile")
+      (description
+       "This is a collection of iteration macros for Guile. They are inspired by
+@code{racket}'s family of iterators. Specifically, the following iterators are
+available:
+@itemize
+@item @code{for}
+@item @code{for/map}
+@item @code{for/c}
+@item @code{for/fold}
+@item @code{for/fold-right}
+@item @code{for/folder}
+@item @code{folder}
+@end itemize")
+      (license license:asl2.0))))
+
 (define-public guile2.0-lib
   (package
     (inherit guile-lib)
