@@ -316,7 +316,7 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "109.0.5414.74")
+(define %chromium-version "109.0.5414.119")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
 (define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
@@ -329,7 +329,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0l07f9221g7q9rmi3drlia40m7dsac26smgh7nnyhfncahzjsc2y"))))
+      "1nb0099gwkhxv3zc184jyvpl5jrrq194pv6yq95nbc27vw6zz7qv"))))
 
 (define %debian-origin
   (origin
@@ -492,7 +492,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0pcfaj3n3rjk4va9g0ajlsv1719kdhqcnjdd4piinqxb4qy27vgd"))
+                "0bdyb14v12izxkldq27jx532p0bid3wdwfpd1mwm7jqswxgfzkfb"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -671,7 +671,7 @@
                 ;; The unbundling script leaves behind an empty pyyaml directory
                 ;; which prevents the code that tries to use it from falling
                 ;; back to the pyyaml provided by Guix.
-                (rmdir "third_party/pyyaml")
+                (delete-file-recursively "third_party/pyyaml")
 
                 (substitute*
                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
@@ -750,9 +750,7 @@
                    (string-append mesa-lib "/libGLESv2.so.2"))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (let ((c++ (search-input-directory (or native-inputs inputs)
-                                                 "include/c++"))
-                    (node (search-input-file (or native-inputs inputs)
+              (let ((node (search-input-file (or native-inputs inputs)
                                              "/bin/node")))
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
