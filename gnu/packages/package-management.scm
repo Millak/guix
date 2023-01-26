@@ -842,13 +842,22 @@ features of Stow with some extensions.")
     (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--enable-python")
+     '(#:configure-flags '("--enable-python"
+                           ;; The RPM database must be writable.
+                           "--localstatedir=/var")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'fix-lua-check
                     (lambda _
                       (substitute* "configure"
                         (("lua >= ?.?")
-                         "lua-5.3 >= 5.3")))))))
+                         "lua-5.3 >= 5.3"))))
+                  (add-after 'unpack 'patch-build-system
+                    (lambda _
+                      ;; The build system attempts to create /var in the build
+                      ;; chroot, and fails.
+                      (substitute* "Makefile.in"
+                        ((".*MKDIR_P) \\$\\(DESTDIR)\\$\\(localstatedir.*")
+                         "")))))))
     (native-inputs
      (list pkg-config
            python))
