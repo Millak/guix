@@ -2901,7 +2901,9 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
     (arguments
      ;; To build the GUI, add the `--enable-gui' configure flag.
      ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-     `(#:configure-flags '("--enable-mi")))
+     `(#:configure-flags
+       '("--enable-mi"
+         "--disable-static")))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
