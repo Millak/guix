@@ -1818,7 +1818,7 @@ syntax with variables, conditions, functions and more.")
 (define-public simdjson
   (package
     (name "simdjson")
-    (version "1.0.2")
+    (version "3.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1827,7 +1827,7 @@ syntax with variables, conditions, functions and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05i5jnqd7ngps79cws16ls48gnx08ykkkib3n2hbrdhr1wwrnv7a"))))
+                "0q784bm8xbz3p782dw02cdds6m71wk3acy94vva8krc9g88142ws"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; tests require downloading dependencies
