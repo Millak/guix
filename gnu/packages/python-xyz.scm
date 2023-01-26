@@ -31769,6 +31769,52 @@ shared objects, and lift them up to the executable referenced by absolute
 path.")
     (license license:expat)))
 
+(define-public staticsite
+  (package
+    (name "staticsite")
+    (version "2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/spanezz/staticsite")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rhr25xydvnlrrcz389j3f6nknmczm5x11cagrji1qww70piwy08"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-themes-in-output
+            (lambda _
+              (substitute* "staticsite/global_settings.py"
+                (("/usr/share/staticsite") #$output))))
+          (add-after 'install 'install-themes
+            (lambda _
+              (let ((themedir (string-append #$output "/themes")))
+                (copy-recursively "themes" themedir)))))))
+    (native-inputs
+     (list perl-image-exiftool
+           python-dateutil
+           python-docutils
+           python-jinja2
+           python-markdown
+           python-pillow
+           python-pyinotify
+           python-pytz
+           python-pyyaml
+           python-ruamel.yaml
+           python-slugify
+           python-tornado
+           tzdata-for-tests))
+    (home-page "https://github.com/spanezz/staticsite")
+    (synopsis "Static site generator")
+    (description "Statistic is a static site generator based on Markdown and
+Jinja2.")
+    (license (list license:gpl3+ license:expat))))
+
 (define-public python-pymonad
   (package
     (name "python-pymonad")
