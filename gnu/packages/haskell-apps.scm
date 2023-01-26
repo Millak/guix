@@ -842,7 +842,7 @@ too slow and you'll get wound up in the scroll and crushed.")
 (define-public shellcheck
   (package
     (name "shellcheck")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
@@ -850,7 +850,7 @@ too slow and you'll get wound up in the scroll and crushed.")
              "https://hackage.haskell.org/package/ShellCheck/ShellCheck-"
              version ".tar.gz"))
        (sha256
-        (base32 "05jlapp4m997w36h2wszdxz9gvczdczaylypsbn14jqpb650w232"))
+        (base32 "071k2gc8rzpg9lwq9g10c9xx0zm1wcgsf8v4n1csj9fm56vy7gmb"))
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system haskell-build-system)
     (arguments
@@ -868,7 +868,7 @@ too slow and you'll get wound up in the scroll and crushed.")
     (native-inputs
      (list pandoc))
     (inputs
-     (list ghc-aeson ghc-diff ghc-quickcheck ghc-regex-tdfa))
+     (list ghc-aeson ghc-diff ghc-fgl ghc-quickcheck ghc-regex-tdfa))
     (home-page "https://www.shellcheck.net/")
     (synopsis "Static analysis for shell scripts")
     (description "@code{shellcheck} provides static analysis for
