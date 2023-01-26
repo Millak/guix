@@ -17,6 +17,7 @@
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages ssh)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
@@ -940,3 +942,62 @@ Ed25519 keys.
 @item Modern browsers are supported.
 @end itemize")
     (license license:expat)))
+
+(define-public x11-ssh-askpass
+  (package
+    (name "x11-ssh-askpass")
+    (version "1.2.4.1")
+    (source
+     (origin
+       (method url-fetch)
+       ;; The project home page seams to be offline.
+       (uri (string-append "https://pkgs.fedoraproject.org/repo/pkgs/openssh/"
+                           name "-" version ".tar.gz"
+                           "/8f2e41f3f7eaa8543a2440454637f3c3/"
+                           name "-" version ".tar.gz"))
+       (sha256
+        (base32 "124c1frwvdmg4nv8xqv435ibjhj2y8xc1bmfr6i8a8g75b1y63b2"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:make-flags
+      #~(list (string-append "BINDIR=" #$output "/libexec")
+              (string-append "MANDIR=" #$output "/share/man"))
+      #:configure-flags
+      #~(list (string-append "--mandir="
+                             "/usr/share/man/test")
+              (string-append "--libexecdir="
+                             "/usr/lib/ssh/test")
+              (string-append "--with-app-defaults-dir="
+                             "/usr/share/X11/app-defaults/test"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'xmkmf
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((imake #$(this-package-native-input "imake")))
+                (invoke "xmkmf")
+                (substitute* "Makefile"
+                  ;; These imake variables somehow remain undefined
+                  (("DefaultGcc2[[:graph:]]*Opt") "-O2")
+                  ;; Reset a few variable defaults that are set in imake
+                  ;; templates.
+                  ((imake) #$output)
+                  (("(MANPATH = )[[:graph:]]*" _ front)
+                   (string-append front #$output "/share/man"))))))
+          (add-after 'xmkmf 'make-includes
+            (lambda _
+              (invoke "make" "includes")))
+          (add-after 'install 'install/doc
+            (lambda _
+              (lambda _
+                (invoke "make"
+                        (string-append "MANDIR=" #$output "/share/man")
+                        "install.man")))))))
+    (native-inputs (list imake))
+    (inputs (list libxt))
+    (home-page "http://www.jmknoble.net/software/x11-ssh-askpass/")
+    (synopsis "Lightweight passphrase dialog for SSH")
+    (description "code{x11-ssh-askpass} is an X11-based pass-phrase dialog for
+use with OpenSSH.")
+    (license license:gpl2+)))
