@@ -512,6 +512,57 @@ BED, GFF/GTF, VCF.")
     (inputs
      (list samtools zlib))))
 
+(define-public bitmapperbs
+  (package
+    (name "bitmapperbs")
+    (version "1.0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chhylp123/BitMapperBS/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02ksssfnvmpskld0a2016smfz5nrzm3d90v8974f3cpzywckvp8v"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                     (delete-file-recursively "libdivsufsort-2.0.1")
+                     (delete-file-recursively "pSAscan-0.1.0")))))
+                     ;;this package bundles a modified copy of htslib, so we cannot unbundle it
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false
+      #:make-flags '(list "bitmapperBS")
+      #:phases
+      #~(modify-phases %standard-phases
+         (replace 'install
+          (lambda _
+             (install-file "bitmapperBS"
+                (string-append #$output "/bin/"))))
+         #;(add-after 'unpack 'fix-build-system
+           (lambda _
+             (substitute* "Makefile"
+               (("-Wl,-rpath=htslib_aim/lib") "")
+              #;(("^HTSLIB_INFO.*") ""))))
+         (add-after 'unpack 'patch-references-to-psascan
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "Makefile"
+               (("\"(./)?psascan" pre all)
+                (string-append "\"" pre (search-input-file inputs "/bin/psascan"))))))
+         (delete 'configure))))
+    (inputs
+     (list libdivsufsort
+           psascan
+           zlib))
+    (home-page "https://github.com/chhylp123/BitMapperBS/")
+    (synopsis "read aligner for whole-genome bisulfite sequencing")
+    (description
+     "BitMapperBS is memory-efficient aligner that 
+is designed for WGBS reads from directional protocol.")
+    (license license:gpl3+)))
+
 (define-public cellsnp-lite
   ;; Last release is from November 2021 and does not contain fixes.
   (let ((commit "0885d746b0b1ea65c8ef92f8943ca7669ca9734a")
