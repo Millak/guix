@@ -2903,7 +2903,9 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
      ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
      `(#:configure-flags
        '("--enable-mi"
-         "--disable-static")))
+         "--disable-static"
+         ;; The emacs files are provided in emacs-poke.
+         "--with-lispdir=/tmp/share/emacs")))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
@@ -2911,6 +2913,24 @@ Not limited to editing basic entities such as bits and bytes, it provides a
 full-fledged procedural, interactive programming language designed to describe
 data structures and to operate on them.")
     (license license:gpl3+)))
+
+(define-public emacs-poke
+  (package
+    (inherit poke)
+    (name "emacs-poke")
+    (build-system emacs-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'expand-load-path 'change-working-directory
+             (lambda _ (chdir "etc"))))))
+    (inputs '())
+    (native-inputs '())
+    (synopsis "GNU Poke major modes for Emacs")
+    (description
+     "This package provides two Emacs major modes for working with GNU Poke:
+@code{Poke Ras mode} and @code{Poke Map mode}.")))
 
 (define-public pcb2gcode
   ;; Take some additional commits after v2.4.0 to fix build against
