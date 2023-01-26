@@ -839,6 +839,7 @@ features of Stow with some extensions.")
               (sha256
                (base32
                 "0m250plyananjn0790xmwy6kixmxcdj5iyy2ybnk1aw7f4nia5ra"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--enable-python")
