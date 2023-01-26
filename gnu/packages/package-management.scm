@@ -510,30 +510,6 @@ the Nix package manager.")
 
 (export channel-source->package)
 
-(define-public guix-for-cuirass
-  ;; Known-good revision before commit
-  ;; bd86bbd300474204878e927f6cd3f0defa1662a5, which introduced
-  ;; 'primitive-fork' in 'open-inferior'.
-  (let ((version "1.3.0")
-        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
-        (revision 23))
-    (package
-      (inherit guix)
-      (version (string-append version "-"
-                              (number->string revision)
-                              "." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix.git")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
-                (file-name (string-append "guix-" version "-checkout"))))
-      (properties `((hidden? . #t)
-                    ,@(package-properties guix))))))
-
 (define-public guix-daemon
   ;; This package is for internal consumption: it allows us to quickly build
   ;; the 'guix-daemon' program and use that in (guix self), used by 'guix

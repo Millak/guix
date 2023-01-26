@@ -391,19 +391,17 @@ without requiring the source code to be rewritten.")
 (define-public guile-3.0-latest
   (package
     (inherit guile-3.0)
-    (version "3.0.8")
+    (version "3.0.9")
     (source (origin
               (inherit (package-source guile-3.0))
               (uri (string-append "mirror://gnu/guile/guile-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "04wagg0zr0sib0w9ly5jm91jplgfigzfgmy8fjdlx07jaq50d9ys"))
-              (patches (search-patches "guile-cross-compilation.patch"
-                                       "guile-continuation-stack-leak.patch"))))
+                "03bm1mnfc9kkg2ls942a0js7bxrdzmcffgrgg6anwdmjfan2a9hs"))))
     (arguments
      (substitute-keyword-arguments (package-arguments guile-3.0)
-       ;; Guile 3.0.8 is bit-reproducible when built in parallel, thanks to
+       ;; Guile 3.0.9 is bit-reproducible when built in parallel, thanks to
        ;; its multi-stage build process for cross-module inlining, except when
        ;; cross-compiling.
        ((#:parallel-build? _ #f)
