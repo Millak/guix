@@ -2,6 +2,7 @@
 ;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -230,3 +231,52 @@ for applications and does not have any dependencies, a default render backend
 or OS window/input handling.  The library is self contained in one single header
 file and can be used either in header only mode or in implementation mode.")
     (license (list license:unlicense license:expat))))
+
+(define-public implot
+  (package
+    (name "implot")
+    (version "0.16")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/epezent/implot")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vbsw1qsi7j6pdz77840pxcqcghcl9fld80hchajbhpp1jr1a2gz"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'bootstrap)
+          (delete 'configure)
+          (replace 'build
+            ;; Build a shared library from the source code.
+            (lambda* (#:key inputs #:allow-other-keys)
+              (invoke #$(cc-for-target) "-I" (getcwd)
+                      "-I" (search-input-directory inputs "include/imgui")
+                      "-g" "-O2" "-fPIC" "-shared"
+                      "-o" "libimplot.so"
+                      "implot.cpp"
+                      "implot_items.cpp")))
+          (replace 'install
+            ;; Copy the library and header files to the output.
+            (lambda _
+              (install-file "libimplot.so" (string-append #$output "/lib"))
+              (for-each (lambda (file-name)
+                          (install-file file-name
+                                        (string-append #$output
+                                                       "/include/implot")))
+                        '("implot.h" "implot_internal.h")))))
+      #:tests? #f))                     ; no test suite
+    (inputs
+     (list imgui))
+    (home-page "https://github.com/epezent/implot")
+    (synopsis "Immediate-mode C++ plotting library for ImGui")
+    (description "ImPlot is an immediate-mode, GPU-accelerated plotting
+library in C++ for the ImGui GUI library, suitable for creating real-time
+visualizations or interactive plots.  Like ImGui, ImPlot is self-contained and
+requires only minimal code to integrate with existing applications.")
+    (license license:expat)))
