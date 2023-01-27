@@ -20255,7 +20255,7 @@ object has been freed.")
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/skeeto/emacsql")
+             (url "https://github.com/magit/emacsql")
              (commit (string-append version))))
        (file-name (git-file-name name version))
        (sha256
@@ -20298,7 +20298,7 @@ object has been freed.")
      (list emacs-minimal `(,mariadb "dev") `(,mariadb "lib") postgresql))
     (propagated-inputs
      (list emacs-finalize emacs-pg))
-    (home-page "https://github.com/skeeto/emacsql")
+    (home-page "https://github.com/magit/emacsql")
     (synopsis "Emacs high-level SQL database front-end")
     (description "Any readable Lisp value can be stored as a value in EmacSQL,
 including numbers, strings, symbols, lists, vectors, and closures.  EmacSQL
