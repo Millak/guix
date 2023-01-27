@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Andrew Miloradovsky <andrew@interpretmath.pw>
 ;;; Copyright © 2022 Christian Gelinek <cgelinek@radlogic.com.au>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2024 Jakob Kirsch <jakob.kirsch@web.de>
 ;;;
@@ -69,6 +70,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages tcl)
+  #:use-module (gnu packages toolkits)
   #:use-module (gnu packages version-control))
 
 (define-public abc
@@ -298,24 +300,77 @@ Includes the actual FTDI connector.")
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1llkrh8rk1a1xxzx54apbg49ny2jqzzl2rmbkb8188idipq568ws"))))
+            "1llkrh8rk1a1xxzx54apbg49ny2jqzzl2rmbkb8188idipq568ws"))
+          (modules '((guix build utils)))
+          (snippet
+           #~(begin
+               ;; Remove bundled source code for which Guix has packages.
+               ;; Note the bundled copies of json11 and python-console contain
+               ;; modifications, while QtPropertyBrowser appears to be
+               ;; abandoned and without an official source.
+               (with-directory-excursion "3rdparty"
+                 (for-each delete-file-recursively
+                           '("googletest" "imgui" "pybind11" "qtimgui"
+                             "sanitizers-cmake")))
+
+               ;; Remove references to unbundled code and link against
+               ;; external libraries instead.
+               (substitute* "CMakeLists.txt"
+                 (("^\\s+add_subdirectory\\(3rdparty/googletest.*") "")
+                 (("^(\\s+target_link_libraries.*)( gtest_main\\))"
+                   _ prefix suffix)
+                  (string-append prefix " gtest" suffix)))
+               (substitute* "gui/CMakeLists.txt"
+                 (("^\\s+../3rdparty/(qt)?imgui.*") "")
+                 (("^(target_link_libraries.*)\\)" _ prefix)
+                  (string-append prefix " imgui qt_imgui_widgets)")))))))
+      (native-inputs
+       (list googletest sanitizers-cmake))
       (inputs
        (list boost
              eigen
              icestorm
+             imgui-1.86
+             pybind11
              python
              qtbase-5
+             qtimgui
              yosys))
       (build-system cmake-build-system)
       (arguments
-       (list #:configure-flags
-             #~(list "-DARCH=ice40"
-                     "-DBUILD_TESTS=ON"
-                     (string-append "-DCURRENT_GIT_VERSION="
-                                    #$(string-take commit 8))
-                     (string-append "-DICEBOX_ROOT="
-                                    #$(this-package-input "icestorm")
-                                    "/share/icebox"))))
+       (list
+        #:configure-flags
+        #~(list "-DARCH=ice40"
+                "-DBUILD_TESTS=ON"
+                (string-append "-DCURRENT_GIT_VERSION="
+                               #$(string-take commit 8))
+                (string-append "-DICEBOX_ROOT="
+                               #$(this-package-input "icestorm")
+                               "/share/icebox"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-source
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "CMakeLists.txt"
+                  ;; Use the system sanitizers-cmake module.
+                  (("\\$\\{CMAKE_SOURCE_DIR\\}/3rdparty/sanitizers-cmake/cmake")
+                   (string-append
+                    #$(this-package-native-input "sanitizers-cmake")
+                    "/share/sanitizers-cmake/cmake")))
+                (substitute* "gui/CMakeLists.txt"
+                  ;; Compile with system imgui and qtimgui headers.
+                  (("^(target_include_directories.*)../3rdparty/imgui(.*)$"
+                    _ prefix suffix)
+                   (string-append prefix
+                                  (search-input-directory inputs
+                                                          "include/imgui")
+                                  suffix))
+                  (("^(target_include_directories.*)../3rdparty/qtimgui/(.*)$"
+                    _ prefix suffix)
+                   (string-append prefix
+                                  (search-input-directory inputs
+                                                          "include/qtimgui")
+                                  suffix))))))))
       (synopsis "Place-and-Route tool for FPGAs")
       (description "Nextpnr aims to be a vendor neutral, timing driven,
 FOSS FPGA place and route tool.")
