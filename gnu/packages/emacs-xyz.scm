@@ -12458,33 +12458,27 @@ empty @file{.projectile} file in it.")
                  (base32
                   "12bdgykfh4mwsqdazxjdvha62h3q3v33159ypy91f6x59y01fi0n"))))
       (build-system emacs-build-system)
-      (propagated-inputs
-       (list emacs-s emacs-f emacs-dash emacs-let-alist))
+      (arguments
+       (list
+        #:include #~(cons "^project-skeletons\\/" %default-include)
+        #:tests? #true
+        #:test-command #~(list "ert-runner")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; XXX: one failing test involving initializing a git repo.
+            (add-before 'check 'remove-git-test
+              (lambda _
+                (emacs-batch-edit-file "test/skeletor-test.el"
+                  `(progn
+                    (goto-char (point-min))
+                    (re-search-forward "ert-deftest initialises-git-repo")
+                    (beginning-of-line)
+                    (kill-sexp)
+                    (basic-save-buffer))))))))
       (native-inputs
        (list emacs-ert-runner))
-      (arguments
-       `(#:include (cons "^project-skeletons\\/" %default-include)
-         ;; XXX: one failing test involving initializing a git repo
-         #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'make-test-writable
-             (lambda _
-               (make-file-writable "test/skeletor-test.el")
-               #t))
-           (add-before 'check 'remove-git-test
-             (lambda _
-               (emacs-batch-edit-file "test/skeletor-test.el"
-                 `(progn
-                   (progn
-                    (goto-char (point-min))
-                    (re-search-forward
-                     "ert-deftest initialises-git-repo")
-                    (beginning-of-line)
-                    (kill-sexp))
-                   (basic-save-buffer)))
-               #t)))
-         #:tests? #t
-         #:test-command '("ert-runner")))
+      (propagated-inputs
+       (list emacs-dash emacs-f emacs-let-alist emacs-s))
       (home-page "https://github.com/chrisbarrett/skeletor.el")
       (synopsis "Project skeletons for Emacs")
       (description "This package provides project templates and automates the
