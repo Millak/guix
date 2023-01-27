@@ -12,6 +12,7 @@
 ;;; Copyright © 2019 Pierre-Moana Levesque <pierre.moana.levesque@gmail.com>
 ;;; Copyright © 2020, 2023 Janneke Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2023 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2024 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2024 dan <i@dan.games>
 ;;; Copyright © 2024 Charles <charles@charje.net>
@@ -36,6 +37,7 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix deprecation)
@@ -587,3 +589,42 @@ CMake modules.")
     (description "CPM.cmake is a cross-platform CMake script that adds
 dependency management capabilities to CMake.")
     (license license:expat)))
+
+(define-public sanitizers-cmake
+  (let ((commit "0573e2ea8651b9bb3083f193c41eb086497cc80a")
+        (revision "0"))
+    (package
+      (name "sanitizers-cmake")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/arsenm/sanitizers-cmake")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sqjmx65iif67k10jwlf1j8p279rsniy1i3ff660hfrynr0knlry"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list
+           ;; Otherwise optimizer will optimize away our faulty thing.
+           "-DCMAKE_BUILD_TYPE=Debug")
+        #:phases
+        #~(modify-phases %standard-phases
+            ;; No install target provided; manually copy files to a suitable
+            ;; folder in the output.
+            (replace 'install
+              (lambda* (#:key source #:allow-other-keys)
+                (copy-recursively
+                 (string-append source "/cmake")
+                 (string-append #$output "/share/" #$name "/cmake")))))))
+      (synopsis "CMake module to enable sanitizers for binary targets")
+      (description "@code{sanitizers-cmake} provides a module for the CMake
+build system that can enable address, memory, thread and undefined-behavior
+sanitizers for binary targets using flags appropriate for the compiler in
+use.")
+      (home-page "https://github.com/arsenm/sanitizers-cmake")
+      (license license:expat))))
