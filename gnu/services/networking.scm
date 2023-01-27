@@ -20,6 +20,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,7 +81,9 @@
   #:use-module (json)
   #:re-export (static-networking-service
                static-networking-service-type)
-  #:export (%facebook-host-aliases
+  #:export (%facebook-host-aliases ;deprecated
+            block-facebook-hosts-service-type
+
             dhcp-client-service-type
             dhcp-client-configuration
             dhcp-client-configuration?
@@ -235,39 +238,36 @@
 ;;;
 ;;; Code:
 
-(define %facebook-host-aliases
+(define facebook-host-aliases
   ;; This is the list of known Facebook hosts to be added to /etc/hosts if you
   ;; are to block it.
-  "\
-# Block Facebook IPv4.
-127.0.0.1   www.facebook.com
-127.0.0.1   facebook.com
-127.0.0.1   login.facebook.com
-127.0.0.1   www.login.facebook.com
-127.0.0.1   fbcdn.net
-127.0.0.1   www.fbcdn.net
-127.0.0.1   fbcdn.com
-127.0.0.1   www.fbcdn.com
-127.0.0.1   static.ak.fbcdn.net
-127.0.0.1   static.ak.connect.facebook.com
-127.0.0.1   connect.facebook.net
-127.0.0.1   www.connect.facebook.net
-127.0.0.1   apps.facebook.com
+  (let ((domains '("facebook.com" "www.facebook.com"
+                   "login.facebook.com" "www.login.facebook.com"
+                   "fbcdn.net" "www.fbcdn.net" "fbcdn.com" "www.fbcdn.com"
+                   "static.ak.fbcdn.net" "static.ak.connect.facebook.com"
+                   "connect.facebook.net" "www.connect.facebook.net"
+                   "apps.facebook.com")))
+    (append-map (lambda (name)
+                  (map (lambda (addr)
+                         (host addr name))
+                       (list "127.0.0.1" "::1"))) domains)))
 
-# Block Facebook IPv6.
-fe80::1%lo0 facebook.com
-fe80::1%lo0 login.facebook.com
-fe80::1%lo0 www.login.facebook.com
-fe80::1%lo0 fbcdn.net
-fe80::1%lo0 www.fbcdn.net
-fe80::1%lo0 fbcdn.com
-fe80::1%lo0 www.fbcdn.com
-fe80::1%lo0 static.ak.fbcdn.net
-fe80::1%lo0 static.ak.connect.facebook.com
-fe80::1%lo0 connect.facebook.net
-fe80::1%lo0 www.connect.facebook.net
-fe80::1%lo0 apps.facebook.com\n")
+(define-deprecated %facebook-host-aliases
+  block-facebook-hosts-service-type
+  (string-join
+   (map (lambda (x)
+          (string-append (host-address x) "\t"
+                         (host-canonical-name x) "\n"))
+        facebook-host-aliases)))
 
+(define block-facebook-hosts-service-type
+  (service-type
+   (name 'block-facebook-hosts)
+   (extensions
+    (list (service-extension hosts-service-type
+                             (const facebook-host-aliases))))
+   (default-value #f)
+   (description "Add a list of known Facebook hosts to @file{/etc/hosts}")))
 
 (define-record-type* <dhcp-client-configuration>
   dhcp-client-configuration make-dhcp-client-configuration

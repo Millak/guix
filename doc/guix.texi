@@ -20998,41 +20998,13 @@ Logging level.
 @end table
 @end deftp
 
-@defvar %facebook-host-aliases
-This variable contains a string for use in @file{/etc/hosts}
-(@pxref{Host Names,,, libc, The GNU C Library Reference Manual}).  Each
-line contains a entry that maps a known server name of the Facebook
+@defvar block-facebook-hosts-service-type
+This service type adds a list of known Facebook hosts to the
+@file{/etc/hosts} file.
+(@pxref{Host Names,,, libc, The GNU C Library Reference Manual})
+Each line contains a entry that maps a known server name of the Facebook
 on-line service---e.g., @code{www.facebook.com}---to the local
 host---@code{127.0.0.1} or its IPv6 equivalent, @code{::1}.
-
-This variable is typically used as a @code{hosts-service-type}
-service extension (@pxref{Service Reference, @code{hosts-service-type}}):
-
-@lisp
-(use-modules (gnu) (gnu services) (guix) (srfi srfi-1) (ice-9 match))
-(use-service-modules networking)
-
-(operating-system
-  ;; @dots{}
-
-  (service
-    (simple-service 'block-facebook-hosts hosts-service-type
-                    (let ((host-pairs
-                            (filter-map
-                              (lambda (x)
-                                (and (not (or (string-null? x)
-                                              (string-prefix? "#" x)))
-	                             (remove string-null?
-                                             (string-split
-                                               x
-                                               char-set:whitespace))))
-                              (string-split %facebook-host-aliases #\newline))))
-                      (map (match-lambda
-                             ((addr name)
-                              (host addr name)))
-                           host-pairs)))
-    ;; @dots{}
-@end lisp
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
