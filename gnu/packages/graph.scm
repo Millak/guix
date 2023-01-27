@@ -572,19 +572,18 @@ isolating planarity obstructions.")
     (name "rw")
     ;; There is a version 0.8, but the tarball is broken with symlinks
     ;; to /usr/share.
-    (version "0.7")
+    (version "0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/rankwidth/"
                                   "rw-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1rv2v42x2506x7f10349m1wpmmfxrv9l032bkminni2gbip9cjg0"))))
+              (sha256
+               (base32
+                "0hdlxxmlccb6fp7g58zv0rdzpbyjn9bgqlf052sgrk95zq33bq61"))
+              (patches (search-patches "rw-igraph-0.10.patch"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list igraph))
+    (native-inputs (list pkg-config))
+    (inputs (list igraph))
     (home-page "https://sourceforge.net/projects/rankwidth/")
     (synopsis "Rank-width and rank-decomposition of graphs")
     (description "rw computes rank-width and rank-decompositions
