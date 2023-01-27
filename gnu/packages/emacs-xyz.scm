@@ -26880,6 +26880,32 @@ next, volume) and display and control the current playlist as well as your
 stored playlists.")
     (license license:gpl3+)))
 
+
+(define-public emacs-kodi-remote
+  (let ((commit "f5e932036c16e2b61a63020e006fc601e38d181e")
+        (revision "0"))
+    (package
+      (name "emacs-kodi-remote")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/spiderbit/kodi-remote.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1gck7lvqxcr9ikrzlpvcf4408cq6i4s8ijgb0kdsbkfzv0w86934"))))
+      (build-system emacs-build-system)
+      (propagated-inputs
+       (list emacs-f emacs-json-mode emacs-let-alist emacs-request))
+      (home-page "https://github.com/spiderbit/kodi-remote.el")
+      (synopsis "Remote control for Kodi")
+      (description
+       "This package provides a major mode to control Kodi
+instances (play/pause, volume control, media selection, etc.) remotely.")
+      (license license:gpl3+))))
+
 (define-public emacs-navigel
   (package
     (name "emacs-navigel")
