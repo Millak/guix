@@ -293,11 +293,12 @@ Includes the actual FTDI connector.")
           (method git-fetch)
           (uri (git-reference
                  (url "https://github.com/YosysHQ/nextpnr")
-                 (commit commit)))
+                 (commit commit)
+                 (recursive? #t)))
           (file-name (git-file-name name version))
           (sha256
            (base32
-            "1fmxsywgs45g88ra7ips5s2niiiwrkyxdcy742ws18dfk2y4vi9c"))))
+            "1llkrh8rk1a1xxzx54apbg49ny2jqzzl2rmbkb8188idipq568ws"))))
       (inputs
        (list boost
              eigen
@@ -309,10 +310,10 @@ Includes the actual FTDI connector.")
       (arguments
        (list #:configure-flags
              #~(list "-DARCH=ice40"
+                     "-DBUILD_TESTS=ON"
                      (string-append "-DICEBOX_ROOT="
                                     #$(this-package-input "icestorm")
-                                    "/share/icebox"))
-             #:tests? #f))
+                                    "/share/icebox"))))
       (synopsis "Place-and-Route tool for FPGAs")
       (description "Nextpnr aims to be a vendor neutral, timing driven,
 FOSS FPGA place and route tool.")
