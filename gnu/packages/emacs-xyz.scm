@@ -2776,14 +2776,14 @@ incrementally confined in Isearch manner.")
 (define emacs-emms-print-metadata
   (package
     (name "emacs-emms-print-metadata")
-    (version "13")
+    (version "14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "emms-" version ".tar"))
        (sha256
-        (base32 "0kfpdyhvgjdzg5m1g1cd2spnmq1nad3h5zly240dpda0ww41wmm6"))))
+        (base32 "0525vmi397q604z8i35zld3c4fkwbvxwir5lf4f1ji1bbvkzqavc"))))
     (build-system gnu-build-system)
     (arguments
      (list
