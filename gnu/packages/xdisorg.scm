@@ -98,6 +98,7 @@
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -3097,6 +3098,29 @@ applications.  The font and colors can be configured.")
      "Wofi is a launcher/menu program for wlroots based wayland compositors
 such as sway, similar to @command{rofi}.")
     (home-page "https://hg.sr.ht/~scoopta/wofi")
+    (license license:gpl3+)))
+
+(define-public nwg-launchers
+  (package
+    (name "nwg-launchers")
+    (version "0.7.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nwg-piotr/nwg-launchers")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0hq2qiqxvrw3g515ywcb676ljc8mdw3pyslgxr3vahizfljah1pv"))))
+    (build-system meson-build-system)
+    (native-inputs (list json-modern-cxx pkg-config))
+    (inputs (list gtk-layer-shell gtkmm-3 librsvg))
+    (home-page "https://github.com/nwg-piotr/nwg-launchers")
+    (synopsis "Application launchers for wlroots")
+    (description
+     "This package provides an application grid, button bar, and dmenu
+applications for Sway and other wlroots-based Wayland compositors.")
     (license license:gpl3+)))
 
 (define-public dex
