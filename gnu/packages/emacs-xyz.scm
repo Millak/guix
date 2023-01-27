@@ -34336,6 +34336,59 @@ notebooks")
 execute code split into cells according to certain magic comments.")
       (license license:gpl3+))))
 
+(define-public emacs-ein
+  ;; XXX: Upstream doesn't make any release, and didn't set any version.
+  (let ((commit "b2410dc96f61aa806a7934099d8f1e40c8f6ca18"))
+    (package
+      (name "emacs-ein")
+      (version "20220911")
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/millejoh/emacs-ipython-notebook")
+           (commit commit)))
+         (sha256
+          (base32
+           "02392bxl0msda58cls0i79mzqjs73x39czx0mlb0sg2vxp84gy15"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command
+        #~(list "emacs" "-Q" "--batch"
+                "-L" "test"
+                "--load" "test/testein-loader.el")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'move-source-files
+              (lambda _
+                (let ((el-files (find-files "./lisp" ".*\\.el$")))
+                  (for-each (lambda (f)
+                              (rename-file f (basename f)))
+                            el-files)))))))
+      (native-inputs
+       (list emacs-f emacs-mocker))
+      (propagated-inputs
+       (list emacs-anaphora
+             emacs-dash
+             emacs-deferred
+             emacs-polymode
+             emacs-request
+             emacs-websocket
+             emacs-with-editor))
+      (home-page "https://github.com/millejoh/emacs-ipython-notebook")
+      (synopsis "Jupyter client for all languages")
+      (description
+       "The Emacs IPython Notebook (EIN) package provides a Jupyter Notebook
+client and integrated REPL (like SLIME) in Emacs.  EIN improves notebook
+editing by allowing you to use Emacs.  It also expose IPython features such as
+code evaluation, object inspection and code completion. These features can be
+accessed anywhere in Emacs and improve Python code editing and reading in
+general in Emacs.")
+      (license license:gpl3+))))
+
 (define-public emacs-kibit-helper
   (package
     (name "emacs-kibit-helper")
