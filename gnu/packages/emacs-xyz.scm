@@ -20263,6 +20263,12 @@ object has been freed.")
     (build-system emacs-build-system)
     (arguments
      (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "-Q" "--batch"
+                             "-L" "tests"
+                             "-L" "."
+                             "-l" "tests/emacsql-tests.el"
+                             "-f" "ert-run-tests-batch-and-exit")
       #:modules '((guix build emacs-build-system)
                   (guix build utils)
                   (guix build emacs-utils)
