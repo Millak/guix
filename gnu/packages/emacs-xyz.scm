@@ -121,6 +121,7 @@
 ;;; Copyright © 2022 Joeke de Graaf <joeke@posteo.net>
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20004,6 +20005,9 @@ used with SGML-like languages: XML, HTML, XHTML, XSL, etc.")
         (base32
          "1ipwzl0l26g5qvc1sgmz2ra5vn1j3hl0mnkgzpa3j4p8gsmxdiqr"))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons* "^kbd\\.svg$" "^kbd-ergo\\.svg$"
+                              %default-include)))
     (propagated-inputs
      (list emacs-undo-tree))
     (home-page "https://ergoemacs.github.io/")
