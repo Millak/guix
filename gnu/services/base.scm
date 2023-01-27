@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -102,6 +103,14 @@
             console-font-service-type
             console-font-service
             virtual-terminal-service-type
+
+            host
+            %host
+            host?
+            host-address
+            host-canonical-name
+            host-aliases
+            hosts-service-type
 
             static-networking
             static-networking?
@@ -685,6 +694,72 @@ to add @var{device} to the kernel's entropy pool.  The service will fail if
            (rngd-configuration
             (rng-tools rng-tools)
             (device device))))
+
+;;;
+;;; /etc/hosts
+;;;
+
+(define (valid-name? name)
+  "Return true if @var{name} is likely to be a valid host name."
+  (false-if-exception (not (string-any char-set:whitespace name))))
+
+(define-compile-time-procedure (assert-valid-name (name valid-name?))
+  "Ensure @var{name} is likely to be a valid host name."
+  ;; TODO: RFC compliant implementation.
+  (unless (valid-name? name)
+    (raise
+     (make-compound-condition
+      (formatted-message (G_ "host name '~a' contains invalid characters")
+                         name)
+      (condition (&error-location
+                  (location
+                   (source-properties->location procedure-call-location)))))))
+  name)
+
+(define-record-type* <host> %host
+  ;; XXX: Using the record type constructor becomes tiresome when
+  ;; there's multiple records to make.
+  make-host host?
+  (address        host-address)
+  (canonical-name host-canonical-name
+                  (sanitize assert-valid-name))
+  (aliases        host-aliases
+                  (default '())
+                  (sanitize (cut map assert-valid-name <>))))
+
+(define* (host address canonical-name #:optional (aliases '()))
+  "Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names."
+  (%host
+   (address address)
+   (canonical-name canonical-name)
+   (aliases aliases)))
+
+(define hosts-service-type
+  ;; Extend etc-service-type with a entry for @file{/etc/hosts}.
+  (let* ((serialize-host-record
+          (lambda (record)
+            (match-record record <host> (address canonical-name aliases)
+              (format #f "~a~/~a~{~^~/~a~}~%" address canonical-name aliases))))
+         (host-etc-service
+          (lambda (lst)
+            `(("hosts" ,(plain-file "hosts"
+                                    (format #f "~{~a~}"
+                                            (map serialize-host-record
+                                                 lst))))))))
+    (service-type
+     (name 'etc-hosts)
+     (extensions
+      (list
+       (service-extension etc-service-type
+                          host-etc-service)))
+     (compose concatenate)
+     (extend append)
+     (description "Populate the @file{/etc/hosts} file."))))
 
 
 ;;;
