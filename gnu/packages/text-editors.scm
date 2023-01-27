@@ -1406,6 +1406,9 @@ quality of font rendering, and reduce CPU usage.")
                 "0qspdc6wss43wh1a8fddvf62xyhld5p7hl75grv4d95h5z73k8wp"))
               (modules '((guix build utils)))
               (snippet #~(begin
+                           ;; Delete Windows binaries.
+                           (delete-file-recursively "bin/w32")
+
                            (substitute* "src/Makefile.in"
                              (("/bin/cp")
                               "cp"))
