@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -91,35 +91,40 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.9.8")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/igraph/igraph/releases/"
                            "download/" version "/igraph-" version ".tar.gz"))
-       (modules '((guix build utils)))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet '(begin
-                   ;; Fully unbundle igraph (see:
-                   ;; https://github.com/igraph/igraph/issues/1897).
-                   (delete-file-recursively "vendor")
-                   (substitute* "CMakeLists.txt"
-                     (("add_subdirectory\\(vendor\\).*")
-                      ""))
-                   ;; Help CMake to find our plfit headers.
-                   (substitute* "etc/cmake/FindPLFIT.cmake"
-                     (("^  NAMES plfit.h.*" all)
-                      (string-append all
-                                     "  PATH_SUFFIXES plfit")))
+                   ;; igraph insists on building its own copy of CxSparse
+                   ;; (see: https://github.com/igraph/igraph/commit/\
+                   ;; 334318b7dfe46501236272ca336580f4748114b0) and the build
+                   ;; has no support to use a system provided 'pcg'.
+                   (define keep-libraries '("cs" "pcg"))
+                   (define keep (append '("." ".." "CMakeLists.txt")
+                                        keep-libraries))
+                   (define keep? (cut member <> keep))
+                   (with-directory-excursion "vendor"
+                     (for-each delete-file-recursively
+                               (scandir "." (negate keep?))))
+                   (call-with-output-file "vendor/CMakeLists.txt"
+                     (cut format <> "~{add_subdirectory(~a)~%~}"
+                          keep-libraries))
                    (substitute* '("src/CMakeLists.txt"
                                   "etc/cmake/benchmark_helpers.cmake")
-                     ;; Remove bundling related variables.
+                     ;; Remove extraneous bundling related variables.
                      ((".*_IS_VENDORED.*")
                       ""))))
        (sha256
-        (base32 "15v3ydq95gahnas37cip637hvc2nwrmk76xp0nv3gq53rrrk9a7r"))))
+        (base32 "1z1ay3l1h64jc2igbl2ibvi20sswy56v2yk3ykhis7jzijsh0mxa"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
+    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+                     #:test-target "check"))
     (native-inputs (list pkg-config))
     (inputs
      (list arpack-ng
@@ -128,8 +133,9 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
            libxml2
            lapack
            openblas
-           plfit
-           suitesparse))
+           plfit))
+    ;; libxml2 is in the 'Requires.private' of igraph.pc.
+    (propagated-inputs (list libxml2))
     (home-page "https://igraph.org")
     (synopsis "Network analysis and visualization")
     (description
