@@ -71,7 +71,7 @@ Copyright @copyright{} 2019 Kyle Andrews@*
 Copyright @copyright{} 2019 Alex Griffin@*
 Copyright @copyright{} 2019, 2020, 2021, 2022 Guillaume Le Vaillant@*
 Copyright @copyright{} 2020 Liliana Marie Prikler@*
-Copyright @copyright{} 2019, 2020, 2021, 2022 Simon Tournier@*
+Copyright @copyright{} 2019, 2020, 2021, 2022, 2023 Simon Tournier@*
 Copyright @copyright{} 2020 Wiktor Żelazny@*
 Copyright @copyright{} 2020 Damien Cassou@*
 Copyright @copyright{} 2020 Jakub Kądziołka@*
@@ -5938,6 +5938,22 @@ building or downloading any missing package, and runs the
 @example
 guix shell python python-numpy -- python3
 @end example
+
+@quotation Note
+@cindex shebang, for @command{guix shell}
+@command{guix shell} can be also be used as a script interpreter, also
+known as @dfn{shebang}.  Here is an example self-contained Python script
+making use of this feature:
+
+@example
+#!/usr/bin/env -S guix shell python python-numpy -- python3
+import numpy
+print("This is numpy", numpy.version.version)
+@end example
+
+You may pass any @command{guix shell} option, but there's one caveat:
+the Linux kernel has a limit of 127 bytes on shebang length.
+@end quotation
 
 Development environments can be created as in the example below, which
 spawns an interactive shell containing all the dependencies and
