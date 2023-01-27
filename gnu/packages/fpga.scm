@@ -311,6 +311,8 @@ Includes the actual FTDI connector.")
        (list #:configure-flags
              #~(list "-DARCH=ice40"
                      "-DBUILD_TESTS=ON"
+                     (string-append "-DCURRENT_GIT_VERSION="
+                                    #$(string-take commit 8))
                      (string-append "-DICEBOX_ROOT="
                                     #$(this-package-input "icestorm")
                                     "/share/icebox"))))
