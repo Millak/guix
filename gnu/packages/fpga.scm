@@ -292,7 +292,7 @@ Includes the actual FTDI connector.")
         (origin
           (method git-fetch)
           (uri (git-reference
-                 (url "git://github.com/YosysHQ/nextpnr")
+                 (url "https://github.com/YosysHQ/nextpnr")
                  (commit commit)))
           (file-name (git-file-name name version))
           (sha256
