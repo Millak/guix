@@ -34370,6 +34370,7 @@ execute code split into cells according to certain magic comments.")
           (git-reference
            (url "https://github.com/millejoh/emacs-ipython-notebook")
            (commit commit)))
+         (file-name (git-file-name name version))
          (sha256
           (base32
            "02392bxl0msda58cls0i79mzqjs73x39czx0mlb0sg2vxp84gy15"))))
@@ -34405,7 +34406,7 @@ execute code split into cells according to certain magic comments.")
        "The Emacs IPython Notebook (EIN) package provides a Jupyter Notebook
 client and integrated REPL (like SLIME) in Emacs.  EIN improves notebook
 editing by allowing you to use Emacs.  It also expose IPython features such as
-code evaluation, object inspection and code completion. These features can be
+code evaluation, object inspection and code completion.  These features can be
 accessed anywhere in Emacs and improve Python code editing and reading in
 general in Emacs.")
       (license license:gpl3+))))
