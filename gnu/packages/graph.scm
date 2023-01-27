@@ -502,14 +502,14 @@ Faiss library.")))
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
-    (version "0.8.10")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "leidenalg" version))
        (sha256
         (base32
-         "1hbvagp1yyazvl7cid7mii5263qi48lpkq543n5w71qysgz1f0v7"))))
+         "1wvmi6ca9kf8pbxg6b18n64h82wr9a6wcdazyn82pww0dwxzwp3y"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;tests are not included
