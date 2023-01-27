@@ -8786,43 +8786,43 @@ in @code{html-mode}.")
        (sha256
         (base32 "1acmm4w1mv1qzpnkgc4wyiilbx8l0dk16sx8wv815ri5ks289rll"))))
     (build-system emacs-build-system)
-    (native-inputs
-     (list texinfo))
     (arguments
-     `(#:include '("\\.el$" "\\.lisp$" "\\.asd$" "contrib")
-       #:exclude '("^slime-tests.el" "^contrib/test/"
-                   "^contrib/Makefile$" "^contrib/README.md$")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-git-checkout-writable
-           (lambda _
-             (for-each make-file-writable (find-files "."))))
-         (add-before 'install 'configure
-           (lambda* _
-             (emacs-substitute-variables "slime.el"
-               ("inferior-lisp-program" "sbcl"))))
-         (add-before 'install 'install-doc
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (info-dir (string-append out "/share/info"))
-                    (doc-dir (string-append out "/share/doc/"
-                                            ,name "-" ,version))
+     (list
+      #:include #~(cons* "\\.lisp$" "\\.asd$" "contrib" %default-include)
+      #:exclude #~(list "^slime-tests.el" "^contrib/test/"
+                        "^contrib/Makefile$" "^contrib/README.md$")
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; (add-after 'unpack 'make-git-checkout-writable
+          ;;   (lambda _
+          ;;     (for-each make-file-writable (find-files "."))))
+          (add-before 'install 'configure
+            (lambda* _
+              (emacs-substitute-variables "slime.el"
+                ("inferior-lisp-program" "sbcl"))))
+          (add-before 'install 'install-doc
+            (lambda _
+              (let ((info-dir (string-append #$output "/share/info"))
+                    (doc-dir (string-append #$output "/share/doc/"
+                                            #$name "-" #$version))
                     (doc-files '("doc/slime-refcard.pdf"
                                  "README.md" "NEWS" "PROBLEMS"
                                  "CONTRIBUTING.md")))
-               (with-directory-excursion "doc"
-                 (substitute* "Makefile"
-                   (("infodir=/usr/local/info")
-                    (string-append "infodir=" info-dir)))
-                 (invoke "make" "html/index.html")
-                 (invoke "make" "slime.info")
-                 (install-file "slime.info" info-dir)
-                 (copy-recursively "html" (string-append doc-dir "/html")))
-               (for-each (lambda (f)
-                           (install-file f doc-dir)
-                           (delete-file f))
-                         doc-files)
-               (delete-file-recursively "doc")))))))
+                (with-directory-excursion "doc"
+                  (substitute* "Makefile"
+                    (("infodir=/usr/local/info")
+                     (string-append "infodir=" info-dir)))
+                  (invoke "make" "html/index.html")
+                  (invoke "make" "slime.info")
+                  (install-file "slime.info" info-dir)
+                  (copy-recursively "html" (string-append doc-dir "/html")))
+                (for-each (lambda (f)
+                            (install-file f doc-dir)
+                            (delete-file f))
+                          doc-files)
+                (delete-file-recursively "doc")))))))
+    (native-inputs
+     (list texinfo))
     (home-page "https://github.com/slime/slime")
     (synopsis "Superior Lisp Interaction Mode for Emacs")
     (description
