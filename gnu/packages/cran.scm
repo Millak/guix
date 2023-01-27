@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -255,6 +255,33 @@ multiple and joint correspondence analysis.")
 can limit either their total size or the age of the oldest object (or both),
 automatically pruning objects to maintain the constraints.")
     (license license:expat)))
+
+(define-public r-castor
+  (package
+    (name "r-castor")
+    (version "1.7.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "castor" version))
+              (sha256
+               (base32
+                "1qbndwmzzpkzgiah0hgid9z5f9iv2j53d515bjcci1591gx1fk36"))))
+    (properties `((upstream-name . "castor")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-naturalsort r-rcpp r-rspectra))
+    (home-page "https://cran.r-project.org/package=castor")
+    (synopsis "Efficient phylogenetics on large trees")
+    (description
+     "This tool supports analyses on massive phylogenies comprising up to
+millions of tips.  Functions include pruning, rerooting, calculation of
+most-recent common ancestors, calculating distances from the tree root and
+calculating pairwise distances.  In addition, this tool takes care of
+calculation of phylogenetic signal and mean trait depth (trait conservatism),
+ancestral state reconstruction and hidden character prediction of discrete
+characters, simulating and fitting models of trait evolution, fitting and
+simulating diversification models, dating trees, comparing trees, and
+reading/writing trees in Newick format.")
+    (license license:gpl2+)))
 
 (define-public r-collections
   (package
