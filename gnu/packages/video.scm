@@ -48,7 +48,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
 ;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -3398,7 +3398,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.2.4")
+    (version "29.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3408,7 +3408,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13bfzjqmvabli99yr1h0306w5lx72mbl5sxrnr46hjig1a6rw91s"))
+                "15nvvlpryvlbf76918jvygg1985glz38cndfgnc2c0009vdb9qbk"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -3417,6 +3417,8 @@ be used for realtime video capture via Linux-specific APIs.")
       #:configure-flags
       #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
               "-DENABLE_UNIT_TESTS=ON"
+              "-DENABLE_NEW_MPEGTS_OUTPUT=OFF"
+              "-DENABLE_AJA=OFF"
               ;; Browser plugin requires cef, but it is not packaged yet.
               ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
               "-DBUILD_BROWSER=OFF")
@@ -3450,6 +3452,8 @@ be used for realtime video capture via Linux-specific APIs.")
       glib
       jack-1
       jansson
+      libglvnd
+      libva
       libx264
       libxcomposite
       libxkbcommon
@@ -3466,6 +3470,7 @@ be used for realtime video capture via Linux-specific APIs.")
       qtwayland-5
       speexdsp
       v4l-utils
+      vlc
       wayland
       wayland-protocols
       zlib))
