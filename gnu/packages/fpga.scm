@@ -307,11 +307,12 @@ Includes the actual FTDI connector.")
              yosys))
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags `("-DARCH=ice40"
-                             ,(string-append "-DICEBOX_ROOT="
-                                             (assoc-ref %build-inputs "icestorm")
-                                             "/share/icebox"))
-         #:tests? #f))
+       (list #:configure-flags
+             #~(list "-DARCH=ice40"
+                     (string-append "-DICEBOX_ROOT="
+                                    #$(this-package-input "icestorm")
+                                    "/share/icebox"))
+             #:tests? #f))
       (synopsis "Place-and-Route tool for FPGAs")
       (description "Nextpnr aims to be a vendor neutral, timing driven,
 FOSS FPGA place and route tool.")
