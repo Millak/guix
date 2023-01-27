@@ -285,45 +285,48 @@ Includes the actual FTDI connector.")
     (license license:isc))))
 
 (define-public nextpnr-ice40
-  (let [(commit "fbe486df459909065d6852a7495a212dfd2accef")
-        (revision "1")]
+  (let* ((version "0.5")
+         (tag (string-append "nextpnr-" version)))
     (package
       (name "nextpnr-ice40")
-      (version (git-version "0.0.0" revision commit))
+      (version version)
       (source
-        (origin
-          (method git-fetch)
-          (uri (git-reference
-                 (url "https://github.com/YosysHQ/nextpnr")
-                 (commit commit)
-                 (recursive? #t)))
-          (file-name (git-file-name name version))
-          (sha256
-           (base32
-            "1llkrh8rk1a1xxzx54apbg49ny2jqzzl2rmbkb8188idipq568ws"))
-          (modules '((guix build utils)))
-          (snippet
-           #~(begin
-               ;; Remove bundled source code for which Guix has packages.
-               ;; Note the bundled copies of json11 and python-console contain
-               ;; modifications, while QtPropertyBrowser appears to be
-               ;; abandoned and without an official source.
-               (with-directory-excursion "3rdparty"
-                 (for-each delete-file-recursively
-                           '("googletest" "imgui" "pybind11" "qtimgui"
-                             "sanitizers-cmake")))
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/YosysHQ/nextpnr")
+               (commit tag)
+               (recursive? #t)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "119iqxxzbxq2qy8x20awf9gr0nf3y1yjmk36adsg89ly3rb9gwzk"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              ;; Remove bundled source code for which Guix has packages.
+              ;; Note the bundled copies of json11 and python-console contain
+              ;; modifications, while QtPropertyBrowser appears to be
+              ;; abandoned and without an official source.
+              ;; fpga-interchange-schema is used only by the
+              ;; "fpga_interchange" architecture target, which this package
+              ;; doesn't build.
+              (with-directory-excursion "3rdparty"
+                (for-each delete-file-recursively
+                          '("googletest" "imgui" "pybind11" "qtimgui"
+                            "sanitizers-cmake")))
 
-               ;; Remove references to unbundled code and link against
-               ;; external libraries instead.
-               (substitute* "CMakeLists.txt"
-                 (("^\\s+add_subdirectory\\(3rdparty/googletest.*") "")
-                 (("^(\\s+target_link_libraries.*)( gtest_main\\))"
-                   _ prefix suffix)
-                  (string-append prefix " gtest" suffix)))
-               (substitute* "gui/CMakeLists.txt"
-                 (("^\\s+../3rdparty/(qt)?imgui.*") "")
-                 (("^(target_link_libraries.*)\\)" _ prefix)
-                  (string-append prefix " imgui qt_imgui_widgets)")))))))
+              ;; Remove references to unbundled code and link against external
+              ;; libraries instead.
+              (substitute* "CMakeLists.txt"
+                (("^\\s+add_subdirectory\\(3rdparty/googletest.*") "")
+                (("^(\\s+target_link_libraries.*)( gtest_main\\))"
+                  _ prefix suffix)
+                 (string-append prefix " gtest" suffix)))
+              (substitute* "gui/CMakeLists.txt"
+                (("^\\s+../3rdparty/(qt)?imgui.*") "")
+                (("^(target_link_libraries.*)\\)" _ prefix)
+                 (string-append prefix " imgui qt_imgui_widgets)")))))))
       (native-inputs
        (list googletest sanitizers-cmake))
       (inputs
@@ -341,12 +344,12 @@ Includes the actual FTDI connector.")
        (list
         #:configure-flags
         #~(list "-DARCH=ice40"
+                "-DBUILD_GUI=ON"
                 "-DBUILD_TESTS=ON"
-                (string-append "-DCURRENT_GIT_VERSION="
-                               #$(string-take commit 8))
-                (string-append "-DICEBOX_ROOT="
-                               #$(this-package-input "icestorm")
-                               "/share/icebox"))
+                (string-append "-DCURRENT_GIT_VERSION=" #$tag)
+                (string-append "-DICESTORM_INSTALL_PREFIX="
+                               #$(this-package-input "icestorm"))
+                "-DUSE_IPO=OFF")
         #:phases
         #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-source
@@ -372,8 +375,8 @@ Includes the actual FTDI connector.")
                                                           "include/qtimgui")
                                   suffix))))))))
       (synopsis "Place-and-Route tool for FPGAs")
-      (description "Nextpnr aims to be a vendor neutral, timing driven,
-FOSS FPGA place and route tool.")
+      (description "Nextpnr aims to be a vendor neutral, timing driven, FOSS
+FPGA place and route tool.")
       (home-page "https://github.com/YosysHQ/nextpnr")
       (license license:expat))))
 
