@@ -6998,31 +6998,40 @@ the speedbar window.")
     (license license:gpl3+)))
 
 (define-public emacs-shx
-  (package
-    (name "emacs-shx")
-    (version "1.5.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/riscy/shx-for-emacs")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32 "1cb5w6p9gnfxgh8qp7yj2f5ibpk1b4b5af3ynldaaj6yfpa8hqzn"))))
-    (build-system emacs-build-system)
-    (arguments
-     `(#:tests? #t
-       #:test-command
-       '("emacs" "--batch" "--quiet"
-         "--script" "test/script.el")))
-    (home-page "https://github.com/riscy/shx-for-emacs")
-    (synopsis "Extras for the comint-mode shell")
-    (description
-     "This package extends @code{comint-mode}: it parses markup in the output
+  ;; XXX: Some tests fails in the latest stable release.
+  (let ((commit "b99d16f36bc278d668d8428c4bc9af77064c336a")
+        (revision "1"))
+    (package
+      (name "emacs-shx")
+      (version (git-version "1.5.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/riscy/shx-for-emacs")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1wkqnc5n8if8fsh7f3bdr5nzn6dbj1nzdxlmnz8nflmx4g32fp6v"))))
+      (build-system emacs-build-system)
+      (arguments
+       `(#:tests? #t
+         #:test-command
+         '("emacs" "--batch" "--quiet"
+           "--script" "test/script.el")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'appease-checkdoc
+             (lambda _
+               (substitute* "shx.el"
+                 (("Toggle shx-mode on") "Toggle `shx-mode' on")))))))
+      (home-page "https://github.com/riscy/shx-for-emacs")
+      (synopsis "Extras for the comint-mode shell")
+      (description
+       "This package extends @code{comint-mode}: it parses markup in the output
 stream, enabling plots and graphics to be embedded, and adds command-line
 functions which plug into Emacs (e.g. use @code{:e <filename>} to edit a
 file).")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-names
   (let ((commit "d8baba5360e5253938a25d3e005455b6d2d86971")
