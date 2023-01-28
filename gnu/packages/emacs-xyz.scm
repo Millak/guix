@@ -6944,8 +6944,8 @@ It is not intended as a user interface.")
               (make-file-writable "sqlite3.el")
               (emacs-substitute-sexps "sqlite3.el"
                 ("(require 'sqlite3-api nil t)"
-                 (string-append
-                  "(module-load \"" #$output "/lib/sqlite3-api.so\")")))))
+                 `(module-load
+                   ,(string-append #$output "/lib/sqlite3-api.so"))))))
           (add-before 'check 'build-emacs-module
             (lambda _
               ;; Remove code that fetches constants from the SQLite website
