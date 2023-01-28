@@ -21499,34 +21499,31 @@ orient yourself in the code, and tell which statements are at a given level.")
     (license license:gpl3+)))
 
 (define-public emacs-pulseaudio-control
-  (let ((commit "a931533140547510decdc368f39b2d2b97ca725f")
-        (revision "4"))
+  (let ((commit "34a6114357dbbc6b6720aa013e0f8a48f3739403")
+        (revision "0"))
     (package
       (name "emacs-pulseaudio-control")
-      (version (git-version "0.0.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/flexibeast/pulseaudio-control")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "1jvjn9jszjjapi167an49jxcvr88cvgjwykglhp4b8lwhbjfqw76"))))
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~flexibeast/pulseaudio-control")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0wm312pqp0i5i6qh6g3nacnnvsrad58927cl2g42gxzrzlb3slv5"))))
       (build-system emacs-build-system)
       (arguments
        '(#:phases (modify-phases %standard-phases
                     (add-after 'unpack 'patch-file-name
                       (lambda* (#:key inputs #:allow-other-keys)
                         (let ((pulseaudio (assoc-ref inputs "pulseaudio")))
-                          (chmod "pulseaudio-control.el" #o600)
                           (emacs-substitute-variables "pulseaudio-control.el"
                             ("pulseaudio-control-pactl-path"
-                             (string-append pulseaudio "/bin/pactl")))
-                          #t))))))
+                             (string-append pulseaudio "/bin/pactl")))))))))
       (inputs (list pulseaudio))
-      (home-page "https://github.com/flexibeast/pulseaudio-control")
+      (home-page "https://git.sr.ht/~flexibeast/pulseaudio-control")
       (synopsis "Control @code{pulseaudio} from Emacs")
       (description
        "This package allows controlling @code{pulseaudio} from Emacs.")
