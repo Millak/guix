@@ -24436,6 +24436,32 @@ the GIF result.")
 on-line service.")
     (license license:gpl3+)))
 
+(define-public emacs-lingva
+  (let ((commit "6c33594068fa33de622172503deeec6778d9c744")
+        (revision "1"))
+    (package
+      (name "emacs-lingva")
+      (version
+       (git-version "0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://codeberg.org/martianh/lingva.el")
+           (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0r2f4wrd2v67m7198z0194pg853hbq4vvpd3x96y5ikbypywf426"))))
+      (build-system emacs-build-system)
+      (home-page "https://codeberg.org/martianh/lingva.el")
+      (synopsis "Interact with the lingva.ml API from within Emacs")
+      (description "This is a basic interface to the lingva.ml API, which
+allows you to obtain translations of texts from Google Translate without any
+tracking.")
+      (license license:gpl3+))))
+
 (define-public emacs-helm-company
   (package
     (name "emacs-helm-company")
