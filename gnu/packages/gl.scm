@@ -278,7 +278,9 @@ also known as DXTn or DXTC) for Mesa.")
                                   version "/mesa-" version ".tar.xz")))
         (sha256
          (base32
-          "1azpr68pdg63yq3igmzwsgn2ypg49m0mp3hfkq0lcyswr99npmv5"))))
+          "1azpr68pdg63yq3igmzwsgn2ypg49m0mp3hfkq0lcyswr99npmv5"))
+        (patches
+         (list (search-patch "mesa-fix-sporadic-test-failures.patch")))))
     (build-system meson-build-system)
     (propagated-inputs
      ;; The following are in the Requires.private field of gl.pc.
