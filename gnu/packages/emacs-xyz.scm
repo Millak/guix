@@ -35183,7 +35183,14 @@ the buffer you want to undo.  An undo tree buffer should pop up.")
                 (substitute* "org-cliplink-transport.el"
                   (("\\(executable-find \"curl\"\\)")
                    (let ((curl (search-input-file inputs "/bin/curl")))
-                     (string-append "\"" curl "\"")))))))))
+                     (string-append "\"" curl "\""))))))
+            (add-before 'check 'fix-failing-test
+              ;; XXX: Fix randomly (!) failing test, which doesn't account for
+              ;; the fact that (random) may return a negative number.
+              (lambda _
+                (substitute* "test/org-cliplink-transport-test.el"
+                  (("curl-rexim.me-\\[a-z0-9\\]\\+")
+                   "curl-rexim.me--?[a-z0-9]+")))))))
       (native-inputs
        (list emacs-el-mock emacs-ert-runner emacs-undercover))
       (inputs
