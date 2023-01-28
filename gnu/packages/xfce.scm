@@ -697,7 +697,8 @@ allows you to shut down the computer from Xfce.")
     (native-inputs
      (list pkg-config intltool))
     (inputs
-     (list exo
+     (list colord
+           exo
            garcon
            libnotify
            libxcursor
