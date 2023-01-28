@@ -16948,13 +16948,27 @@ and lambdas.")
        (sha256
         (base32 "0wsvfn409a2ivbich8b8zqza78sprirg4bl7igx536ydqclmi0n7"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'fix-byte-compilation
+            ;; XXX: The fix below was integrated upstream and can be removed
+            ;; in next release.
+            (lambda _
+              (substitute* "org2web-el2org.el"
+                (("(define-obsolete-function-alias .*)\\)" _ lead)
+                 (string-append lead " \"0.1\")"))))))))
     (propagated-inputs
-     (list emacs-dash emacs-el2org emacs-ht emacs-mustache
+     (list emacs-dash
+           emacs-el2org
+           emacs-ht
+           emacs-mustache
            emacs-simple-httpd))
     (home-page "https://github.com/tumashu/org2web")
-    (synopsis "Static site generator based on org-mode")
-    (description "Org2web is a static site generator based on org-mode,
-which code derived from Kelvin H's org-page.")
+    (synopsis "Static site generator based on Org mode")
+    (description "Org2web is a static site generator based on Org mode, which
+code derived from Kelvin H's Org page.")
     (license license:gpl2+)))
 
 (define-public emacs-meow
