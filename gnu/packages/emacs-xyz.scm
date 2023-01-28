@@ -8934,10 +8934,10 @@ windows Emacs produces, while still keeping them within arm’s reach.")
          #:phases
          #~(modify-phases %standard-phases
             (add-after 'unpack 'patch-python-executable
-              (lambda* (#:key outputs #:allow-other-keys)
+              (lambda* (#:key inputs #:allow-other-keys)
                 (emacs-substitute-variables "pydoc.el"
                   ("pydoc-python-command"
-                    (search-input-file outputs "bin/python")))))
+                    (search-input-file inputs "bin/python")))))
             (add-after 'unpack 'patch-lsof-executable
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* "pydoc.el"
