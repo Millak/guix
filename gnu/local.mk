@@ -1627,6 +1627,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/pciutils-hurd-configure.patch		\
   %D%/packages/patches/pciutils-hurd-fix.patch			\
   %D%/packages/patches/petri-foo-0.1.87-fix-recent-file-not-exist.patch			\
+  %D%/packages/patches/php-fix-streams-copy-length.patch	\
   %D%/packages/patches/plasma-framework-fix-KF5PlasmaMacros.cmake.patch \
   %D%/packages/patches/pocketfft-cpp-prefer-preprocessor-if.patch			\
   %D%/packages/patches/pokerth-boost.patch			\
@@ -1668,8 +1669,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/perl-www-curl-fix-struct-void.patch	\
   %D%/packages/patches/perl-www-curl-remove-symbol.patch	\
   %D%/packages/patches/phoronix-test-suite-fsdg.patch		\
-  %D%/packages/patches/php-bug-74093-test.patch			\
-  %D%/packages/patches/php-curl-compat.patch			\
   %D%/packages/patches/picprog-non-intel-support.patch		\
   %D%/packages/patches/pidgin-add-search-path.patch		\
   %D%/packages/patches/pinball-system-ltdl.patch		\
