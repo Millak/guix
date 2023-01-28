@@ -11720,6 +11720,32 @@ refactoring for the @uref{http://clojure.org, Clojure programming language}.
 It is recommended to use @code{clojure-mode} with Paredit or Smartparens.")
     (license license:gpl3+)))
 
+(define-public emacs-clj-deps-new
+  (let ((commit "e1cf65eb040f5a2e9a3eca970044ba71cc53fb27")
+        (revision "0"))
+    (package
+      (name "emacs-clj-deps-new")
+      (version (git-version "1.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jpe90/emacs-clj-deps-new")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "03db3l5klc20wgdaj44scgjfi2mha85bip07ls6pwbi039ls7rvx"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-transient))
+      (home-page "https://github.com/jpe90/emacs-clj-deps-new")
+      (synopsis "Create Clojure projects from templates")
+      (description
+       "This is a small wrapper around the
+@uref{https://github.com/seancorfield/deps-new, deps-new} and
+@uref{https://github.com/seancorfield/clj-new, clj-new} tools for creating
+Clojure projects from templates.")
+      (license license:gpl3+))))
+
 (define-public emacs-clj-refactor
   (package
     (name "emacs-clj-refactor")
