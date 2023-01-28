@@ -907,6 +907,7 @@ menu.")
            libxcomposite
            libxdamage
            libxfce4ui
+           libxpresent
            libxrandr))
     (home-page "https://www.xfce.org/")
     (synopsis "Xfce window manager")
