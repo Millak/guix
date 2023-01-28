@@ -1605,7 +1605,7 @@ watch your every step.")
 (define-public xfce4-datetime-plugin
   (package
    (name "xfce4-datetime-plugin")
-   (version "0.8.2")
+   (version "0.8.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/panel-plugins/"
@@ -1614,7 +1614,7 @@ watch your every step.")
                                   "/xfce4-datetime-plugin-" version ".tar.bz2"))
               (sha256
                (base32
-                "0dz0syl9dm55pqcqywbnjpi14z2xh7pg2ipmxjgn4pq1az28qf3c"))))
+                "1c00rj3h25g0g3ss5n07hp2ziis3rnjd5jr6firnhs2qzdwynbkb"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
