@@ -29801,7 +29801,7 @@ implementation of Windows NT and LanManager compatible password encryption.")
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
-                           "nadvice-" version ".el"))
+                           "nadvice-" version ".tar"))
        (sha256
         (base32 "0ac7zxi04gzcd5hz81lib1db3c6a7xmwkb381ljxvaha1mlzp1k0"))))
     (build-system emacs-build-system)
