@@ -100,6 +100,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages calendar)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
   #:use-module (gnu packages datastructures)
   #:use-module (gnu packages docbook)
@@ -733,6 +734,72 @@ be passed any screenshot util like @code{scrot}.
 This screen locker can be used with any window manager or
 desktop environment.")
     (license license:expat)))
+
+(define-public icewm
+  (package
+    (name "icewm")
+    (version "3.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/ice-wm/icewm/releases/download/"
+                    version "/icewm-" version ".tar.lz"))
+              (sha256
+               (base32
+                "1m0jl9d2ikwb1s2cpm3q7f73h84mai9y31k8bhsq8y47jbkc6slk"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list fontconfig
+                  fribidi
+                  imlib2
+                  libice
+                  libjpeg-turbo
+                  libsm
+                  libxcomposite
+                  libxdamage
+                  libxext
+                  libxfixes
+                  libxft
+                  libxinerama
+                  libxpm
+                  libxrandr
+                  libxrender
+                  libx11
+                  lzip
+                  perl))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'remove-gmo-files
+                 ;; gmo files are generated from .po files
+                 ;; so remove them before build to make sure
+                 ;; they are re-generated if needed
+                 (lambda _
+                   (for-each delete-file
+                             (find-files "po" "\\.gmo$"))))
+               (add-after 'unpack 'skip-failing-test
+                 ;; strtest.cc tests failing due to $HOME and /etc setup
+                 ;; difference under guix
+                 (lambda _
+                   (substitute* "src/Makefile.in"
+                     (("TESTS = strtest\\$\\(EXEEXT\\)")
+                      "TESTS = ")))))))
+    (home-page "https://ice-wm.org/")
+    (synopsis "Window manager for the X Window System")
+    (description
+     "IceWM is a window manager for the X Window System.  The goal of IceWM is
+speed, simplicity, and not getting in the user’s way.  It comes with a taskbar
+with pager, global and per-window keybindings and a dynamic menu system.
+Application windows can be managed by keyboard and mouse.  Windows can be
+iconified to the taskbar, to the tray, to the desktop or be made hidden.  They
+are controllable by a quick switch window (Alt+Tab) and in a window list.  A
+handful of configurable focus models are menu-selectable.  Setups with
+multiple monitors are supported by RandR and Xinerama.  IceWM is very
+configurable, themeable and well documented.  It includes an optional external
+background wallpaper manager with transparency support, a simple session
+manager and a system tray.")
+    (license license:lgpl2.0)))
+
 
 (define-public xmonad-next
   (package
