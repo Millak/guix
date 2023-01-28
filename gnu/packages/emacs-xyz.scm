@@ -8797,14 +8797,14 @@ in @code{html-mode}.")
     (build-system emacs-build-system)
     (arguments
      (list
-      #:include #~(cons* "\\.lisp$" "\\.asd$" "contrib" %default-include)
+      #:include #~(cons* "\\.lisp$" "\\.asd$"
+                         "contrib"
+                         "lib/hyperspec.el"
+                         %default-include)
       #:exclude #~(list "^slime-tests.el" "^contrib/test/"
                         "^contrib/Makefile$" "^contrib/README.md$")
       #:phases
       #~(modify-phases %standard-phases
-          ;; (add-after 'unpack 'make-git-checkout-writable
-          ;;   (lambda _
-          ;;     (for-each make-file-writable (find-files "."))))
           (add-before 'install 'configure
             (lambda* _
               (emacs-substitute-variables "slime.el"
