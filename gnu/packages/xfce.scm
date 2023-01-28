@@ -1110,7 +1110,7 @@ plugin for the Xfce panel.")
 (define-public xfdashboard
   (package
     (name "xfdashboard")
-    (version "0.8.1")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1124,7 +1124,7 @@ plugin for the Xfce panel.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "1xfyli91gpw7bn9gjk6gp8lnn50qsjd5lh5mzypz9kx3l88wbas4"))))
+                "19a8xz6zv039j2m595v4wld3x4inidc7idfkk0pp42ffwm1l6a55"))))
     (build-system gnu-build-system)
     (native-inputs (list intltool pkg-config `(,glib "bin")))
     (inputs (list clutter
