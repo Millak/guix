@@ -49,7 +49,7 @@
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -27024,7 +27024,7 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.12.4")
+    (version "4.12.5")
     (source
      (origin
        (method git-fetch)
@@ -27034,7 +27034,7 @@ accessor layer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10qqilbh7n4z2656qbr9gllvgi7xq11xcm2bv64h02jmkb7m4m6n"))))
+         "0938dk9z1l248756h4z08si4n1i2rj02lbwgd04x49p97iclgwrn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
