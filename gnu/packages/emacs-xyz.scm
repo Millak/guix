@@ -7014,23 +7014,23 @@ the speedbar window.")
                  (base32 "1wkqnc5n8if8fsh7f3bdr5nzn6dbj1nzdxlmnz8nflmx4g32fp6v"))))
       (build-system emacs-build-system)
       (arguments
-       `(#:tests? #t
-         #:test-command
-         '("emacs" "--batch" "--quiet"
-           "--script" "test/script.el")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'appease-checkdoc
-             (lambda _
-               (substitute* "shx.el"
-                 (("Toggle shx-mode on") "Toggle `shx-mode' on")))))))
+       (list
+        #:tests? #t
+        #:test-command
+        #~(list "emacs" "--batch" "--quiet" "--script" "test/script.el")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'appease-checkdoc
+              (lambda _
+                (substitute* "shx.el"
+                  (("Toggle shx-mode on") "Toggle `shx-mode' on")))))))
       (home-page "https://github.com/riscy/shx-for-emacs")
-      (synopsis "Extras for the comint-mode shell")
+      (synopsis "Extras for the Comint mode shell")
       (description
-       "This package extends @code{comint-mode}: it parses markup in the output
+       "This package extends Comint mode: it parses markup in the output
 stream, enabling plots and graphics to be embedded, and adds command-line
-functions which plug into Emacs (e.g. use @code{:e <filename>} to edit a
-file).")
+functions which plug into Emacs (e.g., use @code{:e <filename>} to edit
+a file).")
       (license license:gpl3+))))
 
 (define-public emacs-names
