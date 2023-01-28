@@ -33777,35 +33777,35 @@ provides an easy way to bind keys under a configurable prefix key.")
       (license license:gpl3+))))
 
 (define-public emacs-promise
-  (package
-    (name "emacs-promise")
-    (version "1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/chuntaro/emacs-promise")
-             (commit version)))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xb34zdbwjvahfhycjphdkm925kgd22dr298c57hwxza4ljc2hxj"))))
-    (build-system emacs-build-system)
-    (home-page "https://github.com/chuntaro/emacs-promise")
-    (synopsis "Promises/A+ for Emacs")
-    (description "This is a simple implementation of Promises/A+.
+  ;; XXX: Last stable release fails to build with "(wrong-number-of-arguments
+  ;; (3 . 4) 2)" error.
+  (let ((commit "cec51feb5f957e8febe6325335cf57dc2db6be30")
+        (revision "1"))
+    (package
+      (name "emacs-promise")
+      (version (git-version "1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/chuntaro/emacs-promise")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1kxsdgg5byw9zddf8jkc3h87mb4k5pnjdpskaagkahc0xg3w18d7"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/chuntaro/emacs-promise")
+      (synopsis "Promises/A+ for Emacs")
+      (description "This is a simple implementation of Promises/A+.
 
-This implementation ports the following Promises/A+ features
-faithfully.  See @url{https://github.com/then/promise}.
+This implementation ports the following Promises/A+ features faithfully.  See
+@url{https://github.com/then/promise}.
 
-@itemize
-@item The same API as the JavaScript version of Promise can be used.
-@item It has all the @code{then}, @code{catch}, @code{resolve}, @code{reject},
-@code{all}, @code{race}, etc.
-@item It supports \"thenable\".
-@item It supports \"Inheritance of Promise\".
-@item It supports \"rejection-tracking\".
-@end itemize\n")
-    (license license:gpl3+)))
+The same API as the JavaScript version of Promise can be used.  It has all the
+@code{then}, @code{catch}, @code{resolve}, @code{reject}, @code{all},
+@code{race}, etc.  It also supports @code{thenable}, inheritance of promise
+and rejection tracking.")
+      (license license:gpl3+))))
 
 (define-public emacs-async-await
   (package
