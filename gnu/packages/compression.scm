@@ -1339,6 +1339,7 @@ for most inputs, but the resulting compressed files are anywhere from 20% to
                      "switch(static_cast<HRESULT>(errorCode)) {"))))
               (patches (search-patches "p7zip-CVE-2016-9296.patch"
                                        "p7zip-CVE-2017-17969.patch"
+                                       "p7zip-fix-build-with-gcc-11.patch"
                                        "p7zip-remove-unused-code.patch"))))
     (build-system gnu-build-system)
     (arguments

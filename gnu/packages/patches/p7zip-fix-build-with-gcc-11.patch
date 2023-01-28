@@ -1,0 +1,49 @@
+Building p7zip with GCC 11 or newer normally fails with error messages like
+
+  ../../../../CPP/7zip/Archive/Wim/WimHandler.cpp:308:11: error: use of an
+  operand of type ‘bool’ in ‘operator++’ is forbidden in C++17
+    308 |           numMethods++;
+        |           ^~~~~~~~~~
+
+This patch causes GCC to interpret the code using the GNU dialect of the C++14
+standard, as GCC 10 did by default, and reduces these errors to warnings.
+
+diff --git a/makefile.linux_amd64_asm b/makefile.linux_amd64_asm
+index 075c6a8..b7d73ee 100644
+--- a/makefile.linux_amd64_asm
++++ b/makefile.linux_amd64_asm
+@@ -11,6 +11,8 @@ ALLFLAGS=-m64 ${OPTFLAGS} -pipe \
+ 	-D_7ZIP_ASM \
+ 	$(LOCAL_FLAGS)
+ 
++ALLFLAGS_CPP=-std=gnu++14
++
+ CXX=g++
+ CC=gcc
+ CC_SHARED=-fPIC
+diff --git a/makefile.linux_any_cpu_gcc_4.X b/makefile.linux_any_cpu_gcc_4.X
+index be093b5..c0f3120 100644
+--- a/makefile.linux_any_cpu_gcc_4.X
++++ b/makefile.linux_any_cpu_gcc_4.X
+@@ -10,7 +10,7 @@ ALLFLAGS=${OPTFLAGS} -pipe \
+ 	-D_7ZIP_LARGE_PAGES \
+ 	$(LOCAL_FLAGS)
+ 
+-ALLFLAGS_CPP=-DENV_HAVE_GCCVISIBILITYPATCH -fvisibility=hidden -fvisibility-inlines-hidden
++ALLFLAGS_CPP=-DENV_HAVE_GCCVISIBILITYPATCH -std=gnu++14 -fvisibility=hidden -fvisibility-inlines-hidden
+ 
+ CXX=g++
+ CC=gcc
+diff --git a/makefile.linux_x86_asm_gcc_4.X b/makefile.linux_x86_asm_gcc_4.X
+index 1ac339b..6e736d9 100644
+--- a/makefile.linux_x86_asm_gcc_4.X
++++ b/makefile.linux_x86_asm_gcc_4.X
+@@ -12,7 +12,7 @@ ALLFLAGS=${OPTFLAGS} -pipe -m32 \
+ 	-D_7ZIP_ASM \
+ 	$(LOCAL_FLAGS)
+ 
+-ALLFLAGS_CPP=-DENV_HAVE_GCCVISIBILITYPATCH -fvisibility=hidden -fvisibility-inlines-hidden
++ALLFLAGS_CPP=-DENV_HAVE_GCCVISIBILITYPATCH -std=gnu++14 -fvisibility=hidden -fvisibility-inlines-hidden
+ 
+ CXX=g++
+ CC=gcc

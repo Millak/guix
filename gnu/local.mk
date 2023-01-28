@@ -1622,6 +1622,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/owncloud-disable-updatecheck.patch	\
   %D%/packages/patches/p7zip-CVE-2016-9296.patch		\
   %D%/packages/patches/p7zip-CVE-2017-17969.patch		\
+  %D%/packages/patches/p7zip-fix-build-with-gcc-11.patch	\
   %D%/packages/patches/p7zip-remove-unused-code.patch		\
   %D%/packages/patches/pam-krb5-CVE-2020-10595.patch		\
   %D%/packages/patches/pango-skip-libthai-test.patch		\
