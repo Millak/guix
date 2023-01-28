@@ -693,6 +693,7 @@ allows you to shut down the computer from Xfce.")
     (arguments
      `(#:configure-flags '("--enable-pluggable-dialogs"
                            "--enable-sound-settings"
+                           "--enable-upower-glib"
                            "--enable-xrandr")))
     (native-inputs
      (list pkg-config intltool))
@@ -706,7 +707,7 @@ allows you to shut down the computer from Xfce.")
            libxklavier
            libxrandr
            libxfce4ui
-           upower ;; TODO needs upower-glib
+           upower
            python ;; for xfce4-compose-mail
            xf86-input-libinput))
     (propagated-inputs
