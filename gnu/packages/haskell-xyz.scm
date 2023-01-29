@@ -15454,6 +15454,9 @@ embeddable scripting language <https://lua.org Lua>.")
                 "07wni3ji46ndqabwffgwzij2jk34dq2d66z15hcd6jg33sqnym45"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "lua")))
+    (arguments
+     ;; Allow creating fully static binaries. Avoids issues with linking pandoc statically.
+     `(#:configure-flags (list "-f-export-dynamic")))
     (native-inputs (list ghc-tasty ghc-tasty-hunit))
     (home-page "https://hslua.org/")
     (synopsis "Lua, an embeddable scripting language")
