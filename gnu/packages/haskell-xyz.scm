@@ -8189,9 +8189,9 @@ with several features not present in pretty-printing libraries designed for
 code.  It was designed for use in @code{Pandoc}.")
     (license license:bsd-3)))
 
-(define-public pandoc
+(define-public ghc-pandoc
   (package
-    (name "pandoc")
+    (name "ghc-pandoc")
     (version "2.19.2")
     (source (origin
               (method url-fetch)
@@ -8289,8 +8289,19 @@ definition lists, tables, and other features.  A compatibility mode is
 provided for those who need a drop-in replacement for Markdown.pl.")
     (license license:gpl2+)))
 
-(define-public ghc-pandoc
-  (deprecated-package "ghc-pandoc" pandoc))
+(define-public pandoc
+  (package
+    (inherit ghc-pandoc)
+    (name "pandoc")
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))
+       ;; Haddock documentation is for the library.
+       #:haddock? #f))))
 
 (define-public ghc-pandoc-types
   (package
