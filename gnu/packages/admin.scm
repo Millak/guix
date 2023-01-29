@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3943,6 +3944,48 @@ the pattern of the pride flag of your choice.  The main purpose of HyFetch is to
 be used in screenshots to show other users what operating system or distribution
 you are running, what theme or icon set you are using, etc.")
     (license license:expat)))
+
+(define-public uwufetch
+  (package
+    (name "uwufetch")
+    (version "2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/TheDarkBug/uwufetch")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s4pzaqmlq6rn54kgmlpcrc0sy3q5zn6lxh4448k9iimshljsjfs"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f ;no tests
+      #:make-flags
+      #~(list (string-append "DESTDIR=" #$output)
+              (string-append "ETC_DIR=" #$output "/etc")
+              (string-append "CC=" #$(cc-for-target)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'path-source-paths
+            (lambda _
+              (substitute* "uwufetch.c"
+                (("(/usr(/local)?)(.*;)" all _ _ rest)
+                 (string-append #$output rest))))))))
+    (inputs (list lshw
+                  ;; viu XXX not yet packaged in Guix
+                  xwininfo))
+    (home-page "https://github.com/TheDarkBug/uwufetch")
+    (synopsis "Meme system info tool based on Nyan/UwU trend")
+    (description
+     "UwUFetch is a system information tool in the lineage of NeoFetch,
+PFetch, HyFetch, and the like.  It prints ASCII art of your system's logo as
+well as a summary of system information.  UwUFetch's unique contribution is the
+uwu-ification of various words used in the description.  For example, Guix
+becomes gUwUix.")
+    (license license:gpl3+)))
 
 (define-public screenfetch
   (package
