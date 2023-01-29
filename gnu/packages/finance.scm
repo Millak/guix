@@ -214,9 +214,9 @@ line client and a client based on Qt.")
 
 (define-public bitcoin-core bitcoin-core-23.0)
 
-(define-public hledger
+(define-public ghc-hledger
   (package
-    (name "hledger")
+    (name "ghc-hledger")
     (version "1.27.1")
     (source (origin
               (method url-fetch)
@@ -225,14 +225,6 @@ line client and a client based on Qt.")
                (base32
                 "0qdg87m7ys2ykqqq32p7h7aw827w4f5bcqx4dspxxq6zqlvzddqb"))))
     (build-system haskell-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'install 'install-doc
-            (lambda _
-              (install-file "hledger.info" (string-append #$output "/share/info"))
-              (install-file "hledger.1" (string-append #$output "/man/man1")))))))
     (properties '((upstream-name . "hledger")))
     (inputs (list ghc-decimal
                   ghc-diff
@@ -274,6 +266,23 @@ format, with command-line, terminal and web interfaces.  It is a Haskell
 rewrite of Ledger, and one of the leading implementations of Plain Text
 Accounting.")
     (license license:gpl3)))
+
+(define-public hledger
+  (package
+    (inherit ghc-hledger)
+    (name "hledger")
+    (arguments
+     (list
+      #:haddock? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "hledger.info" (string-append #$output "/share/info"))
+              (install-file "hledger.1" (string-append #$output "/man/man1"))))
+           (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))))
 
 (define-public homebank
   (package
@@ -1991,7 +2000,7 @@ generate a variety of reports from them, and provides a web interface.")
                   ghc-data-default
                   ghc-extra
                   ghc-hjsmin
-                  hledger
+                  ghc-hledger
                   ghc-hledger-lib
                   ghc-hspec
                   ghc-http-client
@@ -2015,12 +2024,17 @@ generate a variety of reports from them, and provides a web interface.")
                   ghc-yesod-static
                   ghc-yesod-test))
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               ;; Tests write to $HOME.
-               (add-before 'check 'set-home
-                 (lambda _
-                   (setenv "HOME" "/tmp"))))))
+     (list
+      #:haddock? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; Tests write to $HOME.
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp")))
+           (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
     (home-page "http://hledger.org")
     (synopsis "Web-based user interface for the hledger accounting system")
     (description
