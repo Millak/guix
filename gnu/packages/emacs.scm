@@ -23,6 +23,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2023 Declan Tsien <declantsien@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,6 +76,7 @@
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages text-editors) ; for tree-sitter
   #:use-module (gnu packages web)       ; for jansson
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
@@ -381,12 +383,12 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "6adc193ad66445acd84caba6973424ecbd21da26")
-        (revision "4"))
+  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
+        (revision "0"))
     (package
       (inherit emacs)
       (name "emacs-next")
-      (version (git-version "29.0.50" revision commit))
+      (version (git-version "29.0.60" revision commit))
       (source
        (origin
          (inherit (package-source emacs))
@@ -401,10 +403,10 @@ languages.")
                                   "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
-           "0b48qg9w7fzvhva78gzi3cs2m6asj11fk0kgys49fqhwskigzg1f"))))
+           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
       (inputs
        (modify-inputs (package-inputs emacs)
-         (prepend sqlite)))
+         (prepend sqlite tree-sitter)))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
          (prepend autoconf))))))
