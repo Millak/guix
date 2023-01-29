@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -1167,13 +1167,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "0hnfs75dcnz12ximah5xn9566r8zz189lxikmj4lrs9jl4l3l7ff"))))
+        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
