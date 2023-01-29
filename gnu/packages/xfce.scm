@@ -1195,6 +1195,7 @@ for and start applications.")
            greybird-gtk-theme
            hicolor-icon-theme
            mate-polkit-for-xfce
+           mousepad
            ristretto
            shared-mime-info
            thunar
@@ -1204,12 +1205,15 @@ for and start applications.")
            xfce4-notifyd                          ;for pop-up notifications
            xfce4-panel
            xfce4-power-manager
+           xfce4-screenshooter
            xfce4-session
            xfce4-settings
+           xfce4-taskmanager
            xfce4-terminal
            xfconf
            xfdesktop
            xfwm4
+           xkill
            ;; Panel plugins.
            xfce4-battery-plugin
            xfce4-clipman-plugin
