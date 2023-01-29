@@ -19287,7 +19287,7 @@ CL-I18N and CL-L10N.")
              sbcl-parser-combinators
              sbcl-split-sequence
              sbcl-trivial-backtrace))
-      (home-page "https://mmontone.github.io/djula/")
+      (home-page "https://mmontone.github.io/djula/djula/")
       (synopsis "Common Lisp port of the Django templating language")
       (description
        "This package provides a Common Lisp templating system based on Python
