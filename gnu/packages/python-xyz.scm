@@ -2083,13 +2083,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.10")
+    (version "0.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "0mywzs235skwq670c80achrd34kangwy24793k1nij3651zllgrp"))))
+        (base32 "15d9kxyc7qvknx0kv27m2jamnmisckyf89i7wlqykwgqm46p0qdn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2097,7 +2097,11 @@ conventions and aliases in the same expression.")
          (add-after 'unpack 'find-magickwand
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
-             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16"))))))
+             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
+         (replace 'check
+           (lambda _
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (inputs
