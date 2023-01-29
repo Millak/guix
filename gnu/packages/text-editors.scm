@@ -21,6 +21,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages hunspell)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
@@ -1378,4 +1380,36 @@ quality of font rendering, and reduce CPU usage.")
 for configuration and extensibility.  It provides emulation modes for the
 key bindings of many editors (including Emacs and WordStar), and has syntax
 highlighting for dozens of languages.  Jed is very small and fast.")
+    (license license:gpl2+)))
+
+(define-public xnedit
+  (package
+    (name "xnedit")
+    (version "1.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/xnedit/" name "-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "0fw3li7hr47hckm9pl1njx30lfr6cx2p094ir8zmgr91hyxidgld"))))
+
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:make-flags #~(list (string-append "PREFIX=" #$output)
+                           (string-append "CC=" #$(cc-for-target)))
+      #:tests? #f                       ;no tests
+      #:phases #~(modify-phases %standard-phases
+                   (delete 'configure)
+                   (replace 'build
+                     (lambda* (#:key make-flags #:allow-other-keys)
+                       (apply invoke "make" "linux" make-flags))))))
+    (inputs (list motif pcre))
+    (native-inputs (list pkg-config))
+    (home-page "https://sourceforge.net/projects/xnedit/")
+    (synopsis "Fast and classic X11 text editor")
+    (description
+     "XNEdit is a fast and classic X11 text editor, based on NEdit,
+with full unicode support and antialiased text rendering.")
     (license license:gpl2+)))
