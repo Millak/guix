@@ -4832,14 +4832,14 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "0h8cl9bkd3vx17kbvcnmc8cy6pc29lxr0drxm84kj37ka788cj2g"))))
-    (build-system python-build-system)
+                "1kqkb23wb9a4a8zdky2066887vgv7ywhivhxi5nipkx07mf8v01k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The tests need network access
