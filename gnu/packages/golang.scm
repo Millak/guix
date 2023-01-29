@@ -850,7 +850,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.17)
     (name "go")
-    (version "1.18.6")
+    (version "1.18.10")
     (source
      (origin
        (method git-fetch)
@@ -860,7 +860,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s2xwgd3mfbjdf7ls9gyj7n1lbqc4276qkr3znyq9694isj1ak20"))))))
+         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))))
 
 (define-public go-1.19
   (package
