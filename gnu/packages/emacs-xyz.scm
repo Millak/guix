@@ -23701,7 +23701,7 @@ modes of SLIME.")
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/sml-mode-"
-                           version ".el"))
+                           version ".tar"))
        (sha256
         (base32 "05vga709kphbx6jacqh57cq5gyicwrxxf81gask5lbq7vzfzlbfc"))))
     (build-system emacs-build-system)
