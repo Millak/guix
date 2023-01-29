@@ -1286,7 +1286,8 @@ interactive environment for the functional language Haskell.")
                                     "/ghc-" version "-src.tar.xz"))
                 (sha256
                  (base32
-                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))))
+                  "07028i0hm74svvq9b3jpkczaj6lsdgn3hgr4wa7diqiq3dypj1h6"))
+                (patches (search-patches "ghc-9.2-glibc-2.33-link-order.patch"))))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases '%standard-phases)

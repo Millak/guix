@@ -1,0 +1,35 @@
+Slightly modified version of
+https://gitlab.haskell.org/ghc/ghc/-/issues/19029#note_447989, required
+for older, buggy glibc versions < 2.34.
+
+diff -Naur ghc-9.2.5/compiler/GHC/Linker/Unit.hs ghc-9.2.5.patched/compiler/GHC/Linker/Unit.hs
+--- ghc-9.2.5/compiler/GHC/Linker/Unit.hs	2022-11-06 20:40:29.000000000 +0100
++++ ghc-9.2.5.patched/compiler/GHC/Linker/Unit.hs	2023-01-15 14:52:57.511275338 +0100
+@@ -31,11 +31,26 @@
+     ps <- mayThrowUnitErr $ preloadUnitsInfo' unit_env pkgs
+     return (collectLinkOpts dflags ps)
+ 
++fixOrderLinkOpts :: [String] -> [String]
++fixOrderLinkOpts opts
++  | have_bad_glibc_version -- glibc version strictly less than 2.34
++  , let (before, rest) = break (== libc) opts
++  , not (pthread `elem` before)
++  , pthread `elem` rest -- optional if we know pthread is definitely present
++  = before ++ pthread_and_deps ++ rest
++  | otherwise
++  = opts
++  where
++    pthread = "-lpthread"
++    libc = "-lc"
++    pthread_and_deps = [ "-lrt", pthread ] -- should depend on the environment
++    have_bad_glibc_version = True
++
+ collectLinkOpts :: DynFlags -> [UnitInfo] -> ([String], [String], [String])
+ collectLinkOpts dflags ps =
+     (
+         concatMap (map ("-l" ++) . unitHsLibs (ghcNameVersion dflags) (ways dflags)) ps,
+-        concatMap (map ("-l" ++) . map ST.unpack . unitExtDepLibsSys) ps,
++        fixOrderLinkOpts $ concatMap (map ("-l" ++) . map ST.unpack . unitExtDepLibsSys) ps,
+         concatMap (map ST.unpack . unitLinkerOptions) ps
+     )
+ 
