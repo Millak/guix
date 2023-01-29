@@ -11932,7 +11932,7 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
@@ -11940,7 +11940,7 @@ advanced image management tool")
                            "releases/download/v" version "/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xdgmam7ghnxw6g38a4gjw3kk3rhga8c66lns18k928jlr9fmddw"))))
+        (base32 "10shpn8id7z43d4dpx16x76mgxnk4mr976j5cg28icjiiaidyfc2"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
