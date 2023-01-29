@@ -2222,6 +2222,10 @@ command.")
     (name "wpa-supplicant")
     (inputs (modify-inputs (package-inputs wpa-supplicant-minimal)
               (prepend dbus)))
+    (source (origin
+              (inherit (package-source wpa-supplicant-minimal))
+              (patches (search-patches
+                        "wpa-supplicant-dbus-group-policy.patch"))))
     (arguments
      (substitute-keyword-arguments (package-arguments wpa-supplicant-minimal)
        ((#:phases phases)
