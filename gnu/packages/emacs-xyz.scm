@@ -1102,69 +1102,68 @@ on stdout instead of using a socket as the Emacsclient does.")
       ;; Use the cmake-build-system as it provides support for cross builds.
       (build-system cmake-build-system)
       (arguments
-       `(#:configure-flags '("-DUSE_SYSTEM_LIBGIT2=x")
-         ;; Add the emacs-build-system byte compilation and install phases.
-         #:imported-modules (,@%cmake-build-system-modules
+       (list
+        #:configure-flags #~(list "-DUSE_SYSTEM_LIBGIT2=x")
+        ;; Add the emacs-build-system byte compilation and install phases.
+        #:imported-modules `(,@%cmake-build-system-modules
                              (guix build emacs-build-system)
                              (guix build emacs-utils))
-         #:modules ((guix build cmake-build-system)
+        #:modules '((guix build cmake-build-system)
                     ((guix build emacs-build-system) #:prefix emacs:)
                     (guix build emacs-utils)
                     (guix build utils))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-source
-             (lambda _
-               ;; Use Emacs 28 unibyte strings.
-               ;; XXX: This now breaks if linked against Emacs <= 26, probably
-               ;; also 27.
-               (substitute* "src/egit-blob.c"
-                 (("make_string") "make_unibyte_string"))))
-           (add-after 'unpack 'set-libgit--module-file
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out")))
-                 (make-file-writable "libgit.el")
-                 (emacs-substitute-variables "libgit.el"
-                   ("libgit--module-file"
-                    (string-append (emacs:elpa-directory out) "/libegit2.so"))))))
-           (add-after 'unpack 'skip-failing-tests
-             ;; XXX: Skip 2 failing tests (out of 29).
-             (lambda _
-               (substitute* "test/submodule-test.el"
-                 (("\\(ert-deftest (status|ids) .*" all)
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-source
+              (lambda _
+                ;; Use Emacs 28 unibyte strings.
+                ;; XXX: This now breaks if linked against Emacs <= 26, probably
+                ;; also 27.
+                (substitute* "src/egit-blob.c"
+                  (("make_string") "make_unibyte_string"))))
+            (add-after 'unpack 'set-libgit--module-file
+              (lambda _
+                (emacs-substitute-variables "libgit.el"
+                  ("libgit--module-file"
+                   (string-append (emacs:elpa-directory #$output)
+                                  "/libegit2.so")))))
+            (add-after 'unpack 'skip-failing-tests
+              ;; XXX: Skip 2 failing tests (out of 29).
+              (lambda _
+                (substitute* "test/submodule-test.el"
+                  (("\\(ert-deftest (status|ids) .*" all)
                    (string-append all " (skip-unless nil)")))))
-           (add-before 'install 'prepare-for-install
-             (lambda _
-               (let ((s "../source"))
-                 (copy-file "libegit2.so" (string-append s "/libegit2.so"))
-                 (chdir s))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let ((install (assoc-ref emacs:%standard-phases 'install)))
-                 (install #:outputs outputs
-                          #:include (cons "\\.so$"
-                                          emacs:%default-include)))))
-           (add-after 'unpack 'emacs-add-install-to-native-load-path
-             (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
-           (add-after 'install 'make-autoloads
-             (assoc-ref emacs:%standard-phases 'make-autoloads))
-           (add-after 'make-autoloads 'enable-autoloads-compilation
-             (assoc-ref emacs:%standard-phases 'enable-autoloads-compilation))
-           (add-after 'enable-autoloads-compilation 'patch-el-files
-             (assoc-ref emacs:%standard-phases 'patch-el-files))
-           (add-after 'patch-el-files 'emacs-build
-             (assoc-ref emacs:%standard-phases 'build))
-           (add-after 'emacs-build 'validate-compiled-autoloads
-             (assoc-ref emacs:%standard-phases 'validate-compiled-autoloads)))))
+            (add-before 'install 'prepare-for-install
+              (lambda _
+                (let ((s "../source"))
+                  (copy-file "libegit2.so" (string-append s "/libegit2.so"))
+                  (chdir s))))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let ((install (assoc-ref emacs:%standard-phases 'install)))
+                  (install #:outputs outputs
+                           #:include (cons "\\.so$"
+                                           emacs:%default-include)))))
+            (add-after 'unpack 'emacs-add-install-to-native-load-path
+              (assoc-ref emacs:%standard-phases 'add-install-to-native-load-path))
+            (add-after 'install 'make-autoloads
+              (assoc-ref emacs:%standard-phases 'make-autoloads))
+            (add-after 'make-autoloads 'enable-autoloads-compilation
+              (assoc-ref emacs:%standard-phases 'enable-autoloads-compilation))
+            (add-after 'enable-autoloads-compilation 'patch-el-files
+              (assoc-ref emacs:%standard-phases 'patch-el-files))
+            (add-after 'patch-el-files 'emacs-build
+              (assoc-ref emacs:%standard-phases 'build))
+            (add-after 'emacs-build 'validate-compiled-autoloads
+              (assoc-ref emacs:%standard-phases 'validate-compiled-autoloads)))))
       (native-inputs
-       (list pkg-config emacs-no-x git-minimal))
+       (list emacs-no-x git-minimal pkg-config))
       (inputs
        (list libgit2))
       (home-page "https://github.com/magit/libegit2")
       (synopsis "Emacs bindings for libgit2")
       (description "This is an experimental module written in C providing
 libgit2 bindings for Emacs, intended to boost the performance of Magit.")
-      ;; The LICENSE file says GPL v2+, but libgit.el says GPL v3+.
       (license license:gpl2+))))
 
 (define-public emacs-magit
