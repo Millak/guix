@@ -14832,7 +14832,8 @@ datasets.")
                 "0pljyrlpr9r3cl5311dhgxdl8y40szyi4vprn34i3piy0qrldymi"))))
     (build-system haskell-build-system)
     (arguments
-     `(#:phases
+     `(#:haddock? #f
+       #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'update-constraints
            (lambda _
@@ -14876,7 +14877,10 @@ datasets.")
           (add-after 'wrap-program 'check-install
              (lambda* (#:key outputs #:allow-other-keys)
                (let* ((ngless (string-append (assoc-ref outputs "out") "/bin/ngless")))
-                 (invoke ngless "--check-install")))))))
+                 (invoke ngless "--check-install"))))
+          (add-after 'register 'remove-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
     (inputs (list prodigal
                   bwa
                   samtools
