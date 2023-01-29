@@ -203,9 +203,10 @@
   42
   ;; The parent and child are in the same namespaces.  'container-excursion'
   ;; should notice that and avoid calling 'setns' since that would fail.
-  (container-excursion (getpid)
-    (lambda ()
-      (primitive-exit 42))))
+  (status:exit-val
+   (container-excursion (getpid)
+     (lambda ()
+       (primitive-exit 42)))))
 
 (skip-if-unsupported)
 (test-assert "container-excursion*"

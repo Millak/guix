@@ -404,7 +404,7 @@ load path must be adjusted as needed."
 
 (define (container-excursion pid thunk)
   "Run THUNK as a child process within the namespaces of process PID and
-return the exit status."
+return the exit status, an integer as returned by 'waitpid'."
   (define (namespace-file pid namespace)
     (string-append "/proc/" (number->string pid) "/ns/" namespace))
 
@@ -436,7 +436,7 @@ return the exit status."
     (pid
      (match (waitpid pid)
        ((_ . status)
-        (status:exit-val status))))))
+        status)))))
 
 (define (container-excursion* pid thunk)
   "Like 'container-excursion', but return the return value of THUNK."
