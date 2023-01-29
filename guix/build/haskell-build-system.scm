@@ -129,17 +129,7 @@ and parameters ~s~%"
 
 (define* (install #:key outputs #:allow-other-keys)
   "Install a given Haskell package."
-  (run-setuphs "copy" '())
-  (when (assoc-ref outputs "static")
-    (let ((static (assoc-ref outputs "static"))
-          (lib (or (assoc-ref outputs "lib")
-                   (assoc-ref outputs "out"))))
-      (for-each (lambda (static-lib)
-                  (let* ((subdir (string-drop static-lib (string-length lib)))
-                         (new    (string-append static subdir)))
-                    (mkdir-p (dirname new))
-                    (rename-file static-lib new)))
-                (find-files lib "\\.a$")))))
+  (run-setuphs "copy" '()))
 
 (define* (setup-compiler #:key system inputs outputs #:allow-other-keys)
   "Setup the compiler environment."

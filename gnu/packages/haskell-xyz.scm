@@ -1395,7 +1395,7 @@ call stacks with different versions of the compiler.")
   (package
     (name "ghc-case-insensitive")
     (version "1.2.1.0")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -1993,7 +1993,7 @@ of the C library.")
          "0xfabq187n1vqrnnm4ciprpl0dcjq97rksyjnpcniwva9rffmn7p"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "cmdargs")))
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (home-page
      "http://community.haskell.org/~ndm/cmdargs/")
     (synopsis "Command line argument processing")
@@ -2171,7 +2171,7 @@ concurrent threads.  Can be used for progress displays etc.")
                 "18izjgff4pmrknc8py06yvg3g6x27nx0rzmlwjxcflwm5v4szpw4"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "conduit")))
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (inputs
      (list ghc-exceptions
            ghc-lifted-base
@@ -3855,7 +3855,7 @@ consuming feeds in both RSS (Really Simple Syndication) and Atom format.")
   (package
     (name "ghc-fgl")
     (version "5.7.0.3")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -4958,7 +4958,7 @@ package are to parse or generate Haskell 98 code.")
          "01bcrxs9af4yqpclw43aijmsd1g19qhyzb47blz7vzwz2r3k11b7"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "haskell-src-exts")))
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (inputs
      (list cpphs ghc-happy ghc-pretty-show))
     (native-inputs
@@ -6349,7 +6349,7 @@ Music Player Daemon.")
                 "1xh8rm5lwbh96g4v34whkcbb1yjsyvx3rwwycj30lrglhqk7f4c4"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "ghc-lib-parser")))
-    (outputs '("out" "static" "doc")) ; documentation is 39M
+    (outputs '("out" "doc")) ; documentation is 39M
     (native-inputs (list ghc-alex ghc-happy))
     (home-page "https://github.com/digital-asset/ghc-lib")
     (synopsis "The GHC API, decoupled from GHC versions")
@@ -7314,7 +7314,7 @@ the @code{mtl-tf} package.")
          "1dvlp7r7r1lc3fxkwaz68f1nffg83240q8a989x24x1x67rj1clq"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "mono-traversable")))
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (inputs (list ghc-unordered-containers ghc-hashable ghc-vector
                   ghc-vector-algorithms ghc-split))
     (native-inputs (list ghc-hspec ghc-hunit ghc-quickcheck ghc-foldl))
@@ -8320,7 +8320,7 @@ building up, manipulating and serialising @code{Pandoc} structures.")
   (package
     (name "ghc-parallel")
     (version "3.2.2.0")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -8480,7 +8480,7 @@ files/directories, and more.")
   (package
     (name "ghc-paths")
     (version "0.1.0.12")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -9118,7 +9118,7 @@ API.")
          "0an9v003ivxmjid0s51qznbjhd5fsa1dkcfsrhxllnjja1xmv5b5"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "profunctors")))
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (inputs
      (list ghc-base-orphans
            ghc-bifunctors
@@ -11894,7 +11894,7 @@ string metrics efficiently.")
   (package
     (name "ghc-tf-random")
     (version "0.5")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
@@ -13163,7 +13163,7 @@ representing a store for a single element.")
   (package
     (name "ghc-vector")
     (version "0.12.3.1")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)

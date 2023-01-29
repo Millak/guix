@@ -109,10 +109,7 @@ version REVISION."
                         ,@(standard-packages)))
          (build-inputs `(("haskell" ,haskell)
                          ,@native-inputs))
-         ;; XXX: this is a hack to get around issue #41569.
-         (outputs (match outputs
-                    (("out") (cons "static" outputs))
-                    (_ outputs)))
+         (outputs outputs)
          (build haskell-build)
          (arguments
           (substitute-keyword-arguments

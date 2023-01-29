@@ -141,7 +141,6 @@ algorithm (ex: padding) is within scope of this package.")
          "0w3j43jdrlj28jryp18hc6q84nkl2yf4vs1hhgrsk7gb9kfyqjpl"))))
     (build-system haskell-build-system)
     (properties '((upstream-name . "crypto-api-tests")))
-    (outputs '("out" "static" "doc"))
     (inputs (list ghc-test-framework-quickcheck2
                   ghc-crypto-api
                   ghc-cereal

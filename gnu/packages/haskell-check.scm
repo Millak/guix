@@ -629,7 +629,7 @@ using Template Haskell")
   (package
     (name "ghc-hunit")
     (version "1.6.2.0")
-    (outputs '("out" "static" "doc"))
+    (outputs '("out" "doc"))
     (source
      (origin
        (method url-fetch)
