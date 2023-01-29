@@ -836,7 +836,10 @@ too slow and you'll get wound up in the scroll and crushed.")
            (lambda* (#:key outputs #:allow-other-keys)
              (install-file "shellcheck.1"
                            (string-append (assoc-ref outputs "out")
-                                          "/share/man/man1/")))))))
+                                          "/share/man/man1/"))))
+         (add-after 'register 'remove-libraries
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
     (native-inputs
      (list pandoc))
     (inputs
