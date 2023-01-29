@@ -869,13 +869,17 @@ tiled on several screens.")
            libxpm))
     (arguments
      `(#:configure-flags (list "--flags=all_extensions")
+       ;; Haddock documentation is for the library.
+       #:haddock? #f
        #:phases
        (modify-phases %standard-phases
+         (add-after 'register 'remove-libraries
+             (lambda* (#:key outputs #:allow-other-keys)
+               (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib"))))
          (add-before 'build 'patch-test-shebang
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "test/Xmobar/Plugins/Monitors/AlsaSpec.hs"
-               (("/bin/bash") (which "bash")))
-             #t)))))
+               (("/bin/bash") (which "bash"))))))))
     (home-page "https://xmobar.org")
     (synopsis "Minimalistic text based status bar")
     (description
