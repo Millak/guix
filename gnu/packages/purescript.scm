@@ -99,13 +99,17 @@
      `(;; Tests require npm
        #:tests? #f
        #:configure-flags '("--flags=release")
+       #:haddock? #f
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'update-constraints
            (lambda _
              (substitute* "purescript.cabal"
                (("\\b(language-javascript|process)\\s+[^,]+" all dep)
-                dep)))))))
+                dep))))
+         (add-after 'register 'remove-libraries
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
     (home-page "https://www.purescript.org/")
     (synopsis "Haskell inspired programming language compiling to JavaScript")
     (description
