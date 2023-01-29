@@ -187,6 +187,7 @@ unlit literate code files; and an option to turn off macro-expansion.")
        #:configure-flags '("-fpkgconfig" "-fcurl" "-flibiconv" "-fthreaded"
                            "-fnetwork-uri" "-fhttp" "--flag=executable"
                            "--flag=library")
+       #:haddock? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'patch-source-shebangs 'patch-sh
@@ -198,7 +199,10 @@ unlit literate code files; and an option to turn off macro-expansion.")
            (lambda _
              (substitute* "darcs.cabal"
                (("(attoparsec|base|bytestring|constraints|cryptonite|hashable|memory|regex-tdfa|time)\\s+[^,]+" all dep)
-                dep)))))))
+                dep))))
+         (add-after 'register 'remove-libraries
+           (lambda* (#:key outputs #:allow-other-keys)
+             (delete-file-recursively (string-append (assoc-ref outputs "out") "/lib")))))))
     (inputs (list ghc-regex-base
                   ghc-regex-tdfa
                   ghc-regex-applicative
