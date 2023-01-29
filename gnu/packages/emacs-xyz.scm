@@ -21515,18 +21515,19 @@ orient yourself in the code, and tell which statements are at a given level.")
                   "0wm312pqp0i5i6qh6g3nacnnvsrad58927cl2g42gxzrzlb3slv5"))))
       (build-system emacs-build-system)
       (arguments
-       '(#:phases (modify-phases %standard-phases
-                    (add-after 'unpack 'patch-file-name
-                      (lambda* (#:key inputs #:allow-other-keys)
-                        (let ((pulseaudio (assoc-ref inputs "pulseaudio")))
-                          (emacs-substitute-variables "pulseaudio-control.el"
-                            ("pulseaudio-control-pactl-path"
-                             (string-append pulseaudio "/bin/pactl")))))))))
+       (list
+        #:phases #~(modify-phases %standard-phases
+                     (add-after 'unpack 'patch-file-name
+                       (lambda* (#:key inputs #:allow-other-keys)
+                         (let ((pulseaudio (assoc-ref inputs "pulseaudio")))
+                           (emacs-substitute-variables "pulseaudio-control.el"
+                             ("pulseaudio-control-pactl-path"
+                              (string-append pulseaudio "/bin/pactl")))))))))
       (inputs (list pulseaudio))
       (home-page "https://git.sr.ht/~flexibeast/pulseaudio-control")
-      (synopsis "Control @code{pulseaudio} from Emacs")
+      (synopsis "Control Pulseaudio from Emacs")
       (description
-       "This package allows controlling @code{pulseaudio} from Emacs.")
+       "This package allows controlling Pulseaudio from Emacs.")
       (license license:gpl3+))))
 
 (define-public emacs-pulsar
