@@ -99,10 +99,14 @@ and parameters ~s~%"
                    ,@(if tests?
                          '("--enable-tests")
                          '())
-                   ;; Build and link with shared libraries
+                   ;; Build static and shared libraries.
                    "--enable-shared"
-                   "--enable-executable-dynamic"
+                   "--enable-static"
+                   ;; Link executables statically by default.
+                   "--disable-executable-dynamic"
                    "--ghc-option=-fPIC"
+                   ;; Ensure static libraries can be used with -Wl,--gc-sections for size.
+                   "--ghc-option=-split-sections"
                    ,@configure-flags)))
     ;; Cabal errors if GHC_PACKAGE_PATH is set during 'configure', so unset
     ;; and restore it.
