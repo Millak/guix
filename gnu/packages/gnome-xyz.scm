@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
@@ -216,7 +216,23 @@ simple and consistent.")
        (modify-phases %standard-phases
          (delete 'bootstrap)
          (delete 'configure)
-         (delete 'build))))
+         (delete 'build)
+         (add-after 'install 'halve-inode-consumption
+           ;; This package uses over 100K inodes, which is a lot.  We can easily
+           ;; halve that number by using (hard) links, to no ill effect.
+           ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
+           ;; However, the source checkout will still use the full amount!
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (symlink? (lambda (_ stat)
+                               (eq? 'symlink (stat:type stat)))))
+               (for-each (lambda (file)
+                           (with-directory-excursion (dirname file)
+                             (let ((target (readlink file)))
+                               (when (eq? 'regular (stat:type (stat target)))
+                                 (delete-file file)
+                                 (link target file)))))
+                         (find-files out symlink?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
