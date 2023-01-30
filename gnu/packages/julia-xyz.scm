@@ -2128,6 +2128,31 @@ types and sparsity.")
 using finite difference.")
     (license license:expat)))
 
+(define-public julia-fitsio
+  (package
+    (name "julia-fitsio")
+    (version "0.17.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/FITSIO.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10w7cdb2cvcwpkcfdz2fwl4ji5rfdv8w9msc9gfd8d34k58bk8c5"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-aqua julia-orderedcollections))
+    (propagated-inputs
+     (list julia-cfitsio julia-reexport julia-tables))
+    (home-page "https://github.com/JuliaAstro/CFITSIO.jl")
+    (synopsis "Astronomical FITS file support for Julia")
+    (description "This package provides Julia implementation for reading and
+writing @acronym{FITS, Flexible Image Transport System} files, based on the
+@code{cfitsio} library.")
+    (license license:expat)))
+
 (define-public julia-fixedpointnumbers
   (let ((commit "59ee94b93f2f1ee75544ef44187fc0e440cd8015")
         (revision "1"))
