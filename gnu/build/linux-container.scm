@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2017-2019, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2019, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -432,7 +432,16 @@ return the exit status, an integer as returned by 'waitpid'."
                   '("user" "ipc" "uts" "net" "pid" "mnt"))
         (purify-environment)
         (chdir "/")
-        (thunk))))
+
+        ;; Per setns(2), changing the PID namespace only applies to child
+        ;; processes, not to the process itself.  Thus fork so that THUNK runs
+        ;; in the right PID namespace, which also gives it access to /proc.
+        (match (primitive-fork)
+          (0 (call-with-clean-exit thunk))
+          (pid (primitive-exit
+                (match (waitpid pid)
+                  ((_ . status)
+                   (or (status:exit-val status) 127)))))))))
     (pid
      (match (waitpid pid)
        ((_ . status)
