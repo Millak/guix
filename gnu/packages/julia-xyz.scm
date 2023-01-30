@@ -4,6 +4,7 @@
 ;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -744,6 +745,36 @@ variables, both with unordered (nominal variables) and ordered categories
     (home-page "https://github.com/JuliaInterop/CEnum.jl")
     (synopsis "C-compatible enum for Julia")
     (description "This package provides a C-compatible enum for Julia.")
+    (license license:expat)))
+
+(define-public julia-cfitsio
+  (package
+    (name "julia-cfitsio")
+    (version "1.4.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/CFITSIO.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "05bxzzjcc021p3hi092h06r2q7qnvql0xz1alggi83i0pp1mxp6d"))))
+    (build-system julia-build-system)
+    (native-inputs (list julia-aqua))
+    (propagated-inputs (list julia-cfitsio-jll))
+    (home-page "https://github.com/JuliaAstro/CFITSIO.jl")
+    (synopsis "C-style interface to the libcfitsio library")
+    (description "This package provides Julia implementation of C-style
+interface to CFITSIO functions with following features:
+@itemize
+@item Function names closely mirror the C interface (e.g.,
+@code{fits_open_file()}).
+@item Functions operate on @code{FITSFile}, a thin wrapper for fitsfile C
+struct (@code{FITSFile} has concept of \"current HDU\", as in CFITSIO).
+@item Wrapper functions do check the return status from CFITSIO and throw an
+error with the appropriate message.
+@end itemize")
     (license license:expat)))
 
 (define-public julia-chainrules
