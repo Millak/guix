@@ -19,12 +19,14 @@
 
 (define-module (gnu home services shells)
   #:use-module (gnu services configuration)
+  #:autoload   (gnu system shadow) (%default-bashrc)
   #:use-module (gnu home services utils)
   #:use-module (gnu home services)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages bash)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (guix records)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match)
@@ -369,43 +371,6 @@ Used for executing user's commands at the exit of login shell.  It
 won't be read in some cases (if the shell terminates by exec'ing
 another process for example)."))
 
-;; TODO: Use value from (gnu system shadow)
-(define guix-bashrc
-  "\
-# Bash initialization for interactive non-login shells and
-# for remote shells (info \"(bash) Bash Startup Files\").
-
-# Export 'SHELL' to child processes.  Programs such as 'screen'
-# honor it and otherwise use /bin/sh.
-export SHELL
-
-if [[ $- != *i* ]]
-then
-    # We are being invoked from a non-interactive shell.  If this
-    # is an SSH session (as in \"ssh host command\"), source
-    # /etc/profile so we get PATH and other essential variables.
-    [[ -n \"$SSH_CLIENT\" ]] && source /etc/profile
-
-    # Don't do anything else.
-    return
-fi
-
-# Source the system-wide file.
-if [[ -e /etc/bashrc ]]; then
-    source /etc/bashrc
-fi
-
-# Adjust the prompt depending on whether we're in 'guix environment'.
-if [ -n \"$GUIX_ENVIRONMENT\" ]
-then
-    PS1='\\u@\\h \\w [env]\\$ '
-else
-    PS1='\\u@\\h \\w\\$ '
-fi
-alias ls='ls -p --color=auto'
-alias ll='ls -l'
-alias grep='grep --color=auto'\n")
-
 (define (add-bash-configuration config)
   (define (filter-fields field)
     (filter-configuration-fields home-bash-configuration-fields
@@ -442,13 +407,23 @@ if [ -f ~/.profile ]; then source ~/.profile; fi
 # Honor per-interactive-shell startup file
 if [ -f ~/.bashrc ]; then source ~/.bashrc; fi
 "
+
+        ;; The host distro might provide a bad 'PS1' default--e.g., not taking
+        ;; $GUIX_ENVIRONMENT into account.  Provide a good default here when
+        ;; asked to.  The default can be overridden below via
+        ;; 'environment-variables'.
+        (if (home-bash-configuration-guix-defaults? config)
+            "PS1='\\u@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '\n"
+            "")
+
         (serialize-field 'bash-profile)
         (serialize-field 'environment-variables)))
 
      ,@(list (file-if-not-empty
               'bashrc
               (if (home-bash-configuration-guix-defaults? config)
-                  (list (serialize-field 'aliases) guix-bashrc)
+                  (list (serialize-field 'aliases)
+                        (plain-file-content %default-bashrc))
                   (list (serialize-field 'aliases))))
              (file-if-not-empty 'bash-logout)))))
 
@@ -479,31 +454,30 @@ with text blocks from other extensions and the base service.")
 with text blocks from other extensions and the base service."))
 
 (define (home-bash-extensions original-config extension-configs)
-  (match original-config
-    (($ <home-bash-configuration> _ _ _ environment-variables aliases
-                                  bash-profile bashrc bash-logout)
-     (home-bash-configuration
-      (inherit original-config)
-      (environment-variables
-       (append environment-variables
-               (append-map
-                home-bash-extension-environment-variables extension-configs)))
-      (aliases
-       (append aliases
-               (append-map
-                home-bash-extension-aliases extension-configs)))
-      (bash-profile
-       (append bash-profile
-               (append-map
-                home-bash-extension-bash-profile extension-configs)))
-      (bashrc
-       (append bashrc
-               (append-map
-                home-bash-extension-bashrc extension-configs)))
-      (bash-logout
-       (append bash-logout
-               (append-map
-                home-bash-extension-bash-logout extension-configs)))))))
+  (match-record original-config <home-bash-configuration>
+    (environment-variables aliases bash-profile bashrc bash-logout)
+    (home-bash-configuration
+     (inherit original-config)
+     (environment-variables
+      (append environment-variables
+              (append-map
+               home-bash-extension-environment-variables extension-configs)))
+     (aliases
+      (append aliases
+              (append-map
+               home-bash-extension-aliases extension-configs)))
+     (bash-profile
+      (append bash-profile
+              (append-map
+               home-bash-extension-bash-profile extension-configs)))
+     (bashrc
+      (append bashrc
+              (append-map
+               home-bash-extension-bashrc extension-configs)))
+     (bash-logout
+      (append bash-logout
+              (append-map
+               home-bash-extension-bash-logout extension-configs))))))
 
 (define home-bash-service-type
   (service-type (name 'home-bash)

@@ -56,7 +56,10 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2022 Elais Player <elais@fastmail.com>
-;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022, 2023 Trevor Richards <trev@trevdev.ca>
+;;; Copyright © 2022 Fredrik Salomonsson <plattfot@posteo.net>
+;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -284,7 +287,7 @@ or musca).
      (list alsa-lib
            libconfuse
            libnl
-           libyajl
+           yajl
            pulseaudio))
     (native-inputs
      (list asciidoc
@@ -306,14 +309,14 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.20.1")
+    (version "4.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1rpwdgykcvmrmdz244f0wm7446ih1dcw8rlc1hm1c7cc42pyrq93"))))
+                "0jrya4rhh46sivlmqaqc4n9abpp1yn1ajhi616gn75cxwl8rjqr8"))))
     (build-system meson-build-system)
     (arguments
      `(;; The test suite requires the unpackaged Xephyr X server.
@@ -339,11 +342,11 @@ commands would.")
            xcb-util-xrm
            libxkbcommon
            libev
-           libyajl
+           yajl
            xmlto
            perl-pod-simple
            libx11
-           pcre
+           pcre2
            startup-notification
            pango
            cairo))
@@ -372,35 +375,7 @@ many programming languages.")
     (license license:bsd-3)))
 
 (define-public i3-gaps
-  (package
-    (inherit i3-wm)
-    (name "i3-gaps")
-    (version "4.20.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Airblader/i3")
-                    (commit version)))
-              (sha256
-               (base32
-                "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
-    (home-page "https://github.com/Airblader/i3")
-    (synopsis "Tiling window manager with gaps")
-    (description
-     "i3-gaps is a fork of i3wm, a tiling window manager
-for X11.  It is kept up to date with upstream, adding a few additional
-features such as gaps between windows.
-
-i3 is a tiling X11 window manager that dynamically manages tiled, stacked,
-and tabbed window layouts.
-
-i3 primarily targets advanced users.  Windows are managed manually and
-organised inside containers, which can be split vertically or horizontally,
-and optionally resized.
-
-i3 uses a plain-text configuration file, and can be extended and controlled
-from many programming languages.")
-    (license license:bsd-3)))
+  (deprecated-package "i3-gaps" i3-wm))
 
 (define-public i3lock
   (package
@@ -1051,7 +1026,7 @@ experience.")
 (define-public fnott
   (package
     (name "fnott")
-    (version "1.2.1")
+    (version "1.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1060,7 +1035,7 @@ experience.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1770p5hfswbaa15zmjh10n7fskch00d3y03ij3gfb1v4q314nb9n"))))
+                "00zg03nz79kqcsnwmm22friawhvl05f93yxpvqmy5wvggx9hrlz8"))))
     (build-system meson-build-system)
     (arguments `(#:build-type "release"))
     (native-inputs
@@ -1631,7 +1606,7 @@ modules for building a Wayland compositor.")
 (define-public swayidle
   (package
     (name "swayidle")
-    (version "1.7")
+    (version "1.7.1")
     (source
      (origin
        (method git-fetch)
@@ -1640,7 +1615,7 @@ modules for building a Wayland compositor.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0ziya8d5pvvxg16jhy4i04pvq11bdvj68gz5q654ar4dldil17nn"))))
+        (base32 "06iq12p4438d6bv3jlqsf01wjaxrzlnj1bnicn41kad563aq41xl"))))
     (build-system meson-build-system)
     (arguments
      `(#:configure-flags '("-Dlogind-provider=elogind")))
@@ -1675,36 +1650,27 @@ modules for building a Wayland compositor.")
     (license license:expat))) ; MIT license
 
 (define-public swaylock-effects
-  ;; Latest release is from November 2020, but doesn't support disabling SSE.
-  (let ((commit "5cb9579faaf5662b111f5722311b701eff1c1d00")
-        (revision "1"))
-    (package
-      (inherit swaylock)
-      (name "swaylock-effects")
-      (version (git-version "1.6-3" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/mortie/swaylock-effects")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "036dkhfqgk7g9vbr5pxgrs66h5fz0rwdsc67i1w51aa9v01r35ca"))))
-      (arguments
-       `(#:configure-flags '("-Dsse=false")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'patch-meson
-             (lambda _
-               (substitute* "meson.build"
-                 (("'-mtune=native',") "")))))))
-      (synopsis "Screen locking utility for Wayland compositors with effects")
-      (description "@code{Swaylock-effects} is a fork of swaylock with additional
+  (package
+    (inherit swaylock)
+    (name "swaylock-effects")
+    (version "1.6.10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jirutka/swaylock-effects")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1d8ri7bzwfr53ybgf23acz57wyhcl2f1nqprcda1v9bzfgsqfk2n"))))
+    (arguments
+     (list #:configure-flags #~'("-Dsse=false")))
+    (synopsis "Screen locking utility for Wayland compositors with effects")
+    (description "@code{Swaylock-effects} is a fork of swaylock with additional
 features, such as the ability to take a screenshot as the background image,
 display a clock or apply image manipulation techniques to the background image.")
-      (home-page "https://github.com/mortie/swaylock-effects"))))
+    (home-page "https://github.com/jirutka/swaylock-effects")))
 
 (define-public swaybg
   (package
@@ -1727,10 +1693,61 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+
+(define-public swaynotificationcenter
+  (package
+    (name "swaynotificationcenter")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ErikReider/SwayNotificationCenter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xvr5m5sqznr3dd512i5pk0d56v7n0ywdcy6rnz85vbf2k7b6kj5"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
+    (native-inputs
+     (list `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python-minimal
+           scdoc
+           vala))
+    (inputs
+     (list json-glib
+           glib
+           gtk+
+           gtk-layer-shell
+           libhandy
+           wayland-protocols))
+    (synopsis "Notification daemon with a graphical interface")
+    (description
+     "This package provides a notification daemon for the Sway Wayland
+compository, supporting the following featuers:
+
+@itemize
+@item Keyboard shortcuts
+@item Notification body markup with image support
+@item A panel to view previous notifications
+@item Show album art for notifications like Spotify
+@item Do not disturb
+@item Click notification to execute default action
+@item Show alternative notification actions
+@item Customization through a CSS file
+@item Trackpad/mouse gesture to close notification
+@item The same features as any other basic notification daemon
+@item Basic configuration through a JSON config file
+@item Hot-reload config through swaync-client
+@end itemize")
+    (home-page "https://github.com/ErikReider/SwayNotificationCenter")
+    (license license:expat)))
+
 (define-public waybar
   (package
     (name "waybar")
-    (version "0.9.13")
+    (version "0.9.16")
     (source
      (origin
        (method git-fetch)
@@ -1739,7 +1756,7 @@ display a clock or apply image manipulation techniques to the background image."
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15fy21cipih80amv78g7g4k2gylf107phbv0fjacn3w3n0i3cf2k"))))
+        (base32 "06vwsax8z6vvvav4c1d40nfiljc7h1cla57r43nv8dw86n539ic5"))))
     (build-system meson-build-system)
     (inputs (list date
                   fmt
@@ -1761,6 +1778,34 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Waybar is a highly customisable Wayland bar for Sway and
 Wlroots based compositors.")
     (license license:expat))) ; MIT license
+
+(define-public waybar-cpu-histogram
+  (package
+    (name "waybar-cpu-histogram")
+    (version "0.4.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~plattfot/waybar-cpu-histogram")
+             (commit (string-append version))))
+       (sha256
+        (base32
+         "001pyf1jdmf2478plnggd7dkfi688qwi89db2jwfp4zza3640na6"))
+       (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list jsoncpp
+           fmt))
+    (synopsis "CPU histogram for waybar")
+    (description
+     "Custom module for waybar to show CPU usage as a histogram.  A compact way
+to see how many cores are active, compared to having a bar for each
+core/thread.")
+    (home-page "https://github.com/plattfot/cpu-histogram/")
+    (license license:expat)))
 
 (define-public wlr-randr
   (package
@@ -1787,17 +1832,32 @@ Wlroots based compositors.")
   (package
     (name "mako")
     (version "1.7.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/emersion/mako")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/emersion/mako")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0vpar1a7zafkd2plmyaackgba6fyg35s9zzyxmj8j7v2q5zxirgz"))))
     (build-system meson-build-system)
-    (inputs (list basu cairo gdk-pixbuf pango wayland))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-makoctl
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "makoctl"
+                     (("^BUSCTL=.*$")
+                      (string-append
+                       "BUSCTL="
+                       (search-input-file inputs "bin/basuctl")
+                       "\n"))
+                     (("jq ")
+                      (string-append
+                       (search-input-file inputs "bin/jq")
+                       " "))))))))
+    (inputs (list basu cairo gdk-pixbuf jq pango wayland))
     (native-inputs (list pkg-config scdoc wayland-protocols))
     (home-page "https://wayland.emersion.fr/mako")
     (synopsis "Lightweight Wayland notification daemon")
@@ -1808,7 +1868,7 @@ compositors that support the layer-shell protocol.")
 (define-public kanshi
   (package
     (name "kanshi")
-    (version "1.2.0")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -1817,7 +1877,7 @@ compositors that support the layer-shell protocol.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10lxagwc2pkq86g2sxkwljjd39sahp3w1j5yx853d3c4d95iwls5"))))
+        (base32 "0sa8k74d24ijw6ml1yyy75dk763r2sbm7fgk033g5xnx28kd394j"))))
     (build-system meson-build-system)
     (inputs (list wayland))
     (native-inputs (list pkg-config scdoc))
@@ -1829,79 +1889,84 @@ Wayland compositors supporting the wlr-output-management protocol.")
     (license license:expat))) ; MIT license
 
 (define-public stumpwm
-  (package
-    (name "stumpwm")
-    (version "22.05")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/stumpwm/stumpwm")
-             (commit version)))
-       (file-name (git-file-name "stumpwm" version))
-       (sha256
-        (base32 "12hf70mpwy0ixiyvv8sf8pkwrzz8nb12a8ybvsdpibsxfjxgxnan"))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-fiasco
-           texinfo
+  ;; Some fixes to make stumpwm work with sbcl>=2.2.7 are not in a release
+  ;; yet, so we use a commit directly.
+  (let ((commit "ff6cb73f48f0df4285948f1009ef3b285c78b351")
+        (revision "1"))
+    (package
+      (name "stumpwm")
+      (version (git-version "22.05" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/stumpwm/stumpwm")
+               (commit commit)))
+         (file-name (git-file-name "stumpwm" version))
+         (sha256
+          (base32 "0gvr136fv5zs61017gns3kbkz00837n0b52fif9vany5fslx3aj2"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiasco
+             texinfo
 
-           ;; To build the manual.
-           autoconf
-           automake))
-    (inputs
-     (list sbcl-alexandria
-           sbcl-cl-ppcre
-           sbcl-clx))
-    (outputs '("out" "lib"))
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-tests
-            (lambda _
-              (substitute* "stumpwm-tests.asd"
-                (("\"ALL-TESTS\"")
-                 "\"RUN-PACKAGE-TESTS\" :package"))))
-          (add-after 'create-asdf-configuration 'build-program
-            (lambda* (#:key outputs #:allow-other-keys)
-              (build-program
-               (string-append (assoc-ref outputs "out") "/bin/stumpwm")
-               outputs
-               #:entry-program '((stumpwm:stumpwm) 0))))
-          (add-after 'build-program 'create-desktop-file
-            (lambda* (#:key outputs #:allow-other-keys)
-              (let* ((out (assoc-ref outputs "out"))
-                     (xsessions (string-append out "/share/xsessions")))
-                (mkdir-p xsessions)
-                (call-with-output-file
-                    (string-append xsessions "/stumpwm.desktop")
-                  (lambda (file)
-                    (format file
-                     "[Desktop Entry]~@
-                      Name=stumpwm~@
-                      Comment=The Stump Window Manager~@
-                      Exec=~a/bin/stumpwm~@
-                      TryExec=~@*~a/bin/stumpwm~@
-                      Icon=~@
-                      Type=Application~%"
-                     out))))))
-          (add-after 'install 'install-manual
-            (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
-              (let* ((out  (assoc-ref outputs "out"))
-                     (info (string-append out "/share/info")))
-                (invoke "./autogen.sh")
-                (invoke "sh" "./configure" "SHELL=sh")
-                (apply invoke "make" "stumpwm.info" make-flags)
-                (install-file "stumpwm.info" info)))))))
-    (synopsis "Window manager written in Common Lisp")
-    (description "Stumpwm is a window manager written entirely in Common Lisp.
+             ;; To build the manual.
+             autoconf
+             automake))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-cl-ppcre
+             sbcl-clx))
+      (outputs '("out" "lib"))
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'fix-tests
+              (lambda _
+                (substitute* "stumpwm-tests.asd"
+                  (("\"ALL-TESTS\"")
+                   "\"RUN-PACKAGE-TESTS\" :package"))))
+            (add-after 'create-asdf-configuration 'build-program
+              (lambda* (#:key outputs #:allow-other-keys)
+                (build-program
+                 (string-append (assoc-ref outputs "out") "/bin/stumpwm")
+                 outputs
+                 #:entry-program '((stumpwm:stumpwm) 0))))
+            (add-after 'build-program 'create-desktop-file
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (xsessions (string-append out "/share/xsessions")))
+                  (mkdir-p xsessions)
+                  (call-with-output-file
+                      (string-append xsessions "/stumpwm.desktop")
+                    (lambda (file)
+                      (format file
+                       "[Desktop Entry]~@
+                        Name=stumpwm~@
+                        Comment=The Stump Window Manager~@
+                        Exec=~a/bin/stumpwm~@
+                        TryExec=~@*~a/bin/stumpwm~@
+                        Icon=~@
+                        Type=Application~%"
+                       out))))))
+            (add-after 'install 'install-manual
+              (lambda* (#:key (make-flags '()) outputs #:allow-other-keys)
+                (let* ((out  (assoc-ref outputs "out"))
+                       (info (string-append out "/share/info")))
+                  (invoke "./autogen.sh")
+                  (invoke "sh" "./configure" "SHELL=sh")
+                  (apply invoke "make" "stumpwm.info" make-flags)
+                  (install-file "stumpwm.info" info)))))))
+      (synopsis "Window manager written in Common Lisp")
+      (description
+       "Stumpwm is a window manager written entirely in Common Lisp.
 It attempts to be highly customizable while relying entirely on the keyboard
 for input.  These design decisions reflect the growing popularity of
 productive, customizable lisp based systems.")
-    (home-page "https://github.com/stumpwm/stumpwm")
-    (license license:gpl2+)
-    (properties `((cl-source-variant . ,(delay cl-stumpwm))))))
+      (home-page "https://github.com/stumpwm/stumpwm")
+      (license license:gpl2+)
+      (properties `((cl-source-variant . ,(delay cl-stumpwm)))))))
 
 (define-public sbcl-stumpwm
   (deprecated-package "sbcl-stumpwm" stumpwm))
@@ -2315,6 +2380,25 @@ interface[fn:dbus-spec].  It shows notifications using stumpwm:message
 by default.")
     (license license:gpl3+)))
 
+(define-public sbcl-stumpwm-battery-portable
+  (package
+    (inherit stumpwm-contrib)
+    (name "sbcl-stumpwm-battery-portable")
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-cl-ppcre
+           (list stumpwm "lib")))
+    (arguments
+     '(#:asd-systems '("battery-portable")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _ (chdir "modeline/battery-portable"))))))
+    (synopsis "Battery level indicator for StumpWM")
+    (description "This module provides a battery level indicator for the
+modeline.  It can be displayed in the modeline with %B.")
+    (license (list license:expat license:gpl3+))))
+
 (define-public lemonbar
   (package
     (name "lemonbar")
@@ -2615,7 +2699,7 @@ for wayland conceptually based on the X11 window manager
 (define-public libucl
   (package
     (name "libucl")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2624,8 +2708,7 @@ for wayland conceptually based on the X11 window manager
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1h52ldxankyhbbm1qbqz1f2q0j03c1b4mig7343bs3mc6fpm18gf"))))
+        (base32 "1j8npymjhcnzbwhx1wggr88148cga921438flf1sn7mw1b9dr55f"))))
     (native-inputs
      (list autoconf automake pkg-config libtool))
     (build-system gnu-build-system)
@@ -2792,7 +2875,7 @@ which do not support it.")
 (define-public berry
   (package
     (name "berry")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
       (origin
         (method git-fetch)
@@ -2801,7 +2884,7 @@ which do not support it.")
           (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1qyq3g0m7rb9gpk1i5kfy9nr8sqivjiilbi4g0nw4d400rblvkbj"))))
+          (base32 "0ygqzgi7ncc6whvwdifds2cq9cllq9fhiqnigx859hbdnf453hn4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.
@@ -2916,3 +2999,114 @@ used for multimedia keys.")
 an interface over @code{grim}, @code{slurp} and @code{jq}, and supports storing
 the screenshot either directly to the clipboard using @code{wl-copy} or to a
 file.")))
+
+(define-public wld
+  (let ((commit "6586736176ef50a88025abae835e29a7ca980126")
+        (revision "1"))
+    (package
+      (name "wld")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/wld")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0qkd3q8p1s72x688g83fkcarrz2h20904rpd8z44ql6ksgrj9bp3"))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f                              ; no tests
+         #:make-flags (list (string-append "CC=" ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list fontconfig
+                    libdrm
+                    pixman
+                    wayland))
+      (propagated-inputs (list fontconfig pixman))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/wld")
+      (synopsis "Primitive drawing library for Wayland")
+      (description "wld is a drawing library that targets Wayland.")
+      (license license:expat))))
+
+(define-public swc
+  (let ((commit "a7b615567f83d9e48d585251015048c441ca0239")
+        (revision "1"))
+    (package
+      (name "swc")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/swc")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "19rpbwpi81pm92fkhsmbx7pzagpah5m9ih5h5k3m8dy6r8ihdh35"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;no tests
+         #:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list libdrm
+                    libinput
+                    libxcb
+                    libxkbcommon
+                    wayland
+                    wayland-protocols
+                    wld
+                    xcb-util-wm))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/swc")
+      (synopsis "Library for making a simple Wayland compositor")
+      (description
+       "swc is a small Wayland compositor implemented as a library.
+
+It has been designed primarily with tiling window managers in mind.  Additionally,
+notable features include:
+@itemize
+@item Easy to follow code base
+@item XWayland support
+@item Can place borders around windows
+@end itemize")
+      (license license:expat))))
+
+(define-public velox
+  (let ((commit "fcc041265539befd907a64ee3a536cb2489ffb99")
+        (revision "1"))
+    (package
+      (name "velox")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/michaelforney/velox")
+                      (commit commit)))
+                (sha256
+                 (base32
+                  "0d11bmag5zwmas3rf1b7x5hjla7wpxq70nr86dz3x9r7cal04mym"))
+                (file-name (git-file-name name version))))
+      (build-system gnu-build-system)
+      (arguments
+       `(#:tests? #f ;no tests
+         #:make-flags (list (string-append "CC="
+                                           ,(cc-for-target))
+                            (string-append "PREFIX=" %output))
+         #:phases (modify-phases %standard-phases
+                    (delete 'configure))))
+      (inputs (list libinput libxkbcommon wayland wld))
+      (propagated-inputs (list swc))
+      (native-inputs (list pkg-config))
+      (home-page "https://github.com/michaelforney/velox")
+      (synopsis "Simple window manager based on swc")
+      (description "velox is a simple window manager for Wayland based on swc.
+It is inspired by dwm and xmonad.")
+      (license license:expat))))

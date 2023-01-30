@@ -306,7 +306,10 @@ back-end for the LLVM compiler framework.")
          (add-before 'check 'set-HOME
            (lambda _
              (setenv "HOME" "/tmp")
-             #t)))))
+
+             ;; Since 2.9.0, hwloc fails when /sys is missing, so provide a
+             ;; fake topology.
+             (setenv "HWLOC_SYNTHETIC" "4"))))))
     (home-page "http://portablecl.org/")
     (synopsis "Portable Computing Language (pocl), an OpenCL implementation")
     (description

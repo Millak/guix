@@ -1,12 +1,12 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;; Copyright © 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;; Copyright © 2019–2022 Florian Pelz <pelzflorian@pelzflorian.de>
-;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;; Copyright © 2019–2023 Florian Pelz <pelzflorian@pelzflorian.de>
+;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;; Copyright © 2020, 2021 Mathieu Othacehe <m.othacehe@gmail.com>
 ;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -25,11 +25,344 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "137b91f03bbb7f1df71cf10c4f79ae57fbcea400")
+        (title
+         (en "New @option{--with-version} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-version}")
+         (fr "Nouvelle option de transformation @option{--with-version}"))
+        (body
+         (en "The new @option{--with-version} package transformation option
+generalizes @option{--with-latest}: it gets the specified upstream release of
+a package and uses it instead of the currently-packaged version.
+
+For example, the command below would spawn GNOME Clocks built against GTK
+4.7.0, skipping its test suite:
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more info.")
+         (de "Die neue Paketumwandlungsoption @option{--with-version}
+verallgemeinert @option{--with-latest}: Mit ihr kann man angeben, welche
+vom Anbieter veröffentlichte Version man anstelle der derzeit im Paket
+vorgegebenen haben möchte.
+
+Zum Beispiel kann mit folgendem Befehl ein für die GTK-Version 4.7.0
+erstelltes GNOME Clocks aufgerufen werden, wobei der Testkatalog dafür
+übersprungen wird.
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets
+@option{--with-version} généralise @option{--with-latest} : elle permet de
+spécifier quelle version amont d'un logiciel utiliser à la place de celle
+actuellement fournie.
+
+Par exemple, la commande ci-dessous démarre GNOME Clocks construit avec GTK
+4.7.0, sans lancer sa suite de tests :
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Voir @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus de détails.")))
+
+ (entry (commit "9ea37eb9f5329c213757bbfe5d9241cde8433858")
+        (title
+          (en "Linux-libre 6.0 removed due to end of upstream support")
+          (de "Linux-libre 6.0 wurde entfernt"))
+        (body
+          (en "The linux-libre 6.0 kernel series has reached the end of
+             its life, and no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Vom Kernel @code{linux-libre} wird die 6.0-Versionsreihe keine
+Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
+aus GNU Guix entfernt worden.")))
+
+ (entry (commit "ce8a34bc9ab89f31f107383ba791954864aed372")
+        (title
+         (en "Linux-libre kernel updated to 6.1")
+         (de "Linux-libre-Kernel wird auf 6.1 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.1")
+         (pt "Kernel linux-libre atualizado para 6.1"))
+        (body
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.1 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.1-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.1.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.1.")))
+
+ (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
+        (title
+          (en "Linux-libre 4.9 removed due to end of upstream support")
+          (de "Linux-libre 4.9 wurde entfernt"))
+        (body
+          (en "The linux-libre 4.9 kernel series has reach the end of its life,
+and is no longer supported upstream.  For this reason, it has been removed from
+GNU Guix.")
+          (de "Vom Kernel @code{linux-libre} wird die 4.9-Versionsreihe keine
+Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
+aus GNU Guix entfernt worden.")))
+
+ (entry (commit "dfc6957a5af7d179d4618eb19d4f555c519bc6f2")
+        (title
+         (en "New @code{customize-linux} procedure")
+         (de "Neue Prozedur @code{customize-linux}")
+         (fr "Nouvelle procédure @code{customize-linux}"))
+        (body
+         (en "The @code{(gnu packages linux)} module includes a new
+@code{customize-linux} procedure, which should now be used instead of
+replacing the @samp{\"kconfig\"} native input of a @code{linux-libre}-derived
+package, as the kernel config file is no longer provided as a native
+input.")
+         (de "Das Modul @code{(gnu packages linux)} enthält eine neue Prozedur
+@code{customize-linux}, die von nun an für angepasste Linux-Pakete benutzt
+werden sollte.  Die native Eingabe @samp{\"kconfig\"} eines von
+@code{linux-libre} abgeleiteten Pakets zu ersetzen, funktioniert nicht mehr,
+weil die Kernel-Konfigurationsdatei nicht mehr als native Eingabe vorliegt.")
+         (fr "Le module @code{(gnu packages linux)} inclut une nouvelle
+procédure @code{customize-linux}, qui devrait maintenant être utilisée au lieu
+de remplacer l'entrée native @samp{\"kconfig\"} d'un paquet dérivé de
+@code{linux-libre}, car le fichier de configuration du noyau n'est plus fourni
+en tant qu'entrée native.")))
+
+ (entry (commit "788602b37ff42f730d4b7b569b0fb51465f147da")
+        (title
+         (en "New @option{--symlink} option for @command{guix shell}")
+         (de "Neue Option @option{--symlink} für @command{guix shell}")
+         (fr "Nouvelle option @option{--symlink} pour @command{guix shell}"))
+        (body
+         (en "The @command{guix shell} command has a new
+@option{--symlink} (or @option{-S}) option, to be used in conjunction with the
+@option{--container} (or @option{-C}) option to create a symbolic link inside
+the container.  Run @command{info \"(guix) Invoking guix shell\"} for more
+information.")
+         (de "Der Befehl @command{guix shell} verfügt jetzt über eine neue
+Befehlszeilenoption @option{--symlink} (oder @option{-S}), die zusammen mit der
+Option @option{--container} (oder @option{-C}) benutzt werden kann, um eine
+symbolische Verknüpfung im Container anzulegen.  Führen Sie
+@command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr zu erfahren.")
+         (fr "La commande @command{guix shell} dispose d'une nouvelle option,
+@option{--symlink} (ou @option{-S}), qui doit être utilisée en conjonction
+avec l'option @option{--container} (ou @option{-C}) pour créer un lien
+symbolique dans le conteneur.  Lancer @command{info \"(guix.fr) Invoquer guix
+shell\"} pour plus d'informations.")))
+
+ (entry (commit "82a0a395d7051eab7b9f15ec4740d58c86413604")
+        (title
+         (en "Linux-libre kernel updated to 6.0")
+         (de "Linux-libre-Kernel wird auf 6.0 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.0")
+         (pt "Kernel linux-libre atualizado para 6.0"))
+        (body
+         (en "The default version of the linux-libre kernel has been
+              updated to the 6.0 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.0-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.0.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.0.")))
+
+ (entry (commit "400a7a4c80efbde1905ae98a298bbb5882d46a0d")
+        (title
+         (en "New build system for Python packages")
+         (de "Neues Erstellungssystem für Python-Pakete")
+         (fr "Nouveau système de construction pour les paquets Python")
+         (pt "Novo sistema de compilação para pacotes Python"))
+        (body
+         (en "A new @var{pyproject-build-system} has been added.  This
+is a redesign of @var{python-build-system} with support for @dfn{PEP 517}
+and @file{pyproject.toml} files.  It also has built-in support for various
+test frameworks such as @command{pytest} and @code{nosetests}.
+
+There is a complementary @code{python-toolchain} package that comes with
+updated versions of @command{pip}, @command{setuptools} and others.
+
+The build system will eventually be merged into @var{python-build-system}
+but you are encouraged to use it for packages in the @code{guix} channel.
+Third party channels may want to wait until the API is stable (see the
+Guix manual for caveats).
+
+Despite the name, @var{pyproject-build-system} also works with the
+``legacy'' @file{setup.py} format.")
+         (de "Ein neues Erstellungssystem @var{pyproject-build-system} ist
+verfügbar.  Es ist eine Neuauflage des @var{python-build-system}, die
+@dfn{PEP 517} und @file{pyproject.toml}-Dateien unterstützt.  Auch wurde
+Unterstützung für Testrahmen wie @command{pytest} und @code{nosetests}
+eingebaut.
+
+Ergänzend gibt es ein Paket @code{python-toolchain} mit aktualisierten Versionen
+von @command{pip}, @command{setuptools} und mehr.
+
+Das Erstellungssystem wird in Zukunft Teil von @var{python-build-system} werden,
+aber wir würden es begrüßen, wenn Sie es für Pakete auf dem @code{guix}-Kanal
+verwenden würden.  Drittanbieterkanäle warten vielleicht lieber auf eine
+stabile Programmierschnittstelle (siehe die im Guix-Handbuch genannten
+Einschränkungen).
+
+Trotz dem Namen funktioniert @var{pyproject-build-system} auch mit dem „alten“
+@file{setup.py}-Format.")
+         (fr "Un nouveau système de construction, @var{pyproject-build-system},
+a été ajouté.  Il s'agit d'une refonte du @var{python-build-system} qui rajoute
+la prise en charge de @dfn{PEP 517} et des fichiers @file{pyproject.toml}.
+Il intègre aussi la prise en charge de divers cadriciels de test comme
+@command{pytest} ou @code{nosetests}.
+
+Un paquet supplémentaire @code{python-toolchain} fournit des versions à jour
+de @command{pip}, @command{setuptools} et autres.
+
+Le système de construction finira par être intégré au @var{python-build-system}
+mais nous vous encourageons à l'utiliser pour les paquets du canal @code{guix}.
+Les canaux tiers devraient attendre que l'API se stabilise (voir le manuel de
+Guix pour les mises en garde).
+
+Contrairement à ce qu'indique son nom, @var{pyproject-build-system} fonctionne
+aussi avec « l'ancien » format @file{setup.py}.")
+         (pt "Um novo sistema de compilação chamado @var{pyproject-build-system}
+foi adicionado.  É um redesign do @var{python-build-system} com suporte à
+@dfn{PEP 517} e a arquivos @file{pyproject.toml}.  Ele também inclui suporte a
+vários frameworks de teste tais como @command{pytest} e @code{nosetests}.
+
+Há um pacote complementar @code{python-toolchain} que contém versões
+atualizadas do @command{pip}, @command{setuptools} e outros.
+
+O sistema de compilação será eventualmente incorporado ao
+@var{python-build-system}, mas encorajamos você a usá-lo para pacotes no canal
+@code{guix}.  Canais de terceiros podem querer esperar até a API se
+estabilizar (veja o manual do Guix para ressalvas).
+
+Apesar do nome, o @var{pyproject-build-system} também funciona com o formato
+“legado” do @file{setup.py}.")))
+
+ (entry (commit "c7ba5f38b80433b040d3946b8fc0b1e8621ba30a")
+        (title
+         (en "New @option{--emulate-fhs} option for @command{guix shell}")
+         (de "Neue Option @option{--emulate-fhs} für @command{guix shell}")
+         (fr "Nouvelle option @option{--emulate-fhs} pour @command{guix shell}")
+         (pt "Nova opção @option{--emulate-fhs} para o @command{guix shell}"))
+        (body
+         (en "The @command{guix shell} command has a new
+@option{--emulate-fhs} (or @option{-F}) option.  Combined with
+@option{--container} (or @option{-C}), it emulates the file and directory
+layout specified by the Filesystem Hierarchy Standard (FHS), providing
+@file{/bin}, @file{/lib}, etc. within the container.
+
+For example, the following command runs @file{/bin/ls} within such a
+container:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Run @command{info \"(guix) Invoking guix shell\"} for more information.")
+         (de "Der Befehl @command{guix shell} verfügt jetzt über eine neue
+Befehlszeilenoption @option{--emulate-fhs} (oder @option{-F}).  Zusammen mit
+@option{--container} (oder @option{-C}) kann so die Datei- und
+Verzeichnisstruktur, die im @i{Filesystem Hierarchy Standard} (FHS) vorgegeben
+wird, nachgebildet werden. Das heißt, in der Container-Umgebung gibt es
+@file{/bin}, @file{/lib} und so weiter.
+
+Zum Beispiel wird folgender Befehl @file{/bin/ls} in einem solchen Container
+ausführen:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Führen Sie @command{info \"(guix.de) Aufruf von guix shell\"} aus, um mehr
+zu erfahren.")
+         (fr "La commande @command{guix shell} dispose d'une nouvelle option,
+@option{--emulate-fhs} (ou @option{-F}).  Avec @option{--container} (ou
+@option{-C}), elle permet d'imiter la disposition des fichiers et répertoires
+spécifiée par le @i{Filesystem Hierarchy Standard} (FHS) en fournissant
+@file{/bin}, @file{/lib}, etc. dans le conteneur.
+
+Par exemple, la commande ci-dessous lance @file{/bin/ls} dans un tel
+conteneur :
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Lancer @command{info \"(guix.fr) Invoquer guix shell\"} pour plus
+d'informations.")
+         (pt "O comando @command{guix shell} tem uma nova opção
+@option{--emulate-fhs} (ou @option{-F}).  Combinada com
+@option{--container} (ou @option{-C}), ela emula o layout de arquivos e
+diretórios especificado pelo Padrão de Hierarquia do Sistema de
+Arquivos (Filesystem Hierarchy Standard — FHS), provendo @file{/bin},
+@file{/lib}, etc. dentro do contêiner.
+
+Por exemplo, o comando seguinte executa @file{/bin/ls} dentro de um contêiner
+desse tipo:
+
+@example
+guix shell -CF coreutils -- /bin/ls
+@end example
+
+Execute @command{info \"(guix) Invoking guix shell\"} para mais informações.")))
+
+ (entry (commit "28ade1bab207974cce6a014e7187968511fc5526")
+        (title
+         (en "@option{--with-source} is now recursive")
+         (de "@option{--with-source} ist jetzt rekursiv")
+         (fr "@option{--with-source} est dorénavant récursive")
+         (pt "@option{--with-source} agora é recursiva"))
+        (body
+         (en "The @option{--with-source} package transformation option now
+uses the specified source for all matching packages, including dependencies.
+This option is useful for all package maintainers, developers, and, in
+general, all users who want Guix to facilitate their rights to modify their
+software and share their changes.
+
+Run @command{info \"(guix) Package Transformation Options\"} for more
+info.")
+         (de "Die Paketumwandlungsoption @option{--with-source} wird jetzt den
+angegebenen Quellcode für sämtliche passende Pakete benutzen, Abhängigkeiten
+eingeschlossen. Die Option hilft Paketbetreuern, Entwicklern und allgemein allen
+Nutzern, die Guix benutzen, das Recht, ihre Software anzupassen und
+Änderungen zu teilen, leichter auszuüben.
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "L'option de transformation de paquet @option{--with-source}
+s'applique désormais à tous les paquets correspondant, y compris les
+dépendances.  Cette option est utile pour les personnes qui maintiennent un
+logiciel, en développent un ou, plus généralement, pour toute personne qui
+souhaite que Guix facilite l'exercice de ses droits à modifier le logiciel et
+à partager ses changements.
+
+Lancer @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus d'informations.")
+         (pt "A opção de transformação de pacote @option{--with-source} agora
+usa a fonte especificada para todos os pacotes correspondentes, incluindo
+dependências.  Essa opção é útil para todos os mantenedores de pacotes,
+desenvolvedores e usuários em geral que querem que o Guix facilite seu direito
+de modificar seu software e compartilhar suas mudanças.
+
+Execute @command{info \"(guix) Package Transformation Options\"} para mais
+informações.")))
+
  (entry (commit "a13f5ead0265cf0fe11e60150547c09dfc8c45b0")
         (title
          (en "Guix System image creation is now documented")
          (de "Es gibt eine Dokumentation, wie Sie Guix-System-Abbilder („Images“) erzeugen")
-         (fr "La création d'images pour Guix System est à présent documentée"))
+         (fr "La création d'images pour Guix System est à présent documentée")
+         (pt "A criação de imagens do Guix System agora está documentada"))
         (body
          (en "The Guix System image API that allows you to create customized
 system images and turn them into actual bootable images is now documented in
@@ -45,12 +378,18 @@ zu bringen.")
 permettant de créer des images personnalisées et de les transformer en images
 amorçables est désormais documentée dans le chapitre @code{Création d'images
 système}.  Cette interface devrait être particulièrement utile aux personnes
-qui essaient de faire fonctionner Guix sur de nouvelles machines.")))
+qui essaient de faire fonctionner Guix sur de nouvelles machines.")
+         (pt "A API de imagens do Guix System que permite criar imagens de
+sistema customizadas e torná-las inicializáveis agora está documentada no
+capítulo @code{Creating System Images} da documentação do Guix.  Isso é
+particularmente útil para pessoas tentando portar o Guix System para um novo
+hardware.")))
  (entry (commit "c8112f3bd95269ce4aca12dedbfe61bb6b37acae")
         (title
          (en "WSL system images support")
          (de "WSL-Systemabbilder werden unterstützt")
-         (fr "Support pour les images système WSL"))
+         (fr "Support pour les images système WSL")
+         (pt "Suporte a imagens de sistema WSL"))
         (body
          (en "The @command{guix system image} command can now generate system
 images for the Windows Subsystem for Linux.  To get started, you can for
@@ -80,6 +419,16 @@ exemple lancer la commande suivante depuis un répertoire de sources Guix :
 @command{guix system image gnu/system/images/wsl2.scm},
 
 et importer l'image obtenue de cette manière :
+
+@command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
+@command{wsl -d Guix}.")
+         (pt "Agora o comando @command{guix system image} pode gerar imagens
+de sistema para o Subsistema do Windows para Linux.  Para começar, você pode
+por exemplo rodar a partir de um checkout do repositório do Guix:
+
+@command{guix system image gnu/system/images/wsl2.scm},
+
+e importar a imagem resultante da seguinte maneira:
 
 @command{wsl --import Guix ./guix ./wsl2-image.tar.gz}
 @command{wsl -d Guix}.")))
@@ -124,18 +473,18 @@ uma transformação, como por exemplo
 
  (entry (commit "c188cf57f161c0c26e2d7c8516bd1ddd1492d686")
         (title
-          (en "Linux-libre kernel updated to 5.19")
-          (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
-          (fr "Le noyau linux-libre est mis à jour vers la 5.19")
-          (pt "Kernel linux-libre atualizado para 5.19"))
+         (en "Linux-libre kernel updated to 5.19")
+         (de "Linux-libre-Kernel wird auf 5.19 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 5.19")
+         (pt "Kernel linux-libre atualizado para 5.19"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.19 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
               jetzt auf der 5.19-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.19.")
-          (pt "A versão padrão do kernel linux-libre foi atualizada para a
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
               série do kernel 5.19.")))
 
  (entry (commit "a15542d26df42dabdb5e2f76d150ae200230c3b0")
@@ -177,15 +526,15 @@ Execute @command{info \"(guix) Invoking guix style\"} para mais informações.")
 
  (entry (commit "2ec7ab2610eb67e26dab52b671eb29e46f64ea0f")
         (title
-          (en "Linux-libre kernel updated to 5.18")
-          (de "Linux-libre-Kernel wird auf 5.18 aktualisiert")
-          (fr "Le noyau linux-libre est mis à jour vers la 5.18"))
+         (en "Linux-libre kernel updated to 5.18")
+         (de "Linux-libre-Kernel wird auf 5.18 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 5.18"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.18 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
 jetzt auf der 5.18-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.18.")))
 
  (entry (commit "bdf422176739b473add66eb8cac9fdd8c654f794")
@@ -317,11 +666,11 @@ Cela vient avec un nouveau système de construction pour paquets Elm---lancer
                (de "Linux-libre-Kernel wird auf 5.17 aktualisiert")
                (fr "Le noyau linux-libre est mis à jour vers la 5.17"))
         (body
-          (en "The default version of the linux-libre kernel has been
+         (en "The default version of the linux-libre kernel has been
               updated to the 5.17 release series.")
-          (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
 jetzt auf der 5.17-Versionsreihe.")
-          (fr "La version par défaut du noyau linux-libre est mise à jour
+         (fr "La version par défaut du noyau linux-libre est mise à jour
               vers la série des 5.17.")))
 
  (entry (commit "c42b7baf13c7633b4512e94da7445299c57b247d")

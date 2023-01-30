@@ -342,6 +342,10 @@ for example in gnu/system/examples/*.tmpl; do
 	    # 'asus-c201.tmpl' uses 'linux-libre-arm-generic', which is an
 	    # ARM-only package.
             options="--system=armhf-linux";;
+        *raspberry*)
+	    # The Raspberry Pi templates 'linux-libre-arm64-generic', which is
+	    # an ARM-only package.
+            options="--system=aarch64-linux";;
 	*vm-image*)
 	    # The VM image tries to build 'current-guix' as per 'guix pull'.
 	    # Skip it.
@@ -352,6 +356,12 @@ for example in gnu/system/examples/*.tmpl; do
 	    ;;
     esac
     guix system -n disk-image $options "$example"
+done
+
+# Make sure the desktop image can be built on major architectures.
+for system in x86_64-linux i686-linux aarch64-linux
+do
+    guix system -n image -s "$system" gnu/system/examples/desktop.tmpl
 done
 
 # Verify that the images can be built.

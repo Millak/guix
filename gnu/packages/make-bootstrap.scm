@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2019 Mark H Weaver <mhw@netris.org>
@@ -709,6 +709,14 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
           ;; doesn't try to link using libtool, and thus fails
           ;; because of a missing -ldl.  Work around that.
           `(list "LDFLAGS=-ldl" "--enable-mini-gmp"
+
+                 ;; Guile does an LTO build by default, but in 3.0.9 it
+                 ;; wrongfully picks 'ar' instead of 'gcc-ar', so work around
+                 ;; it (see <https://issues.guix.gnu.org/61086>).
+                 ,@(if (version-prefix? "3.0" (package-version guile))
+                       '("AR=gcc-ar" "RANLIB=gcc-ranlib")
+                       '())
+
                  ,@(if (hurd-target?)
                        '("--disable-jit")
                        '())))
@@ -750,6 +758,12 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
   (make-guile-static guile-2.0 '("guile-relocatable.patch"
                                  "guile-default-utf8.patch"
                                  "guile-linux-syscalls.patch")))
+
+(define %guile-static-3.0
+  (make-guile-static guile-3.0-latest
+                     '("guile-2.2-default-utf8.patch"
+                       "guile-3.0-linux-syscalls.patch"
+                       "guile-3.0-relocatable.patch")))
 
 (define* (make-guile-static-stripped static-guile)
   (package
@@ -799,11 +813,7 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 (define %guile-static-stripped
   ;; A stripped static Guile 3.0 binary, for use in initrds
   ;; and during bootstrap.
-  (make-guile-static-stripped
-   (make-guile-static guile-3.0
-                      '("guile-2.2-default-utf8.patch"
-                        "guile-3.0-linux-syscalls.patch"
-                        "guile-3.0-relocatable.patch"))))
+  (make-guile-static-stripped %guile-static-3.0))
 
 (define (tarball-package pkg)
   "Return a package containing a tarball of PKG."

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -137,7 +137,8 @@
                            #$@(if debug? #~("--debug") #~())
                            "-f" #$config)
                      #:pid-file "/run/avahi-daemon/pid"))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action config)))))))
 
 (define avahi-service-type
   (let ((avahi-package (compose list avahi-configuration-avahi)))

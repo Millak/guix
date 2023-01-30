@@ -736,6 +736,29 @@ or for saving sensitive information that shouldn't be sent to an
 external server.")
     (license license:expat)))
 
+(define-public js-scianimator
+  (package
+    (name "js-scianimator")
+    (version "1.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/brentertz/scianimator.git")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b4r6z85gnsjagdchvf1pvrhylfiaidh701hna8jrm0l4kbb735x"))))
+    (build-system minify-build-system)
+    (arguments
+     '(#:javascript-files
+       (list "assets/js/jquery.scianimator.js")))
+    (home-page "https://github.com/brentertz/scianimator")
+    (synopsis "Scientific image animator plugin for jQuery")
+    (description "SciAnimator provides a simple yet powerful interface for
+animating a series of images.")
+    (license license:expat)))
+
 (define-public mujs
   (package
     (name "mujs")

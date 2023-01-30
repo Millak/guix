@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -123,7 +124,8 @@ VERSION, HASH, HOME-PAGE, DESCRIPTION, DEPENDENCIES, and LICENSES."
                  ((license) (license->symbol license))
                  (_ `(list ,@(map license->symbol licenses)))))))
 
-(define* (gem->guix-package package-name #:key (repo 'rubygems) version)
+(define* (gem->guix-package package-name #:key (repo 'rubygems) version
+                            #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from rubygems.org, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 Optionally include a VERSION string to fetch a specific version gem."
@@ -173,11 +175,11 @@ package on RubyGems."
 (define gem-package?
   (url-prefix-predicate "https://rubygems.org/downloads/"))
 
-(define (latest-release package)
+(define* (import-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
   (let* ((gem-name (guix-package->gem-name package))
          (gem      (rubygems-fetch gem-name))
-         (version  (gem-version gem))
+         (version  (or version (gem-version gem)))
          (url      (rubygems-uri gem-name version)))
     (upstream-source
      (package (package-name package))
@@ -189,7 +191,7 @@ package on RubyGems."
    (name 'gem)
    (description "Updater for RubyGem packages")
    (pred gem-package?)
-   (latest latest-release)))
+   (import import-release)))
 
 (define* (gem-recursive-import package-name #:optional version)
   (recursive-import package-name

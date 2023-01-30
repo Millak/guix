@@ -53,7 +53,7 @@
 (define-public minetest
   (package
     (name "minetest")
-    (version "5.5.1")
+    (version "5.6.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -62,7 +62,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "042v71gkk0xfixcsn82az2fri0n28fgf9d2zcz31bijqmg5q7imj"))
+                "1bgk369n7r52vh3hdngrlf98k3v84ch2qp341xhs53ixrns2crfn"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -166,7 +166,7 @@ in different ways.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "12cpaiww148szvnrc8r8cffwvl33smnrl7k29sh401yv0pbqi3j8"))))
+                "1w0vdk6a1rhsfwyfviayfwsyqbzwikqazkgbrfl39anf3a50rvv1"))))
     (build-system copy-build-system)
     (arguments
      (list #:install-plan
@@ -395,7 +395,7 @@ with different rules and mechanics.")
 (define-public minetest-mineclone
   (package
     (name "minetest-mineclone")
-    (version "0.75.0")
+    (version "0.80.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -404,7 +404,7 @@ with different rules and mechanics.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "10apja8bp8wmrbjlxg3gvrw5bdc8mizcngvnfi2ff790f6bsc5ip"))))
+                "0ndgzasjmj8397bb3y2aqalx9v72llwgvp9pv05mms3chpji2675"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan
@@ -472,6 +472,31 @@ bunnies, chickens, cows, kittens, rats, sheep, warthogs, penguins and pandas.")
     (license (list license:cc0 license:expat))
     (properties `((upstream-name . "TenPlus1/mobs_animal")))))
 
+(define-public minetest-mobs-monster
+  (package
+    (name "minetest-mobs-monster")
+    ;; Upstream does not use version numbers, so use the release title
+    ;; from ContentDB instead;
+    (version "2022-12-10")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://notabug.org/TenPlus1/mobs_monster")
+             (commit "1b197f9ae136179a764ef45824464b667ade52e6")))
+       (sha256
+        (base32 "15g8acrzvsiccxchfmgjhyf2lmkbrpdjqv3v7hmqz7xqypi8wm3h"))
+       (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (propagated-inputs (list minetest-mobs))
+    (home-page "https://notabug.org/TenPlus1/mobs_monster")
+    (synopsis "Add monsters with Mobs Redo on minetest")
+    (description
+     "This Minetest mod adds many types of monsters to Minetest, that live on the
+surface or deep underground.")
+    (license license:expat)
+    (properties `((upstream-name . "TenPlus1/mobs_monster")))))
+
 (define-public minetest-pipeworks
   (package
     (name "minetest-pipeworks")
@@ -508,15 +533,15 @@ breakers simulate a player punching a node.")
     (name "minetest-technic")
     ;; Upstream doesn't keep version numbers, so use the release
     ;; date on ContentDB instead.
-    (version "2022-02-06")
+    (version "2022-10-30")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/minetest-mods/technic")
-             (commit "d2b68a6bef53e34e166deadd64e02b58bcae59a1")))
+             (commit "6a9dfec36f7265f9328fe378732417d9b57060b4")))
        (sha256
-        (base32 "0vmi1y39q0x39s9w0hhgi979a4hf6n1ah5jaazjvmjf02pjcvvy1"))
+        (base32 "0ng1aklm02n2lbar345yf88g3alzvnh0m0s5rb2bcw2k5lib8468"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
     (propagated-inputs
@@ -746,3 +771,48 @@ stopping before signals.
 advtrains up to version 2.2.1.")
     (license (list license:cc-by-sa3.0 license:agpl3+))
     (properties `((upstream-name . "orwell/basic_trains")))))
+
+(define-public minetest-oneblock
+  (package
+    (name "minetest-oneblock")
+    (version "2022-09-01")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/NO411/oneblock")
+                    (commit "3582c825137e61b3d2ae3d60b8b9746acd6dfe3d")))
+              (sha256
+               (base32
+                "1pkdrj99qqwmz7c86w2mh081ynyxhiwv2rl01xjm1wfpazx5zhdg"))
+              (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (home-page "https://github.com/NO411/oneblock")
+    (synopsis "Build your island in the sky with random items!")
+    (description
+     "This package provides an extension of the Minetest game that lets you
+build your island in the sky.  Every 30 seconds you will receive a random
+block or item from the oneblock to expand the island!")
+    (license license:gpl3+)
+    (properties `((upstream-name . "NO11/oneblock")))))
+
+(define-public minetest-wielded-light
+  (package
+    (name "minetest-wielded-light")
+    (version "2022-06-24")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/minetest-mods/wielded_light")
+                    (commit "b5236562af9772dff8522fe2bda5b5f738e81b88")))
+              (sha256
+               (base32
+                "0m5rf8wkc9iq04xppjfva9d83qmhlnx8fibdbi2d3pkwwl6p2y5c"))
+              (file-name (git-file-name name version))))
+    (build-system minetest-mod-build-system)
+    (home-page (minetest-topic 19378))
+    (synopsis "Adds shining for wielded and dropped items")
+    (description
+     "With this Minetest extension, all bright nodes lighten the player
+environment if wielded.")
+    (license license:gpl3+)
+    (properties `((upstream-name . "bell07/wielded_light")))))

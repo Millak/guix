@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -23,16 +23,19 @@
 (define-module (gnu packages tbb)
   #:use-module (guix packages)
   #:use-module (guix licenses)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (gnu packages))
+  #:use-module (gnu packages)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages swig))
 
 (define-public tbb
   (package
     (name "tbb")
-    (version "2021.5.0")
+    (version "2021.6.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -41,12 +44,8 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1z0pqzfx63zrmyqdvvkk8vl5dc0i0n5cimdkrypd50ig4d4yi7sc"))
-              (patches
-                ;; Backport an upstream commit that prevents the
-                ;; "test_eh_thread" test failing on AArch64.
-                (search-patches "tbb-fix-test-on-aarch64.patch"
-                                "tbb-other-arches.patch"))))
+                "039v4jmnkkxs7haxrfmk9j57vfbrwlhjynlm5byfaqddv4cbsy0p"))
+              (patches (search-patches "tbb-other-arches.patch"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DTBB_STRICT=OFF"))) ;; Don't fail on warnings
@@ -59,6 +58,44 @@ It uses common C++ templates and coding style to eliminate tedious threading
 implementation work.  It provides parallel loop constructs, asynchronous
 tasks, synchronization primitives, atomic operations, and more.")
     (license asl2.0)))
+
+(define-public python-tbb
+  (package
+    (inherit tbb)
+    (name "python-tbb")
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DTBB_STRICT=OFF"
+              "-DTBB4PY_BUILD=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-python-install-directory
+            (lambda _
+              (substitute* "python/CMakeLists.txt"
+                (("\\$\\{PYTHON_BUILD_WORK_DIR\\}/build")
+                 #$output))
+              (substitute* "python/setup.py"
+                (("extra_link_args=tbb_flag,")
+                 (string-append "extra_link_args=['-Wl,-rpath="
+                                #$(this-package-input "tbb") "/lib"
+                                "', '-Wl,-rpath=" #$output "/lib'] + tbb_flag,")))))
+          (replace 'build
+            (lambda _
+              (setenv "PYTHONHASHSEED" "0")
+              (setenv "PYTHONDONTWRITEBYTECODE" "1")
+              (invoke "make" "python_build")))
+          ;; The 'build phase already installs the modules
+          (replace 'install
+            (lambda _
+              (with-directory-excursion "python/rml"
+                (invoke "make" "install"))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "ctest" "-R" "python_test" "--output-on-failure")))))))
+    (inputs (list python tbb))
+    (native-inputs (list swig))))
 
 (define-public tbb-2020
   (package

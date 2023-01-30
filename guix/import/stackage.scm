@@ -3,7 +3,8 @@
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Xinglu Chem <public@yoctocell.xyz>
-;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021, 2023, 2023 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -108,7 +109,8 @@
              (lts-version %default-lts-version)
              (packages
               (stackage-lts-packages
-               (stackage-lts-info-fetch lts-version))))
+               (stackage-lts-info-fetch lts-version)))
+             #:allow-other-keys)
      "Fetch Cabal file for PACKAGE-NAME from hackage.haskell.org.  The retrieved
 version corresponds to the version of PACKAGE-NAME specified in the LTS-VERSION
 release at stackage.org.  Return the `package' S-expression corresponding to
@@ -125,7 +127,7 @@ included in the Stackage LTS release."
 
 (define (stackage-recursive-import package-name . args)
   (recursive-import package-name
-                    #:repo->guix-package (lambda* (name #:key repo version)
+                    #:repo->guix-package (lambda* (name #:key version #:allow-other-keys)
                                            (apply stackage->guix-package (cons name args)))
                     #:guix-name hackage-name->package-name))
 
@@ -139,9 +141,14 @@ included in the Stackage LTS release."
          (mlambda ()
            (stackage-lts-packages
             (stackage-lts-info-fetch %default-lts-version)))))
-    (lambda* (pkg)
+    (lambda* (pkg #:key (version #f))
       "Return an <upstream-source> for the latest Stackage LTS release of
 PACKAGE or #f if the package is not included in the Stackage LTS release."
+      (when version
+        (error
+         (formatted-message
+          (G_ "~a updater doesn't support updating to a specific version, sorry.")
+          "stackage")))
       (let* ((hackage-name (guix-package->hackage-name pkg))
              (version (lts-package-version (packages) hackage-name))
              (name-version (hackage-name-version hackage-name version)))
@@ -163,18 +170,19 @@ PACKAGE or #f if the package is not included in the Stackage LTS release."
 (define (stackage-lts-package? package)
   "Return whether PACKAGE is available on the default Stackage LTS release."
   (and (hackage-package? package)
-       (let ((packages (stackage-lts-packages
-                        (stackage-lts-info-fetch %default-lts-version)))
-             (hackage-name (guix-package->hackage-name package)))
-         (find (lambda (package)
-                 (string=? (stackage-package-name package) hackage-name))
-               packages))))
+       (false-if-networking-error
+        (let ((packages (stackage-lts-packages
+                         (stackage-lts-info-fetch %default-lts-version)))
+              (hackage-name (guix-package->hackage-name package)))
+          (find (lambda (package)
+                  (string=? (stackage-package-name package) hackage-name))
+                packages)))))
 
 (define %stackage-updater
   (upstream-updater
    (name 'stackage)
    (description "Updater for Stackage LTS packages")
    (pred stackage-lts-package?)
-   (latest latest-lts-release)))
+   (import latest-lts-release)))
 
 ;;; stackage.scm ends here

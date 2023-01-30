@@ -27,6 +27,8 @@
   #:use-module (guix utils)
   #:use-module (guix ui)
   #:use-module ((guix self) #:select (make-config.scm))
+  #:use-module (guix describe)
+  #:use-module (guix channels)
   #:use-module (guix packages)
   #:use-module (guix git-download)
   #:use-module (gnu installer utils)
@@ -46,11 +48,13 @@
   #:use-module (gnu packages nano)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages package-management)
+  #:use-module (gnu packages pciutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages xorg)
   #:use-module (gnu system locale)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
+  #:use-module (web uri)
   #:export (installer-program))
 
 (define module-to-import?
@@ -226,7 +230,9 @@ selected keymap."
           (id 'welcome)
           (compute (lambda _
                      ((installer-welcome-page current-installer)
-                      #$(local-file "installer/aux-files/logo.txt")))))
+                      #$(local-file "installer/aux-files/logo.txt")
+                      #:pci-database
+                      #$(file-append pciutils "/share/hwdata/pci.ids.gz")))))
 
          ;; Ask the user to select a timezone under glibc format.
          (installer-step
@@ -312,6 +318,25 @@ selected keymap."
              ((installer-final-page current-installer)
               result prev-steps))))))))
 
+(define (provenance-sexp)
+  "Return an sexp representing the currently-used channels, for logging
+purposes."
+  (match (match (current-channels)
+           (() (and=> (repository->guix-channel (dirname (current-filename)))
+                      list))
+           (channels channels))
+    (#f
+     (warning (G_ "cannot determine installer provenance~%"))
+     'unknown)
+    ((channels ...)
+     (map (lambda (channel)
+            (let* ((uri (string->uri (channel-url channel)))
+                   (url (if (or (not uri) (eq? 'file (uri-scheme uri)))
+                            "local checkout"
+                            (channel-url channel))))
+             `(channel ,(channel-name channel) ,url ,(channel-commit channel))))
+          channels))))
+
 (define (installer-program)
   "Return a file-like object that runs the given INSTALLER."
   (define init-gettext
@@ -358,7 +383,9 @@ selected keymap."
     (with-extensions (list guile-gcrypt guile-newt
                            guile-parted guile-bytestructures
                            guile-json-3 guile-git guile-webutils
-                           guix gnutls)
+                           guile-gnutls
+                           guile-zlib           ;for (gnu build linux-modules)
+                           (current-guix))
       (with-imported-modules `(,@(source-module-closure
                                   `(,@modules
                                     (gnu services herd)
@@ -389,6 +416,12 @@ selected keymap."
                          (ice-9 match)
                          (ice-9 textual-ports))
 
+            ;; Enable core dump generation.
+            (setrlimit 'core #f #f)
+            (call-with-output-file "/proc/sys/kernel/core_pattern"
+              (lambda (port)
+                (format port %core-dump)))
+
             ;; Initialize gettext support so that installers can use
             ;; (guix i18n) module.
             #$init-gettext
@@ -417,6 +450,9 @@ selected keymap."
 
             (define current-installer newt-installer)
             (define steps (#$steps current-installer))
+
+            (installer-log-line "installer provenance: ~s"
+                                '#$(provenance-sexp))
 
             (dynamic-wind
               (installer-init current-installer)
@@ -447,11 +483,21 @@ selected keymap."
                                           key args)
                       (define dump-dir
                         (prepare-dump key args #:result %current-result))
+
+                      (define user-abort?
+                        (match args
+                          (((? user-abort-error? obj)) #t)
+                          (_ #f)))
+
                       (define action
-                        ((installer-exit-error current-installer)
-                         (get-string-all
-                          (open-input-file
-                           (string-append dump-dir "/installer-backtrace")))))
+                        (if user-abort?
+                            'dump
+                            ((installer-exit-error current-installer)
+                             (get-string-all
+                              (open-input-file
+                               (string-append dump-dir
+                                              "/installer-backtrace"))))))
+
                       (match action
                         ('dump
                          (let* ((dump-files

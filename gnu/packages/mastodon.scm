@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Taiju HIGASHI <higashi@taiju.info>
 ;;;
@@ -42,17 +42,22 @@
 (define-public toot
   (package
     (name "toot")
-    (version "0.28.0")
+    (version "0.32.1")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "toot" version))
         (sha256
-         (base32 "1wsj4160z3m1nvswgkl08n9ymihxhxdvxvrsycn9d3y5fplm00k9"))))
+         (base32 "0diskgvqmnkjl4k6sdda8f1sfz0c4w0j8ppv1q7p84phh9vgml6g"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
+         (add-before 'check 'adjust-test-suite
+           (lambda _
+             ;; This test contains integration tests meant to run against a test
+             ;; Mastodon instance.
+             (delete-file "tests/test_integration.py")))
          (replace 'check
            (lambda* (#:key tests? inputs outputs #:allow-other-keys)
              (when tests?

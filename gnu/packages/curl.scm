@@ -334,7 +334,7 @@ curl to obtain exactly that HTTP request.")
 (define-public coeurl
   (package
     (name "coeurl")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -343,8 +343,7 @@ curl to obtain exactly that HTTP request.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0kbazvrb4hzc9jr7yywd36ack1yy7bh8sh1kc4jzv6jfzvxjb0i0"))))
+        (base32 "0qbbrfs35zl0wl6x6jn4p9ncxgdm70a883cflvikkykx9n5k2lpq"))))
     (build-system meson-build-system)
     (native-inputs
      (list doctest pkg-config))

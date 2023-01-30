@@ -27,8 +27,8 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
-  #:use-module (gnu packages textutils)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages java-xml)
+  #:use-module (gnu packages textutils))
 
 (define-public java-w3c-smil-3.0
   (package

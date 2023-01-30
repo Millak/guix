@@ -32,9 +32,9 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages maven-parent-pom)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
 (define-public maven-resolver-api
@@ -2319,7 +2319,6 @@ reporting or the build process.")))
        #:modules
        ((guix build ant-build-system)
         (guix build java-utils)
-        (guix build syscalls)
         (guix build utils))
        #:phases
        (modify-phases %standard-phases
@@ -2328,7 +2327,7 @@ reporting or the build process.")))
              ;; The model has almost not changed, but the newer version is
              ;; needed to prevent an error in the newer modello we have
              (let ((source (assoc-ref inputs "maven-source"))
-                   (dir (mkdtemp! "maven-source-XXXXXXXX")))
+                   (dir (mkdtemp "maven-source-XXXXXXXX")))
                (with-directory-excursion dir
                  (invoke "tar" "xf" source)
                  (copy-file (car (find-files "." "maven.mdo"))
@@ -3462,8 +3461,7 @@ internal to the SureFire Logger API.  It is designed to have no dependency.")
          (add-before 'install 'fix-pom-dependency-versions
            (lambda _
              (substitute* "pom.xml"
-               (("1.11") ,(package-version java-commons-compress))
-               (("1.13") ,(package-version java-commons-codec)))
+               (("1.11") ,(package-version java-commons-codec)))
              (substitute* "pom.xml"
                (("commonsLang3Version>.*")
                 (string-append

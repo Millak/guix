@@ -20,7 +20,8 @@
   #:use-module (guix ui)
   #:use-module ((guix diagnostics) #:select (location))
   #:use-module (guix scripts environment)
-  #:autoload   (guix scripts build) (show-build-options-help)
+  #:autoload   (guix scripts build) (show-build-options-help
+                                     show-native-build-options-help)
   #:autoload   (guix transformations) (options->transformation
                                        transformation-option-key?
                                        show-transformation-options-help)
@@ -68,10 +69,15 @@ interactive shell in that environment.\n"))
       --rebuild-cache    rebuild cached environment, if any"))
   (display (G_ "
       --export-manifest  print a manifest for the given options"))
+  (display (G_ "
+  -F, --emulate-fhs      for containers, emulate the Filesystem Hierarchy
+                         Standard (FHS)"))
 
   (show-environment-options-help)
   (newline)
   (show-build-options-help)
+  (newline)
+  (show-native-build-options-help)
   (newline)
   (show-transformation-options-help)
   (newline)
@@ -136,7 +142,11 @@ interactive shell in that environment.\n"))
                         (alist-cons 'explicit-loading? #t result)))
               (option '("rebuild-cache") #f #f
                       (lambda (opt name arg result)
-                        (alist-cons 'rebuild-cache? #t result))))
+                        (alist-cons 'rebuild-cache? #t result)))
+
+              (option '(#\F "emulate-fhs") #f #f
+                      (lambda (opt name arg result)
+                        (alist-cons 'emulate-fhs? #t result))))
         (filter-map (lambda (opt)
                       (and (not (any (lambda (name)
                                        (member name to-remove))
@@ -157,8 +167,18 @@ interactive shell in that environment.\n"))
   ;; The '--' token is used to separate the command to run from the rest of
   ;; the operands.
   (let ((args command (break (cut string=? "--" <>) args)))
-    (let ((opts (parse-command-line args %options (list %default-options)
-                                    #:argument-handler handle-argument)))
+    (let* ((args-parsed (parse-command-line args %options (list %default-options)
+                                            #:argument-handler handle-argument))
+           ;; For an FHS-container, add the (hidden) package glibc-for-fhs
+           ;; which uses the global cache at /etc/ld.so.cache.  We handle
+           ;; adding this package here to ensure it will always appear in the
+           ;; container as it is the first package in OPTS.
+           (opts (if (assoc-ref args-parsed 'emulate-fhs?)
+                     (alist-cons 'expression
+                                 '(ad-hoc-package
+                                   "(@@ (gnu packages base) glibc-for-fhs)")
+                                 args-parsed)
+                     args-parsed)))
       (options-with-caching
        (auto-detect-manifest
         (match command
@@ -517,43 +537,44 @@ concatenates MANIFESTS, a list of expressions."
   (category development)
   (synopsis "spawn one-off software environments")
 
-  (define (cache-entries directory)
-    (filter-map (match-lambda
-                  ((or "." "..") #f)
-                  (file (string-append directory "/" file)))
-                (or (scandir directory) '())))
+  (with-error-handling
+    (define (cache-entries directory)
+      (filter-map (match-lambda
+                    ((or "." "..") #f)
+                    (file (string-append directory "/" file)))
+                  (or (scandir directory) '())))
 
-  (define* (entry-expiration file)
-    ;; Return the time at which FILE, a cached profile, is considered expired.
-    (match (false-if-exception (lstat file))
-      (#f 0)                       ;FILE may have been deleted in the meantime
-      (st (+ (stat:atime st) (* 60 60 24 7)))))
+    (define* (entry-expiration file)
+      ;; Return the time at which FILE, a cached profile, is considered expired.
+      (match (false-if-exception (lstat file))
+        (#f 0)                       ;FILE may have been deleted in the meantime
+        (st (+ (stat:atime st) (* 60 60 24 7)))))
 
-  (define opts
-    (parse-args args))
+    (define opts
+      (parse-args args))
 
-  (define interactive?
-    (not (assoc-ref opts 'exec)))
+    (define interactive?
+      (not (assoc-ref opts 'exec)))
 
-  (if (assoc-ref opts 'check?)
-      (record-hint 'shell-check)
-      (when (and interactive?
-                 (not (hint-given? 'shell-check))
-                 (not (assoc-ref opts 'container?))
-                 (not (assoc-ref opts 'search-paths)))
-        (display-hint (G_ "Consider passing the @option{--check} option once
+    (if (assoc-ref opts 'check?)
+        (record-hint 'shell-check)
+        (when (and interactive?
+                   (not (hint-given? 'shell-check))
+                   (not (assoc-ref opts 'container?))
+                   (not (assoc-ref opts 'search-paths)))
+          (display-hint (G_ "Consider passing the @option{--check} option once
 to make sure your shell does not clobber environment variables."))) )
 
-  ;; Clean the cache in EXIT-HOOK so that (1) it happens after potential use
-  ;; of cached profiles, and (2) cleanup actually happens, even when
-  ;; 'guix-environment*' calls 'exit'.
-  (add-hook! exit-hook
-             (lambda _
-               (maybe-remove-expired-cache-entries
-                (%profile-cache-directory)
-                cache-entries
-                #:entry-expiration entry-expiration)))
+    ;; Clean the cache in EXIT-HOOK so that (1) it happens after potential use
+    ;; of cached profiles, and (2) cleanup actually happens, even when
+    ;; 'guix-environment*' calls 'exit'.
+    (add-hook! exit-hook
+               (lambda _
+                 (maybe-remove-expired-cache-entries
+                  (%profile-cache-directory)
+                  cache-entries
+                  #:entry-expiration entry-expiration)))
 
-  (if (assoc-ref opts 'export-manifest?)
-      (export-manifest opts (current-output-port))
-      (guix-environment* opts)))
+    (if (assoc-ref opts 'export-manifest?)
+        (export-manifest opts (current-output-port))
+        (guix-environment* opts))))

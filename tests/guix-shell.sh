@@ -32,6 +32,9 @@ export XDG_CONFIG_HOME
 
 guix shell --bootstrap --pure guile-bootstrap -- guile --version
 
+# '--symlink' can only be used with --container.
+! guix shell --bootstrap guile-bootstrap -S /dummy=bin/guile
+
 # '--ad-hoc' is a thing of the past.
 ! guix shell --ad-hoc guile-bootstrap
 

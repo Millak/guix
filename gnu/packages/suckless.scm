@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2015 Dmitry Bogatov <KAction@gnu.org>
-;;; Copyright © 2015 Leo Famulari <leo@famulari.name>
+;;; Copyright © 2015, 2023 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -279,14 +279,14 @@ optimising the environment for the application in use and the task performed.")
 (define-public dmenu
   (package
     (name "dmenu")
-    (version "5.1")
+    (version "5.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.suckless.org/tools/dmenu-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1mcg6i5g2c4wsyq9ap739si4zghk1xg6c3msdqrbfzm3pfg70k8z"))))
+                "14ipsirsfqbyqlnna0k8yla5j6mrbgh3gd9d4xrg4h4inmvwmm6l"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -337,14 +337,14 @@ numbers of user-defined menu items efficiently.")
 (define-public slock
   (package
     (name "slock")
-    (version "1.4")
+    (version "1.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://dl.suckless.org/tools/slock-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0sif752303dg33f14k6pgwq2jp1hjyhqv6x4sy3sj281qvdljf5m"))))
+                "0k8fvf9g27yyaqpyhk6apbkq6r4vjwxhff1qb9ignxx2yvxy7qdf"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -547,7 +547,13 @@ point surf to another URI by setting its XProperties.")
                   (add-before 'build 'patch-farbfeld
                     (lambda* (#:key inputs #:allow-other-keys)
                       (substitute* "config.def.h"
-                        (("2ff") (search-input-file inputs "/bin/2ff"))))))
+                        (("2ff") (search-input-file inputs "/bin/2ff")))))
+                  (add-after 'install 'install-doc
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (let* ((out (assoc-ref outputs "out"))
+                             (doc (string-append out "/share/doc/" ,name "-"
+                                                 ,(package-version this-package))))
+                        (install-file "README.md" doc)))))
        #:tests? #f                                ;no test suite
        #:make-flags
        (let ((pkg-config (lambda (flag)
@@ -1108,7 +1114,7 @@ support.")
 (define-public sfeed
   (package
     (name "sfeed")
-    (version "1.5")
+    (version "1.6")
     (source
      (origin
        (method git-fetch)
@@ -1118,7 +1124,7 @@ support.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1w3xk00nv502q2nr23y1sig7bkqa7f431f4fcaybfcfk7dbv2piq"))))
+        (base32 "1ax603xxcwvmgizf6ia820fc7fliinx86zv6ggiqj5p59kz75x0r"))))
     (build-system gnu-build-system)
     (arguments
      (list

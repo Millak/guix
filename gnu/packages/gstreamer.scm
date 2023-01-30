@@ -353,8 +353,7 @@ playback by a single audio device.  You can also pre-load samples, and play them
 back without having to send all the data for the sound.  Network transparency is
 also built in, so you can play sounds on one machine, and listen to them on
 another.")
-    (home-page "https://web.archive.org/web/20160528230227/
-http://www.tux.org/~ricdude/overview.html")
+    (home-page "https://web.archive.org/web/20160528230227/http://www.tux.org/~ricdude/overview.html")
     (license
      (list
       ;; Libraries.
@@ -731,6 +730,17 @@ model to base your own plug-in on, here it is.")
     (home-page "https://gstreamer.freedesktop.org/")
     (license license:lgpl2.0+)))
 
+(define-public gst-plugins-good-qt
+  (package
+    (inherit gst-plugins-good)
+    (name "gst-plugins-good-qt")
+    (inputs
+     (modify-inputs (package-inputs gst-plugins-good)
+       (prepend qtbase-5
+                qtdeclarative-5
+                qtwayland-5
+                qtx11extras)))))
+
 (define-public gst-plugins-bad
   (package
     (name "gst-plugins-bad")
@@ -788,6 +798,14 @@ model to base your own plug-in on, here it is.")
                   ;; FIXME: Why is this failing.
                   ((".*elements/dash_mpd\\.c.*") "")
 
+                  ;; This test is flaky on at least some architectures.
+                  ;; https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/1244
+                  #$@(if (member (%current-system)
+                                 '("i686-linux" "aarch64-linux" "riscv64-linux"))
+                         `((("'elements/camerabin\\.c'\\]\\],")
+                            "'elements/camerabin.c'], true, ],"))
+                         '())
+
                   ;; These tests are flaky and occasionally time out:
                   ;; https://gitlab.freedesktop.org/gstreamer/gst-plugins-bad/-/issues/932
                   ((".*elements/curlhttpsrc\\.c.*") "")
@@ -833,7 +851,6 @@ model to base your own plug-in on, here it is.")
             curl
             directfb
             ;; dssim
-            faac
             faad2
             flite
             fluidsynth

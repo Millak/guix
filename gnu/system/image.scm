@@ -138,6 +138,9 @@ parent image record."
    (size 'guess)
    (label root-label)
    (file-system "ext4")
+   ;; Disable the metadata_csum and 64bit features of ext4, for compatibility
+   ;; with U-Boot.
+   (file-system-options (list "-O" "^metadata_csum,^64bit"))
    (flags '(boot))
    (initializer (gexp initialize-root-partition))))
 
@@ -652,6 +655,8 @@ output file."
                shared-network?)
               (list boot-program)))
          (substitutable? (image-substitutable? image))
+         (image-target (or (%current-target-system)
+                           (nix-system->gnu-triplet)))
          (register-closures? (has-guix-service-type? os))
          (schema (and register-closures?
                       (local-file (search-path %load-path
@@ -705,6 +710,7 @@ output file."
                  #:entry-point '(#$boot-program #$os)
                  #:compressor '(#+(file-append gzip "/bin/gzip") "-9n")
                  #:creation-time (make-time time-utc 0 1)
+                 #:system #$image-target
                  #:transformations `((,image-root -> ""))))))))
 
     (computed-file name builder
@@ -969,9 +975,9 @@ image, depending on IMAGE format."
                 (G_ "~a: unsupported image format") image-format)))))))
 
 
-;;
-;; Image detection.
-;;
+;;;
+;;; Image type discovery.
+;;;
 
 (define (image-modules)
   "Return the list of image modules."

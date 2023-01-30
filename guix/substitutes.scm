@@ -90,6 +90,16 @@
           (string-append %state-directory "/substitute/cache"))
       (string-append (cache-directory #:ensure? #f) "/substitute")))
 
+(define %debug?
+  ;; Enable debug mode by setting the GUIX_SUBSTITUTE_DEBUG environmnent
+  ;; variable.
+  (make-parameter
+   (getenv "GUIX_SUBSTITUTE_DEBUG")))
+
+(define-syntax-rule (debug fmt args ...)
+  (when (%debug?)
+    (format #t fmt args ...)))
+
 (define (narinfo-cache-file cache-url path)
   "Return the name of the local file that contains an entry for PATH.  The
 entry is stored in a sub-directory specific to CACHE-URL."
@@ -224,6 +234,13 @@ if file doesn't exist, and the narinfo otherwise."
           (let* ((path      (uri-path (request-uri request)))
                  (hash-part (basename
                              (string-drop-right path 8)))) ;drop ".narinfo"
+            ;; Log the failing queries and indicate if it failed because the
+            ;; narinfo is being baked.
+            (let ((baking?
+                   (assoc-ref (response-headers response) 'x-baking)))
+              (debug "could not fetch ~a~a ~a~a~%"
+                     url path code
+                     (if baking? " (baking)" "")))
             (if len
                 (get-bytevector-n port len)
                 (read-to-eof port))

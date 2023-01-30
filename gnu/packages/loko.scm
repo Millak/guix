@@ -18,6 +18,7 @@
 
 (define-module (gnu packages loko)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
@@ -29,7 +30,7 @@
 (define-public loko-scheme
   (package
     (name "loko-scheme")
-    (version "0.7.0")
+    (version "0.12.0")
     (source
      (origin
        (method git-fetch)
@@ -37,45 +38,47 @@
              (url "https://gitlab.com/weinholt/loko")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1441aarw3vy14zdxyab495ag2fch04v4j89krhbqnqfkz6mdi0vy"))
+        (base32 "12xp82z91qkp9q8lfp46s4sda8qgs472jic3js1kbykn4jzy7399"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(;; r7rs tests are a work in progress as of 0.7.0.
-       #:tests? #f
-       #:strip-binaries? #f
-       #:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list
-          (string-append "PREFIX=" out)
-          (string-append "GDB_AUTOLOAD_PATH=" out "/share/gdb/auto-load")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'akku-fixes
-           (lambda* (#:key inputs #:allow-other-keys)
-             (delete-file "Akku.lock")
-             (substitute* "Akku.manifest"
-               (("\\(depends.*") "(depends)"))
-             (invoke "akku" "install")
-             (let ((dest "./.akku/lib/")
-                   (source "/share/guile/site/3.0/"))
-               (for-each
-                (lambda (name)
-                  ;; Symlink the scheme libraries so that Akku can find them
-                  (symlink (string-append (assoc-ref inputs name) source name)
-                           (string-append dest name)))
-                '("struct" "laesare" "pfds" "machine-code")))
-             (substitute* ".akku/env"
-               (("/bin/sh") (which "sh")))
-             #t)))))
+     (list
+      ;; r7rs tests are a work in progress as of 0.7.0.
+      #:tests? #f
+      #:strip-binaries? #f
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'akku-fixes
+            (lambda _
+              (delete-file "Akku.lock")
+              (substitute* "Akku.manifest"
+                (("\\(depends.*") "(depends)"))
+              (invoke "akku" "install")
+              (let ((dest "./.akku/lib/")
+                    (source "/share/guile/site/3.0/"))
+                (for-each
+                 (lambda (name prefix)
+                   ;; Symlink the scheme libraries so that Akku can find them
+                   (symlink (string-append prefix source name)
+                            (string-append dest name)))
+                 '("struct" "laesare" "pfds" "machine-code")
+                 (list #$(this-package-native-input "guile-struct-pack")
+                       #$(this-package-native-input "guile-laesare")
+                       #$(this-package-native-input "guile-pfds")
+                       #$(this-package-native-input "guile-machine-code"))))
+              (substitute* ".akku/env"
+                (("/bin/sh") (which "sh")))
+              #t)))))
     (native-inputs
-     `(("akku" ,akku)
-       ("chez-scheme" ,(chez-scheme-for-system))
-       ("struct" ,guile-struct-pack)
-       ("laesare" ,guile-laesare)
-       ("pfds" ,guile-pfds)
-       ("machine-code" ,guile-machine-code)))
+     (list akku
+           (chez-scheme-for-system)
+           guile-struct-pack
+           guile-laesare
+           guile-pfds
+           guile-machine-code))
     (home-page "https://scheme.fail")
     (synopsis "Implementation of the algorithmic language Scheme")
     (description

@@ -899,6 +899,10 @@ caught and lead to a warning and #f as the result."
                  (format (current-error-port)
                          "warning: failed to read from device '~a'~%" device)
                  #f)
+                ((= EMEDIUMTYPE errno)            ;inaccessible, like DRBD secondaries
+                 (format (current-error-port)
+                         "warning: failed to open device '~a'~%" device)
+                 #f)
                 (else
                  (apply throw args))))))))
 
@@ -1123,7 +1127,7 @@ corresponds to the symbols listed in FLAGS."
       (('read-only rest ...)
        (logior MS_RDONLY (loop rest)))
       (('bind-mount rest ...)
-       (logior MS_BIND (loop rest)))
+       (logior MS_REC (logior MS_BIND (loop rest))))
       (('no-suid rest ...)
        (logior MS_NOSUID (loop rest)))
       (('no-dev rest ...)
@@ -1132,6 +1136,8 @@ corresponds to the symbols listed in FLAGS."
        (logior MS_NOEXEC (loop rest)))
       (('no-atime rest ...)
        (logior MS_NOATIME (loop rest)))
+      (('no-diratime rest ...)
+       (logior MS_NODIRATIME (loop rest)))
       (('strict-atime rest ...)
        (logior MS_STRICTATIME (loop rest)))
       (('lazy-time rest ...)

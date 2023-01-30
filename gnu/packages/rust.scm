@@ -15,6 +15,7 @@
 ;;; Copyright © 2021 (unmatched parenthesis <paren@disroot.org>
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Jim Newsome <jnewsome@torproject.org>
+;;; Copyright © 2022 Mark H Weaver <mhw@netris.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -124,11 +125,11 @@
 
 ;;; Note: mrustc's only purpose is to be able to bootstap Rust; it's designed
 ;;; to be used in source form.
-(define %mrustc-commit "b364724f15fd6fce8234ad8add68107c23a22151")
+(define %mrustc-commit "597593aba86fa2edbea80c6e09f0b1b2a480722d")
 (define %mrustc-source
   (let* ((version "0.10")
          (commit %mrustc-commit)
-         (revision "1")
+         (revision "2")
          (name "mrustc"))
     (origin
       (method git-fetch)
@@ -138,8 +139,14 @@
       (file-name (git-file-name name (git-version version revision commit)))
       (sha256
        (base32
-        "0f7kh4n2663sn0z3xib8gzw0s97qpvwag40g2vs3bfjlrbpgi9z0"))
-      (patches (search-patches "mrustc-riscv64-support.patch")))))
+        "09rvm3zgx1d86gippl8qzh13m641ynbw9q0zsc90g0h1khd3z3b6"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; Drastically reduces memory and build time requirements
+          ;; by disabling debug by default.
+          (substitute* (find-files "." "Makefile")
+            (("-g ") "")))))))
 
 ;;; Rust 1.54 is special in that it is built with mrustc, which shortens the
 ;;; bootstrap path.
@@ -221,7 +228,7 @@
                  (substitute* '("minicargo.mk"
                                 "run_rustc/Makefile")
                    ;; Use the system-provided LLVM.
-                   (("LLVM_CONFIG := .*")
+                   (("LLVM_CONFIG [:|?]= .*")
                     (string-append "LLVM_CONFIG := " llvm "/bin/llvm-config\n")))
                  (substitute* "minicargo.mk"
                    ;; Do not try to fetch sources from the Internet.
@@ -431,6 +438,7 @@ submodules = false
 prefix = \"" out "\"
 sysconfdir = \"etc\"
 [rust]
+debug=false
 jemalloc=true
 default-linker = \"" gcc "/bin/gcc" "\"
 channel = \"stable\"
@@ -590,6 +598,53 @@ safety and thread safety guarantees.")
    ;; Verified that it *doesn't* build with 1.58. e.g.:
    ;; * error: unknown codegen option: `symbol-mangling-version`
    rust-1.59 "1.60.0" "1drqr0a26x1rb2w3kj0i6abhgbs3jx5qqkrcwbwdlx7n3inq5ji0"))
+
+(define rust-1.61
+  (rust-bootstrapped-package
+   rust-1.60 "1.61.0" "1vfs05hkf9ilk19b2vahqn8l6k17pl9nc1ky9kgspaascx8l62xd"))
+
+(define rust-1.62
+  (rust-bootstrapped-package
+   rust-1.61 "1.62.1" "0gqkg34ic77dcvsz69qbdng6g3zfhl6hnhx7ha1mjkyrzipvxb3j"))
+
+(define rust-1.63
+  (rust-bootstrapped-package
+   rust-1.62 "1.63.0" "1l4rrbzhxv88pnfq94nbyb9m6lfnjwixma3mwjkmvvs2aqlq158z"))
+
+(define rust-1.64
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.63 "1.64.0" "018j720b2n12slp4xk64jc6shkncd46d621qdyzh2a8s3r49zkdk")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (patches (search-patches "rust-1.64-fix-riscv64-bootstrap.patch"))
+         (patch-flags '("-p1" "--reverse"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-rust)
+         ((#:phases phases)
+          `(modify-phases ,phases
+             (replace 'patch-cargo-checksums
+               (lambda* _
+                 (substitute* '("Cargo.lock"
+                                "src/bootstrap/Cargo.lock")
+                   (("(checksum = )\".*\"" all name)
+                    (string-append name "\"" ,%cargo-reference-hash "\"")))
+                 (generate-all-checksums "vendor"))))))))))
+
+(define rust-1.65
+  (let ((base-rust
+         (rust-bootstrapped-package
+          rust-1.64 "1.65.0" "0f005kc0vl7qyy298f443i78ibz71hmmh820726bzskpyrkvna2q")))
+    (package
+      (inherit base-rust)
+      (source
+       (origin
+         (inherit (package-source base-rust))
+         (patches '())
+         (patch-flags '("-p1")))))))
 
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not

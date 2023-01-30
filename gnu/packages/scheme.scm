@@ -19,6 +19,7 @@
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -44,41 +45,43 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
+  #:use-module (guix build-system asdf)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages autotools)
-  #:use-module (gnu packages bdw-gc)
+  #:use-module (gnu packages avahi)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages bdw-gc)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages emacs)
+  #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages ghostscript)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages glib)
+  #:use-module (gnu packages gtk)
+  #:use-module (gnu packages image)
+  #:use-module (gnu packages libedit)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libphidget)
   #:use-module (gnu packages libunistring)
+  #:use-module (gnu packages linux)
+  #:use-module (gnu packages lisp-check)
+  #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages ncurses)
-  #:use-module (gnu packages pcre)
-  #:use-module (gnu packages emacs)
-  #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages netpbm)
-  #:use-module (gnu packages texinfo)
-  #:use-module (gnu packages tex)
-  #:use-module (gnu packages base)
-  #:use-module (gnu packages compression)
+  #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages avahi)
-  #:use-module (gnu packages libphidget)
-  #:use-module (gnu packages gcc)
-  #:use-module (gnu packages glib)
-  #:use-module (gnu packages gtk)
-  #:use-module (gnu packages libffi)
-  #:use-module (gnu packages fontutils)
-  #:use-module (gnu packages image)
-  #:use-module (gnu packages xorg)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tls)
-  #:use-module (gnu packages gl)
-  #:use-module (gnu packages libedit)
-  #:use-module (gnu packages linux)
+  #:use-module (gnu packages xorg)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
@@ -885,21 +888,17 @@ The core is 12 builtin special forms and 33 builtin functions.")
 (define-public gauche
   (package
     (name "gauche")
-    (version "0.9.10")
+    (version "0.9.12")
     (home-page "https://practical-scheme.net/gauche/index.html")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://sourceforge/gauche/Gauche/Gauche-"
-             version ".tgz"))
+             "https://github.com/shirok/Gauche/releases/download/release"
+             (string-replace-substring version "." "_")
+             "/Gauche-" version ".tgz"))
        (sha256
-        (base32 "0ci57ak5cp3lkmfy3nh50hifh8nbg58hh6r18asq0rn5mqfxyf8g"))
-       (modules '((guix build utils)))
-       (snippet '(begin
-                   ;; Remove libatomic-ops.
-                   (delete-file-recursively "gc/libatomic_ops")
-                   #t))))
+        (base32 "05xnym1phg8i14bacip5d0d3v0gc1nn5mgayd5hnda873f969bml"))))
     (build-system gnu-build-system)
     (inputs
      (list libatomic-ops slib zlib))
@@ -930,8 +929,8 @@ The core is 12 builtin special forms and 33 builtin functions.")
          (add-before 'check 'patch-network-tests
            ;; Remove net checks.
            (lambda _
-             (delete-file "ext/net/test.scm")
-             (invoke "touch" "ext/net/test.scm")
+             (delete-file "test/net.scm")
+             (invoke "touch" "test/net.scm")
              #t))
          (add-after 'install 'install-docs
            (lambda _
@@ -946,6 +945,38 @@ multilingual support are some of the goals.  Gauche comes with a package
 manager/installer @code{gauche-package} which can download, compile, install
 and list gauche extension packages.")
     (license bsd-3)))
+
+(define-public sbcl-airship-scheme
+  (let ((commit "1862db81dfa67729444916c361f39f9f1c5a2ccd")
+        (revision "0"))
+    (package
+      (name "sbcl-airship-scheme")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.com/mbabich/airship-scheme.git")
+               (commit commit)))
+         (file-name (git-file-name "cl-airship-scheme" version))
+         (sha256
+          (base32 "1d1kvrzlx5kcfsn3rn30ww8jihjflpgcka3n3awj2k4f0sq4mplg"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-fiveam))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-float-features
+              sbcl-trivial-features
+              sbcl-zr-utils))
+      (synopsis "R7RS Scheme implementation in Common Lisp")
+      (description
+       "This is a R7RS Scheme implementation designed to run within
+a Common Lisp environment.")
+      (home-page "https://gitlab.com/mbabich/airship-scheme")
+      (license expat))))
+
+(define-public cl-airship-scheme
+  (sbcl-package->cl-source-package sbcl-airship-scheme))
 
 (define-public gerbil
   (package

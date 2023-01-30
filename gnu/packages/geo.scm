@@ -7,8 +7,8 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
@@ -20,6 +20,7 @@
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -78,6 +80,7 @@
   #:use-module (gnu packages flex)
   #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -114,6 +117,8 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sdl)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
@@ -125,25 +130,94 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
 
+(define-public libaec
+  (package
+    (name "libaec")
+    (version "1.0.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.dkrz.de/k202009/libaec")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "14myrmmiz9z6wgxqywf3a63cq514vrzsd6z4zvpwigvawlk30iip"))))
+    (build-system cmake-build-system)
+    (home-page "https://gitlab.dkrz.de/k202009/libaec")
+    (synopsis "Adaptive Entropy Coding library")
+    (description "Libaec provides fast lossless compression of 1 up to 32 bit
+wide signed or unsigned integers (samples).  The library achieves best results
+for low entropy data as often encountered in space imaging instrument data or
+numerical model output from weather or climate simulations.  While floating
+point representations are not directly supported, they can also be efficiently
+coded by grouping exponents and mantissa.")
+    (license license:bsd-2)))
+
+(define-public eccodes
+  (package
+    (name "eccodes")
+    (version "2.27.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://confluence.ecmwf.int/download/attachments/45757960/"
+             "eccodes-" version "-Source.tar.gz"))
+       (sha256
+        (base32 "16cw4v2d0kjq6gq04paqny0sh5jymn70w449mig7m5h3spzv7rgd"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags '("-DENABLE_MEMFS=ON" "-DENABLE_PNG=ON")
+       #:validate-runpath? #f))
+    (inputs
+     (list jasper libaec libjpeg-turbo libpng netcdf openjpeg))
+    (native-inputs
+     (list gfortran perl pkg-config python))
+    (home-page "https://confluence.ecmwf.int/display/ECC")
+    (synopsis "Library for handling the GRIB, BUFR and GTS file formats")
+    (description "ecCodes is a package developed by @acronym{ECMWF, European
+Centre for Medium-Range Weather Forecasts} which provides an application
+programming interface and a set of tools for decoding and encoding messages in
+the @acronym{WMO, World Meteorological Organization} FM-92 GRIB, WMO FM-94
+BUFR and WMO GTS abbreviated header formats.")
+    (license license:asl2.0)))
+
 (define-public cdo
   (package
     (name "cdo")
-    (version "2.0.5")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://code.mpimet.mpg.de/attachments/download/26823/cdo-"
-                     version ".tar.gz"))
-              (sha256
-               (base32
-                "1khdbd5cmnn7qm6hcqg4md5wbq14fs6brrns8b3g18diqgqvpvpd"))))
+    (version "2.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://code.mpimet.mpg.de/attachments/download/27481/cdo-"
+             version ".tar.gz"))
+       (sha256
+        (base32 "1k18llghpf3jnjn0xcnhmbg7arb1fiy854qqn9m5c1abjin38wdq"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
-           #~(list (string-append "--with-netcdf="
-                                  #$(this-package-input "netcdf")))))
+           #~(list (string-append "--with-curl="
+                                  #$(this-package-input "curl"))
+                   (string-append "--with-eccodes="
+                                  #$(this-package-input "eccodes"))
+                   (string-append "--with-fftw3="
+                                  #$(this-package-input "fftw"))
+                   (string-append "--with-hdf5="
+                                  #$(this-package-input "hdf5"))
+                   (string-append "--with-netcdf="
+                                  #$(this-package-input "netcdf"))
+                   (string-append "--with-proj="
+                                  #$(this-package-input "proj"))
+                   (string-append "--with-udunits2="
+                                  #$(this-package-input "udunits"))
+                   (string-append "--with-libxml2="
+                                  #$(this-package-input "libxml2")))
+           ;; Some tests can fail on machines with many threads.
+           #:parallel-tests? #f))
     (inputs
-     (list netcdf))
+     (list curl eccodes fftw hdf5 libxml2 netcdf proj udunits))
     (native-inputs
      (list pkg-config))
     (home-page "https://code.mpimet.mpg.de/projects/cdo")
@@ -219,7 +293,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
 (define-public geos
   (package
     (name "geos")
-    (version "3.11.0")
+    (version "3.11.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://download.osgeo.org/geos/geos-"
@@ -227,7 +301,7 @@ OpenStreetMap written in C using eXpat, Cairo and GLib.")
                                   ".tar.bz2"))
               (sha256
                (base32
-                "12l59pxawyizmc4wn20dvjn7aifqwkim4ysmc78h91mayjmqravr"))))
+                "1qhbirv1rbznv99ha0pa0zybvcsn0dsz2xfc65vr8bgrm77v63kd"))))
     (build-system cmake-build-system)
     (arguments `(#:phases
                  (modify-phases %standard-phases
@@ -255,7 +329,7 @@ topology functions.")
 (define-public gnome-maps
   (package
     (name "gnome-maps")
-    (version "43.rc")                   ;for libsoup 3 support
+    (version "43.0")                    ;for libsoup 3 support
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -263,27 +337,33 @@ topology functions.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "16a3j896fwxgnvrmx27jnrvhxzh3v22paaq87ad57yp8wkq946il"))))
+                "1r1l6ajs6zz316m8zac5r0l3qgdv616xh376bfn2fflcnz7wys08"))))
     (build-system meson-build-system)
     (arguments
      (list
       #:glib-or-gtk? #t
+      #:meson meson-0.63
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'skip-gtk-update-icon-cache
-            ;; Don't create 'icon-theme.cache'.
+          (add-after 'unpack 'skip-cache-and-database-updates
             (lambda _
-              (substitute* "meson_post_install.py"
-                (("gtk-update-icon-cache") "true"))))
-          (add-after 'unpack 'patch-dbus-service
-            (lambda _
-              (substitute* "data/org.gnome.Maps.service.in"
-                (("@pkgdatadir@/org.gnome.Maps")
-                 (string-append #$output "/bin/gnome-maps")))))
+              (substitute* "meson.build"
+                (("([a-z_]*): true" all option)
+                 (cond                ; cond rather than match saves an import
+                  ((member option '("gtk_update_icon_cache"
+                                    "update_desktop_database"))
+                   (string-append option ": false"))
+                  (else all))))))
           (add-after 'install 'wrap
             (lambda _
-              (wrap-program (string-append #$output "/bin/gnome-maps")
-                `("GI_TYPELIB_PATH" ":" prefix (,(getenv "GI_TYPELIB_PATH")))))))))
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+                (substitute* (string-append #$output "/share/gnome-maps/"
+                                            "org.gnome.Maps")
+                  (("imports\\.package\\.init" all)
+                   (string-append "'" gi-typelib-path "'.split(':').forEach("
+                                  "path => imports.gi.GIRepository.Repository."
+                                  "prepend_search_path(path));\n"
+                                  all)))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
@@ -307,7 +387,7 @@ topology functions.")
            libhandy
            librsvg
            libsecret
-           libshumate           
+           libshumate
            libsoup
            libxml2
            rest-next
@@ -328,6 +408,7 @@ and driving.")
        (method url-fetch)
        (uri (string-append "http://download.osgeo.org/geotiff/libgeotiff/libgeotiff-"
                            version ".tar.gz"))
+       (patches (search-patches "libgeotiff-fix-tests-with-proj-9.1.1.patch"))
        (sha256
         (base32 "1mjmgv48x51ppax5dnb6lq7z600czxll53bx6jbzqwd4m93i7aq5"))
        (modules '((guix build utils)))
@@ -518,7 +599,7 @@ fully fledged Spatial SQL capabilities.")
 (define-public proj
   (package
     (name "proj")
-    (version "9.1.0")
+    (version "9.1.1")
     (source
      (origin
        (method url-fetch)
@@ -526,7 +607,7 @@ fully fledged Spatial SQL capabilities.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "0593vd9sac0c98j1f4rammd90d4xnhygbr6d49i8il6ajjdj7cl1"))))
+         "0fbd1vj4cj19kwh03vdn0a4hr0xaacvi876yyyw5xfsj1q0x8g00"))))
     (build-system cmake-build-system)
     (native-inputs (list googletest pkg-config))
     (propagated-inputs (list curl libtiff sqlite)) ;required by proj.pc
@@ -620,14 +701,14 @@ projections.")
 (define-public python-pyproj
   (package
     (name "python-pyproj")
-    (version "3.3.1")
+    (version "3.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "pyproj" version))
         (sha256
           (base32
-            "1gjg63irs44djyqbp9gg7s02d0y5i9cd1a83phyzp5fcj56y3n5k"))))
+            "0czbfl5dd7jckbwvinfwiwdb99sxj796gfn3a9zqbsdc4xcl8257"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -964,7 +1045,7 @@ development.")
 (define-public gdal
   (package
     (name "gdal")
-    (version "3.5.1")
+    (version "3.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -972,7 +1053,7 @@ development.")
                      version ".tar.gz"))
               (sha256
                (base32
-                "1l93q7xf6qx9ck5axfkf3ygmvclxkvrjd8x00ckn7j0d0750ci3w"))
+                "1qckwnygszxkkq40bf87s3m1sab6jj9jyakdvskh0qf7dq8zjarf"))
               (modules '((guix build utils)))
               (snippet
                 `(begin
@@ -1002,19 +1083,27 @@ development.")
            json-c
            libgeotiff
            libjpeg-turbo
+           libjxl
            libpng
            libtiff
            libwebp
+           lz4
            netcdf
            openssl
+           openjpeg
            pcre2
            postgresql ; libpq
            proj
            qhull
            sqlite
-           zlib))
+           swig
+           zlib
+           zstd))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python))
+    (propagated-inputs
+     (list python-numpy))
     (home-page "https://gdal.org/")
     (synopsis "Raster and vector geospatial data format library")
     (description "GDAL is a translator library for raster and vector geospatial
@@ -1042,25 +1131,6 @@ utilities for data translation and processing.")
                (license:non-copyleft "file://alg/internal_libqhull/COPYING.txt")
                ;; frmts/mrf/libLERC
                license:asl2.0))))
-
-(define-public python-gdal
-  (package (inherit gdal)
-    (name "python-gdal")
-    (build-system python-build-system)
-    (arguments
-     '(#:tests? #f                      ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'chdir
-           (lambda _
-             (chdir "swig/python")
-             #t)))))
-    (native-inputs '())
-    (propagated-inputs
-     (list python-numpy))
-    (inputs
-     (list gdal))
-    (synopsis "GDAL (Geospatial Data Abstraction Library) python bindings")))
 
 (define-public python-pyshp
   (package
@@ -1096,13 +1166,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.20.3")
+    (version "0.21.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "01lhnkhw22jp6hnrs5qvgkq4fqcni2sx7ydiyv8w8xxx5wpglq0d"))))
+        (base32 "0hnfs75dcnz12ximah5xn9566r8zz189lxikmj4lrs9jl4l3l7ff"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1125,13 +1195,12 @@ utilities for data translation and processing.")
            python-scipy
            python-shapely))
     (inputs
-     (list geos
-           ;; cartopy's setup.py looks for the proj executable.
-           ;; Not sure if it actually makes use of it since it
-           ;; probably uses proj only through pyproj.
-           proj))
+     (list geos))
     (native-inputs
-     (list python-cython python-flufl-lock python-pytest))
+     (list python-cython
+           python-flufl-lock
+           python-pytest
+           python-pytest-mpl))
     (home-page "https://scitools.org.uk/cartopy/docs/latest/")
     (synopsis "Cartographic library for visualisation")
     (description
@@ -1211,29 +1280,22 @@ extension.")
 (define-public tegola
   (package
     (name "tegola")
-    (version "0.7.0")
+    (version "0.16.0")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                     "https://github.com/go-spatial/tegola/archive/v"
-                     version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/go-spatial/tegola")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "09vnzxfn0r70kmd776kcdfqxhzdj11syxa0b27z4ci1k367v7viw"))))
+                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-spatial/tegola/cmd/tegola"
        #:unpack-path "github.com/go-spatial/tegola"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-version
-           (lambda _
-             (with-directory-excursion "src/github.com/go-spatial/tegola"
-               (substitute* '("cmd/tegola/cmd/root.go"
-                              "cmd/tegola_lambda/main.go")
-                 (("version not set") ,version)))
-             #t)))))
+       #:build-flags '(,(string-append "-ldflags=-X github.com/go-spatial/tegola/internal/build.Version=" version))
+       #:install-source? #f))
     (home-page "https://tegola.io")
     (synopsis "Vector tile server for maps")
     (description "Tegola is a free vector tile server written in Go.  Tegola
@@ -1253,13 +1315,14 @@ delivered to any client.")
     (version "0.11.1")
     (source
       (origin
-        (method url-fetch)
-        (uri (string-append "https://github.com/omniscale/imposm3/archive/v"
-                            version ".tar.gz"))
-    (file-name (string-append name "-" version ".tar.gz"))
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/omniscale/imposm3")
+              (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
         (sha256
          (base32
-          "1w7b221z5k9254zn01imycxkyw62xigqizhwvrgxqmq1m9r5410l"))))
+          "1ifniw57l3s0sl7nb3zwxxm86i46451yrhfqnnkxr46cnpbzmwxr"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/omniscale/imposm3/cmd/imposm"
@@ -1377,7 +1440,7 @@ based on the Osmium library.")
      (list boost
            bzip2
            expat
-           fmt
+           fmt-8
            libosmium
            lua
            postgresql
@@ -1397,16 +1460,16 @@ map, geocoding with Nominatim, or general analysis.")
 (define-public tippecanoe
   (package
     (name "tippecanoe")
-    (version "1.36.0")
+    (version "2.17.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
-             (url "https://github.com/mapbox/tippecanoe")
+             (url "https://github.com/felt/tippecanoe")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lbmhly4ivnqc6qk1k3sdqvsg6x3nfd8gnjx846bhqj4wag3f88m"))))
+        (base32 "1q2snvsbs10l9pjydid3zxkidlha5hav8gvb0p731m2pwg3xw0qr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1657,7 +1720,7 @@ an independent project by the JOSM team.")
 (define-public java-opening-hours-parser
   (package
     (name "java-opening-hours-parser")
-    (version "0.23.0")
+    (version "0.27.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1666,11 +1729,12 @@ an independent project by the JOSM team.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0yhbd2ix6h506aljh0jkrnp28m4xcqdcdpnqm30fn08kawdgxgsh"))))
+                "1sw5ccxqw4ly5hzxnnljjqx4876gyvagi10sg8r9w25n211lq0x4"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-opening-hours-parser.jar"
        #:source-dir "src/main/java"
+       #:test-exclude (list "**/IndividualTest.java")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'copy-resources
@@ -1685,8 +1749,7 @@ an independent project by the JOSM team.")
                        "-DEBUG_TOKEN_MANAGER=false" "-JDK_VERSION=1.8"
                        "-GRAMMAR_ENCODING=UTF-8"
                        (string-append "-OUTPUT_DIRECTORY=" dir)
-                       file))
-             #t)))))
+                       file)))))))
     (inputs
      (list java-jetbrains-annotations))
     (native-inputs
@@ -1700,7 +1763,7 @@ to the OSM opening hours specification.")
 (define-public josm
   (package
     (name "josm")
-    (version "18360")
+    (version "18583")
     (source (origin
               (method svn-fetch)
               (uri (svn-reference
@@ -1709,7 +1772,7 @@ to the OSM opening hours specification.")
                      (recursive? #f)))
               (sha256
                (base32
-                "0j7fhzh6hs2b5r1a3d1xpy6f5r6q1kh79bck28raang8ldd754c6"))
+                "01ghh9kl984lr8f70jsks31p6a4cqpxqjpmbc4x6mzbmvy87dfvy"))
               (file-name (string-append name "-" version "-checkout"))
               (modules '((guix build utils)))
             (snippet
@@ -1748,15 +1811,6 @@ to the OSM opening hours specification.")
                    (string-append "<info><entry><commit revision=\"" ,version "\">"
                                   "<date>1970-01-01 00:00:00 +0000</date>"
                                   "</commit></entry></info>"))))
-             #t))
-         (add-before 'build 'fix-jcs
-           (lambda _
-             ;; This version of JOSM uses an unreleased version of commons-jcs,
-             ;; which has renamed its classes to another namespace.  Rename them
-             ;; back so they can be used with our version of jcs.
-             (substitute* (find-files "." ".*.java$")
-               (("jcs3") "jcs")
-               (("ICache.NAME_COMPONENT_DELIMITER") "\":\""))
              #t))
          (add-before 'build 'fix-classpath
            (lambda* (#:key inputs #:allow-other-keys)
@@ -2121,7 +2175,7 @@ exchanged form one Spatial DBMS and the other.")
 (define-public opencpn
   (package
     (name "opencpn")
-    (version "5.6.0")
+    (version "5.6.2")
     (source
      (origin
        (method git-fetch)
@@ -2130,11 +2184,10 @@ exchanged form one Spatial DBMS and the other.")
              (commit (string-append "Release_" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g5x45wv3djfjmigk6kgs0i63yp8rs1fbmm4pb15wb3z6dml624y"))))
+        (base32 "16hb0ycp0kbx2h8fx08rqkgrlz48kaym0d6wqvpjrcfa2r4myss8"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)))
+     (list gettext-minimal pkg-config))
     (inputs
      (list alsa-utils
            bzip2
@@ -2157,7 +2210,7 @@ exchanged form one Spatial DBMS and the other.")
            sqlite
            tinyxml
            wxsvg
-           wxwidgets
+           wxwidgets-3.0
            xz
            zlib))
     (arguments
@@ -2479,6 +2532,7 @@ growing set of geoscientific methods.")
                              "ProcessingQgisAlgorithmsTestPt2"
                              "ProcessingQgisAlgorithmsTestPt3"
                              "ProcessingQgisAlgorithmsTestPt4"
+                             "ProcessingGdalAlgorithmsRasterTest"
                              "ProcessingGdalAlgorithmsVectorTest"
                              "ProcessingGrass7AlgorithmsImageryTest"
                              "ProcessingGrass7AlgorithmsRasterTestPt1"
@@ -2596,7 +2650,6 @@ growing set of geoscientific methods.")
            python-chardet
            python-dateutil
            python-future
-           python-gdal
            python-jinja2
            python-numpy
            python-owslib
@@ -2677,6 +2730,51 @@ architecture.")
       license:opl1.0+
       license:public-domain
       license:qwt1.0))))
+
+(define-public splat
+  (package
+    (name "splat")
+    (version "1.5.0b3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hoche/splat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10djwjwb1pvznr0fjwnxdm5d961f3yngispb4zj9hyzdgq1xh217"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete pre-compiled libraries.
+           (delete-file-recursively "vstudio")))))
+    (build-system gnu-build-system)
+    (inputs
+     (list bzip2 libjpeg-turbo libpng zlib))
+    (arguments
+     (list #:tests? #f ; No test suite.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-installation-scripts
+                 (lambda _
+                   (substitute* (list "install" "utils/install")
+                     (("/usr/local")
+                      #$output)
+                     (("whoami=`whoami`")
+                      "whoami=root"))))
+               (delete 'configure)
+               (add-before 'install 'create-bin-directory
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin")))))))
+    (synopsis "Signal propagation and coverage analysis tool")
+    (description
+     "The SPLAT (Signal Propagation, Loss, And Terrain) program can use the
+Longley-Rice path loss and coverage prediction using the Irregular Terrain
+Model to predict the behaviour and reliability of radio links, and to predict
+path loss.")
+    (home-page "https://www.qsl.net/kd2bd/splat.html")
+    (license license:gpl2+)))
 
 (define-public python-geographiclib
   (package
@@ -2771,3 +2869,106 @@ using third-party geocoders and other data sources.")
 reconstructions of geological and paleogeographic features through geological
 time.  Interactively visualize vector, raster and volume data.")
     (license license:gpl2+)))
+
+(define-public navit
+  (package
+    (name "navit")
+    (version "0.5.6")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/navit-gps/navit")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1jhlif0sc5m8wqb5j985g1xba2ki7b7mm14pkvzdghjd0q0gf15s"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      ;; There are no tests
+      #:tests? #f
+      ;; With -DSAMPLE_MAP=TRUE (the default), it tries to download a
+      ;; map during the build process.
+      #:configure-flags #~(list "-DSAMPLE_MAP=FALSE")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after
+              'unpack 'patch-navit-config
+            (lambda _
+              ;; For now this package only supports SDL, so if we keep
+              ;; the configuration as-is, Navit doesn't start.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (("<graphics type=\"gtk_drawing_area\"/>")
+                 "<graphics type=\"sdl\"/>"))
+              ;; Users are expected to be able to add XML files inside
+              ;; $NAVIT_SHAREDIR, however that directory is in the store.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (("<xi:include href=\"\\$NAVIT_SHAREDIR/maps/\\*\\.xml\"/>")
+                 "<xi:include href=\"$NAVIT_USER_DATADIR/maps/*.xml\"/>"))
+              ;; Navit also works without GPS but in that case there is
+              ;; no automatic zooming, so we need zoom buttons to be able
+              ;; to manually zoom in or out.
+              (substitute*
+                  "navit/navit_shipped.xml"
+                (((string-append
+                   "<osd enabled=\"no\" type=\"button\" x=\"-96\" y=\"-96\" "
+                   "command=\"zoom_in()"))
+                 (string-append
+                  "<osd enabled=\"yes\" type=\"button\" x=\"-96\" y=\"-96\" "
+                  "command=\"zoom_in()"))
+                (((string-append
+                   "<osd enabled=\"no\" type=\"button\" x=\"0\" y=\"-96\" "
+                   "command=\"zoom_out()"))
+                 (string-append
+                  "<osd enabled=\"yes\" type=\"button\" x=\"0\" y=\"-96\" "
+                  "command=\"zoom_out()\" src=\"zoom_out.png\"/>")))))
+          (add-before
+              'build 'set-cache
+            ;; During the build, svg icons are converted in different
+            ;; formats, and this needs XDG_CACHE_HOME to work.
+            (lambda _
+              (setenv "XDG_CACHE_HOME" "/tmp/xdg-cache"))))))
+    (inputs (list dbus-glib
+                  espeak
+                  freeglut
+                  freeimage
+                  freetype
+                  glib
+                  gettext-minimal
+                  gpsd
+                  gdk-pixbuf
+                  imlib2
+                  python
+                  sdl
+                  sdl-image))
+    (native-inputs (list fontconfig
+                         (librsvg-for-system)
+                         pkg-config))
+    (home-page "https://www.navit-project.org")
+    (synopsis "Car navigation system with routing engine that uses vector maps data")
+    (description "Navit is a car navigation system with a routing engine.
+
+It is meant to work with touchscreen devices, but it also works
+without a touchscreen.  It also supports text to speech.
+
+It can be configured extensively through its own configuration file
+format.  For instance we can configure the graphical interface, and
+which map data is to be displayed at which zoom level.
+
+It supports different routing profiles: bike, car, car_avoid_toll,
+car_pedantic, car_shortest, horse, pedestrian, truck.
+
+It can use gpsd or NMEA GPS directly to get position data.  It also
+works without GPS: in this case users can also enter position data
+directly.
+
+It can also be used to log GPS data to files using the GPX or NMEA
+formats, or to replay NMEA data.
+
+For maps, it can uses its own \"binfile\" map format, or Garmin map
+file format, and data from OpenStreetMap, Garmin maps, Marco Polo
+Grosser Reiseplaner, Routeplaner Europa 2007, Map + Route.")
+    (license license:gpl2)))

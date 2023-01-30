@@ -20,7 +20,6 @@
 
 (define-module (guix build dub-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (ice-9 popen)
   #:use-module (ice-9 rdelim)
@@ -52,7 +51,7 @@
 to do this (instead of just using /gnu/store as the directory) because we want
 to hide the libraries in subdirectories lib/dub/... instead of polluting the
 user's profile root."
-  (let* ((dir (mkdtemp! "/tmp/dub.XXXXXX"))
+  (let* ((dir (mkdtemp "/tmp/dub.XXXXXX"))
          (vendor-dir (string-append dir "/vendor")))
     (setenv "HOME" dir)
     (mkdir vendor-dir)

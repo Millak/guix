@@ -84,14 +84,14 @@
 (define-public dash
   (package
     (name "dash")
-    (version "0.5.11.5")
+    (version "0.5.12")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://gondor.apana.org.au/~herbert/dash/files/"
                            "dash-" version ".tar.gz"))
        (sha256
-        (base32 "1g93w4lpn3jfwn2gaq17a1lxdig11x0j7gr9byc3fy8zi4882xyv"))
+        (base32 "12pjm2j0q0q88nvqbcyqjwr8s1c29ilxyq2cdj8k42wbdv24liva"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -99,8 +99,7 @@
            ;; This isn't the case on Guix or indeed most other GNU systems.
            (substitute* "src/dash.1"
              (("the standard command interpreter for the system")
-              "a command interpreter based on the original Bourne shell"))
-           #t))))
+              "a command interpreter based on the original Bourne shell"))))))
     (build-system gnu-build-system)
     (inputs
      (list libedit))
@@ -109,9 +108,9 @@
     (home-page "http://gondor.apana.org.au/~herbert/dash")
     (synopsis "POSIX-compliant shell optimised for size")
     (description
-     "dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
+     "Dash is a POSIX-compliant @command{/bin/sh} implementation that aims to be
 as small as possible, often without sacrificing speed.  It is faster than the
-GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  dash is a
+GNU Bourne-Again Shell (@command{bash}) at most scripted tasks.  Dash is a
 direct descendant of NetBSD's Almquist Shell (@command{ash}).")
     (license (list license:bsd-3
                    license:gpl2+))))    ; mksignames.c
@@ -536,14 +535,14 @@ ksh, and tcsh.")
 (define-public xonsh
   (package
     (name "xonsh")
-    (version "0.13.3")
+    (version "0.13.4")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "xonsh" version))
         (sha256
           (base32
-           "154s4lbda3n8kamiyblfrv8isn3hnqyxw2k99qicyfll02chpjzl"))
+           "19r1g8i8k6ds7ncvqdh58vkm4m5hz4w9zbglmg1mi7xcdqp4ax8h"))
         (modules '((guix build utils)))
         (snippet
          #~(begin
@@ -845,7 +844,7 @@ Shell (pdksh).")
 (define-public oil
   (package
     (name "oil")
-    (version "0.12.4")
+    (version "0.12.9")
     (source
      ;; oil's sources contain a modified version of CPython 2.7.13.
      ;; According to https://www.oilshell.org/blog/2017/05/05.html
@@ -858,7 +857,7 @@ Shell (pdksh).")
        (uri (string-append "https://www.oilshell.org/download/oil-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1ck59fs2mkid4d9fss6kplvv0aiimsr9m3gv75ckivb376sd8pmc"))))
+        (base32 "047gjar5lkbms4gdp3063njnqc6fl6p0dcx8bbpi1cdn1956yh1s"))))
     (build-system gnu-build-system)
     (arguments
      (list #:strip-binaries? #f         ; strip breaks the binary

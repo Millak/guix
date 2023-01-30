@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018, 2020 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 (define-module (gnu installer utils)
   #:use-module (gnu services herd)
   #:use-module (guix utils)
+  #:use-module ((guix build syscalls) #:select (openpty login-tty))
   #:use-module (guix build utils)
   #:use-module (guix i18n)
   #:use-module (srfi srfi-1)
@@ -45,6 +46,7 @@
             nearest-exact-integer
             read-percentage
             run-external-command-with-handler
+            run-external-command-with-handler/tty
             run-external-command-with-line-hooks
             run-command
             run-command-in-installer
@@ -124,26 +126,58 @@ the child process as returned by waitpid."
     (close-port input)
     (close-pipe dummy-pipe)))
 
-(define (run-external-command-with-line-hooks line-hooks command)
+(define (run-external-command-with-handler/tty handler command)
+  "Run command specified by the list COMMAND in a child operating in a
+pseudoterminal with output handler HANDLER.  HANDLER is a procedure taking an
+input port, to which the command will write its standard output and error.
+Returns the integer status value of the child process as returned by waitpid."
+  (define-values (controller inferior)
+    (openpty))
+
+  (match (primitive-fork)
+    (0
+     (catch #t
+       (lambda ()
+         (close-fdes controller)
+         (login-tty inferior)
+         (apply execlp (car command) command))
+       (lambda _
+         (primitive-exit 127))))
+    (pid
+     (close-fdes inferior)
+     (let* ((port (fdopen controller "r0"))
+            (result (false-if-exception
+                     (handler port))))
+       (close-port port)
+       (cdr (waitpid pid))))))
+
+(define* (run-external-command-with-line-hooks line-hooks command
+                                               #:key (tty? #false))
   "Run command specified by the list COMMAND in a child, processing each
-output line with the procedures in LINE-HOOKS.  Returns the integer status
-value of the child process as returned by waitpid."
+output line with the procedures in LINE-HOOKS.  If TTY is set to #true, the
+COMMAND will be run in a pseudoterminal.  Returns the integer status value of
+the child process as returned by waitpid."
   (define (handler input)
     (and
-     (and=> (get-line input)
+     ;; Lines for progress bars etc. end in \r; treat is as a line ending so
+     ;; those lines are printed right away.
+     (and=> (read-delimited "\r\n" input 'concat)
             (lambda (line)
               (if (eof-object? line)
                   #f
                   (begin (for-each (lambda (f) (f line))
                                    (append line-hooks
-                                       %default-installer-line-hooks))
+                                           %default-installer-line-hooks))
                          #t))))
      (handler input)))
-  (run-external-command-with-handler handler command))
+  (if tty?
+      (run-external-command-with-handler/tty handler command)
+      (run-external-command-with-handler handler command)))
 
-(define* (run-command command)
+(define* (run-command command #:key (tty? #f))
   "Run COMMAND, a list of strings.  Return true if COMMAND exited
-successfully, #f otherwise."
+successfully, #f otherwise.  If TTY is set to #true, the COMMAND will be run
+in a pseudoterminal."
   (define (pause)
     (format #t (G_ "Press Enter to continue.~%"))
     (send-to-clients '(pause))
@@ -154,8 +188,8 @@ successfully, #f otherwise."
 
   (installer-log-line "running command ~s" command)
   (define result (run-external-command-with-line-hooks
-                  (list %display-line-hook)
-                  command))
+                  (list display) command
+                  #:tty? tty?))
   (define exit-val (status:exit-val result))
   (define term-sig (status:term-sig result))
   (define stop-sig (status:stop-sig result))
@@ -232,7 +266,10 @@ values."
       (or port (%make-void-port "w")))))
 
 (define (%syslog-line-hook line)
-  (format (syslog-port) "installer[~d]: ~a~%" (getpid) line))
+  (let ((line (if (string-suffix? "\r" line)
+                  (string-append (string-drop-right line 1) "\n")
+                  line)))
+    (format (syslog-port) "installer[~d]: ~a" (getpid) line)))
 
 (define-syntax syslog
   (lambda (s)
@@ -261,11 +298,7 @@ values."
       port)))
 
 (define (%installer-log-line-hook line)
-  (format (installer-log-port) "~a~%" line))
-
-(define (%display-line-hook line)
-  (display line)
-  (newline))
+  (display line (installer-log-port)))
 
 (define %default-installer-line-hooks
   (list %syslog-line-hook
@@ -277,9 +310,10 @@ values."
     (syntax-case s ()
       ((_ fmt args ...)
        (string? (syntax->datum #'fmt))
-       #'(let ((formatted (format #f fmt args ...)))
-               (for-each (lambda (f) (f formatted))
-                         %default-installer-line-hooks))))))
+       (with-syntax ((fmt (string-append (syntax->datum #'fmt) "\n")))
+         #'(let ((formatted (format #f fmt args ...)))
+             (for-each (lambda (f) (f formatted))
+                       %default-installer-line-hooks)))))))
 
 
 ;;;

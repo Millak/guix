@@ -11,6 +11,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Imran Iqbal <imran@imraniqbal.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -269,7 +270,7 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
 (define-public man-pages
   (package
     (name "man-pages")
-    (version "5.13")
+    (version "6.02")
     (source
      (origin
        (method url-fetch)
@@ -279,18 +280,30 @@ PostScript, and PDF.  Additional tools include the @command{man} viewer, and
               (string-append "mirror://kernel.org/linux/docs/man-pages/Archive/"
                              "man-pages-" version ".tar.xz")))
        (sha256
-        (base32 "12vb15gs56g8wl5nqlm4llr508brh4m2lfknhq4lizbxzqzawkb1"))))
+        (base32 "159p60a0w5ri3i7bbfxzjfmj8sbpf030m38spny1ws585fv0kn36"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases (delete 'configure))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'skip-html
+            ;; As of 6.00, this package tries to convert man pages to HTML with
+            ;; man2html.  The only Guix package currently providing that script
+            ;; is man-for-txr, but that version seems unable to handle relative
+            ;; ‘.so’ statements properly.  Disable HTML generation.
+            (lambda _
+              (substitute* "lib/build-html.mk"
+                (("(html:) .*" _ target) (string-append target "\n")))))
+          (delete 'configure))
 
-       ;; The 'all' target depends on three targets that directly populate
-       ;; $(MANDIR) based on its current contents.  Doing that in parallel
-       ;; leads to undefined behavior (see <http://bugs.gnu.org/18701>.)
-       #:parallel-build? #f
+      ;; The 'all' target depends on three targets that directly populate
+      ;; $(MANDIR) based on its current contents.  Doing that in parallel
+      ;; leads to undefined behavior (see <http://bugs.gnu.org/18701>.)
+      #:parallel-build? #f
 
-       #:tests? #f
-       #:make-flags ,#~(list (string-append "mandir=" #$output "/share/man"))))
+      #:tests? #f
+      #:make-flags
+      #~(list (string-append "mandir=" #$output "/share/man"))))
     (home-page "https://www.kernel.org/doc/man-pages/")
     (synopsis "Development manual pages from the Linux project")
     (description
@@ -303,6 +316,7 @@ Linux kernel and C library interfaces employed by user-space programs.")
 (define-public man-pages-posix
   (package
     (name "man-pages-posix")
+    ;; Make sure that updates are still legally distributable.  2017-a is not.
     (version "2013-a")
     (source
      (origin
@@ -379,7 +393,7 @@ automatically.")
 (define-public scdoc
   (package
    (name "scdoc")
-   (version "1.10.1")
+   (version "1.11.2")
    (source
     (origin
      (method git-fetch)
@@ -388,7 +402,7 @@ automatically.")
            (commit version)))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1xmh6fnp378xmiycslg4migs1vx7yly4i1cf2vbbnwim9c9g0aw7"))))
+      (base32 "07c2vmdgqifbynm19zjnrk7h102pzrriv73izmx8pmd7b3xl5mfq"))))
    (build-system gnu-build-system)
    (arguments
     `(#:make-flags

@@ -953,14 +953,14 @@ SHA256, SHA512, SHA3, AICH, ED2K, Tiger, DC++ TTH, BitTorrent BTIH, GOST R
 (define-public botan
   (package
     (name "botan")
-    (version "2.19.1")
+    (version "2.19.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://botan.randombit.net/releases/"
                                   "Botan-" version ".tar.xz"))
               (sha256
                (base32
-                "0q2mzzg0a40prp9gwjk7d9fn8kwj6z2x6h6mzlm0hr6sxz7h0vp2"))))
+                "0m9dh00zibx13pbjij8lbncf86pix3cxklxmgl47z965k7rlgq6s"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -1264,7 +1264,7 @@ quickly by using all your CPU cores and hardware acceleration.")
 (define-public minisign
   (package
     (name "minisign")
-    (version "0.10")
+    (version "0.11")
     (source
      (origin
        (method git-fetch)
@@ -1273,7 +1273,7 @@ quickly by using all your CPU cores and hardware acceleration.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gi5z03w9sg72vyjs94y0mhkzz7bbhyzcg92mgmd9r2ydpi5gads"))))
+        (base32 "1vv2bhhsyhlpnjclfa7gkqgd9xi3jfcdrss7abbdxvvflyrwdk5i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no test suite
@@ -1293,10 +1293,10 @@ signatures include trusted comments in addition to untrusted comments.
 Trusted comments are signed, thus verified, before being displayed.")
     (license license:isc)))
 
-(define-public libolm
+(define-public olm
   (package
-    (name "libolm")
-    (version "3.2.12")
+    (name "olm")
+    (version "3.2.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1304,7 +1304,7 @@ Trusted comments are signed, thus verified, before being displayed.")
                     (commit version)))
               (sha256
                (base32
-                "1k8v9ig32vmjm58rbris621d7mvp4q91qa5p79vc51p41sz91yhj"))
+                "0pj7gs32ixhlls792wah7xf49j5pra0avp7dpvy9cndkdkg6biq5"))
               (file-name (git-file-name name version))
               ;; Delete the bundled blob.  It's free, but unauditable,
               ;; and apparently only required for android.
@@ -1319,12 +1319,15 @@ Trusted comments are signed, thus verified, before being displayed.")
              (when tests?
                (with-directory-excursion "tests"
                  (invoke "ctest" "."))))))))
-    (synopsis "Implementation of the olm and megolm cryptographic ratchets")
-    (description "The libolm library implements the Double Ratchet
+    (synopsis "Implementation of the Olm and Megolm cryptographic ratchets")
+    (description "The Olm library implements the Double Ratchet
 cryptographic ratchet.  It is written in C and C++11, and exposed as a C
 API.")
     (home-page "https://matrix.org/docs/projects/other/olm/")
     (license license:asl2.0)))
+
+(define-public libolm
+  (deprecated-package "libolm" olm))
 
 (define-public python-olm
   (package
@@ -1351,10 +1354,9 @@ API.")
      (list python-cffi python-future))
     (native-inputs
      (list python-pytest python-pytest-benchmark python-aspectlib))
-    (synopsis "Python bindings for libolm")
-    (description "The libolm library implements the Double Ratchet
-cryptographic ratchet.  It is written in C and C++11, and exposed as a C
-API.  This package contains its Python bindings.")))
+    (synopsis "Python bindings for Olm")
+    (description "The Olm library implements the Double Ratchet
+cryptographic ratchet.  This package contains its Python bindings.")))
 
 (define-public hash-extender
   (let ((commit "cb8aaee49f93e9c0d2f03eb3cafb429c9eed723d")
@@ -1471,7 +1473,7 @@ non-encrypted files.")
 (define-public cryfs
   (package
     (name "cryfs")
-    (version "0.11.2")
+    (version "0.11.3")
     (source
      (origin
        (method url-fetch)
@@ -1479,7 +1481,7 @@ non-encrypted files.")
              "https://github.com/cryfs/cryfs/releases/download/"
              version "/cryfs-" version ".tar.xz"))
        (sha256
-        (base32 "1ggizlacm4fccsw9syy2763ihxnby6cdh3mhhraxy8bmsdjza7lm"))))
+        (base32 "1h41dhdfk2nll0vx5i66mgrdalv6kccwq5yx99gridywxw6qxxhq"))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((guix build cmake-build-system)
@@ -1519,19 +1521,17 @@ non-encrypted files.")
              (when tests?
                (let ((tests (find-files "." "-test$")))
                  ;; XXX: Disable failing tests. Unfortunately there are a
-                   ;; few. Some only fail in the build environment due to
-                   ;; FUSE not being available.
-                   (for-each invoke
-                             (lset-difference string-contains
-                                              tests
-                                              '("cpp-utils-test"
-                                                "cryfs-cli-test"
-                                                "blobstore-test"
-                                                "fspp-test")))))
-             #t)))))
+                 ;; few. Some only fail in the build environment due to
+                 ;; FUSE not being available.
+                 (for-each invoke
+                           (lset-difference string-contains
+                                            tests
+                                            '("cpp-utils-test"
+                                              "cryfs-cli-test"
+                                              "blobstore-test"
+                                              "fspp-test"))))))))))
     (native-inputs
-     `(("python" ,python-wrapper)
-       ("pkg-config" ,pkg-config)))
+     (list pkg-config python-wrapper))
     (inputs
      (list boost curl fuse range-v3 spdlog))
     (home-page "https://www.cryfs.org/")
@@ -1670,7 +1670,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
 (define-public libxcrypt
   (package
     (name "libxcrypt")
-    (version "4.4.28")
+    (version "4.4.33")
     (source
      (origin
        (method git-fetch)
@@ -1679,8 +1679,7 @@ checksum tool based on the BLAKE3 cryptographic hash function.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0pacj0s1hlv22iz0k2bkysjslc6rbrgmvmsr02qq17lp4d2gw5rs"))))
+        (base32 "174k5cj95617akg6pplv371mpd35j9q8il245f2zcpq76yz4qydl"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf

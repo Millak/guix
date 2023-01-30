@@ -21,7 +21,6 @@
 
 (define-module (guix build java-utils)
   #:use-module (guix build utils)
-  #:use-module (guix build syscalls)
   #:use-module (guix build maven pom)
   #:use-module (guix build maven plugin)
   #:use-module (ice-9 match)
@@ -83,7 +82,7 @@ fetched."
   "Unpack the jar archive, add the pom file, and repack it.  This is necessary
 to ensure that maven can find dependencies."
   (format #t "adding ~a to ~a\n" pom-file jar)
-  (let* ((dir (mkdtemp! "jar-contents.XXXXXX"))
+  (let* ((dir (mkdtemp "jar-contents.XXXXXX"))
          (manifest (string-append dir "/META-INF/MANIFEST.MF"))
          (pom (get-pom pom-file))
          (artifact (pom-artifactid pom))

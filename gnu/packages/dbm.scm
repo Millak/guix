@@ -7,6 +7,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Leo Le Bouter <lle-bout@zaclys.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2021 LuHui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,7 +66,8 @@
          ;; for "--build", but not for "--host", so update config.sub.
          ,@(if (and (%current-target-system)
                     (or (target-ppc64le? (%current-target-system))
-                        (target-aarch64? (%current-target-system))))
+                        (target-aarch64? (%current-target-system))
+                        (target-riscv64? (%current-target-system))))
                `((add-after 'unpack 'update-config.sub
                    (lambda* (#:key native-inputs #:allow-other-keys)
                      (delete-file "dist/config.sub")
@@ -118,7 +120,8 @@
     (native-inputs
      (if (and (%current-target-system)
               (or (target-ppc64le? (%current-target-system))
-                  (target-aarch64? (%current-target-system))))
+                  (target-aarch64? (%current-target-system))
+                  (target-riscv64? (%current-target-system))))
          `(("config" ,config)) ; for config.sub
          '()))
     (synopsis "Berkeley database")

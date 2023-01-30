@@ -24,8 +24,8 @@
   #:use-module (guix download)
   #:use-module (gnu packages ed)
   #:use-module (gnu packages bison)
-  #:use-module (gnu packages groff)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages groff)
   #:use-module (guix build-system gnu))
 
 (define-public cook
@@ -70,7 +70,7 @@
 
              (setenv "SH" (which "sh"))
              #t)))))
-    (native-inputs (list bison
+    (native-inputs (list bison-3.0
                          ;; For building the documentation:
                          groff
                          ;; For the tests:

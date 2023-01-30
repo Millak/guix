@@ -11,6 +11,7 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,6 +37,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system meson)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -46,6 +48,9 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages kde-frameworks)
+  #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages maths)
@@ -60,6 +65,8 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages vulkan)
+  #:use-module (gnu packages xorg)
   #:use-module (gnu packages xml)
   #:use-module (ice-9 match))
 
@@ -72,14 +79,14 @@
 (define-public fio
   (package
     (name "fio")
-    (version "3.31")
+    (version "3.33")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://brick.kernel.dk/snaps/"
                                   "fio-" version ".tar.bz2"))
               (sha256
                (base32
-                "03x0n18f2wsyjh6qv57kvgqcwga54rzngwzr6fzlrjsalqw7mxlp"))))
+                "083c1w8jqkvyw7wcy69142inlikzmk1k78mk973rnqdp3a7798qb"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules
@@ -693,3 +700,46 @@ user-provided Lua scripts.
 @item
 @end itemize")
     (license license:gpl2+)))
+
+(define-public vkmark
+  ;; The only ever release is tagged "2017.08" and as its name suggests
+  ;; it was back in the august of 2017. That version no longer compiles
+  ;; due to changes in APIs of its libraries.
+  ;; Latest commit on the other hand seems to be fully working on xcb
+  ;; and wayland backends.
+  (let ((commit "30d2cd37f0566589d90914501fc7c51a4e51f559")
+        (revision "0"))
+    (package
+      (name "vkmark")
+      (version (git-version "2017.08" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/vkmark/vkmark")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0w0n080sb67s7dbxqi71h0vhm6dccs78rqjnxx9x524jp4jh9b7x"))))
+      (build-system meson-build-system)
+      (native-inputs (list pkg-config))
+      ;; The kms backend currently will not compile because of upstream issues.
+      ;; So I omitted this backend's dependiencies. A fix has been proposed
+      ;; on another branch, but it has not been merged yet.
+      ;; See https://github.com/vkmark/vkmark/issues/33
+      (inputs
+       (list vulkan-loader
+             vulkan-headers
+             glm
+             assimp
+             libxcb
+             xcb-util-wm
+             wayland-protocols
+             wayland))
+      (home-page "https://github.com/vkmark/vkmark")
+      (synopsis "Extensible benchmarking suite for Vulkan")
+      (description
+       "vkmark offers a suite of scenes that can be used to measure various
+aspects of Vulkan performance.  The way in which each scene is rendered is
+configurable through a set of options.")
+      (license license:lgpl2.1+))))

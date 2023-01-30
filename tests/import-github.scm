@@ -92,7 +92,7 @@
 (define* (found-sexp old-version old-commit tags releases)
   (and=>
    (call-with-releases (lambda ()
-                         ((upstream-updater-latest %github-updater)
+                         ((upstream-updater-import %github-updater)
                           (example-package old-version old-commit)))
                        tags releases)
    upstream-source->sexp))

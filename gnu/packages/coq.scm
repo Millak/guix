@@ -54,7 +54,7 @@
 (define-public coq-core
   (package
     (name "coq-core")
-    (version "8.16.0")
+    (version "8.16.1")
     (source
      (origin
        (method git-fetch)
@@ -64,7 +64,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1rp4m2yjldsz0kj7p2fsc312n740fr8kg99jlsk8aq3h524qz2h8"))
+         "0ljpqhh5lfsim29fcfp2xfcvm3j84pf1mb0gnpdr8vcqqw7mqwpf"))
        (patches (search-patches "coq-fix-envvars.patch"))))
     (native-search-paths
      (list (search-path-specification
@@ -727,7 +727,7 @@ for goals involving set operations.
      "This library is an extension of coq-mathcomp which supports finite sets
 and finite maps on choicetypes (rather than finite types).  This includes
 support for functions with finite support and multisets.  The library also
-contains a generic order and set libary, which will eventually be used to
+contains a generic order and set library, which will eventually be used to
 subsume notations for finite sets.")
     (home-page "https://math-comp.github.io/")
     (license license:cecill-b)))

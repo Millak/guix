@@ -97,7 +97,9 @@ Run IMPORTER with ARGS.\n"))
              ((? list? expressions)
               (for-each (lambda (expr)
                           (print expr)
-                          (newline))
+                          ;; Two newlines: one after the closing paren, and
+                          ;; one to leave a blank line.
+                          (newline) (newline))
                         expressions))
              (x
               (leave (G_ "'~a' import failed~%") importer))))

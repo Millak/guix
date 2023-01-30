@@ -40,6 +40,8 @@
             dbus-service
             wrapped-dbus-service
 
+            polkit-configuration
+            polkit-configuration?
             polkit-service-type
             polkit-service))
 

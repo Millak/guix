@@ -17,16 +17,17 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019, 2020, 2021 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2019 Jethro Cao <jethrocao@gmail.com>
-;;; Copyright © 2020, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Dmitry Polyakov <polyakov@liltechdude.xyz>
-;;; Copyright © 2020-2021 James Smith <jsubuntuxp@disroot.org>
+;;; Copyright © 2020-2022 James Smith <jsubuntuxp@disroot.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,6 +75,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages dbm)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
@@ -85,6 +87,7 @@
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages llvm)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages m4)
   #:use-module (gnu packages mp3)
@@ -180,6 +183,71 @@
      "Bullet is a physics engine library usable for collision detection.  It
 is used in some video games and movies.")
     (license license:zlib)))
+
+(define-public dds
+  (package
+    (name "dds")
+    (version "2.9.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dds-bridge/dds")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1iv09qic43nvla02lm8zgnkqpjgnc95p8zh3wyifmnmlh1rz02yj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'chdir
+                 (lambda _
+                   (chdir "src")))
+               (replace 'configure
+                 ;; Configuration is done by copying the appropriate
+                 ;; make file in the working directory.  There is no
+                 ;; configure script.
+                 (lambda _
+                   (copy-file "Makefiles/Makefile_linux_shared"
+                              "Makefile")))
+               (replace 'check
+                 ;; There is no "check" traget.  We must compile
+                 ;; a "dtest" program and apply it on a data set.
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (install-file "libdds.so" "../test")
+                     (with-directory-excursion "../test"
+                       (copy-file "Makefiles/Makefile_linux"
+                                  "Makefile")
+                       (substitute* "Makefile"
+                         (("-Werror") ""))
+                       (invoke "make")
+                       (invoke "./dtest" "-f" "../hands/list100.txt")))))
+               (replace 'install
+                 ;; "install" target merely moves ".so" file around
+                 ;; the source directory.  We install it in the store,
+                 ;; along with all shipped documentation (which cannot
+                 ;; be built from source unfortunately).
+                 (lambda _
+                   (install-file "libdds.so"
+                                 (string-append #$output "/lib"))
+                   (let ((doc (string-append #$output
+                                             "/share/doc/"
+                                             #$name "-" #$version)))
+                     (install-file "../LICENSE" doc)
+                     (copy-recursively "../doc" doc)))))))
+    (native-inputs
+     (list gawk procps))
+    (inputs
+     (list boost))
+    (home-page "http://privat.bahnhof.se/wb758135/")
+    (synopsis "Double dummy solver for the bridge card game")
+    (description "DDS is a double-dummy solver of bridge hands.  It supports
+single-threading and multi-threading for improved performance.  DDS
+offers a wide range of functions, including par-score calculations.")
+    (license license:asl2.0)))
 
 (define-public deutex
   (package
@@ -313,9 +381,10 @@ PCM data.")
                       (substitute* (find-files "." "^Makefile\\.in$")
                         (("-Werror") ""))
                       #t)))))
-    (native-inputs `(("pkgconfig" ,pkg-config)))
+    (native-inputs (list pkg-config))
     (inputs (list bdb
                   glib
+                  gmp
                   guile-3.0
                   libmicrohttpd
                   ncurses
@@ -449,52 +518,45 @@ support.")
 (define-public slade
   (package
     (name "slade")
-    (version "3.1.13")
+    (version "3.2.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/sirjuddington/SLADE")
              (commit version)))
-       (sha256 (base32 "009yc5m6y074wfalvwbrnv2zsmaf9yhbi8hzgs973di0zqnqv011"))
+       (sha256 (base32 "11ab38nv190lpvkdba5r2gckdrk4h15pri0zzslz7zy8qzg5fm18"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (list "-DWX_GTK3=ON" "-DNO_WEBVIEW=ON"
-             (string-append "-DWITH_WXPATH="
-                            (assoc-ref %build-inputs "wxwidgets") "/bin")
-             (string-append "-DwxWidgets_LIBRARIES="
-                            (assoc-ref %build-inputs "wxwidgets") "/lib"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'reset-slade.pk3-timestamps
-           ;; This is neccessary to make slade reproducible due to
-           ;; <https://bugs.gnu.org/44741>.  TODO: Remove on next core update
-           ;; cycle.
-           (lambda _
-             (invoke "find" "../source/dist/res" "-exec" "touch"
-                     "--no-dereference" "-t" "197001010000.00" "{}"
-                     "+")))
-         (add-after 'install 'wrap-with-x11-gdk-backend
-           ;; Set GDK_BACKEND to x11 to prevent crash on Wayland.
-           ;; See https://github.com/sirjuddington/SLADE/issues/1097 for details.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (wrap-program
-                 (string-append (assoc-ref outputs "out")
-                                "/bin/slade")
-               '("GDK_BACKEND" = ("x11"))))))
-       #:tests? #f)) ;; No test suite.
+     (list #:configure-flags
+           #~(list "-DWX_GTK3=ON" "-DNO_WEBVIEW=ON"
+                   (string-append "-DWITH_WXPATH="
+                                  #$(this-package-input "wxwidgets") "/bin")
+                   (string-append "-DwxWidgets_LIBRARIES="
+                                  #$(this-package-input "wxwidgets") "/lib"))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'wrap-with-x11-gdk-backend
+                 ;; Set GDK_BACKEND to x11 to prevent crash on Wayland.
+                 ;; See https://github.com/sirjuddington/SLADE/issues/1097 for
+                 ;; details.
+                 (lambda _
+                   (wrap-program (string-append #$output "/bin/slade")
+                     '("GDK_BACKEND" = ("x11"))))))
+           #:tests? #f)) ;; No test suite.
     (inputs
-     `(("bash" ,bash-minimal)
-       ("curl" ,curl)
-       ("fluidsynth" ,fluidsynth)
-       ("freeimage" ,freeimage)
-       ("ftgl" ,ftgl)
-       ("glew" ,glew)
-       ("gtk+" ,gtk+)
-       ("sfml" ,sfml)
-       ("wxwidgets" ,wxwidgets-3.1)))
+     (list bash-minimal
+           curl
+           fluidsynth
+           freeimage
+           ftgl
+           glew
+           gtk+
+           lua
+           mpg123
+           sfml
+           wxwidgets))
     (native-inputs
      (list pkg-config which zip))
     (home-page "https://slade.mancubus.net")
@@ -550,7 +612,7 @@ clone.")
 (define-public tsukundere
   (package
     (name "tsukundere")
-    (version "0.4.1")
+    (version "0.4.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -559,7 +621,7 @@ clone.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11glghnff27rqh2s34g51afg93g3f5ryfz9mkyb7qj35ngl8vw5f"))))
+                "1lq2rs33s6l6y0hwwkv8pppgq2ki0q5kzj11s90yivi8g8g201af"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((ice-9 match)
@@ -675,6 +737,34 @@ to ease the development of games and multimedia applications.  It is composed
 of five modules: system, window, graphics, audio and network.")
     (license license:zlib)))
 
+(define-public csfml
+  (package
+    (name "csfml")
+    (version "2.5.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/SFML/CSFML")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wj1p798myyavld2xdhvvflb5h4nf1vgxxzs6nh5qad44vj9b3kb"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-DCSFML_BUILD_DOC=TRUE")
+           #:tests? #f)) ;no tests
+    (native-inputs (list doxygen))
+    (inputs (list sfml))
+    (synopsis "C bindings for the SFML multimedia library")
+    (description
+     "CSFML is the official C binding to the SFML libraries.  SFML provides a
+simple interface to the various computer components, to ease the development of
+games and multimedia applications.  It is composed of five modules: system,
+window, graphics, audio and network.")
+    (home-page "https://www.sfml-dev.org/download/csfml/")
+    (license license:zlib)))
+
 (define-public sfxr
   (package
     (name "sfxr")
@@ -713,7 +803,7 @@ sounds from presets such as \"explosion\" or \"powerup\".")
 (define-public surgescript
   (package
     (name "surgescript")
-    (version "0.5.5")
+    (version "0.5.6.1")
     (source
      (origin
        (method git-fetch)
@@ -722,15 +812,10 @@ sounds from presets such as \"explosion\" or \"powerup\".")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0xwd4g7n0b0rxkpbyshkzyl472h1y606ghyvf8gv034n3jz2g4jk"))))
+        (base32 "1p1pxb4iixzq7z14bpy32dx3dhfaaf6mcz4y3g3g09bkdmm1ys6j"))))
      (build-system cmake-build-system)
      (arguments
-      '(#:configure-flags
-        (let ((share (string-append (assoc-ref %outputs "out") "/share")))
-          (list "-DWANT_STATIC=NO"
-                (string-append "-DICON_PATH=" share "/pixmaps")
-                (string-append "-DMETAINFO_PATH=" share "/metainfo")))
-        #:tests? #f))
+      (list #:tests? #f)) ; there are no tests
      (home-page "https://docs.opensurge2d.org")
      (synopsis "Scripting language for games")
      (description "@code{SurgeScript} is a dynamically typed object-oriented
@@ -1021,7 +1106,8 @@ the creation of animations, tiled graphics, texture atlases, and more.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags
-       (list "-DWITH_WEBP_SUPPORT=1")
+       (list "-DWITH_WEBP_SUPPORT=1"
+             "-DWITH_DESKTOP_INTEGRATION=1")
        ;; Tests are unmaintained
        #:tests? #f))
     (native-inputs
@@ -1109,93 +1195,61 @@ interface (API).")
 (define-public python-pygame
   (package
     (name "python-pygame")
-    (version "1.9.4")
+    (version "2.1.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "pygame" version))
               (sha256
                (base32
-                "1dn0nb86jl7yr8709cncxdr0yrmviqakw7zx3g8jbbwrr60if3bh"))))
+                "0g6j79naab7583kymf1bgxc5l5c9h5laq887rmvh8vw8iyifrl6n"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f                ; tests require pygame to be installed first
-       #:phases
-       (modify-phases %standard-phases
-         ;; Set the paths to the dependencies manually because
-         ;; the configure script does not allow passing them as
-         ;; parameters.  This also means we can skip the configure
-         ;; phase.
-         (add-before 'build 'set-library-paths
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((sdl-ref   (assoc-ref inputs "sdl"))
-                   (font-ref  (assoc-ref inputs "sdl-ttf"))
-                   (image-ref (assoc-ref inputs "sdl-image"))
-                   (mixer-ref (assoc-ref inputs "sdl-mixer"))
-                   (smpeg-ref (assoc-ref inputs "libsmpeg"))
-                   (png-ref   (assoc-ref inputs "libpng"))
-                   (jpeg-ref  (assoc-ref inputs "libjpeg"))
-                   (freetype-ref (assoc-ref inputs "freetype"))
-                   (v4l-ref   (assoc-ref inputs "v4l-utils"))
-                   (out-ref   (assoc-ref outputs "out")))
-               (substitute* "Setup.in"
-                 (("SDL = -I/usr/include/SDL")
-                  (string-append "SDL = -I" sdl-ref "/include/SDL -I.")))
-               (substitute* "Setup.in"
-                 (("FONT = -lSDL_ttf")
-                  (string-append "FONT = -I" font-ref "/include/SDL -L"
-                                 font-ref "/lib -lSDL_ttf")))
-               (substitute* "Setup.in"
-                 (("IMAGE = -lSDL_image")
-                  (string-append "IMAGE = -I" image-ref "/include/SDL -L"
-                                 image-ref "/lib -lSDL_image")))
-               (substitute* "Setup.in"
-                 (("MIXER = -lSDL_mixer")
-                  (string-append "MIXER = -I" mixer-ref "/include/SDL -L"
-                                 mixer-ref "/lib -lSDL_mixer")))
-               (substitute* "Setup.in"
-                 (("SMPEG = -lsmpeg")
-                  (string-append "SMPEG = -I" smpeg-ref "/include/smpeg -L"
-                                 smpeg-ref "/lib -lsmpeg")))
-               (substitute* "Setup.in"
-                 (("PNG = -lpng")
-                  (string-append "PNG = -I" png-ref "/include -L"
-                                 png-ref "/lib -lpng")))
-               (substitute* "Setup.in"
-                 (("JPEG = -ljpeg")
-                  (string-append "JPEG = -I" jpeg-ref "/include -L"
-                                 jpeg-ref "/lib -ljpeg")))
-
-               (substitute* "Setup.in"
-                 (("FREETYPE = -lfreetype")
-                  (string-append "FREETYPE = -I" freetype-ref "/include/freetype2 -L"
-                                 freetype-ref "/lib -lfreetype")))
-
-               (substitute* "Setup.in"
-                 (("^pypm") "#pypm"))
-               ;; Create a path to a header file provided by v4l-utils.
-               (system* "mkdir" "linux")
-               (system* "ln" "--symbolic"
-                        (string-append v4l-ref "/include/libv4l1-videodev.h")
-                        "linux/videodev.h")
-               (system* "ln" "--symbolic" "Setup.in" "Setup")))))))
+     (list
+      #:tests? #f                 ; tests require pygame to be installed first
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-config
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("origincdirs = \\[.*\\]")
+                 "origincdirs = os.environ['C_INCLUDE_PATH'].split(\":\")")
+                (("ORIGLIBDIRS") "LIBRARY_PATH")
+                (("incdirs = \\[\\]") "incdirs = origincdirs")
+                (("libdirs = \\[\\]") "libdirs = origlibdirs"))))
+          (add-after 'unpack 'fix-sdl2-headers
+            (lambda _
+              (substitute* "buildconfig/config_unix.py"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h")
+                (("SDL_image.h") "SDL2/SDL_image.h")
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/imageext.c"
+                (("SDL_image.h") "SDL2/SDL_image.h"))
+              (substitute* "src_c/font.h"
+                (("SDL_ttf.h") "SDL2/SDL_ttf.h"))
+              (substitute* "src_c/mixer.h"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h"))
+              (substitute* "src_c/_sdl2/mixer.c"
+                (("SDL_mixer.h") "SDL2/SDL_mixer.h")))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     `(("freetype" ,freetype)
-       ("sdl" ,sdl)
-       ("sdl-image" ,sdl-image)
-       ("sdl-mixer" ,sdl-mixer)
-       ("sdl-ttf" ,sdl-ttf)
-       ("sdl-gfx" ,sdl-gfx)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libX11" ,libx11)
-       ("libsmpeg" ,libsmpeg)
-       ("portmidi" ,portmidi)
-       ("v4l-utils" ,v4l-utils)))
+     (list freetype
+           sdl2
+           sdl2-image
+           sdl2-mixer
+           sdl2-ttf
+           sdl2-gfx
+           libjpeg-turbo
+           libpng
+           libx11
+           libsmpeg
+           portmidi
+           v4l-utils))
     (home-page "https://www.pygame.org")
     (synopsis "SDL wrapper for Python")
     (description "Pygame is a set of Python modules designed for writing games.
-Pygame adds functionality on top of the excellent SDL library. This allows you
-to create fully featured games and multimedia programs in the python language.")
+It adds functionality on top of the SDL library, allowing you to create games
+and multimedia programs in the Python language.")
     (license (list license:bsd-2
                    ;; python numeric license as listed by Debian looks like
                    ;; an Expat-style license with a warranty disclaimer for
@@ -1210,7 +1264,7 @@ to create fully featured games and multimedia programs in the python language.")
 
 (define-public python-pygame-sdl2
   (let ((real-version "2.1.0")
-        (renpy-version "8.0.0"))
+        (renpy-version "8.0.3"))
     (package
       (inherit python-pygame)
       (name "python-pygame-sdl2")
@@ -1220,7 +1274,7 @@ to create fully featured games and multimedia programs in the python language.")
          (method url-fetch)
          (uri (string-append "https://www.renpy.org/dl/" renpy-version
                              "/pygame_sdl2-" version ".tar.gz"))
-         (sha256 (base32 "0majf64pdfba5byjlv41pgsdmwvy09hw3m7143jz3kc1wjd2gaw8"))
+         (sha256 (base32 "1nq78mybkvshshdjy5bly6nfq6dnwll648ng62fwmksxpni17486"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -1261,13 +1315,13 @@ developed mainly for Ren'py.")
 (define-public python-renpy
   (package
     (name "python-renpy")
-    (version "8.0.0")
+    (version "8.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.renpy.org/dl/" version
                            "/renpy-" version "-source.tar.bz2"))
-       (sha256 (base32 "09z3r16j4cxddkb50ghmi4xp0s05s15q4pzdmfajy85ignwqhjdi"))
+       (sha256 (base32 "1b49y60pi6304fg06lw5gajzrgg9w80swpfkn6pw0lxbr6djgjgn"))
        (modules '((guix build utils)))
        (patches
         (search-patches
@@ -1635,7 +1689,7 @@ robust and compatible with many systems and operating systems.")
 (define-public mygui
   (package
     (name "mygui")
-    (version "3.2.2")
+    (version "3.4.1")
     (source
      (origin
        (method git-fetch)
@@ -1645,7 +1699,7 @@ robust and compatible with many systems and operating systems.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wk7jmwm55rhlqqcyvqsxdmwvl70bysl9azh4kd9n57qlmgk3zmw"))))
+         "1gyd4bzm6qqpqw6is065qs5c729gl6rp989bnkygha6q4s371vz6"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; No test target
@@ -1677,10 +1731,8 @@ of use.")
 
 (define-public mygui-gl
   ;; Closure size is reduced by some 800 MiB.
-  (package
-    (inherit mygui)
+  (package/inherit mygui
     (name "mygui-gl")
-    (version "3.2.2")
     (arguments
      (substitute-keyword-arguments (package-arguments mygui)
        ((#:configure-flags _)
@@ -1721,7 +1773,7 @@ of use.")
      (list boost doxygen pkg-config))
     (inputs
      (list bullet
-           ffmpeg
+           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
            libxt
            lz4
            mygui-gl              ; OpenMW does not need Ogre.
@@ -2001,14 +2053,14 @@ a 2D editor view.")
 (define-public guile-chickadee
   (package
     (name "guile-chickadee")
-    (version "0.8.0")
+    (version "0.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/chickadee/"
                                   "chickadee-" version ".tar.gz"))
               (sha256
                (base32
-                "1k2dml2z57lnc36wrmwhh7avnpczxgxnshlfhpbk174vg6v609n0"))))
+                "0b92lld7kj629mvq44vgd8vmf9h7s5gkdawb35vkzlx5q03wjfvk"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))
@@ -2018,6 +2070,8 @@ a 2D editor view.")
     (inputs
      (list freetype
            guile-3.0-latest
+           libjpeg-turbo
+           libpng
            libvorbis
            mpg123
            openal
@@ -2337,29 +2391,30 @@ a.k.a. XenoCollide) as described in Game Programming Gems 7.")
 (define-public ode
   (package
     (name "ode")
-    (version "0.16.2")
+    (version "0.16.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://bitbucket.org/odedevs/ode/downloads/"
                            "ode-" version ".tar.gz"))
        (sha256
-        (base32 "08hgh4gqdk77jcw8b7gq2mwsfg4a5v5y0j7g42bxiqhmn3ffnsmj"))
+        (base32 "04y40czkh71m1p2r8ddfn5bajvlh7yyfa928jvi8qipwkgsdnhf7"))
        (modules '((guix build utils)))
        (snippet
         '(begin
-           (delete-file-recursively "libccd")
-           #t))))
+           (delete-file-recursively "libccd")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DODE_WITH_LIBCCD_SYSTEM=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unbundle-libccd
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("configure_file\\(libccd/.*") ""))
-             #t)))))
+     (list
+      ;; XXX: The sole test is failing on i686 due to a rounding error.
+      #:tests? (not (target-x86-32?))
+      #:configure-flags #~(list "-DODE_WITH_LIBCCD_SYSTEM=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unbundle-libccd
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("configure_file\\(libccd/.*") "")))))))
     (inputs
      (list glu libccd mesa))
     (home-page "https://www.ode.org/")
@@ -2386,12 +2441,20 @@ computer games, 3D authoring tools and simulation tools.")
              (commit (string-append "Chipmunk-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qmkn01g06p3rnhmbyffmjns6wj5vhgf9cscigk3wzxcpwv1hyxb"))))
+        (base32 "1qmkn01g06p3rnhmbyffmjns6wj5vhgf9cscigk3wzxcpwv1hyxb"))
+       (modules '((guix build utils)))
+       (snippet
+        #~(begin
+            ;; This is fixed in the upstream repository but the fix
+            ;; has not been released.
+            (substitute* "src/cpHastySpace.c"
+              (("#include <sys/sysctl.h>") ""))))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ;no test
-       #:configure-flags '("-DBUILD_STATIC=OFF"
-                           "-DBUILD_DEMOS=OFF")))
+     (list #:tests? #f                      ;no test
+           #:configure-flags
+           #~(list "-DBUILD_STATIC=OFF"
+                   "-DBUILD_DEMOS=OFF")))
     (inputs
      (list freeglut libxmu libxrandr))
     (home-page "https://chipmunk-physics.net/")
@@ -2572,7 +2635,7 @@ utilities frequently used in roguelikes.")
        `(("alsa-lib" ,alsa-lib)
          ("curl" ,curl)
          ("freetype" ,freetype)
-         ("ffmpeg" ,ffmpeg)
+         ("ffmpeg" ,ffmpeg-4)
          ("libjpeg" ,libjpeg-turbo)
          ("libogg" ,libogg)
          ("libpng" ,libpng)
@@ -2773,3 +2836,35 @@ systems where you stream new navigation data in and out as the player
 progresses the level, or you may regenerate tiles as the world changes.")
       (home-page "https://github.com/recastnavigation/recastnavigation")
       (license license:zlib))))
+
+(define-public raylib
+  (package
+    (name "raylib")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/raysan5/raylib/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14v5iwxh8grywiyw9agpd2sfpyriq1rwwkd9f2s4iihh0z5j7hk8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no test
+    (inputs (list alsa-lib
+                  libx11
+                  libxrandr
+                  libxi
+                  libxinerama
+                  libxcursor
+                  mesa))
+    (native-inputs (list pkg-config))
+    (synopsis "C library for videogame programming")
+    (description
+     "raylib is a high-level library for video game programming.  It aims to
+  abstract away platform and graphics details, allowing you to focus on
+  writing your game.")
+    (home-page "https://www.raylib.com/")
+    (license license:zlib)))

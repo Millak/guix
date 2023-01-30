@@ -5,6 +5,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,7 @@
              (ice-9 format)
              (ice-9 regex)
              (ice-9 match)
+             (ice-9 rdelim)
              (guix ui)
              (git))
 
@@ -100,6 +102,8 @@
               (make-regexp "^gnu/packages/python(-.+|)\\.scm$")
               "gnu/packages/sphinx.scm"
               "gnu/packages/tryton.scm"
+              "guix/build/pyproject-build-system.scm"
+              "guix/build-system/pyproject.scm"
               "guix/build/python-build-system.scm"
               "guix/build-system/python.scm"
               "guix/import/pypi.scm"
@@ -129,13 +133,23 @@ the haskell-build-system."
         #:name "R team"
         #:description
         "The R language, CRAN and Bioconductor repositories, the \"cran\" importer,
-and the r-build-system."))
+and the r-build-system."
+        #:scope (list "gnu/packages/bioconductor.scm"
+                      "gnu/packages/cran.scm"
+                      "guix/build/r-build-system.scm"
+                      "guix/build-system/r.scm"
+                      "guix/import/cran.scm"
+                      "guix/scripts/import/cran.scm"
+                      "tests/cran.scm")))
 
 (define-team julia
   (team 'julia
         #:name "Julia team"
         #:description
-        "The Julia language, Julia packages, and the julia-build-system."))
+        "The Julia language, Julia packages, and the julia-build-system."
+        #:scope (list (make-regexp "^gnu/packages/julia(-.+|)\\.scm$")
+                      "guix/build/julia-build-system.scm"
+                      "guix/build-system/julia.scm")))
 
 (define-team ocaml
   (team 'ocaml
@@ -175,7 +189,14 @@ and the maven-build-system."
 
 (define-team science
   (team 'science
-        #:name "Science team"))
+        #:name "Science team"
+        #:description "The main science disciplines and fields related
+packages (e.g. Astronomy, Chemistry, Math, Physics etc.)"
+        #:scope (list "gnu/packages/algebra.scm"
+                      "gnu/packages/astronomy.scm"
+                      "gnu/packages/geo.scm"
+                      "gnu/packages/chemestry.scm"
+                      "gnu/packages/maths.scm")))
 
 (define-team emacs
   (team 'emacs
@@ -185,7 +206,10 @@ ecosystem."
         #:scope (list (make-regexp "^gnu/packages/emacs(-.+|)\\.scm$")
                       "guix/build/emacs-build-system.scm"
                       "guix/build/emacs-utils.scm"
-                      "guix/build-system/emacs.scm")))
+                      "guix/build-system/emacs.scm"
+                      "guix/import/elpa.scm"
+                      "guix/scripts/import/elpa.scm"
+                      "tests/elpa.scm")))
 
 (define-team lisp
   (team 'lisp
@@ -200,11 +224,23 @@ asdf-build-system."
 
 (define-team ruby
   (team 'ruby
-        #:name "Ruby team"))
+        #:name "Ruby team"
+        #:scope (list "gnu/packages/ruby.scm"
+                      "guix/build/ruby-build-system.scm"
+                      "guix/build-system/ruby.scm"
+                      "guix/import/gem.scm"
+                      "guix/scripts/import/gem.scm"
+                      "tests/gem.scm")))
 
 (define-team go
   (team 'go
-        #:name "Go team"))
+        #:name "Go team"
+        #:scope (list "gnu/packages/golang.scm"
+                      "guix/build/go-build-system.scm"
+                      "guix/build-system/go.scm"
+                      "guix/import/go.scm"
+                      "guix/scripts/import/go.scm"
+                      "tests/go.scm")))
 
 (define-team embedded-bootstrap
   (team 'embedded-bootstrap
@@ -212,11 +248,23 @@ asdf-build-system."
 
 (define-team rust
   (team 'rust
-        #:name "Rust"))
+        #:name "Rust"
+        #:scope (list (make-regexp "^gnu/packages/(crates|rust)(-.+|)\\.scm$")
+                      "guix/build/cargo-build-system.scm"
+                      "guix/build/cargo-utils.scm"
+                      "guix/build-system/cargo.scm"
+                      "guix/import/crate.scm"
+                      "guix/scripts/import/crate.scm"
+                      "tests/crate.scm")))
 
 (define-team kernel
   (team 'kernel
-        #:name "Linux-libre kernel team"))
+        #:name "Linux-libre kernel team"
+        #:scope (list "gnu/build/linux-modules.scm"
+                      "gnu/packages/linux.scm"
+                      "gnu/tests/linux-modules.scm"
+                      "guix/build/linux-module-build-system.scm"
+                      "guix/build-system/linux-module.scm")))
 
 (define-team core
   (team 'core
@@ -314,19 +362,35 @@ asdf-build-system."
                       "gnu/packages/motti.scm"
                       "guix/build/minetest-build-system.scm")))
 
+(define-team localization
+  (team 'localization
+        #:name "Localization (l10n) team"
+        #:description
+        "Localization of your system to specific languages."
+        #:scope (list "gnu/packages/anthy.scm"
+                      "gnu/packages/fcitx5.scm"
+                      "gnu/packages/fcitx.scm"
+                      "gnu/packages/fonts.scm"
+                      "gnu/packages/ibus.scm")))
+
 (define-team translations
   (team 'translations
-        #:name "Translations"))
+        #:name "Translations"
+        #:scope (list "etc/news.scm"
+                      (make-regexp "^po/"))))
 
 (define-team installer
   (team 'installer
         #:name "Installer script and system installer"
-        #:scope
-        (list (make-regexp "^guix/installer(\\.scm$|/)"))))
+        #:scope (list (make-regexp "^gnu/installer(\\.scm$|/)"))))
 
 (define-team home
   (team 'home
-        #:name "Team for \"Guix Home\""))
+        #:name "Team for \"Guix Home\""
+        #:scope (list (make-regexp "^(gnu|guix/scripts)/home(\\.scm$|/)")
+                      "tests/guix-home.sh"
+                      "tests/home-import.scm"
+                      "tests/home-services.scm")))
 
 (define-team mentors
   (team 'mentors
@@ -339,7 +403,8 @@ asdf-build-system."
         #:name "Mozilla"
         #:description
         "Taking care about Icecat and Icedove, built from Mozilla Firefox
-and Thunderbird."))
+and Thunderbird."
+        #:scope (list "gnu/packages/gnuzilla.scm")))
 
 (define-team racket
   (team 'racket
@@ -347,13 +412,18 @@ and Thunderbird."))
         #:description
         "The Racket language and Racket-based languages, Racket packages,
 Racket's variant of Chez Scheme, and development of a Racket build system and
-importer."))
+importer."
+        #:scope (list "gnu/packages/chez.scm"
+                      "gnu/packages/racket.scm")))
+
+(define-team reproduciblebuilds
+  (team 'reproduciblebuilds
+        #:name "Reproducible Builds team"
+        #:description
+        "Reproducible Builds tooling and issues that affect any guix packages."
+        #:scope (list "gnu/packages/diffoscope.scm")))
 
 
-(define-member (person "Thiago Jung Bauermann"
-                       "bauermann@kolabnow.com")
-  embedded-bootstrap translations)
-
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
   science)
@@ -373,6 +443,10 @@ importer."))
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
   science)
+
+(define-member (person "Tobias Geerinckx-Rice"
+                       "me@tobias.gr")
+  core kernel mentors)
 
 (define-member (person "Björn Höfling"
                        "bjoern.hoefling@bjoernhoefling.de")
@@ -434,6 +508,26 @@ importer."))
                        "dev@jpoiret.xyz")
   core installer)
 
+(define-member (person "("
+                       "paren@disroot.org")
+  home mentors)
+
+(define-member (person "Simon Tournier"
+                       "zimon.toutoune@gmail.com")
+  julia core mentors)
+
+(define-member (person "Raghav Gururajan"
+                       "rg@raghavgururajan.name")
+  mentors)
+
+(define-member (person "宋文武"
+                       "iyzsong@envs.net")
+  games localization)
+
+(define-member (person "Vagrant Cascadian"
+                       "vagrant@reproducible-builds.org")
+  reproduciblebuilds)
+
 
 (define (find-team name)
   (or (hash-ref %teams (string->symbol name))
@@ -476,14 +570,16 @@ TEAMS when a patch is received by Debbugs."
              prefix
              (person-name member)
              (person-email member)))
-   (team-members team)))
+   (sort
+    (team-members team)
+    (lambda (m1 m2) (string<? (person-name m1) (person-name m2))))))
 
 (define (list-teams)
   "Print all teams, their scope and their members."
   (define port* (current-output-port))
   (define width* (%text-width))
-  (hash-for-each
-   (lambda (key team)
+  (for-each
+   (lambda (team)
      (format port*
              "\
 id: ~a
@@ -504,7 +600,11 @@ description: ~a
                (scope (format #f "scope: ~{~s ~}~%" scope))))
      (list-members team port* "+ ")
      (newline))
-   %teams))
+   (sort
+    (hash-map->list (lambda (key value) value) %teams)
+    (lambda (team1 team2)
+      (string<? (symbol->string (team-id team1))
+                (symbol->string (team-id team2)))))))
 
 
 (define (diff-revisions rev-start rev-end)
@@ -532,14 +632,38 @@ and REV-END, two git revision strings."
      (const 0))
     files))
 
+(define (git-patch->commit-id file)
+  "Parse the commit ID from the first line of FILE, a patch produced with git."
+  (call-with-input-file file
+    (lambda (port)
+      (let ((m (string-match "^From ([0-9a-f]{40})" (read-line port))))
+        (unless m
+          (error "invalid patch file:" file))
+        (match:substring m 1)))))
+
+(define (git-patch->revisions file)
+  "Return the start and end revisions of FILE, a patch file produced with git."
+  (let* ((rev-end (git-patch->commit-id file))
+         (rev-start (string-append rev-end "^")))
+    (list rev-start rev-end)))
+
 
 (define (main . args)
   (match args
     (("cc" . team-names)
      (apply cc (map find-team team-names)))
+    (("cc-members" patch-file)
+     (unless (file-exists? patch-file)
+       (error "patch file does not exist:" patch-file))
+     (apply main "cc-members" (git-patch->revisions patch-file)))
     (("cc-members" rev-start rev-end)
      (apply cc (find-team-by-scope
                 (diff-revisions rev-start rev-end))))
+    (("get-maintainer" patch-file)
+     (apply main "list-members"
+            (map (compose symbol->string team-id)
+                 (find-team-by-scope (apply diff-revisions
+                                            (git-patch->revisions patch-file))))))
     (("list-teams" . args)
      (list-teams))
     (("list-members" . team-names)
@@ -549,6 +673,18 @@ and REV-END, two git revision strings."
       team-names))
     (anything
      (format (current-error-port)
-             "Usage: etc/teams.scm <command> [<args>]~%"))))
+             "Usage: etc/teams.scm <command> [<args>]
+
+Commands:
+  cc <team-name>
+      get git send-email flags for cc-ing <team-name>
+  cc-members <start> <end> | patch
+      cc teams related to files changed between revisions or in a patch file
+  list-teams
+      list teams and their members
+  list-members <team-name>
+      list members belonging to <team-name>
+  get-maintainer <patch>
+      compatibility mode with Linux get_maintainer.pl~%"))))
 
 (apply main (cdr (command-line)))

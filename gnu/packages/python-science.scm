@@ -20,6 +20,8 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2022 Eric Bavier <bavier@posteo.net>
+;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,6 +50,7 @@
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages image)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages machine-learning)
   #:use-module (gnu packages maths)
@@ -289,26 +292,6 @@ logic, also known as grey logic.")
 genetic variation data.")
     (license license:expat)))
 
-(define-public python-sgp4
-  (package
-    (name "python-sgp4")
-    (version "2.12")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "sgp4" version))
-       (sha256
-        (base32 "0dncp9i5b6afkg7f8mj9j0qzsp008b8v73yc0qkmizhpns7mvwvx"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     (list python-numpy))
-    (home-page "https://github.com/brandon-rhodes/python-sgp4")
-    (synopsis "Track earth satellite TLE orbits using SGP4")
-    (description
-     "This package provides a Python implementation of the most recent version
-of the SGP4 satellite tracking algorithm.")
-    (license license:expat)))
-
 (define-public python-trimesh
   (package
     (name "python-trimesh")
@@ -346,6 +329,26 @@ a full featured and well tested Trimesh object which allows for easy
 manipulation and analysis, in the style of the Polygon object in the Shapely
 library.")
     (license license:expat)))
+
+(define-public python-tspex
+  (package
+    (name "python-tspex")
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "tspex" version))
+              (sha256
+               (base32
+                "0x64ki1nzhms2nb8xpng92bzh5chs850dvapr93pkg05rk22m6mv"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-matplotlib python-numpy python-pandas python-xlrd))
+    (home-page "https://apcamargo.github.io/tspex/")
+    (synopsis "Calculate tissue-specificity metrics for gene expression")
+    (description
+     "This package provides a Python package for calculating
+tissue-specificity metrics for gene expression.")
+    (license license:gpl3+)))
 
 (define-public python-pandas
   (package
@@ -500,6 +503,47 @@ annotated with a few interface descriptions and turns it into a native
 Python module with the same interface, but (hopefully) faster.")
     (license license:bsd-3)))
 
+(define-public python-pyts
+  (package
+    (name "python-pyts")
+    (version "0.12.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pyts" version))
+              (sha256
+               (base32
+                "1cb5jwp8g52a3hxay6mxbfzk16ly6yj6rphq8cwbwk1k2jdf11dg"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v"
+                       ;; XXX: This test fails for unknown reasons
+                       ;; Expected:
+                       ;;  (40, 9086)
+                       ;; Got:
+                       ;; (40, 9088)
+                       "-k"
+                       "not pyts.multivariate.transformation.weasel_muse.WEASELMUSE")))))))
+    (propagated-inputs
+     (list python-joblib
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest python-pytest-cov))
+    (home-page "https://github.com/johannfaouzi/pyts")
+    (synopsis "Python package for time series classification")
+    (description
+     "This package provides a Python package for time series classification.")
+    (license license:bsd-3)))
+
 (define-public python-bottleneck
   (package
     (name "python-bottleneck")
@@ -631,14 +675,14 @@ and visualization with these data structures.")
 (define-public python-msgpack-numpy
   (package
     (name "python-msgpack-numpy")
-    (version "0.4.6.post0")
+    (version "0.4.8")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "msgpack-numpy" version))
        (sha256
         (base32
-         "0syzy645mwcy7lfjwz6pc8f9p2vv1qk4limc8iina3l5nnf0rjyz"))))
+         "0sbfanbkfs6c77np4vz0ayrwnv99bpn5xgj5fnf2yhhk0lcd6ry6"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-msgpack python-numpy))
@@ -1290,6 +1334,26 @@ powerful visualization backend to facilitate rapid prototyping, analysis, and
 visual integration of spatially referenced datasets.")
     (license license:expat)))
 
+(define-public python-simplespectral
+  (package
+    (name "python-simplespectral")
+    (version "1.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "SimpleSpectral" version))
+       (sha256
+        (base32 "0qh3xwdv9cwcqdamvglrhm586p4yaq1hd291py1fvykhk2a2d4w6"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-numpy python-scipy))
+    (home-page "https://github.com/xmikos/simplespectral")
+    (synopsis "FFT module for Python")
+    (description
+     "This package provides a simplified @code{scipy.signal.spectral} module
+to do spectral analysis in Python.")
+    (license license:expat)))
+
 (define-public python-traittypes
   (package
     (name "python-traittypes")
@@ -1426,6 +1490,55 @@ Python, from the Sheffield machine learning group.  GPy implements a range of
 machine learning algorithms based on GPs.")
     (license license:bsd-3)))
 
+(define-public python-pydicom
+  (package
+    (name "python-pydicom")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pydicom/pydicom")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18l26s53yf5j9yh2zwq83n74qq4f2iq0cfblamsw4y9k35l1c108"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (chdir "pydicom/tests")
+               (invoke "python3" "-m" "pytest" "-k" ;skip tests using web data
+                       (string-append
+                        "not test_jpeg_ls_pixel_data.py"
+                        " and not test_gdcm_pixel_data.py"
+                        " and not test_pillow_pixel_data.py"
+                        " and not test_rle_pixel_data.py"
+                        " and not Test_JPEG_LS_Lossless_transfer_syntax"
+                        " and not test_numpy_pixel_data.py"
+                        " and not test_data_manager.py"
+                        " and not test_handler_util.py"
+                        " and not test_overlay_np.py"
+                        " and not test_encoders_pydicom.py"
+                        " and not test_encaps.py"
+                        " and not test_reading_ds_with_known_tags_with_UN_VR"
+                        " and not TestDatasetOverlayArray"
+                        " and not TestReader"
+                        " and not test_filewriter.py"))))))))
+    (native-inputs (list python-pytest))
+    (inputs (list gdcm libjpeg-turbo))
+    (propagated-inputs (list python-numpy python-pillow))
+    (home-page "https://github.com/pydicom/pydicom")
+    (synopsis "Python library for reading and writing DICOM data")
+    (description "@code{python-pydicom} is a Python library for reading and
+writing DICOM medical imaging data.  It lets developers read, modify and write
+DICOM data in a pythonic way.")
+    (license license:expat)))
+
 (define-public python-deepdish
   (package
     (name "python-deepdish")
@@ -1461,6 +1574,30 @@ data as HDF5.  It can save any Python data structure, offering the same ease
 of use as pickling or @code{numpy.save}, but with the language
 interoperability offered by HDF5.")
     (license license:bsd-3)))
+
+(define-public python-simple-pid
+  (package
+    (name "python-simple-pid")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "simple-pid" version))
+              (sha256
+               (base32
+                "094mz6rmfq1h0gpns5vlxb7xf9297hlkhndw7g9k95ziqfkv7mk0"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "python" "-m" "unittest" "discover" "tests/")))))))
+    (home-page "https://github.com/m-lundberg/simple-pid")
+    (synopsis "Easy to use PID controller")
+    (description "This package provides a simple and easy-to-use @acronym{PID,
+proportional-integral-derivative} controller.")
+    (license license:expat)))
 
 (define-public python-opt-einsum
   (package

@@ -8,6 +8,7 @@
 ;;; Copyright © 2021 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -28,6 +29,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module (gnu packages)
   #:use-module (gnu packages check)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
@@ -35,7 +37,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
-  #:use-module (gnu packages libreoffice)  ;for hunspell
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ncurses)
@@ -44,6 +46,8 @@
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
+  #:use-module (gnu packages readline)
+  #:use-module (gnu packages ruby)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (guix download)
@@ -150,6 +154,84 @@ to finish tasks, not organize them.")
      "Taskwarrior is a command-line task manager following the Getting Things
 Done time management method.  It supports network synchronization, filtering
 and querying data, exposing task data in multiple formats to other tools.")
+    (license license:expat)))
+
+(define-public tasksh
+  (package
+    (name "tasksh")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://taskwarrior.org/download/tasksh-" version ".tar.gz"))
+       (sha256 (base32
+                "1z8zw8lld62fjafjvy248dncjk0i4fwygw0ahzjdvyyppx4zjhkf"))))
+    (build-system cmake-build-system)
+    (inputs
+     (list readline))
+    (arguments
+     `(#:tests? #f ; No tests implemented.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'install-license-files)))) ; Already installed by package
+    (home-page "https://taskwarrior.org")
+    (synopsis "Taskwarrior shell")
+    (description
+     "Tasksh is a shell for Taskwarrior, providing a more immersive
+environment for list management. It has a review feature, shell command
+execution, and libreadline support.")
+    (license license:expat)))
+
+(define-public timewarrior
+  (package
+    (name "timewarrior")
+    (version "1.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "https://github.com/GothenburgBitFactory/timewarrior/releases/download/v" version
+             "/timew-" version ".tar.gz"))
+       (patches (search-patches "timewarrior-time-sensitive-tests.patch"))
+       (sha256 (base32
+                "0lyaqzcg8np2fpsmih0hlkjxd3qbadc7khr24m1pq9lsdhq7xpy4"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-cmake-shell
+            (lambda _
+              (substitute* "src/commands/CMakeLists.txt"
+                (("/bin/sh") "sh"))))
+          ;; Fix out of source building of manual pages
+          (add-after 'patch-source-shebangs 'patch-man-cmake
+            (lambda _
+              (substitute* "doc/man1/CMakeLists.txt"
+                (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}")
+                 "${CMAKE_CURRENT_SOURCE_DIR}"))
+              (substitute* "doc/man7/CMakeLists.txt"
+                (("\\$\\{CMAKE_CURRENT_BINARY_DIR\\}")
+                 "${CMAKE_CURRENT_SOURCE_DIR}"))))
+          (add-after 'install 'install-completions
+            (lambda _
+              (let ((bash-completion-install-dir
+                     (string-append #$output "/etc/bash_completion.d")))
+                (mkdir-p bash-completion-install-dir)
+                (copy-file
+                 "../timew-1.4.3/completion/timew-completion.bash"
+                 (string-append bash-completion-install-dir "/timew"))))))))
+    (native-inputs
+     (list ruby-asciidoctor))
+    (inputs
+     (list gnutls python `(,util-linux "lib")))
+    (home-page "https://timewarrior.net")
+    (synopsis "Command line utility to track and report time")
+    (description
+     "Timewarrior is a command line time tracking application, which allows
+you to record time spent on activities.  You may be tracking your time for
+curiosity, or because your work requires it.")
     (license license:expat)))
 
 (define-public worklog

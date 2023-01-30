@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +65,10 @@
 
 (test-assert "authorized-key? public-key singleton"
   (authorized-key? %public-key (public-keys->acl (list %public-key))))
+
+(test-equal "public-keys->acl deduplication"
+  (public-keys->acl (list %public-key))
+  (public-keys->acl (make-list 10 %public-key)))
 
 (test-assert "signature-case valid-signature"
   (let* ((hash (sha256 #vu8(1 2 3)))

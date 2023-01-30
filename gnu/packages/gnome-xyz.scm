@@ -55,6 +55,7 @@
   #:use-module (gnu packages bash)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -69,7 +70,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages xml)
+  #:use-module (gnu packages xorg))
 
 (define-public arc-icon-theme
   (package
@@ -196,7 +198,7 @@ simple and consistent.")
 (define-public papirus-icon-theme
   (package
     (name "papirus-icon-theme")
-    (version "20220508")
+    (version "20230104")
     (source
      (origin
        (method git-fetch)
@@ -204,7 +206,7 @@ simple and consistent.")
              (url "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme")
              (commit version)))
        (sha256
-        (base32 "0rpcniaw8xbn23q67m26vgx3fynn4v056azrfp63lxdh46gfsvmc"))
+        (base32 "1x40gdqyw0gj389by6904g5a64r72by544k3nlyiamjhg2zmpx97"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -302,6 +304,97 @@ hyperbolic, exponential, and logarithmic functions, as well as arbitrary sums
 and products.  Plots is designed to integrate well with the GNOME desktop and
 takes advantage of modern hardware using OpenGL.")
     (license license:gpl3+)))
+
+(define-public portfolio
+  (package
+    (name "portfolio")
+    (version "0.9.14")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tchx84/Portfolio")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h09v8lhz3kv6qmwjhx3gr7rp6ccfhrzm54gjnaixl4dcg9zddls"))))
+    (arguments
+     (list #:glib-or-gtk? #t
+           #:imported-modules `(,@%meson-build-system-modules
+                                (guix build python-build-system))
+           #:modules '((guix build meson-build-system)
+                       ((guix build python-build-system)
+                        #:prefix python:)
+                       (guix build utils))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'rename-executable
+                          (lambda _
+                            (with-directory-excursion (string-append #$output
+                                                                     "/bin")
+                              (symlink "dev.tchx84.Portfolio" "portfolio"))))
+                        (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+                          (lambda* (#:key inputs outputs #:allow-other-keys)
+                            (wrap-program (search-input-file outputs
+                                                             "bin/dev.tchx84.Portfolio")
+                              `("GUIX_PYTHONPATH" =
+                                (,(getenv "GUIX_PYTHONPATH") ,(python:site-packages
+                                                               inputs
+                                                               outputs)))
+                              `("GI_TYPELIB_PATH" =
+                                (,(getenv "GI_TYPELIB_PATH")))))))))
+    (build-system meson-build-system)
+    (inputs (list bash-minimal python-pygobject gtk+ libhandy))
+    (native-inputs
+     (list desktop-file-utils
+           gettext-minimal
+           `(,glib "bin")
+           `(,gtk+ "bin")
+           python))
+    (home-page "https://github.com/tchx84/Portfolio")
+    (synopsis "Minimalist file manager for Linux mobile devices")
+    (description
+     "Portfolio is a minimalist file manager for those who want to use Linux
+mobile devices.  Tap to activate and long press to select, to browse, open,
+copy, move, delete, or edit your files.")
+    (license license:gpl3+)))
+
+(define-public gnome-shell-extension-unite-shell
+  (package
+    (name "gnome-shell-extension-unite-shell")
+    (version "69")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hardpixel/unite-shell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "10yh6ylyp43ykcza180iak08wfypay3raqf3p0vrj9ngm98qzq70"))))
+    (build-system copy-build-system)
+    (native-inputs (list `(,glib "bin") gettext-minimal))
+    (inputs (list xprop))
+    (arguments
+     (list #:install-plan ''(("./unite@hardpixel.eu"
+                              "share/gnome-shell/extensions/unite@hardpixel.eu"))
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'patch-xprop-bin
+                          (lambda _
+                            (substitute* "unite@hardpixel.eu/window.js"
+                              (("xprop")
+                               (string-append #$(this-package-input "xprop")
+                                              "/bin/xprop")))))
+                        (add-before 'install 'compile-schemas
+                          (lambda _
+                            (with-directory-excursion "unite@hardpixel.eu/schemas"
+                              (invoke "glib-compile-schemas" ".")))))))
+    (home-page "https://github.com/hardpixel/unite-shell")
+    (synopsis "Top panel and window decoration extension for GNOME Shell")
+    (description
+     "Unite is a GNOME Shell extension which makes a few layout
+tweaks to the top panel and removes window decorations to make it look like
+Ubuntu Unity Shell.")
+    (license license:gpl3)))
 
 (define-public gnome-shell-extension-appindicator
   (package
@@ -780,7 +873,7 @@ notebooks and tiling window managers.")
 (define-public gpaste
   (package
     (name "gpaste")
-    (version "42.1")
+    (version "42.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -789,12 +882,13 @@ notebooks and tiling window managers.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1dlqa69zvzzdxyh21qfrx2nhpfy0fbihxpgkxqmramcgv3h5k4q3"))
+                "0qq2p19p3r3lz8yfynpnf36cipv54bzdbmq1x5zgwhyl4yl41g28"))
               (patches
                (search-patches "gpaste-fix-paths.patch"))))
     (build-system meson-build-system)
     (native-inputs
-     (list gettext-minimal
+     (list gcr
+           gettext-minimal
            gobject-introspection
            (list glib "bin")            ; for glib-compile-resources
            pkg-config
@@ -820,6 +914,9 @@ notebooks and tiling window managers.")
            #~(modify-phases %standard-phases
                (add-after 'unpack 'fix-introspection-install-dir
                  (lambda _
+                   (substitute* "src/libgpaste/gpaste/gpaste-settings.c"
+                     (("@gschemasCompiled@")
+                      (string-append #$output "/share/glib-2.0/schemas/")))
                    (substitute* '("src/gnome-shell/extension.js"
                                   "src/gnome-shell/prefs.js")
                      (("@typelibPath@")
@@ -837,7 +934,7 @@ copies you now want to paste.")
 (define-public gnome-shell-extension-vertical-overview
   (package
     (name "gnome-shell-extension-vertical-overview")
-    (version "9")
+    (version "10")
     (source
      (origin
        (method git-fetch)
@@ -846,7 +943,7 @@ copies you now want to paste.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0pkby00rjipj04z68d6i3rr7mzm01dckf2vl3iz6yvbl39602icl"))
+         "1sqkbg93qqrq47wyfnh2flg7dpsmv5c2pmkx8kgqhnbl7j2kgi0l"))
        (file-name (git-file-name name version))
        (snippet
         '(begin (delete-file "schemas/gschemas.compiled")))))
@@ -918,7 +1015,7 @@ position when the mouse is moved rapidly.")
 (define-public gnome-shell-extension-burn-my-windows
   (package
     (name "gnome-shell-extension-burn-my-windows")
-    (version "21")
+    (version "22")
     (source
      (origin
        (method git-fetch)
@@ -927,7 +1024,7 @@ position when the mouse is moved rapidly.")
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "07ckfl47pq83nhb77v230zfxlz3imga3s8nn3sr9cq4zxvbkj2r4"))
+         "185xrf330d9bflmk0l61cnzlylnppb2v4yz6v6ygkk4zpwyil8np"))
        (file-name (git-file-name name version))))
     (build-system copy-build-system)
     (arguments
@@ -957,7 +1054,7 @@ animation of closing windowed applications.")
 (define-public gnome-shell-extension-blur-my-shell
   (package
     (name "gnome-shell-extension-blur-my-shell")
-    (version "29")
+    (version "44")
     (source
      (origin
        (method git-fetch)
@@ -967,22 +1064,21 @@ animation of closing windowed applications.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "13x7zgaj3dz7lypdv1bgmpmh0f2w53q567zxmhmqimi1gy5mjrvk"))
-       (snippet
-        '(begin (delete-file "src/schemas/gschemas.compiled")))))
+         "0h7yfvrrg5r821mzrp42c09jws06mw6v9avvkfykqj8n8qnslmyx"))))
     (build-system copy-build-system)
     (arguments
-     `(#:install-plan
-       '(("." ,(string-append
-                "share/gnome-shell/extensions/"
-                "blur-my-shell@aunetx")
-          #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
-                            "\\.xml$" "\\.compiled$")))
+     '(#:install-plan
+       (let ((extension "share/gnome-shell/extensions/blur-my-shell@aunetx"))
+         `(("src/" ,extension)
+           ("resources/" ,extension
+            #:include-regexp ("\\.svg$" "\\.ui"))
+           ("." ,extension
+            #:exclude-regexp ("src/" "resources/")
+            #:include-regexp ("\\.js(on)?$" "\\.css$" "\\.ui$" "\\.png$"
+                              "\\.xml$" "\\.compiled$"))))
        #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'cd-src
-           (lambda _ (chdir "src")))
-         (add-before 'install 'compile-schemas
+         (add-after 'unpack 'compile-schemas
            (lambda _
              (with-directory-excursion "schemas"
                (invoke "glib-compile-schemas" ".")))))))
@@ -997,7 +1093,7 @@ GNOME Shell, including the top panel, dash and overview.")
 (define-public gnome-shell-extension-radio
   (package
     (name "gnome-shell-extension-radio")
-    (version "19")
+    (version "20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1007,7 +1103,7 @@ GNOME Shell, including the top panel, dash and overview.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qsi6c57hxh4jqdw18knm06601lhag6jdbvzg0r79aa9572zy8a0"))))
+                "01dmziad9g7bs3hr59aaz3mivkc6rqfyb9bz2v202zk22vcr5a2y"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1434,6 +1530,47 @@ used in text editing environments to provide a complete and integrated
 feature-set for programming Vala effectively.")
     (license license:lgpl2.1+)))
 
+
+(define-public yaru-theme
+  (package
+    (name "yaru-theme")
+    (version "22.10.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ubuntu/yaru")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0f052a5cyf4lijyrdp4kjvxrx6d5fbj7109pi2bhxs9lk5jy8z86"))))
+    (build-system meson-build-system)
+    (native-inputs
+     (list python sassc pkg-config `(,glib "bin") `(,gtk+ "bin")))
+    (arguments
+     (list #:configure-flags #~'("-Dmate=true"
+                                 "-Dmate-dark=true"
+                                 "-Dxfwm4=true"
+                                 "-Dmetacity=true"
+                                 "-Dsessions=false")))
+    (home-page "https://github.com/ubuntu/yaru")
+    (synopsis "Ubuntu community theme yaru")
+    (description "Yaru is the default theme for Ubuntu.
+
+It contains:
+
+@itemize
+@item a GNOME Shell theme based on the upstream GNOME shell theme
+@item a light and dark GTK theme (gtk2 and gtk3) based on the upstream Adwaita
+ Gtk theme
+@item an icon & cursor theme, derived from the Unity8 Suru icons and Suru icon
+ theme
+@item a sound theme, combining sounds from the WoodenBeaver and Touch-Remix
+ sound themes.
+@end itemize")
+    (license (list license:lgpl2.1 license:lgpl3 license:cc-by-sa4.0))))
+  
 (define-public nordic-theme
   (let ((commit "07d764c5ebd5706e73d2e573f1a983e37b318915")
 	(revision "0"))

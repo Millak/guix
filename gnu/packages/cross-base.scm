@@ -7,6 +7,7 @@
 ;;; Copyright © 2019, 2020, 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Carl Dong <contact@carldong.me>
 ;;; Copyright © 2020 Mathieu Othacehe <m.othacehe@gmail.com>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,7 +33,9 @@
   #:use-module (gnu packages mingw)
   #:use-module (guix platform)
   #:use-module (guix packages)
+  #:use-module (guix diagnostics)
   #:use-module (guix download)
+  #:use-module (guix i18n)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
@@ -74,9 +77,23 @@
         `(cons ,(string-append "--target=" target)
                ,flags))))))
 
-(define* (cross-binutils target #:optional (binutils binutils))
+(define (contains-keyword? args)
+  "Check if ARGS contains a keyword object."
+  (find keyword? args))
+
+(define* (cross-binutils . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-binutils* args)
+      (apply cross-binutils/deprecated args)))
+
+(define* (cross-binutils/deprecated target #:optional (binutils binutils))
+  (warning (G_ "'cross-binutils' must be used with keyword arguments~%"))
+  (cross-binutils* target #:binutils binutils))
+
+(define* (cross-binutils* target #:key (binutils binutils))
   "Return a cross-Binutils for TARGET using BINUTILS."
-  (let ((binutils (package (inherit binutils)
+  (let ((binutils (package
+                    (inherit binutils)
                     (arguments
                      (substitute-keyword-arguments (package-arguments
                                                     binutils)
@@ -128,71 +145,71 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
     ;; for instance.
     (let ((args `(#:strip-binaries? #f
                   ,@(package-arguments xgcc))))
-     (substitute-keyword-arguments args
-       ((#:configure-flags flags)
-        `(append (list ,(string-append "--target=" target)
-                       ,@(if libc
-                             `( ;; Disable libcilkrts because it is not
+      (substitute-keyword-arguments args
+        ((#:configure-flags flags)
+         `(append (list ,(string-append "--target=" target)
+                        ,@(if libc
+                              `( ;; Disable libcilkrts because it is not
                                 ;; ported to GNU/Hurd.
-                               "--disable-libcilkrts"
-                               ;; When building a cross compiler, --with-sysroot is
-                               ;; implicitly set to "$gcc_tooldir/sys-root".  This does
-                               ;; not work for us, because --with-native-system-header-dir
-                               ;; is searched for relative to this location.  Thus, we set
-                               ;; it to "/" so GCC is able to find the target libc headers.
-                               ;; This is safe because in practice GCC uses CROSS_CPATH
-                               ;; & co to separate target and host libraries.
-                               "--with-sysroot=/")
-                             `( ;; Disable features not needed at this stage.
-                               "--disable-shared" "--enable-static"
-                               "--enable-languages=c,c++"
+                                "--disable-libcilkrts"
+                                ;; When building a cross compiler, --with-sysroot is
+                                ;; implicitly set to "$gcc_tooldir/sys-root".  This does
+                                ;; not work for us, because --with-native-system-header-dir
+                                ;; is searched for relative to this location.  Thus, we set
+                                ;; it to "/" so GCC is able to find the target libc headers.
+                                ;; This is safe because in practice GCC uses CROSS_CPATH
+                                ;; & co to separate target and host libraries.
+                                "--with-sysroot=/")
+                              `( ;; Disable features not needed at this stage.
+                                "--disable-shared" "--enable-static"
+                                "--enable-languages=c,c++"
 
-                               ;; libstdc++ cannot be built at this stage
-                               ;; ("Link tests are not allowed after
-                               ;; GCC_NO_EXECUTABLES.").
-                               "--disable-libstdc++-v3"
+                                ;; libstdc++ cannot be built at this stage
+                                ;; ("Link tests are not allowed after
+                                ;; GCC_NO_EXECUTABLES.").
+                                "--disable-libstdc++-v3"
 
-                               "--disable-threads" ;libgcc, would need libc
-                               "--disable-libatomic"
-                               "--disable-libmudflap"
-                               "--disable-libgomp"
-                               "--disable-libmpx"
-                               "--disable-libssp"
-                               "--disable-libquadmath"
-                               "--disable-decimal-float" ;would need libc
-                               "--disable-libcilkrts"
+                                "--disable-threads" ;libgcc, would need libc
+                                "--disable-libatomic"
+                                "--disable-libmudflap"
+                                "--disable-libgomp"
+                                "--disable-libmpx"
+                                "--disable-libssp"
+                                "--disable-libquadmath"
+                                "--disable-decimal-float" ;would need libc
+                                "--disable-libcilkrts"
 
-                               ;; When target is any OS other than 'none' these
-                               ;; libraries will fail if there is no libc
-                               ;; present. See
-                               ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg01311.html>
-                               "--disable-libitm"
-                               "--disable-libvtv"
-                               "--disable-libsanitizer"
+                                ;; When target is any OS other than 'none' these
+                                ;; libraries will fail if there is no libc
+                                ;; present. See
+                                ;; <https://lists.gnu.org/archive/html/guix-devel/2016-02/msg01311.html>
+                                "--disable-libitm"
+                                "--disable-libvtv"
+                                "--disable-libsanitizer"
                                 ))
 
-                       ;; Install cross-built libraries such as libgcc_s.so in
-                       ;; the "lib" output.
-                       ,@(if libc
-                             `((string-append "--with-toolexeclibdir="
-                                              (assoc-ref %outputs "lib")
-                                              "/" ,target "/lib"))
-                             '()))
+                        ;; Install cross-built libraries such as libgcc_s.so in
+                        ;; the "lib" output.
+                        ,@(if libc
+                              `((string-append "--with-toolexeclibdir="
+                                               (assoc-ref %outputs "lib")
+                                               "/" ,target "/lib"))
+                              '()))
 
-                 ,(if libc
-                      flags
-                      `(remove (cut string-match "--enable-languages.*" <>)
-                               ,flags))))
-       ((#:make-flags flags)
-        (if libc
-            `(let ((libc (assoc-ref %build-inputs "libc")))
-               ;; FLAGS_FOR_TARGET are needed for the target libraries to receive
-               ;; the -Bxxx for the startfiles.
-               (cons (string-append "FLAGS_FOR_TARGET=-B" libc "/lib")
-                     ,flags))
-            flags))
-       ((#:phases phases)
-        `(cross-gcc-build-phases ,target ,phases))))))
+                  ,(if libc
+                       flags
+                       `(remove (cut string-match "--enable-languages.*" <>)
+                                ,flags))))
+        ((#:make-flags flags)
+         (if libc
+             `(let ((libc (assoc-ref %build-inputs "libc")))
+                ;; FLAGS_FOR_TARGET are needed for the target libraries to receive
+                ;; the -Bxxx for the startfiles.
+                (cons (string-append "FLAGS_FOR_TARGET=-B" libc "/lib")
+                      ,flags))
+             flags))
+        ((#:phases phases)
+         `(cross-gcc-build-phases ,target ,phases))))))
 
 (define (cross-gcc-patches xgcc target)
   "Return GCC patches needed for XGCC and TARGET."
@@ -203,7 +220,7 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
          (append (search-patches "gcc-4.9.3-mingw-gthr-default.patch")
                  (if (version>=? (package-version xgcc) "7.0")
                      (search-patches "gcc-7-cross-mingw.patch")
-                    '())))
+                     '())))
         (else '())))
 
 (define (cross-gcc-snippet target)
@@ -231,13 +248,15 @@ base compiler and using LIBC (which may be either a libc package or #f.)"
 XGCC as the base compiler.  Use XBINUTILS as the associated cross-Binutils.
 If LIBC is false, then build a GCC that does not target a libc; otherwise,
 target that libc."
-  (package (inherit xgcc)
+  (package
+    (inherit xgcc)
     (name (string-append "gcc-cross-"
                          (if libc "" "sans-libc-")
                          target))
     (source
      (origin
-       (inherit (package-source xgcc))
+       (inherit
+        (package-source xgcc))
        (patches
         (append
          (origin-patches (package-source xgcc))
@@ -304,7 +323,7 @@ target that libc."
              `(,@inputs
                ("libc" ,libc)
                ("libc:static" ,libc "static")
-               ("xkernel-headers"                ;the target headers
+               ("xkernel-headers"       ;the target headers
                 ,@(assoc-ref (package-propagated-inputs libc)
                              "kernel-headers"))))
             (else inputs)))))
@@ -330,15 +349,32 @@ target that libc."
                              %gcc-cross-include-paths)))
     (native-search-paths '())))
 
-(define* (cross-kernel-headers target
-                               #:optional
-                               (linux-headers linux-libre-headers)
-                               (xgcc (cross-gcc target))
-                               (xbinutils (cross-binutils target)))
+(define* (cross-kernel-headers . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-kernel-headers* args)
+      (apply cross-kernel-headers/deprecated args)))
+
+(define* (cross-kernel-headers/deprecated target
+                                          #:optional
+                                          (linux-headers linux-libre-headers)
+                                          (xgcc (cross-gcc target))
+                                          (xbinutils (cross-binutils target)))
+  (warning (G_ "'cross-kernel-headers' must be used with keyword arguments~%"))
+  (cross-kernel-headers* target
+                         #:linux-headers linux-headers
+                         #:xgcc xgcc
+                         #:xbinutils xbinutils))
+
+(define* (cross-kernel-headers* target
+                                #:key
+                                (linux-headers linux-libre-headers)
+                                (xgcc (cross-gcc target))
+                                (xbinutils (cross-binutils target)))
   "Return headers depending on TARGET."
 
   (define xlinux-headers
-    (package (inherit linux-headers)
+    (package
+      (inherit linux-headers)
       (name (string-append (package-name linux-headers)
                            "-cross-" target))
       (arguments
@@ -364,7 +400,8 @@ target that libc."
                        ,@(package-native-inputs linux-headers)))))
 
   (define xgnumach-headers
-    (package (inherit gnumach-headers)
+    (package
+      (inherit gnumach-headers)
       (name (string-append (package-name gnumach-headers)
                            "-cross-" target))
 
@@ -373,7 +410,8 @@ target that libc."
                        ,@(package-native-inputs gnumach-headers)))))
 
   (define xmig
-    (package (inherit mig)
+    (package
+      (inherit mig)
       (name (string-append "mig-cross"))
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -396,7 +434,8 @@ target that libc."
                        ,@(package-native-inputs mig)))))
 
   (define xhurd-headers
-    (package (inherit hurd-headers)
+    (package
+      (inherit hurd-headers)
       (name (string-append (package-name hurd-headers)
                            "-cross-" target))
 
@@ -405,8 +444,9 @@ target that libc."
                        ("cross-mig" ,xmig)
                        ,@(alist-delete "mig"(package-native-inputs hurd-headers))))))
 
-   (define xglibc/hurd-headers
-    (package (inherit glibc/hurd-headers)
+  (define xglibc/hurd-headers
+    (package
+      (inherit glibc/hurd-headers)
       (name (string-append (package-name glibc/hurd-headers)
                            "-cross-" target))
 
@@ -437,15 +477,16 @@ target that libc."
                        ,@(alist-delete "mig"(package-native-inputs glibc/hurd-headers))))))
 
   (define xhurd-minimal
-    (package (inherit hurd-minimal)
+    (package
+      (inherit hurd-minimal)
       (name (string-append (package-name hurd-minimal)
                            "-cross-" target))
       (arguments
        (substitute-keyword-arguments
-         `(#:modules ((guix build gnu-build-system)
-                      (guix build utils)
-                      (srfi srfi-26))
-           ,@(package-arguments hurd-minimal))
+           `(#:modules ((guix build gnu-build-system)
+                        (guix build utils)
+                        (srfi srfi-26))
+             ,@(package-arguments hurd-minimal))
          ((#:phases phases)
           `(modify-phases ,phases
              (add-before 'configure 'set-cross-headers-path
@@ -464,7 +505,8 @@ target that libc."
                        ,@(alist-delete "mig"(package-native-inputs hurd-minimal))))))
 
   (define xhurd-core-headers
-    (package (inherit hurd-core-headers)
+    (package
+      (inherit hurd-core-headers)
       (name (string-append (package-name hurd-core-headers)
                            "-cross-" target))
 
@@ -481,12 +523,30 @@ target that libc."
     ((or "i586-pc-gnu" "i586-gnu") xhurd-core-headers)
     (_ xlinux-headers)))
 
-(define* (cross-libc target
-                     #:optional
-                     (libc glibc)
-                     (xgcc (cross-gcc target))
-                     (xbinutils (cross-binutils target))
-                     (xheaders (cross-kernel-headers target)))
+(define* (cross-libc . args)
+  (if (or (= (length args) 1) (contains-keyword? args))
+      (apply cross-libc* args)
+      (apply cross-libc/deprecated args)))
+
+(define* (cross-libc/deprecated target
+                                #:optional
+                                (libc glibc)
+                                (xgcc (cross-gcc target))
+                                (xbinutils (cross-binutils target))
+                                (xheaders (cross-kernel-headers target)))
+  (warning (G_ "'cross-libc' must be used with keyword arguments~%"))
+  (cross-libc* target
+               #:libc libc
+               #:xgcc xgcc
+               #:xbinutils xbinutils
+               #:xheaders xheaders))
+
+(define* (cross-libc* target
+                      #:key
+                      (libc glibc)
+                      (xgcc (cross-gcc target))
+                      (xbinutils (cross-binutils target))
+                      (xheaders (cross-kernel-headers target)))
   "Return LIBC cross-built for TARGET, a GNU triplet. Use XGCC and XBINUTILS
 and the cross tool chain."
   (if (target-mingw? target)
@@ -551,7 +611,7 @@ and the cross tool chain."
                                   ,@(assoc-ref (package-native-inputs xheaders)
                                                "cross-mig")))
                                '())
-                         ,@(package-inputs libc)  ;FIXME: static-bash
+                         ,@(package-inputs libc) ;FIXME: static-bash
                          ,@(package-native-inputs libc))))))
 
 

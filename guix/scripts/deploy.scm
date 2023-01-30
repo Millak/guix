@@ -27,7 +27,6 @@
   #:use-module (guix gexp)
   #:use-module (guix ui)
   #:use-module (guix utils)
-  #:use-module (guix grafts)
   #:use-module ((guix status) #:select (with-status-verbosity))
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
@@ -256,7 +255,7 @@ otherwise."
         (leave (G_ "missing deployment file argument~%")))
 
       (when (and (pair? command) (not execute-command?))
-        (leave (G_ "'--' was used by '-x' was not specified~%")))
+        (leave (G_ "'--' was used, but '-x' was not specified~%")))
 
       (with-status-verbosity (assoc-ref opts 'verbosity)
         (with-store store

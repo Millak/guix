@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Mckinley Olsen <mck.olsen@gmail.com>
 ;;; Copyright © 2016, 2017, 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -32,6 +32,7 @@
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Felipe Balbi <balbi@kernel.org>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -56,6 +57,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -72,6 +74,7 @@
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages crates-graphics)
   #:use-module (gnu packages crypto)
+  #:use-module (gnu packages dlang)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
@@ -86,6 +89,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages libcanberra)
   #:use-module (gnu packages libevent)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages man)
   #:use-module (gnu packages ncurses)
@@ -241,7 +245,7 @@ keybindings have different functions.")
 (define-public asciinema
   (package
     (name "asciinema")
-    (version "2.1.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -250,16 +254,18 @@ keybindings have different functions.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1alcz018jrrpasrmgs8nw775a6pf62xq2xgs54c4mb396prdqy4x"))))
-    (build-system python-build-system)
+        (base32 "0pcrghfi9p1p40d0339lcmhcv24hm1vxqr4rsdln34v385vqv14a"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _ (invoke "nosetests" "-v"))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-python-path
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "tests/pty_test.py"
+                     (("python3") (search-input-file inputs "/bin/python3"))))))))
     (native-inputs
      ;; For tests.
-     (list python-nose))
+     (list python-pytest))
     (home-page "https://asciinema.org")
     (synopsis "Terminal session recorder")
     (description
@@ -640,15 +646,14 @@ should be thread-safe.")
 (define-public libvterm
   (package
     (name "libvterm")
-    (version "0.1.4")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "http://www.leonerd.org.uk/code/libvterm/"
                            "libvterm-" version ".tar.gz"))
        (sha256
-        (base32
-         "1pfkhbbihd2kvaza707vl2nvk7bxaawmb37wf9v6d72mjng38w5w"))))
+        (base32 "15y3y23kfpcda7n79ym3gp1abzn8mshxrad8s3gnhls82nfava15"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -743,7 +748,7 @@ embedded kernel situations.")
                        ""))
                     (for-each
                      (lambda (file)
-                       (let ((start-rx (make-regexp " *ListElement\\{"))
+                       (let ((start-rx (make-regexp " *ListElement *\\{"))
                              (end-rx   (make-regexp " *\\}")))
                         (with-atomic-file-replacement file
                           (lambda (in out)
@@ -926,7 +931,7 @@ programmer to write text-based user interfaces.")
 (define-public go-github-com-junegunn-fzf
   (package
     (name "go-github-com-junegunn-fzf")
-    (version "0.25.0")
+    (version "0.34.0")
     (source
      (origin
        (method git-fetch)
@@ -936,7 +941,7 @@ programmer to write text-based user interfaces.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1j5bfxl4w8w3n89p051y8dhxg0py9l98v7r2gkr63bg4lj32faz8"))))
+         "023ksrmjg99svmkpnlh4k7gssv1sz2nl0v5b6bsr2iragvwrgkf4"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/junegunn/fzf"))
@@ -945,8 +950,10 @@ programmer to write text-based user interfaces.")
            go-github-com-mattn-go-shellwords
            go-github-com-mattn-go-isatty
            go-github-com-gdamore-tcell
+           go-github-com-rivo-uniseg
            go-github-com-saracen-walker
            go-golang.org-x-sync-errgroup
+           go-golang-org-x-term
            go-golang-org-x-crypto))
     (home-page "https://github.com/junegunn/fzf")
     (synopsis "Command-line fuzzy-finder")
@@ -1097,14 +1104,13 @@ than a terminal.")
 (define-public python-curtsies
   (package
     (name "python-curtsies")
-    (version "0.3.5")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "curtsies" version))
        (sha256
-        (base32
-         "1g8dwafx4vx06isjkn28r3cwb0hw1bv67lgygaz34yk66lrzz1x5"))))
+        (base32 "1zj284kacv0d10ab3amkkx37hcciylkqympsksi9bwzy6g7fyafb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1113,9 +1119,9 @@ than a terminal.")
            (lambda _
              (invoke "nosetests" "-v"))))))
     (propagated-inputs
-     (list python-blessings python-cwcwidth))
+     (list python-blessed python-cwcwidth))
     (native-inputs
-     (list python-mock python-pyte python-nose))
+     (list python-pyte python-nose))
     (home-page "https://github.com/bpython/curtsies")
     (synopsis "Library for curses-like terminal interaction with colored
 strings")
@@ -1305,6 +1311,64 @@ while also supporting native scrolling and @command{tmux} control mode
 
 (define-public wterm
   (deprecated-package "wterm" foot))
+
+(define-public tilix
+  (package
+    (name "tilix")
+    (version "1.9.5")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/gnunn1/tilix")
+               (commit version)))
+        (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ij3ix6yhi8hicxvglrxjyyv8bch9birrgsr8ml6jfh3hvk4pxdh"))))
+    (build-system meson-build-system)
+    (arguments
+     `(#:glib-or-gtk? #t
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'set-env-variables
+           (lambda _
+             (setenv "CC" ,(cc-for-target))))
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") (which "true"))
+               (("update-desktop-database") (which "true"))))))))
+    (inputs
+     (list dbus
+           dconf
+           gsettings-desktop-schemas
+           gtk+
+           gtkd
+           ldc
+           libsecret
+           libunwind
+           vte))
+    (native-inputs
+     (list appstream
+           gettext-minimal
+           (list glib "bin")
+           ldc
+           pkg-config))
+    (home-page "https://gnunn1.github.io/tilix-web/")
+    (synopsis "Tiling terminal emulator")
+    (description "Tilix is a tiling terminal emulator following the
+Gnome Human Interface Guidelines.  Its features include:
+@enumerate
+@item Layout terminals in any fashion by splitting them horizontally or
+vertically.
+@item Terminals can be re-arranged using drag and drop both within and between
+windows.
+@item Terminals can be detached into a new window via drag and drop.
+@item Input can be synchronized between terminals so commands typed in one
+terminal are replicated to the others.
+@item Supports notifications when processes are completed out of view.
+@end enumerate")
+    (license license:mpl2.0)))
 
 (define-public tio
   (package

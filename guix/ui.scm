@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014 Cyril Roelandt <tipecaml@gmail.com>
@@ -518,7 +518,7 @@ See the \"Application Setup\" section in the manual, for more info.\n"))
   "Display version information for COMMAND and `(exit 0)'."
   (simple-format #t "~a (~a) ~a~%"
                  command %guix-package-name %guix-version)
-  (format #t "Copyright ~a 2022 ~a"
+  (format #t "Copyright ~a 2023 ~a"
           ;; TRANSLATORS: Translate "(C)" to the copyright symbol
           ;; (C-in-a-circle), if this symbol is available in the user's
           ;; locale.  Otherwise, do not translate "(C)"; leave it as-is.  */
@@ -590,6 +590,9 @@ FILE."
 
 (set! execlp
   (error-reporting-wrapper execlp (filename . args) filename))
+
+(set! mkdir
+  (error-reporting-wrapper mkdir (directory . args) directory))
 
 (define (make-regexp* regexp . flags)
   "Like 'make-regexp' but error out if REGEXP is invalid, reporting the error
@@ -1512,7 +1515,16 @@ that may return a colorized version of its argument."
                                    (sort packages package<?))) " ")))
       (split-lines list (string-length "dependencies: "))))
 
-  (define (output->recutils package output)
+  (define %default-output-synopses
+    `(("bin" . ,(G_ "executable programs and scripts"))
+      ("debug" . ,(G_ "debug information"))
+      ("doc" . ,(G_ "documentation"))
+      ("lib" . ,(G_ "shared libraries"))
+      ("static" . ,(G_ "static libraries"))
+      ("out" . ,(G_ "everything else"))))
+
+  (define* (output->recutils package output #:optional
+                             (default-synopses %default-output-synopses))
     (string-append
      "+ " output ": "
      (or
@@ -1522,13 +1534,8 @@ that may return a colorized version of its argument."
           (and (string=? key output) (P_ synopsis)))
          (_ #f))
        (package-properties package))
-      (assoc-ref `(("bin" . ,(G_ "executable programs and scripts"))
-                   ("debug" . ,(G_ "debug information"))
-                   ("lib" . ,(G_ "shared libraries"))
-                   ("static" . ,(G_ "static libraries"))
-                   ("out" . ,(G_ "everything else")))
-                 output)
-      (G_ "see Appendix H"))))
+      (assoc-ref default-synopses output)
+      (G_ "[description missing]"))))
 
   (define (package-outputs/out-last package)
     ((compose append partition)
@@ -1546,8 +1553,16 @@ that may return a colorized version of its argument."
   ;; Note: Don't i18n field names so that people can post-process it.
   (format port "name: ~a~%" (highlight (package-name p) port*))
   (format port "version: ~a~%" (highlight (package-version p) port*))
-  (format port "outputs:~%~{~a~%~}"
-          (map (cut output->recutils p <>) (package-outputs/out-last p)))
+  (match (package-outputs/out-last p)
+    (("out")                            ; one output has everything
+     (format port "outputs:~%~a~%"
+             (output->recutils p "out"
+                               (alist-cons "out" (G_ "everything")
+                                           %default-output-synopses))))
+    (outputs                            ; multiple outputs
+     (format port "outputs:~%~{~a~%~}"
+             (map (cut output->recutils p <>) (package-outputs/out-last p)))))
+
   (format port "systems: ~a~%"
           (split-lines (string-join (package-transitive-supported-systems p))
                        (string-length "systems: ")))
@@ -1656,6 +1671,7 @@ score, the more relevant OBJ is to REGEXPS."
   ;; Metrics used to compute the "relevance score" of a package against a set
   ;; of regexps.
   `((,package-name . 4)
+    (,package-upstream-name* . 2)
 
     ;; Match against uncommon outputs.
     (,(lambda (package)

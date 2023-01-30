@@ -47,7 +47,8 @@
                 ("guile" "guile-2.0.11.tar.gz.sig")
                 ("mit-scheme" "mit-scheme-9.2-i386.tar.gz")
                 ("mit-scheme" "mit-scheme-9.2-doc-pdf.tar.gz")
-                ("gnutls" "gnutls-3.2.18-w32.zip")))))
+                ("gnutls" "gnutls-3.2.18-w32.zip")
+                ("valgrind" "valgrind-3.20.0.RC1.tar.bz2")))))
 
 (test-assert "tarball->version"
   (let ((tarball->version (@@ (guix gnu-maintenance) tarball->version)))
@@ -78,7 +79,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url "http://another-site/foo-2.tar.gz")
       (and (pk 'u update)
            (equal? (upstream-source-version update) "2")
@@ -103,7 +104,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url
         (string-append (%local-url) "/foo-2.tar.gz"))
       (and (pk 'u update)
@@ -134,7 +135,7 @@
             (uri (string-append (%local-url) "/foo-1.tar.gz"))))
           (properties
            `((release-monitoring-url . ,(%local-url))))))
-      (define update ((upstream-updater-latest %generic-html-updater) package))
+      (define update ((upstream-updater-import %generic-html-updater) package))
       (define expected-new-url
         (string-append (%local-url) "/foo-2.tar.gz"))
       (define expected-signature-url

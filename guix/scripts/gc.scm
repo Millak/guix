@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2012-2013, 2015-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,6 +28,7 @@
                                 generation-number)
   #:autoload   (guix scripts package) (delete-generations)
   #:autoload   (gnu home) (home-generation-base)
+  #:autoload   (guix store database) (vacuum-database)
   #:use-module (ice-9 match)
   #:use-module (ice-9 regex)
   #:use-module (srfi srfi-1)
@@ -87,6 +89,10 @@ Invoke the garbage collector.\n"))
       --clear-failures   remove PATHS from the set of cached failures"))
   (newline)
   (display (G_ "
+      --vacuum-database  repack the sqlite database tracking the store
+                         using less space"))
+  (newline)
+  (display (G_ "
   -h, --help             display this help and exit"))
   (display (G_ "
   -V, --version          display version information and exit"))
@@ -130,6 +136,11 @@ current one."
         (option '(#\V "version") #f #f
                 (lambda args
                   (show-version-and-exit "guix gc")))
+
+        (option '("vacuum-database") #f #f
+                (lambda args
+                  (vacuum-database)
+                  (exit 0)))
 
         (option '(#\C "collect-garbage") #f #t
                 (lambda (opt name arg result)

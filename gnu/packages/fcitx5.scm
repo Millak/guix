@@ -2,6 +2,7 @@
 ;;; Copyright © 2020, 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2022 Dominic Martinez <dom@dominicm.dev>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -35,6 +36,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
@@ -54,7 +56,7 @@
 (define-public xcb-imdkit
   (package
     (name "xcb-imdkit")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
@@ -62,7 +64,7 @@
              "https://download.fcitx-im.org/fcitx5/xcb-imdkit/xcb-imdkit-"
              version ".tar.xz"))
        (sha256
-        (base32 "1s58vjkdrgr8h183jz4b4mjn7pbvdc9cli01cn66mgczl9p65hh9"))
+        (base32 "1jfhrqq89grrkwmp4lbn1pxi7935jhhz9xr8yqa07aarqb86skw2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -85,7 +87,7 @@ client.")
 (define-public fcitx5
   (package
     (name "fcitx5")
-    (version "5.0.10")
+    (version "5.0.21")
     (source
      (origin
        (method url-fetch)
@@ -93,7 +95,7 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5/fcitx5-"
              version "_dict.tar.xz"))
        (sha256
-        (base32 "0i23skr49n6b30ybm66bkv07dcr0dan5mzxch7x83znfnrpk8z3h"))))
+        (base32 "10hchay93ld3fs2p17gmq50gsv96q908hzjinn0nh0qcnpz8sx60"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -144,7 +146,7 @@ client.")
 (define-public fcitx5-lua
   (package
     (name "fcitx5-lua")
-    (version "5.0.5")
+    (version "5.0.10")
     (source
      (origin
        (method url-fetch)
@@ -152,8 +154,12 @@ client.")
              "https://download.fcitx-im.org/fcitx5/fcitx5-lua/fcitx5-lua-"
              version ".tar.xz"))
        (sha256
-        (base32 "0f3raxzkq0nwdfpc9hxvg65vga09gznjjgy9dr6jlkamzx8zlyw9"))))
+        (base32 "13vh6i7pap3h9jrjri3cfi7pcjwhlkw9g24ibfh0aykdhd8d7p99"))))
     (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DUSE_DLOPEN=OFF")))
     (inputs
      (list fcitx5 lua gettext-minimal libpthread-stubs))
     (native-inputs
@@ -166,14 +172,14 @@ client.")
 (define-public libime
   (package
     (name "libime")
-    (version "1.0.10")
+    (version "1.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.fcitx-im.org/fcitx5/libime/libime-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "0dknxf5lf5a6kam39rp7y1h2p47bwb6pnlc8fsrhmiv7rw2pkq0f"))))
+        (base32 "1ydja6bpb9q7j2dj87yni1jlw9nj7256g3dqvz1hl4dl8zill0rz"))))
     (build-system cmake-build-system)
     (inputs
      (list fcitx5 boost))
@@ -188,7 +194,7 @@ editors.")
 (define-public fcitx5-gtk
   (package
     (name "fcitx5-gtk")
-    (version "5.0.9")
+    (version "5.0.21")
     (source
      (origin
        (method url-fetch)
@@ -196,7 +202,7 @@ editors.")
                            "/fcitx5-gtk/fcitx5-gtk-"
                            version ".tar.xz"))
        (sha256
-        (base32 "07ip4sxf3q895pp7mivv2bdwcmqjnwrmv9pg99jk73cw9bgyq00n"))))
+        (base32 "04909s99nng835qaycsbhwkmml4prhvpg3r3b39ranqyjy4m4dqj"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -268,11 +274,18 @@ IM module for GTK+3 applications.
       #:configure-flags
       #~(list (string-append "-DCMAKE_CXX_FLAGS=-I"
                              #$(this-package-input "fcitx5-gtk")
-                             "/include/Fcitx5/GClient")
+                             "/include/Fcitx5/GClient"
+                             " -I" #$(this-package-input "glib")
+                             "/include/gio-unix-2.0")
               "-DENABLE_GTK2_IM_MODULE=OFF"
               "-DENABLE_GTK3_IM_MODULE=OFF")
       #:phases
       #~(modify-phases %standard-phases
+          (add-before 'configure 'fix-fcitxtheme-path
+            (lambda _
+              (substitute* "gtk4/gtk4inputwindow.cpp"
+                (("<gtk3/fcitxtheme.h>")
+                 "\"fcitxtheme.h\""))))
           (add-before 'configure 'fix-gclient
             (lambda* (#:key inputs #:allow-other-keys)
               (define gclient
@@ -299,7 +312,7 @@ IM module for GTK+3 applications.
 (define-public fcitx5-qt
   (package
     (name "fcitx5-qt")
-    (version "5.0.7")
+    (version "5.0.16")
     (source
      (origin
        (method url-fetch)
@@ -307,7 +320,7 @@ IM module for GTK+3 applications.
                            "/fcitx5-qt/fcitx5-qt-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1gspj3s1nz6mqbp3z6js5zf7mqicwm32isxlqh6whhwawr9w7vrk"))))
+        (base32 "1wsal20629iwcjdqs8mj4ksg62al2aw05da11ak35fjbbw2w2fjq"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -334,7 +347,7 @@ for Qt based application.")
 (define-public fcitx5-anthy
   (package
     (name "fcitx5-anthy")
-    (version "5.0.9")
+    (version "5.0.13")
     (source
      (origin
        (method url-fetch)
@@ -342,7 +355,7 @@ for Qt based application.")
                            "/fcitx5-anthy/fcitx5-anthy-"
                            version ".tar.xz"))
        (sha256
-        (base32 "0i2ahfp1vh0cs3brcsfblzqwszal2qj1ncgb1hbc9v03s1j6bybk"))))
+        (base32 "1qj8kylskjyxcvrc0mg46s3cn8rrfblgp6kkkw26x5js4di74shh"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f)) ;; no tests
@@ -358,7 +371,7 @@ the Anthy input method.")
 (define-public fcitx5-chinese-addons
   (package
     (name "fcitx5-chinese-addons")
-    (version "5.0.6")
+    (version "5.0.16")
     (source
      (origin
        (method url-fetch)
@@ -366,7 +379,7 @@ the Anthy input method.")
                            "/fcitx5-chinese-addons/fcitx5-chinese-addons-"
                            version "_dict.tar.xz"))
        (sha256
-        (base32 "11l76gpcfm0x1f6x5m9s37q7ffa7xcsdydlzjdz2s6kk45fvvq89"))))
+        (base32 "06s7d3n4h5b0msw0b48pmy3xcz7268b7r00p3wfr83wb1m9rv0xw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -422,7 +435,7 @@ including input methods previous bundled inside Fcitx 4:
 (define-public fcitx5-configtool
   (package
     (name "fcitx5-configtool")
-    (version "5.0.8")
+    (version "5.0.16")
     (source
      (origin
        (method url-fetch)
@@ -430,7 +443,7 @@ including input methods previous bundled inside Fcitx 4:
              "https://download.fcitx-im.org/fcitx5"
              "/fcitx5-configtool/fcitx5-configtool-" version ".tar.xz"))
        (sha256
-        (base32 "0rajrw914mbl0x7h08cal0sszwyvqg6v3w0vs0c9acs6m438xbw4"))))
+        (base32 "06n8yhmkammr04nhv0zaw14da3i0dg02wszbr15812shcmdcwazf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -459,7 +472,7 @@ to manage different input methods in Fcitx 5.")
 (define-public fcitx5-material-color-theme
   (package
     (name "fcitx5-material-color-theme")
-    (version "0.1")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -468,7 +481,7 @@ to manage different input methods in Fcitx 5.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mgc722521jmfx0xc3ibmiycd3q2w7xg2956xcpc07kz90gcdjaa"))))
+        (base32 "0drdypjf1njl7flkb5d581vchwlp4gaqyws3cp0v874wkwh4gllb"))))
     (build-system copy-build-system)
     (arguments
      `(#:phases
@@ -484,7 +497,6 @@ to manage different input methods in Fcitx 5.")
 
                (define (install-theme-variant variant target)
                  (let ((dir (string-append themes-prefix "/" target))
-                       (png (string-append "panel-" variant ".png"))
                        (conf (string-append "theme-" variant ".conf")))
                    (format #t "install: Installing color variant \"~a\" to ~a~%"
                            variant dir)
@@ -492,13 +504,15 @@ to manage different input methods in Fcitx 5.")
                      (("^Name=.*")
                       (string-append "Name=" target "\n")))
                    (mkdir-p dir)
-                   (install-file png dir)
                    (copy-file conf (string-append dir "/theme.conf"))
                    (symlink (string-append assets-dir "/arrow.png")
-                            (string-append dir "/arrow.png"))))
+                            (string-append dir "/arrow.png"))
+                   (symlink (string-append assets-dir "/radio.png")
+                            (string-append dir "/radio.png"))))
 
                (mkdir-p assets-dir)
                (install-file "arrow.png" assets-dir)
+               (install-file "radio.png" assets-dir)
                (for-each
                 (lambda (x)
                   (install-theme-variant
@@ -507,7 +521,9 @@ to manage different input methods in Fcitx 5.")
                   "orange" "pink" "red" "teal"))
 
                (install-theme-variant
-                "deepPurple" "Material-Color-DeepPurple")))))))
+                "deepPurple" "Material-Color-DeepPurple")
+               (install-theme-variant
+                "sakuraPink" "Material-Color-SakuraPink")))))))
     (home-page "https://github.com/hosxy/Fcitx5-Material-Color")
     (synopsis "Material Design for Fcitx 5")
     (description "Fcitx5-material-color-theme is a Material Design theme
@@ -525,3 +541,42 @@ for Fcitx 5 with following color variants:
 @item DeepPurple
 @end itemize\n")
     (license license:asl2.0)))
+
+(define-public fcitx5-rime
+  (package
+    (name "fcitx5-rime")
+    (version "5.0.15")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://download.fcitx-im.org/fcitx5"
+                                  "/fcitx5-rime/fcitx5-rime-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "0qq2khc1816sbc3lw2djhpadbhlcp8g7j8wjzb2rzw9yl6n10lkh"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ;no tests
+       #:configure-flags (list (string-append "-DRIME_DATA_DIR="
+                                              (assoc-ref %build-inputs
+                                                         "rime-data")
+                                              "/share/rime-data"))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'patch-source
+                    (lambda _
+                      (substitute* "data/CMakeLists.txt"
+                        (("DESTINATION....RIME_DATA_DIR..")
+                         "DESTINATION \"${CMAKE_INSTALL_DATADIR}/rime-data\""))
+                      #t)))))
+    (inputs (list fcitx5 librime rime-data))
+    (native-inputs (list gettext-minimal extra-cmake-modules pkg-config))
+    (home-page "https://github.com/fcitx/fcitx5-rime")
+    (synopsis "Rime Input Method Engine for Fcitx 5")
+    (description
+     "@dfn{fcitx5-rime} provides the Rime input method engine for fcitx5.
+Rime is a lightweight, extensible input method engine supporting various input
+schemas including glyph-based input methods, romanization-based input methods
+as well as those for Chinese dialects.  It has the ability to compose phrases
+and sentences intelligently and provide very accurate traditional Chinese
+output.")
+    (license license:lgpl2.1+)))

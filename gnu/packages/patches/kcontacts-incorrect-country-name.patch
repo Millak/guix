@@ -1,0 +1,85 @@
+From 5fc2ce8b9f34ea3218a030aeede01b70bedb2546 Mon Sep 17 00:00:00 2001
+From: Petr Hodina <phodina@protonmail.com>
+Date: Wed, 28 Sep 2022 20:58:43 +0200
+Subject: [PATCH] autotests: Fix incorrect name of country in comparison.
+
+
+diff --git a/autotests/addresstest.cpp b/autotests/addresstest.cpp
+index fc6a9bc7..01e474b6 100644
+--- a/autotests/addresstest.cpp
++++ b/autotests/addresstest.cpp
+@@ -157,7 +157,7 @@ void AddressTest::formatTest()
+ 
+         const QString result(
+             QStringLiteral("Jim Knopf\nLummerlandstr. 1\n"
+-                           "12345 Lummerstadt\n\nGERMANIA"));
++                           "12345 Lummerstadt\n\nGERMANY"));
+ 
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QStringLiteral("Jim Knopf")), result);
+ #if KCONTACTS_BUILD_DEPRECATED_SINCE(5, 92)
+@@ -175,7 +175,7 @@ void AddressTest::formatTest()
+ 
+         const QString result(
+             QStringLiteral("Huck Finn\n457 Foobar Ave\nNERVOUSBREAKTOWN,"
+-                           " DC 1A2B3C\n\nSTATI UNITI"));
++                           " DC 1A2B3C\n\nUNITED STATES"));
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QStringLiteral("Huck Finn")), result);
+     }
+ 
+@@ -188,7 +188,7 @@ void AddressTest::formatTest()
+ 
+         const QString result(
+             QStringLiteral("Jim Knopf\nLummerlandstr. 1\n"
+-                           "12345 Lummerstadt\n\nGERMANIA"));
++                           "12345 Lummerstadt\n\nGERMANY"));
+ 
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QStringLiteral("Jim Knopf")), result);
+     }
+@@ -214,7 +214,7 @@ void AddressTest::formatTest()
+         address.setCountry(QStringLiteral("Schweiz"));
+ 
+         // we want the Italian variant of the Swiss format for it_CH
+-        const QString result(QStringLiteral("Dr. Konqui\nCasella postale 5678\nHaus Randa\n1234 Randa\n\nSVIZZERA"));
++        const QString result(QStringLiteral("Dr. Konqui\nCasella postale 5678\nHaus Randa\n1234 Randa\n\nSWITZERLAND"));
+ 
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QStringLiteral("Dr. Konqui")), result);
+     }
+@@ -228,14 +228,14 @@ void AddressTest::formatTest()
+         address.setCountry(QStringLiteral("CH"));
+ 
+         // we want the Italian variant of the Swiss format for it_CH
+-        const QString result(QStringLiteral("Dr. Konqui\nCasella postale 5678\nHaus Randa\n1234 Randa\n\nSVIZZERA"));
++        const QString result(QStringLiteral("Dr. Konqui\nCasella postale 5678\nHaus Randa\n1234 Randa\n\nSWITZERLAND"));
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QStringLiteral("Dr. Konqui")), result);
+     }
+ 
+     {
+         KContacts::Address address;
+         address.setCountry(QStringLiteral("CH"));
+-        QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QString()), QLatin1String("SVIZZERA"));
++        QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal, QString()), QLatin1String("SWITZERLAND"));
+     }
+ 
+     {
+@@ -257,14 +257,14 @@ void AddressTest::formatTest()
+         address.setLocality(QStringLiteral("Minato-ku"));
+         address.setPostalCode(QStringLiteral("106-0047"));
+         address.setStreet(QStringLiteral("4-6-28 Minami-Azabu"));
+-        auto result = QString::fromUtf8("4-6-28 Minami-Azabu, Minato-ku\nTOKYO 106-0047\n\nGIAPPONE");
++        auto result = QString::fromUtf8("4-6-28 Minami-Azabu, Minato-ku\nTOKYO 106-0047\n\nJAPAN");
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal), result);
+ 
+         address.setRegion(QStringLiteral("東京"));
+         address.setLocality(QStringLiteral("都港区"));
+         address.setPostalCode(QStringLiteral("106-0047"));
+         address.setStreet(QStringLiteral("南麻布 4-6-28"));
+-        result = QString::fromUtf8("〒106-0047\n東京都港区南麻布 4-6-28\n\nGIAPPONE");
++        result = QString::fromUtf8("〒106-0047\n東京都港区南麻布 4-6-28\n\nJAPAN");
+         QCOMPARE(address.formatted(KContacts::AddressFormatStyle::Postal), result);
+     }
+ }
+
+base-commit: 1d757eba019718cab5d3b33a231d19daf31eb8ba
+-- 
+2.37.2
+

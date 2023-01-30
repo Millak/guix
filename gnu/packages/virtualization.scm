@@ -63,6 +63,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages containers)
   #:use-module (gnu packages cross-base)
+  #:use-module (gnu packages cryptsetup)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages debian)
@@ -159,7 +160,7 @@
 (define-public qemu
   (package
     (name "qemu")
-    (version "7.1.0")
+    (version "7.2.0")
     (source
      (origin
        (method url-fetch)
@@ -167,17 +168,35 @@
                            version ".tar.xz"))
        (sha256
         (base32
-         "1rmvrgqjhrvcmchnz170dxvrrf14n6nm39y8ivrprmfydd9lwqx0"))
+         "0mr1xd78bgp1l61281sdx0338ji0aa68j2p9994sskblhwkcwjav"))
        (patches (search-patches "qemu-build-info-manual.patch"
                                 "qemu-disable-aarch64-migration-test.patch"
                                 "qemu-fix-agent-paths.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
+           ;; TODO: Scrub all firmwares from this directory!
+           (with-directory-excursion "pc-bios"
+             ;; Delete firmwares provided by SeaBIOS.
+             (for-each delete-file (find-files "." "^(bios|vgabios).*\\.bin$"))
+             ;; Delete SGABIOS.
+             (delete-file "sgabios.bin")
+             ;; Delete ppc64 OpenBIOS.  TODO: Remove sparc32 and sparc64 too
+             ;; once they are supported in Guix.
+             (delete-file "openbios-ppc")
+             ;; Delete riscv64 OpenSBI.  TODO: Remove riscv32 when supported
+             ;; in Guix.
+             (delete-file "opensbi-riscv64-generic-fw_dynamic.bin")
+             ;; Delete iPXE firmwares.
+             (for-each delete-file (find-files "." "^(efi|pxe)-.*\\.rom$")))
            ;; Delete bundled code that we provide externally.
-           ;; TODO: Unbundle SeaBIOS!
            (for-each delete-file-recursively
-                     '("dtc" "meson" "slirp"))))))
+                     '("dtc" "meson"
+                       "roms/ipxe"
+                       "roms/openbios"
+                       "roms/opensbi"
+                       "roms/seabios"
+                       "roms/sgabios"))))))
     (outputs '("out" "static" "doc"))   ;5.3 MiB of HTML docs
     (build-system gnu-build-system)
     (arguments
@@ -188,14 +207,33 @@
                    (not (string=? "i686-linux" (%current-system))))
       #:configure-flags
       #~(let ((gcc (search-input-file %build-inputs "/bin/gcc"))
+              (meson (search-input-file %build-inputs "bin/meson"))
+              (openbios (search-input-file %build-inputs
+                                           "share/qemu/openbios-ppc"))
+              (opensbi (search-input-file
+                        %build-inputs
+                        "share/qemu/opensbi-riscv64-generic-fw_dynamic.bin"))
+              (seabios (search-input-file %build-inputs
+                                          "share/qemu/bios.bin"))
+              (sgabios (search-input-file %build-inputs
+                                          "/share/qemu/sgabios.bin"))
+              (ipxe (search-input-file %build-inputs
+                                       "share/qemu/pxe-virtio.rom"))
               (out #$output))
           (list (string-append "--cc=" gcc)
                 ;; Some architectures insist on using HOST_CC.
                 (string-append "--host-cc=" gcc)
+                (string-append "--meson=" meson)
                 (string-append "--prefix=" out)
+
                 "--sysconfdir=/etc"
-                "--enable-slirp=system"
                 "--enable-fdt=system"
+                (string-append "--firmwarepath=" out "/share/qemu:"
+                               (dirname seabios) ":"
+                               (dirname ipxe) ":"
+                               (dirname openbios) ":"
+                               (dirname opensbi) ":"
+                               (dirname sgabios))
                 (string-append "--smbd=" out "/libexec/samba-wrapper")
                 "--disable-debug-info"  ;for space considerations
                 ;; The binaries need to be linked against -lrt.
@@ -209,6 +247,44 @@
                   ,@%gnu-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
+          ;; Since we removed the bundled firmwares above, many tests
+          ;; can't work.  Re-add them here.
+          (add-after 'unpack 'replace-firmwares
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((seabios (dirname (search-input-file
+                                        inputs "share/qemu/bios.bin")))
+                     (seabios-firmwares (find-files seabios "\\.bin$"))
+                     (sgabios (search-input-file inputs "share/qemu/sgabios.bin"))
+                     (ipxe (dirname (search-input-file
+                                     inputs "share/qemu/pxe-virtio.rom")))
+                     (ipxe-firmwares (find-files ipxe "\\.rom$"))
+                     (openbios (search-input-file
+                                inputs "share/qemu/openbios-ppc"))
+                     (opensbi-riscv64
+                      (search-input-file
+                       inputs
+                       "share/qemu/opensbi-riscv64-generic-fw_dynamic.bin"))
+                     (allowed-differences
+                      ;; Ignore minor differences (addresses etc) in the firmware
+                      ;; data tables compared to what the test suite expects.
+                      '("tests/data/acpi/pc/SSDT.dimmpxm"
+                        "tests/data/acpi/pc/DSDT.dimmpxm"
+                        "tests/data/acpi/pc/ERST.acpierst"
+                        "tests/data/acpi/q35/ERST.acpierst"
+                        "tests/data/acpi/q35/DSDT.cxl"))
+                     (allowed-differences-whitelist
+                      (open-file "tests/qtest/bios-tables-test-allowed-diff.h"
+                                 "a")))
+                (with-directory-excursion "pc-bios"
+                  (for-each (lambda (file)
+                              (symlink file (basename file)))
+                            (append seabios-firmwares ipxe-firmwares
+                                    (list openbios opensbi-riscv64 sgabios))))
+                (for-each (lambda (file)
+                            (format allowed-differences-whitelist
+                                    "\"~a\",~%" file))
+                          allowed-differences)
+                (close-port allowed-differences-whitelist))))
           (add-after 'unpack 'extend-test-time-outs
             (lambda _
               ;; These tests can time out on heavily-loaded and/or slow storage.
@@ -275,6 +351,7 @@
               (mkdir-p "b/qemu")
               (chdir "b/qemu")
               (apply invoke "../../configure" configure-flags)))
+
           ;; Configure, build and install QEMU user-emulation static binaries.
           (add-after 'configure 'configure-user-static
             (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -311,6 +388,20 @@
                                         (scandir "."
                                                  (cut string-suffix?
                                                       "-linux-user" <>))))))))
+
+          (add-after 'install 'delete-firmwares
+            (lambda _
+              ;; Delete firmares that are accessible on --firmwarepath.
+              ;; For some reason tests fail if we simply remove them from
+              ;; pc-bios/meson.build, hence this roundabout way.
+              (with-directory-excursion (string-append #$output "/share/qemu")
+                (for-each delete-file
+                          (append
+                           '("openbios-ppc"
+                             "opensbi-riscv64-generic-fw_dynamic.bin"
+                             "sgabios.bin")
+                           (find-files "." "^(vga)?bios(-[a-z0-9-]+)?\\.bin$")
+                           (find-files "." "^(efi|pxe)-.*\\.rom$"))))))
           ;; Create a wrapper for Samba. This allows QEMU to use Samba without
           ;; pulling it in as an input. Note that you need to explicitly install
           ;; Samba in your Guix profile for Samba support.
@@ -338,6 +429,7 @@ exec smbd $@")))
            dtc
            glib
            gtk+
+           ipxe-qemu
            libaio
            libcacard                    ;smartcard support
            attr libcap-ng               ;VirtFS support
@@ -351,10 +443,14 @@ exec smbd $@")))
            libusb                       ;USB pass-through support
            mesa
            ncurses
+           openbios-qemu-ppc
+           opensbi-qemu
            ;; ("pciutils" ,pciutils)
            pixman
            pulseaudio
            sdl2
+           seabios-qemu
+           sgabios
            spice
            usbredir
            util-linux
@@ -365,13 +461,16 @@ exec smbd $@")))
            zlib
            `(,zstd "lib")))
     (native-inputs
-     (list gettext-minimal
-           `(,glib "bin")               ;gtester, etc.
-           perl
-           flex
+     ;; Note: acpica is here only to pretty-print firmware differences with IASL
+     ;; (see the replace-firmwares phase above).
+     (list acpica
            bison
-           meson
+           flex
+           gettext-minimal
+           `(,glib "bin")               ;gtester, etc.
+           meson-0.63
            ninja
+           perl
            pkg-config
            python-wrapper
            python-sphinx
@@ -901,7 +1000,7 @@ commodity hardware.")
 (define-public ganeti-instance-guix
   (package
     (name "ganeti-instance-guix")
-    (version "0.6.1")
+    (version "0.8")
     (home-page "https://github.com/mbakke/ganeti-instance-guix")
     (source (origin
               (method git-fetch)
@@ -909,14 +1008,22 @@ commodity hardware.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "18h8hdd38h1l89si8122v3ylzvvirs8hiypayklk1nr2wnfgbvff"))))
+                "0sw9ks3j3y33apdcghjxxjf09ld592z9skaa7bgn9d2lhplzjihr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--sysconfdir=/etc" "--localstatedir=/var")))
     (native-inputs
-     (list autoconf automake))
+     (list autoconf automake jq))
     (inputs
-     (list util-linux qemu-minimal))
+     (list btrfs-progs
+           cryptsetup
+           e2fsprogs
+           f2fs-tools
+           lvm2
+           multipath-tools
+           util-linux
+           parted
+           xfsprogs))
     (synopsis "Guix OS integration for Ganeti")
     (description
      "This package provides a guest OS definition for Ganeti that uses
@@ -1354,7 +1461,7 @@ pretty simple, REST API.")
            openssl
            readline
            cyrus-sasl
-           libyajl
+           yajl
            audit
            dmidecode
            dnsmasq
@@ -1394,7 +1501,7 @@ to integrate other virtualization mechanisms if needed.")
     (build-system meson-build-system)
     (inputs
      (list openssl cyrus-sasl lvm2 ; for libdevmapper
-           libyajl))
+           yajl))
     (native-inputs
      (list pkg-config intltool
            `(,glib "bin") vala))
@@ -1444,7 +1551,7 @@ virtualization library.")
 (define-public virt-manager
   (package
     (name "virt-manager")
-    (version "3.2.0")
+    (version "4.1.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://virt-manager.org/download/sources"
@@ -1452,7 +1559,7 @@ virtualization library.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "11kvpzcmyir91qz0dsnk7748jbb4wr8mrc744w117qc91pcy6vrb"))))
+                "18lhlnd3gmyzhbnjc16gdyzhjcd33prlxnca4xlidiidngbq21lm"))))
     (build-system python-build-system)
     (arguments
      `(#:use-setuptools? #f          ; uses custom distutils 'install' command
@@ -1559,7 +1666,7 @@ domains, their live performance and resource utilization statistics.")
 (define-public criu
   (package
     (name "criu")
-    (version "3.17")
+    (version "3.17.1")
     (source
      (origin
        (method git-fetch)
@@ -1568,7 +1675,7 @@ domains, their live performance and resource utilization statistics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1qql1xp2zkkd7z50vp0nylx3rqrp8xa3c6x25c886d5i1j9pak5x"))))
+        (base32 "0ff3xfcf0wfz02fc0qbj56mci1a0xdl8jzaihaw6qyjvgrsiq7fh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -2260,7 +2367,7 @@ override CC = " (assoc-ref inputs "cross-gcc") "/bin/i686-linux-gnu-gcc"))
        ("iproute" ,iproute) ; TODO: patch invocations.
        ("libaio" ,libaio)
        ("libx11" ,libx11)
-       ("libyajl" ,libyajl)
+       ("yajl" ,yajl)
        ("ncurses" ,ncurses)
        ("openssl" ,openssl)
        ("ovmf" ,ovmf)

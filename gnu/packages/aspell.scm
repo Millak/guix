@@ -161,6 +161,13 @@ dictionaries, including personal ones.")
                      (base32
                       "1svls9p7rsfi3hs0afh0cssj006qb4v1ik2yzqgj8hm10c6as2sm")))
 
+(define-public aspell-dict-bn
+  (aspell-dictionary "bn" "Bengali"
+                     #:version "0.01.1-1"
+                     #:sha256
+                     (base32
+                      "1nc02jd67iggirwxnhdvlvaqm0xfyks35c4psszzj3dhzv29qgxh")))
+
 (define-public aspell-dict-ca
   (let ((version "2.5.0")
         (sha256
@@ -310,6 +317,14 @@ dictionaries, including personal ones.")
                      (base32
                       "0w2k5l5rbqpliripgqwiqixz5ghnjf7i9ggbrc4ly4vy1ia10rmc")))
 
+(define-public aspell-dict-nb
+  (aspell-dictionary "nb" "Norwegian Bokmål"
+                     #:version "0.50.1-2"
+                     #:prefix "aspell-"
+                     #:sha256
+                     (base32
+                      "1xvns7dwx2sc0msldj7r2hv0426913rg3dpnkxlrvnsyrxzjpbpc")))
+
 (define-public aspell-dict-pl
   (aspell-dictionary "pl" "Polish"
                      #:version "0.51-0"
@@ -369,124 +384,6 @@ dictionaries, including personal ones.")
                      #:sha256
                      (base32
                       "0gb8j9iy1acdl11jq76idgc2lbc1rq3w04favn8cyh55d1v8phsk")))
-
-
-;;;
-;;; Hunspell packages made from the Aspell word lists.
-;;;
-
-(define* (aspell-word-list language synopsis
-                           #:optional
-                           (nick (string-map (lambda (chr)
-                                               (if (char=? #\_ chr)
-                                                   #\-
-                                                   chr))
-                                             (string-downcase language))))
-  (package
-    (name (string-append "hunspell-dict-" nick))
-    (version "2018.04.16")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://sourceforge/wordlist/SCOWL/"
-                    version "/scowl-" version ".tar.gz"))
-              (sha256
-               (base32
-                "11lkrnhwrf5mvrrq45k4mads3n9aswgac8dc25ba61c75alxb5rs"))))
-    (native-inputs
-     (list tar gzip perl aspell))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             (substitute* "speller/README_en.txt.sh"
-               (("\\bdate\\b") ""))))
-         (delete 'configure)
-         (delete 'check)
-         (replace 'build
-           (lambda _
-             (substitute* "speller/make-hunspell-dict"
-               (("zip -9 .*$")
-                "return\n"))
-             (mkdir "speller/hunspell")
-
-             ;; XXX: This actually builds all the dictionary variants.
-             (invoke "make" "-C" "speller" "hunspell")))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out      (assoc-ref %outputs "out"))
-                    (hunspell (string-append out "/share/hunspell"))
-                    (myspell  (string-append out "/share/myspell"))
-                    (doc      (string-append out "/share/doc/"
-                                             ,name))
-                    (dot-dic  ,(string-append "speller/" language ".dic")))
-               (mkdir-p myspell)
-
-               ;; Usually there's only a 'LANGUAGE.dic' file, but for the "en"
-               ;; dictionary, there no 'en.dic'.  Instead, there's a set of
-               ;; 'en*.dic' files, hence the 'find-files' call below.
-               (if (file-exists? dot-dic)
-                   (install-file dot-dic hunspell)
-                   (for-each (lambda (dic)
-                               (install-file dic hunspell))
-                             (find-files "speller"
-                                         ,(string-append language ".*\\.dic$"))))
-
-               ;; Install affix files corresponding to installed dictionaries
-               (for-each (lambda (dic)
-                           (install-file (string-append
-                                           "speller/" (basename dic ".dic") ".aff")
-                                         hunspell))
-                         (find-files hunspell ".*\\.dic$"))
-               (symlink hunspell (string-append myspell "/dicts"))
-               (for-each (lambda (file)
-                           (install-file file doc))
-                         (find-files "."
-                                     "^(Copyright|.*\\.(txt|org|md))$"))
-               #t))))))
-    (synopsis synopsis)
-    (description
-     "This package provides a dictionary for the Hunspell spell-checking
-library.")
-    (home-page "http://wordlist.aspell.net/")
-    (license (non-copyleft "file://Copyright"
-                           "Word lists come from several sources, all
-under permissive licensing terms.  See the 'Copyright' file."))))
-
-(define-syntax define-word-list-dictionary
-  (syntax-rules (synopsis)
-    ((_ name language (synopsis text))
-     (define-public name
-       (aspell-word-list language text)))
-    ((_ name language nick (synopsis text))
-     (define-public name
-       (aspell-word-list language text nick)))))
-
-(define-word-list-dictionary hunspell-dict-en
-  "en"
-  (synopsis "Hunspell dictionary for English"))
-
-(define-word-list-dictionary hunspell-dict-en-au
-  "en_AU"
-  (synopsis "Hunspell dictionary for Australian English"))
-
-(define-word-list-dictionary hunspell-dict-en-ca
-  "en_CA"
-  (synopsis "Hunspell dictionary for Canadian English"))
-
-(define-word-list-dictionary hunspell-dict-en-gb
-  "en_GB-ise" "en-gb"
-  (synopsis "Hunspell dictionary for British English, with -ise endings"))
-
-(define-word-list-dictionary hunspell-dict-en-gb-ize
-  "en_GB-ize"
-  (synopsis "Hunspell dictionary for British English, with -ize endings"))
-
-(define-word-list-dictionary hunspell-dict-en-us
-  "en_US"
-  (synopsis "Hunspell dictionary for United States English"))
 
 (define-public ispell
   (package

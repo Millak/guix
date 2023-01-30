@@ -91,7 +91,7 @@
       (inputs
        (list libcap
              libseccomp
-             libyajl))
+             yajl))
       (native-inputs
        (list automake
              autoconf
@@ -274,7 +274,7 @@ configure network interfaces in Linux containers.")
 (define-public podman
   (package
     (name "podman")
-    (version "4.2.1")
+    (version "4.3.1")
     (source
      (origin
        (method git-fetch)
@@ -282,7 +282,7 @@ configure network interfaces in Linux containers.")
              (url "https://github.com/containers/podman")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "0ph8gf5gk9z1hm1v5kv924dipswvgrz0sgk23plnh2q0vbnh4wvv"))
+        (base32 "05hv4xdf06n728lmsx793zygypc9i404bgcgpy0fyrg8c2s11q2h"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
@@ -346,7 +346,8 @@ configure network interfaces in Linux containers.")
            git
            go
            ; strace ; XXX debug
-           pkg-config))
+           pkg-config
+           python))
     (home-page "https://podman.io")
     (synopsis "Manage containers, images, pods, and their volumes")
     (description

@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Jakob L. Kreuze <zerodaysfordays@sdf.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -22,6 +23,7 @@
   #:use-module (gnu machine ssh)
   #:use-module (gnu machine)
   #:use-module (gnu services)
+  #:use-module (gnu services base)
   #:use-module (gnu services networking)
   #:use-module (gnu system)
   #:use-module (gnu system pam)
@@ -34,7 +36,9 @@
   #:use-module (guix records)
   #:use-module (guix ssh)
   #:use-module (guix store)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 iconv)
+  #:use-module (ice-9 string-fun)
   #:use-module (json)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
@@ -188,18 +192,66 @@ an environment type of 'digital-ocean-environment-type'."
 ;;; System deployment.
 ;;;
 
+;; XXX Copied from (gnu services base)
+(define* (ip+netmask->cidr ip netmask #:optional (family AF_INET))
+  "Return the CIDR notation (a string) for @var{ip} and @var{netmask}, two
+@var{family} address strings, where @var{family} is @code{AF_INET} or
+@code{AF_INET6}."
+  (let* ((netmask (inet-pton family netmask))
+         (bits    (logcount netmask)))
+    (string-append ip "/" (number->string bits))))
+
 ;; The following script was adapted from the guide available at
 ;; <https://wiki.pantherx.org/Installation-digital-ocean/>.
 (define (guix-infect network)
   "Given NETWORK, an alist describing the Droplet's public IPv4 network
 interface, return a Bash script that will install the Guix system."
+  (define os
+    `(operating-system
+       (host-name "gnu-bootstrap")
+       (timezone "Etc/UTC")
+       (bootloader (bootloader-configuration
+                    (bootloader grub-bootloader)
+                    (targets '("/dev/vda"))
+                    (terminal-outputs '(console))))
+       (file-systems (cons (file-system
+                             (mount-point "/")
+                             (device "/dev/vda1")
+                             (type "ext4"))
+                           %base-file-systems))
+       (services
+        (append (list (service static-networking-service-type
+                               (list (static-networking
+                                      (addresses
+                                       (list (network-address
+                                              (device "eth0")
+                                              (value ,(ip+netmask->cidr
+                                                       (assoc-ref network "ip_address")
+                                                       (assoc-ref network "netmask"))))))
+                                      (routes
+                                       (list (network-route
+                                              (destination "default")
+                                              (gateway ,(assoc-ref network "gateway")))))
+                                      (name-servers '("84.200.69.80" "84.200.70.40")))))
+                      (simple-service 'guile-load-path-in-global-env
+                                      session-environment-service-type
+                                      `(("GUILE_LOAD_PATH"
+                                         . "/run/current-system/profile/share/guile/site/3.0")
+                                        ("GUILE_LOAD_COMPILED_PATH"
+                                         . ,(string-append "/run/current-system/profile/lib/guile/3.0/site-ccache:"
+                                                           "/run/current-system/profile/share/guile/site/3.0"))))
+                      (service openssh-service-type
+                               (openssh-configuration
+                                (log-level 'debug)
+                                (permit-root-login 'prohibit-password))))
+            %base-services))))
   (format #f "#!/bin/bash
 
 apt-get update
 apt-get install xz-utils -y
-wget https://ftp.gnu.org/gnu/guix/guix-binary-1.0.1.x86_64-linux.tar.xz
+wget -nv https://ci.guix.gnu.org/search/latest/archive?query=spec:tarball+status:success+system:x86_64-linux+guix-binary.tar.xz -O guix-binary-nightly.x86_64-linux.tar.xz
 cd /tmp
-tar --warning=no-timestamp -xf ~~/guix-binary-1.0.1.x86_64-linux.tar.xz
+tar --warning=no-timestamp -xf ~~/guix-binary-nightly.x86_64-linux.tar.xz
 mv var/guix /var/ && mv gnu /
 mkdir -p ~~root/.config/guix
 ln -sf /var/guix/profiles/per-user/root/current-guix ~~root/.config/guix/current
@@ -229,37 +281,9 @@ export GUIX_LOCPATH=\"$HOME/.guix-profile/lib/locale\"
 guix package -i openssl
 cat > /etc/bootstrap-config.scm << EOF
 (use-modules (gnu))
-(use-service-modules networking ssh)
+(use-service-modules base networking ssh)
 
-(operating-system
-  (host-name \"gnu-bootstrap\")
-  (timezone \"Etc/UTC\")
-  (bootloader (bootloader-configuration
-               (bootloader grub-bootloader)
-               (targets '(\"/dev/vda\"))
-               (terminal-outputs '(console))))
-  (file-systems (cons (file-system
-                        (mount-point \"/\")
-                        (device \"/dev/vda1\")
-                        (type \"ext4\"))
-                      %base-file-systems))
-  (services
-   (append (list (static-networking-service \"eth0\" \"~a\"
-                    #:netmask \"~a\"
-                    #:gateway \"~a\"
-                    #:name-servers '(\"84.200.69.80\" \"84.200.70.40\"))
-                 (simple-service 'guile-load-path-in-global-env
-                  session-environment-service-type
-                  \\`((\"GUILE_LOAD_PATH\"
-                     . \"/run/current-system/profile/share/guile/site/2.2\")
-                    (\"GUILE_LOAD_COMPILED_PATH\"
-                     . ,(string-append \"/run/current-system/profile/lib/guile/2.2/site-ccache:\"
-                                       \"/run/current-system/profile/share/guile/site/2.2\"))))
-                 (service openssh-service-type
-                          (openssh-configuration
-                           (log-level 'debug)
-                           (permit-root-login 'prohibit-password))))
-           %base-services)))
+~a
 EOF
 # guix pull
 guix system build /etc/bootstrap-config.scm
@@ -268,9 +292,9 @@ mv /etc /old-etc
 mkdir /etc
 cp -r /old-etc/{passwd,group,shadow,gshadow,mtab,guix,bootstrap-config.scm} /etc/
 guix system reconfigure /etc/bootstrap-config.scm"
-          (assoc-ref network "ip_address")
-          (assoc-ref network "netmask")
-          (assoc-ref network "gateway")))
+          ;; Escape the bare backtick to avoid having it interpreted by Bash.
+          (string-replace-substring
+           (format #f "~y" os) "`" "\\`")))
 
 (define (machine-wait-until-available machine)
   "Block until the initial Debian image has been installed on the droplet
@@ -301,18 +325,26 @@ named DROPLET-NAME."
 configuration for the public IPv4 network described by the alist NETWORK."
   (operating-system
     (inherit (machine-operating-system target))
-    (services (cons* (static-networking-service "eth0"
-                        (assoc-ref network "ip_address")
-                        #:netmask (assoc-ref network "netmask")
-                        #:gateway (assoc-ref network "gateway")
-                        #:name-servers '("84.200.69.80" "84.200.70.40"))
+    (services (cons* (service static-networking-service-type
+                              (list (static-networking
+                                     (addresses
+                                      (list (network-address
+                                             (device "eth0")
+                                             (value (ip+netmask->cidr
+                                                     (assoc-ref network "ip_address")
+                                                     (assoc-ref network "netmask"))))))
+                                     (routes
+                                      (list (network-route
+                                             (destination "default")
+                                             (gateway (assoc-ref network "gateway")))))
+                                     (name-servers '("84.200.69.80" "84.200.70.40")))))
                     (simple-service 'guile-load-path-in-global-env
                                     session-environment-service-type
                                     `(("GUILE_LOAD_PATH"
-                                       . "/run/current-system/profile/share/guile/site/2.2")
+                                       . "/run/current-system/profile/share/guile/site/3.0")
                                       ("GUILE_LOAD_COMPILED_PATH"
-                                       . ,(string-append "/run/current-system/profile/lib/guile/2.2/site-ccache:"
-                                                         "/run/current-system/profile/share/guile/site/2.2"))))
+                                       . ,(string-append "/run/current-system/profile/lib/guile/3.0/site-ccache:"
+                                                         "/run/current-system/profile/share/guile/site/3.0"))))
                     (operating-system-user-services
                      (machine-operating-system target))))))
 

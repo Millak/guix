@@ -6,6 +6,7 @@
 ;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -39,6 +40,7 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cdrom)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages curl)
@@ -55,12 +57,14 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
   #:use-module (gnu packages groff)
+  #:use-module (gnu packages groovy)
   #:use-module (gnu packages gnunet)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages logging)
   #:use-module (gnu packages mp3)
   #:use-module (gnu packages pcre)
   #:use-module (gnu packages pkg-config)
@@ -259,7 +263,7 @@ generator library for C++.")
     (native-inputs
      (list ghostscript ; ps2pdf
            groff libtool which))
-    (synopsis "fuzzy comparison of strings")
+    (synopsis "Fuzzy comparison of strings")
     (description
      "The fstrcmp project provides a library that is used to make fuzzy
 comparisons of strings and byte arrays, including multi-byte character strings.
@@ -270,43 +274,40 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
 (define-public kodi
   (package
     (name "kodi")
-    (version "18.8")
+    (version "19.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/xbmc/xbmc")
-                    (commit (string-append version "-Leia"))))
+                    (commit (string-append version "-Matrix"))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qpkpz43s207msvv3qkiy6vzqwcgmydxv3py7vc29mv6h30chrva"))
-              (patches (search-patches "kodi-skip-test-449.patch"
-                                       "kodi-increase-test-timeout.patch"
-                                       "kodi-set-libcurl-ssl-parameters.patch"))
+                "1pfd1ajivr865h0fkpbv778626c4czrvq8650bzqv9aqzh8f36my"))
+              (patches (search-patches "kodi-set-libcurl-ssl-parameters.patch"))
+              (modules '((guix build utils)))
               (snippet
                '(begin
                   (use-modules (guix build utils))
                   (for-each delete-file-recursively
                             '("project/BuildDependencies/"
-                              ;; TODO: Purge these jars.
-                              ;;"tools/codegenerator/groovy"
-                              ;; And these sources:
+                              "tools/codegenerator/groovy/commons-lang-2.6.jar"
+                              "tools/codegenerator/groovy/groovy-all-2.4.4.jar"
+                              ;; Purge these sources:
                               ;; "tools/depend/native/JsonSchemaBuilder"
                               ;; "tools/depend/native/TexturePacker"
-                              ;; "lib/gtest"
-                              ;; "lib/cpluff"
                               ;; "lib/libUPnP"
                               "lib/libUPnP/Neptune/ThirdParty"
-                              "project/Win32BuildSetup/tools/7z"))
-                  #t))
-              (modules '((guix build utils)))))
+                              "project/Win32BuildSetup/tools/7z"))))))
     (build-system cmake-build-system)
     (arguments
      '(#:modules ((srfi srfi-1)
                   (guix build cmake-build-system)
                   (guix build utils))
        #:configure-flags
-       (list "-DENABLE_INTERNAL_FFMPEG=OFF"
+       (list "-DCORE_PLATFORM_NAME=x11"
+             "-DAPP_RENDER_SYSTEM=gl"
+             "-DENABLE_INTERNAL_FFMPEG=OFF"
              "-DENABLE_INTERNAL_CROSSGUID=OFF"
              (string-append "-Dlibdvdread_URL="
                             (assoc-ref %build-inputs "libdvdread-bootstrapped"))
@@ -324,28 +325,36 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
          ;; bootstrap it on our own instead.
          (add-after 'unpack 'bootstrap-bundled-software
            (lambda _
-             (let ((dirs '("tools/depends/native/JsonSchemaBuilder/src"
-                           "lib/cpluff")))
+             (let ((dirs '("tools/depends/native/JsonSchemaBuilder/src")))
                (every (lambda (third-party)
                         (with-directory-excursion third-party
                           (invoke "autoreconf" "-vif")))
                       dirs))))
          (add-after 'bootstrap-bundled-software 'patch-stuff
            (lambda* (#:key inputs #:allow-other-keys)
+             ;; Run groovy executable directly.
+             (substitute* "xbmc/interfaces/swig/CMakeLists.txt"
+               (("COMMAND \\$\\{Java_JAVA_EXECUTABLE\\}")
+                "COMMAND groovy")
+               (("ARGS \\$\\{JAVA_OPEN_OPTS\\} -cp \"\\$\\{classpath\\}\" groovy.ui.GroovyMain")
+                "ARGS -cp \"${classpath}\" ")
+               (("classpath \\$\\{GROOVY_DIR\\}/groovy-all-\\$\\{GROOVY_VER\\}.jar")
+                "classpath ")
+               (("\\$\\{GROOVY_DIR\\}/commons-lang-\\$\\{COMMONS_VER\\}.jar")
+                (search-input-file inputs "/share/java/commons-lang-2.6.jar"))
+               (("^set\\(GROOVY_VER.*")
+                (string-append "set(GROOVY_VER 3.0.5)\n")))
+
              ;; Prevent the build scripts from calling autoreconf in the
              ;; build stage.  Otherwise, it would undo the bootstrapping
              ;; and shebang patching that we worked so hard for.
-             (substitute* "cmake/modules/FindCpluff.cmake"
-               (("autoreconf -vif") "true"))
-             (substitute* "lib/cpluff/po/Makefile.in.in"
-               (("/bin/sh") (which "sh")))
              (substitute* "cmake/modules/FindLibDvd.cmake"
                ;; The libdvd* sources that we bootstrapped separately are
                ;; unpacked in the build phase. This is our best opportunity
                ;; to make them writable before the build process starts.
                (("autoreconf -vif") "chmod -R u+w ."))
 
-             (substitute* "xbmc/platform/linux/LinuxTimezone.cpp"
+             (substitute* "xbmc/platform/posix/PosixTimezone.cpp"
                (("/usr/share/zoneinfo")
                 (search-input-directory inputs "share/zoneinfo")))
 
@@ -357,20 +366,21 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
              ;; Let's disable some tests that are known not to work here.
              ;; Doing this later while in the cmake "../build" directory
              ;; is trickier.
-             (substitute* '("xbmc/utils/test/TestSystemInfo.cpp")
+             (substitute* "xbmc/utils/test/TestSystemInfo.cpp"
                (("TEST_F\\(TestSystemInfo, GetOsPrettyNameWithVersion\\)")
                 "TEST_F(TestSystemInfo, DISABLED_GetOsPrettyNameWithVersion)")
                (("TEST_F\\(TestSystemInfo, GetOsName\\)")
                 "TEST_F(TestSystemInfo, DISABLED_GetOsName)")
                (("TEST_F\\(TestSystemInfo, GetOsVersion\\)")
                 "TEST_F(TestSystemInfo, DISABLED_GetOsVersion)"))
-             #t))
+             (substitute* "xbmc/utils/test/TestCPUInfo.cpp"
+               (("TEST_F\\(TestCPUInfo, GetCPUFrequency\\)")
+                "TEST_F(TestCPUInfo, DISABLED_GetCPUFrequency)"))))
          (add-before 'build 'set-build-environment
            (lambda _
              ;; Some bundled build scripts fall back to /bin/sh
              ;; if this is not set.
-             (setenv "CONFIG_SHELL" (which "sh"))
-             #t))
+             (setenv "CONFIG_SHELL" (which "sh"))))
          (add-before 'check 'build-kodi-test
            (lambda _
              (invoke "make" "kodi-test"))))))
@@ -379,77 +389,81 @@ alternatives. In compilers, this can reduce the cascade of secondary errors.")
     ;; - plist
     ;; - shairplay
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("icedtea" ,icedtea) ; needed at build-time only, mandatory
-       ("libdvdcss-bootstrapped" ,libdvdcss/kodi)
-       ("libdvdnav-bootstrapped" ,libdvdnav/kodi)
-       ("libdvdread-bootstrapped" ,libdvdread/kodi)
-       ("libtool" ,libtool)
-       ("pkg-config" ,pkg-config)
-       ("swig" ,swig)
-       ("yasm" ,yasm)))
+     (list autoconf
+           automake
+           gettext-minimal
+           googletest
+           groovy
+           openjdk9                     ;like groovy
+           java-commons-lang
+           libdvdcss/kodi
+           libdvdnav/kodi
+           libdvdread/kodi
+           libtool
+           pkg-config
+           swig
+           yasm))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("avahi" ,avahi)
-       ("bluez" ,bluez)
-       ("crossguid" ,crossguid)
-       ("curl" ,curl)
-       ("dcadec" ,dcadec)
-       ("dbus" ,dbus)
-       ("eudev" ,eudev)
-       ("ffmpeg" ,ffmpeg)
-       ("flac" ,flac)
-       ("flatbuffers" ,flatbuffers)
-       ("fmt" ,fmt-7)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("fstrcmp" ,fstrcmp)
-       ("giflib" ,giflib)
-       ("glew" ,glew)
-       ("gnutls" ,gnutls)
-       ("lame" ,lame)
-       ("lcms" ,lcms)
-       ("libass" ,libass)
-       ("libbluray" ,libbluray)
-       ("libcap" ,libcap)
-       ("libcdio" ,libcdio)
-       ("libdrm" ,libdrm)
-       ("libgcrypt" ,libgcrypt)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libltdl" ,libltdl)
-       ("libmad" ,libmad)
-       ("libmicrohttpd" ,libmicrohttpd)
-       ("libmpeg2" ,libmpeg2)
-       ("libnfs" ,libnfs)
-       ("libogg" ,libogg)
-       ("libpng" ,libpng)
-       ("libssh" ,libssh)
-       ("libtiff" ,libtiff)
-       ("libva" ,libva)
-       ("libvorbis" ,libvorbis)
-       ("libxml2" ,libxml2)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxslt" ,libxslt)
-       ("lzo" ,lzo)
-       ("mariadb-dev" ,mariadb "lib")
-       ("mariadb-dev" ,mariadb "dev")
-       ("openssl" ,openssl)
-       ("pcre" ,pcre)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python-2)
-       ("rapidjson" ,rapidjson)
-       ("samba" ,samba)
-       ("sqlite" ,sqlite)
-       ("taglib" ,taglib)
-       ("tinyxml" ,tinyxml)
-       ("tzdata" ,tzdata)
-       ("util-linux" ,util-linux)
-       ("zip" ,zip)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           avahi
+           bluez
+           crossguid
+           curl
+           dcadec
+           dbus
+           eudev
+           ffmpeg-4
+           flac
+           flatbuffers
+           fmt-6
+           fontconfig
+           freetype
+           fribidi
+           fstrcmp
+           giflib
+           glew
+           gnutls
+           lame
+           lcms
+           libass
+           libbluray
+           libcap
+           libcdio
+           libdrm
+           libgcrypt
+           libjpeg-turbo
+           libltdl
+           libmad
+           libmicrohttpd
+           libmpeg2
+           libnfs
+           libogg
+           libpng
+           libssh
+           libtiff
+           libva
+           libvorbis
+           libxml2
+           libxrandr
+           libxrender
+           libxslt
+           lzo
+           (list mariadb "lib")
+           (list mariadb "dev")
+           openssl
+           pcre
+           pulseaudio
+           python
+           rapidjson
+           samba
+           spdlog-for-kodi
+           sqlite
+           taglib
+           tinyxml
+           tzdata
+           util-linux
+           zip
+           zlib))
     (synopsis "Media center for home theater computers")
     (description "Kodi is a media center application for playing videos,
 music, games, etc.  Kodi is highly customizable and features a theme and
@@ -458,27 +472,27 @@ plug-in system.")
     ;; XBMC is largely GPL2+, with some library components as LGPL2.1+, but
     ;; there are some other licenses spread throughout.
     (license (list license:gpl2+ license:lgpl2.1+
-                   license:gpl3+                  ;WiiRemote client
-                   license:expat                  ;cpluff, dbwrappers
-                   license:public-domain          ;cpluff/examples
-                   license:bsd-3                  ;misc, gtest
-                   license:bsd-2))))              ;xbmc/freebsd
+                   license:gpl3+         ;WiiRemote client
+                   license:expat         ;cpluff, dbwrappers
+                   license:public-domain ;cpluff/examples
+                   license:bsd-3         ;misc
+                   license:bsd-2))))     ;xbmc/freebsd
 
 (define-public kodi/wayland
-  (package/inherit kodi
+  (package
+    (inherit kodi)
     (name "kodi-wayland")
     (arguments
      (substitute-keyword-arguments (package-arguments kodi)
        ((#:configure-flags flags)
-        `(append '("-DCORE_PLATFORM_NAME=wayland"
-                   "-DWAYLAND_RENDER_SYSTEM=gl")
-                   ,flags))))
+        `(cons "-DCORE_PLATFORM_NAME=wayland"
+               (delete "-DCORE_PLATFORM_NAME=x11" ,flags)))))
     (inputs
-     `(("libinput" ,libinput)
-       ("libxkbcommon" ,libxkbcommon)
-       ("waylandpp" ,waylandpp)
-       ("waylandp-protocols" ,wayland-protocols)
-       ,@(package-inputs kodi)))
+     (modify-inputs (package-inputs kodi)
+       (prepend libinput
+                libxkbcommon
+                waylandpp
+                wayland-protocols)))
     (synopsis "Kodi with Wayland rendering backend")))
 
 (define-public kodi-cli

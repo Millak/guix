@@ -47,7 +47,7 @@
 (define-public syncthing
   (package
     (name "syncthing")
-    (version "1.20.3")
+    (version "1.23.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/syncthing/syncthing"
@@ -55,7 +55,7 @@
                                   "/syncthing-source-v" version ".tar.gz"))
               (sha256
                (base32
-                "0xpm7bz4i6krr4wzj5fr10yk6f7jv2pf70b9dmvsgdvmrw412kqi"))))
+                "0n7438vppr8yrq8k4lsacjr48m1l0bfc2wv7rbrsc5br5bfx6rhg"))))
     (build-system go-build-system)
     ;; The primary Syncthing executable goes to "out", while the auxiliary
     ;; server programs and utility tools go to "utils".  This reduces the size
@@ -65,6 +65,7 @@
      `(#:modules ((srfi srfi-26) ; for cut
                   (guix build utils)
                   (guix build go-build-system))
+       #:go ,go-1.19
        #:import-path "github.com/syncthing/syncthing"
        ;; We don't need to install the source code for end-user applications.
        #:install-source? #f
@@ -137,7 +138,7 @@ supports a wide variety of computing platforms.  It uses the Block Exchange
 Protocol.")
     (home-page "https://github.com/syncthing/syncthing")
     (properties
-     '((release-monitoring-url . "https://github.com/syncthing/syncthing/releases")
+     '((release-monitoring-url . "https://syncthing.net/downloads/")
        (upstream-name . "syncthing-source")))
     (license mpl2.0)))
 

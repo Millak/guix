@@ -100,7 +100,9 @@ provides a 'SConstruct' file as its build system."
           #$(with-build-variables inputs outputs
               #~(scons-build #:name #$name
                              #:source #+source
-                             #:scons-flags #$(sexp->gexp scons-flags)
+                             #:scons-flags #$(if (pair? scons-flags)
+                                                 (sexp->gexp scons-flags)
+                                                 scons-flags)
                              #:system #$system
                              #:build-targets #$build-targets
                              #:test-target #$test-target

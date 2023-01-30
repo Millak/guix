@@ -28,6 +28,7 @@
   #:use-module (ice-9 match)
   #:use-module (ice-9 rdelim)
   #:use-module (ice-9 regex)
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-11)
   #:use-module (web uri)
 
@@ -149,42 +150,52 @@ Output:
       (string-join (map version->pattern directory-parts) "/")
       "/"))))
 
-(define (latest-kde-release package)
+(define* (import-kde-release package #:key (version #f))
   "Return the latest release of PACKAGE, a KDE package, or #f if it could
-not be determined."
+not be determined. Optionally include a VERSION string to fetch a specific
+version."
+
+  (define (find-latest-archive-version archives)
+    (fold (lambda (file1 file2)
+            (if (and file2
+                     (version>? (tarball-sans-extension (basename file2))
+                                (tarball-sans-extension (basename file1))))
+                file2
+                file1))
+          #f
+          archives))
+
   (let* ((uri      (string->uri (origin-uri (package-source package))))
          (path-rx  (uri->kde-path-pattern uri))
          (name     (package-upstream-name package))
          (files    (download.kde.org-files))
+         ;; select archives for this package
          (relevant (filter (lambda (file)
                              (and (regexp-exec path-rx file)
                                   (release-file? name (basename file))))
-                           files)))
-    (match (sort relevant (lambda (file1 file2)
-                            (version>? (tarball-sans-extension
-                                        (basename file1))
-                                       (tarball-sans-extension
-                                        (basename file2)))))
-           ((and tarballs (reference _ ...))
-            (let* ((version  (tarball->version reference))
-                   (tarballs (filter (lambda (file)
-                                       (string=? (tarball-sans-extension
-                                                  (basename file))
-                                                 (tarball-sans-extension
-                                                  (basename reference))))
-                                     tarballs)))
-              (upstream-source
-               (package name)
-               (version version)
-               (urls (map (lambda (file)
-                            (string-append "mirror://kde/" file))
-                          tarballs)))))
-           (()
-            #f))))
+                           files))
+         ;; Find latest version.
+         (version (or version
+                      (and (not (null? relevant))
+                           (tarball->version (find-latest-archive-version relevant)))))
+         ;; Find archives matching this version.
+         (tarballs (filter (lambda (file)
+                             (string=? version (tarball->version file)))
+                           relevant)))
+    (match tarballs
+      (() #f)
+      (_
+       (upstream-source
+        (package name)
+        (version version)
+        (urls (map (lambda (file)
+                     (string-append "mirror://kde/" file))
+                   tarballs)))))))
+
 
 (define %kde-updater
   (upstream-updater
     (name 'kde)
     (description "Updater for KDE packages")
     (pred (url-prefix-predicate "mirror://kde/"))
-    (latest latest-kde-release)))
+    (import import-kde-release)))

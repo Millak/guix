@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019 Danny Milosavljevic <dannym@scratchpost.org>
-;;; Copyright © 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -209,7 +209,7 @@ inside %DOCKER-OS."
     (virtual-machine
      (operating-system os)
      (volatile? #f)
-     (disk-image-size (* 5000 (expt 2 20)))
+     (disk-image-size (* 5500 (expt 2 20)))
      (memory-size 2048)
      (port-forwardings '())))
 

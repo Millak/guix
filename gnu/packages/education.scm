@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -384,8 +384,8 @@ to open the application in a web browser, for offline usage.")
        (method url-fetch)
        (uri (list
              ;; XXX: Upstream does not exist anymore.
-             (string-append "http://www.bipede.fr/downloads/logiciels/"
-                            "ToutEnClic-" version "-src.zip")
+             ;; (string-append "http://www.bipede.fr/downloads/logiciels/"
+             ;;                "ToutEnClic-" version "-src.zip")
              (string-append "https://archive.org/download/tout-en-clic-" version
                             "-src/ToutEnClic-" version "-src.zip")))
        (sha256
@@ -547,7 +547,7 @@ specialized device.")
       (inputs
        (list alsa-lib
              coreutils-minimal          ;for patched 'env' shebang
-             ffmpeg
+             ffmpeg-4
              freetype
              lame
              libass
@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.5.7")
+    (version "6.8.0")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "08j5i3dlp290fz142ljn68j8ssi5f3kabs0dd75ig33kms30hjs7"))))
+        (base32 "12hbw87d6aza77615apvbkdgrn3gqdw0q9xp2pw64w2513z0a2jm"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -623,14 +623,14 @@ hours.")
 (define-public klavaro
   (package
     (name "klavaro")
-    (version "3.13")
+    (version "3.14")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/klavaro/klavaro-"
                             version ".tar.bz2"))
         (sha256
-         (base32 "0z6c3lqikk50mkz3ipm93l48qj7b98lxyip8y6ndg9y9k0z0n878"))))
+         (base32 "1avdwpmd7jmdkrwzsxd8s8qg0sqj2avcv620jvk11i81sd4pw647"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))
@@ -667,7 +667,6 @@ language and very flexible regarding to new or unknown keyboard layouts.")
            ki18n
            kiconthemes
            kitemviews
-           kqtquickcharts
            ktextwidgets
            kwidgetsaddons
            kwindowsystem
@@ -1049,7 +1048,7 @@ machine, and more.")
 (define-public exercism
   (package
     (name "exercism")
-    (version "3.0.13")
+    (version "3.1.0")
     (source
      (origin
        (method git-fetch)
@@ -1059,21 +1058,42 @@ machine, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "17gvz9a0sn4p36hf4l77bxhhfipf4x998iay31layqwbnzmb4xy7"))
+         "0ah5v4pqq31bvj7s4rg3jyjn7jwxa15w31cn4c317gsqmi0n8rzl"))
        (patches (search-patches "exercism-disable-self-update.patch"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/exercism/cli/exercism"
        #:unpack-path "github.com/exercism/cli"
-       #:install-source? #f))
+       #:install-source? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'install 'install-completions
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out  (assoc-ref outputs "out"))
+                    (bash (string-append out "/etc/bash_completion.d/exercism"))
+                    (fish (string-append
+                            out "/share/fish/vendor_completions.d/exercism.fish"))
+                    (zsh  (string-append out "/share/zsh/site-functions/_exercism")))
+               (mkdir-p (dirname bash))
+               (with-output-to-file bash
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "bash")))
+               (mkdir-p (dirname fish))
+               (with-output-to-file fish
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "fish")))
+               (mkdir-p (dirname zsh))
+               (with-output-to-file zsh
+                 (lambda ()
+                   (invoke (string-append out "/bin/exercism") "completion" "zsh")))))))))
     (inputs
-     `(("github.com/blang/semver" ,go-github-com-blang-semver)
-       ("github.com/spf13/cobra" ,go-github-com-spf13-cobra)
-       ("github.com/spf13/pflag" ,go-github-com-spf13-pflag)
-       ("github.com/spf13/viper" ,go-github-com-spf13-viper)
-       ("golang.org/x/net" ,go-golang-org-x-net)
-       ("golang.org/x/text" ,go-golang-org-x-text)))
-    (home-page "https://exercism.io")
+     (list go-github-com-blang-semver
+           go-github-com-spf13-cobra
+           go-github-com-spf13-pflag
+           go-github-com-spf13-viper
+           go-golang-org-x-net
+           go-golang-org-x-text))
+    (home-page "https://exercism.org/")
     (synopsis "Mentored learning for programming languages")
     (description "Commandline client for exercism.io, a free service providing
 mentored learning for programming languages.")

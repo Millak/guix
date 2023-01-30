@@ -8,6 +8,7 @@
 ;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,9 @@
   #:use-module (guix search-paths)
   #:use-module (guix sets)
   #:use-module (guix deprecation)
+  #:use-module ((guix diagnostics)
+                #:select (formatted-message define-with-syntax-properties))
+  #:autoload   (guix licenses) (license?)
   #:use-module (guix i18n)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
@@ -86,6 +90,7 @@
             this-package
             package-name
             package-upstream-name
+            package-upstream-name*
             package-version
             package-full-name
             package-source
@@ -159,6 +164,8 @@
             &package-error
             package-error?
             package-error-package
+            package-license-error?
+            package-error-invalid-license
             &package-input-error
             package-input-error?
             package-error-invalid-input
@@ -418,7 +425,7 @@ from forcing GEXP-PROMISE."
 
 (define %hurd-systems
   ;; The GNU/Hurd systems for which support is being developed.
-  '("i586-gnu" "i686-gnu"))
+  '("i586-gnu"))
 
 (define %cuirass-supported-systems
   ;; This is the list of system types for which build machines are available.
@@ -533,6 +540,34 @@ Texinfo.  Otherwise, return the string."
         ((_ obj)
          #'obj)))))
 
+(define-syntax valid-license-value?
+  (syntax-rules (list package-license)
+    "Return #t if the given value is a valid license field, #f otherwise."
+    ;; Arrange so that the answer can be given at macro-expansion time in the
+    ;; most common cases.
+    ((_ (list x ...))
+     (and (license? x) ...))
+    ((_ (package-license _))
+     #t)
+    ((_ obj)
+     (or (license? obj)
+         ;; Note: Avoid 'not' below due to <https://bugs.gnu.org/58217>.
+         (eq? #f obj)                             ;#f is considered valid
+         (let ((x obj))
+           (and (pair? x) (every license? x)))))))
+
+(define-with-syntax-properties (validate-license (value properties))
+  (unless (valid-license-value? value)
+    (raise
+     (make-compound-condition
+      (condition
+       (&error-location
+        (location (source-properties->location properties))))
+      (condition
+       (&package-license-error (package #f) (license value)))
+      (formatted-message (G_ "~s: invalid package license~%") value))))
+  value)
+
 ;; A package.
 (define-record-type* <package>
   package make-package
@@ -574,8 +609,9 @@ Texinfo.  Otherwise, return the string."
             (sanitize validate-texinfo))          ; one-line description
   (description package-description
                (sanitize validate-texinfo))       ; one or two paragraphs
-  (license package-license)                       ; (list of) <license>
-  (home-page package-home-page)
+  (license package-license                        ; (list of) <license>
+           (sanitize validate-license))
+  (home-page package-home-page)                   ; string
   (supported-systems package-supported-systems    ; list of strings
                      (default %supported-systems))
 
@@ -657,6 +693,38 @@ it has in Guix."
   (or (assq-ref (package-properties package) 'upstream-name)
       (package-name package)))
 
+(define (package-upstream-name* package)
+  "Return the upstream name of PACKAGE, accounting for commonly-used
+package name prefixes in addition to the @code{upstream-name} property."
+  (let ((namespaces (list "cl-"
+                          "ecl-"
+                          "emacs-"
+                          "ghc-"
+                          "go-"
+                          "guile-"
+                          "java-"
+                          "julia-"
+                          "lua-"
+                          "minetest-"
+                          "node-"
+                          "ocaml-"
+                          "perl-"
+                          "python-"
+                          "r-"
+                          "ruby-"
+                          "rust-"
+                          "sbcl-"
+                          "texlive-"))
+        (name (package-name package)))
+    (or (assq-ref (package-properties package) 'upstream-name)
+        (let loop ((prefixes namespaces))
+          (match prefixes
+            (() name)
+            ((prefix rest ...)
+              (if (string-prefix? prefix name)
+                (substring name (string-length prefix))
+                (loop rest))))))))
+
 (define (hidden-package p)
   "Return a \"hidden\" version of P--i.e., one that 'fold-packages' and thus,
 user interfaces, ignores."
@@ -736,6 +804,10 @@ exist, return #f instead."
 (define-condition-type &package-error &error
   package-error?
   (package package-error-package))
+
+(define-condition-type &package-license-error &package-error
+  package-license-error?
+  (license package-error-invalid-license))
 
 (define-condition-type &package-input-error &package-error
   package-input-error?
@@ -1138,9 +1210,9 @@ inputs of Coreutils and adds libcap:
 
   (modify-inputs (package-inputs coreutils)
     (delete \"gmp\" \"acl\")
-    (append libcap))
+    (prepend libcap))
 
-Other types of clauses include 'prepend' and 'replace'.
+Other types of clauses include 'append' and 'replace'.
 
 The first argument must be a labeled input list; the result is also a labeled
 input list."

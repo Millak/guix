@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2022 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -35,10 +35,24 @@
   #:export (home-xdg-base-directories-service-type
             home-xdg-base-directories-configuration
             home-xdg-base-directories-configuration?
+            home-xdg-base-directories-configuration-cache-home
+            home-xdg-base-directories-configuration-config-home
+            home-xdg-base-directories-configuration-data-home
+            home-xdg-base-directories-configuration-state-home
+            home-xdg-base-directories-configuration-log-home
+            home-xdg-base-directories-configuration-runtime-dir
 
             home-xdg-user-directories-service-type
             home-xdg-user-directories-configuration
             home-xdg-user-directories-configuration?
+            home-xdg-user-directories-configuration-desktop
+            home-xdg-user-directories-configuration-documents
+            home-xdg-user-directories-configuration-download
+            home-xdg-user-directories-configuration-music
+            home-xdg-user-directories-configuration-pictures
+            home-xdg-user-directories-configuration-publicshare
+            home-xdg-user-directories-configuration-templates
+            home-xdg-user-directories-configuration-videos
 
             xdg-desktop-action
             xdg-desktop-entry
@@ -106,22 +120,25 @@ services more consistent."))
    home-xdg-base-directories-configuration-fields))
 
 (define (ensure-xdg-base-dirs-on-activation config)
-  #~(map (lambda (xdg-base-dir-variable)
-           ((@ (guix build utils) mkdir-p)
-            (getenv
-             xdg-base-dir-variable)))
-         '#$(filter-map
-             (lambda (field)
-               (let ((variable
-                      (string-append
-                       "XDG_"
-                       (object->snake-case-string
-                        (configuration-field-name field) 'upper))))
-                 ;; XDG_RUNTIME_DIR shouldn't be created during activation
-                 ;; and will be provided by elogind or other service.
-                 (and (not (string=? "XDG_RUNTIME_DIR" variable))
-                      variable)))
-             home-xdg-base-directories-configuration-fields)))
+  (with-imported-modules '((guix build utils))
+    #~(begin
+        (use-modules (guix build utils))
+        (map (lambda (xdg-base-dir-variable)
+               (mkdir-p
+                (getenv
+                 xdg-base-dir-variable)))
+             '#$(filter-map
+                 (lambda (field)
+                   (let ((variable
+                          (string-append
+                           "XDG_"
+                           (object->snake-case-string
+                            (configuration-field-name field) 'upper))))
+                     ;; XDG_RUNTIME_DIR shouldn't be created during activation
+                     ;; and will be provided by elogind or other service.
+                     (and (not (string=? "XDG_RUNTIME_DIR" variable))
+                          variable)))
+                 home-xdg-base-directories-configuration-fields)))))
 
 (define (last-extension-or-cfg config extensions)
   "Picks configuration value from last provided extension.  If there
@@ -231,6 +248,8 @@ pre-populated content.")
                         home-activation-service-type
                         home-xdg-user-directories-activation-service)))
                 (default-value (home-xdg-user-directories-configuration))
+                (compose identity)
+                (extend last-extension-or-cfg)
                 (description "Configure XDG user directories.  To
 disable a directory, point it to the $HOME.")))
 
@@ -383,25 +402,25 @@ configuration."
   (define (serialize-alist config)
     (generic-serialize-alist append format-config config))
 
-  (define (serialize-xdg-desktop-action action)
-    (match action
-      (($ <xdg-desktop-action> action name config)
-       `(,(format #f "[Desktop Action ~a]\n"
-                  (string-capitalize (maybe-object->string action)))
-         ,(format #f "Name=~a\n" name)
-         ,@(serialize-alist config)))))
+  (define (serialize-xdg-desktop-action desktop-action)
+    (match-record desktop-action <xdg-desktop-action>
+      (action name config)
+      `(,(format #f "[Desktop Action ~a]\n"
+                 (string-capitalize (maybe-object->string action)))
+        ,(format #f "Name=~a\n" name)
+        ,@(serialize-alist config))))
 
-  (match entry
-    (($ <xdg-desktop-entry> file name type config actions)
-     (list (if (string-suffix? file ".desktop")
-               file
-               (string-append file ".desktop"))
-           `("[Desktop Entry]\n"
-             ,(format #f "Name=~a\n" name)
-             ,(format #f "Type=~a\n"
-                      (string-capitalize (symbol->string type)))
-             ,@(serialize-alist config)
-             ,@(append-map serialize-xdg-desktop-action actions))))))
+  (match-record entry <xdg-desktop-entry>
+    (file name type config actions)
+    (list (if (string-suffix? file ".desktop")
+              file
+              (string-append file ".desktop"))
+          `("[Desktop Entry]\n"
+            ,(format #f "Name=~a\n" name)
+            ,(format #f "Type=~a\n"
+                     (string-capitalize (symbol->string type)))
+            ,@(serialize-alist config)
+            ,@(append-map serialize-xdg-desktop-action actions)))))
 
 (define-configuration home-xdg-mime-applications-configuration
   (added

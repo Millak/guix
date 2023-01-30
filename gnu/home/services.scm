@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021-2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
+;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (guix i18n)
   #:use-module (guix modules)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
 
@@ -46,6 +48,10 @@
             home-activation-service-type
             home-run-on-change-service-type
             home-provenance-service-type
+
+            literal-string
+            literal-string?
+            literal-string-value
 
             environment-variable-shell-definitions
             home-files-directory
@@ -171,32 +177,52 @@ packages, configuration files, activation script, and so on.")))
 configuration files that the user has declared in their
 @code{home-environment} record.")))
 
+;; Representation of a literal string.
+(define-record-type <literal-string>
+  (literal-string str)
+  literal-string?
+  (str literal-string-value))
+
 (define (environment-variable-shell-definitions variables)
   "Return a gexp that evaluates to a list of POSIX shell statements defining
 VARIABLES, a list of environment variable name/value pairs.  The returned code
 ensures variable values are properly quoted."
-  #~(let ((shell-quote
-           (lambda (value)
-             ;; Double-quote VALUE, leaving dollar sign as is.
-             (let ((quoted (list->string
-                            (string-fold-right
+  #~(let* ((quote-string
+            (lambda (value quoted-chars)
+              (list->string (string-fold-right
                              (lambda (chr lst)
-                               (case chr
-                                 ((#\" #\\)
-                                  (append (list chr #\\) lst))
-                                 (else (cons chr lst))))
+                               (if (memq chr quoted-chars)
+                                   (append (list #\\ chr) lst)
+                                   (cons chr lst)))
                              '()
                              value))))
-               (string-append "\"" quoted "\"")))))
+           (shell-double-quote
+            (lambda (value)
+              ;; Double-quote VALUE, leaving dollar sign as is.
+              (string-append "\"" (quote-string value '(#\" #\\))
+                             "\"")))
+           (shell-single-quote
+            (lambda (value)
+              ;; Single-quote VALUE to enter a literal string.
+              (string-append "'" (quote-string value '(#\'))
+                             "'"))))
       (string-append
        #$@(map (match-lambda
                  ((key . #f)
                   "")
                  ((key . #t)
                   #~(string-append "export " #$key "\n"))
-                 ((key . value)
+                 ((key . (or (? string? value)
+                             (? file-like? value)
+                             (? gexp? value)))
                   #~(string-append "export " #$key "="
-                                   (shell-quote #$value) "\n")))
+                                   (shell-double-quote #$value)
+                                   "\n"))
+                 ((key . (? literal-string? value))
+                  #~(string-append "export " #$key "="
+                                   (shell-single-quote
+                                    #$(literal-string-value value))
+                                   "\n")))
                variables))))
 
 (define (environment-variables->setup-environment-script vars)
@@ -313,7 +339,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files}, and further processed during activation.")))
+@file{~/.guix-home/files}, and further processed during activation.")))
 
 (define xdg-configuration-files-directory ".config")
 
@@ -334,7 +360,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/.config}, and further processed during activation.")))
+@file{~/.guix-home/files/.config}, and further processed during activation.")))
 
 (define xdg-data-files-directory ".local/share")
 
@@ -355,7 +381,7 @@ directory containing FILES."
                 (extend append)
                 (default-value '())
                 (description "Files that will be put in
-@file{~~/.guix-home/files/.local/share}, and further processed during
+@file{~/.guix-home/files/.local/share}, and further processed during
 activation.")))
 
 

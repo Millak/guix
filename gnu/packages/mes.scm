@@ -98,29 +98,20 @@ extensive examples, including parsers for the Javascript and C99 languages.")
 (define-public nyacc
   (package
     (inherit nyacc-0.99)
-    (version "1.07.0")
+    (version "1.08.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://savannah/nyacc/nyacc-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "01qb6h6bk684z8xda5d71q5f5l2z3q9jjz36if3jbpjc7b8dxjap"))
+                "1vrz3pnlr3njwk6ksz85slcwawi8ngiqbw94wd9x3mgv85vsfmys"))
               (modules '((guix build utils)))
               (snippet
                '(substitute* "configure"
                   (("GUILE_GLOBAL_SITE=\\$prefix.*")
                    "GUILE_GLOBAL_SITE=\
 $prefix/share/guile/site/$GUILE_EFFECTIVE_VERSION\n")))))
-    (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; See https://savannah.nongnu.org/bugs/index.php?60474
-         (add-after 'unpack 'fix-60474
-           (lambda _
-             (substitute* "module/nyacc/lang/c99/parser.scm"
-               (("\\(memq \\(car stmt\\) '\\(include include-next\\)\\)")
-                "(memq (car stmt) '(include include-next define))")))))))
     (inputs (list guile-3.0))
     (propagated-inputs (list guile-bytestructures))
     (description
@@ -167,14 +158,14 @@ parsers to allow execution with Guile as extension languages.")))
 (define-public mes
   (package
     (name "mes")
-    (version "0.24")
+    (version "0.24.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/mes/"
                                   "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
+                "0d855agwawjjzwbjmvb5xlbwg77zdpwbjm9kjxc2wqvn0vmhq4im"))))
     (supported-systems '("armhf-linux" "i686-linux" "x86_64-linux"))
     (propagated-inputs (list mescc-tools nyacc-1.00.2))
     (native-inputs
@@ -234,7 +225,7 @@ Guile.")
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"
                          "armhf-linux" "aarch64-linux"
-                         "riscv32-linux" "riscv64-linux"))
+                         "riscv64-linux"))
     (arguments
      `(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
        #:test-target "test"

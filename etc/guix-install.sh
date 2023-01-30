@@ -3,13 +3,14 @@
 # Copyright © 2017 sharlatan <sharlatanus@gmail.com>
 # Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 # Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-# Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+# Copyright © 2019–2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 # Copyright © 2020 Morgan Smith <Morgan.J.Smith@outlook.com>
 # Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 # Copyright © 2020 Daniel Brooks <db48x@db48x.net>
 # Copyright © 2021 Jakub Kądziołka <kuba@kadziolka.net>
 # Copyright © 2021 Chris Marusich <cmmarusich@gmail.com>
-# Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+# Copyright © 2022 Prafulla Giri <prafulla.giri@protonmail.com>
 #
 # This file is part of GNU Guix.
 #
@@ -33,7 +34,7 @@ then
     exec bash "$0" "$@"
 fi
 
-set -e
+set -eo pipefail
 
 [ "$UID" -eq 0 ] || { echo "This script must be run as root."; exit 1; }
 
@@ -52,6 +53,7 @@ REQUIRE=(
     "chmod"
     "uname"
     "groupadd"
+    "useradd"
     "tail"
     "tr"
     "xz"
@@ -92,17 +94,20 @@ _debug()
     fi
 }
 
-# Return true if user answered yes, false otherwise.
+die()
+{
+    _err "${ERR}$*"
+    exit 1
+}
+
+# Return true if user answered yes, false otherwise.  The prompt is
+# yes-biased, that is, when the user simply enter newline, it is equivalent to
+# answering "yes".
 # $1: The prompt question.
 prompt_yes_no() {
-    while true; do
-        read -rp "$1 " yn
-        case $yn in
-            [Yy]*) return 0;;
-            [Nn]*) return 1;;
-            *) _msg "Please answer yes or no."
-        esac
-    done
+    local -l yn
+    read -rp "$1 [Y/n]" yn
+    [[ ! $yn || $yn = y || $yn = yes ]] || return 1
 }
 
 chk_require()
@@ -116,10 +121,8 @@ chk_require()
         command -v "$c" &>/dev/null || warn+=("$c")
     done
 
-    [ "${#warn}" -ne 0 ] &&
-        { _err "${ERR}Missing commands: ${warn[*]}.";
-          return 1; }
-    
+    [ "${#warn}" -ne 0 ] && die "Missing commands: ${warn[*]}."
+
     _msg "${PAS}verification of required commands completed"
 }
 
@@ -134,21 +137,27 @@ chk_gpg_keyring()
         gpg_key_id=${GPG_SIGNING_KEYS[$user_id]}
         # Without --dry-run this command will create a ~/.gnupg owned by root on
         # systems where gpg has never been used, causing errors and confusion.
-        if ! gpg --dry-run --list-keys "$gpg_key_id" >/dev/null 2>&1; then
-            if prompt_yes_no "${INF}The following OpenPGP public key is \
+        if gpg --dry-run --list-keys "$gpg_key_id" >/dev/null 2>&1; then
+            continue
+        fi
+        if prompt_yes_no "${INF}The following OpenPGP public key is \
 required to verify the Guix binary signature: $gpg_key_id.
-Would you like me to fetch it for you? (yes/no)"; then
-                wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
-                     --no-verbose -O- | gpg --import -
-            else
-                _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
+Would you like me to fetch it for you?"; then
+            # Use a reasonable time-out here so users don't report silent
+            # ‘freezes’ when Savannah goes out to lunch, as has happened.
+            if wget "https://sv.gnu.org/people/viewgpg.php?user_id=$user_id" \
+                    --timeout=30 --no-verbose -O- | gpg --import -; then
+                continue
+            fi
+        fi
+	# If we reach this point, the key is (still) missing.  Report further
+	# missing keys, if any, but then abort the installation.
+        _err "${ERR}Missing OpenPGP public key ($gpg_key_id).
 Fetch it with this command:
 
   wget \"https://sv.gnu.org/people/viewgpg.php?user_id=$user_id\" -O - | \
 sudo -i gpg --import -"
-                exit_flag=yes
-            fi
-        fi
+        exit_flag=yes
     done
     if [ "$exit_flag" = yes ]; then
         exit 1
@@ -220,8 +229,7 @@ chk_sys_arch()
             local arch=powerpc64le
             ;;
         *)
-            _err "${ERR}Unsupported CPU type: ${arch}"
-            exit 1
+            die "Unsupported CPU type: ${arch}"
     esac
 
     case "$os" in
@@ -229,8 +237,7 @@ chk_sys_arch()
             local os=linux
             ;;
         *)
-            _err "${ERR}Your operation system (${os}) is not supported."
-            exit 1
+            die "Your operation system (${os}) is not supported."
     esac
 
     ARCH_OS="${arch}-${os}"
@@ -254,7 +261,7 @@ chk_sys_nscd()
 configure_substitute_discovery() {
     if grep -q -- '--discover=no' "$1" && \
             prompt_yes_no "Would you like the Guix daemon to automatically \
-discover substitute servers on the local network? (yes/no)"; then
+discover substitute servers on the local network?"; then
         sed -i 's/--discover=no/--discover=yes/' "$1"
     fi
 }
@@ -285,8 +292,7 @@ guix_get_bin_list()
     if [[ "${#bin_ver_ls}" -ne "0" ]]; then
         _msg "${PAS}Release for your system: ${default_ver}"
     else
-        _err "${ERR}Could not obtain list of Guix releases."
-        exit 1
+        die "Could not obtain list of Guix releases."
     fi
 
     # Use default to download according to the list and local ARCH_OS.
@@ -311,8 +317,7 @@ guix_get_bin()
             "${url}/${bin_ver}.tar.xz" "${url}/${bin_ver}.tar.xz.sig"; then
         _msg "${PAS}download completed."
     else
-        _err "${ERR}could not download ${url}/${bin_ver}.tar.xz."
-        exit 1
+        die "could not download ${url}/${bin_ver}.tar.xz."
     fi
 
     pushd "${dl_path}" >/dev/null
@@ -320,8 +325,7 @@ guix_get_bin()
         _msg "${PAS}Signature is valid."
         popd >/dev/null
     else
-        _err "${ERR}could not verify the signature."
-        exit 1
+        die "could not verify the signature."
     fi
 }
 
@@ -333,8 +337,7 @@ sys_create_store()
     _debug "--- [ ${FUNCNAME[0]} ] ---"
 
     if [[ -e "/var/guix" || -e "/gnu" ]]; then
-        _err "${ERR}A previous Guix installation was found.  Refusing to overwrite."
-        exit 1
+        die "A previous Guix installation was found.  Refusing to overwrite."
     fi
 
     cd "$tmp_path"
@@ -488,14 +491,22 @@ sys_enable_guix_daemon()
 }
 
 sys_authorize_build_farms()
-{ # authorize the public key of the build farm
+{ # authorize the public key(s) of the build farm(s)
+    local hosts=(
+	ci.guix.gnu.org
+	bordeaux.guix.gnu.org
+    )
+
     if prompt_yes_no "Permit downloading pre-built package binaries from the \
-project's build farm? (yes/no)"; then
-        guix archive --authorize \
-             < ~root/.config/guix/current/share/guix/ci.guix.gnu.org.pub \
-            && _msg "${PAS}Authorized public key for ci.guix.gnu.org"
-        else
-            _msg "${INF}Skipped authorizing build farm public keys"
+project's build farms?"; then
+	for host in "${hosts[@]}"; do
+	    local key=~root/.config/guix/current/share/guix/$host.pub
+	    [ -f "$key" ] \
+		&& guix archive --authorize < "$key" \
+		&& _msg "${PAS}Authorized public key for $host"
+	done
+    else
+        _msg "${INF}Skipped authorizing build farm public keys"
     fi
 }
 
@@ -503,7 +514,7 @@ sys_create_init_profile()
 { # Define for better desktop integration
   # This will not take effect until the next shell or desktop session!
     [ -d "/etc/profile.d" ] || mkdir /etc/profile.d # Just in case
-    cat <<"EOF" > /etc/profile.d/guix.sh
+    cat <<"EOF" > /etc/profile.d/zzz-guix.sh
 # Explicitly initialize XDG base directory variables to ease compatibility
 # with Guix System: see <https://issues.guix.gnu.org/56050#3>.
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -532,9 +543,6 @@ GUIX_LOCPATH="$GUIX_PROFILE/lib/locale"
 export GUIX_LOCPATH
 
 [ -f "$GUIX_PROFILE/etc/profile" ] && . "$GUIX_PROFILE/etc/profile"
-
-# set XDG_DATA_DIRS to include Guix installations
-export XDG_DATA_DIRS="$GUIX_PROFILE/share:$XDG_DATA_DIRS"
 EOF
 }
 
@@ -557,9 +565,28 @@ sys_create_shell_completion()
         _msg "${PAS}installed shell completion"
 }
 
+sys_customize_bashrc()
+{
+    prompt_yes_no "Customize users Bash shell prompt for Guix?" || return
+    for bashrc in /home/*/.bashrc /root/.bashrc; do
+        test -f "$bashrc" || continue
+        grep -Fq '$GUIX_ENVIRONMENT' "$bashrc" && continue
+        cp "${bashrc}" "${bashrc}.bak"
+        echo '
+# Automatically added by the Guix install script.
+if [ -n "$GUIX_ENVIRONMENT" ]; then
+    if [[ $PS1 =~ (.*)"\\$" ]]; then
+        PS1="${BASH_REMATCH[1]} [env]\\\$ "
+    fi
+fi
+' >> "$bashrc"
+    done
+    _msg "${PAS}Bash shell prompt successfully customized for Guix"
+}
 
 welcome()
 {
+    local char
     cat<<"EOF"
     ░░░                                     ░░░
     ░░▒▒░░░░░░░░░               ░░░░░░░░░▒▒░░
@@ -585,8 +612,18 @@ This script installs GNU Guix on your system
 
 https://www.gnu.org/software/guix/
 EOF
-    echo -n "Press return to continue..."
-    read -r
+    # Don't use ‘read -p’ here!  It won't display when run non-interactively.
+    echo -n "Press return to continue..."$'\r'
+    if ! read -r char; then
+	echo
+	die "Can't read standard input.  Hint: don't pipe scripts into a shell."
+    fi
+    if [ "$char" ]; then
+	echo
+	echo "...that ($char) was not a return!"
+	_msg "${WAR}Use newlines to automate installation, e.g.: yes '' | ${0##*/}"
+	_msg "${WAR}Any other method is unsupported and likely to break in future."
+    fi
 }
 
 main()
@@ -606,7 +643,7 @@ main()
     _msg "${INF}system is ${ARCH_OS}"
 
     umask 0022
-    tmp_path="$(mktemp -t -d guix.XXX)"
+    tmp_path="$(mktemp -t -d guix.XXXXXX)"
 
     if [ -z "${GUIX_BINARY_FILE_NAME}" ]; then
         guix_get_bin_list "${GNU_URL}"
@@ -626,6 +663,7 @@ main()
     sys_authorize_build_farms
     sys_create_init_profile
     sys_create_shell_completion
+    sys_customize_bashrc
 
     _msg "${INF}cleaning up ${tmp_path}"
     rm -r "${tmp_path}"

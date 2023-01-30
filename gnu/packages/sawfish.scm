@@ -21,6 +21,7 @@
 
 (define-module (gnu packages sawfish)
   #:use-module ((guix licenses) #:select (gpl2+))
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix build-system gnu)
@@ -113,14 +114,14 @@ backend of Sawfish.")
 (define-public sawfish
   (package
     (name "sawfish")
-    (version "1.12.0")
+    (version "1.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.tuxfamily.org/sawfish/"
                                   name "_" version ".tar.xz"))
               (sha256
                (base32
-                "1z7awzgw8d15aw17kpbj460pcxq8l2rhkaxk47w7yg9qrmg0xja4"))
+                "0pdgf9w5vrn3kfqxwggikj4yqg82rpy8ji613zdhidacz9dkqsw1"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -131,44 +132,44 @@ backend of Sawfish.")
                      "REP_DL_LOAD_PATH=$(REP_DL_LOAD_PATH):"))
                   (substitute* "src/Makefile.in"
                     ;; Install libraries for librep to $out/lib/rep.
-                    (("\\$\\(repexecdir\\)") "$(libdir)/rep"))
-                  #t))))
+                    (("\\$\\(repexecdir\\)") "$(libdir)/rep"))))))
     (build-system gnu-build-system)
     (arguments
-     '(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'patch-exec-rep
-           (lambda _
-             (substitute* '("lisp/sawfish/cfg/main.jl.in"
-                            "scripts/sawfish-about.jl.in"
-                            "scripts/sawfish-client.jl"
-                            "scripts/sawfish-menu.jl")
-               (("exec rep") (string-append "exec " (which "rep"))))
-             #t))
-         (add-after 'install 'wrap-scripts
-           ;; Wrap scripts with REP_DL_LOAD_PATH for finding rep-gtk
-           ;; and sawfish.client.
-           (lambda* (#:key outputs #:allow-other-keys)
-             (define (wrap-script script)
-               (let ((out (assoc-ref outputs "out")))
-                 (wrap-program (string-append out script)
-                   `("REP_DL_LOAD_PATH" =
-                     ,(list (getenv "REP_DL_LOAD_PATH")
-                            (string-append out "/lib/rep"))))))
-             (for-each wrap-script
-                       (list "/bin/sawfish-about"
-                             "/bin/sawfish-client"
-                             "/bin/sawfish-config"
-                             "/lib/sawfish/sawfish-menu"))
-             #t)))))
+     (list
+      #:tests? #f ; no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-exec-rep
+            (lambda _
+              (substitute* '("lisp/sawfish/cfg/main.jl.in"
+                             "scripts/sawfish-about.jl.in"
+                             "scripts/sawfish-client.jl"
+                             "scripts/sawfish-menu.jl")
+                (("exec rep") (string-append "exec " (which "rep"))))))
+          (add-after 'install 'wrap-scripts
+            ;; Wrap scripts with REP_DL_LOAD_PATH for finding rep-gtk
+            ;; and sawfish.client.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (define (wrap-script script)
+                (let ((out (assoc-ref outputs "out")))
+                  (wrap-program (string-append out script)
+                    `("REP_DL_LOAD_PATH" =
+                      ,(list (getenv "REP_DL_LOAD_PATH")
+                             (string-append out "/lib/rep"))))))
+              (for-each wrap-script
+                        (list "/bin/sawfish-about"
+                              "/bin/sawfish-client"
+                              "/bin/sawfish-config"
+                              "/lib/sawfish/sawfish-menu")))))))
     (native-inputs
-     `(("gettext"     ,gettext-minimal)
-       ("makeinfo"    ,texinfo)
-       ("pkg-config"  ,pkg-config)
-       ("which"       ,which)))
+     (list gettext-minimal
+           texinfo
+           pkg-config
+           which))
     (inputs
-     (list libsm
+     (list gdk-pixbuf-xlib
+           gmp
+           libsm
            libxft
            libxinerama
            libxrandr

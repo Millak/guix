@@ -40,6 +40,7 @@
 ;;; Copyright © 2020 Jesse Dowell <jessedowell@gmail.com>
 ;;; Copyright © 2020 Hamzeh Nasajpour <h.nasajpour@pantherx.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2021 Fakhri Sajadi <f.sajadi@pantherx.org>
 ;;; Copyright © 2021 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
@@ -48,9 +49,12 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Simon South <simon@simonsouth.net>
+;;; Copyright © 2022 Pavel Shlyak <p.shlyak@pantherx.org>
 ;;; Copyright © 2022 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
+;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
+;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -80,6 +84,7 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -115,6 +120,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libusb)
@@ -190,7 +196,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
 (define-public arp-scan
   (package
     (name "arp-scan")
-    (version "1.9.7")
+    (version "1.9.8")
     (source
      (origin
        (method git-fetch)
@@ -200,7 +206,7 @@ runs on top of IP or UDP, and supports both v4 and v6 versions.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mf7a4f9vzvnkiavc87aqyciswggsb4fpy7j05jxnvjyyxv3l7gp"))))
+        (base32 "18pck3hi7caykpkry5ri16w4w8m11g8gvh3qx5rhwsc6d9xa2a6d"))))
     (build-system gnu-build-system)
     (inputs
      (list libpcap))
@@ -264,11 +270,11 @@ protocols.")
                                            (assoc-ref %outputs "out"))))
        #:test-target "test"))
     (home-page "https://librecast.net/lcrq.html")
-    (synopsis "librecast RaptorQ library")
+    (synopsis "Librecast RaptorQ library")
     (description
      "C library implementation of RaptorQ Forward Error Correction for
 Librecast.  RFC6330 (IETF) describes the RaptorQ proposed standard, which LCRQ
-more-or-less follows. The primary focus has been on building a fast, simple
+more-or-less follows.  The primary focus has been on building a fast, simple
 and dependency-free FEC implementation for use with Librecast, and not on
 strict standards compliance.  The code does, however, fairly closely follow
 the RFC.")
@@ -326,7 +332,7 @@ the RFC.")
     (inputs (list librecast libsodium))
     (native-inputs (list simde))
     (home-page "https://librecast.net/lcsync.html")
-    (synopsis "librecast file and data syncing tool")
+    (synopsis "Librecast file and data syncing tool")
     (description
      "lcsync is a tool to sync files over IPv6 multicast or the
 local filesystem.  It splits the file into blocks, hashes them, and compares
@@ -519,7 +525,7 @@ GLib-based library, libnice, as well as GStreamer elements to use it.")
                       (delete-file "./test/0000-0039.c")
                       (delete-file "./test/0000-0040.c"))))))
     (inputs (list libsodium lcrq))
-    (synopsis "librecast IPv6 multicast library")
+    (synopsis "IPv6 multicast library")
     (description "Librecast is a C library which supports IPv6 multicast
 networking.")
     (home-page "https://librecast.net/librecast.html")
@@ -587,7 +593,7 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
 (define-public slurm-monitor
   (package
     (name "slurm-monitor")
-    (version "0.4.3")
+    (version "0.4.4")
     (source
      (origin
        (method git-fetch)
@@ -597,9 +603,10 @@ supported, including rtmp://, rtmpt://, rtmpe://, rtmpte://, and rtmps://.")
          (commit (string-append "upstream/" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1n6pgrcs8gwrcq5fch1q3yk3jipjwrf21s9a13fbjrl903g5zzv9"))))
-    (build-system cmake-build-system)
+        (base32 "07q8895bxsajkwip8dgrrwr1m8a10xnl4p0g6wqcrd2wf4hx5gn3"))))
+    (build-system meson-build-system)
     (arguments `(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
     (inputs (list ncurses))
     (synopsis "Network load monitor")
     (description
@@ -867,14 +874,14 @@ systems with no further dependencies.")
 (define-public blueman
   (package
     (name "blueman")
-    (version "2.3.2")
+    (version "2.3.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/blueman-project/blueman/releases"
                            "/download/" version "/blueman-" version ".tar.xz"))
        (sha256
-        (base32 "1bjh0cx9j2akygiqyxm7g0q74jyx9hpgf186gv3m31vks5zpvkw4"))))
+        (base32 "0lh1aqpdq6vi4agrgmm7fifjbxz2s5qcs3hr7nfjrwrp2j1361n2"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags (list "--enable-polkit"
@@ -972,6 +979,33 @@ D-Bus backend.  It is designed to be easy to use for most common Bluetooth
 tasks.")
     (home-page "https://github.com/blueman-project/blueman")
     (license license:gpl3+)))
+
+(define-public nm-tray
+  (package
+    (name "nm-tray")
+    (version "0.5.0")
+    (home-page "https://github.com/palinek/nm-tray")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (sha256
+               (base32
+                "14i8sl0hrnyidlvqnxza0v4018f7p685ksn8419i2w7f9yqpvpiw"))
+              (file-name (git-file-name name version))))
+    (build-system qt-build-system)
+    (arguments
+     (list #:tests? #f)) ;There are no tests upstream
+    (inputs (list qtbase-5 networkmanager-qt))
+    (native-inputs (list qttools-5 pkg-config))
+    (synopsis
+     "NetworkManager front-end with information icon residing in system tray")
+    (description
+     "nm-tray is a network connection management tool (NetworkManager
+front-end) with an information icon residing in the system tray.  Unlike
+nm-applet, which is part of GNOME, this application is desktop-unaware.")
+    (license license:gpl2+)))
 
 ;; The gnu.org ‘home’ for this GNU project is a directory listing with 1.6.0 as
 ;; the latest version.  The author's git repository, mentioned in the 1.6.0
@@ -1505,22 +1539,14 @@ Ethernet devices.")
 (define-public ifstatus
   (package
     (name "ifstatus")
-    (version "1.1.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/ifstatus/ifstatus/"
-                                  "ifstatus%20v" version "/ifstatus-v"
-                                  version ".tar.gz"))
+                                  "ifstatus-v" version ".tar.gz"))
               (sha256
                (base32
-                "045cbsq9ps32j24v8y5hpyqxnqn9mpaf3mgvirlhgpqyb9jsia0c"))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  (substitute* "Main.h"
-                    (("#include <stdio.h>")
-                     "#include <stdio.h>\n#include <stdlib.h>"))
-                  #t))))
+                "0n622f2m3x901hcmad4ns52r2x75csy4nqraagzb8h9fn0j62jkv"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f                                ; no "check" target
@@ -1728,27 +1754,29 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "3.6.7")
+    (version "4.0.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1idpxnh8vrvan3g0ymaa24bd4iyxi19xrr76sdrrpxx2r8shmqfc"))))
+        (base32 "07a18jx88jaa2j1i949w9n1yb149xi02s80inbfji6rgkxliangk"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'remove-failing-test
-           ;; Skip test suite failing with "Program reassemble_test is not
-           ;; available" and alike errors.  Also skip test suite failing with
-           ;; "AssertionError: Program extcap/sdjournal is not available"
-           ;; error.'
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("suite_unittests" all) (string-append "# " all))
-               (("suite_extcaps" all) (string-append "# " all))))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             ;; Skip test suite failing with "Program reassemble_test is not
+             ;; available" and alike errors.  Also skip test suite failing
+             ;; with "AssertionError: Program extcap/sdjournal is not
+             ;; available" error.'
+             (when tests?
+               (invoke "ctest"
+                       "-E"
+                       (string-join (list "suite_unittests" "suite_extcaps")
+                                    "|"))))))
        ;; Build process chokes during `validate-runpath' phase.
        ;;
        ;; Errors are like the following:
@@ -1777,6 +1805,7 @@ of the same name.")
            mit-krb5
            `(,nghttp2 "lib")
            minizip
+           pcre2
            qtbase-5
            qtmultimedia-5
            qtsvg-5
@@ -1937,15 +1966,15 @@ transmission protocol (SCTP) in a Go application.")
         (base32
          "1y7sbgkhgadmd93x1zafqc4yp26ssiv16ni5bbi9vmvvdl55m29y"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:tests? #f))                ; no test suite
     (native-inputs
-     `(("gettext" ,gettext-minimal)))
+     (list gettext-minimal))
     (inputs
      (list fftw ncurses openssl))
-    (arguments
-     `(#:make-flags (list ,(string-append "CC=" (cc-for-target))
-                          (string-append "DESTDIR=" (assoc-ref %outputs "out"))
-                          "PREFIX=")
-       #:tests? #f)) ; no tests
     (home-page "https://www.vanheusden.com/httping/")
     (synopsis "Web server latency and throughput monitor")
     (description
@@ -2010,7 +2039,7 @@ TCP connection, TLS handshake and so on) in the terminal.")
      '(#:configure-flags
        ;; disable -march=native in build for reproducibility; see
        ;; https://wiki.squid-cache.org/KnowledgeBase/IllegalInstructionError
-       (list "--disable-arch-native")
+       (list "--disable-arch-native" "--with-openssl")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'fix-true-path
@@ -2631,7 +2660,7 @@ that block port 22.")
 (define-public iperf
   (package
     (name "iperf")
-    (version "3.11")
+    (version "3.12")
     (source
      (origin
        (method git-fetch)
@@ -2640,7 +2669,7 @@ that block port 22.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "064sb8f9jxi5ii43swd73c0mm50lvk51v7awhgbj6p129c1a4nn5"))))
+        (base32 "0bkmlah8lsm9vciaa9k84x3g1fd0k6nwnsrzp8y04piyiplrvpsi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -2731,7 +2760,7 @@ procedure calls (RPCs).")
 (define-public openvswitch
   (package
     (name "openvswitch")
-    (version "3.0.0")
+    (version "3.0.3")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2739,7 +2768,7 @@ procedure calls (RPCs).")
                     version ".tar.gz"))
               (sha256
                (base32
-                "17hr7x9iahhmskp70pv59v4bsn86r2jmbaw37vs03jsz3k1a57gs"))))
+                "0qwlpnwjcyb7fpw6yp65mdqg20i1851z70xmvzxwxwpifq56a1pm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
@@ -2968,6 +2997,40 @@ clients which typically implement a routing protocol and communicate routing
 updates to the zebra daemon.")
     (home-page "https://www.nongnu.org/quagga/")
     (license license:gpl2+)))
+
+(define-public bgpq3
+  (package
+    (name "bgpq3")
+    (version "0.1.36.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/snar/bgpq3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0768hihx7idmn2dk8ii21m0dm052amlnfpqq53vsfaapb60n1smc"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:tests? #f))                    ; no test suite
+    (native-inputs (list python-markdown))
+    (home-page "http://snar.spb.ru/prog/bgpq3/")
+    (synopsis
+     "Generate BGP filters from the @acronym{IRR, Internet Routing Registry}")
+    (description
+     "This program helps automate the creation and maintenance of @acronym{BGP,
+Border Gateway Protocol} routing filters used for peering trough Internet
+exchanges.
+
+It generates prefix lists, (extended) access lists, policy-statement terms, and
+AS paths from data in the @acronym{IRR, Internet Routing Registry}, including
+the @acronym{RADB, Routing Assets Database} operated by the Merit Network at the
+University of Michigan.
+
+The filters can be aggregated and exported in the most common formats.")
+    (license (list license:bsd-3        ; strlcpy.c, sys_queue.h
+                   license:bsd-2))))    ; everything else, but missing headers
 
 (define-public thc-ipv6
   (let ((revision "0")
@@ -3594,7 +3657,7 @@ communication over HTTP.")
 (define-public restinio
   (package
     (name "restinio")
-    (version "0.6.15")
+    (version "0.6.17")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3603,26 +3666,38 @@ communication over HTTP.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1f8d5nfm8jqhspzsslwb1b7j4glipz31i9vszrcnkx3clc39nj2n"))))
+                "1jpvfa2sjkihbkcc1q6c9zb1vry9mkkhbz2jrl831bqslpq9la3p"))))
     (build-system cmake-build-system)
-    (inputs                             ; TODO: Need to force-keep references on some inputs, e.g. boost.
-     (list zlib
-           catch2
-           openssl
-           boost
-           pcre
-           pcre2
+    (arguments
+     (list
+      ;; Multiple tests fail to run in the build container due to host name
+      ;; resolution (see: https://github.com/Stiffstream/restinio/issues/172).
+      #:tests? #f
+      #:configure-flags #~(list "-DRESTINIO_FIND_DEPS=ON"
+                                "-DRESTINIO_INSTALL=ON"
+                                "-DRESTINIO_TEST=ON"
+                                "-DRESTINIO_USE_EXTERNAL_HTTP_PARSER=ON"
+                                "-DRESTINIO_USE_EXTERNAL_SOBJECTIZER=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'change-directory
+            (lambda _
+              (chdir "dev"))))))
+    (native-inputs
+     (list catch2
+           clara
+           json-dto))
+    (inputs
+     (list openssl
            sobjectizer))
     (propagated-inputs
-     (list asio fmt http-parser))
-    (arguments
-     `(#:configure-flags '("-DRESTINIO_INSTALL=on")
-       #:tests? #f ; TODO: The tests are called from the root CMakelist, need RESTINIO_TEST=on.
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'change-directory
-           (lambda _
-             (chdir "dev/restinio"))))))
+     ;; These are all #include'd by restinio's .hpp header files.
+     (list asio
+           fmt
+           http-parser
+           pcre
+           pcre2
+           zlib))
     (home-page "https://stiffstream.com/en/products/restinio.html")
     (synopsis "C++14 library that gives you an embedded HTTP/Websocket server")
     (description "RESTinio is a header-only C++14 library that gives you an embedded
@@ -3702,7 +3777,10 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                 (chmod dhtcluster #o555)
                 (wrap-program dhtcluster
                   `("GUIX_PYTHONPATH" prefix (,site-packages)))))))))
-    (inputs (list bash-minimal fmt readline))
+    (inputs
+     (list bash-minimal
+           fmt
+           readline))
     (propagated-inputs
      (list msgpack                      ;included in several installed headers
            restinio                     ;included in opendht/http.h
@@ -3774,14 +3852,14 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
 (define-public bird
   (package
     (name "bird")
-    (version "2.0.10")
+    (version "2.0.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "ftp://bird.network.cz/pub/bird/bird-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0npx3zgbjnhm4905zmj2qkz3d13s8hakassq6sbzm1ywv3fl3lvy"))))
+                "1mjm7w5zkbc5q2v4bdn7mcqzcq94s7fiz8a5lz98kl5rcwxvi9v0"))))
     (inputs
      (list libssh readline))
     (native-inputs
@@ -3805,7 +3883,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
 (define-public iwd
   (package
     (name "iwd")
-    (version "1.24")
+    (version "2.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3814,7 +3892,7 @@ powerful route filtering syntax and an easy-to-use configuration interface.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1sdi7008j5jhlg2rqpczh1pzb8zay6mc9dpnjjsmdnsmrcr3v7wi"))))
+                "0icrmd0361yy24sa7wdd388ykaknv1va4678h9ksysz1dmykdr7m"))))
     (build-system gnu-build-system)
     (inputs
      (list dbus ell (package-source ell) readline))
@@ -4179,14 +4257,14 @@ realistic with today's hardware.")
 (define-public lldpd
   (package
     (name "lldpd")
-    (version "1.0.14")
+    (version "1.0.16")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://media.luffy.cx/files/lldpd/lldpd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "1s0j5p0mjh1pda1aq5wm4hd41fh1m864jgbs82y5sshi9whijj57"))
+        (base32 "1ab5hkgi2iwqpfw6xy2wxjhqmz6pnkynfkg85zm7r9kv1ijr3cz3"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -4375,7 +4453,7 @@ IPv6 Internet connectivity - it also works over IPv4.")
 (define-public netdiscover
   (package
    (name "netdiscover")
-   (version "0.7")
+   (version "0.10")
    (source
     (origin
       (method git-fetch)
@@ -4383,10 +4461,10 @@ IPv6 Internet connectivity - it also works over IPv4.")
             (url "https://github.com/netdiscover-scanner/netdiscover")
             (commit version)))
       (sha256
-       (base32 "0g8w8rlg16dsibxi4dnyn7v7r8wwi5ypd51c4w59j0ps2id0w8yj"))
+       (base32 "1ljkj280qja9rz0zwkilsa4051fdxsygjqhfch0wpkxxa5zx3prx"))
       (file-name (string-append "netdiscover-" version))))
    (arguments
-    `(#:tests? #f)) ;; no tests
+    `(#:tests? #f))                     ; no tests
    (build-system gnu-build-system)
    (inputs
     (list libnet libpcap))
@@ -4441,3 +4519,37 @@ Transfer Protocol} and older @acronym{SCP, Secure Copy Protocol}
 implementations.")
     (home-page "https://www.chiark.greenend.org.uk/~sgtatham/putty/")
     (license license:expat)))
+
+(define-public vnstat
+  (package
+   (name "vnstat")
+   (version "2.9")
+   (source
+    (origin
+      (method url-fetch)
+      (uri (string-append "https://humdi.net/vnstat/vnstat-"
+                          version ".tar.gz"))
+      (sha256
+       (base32
+        "1iwxmnpabfljvyng7c8k3z83yw1687i66z5s1980c5x9vrsi98hi"))))
+   (build-system gnu-build-system)
+   (inputs (list sqlite))
+   (native-inputs (list pkg-config check))
+   (arguments
+    `(#:phases
+      (modify-phases %standard-phases
+        (add-before 'check 'disable-id-tests
+          (lambda _
+            (substitute*
+                '("Makefile" "tests/vnstat_tests.c")
+              (("tests/id_tests.c \\$") "\\")
+              (("tests/id_tests.h h") "h")
+              (("^.*id_tests.*$") "")))))))
+   (home-page "https://humdi.net/vnstat/")
+   (synopsis "Network traffic monitoring tool")
+   (description "vnStat is a console-based network traffic monitor that keeps
+a log of network traffic for the selected interface(s).  It uses the network
+interface statistics provided by the kernel as information source.  This means
+that vnStat won't actually be sniffing any traffic and also ensures light use
+of system resources regardless of network traffic rate.")
+   (license license:gpl2+)))

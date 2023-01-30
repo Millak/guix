@@ -1,0 +1,15 @@
+https://github.com/taynaud/python-louvain/commit/638804ae636dc65306900ef6518ca0a1c9202566.diff
+
+diff --git a/test_community.py b/test_community.py
+index 1ee1976..566a4b1 100644
+--- a/test_community.py
++++ b/test_community.py
+@@ -203,7 +203,7 @@ def test_karate(self):
+         self.assertAlmostEqual(co.modularity(part, graph),
+                                co.modularity(part_weight,
+                                              graph,
+-                                             "test_weight"), places=2)
++                                             "test_weight"), places=1)
+ 
+         part_res_low = co.best_partition(graph, resolution=0.1)
+         self.assertTrue(

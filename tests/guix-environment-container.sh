@@ -1,5 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2015 David Thompson <davet@gnu.org>
+# Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -197,3 +199,68 @@ then false;
 else
     test $? -gt 127
 fi
+
+# Test the Filesystem Hierarchy Standard (FHS) container option, --emulate-fhs (-F)
+
+# As this option requires a glibc package (glibc-for-fhs), try to run these
+# tests with the user's global store to make it easier to build or download a
+# substitute.
+storedir="`guile -c '(use-modules (guix config))(display %storedir)'`"
+localstatedir="`guile -c '(use-modules (guix config))(display %localstatedir)'`"
+NIX_STORE_DIR="$storedir"
+GUIX_DAEMON_SOCKET="$localstatedir/guix/daemon-socket/socket"
+export NIX_STORE_DIR GUIX_DAEMON_SOCKET
+
+if ! guile -c '(use-modules (guix)) (exit (false-if-exception (open-connection)))'
+then
+    exit 77
+fi
+
+# Test that the container has FHS specific files/directories.  Note that /bin
+# exists in a non-FHS container as it will contain sh, a symlink to the bash
+# package, so we don't test for it.
+guix shell -C --emulate-fhs --bootstrap guile-bootstrap \
+     -- guile -c '(exit (and (file-exists? "/etc/ld.so.cache")
+                             (file-exists? "/lib")
+                             (file-exists? "/sbin")
+                             (file-exists? "/usr/bin")
+                             (file-exists? "/usr/include")
+                             (file-exists? "/usr/lib")
+                             (file-exists? "/usr/libexec")
+                             (file-exists? "/usr/sbin")
+                             (file-exists? "/usr/share")))'
+
+# Test that the ld cache was generated and can be successfully read.
+guix shell -CF --bootstrap guile-bootstrap \
+     -- guile -c '(execlp "ldconfig" "ldconfig" "-p")'
+
+# Test that the package glibc-for-fhs is in the container even if there is the
+# regular glibc package from another source.  See
+# <https://issues.guix.gnu.org/58861>.
+guix shell -CF --bootstrap guile-bootstrap glibc \
+     -- guile -c '(exit (if (string-contains (readlink "/lib/libc.so")
+                            "glibc-for-fhs")
+                           0
+                           1))'
+
+# Test that $PATH inside the container includes the FHS directories.
+guix shell -CF coreutils -- env | grep ^PATH=/bin:/usr/bin:/sbin:/usr/sbin.*
+
+# Make sure '--preserve' is honored for $PATH, which the '--emulate-fhs'
+# option modifies.  We can't (easily) check the whole $PATH as it will differ
+# inside and outside the container, so just check our test $PATH is still
+# present.  See <https://issues.guix.gnu.org/60566>.
+PATH=/foo $(type -P guix) shell -CF -E ^PATH$ coreutils \
+     -- env | grep ^PATH=.*:/foo
+
+# '--symlink' works.
+echo "TESTING SYMLINK IN CONTAINER"
+guix shell --bootstrap guile-bootstrap --container \
+     --symlink=/usr/bin/guile=bin/guile -- \
+     /usr/bin/guile --version
+
+# A dangling symlink causes the command to fail.
+! guix shell --bootstrap -CS /usr/bin/python=bin/python guile-bootstrap -- exit
+
+# An invalid symlink spec causes the command to fail.
+! guix shell --bootstrap -CS bin/guile=/usr/bin/guile guile-bootstrap -- exit

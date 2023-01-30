@@ -66,7 +66,7 @@
             (replace 'build
               (lambda _
                 (invoke "make" "modules_prepare")))
-            (delete 'strip)             ; faster
+            (delete 'strip)             ;faster
             (replace 'install
               (lambda* (#:key inputs #:allow-other-keys)
                 (let ((out-lib-build (string-append #$output "/lib/modules/build")))
@@ -210,6 +210,7 @@
           (tests? #f)
           (phases '%standard-phases)
           (system (%current-system))
+          (source-directory ".")
           (substitutable? #t)
           (imported-modules
            %linux-module-build-system-modules)
@@ -229,6 +230,7 @@
 
           (linux-module-build #:name #$name
                               #:source #+source
+                              #:source-directory #$source-directory
                               #:system #$system
                               #:target #$target
                               #:arch #$(system->arch (or target system))

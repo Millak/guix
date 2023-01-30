@@ -5,7 +5,7 @@
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2017, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
-;;; Copyright © 2018, 2020 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
@@ -273,7 +273,8 @@
                      #:environment-variables
                      (list (string-append "UPOWER_CONF_FILE_NAME="
                                           #$config))))
-           (stop #~(make-kill-destructor))))))
+           (stop #~(make-kill-destructor))
+           (actions (list (shepherd-configuration-action config)))))))
 
 (define upower-service-type
   (let ((upower-package (compose list upower-configuration-upower)))
@@ -759,7 +760,7 @@ site} for more information."
                                                (bluetooth-configuration-enable-adv-mon-interleave-scan
                                                 config))
                                           1 0))
-   
+
    "\n[GATT]"
    "\nCache = " (symbol->string (bluetooth-configuration-cache config))
    "\nKeySize = " (number->string (bluetooth-configuration-key-size config))
@@ -837,9 +838,7 @@ Bluetooth devices and provides a number of D-Bus interfaces.")))
   "Return a service that runs the @command{bluetoothd} daemon, which manages
 all the Bluetooth devices and provides a number of D-Bus interfaces.  When
 AUTO-ENABLE? is true, the bluetooth controller is powered automatically at
-boot.
-
-Users need to be in the @code{lp} group to access the D-Bus service.
+boot, which can be useful when using a bluetooth keyboard or mouse.
 "
   (service bluetooth-service-type
            (bluetooth-configuration
@@ -1168,6 +1167,9 @@ seats.)"
 
 (define (elogind-shepherd-service config)
   "Return a Shepherd service to start elogind according to @var{config}."
+  (define config-file
+    (elogind-configuration-file config))
+
   (list (shepherd-service
          (requirement '(dbus-system))
          (provision '(elogind))
@@ -1176,9 +1178,9 @@ seats.)"
                                         "/libexec/elogind/elogind"))
                    #:environment-variables
                    (list (string-append "ELOGIND_CONF_FILE="
-                                        #$(elogind-configuration-file
-                                           config)))))
-         (stop #~(make-kill-destructor)))))
+                                        #$config-file))))
+         (stop #~(make-kill-destructor))
+         (actions (list (shepherd-configuration-action config-file))))))
 
 (define elogind-service-type
   (service-type (name 'elogind)
@@ -1538,6 +1540,11 @@ rules."
                              (compose list
                                       (package-direct-input-selector
                                        "efl")
+                                      enlightenment-package))
+          (service-extension udev-service-type
+                             (compose list
+                                      (package-direct-input-selector
+                                        "ddcutil")
                                       enlightenment-package))
           (service-extension setuid-program-service-type
                              enlightenment-setuid-programs)

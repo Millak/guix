@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2018, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2018, 2019, 2020, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Jelle Licht <jlicht@fsfe.org>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017, 2019, 2020, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -12,6 +12,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 Alice Brenon <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2022 Kyle Meyer <kyle@kyleam.com>
+;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -53,10 +54,12 @@
   #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-71)
   #:export (factorize-uri
 
             flatten
+            false-if-networking-error
 
             url-fetch
             guix-hash-url
@@ -72,6 +75,7 @@
 
             snake-case
             beautify-description
+            beautify-synopsis
 
             alist->package
 
@@ -120,6 +124,26 @@ of the string VERSION is replaced by the symbol 'version."
      (cons elem memo)))
    '() lst))
 
+(define (call-with-networking-exception-handler thunk)
+  "Invoke THUNK, returning #f if one of the usual networking exception is
+thrown."
+  (catch #t
+    (lambda ()
+      (guard (c ((http-get-error? c) #f))
+        (thunk)))
+    (lambda (key . args)
+      ;; Return false and move on upon connection failures and bogus HTTP
+      ;; servers.
+      (unless (memq key '(gnutls-error tls-certificate-error
+                                       system-error getaddrinfo-error
+                                       bad-header bad-header-component))
+        (apply throw key args))
+      #f)))
+
+(define-syntax-rule (false-if-networking-error exp)
+  "Evaluate EXP, returning #f if a networking-related exception is thrown."
+  (call-with-networking-exception-handler (lambda () exp)))
+
 (define (url-fetch url file-name)
   "Save the contents of URL to FILE-NAME.  Return #f on failure."
   (parameterize ((current-output-port (current-error-port)))
@@ -129,135 +153,152 @@ of the string VERSION is replaced by the symbol 'version."
   "Return the hash of FILENAME in nix-base32 format."
   (bytevector->nix-base32-string (file-sha256 filename)))
 
-(define (spdx-string->license str)
-  "Convert STR, a SPDX formatted license identifier, to a license object.
-   Return #f if STR does not match any known identifiers."
+(define %spdx-license-identifiers
   ;; https://spdx.org/licenses/
   ;; The gfl1.0, nmap, repoze
   ;; licenses doesn't have SPDX identifiers
   ;;
   ;; Please update guix/licenses.scm when modifying
   ;; this list to avoid mismatches.
-  (match str
-    ;; "GPL-N+" has been deprecated in favour of "GPL-N-or-later".
-    ;; "GPL-N" has been deprecated in favour of "GPL-N-only"
-    ;; or "GPL-N-or-later" as appropriate.  Likewise for LGPL
-    ;; and AGPL
-    ("AGPL-1.0"                    'license:agpl1)
-    ("AGPL-1.0-only"               'license:agpl1)
-    ("AGPL-3.0"                    'license:agpl3)
-    ("AGPL-3.0-only"               'license:agpl3)
-    ("AGPL-3.0-or-later"           'license:agpl3+)
-    ("Apache-1.1"                  'license:asl1.1)
-    ("Apache-2.0"                  'license:asl2.0)
-    ("APSL-2.0"                    'license:apsl2)
-    ("BSL-1.0"                     'license:boost1.0)
-    ("0BSD"                        'license:bsd-0)
-    ("BSD-2-Clause"                'license:bsd-2)
-    ("BSD-2-Clause-FreeBSD"        'license:bsd-2)     ;flagged as deprecated on spdx
-    ("BSD-3-Clause"                'license:bsd-3)
-    ("BSD-4-Clause"                'license:bsd-4)
-    ("CC0-1.0"                     'license:cc0)
-    ("CC-BY-2.0"                   'license:cc-by2.0)
-    ("CC-BY-3.0"                   'license:cc-by3.0)
-    ("CC-BY-4.0"                   'license:cc-by4.0)
-    ("CC-BY-SA-2.0"                'license:cc-by-sa2.0)
-    ("CC-BY-SA-3.0"                'license:cc-by-sa3.0)
-    ("CC-BY-SA-4.0"                'license:cc-by-sa4.0)
-    ("CDDL-1.0"                    'license:cddl1.0)
-    ("CDDL-1.1"                    'license:cddl1.1)
-    ("CECILL-2.1"                  'license:cecill)
-    ("CECILL-B"                    'license:cecill-b)
-    ("CECILL-C"                    'license:cecill-c)
-    ("Artistic-2.0"                'license:artistic2.0)
-    ("ClArtistic"                  'license:clarified-artistic)
-    ("copyleft-next-0.3.0"         'license:copyleft-next)
-    ("CPL-1.0"                     'license:cpl1.0)
-    ("EPL-1.0"                     'license:epl1.0)
-    ("EPL-2.0"                     'license:epl2.0)
-    ("EUPL-1.2"                    'license:eupl1.2)
-    ("MIT"                         'license:expat)
-    ("MIT-0"                       'license:expat-0)
-    ("FTL"                         'license:freetype)
-    ("FreeBSD-DOC"                 'license:freebsd-doc)
-    ("Freetype"                    'license:freetype)
-    ("FSFAP"                       'license:fsf-free)
-    ("FSFUL"                       'license:fsf-free)
-    ("GFDL-1.1"                    'license:fdl1.1+)
-    ("GFDL-1.1-or-later"           'license:fdl1.1+)
-    ("GFDL-1.2"                    'license:fdl1.2+)
-    ("GFDL-1.2-or-later"           'license:fdl1.2+)
-    ("GFDL-1.3"                    'license:fdl1.3+)
-    ("GFDL-1.3-or-later"           'license:fdl1.3+)
-    ("Giftware"                    'license:giftware)
-    ("GPL-1.0"                     'license:gpl1)
-    ("GPL-1.0-only"                'license:gpl1)
-    ("GPL-1.0+"                    'license:gpl1+)
-    ("GPL-1.0-or-later"            'license:gpl1+)
-    ("GPL-2.0"                     'license:gpl2)
-    ("GPL-2.0-only"                'license:gpl2)
-    ("GPL-2.0+"                    'license:gpl2+)
-    ("GPL-2.0-or-later"            'license:gpl2+)
-    ("GPL-3.0"                     'license:gpl3)
-    ("GPL-3.0-only"                'license:gpl3)
-    ("GPL-3.0+"                    'license:gpl3+)
-    ("GPL-3.0-or-later"            'license:gpl3+)
-    ("HPND"                        'license:hpnd)
-    ("ISC"                         'license:isc)
-    ("IJG"                         'license:ijg)
-    ("Imlib2"                      'license:imlib2)
-    ("IPA"                         'license:ipa)
-    ("IPL-1.0"                     'license:ibmpl1.0)
-    ("LAL-1.3"                     'license:lal1.3)
-    ("LGPL-2.0"                    'license:lgpl2.0)
-    ("LGPL-2.0-only"               'license:lgpl2.0)
-    ("LGPL-2.0+"                   'license:lgpl2.0+)
-    ("LGPL-2.0-or-later"           'license:lgpl2.0+)
-    ("LGPL-2.1"                    'license:lgpl2.1)
-    ("LGPL-2.1-only"               'license:lgpl2.1)
-    ("LGPL-2.1+"                   'license:lgpl2.1+)
-    ("LGPL-2.1-or-later"           'license:lgpl2.1+)
-    ("LGPL-3.0"                    'license:lgpl3)
-    ("LGPL-3.0-only"               'license:lgpl3)
-    ("LGPL-3.0+"                   'license:lgpl3+)
-    ("LGPL-3.0-or-later"           'license:lgpl3+)
-    ("LPPL-1.0"                    'license:lppl)
-    ("LPPL-1.1"                    'license:lppl)
-    ("LPPL-1.2"                    'license:lppl1.2)
-    ("LPPL-1.3a"                   'license:lppl1.3a)
-    ("LPPL-1.3c"                   'license:lppl1.3c)
-    ("MirOS"                       'license:miros)
-    ("MPL-1.0"                     'license:mpl1.0)
-    ("MPL-1.1"                     'license:mpl1.1)
-    ("MPL-2.0"                     'license:mpl2.0)
-    ("MS-PL"                       'license:ms-pl)
-    ("NCSA"                        'license:ncsa)
-    ("OGL-UK-1.0"                  'license:ogl-psi1.0)
-    ("OpenSSL"                     'license:openssl)
-    ("OLDAP-2.8"                   'license:openldap2.8)
-    ("OPL-1.0"                     'license:opl1.0+)
-    ("CUA-OPL-1.0"                 'license:cua-opl1.0)
-    ("PSF-2.0"                     'license:psfl)
-    ("OSL-2.1"                     'license:osl2.1)
-    ("QPL-1.0"                     'license:qpl)
-    ("Ruby"                        'license:ruby)
-    ("SGI-B-2.0"                   'license:sgifreeb2.0)
-    ("OFL-1.1"                     'license:silofl1.1)
-    ("Sleepycat"                   'license:sleepycat)
-    ("TCL"                         'license:tcl/tk)
-    ("Unlicense"                   'license:unlicense)
-    ("Vim"                         'license:vim)
-    ("W3C"                         'license:w3c)
-    ("WTFPL"                       'license:wtfpl2)
-    ("wxWindow"                    'license:wxwindows3.1+)         ;flagged as deprecated on spdx
-    ("X11"                         'license:x11)
-    ("ZPL-2.1"                     'license:zpl2.1)
-    ("Zlib"                        'license:zlib)
-    (_ #f)))
+  ;;
+  ;; "GPL-N+" has been deprecated in favour of "GPL-N-or-later".  "GPL-N" has
+  ;; been deprecated in favour of "GPL-N-only" or "GPL-N-or-later" as
+  ;; appropriate.  Likewise for LGPL and AGPL.  However, we list the
+  ;; deprecated forms here (with and without the "+" operator) to get better
+  ;; results from old license expressions.
+  '(("AGPL-1.0"                   . license:agpl1)
+    ("AGPL-1.0-only"              . license:agpl1)
+    ("AGPL-3.0"                   . license:agpl3)
+    ("AGPL-3.0-only"              . license:agpl3)
+    ("AGPL-3.0-or-later"          . license:agpl3+)
+    ("Apache-1.1"                 . license:asl1.1)
+    ("Apache-2.0"                 . license:asl2.0)
+    ("APSL-2.0"                   . license:apsl2)
+    ("BSL-1.0"                    . license:boost1.0)
+    ("0BSD"                       . license:bsd-0)
+    ("BSD-2-Clause"               . license:bsd-2)
+    ("BSD-2-Clause-FreeBSD"       . license:bsd-2)     ;flagged as deprecated on spdx
+    ("BSD-3-Clause"               . license:bsd-3)
+    ("BSD-4-Clause"               . license:bsd-4)
+    ("CC0-1.0"                    . license:cc0)
+    ("CC-BY-2.0"                  . license:cc-by2.0)
+    ("CC-BY-3.0"                  . license:cc-by3.0)
+    ("CC-BY-4.0"                  . license:cc-by4.0)
+    ("CC-BY-SA-2.0"               . license:cc-by-sa2.0)
+    ("CC-BY-SA-3.0"               . license:cc-by-sa3.0)
+    ("CC-BY-SA-4.0"               . license:cc-by-sa4.0)
+    ("CDDL-1.0"                   . license:cddl1.0)
+    ("CDDL-1.1"                   . license:cddl1.1)
+    ("CECILL-2.1"                 . license:cecill)
+    ("CECILL-B"                   . license:cecill-b)
+    ("CECILL-C"                   . license:cecill-c)
+    ("Artistic-2.0"               . license:artistic2.0)
+    ("ClArtistic"                 . license:clarified-artistic)
+    ("copyleft-next-0.3.0"        . license:copyleft-next)
+    ("CPL-1.0"                    . license:cpl1.0)
+    ("EPL-1.0"                    . license:epl1.0)
+    ("EPL-2.0"                    . license:epl2.0)
+    ("EUPL-1.2"                   . license:eupl1.2)
+    ("MIT"                        . license:expat)
+    ("MIT-0"                      . license:expat-0)
+    ("FTL"                        . license:freetype)
+    ("FreeBSD-DOC"                . license:freebsd-doc)
+    ("Freetype"                   . license:freetype)
+    ("FSFAP"                      . license:fsf-free)
+    ("FSFUL"                      . license:fsf-free)
+    ("GFDL-1.1"                   . license:fdl1.1+)
+    ("GFDL-1.1-or-later"          . license:fdl1.1+)
+    ("GFDL-1.2"                   . license:fdl1.2+)
+    ("GFDL-1.2-or-later"          . license:fdl1.2+)
+    ("GFDL-1.3"                   . license:fdl1.3+)
+    ("GFDL-1.3-or-later"          . license:fdl1.3+)
+    ("Giftware"                   . license:giftware)
+    ("GPL-1.0"                    . license:gpl1)
+    ("GPL-1.0-only"               . license:gpl1)
+    ("GPL-1.0+"                   . license:gpl1+)
+    ("GPL-1.0-or-later"           . license:gpl1+)
+    ("GPL-2.0"                    . license:gpl2)
+    ("GPL-2.0-only"               . license:gpl2)
+    ("GPL-2.0+"                   . license:gpl2+)
+    ("GPL-2.0-or-later"           . license:gpl2+)
+    ("GPL-3.0"                    . license:gpl3)
+    ("GPL-3.0-only"               . license:gpl3)
+    ("GPL-3.0+"                   . license:gpl3+)
+    ("GPL-3.0-or-later"           . license:gpl3+)
+    ("HPND"                       . license:hpnd)
+    ("ISC"                        . license:isc)
+    ("IJG"                        . license:ijg)
+    ("Imlib2"                     . license:imlib2)
+    ("IPA"                        . license:ipa)
+    ("IPL-1.0"                    . license:ibmpl1.0)
+    ("LAL-1.3"                    . license:lal1.3)
+    ("LGPL-2.0"                   . license:lgpl2.0)
+    ("LGPL-2.0-only"              . license:lgpl2.0)
+    ("LGPL-2.0+"                  . license:lgpl2.0+)
+    ("LGPL-2.0-or-later"          . license:lgpl2.0+)
+    ("LGPL-2.1"                   . license:lgpl2.1)
+    ("LGPL-2.1-only"              . license:lgpl2.1)
+    ("LGPL-2.1+"                  . license:lgpl2.1+)
+    ("LGPL-2.1-or-later"          . license:lgpl2.1+)
+    ("LGPL-3.0"                   . license:lgpl3)
+    ("LGPL-3.0-only"              . license:lgpl3)
+    ("LGPL-3.0+"                  . license:lgpl3+)
+    ("LGPL-3.0-or-later"          . license:lgpl3+)
+    ("LPPL-1.0"                   . license:lppl)
+    ("LPPL-1.1"                   . license:lppl)
+    ("LPPL-1.2"                   . license:lppl1.2)
+    ("LPPL-1.3a"                  . license:lppl1.3a)
+    ("LPPL-1.3c"                  . license:lppl1.3c)
+    ("MirOS"                      . license:miros)
+    ("MPL-1.0"                    . license:mpl1.0)
+    ("MPL-1.1"                    . license:mpl1.1)
+    ("MPL-2.0"                    . license:mpl2.0)
+    ("MS-PL"                      . license:ms-pl)
+    ("NCSA"                       . license:ncsa)
+    ("OGL-UK-1.0"                 . license:ogl-psi1.0)
+    ("OpenSSL"                    . license:openssl)
+    ("OLDAP-2.8"                  . license:openldap2.8)
+    ("OPL-1.0"                    . license:opl1.0+)
+    ("CUA-OPL-1.0"                . license:cua-opl1.0)
+    ("PSF-2.0"                    . license:psfl)
+    ("OSL-2.1"                    . license:osl2.1)
+    ("QPL-1.0"                    . license:qpl)
+    ("Ruby"                       . license:ruby)
+    ("SGI-B-2.0"                  . license:sgifreeb2.0)
+    ("OFL-1.1"                    . license:silofl1.1)
+    ("Sleepycat"                  . license:sleepycat)
+    ("TCL"                        . license:tcl/tk)
+    ("Unlicense"                  . license:unlicense)
+    ("Vim"                        . license:vim)
+    ("W3C"                        . license:w3c)
+    ("WTFPL"                      . license:wtfpl2)
+    ("wxWindow"                   . license:wxwindows3.1+)         ;flagged as deprecated on spdx
+    ("X11"                        . license:x11)
+    ("ZPL-2.1"                    . license:zpl2.1)
+    ("Zlib"                       . license:zlib)))
+
+(define (spdx-string->license str)
+  "Convert STR, an SPDX license identifier (possibly with a postfix +
+operator), to a symbol like 'license:gpl3+ giving the prefixed name of a
+license object exported from (guix licenses).  Return #f if STR does not match
+any known SPDX license identifiers.  Per the SPDX specification, license
+identifiers are compared case-insensitively."
+  ;; https://spdx.github.io/spdx-spec/v2.3/SPDX-license-expressions/#d2-case-sensitivity
+  ;; Operators AND, OR, and WITH are case-sensitive, but identifiers are
+  ;; case-insensitive for matching, though the canonical case is used in URIs.
+  (match (assoc str %spdx-license-identifiers string-ci=?)
+    ((_ . license)
+     license)
+    (#f
+     (and (string-suffix? "+" str)
+          ;; We try the form with the + to support deprecated identifiers for
+          ;; GNU licenses (see above).  Here, we handle other uses of +.
+          (spdx-string->license (string-drop-right str 1))))))
 
 (define (license->symbol license)
-  "Convert license to a symbol representing the variable the object is bound
-to in the (guix licenses) module, or #f if there is no such known license."
+  "Convert LICENSE object to a prefixed symbol representing the variable the
+object is bound to in the (guix licenses) module, such as 'license:gpl3+, or
+#f if there is no such known license."
   (define licenses
     (module-map (lambda (sym var) `(,(variable-ref var) . ,sym))
                 (resolve-interface '(guix licenses) #:prefix 'license:)))
@@ -272,30 +313,70 @@ with dashes."
   "Improve the package DESCRIPTION by turning a beginning sentence fragment into
 a proper sentence and by using two spaces between sentences, and wrap lines at
 LENGTH characters."
-  (let ((cleaned (cond
-                  ((not (string? description))
-                   (G_ "This package lacks a description.  Run \
+  (unless (string? description)
+    (G_ "This package lacks a description.  Run \
 \"info '(guix) Synopses and Descriptions'\" for more information."))
-                  ((string-prefix? "A " description)
-                   (string-append "This package provides a"
-                                  (substring description 1)))
-                  ((string-prefix? "Provides " description)
-                   (string-append "This package provides"
-                                  (substring description
-                                             (string-length "Provides"))))
-                  ((string-prefix? "Implements " description)
-                   (string-append "This package implements"
-                                  (substring description
-                                             (string-length "Implements"))))
-                  ((string-prefix? "Functions " description)
-                   (string-append "This package provides functions"
-                                  (substring description
-                                             (string-length "Functions"))))
-                  (else description))))
+
+  (let* ((fix-word
+          (lambda (word)
+            (fold (lambda (proc acc) (proc acc)) word
+                  (list
+                   ;; Remove wrapping in single quotes, common in R packages.
+                   (cut string-trim-both <> #\')
+                   ;; Escape single @ to prevent it from being understood as
+                   ;; invalid Texinfo syntax.
+                   (cut regexp-substitute/global #f "@" <> 'pre "@@" 'post)))))
+         (words
+          (string-tokenize (string-trim-both description)
+                           (char-set-complement
+                            (char-set #\space #\newline))))
+         (new-words
+          (match words
+            (((and (or "A" "Functions" "Methods") first) . rest)
+             (cons* "This" "package" "provides"
+                    (string-downcase first) rest))
+            (((and (or "Contains"
+                       "Creates"
+                       "Performs"
+                       "Provides"
+                       "Produces"
+                       "Implements"
+                       "Infers") first) . rest)
+             (cons* "This" "package"
+                    (string-downcase first) rest))
+            (_ words)))
+         (cleaned
+          (string-join (map fix-word new-words))))
     ;; Use double spacing between sentences
     (fill-paragraph (regexp-substitute/global #f "\\. \\b"
-                                          cleaned 'pre ".  " 'post)
-                length)))
+                                              cleaned 'pre
+                                              (lambda (m)
+                                                (let ((pre (match:prefix m))
+                                                      (abbrevs '("Dr" "Mr" "Mrs"
+                                                                 "Ms" "Prof" "vs"
+                                                                 "e.g")))
+                                                  (if (or (any (cut string-suffix? <> pre) abbrevs)
+                                                          (char-upper-case?
+                                                           (string-ref pre (1- (string-length pre)))))
+                                                      ". "
+                                                      ".  ")))
+                                              'post)
+                    length)))
+
+(define (beautify-synopsis synopsis)
+  "Improve the package SYNOPSIS."
+  (let ((cleaned (cond
+                  ((not (string? synopsis))
+                   (G_ "This package lacks a synopsis.  Run \
+\"info '(guix) Synopses and Descriptions'\" for more information."))
+                  ((string-prefix? "A " synopsis)
+                   (substring synopsis 1))
+                  ;; Remove trailing period.
+                  ((string-suffix? "." synopsis)
+                   (substring synopsis 0
+                              (1- (string-length synopsis))))
+                  (else synopsis))))
+    (string-trim-both cleaned)))
 
 (define* (package-names->package-inputs names #:optional (output #f))
   "Given a list of PACKAGE-NAMES or (PACKAGE-NAME VERSION) pairs, and an
@@ -428,10 +509,20 @@ specifications to look up and replace them with plain symbols instead."
                   ((key . value)
                    (list (symbol->keyword (string->symbol key)) value)))
                 arguments))
+  (define (process-properties properties)
+    (map (match-lambda
+           ((key . value)
+            (cons (string->symbol key) value)))
+         properties))
+
   (package
     (name (assoc-ref meta "name"))
     (version (assoc-ref meta "version"))
     (source (source-spec->object (assoc-ref meta "source")))
+    (properties
+     (or (and=> (assoc-ref meta "properties")
+                process-properties)
+         '()))
     (build-system
       (lookup-build-system-by-name
        (string->symbol (assoc-ref meta "build-system"))))
@@ -511,11 +602,11 @@ obtain a node's uniquely identifying \"key\"."
                    (set-insert (node-name head) visited))))))))
 
 (define* (recursive-import package-name
-                           #:key repo->guix-package guix-name version repo
-                           #:allow-other-keys)
+                           #:key repo->guix-package guix-name version
+                           #:allow-other-keys #:rest rest)
   "Return a list of package expressions for PACKAGE-NAME and all its
 dependencies, sorted in topological order.  For each package,
-call (REPO->GUIX-PACKAGE NAME :KEYS version repo), which should return a
+call (REPO->GUIX-PACKAGE NAME :KEYS version), which should return a
 package expression and a list of dependencies; call (GUIX-NAME PACKAGE-NAME)
 to obtain the Guix package name corresponding to the upstream name."
   (define-record-type <node>
@@ -530,9 +621,12 @@ to obtain the Guix package name corresponding to the upstream name."
     (not (null? (find-packages-by-name (guix-name name) version))))
 
   (define (lookup-node name version)
-    (let* ((package dependencies (repo->guix-package name
-                                                     #:version version
-                                                     #:repo repo))
+    (let* ((pre post (break (cut eq? #:version <>) rest))
+           (post* (match post
+                    ((#:version v . more) more)
+                    (_ post)))
+           (args (append pre (list #:version version) post*))
+           (package dependencies (apply repo->guix-package (cons* name args)))
            (normalized-deps (map (match-lambda
                                    ((name version) (list name version))
                                    (name (list name #f))) dependencies)))

@@ -148,12 +148,13 @@
 (define (certbot-renewal-jobs config)
   (list
    ;; Attempt to renew the certificates twice per day, at a random minute
-   ;; within the hour.  See https://certbot.eff.org/all-instructions/.
+   ;; within the hour.  See https://eff-certbot.readthedocs.io/.
    #~(job '(next-minute-from (next-hour '(0 12)) (list (random 60)))
           #$(certbot-command config))))
 
 (define (certbot-activation config)
   (let* ((certbot-directory "/var/lib/certbot")
+         (certbot-cert-directory "/etc/letsencrypt/live")
          (script (in-vicinity certbot-directory "renew-certificates"))
          (message (format #f (G_ "~a may need to be run~%") script)))
     (match config
@@ -164,6 +165,7 @@
              (use-modules (guix build utils))
              (mkdir-p #$webroot)
              (mkdir-p #$certbot-directory)
+             (mkdir-p #$certbot-cert-directory)
              (copy-file #$(certbot-command config) #$script)
              (display #$message)))))))
 

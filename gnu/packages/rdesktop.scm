@@ -101,7 +101,7 @@ to remotely control a user's Windows desktop.")
     (inputs
      `(("alsa-lib" ,alsa-lib)
        ("cups" ,cups)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("libjpeg" ,libjpeg-turbo)
        ("libusb" ,libusb)
        ("libx11" ,libx11)

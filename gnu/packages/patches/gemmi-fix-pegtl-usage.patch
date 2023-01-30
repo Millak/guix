@@ -1,0 +1,31 @@
+Use the definitions from (newer) upstream PEGTL.
+
+diff --git a/include/gemmi/cif.hpp b/include/gemmi/cif.hpp
+index c7ffdb44..35d24210 100644
+--- a/include/gemmi/cif.hpp
++++ b/include/gemmi/cif.hpp
+@@ -37,7 +37,6 @@ namespace pegtl = tao::pegtl;
+ namespace rules {
+ 
+   template<int TableVal> struct lookup_char {
+-    using analyze_t = pegtl::analysis::generic<pegtl::analysis::rule_type::ANY>;
+     template<typename Input> static bool match(Input& in) {
+       if (!in.empty() && cif::char_table(in.peek_char()) == TableVal) {
+         if (TableVal == 2)  // this set includes new-line
+@@ -71,11 +70,11 @@ namespace rules {
+   struct ws_or_eof : pegtl::sor<whitespace, pegtl::eof> {};
+ 
+   // (b) Reserved words.
+-  struct str_data : TAOCPP_PEGTL_ISTRING("data_") {};
+-  struct str_loop : TAOCPP_PEGTL_ISTRING("loop_") {};
+-  struct str_global : TAOCPP_PEGTL_ISTRING("global_") {};
+-  struct str_save : TAOCPP_PEGTL_ISTRING("save_") {};
+-  struct str_stop : TAOCPP_PEGTL_ISTRING("stop_") {};
++  struct str_data : TAO_PEGTL_ISTRING("data_") {};
++  struct str_loop : TAO_PEGTL_ISTRING("loop_") {};
++  struct str_global : TAO_PEGTL_ISTRING("global_") {};
++  struct str_save : TAO_PEGTL_ISTRING("save_") {};
++  struct str_stop : TAO_PEGTL_ISTRING("stop_") {};
+   struct keyword : pegtl::sor<str_data, str_loop, str_global,
+                               str_save, str_stop> {};
+ 

@@ -29,6 +29,7 @@
   #:use-module (gnu system shadow)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages admin)
+  #:use-module (guix deprecation)
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -54,6 +55,7 @@
 
             <gitolite-rc-file>
             gitolite-rc-file
+            gitolite-rc-file-local-code
             gitolite-rc-file-umask
             gitolite-rc-file-unsafe-pattern
             gitolite-rc-file-git-config-keys
@@ -177,7 +179,8 @@
 protocol.")
    (default-value (git-daemon-configuration))))
 
-(define* (git-daemon-service #:key (config (git-daemon-configuration)))
+(define-deprecated (git-daemon-service #:key (config (git-daemon-configuration)))
+  git-daemon-service-type
   "Return a service that runs @command{git daemon}, a simple TCP server to
 expose repositories over the Git protocol for anonymous access.
 
@@ -242,6 +245,8 @@ access to exported repositories under @file{/srv/git}."
   gitolite-rc-file?
   (umask           gitolite-rc-file-umask
                    (default #o0077))
+  (local-code      gitolite-rc-file-local-code
+                   (default "$rc{GL_ADMIN_BASE}/local"))
   (unsafe-pattern  gitolite-rc-file-unsafe-pattern
                    (default #f))
   (git-config-keys gitolite-rc-file-git-config-keys
@@ -263,11 +268,14 @@ access to exported repositories under @file{/srv/git}."
 (define-gexp-compiler (gitolite-rc-file-compiler
                        (file <gitolite-rc-file>) system target)
   (match file
-    (($ <gitolite-rc-file> umask unsafe-pattern git-config-keys roles enable)
+    (($ <gitolite-rc-file> umask local-code unsafe-pattern git-config-keys roles enable)
      (apply text-file* "gitolite.rc"
       `("%RC = (\n"
         "    UMASK => " ,(format #f "~4,'0o" umask) ",\n"
         "    GIT_CONFIG_KEYS => '" ,git-config-keys "',\n"
+        ,(if local-code
+             (simple-format #f "    LOCAL_CODE => \"~A\",\n" local-code)
+             "")
         "    ROLES => {\n"
         ,@(map (match-lambda
                  ((role . value)
@@ -307,7 +315,7 @@ access to exported repositories under @file{/srv/git}."
     (($ <gitolite-configuration> package user group home-directory
                                  rc-file admin-pubkey)
      ;; User group and account to run Gitolite.
-     (list (user-group (name user) (system? #t))
+     (list (user-group (name group) (system? #t))
            (user-account
             (name user)
             (group group)
@@ -405,7 +413,7 @@ access to exported repositories under @file{/srv/git}."
                                (list
                                 (gitolite-configuration-package config))))))
    (description
-    "Setup @command{gitolite}, a Git hosting tool providing access over SSH..
+    "Set up @command{gitolite}, a Git hosting tool providing access over SSH.
 By default, the @code{git} user is used, but this is configurable.
 Additionally, Gitolite can integrate with with tools like gitweb or cgit to
 provide a web interface to view selected repositories.")))

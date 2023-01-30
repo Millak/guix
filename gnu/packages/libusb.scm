@@ -85,7 +85,7 @@ devices on various operating systems.")
 (define-public libusb-compat
   (package
     (name "libusb-compat")
-    (version "0.1.5")
+    (version "0.1.8")
     (source
      (origin
       (method url-fetch)
@@ -94,11 +94,13 @@ devices on various operating systems.")
                           "libusb-compat-" version "/"
                           "libusb-compat-" version ".tar.bz2"))
       (sha256
-       (base32
-        "0nn5icrfm9lkhzw1xjvaks9bq3w6mjg86ggv3fn7kgi4nfvg8kj0"))))
+       (base32 "09q8w00djrkaxbiklcgjwya1w0n3aqavsz06fl0ixv1x9x47d339"))))
     (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-static")))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake libtool pkg-config))
     (inputs
      (list libusb))
     (home-page "https://libusb.info")

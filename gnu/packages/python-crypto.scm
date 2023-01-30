@@ -49,6 +49,7 @@
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -326,29 +327,33 @@ do what is needed for client/server Kerberos authentication based on
 (define-public python-keyring
   (package
     (name "python-keyring")
-    (version "22.0.1")
+    (version "23.9.3")
     (source
      (origin
-      (method url-fetch)
-      (uri (pypi-uri "keyring" version))
-      (sha256
-       (base32
-        "1pvqc6may03did0iz98gasg7cy4h8ljzs4ibh927bfzda8a3xjws"))))
-    (build-system python-build-system)
+       (method url-fetch)
+       (uri (pypi-uri "keyring" version))
+       (sha256
+        (base32
+         "19f4jpsxng9sjfqi8ww5hgg196r2zh1zb8g71wjr1xa27kc1vc39"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest" "-vv" "-c" "/dev/null" "tests")))))))
+     (list
+      #:test-flags '(list "-c" "/dev/null") ;avoid extra test dependencies
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'workaround-test-failure
+            (lambda _
+              ;; Workaround a failure in the test_entry_point test (see:
+              ;; https://github.com/jaraco/keyring/issues/526).
+              (delete-file-recursively "keyring.egg-info"))))))
     (native-inputs
      (list python-toml
            python-pytest
-           python-setuptools
            python-setuptools-scm))
     (propagated-inputs
-     (list python-secretstorage))
+     (list python-importlib-metadata
+           python-jaraco-classes
+           python-secretstorage))
     (home-page "https://github.com/jaraco/keyring")
     (synopsis "Store and access your passwords safely")
     (description
@@ -997,14 +1002,14 @@ protocol (Javascript Object Signing and Encryption).")
 (define-public python-pycryptodome
   (package
     (name "python-pycryptodome")
-    (version "3.11.0")
+    (version "3.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pycryptodome" version))
        (sha256
         (base32
-         "1l3a80z3lxcj1q0hzj1d3plavy2d51y4vzcd85zj0zm7yyxrd022"))
+         "1f0qc0ns3ppybkr7wi66gsl5wfkcx1fdklmh3362nn84spddsdci"))
        (modules '((guix build utils)))
        (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (build-system python-build-system)
@@ -1059,7 +1064,7 @@ PyCryptodome variants, the other being python-pycryptodomex.")
        (method url-fetch)
        (uri (pypi-uri "pycryptodomex" version))
        (sha256
-        (base32 "0vcd65ylri2a4pdqcc1897jasj7wfmqklj8x3pdynmdvark3d603"))
+        (base32 "1vf0xbsqvcp4k3cl8cmxrlij9a88hajw6d3z0jhd3c5d5nxz2hbk"))
        (modules '((guix build utils)))
        (snippet pycryptodome-unbundle-tomcrypt-snippet)))
     (description
@@ -1246,13 +1251,13 @@ been constructed to maintain extensive documentation on how to use
 (define-public python-pyotp
   (package
     (name "python-pyotp")
-    (version "2.4.1")
+    (version "2.7.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyotp" version))
        (sha256
-        (base32 "0jsqfmx9i7j8z81r4zazv76xzy1fcq8v9s2r4kvx7ajfndq3z2h3"))))
+        (base32 "1dbcgpf576kmrpkx3ly8jq4g5g22r9n1rra55c1xqxyzl2mrz66f"))))
     (build-system python-build-system)
     (home-page "https://github.com/pyauth/pyotp")
     (synopsis "Python One Time Password Library")
@@ -1759,4 +1764,34 @@ supply a handful of python functions as methods to a class.")
     (synopsis "Python ECDSA library")
     (description "This package provides a Python ECDSA library, optimized for
 speed but without C extensions.")
+    (license license:expat)))
+
+(define-public python-zxcvbn
+  (package
+    (name "python-zxcvbn")
+    (version "4.4.28")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/dwolfhub/zxcvbn-python")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0xzlsqc9h0llfy19w4m39jgfcnvzqviv8jhgwn3r75kip97i5mvs"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/dwolfhub/zxcvbn-python")
+    (synopsis "Realistic password strength estimator Python library")
+    (description "This is a Python implementation of the @code{zxcvbn} library
+created at Dropbox.  The original library, written for JavaScript, can be
+found @url{https://github.com/dropbox/zxcvbn, here}.  This port includes
+features such as:
+@enumerate
+@item Accepts user data to be added to the dictionaries that are tested
+against (name, birthdate, etc.)
+@item Gives a score to the password, from 0 (terrible) to 4 (great).
+@item Provides feedback on the password and ways to improve it.
+@item Returns time estimates on how long it would take to guess the password
+in different situations.
+@end enumerate")
     (license license:expat)))

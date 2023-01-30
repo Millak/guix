@@ -1,0 +1,16 @@
+Make test work with upstream cbehave
+(tinydir bundles a modified version)
+
+diff --git a/tests/file_open_test.c b/tests/file_open_test.c
+index 3e659bc..9f6f88d 100644
+--- a/tests/file_open_test.c
++++ b/tests/file_open_test.c
+@@ -19,4 +19,7 @@ FEATURE(file_open, "File open")
+ 	SCENARIO_END
+ FEATURE_END
+ 
+-CBEHAVE_RUN("File open:", TEST_FEATURE(file_open))
++int main(void) {
++	cbehave_feature _cfeatures[] = {{feature_idx(file_open)}};
++	return cbehave_runner("File open:", _cfeatures);
++}

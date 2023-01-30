@@ -7,6 +7,7 @@
 ;;; Copyright © 2020-2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Oskar Köök <oskar@maatriks.ee>
 ;;; Copyright © 2021 Cees de Groot <cg@evrl.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -280,6 +281,28 @@ Mozilla's canonical set.")
 printing extending the io:format syntax to add colours.")
     (license license:expat)))
 
+(define-public erlang-yamerl
+  (package
+    (name "erlang-yamerl")
+    (version "0.10.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             ;; There are no tests included on Hex.
+             (url "https://github.com/yakaz/yamerl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0if8abgmispcfk7zhd0a5dndzwzbsmqrbyrm5shk375r2dbbwak6"))))
+    (build-system rebar-build-system)
+    (synopsis "YAML and JSON parser in pure Erlang")
+    (description
+     "Erlang application to parse YAML 1.1 and YAML 1.2 documents, as well as
+JSON documents.")
+    (home-page "https://hexdocs.pm/yamerl/")
+    (license license:bsd-2)))
+
 (define-public erlang-covertool
   (package
     (name "erlang-covertool")
@@ -498,6 +521,23 @@ property-based testing of Erlang programs.  It is fully integrated with
 Erlang's type language, and can also be used for the model-based random
 testing of stateful systems.")
     (license license:gpl3+)))
+
+(define-public erlang-jsx
+  (package
+    (name "erlang-jsx")
+    (version "3.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hexpm-uri "jsx" version))
+              (sha256
+               (base32
+                "1wr7jkxm6nlgvd52xhniav64xr9rml2ngb35rwjwqlqvq7ywhp0c"))))
+    (build-system rebar-build-system)
+    (synopsis "Streaming, evented JSON parsing toolkit")
+    (description
+     "An Erlang application for consuming, producing and manipulating json.")
+    (home-page "https://github.com/talentdeficit/jsx")
+    (license license:expat)))
 
 (define-public erlang-providers
   (package

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -175,7 +175,15 @@ directories."
                 outputs))
 
   (append-map (lambda (directory)
-                (filter elf-file?
+                (filter (lambda (file)
+                          (catch 'system-error
+                            (lambda ()
+                              (elf-file? file))
+                            (lambda args
+                              ;; FILE might be a dangling symlink.
+                              (if (= ENOENT (system-error-errno args))
+                                  #f
+                                  (apply throw args)))))
                         (with-error-to-port (%make-void-port "w")
                           (lambda ()
                             (find-files directory)))))

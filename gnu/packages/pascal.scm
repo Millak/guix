@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Kei Kebreau <address@hidden>
 ;;; Copyright © 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,12 +24,12 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bootstrap)
-  #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages ncurses)
@@ -86,7 +87,7 @@
     (build-system gnu-build-system)
     (supported-systems '("i686-linux" "x86_64-linux"))
     (inputs
-     (list expat glibc ld-wrapper ncurses zlib))
+     (list expat glibc ncurses zlib))
     (native-inputs
      ;; FPC is built with FPC, so we need bootstrap binaries.
      `(("fpc-binary" ,(match (or (%current-target-system)
@@ -230,45 +231,40 @@ many useful extensions to the Pascal programming language.")
 (define-public p2c
   (package
     (name "p2c")
-    (version "2.01")
+    (version "2.02")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://alum.mit.edu/www/toms/p2c/p2c-"
-                                  version ".tar.gz"))
+              (uri (string-append "http://users.fred.net/tds/lab/p2c/p2c-"
+                                  version ".zip"))
               (sha256
                (base32
-                "03x72lv6jrvikbrpz4kfq1xp61l2jw5ki6capib71lxs65zndajn"))))
+                "17q6s0vbz298pks80bxf4r6gm8kwbrml1q3vfs6g6yj75sqj58xs"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (let ((out (assoc-ref %outputs "out")))
-         (list (string-append "CC=" ,(cc-for-target))
-               (string-append "HOMEDIR=" out "/lib/p2c")
-               (string-append "INCDIR=" out "/include/p2c")
-               (string-append "BINDIR=" out "/bin")
-               (string-append "LIBDIR=" out "/lib")
-               (string-append "MANDIR=" out "/share/man/man1")
-               "MANFILE=p2c.man.inst"))
-       #:test-target "test"
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'build 'mkdir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (mkdir-p (string-append out "/share/man"))
-               (mkdir-p (string-append out "/lib"))
-               (mkdir-p (string-append out "/bin"))
-               (mkdir-p (string-append out "/include")))
-             #t))
-         (add-before 'build 'chdir
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (chdir "src")
-             #t)))))
+     (list
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "HOMEDIR=" #$output "/lib/p2c")
+              (string-append "INCDIR=" #$output "/include/p2c")
+              (string-append "BINDIR=" #$output "/bin")
+              (string-append "LIBDIR=" #$output "/lib")
+              (string-append "MANDIR=" #$output "/share/man/man1")
+              "MANFILE=p2c.man.inst")
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'build 'mkdir
+            (lambda _
+              (mkdir-p (string-append #$output "/share/man"))
+              (mkdir-p (string-append #$output "/lib"))
+              (mkdir-p (string-append #$output "/bin"))
+              (mkdir-p (string-append #$output "/include"))))
+          (add-before 'build 'chdir
+            (lambda _ (chdir "src"))))))
     (native-inputs
-     (list perl which))
-    (synopsis "p2c converts Pascal programs to C programs--which you can then
-compile using gcc")
+     (list perl unzip which))
+    (synopsis "p2c converts Pascal programs to C programs")
     (description "This package provides @command{p2c}, a program to convert
 Pascal source code to C source code, and @command{p2cc}, a compiler for
 Pascal programs.")

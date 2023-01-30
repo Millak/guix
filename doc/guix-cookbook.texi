@@ -11,7 +11,7 @@
 @set SUBSTITUTE-TOR-URL https://4zwzi66wwdaalbhgnix55ea3ab4pvvw66ll2ow53kjub6se4q2bclcyd.onion
 
 @copying
-Copyright @copyright{} 2019 Ricardo Wurmus@*
+Copyright @copyright{} 2019, 2022 Ricardo Wurmus@*
 Copyright @copyright{} 2019 Efraim Flashner@*
 Copyright @copyright{} 2019 Pierre Neidhardt@*
 Copyright @copyright{} 2020 Oleg Pykhalov@*
@@ -21,6 +21,8 @@ Copyright @copyright{} 2020 Brice Waegeneire@*
 Copyright @copyright{} 2020 André Batista@*
 Copyright @copyright{} 2020 Christine Lemmer-Webber@*
 Copyright @copyright{} 2021 Joshua Branson@*
+Copyright @copyright{} 2022 Maxim Cournoyer@*
+Copyright @copyright{} 2023 Ludovic Courtès
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -71,8 +73,10 @@ Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual}).
 * Scheme tutorials::            Meet your new favorite language!
 * Packaging::                   Packaging tutorials
 * System Configuration::        Customizing the GNU System
-* Advanced package management:: Power to the users!
+* Containers::                  Isolated environments and nested systems
+* Advanced package management::  Power to the users!
 * Environment management::      Control environment
+* Installing Guix on a Cluster:: High-performance computing.
 
 * Acknowledgments::             Thanks!
 * GNU Free Documentation License::  The license of this document.
@@ -81,18 +85,44 @@ Weblate} (@pxref{Translating Guix,,, guix, GNU Guix reference manual}).
 @detailmenu
  --- The Detailed Node Listing ---
 
-Scheme tutorials
-
-* A Scheme Crash Course::       Learn the basics of Scheme
-
 Packaging
 
-* Packaging Tutorial::          Let's add a package to Guix!
+* Packaging Tutorial::         A tutorial on how to add packages to Guix.
 
 System Configuration
 
 * Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
 * Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
+* Guix System Image API::        Customizing images to target specific platforms.
+* Using security keys::          How to use security keys with Guix System.
+* Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
+* Customizing a Window Manager:: Handle customization of a Window manager on Guix System.
+* Running Guix on a Linode Server:: Running Guix on a Linode Server
+* Setting up a bind mount:: Setting up a bind mount in the file-systems definition.
+* Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
+* Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
+
+Containers
+
+* Guix Containers::            Perfectly isolated environments
+* Guix System Containers::     A system inside your system
+
+Advanced package management
+
+* Guix Profiles in Practice::     Strategies for multiple profiles and manifests.
+
+Environment management
+
+* Guix environment via direnv:: Setup Guix environment with direnv
+
+Installing Guix on a Cluster
+
+* Setting Up a Head Node::      The node that runs the daemon.
+* Setting Up Compute Nodes::    Client nodes.
+* Cluster Network Access::      Dealing with network access restrictions.
+* Cluster Disk Usage::          Disk usage considerations.
+* Cluster Security Considerations::  Keeping the cluster secure.
 
 @end detailmenu
 @end menu
@@ -299,7 +329,8 @@ Scheme Primer}}, by Christine Lemmer-Webber and the Spritely Institute.
 @i{Scheme at a Glance}}, by Steve Litt.
 
 @item
-@uref{https://mitpress.mit.edu/sites/default/files/sicp/index.html,
+@c There used to be a copy at mitpress.mit.edu but it vanished.
+@uref{https://sarabander.github.io/sicp/,
 @i{Structure and Interpretation of Computer Programs}}, by Harold
 Abelson and Gerald Jay Sussman, with Julie Sussman.  Colloquially known
 as ``SICP'', this book is a reference.
@@ -310,9 +341,6 @@ You can also install it and read it from your computer:
 guix install sicp info-reader
 info sicp
 @end example
-
-An @uref{https://sarabander.github.io/sicp/, unofficial ebook} is also
-available.
 
 @end itemize
 
@@ -1371,12 +1399,14 @@ reference.
 * Auto-Login to a Specific TTY:: Automatically Login a User to a Specific TTY
 * Customizing the Kernel::       Creating and using a custom Linux kernel on Guix System.
 * Guix System Image API::        Customizing images to target specific platforms.
+* Using security keys::          How to use security keys with Guix System.
 * Connecting to Wireguard VPN::  Connecting to a Wireguard VPN.
 * Customizing a Window Manager:: Handle customization of a Window manager on Guix System.
 * Running Guix on a Linode Server:: Running Guix on a Linode Server
 * Setting up a bind mount:: Setting up a bind mount in the file-systems definition.
 * Getting substitutes from Tor:: Configuring Guix daemon to get substitutes through Tor.
 * Setting up NGINX with Lua:: Configuring NGINX web-server to load Lua modules.
+* Music Server with Bluetooth Audio:: Headless music player with Bluetooth output.
 @end menu
 
 @node Auto-Login to a Specific TTY
@@ -1872,6 +1902,65 @@ guix system image --image-type=hurd-qcow2 my-hurd-os.scm
 @end example
 
 will instead produce a Hurd QEMU image.
+
+@node Using security keys
+@section Using security keys
+@cindex 2FA, two-factor authentication
+@cindex U2F, Universal 2nd Factor
+@cindex security key, configuration
+
+The use of security keys can improve your security by providing a second
+authentication source that cannot be easily stolen or copied, at least
+for a remote adversary (something that you have), to the main secret (a
+passphrase -- something that you know), reducing the risk of
+impersonation.
+
+The example configuration detailed below showcases what minimal
+configuration needs to be made on your Guix System to allow the use of a
+Yubico security key.  It is hoped the configuration can be useful for
+other security keys as well, with minor adjustments.
+
+@subsection Configuration for use as a two-factor authenticator (2FA)
+
+To be usable, the udev rules of the system should be extended with
+key-specific rules.  The following shows how to extend your udev rules
+with the @file{lib/udev/rules.d/70-u2f.rules} udev rule file provided by
+the @code{libfido2} package from the @code{(gnu packages
+security-token)} module and add your user to the @samp{"plugdev"} group
+it uses:
+
+@lisp
+(use-package-modules ... security-token ...)
+...
+(operating-system
+ ...
+ (users (cons* (user-account
+               (name "your-user")
+               (group "users")
+               (supplementary-groups
+		'("wheel" "netdev" "audio" "video"
+                  "plugdev"))           ;<- added system group
+               (home-directory "/home/your-user"))
+              %base-user-accounts))
+ ...
+ (services
+  (cons*
+   ...
+   (udev-rules-service 'fido2 libfido2 #:groups '("plugdev")))))
+@end lisp
+
+After re-configuring your system and re-logging in your graphical
+session so that the new group is in effect for your user, you can verify
+that your key is usable by launching:
+
+@example
+guix shell ungoogled-chromium -- chromium chrome://settings/securityKeys
+@end example
+
+and validating that the security key can be reset via the ``Reset your
+security key'' menu.  If it works, congratulations, your security key is
+ready to be used with applications supporting two-factor authentication
+(2FA).
 
 @node Connecting to Wireguard VPN
 @section Connecting to Wireguard VPN
@@ -2454,6 +2543,594 @@ ngx.say(stdout)
                                                         #$(local-file "index.lua"))))))))))))))
 @end lisp
 
+@node Music Server with Bluetooth Audio
+@section Music Server with Bluetooth Audio
+@cindex mpd
+@cindex music server, headless
+@cindex bluetooth, ALSA configuration
+
+MPD, the Music Player Daemon, is a flexible server-side application for
+playing music.  Client programs on different machines on the network ---
+a mobile phone, a laptop, a desktop workstation --- can connect to it to
+control the playback of audio files from your local music collection.
+MPD decodes the audio files and plays them back on one or many outputs.
+
+By default MPD will play to the default audio device.  In the example
+below we make things a little more interesting by setting up a headless
+music server.  There will be no graphical user interface, no Pulseaudio
+daemon, and no local audio output.  Instead we will configure MPD with
+two outputs: a bluetooth speaker and a web server to serve audio streams
+to any streaming media player.
+
+Bluetooth is often rather frustrating to set up.  You will have to pair
+your Bluetooth device and make sure that the device is automatically
+connected as soon as it powers on.  The Bluetooth system service
+returned by the @code{bluetooth-service} procedure provides the
+infrastructure needed to set this up.
+
+Reconfigure your system with at least the following services and
+packages:
+
+@lisp
+(operating-system
+  ;; …
+  (packages (cons* bluez bluez-alsa
+                   %base-packages))
+  (services
+   ;; …
+   (dbus-service #:services (list bluez-alsa))
+   (bluetooth-service #:auto-enable? #t)))
+@end lisp
+
+Start the @code{bluetooth} service and then use @command{bluetoothctl}
+to scan for Bluetooth devices.  Try to identify your Bluetooth speaker
+and pick out its device ID from the resulting list of devices that is
+indubitably dominated by a baffling smorgasbord of your neighbors' home
+automation gizmos.  This only needs to be done once:
+
+@example
+$ bluetoothctl 
+[NEW] Controller 00:11:22:33:95:7F BlueZ 5.40 [default]
+
+[bluetooth]# power on
+[bluetooth]# Changing power on succeeded
+
+[bluetooth]# agent on
+[bluetooth]# Agent registered
+
+[bluetooth]# default-agent
+[bluetooth]# Default agent request successful
+
+[bluetooth]# scan on
+[bluetooth]# Discovery started
+[CHG] Controller 00:11:22:33:95:7F Discovering: yes
+[NEW] Device AA:BB:CC:A4:AA:CD My Bluetooth Speaker
+[NEW] Device 44:44:FF:2A:20:DC My Neighbor's TV
+@dots{}
+
+[bluetooth]# pair AA:BB:CC:A4:AA:CD
+Attempting to pair with AA:BB:CC:A4:AA:CD
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes
+
+[My Bluetooth Speaker]# [CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110b-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110c-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD UUIDs: 0000110e-0000-1000-8000-00xxxxxxxxxx
+[CHG] Device AA:BB:CC:A4:AA:CD Paired: yes
+Pairing successful
+
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: no
+
+[bluetooth]# 
+[bluetooth]# trust AA:BB:CC:A4:AA:CD
+[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD Trusted: yes
+Changing AA:BB:CC:A4:AA:CD trust succeeded
+
+[bluetooth]# 
+[bluetooth]# connect AA:BB:CC:A4:AA:CD
+Attempting to connect to AA:BB:CC:A4:AA:CD
+[bluetooth]# [CHG] Device AA:BB:CC:A4:AA:CD RSSI: -63
+[CHG] Device AA:BB:CC:A4:AA:CD Connected: yes
+Connection successful
+
+[My Bluetooth Speaker]# scan off
+[CHG] Device AA:BB:CC:A4:AA:CD RSSI is nil
+Discovery stopped
+[CHG] Controller 00:11:22:33:95:7F Discovering: no
+@end example
+
+Congratulations, you can now automatically connect to your Bluetooth
+speaker!
+
+It is now time to configure ALSA to use the @emph{bluealsa} Bluetooth
+module, so that you can define an ALSA pcm device corresponding to your
+Bluetooth speaker.  For a headless server using @emph{bluealsa} with a
+fixed Bluetooth device is likely simpler than configuring Pulseaudio and
+its stream switching behavior.  We configure ALSA by crafting a custom
+@code{alsa-configuration} for the @code{alsa-service-type}.  The
+configuration will declare a @code{pcm} type @code{bluealsa} from the
+@code{bluealsa} module provided by the @code{bluez-alsa} package, and
+then define a @code{pcm} device of that type for your Bluetooth speaker.
+
+All that is left then is to make MPD send audio data to this ALSA
+device.  We also add a secondary MPD output that makes the currently
+played audio files available as a stream through a web server on port
+8080.  When enabled a device on the network could listen to the audio
+stream by connecting any capable media player to the HTTP server on port
+8080, independent of the status of the Bluetooth speaker.
+
+What follows is the outline of an @code{operating-system} declaration
+that should accomplish the above-mentioned tasks:
+
+@lisp
+(use-modules (gnu))
+(use-service-modules audio dbus sound #;… etc)
+(use-package-modules audio linux #;… etc)
+(operating-system
+  ;; …
+  (packages (cons* bluez bluez-alsa
+                   %base-packages))
+  (services
+   ;; …
+   (service mpd-service-type
+            (mpd-configuration
+             (user "your-username")
+             (music-dir "/path/to/your/music")
+             (address "192.168.178.20")
+             (outputs (list (mpd-output
+                             (type "alsa")
+                             (name "MPD")
+                             (extra-options
+                              ;; Use the same name as in the ALSA
+                              ;; configuration below.
+                              '((device . "pcm.btspeaker"))))
+                            (mpd-output
+                             (type "httpd")
+                             (name "streaming")
+                             (enabled? #false)
+                             (always-on? #true)
+                             (tags? #true)
+                             (mixer-type 'null)
+                             (extra-options
+                              '((encoder . "vorbis")
+                                (port    . "8080")
+                                (bind-to-address . "192.168.178.20")
+                                (max-clients . "0") ;no limit
+                                (quality . "5.0")
+                                (format  . "44100:16:1"))))))))
+   (dbus-service #:services (list bluez-alsa))
+   (bluetooth-service #:auto-enable? #t)
+   (service alsa-service-type
+            (alsa-configuration
+             (pulseaudio? #false) ;we don't need it
+             (extra-options
+              #~(string-append "\
+# Declare Bluetooth audio device type \"bluealsa\" from bluealsa module
+pcm_type.bluealsa @{
+    lib \"" #$(file-append bluez-alsa "/lib/alsa-lib/libasound_module_pcm_bluealsa.so") "\"
+@}
+
+# Declare control device type \"bluealsa\" from the same module
+ctl_type.bluealsa @{
+    lib \"" #$(file-append bluez-alsa "/lib/alsa-lib/libasound_module_ctl_bluealsa.so") "\"
+@}
+
+# Define the actual Bluetooth audio device.
+pcm.btspeaker @{
+    type bluealsa
+    device \"AA:BB:CC:A4:AA:CD\" # unique device identifier
+    profile \"a2dp\"
+@}
+
+# Define an associated controller.
+ctl.btspeaker @{
+    type bluealsa
+@}
+"))))))
+@end lisp
+
+Enjoy the music with the MPD client of your choice or a media player
+capable of streaming via HTTP!
+
+
+@c *********************************************************************
+@node Containers
+@chapter Containers
+
+The kernel Linux provides a number of shared facilities that are
+available to processes in the system.  These facilities include a shared
+view on the file system, other processes, network devices, user and
+group identities, and a few others.  Since Linux 3.19 a user can choose
+to @emph{unshare} some of these shared facilities for selected
+processes, providing them (and their child processes) with a different
+view on the system.
+
+A process with an unshared @code{mount} namespace, for example, has its
+own view on the file system --- it will only be able to see directories
+that have been explicitly bound in its mount namespace.  A process with
+its own @code{proc} namespace will consider itself to be the only
+process running on the system, running as PID 1.
+
+Guix uses these kernel features to provide fully isolated environments
+and even complete Guix System containers, lightweight virtual machines
+that share the host system's kernel.  This feature comes in especially
+handy when using Guix on a foreign distribution to prevent interference
+from foreign libraries or configuration files that are available
+system-wide.
+
+@menu
+* Guix Containers::            Perfectly isolated environments
+* Guix System Containers::     A system inside your system
+@end menu
+
+@node Guix Containers
+@section Guix Containers
+
+The easiest way to get started is to use @command{guix shell} with the
+@option{--container} option.  @xref{Invoking guix shell,,, guix, GNU
+Guix Reference Manual} for a reference of valid options.
+
+The following snippet spawns a minimal shell process with most
+namespaces unshared from the system.  The current working directory is
+visible to the process, but anything else on the file system is
+unavailable.  This extreme isolation can be very useful when you want to
+rule out any sort of interference from environment variables, globally
+installed libraries, or configuration files.
+
+@example
+guix shell --container
+@end example
+
+It is a bleak environment, barren, desolate.  You will find that not
+even the GNU coreutils are available here, so to explore this deserted
+wasteland you need to use built-in shell commands.  Even the usually
+gigantic @file{/gnu/store} directory is reduced to a faint shadow of
+itself.
+
+@example sh
+$ echo /gnu/store/*
+/gnu/store/@dots{}-gcc-10.3.0-lib
+/gnu/store/@dots{}-glibc-2.33
+/gnu/store/@dots{}-bash-static-5.1.8
+/gnu/store/@dots{}-ncurses-6.2.20210619
+/gnu/store/@dots{}-bash-5.1.8
+/gnu/store/@dots{}-profile
+/gnu/store/@dots{}-readline-8.1.1
+@end example
+
+@cindex exiting a container
+There isn't much you can do in an environment like this other than
+exiting it.  You can use @key{^D} or @command{exit} to terminate this
+limited shell environment.
+
+@cindex exposing directories, container
+@cindex sharing directories, container
+@cindex mapping locations, container
+You can make other directories available inside of the container
+environment; use @option{--expose=DIRECTORY} to bind-mount the given
+directory as a read-only location inside the container, or use
+@option{--share=DIRECTORY} to make the location writable.  With an
+additional mapping argument after the directory name you can control the
+name of the directory inside the container.  In the following example we
+map @file{/etc} on the host system to @file{/the/host/etc} inside a
+container in which the GNU coreutils are installed.
+
+@example sh
+$ guix shell --container --share=/etc=/the/host/etc coreutils
+$ ls /the/host/etc
+@end example
+
+Similarly, you can prevent the current working directory from being
+mapped into the container with the @option{--no-cwd} option.  Another
+good idea is to create a dedicated directory that will serve as the
+container's home directory, and spawn the container shell from that
+directory.
+
+@cindex hide system libraries, container
+@cindex avoid ABI mismatch, container
+On a foreign system a container environment can be used to compile
+software that cannot possibly be linked with system libraries or with
+the system's compiler toolchain.  A common use-case in a research
+context is to install packages from within an R session.  Outside of a
+container environment there is a good chance that the foreign compiler
+toolchain and incompatible system libraries are found first, resulting
+in incompatible binaries that cannot be used by R.  In a container shell
+this problem disappears, as system libraries and executables simply
+aren't available due to the unshared @code{mount} namespace.
+
+Let's take a comprehensive manifest providing a comfortable development
+environment for use with R:
+
+@lisp
+(specifications->manifest
+  (list "r-minimal"
+
+        ;; base packages
+        "bash-minimal"
+        "glibc-locales"
+        "nss-certs"
+
+        ;; Common command line tools lest the container is too empty.
+        "coreutils"
+        "grep"
+        "which"
+        "wget"
+        "sed"
+
+        ;; R markdown tools
+        "pandoc"
+
+        ;; Toolchain and common libraries for "install.packages"
+        "gcc-toolchain@@10"
+        "gfortran-toolchain"
+        "gawk"
+        "tar"
+        "gzip"
+        "unzip"
+        "make"
+        "cmake"
+        "pkg-config"
+        "cairo"
+        "libxt"
+        "openssl"
+        "curl"
+        "zlib"))
+@end lisp
+
+Let's use this to run R inside a container environment.  For convenience
+we share the @code{net} namespace to use the host system's network
+interfaces.  Now we can build R packages from source the traditional way
+without having to worry about ABI mismatch or incompatibilities.
+
+@example sh
+$ guix shell --container --network --manifest=manifest.scm -- R
+
+R version 4.2.1 (2022-06-23) -- "Funny-Looking Kid"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+@dots{}
+> e <- Sys.getenv("GUIX_ENVIRONMENT")
+> Sys.setenv(GIT_SSL_CAINFO=paste0(e, "/etc/ssl/certs/ca-certificates.crt"))
+> Sys.setenv(SSL_CERT_FILE=paste0(e, "/etc/ssl/certs/ca-certificates.crt"))
+> Sys.setenv(SSL_CERT_DIR=paste0(e, "/etc/ssl/certs"))
+> install.packages("Cairo", lib=paste0(getwd()))
+@dots{}
+* installing *source* package 'Cairo' ...
+@dots{}
+* DONE (Cairo)
+
+The downloaded source packages are in
+	'/tmp/RtmpCuwdwM/downloaded_packages'
+> library("Cairo", lib=getwd())
+> # success!
+@end example
+
+Using container shells is fun, but they can become a little cumbersome
+when you want to go beyond just a single interactive process.  Some
+tasks become a lot easier when they sit on the rock solid foundation of
+a proper Guix System and its rich set of system services.  The next
+section shows you how to launch a complete Guix System inside of a
+container.
+
+
+@node Guix System Containers
+@section Guix System Containers
+
+The Guix System provides a wide array of interconnected system services
+that are configured declaratively to form a dependable stateless GNU
+System foundation for whatever tasks you throw at it.  Even when using
+Guix on a foreign distribution you can benefit from the design of Guix
+System by running a system instance as a container.  Using the same
+kernel features of unshared namespaces mentioned in the previous
+section, the resulting Guix System instance is isolated from the host
+system and only shares file system locations that you explicitly
+declare.
+
+A Guix System container differs from the shell process created by
+@command{guix shell --container} in a number of important ways.  While
+in a container shell the containerized process is a Bash shell process,
+a Guix System container runs the Shepherd as PID 1.  In a system
+container all system services (@pxref{Services,,, guix, GNU Guix
+Reference Manual}) are set up just as they would be on a Guix System in
+a virtual machine or on bare metal---this includes daemons managed by
+the GNU@tie{}Shepherd (@pxref{Shepherd Services,,, guix, GNU Guix
+Reference Manual}) as well as other kinds of extensions to the operating
+system (@pxref{Service Composition,,, guix, GNU Guix Reference Manual}).
+
+The perceived increase in complexity of running a Guix System container
+is easily justified when dealing with more complex applications that
+have higher or just more rigid requirements on their execution
+contexts---configuration files, dedicated user accounts, directories for
+caches or log files, etc.  In Guix System the demands of this kind of
+software are satisfied through the deployment of system services.
+
+
+@node A Database Container
+@subsection A Database Container
+
+A good example might be a PostgreSQL database server.  Much of the
+complexity of setting up such a database server is encapsulated in this
+deceptively short service declaration:
+
+@lisp
+(service postgresql-service-type
+         (postgresql-configuration
+          (postgresql postgresql-14)))
+@end lisp
+
+A complete operating system declaration for use with a Guix System
+container would look something like this:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules databases)
+(use-service-modules databases)
+
+(operating-system
+  (host-name "container")
+  (timezone "Europe/Berlin")
+  (file-systems (cons (file-system
+                        (device (file-system-label "does-not-matter"))
+                        (mount-point "/")
+                        (type "ext4"))
+                      %base-file-systems))
+  (bootloader (bootloader-configuration
+               (bootloader grub-bootloader)
+               (targets '("/dev/sdX"))))
+  (services
+   (cons* (service postgresql-service-type
+                   (postgresql-configuration
+                    (postgresql postgresql-14)
+                    (config-file
+                     (postgresql-config-file
+                      (log-destination "stderr")
+                      (hba-file
+                       (plain-file "pg_hba.conf"
+                                   "\
+local	all	all			trust
+host	all	all	10.0.0.1/32 	trust"))
+                      (extra-config
+                       '(("listen_addresses" "*")
+                         ("log_directory"    "/var/log/postgresql")))))))
+          (service postgresql-role-service-type
+                   (postgresql-role-configuration
+                    (roles
+                     (list (postgresql-role
+                            (name "test")
+                            (create-database? #t))))))
+          %base-services)))
+@end lisp
+
+With @code{postgresql-role-service-type} we define a role ``test'' and
+create a matching database, so that we can test right away without any
+further manual setup.  The @code{postgresql-config-file} settings allow
+a client from IP address 10.0.0.1 to connect without requiring
+authentication---a bad idea in production systems, but convenient for
+this example.
+
+Let's build a script that will launch an instance of this Guix System as
+a container.  Write the @code{operating-system} declaration above to a
+file @file{os.scm} and then use @command{guix system container} to build
+the launcher.  (@pxref{Invoking guix system,,, guix, GNU Guix Reference
+Manual}).
+
+@example
+$ guix system container os.scm
+The following derivations will be built:
+  /gnu/store/@dots{}-run-container.drv
+  @dots{}
+building /gnu/store/@dots{}-run-container.drv...
+/gnu/store/@dots{}-run-container
+@end example
+
+Now that we have a launcher script we can run it to spawn the new system
+with a running PostgreSQL service.  Note that due to some as yet
+unresolved limitations we need to run the launcher as the root user, for
+example with @command{sudo}.
+
+@example
+$ sudo /gnu/store/@dots{}-run-container
+system container is running as PID 5983
+@dots{}
+@end example
+
+Background the process with @key{Ctrl-z} followed by @command{bg}.  Note
+the process ID in the output; we will need it to connect to the
+container later.  You know what?  Let's try attaching to the container
+right now.  We will use @command{nsenter}, a tool provided by the
+@code{util-linux} package:
+
+@example
+$ guix shell util-linux
+$ sudo nsenter -a -t 5983
+root@@container /# pgrep -a postgres
+49 /gnu/store/@dots{}-postgresql-14.4/bin/postgres -D /var/lib/postgresql/data --config-file=/gnu/store/@dots{}-postgresql.conf -p 5432
+51 postgres: checkpointer
+52 postgres: background writer
+53 postgres: walwriter
+54 postgres: autovacuum launcher
+55 postgres: stats collector
+56 postgres: logical replication launcher
+root@@container /# exit
+@end example
+
+The PostgreSQL service is running in the container!
+
+
+@node Container Networking
+@subsection Container Networking
+@cindex container networking
+
+What good is a Guix System running a PostgreSQL database service as a
+container when we can only talk to it with processes originating in the
+container?  It would be much better if we could talk to the database
+over the network.
+
+The easiest way to do this is to create a pair of connected virtual
+Ethernet devices (known as @code{veth}).  We move one of the devices
+(@code{ceth-test}) into the @code{net} namespace of the container and
+leave the other end (@code{veth-test}) of the connection on the host
+system.
+
+@example
+pid=5983
+ns="guix-test"
+host="veth-test"
+client="ceth-test"
+
+# Attach the new net namespace "guix-test" to the container PID.
+sudo ip netns attach $ns $pid
+
+# Create the pair of devices
+sudo ip link add $host type veth peer name $client
+
+# Move the client device into the container's net namespace
+sudo ip link set $client netns $ns
+@end example
+
+Then we configure the host side:
+
+@example
+sudo ip link set $host up
+sudo ip addr add 10.0.0.1/24 dev $host
+@end example
+
+@dots{}and then we configure the client side:
+
+@example
+sudo ip netns exec $ns  ip link set lo up
+sudo ip netns exec $ns  ip link set $client up
+sudo ip netns exec $ns  ip addr add 10.0.0.2/24 dev $client
+@end example
+
+At this point the host can reach the container at IP address 10.0.0.2,
+and the container can reach the host at IP 10.0.0.1.  This is all we
+need to talk to the database server inside the container from the host
+system on the outside.
+
+@example
+$ psql -h 10.0.0.2 -U test
+psql (14.4)
+Type "help" for help.
+
+test=> CREATE TABLE hello (who TEXT NOT NULL);
+CREATE TABLE
+test=> INSERT INTO hello (who) VALUES ('world');
+INSERT 0 1
+test=> SELECT * FROM hello;
+  who
+-------
+ world
+(1 row)
+@end example
+
+Now that we're done with this little demonstration let's clean up:
+
+@example
+sudo kill $pid
+sudo ip netns del $ns
+sudo ip link del $host
+@end example
+
+
 @c *********************************************************************
 @node Advanced package management
 @chapter Advanced package management
@@ -2843,8 +3520,8 @@ to reproduce the exact same profile:
 GUIX_EXTRA_PROFILES=$HOME/.guix-extra-profiles
 GUIX_EXTRA=$HOME/.guix-extra
 
-mkdir "$GUIX_EXTRA"/my-project
-guix pull --channels=channel-specs.scm --profile "$GUIX_EXTRA/my-project/guix"
+mkdir -p "$GUIX_EXTRA"/my-project
+guix pull --channels=channel-specs.scm --profile="$GUIX_EXTRA/my-project/guix"
 
 mkdir -p "$GUIX_EXTRA_PROFILES/my-project"
 "$GUIX_EXTRA"/my-project/guix/bin/guix package --manifest=/path/to/guix-my-project-manifest.scm --profile="$GUIX_EXTRA_PROFILES"/my-project/my-project
@@ -2977,6 +3654,380 @@ will have predefined environment variables and procedures.
 
 Run @command{direnv allow} to setup the environment for the first time.
 
+
+@c *********************************************************************
+@node Installing Guix on a Cluster
+@chapter Installing Guix on a Cluster
+
+@cindex cluster installation
+@cindex high-performance computing, HPC
+@cindex HPC, high-performance computing
+Guix is appealing to scientists and @acronym{HPC, high-performance
+computing} practitioners: it makes it easy to deploy potentially complex
+software stacks, and it lets you do so in a reproducible fashion---you
+can redeploy the exact same software on different machines and at
+different points in time.
+
+In this chapter we look at how a cluster sysadmin can install Guix for
+system-wide use, such that it can be used on all the cluster nodes, and
+discuss the various tradeoffs@footnote{This chapter is adapted from a
+@uref{https://hpc.guix.info/blog/2017/11/installing-guix-on-a-cluster/,
+blog post published on the Guix-HPC web site in 2017}.}.
+
+@quotation Note
+Here we assume that the cluster is running a GNU/Linux distro other than
+Guix System and that we are going to install Guix on top of it.
+@end quotation
+
+@menu
+* Setting Up a Head Node::      The node that runs the daemon.
+* Setting Up Compute Nodes::    Client nodes.
+* Cluster Network Access::      Dealing with network access restrictions.
+* Cluster Disk Usage::          Disk usage considerations.
+* Cluster Security Considerations::  Keeping the cluster secure.
+@end menu
+
+@node Setting Up a Head Node
+@section Setting Up a Head Node
+
+The recommended approach is to set up one @emph{head node} running
+@command{guix-daemon} and exporting @file{/gnu/store} over NFS to
+compute nodes.
+
+Remember that @command{guix-daemon} is responsible for spawning build
+processes and downloads on behalf of clients (@pxref{Invoking
+guix-daemon,,, guix, GNU Guix Reference Manual}), and more generally
+accessing @file{/gnu/store}, which contains all the package binaries
+built by all the users (@pxref{The Store,,, guix, GNU Guix Reference
+Manual}).  ``Client'' here refers to all the Guix commands that users
+see, such as @code{guix install}.  On a cluster, these commands may be
+running on the compute nodes and we'll want them to talk to the head
+node's @code{guix-daemon} instance.
+
+To begin with, the head node can be installed following the usual binary
+installation instructions (@pxref{Binary Installation,,, guix, GNU Guix
+Reference Manual}).  Thanks to the installation script, this should be
+quick.  Once installation is complete, we need to make some adjustments.
+
+Since we want @code{guix-daemon} to be reachable not just from the head
+node but also from the compute nodes, we need to arrange so that it
+listens for connections over TCP/IP.  To do that, we'll edit the systemd
+startup file for @command{guix-daemon},
+@file{/etc/systemd/system/guix-daemon.service}, and add a
+@code{--listen} argument to the @code{ExecStart} line so that it looks
+something like this:
+
+@example
+ExecStart=/var/guix/profiles/per-user/root/current-guix/bin/guix-daemon --build-users-group=guixbuild --listen=/var/guix/daemon-socket/socket --listen=0.0.0.0
+@end example
+
+For these changes to take effect, the service needs to be restarted:
+
+@example
+systemctl daemon-reload
+systemctl restart guix-daemon
+@end example
+
+@quotation Note
+The @code{--listen=0.0.0.0} bit means that @code{guix-daemon} will
+process @emph{all} incoming TCP connections on port 44146
+(@pxref{Invoking guix-daemon,,, guix, GNU Guix Reference Manual}). This
+is usually fine in a cluster setup where the head node is reachable
+exclusively from the cluster's local area network---you don't want that
+to be exposed to the Internet!
+@end quotation
+
+The next step is to define our NFS exports in
+@uref{https://linux.die.net/man/5/exports,@file{/etc/exports}} by adding
+something along these lines:
+
+@example
+/gnu/store    *(ro)
+/var/guix     *(rw, async)
+/var/log/guix *(ro)
+@end example
+
+The @file{/gnu/store} directory can be exported read-only since only
+@command{guix-daemon} on the master node will ever modify it.
+@file{/var/guix} contains @emph{user profiles} as managed by @code{guix
+package}; thus, to allow users to install packages with @code{guix
+package}, this must be read-write.
+
+Users can create as many profiles as they like in addition to the
+default profile, @file{~/.guix-profile}.  For instance, @code{guix
+package -p ~/dev/python-dev -i python} installs Python in a profile
+reachable from the @code{~/dev/python-dev} symlink.  To make sure that
+this profile is protected from garbage collection---i.e., that Python
+will not be removed from @file{/gnu/store} while this profile exists---,
+@emph{home directories should be mounted on the head node} as well so
+that @code{guix-daemon} knows about these non-standard profiles and
+avoids collecting software they refer to.
+
+It may be a good idea to periodically remove unused bits from
+@file{/gnu/store} by running @command{guix gc} (@pxref{Invoking guix
+gc,,, guix, GNU Guix Reference Manual}).  This can be done by adding a
+crontab entry on the head node:
+
+@example
+root@@master# crontab -e
+@end example
+
+@noindent
+... with something like this:
+
+@example
+# Every day at 5AM, run the garbage collector to make sure
+# at least 10 GB are free on /gnu/store.
+0 5 * * 1  /usr/local/bin/guix gc -F10G
+@end example
+
+We're done with the head node! Let's look at compute nodes now.
+
+@node Setting Up Compute Nodes
+@section Setting Up Compute Nodes
+
+First of all, we need compute nodes to mount those NFS directories that
+the head node exports.  This can be done by adding the following lines
+to @uref{https://linux.die.net/man/5/fstab,@file{/etc/fstab}}:
+
+@example
+@var{head-node}:/gnu/store    /gnu/store    nfs  defaults,_netdev,vers=3 0 0
+@var{head-node}:/var/guix     /var/guix     nfs  defaults,_netdev,vers=3 0 0
+@var{head-node}:/var/log/guix /var/log/guix nfs  defaults,_netdev,vers=3 0 0
+@end example
+
+@noindent
+... where @var{head-node} is the name or IP address of your head node.
+From there on, assuming the mount points exist, you should be able to
+mount each of these on the compute nodes.
+
+Next, we need to provide a default @command{guix} command that users can
+run when they first connect to the cluster (eventually they will invoke
+@command{guix pull}, which will provide them with their ``own''
+@command{guix} command).  Similar to what the binary installation script
+did on the head node, we'll store that in @file{/usr/local/bin}:
+
+@example
+mkdir -p /usr/local/bin
+ln -s /var/guix/profiles/per-user/root/current-guix/bin/guix \
+      /usr/local/bin/guix
+@end example
+
+We then need to tell @code{guix} to talk to the daemon running on our
+master node, by adding these lines to @code{/etc/profile}:
+
+@example
+GUIX_DAEMON_SOCKET="guix://@var{head-node}"
+export GUIX_DAEMON_SOCKET
+@end example
+
+To avoid warnings and make sure @code{guix} uses the right locale, we
+need to tell it to use locale data provided by Guix (@pxref{Application
+Setup,,, guix, GNU Guix Reference Manual}):
+
+@example
+GUIX_LOCPATH=/var/guix/profiles/per-user/root/guix-profile/lib/locale
+export GUIX_LOCPATH
+
+# Here we must use a valid locale name.  Try "ls $GUIX_LOCPATH/*"
+# to see what names can be used.
+LC_ALL=fr_FR.utf8
+export LC_ALL
+@end example
+
+For convenience, @code{guix package} automatically generates
+@file{~/.guix-profile/etc/profile}, which defines all the environment
+variables necessary to use the packages---@code{PATH},
+@code{C_INCLUDE_PATH}, @code{PYTHONPATH}, etc.  Thus it's a good idea to
+source it from @code{/etc/profile}:
+
+@example
+GUIX_PROFILE="$HOME/.guix-profile"
+if [ -f "$GUIX_PROFILE/etc/profile" ]; then
+  . "$GUIX_PROFILE/etc/profile"
+fi
+@end example
+
+Last but not least, Guix provides command-line completion notably for
+Bash and zsh.  In @code{/etc/bashrc}, consider adding this line:
+
+@verbatim
+. /var/guix/profiles/per-user/root/current-guix/etc/bash_completion.d/guix
+@end verbatim
+
+Voilà!
+
+You can check that everything's in place by logging in on a compute node
+and running:
+
+@example
+guix install hello
+@end example
+
+The daemon on the head node should download pre-built binaries on your
+behalf and unpack them in @file{/gnu/store}, and @command{guix install}
+should create @file{~/.guix-profile} containing the
+@file{~/.guix-profile/bin/hello} command.
+
+@node Cluster Network Access
+@section Network Access
+
+Guix requires network access to download source code and pre-built
+binaries.  The good news is that only the head node needs that since
+compute nodes simply delegate to it.
+
+It is customary for cluster nodes to have access at best to a
+@emph{white list} of hosts.  Our head node needs at least
+@code{ci.guix.gnu.org} in this white list since this is where it gets
+pre-built binaries from by default, for all the packages that are in
+Guix proper.
+
+Incidentally, @code{ci.guix.gnu.org} also serves as a
+@emph{content-addressed mirror} of the source code of those packages.
+Consequently, it is sufficient to have @emph{only}
+@code{ci.guix.gnu.org} in that white list.
+
+Software packages maintained in a separate repository such as one of the
+various @uref{https://hpc.guix.info/channels, HPC channels} are of
+course unavailable from @code{ci.guix.gnu.org}.  For these packages, you
+may want to extend the white list such that source and pre-built
+binaries (assuming this-party servers provide binaries for these
+packages) can be downloaded.  As a last resort, users can always
+download source on their workstation and add it to the cluster's
+@file{/gnu/store}, like this:
+
+@verbatim
+GUIX_DAEMON_SOCKET=ssh://compute-node.example.org \
+  guix download http://starpu.gforge.inria.fr/files/starpu-1.2.3/starpu-1.2.3.tar.gz
+@end verbatim
+
+The above command downloads @code{starpu-1.2.3.tar.gz} @emph{and} sends
+it to the cluster's @code{guix-daemon} instance over SSH.
+
+Air-gapped clusters require more work.  At the moment, our suggestion
+would be to download all the necessary source code on a workstation
+running Guix.  For instance, using the @option{--sources} option of
+@command{guix build} (@pxref{Invoking guix build,,, guix, GNU Guix
+Reference Manual}), the example below downloads all the source code the
+@code{openmpi} package depends on:
+
+@example
+$ guix build --sources=transitive openmpi
+
+@dots{}
+
+/gnu/store/xc17sm60fb8nxadc4qy0c7rqph499z8s-openmpi-1.10.7.tar.bz2
+/gnu/store/s67jx92lpipy2nfj5cz818xv430n4b7w-gcc-5.4.0.tar.xz
+/gnu/store/npw9qh8a46lrxiwh9xwk0wpi3jlzmjnh-gmp-6.0.0a.tar.xz
+/gnu/store/hcz0f4wkdbsvsdky3c0vdvcawhdkyldb-mpfr-3.1.5.tar.xz
+/gnu/store/y9akh452n3p4w2v631nj0injx7y0d68x-mpc-1.0.3.tar.gz
+/gnu/store/6g5c35q8avfnzs3v14dzl54cmrvddjm2-glibc-2.25.tar.xz
+/gnu/store/p9k48dk3dvvk7gads7fk30xc2pxsd66z-hwloc-1.11.8.tar.bz2
+/gnu/store/cry9lqidwfrfmgl0x389cs3syr15p13q-gcc-5.4.0.tar.xz
+/gnu/store/7ak0v3rzpqm2c5q1mp3v7cj0rxz0qakf-libfabric-1.4.1.tar.bz2
+/gnu/store/vh8syjrsilnbfcf582qhmvpg1v3rampf-rdma-core-14.tar.gz
+…
+@end example
+
+(In case you're wondering, that's more than 320@ MiB of
+@emph{compressed} source code.)
+
+We can then make a big archive containing all of this (@pxref{Invoking
+guix archive,,, guix, GNU Guix Reference Manual}):
+
+@verbatim
+$ guix archive --export \
+    `guix build --sources=transitive openmpi` \
+    > openmpi-source-code.nar
+@end verbatim
+
+@dots{} and we can eventually transfer that archive to the cluster on
+removable storage and unpack it there:
+
+@verbatim
+$ guix archive --import < openmpi-source-code.nar
+@end verbatim
+
+This process has to be repeated every time new source code needs to be
+brought to the cluster.
+
+As we write this, the research institutes involved in Guix-HPC do not
+have air-gapped clusters though. If you have experience with such
+setups, we would like to hear feedback and suggestions.
+
+@node Cluster Disk Usage
+@section Disk Usage
+
+@cindex disk usage, on a cluster
+A common concern of sysadmins' is whether this is all going to eat a lot
+of disk space.  If anything, if something is going to exhaust disk
+space, it's going to be scientific data sets rather than compiled
+software---that's our experience with almost ten years of Guix usage on
+HPC clusters.  Nevertheless, it's worth taking a look at how Guix
+contributes to disk usage.
+
+First, having several versions or variants of a given package in
+@file{/gnu/store} does not necessarily cost much, because
+@command{guix-daemon} implements deduplication of identical files, and
+package variants are likely to have a number of common files.
+
+As mentioned above, we recommend having a cron job to run @code{guix gc}
+periodically, which removes @emph{unused} software from
+@file{/gnu/store}. However, there's always a possibility that users will
+keep lots of software in their profiles, or lots of old generations of
+their profiles, which is ``live'' and cannot be deleted from the
+viewpoint of @command{guix gc}.
+
+The solution to this is for users to regularly remove old generations of
+their profile. For instance, the following command removes generations
+that are more than two-month old:
+
+@example
+guix package --delete-generations=2m
+@end example
+
+Likewise, it's a good idea to invite users to regularly upgrade their
+profile, which can reduce the number of variants of a given piece of
+software stored in @file{/gnu/store}:
+
+@example
+guix pull
+guix upgrade
+@end example
+
+As a last resort, it is always possible for sysadmins to do some of this
+on behalf of their users. Nevertheless, one of the strengths of Guix is
+the freedom and control users get on their software environment, so we
+strongly recommend leaving users in control.
+
+@node Cluster Security Considerations
+@section Security Considerations
+
+@cindex security, on a cluster
+On an HPC cluster, Guix is typically used to manage scientific software.
+Security-critical software such as the operating system kernel and
+system services such as @code{sshd} and the batch scheduler remain under
+control of sysadmins.
+
+The Guix project has a good track record delivering security updates in
+a timely fashion (@pxref{Security Updates,,, guix, GNU Guix Reference
+Manual}).  To get security updates, users have to run @code{guix pull &&
+guix upgrade}.
+
+Because Guix uniquely identifies software variants, it is easy to see if
+a vulnerable piece of software is in use. For instance, to check whether
+the glibc@ 2.25 variant without the mitigation patch against
+``@uref{https://www.qualys.com/2017/06/19/stack-clash/stack-clash.txt,Stack
+Clash}'', one can check whether user profiles refer to it at all:
+
+@example
+guix gc --referrers /gnu/store/…-glibc-2.25
+@end example
+
+This will report whether profiles exist that refer to this specific
+glibc variant.
+
+
 @c *********************************************************************
 @node Acknowledgments
 @chapter Acknowledgments
@@ -2998,8 +4049,10 @@ information on these fine people.  The @file{THANKS} file lists people
 who have helped by reporting bugs, taking care of the infrastructure,
 providing artwork and themes, making suggestions, and more---thank you!
 
-This document includes adapted sections from articles that have previously
-been published on the Guix blog at @uref{https://guix.gnu.org/blog}.
+This document includes adapted sections from articles that have
+previously been published on the Guix blog at
+@uref{https://guix.gnu.org/blog} and on the Guix-HPC blog at
+@uref{https://hpc.guix.info/blog}.
 
 
 @c *********************************************************************

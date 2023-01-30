@@ -23,7 +23,6 @@
   #:use-module (guix tests)
   #:use-module (guix store)
   #:use-module (guix monads)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (tarball?))
@@ -76,6 +75,9 @@
 ;; can trigger builds early.)
 (%graft? #f)
 
+;; When grafting, do not add dependency on 'glibc-utf8-locales'.
+(%graft-with-utf8-locale? #f)
+
 
 (test-begin "packages")
 
@@ -93,6 +95,13 @@
                   (lambda ()
                     (write
                      (dummy-package "foo" (location #f)))))))
+
+(test-equal "license type checking"
+  'bad-license
+  (guard (c ((package-license-error? c)
+             (package-error-invalid-license c)))
+    (dummy-package "foo"
+      (license 'bad-license))))
 
 (test-assert "hidden-package"
   (and (hidden-package? (hidden-package (dummy-package "foo")))
@@ -616,6 +625,10 @@
          (output (derivation->output-path drv)))
     (build-derivations %store (list drv))
     (call-with-input-file output get-string-all)))
+
+(test-equal "package-upstream-name*"
+  (package-upstream-name* (specification->package "guile-gcrypt"))
+  "gcrypt")
 
 
 ;;;

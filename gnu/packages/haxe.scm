@@ -102,7 +102,7 @@ easily embedded into any application and your libraries can be accessed using
 the C foreign function interface.
 
 You can use the compiler as standalone command line executable separate from
-the VM, or as a Neko library to perform compile-and-run funtions for
+the VM, or as a Neko library to perform compile-and-run functions for
 interactive languages.")
     (license license:expat)))
 

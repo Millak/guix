@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Tissevert <tissevert+guix@marvid.fr>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2022 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
+;;; Copyright © 2022, 2023 Luis Henrique Gomes Higino <luishenriquegh2701@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,6 +40,7 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin) ; For GNU hostname
@@ -77,7 +78,7 @@
 (define-public vim
   (package
     (name "vim")
-    (version "9.0.0509")
+    (version "9.0.1073")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -86,7 +87,7 @@
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0affh0q6r5cvf01f4m5nr94bq1k23bzhiwa4xlpqim21yipafamm"))))
+               "0vifinbxjcs7j3zs290q91009cdqijn2awyva2332if7qbx48ssw"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -94,17 +95,21 @@
        #:phases
        (modify-phases %standard-phases
          (add-after 'configure 'patch-absolute-paths
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("src/testdir/Makefile"
                             "src/testdir/test_filetype.vim"
                             "src/testdir/test_normal.vim"
                             "src/testdir/test_popupwin.vim"
+                            "src/testdir/test_prompt_buffer.vim"
                             "src/testdir/test_shell.vim"
+                            "src/testdir/test_suspend.vim"
                             "src/testdir/test_terminal.vim"
                             "src/testdir/test_terminal2.vim")
                (("/bin/sh") (which "sh")))
              (substitute* "src/testdir/test_autocmd.vim"
-               (("/bin/kill") (which "kill")))))
+               (("/bin/kill") (which "kill")))
+             (substitute* "src/if_cscope.c"
+               (("/bin/sh") (search-input-file inputs "/bin/sh")))))
          (add-before 'check 'set-environment-variables
            (lambda* (#:key inputs #:allow-other-keys)
              ;; One of the tests tests timezone-dependent functions.
@@ -124,6 +129,9 @@
              ;; actions.  The path of the bash binary is shown, which results in
              ;; a difference being detected.  Patching the expected result is
              ;; non-trivial due to the special format used, so skip the test.
+             (substitute* "src/testdir/test_messages.vim"
+               ((".*Test_echo_verbose_system.*" line)
+                (string-append line "return\n")))
              (substitute* "src/testdir/test_terminal.vim"
                ((".*Test_open_term_from_cmd.*" line)
                 (string-append line "return\n"))
@@ -684,7 +692,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.7.2")
+    (version "0.8.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -693,7 +701,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jn4i4ral79ys06i50bimylm515sfh41z503gj50a74h1ylg0z4w"))))
+                "1jjw9a42l7wrziki2qznn7wiw5r59n4hs9i6g2hxnjyzixpg9xvl"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
@@ -918,6 +926,25 @@ With the package comes a plugin to use vifm as a vim file selector.")
 also works as a library for connecting to and scripting neovim processes
 through its msgpack-rpc API.")
     (license license:asl2.0)))
+
+(define-public python-neovim-remote
+  (package
+    (name "python-neovim-remote")
+    (version "2.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "neovim-remote" version))
+              (sha256
+               (base32
+                "00kxlb3f1k7iaxzpsr07scavmnyg8c1jmicmr13mfk2lcdac6g2b"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-psutil python-pynvim))
+    (home-page "https://github.com/mhinz/neovim-remote")
+    (synopsis "Control nvim processes using `nvr` commandline tool")
+    (description "This package provide a `nvr` command, which can open File in
+remote nvim.  Also allow opening files from within :terminal without starting
+a nested nvim process.")
+    (license license:expat)))
 
 (define-public vim-guix-vim
   (package

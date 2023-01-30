@@ -31,6 +31,9 @@
 ;;; Copyright © 2021 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Benjamin Slade <slade@lambda-y.net>
+;;; Copyright © 2022 Denis 'GNUtoo' Carikli <GNUtoo@cyberdimension.org>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -65,6 +68,7 @@
   #:use-module (guix build-system waf)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
+  #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -115,6 +119,43 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
   #:use-module (ice-9 match))
+
+(define-public appmenu-gtk-module
+  (package
+    (name "appmenu-gtk-module")
+    (version "0.7.6")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/vala-panel-project/vala-panel-appmenu")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1ywpygjwlbli65203ja2f8wwxh5gbavnfwcxwg25v061pcljaqmm"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #t
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-install-gtk-module
+            (lambda* _
+              (substitute*
+                  "subprojects/appmenu-gtk-module/src/gtk-3.0/meson.build"
+                (("gtk3.get_pkgconfig_variable\\('libdir'\\)")
+                 #$output)))))))
+    (native-inputs
+     (list `(,glib "bin") vala pkg-config))
+    (inputs
+     (list gtk+ libwnck))
+    (synopsis "Application Menu applet")
+    (description
+     "This package provides a global menu applet for use with desktop panels
+such as mate-panel and xfce4-panel.")
+    (home-page "https://gitlab.com/vala-panel-project/vala-panel-appmenu")
+    (license (list license:lgpl3))))
 
 (define-public atk
   (package
@@ -278,6 +319,20 @@ output.  Experimental backends include OpenGL, BeOS, OS/2, and DirectFB.")
     (license (license:x11-style "file://COPYING"
                                 "See 'COPYING' in the distribution."))
     (home-page "https://www.freedesktop.org/wiki/Software/HarfBuzz/")))
+
+
+(define-public harfbuzz-5
+  (package
+    (inherit harfbuzz)
+    (version "5.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/harfbuzz/harfbuzz"
+                                  "/releases/download/" version "/harfbuzz-"
+                                  version ".tar.xz"))
+              (sha256
+               (base32
+                "0ka3nkk2lks2lgakq02vyibwdziv11dkpa2brkx230asnyby0v2a"))))))
 
 (define-public libdatrie
   (package
@@ -1088,7 +1143,7 @@ application suites.")
 (define-public gtk
   (package
     (name "gtk")
-    (version "4.8.0")
+    (version "4.8.1")
     (source
      (origin
        (method url-fetch)
@@ -1096,7 +1151,7 @@ application suites.")
                            (version-major+minor version)  "/"
                            name "-" version ".tar.xz"))
        (sha256
-        (base32 "0zxxvjnbmaahvm9lwm007dzgc0yl8qamkp1467c5kqyi6ws21mn8"))
+        (base32 "1za2nyqqs2lrbss61gfw17qba2f0w6a119m1xk4d0fx2k3gdis2w"))
        (patches
         (search-patches "gtk4-respect-GUIX_GTK4_PATH.patch"))))
     (build-system meson-build-system)
@@ -2801,7 +2856,7 @@ user interaction (e.g.  measuring distances).")
 (define-public volctl
   (package
     (name "volctl")
-    (version "0.8.2")
+    (version "0.9.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url "https://github.com/buzz/volctl")
@@ -2809,28 +2864,28 @@ user interaction (e.g.  measuring distances).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1cx27j83pz2qffnzb85fbl1x6pp3irv1kbw7g1hri7kaw6ky4xiz"))))
+                "0fz80w3ywq54jn4v31frfdj01s5g9lz6v9cd7hpg3kirca0zisln"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-path
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pulse (assoc-ref inputs "pulseaudio"))
-                   (xfixes (assoc-ref inputs "libxfixes")))
-               (substitute* "volctl/lib/xwrappers.py"
-                 (("libXfixes.so")
-                  (string-append xfixes "/lib/libXfixes.so")))
-               (substitute* "volctl/lib/pulseaudio.py"
-                 (("libpulse.so.0")
-                  (string-append pulse "/lib/libpulse.so.0")))
-               #t))))))
+             (substitute* "volctl/xwrappers.py"
+               (("libXfixes.so")
+                (string-append (search-input-file inputs
+                                                  "/lib/libXfixes.so")))))))))
     (inputs
-     (list gtk+ libxfixes pulseaudio))
+     (list libxfixes))
     (propagated-inputs
-     (list python-click python-pycairo python-pygobject python-pyyaml))
+     (list python-click
+           python-pycairo
+           python-pygobject
+           python-pyyaml
+           python-pulsectl
+           gtk+))
     (home-page "https://buzz.github.io/volctl/")
-    (synopsis "Per-application volume control and on-screen display (OSD) for graphical desktops")
+    (synopsis "Per-application volume control and on-screen display")
     (description "Volctl is a PulseAudio-enabled tray icon volume control and
 OSD applet for graphical desktops.  It's not meant to be an replacement for a
 full-featured mixer application.  If you're looking for that check out the

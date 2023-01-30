@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2015, 2018 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Mike Gerwitz <mtg@gnu.org>
+;;; Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,7 +24,6 @@
   #:use-module (guix store)
   #:use-module (guix utils)
   #:use-module ((guix status) #:select (with-status-verbosity))
-  #:use-module (guix grafts)
   #:use-module (guix derivations)
   #:use-module (guix packages)
   #:use-module (guix profiles)
@@ -33,8 +33,10 @@
   #:use-module ((guix gexp) #:select (lower-object))
   #:use-module (guix scripts)
   #:use-module (guix scripts build)
+  #:autoload   (guix scripts pack) (symlink-spec-option-parser)
   #:use-module (guix transformations)
   #:autoload   (ice-9 ftw) (scandir)
+  #:use-module (gnu build install)
   #:autoload   (gnu build linux-container) (call-with-container %namespaces
                                             user-namespace-supported?
                                             unprivileged-user-namespace-supported?
@@ -120,6 +122,9 @@ shell'."
       --expose=SPEC      for containers, expose read-only host file system
                          according to SPEC"))
   (display (G_ "
+  -S, --symlink=SPEC     for containers, add symlinks to the profile according
+                         to SPEC, e.g. \"/usr/bin/env=bin/env\"."))
+  (display (G_ "
   -v, --verbosity=LEVEL  use the given verbosity LEVEL"))
   (display (G_ "
       --bootstrap        use bootstrap binaries to build the environment")))
@@ -157,6 +162,7 @@ COMMAND or an interactive shell in that environment.\n"))
 (define %default-options
   `((system . ,(%current-system))
     (substitutes? . #t)
+    (symlinks . ())
     (offload? . #t)
     (graft? . #t)
     (print-build-trace? . #t)
@@ -256,6 +262,7 @@ use '--preserve' instead~%"))
                    (alist-cons 'file-system-mapping
                                (specification->file-system-mapping arg #f)
                                result)))
+         (option '(#\S "symlink") #t #f symlink-spec-option-parser)
          (option '(#\r "root") #t #f
                  (lambda (opt name arg result)
                    (alist-cons 'gc-root arg result)))
@@ -375,6 +382,65 @@ requisite store items i.e. the union closure of all the inputs."
                                   input->requisites inputs)))
     (return (delete-duplicates (concatenate reqs)))))
 
+(define (setup-fhs profile)
+  "Setup the FHS container by creating and linking expected directories from
+PROFILE (other bind mounts are done in LAUNCH-ENVIRONMENT/CONTAINER),
+providing a symlink for CC if GCC is in the container PROFILE, and writing
+/etc/ld.so.conf."
+  ;; Additional symlinks for an FHS container.
+  (define fhs-symlinks
+    `(("/lib" . "/usr/lib")
+      ,(if (target-64bit?)
+           '("/lib" . "/lib64")
+           '("/lib" . "/lib32"))
+      ("/bin" . "/usr/bin")
+      ("/sbin" . "/usr/sbin")))
+
+  ;; A procedure to symlink the contents (at the top level) of a directory,
+  ;; excluding the directory itself and parent, along with any others provided
+  ;; in EXCLUDE.
+  (define* (link-contents dir #:key (exclude '()))
+    (for-each (lambda (file)
+                (symlink (string-append profile dir "/" file)
+                         (string-append dir "/" file)))
+              (scandir (string-append profile dir)
+                       (negate (cut member <>
+                                    (append exclude '("." ".." )))))))
+
+  ;; The FHS container sets up the expected filesystem through MAPPINGS with
+  ;; FHS-MAPPINGS (in LAUNCH-ENVIRONMENT/CONTAINER), the symlinks through
+  ;; FHS-SYMLINKS, and linking the contents of PROFILE/bin and PROFILE/etc
+  ;; using LINK-CONTENTS, as these both have or will have contents for a
+  ;; non-FHS container so must be handled separately.
+  (mkdir-p "/usr")
+  (for-each (lambda (link)
+              (if (file-exists? (car link))
+                  (symlink (car link) (cdr link))))
+            fhs-symlinks)
+  (link-contents "/bin" #:exclude '("sh"))
+  (mkdir-p "/etc")
+  (link-contents "/etc")
+
+  ;; Provide a frequently expected 'cc' symlink to gcc (in case it is in
+  ;; PROFILE), though this could also be done by the user in the container,
+  ;; e.g. in $HOME/.local/bin and adding that to $PATH.  Note: we do this in
+  ;; /bin since that already has the sh symlink and the other (optional) FHS
+  ;; bin directories will link to /bin.
+  (let ((gcc-path (string-append profile "/bin/gcc")))
+    (if (file-exists? gcc-path)
+        (symlink gcc-path "/bin/cc")))
+
+  ;; Guix's ldconfig doesn't search in FHS default locations, so provide a
+  ;; minimal ld.so.conf.
+  (call-with-output-file "/etc/ld.so.conf"
+    (lambda (port)
+      (for-each (lambda (directory)
+                  (display directory port)
+                  (newline port))
+                ;; /lib/nss is needed as Guix's nss puts libraries
+                ;; there rather than in the lib directory.
+                '("/lib" "/lib/nss")))))
+
 (define (status->exit-code status)
   "Compute the exit code made from STATUS, a value as returned by 'waitpid',
 and suitable for 'exit'."
@@ -386,11 +452,13 @@ and suitable for 'exit'."
 (define primitive-exit/status (compose primitive-exit status->exit-code))
 
 (define* (launch-environment command profile manifest
-                             #:key pure? (white-list '()))
-  "Run COMMAND in a new environment containing INPUTS, using the native search
-paths defined by the list PATHS.  When PURE?, pre-existing environment
-variables are cleared before setting the new ones, except those matching the
-regexps in WHITE-LIST."
+                             #:key pure? (white-list '())
+                             emulate-fhs?)
+  "Load the environment of PROFILE, which corresponds to MANIFEST, and execute
+COMMAND.  When PURE?, pre-existing environment variables are cleared before
+setting the new ones, except those matching the regexps in WHITE-LIST.  When
+EMULATE-FHS?, first set up an FHS environment with $PATH and generate the LD
+cache."
   ;; Properly handle SIGINT, so pressing C-c in an interactive terminal
   ;; application works.
   (sigaction SIGINT SIG_DFL)
@@ -406,6 +474,15 @@ regexps in WHITE-LIST."
     ((program . args)
      (catch 'system-error
        (lambda ()
+         (when emulate-fhs?
+           ;; When running in a container with EMULATE-FHS?, augment $PATH
+           ;; (optional, but to better match FHS expectations), and generate
+           ;; /etc/ld.so.cache.
+           (setenv "PATH" (string-append "/bin:/usr/bin:/sbin:/usr/sbin"
+                                         (if (getenv "PATH")
+                                             (string-append ":" (getenv "PATH"))
+                                             "")))
+           (invoke "ldconfig" "-X"))
          (apply execlp program program args))
        (lambda _
          ;; Report the error from here because the parent process cannot
@@ -527,7 +604,12 @@ environment~%")))
       (match (vhash-assoc "PS1" actual)
         (#f #f)
         ((_ . str)
-         (when (and (getenv "PS1") (string=? str (getenv "PS1")))
+         (when (and (getenv "PS1") (string=? str (getenv "PS1"))
+
+                    ;; 'PS1' might be conditional on 'GUIX_ENVIRONMENT', as
+                    ;; shown in the hint below.
+                    (not (or (string-contains str "$GUIX_ENVIRONMENT")
+                             (string-contains str "${GUIX_ENVIRONMENT"))))
            (warning (G_ "'PS1' is the same in sub-shell~%"))
            (display-hint (G_ "Consider setting a different prompt for
 environment shells to make them distinguishable.
@@ -536,10 +618,7 @@ If you are using Bash, you can do that by adding these lines to
 @file{~/.bashrc}:
 
 @example
-if [ -n \"$GUIX_ENVIRONMENT\" ]
-then
-  export PS1=\"\\u@@\\h \\w [env]\\$ \"
-fi
+PS1='\\u@@\\h \\w${GUIX_ENVIRONMENT:+ [env]}\\$ '
 @end example
 "))))))
 
@@ -604,22 +683,48 @@ regexps in WHITE-LIST."
 
 (define* (launch-environment/container #:key command bash user user-mappings
                                        profile manifest link-profile? network?
-                                       map-cwd? (white-list '()))
+                                       map-cwd? emulate-fhs? (setup-hook #f)
+                                       (symlinks '()) (white-list '()))
   "Run COMMAND within a container that features the software in PROFILE.
-Environment variables are set according to the search paths of MANIFEST.
-The global shell is BASH, a file name for a GNU Bash binary in the
-store.  When NETWORK?, access to the host system network is permitted.
-USER-MAPPINGS, a list of file system mappings, contains the user-specified
-host file systems to mount inside the container.  If USER is not #f, each
-target of USER-MAPPINGS will be re-written relative to '/home/USER', and USER
-will be used for the passwd entry.  LINK-PROFILE? creates a symbolic link from
-~/.guix-profile to the environment profile.
+Environment variables are set according to the search paths of MANIFEST.  The
+global shell is BASH, a file name for a GNU Bash binary in the store.  When
+NETWORK?, access to the host system network is permitted.  USER-MAPPINGS, a
+list of file system mappings, contains the user-specified host file systems to
+mount inside the container.  If USER is not #f, each target of USER-MAPPINGS
+will be re-written relative to '/home/USER', and USER will be used for the
+passwd entry.
+
+When EMULATE-FHS?, set up the container to follow the Filesystem Hierarchy
+Standard and provide a glibc that reads the cache from /etc/ld.so.cache.
+SETUP-HOOK is an additional setup procedure to be called, currently only used
+with the EMULATE-FHS? option.
+
+LINK-PROFILE? creates a symbolic link from ~/.guix-profile to the
+environment profile.
+
+SYMLINKS must be a list of (SOURCE -> TARGET) tuples denoting symlinks to be
+added to the container.
 
 Preserve environment variables whose name matches the one of the regexps in
 WHILE-LIST."
   (define (optional-mapping->fs mapping)
     (and (file-exists? (file-system-mapping-source mapping))
          (file-system-mapping->bind-mount mapping)))
+
+  ;; File system mappings for an FHS container, where the entire directory can
+  ;; be mapped.  Others (bin and etc) will already have contents and need to
+  ;; use LINK-CONTENTS (defined in SETUP-FHS) to symlink the directory
+  ;; contents.
+  (define fhs-mappings
+    (map (lambda (mapping)
+           (file-system-mapping
+            (source (string-append profile (car mapping)))
+            (target (cdr mapping))))
+         '(("/lib"     . "/lib")
+           ("/include" . "/usr/include")
+           ("/sbin"    . "/sbin")
+           ("/libexec" . "/usr/libexec")
+           ("/share"   . "/usr/share"))))
 
   (mlet %store-monad ((reqs (inputs->requisites
                              (list (direct-store-path bash) profile))))
@@ -628,14 +733,21 @@ WHILE-LIST."
             (home     (getenv "HOME"))
             (uid      (if user 1000 (getuid)))
             (gid      (if user 1000 (getgid)))
-            (passwd   (let ((pwd (getpwuid (getuid))))
+
+            ;; On a foreign distro, the name service switch might be
+            ;; dysfunctional and 'getpwuid' throws.  Don't let that hamper
+            ;; operations.
+            (passwd   (let ((pwd (false-if-exception (getpwuid (getuid)))))
                         (password-entry
-                         (name (or user (passwd:name pwd)))
-                         (real-name (if user
+                         (name (or user
+                                   (and=> pwd passwd:name)
+                                   (getenv "USER")
+                                   "charlie"))
+                         (real-name (if (or user (not pwd))
                                         ""
                                         (passwd:gecos pwd)))
                          (uid uid) (gid gid) (shell bash)
-                         (directory (if user
+                         (directory (if (or user (not pwd))
                                         (string-append "/home/" user)
                                         (passwd:dir pwd))))))
             (groups   (list (group-entry (name "users") (gid gid))
@@ -675,6 +787,11 @@ WHILE-LIST."
                                       (filter-map optional-mapping->fs
                                                   %network-file-mappings)
                                       '())
+                                  ;; Mappings for an FHS container.
+                                  (if emulate-fhs?
+                                      (filter-map optional-mapping->fs
+                                                  fhs-mappings)
+                                      '())
                                   (map file-system-mapping->bind-mount
                                        mappings))))
        (exit/status
@@ -701,6 +818,19 @@ WHILE-LIST."
             ;; Create a dummy home directory.
             (mkdir-p home-dir)
             (setenv "HOME" home-dir)
+
+            ;; Create symlinks.
+            (let ((symlink->directives
+                   (match-lambda
+                     ((source '-> target)
+                      `((directory ,(dirname source))
+                        (,source -> ,(string-append profile "/" target)))))))
+              (for-each (cut evaluate-populate-directive <> ".")
+                        (append-map symlink->directives symlinks)))
+
+            ;; Call an additional setup procedure, if provided.
+            (when setup-hook
+              (setup-hook profile))
 
             ;; If requested, link $GUIX_ENVIRONMENT to $HOME/.guix-profile;
             ;; this allows programs expecting that path to continue working as
@@ -743,7 +873,8 @@ WHILE-LIST."
                                  (if link-profile?
                                      (string-append home-dir "/.guix-profile")
                                      profile)
-                                 manifest #:pure? #f)))
+                                 manifest #:pure? #f
+                                 #:emulate-fhs? emulate-fhs?)))
           #:guest-uid uid
           #:guest-gid gid
           #:namespaces (if network?
@@ -861,147 +992,158 @@ message if any test fails."
   (category development)
   (synopsis "spawn one-off software environments (deprecated)")
 
-  (guix-environment* (parse-args args)))
+  (with-error-handling
+    (guix-environment* (parse-args args))))
 
 (define (guix-environment* opts)
   "Run the 'guix environment' command on OPTS, an alist resulting for
 command-line option processing with 'parse-command-line'."
-  (with-error-handling
-    (let* ((pure?      (assoc-ref opts 'pure))
-           (container? (assoc-ref opts 'container?))
-           (link-prof? (assoc-ref opts 'link-profile?))
-           (network?   (assoc-ref opts 'network?))
-           (no-cwd?    (assoc-ref opts 'no-cwd?))
-           (user       (assoc-ref opts 'user))
-           (bootstrap? (assoc-ref opts 'bootstrap?))
-           (system     (assoc-ref opts 'system))
-           (profile    (assoc-ref opts 'profile))
-           (command    (or (assoc-ref opts 'exec)
-                           ;; Spawn a shell if the user didn't specify
-                           ;; anything in particular.
-                           (if container?
-                               ;; The user's shell is likely not available
-                               ;; within the container.
-                               '("/bin/sh")
-                               (list %default-shell))))
-           (mappings   (pick-all opts 'file-system-mapping))
-           (white-list (pick-all opts 'inherit-regexp)))
+  (let* ((pure?        (assoc-ref opts 'pure))
+         (container?   (assoc-ref opts 'container?))
+         (link-prof?   (assoc-ref opts 'link-profile?))
+         (symlinks     (assoc-ref opts 'symlinks))
+         (network?     (assoc-ref opts 'network?))
+         (no-cwd?      (assoc-ref opts 'no-cwd?))
+         (emulate-fhs? (assoc-ref opts 'emulate-fhs?))
+         (user         (assoc-ref opts 'user))
+         (bootstrap?   (assoc-ref opts 'bootstrap?))
+         (system       (assoc-ref opts 'system))
+         (profile      (assoc-ref opts 'profile))
+         (command  (or (assoc-ref opts 'exec)
+                       ;; Spawn a shell if the user didn't specify
+                       ;; anything in particular.
+                       (if container?
+                           ;; The user's shell is likely not available
+                           ;; within the container.
+                           '("/bin/sh")
+                           (list %default-shell))))
+         (mappings   (pick-all opts 'file-system-mapping))
+         (white-list (pick-all opts 'inherit-regexp)))
 
-      (define store-needed?
-        ;; Whether connecting to the daemon is needed.
-        (or container? (not profile)))
+    (define store-needed?
+      ;; Whether connecting to the daemon is needed.
+      (or container? (not profile)))
 
-      (define-syntax-rule (with-store/maybe store exp ...)
-        ;; Evaluate EXP... with STORE bound to a connection, unless
-        ;; STORE-NEEDED? is false, in which case STORE is bound to #f.
-        (let ((proc (lambda (store) exp ...)))
-          (if store-needed?
-              (with-store s
-                (set-build-options-from-command-line s opts)
-                (with-build-handler (build-notifier #:use-substitutes?
-                                                    (assoc-ref opts 'substitutes?)
-                                                    #:verbosity
-                                                    (assoc-ref opts 'verbosity)
-                                                    #:dry-run?
-                                                    (assoc-ref opts 'dry-run?))
-                  (proc s)))
-              (proc #f))))
+    (define-syntax-rule (with-store/maybe store exp ...)
+      ;; Evaluate EXP... with STORE bound to a connection, unless
+      ;; STORE-NEEDED? is false, in which case STORE is bound to #f.
+      (let ((proc (lambda (store) exp ...)))
+        (if store-needed?
+            (with-store s
+              (set-build-options-from-command-line s opts)
+              (with-build-handler (build-notifier #:use-substitutes?
+                                                  (assoc-ref opts 'substitutes?)
+                                                  #:verbosity
+                                                  (assoc-ref opts 'verbosity)
+                                                  #:dry-run?
+                                                  (assoc-ref opts 'dry-run?))
+                (proc s)))
+            (proc #f))))
 
-      (when container? (assert-container-features))
+    (when container? (assert-container-features))
 
-      (when (and (not container?) link-prof?)
+    (when (not container?)
+      (when link-prof?
         (leave (G_ "'--link-profile' cannot be used without '--container'~%")))
-      (when (and (not container?) user)
+      (when user
         (leave (G_ "'--user' cannot be used without '--container'~%")))
-      (when (and (not container?) no-cwd?)
-        (leave (G_ "--no-cwd cannot be used without --container~%")))
+      (when no-cwd?
+        (leave (G_ "--no-cwd cannot be used without '--container'~%")))
+      (when emulate-fhs?
+        (leave (G_ "'--emulate-fhs' cannot be used without '--container~%'")))
+      (when (pair? symlinks)
+        (leave (G_ "'--symlink' cannot be used without '--container~%'"))))
 
+    (with-store/maybe store
+      (with-status-verbosity (assoc-ref opts 'verbosity)
+        (define manifest-from-opts
+          (options/resolve-packages store opts))
 
-      (with-store/maybe store
-        (with-status-verbosity (assoc-ref opts 'verbosity)
-          (define manifest-from-opts
-            (options/resolve-packages store opts))
+        (define manifest
+          (if profile
+              (profile-manifest profile)
+              manifest-from-opts))
 
-          (define manifest
-            (if profile
-                (profile-manifest profile)
-                manifest-from-opts))
+        (when (and profile
+                   (> (length (manifest-entries manifest-from-opts)) 0))
+          (leave (G_ "'--profile' cannot be used with package options~%")))
 
-          (when (and profile
-                     (> (length (manifest-entries manifest-from-opts)) 0))
-            (leave (G_ "'--profile' cannot be used with package options~%")))
+        (when (null? (manifest-entries manifest))
+          (warning (G_ "no packages specified; creating an empty environment~%")))
 
-          (when (null? (manifest-entries manifest))
-            (warning (G_ "no packages specified; creating an empty environment~%")))
+        ;; Use the bootstrap Guile when requested.
+        (parameterize ((%graft? (assoc-ref opts 'graft?))
+                       (%guile-for-build
+                        (and store-needed?
+                             (package-derivation
+                              store
+                              (if bootstrap?
+                                  %bootstrap-guile
+                                  (default-guile))))))
+          (run-with-store store
+            ;; Containers need a Bourne shell at /bin/sh.
+            (mlet* %store-monad ((bash       (environment-bash container?
+                                                               bootstrap?
+                                                               system))
+                                 (prof-drv   (if profile
+                                                 (return #f)
+                                                 (manifest->derivation
+                                                  manifest system bootstrap?)))
+                                 (profile -> (if profile
+                                                 (readlink* profile)
+                                                 (derivation->output-path prof-drv)))
+                                 (gc-root -> (assoc-ref opts 'gc-root)))
 
-          ;; Use the bootstrap Guile when requested.
-          (parameterize ((%graft? (assoc-ref opts 'graft?))
-                         (%guile-for-build
-                          (and store-needed?
-                               (package-derivation
-                                store
-                                (if bootstrap?
-                                    %bootstrap-guile
-                                    (default-guile))))))
-            (run-with-store store
-              ;; Containers need a Bourne shell at /bin/sh.
-              (mlet* %store-monad ((bash       (environment-bash container?
-                                                                 bootstrap?
-                                                                 system))
-                                   (prof-drv   (if profile
-                                                   (return #f)
-                                                   (manifest->derivation
-                                                    manifest system bootstrap?)))
-                                   (profile -> (if profile
-                                                   (readlink* profile)
-                                                   (derivation->output-path prof-drv)))
-                                   (gc-root -> (assoc-ref opts 'gc-root)))
+              ;; First build the inputs.  This is necessary even for
+              ;; --search-paths.  Additionally, we might need to build bash for
+              ;; a container.
+              (mbegin %store-monad
+                (mwhen store-needed?
+                  (built-derivations (append
+                                      (if prof-drv (list prof-drv) '())
+                                      (if (derivation? bash) (list bash) '()))))
+                (mwhen gc-root
+                  (register-gc-root profile gc-root))
 
-                ;; First build the inputs.  This is necessary even for
-                ;; --search-paths.  Additionally, we might need to build bash for
-                ;; a container.
-                (mbegin %store-monad
-                  (mwhen store-needed?
-                    (built-derivations (append
-                                           (if prof-drv (list prof-drv) '())
-                                           (if (derivation? bash) (list bash) '()))))
-                  (mwhen gc-root
-                    (register-gc-root profile gc-root))
-
-                  (mwhen (assoc-ref opts 'check?)
-                    (return
-                     (if container?
-                         (warning (G_ "'--check' is unnecessary \
+                (mwhen (assoc-ref opts 'check?)
+                  (return
+                   (if container?
+                       (warning (G_ "'--check' is unnecessary \
 when using '--container'; doing nothing~%"))
-                         (validate-child-shell-environment profile manifest))))
+                       (validate-child-shell-environment profile manifest))))
 
-                  (cond
-                   ((assoc-ref opts 'search-paths)
-                    (show-search-paths profile manifest #:pure? pure?)
-                    (return #t))
-                   (container?
-                    (let ((bash-binary
-                           (if bootstrap?
-                               (derivation->output-path bash)
-                               (string-append (derivation->output-path bash)
-                                              "/bin/sh"))))
-                      (launch-environment/container #:command command
-                                                    #:bash bash-binary
-                                                    #:user user
-                                                    #:user-mappings mappings
-                                                    #:profile profile
-                                                    #:manifest manifest
-                                                    #:white-list white-list
-                                                    #:link-profile? link-prof?
-                                                    #:network? network?
-                                                    #:map-cwd? (not no-cwd?))))
+                (cond
+                 ((assoc-ref opts 'search-paths)
+                  (show-search-paths profile manifest #:pure? pure?)
+                  (return #t))
+                 (container?
+                  (let ((bash-binary
+                         (if bootstrap?
+                             (derivation->output-path bash)
+                             (string-append (derivation->output-path bash)
+                                            "/bin/sh"))))
+                    (launch-environment/container #:command command
+                                                  #:bash bash-binary
+                                                  #:user user
+                                                  #:user-mappings mappings
+                                                  #:profile profile
+                                                  #:manifest manifest
+                                                  #:white-list white-list
+                                                  #:link-profile? link-prof?
+                                                  #:network? network?
+                                                  #:map-cwd? (not no-cwd?)
+                                                  #:emulate-fhs? emulate-fhs?
+                                                  #:symlinks symlinks
+                                                  #:setup-hook
+                                                  (and emulate-fhs?
+                                                       setup-fhs))))
 
-                   (else
-                    (return
-                     (exit/status
-                      (launch-environment/fork command profile manifest
-                                               #:white-list white-list
-                                               #:pure? pure?))))))))))))))
+                 (else
+                  (return
+                   (exit/status
+                    (launch-environment/fork command profile manifest
+                                             #:white-list white-list
+                                             #:pure? pure?)))))))))))))
 
 ;;; Local Variables:
 ;;; eval: (put 'with-store/maybe 'scheme-indent-function 1)

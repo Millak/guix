@@ -45,7 +45,8 @@
                shepherd-service-auto-start?
                shepherd-service-modules
 
-               shepherd-action))
+               shepherd-action
+               shepherd-configuration-action))
 
 (define-record-type* <home-shepherd-configuration>
   home-shepherd-configuration make-home-shepherd-configuration

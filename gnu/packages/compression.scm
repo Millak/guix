@@ -36,6 +36,8 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -59,6 +61,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -71,6 +74,7 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages benchmark)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
@@ -82,6 +86,7 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages java)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages man)
   #:use-module (gnu packages maths)
@@ -267,6 +272,10 @@ adding and extracting files to/from a tar archive.")
               (("exec 'gzip'")
                (string-append "exec " (assoc-ref outputs "out")
                               "/bin/gzip"))))))))
+   (inputs
+    `(,@(if (%current-target-system)
+            `(("bash" ,bash-minimal))
+            '())))
    (description
     "GNU Gzip provides data compression and decompression utilities; the
 typical extension is \".gz\".  Unlike the \"zip\" format, it compresses a single
@@ -374,6 +383,10 @@ file; as a result, it is often used in conjunction with \"tar\", resulting in
        ;; Don't attempt to run the tests when cross-compiling.
        ,@(if (%current-target-system)
              '(#:tests? #f)
+             '())))
+    (inputs
+     `(,@(if (%current-target-system)
+             `(("bash" ,bash-minimal))
              '())))
     (outputs '("out" "static"))
     (synopsis "High-quality data compression program")
@@ -510,6 +523,10 @@ compressed with pbzip2 can be decompressed with bzip2).")
                 (("^old_library='liblzma.a'") "old_library=''"))
               #t))))))
    (outputs '("out" "static"))
+   (inputs
+    `(,@(if (%current-target-system)
+            `(("bash" ,bash-minimal))
+            '())))
    (synopsis "General-purpose data compression")
    (description
     "XZ Utils is free general-purpose data compression software with high
@@ -618,6 +635,12 @@ some compression ratio).")
               (base32
                "03985xc696210irdzv475mlvf30ylahni3msanfz4ppivm3w14j7"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; The configure script doesn't recognise the --build or --host
+     ;; arguments, so set CXX here
+     `(,@(if (%current-target-system)
+             `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
+             '())))
     (home-page "https://www.nongnu.org/lzip/lzip.html")
     (synopsis "Lossless data compressor based on the LZMA algorithm")
     (description
@@ -639,6 +662,12 @@ archiving.  Lzip is a clean implementation of the LZMA algorithm.")
                (base32
                 "0wmmyi03fv2lflsir5ldrsv04q57k3hmlqajzb1m3p86gwbh967j"))))
     (build-system gnu-build-system)
+    (arguments
+     ;; The configure script doesn't recognise the --build or --host
+     ;; arguments, so set CXX here
+     `(,@(if (%current-target-system)
+             `(#:make-flags (list ,(string-append "CXX=" (cxx-for-target))))
+             '())))
     (home-page "https://www.nongnu.org/lzip/lziprecover.html")
     (synopsis "Recover and decompress data from damaged lzip files")
     (description
@@ -1085,7 +1114,7 @@ tarballs.")
 (define-public libjcat
   (package
     (name "libjcat")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
      (origin
        (method git-fetch)
@@ -1095,7 +1124,7 @@ tarballs.")
          (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "08zywwhm9q8m8v17w2mp23w3w93p40ir1w4x18zrlbhs10xnhiys"))))
+        (base32 "0fbcmnpc0y7s2ls3q829dv3ardhv0m5gxqqmbn0dnkzgkh42vv7p"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection help2man pkg-config))
@@ -2210,6 +2239,19 @@ package, an implementation of the Brotli lossless compression algorithm.")))
 (define-public python-google-brotli
   (deprecated-package "python-google-brotli" python-brotli))
 
+(define-public java-brotli
+  (package
+    (inherit brotli)
+    (name "java-brotli")
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "java-brotli.jar"
+       #:source-dir "java"
+       ;; Tests are mixed in with java sources, the ant build system
+       ;; doesn't allow that
+       #:tests? #f))
+    (native-inputs (list java-junit))))
+
 (define-public ucl
   (package
     (name "ucl")
@@ -2239,40 +2281,16 @@ decompression is a little bit slower.")
 (define-public upx
   (package
     (name "upx")
-    (version "3.96")
-    (source (origin
-             (method url-fetch)
-             (uri (string-append "https://github.com/upx/upx/releases/download/v"
-                                 version "/upx-" version "-src.tar.xz"))
-             (sha256
-              (base32
-               "051pk5jk8fcfg5mpgzj43z5p4cn7jy5jbyshyn78dwjqr7slsxs7"))
-             (patches (search-patches "upx-CVE-2021-20285.patch"))))
-    (build-system gnu-build-system)
-    (native-inputs
-     (list perl))
-    (inputs
-     (list ucl zlib))
-    (arguments
-     `(#:make-flags
-       (list "all")
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)            ; no configure script
-         (delete 'check)                ; no test suite
-         (add-before 'build 'patch-exec-bin-sh
-           (lambda _
-             (substitute* (list "Makefile"
-                                "src/Makefile")
-               (("/bin/sh") (which "sh")))
-             #t))
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (copy-file "src/upx.out" (string-append bin "/upx")))
-             #t)))))
+    (version "4.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/upx/upx/releases/download/v"
+                           version "/upx-" version "-src.tar.xz"))
+       (sha256
+        (base32
+         "1471nxzrbv8sw2pmxn817q5l40sr0l7v7bpvw829iai95s73q03p"))))
+    (build-system cmake-build-system)
     (home-page "https://upx.github.io/")
     (synopsis "Compression tool for executables")
     (description
@@ -2322,7 +2340,7 @@ reading from and writing to ZIP archives.")
   (package
     (inherit quazip-0)
     (name "quazip")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -2331,7 +2349,7 @@ reading from and writing to ZIP archives.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0njgbdm3dm5p7xic5mhppbqsl36zn83zz0xfsfh624hlk0ff7n0a"))))))
+        (base32 "1jsw4xm5wyaqcj1pma5zzd8f5xbgd5lcjh18ah3kg36xz5i69yi4"))))))
 
 (define-public zchunk
   (package
@@ -2649,7 +2667,7 @@ to their original, binary CD format.")
 (define-public libdeflate
   (package
     (name "libdeflate")
-    (version "1.12")
+    (version "1.15")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2658,19 +2676,16 @@ to their original, binary CD format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "16n9232zjavcp5wp17cx0gh2v7gipxpncsha05j3ybajfs7g88jv"))))
-    (build-system gnu-build-system)
+                "001l1xdc3k1dfjvl3ng480ydz0rnyvlhv54l5mshg2p9v4iz3v09"))))
+    (build-system cmake-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target))
-                   (string-append "PREFIX=" #$output))
+     (list #:configure-flags
+           #~(list "-DLIBDEFLATE_BUILD_STATIC_LIB=NO")
            #:phases
            #~(modify-phases %standard-phases
-               (add-after 'unpack 'skip-static-library-installation
+               (replace 'check
                  (lambda _
-                   (substitute* "Makefile"
-                     (("install .*\\$\\(STATIC_LIB\\).*") ""))))
-               (delete 'configure))))   ; no configure script
+                   (invoke "../source/scripts/run_tests.sh"))))))
     (inputs
      (list zlib))
     (home-page "https://github.com/ebiggers/libdeflate")
@@ -2773,4 +2788,34 @@ serializations such as ASN.1 and MessagePack.")
     (home-page "http://oldhome.schmorp.de/marc/fcrackzip.html")
     (synopsis "Zip password cracker")
     (description "Fcrackzip is a Zip file password cracker.")
+    (license license:gpl2+)))
+
+(define-public unrar-free
+  (package
+    (name "unrar-free")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/bgermann/unrar-free")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12idmr5rjmw7dg2mi6250q599nywrirgc8553353a4swf5n1pmx4"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libarchive" ,libarchive)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://gitlab.com/bgermann/unrar-free")
+    (synopsis "Extract files from RAR archives")
+    (description
+     "@code{unrar-free} is a free software version of the non-free @code{unrar}
+utility.  This program is a simple command-line front-end to libarchive, and can
+list and extract not only RAR archives but also other formats supported by
+libarchive.  It does not rival the non-free @code{unrar} in terms of features,
+but special care has been taken to ensure it meets most user's needs.")
     (license license:gpl2+)))

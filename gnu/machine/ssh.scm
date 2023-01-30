@@ -42,6 +42,7 @@
   #:use-module ((guix inferior)
                 #:select (inferior-exception?
                           inferior-exception-arguments))
+  #:use-module ((guix platform) #:select (systems))
   #:use-module (gcrypt pk-crypto)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
@@ -86,7 +87,8 @@
   machine-ssh-configuration?
   this-machine-ssh-configuration
   (host-name      machine-ssh-configuration-host-name)     ; string
-  (system         machine-ssh-configuration-system)        ; string
+  (system         machine-ssh-configuration-system         ; string
+                  (sanitize validate-system-type))
   (build-locally? machine-ssh-configuration-build-locally? ; boolean
                   (default #t))
   (authorize?     machine-ssh-configuration-authorize?     ; boolean
@@ -108,6 +110,32 @@
                     (open-machine-ssh-session* this-machine-ssh-configuration)))
   (host-key       machine-ssh-configuration-host-key       ; #f | string
                   (default #f)))
+
+(define-with-syntax-properties (validate-system-type (value properties))
+  ;; Raise an error if VALUE is not a valid system type.
+  (unless (string? value)
+    (raise (make-compound-condition
+            (condition
+             (&error-location
+              (location (source-properties->location properties))))
+            (formatted-message
+             (G_ "~a: invalid system type; must be a string")
+             value))))
+  (unless (member value (systems))
+    (raise (apply make-compound-condition
+                  (condition
+                   (&error-location
+                    (location (source-properties->location properties))))
+                  (formatted-message (G_ "~a: unknown system type") value)
+                  (let ((closest (string-closest value (systems)
+                                                 #:threshold 5)))
+                    (if closest
+                        (list (condition
+                               (&fix-hint
+                                (hint (format #f (G_ "Did you mean @code{~a}?")
+                                              closest)))))
+                        '())))))
+  value)
 
 (define (open-machine-ssh-session config)
   "Open an SSH session for CONFIG, a <machine-ssh-configuration> record."
@@ -466,7 +494,7 @@ environment type of 'managed-host."
          (machine-configuration machine))
     (unless (file-exists? %public-key-file)
       (raise (formatted-message (G_ "no signing key '~a'. \
-have you run 'guix archive --generate-key?'")
+Have you run 'guix archive --generate-key'?")
                                 %public-key-file)))
     (remote-authorize-signing-key (call-with-input-file %public-key-file
                                     (lambda (port)

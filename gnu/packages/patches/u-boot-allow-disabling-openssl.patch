@@ -5,6 +5,9 @@ Subject: [PATCH] Revert "tools: kwbimage: Do not hide usage of secure header
 
 This reverts commit b4f3cc2c42d97967a3a3c8796c340f6b07ecccac.
 
+Addendum 2022-12-08, Ricardo Wurmus: This patch has been updated to introduce
+CONFIG_FIT_PRELOAD to remove fit_pre_load_data, which depends on openssl.
+
 diff --git a/tools/kwbimage.c b/tools/kwbimage.c
 index 94b7685392..eec599b0ee 100644
 --- a/tools/kwbimage.c
@@ -137,3 +140,66 @@ index 94b7685392..eec599b0ee 100644
  
  	*imagesz = headersz;
  
+--- a/tools/image-host.c
++++ b/tools/image-host.c
+@@ -14,10 +14,12 @@
+ #include <image.h>
+ #include <version.h>
+ 
++#ifdef CONFIG_FIT_PRELOAD
+ #include <openssl/pem.h>
+ #include <openssl/evp.h>
+ 
+ #define IMAGE_PRE_LOAD_PATH                             "/image/pre-load/sig"
++#endif
+ 
+ /**
+  * fit_set_hash_value - set hash value in requested has node
+@@ -1116,6 +1118,7 @@
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_FIT_PRELOAD
+ /*
+  * 0) open file (open)
+  * 1) read certificate (PEM_read_X509)
+@@ -1224,6 +1227,7 @@
+  out:
+ 	return ret;
+ }
++#endif
+ 
+ int fit_cipher_data(const char *keydir, void *keydest, void *fit,
+ 		    const char *comment, int require_keys,
+--- a/tools/fit_image.c
++++ b/tools/fit_image.c
+@@ -59,9 +59,10 @@
+ 		ret = fit_set_timestamp(ptr, 0, time);
+ 	}
+ 
++#ifdef CONFIG_FIT_PRELOAD
+ 	if (!ret)
+ 		ret = fit_pre_load_data(params->keydir, dest_blob, ptr);
+-
++#endif
+ 	if (!ret) {
+ 		ret = fit_cipher_data(params->keydir, dest_blob, ptr,
+ 				      params->comment,
+--- a/include/image.h
++++ b/include/image.h
+@@ -1090,6 +1090,7 @@
+ 
+ int fit_set_timestamp(void *fit, int noffset, time_t timestamp);
+ 
++#ifdef CONFIG_FIT_PRELOAD
+ /**
+  * fit_pre_load_data() - add public key to fdt blob
+  *
+@@ -1104,6 +1105,7 @@
+  *	< 0, on failure
+  */
+ int fit_pre_load_data(const char *keydir, void *keydest, void *fit);
++#endif
+ 
+ int fit_cipher_data(const char *keydir, void *keydest, void *fit,
+ 		    const char *comment, int require_keys,

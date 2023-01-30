@@ -242,17 +242,17 @@ does not have a default value" field kind)))
                stem
                #,(id #'stem #'make- #'stem)
                #,(id #'stem #'stem #'?)
-               (%location #,(id #'stem #'stem #'-location)
-                          (default (and=> (current-source-location)
-                                          source-properties->location))
-                          (innate))
                #,@(map (lambda (name getter def)
                          #`(#,name #,getter (default #,def)
                                    (sanitize
                                     #,(id #'stem #'validate- #'stem #'- name))))
                        #'(field ...)
                        #'(field-getter ...)
-                       #'(field-default ...)))
+                       #'(field-default ...))
+               (%location #,(id #'stem #'stem #'-source-location)
+                          (default (and=> (current-source-location)
+                                          source-properties->location))
+                          (innate)))
 
              (define #,(id #'stem #'stem #'-fields)
                (list (configuration-field
@@ -436,7 +436,11 @@ the list result in @code{#t} when applying PRED? on them."
 (define list-of-strings?
   (list-of string?))
 
-(define alist? list?)
+(define alist?
+  (match-lambda
+    (() #t)
+    ((head . tail) (and (pair? head) (alist? tail)))
+    (_ #f)))
 
 (define serialize-file-like empty-serializer)
 
@@ -469,9 +473,6 @@ applied on the fields and values of FIELDS using the
 
 COMBINE is a procedure that takes one or more arguments and combines
 all the alist entries into one value, @code{string-append} or
-@code{append} are usually good candidates for this.
-
-See the @code{serialize-alist} procedure in `@code{(gnu home services
-version-control}' for an example usage.)}"
+@code{append} are usually good candidates for this."
   (apply combine
          (map (generic-serialize-alist-entry serialize-field) fields)))

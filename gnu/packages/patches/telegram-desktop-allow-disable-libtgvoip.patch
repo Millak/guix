@@ -1,0 +1,125 @@
+From 4d1a8351ee82728912fcf7ad0070049b2910c393 Mon Sep 17 00:00:00 2001
+From: Klemens Nanni <klemens@posteo.de>
+Date: Wed, 2 Mar 2022 01:07:48 +0100
+Subject: [PATCH] Introduce TDESKTOP_DISABLE_LEGACY_TGVOIP
+
+Originally from Alt Linux[0], OpenBSD has so far adapted the removal of
+tgvoip in the official net/tdesktop build.
+
+tgcalls provides everything needed for calls;  audio/video/desktop
+sharing calls have been working fine across different operating systems
+and telegram desktop/mobile versions without problems.
+
+0: http://www.sisyphus.ru/cgi-bin/srpm.pl/Sisyphus/telegram-desktop/getpatch/1
+---
+ Telegram/CMakeLists.txt                   | 6 +++---
+ Telegram/SourceFiles/calls/calls_call.cpp | 6 ++++++
+ Telegram/cmake/lib_tgcalls.cmake          | 4 ++++
+ Telegram/cmake/telegram_options.cmake     | 8 ++++++++
+ 4 files changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/Telegram/CMakeLists.txt b/Telegram/CMakeLists.txt
+index fb2bf370f..5d9578f2d 100644
+--- a/Telegram/CMakeLists.txt
++++ b/Telegram/CMakeLists.txt
+@@ -28,7 +28,9 @@ get_filename_component(res_loc Resources REALPATH)
+ include(cmake/telegram_options.cmake)
+ include(cmake/lib_ffmpeg.cmake)
+ include(cmake/lib_stripe.cmake)
+-include(cmake/lib_tgvoip.cmake)
++if (NOT TDESKTOP_DISABLE_LEGACY_TGVOIP)
++    include(cmake/lib_tgvoip.cmake)
++endif()
+ include(cmake/lib_tgcalls.cmake)
+ include(cmake/td_export.cmake)
+ include(cmake/td_mtproto.cmake)
+@@ -52,9 +54,7 @@ target_prepare_qrc(Telegram)
+ 
+ target_link_libraries(Telegram
+ PRIVATE
+-    tdesktop::lib_tgcalls_legacy
+     tdesktop::lib_tgcalls
+-    tdesktop::lib_tgvoip
+ 
+     # Order in this list defines the order of include paths in command line.
+     # We need to place desktop-app::external_minizip this early to have its
+diff --git a/Telegram/SourceFiles/calls/calls_call.cpp b/Telegram/SourceFiles/calls/calls_call.cpp
+index 6894d5d90..cd03620e7 100644
+--- a/Telegram/SourceFiles/calls/calls_call.cpp
++++ b/Telegram/SourceFiles/calls/calls_call.cpp
+@@ -39,8 +39,10 @@ class InstanceImpl;
+ class InstanceV2Impl;
+ class InstanceV2ReferenceImpl;
+ class InstanceV2_4_0_0Impl;
++#ifndef TDESKTOP_DISABLE_LEGACY_TGVOIP
+ class InstanceImplLegacy;
+ void SetLegacyGlobalServerConfig(const std::string &serverConfig);
++#endif
+ } // namespace tgcalls
+ 
+ namespace Calls {
+@@ -56,7 +58,9 @@ const auto Register = tgcalls::Register<tgcalls::InstanceImpl>();
+ const auto RegisterV2 = tgcalls::Register<tgcalls::InstanceV2Impl>();
+ const auto RegV2Ref = tgcalls::Register<tgcalls::InstanceV2ReferenceImpl>();
+ const auto RegisterV240 = tgcalls::Register<tgcalls::InstanceV2_4_0_0Impl>();
++#ifndef TDESKTOP_DISABLE_LEGACY_TGVOIP
+ const auto RegisterLegacy = tgcalls::Register<tgcalls::InstanceImplLegacy>();
++#endif
+ 
+ [[nodiscard]] base::flat_set<int64> CollectEndpointIds(
+ 		const QVector<MTPPhoneConnection> &list) {
+@@ -1322,7 +1326,9 @@ Call::~Call() {
+ }
+ 
+ void UpdateConfig(const std::string &data) {
++#ifndef TDESKTOP_DISABLE_LEGACY_TGVOIP
+ 	tgcalls::SetLegacyGlobalServerConfig(data);
++#endif
+ }
+ 
+ } // namespace Calls
+diff --git a/Telegram/cmake/lib_tgcalls.cmake b/Telegram/cmake/lib_tgcalls.cmake
+index 34a5ba418..8a784be2c 100644
+--- a/Telegram/cmake/lib_tgcalls.cmake
++++ b/Telegram/cmake/lib_tgcalls.cmake
+@@ -267,6 +267,10 @@ PRIVATE
+     ${tgcalls_loc}
+ )
+ 
++if (TDESKTOP_DISABLE_LEGACY_TGVOIP)
++    return()
++endif()
++
+ add_library(lib_tgcalls_legacy STATIC)
+ init_target(lib_tgcalls_legacy)
+ 
+diff --git a/Telegram/cmake/telegram_options.cmake b/Telegram/cmake/telegram_options.cmake
+index 1c3c25431..033f2bc95 100644
+--- a/Telegram/cmake/telegram_options.cmake
++++ b/Telegram/cmake/telegram_options.cmake
+@@ -4,7 +4,9 @@
+ # For license and copyright information please follow this link:
+ # https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
+ 
++option(TDESKTOP_DISABLE_LEGACY_TGVOIP "Disable legacy tgvoip support." OFF)
+ option(TDESKTOP_API_TEST "Use test API credentials." OFF)
++
+ set(TDESKTOP_API_ID "0" CACHE STRING "Provide 'api_id' for the Telegram API access.")
+ set(TDESKTOP_API_HASH "" CACHE STRING "Provide 'api_hash' for the Telegram API access.")
+ 
+@@ -40,6 +42,12 @@ if (TDESKTOP_API_ID STREQUAL "0" OR TDESKTOP_API_HASH STREQUAL "")
+     " ")
+ endif()
+ 
++if (TDESKTOP_DISABLE_LEGACY_TGVOIP)
++    target_compile_definitions(Telegram PRIVATE TDESKTOP_DISABLE_LEGACY_TGVOIP)
++else()
++    target_link_libraries(Telegram PRIVATE tdesktop::lib_tgcalls_legacy tdesktop::lib_tgvoip)
++endif()
++
+ if (DESKTOP_APP_DISABLE_SPELLCHECK)
+     target_compile_definitions(Telegram PRIVATE TDESKTOP_DISABLE_SPELLCHECK)
+ else()
+-- 
+2.37.3
+

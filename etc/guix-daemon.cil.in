@@ -1,6 +1,6 @@
 ; -*- lisp -*-
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Daniel Brooks <db48x@db48x.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -37,11 +37,13 @@
 
 (block guix_daemon
   ;; Require existing types
-  (typeattributeset cil_gen_require init_t)
-  (typeattributeset cil_gen_require tmp_t)
-  (typeattributeset cil_gen_require nscd_var_run_t)
-  (typeattributeset cil_gen_require var_log_t)
   (typeattributeset cil_gen_require domain)
+  (typeattributeset cil_gen_require init_t)
+  (typeattributeset cil_gen_require init_var_run_t)
+  (typeattributeset cil_gen_require nscd_var_run_t)
+  (typeattributeset cil_gen_require system_dbusd_var_run_t)
+  (typeattributeset cil_gen_require tmp_t)
+  (typeattributeset cil_gen_require var_log_t)
 
   ;; Declare own types
   (type guix_daemon_t)
@@ -92,6 +94,9 @@
   (allow init_t
          guix_store_content_t
          (file (open read execute)))
+  (allow init_t
+         guix_profiles_t
+         (dir (setattr)))
 
   ;; guix-daemon needs to know the names of users
   (allow guix_daemon_t
@@ -284,6 +289,14 @@
          guix_store_content_t
          (sock_file (create getattr setattr unlink write)))
 
+  ;; Access to run state directories
+  (allow guix_daemon_t
+         system_dbusd_var_run_t
+         (dir (search)))
+  (allow guix_daemon_t
+         init_var_run_t
+         (dir (search)))
+
   ;; Access to configuration files and directories
   (allow guix_daemon_t
          guix_daemon_conf_t
@@ -446,6 +459,8 @@
   (filecon "@storedir@/[^/]+/.+"
            any (unconfined_u object_r guix_store_content_t (low low)))
   (filecon "@prefix@/bin/guix-daemon"
+           file (system_u object_r guix_daemon_exec_t (low low)))
+  (filecon "@guix_localstatedir@/guix/profiles/per-user/[^/]+/current-guix/bin/guix-daemon"
            file (system_u object_r guix_daemon_exec_t (low low)))
   (filecon "@storedir@/.+-(guix-.+|profile)/bin/guix-daemon"
            file (system_u object_r guix_daemon_exec_t (low low)))

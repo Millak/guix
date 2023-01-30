@@ -270,10 +270,10 @@ This package is part of the KDE base applications module.")
            libxcb
            libxtst
            breeze-icons ;; default icon set
-           pipewire-0.3
+           pipewire
            plasma-wayland-protocols
            qtbase-5
-           qtwayland
+           qtwayland-5
            qtx11extras
            wayland
            xcb-util-image

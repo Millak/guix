@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -248,7 +248,7 @@ could be found at DIRECTORY or one of its ancestors."
 'latest-repository-commit'."
   (match (channel-commit channel)
     (#f      `(branch . ,(channel-branch channel)))
-    (commit  `(commit . ,(channel-commit channel)))))
+    (commit  `(tag-or-commit . ,(channel-commit channel)))))
 
 (define sexp->channel-introduction
   (match-lambda
@@ -419,19 +419,28 @@ their relation.  When AUTHENTICATE? is false, CHANNEL is not authenticated."
     (if authenticate?
         (if (channel-introduction channel)
             (authenticate-channel channel checkout commit)
-            ;; TODO: Warn for all the channels once the authentication interface
-            ;; is public.
-            (when (guix-channel? channel)
-              (raise (make-compound-condition
-                      (formatted-message (G_ "channel '~a' lacks an \
+            (begin
+              (when (file-exists?
+                     (string-append checkout "/.guix-authorizations"))
+                (warning (and=> (channel-location channel)
+                                source-properties->location)
+                         (G_ "channel '~a' lacks 'introduction' field but \
+'.guix-authorizations' found\n")
+                         (channel-name channel)))
+
+              ;; TODO: Warn for all the channels once the authentication interface
+              ;; is public.
+              (when (guix-channel? channel)
+                (raise (make-compound-condition
+                        (formatted-message (G_ "channel '~a' lacks an \
 introduction and cannot be authenticated~%")
-                                         (channel-name channel))
-                      (condition
-                       (&fix-hint
-                        (hint (G_ "Add the missing introduction to your
+                                           (channel-name channel))
+                        (condition
+                         (&fix-hint
+                          (hint (G_ "Add the missing introduction to your
 channels file to address the issue.  Alternatively, you can pass
 @option{--disable-authentication}, at the risk of running unauthenticated and
-thus potentially malicious code."))))))))
+thus potentially malicious code.")))))))))
         (warning (G_ "channel authentication disabled~%")))
 
     (when (guix-channel? channel)
@@ -1048,7 +1057,9 @@ true, include its introduction, if any."
       (name ',(channel-name channel))
       (url ,(channel-url channel))
       (branch ,(channel-branch channel))
-      (commit ,(channel-commit channel))
+      ,@(if (channel-commit channel)
+            `((commit ,(channel-commit channel)))
+            '())
       ,@(if intro
             `((introduction (make-channel-introduction
                              ,(channel-introduction-first-signed-commit intro)

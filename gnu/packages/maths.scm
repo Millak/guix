@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -55,6 +55,10 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
+;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
+;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
+;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -90,6 +94,7 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system ruby)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages audio)
@@ -124,6 +129,7 @@
   #:use-module (gnu packages image)
   #:use-module (gnu packages java)
   #:use-module (gnu packages less)
+  #:use-module (gnu packages libffi)
   #:use-module (gnu packages lisp)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages llvm)
@@ -158,6 +164,7 @@
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages shells)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages swig)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages texinfo)
@@ -368,13 +375,13 @@ programming language.")
 (define-public units
   (package
    (name "units")
-   (version "2.21")
+   (version "2.22")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://gnu/units/units-" version
                                 ".tar.gz"))
             (sha256 (base32
-                     "1bybhqs4yrly9myb5maz3kdmf8k4fhk2m1d5cbcryn40z6lq0gkc"))))
+                     "0j2q2a9sgldqwcifsnb7qagsmp8fvj91vfh6v4k7gzi1fwhf24sx"))))
    (build-system gnu-build-system)
    (inputs
     `(("readline" ,readline)
@@ -733,6 +740,7 @@ integer programming problems and computes Markov bases for statistics.")
       (uri (git-reference
             (url "https://github.com/cddlib/cddlib")
             (commit version)))
+      (file-name (git-file-name name version))
       (sha256
        (base32
         "09s8323h5w9j6mpl1yc6lm770dkskfxd2ayyafkcjllmnncxzfa0"))))
@@ -892,20 +900,6 @@ halfspaces) or by their double description with both representations.")
 large scale eigenvalue problems.")
     (license (license:non-copyleft "file://COPYING"
                                 "See COPYING in the distribution."))))
-
-(define-public arpack-ng-3.3.0
-  (package
-    (inherit arpack-ng)
-    (version "3.3.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference (url (package-home-page arpack-ng))
-                           (commit version)))
-       (file-name (git-file-name (package-name arpack-ng) version))
-       (sha256
-        (base32
-         "00h6bjvxjq7bv0b8pwnc0gw33ns6brlqv00xx2rh3w9b5n205918"))))))
 
 (define-public arpack-ng-openmpi
   (package (inherit arpack-ng)
@@ -1859,16 +1853,16 @@ similar to MATLAB, GNU Octave or SciPy.")
 (define-public netcdf
   (package
     (name "netcdf")
-    (version "4.7.4")
+    (version "4.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "https://www.unidata.ucar.edu/downloads/netcdf/ftp/"
-             "netcdf-c-" version ".tar.gz"))
+             "https://downloads.unidata.ucar.edu/netcdf-c/" version
+             "/netcdf-c-" version ".tar.gz"))
        (sha256
         (base32
-         "1a2fpp15a2rl1m50gcvvzd9y6bavl6vjf9zzf63sz5gdmq06yiqf"))
+         "0j8b814mjdqvqanzmrxpq8hn33n22cdzb3gf9vhya24wnwi615ac"))
        (modules '((guix build utils)))
        (snippet
         ;; Make sure this variable is defined only once.  Failing to do so
@@ -1881,13 +1875,18 @@ similar to MATLAB, GNU Octave or SciPy.")
     (native-inputs
      (list m4 doxygen graphviz))
     (inputs
-     `(("hdf4" ,hdf4-alt)
+     `(("curl" ,curl)
+       ("hdf4" ,hdf4-alt)
        ("hdf5" ,hdf5)
-       ("curl" ,curl)
-       ("zlib" ,zlib)
-       ("libjpeg" ,libjpeg-turbo)))
+       ("libjpeg" ,libjpeg-turbo)
+       ("libxml2" ,libxml2)
+       ("unzip" ,unzip)
+       ("zlib" ,zlib)))
     (arguments
-     `(#:configure-flags '("--enable-doxygen" "--enable-dot" "--enable-hdf4")
+     `(#:configure-flags '("--enable-doxygen"
+                           "--enable-dot"
+                           "--enable-hdf4"
+                           "--disable-dap-remote-tests")
 
        #:phases (modify-phases %standard-phases
          (add-before 'configure 'fix-source-date
@@ -1898,8 +1897,7 @@ similar to MATLAB, GNU Octave or SciPy.")
              ;; package not reproducible.
              (substitute* "./configure"
                (("date -u -d \"\\$\\{SOURCE_DATE_EPOCH\\}\"")
-                "date --date='@0'"))
-             #t))
+                "date --date='@0'"))))
          (add-after 'configure 'patch-settings
            (lambda _
              ;; libnetcdf.settings contains the full filename of the compilers
@@ -1908,8 +1906,11 @@ similar to MATLAB, GNU Octave or SciPy.")
              ;; store items.
              (substitute* "libnetcdf.settings"
                (("(/gnu/store/)([0-9A-Za-z]*)" all prefix hash)
-                (string-append prefix (string-take hash 10) "...")))
-             #t)))
+                (string-append prefix (string-take hash 10) "...")))))
+         (add-before 'check 'fix-test-rcmerge
+           (lambda _
+             ;; Set HOME, to fix the test-rcmerge test.
+             (setenv "HOME" "/tmp"))))
 
        #:parallel-tests? #f))           ;various race conditions
     (home-page "https://www.unidata.ucar.edu/software/netcdf/")
@@ -2425,6 +2426,43 @@ and quadratic objectives using the Simplex algorithm.")
 systems and applications.  It provides a modular and extensible solver.")
     (license license:expat)))
 
+(define-public libfixmath
+  (let ((commit "1416c9979635c69f344d3c1de84b3246001a6540")
+        (revision "1"))
+    (package
+      (name "libfixmath")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/PetteriAimonen/libfixmath")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1vnpycw30rq3xwqyvj20l7pnw74dc4f27304i0918igsrdsjw501"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (let ((includes (string-append #$output "/include/libfixmath"))
+                      (lib (string-append #$output "/lib")))
+                  (mkdir-p includes)
+                  (for-each (lambda (file)
+                              (install-file file includes))
+                            (find-files "../source" "\\.h(pp)?$"))
+                  (for-each (lambda (file)
+                              (install-file file lib))
+                            (find-files "." "\\.a$"))))))))
+      (home-page "https://code.google.com/archive/p/libfixmath/")
+      (synopsis "Cross platform fixed point maths library")
+      (description "This library implements the @file{math.h} functions in
+fixed point (16.16) format.")
+      (license license:expat))))
+
 (define-public libflame
   (package
     (name "libflame")
@@ -2555,7 +2593,7 @@ between aspif and smodels format or to a human-readable text format.")
 (define-public clasp
   (package
     (name "clasp")
-    (version "3.3.6")
+    (version "3.3.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2564,7 +2602,7 @@ between aspif and smodels format or to a human-readable text format.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rahqiq530jckvx717858h1q5p8znp1kb6sjm95p8blkr4n3pvmj"))))
+                "163ps9zq7xppqy9hj5qnw6z5lcjnm4xf5fwjsavpia5ynm3hngcw"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DCLASP_BUILD_TESTS=on"
@@ -2598,65 +2636,117 @@ satisfiability checking (SAT).")
 (define-public clingo
   (package
     (name "clingo")
-    (version "5.5.0")
+    (version "5.6.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/potassco/clingo")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   (delete-file-recursively "clasp")
+                   ;; TODO: Unvendor other third-party stuff
+                   (delete-file-recursively "third_party/catch")))
               (sha256
                (base32
-                "0rfjwkcwm0mmf3r4i7asyjwb6cia4i7px7fn2kdbi9j85qvas4pb"))))
+                "19s59ndcm2yj0kxlikfxnx2bmp6b7n31wq1zvwc7hyk37rqarwys"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags `("-DCLINGO_BUILD_TESTS=on"
-                           "-DCLINGO_INSTALL_LIB=on"
-                           "-DCLINGO_BUILD_STATIC=off"
-                           "-DCLINGO_BUILD_SHARED=on"
-                           ;; XXX: Clingo requries private headers and
-                           ;;      sources from clasp
-                           ,(string-append
-                             "-DCLASP_SOURCE_DIR="
-                             (assoc-ref %build-inputs "clasp-src")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "CMakeLists.txt"
-               (("add_subdirectory\\(clasp\\)")
-                "find_package(clasp REQUIRED)"))
-             (substitute* "libclingo/CMakeLists.txt"
-               (("\"cmake/Clingo\"") "\"cmake/clingo\"")
-               (("ClingoConfig\\.cmake") "clingo-config.cmake")
-               (("ClingoConfigVersion\\.cmake")
-                "clingo-config-version.cmake"))
-             (substitute* "cmake/ClingoConfig.cmake.in"
-               (("find_package\\(Clasp") "find_package(clasp"))
-             (rename-file "cmake/ClingoConfig.cmake.in"
-                          "cmake/clingo-config.cmake.in")))
-         (add-after 'unpack 'skip-failing-tests
-           (lambda _
-             (with-directory-excursion "libclingo/tests"
-               (substitute* "CMakeLists.txt"
-                 (("COMMAND test_clingo" all)
-                  (string-append all
-                                 " -f "
-                                 "\"${CMAKE_CURRENT_SOURCE_DIR}/good.txt\"")))
-               (call-with-output-file "good.txt"
-                 (lambda (port)
-                   (for-each (lambda (test) (format port "~s~%" test))
-                             '("parse-ast-v2" "add-ast-v2" "build-ast-v2"
-                               "unpool-ast-v2" "parse_term"
-                               "propagator" "propgator-sequence-mining"
-                               "symbol" "visitor"))))))))))
-    (inputs
-     (list clasp libpotassco))
-    (native-inputs
-     `(("clasp-src" ,(package-source clasp))))
+     (list
+      #:configure-flags #~`("-DCLINGO_BUILD_TESTS=on"
+                            "-DCLINGO_INSTALL_LIB=on"
+                            "-DCLINGO_BUILD_STATIC=off"
+                            "-DCLINGO_BUILD_SHARED=on"
+                            "-DCLINGO_USE_LOCAL_CLASP=off"
+                            "-DCLINGO_USE_LOCAL_CATCH=off")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(clasp\\)")
+                 "find_package(clasp REQUIRED)"))
+              (substitute* "libclingo/CMakeLists.txt"
+                (("\"cmake/Clingo\"") "\"cmake/clingo\"")
+                (("ClingoConfig\\.cmake") "clingo-config.cmake")
+                (("ClingoConfigVersion\\.cmake")
+                 "clingo-config-version.cmake"))
+              (substitute* "cmake/ClingoConfig.cmake.in"
+                (("find_package\\(Clasp") "find_package(clasp"))
+              (rename-file "cmake/ClingoConfig.cmake.in"
+                           "cmake/clingo-config.cmake.in")))
+          (add-after 'unpack 'skip-failing-tests
+            (lambda _
+              (with-directory-excursion "libclingo/tests"
+                (substitute* "CMakeLists.txt"
+                  (("COMMAND test_clingo" all)
+                   (string-append all
+                                  " -f "
+                                  "\"${CMAKE_CURRENT_SOURCE_DIR}/good.txt\"")))
+                (call-with-output-file "good.txt"
+                  (lambda (port)
+                    (for-each (lambda (test) (format port "~s~%" test))
+                              '("parse-ast-v2" "add-ast-v2" "build-ast-v2"
+                                "unpool-ast-v2" "parse_term"
+                                "propagator" "propgator-sequence-mining"
+                                "symbol" "visitor"))))))))))
+    (inputs (list catch2-3.1 clasp libpotassco))
+    (native-inputs (list pkg-config))
     (home-page "https://potassco.org/")
     (synopsis "Grounder and solver for logic programs")
     (description "Clingo computes answer sets for a given logic program.")
+    (license license:expat)))
+
+(define-public python-clingo
+  (package
+    (inherit clingo)
+    (name "python-clingo")
+    (arguments
+     (substitute-keyword-arguments (package-arguments clingo)
+       ((#:configure-flags flags #~'())
+        #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
+                 "-DCLINGO_USE_LIB=yes"
+                 #$flags))
+       ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-failing-tests
+              (lambda _
+                (substitute* "libpyclingo/clingo/tests/test_conf.py"
+                  (("ctl\\.solve\\(on_statistics=on_statistics\\)" all)
+                   (string-append
+                    all
+                    "; self.skipTest(\"You shall not fail.\")")))))))))
+    (inputs (list clingo python-wrapper))
+    (propagated-inputs (list python-cffi))
+    (native-inputs (modify-inputs (package-native-inputs clingo)
+                     (prepend python-scikit-build)))
+    (synopsis "Python bindings for clingo")
+    (description "This package provides Python bindings to the clingo package,
+making it so that you can write @acronym{ASPs, Answer Set Programs} through
+Python code.")))
+
+(define-public python-telingo
+  (package
+    (name "python-telingo")
+    (version "2.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/potassco/telingo")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (patches (search-patches "python-telingo-fix-comparison.patch"))
+              (sha256
+               (base32
+                "0g3khxfdzc2hc7dkiyyqhb399h6h21m5wkp6wy8w71n0m32fiy53"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-clingo))
+    (home-page "https://potassco.org/")
+    (synopsis "Solve dynamic temporal logic programs")
+    (description "This package provides a system to solve dynamic temporal
+logic programs based on clingo.")
     (license license:expat)))
 
 (define-public ceres
@@ -2760,7 +2850,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "7.1.0")
+    (version "7.3.0")
     (source
      (origin
       (method url-fetch)
@@ -2768,7 +2858,7 @@ can solve two kinds of problems:
                           version ".tar.xz"))
       (sha256
        (base32
-        "0wv26nsfi6cq80np6p4av4wfrvbaflca6szajf6c60mbpdg63m1z"))))
+        "1wap9p9imxxqpnm27rxcvpjahk1wg440lzlygjb6iyncxdmfw255"))))
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -2800,7 +2890,6 @@ can solve two kinds of problems:
        ("qhull" ,qhull)
        ("readline" ,readline)
        ("suitesparse" ,suitesparse)
-       ("texinfo" ,texinfo)
        ("zlib" ,zlib)))
     (native-inputs
      (list gfortran
@@ -2815,7 +2904,8 @@ can solve two kinds of problems:
            ;; provide.
            less
            ghostscript
-           gnuplot))
+           gnuplot
+           texinfo))
     ;; Octave code uses this variable to detect directories holding multiple CA
     ;; certificates to verify peers with.  This is required for the networking
     ;; functions that require encryption to work properly.
@@ -2936,7 +3026,7 @@ Open CASCADE library.")
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")
-    (version "7.6.0")
+    (version "7.6.2")
     (source
       (origin
         (method git-fetch)
@@ -2948,7 +3038,7 @@ Open CASCADE library.")
                                           version)))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1rcwm9fkx0j4wrsyikb6g7qd611kpry7dand5dzdjvs5vzd13zvd"))
+         (base32 "07z5d83vm9f50an7vhimzl7gbmri1dn6p2g999l5fgyaj5sg5f02"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -3131,8 +3221,7 @@ ASCII text files using Gmsh's own scripting language.")
              ((@@ (guix build python-build-system) call-setuppy)
               "build_ext"
               (list (string-append "--sip-dir="
-                                   (assoc-ref inputs "python-pyqt")
-                                   "/share/sip"))
+                                   (search-input-directory inputs "share/sip")))
               #t)))
          ;; Ensure that icons are found at runtime.
          (add-after 'install 'wrap-executable
@@ -3150,7 +3239,7 @@ ASCII text files using Gmsh's own scripting language.")
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
-           python-pyqt
+           python-pyqt-without-qtwebkit
            qtbase-5
            qtsvg-5))
     (propagated-inputs
@@ -3815,7 +3904,7 @@ FC            = mpifort
 FL            = mpifort
 INCPAR        =
 LIBPAR        = $(SCALAP) $(LAPACK)
-LIBSEQNEEDED  = 
+LIBSEQNEEDED  =
 INCS          = $(INCPAR)
 LIBS          = $(LIBPAR)~]
 AR            = ar vr # rules require trailing space, ugh...
@@ -4442,7 +4531,7 @@ to BMP, JPEG or PNG image formats.")
                (wrap-program (string-append out "/bin/maxima")
                  `("PATH" prefix (,binutils))))
              #t))
-         ;; The Maxima command ‘describe’ allows to pick the relevant portions
+         ;; The Maxima command ‘describe’ allows picking the relevant portions
          ;; from Maxima’s Texinfo docs.  However it does not support reading
          ;; gzipped info files.
          (delete 'compress-documentation))))
@@ -4689,6 +4778,36 @@ parts of it.")
     (synopsis "Optimized BLAS library based on GotoBLAS (ILP64 version)")
     (license license:bsd-3)))
 
+(define-public libblastrampoline
+  (package
+    (name "libblastrampoline")
+    (version "5.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaLinearAlgebra/libblastrampoline")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0mf79zw11kxyil72y2ly5x8bbz3ng3nsqmp0zcps16b69wvfs19c"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:make-flags (list "-C" "src"
+                          (string-append "prefix=" (assoc-ref %outputs "out"))
+                          (string-append "CC=" ,(cc-for-target)))
+       #:tests? #f      ; No check target.
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure))))
+    (home-page "https://github.com/JuliaLinearAlgebra/libblastrampoline")
+    (synopsis "PLT trampolines to provide a BLAS and LAPACK demuxing library")
+    (description
+     "This package uses PLT trampolines to provide a BLAS and LAPACK demuxing
+library.")
+    (license license:expat)))
+
 (define-public blis
   (package
     (name "blis")
@@ -4796,7 +4915,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
 (define-public openlibm
   (package
     (name "openlibm")
-    (version "0.7.4")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -4805,7 +4924,7 @@ access to BLIS implementations via traditional BLAS routine calls.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1azms0lpxb7vxb3bln5lyz0wpwx6jnzbffkclclpq2v5aiw8d14i"))))
+        (base32 "1xsrcr49z0wdqpwd98jmw2xh18myzsa9xman0kp1h2i89x8mic5b"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags
@@ -4874,7 +4993,7 @@ Fresnel integrals, and similar related functions as well.")
 (define-public suitesparse
   (package
     (name "suitesparse")
-    (version "5.12.0")
+    (version "5.13.0")
     (source
      (origin
        (method git-fetch)
@@ -4884,7 +5003,7 @@ Fresnel integrals, and similar related functions as well.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0zpl51pfpv7ap7z97jlryba2la1qdmzm11bhzkn55wlb03xzi6k6"))
+         "1zwri246yr39p9ymjp18dzv36ch0dn107sf0jghj7capigasfxq2"))
        (patches (search-patches "suitesparse-mongoose-cmake.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -4920,6 +5039,15 @@ Fresnel integrals, and similar related functions as well.")
              "library")
        #:phases
        (modify-phases %standard-phases
+         ,@(if (target-riscv64?)
+             ;; GraphBLAS FTBFS on riscv64-linux
+             `((add-after 'unpack 'skip-graphblas
+                 (lambda _
+                   (substitute* "Makefile"
+                     ((".*cd GraphBLAS.*") "")
+                     (("metisinstall gbinstall moninstall")
+                     "metisinstall moninstall")))))
+             '())
          (delete 'configure))))         ;no configure script
     (inputs
      (list tbb openblas gmp mpfr metis))
@@ -5764,6 +5892,7 @@ set.")
 solvers for the solution of large, sparse linear systems of equations.  It
 features multigrid solvers for both structured and unstructured grid
 problems.")
+    (properties '((tunable? . #t)))
     (license license:lgpl2.1)))
 
 (define-public hypre-openmpi
@@ -6832,7 +6961,7 @@ assemble global function spaces on finite-element grids.")
                   "doc/dune-grid/grids/gridfactory/testgrids"))
                #t))
            (add-after 'build 'build-tests
-             (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
+             (lambda* (#:key inputs make-flags parallel-build? #:allow-other-keys)
                (setenv "CPLUS_INCLUDE_PATH"
                        (string-append (assoc-ref inputs "dune-grid") "/share"))
                (apply invoke "make" "build_tests"
@@ -7383,6 +7512,221 @@ back to C with improved data structures, better scheduling of inprocessing and
 optimized algorithms and implementation.")
     (license license:expat)))
 
+(define-public aiger
+  (package
+    (name "aiger")
+    (version "1.9.9")
+    (source (origin
+             (method url-fetch)
+             (uri (string-append "http://fmv.jku.at/aiger/aiger-"
+                                 version ".tar.gz"))
+             (sha256
+               (base32
+                "1ish0dw0nf9gyghxsdhpy1jjiy5wp54c993swp85xp7m6vdx6l0y"))))
+    (outputs (list "out" "static"))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ; no check target
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-source
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "aiger.c"
+                     (("\"(gzip|gunzip)" all cmd)
+                      (string-append
+                       "\""
+                       (search-input-file inputs (string-append "bin/" cmd)))))))
+               (add-after 'unpack 'patch-build-files
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "makefile.in"
+                     (("test -d .*") "true")
+                     (("/usr/local") (assoc-ref outputs "out")))))
+               (replace 'configure
+                 (lambda* (#:key configure-flags #:allow-other-keys)
+                   (apply invoke "./configure.sh" configure-flags)))
+               (add-after 'install 'install-static
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (apply invoke #$(ar-for-target) "rcs" "libaiger.a"
+                          (find-files "." "\\.o$"))
+                   (let* ((static (assoc-ref outputs "static"))
+                          (lib (string-append static "/lib"))
+                          (incl (string-append static "/include/aiger")))
+                     (mkdir-p lib)
+                     (mkdir-p incl)
+                     (install-file "libaiger.a" lib)
+                     (for-each (lambda (f) (install-file f incl))
+                               (find-files "." "\\.h$"))))))))
+    (inputs (list gzip))
+    (home-page "http://fmv.jku.at/aiger")
+    (synopsis "Utilities for And-Inverter Graphs")
+    (description "AIGER is a format, library and set of utilities for
+@acronym{AIG, And-Inverter Graphs}s.  The focus is on conversion utilities and a
+generic reader and writer API.")
+    (license (list license:expat
+                   license:bsd-3))))    ; blif2aig
+
+(define-public lingeling
+  (let ((commit "72d2b13eea5fbd95557a3d0d199cd98dfbdc76ee")
+        (revision "1"))
+    (package
+     (name "lingeling")
+     (version (git-version "sc2022" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/arminbiere/lingeling")
+                    (commit commit)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16s30x8s2cw6icchwm65zj56ph4qwz6i07g3hwkknvajisvjq85c"))))
+     (build-system gnu-build-system)
+     (arguments
+      (list #:test-target "test"
+            #:modules `((ice-9 match)
+                        ,@%gnu-build-system-modules)
+            #:configure-flags #~(list "--aiger=.")
+            #:phases
+            #~(modify-phases %standard-phases
+                (add-after 'unpack 'unpack-aiger
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (invoke #$(ar-for-target) "x"
+                            (search-input-file inputs "lib/libaiger.a")
+                            "aiger.o")
+                    (copy-file
+                     (search-input-file inputs "include/aiger/aiger.h")
+                     "aiger.h")))
+                (add-after 'unpack 'hard-code-commit
+                  (lambda _
+                    (substitute* "mkconfig.sh"
+                      (("`\\./getgitid`") #$commit))))
+                (add-after 'unpack 'patch-source
+                  (lambda* (#:key inputs #:allow-other-keys)
+                    (substitute* (list "treengeling.c" "lgldimacs.c")
+                      (("\"(gunzip|xz|bzcat|7z)" all cmd)
+                       (string-append
+                        "\""
+                        (search-input-file inputs (string-append "bin/" cmd)))))))
+                (replace 'configure
+                  (lambda* (#:key configure-flags #:allow-other-keys)
+                    (apply invoke "./configure.sh" configure-flags)))
+                (replace 'install
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (let ((bin (string-append (assoc-ref outputs "out")
+                                              "/bin")))
+                      (mkdir-p bin)
+                      (for-each
+                       (lambda (file)
+                         (install-file file bin))
+                       '("blimc" "ilingeling" "lglddtrace" "lglmbt"
+                         "lgluntrace" "lingeling" "plingeling"
+                         "treengeling")))))
+                (add-after 'install 'wrap-path
+                  (lambda* (#:key outputs #:allow-other-keys)
+                    (with-directory-excursion (string-append
+                                               (assoc-ref outputs "out")
+                                               "/bin")
+                      (for-each
+                       (lambda (file)
+                         (wrap-program
+                          file
+                          '("PATH" suffix
+                            #$(map (lambda (input)
+                                     (file-append (this-package-input input) "/bin"))
+                                   '("gzip" "bzip2" "xz" "p7zip")))))
+                       ;; These programs use sprintf on buffers with magic
+                       ;; values to construct commands (yes, eww), so we
+                       ;; can't easily substitute* them.
+                       '("lglddtrace" "lgluntrace" "lingeling" "plingeling"))))))))
+     (inputs (list `(,aiger "static") gzip bzip2 xz p7zip))
+     (home-page "http://fmv.jku.at/lingeling")
+     (synopsis "SAT solver")
+     (description "This package provides a range of SAT solvers, including
+the sequential @command{lingeling} and its parallel variants
+@command{plingeling} and @command{treengeling}.  A bounded model checker is
+also included.")
+     (license license:expat))))
+
+(define-public louvain-community
+  (let ((commit "8cc5382d4844af127b1c1257373740d7e6b76f1e")
+        (revision "1"))
+    (package
+      (name "louvain-community")
+      (version (git-version "1.0.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                       (url "https://github.com/meelgroup/louvain-community")
+                       (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1ss00hkdvr9bdkd355hxf8zd7xycb3nm8qpy7s75gjjf6yng0bfj"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list #:tests? #f                ; tests appear to require missing files
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'encode-git-hash
+                   (lambda _
+                     (substitute* "CMakeLists.txt"
+                       (("GIT-hash-notfound") #$commit)))))))
+      (native-inputs (list python))
+      (home-page "https://github.com/meelgroup/louvain-communities")
+      (synopsis "Multi-criteria community detection")
+      (description "This package provides a C++ implementation of the Louvain
+community detection algorithm.")
+      (license license:lgpl3+))))
+
+(define-public cryptominisat
+  (package
+    (name "cryptominisat")
+    (version "5.11.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/msoos/cryptominisat")
+             (commit version)))
+      (file-name (git-file-name name version))
+      (sha256
+       (base32
+        "1izjn44phjp9670s7bxrdx4p0r59idqwv3bm6sr0qnlqlha5z4zc"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:build-type "Release"
+      #:test-target "test"
+      #:configure-flags #~(list "-DENABLE_TESTING=ON" "-DSTATS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "CMakeLists.txt"
+                (("add_subdirectory\\(utils/lingeling-ala\\)") ""))
+              ;; Transitively included in vendored gtest.h. Fixed in
+              ;; upstream:
+              ;; https://github.com/msoos/cryptominisat/pull/686
+              (substitute* "tests/assump_test.cpp"
+                (("#include <vector>")
+                 "#include <vector>\n#include <algorithm>"))
+              (substitute* "tests/CMakeLists.txt"
+                (("add_subdirectory\\(\\$\\{GTEST_PREFIX\\} gtest\\)")
+                 "find_package(GTest REQUIRED)")
+                (("add_subdirectory\\(\\$\\{PROJECT_SOURCE_DIR\\}/utils/.*\\)")
+                 "")))))))
+    (inputs (list boost louvain-community python python-numpy sqlite zlib))
+    (native-inputs (list googletest lingeling python python-wrapper python-lit))
+    (synopsis "Incremental SAT solver")
+    (description
+     "CryptoMiniSat is an incremental SAT solver with both command line and
+library (C++, C, Python) interfaces.  The command-line interface takes a
+@acronym{CNF, Conjunctive Normal Form} as an input in the DIMACS format with
+the extension of XOR clauses.  The library interfaces mimic this and also
+allow incremental solving, including assumptions.")
+    (home-page "https://github.com/msoos/cryptominisat")
+    (license license:expat)))
+
 (define-public libqalculate
   (package
     (name "libqalculate")
@@ -7698,7 +8042,8 @@ when an application performs repeated divisions by the same divisor.")
                 (sha256
                  (base32
                   "05mm4vrxsac35hjf5djif9r6rdxj9ippg97ia3p6q6b8lrp7srwv"))
-                (patches (search-patches "fp16-system-libraries.patch"))))
+                (patches (search-patches "fp16-implicit-double.patch"
+                                         "fp16-system-libraries.patch"))))
       (build-system cmake-build-system)
       (arguments
        `(#:imported-modules ((guix build python-build-system)

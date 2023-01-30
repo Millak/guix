@@ -4,6 +4,7 @@
 ;;; Copyright © 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -66,7 +67,7 @@
             upstream-updater-name
             upstream-updater-description
             upstream-updater-predicate
-            upstream-updater-latest
+            upstream-updater-import
 
             upstream-input-change?
             upstream-input-change-name
@@ -78,6 +79,7 @@
             lookup-updater
 
             download-tarball
+            package-archive-type
             package-latest-release
             package-latest-release*
             package-update
@@ -240,7 +242,7 @@ correspond to the same version."
   (name        upstream-updater-name)
   (description upstream-updater-description)
   (pred        upstream-updater-predicate)
-  (latest      upstream-updater-latest))
+  (import      upstream-updater-import))
 
 (define (importer-modules)
   "Return the list of importer modules."
@@ -271,22 +273,23 @@ correspond to the same version."
   "Return an updater among UPDATERS that matches PACKAGE, or #f if none of
 them matches."
   (find (match-lambda
-          (($ <upstream-updater> name description pred latest)
+          (($ <upstream-updater> name description pred import)
            (pred package)))
         updaters))
 
 (define* (package-latest-release package
                                  #:optional
-                                 (updaters (force %updaters)))
+                                 (updaters (force %updaters))
+                                 #:key (version #f))
   "Return an upstream source to update PACKAGE, a <package> object, or #f if
 none of UPDATERS matches PACKAGE.  When several updaters match PACKAGE, try
 them until one of them returns an upstream source.  It is the caller's
 responsibility to ensure that the returned source is newer than the current
 one."
   (any (match-lambda
-         (($ <upstream-updater> name description pred latest)
+         (($ <upstream-updater> name description pred import)
           (and (pred package)
-               (latest package))))
+               (import package #:version version))))
        updaters))
 
 (define* (package-latest-release* package
@@ -430,6 +433,19 @@ values: the item from LST1 and the item from LST2 that match PRED."
       (()
        (values #f #f)))))
 
+(define (package-archive-type package)
+  "If PACKAGE's source is a tarball or zip archive, return its archive type--a
+string such as \"xz\".  Otherwise return #f."
+  (match (and=> (package-source package) origin-actual-file-name)
+    (#f #f)
+    (file
+     (let ((extension (file-extension file)))
+       ;; FILE might be "example-1.2-checkout", in which case we want to
+       ;; ignore the extension.
+       (and (or (string-contains extension "z")
+                (string-contains extension "tar"))
+            extension)))))
+
 (define* (package-update/url-fetch store package source
                                    #:key key-download)
   "Return the version, tarball, and SOURCE, to update PACKAGE to
@@ -437,17 +453,7 @@ SOURCE, an <upstream-source>."
   (match source
     (($ <upstream-source> _ version urls signature-urls)
      (let*-values (((archive-type)
-                    (match (and=> (package-source package) origin-uri)
-                      ((? string? uri)
-                       (let ((type (or (file-extension (basename uri)) "")))
-                         ;; Sometimes we have URLs such as
-                         ;; "https://github.com/…/tarball/v0.1", in which case
-                         ;; we must not consider "1" as the extension.
-                         (and (or (string-contains type "z")
-                                  (string=? type "tar"))
-                              type)))
-                      (_
-                       "gz")))
+                    (package-archive-type package))
                    ((url signature-url)
                     ;; Try to find a URL that matches ARCHIVE-TYPE.
                     (find2 (lambda (url sig-url)
@@ -490,16 +496,27 @@ SOURCE, an <upstream-source>."
 
 (define* (package-update store package
                          #:optional (updaters (force %updaters))
-                         #:key (key-download 'interactive))
+                         #:key (key-download 'interactive) (version #f))
   "Return the new version, the file name of the new version tarball, and input
 changes for PACKAGE; return #f (three values) when PACKAGE is up-to-date;
 raise an error when the updater could not determine available releases.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
-values: 'always', 'never', and 'interactive' (default)."
-  (match (package-latest-release package updaters)
+values: 'always', 'never', and 'interactive' (default).
+
+When VERSION is specified, update PACKAGE to that version, even if that is a
+downgrade."
+  (match (package-latest-release package updaters #:version version)
     ((? upstream-source? source)
-     (if (version>? (upstream-source-version source)
-                    (package-version package))
+     (if (or (version>? (upstream-source-version source)
+                        (package-version package))
+             (and version
+                  (begin
+                    (warning (package-location package)
+                             (G_ "downgrading '~a' from ~a to ~a~%")
+                             (package-name package)
+                             (package-version package)
+                             (upstream-source-version source))
+                    #t)))
          (let ((method (match (package-source package)
                          ((? origin? origin)
                           (origin-method origin))
@@ -520,8 +537,11 @@ this method: ~s")
          (values #f #f #f)))
     (#f
      ;; Warn rather than abort so that other updates can still take place.
-     (warning (G_ "updater failed to determine available releases for ~a~%")
-              (package-name package))
+     (if version
+         (warning (G_ "updater failed to find release ~a@~a~%")
+                  (package-name package) version)
+         (warning (G_ "updater failed to determine available releases for ~a~%")
+                  (package-name package)))
      (values #f #f #f))))
 
 (define* (update-package-source package source hash)

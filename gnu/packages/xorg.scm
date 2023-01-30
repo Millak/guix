@@ -1080,16 +1080,14 @@ synchronization between the X server and direct-rendering clients.")
 (define-public libfs
   (package
     (name "libfs")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
-               "mirror://xorg/individual/lib/libFS-"
-               version
-               ".tar.bz2"))
+              "mirror://xorg/individual/lib/libFS-" version ".tar.xz"))
         (sha256
-          (base32 "03xxyvpfa3rhqcld4p2chkil482jn9cp80hj17jdybcv2hkkgqf8"))))
+          (base32 "12i0zh1v5zlba617nam8sjhfqi68qqnl7z5hsz3wqhijid1pjwsr"))))
     (build-system gnu-build-system)
     (inputs
       (list xtrans xorgproto))
@@ -1218,7 +1216,7 @@ hit when running single-threaded.")
             "1p0flwb67xawyv6yhri9w17m1i4lji5qnd0gq8v1vsfb8zw7rw15"))))
     (build-system gnu-build-system)
     (inputs
-      (list xorgproto libxext libx11))
+      (list xorgproto libxext libx11 windowswmproto))
     (native-inputs
       (list pkg-config))
     (home-page "https://www.x.org/wiki/")
@@ -1794,17 +1792,14 @@ listed on the command line.")
 (define-public smproxy
   (package
     (name "smproxy")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/smproxy-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0rkjyzmsdqmlrkx8gy2j4q6iksk58hcc92xzdprkf8kml9ar3wbc"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/smproxy-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "01gkz4n2pfxiklzzx3ghnm9shx3626jcriwvrs3pvawxrhvr5aaa"))))
     (build-system gnu-build-system)
     (inputs
       (list libxt libxmu))
@@ -2294,17 +2289,14 @@ DRI (Direct Rendering Infrastructure) drivers.")
 (define-public xev
   (package
     (name "xev")
-    (version "1.2.4")
+    (version "1.2.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xev-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "1ql592pdhddhkipkrsxn929y9l2nn02a5fh2z3dx47kmzs5y006p"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/xev-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "1hbfwcnbyz4w13fbhnghl0vdhf6w9f9pb7jgjwrhykkii51ilin9"))))
     (build-system gnu-build-system)
     (arguments `(#:configure-flags ',(malloc0-flags)))
     (inputs
@@ -3839,17 +3831,14 @@ one from a running X server.")
 (define-public xkbutils
   (package
     (name "xkbutils")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xkbutils-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0c412isxl65wplhl7nsk12vxlri29lk48g3p52hbrs3m0awqm8fj"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/xkbutils-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "197f4pgw3jdnlp7sj37f3xf15ayad20sl7vvg2rvx0j5qplsi97n"))))
     (build-system gnu-build-system)
     (inputs
       (list libxt libxaw xorgproto))
@@ -4225,17 +4214,14 @@ file.")
 (define-public xrefresh
   (package
     (name "xrefresh")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/app/xrefresh-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0lv3rlshh7s0z3aqx5ahnnf8cl082m934bk7gv881mz8nydznz98"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append "mirror://xorg/individual/app/xrefresh-"
+                           version ".tar.xz"))
+       (sha256
+        (base32 "07hvfw3rdv8mzqmm9ax5z8kw544insdd152f2z8868ply8sxdwd9"))))
     (build-system gnu-build-system)
     (inputs
       (list libx11))
@@ -4577,17 +4563,14 @@ cannot be adequately worked around on the client side of the wire.")
 (define-public libxp
   (package
     (name "libxp")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/lib/libXp-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-            "0mwc2jwmq03b1m9ihax5c6gw2ln8rc70zz4fsj3kb7440nchqdkz"))))
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://xorg/individual/lib/libXp-" version ".tar.xz"))
+       (sha256
+        (base32 "197iklxwyd4naryc6mzv0g5qi1dy1apxk9w9k3yshd1ax2wf668z"))))
     (build-system gnu-build-system)
     (propagated-inputs
       (list printproto))
@@ -5310,7 +5293,7 @@ application-facing EGL functions.")
 (define-public egl-wayland
   (package
     (name "egl-wayland")
-    (version "1.1.10")
+    (version "1.1.11")
     (source
      (origin
        (method git-fetch)
@@ -5319,7 +5302,7 @@ application-facing EGL functions.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "13hdczhsicp4bfkcjg2npslwjaqrajjv867gxjnmvk77scr09dvm"))))
+        (base32 "11a3j2rjai2vsway9ki5y3ncvhrwd300pz2zcq36mq3brbr1vgf5"))))
     (build-system meson-build-system)
     (native-inputs
      (list libglvnd ;needed for headers
@@ -5596,14 +5579,14 @@ The XCB util module provides the following libraries:
 (define-public xcb-util-cursor
   (package
     (name "xcb-util-cursor")
-    (version "0.1.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://xcb.freedesktop.org/dist/"
-                                  "xcb-util-cursor-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "0krr4rcw6r42cncinzvzzdqnmxk3nrgpnadyg2h8k9x10q3hm885"))))
+    (version "0.1.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://xcb.freedesktop.org/dist/"
+                           "xcb-util-cursor-" version ".tar.xz"))
+       (sha256
+        (base32 "1yria9h0vqpblkgzqhpygk3rraijd3mmipg0mdhkayxbpj8gxp18"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
@@ -5922,22 +5905,20 @@ form.")
 (define-public xmag
   (package
     (name "xmag")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://xorg/individual/app/" name "-"
-             version
-             ".tar.gz"))
+       (uri (string-append "mirror://xorg/individual/app/xmag-"
+                           version ".tar.xz"))
        (sha256
-        (base32
-         "19bsg5ykal458d52v0rvdx49v54vwxwqg8q36fdcsv9p2j8yri87"))))
+        (base32 "0qblrqrhxml2asgbck53a1v7c4y7ap7jcyqjg500h1i7bb63d680"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-appdefaultdir="
-                            %output ,%app-defaults-dir))))
+     (list
+      #:configure-flags
+      #~(list (string-append "--with-appdefaultdir="
+                             #$output #$%app-defaults-dir))))
     (inputs
      (list libxaw))
     (native-inputs
@@ -5951,17 +5932,14 @@ of an X11 screen.")
 (define-public xmessage
   (package
     (name "xmessage")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append
-             "mirror://xorg/individual/app/" name "-"
-             version
-             ".tar.gz"))
+       (uri (string-append "mirror://xorg/individual/app/xmessage-"
+                           version ".tar.xz"))
        (sha256
-        (base32
-         "0sw0b0cbrjl44brw7qi1jkm61xd7a1lpj04418c6iqk6mf83llwr"))))
+        (base32 "04kahkk3kd6p1xlzf0jwfgnrb5z2r3y55q3p12b6n59py52wbsnj"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -5982,7 +5960,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
 (define-public xterm
   (package
     (name "xterm")
-    (version "370")
+    (version "377")
     (source
      (origin
        (method url-fetch)
@@ -5992,7 +5970,7 @@ to answer a question.  Xmessage can also exit after a specified time.")
              (string-append "ftp://ftp.invisible-island.net/xterm/"
                             "xterm-" version ".tgz")))
        (sha256
-        (base32 "10lc72spa69n9d7zg9nwhgwz70qzidp5i17jgw3lq3qg1a25sg4n"))
+        (base32 "1clhm4c8d7vmz0dn6qz2c6g68wxl8f2ba8a7c1zdk3jxlkkqy46v"))
        (patches
          (search-patches "xterm-370-explicit-xcursor.patch"))))
     (build-system gnu-build-system)
@@ -6180,14 +6158,14 @@ basic eye-candy effects.")
 (define-public xpra
   (package
     (name "xpra")
-    (version "4.3.4")
+    (version "4.4.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.xpra.org/src/xpra-"
                            version ".tar.xz"))
        (sha256
-        (base32 "1rh4wx4af27xjcxdxrw950wkydgkvm5p3aaiqfmdij6sh6i14xcl"))
+        (base32 "03ypmkh5f1ygag3wnq776dn8gpy3aq8f0xv40ab5rjisix7lgfwg"))
        (patches (search-patches "xpra-4.2-systemd-run.patch"
                                 "xpra-4.2-install_libs.patch"))))
     (build-system python-build-system)
@@ -6206,6 +6184,7 @@ basic eye-candy effects.")
               ("libxdamage" ,libxdamage)
               ("libxext" ,libxext)
               ("libxres" ,libxres)
+              ("lz4" ,lz4)
               ("gtk+" ,gtk+)
               ("python-pycairo" ,python-pycairo)
               ("python-pygobject" ,python-pygobject)
@@ -6546,7 +6525,7 @@ output.")
 (define-public console-setup
   (package
     (name "console-setup")
-    (version "1.209")
+    (version "1.212")
     (source
      (origin
        (method git-fetch)
@@ -6554,7 +6533,7 @@ output.")
              (url "https://salsa.debian.org/installer-team/console-setup.git")
              (commit version)))
        (sha256
-        (base32 "0f1xac4wxkqdrqspmk803vr3z8flmjw5qiw3q31fmacp7nsjfc3x"))
+        (base32 "1g1riswqalhk95i81xmy4dzwp1wwfiapjjiv0x06cp8bnc2rdxbq"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -6581,7 +6560,13 @@ output.")
                (replace 'install
                  (lambda* (#:key make-flags #:allow-other-keys)
                    (apply invoke "make" "install-linux"
-                          make-flags))))))
+                          make-flags)))
+               (add-after 'install 'install-bdf2psf
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (install-file "Fonts/bdf2psf"
+                                 (string-append #$output "/bin"))
+                   (install-file "man/bdf2psf.1"
+                                 (string-append #$output "/share/man/man1")))))))
     (native-inputs
      (list pkg-config
            bdftopcf

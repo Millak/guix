@@ -872,7 +872,7 @@ algorithm.")
        ("libpng" ,libpng)))
     (home-page "https://developer.android.com/studio/command-line/etc1tool.html")
     (synopsis "Encode and decode PNG images to resp. from the ETC1 compression
-standard.")
+standard")
     (description
      "@command{etc1} is a command line utility that lets you encode PNG images
 to the ETC1 compression standard and decode ETC1 compressed images back to

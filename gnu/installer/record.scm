@@ -89,7 +89,7 @@
   (partition-page installer-partition-page)
   ;; procedure void -> void
   (services-page installer-services-page)
-  ;; procedure (logo) -> void
+  ;; procedure (logo #:pci-database) -> void
   (welcome-page installer-welcome-page)
   ;; procedure (menu-proc) -> void
   (parameters-menu installer-parameters-menu)

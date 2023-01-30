@@ -4,6 +4,7 @@
 ;;; Copyright © 2019 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -23,6 +24,7 @@
 (define-module (gnu packages compton)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
@@ -111,7 +113,7 @@ performance).
 (define-public picom
   (package
     (name "picom")
-    (version "9.1")
+    (version "10.2")
     (source
      (origin
        (method git-fetch)
@@ -120,7 +122,7 @@ performance).
              (commit (string-append "v" version))))
        (sha256
         (base32
-         "0q7j6kh9k7i201cwhnfc3bmp0hqrx7ngk3v4qsp8k0qfy1n3ma8n"))
+         "1vd4nhvfykwdhpyhb0jmcj333zxhm6dyikafd76fa4z4fhjrrs0b"))
        (file-name (string-append "picom-" version))))
     (build-system meson-build-system)
     (inputs
@@ -140,8 +142,20 @@ performance).
     (native-inputs
      (list asciidoc pkg-config xorgproto))
     (arguments
-     `(#:build-type "release"
-       #:configure-flags '("-Dwith_docs=true")))
+     (list #:build-type "release"
+           #:configure-flags #~'("-Dwith_docs=true")
+           #:phases
+           #~(modify-phases %standard-phases
+               ;; This file would be patched by 'patch-dot-desktop-files but
+               ;; only in share/applications and not etc/xdg/autostart, so
+               ;; manually patch it before it is installed in either location.
+               ;; The 'patch-dot-desktop-files phase is still needed for other
+               ;; .desktop files.
+               (add-after 'unpack 'patch-autostart-files
+                 (lambda _
+                   (substitute* "picom.desktop"
+                     (("Exec=")
+                      (string-append "Exec=" #$output "/bin/"))))))))
     (home-page "https://github.com/yshui/picom")
     (synopsis "Compositor for X11, forked from Compton")
     (description

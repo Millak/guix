@@ -1,10 +1,11 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 receive)
   #:use-module (web uri)
   #:use-module (guix memoization)
@@ -82,32 +84,64 @@
 (define %input-style
   (make-parameter 'variable)) ; or 'specification
 
-(define string->license
-  (match-lambda
-   ("AGPL-3" 'agpl3+)
-   ("Artistic-2.0" 'artistic2.0)
-   ("Apache License 2.0" 'asl2.0)
-   ("BSD_2_clause" 'bsd-2)
-   ("BSD_2_clause + file LICENSE" 'bsd-2)
-   ("BSD_3_clause" 'bsd-3)
-   ("BSD_3_clause + file LICENSE" 'bsd-3)
-   ("GPL" '(list gpl2+ gpl3+))
-   ("GPL (>= 2)" 'gpl2+)
-   ("GPL (>= 3)" 'gpl3+)
-   ("GPL-2" 'gpl2)
-   ("GPL-3" 'gpl3)
-   ("LGPL-2" 'lgpl2.0)
-   ("LGPL-2.1" 'lgpl2.1)
-   ("LGPL-3" 'lgpl3)
-   ("LGPL (>= 2)" 'lgpl2.0+)
-   ("LGPL (>= 2.1)" 'lgpl2.1+)
-   ("LGPL (>= 3)" 'lgpl3+)
-   ("MIT" 'expat)
-   ("MIT + file LICENSE" 'expat)
-   ((x) (string->license x))
-   ((lst ...) `(list ,@(map string->license lst)))
-   (_ #f)))
+(define (string->licenses license-string license-prefix)
+  (let ((licenses
+         (map string-trim-both
+              (string-tokenize license-string
+                               (char-set-complement (char-set #\|))))))
+    (string->license licenses license-prefix)))
 
+(define (string->license license-string license-prefix)
+  (let ((prefix license-prefix))
+    (match license-string
+      ("AGPL-3" (prefix 'agpl3))
+      ("AGPL (>= 3)" (prefix 'agpl3+))
+      ("Artistic-2.0" (prefix 'artistic2.0))
+      ((or "Apache License 2.0"
+           "Apache License (== 2.0)")
+       (prefix 'asl2.0))
+      ("BSD_2_clause" (prefix 'bsd-2))
+      ("BSD_2_clause + file LICENSE" (prefix 'bsd-2))
+      ("BSD_3_clause" (prefix 'bsd-3))
+      ("BSD_3_clause + file LICENSE" (prefix 'bsd-3))
+      ("CC0" (prefix 'cc0))
+      ("CC BY-SA 4.0" (prefix 'cc-by-sa4.0))
+      ("CeCILL" (prefix 'cecill))
+      ((or "GPL"
+           "GNU General Public License")
+       `(list ,(prefix 'gpl2+) ,(prefix 'gpl3+)))
+      ((or "GPL (>= 2)"
+           "GPL (>= 2.0)")
+       (prefix 'gpl2+))
+      ((or "GPL (> 2)"
+           "GPL (>= 3)"
+           "GPL (>= 3.0)"
+           "GNU General Public License (>= 3)")
+       (prefix 'gpl3+))
+      ((or "GPL-2"
+           "GNU General Public License version 2")
+       (prefix 'gpl2))
+      ((or "GPL-3"
+           "GNU General Public License version 3")
+       (prefix 'gpl3))
+      ((or "GNU Lesser General Public License"
+           "LGPL")
+       (prefix 'lgpl2.0+))
+      ("LGPL-2" (prefix 'lgpl2.0))
+      ("LGPL-2.1" (prefix 'lgpl2.1))
+      ("LGPL-3" (prefix 'lgpl3))
+      ((or "LGPL (>= 2)"
+           "LGPL (>= 2.0)")
+       (prefix 'lgpl2.0+))
+      ("LGPL (>= 2.1)" (prefix 'lgpl2.1+))
+      ("LGPL (>= 3)" (prefix 'lgpl3+))
+      ("MIT" (prefix 'expat))
+      ("MIT + file LICENSE" (prefix 'expat))
+      ("file LICENSE"
+       `(,(prefix 'fsdg-compatible) "file://LICENSE"))
+      ((x) (string->license x license-prefix))
+      ((lst ...) `(list ,@(map (cut string->license <> license-prefix) lst)))
+      (unknown `(,(prefix 'fsdg-compatible) ,unknown)))))
 
 (define (description->alist description)
   "Convert a DESCRIPTION string into an alist."
@@ -156,9 +190,9 @@ package definition."
 (define %cran-canonical-url "https://cran.r-project.org/package=")
 (define %bioconductor-url "https://bioconductor.org/packages/")
 
-;; The latest Bioconductor release is 3.15.  Bioconductor packages should be
+;; The latest Bioconductor release is 3.16.  Bioconductor packages should be
 ;; updated together.
-(define %bioconductor-version "3.15")
+(define %bioconductor-version "3.16")
 
 (define* (bioconductor-packages-list-url #:optional type)
   (string-append "https://bioconductor.org/packages/"
@@ -358,35 +392,60 @@ empty list when the FIELD cannot be found."
 ;; The field for system dependencies is often abused to specify non-package
 ;; dependencies (such as c++11).  This list is used to ignore them.
 (define invalid-packages
-  (list "c++11"
+  (list "c++"
+        "c++11"
         "c++14"
-        "linux"
+        "c++17"
+        "c99"
         "getopt::long"
+        "gnu"
+        "posix.1-2001"
+        "linux"
+        "none"
+        "windows"
+        "xcode"
         "xquartz"))
+
+(define (transform-sysname sysname)
+  "Return a Guix package name for the common package name SYSNAME."
+  (match sysname
+    ("booktabs" "texlive-booktabs")
+    ("bowtie2" "bowtie")
+    ("cat" "coreutils")
+    ("java" "openjdk")
+    ("exiftool" "perl-image-exiftool")
+    ("fftw3" "fftw")
+    ("freetype2" "freetype")
+    ("gettext" "gnu-gettext")
+    ("gmake" "gnu-make")
+    ("libarchive-devel" "libarchive")
+    ("libarchive_dev" "libarchive")
+    ("libbz2" "bzip2")
+    ("libexpat" "expat")
+    ("liblz4" "lz4")
+    ("liblzma" "xz")
+    ("libzstd" "zstd")
+    ("libxml2-devel" "libxml2")
+    ("libz" "zlib")
+    ("mariadb-devel" "mariadb")
+    ("mysql56_dev" "mariadb")
+    ("pandoc-citeproc" "pandoc")
+    ("python3" "python-3")
+    ("sqlite3" "sqlite")
+    ("svn" "subversion")
+    ("tcl/tk" "tcl")
+    ("udunits-2" "udunits")
+    ("whoami" "coreutils")
+    ("x11" "libx11")
+    (_ sysname)))
 
 (define cran-guix-name (cut guix-name "r-" <>))
 
-(define (tarball-needs-fortran? tarball)
-  "Check if the TARBALL contains Fortran source files."
-  (define (check pattern)
-    (parameterize ((current-error-port (%make-void-port "rw+"))
-                   (current-output-port (%make-void-port "rw+")))
-      (zero? (system* "tar" "--wildcards" "--list" pattern "-f" tarball))))
-  (or (check "*.f90")
-      (check "*.f95")
-      (check "*.f")))
-
 (define (directory-needs-fortran? dir)
   "Check if the directory DIR contains Fortran source files."
-  (match (find-files dir "\\.f(90|95)$")
+  (match (find-files dir "\\.f(90|95)?$")
     (() #f)
     (_ #t)))
-
-(define (needs-fortran? thing tarball?)
-  "Check if the THING contains Fortran source files."
-  (if tarball?
-      (tarball-needs-fortran? thing)
-      (directory-needs-fortran? thing)))
 
 (define (files-match-pattern? directory regexp . file-patterns)
   "Return #T if any of the files matching FILE-PATTERNS in the DIRECTORY match
@@ -403,34 +462,10 @@ the given REGEXP."
                     (else (loop))))))))
          (apply find-files directory file-patterns))))
 
-(define (tarball-files-match-pattern? tarball regexp . file-patterns)
-  "Return #T if any of the files represented by FILE-PATTERNS in the TARBALL
-match the given REGEXP."
-  (call-with-temporary-directory
-   (lambda (dir)
-     (parameterize ((current-error-port (%make-void-port "rw+")))
-       (apply system* "tar"
-              "xf" tarball "-C" dir
-              `("--wildcards" ,@file-patterns)))
-     (files-match-pattern? dir regexp))))
-
 (define (directory-needs-zlib? dir)
   "Return #T if any of the Makevars files in the src directory DIR contain a
 zlib linker flag."
   (files-match-pattern? dir "-lz" "(Makevars.*|configure.*)"))
-
-(define (tarball-needs-zlib? tarball)
-  "Return #T if any of the Makevars files in the src directory of the TARBALL
-contain a zlib linker flag."
-  (tarball-files-match-pattern?
-   tarball "-lz"
-   "*/src/Makevars*" "*/src/configure*" "*/configure*"))
-
-(define (needs-zlib? thing tarball?)
-  "Check if the THING contains files indicating a dependency on zlib."
-  (if tarball?
-      (tarball-needs-zlib? thing)
-      (directory-needs-zlib? thing)))
 
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
@@ -438,23 +473,31 @@ the pkg-config tool."
   (files-match-pattern? dir "pkg-config"
                         "(Makevars.*|configure.*)"))
 
-(define (tarball-needs-pkg-config? tarball)
-  "Return #T if any of the Makevars files in the src directory of the TARBALL
-reference the pkg-config tool."
-  (tarball-files-match-pattern?
-   tarball "pkg-config"
-   "*/src/Makevars*" "*/src/configure*" "*/configure*"))
+(define (source-dir->dependencies dir)
+  "Guess dependencies of R package source in DIR and return two values: a list
+of package names for INPUTS and another list of names of NATIVE-INPUTS."
+  (values
+   (if (directory-needs-zlib? dir) '("zlib") '())
+   (append
+       (if (directory-needs-pkg-config? dir) '("pkg-config") '())
+       (if (directory-needs-fortran? dir) '("gfortran") '()))))
 
-(define (needs-pkg-config? thing tarball?)
-  "Check if the THING contains files indicating a dependency on pkg-config."
+(define (source->dependencies source tarball?)
+  "SOURCE-DIR->DEPENDENCIES, but for directories and tarballs as indicated
+by TARBALL?"
   (if tarball?
-      (tarball-needs-pkg-config? thing)
-      (directory-needs-pkg-config? thing)))
+    (call-with-temporary-directory
+     (lambda (dir)
+       (parameterize ((current-error-port (%make-void-port "rw+")))
+         (system* "tar" "xf" source "-C" dir))
+       (source-dir->dependencies dir)))
+    (source-dir->dependencies source)))
 
 (define (needs-knitr? meta)
   (member "knitr" (listify meta "VignetteBuilder")))
 
-(define (description->package repository meta)
+(define* (description->package repository meta #:key (license-prefix identity)
+                               (download-source download))
   "Return the `package' s-expression for an R package published on REPOSITORY
 from the alist META, which was derived from the R package's DESCRIPTION file."
   (let* ((base-url   (case repository
@@ -474,7 +517,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
          (name       (assoc-ref meta "Package"))
          (synopsis   (assoc-ref meta "Title"))
          (version    (assoc-ref meta "Version"))
-         (license    (string->license (assoc-ref meta "License")))
+         (license    (string->licenses (assoc-ref meta "License") license-prefix))
          ;; Some packages have multiple home pages.  Some have none.
          (home-page  (case repository
                        ((git) (assoc-ref meta 'git))
@@ -496,12 +539,15 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                           (_ #f)))))
          (git?       (if (assoc-ref meta 'git) #true #false))
          (hg?        (if (assoc-ref meta 'hg) #true #false))
-         (source     (download source-url #:method (cond
-                                                    (git? 'git)
-                                                    (hg? 'hg)
-                                                    (else #f))))
+         (source     (download-source source-url #:method (cond
+                                                           (git? 'git)
+                                                           (hg? 'hg)
+                                                           (else #f))))
+         (tarball?   (not (or git? hg?)))
+         (source-inputs source-native-inputs
+          (source->dependencies source tarball?))
          (sysdepends (append
-                      (if (needs-zlib? source (not (or git? hg?))) '("zlib") '())
+                      source-inputs
                       (filter (lambda (name)
                                 (not (member name invalid-packages)))
                               (map string-downcase (listify meta "SystemRequirements")))))
@@ -558,20 +604,17 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
                     `((properties ,`(,'quasiquote ((,'upstream-name . ,name)))))
                     '())
               (build-system r-build-system)
-              ,@(maybe-inputs sysdepends)
+              ,@(maybe-inputs (map transform-sysname sysdepends))
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
-                 `(,@(if (needs-fortran? source (not (or git? hg?)))
-                         '("gfortran") '())
-                   ,@(if (needs-pkg-config? source (not (or git? hg?)))
-                         '("pkg-config") '())
+                 `(,@source-native-inputs
                    ,@(if (needs-knitr? meta)
                          '("r-knitr") '()))
                  'native-inputs)
               (home-page ,(if (string-null? home-page)
                               (string-append base-url name)
                               home-page))
-              (synopsis ,synopsis)
+              (synopsis ,(beautify-synopsis synopsis))
               (description ,(beautify-description (or (assoc-ref meta "Description")
                                                       "")))
               (license ,license))))
@@ -590,31 +633,41 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
 
 (define cran->guix-package
   (memoize
-   (lambda* (package-name #:key (repo 'cran) version)
+   (lambda* (package-name #:key (repo 'cran) version (license-prefix identity)
+                          (fetch-description fetch-description)
+                          (download-source download)
+                          #:allow-other-keys)
      "Fetch the metadata for PACKAGE-NAME from REPO and return the `package'
 s-expression corresponding to that package, or #f on failure."
      (let ((description (fetch-description repo package-name version)))
        (if description
-           (description->package repo description)
+           (description->package repo description
+                                 #:license-prefix license-prefix
+                                 #:download-source download-source)
            (case repo
              ((git)
               ;; Retry import from Bioconductor
-              (cran->guix-package package-name #:repo 'bioconductor))
+              (cran->guix-package package-name #:repo 'bioconductor
+                                  #:license-prefix license-prefix))
              ((hg)
               ;; Retry import from Bioconductor
-              (cran->guix-package package-name #:repo 'bioconductor))
+              (cran->guix-package package-name #:repo 'bioconductor
+                                  #:license-prefix license-prefix))
              ((bioconductor)
               ;; Retry import from CRAN
-              (cran->guix-package package-name #:repo 'cran))
+              (cran->guix-package package-name #:repo 'cran
+                                  #:license-prefix license-prefix))
              (else
               (values #f '()))))))))
 
-(define* (cran-recursive-import package-name #:key (repo 'cran) version)
+(define* (cran-recursive-import package-name #:key (repo 'cran) version
+                                (license-prefix identity))
   (recursive-import package-name
                     #:version version
                     #:repo repo
                     #:repo->guix-package cran->guix-package
-                    #:guix-name cran-guix-name))
+                    #:guix-name cran-guix-name
+                    #:license-prefix license-prefix))
 
 
 ;;;
@@ -640,8 +693,13 @@ s-expression corresponding to that package, or #f on failure."
              (_ #f)))
           (_ #f)))))
 
-(define (latest-cran-release pkg)
+(define* (latest-cran-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "CRAN")))
 
   (define upstream-name
     (package->upstream-name pkg))
@@ -660,21 +718,26 @@ s-expression corresponding to that package, or #f on failure."
            (changed-inputs pkg
                            (description->package 'cran meta)))))))
 
-(define (latest-bioconductor-release pkg)
+(define* (latest-bioconductor-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a provides only the latest version of each package, sorry.")
+      "bioconductor.org")))
 
   (define upstream-name
     (package->upstream-name pkg))
 
-  (define version
+  (define latest-version
     (latest-bioconductor-package-version upstream-name))
 
-  (and version
+  (and latest-version
        ;; Bioconductor does not provide signatures.
        (upstream-source
         (package (package-name pkg))
-        (version version)
-        (urls (bioconductor-uri upstream-name version))
+        (version latest-version)
+        (urls (bioconductor-uri upstream-name latest-version))
         (input-changes
          (changed-inputs
           pkg
@@ -723,13 +786,13 @@ s-expression corresponding to that package, or #f on failure."
    (name 'cran)
    (description "Updater for CRAN packages")
    (pred cran-package?)
-   (latest latest-cran-release)))
+   (import latest-cran-release)))
 
 (define %bioconductor-updater
   (upstream-updater
    (name 'bioconductor)
    (description "Updater for Bioconductor packages")
    (pred bioconductor-package?)
-   (latest latest-bioconductor-release)))
+   (import latest-bioconductor-release)))
 
 ;;; cran.scm ends here

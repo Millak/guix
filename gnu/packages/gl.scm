@@ -577,30 +577,29 @@ from software emulation to complete hardware acceleration for modern GPUs.")
     (source (mesa-demos-source version))
     (build-system gnu-build-system)
     (inputs
-     `(("mesa" ,mesa)
-       ("glut" ,freeglut)
-       ("glew" ,glew)))
+     (list mesa freeglut glew))
     (native-inputs
      (list pkg-config))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace
-          'install
-          (lambda* (#:key outputs #:allow-other-keys)
-            (let ((out (assoc-ref outputs "out")))
-              (mkdir-p (string-append out "/bin"))
-              (for-each
-               (lambda (file)
-                 (copy-file file (string-append out "/bin/" (basename file))))
-               '("src/xdemos/glxdemo" "src/xdemos/glxgears"
-                 "src/xdemos/glxinfo" "src/xdemos/glxheads"))
-              #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out #$output))
+                (mkdir-p (string-append out "/bin"))
+                (for-each (lambda (file)
+                            (copy-file file
+                                       (string-append out "/bin/"
+                                                      (basename file))))
+                          '("src/xdemos/glxdemo" "src/xdemos/glxgears"
+                            "src/egl/opengl/eglinfo"
+                            "src/xdemos/glxinfo" "src/xdemos/glxheads"))))))))
     (home-page "https://mesa3d.org/")
     (synopsis "Utility tools for Mesa")
     (description
-     "The mesa-utils package contains several utility tools for Mesa: glxdemo,
-glxgears, glxheads, and glxinfo.")
+     "The mesa-utils package contains several utility tools for Mesa: eglinfo,
+glxdemo, glxgears, glxheads, and glxinfo.")
     ;; glxdemo is public domain; others expat.
     (license (list license:expat license:public-domain))))
 
@@ -746,7 +745,7 @@ OpenGL graphics API.")
 (define-public libglvnd
   (package
     (name "libglvnd")
-    (version "1.3.4")
+    (version "1.5.0")
     (home-page "https://gitlab.freedesktop.org/glvnd/libglvnd")
     (source (origin
               (method git-fetch)
@@ -756,7 +755,7 @@ OpenGL graphics API.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0phvgg2h3pcz3x39gaymwb37bnw1s26clq9wsj0zx398zmp3dwpk"))))
+                "1nvlcwzivrdchp70i2l7ic7qdlsdmlsb0ckydscr43rhqldswx69"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags '("-Dx11=enabled")

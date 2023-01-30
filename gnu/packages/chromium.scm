@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -27,7 +27,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
-  #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -56,11 +55,11 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages regex)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages speech)
@@ -69,10 +68,8 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1))
+  #:use-module (ice-9 match))
 
 (define %preserved-third-party-files
   '("base/third_party/cityhash" ;Expat
@@ -100,6 +97,7 @@
     "third_party/angle/src/third_party/volk" ;Expat
     "third_party/apple_apsl" ;APSL2.0
     "third_party/axe-core" ;MPL2.0
+    "third_party/bidimapper" ;ASL2.0
     "third_party/blink" ;BSD-3, LGPL2+
     "third_party/boringssl" ;OpenSSL/ISC (Google additions are ISC)
     "third_party/boringssl/src/third_party/fiat" ;Expat
@@ -135,7 +133,6 @@
     ;; TODO: can likely be unbundled when Vulkan is updated.
     "third_party/dawn/third_party/khronos" ;ASL2.0
     "third_party/dawn/third_party/gn/webgpu-cts" ;BSD-3
-    "third_party/depot_tools/owners.py" ;BSD-3
     "third_party/devtools-frontend" ;BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/acorn" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party\
@@ -151,6 +148,8 @@
     "third_party/devtools-frontend/src/front_end/third_party/lodash-isequal" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
+/package/lib/esm/third_party/mitt" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
@@ -173,6 +172,7 @@
     "third_party/hunspell" ;MPL1.1/GPL2+/LGPL2.1+
     "third_party/iccjpeg" ;IJG
     "third_party/inspector_protocol" ;BSD-3
+    "third_party/ipcz" ;BSD-3
     "third_party/jinja2" ;BSD-3
     "third_party/jstemplate" ;ASL2.0
     "third_party/khronos" ;Expat, SGI
@@ -181,11 +181,11 @@
     "third_party/libaddressinput" ;ASL2.0
     "third_party/libaom" ;BSD-2 or "Alliance for Open Media Patent License 1.0"
     "third_party/libaom/source/libaom/third_party/fastfeat" ;BSD-3
+    "third_party/libaom/source/libaom/third_party/SVT-AV1" ;BSD-3
     "third_party/libaom/source/libaom/third_party/vector" ;Expat
     "third_party/libaom/source/libaom/third_party/x86inc" ;ISC
     "third_party/libjxl" ;ASL2.0
     "third_party/libgav1" ;ASL2.0
-    "third_party/libgifcodec" ;MPL1.1/GPL2+/LGPL2.1+, BSD-3, BSD-2
     "third_party/libjingle_xmpp" ;BSD-3
     "third_party/libphonenumber" ;ASL2.0
     "third_party/libsecret" ;LGPL2.1+
@@ -214,7 +214,7 @@
     "third_party/nasm" ;BSD-2
     "third_party/nearby" ;ASL2.0
     "third_party/node" ;Expat
-    "third_party/node/node_modules/polymer-bundler/lib/third_party/UglifyJS2" ;BSD-2
+    "third_party/omnibox_proto" ;BSD-3
     "third_party/one_euro_filter" ;BSD-3
     "third_party/openscreen" ;BSD-3
     "third_party/openscreen/src/third_party/tinycbor" ;Expat
@@ -243,10 +243,9 @@
     "third_party/ruy" ;ASL2.0
     "third_party/s2cellid" ;ASL2.0
     "third_party/securemessage" ;ASL2.0
+    "third_party/selenium-atoms" ;ASL2.0
     "third_party/shell-encryption" ;ASL2.0
     "third_party/skia" ;BSD-3
-    "third_party/skia/include/third_party/skcms" ;BSD-3
-    "third_party/skia/third_party/skcms" ;BSD-3
     "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
     "third_party/smhasher" ;Expat, public domain
 
@@ -273,7 +272,7 @@
     "third_party/utf" ;Expat
     "third_party/vulkan-deps" ;ASL2.0, BSD-3, Expat
     "third_party/vulkan_memory_allocator" ;Expat
-    "third_party/wayland/protocol" ;Expat
+    "third_party/wayland/src/protocol" ;Expat
     "third_party/wayland/stubs" ;BSD-3, Expat
     "third_party/wayland/wayland_scanner_wrapper.py" ;BSD-3
     "third_party/wayland-protocols" ;Expat
@@ -317,9 +316,10 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "105.0.5195.125")
+(define %chromium-version "109.0.5414.119")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
+(define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
 
 (define %ungoogled-origin
   (origin
@@ -329,7 +329,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "0k16wma9lj9q34xgz377nasnfzcw7wi73l91r41yilvgb3l2fgw8"))))
+      "1nb0099gwkhxv3zc184jyvpl5jrrq194pv6yq95nbc27vw6zz7qv"))))
 
 (define %debian-origin
   (origin
@@ -343,19 +343,6 @@
     (sha256
      (base32
       "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
-
-(define %chromium-gcc-patchset
-  (let ((commit "chromium-105-patchset-1"))
-    (origin
-      (method git-fetch)
-      (uri (git-reference
-            (url "https://github.com/stha09/chromium-patches")
-            (commit commit)))
-      (file-name (git-file-name "chromium-gcc-patches"
-                                (string-drop commit 9)))
-      (sha256
-       (base32
-        "08c3pbdqjdqi7rmyqkkh6q429611ikakf4gkzwg1gr07vyknwkfa")))))
 
 (define (origin-file origin file)
   (computed-file
@@ -372,28 +359,27 @@
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
-(define (gcc-patch name)
-  (origin-file %chromium-gcc-patchset name))
-
-(define %gcc-patches
-  (map gcc-patch
-       '("chromium-105-AdjustMaskLayerGeometry-ceilf.patch"
-         "chromium-105-Bitmap-include.patch"
-         "chromium-105-browser_finder-include.patch"
-         "chromium-105-raw_ptr-noexcept.patch"
-         "chromium-105-Trap-raw_ptr.patch")))
-
-;; Take a patch from Arch that reverts a change which requires an unreleased
-;; version of ffmpeg.
-(define %ungoogled-chromium-unroll-ffmpeg.patch
+(define (arch-patch revision name hash)
   (origin
     (method url-fetch)
-    (uri "https://raw.githubusercontent.com/archlinux/svntogit-packages\
-/f3225f99b900e11ac900725992ea883142d7309c/trunk/roll-src-third_party-ffmpeg.patch")
-    (file-name "ungoogled-chromium-unroll-ffmpeg.patch")
-    (sha256
-     (base32
-      "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh"))))
+    (uri (string-append "https://raw.githubusercontent.com/archlinux"
+                        "/svntogit-packages/" revision "/trunk/" name))
+    (sha256 (base32 hash))))
+
+(define %reverse-patches
+  (list
+   ;; These patches revert changes that require an unreleased ffmpeg.
+   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m102.patch"
+               "0i7crn6fcwq09kd6a4smqnffaldyv61lmv2p0drcnpfrwalmkprh")
+   (arch-patch %arch-revision "REVERT-roll-src-third_party-ffmpeg-m106.patch"
+               "0li10cvxnppmmmsc7w77b1s7z02s5bzd39zsal9x768708fx64jc")))
+
+(define %arch-patches
+  (list
+   (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
+               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")
+   (arch-patch %arch-revision "fix-the-way-to-handle-codecs-in-the-system-icu.patch"
+               "1qy7ldw7lnfbg0dl49m7myrflw0ps80adaisq5dqjndhn0rcbmd5")))
 
 (define %guix-patches
   (list (local-file
@@ -411,6 +397,9 @@
         (local-file
          (assume-valid-file-name
           (search-patch "ungoogled-chromium-system-nspr.patch")))))
+
+(define %patches
+  (append %debian-patches %arch-patches %guix-patches))
 
 ;; This is a source 'snippet' that does the following:
 ;; *) Applies various patches for unbundling purposes and libstdc++ compatibility.
@@ -433,11 +422,13 @@
           (for-each (lambda (patch)
                       (invoke "patch" "-p1" "--force" "--input"
                               patch "--no-backup-if-mismatch"))
-                    (append '#+%debian-patches '#+%guix-patches
-                            '#+%gcc-patches))
+                    '#+%patches)
 
-          (invoke "patch" "-Rp1" "--force" "--input" "--no-backup-if-mismatch"
-                  "--input" #$%ungoogled-chromium-unroll-ffmpeg.patch)
+          ;; These patches are "reversed", i.e. their changes should be undone.
+          (for-each (lambda (patch)
+                      (invoke "patch" "-Rp1" "-F3" "--force" "--input"
+                              patch "--no-backup-if-mismatch"))
+                    '#+%reverse-patches)
 
           (with-directory-excursion #+%ungoogled-origin
             (format #t "Ungooglifying...~%")
@@ -492,12 +483,7 @@
 (define-public ungoogled-chromium
   (package
     (name "ungoogled-chromium")
-    (version (if (string-prefix? %chromium-version %ungoogled-revision)
-                 %ungoogled-revision
-                 ;; ungoogled-chromium version tags always have a "-1" suffix,
-                 ;; so we can hijack "-0" in cases where the Chromium source
-                 ;; is newer than the latest available tag.
-                 (string-append %chromium-version "-0")))
+    (version %ungoogled-revision)
     (synopsis "Graphical web browser")
     (source (origin
               (method url-fetch)
@@ -506,7 +492,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0rhay46fnfffqcpk6c856hj414508fmhda600lz5whcacr25q6r0"))
+                "0bdyb14v12izxkldq27jx532p0bid3wdwfpd1mwm7jqswxgfzkfb"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -559,6 +545,11 @@
               "custom_toolchain=\"//build/toolchain/linux/unbundle:default\""
               "host_toolchain=\"//build/toolchain/linux/unbundle:default\""
 
+              (string-append "clang_base_path=\""
+                             (dirname (dirname (search-input-file %build-inputs
+                                                                  "/bin/clang")))
+                             "\"")
+
               ;; Prefer system libraries.
               "use_system_freetype=true"
               "use_system_harfbuzz=true"
@@ -567,6 +558,7 @@
               "use_system_libjpeg=true"
               "use_system_libopenjpeg2=true"
               "use_system_libpng=true"
+              "use_system_libwayland=true"
               "use_system_wayland_scanner=true"
               (string-append "system_wayland_scanner_path=\""
                              (search-input-file %build-inputs
@@ -598,7 +590,7 @@
               "ffmpeg_branding=\"Chrome\""
 
               ;; WebRTC stuff.
-              "rtc_use_h264=true"
+              "rtc_use_h264=false"      ;XXX needs bundled openh264
               "rtc_use_pipewire=true"
               "rtc_link_pipewire=true"
               ;; Don't use bundled sources.
@@ -618,16 +610,17 @@
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-stuff
             (lambda* (#:key inputs #:allow-other-keys)
-              (let ((openjpeg (search-input-directory
-                               inputs "include/openjpeg-2.4")))
+              (let* ((libopenjp2 (search-input-file inputs "lib/libopenjp2.so"))
+                     (openjpeg (dirname (dirname libopenjp2))))
                 (substitute* "third_party/pdfium/BUILD.gn"
                   ;; This include path is added by Debians openjpeg patch.
-                  (("/usr/include/openjpeg-2.4") openjpeg))
+                  (("/usr/include/openjpeg-")
+                   (string-append openjpeg "/include/openjpeg-")))
 
-                ;; Remove contrib/ prefix from minizip header inclusions.
+                ;; Adjust minizip header inclusions.
                 (substitute* (find-files "third_party/tflite_support\
 /src/tensorflow_lite_support/metadata/cc")
-                  (("contrib/minizip/")
+                  (("third_party/zlib/contrib/minizip/")
                    "minizip/"))
 
                 (substitute*
@@ -675,6 +668,11 @@
                   (("include \"third_party/lcms/include/lcms2\\.h\"")
                    "include \"lcms2.h\""))
 
+                ;; The unbundling script leaves behind an empty pyyaml directory
+                ;; which prevents the code that tries to use it from falling
+                ;; back to the pyyaml provided by Guix.
+                (delete-file-recursively "third_party/pyyaml")
+
                 (substitute*
                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
                   (("include \"third_party/curl")
@@ -685,7 +683,7 @@
                                "gpu/config/gpu_util.cc")
                   (("third_party/vulkan_headers/include/") ""))
 
-                (substitute* "third_party/skia/include/gpu/vk/GrVkVulkan.h"
+                (substitute* "third_party/skia/include/private/gpu/vk/SkiaVulkan.h"
                   (("include/third_party/vulkan/") "")))))
           (add-after 'patch-stuff 'add-absolute-references
             (lambda* (#:key inputs #:allow-other-keys)
@@ -752,22 +750,11 @@
                    (string-append mesa-lib "/libGLESv2.so.2"))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (let ((c++ (search-input-directory (or native-inputs inputs)
-                                                 "include/c++"))
-                    (node (search-input-file (or native-inputs inputs)
+              (let ((node (search-input-file (or native-inputs inputs)
                                              "/bin/node")))
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
                 (setenv "CC" "clang") (setenv "CXX" "clang++")
-
-                ;; Disable compiler flags that require Clang 15.
-                (substitute* "build/config/compiler/BUILD.gn"
-                  (("\"-no-opaque-pointers\",")
-                   "")
-                  (("\"-Wno-unqualified-std-cast-call\"")
-                   "")
-                  (("\"-Wno-deprecated-non-prototype\"")
-                   ""))
 
                 ;; TODO: pre-compile instead. Avoids a race condition.
                 (setenv "PYTHONDONTWRITEBYTECODE" "1")
@@ -892,16 +879,17 @@
                    '("24" "48" "64" "128" "256")))))))))
     (native-inputs
      (list bison
-           clang-14
+           clang-15
            gn
            gperf
-           lld-as-ld-wrapper
+           lld-as-ld-wrapper-15
            ninja
            node-lts
            pkg-config
            which
            python-beautifulsoup4
            python-html5lib
+           python-pyyaml
            python-wrapper
            wayland))
     (inputs
@@ -913,7 +901,7 @@
            dbus
            expat
            flac
-           ffmpeg
+           ffmpeg-4
            fontconfig
            fp16
            freetype
@@ -955,8 +943,9 @@
            opus+custom
            pango
            pciutils
-           pipewire-0.3
+           pipewire
            pulseaudio
+           qtbase-5
            re2
            snappy
            speech-dispatcher
@@ -1031,7 +1020,8 @@ testing.")
            (call-with-output-file exe
              (lambda (port)
                (format port "#!~a
-exec ~a --enable-features=UseOzonePlatform --ozone-platform=wayland $@"
+exec ~a --enable-features=UseOzonePlatform --ozone-platform=wayland \
+--enable-features=WebRTCPipeWireCapturer $@"
                        (string-append bash "/bin/bash")
                        (string-append chromium "/bin/chromium"))))
            (chmod exe #o555)

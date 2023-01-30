@@ -322,8 +322,9 @@ This package is part of the KDE games module.")
            ki18n
            libkmahjongg
            python
+           python-pyqt-without-qtwebkit
            python-twisted
-           python-pyqt
+           python-qtpy
            python-zope-interface
            qtbase-5
            qtsvg-5))

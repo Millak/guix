@@ -24,7 +24,6 @@
   #:use-module (guix derivations)
   #:use-module (guix store)
   #:use-module (guix monads)
-  #:use-module (guix grafts)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)

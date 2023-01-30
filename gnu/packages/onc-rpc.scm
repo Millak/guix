@@ -1,11 +1,12 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2017, 2018 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2017, 2018, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2017, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -26,6 +27,7 @@
   #:use-module (guix licenses)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
@@ -63,6 +65,7 @@
                             "tirpc/netconfig.h")
                (("/etc/netconfig") (string-append (assoc-ref outputs "out")
                                                   "/etc/netconfig"))))))))
+    (native-inputs (list mit-krb5)) ;; for cross-compilation
     (inputs (list mit-krb5))
     (home-page "https://sourceforge.net/projects/libtirpc/")
     (synopsis "Transport-independent Sun/ONC RPC implementation")
@@ -82,9 +85,9 @@ IPv4 and IPv6.  ONC RPC is notably used by the network file system (NFS).")
      (substitute-keyword-arguments (package-arguments libtirpc)
        ((#:configure-flags flags ''())
         ;; When cross-building the target system's krb5-config should be used.
-        `(list (string-append "ac_cv_prog_KRB5_CONFIG="
-                              (assoc-ref %build-inputs "mit-krb5")
-                              "/bin/krb5-config")))))))
+        #~(list (string-append "ac_cv_prog_KRB5_CONFIG="
+                               #$(this-package-input "mit-krb5")
+                               "/bin/krb5-config")))))))
 
 (define-public rpcbind
   (package

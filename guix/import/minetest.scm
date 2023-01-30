@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,6 +26,7 @@
   #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
+  #:use-module (guix diagnostics)
   #:use-module ((guix packages) #:prefix package:)
   #:use-module (guix upstream)
   #:use-module (guix utils)
@@ -439,7 +441,8 @@ DEPENDENCIES as a list of AUTHOR/NAME strings."
                #f)))))
    dependency-list))
 
-(define* (%minetest->guix-package author/name #:key (sort %default-sort-key))
+(define* (%minetest->guix-package author/name #:key (sort %default-sort-key)
+                                  #:allow-other-keys)
   "Fetch the metadata for AUTHOR/NAME from https://content.minetest.net, and
 return the 'package' S-expression corresponding to that package, or raise an
 exception on failure.  On success, also return the upstream dependencies as a
@@ -475,7 +478,7 @@ list of AUTHOR/NAME strings."
   (memoize %minetest->guix-package))
 
 (define* (minetest-recursive-import author/name #:key (sort %default-sort-key))
-  (define* (minetest->guix-package* author/name #:key repo version)
+  (define* (minetest->guix-package* author/name #:key version #:allow-other-keys)
     (minetest->guix-package author/name #:sort sort))
   (recursive-import author/name
                     #:repo->guix-package minetest->guix-package*
@@ -486,7 +489,7 @@ list of AUTHOR/NAME strings."
   (and (string-prefix? "minetest-" (package:package-name pkg))
        (assq-ref (package:package-properties pkg) 'upstream-name)))
 
-(define (latest-minetest-release pkg)
+(define* (latest-minetest-release pkg #:key (version #f))
   "Return an <upstream-source> for the latest release of the package PKG,
 or #false if the latest release couldn't be determined."
   (define author/name
@@ -494,6 +497,12 @@ or #false if the latest release couldn't be determined."
   (define contentdb-package (contentdb-fetch author/name)) ; TODO warn if #f?
   (define release (latest-release author/name))
   (define source (package:package-source pkg))
+
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a updater doesn't support updating to a specific version, sorry.")
+      "minetest")))
   (and contentdb-package release
        (release-commit release) ; not always set
        ;; Only continue if both the old and new version number are both
@@ -513,4 +522,4 @@ or #false if the latest release couldn't be determined."
     (name 'minetest)
     (description "Updater for Minetest packages on ContentDB")
     (pred minetest-package?)
-    (latest latest-minetest-release)))
+    (import latest-minetest-release)))

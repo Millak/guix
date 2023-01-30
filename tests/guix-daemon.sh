@@ -27,7 +27,7 @@ guix build --version
 
 drv="`guix build emacs -d`"
 out="`guile -c '								\
-  (use-modules (guix) (guix grafts) (gnu packages emacs))			\
+  (use-modules (guix) (gnu packages emacs))					\
   (define store (open-connection))						\
   (%graft? #f)
   (display (derivation->output-path (package-derivation store emacs)))'`"
@@ -122,7 +122,7 @@ guix-daemon --no-substitutes --listen="$socket" --disable-chroot	\
 daemon_pid=$!
 
 guile -c "
-  (use-modules (guix) (guix grafts) (guix tests) (srfi srfi-34))
+  (use-modules (guix) (guix tests) (srfi srfi-34))
   (define store (open-connection-for-tests \"$socket\"))
 
   ;; Disable grafts to avoid building more than needed.

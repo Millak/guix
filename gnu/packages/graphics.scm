@@ -32,6 +32,8 @@
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Tobias Kortkamp <tobias.kortkamp@gmail.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 dan <i@dan.games>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -133,6 +135,7 @@
   #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix utils))
 
 (define-public mmm
@@ -192,36 +195,36 @@ framebuffer graphics, audio output and input event.")
     (native-inputs
      (list autoconf automake libtool perl pkg-config))
     (inputs
-     `(("alsa" ,alsa-lib)
-       ("ffmpeg" ,ffmpeg)
-       ("freetype" ,freetype)
-       ("glu" ,glu)
-       ("gstreamer" ,gstreamer)
-       ("imlib2" ,imlib2)
-       ("jasper" ,jasper)
-       ("jpeg" ,libjpeg-turbo)
-       ("libcddb" ,libcddb)
-       ("libdrm" ,libdrm)
-       ("libtimidity" ,libtimidity)
-       ("mad" ,libmad)
-       ("mng" ,libmng)
-       ("mpeg2" ,libmpeg2)
-       ("mpeg3" ,libmpeg3)
-       ("opengl" ,mesa)
-       ("png" ,libpng)
-       ("sdl" ,sdl)
-       ("svg" ,(librsvg-for-system))
-       ("tiff" ,libtiff)
-       ("tslib" ,tslib)
-       ("vdpau" ,libvdpau)
-       ("vorbisfile" ,libvorbis)
-       ("wayland" ,wayland)
-       ("webp" ,libwebp)
-       ("x11" ,libx11)
-       ("xcomposite" ,libxcomposite)
-       ("xext" ,libxext)
-       ("xproto" ,xorgproto)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           ffmpeg
+           freetype
+           glu
+           gstreamer
+           imlib2
+           jasper
+           libjpeg-turbo
+           libcddb
+           libdrm
+           libtimidity
+           libmad
+           libmng
+           libmpeg2
+           libmpeg3
+           mesa
+           libpng
+           sdl
+           (librsvg-for-system)
+           libtiff
+           tslib
+           libvdpau
+           libvorbis
+           wayland
+           libwebp
+           libx11
+           libxcomposite
+           libxext
+           xorgproto
+           zlib))
     (propagated-inputs
      (list flux))
     (synopsis "DFB Graphics Library")
@@ -423,14 +426,14 @@ typically encountered in feature film production.")
 (define-public blender
   (package
     (name "blender")
-    (version "3.0.1")
+    (version "3.3.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.blender.org/source/"
                                   "blender-" version ".tar.xz"))
               (sha256
                (base32
-                "0hblgls5pclqamsxk0vb14f4fm30hdiq7fb2bm5mq2ly4sb0mfqr"))))
+                "1jlc26axbhh97d2j6kfg9brgiq8j412mgmw7p41ah34apzq4inia"))))
     (build-system cmake-build-system)
     (arguments
       (let ((python-version (version-major+minor (package-version python))))
@@ -562,7 +565,7 @@ and export to various formats including the format used by Magicavoxel.")
 (define-public assimp
   (package
     (name "assimp")
-    (version "5.2.2")
+    (version "5.2.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -571,7 +574,7 @@ and export to various formats including the format used by Magicavoxel.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1kjifakjnpm89410pw27wq21fn975gfq46kn9zs3h8bryldvvlgk"))))
+                "0j0pd279n6xyy95x782ha8j75kbx0ck7vs5wv3krhbyfim9bw64l"))))
     (build-system cmake-build-system)
     (inputs
      (list zlib))
@@ -585,6 +588,20 @@ cache locality optimization, removal of degenerate primitives and duplicate
 vertices, sorting by primitive type, merging of redundant materials and many
 more.")
     (license license:bsd-3)))
+
+(define-public assimp-5.0
+  (package
+    (inherit assimp)
+    (version "5.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/assimp/assimp")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "assimp" version))
+              (sha256
+               (base32
+                "1w2484lg823bql7lpfq84vnsfsnag5v65qrbphslj866z9ia68l7"))))))
 
 (define-public mikktspace
   ;; The latest commit is used as there is no release.
@@ -935,7 +952,7 @@ other vector formats such as:
 (define-public alembic
   (package
     (name "alembic")
-    (version "1.8.3")
+    (version "1.8.4")
     (source
      (origin
        (method git-fetch)
@@ -944,7 +961,7 @@ other vector formats such as:
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0glfx3cm7r8zn3cn7j4x4ch1ab6igfis0i2lcy23jc56q87r8yj2"))))
+        (base32 "04cvzr87zqx55si4j3dqiidbmfx92ja3mc1dj0v6ddvl0cwj3m7i"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_HDF5=ON")))
@@ -959,7 +976,7 @@ distills complex, animated scenes into a set of baked geometric results.")
 (define-public mangohud
   (package
     (name "mangohud")
-    (version "0.6.7")
+    (version "0.6.8")
     (source
      (origin
        (method git-fetch)
@@ -968,7 +985,7 @@ distills complex, animated scenes into a set of baked geometric results.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n2x6agv2j8nd6h1998dqsphb7k57zx8vsayv47dqix28kg5kixz"))))
+        (base32 "19dp8l5njzl9xah0bhwlkl39vc8w2rnpvpdrhgaz3hnhz8b0r5df"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -1098,29 +1115,53 @@ graphics.")
   (package
     (name "openexr")
     (version "3.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/AcademySoftwareFoundation/openexr")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/AcademySoftwareFoundation/openexr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0c9vla0kbsbbhkk42jlbf94nzfb1anqh7dy9b0b3nna1qr6v4bh6"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         ;; /var/tmp does not exist in the Guix build environment
-         (add-after 'unpack 'patch-test-directory
-           (lambda _
-             (substitute* '("src/test/OpenEXRUtilTest/tmpDir.h"
-                            "src/test/OpenEXRFuzzTest/tmpDir.h"
-                            "src/test/OpenEXRTest/tmpDir.h"
-                            "src/test/OpenEXRCoreTest/main.cpp")
-               (("/var/tmp") "/tmp")))))))
-    (inputs
-     (list imath zlib))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-test-directory
+                 (lambda _
+                   (substitute* (list
+                                 "src/test/OpenEXRUtilTest/tmpDir.h"
+                                 "src/test/OpenEXRFuzzTest/tmpDir.h"
+                                 "src/test/OpenEXRTest/tmpDir.h"
+                                 "src/test/OpenEXRCoreTest/main.cpp")
+                     (("/var/tmp")
+                      "/tmp"))))
+               #$@(if (target-64bit?)
+                      #~()
+                      #~((add-after 'patch-test-directory 'disable-broken-tests
+                           (lambda _
+                             ;; Disable tests that fail at least on i686-linux.
+                             (substitute* '("src/test/OpenEXRCoreTest/main.cpp"
+					    "src/test/OpenEXRTest/main.cpp")
+                               (("TEST \\(testCompression, \"basic\"\\);")
+                                "")
+                               (("TEST\\( testNoCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testRLECompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testZIPCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testZIPSCompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testB44Compression, \"core_compression\" \\);")
+                                "")
+                               (("TEST\\( testB44ACompression, \"core_compression\" \\);")
+                                "")
+                               (("TEST \\(testOptimizedInterleavePatterns, \"basic\"\\);")
+                                "")))))))))
+    (inputs (list imath zlib))
     (home-page "https://www.openexr.com/")
     (synopsis "High-dynamic-range file format library")
     (description
@@ -1207,7 +1248,7 @@ with strong support for multi-part, multi-channel use cases.")
      (list pkg-config))
     (inputs
      `(("boost" ,boost)
-       ("fmt" ,fmt)
+       ("fmt" ,fmt-8)
        ("libheif" ,libheif)
        ("libpng" ,libpng)
        ("libjpeg" ,libjpeg-turbo)
@@ -1262,7 +1303,7 @@ visual effects work for film.")
        ("jasper" ,jasper)
        ("librsvg" ,librsvg)
        ("libxrandr" ,libxrandr)
-       ("ffmpeg" ,ffmpeg)
+       ("ffmpeg" ,ffmpeg-4)
        ("mesa" ,mesa)))
     (synopsis "High-performance real-time graphics toolkit")
     (description
@@ -1754,102 +1795,57 @@ or by subtracting one shape from the other.")
       (license license:gpl2))))
 
 (define-public coin3D
-  ;; The ‘4.0.0’ zip archive isn't stable, nor in fact a release.  See:
-  ;; https://bitbucket.org/Coin3D/coin/issues/179/coin-400-srczip-has-been-modified
-  (let ((revision 1)
-        (changeset "ab8d0e47a4de3230a8137feb39c142d6ba45f97d"))
-    (package
-      (name "coin3D")
-      (version
-       (simple-format #f "3.1.3-~A-~A" revision (string-take changeset 7)))
-      (source
-       (origin
-         (method hg-fetch)
-         (uri (hg-reference
-               (url "https://bitbucket.org/Coin3D/coin")
-               (changeset changeset)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1ff44jz6lg4rylljvy69n1hcjh9y6achbv9jpn1cv2sf8cxn3r2j"))
-         (modules '((guix build utils)))
-         (snippet
-          '(begin
-             (for-each delete-file
-                       '("cfg/csubst.exe"
-                         "cfg/wrapmsvc.exe"))
-             #t))))
-      (build-system cmake-build-system)
-      (native-inputs
-       (list doxygen graphviz))
-      (inputs
-       (list boost freeglut glew))
-      (arguments
-       `(#:configure-flags
-         (list
-          "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-          (string-append "-DBOOST_ROOT="
-                         (assoc-ref %build-inputs "boost")))))
-      (home-page "https://bitbucket.org/Coin3D/coin/wiki/Home")
-      (synopsis
-       "High-level 3D visualization library with Open Inventor 2.1 API")
-      (description
-       "Coin is a 3D graphics library with an Application Programming Interface
-based on the Open Inventor 2.1 API.  For those who are not familiar with
-Open Inventor, it is a scene-graph based retain-mode rendering and model
-interaction library, written in C++, which has become the de facto
-standard graphics library for 3D visualization and visual simulation
-software in the scientific and engineering community.")
-      (license license:bsd-3))))
-
-(define-public coin3D-4
-    (package
+  (package
     (name "coin3D")
     (version "4.0.0")
     (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/coin3d/coin")
-               (commit (string-append "Coin-" version))
-               (recursive? #t)))
-        (file-name (git-file-name name version))
-        (sha256
-          (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
-        (modules '((guix build utils)))
-        (snippet
-          '(begin
-             ;; Delete binaries
-             (for-each delete-file
-                       '("cfg/csubst.exe"
-                         "cfg/wrapmsvc.exe"))
-             ;; Delete references to packaging tool cpack. Otherwise the build
-             ;; fails with "add_subdirectory given source "cpack.d" which is not
-             ;; an existing directory."
-             (substitute* "CMakeLists.txt"
-               ((".*cpack.d.*") ""))
-             #t))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/coin3d/coin")
+             (commit (string-append "Coin-" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ayg0hl8wanhadahm5xbghghxw1qjwqbrs3dl3ngnff027hsyf8p"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete binaries
+           (for-each delete-file
+                     '("cfg/csubst.exe"
+                       "cfg/wrapmsvc.exe"))
+           ;; Delete references to packaging tool cpack. Otherwise the build
+           ;; fails with "add_subdirectory given source "cpack.d" which is not
+           ;; an existing directory."
+           (substitute* "CMakeLists.txt"
+             ((".*cpack.d.*") ""))
+           #t))))
     (build-system cmake-build-system)
     (native-inputs
-      (list doxygen graphviz))
+     (list doxygen graphviz))
     (inputs
-      (list boost freeglut glew))
+     (list boost freeglut glew))
     (arguments
-      `(#:configure-flags
-        (list
-          "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
-          (string-append "-DBOOST_ROOT="
-                         (assoc-ref %build-inputs "boost")))))
+     `(#:configure-flags
+       (list
+        "-DCOIN_BUILD_DOCUMENTATION_MAN=ON"
+        (string-append "-DBOOST_ROOT="
+                       (assoc-ref %build-inputs "boost")))))
     (home-page "https://github.com/coin3d/coin")
     (synopsis
-      "High-level 3D visualization library with Open Inventor 2.1 API")
+     "High-level 3D visualization library with Open Inventor 2.1 API")
     (description
-      "Coin is a 3D graphics library with an Application Programming Interface
+     "Coin is a 3D graphics library with an Application Programming Interface
 based on the Open Inventor 2.1 API.  For those who are not familiar with Open
 Inventor, it is a scene-graph based retain-mode rendering and model interaction
 library, written in C++, which has become the de facto standard graphics
 library for 3D visualization and visual simulation software in the scientific
 and engineering community.")
-      (license license:bsd-3)))
+    (license license:bsd-3)))
+
+(define-deprecated coin3D-4 coin3D)
+(export coin3D-4)
 
 (define-public skia
   ;; Releases follow those of Chromium, about every 6 weeks.  The release
@@ -2052,7 +2048,7 @@ Some feature highlights:
 (define-public openxr
   (package
     (name "openxr")
-    (version "1.0.24")
+    (version "1.0.26")
     (source
      (origin
        (method git-fetch)
@@ -2066,7 +2062,7 @@ Some feature highlights:
            ;; Delete bundled jsoncpp.
            (delete-file-recursively "src/external/jsoncpp")))
        (sha256
-        (base32 "1lkbw03hpwnqcbn0fmxs4cnp5m04hc0ys6y111n7vlrg11sjdpq5"))))
+        (base32 "0s66xgwkdj5vn05l493hqydrxfpxxidd6mcb8l7l5awhn88cy16f"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; there are no tests
@@ -2120,7 +2116,7 @@ a complete and conforming implementation of the OpenXR API made by Khronos.")
 (define-public azpainter
   (package
     (name "azpainter")
-    (version "3.0.5")
+    (version "3.0.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2129,7 +2125,7 @@ a complete and conforming implementation of the OpenXR API made by Khronos.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1iplp3p8pw9q44kb43hrk89sv2aff6bdy9fk58j2v6k5lqbk6kvf"))))
+                "0lk74drrksk340fzyzvrq0ixwj498adshbp505cj163qsqnndj7y"))))
     (build-system gnu-build-system) ;actually a home grown build system
     (arguments
      (list #:tests? #f
@@ -2181,6 +2177,75 @@ Features include:
 @end itemize
 ")
     (license license:gpl3+)))
+
+(define-public discregrid
+  (let ((commit "4c27e1cc88be828c6ac5b8a05759ac7e01cf79e9")
+        (revision "0"))
+    (package
+      (name "discregrid")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/InteractiveComputerGraphics/Discregrid")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01cwfpw19rc9k5glx9dhnqpihd0is28a9b53qvzp5kgjmdq2v1p0"))
+         (modules '((guix build utils)))
+         (snippet
+          #~(begin
+              (delete-file-recursively "extern/cxxopts")
+              (substitute* '("cmd/discrete_field_to_bitmap/main.cpp"
+                             "cmd/generate_density_map/main.cpp"
+                             "cmd/generate_sdf/main.cpp")
+                (("^#include <cxxopts/cxxopts\\.hpp>")
+                 "#include <cxxopts.hpp>"))))))
+      (build-system cmake-build-system)
+      (outputs '("out" "bin"))
+      (arguments
+       (list #:tests? #f                ; No tests
+             #:configure-flags
+             #~(list (string-append "-DCMAKE_INSTALL_BINDIR="
+                                    #$output:bin "/bin")
+                     ;; Bespoke version of BUILD_SHARED_LIBS.
+                     "-DBUILD_AS_SHARED_LIBS=ON")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'patch-cmake
+                   (lambda _
+                     (let ((port (open-file "cmd/CMakeLists.txt" "a")))
+                       (display "install(TARGETS
+  DiscreteFieldToBitmap
+  GenerateDensityMap
+  GenerateSDF)
+"
+                                port)
+                       (close-port port)))))))
+      (inputs
+       (list cxxopts eigen))
+      (home-page "https://github.com/InteractiveComputerGraphics/Discregrid")
+      (synopsis "Discretize functions on regular grids")
+      (description "Discregrid is a C++ library for the parallel discretization
+of (preferably smooth) functions on regular grids.  It generates a (cubic)
+polynomial discretization given a box-shaped domain, a grid resolution, and a
+3D scalar field.  The library can also serialize and deserialize the generated
+discrete grid, and compute and discretize the signed distance field
+corresponding to a triangle mesh.  The following programs are included with
+Discregrid:
+
+@itemize
+@item @code{GenerateSDF}: Computes a discrete (cubic) signed distance field
+from a triangle mesh in OBJ format.
+
+@item @code{DiscreteFieldToBitmap}: Generates an image in bitmap format of a
+two-dimensional slice of a previously computed discretization.
+
+@item @code{GenerateDensityMap}: Generates a density map from a previously
+generated discrete signed distance field using the cubic spline kernel.
+@end itemize")
+      (license license:expat))))
 
 (define-public mmg
   (package
@@ -2260,7 +2325,8 @@ Features include:
            ;; TODO: Fix failing LaTeX invocation (which results in equations
            ;; being inserted literally into PNGs rather than being typeset).
            ;;texlive-tiny
-           ))
+
+           perl))                            ;used to generate Fortran headers
     (inputs
      (list scotch))
     (home-page "http://www.mmgtools.org/")

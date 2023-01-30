@@ -56,6 +56,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages bash)
+  #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages dns)
@@ -66,6 +67,7 @@
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
+  #:use-module (gnu packages libunistring)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages nettle)
@@ -79,6 +81,7 @@
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages base)
   #:use-module (srfi srfi-1))
 
@@ -304,8 +307,6 @@ required structures.")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
 (define-public gnutls-latest
-  ;; Version 3.7.7 introduces 'set-session-record-port-close!', which allows
-  ;; us to get rid of the wrapper port in 'tls-wrap'.
   (package
     (inherit gnutls)
     (version "3.7.7")
@@ -318,7 +319,14 @@ required structures.")
                                        "gnutls-cross.patch"))
               (sha256
                (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
+                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))
+
+    ;; Disable Guile bindings: they are now provided by Guile-GnuTLS.
+    (inputs (modify-inputs (package-inputs gnutls)
+              (delete "guile")
+              (append libunistring)))             ;GnuTLS depends on it
+    (native-inputs (modify-inputs (package-native-inputs gnutls)
+                     (delete "guile")))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
@@ -335,6 +343,69 @@ required structures.")
     (name "guile2.2-gnutls")
     (inputs (modify-inputs (package-inputs gnutls)
               (replace "guile" guile-2.2)))))
+
+(define-public guile-gnutls
+  (package
+    ;; This package supersedes the Guile bindings that came with GnuTLS until
+    ;; version 3.7.8 included.
+    (name "guile-gnutls")
+    (version "3.7.11")
+    (home-page "https://gitlab.com/gnutls/guile/")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "06d7v3i0d9ayp7zqk1rsy4z0wfpq69n0r54f1xrppb9gn7q9iva6"))
+              (file-name (git-file-name name version))
+              (patches (search-patches "gnutls-cross.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      ;; Tell the build system that we want Guile bindings installed to the
+      ;; output instead of Guiles own module directory.
+      #~(list "--disable-static"
+              (string-append "--with-guile-site-dir="
+                             "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
+              (string-append "--with-guile-site-ccache-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
+              (string-append "--with-guile-extension-dir="
+                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-more-shebangs
+            (lambda _
+              (for-each patch-shebang
+                        '("autopull.sh" "autogen.sh"))))
+          (replace 'bootstrap
+            (lambda _
+              (invoke "bash" "./bootstrap" "--no-git"))))))
+    (native-inputs
+     (list autoconf
+           automake
+           libtool
+           pkg-config
+           texinfo
+           gnutls-latest          ;XXX: 'guile-snarf' invokes the native 'cpp'
+           guile-3.0
+           (gnulib-checkout
+            #:version "2022-12-06"
+            #:commit "440b528b1d81dd31b2a2e4dde20d5c837c147811"
+            #:hash (base32 "15mq43abbnkbamchc9lynrvrd5ql8qacgyx2ph4kkngxf1bz3pqy"))))
+    (inputs
+     (list gnutls-latest
+           guile-3.0))
+    (properties '((release-tag-prefix . "v")
+                  (release-tag-version-delimiter . ".")))
+    (synopsis "Guile bindings to GnuTLS")
+    (description
+     "This package provides Guile bindings to GnuTLS, a library implementation
+the @acronym{TLS, Transport-Layer Security} protocol.  It supersedes the Guile
+bindings that were formerly provided as part of GnuTLS.")
+    (license license:lgpl2.1+)))
 
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
@@ -513,10 +584,29 @@ OpenSSL for TARGET."
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
 
+(define openssl/fixed
+  (package
+    (inherit openssl-1.1)
+    (name "openssl")
+    (version "1.1.1s")
+    (source (origin
+              (method url-fetch)
+              (uri (list (string-append "https://www.openssl.org/source/openssl-"
+                                        version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/"
+                                        "openssl-" version ".tar.gz")
+                         (string-append "ftp://ftp.openssl.org/source/old/"
+                                        (string-trim-right version char-set:letter)
+                                        "/openssl-" version ".tar.gz")))
+              (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
+              (sha256
+               (base32
+                "1amnwis6z2piqs022cpbcg828rql62yjnsqxnvdg0vzfc3kh3b65"))))))
+
 (define-public openssl-3.0
   (package
     (inherit openssl-1.1)
-    (version "3.0.5")
+    (version "3.0.7")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -529,7 +619,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-3.0-c-rehash-in.patch"))
               (sha256
                (base32
-                "0yja085lygkdxbf4k4rckkj9r24p8dgix8avqljnbbbixydqszda"))))
+                "0virbkcrw7nn3gr5r51z722gs1ppig0casj0c9pnj3i65829s143"))))
     (arguments
      (substitute-keyword-arguments (package-arguments openssl-1.1)
        ((#:phases phases '%standard-phases)
@@ -597,14 +687,14 @@ kilobytes of RAM.")
 (define-public libressl
   (package
     (name "libressl")
-    (version "3.3.6")
+    (version "3.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://openbsd/LibreSSL/"
                                   "libressl-" version ".tar.gz"))
               (sha256
                (base32
-                "16jbzqj9wy2z10x8ppx63idw44k0d3wly0grpar0s6g1cn9q8a1z"))))
+                "0x37037rb0zx34zp0kbbqj2xwd57gh1m6bfn52f92fz92q9wdymc"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -893,47 +983,6 @@ correct OpenSSL include path.  It is intended for use in your
 number generator")
   (license license:perl-license)))
 
-(define-public acme-client
-  (package
-    (name "acme-client")
-    (version "0.1.16")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://kristaps.bsd.lv/" name "/"
-                                  "snapshots/" name "-portable-"
-                                  version ".tgz"))
-              (sha256
-               (base32
-                "00q05b3b1dfnfp7sr1nbd212n0mqrycl3cr9lbs51m7ncaihbrz9"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:tests? #f ; no test suite
-       #:make-flags
-       (list "CC=gcc"
-             (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((pem (search-input-file inputs "/etc/ssl/cert.pem")))
-               (substitute* "http.c"
-                 (("/etc/ssl/cert.pem") pem))
-               #t)))
-         (delete 'configure)))) ; no './configure' script
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list libbsd libressl))
-    (synopsis "Let's Encrypt client by the OpenBSD project")
-    (description "acme-client is a Let's Encrypt client implemented in C.  It
-uses a modular design, and attempts to secure itself by dropping privileges and
-operating in a chroot where possible.  acme-client is developed on OpenBSD and
-then ported to the GNU / Linux environment.")
-    (home-page "https://kristaps.bsd.lv/acme-client/")
-    ;; acme-client is distributed under the ISC license, but the files 'jsmn.h'
-    ;; and 'jsmn.c' are distributed under the Expat license.
-    (license (list license:isc license:expat))))
-
 ;; The "-apache" variant is the upstreamed prefered variant. A "-gpl"
 ;; variant exists in addition to the "-apache" one.
 (define-public mbedtls-apache
@@ -941,25 +990,16 @@ then ported to the GNU / Linux environment.")
     (name "mbedtls-apache")
     ;; XXX Check whether ‘-Wformat-signedness’ still breaks mbedtls-for-hiawatha
     ;; when updating.
-    (version "2.26.0")
+    (version "2.28.0")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/ARMmbed/mbedtls")
              (commit (string-append "mbedtls-" version))))
-       (sha256
-        (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
        (file-name (git-file-name name version))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Can be removed with the next version.
-           ;; Reduce level of format truncation warnings due to false positives.
-           ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
-           (substitute* "CMakeLists.txt"
-             (("Wformat-truncation=2") "Wformat-truncation"))
-           #t))))
+       (sha256
+        (base32 "0s37dsi29v7146fi9k4frvx5rz2snxdm6c3rwq2fvnca2r80hfjl"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -969,8 +1009,7 @@ then ported to the GNU / Linux environment.")
        (modify-phases %standard-phases
          (add-after 'unpack 'make-source-writable
            (lambda _
-             (for-each make-file-writable (find-files "."))
-             #t)))))
+             (for-each make-file-writable (find-files ".")))))))
     (native-inputs
      (list perl python))
     (synopsis "Small TLS library")
@@ -987,6 +1026,26 @@ coding footprint.")
   (hidden-package
    (package
      (inherit mbedtls-apache)
+     (name "mbedtls-apache")
+     (version "2.26.0")
+     (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+              (url "https://github.com/ARMmbed/mbedtls")
+              (commit (string-append "mbedtls-" version))))
+        (sha256
+         (base32 "0scwpmrgvg6q7rvqkc352d2fqlsx0aylcbyibcp1f1rsn8iiif2m"))
+        (file-name (git-file-name name version))
+        (modules '((guix build utils)))
+        (snippet
+         '(begin
+            ;; Can be removed with the next version.
+            ;; Reduce level of format truncation warnings due to false positives.
+            ;; https://github.com/ARMmbed/mbedtls/commit/2065a8d8af27c6cb1e40c9462b5933336dca7434
+            (substitute* "CMakeLists.txt"
+              (("Wformat-truncation=2") "Wformat-truncation"))
+            #t))))
      (arguments
       (substitute-keyword-arguments (package-arguments mbedtls-apache)
         ((#:phases phases)
@@ -1005,68 +1064,68 @@ coding footprint.")
 (define-public dehydrated
   (package
     (name "dehydrated")
-    (version "0.7.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://github.com/dehydrated-io/dehydrated/releases/download/"
-                    "v" version "/dehydrated-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1yf4kldyd5y13r6qxrkcbbk74ykngq7jzy0351vb2r3ywp114pqw"))))
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/dehydrated-io/dehydrated")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mhf3v9ynwrxrkqawqpxnwfn5dmrlkqcvkxdrk59nkxjpdx1wkrb"))))
     (build-system trivial-build-system)
     (arguments
-     `(#:modules ((guix build utils)
+     (list
+      #:modules '((guix build utils)
                   (srfi srfi-26))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (srfi srfi-26))
-         (let* ((source (assoc-ref %build-inputs "source"))
-                (tar (assoc-ref %build-inputs "tar"))
-                (gz  (assoc-ref %build-inputs "gzip"))
-                (out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin"))
-                (doc (string-append out "/share/doc/" ,name "-" ,version))
-                (man (string-append out "/share/man"))
-                (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils)
+                       (srfi srfi-26))
+          (let* ((source (assoc-ref %build-inputs "source"))
+                 (gzip (search-input-file %build-inputs "bin/gzip"))
+                 (bin  (string-append #$output "/bin"))
+                 (doc  (string-append #$output "/share/doc/"
+                                      #$name "-" #$version))
+                 (man  (string-append #$output "/share/man"))
+                 (bash (in-vicinity (assoc-ref %build-inputs "bash") "bin")))
 
-           (setenv "PATH" (string-append gz "/bin"))
-           (invoke (string-append tar "/bin/tar") "xvf" source)
-           (chdir (string-append ,name "-" ,version))
+            (chdir source)
 
-           (copy-recursively "docs" doc)
-           (install-file "LICENSE" doc)
+            (copy-recursively "docs" doc)
+            (install-file "LICENSE" doc)
 
-           (mkdir-p man)
-           (rename-file (string-append doc "/man")
-                        (string-append man "/man1"))
-           (for-each (cut invoke "gzip" "-9" <>)
-                     (find-files man ".*"))
+            (mkdir-p man)
+            (rename-file (string-append doc "/man")
+                         (string-append man "/man1"))
+            (for-each (cut invoke gzip "-9n" <>)
+                      (find-files man ".*"))
 
-           (install-file "dehydrated" bin)
-           (with-directory-excursion bin
-             (patch-shebang "dehydrated" (list bash))
+            (install-file "dehydrated" bin)
+            (with-directory-excursion bin
+              (patch-shebang "dehydrated" (list bash))
 
-             ;; Do not try to write to the store.
-             (substitute* "dehydrated"
-               (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
+              ;; Do not try to write to the store.
+              (substitute* "dehydrated"
+                (("SCRIPTDIR=\"\\$.*\"") "SCRIPTDIR=~/.dehydrated"))
 
-             (setenv "PATH" bash)
-             (wrap-program "dehydrated"
-               `("PATH" ":" prefix
-                 ,(map (lambda (dir)
-                         (string-append dir "/bin"))
-                       (map (lambda (input)
-                              (assoc-ref %build-inputs input))
-                            '("coreutils"
-                              "curl"
-                              "diffutils"
-                              "gawk"
-                              "grep"
-                              "openssl"
-                              "sed"))))))
-           #t))))
+              (setenv "PATH" bash)
+              (wrap-program "dehydrated"
+                `("PATH" ":" prefix
+                  ,(map (lambda (file)
+                          (dirname (search-input-file %build-inputs file)))
+                        (list
+                         ;; From check_dependencies() — keep them in sync.
+                         "bin/grep"
+                         "bin/diff"
+                         "bin/sed"
+                         "bin/awk"
+                         "bin/curl"
+                         "bin/cut"      ; also mktemp, head, tail
+                         "bin/hexdump"
+                         ;; Additional requirements.
+                         "bin/openssl")))))))))
     (inputs
      (list bash
            coreutils
@@ -1075,9 +1134,10 @@ coding footprint.")
            gawk
            grep
            openssl
-           sed))
+           sed
+           util-linux+udev))
     (native-inputs
-     (list gzip tar))
+     (list gzip))
     ;; The following definition is copied from the cURL package to prevent a
     ;; cycle between the curl and tls modules.
     (native-search-paths
@@ -1157,7 +1217,7 @@ compatibility is also supported.")
 (define-public wolfssl
   (package
     (name "wolfssl")
-    (version "4.8.1")
+    (version "5.5.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1166,11 +1226,14 @@ compatibility is also supported.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0w5pd40j6h4j2f0b7c2n1n979y9qk8aln3ss2gb0jfsid1hrmx5k"))))
+                "0pz25acm842cl6l51vqr8pgxci6rda8sznms757p7rnm9fw3jdl0"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
-       '("--enable-reproducible-build")))
+       '("--enable-distro"
+         "--enable-pkcs11"
+         "--disable-examples"
+         "--enable-jobserver=no")))
     (native-inputs
      (list autoconf automake libtool))
     (synopsis "SSL/TLS implementation")

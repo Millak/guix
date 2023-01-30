@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -277,7 +277,7 @@ expressions and blanks that were read."
    ('lambda 2)
    ('lambda* 2)
    ('match-lambda 1)
-   ('match-lambda* 2)
+   ('match-lambda* 1)
    ('define 2)
    ('define* 2)
    ('define-public 2)
@@ -286,11 +286,15 @@ expressions and blanks that were read."
    ('define-syntax-rule 2)
    ('define-module 2)
    ('define-gexp-compiler 2)
+   ('define-record-type 2)
+   ('define-record-type* 4)
+   ('define-configuration 2)
    ('let 2)
    ('let* 2)
    ('letrec 2)
    ('letrec* 2)
    ('match 2)
+   ('match-record 3)
    ('when 2)
    ('unless 2)
    ('package 1)
@@ -484,6 +488,19 @@ each line except the first one (they're assumed to be already there)."
                    (8  "#o"))
                  (number->string integer base)))
 
+(define %special-non-extended-symbols
+  ;; Special symbols that can be written without the #{...}# notation for
+  ;; extended symbols: 1+, 1-, 123/, etc.
+  (make-regexp "^[0-9]+[[:graph:]]+$" regexp/icase))
+
+(define (symbol->display-string symbol context)
+  "Return the most appropriate representation of SYMBOL, resorting to extended
+symbol notation only when strictly necessary."
+  (let ((str (symbol->string symbol)))
+    (if (regexp-exec %special-non-extended-symbols str)
+        str                                  ;no need for the #{...}# notation
+        (object->string symbol))))
+
 (define* (pretty-print-with-comments port obj
                                      #:key
                                      (format-comment
@@ -557,7 +574,8 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
               ((? string? str)
                (>= (+ (string-width str) 2 indent) max-width))
               ((? symbol? symbol)
-               (>= (+ (string-width (symbol->string symbol)) indent)
+               (>= (+ (string-width (symbol->display-string symbol context))
+                      indent)
                    max-width))
               ((? boolean?)
                (>= (+ 2 indent) max-width))
@@ -643,7 +661,7 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
        ;; and following arguments are less indented.
        (let* ((lead    (special-form-lead head context))
               (context (cons head context))
-              (head    (symbol->string head))
+              (head    (symbol->display-string head (cdr context)))
               (total   (length arguments)))
          (unless delimited? (display " " port))
          (display "(" port)
@@ -723,6 +741,8 @@ FORMAT-VERTICAL-SPACE; a useful value of 'canonicalize-vertical-space'."
                           (printed-string obj context))
                          ((integer? obj)
                           (integer->string obj context))
+                         ((symbol? obj)
+                          (symbol->display-string obj context))
                          (else
                           (object->string obj))))
               (len (string-width str)))

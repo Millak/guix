@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -103,16 +103,11 @@
                                           "sha256" f))))))))))
 
 (test-assert "options->transformation, with-source, no matches"
-  ;; When a transformation in not applicable, a warning must be raised.
   (let* ((p (dummy-package "foobar"))
          (s (search-path %load-path "guix.scm"))
          (t (options->transformation `((with-source . ,s)))))
-    (let* ((port (open-output-string))
-           (new  (parameterize ((guix-warning-port port))
-                   (t p))))
-      (and (eq? new p)
-           (string-contains (get-output-string port)
-                            "had no effect")))))
+    (eq? (package-source (t p))
+         (package-source p))))
 
 (test-assert "options->transformation, with-source, PKG=URI"
   (let* ((p (dummy-package "foo"))
@@ -146,6 +141,29 @@
              (string=? source
                        (add-to-store store (basename s) #t
                                      "sha256" s)))))))
+
+(test-assert "options->transformation, with-source, in depth"
+  (let* ((p0 (dummy-package "foo" (version "0.0")))
+         (s  (search-path %load-path "guix.scm"))
+         (f  (string-append "foo@42.0=" s))
+         (t  (options->transformation `((with-source . ,f))))
+         (p1 (dummy-package "bar" (inputs (list p0))))
+         (p2 (dummy-package "baz" (inputs (list p1)))))
+    (with-store store
+      (let ((new (t p2)))
+        (and (not (eq? new p2))
+             (match (package-inputs new)
+               ((("bar" p1*))
+                (match (package-inputs p1*)
+                  ((("foo" p0*))
+                   (and (not (eq? p0* p0))
+                        (string=? (package-name p0*) (package-name p0))
+                        (string=? (package-version p0*) "42.0")
+                        (string=? (add-to-store store (basename s) #t
+                                                "sha256" s)
+                                  (run-with-store store
+                                    (lower-object
+                                     (package-source p0*))))))))))))))
 
 (test-assert "options->transformation, with-input"
   (let* ((p (dummy-package "guix.scm"
@@ -470,14 +488,31 @@
                        (name 'dummy)
                        (pred (const #t))
                        (description "")
-                       (latest (const (upstream-source
-                                       (package "foo")
-                                       (version "42.0")
-                                       (urls '("http://example.org")))))))))
+                       (import (const (upstream-source
+                                         (package "foo")
+                                         (version "42.0")
+                                         (urls '("http://example.org")))))))))
         (let* ((p (dummy-package "foo" (version "1.0")))
                (t (options->transformation
                    `((with-latest . "foo")))))
           (package-version (t p)))))
+
+(test-equal "options->transformation, with-version"
+  "1.0"
+  (mock ((guix upstream) %updaters
+         (delay (list (upstream-updater
+                       (name 'dummy)
+                       (pred (const #t))
+                       (description "")
+                       (import (const (upstream-source
+                                         (package "foo")
+                                         (version "1.0")
+                                         (urls '("http://example.org")))))))))
+        (let* ((p0 (dummy-package "foo" (version "7.7")))
+               (p1 (dummy-package "bar" (inputs (list p0))))
+               (t  (options->transformation
+                    `((with-version . "foo=1.0")))))
+          (package-version (lookup-package-input (t p1) "foo")))))
 
 (test-equal "options->transformation, tune"
   '(cpu-tuning . "superfast")

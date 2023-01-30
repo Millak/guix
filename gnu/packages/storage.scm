@@ -3,6 +3,7 @@
 ;;; Copyright © 2017 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2020, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -50,8 +51,10 @@
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages rpc)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml))
@@ -59,23 +62,22 @@
 (define-public ceph
   (package
     (name "ceph")
-    (version "16.2.9")
+    (version "17.2.5")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.ceph.com/tarballs/ceph-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1yf62k9wlx9pmggwa5c05wfqzy28sdm4b465y4iqrgc9dkrgin08"))
+                "16mjj6cyrpdn49ig82mmrv984vqfdf24d6i4n9sghfli8z0nj8in"))
               (patches
                (search-patches
-                "ceph-disable-cpu-optimizations.patch"
-                "ceph-boost-compat.patch"
-                "ceph-rocksdb-compat.patch"))
+                "ceph-disable-cpu-optimizations.patch"))
               (modules '((guix build utils)))
               (snippet
                '(for-each delete-file-recursively
                           '(;; TODO: Unbundle these:
+                            "src/arrow"
                             ;;"src/isa-l"
                             ;;"src/lua"
                             ;;"src/xxHash"
@@ -87,11 +89,14 @@
                             "src/rapidjson"
                             "src/spdk"
                             "src/rocksdb"
-                            "src/boost")))))
+                            "src/boost"
+                            "src/utf8proc")))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (let* ((out (assoc-ref %outputs "out"))
+     (list
+      #:parallel-build? #f ;because mgr_legacy_options.h is not built in time
+      #:configure-flags
+      '(let* ((out (assoc-ref %outputs "out"))
               (lib (assoc-ref %outputs "lib"))
               (libdir (string-append lib "/lib")))
          (list (string-append "-DCMAKE_INSTALL_PREFIX=" out)
@@ -112,11 +117,13 @@
                               (assoc-ref %build-inputs "xfsprogs") "/include")
                "-DCMAKE_INSTALL_LOCALSTATEDIR=/var"
                "-DBUILD_SHARED_LIBS=ON"
-               "-DWITH_SYSTEM_ROCKSDB=ON"
+               "-DWITH_SYSTEM_ARROW=ON"
                "-DWITH_SYSTEM_BOOST=ON"
+               "-DWITH_SYSTEM_ROCKSDB=ON"
+               "-DWITH_SYSTEM_UTF8PROC=ON"
 
                ;; TODO: Enable these when available in Guix.
-               "-DWITH_MGR_DASHBOARD_FRONTEND=OFF"       ;requires node + nodeenv
+               "-DWITH_MGR_DASHBOARD_FRONTEND=OFF" ;requires node + nodeenv
                "-DWITH_BABELTRACE=OFF"
                "-DWITH_LTTNG=OFF"
                "-DWITH_SPDK=OFF"
@@ -136,102 +143,115 @@
        ;; resolved.
        #:tests? #f
        #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-source
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (lib (assoc-ref outputs "lib")))
+       `(modify-phases %standard-phases
+          (add-after 'unpack 'patch-source
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (lib (assoc-ref outputs "lib")))
 
-               (substitute* "cmake/modules/Distutils.cmake"
-                 ;; Prevent creation of Python eggs.
-                 (("setup.py install")
-                  "setup.py install --single-version-externally-managed --root=/")
-                 ;; Inject the -rpath linker argument when linking
-                 ;; Python C libraries so RUNPATH gets set up correctly.
-                 (("LDFLAGS=(.*)\n" _ flags)
-                  (string-append "LDFLAGS=\\\"" flags
-                                 " -Wl,-rpath=" lib "/lib\\\"\n")))
+                (substitute* "src/rgw/store/dbstore/sqlite/CMakeLists.txt"
+                  (("add_library\\(sqlite_db \\$")
+                   "add_library(sqlite_db STATIC $"))
+                (substitute* "src/rgw/store/dbstore/CMakeLists.txt"
+                  (("add_library\\(dbstore \\$")
+                   "add_library(dbstore STATIC $")
+                  (("add_library\\(dbstore_lib \\$")
+                   "add_library(dbstore_lib STATIC $"))
 
-               ;; Statically link libcrc32 because it does not get installed,
-               ;; yet several libraries end up referring to it.
-               (substitute* "src/common/CMakeLists.txt"
-                 (("add_library\\(crc32")
-                  "add_library(crc32 STATIC"))
+                (substitute* "cmake/modules/Distutils.cmake"
+                  ;; Prevent creation of Python eggs.
+                  (("setup.py install")
+                   "setup.py install --single-version-externally-managed --root=/")
+                  ;; Inject the -rpath linker argument when linking
+                  ;; Python C libraries so RUNPATH gets set up correctly.
+                  (("LDFLAGS=(.*)\n" _ flags)
+                   (string-append "LDFLAGS=\\\"" flags
+                                  " -Wl,-rpath=" lib "/lib\\\"\n")))
 
-               (substitute* "udev/50-rbd.rules"
-                 (("/usr/bin/ceph-rbdnamer")
-                  (string-append out "/bin/ceph-rbdnamer"))))))
-         (add-before 'install 'set-install-environment
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (py3sitedir
-                     (string-append out "/lib/python"
-                                    ,(version-major+minor
-                                      (package-version python))
-                                    "/site-packages")))
-               ;; The Python install scripts refuses to function if
-               ;; the install directory is not on PYTHONPATH.
-               (setenv "PYTHONPATH" py3sitedir))))
-         (add-after 'install 'wrap-python-scripts
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
-                    (dependencies (map (lambda (input)
-                                         (assoc-ref inputs input))
-                                       '("python-prettytable" "python-pyyaml")))
-                    (sitedir (lambda (package)
-                               (string-append package
-                                              "/lib/python"
-                                              ,(version-major+minor
-                                                (package-version python))
-                                              "/site-packages")))
-                    (PYTHONPATH (string-join (map sitedir (cons out dependencies))
-                                             ":")))
-               (for-each (lambda (executable)
-                           (wrap-program (string-append out "/" executable)
-                             `("GUIX_PYTHONPATH" ":" prefix (,PYTHONPATH))))
-                         scripts)))))))
+                ;; Statically link libcrc32 because it does not get installed,
+                ;; yet several libraries end up referring to it.
+                (substitute* "src/common/CMakeLists.txt"
+                  (("add_library\\(crc32")
+                   "add_library(crc32 STATIC"))
+
+                (substitute* "udev/50-rbd.rules"
+                  (("/usr/bin/ceph-rbdnamer")
+                   (string-append out "/bin/ceph-rbdnamer"))))))
+          (add-before 'install 'set-install-environment
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (py3sitedir
+                      (string-append out "/lib/python"
+                                     ,(version-major+minor
+                                       (package-version python))
+                                     "/site-packages")))
+                ;; The Python install scripts refuses to function if
+                ;; the install directory is not on PYTHONPATH.
+                (setenv "PYTHONPATH" py3sitedir))))
+          (add-after 'install 'wrap-python-scripts
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (scripts '("bin/ceph" "bin/cephfs-top" "sbin/ceph-volume"))
+                     (dependencies (map (lambda (input)
+                                          (assoc-ref inputs input))
+                                        '("python-prettytable" "python-pyyaml")))
+                     (sitedir (lambda (package)
+                                (string-append package
+                                               "/lib/python"
+                                               ,(version-major+minor
+                                                 (package-version python))
+                                               "/site-packages")))
+                     (PYTHONPATH (string-join (map sitedir (cons out dependencies))
+                                              ":")))
+                (for-each (lambda (executable)
+                            (wrap-program (string-append out "/" executable)
+                              `("GUIX_PYTHONPATH" ":" prefix (,PYTHONPATH))))
+                          scripts)))))))
     (outputs
      '("out" "lib"))
     (native-inputs
      (list gperf pkg-config python-cython python-sphinx yasm))
     (inputs
-     `(("boost" ,boost)
-       ("curl" ,curl)
-       ("cryptsetup" ,cryptsetup)
-       ("expat" ,expat)
-       ("fcgi" ,fcgi)
-       ("fmt" ,fmt)
-       ("fuse" ,fuse)
-       ("icu4c" ,icu4c)
-       ("jemalloc" ,jemalloc)
-       ("keyutils" ,keyutils)
-       ("leveldb" ,leveldb)
-       ("libaio" ,libaio)
-       ("libatomic-ops" ,libatomic-ops)
-       ("libcap-ng" ,libcap-ng)
-       ("libnl" ,libnl)
-       ("librdkafka" ,librdkafka)
-       ("lua" ,lua)
-       ("lz4" ,lz4)
-       ("oath-toolkit" ,oath-toolkit)
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)
-       ("ncurses" ,ncurses)
-       ("nss" ,nss)
-       ("python-prettytable" ,python-prettytable) ;used by ceph_daemon.py
-       ("python-pyyaml" ,python-pyyaml)           ;from python-common/setup.py
-       ("python" ,python)
-       ("rapidjson" ,rapidjson)
-       ("rdma-core" ,rdma-core)
-       ("rocksdb" ,rocksdb)
-       ("snappy" ,snappy)
-       ("sqlite" ,sqlite)
-       ("udev" ,eudev)
-       ("util-linux" ,util-linux)
-       ("util-linux:lib" ,util-linux "lib")
-       ("xfsprogs" ,xfsprogs)
-       ("zlib" ,zlib)))
+     (list `(,apache-thrift "lib")
+           `(,apache-thrift "include")
+           `(,apache-arrow-for-ceph "lib")
+           boost
+           curl
+           cryptsetup
+           eudev
+           expat
+           fcgi
+           fmt-8
+           fuse
+           icu4c
+           jemalloc
+           keyutils
+           leveldb
+           libaio
+           libatomic-ops
+           libcap-ng
+           libnl
+           librdkafka
+           lua
+           lz4
+           oath-toolkit
+           openldap
+           openssl
+           ncurses
+           nss
+           python-prettytable           ;used by ceph_daemon.py
+           python-pyyaml                ;from python-common/setup.py
+           python
+           rapidjson
+           rdma-core
+           rocksdb
+           snappy
+           sqlite
+           utf8proc
+           util-linux
+           `(,util-linux "lib")
+           xfsprogs
+           zlib))
     (home-page "https://ceph.com/")
     (synopsis "Distributed object store and file system")
     (description

@@ -38,6 +38,9 @@
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -88,6 +91,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix deprecation)
@@ -247,6 +251,34 @@ source code editors and IDEs.")
              (sha256
               (base32
                "0d22h8xshmbpl9hba9ch3xj8vb9ybm5akpsbbh7yj07fic4h2hj6"))))))
+
+(define-public clara
+  (package
+    (name "clara")
+    (version "1.1.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/catchorg/Clara")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08mlm9ax5d7wkmsihm1xnlgp7rfgff0bfl4ly4850xmrdaxmmkl3"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              (install-file (string-append #$source "/single_include/clara.hpp")
+                            (string-append #$output "/include")))))))
+    (home-page "https://github.com/catchorg/Clara")
+    (synopsis "Simple command line parser for C++")
+    (description "Clara is a simple to use, composable, command line parser
+for C++ 11 and beyond implemented as a single-header library.")
+    (license license:boost1.0)))
 
 (define-public clitest
   (package
@@ -492,6 +524,142 @@ a multi-paradigm automated test framework for C++ and Objective-C.")
 a multi-paradigm automated test framework for C++ and Objective-C.")
     (license license:boost1.0)))
 
+(define-public cbehave
+  (let ((commit "5deaea0eaaf52f1c5ccdac0c68c003988f348fb4")
+        (revision "1"))
+    (package
+      (name "cbehave")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/bigwhite/cbehave")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0kicawxmxn059n3rmfc7r2q5wfjrqbr6lm8dmsi86ba76ak0f9gi"))
+                (snippet
+                 #~(begin
+                     (for-each delete-file
+                               '("aclocal.m4"
+                                 "config.guess" "config.sub" "configure"
+                                 "depcomp" "install-sh"
+                                 "libtool" "ltmain.sh" "missing"
+                                 "Makefile.in" "src/Makefile.in"
+                                 "src/example/Makefile.in"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags #~(list "--enable-shared" "--disable-static")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'bootstrap 'rename-configure.in
+              (lambda _
+                (rename-file "configure.in" "configure.ac")))
+            (add-after 'rename-configure.in 'set-AM_PROG_AR
+              (lambda _
+                (substitute* "configure.ac"
+                  (("^AC_PROG_LIBTOOL.*" orig)
+                   (string-append "AM_PROG_AR\n" orig)))))
+            (add-after 'set-AM_PROG_AR 'enable-tests
+              (lambda _
+                (let ((port (open-file "src/example/Makefile.am" "a")))
+                  (display (string-append "\nTESTS = calculator_test"
+                                          " text_editor_test string_test"
+                                          " product_database_test mock_test\n")
+                           port)
+                  (close-port port))))
+            (add-before 'check 'create-dummy-file
+              (lambda _
+                (invoke "touch" "src/example/foo.txt"))))))
+      (native-inputs (list autoconf automake libtool))
+      (home-page "https://github.com/bigwhite/cbehave")
+      (synopsis "Behavior-driven development framework")
+      (description "CBehave is a behavior-driven development implemented in C.
+It allows the specification of behaviour scenarios using a given-when-then
+pattern.")
+      (license license:apsl2))))
+
+(define-public catch2-3.1
+  (package
+    (name "catch2")
+    (version "3.1.1")
+    (home-page "https://github.com/catchorg/Catch2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/catchorg/Catch2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qnr5b3zq8brh43f924rgnw5gmmjf9ax7kbq2crz1mlwgmdymxlp"))))
+    (outputs (list "out" "static"))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-meson
+            (lambda _
+              (substitute* "src/catch2/meson.build"
+                (("static_library") "both_libraries"))))
+          (add-after 'install 'install-cmake-config
+            (lambda* (#:key outputs #:allow-other-keys)
+              (define prefix (string-append (assoc-ref outputs "out")
+                                            "/lib/cmake/Catch2/"))
+              (mkdir-p prefix)
+              (call-with-output-file (string-append
+                                      prefix
+                                      "catch2-config-version.cmake")
+                (lambda (port)
+                  (format
+                   port
+                   "set(PACKAGE_VERSION ~s)~@
+                    if(PACKAGE_FIND_VERSION STREQUAL PACKAGE_VERSION)~@
+                    set(PACKAGE_VERSION_EXACT TRUE)~@
+                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
+                    elseif(PACKAGE_FIND_VERSION VERSION_LESS_EQUAL ~
+                           PACKAGE_VERSION)~@
+                    set(PACKAGE_VERSION_COMPATIBLE TRUE)~@
+                    else()~@
+                    set(PACKAGE_VERSION_COMPATIBLE FALSE)~@
+                    endif()"
+                   #$version)))
+              (call-with-output-file (string-append prefix
+                                                    "catch2-config.cmake")
+                (lambda (port)
+                  (format
+                   port
+                   "include(FindPkgConfig)~@
+                    pkg_check_modules(CATCH2 IMPORTED_TARGET GLOBAL catch2)~@
+                    pkg_check_modules(CATCH2MAIN ~
+                                      IMPORTED_TARGET GLOBAL ~
+                                      catch2 catch2-with-main)~@
+                    if(CATCH2_FOUND)~@
+                      add_library(Catch2::Catch2 ALIAS PkgConfig::CATCH2)~@
+                    endif()~@
+                    if(CATCH2MAIN_FOUND)~@
+                      add_library(Catch2::Catch2WithMain ~
+                                  ALIAS PkgConfig::CATCH2MAIN)~@
+                    endif()")))))
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((out (assoc-ref outputs "out"))
+                    (static (assoc-ref outputs "static")))
+                (for-each
+                 (lambda (file)
+                   (install-file file (string-append static "/lib"))
+                   (delete-file file))
+                 (find-files (string-append out "/lib")
+                             "\\.a$"))))))))
+    (inputs (list python-wrapper))
+    (synopsis "Automated test framework for C++ and Objective-C")
+    (description "Catch2 stands for C++ Automated Test Cases in Headers and is
+a multi-paradigm automated test framework for C++ and Objective-C.")
+    (license license:boost1.0)))
+
 (define-public cmdtest
   (package
     (name "cmdtest")
@@ -569,6 +737,51 @@ normally do not detect.  The goal is to detect only real errors in the code
 (i.e. have zero false positives).")
     (license license:gpl3+)))
 
+(define-public cukinia
+  (package
+    (name "cukinia")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/savoirfairelinux/cukinia")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1i92b37w8kb0rzkazlnnhjjbh1l1nmk2yrjvar7rpl97i9gn212m"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; The test suite assumes the host system runs systemd, has a root user,
+      ;; among other things (see:
+      ;; https://github.com/savoirfairelinux/cukinia/issues/51).
+      #:tests? #f
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ;no configure script
+          (delete 'build)               ;no build system
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./cukinia" "tests/testcases.conf"))))
+          (replace 'install
+            (lambda _
+              (install-file "cukinia" (string-append #$output "/bin")))))))
+    (home-page "https://github.com/savoirfairelinux/cukinia")
+    (synopsis "Simple on-target system test framework")
+    (description "Cukinia is designed to help GNU/Linux-based embedded
+firmware developers run simple system-level validation tests on their
+firmware.  Cukinia integrates well with embedded firmware generation
+frameworks such as Buildroot and Yocto, and can be run manually or by your
+favourite continuous integration framework.  Among Cukinia features are:
+@itemize
+@item simple to use
+@item no dependencies other than BusyBox or GNU Coreutils
+@item easy integration with CI/CD pipelines.
+@end itemize")
+    (license (list license:gpl3+ license:asl2.0)))) ;dual license
+
 (define-public cxxtest
   (package
     (name "cxxtest")
@@ -617,7 +830,7 @@ and it supports a very flexible form of test discovery.")
 (define-public doctest
   (package
     (name "doctest")
-    (version "2.4.8")
+    (version "2.4.9")
     (home-page "https://github.com/onqtam/doctest")
     (source (origin
               (method git-fetch)
@@ -626,7 +839,7 @@ and it supports a very flexible form of test discovery.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "057wdkv3gcz42mh1j284sgvm16i5fk1f9b1plgvavca70q4p52gz"))))
+                "1pkpwwvskcr21p00zrbnxpddv34p605mls86qirqqdwggmws82ds"))))
     (build-system cmake-build-system)
     (synopsis "C++ test framework")
     (description
@@ -1034,6 +1247,28 @@ and many external plugins.")
 (define-deprecated python-pytest-6 python-pytest)
 (export python-pytest-6)
 
+;; Astropy started using hard dependencies for Pytest 7+, which might
+;; happen for some other projects. It could be set as default in staging.
+(define-public python-pytest-7.1
+  (package
+    (inherit python-pytest)
+    (version "7.1.3")
+    (name "python-pytest")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pytest" version))
+       (sha256
+        (base32
+         "0f8c31v5r2kgjixvy267n0nhc4xsy65g3n9lz1i1377z5pn5ydjg"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments python-pytest)
+      ((#:phases phases #~%standard-phases)
+        #~(modify-phases #$phases
+            (add-before 'build 'pretend-version
+              (lambda _
+                (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))))))))
+
 (define-public python-pytest-bootstrap
   (package
     (inherit python-pytest)
@@ -1134,6 +1369,25 @@ supports coverage of subprocesses.")
     (synopsis "HTTP server for pytest")
     (description "Pytest plugin library to test http clients without
 contacting the real http server.")
+    (license license:expat)))
+
+(define-public python-pytest-param-files
+  (package
+    (name "python-pytest-param-files")
+    (version "0.3.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest_param_files" version))
+              (sha256
+               (base32
+                "0gc9nsqizrjapjnbcs1bdxfcl69dpmwbpd9sssjidgcikm7k433c"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-flit-core))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/chrisjsewell/pytest-param-files")
+    (synopsis "Pytest plugin to parameterize tests from external files")
+    (description "This Pytest plugin enables creating Pytest parametrize
+decorators from external files.")
     (license license:expat)))
 
 (define-public python-pytest-random-order
@@ -2006,7 +2260,7 @@ instantly.")
 much larger range of examples than you would ever want to write by hand.  It’s
 based on the Haskell library, Quickcheck, and is designed to integrate
 seamlessly into your existing Python unit testing work flow.")
-    (home-page "https://github.com/HypothesisWorks/hypothesis")
+    (home-page "https://hypothesis.works/")
     (license license:mpl2.0)))
 
 (define-deprecated python-hypothesis-next python-hypothesis)
@@ -2143,7 +2397,7 @@ failures.")
     (home-page "https://github.com/ktosiek/pytest-freezegun")
     (synopsis "Pytest plugin to freeze time in test fixtures")
     (description "The @code{pytest-freezegun} plugin wraps tests and fixtures
-with @code{freeze_time}, which allows to control (i.e., freeze) the time seen
+with @code{freeze_time}, which controls (i.e., freeze) the time seen
 by the test.")
     (license license:expat)))
 
@@ -3001,7 +3255,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
 (define-public python-aiounittest
   (package
     (name "python-aiounittest")
-    (version "1.4.1")
+    (version "1.4.2")
     ;; Pypi package lacks tests.
     (source
      (origin (method git-fetch)
@@ -3011,7 +3265,7 @@ system.  The code under test requires no modification to work with pyfakefs.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "10x7ds09b9415r92f7g9714gxixvvq3bm5mnh29ml9aba8blcb0n"))))
+               "0srahyzrk5awfh4rmppvqkblfmiavdklxl9i5mcr8gl7ahiwwl7f"))))
     (build-system python-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases

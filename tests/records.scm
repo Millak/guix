@@ -528,4 +528,37 @@ Description: 1st line,
                  '("a" "b" "c")
                  '("a")))
 
+(test-equal "match-record, simple"
+  '((1 2) (a b))
+  (let ()
+    (define-record-type* <foo> foo make-foo
+      foo?
+      (first  foo-first (default 1))
+      (second foo-second))
+
+    (list (match-record (foo (second 2)) <foo>
+            (first second)
+            (list first second))
+          (match-record (foo (first 'a) (second 'b)) <foo>
+            (second (first first/new-var))
+            (list first/new-var second)))))
+
+(test-equal "match-record, unknown field"
+  'syntax-error
+  (catch 'syntax-error
+    (lambda ()
+      (eval '(begin
+               (use-modules (guix records))
+
+               (define-record-type* <foo> foo make-foo
+                 foo?
+                 (first  foo-first (default 1))
+                 (second foo-second))
+
+               (match-record (foo (second 2)) <foo>
+                 (one two)
+                 #f))
+            (make-fresh-user-module)))
+    (lambda (key . args) key)))
+
 (test-end)

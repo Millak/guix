@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nathan Dehnel <ncdehnel@gmail.com>
 ;;; Copyright © 2022 Cameron V Chaparro <cameron@cameronchaparro.com>
+;;; Copyright © 2022 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -61,6 +62,7 @@
             wireguard-peer-endpoint
             wireguard-peer-allowed-ips
             wireguard-peer-public-key
+            wireguard-peer-preshared-key
             wireguard-peer-keep-alive
 
             wireguard-configuration
@@ -72,6 +74,11 @@
             wireguard-configuration-dns
             wireguard-configuration-private-key
             wireguard-configuration-peers
+            wireguard-configuration-pre-up
+            wireguard-configuration-post-up
+            wireguard-configuration-pre-down
+            wireguard-configuration-post-down
+            wireguard-configuration-table
 
             wireguard-service-type))
 
@@ -704,6 +711,8 @@ strongSwan.")))
   (endpoint          wireguard-peer-endpoint
                      (default #f))     ;string
   (public-key        wireguard-peer-public-key)   ;string
+  (preshared-key     wireguard-peer-preshared-key
+                     (default #f))     ;string
   (allowed-ips       wireguard-peer-allowed-ips) ;list of strings
   (keep-alive        wireguard-peer-keep-alive
                      (default #f)))    ;integer
@@ -724,7 +733,17 @@ strongSwan.")))
   (peers              wireguard-configuration-peers ;list of <wiregard-peer>
                       (default '()))
   (dns                wireguard-configuration-dns ;list of strings
-                      (default #f)))
+                      (default #f))
+  (pre-up             wireguard-configuration-pre-up ;list of strings
+                      (default '()))
+  (post-up            wireguard-configuration-post-up ;list of strings
+                      (default '()))
+  (pre-down           wireguard-configuration-pre-down ;list of strings
+                      (default '()))
+  (post-down          wireguard-configuration-post-down ;list of strings
+                      (default '()))
+  (table              wireguard-configuration-table ;string
+                      (default "auto")))
 
 (define (wireguard-configuration-file config)
   (define (peer->config peer)
@@ -747,9 +766,18 @@ AllowedIPs = ~a
                   (format #f "PersistentKeepalive = ~a\n" keep-alive)
                   "\n"))))
 
+  (define (peers->preshared-keys peer keys)
+    (let ((public-key (wireguard-peer-public-key peer))
+          (preshared-key (wireguard-peer-preshared-key peer)))
+      (if preshared-key
+          (cons* public-key preshared-key keys)
+          keys)))
+
   (match-record config <wireguard-configuration>
-    (wireguard interface addresses port private-key peers dns)
+    (wireguard interface addresses port private-key peers dns
+               pre-up post-up pre-down post-down table)
     (let* ((config-file (string-append interface ".conf"))
+           (peer-keys (fold peers->preshared-keys (list) peers))
            (peers (map peer->config peers))
            (config
             (computed-file
@@ -762,13 +790,50 @@ AllowedIPs = ~a
                      (let ((format (@ (ice-9 format) format)))
                        (format port "[Interface]
 Address = ~a
-PostUp = ~a set %i private-key ~a
+~a
+~a
+PostUp = ~a set %i private-key ~a~{ peer ~a preshared-key ~a~}
+~a
+~a
+~a
 ~a
 ~a
 ~{~a~^~%~}"
                                #$(string-join addresses ",")
+                               #$(if table
+                                     (format #f "Table = ~a" table)
+                                     "")
+                               #$(if (null? pre-up)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PreUp = ~a" command))
+                                           pre-up)
+                                      "\n"))
                                #$(file-append wireguard "/bin/wg")
                                #$private-key
+                               '#$peer-keys
+                               #$(if (null? post-up)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PostUp = ~a" command))
+                                           post-up)
+                                      "\n"))
+                               #$(if (null? pre-down)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PreDown = ~a" command))
+                                           pre-down)
+                                      "\n"))
+                               #$(if (null? post-down)
+                                     ""
+                                     (string-join
+                                      (map (lambda (command)
+                                             (format #f "PostDown = ~a" command))
+                                           post-down)
+                                      "\n"))
                                #$(if port
                                      (format #f "ListenPort = ~a" port)
                                      "")
@@ -781,7 +846,7 @@ PostUp = ~a set %i private-key ~a
 
 (define (wireguard-activation config)
   (match-record config <wireguard-configuration>
-    (private-key)
+    (private-key wireguard)
     #~(begin
         (use-modules (guix build utils)
                      (ice-9 popen)
@@ -790,7 +855,7 @@ PostUp = ~a set %i private-key ~a
         (unless (file-exists? #$private-key)
           (let* ((pipe
                   (open-input-pipe (string-append
-                                    #$(file-append wireguard-tools "/bin/wg")
+                                    #$(file-append wireguard "/bin/wg")
                                     " genkey")))
                  (key (read-line pipe)))
             (call-with-output-file #$private-key
@@ -823,6 +888,9 @@ PostUp = ~a set %i private-key ~a
     (list (service-extension shepherd-root-service-type
                              wireguard-shepherd-service)
           (service-extension activation-service-type
-                             wireguard-activation)))
+                             wireguard-activation)
+          (service-extension profile-service-type
+                             (compose list
+                                      wireguard-configuration-wireguard))))
    (description "Set up Wireguard @acronym{VPN, Virtual Private Network}
 tunnels.")))

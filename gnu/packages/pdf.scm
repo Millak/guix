@@ -18,11 +18,12 @@
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,6 +50,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix build-system trivial)
@@ -113,7 +115,7 @@
 (define-public extractpdfmark
   (package
     (name "extractpdfmark")
-    (version "1.1.0")
+    (version "1.1.1")
     (source
      (origin
        (method git-fetch)
@@ -122,21 +124,21 @@
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14aa6zly53j8gx5d32caiabk2j4b102xha0v9149yahz6kbn5b80"))))
+        (base32 "0yzc3ajgdfb4ssxp49g2vrki45kl144j39bg0wdn6h9dc14kzmx4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'start-xorg-server
-           ;; The test suite wants to write to /homeless-shelter
-           (lambda _ (setenv "HOME" (getcwd)))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-home
+                 ;; The test suite wants to write to /homeless-shelter
+                 (lambda _ (setenv "HOME" (getcwd)))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("gettext" ,gettext-minimal)
-       ("ghostscript" ,ghostscript)
-       ("pkg-config" ,pkg-config)
-       ("texlive" ,texlive-tiny)))
+     (list autoconf
+           automake
+           gettext-minimal
+           ghostscript
+           pkg-config
+           texlive-tiny))
     (inputs
      (list poppler))
     (home-page "https://github.com/trueroad/extractpdfmark")
@@ -183,7 +185,10 @@ information.")
                    (,(string-append qtbase "/lib/qt5/plugins/platforms"))))
                #t))))))
     (inputs
-     (list python-pypdf2 python-pyqt python-poppler-qt5 qtbase-5))
+     (list python-poppler-qt5
+           python-pypdf2
+           python-pyqt-without-qtwebkit
+           qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")
     (description "@command{flyer-composer} can be used to prepare one- or
@@ -319,7 +324,8 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 ;; XXX: Remove it on core-updates.  It is only needed for evince 42.3 that
 ;; requires a recent poppler.
 (define-public poppler-next
-  (package/inherit poppler
+  (package
+    (inherit poppler)
     (name "poppler-next")
     (version "22.09.0")
     (source (origin
@@ -731,24 +737,22 @@ extracting content or merging files.")
 (define-public python-pydyf
   (package
     (name "python-pydyf")
-    (version "0.1.2")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pydyf" version))
        (sha256
-        (base32 "0b30g3hhxw1bg18r9ax85i1dkg8vy1y1wzas0bg0bxblh7j5sbqy"))))
-    (build-system python-build-system)
+        (base32 "18q43g5d9455msipcgd5fvnh8m4a2rz189slzfg80yycjw66rshs"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-c" "/dev/null")))))))
+      #:test-flags #~'("-c" "/dev/null")))
     (propagated-inputs (list python-pillow))
-    (native-inputs (list ghostscript python-pytest))
+    (native-inputs
+     (list ghostscript
+           python-flit-core
+           python-pytest))
     (home-page "https://github.com/CourtBouillon/pydyf")
     (synopsis "Low-level PDF generator")
     (description "@code{pydyf} is a low-level PDF generator written in Python
@@ -943,7 +947,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.1.1")
+    (version "1.1.3")
     (source
      (origin
        (method git-fetch)
@@ -952,7 +956,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16pf50x1ps8dcynnvw5lz7ggl0jg7qvzv6gkd30xg3hkcxff8ch3"))))
+        (base32 "17qq3clfmiyrcah89h8c5r6pc58xcskm5z1czbasv67bfq7chzhy"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1195,6 +1199,35 @@ information for every pixel as the input.")
 the framebuffer.")
     (license license:gpl2+)))
 
+(define-public pdfcrack
+  (package
+    (name "pdfcrack")
+    (version "0.20")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/pdfcrack/pdfcrack/"
+                                  "pdfcrack-" version "/"
+                                  "pdfcrack-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1d751n38cbagxqpw6ncvf3jfv7zhxl3fwh5nms2bjp6diyqjk2vv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:make-flags #~(list (string-append "CC="
+                                               #$(cc-for-target)))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure) ;no configure script
+                        (replace 'install
+                          (lambda _
+                            (install-file "pdfcrack"
+                                          (string-append #$output "/bin")))))))
+    (home-page "https://pdfcrack.sourceforge.net/")
+    (synopsis "Password recovery tool for PDF files")
+    (description "PDFCrack is a simple tool for recovering passwords from PDF
+documents that use the standard security handler.")
+    (license license:gpl2+)))
+
 (define-public pdf2svg
   (package
     (name "pdf2svg")
@@ -1218,6 +1251,35 @@ the framebuffer.")
     (description "@command{pdf2svg} is a simple command-line PDF to SVG
 converter using the Poppler and Cairo libraries.")
     (license license:gpl2+)))
+
+(define-public python-pypdf
+  (package
+    (name "python-pypdf")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/py-pdf/pypdf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qwvjr694sabfblx22zd54b9ny40f2gbv3bv6q43myrlxwvvisk6"))
+              (patches (search-patches
+                        "python-pypdf-annotate-tests-appropriately.patch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-flit))
+    (propagated-inputs (list python-typing-extensions))
+    (home-page "https://github.com/py-pdf/pypdf")
+    (arguments
+     (list
+      ;; Disable tests that use the network and non-free assets.
+      #:test-flags #~(list "-m" "not external and not samples")))
+    (synopsis "Python PDF library")
+    (description
+     "This package provides a PDF library capable of splitting, merging,
+cropping, and transforming PDF files.")
+    (license license:bsd-3)))
 
 (define-public python-pypdf2
   (package
@@ -1268,7 +1330,7 @@ manage or manipulate PDFs.")
 (define-public pdfarranger
   (package
     (name "pdfarranger")
-    (version "1.8.2")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -1277,19 +1339,19 @@ manage or manipulate PDFs.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18bpnnwjx72d5ps06dr89mkixiwzc9hf5gr75k8qcnrkshl038v2"))))
+        (base32 "1zj1fdaqih9d878yxy96ivgqyg4j31slvh2gqsyz2l2vj3s8z54x"))))
     (build-system python-build-system)
     (arguments
-     '(#:tests? #f                      ;no tests
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'wrap-for-typelib
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out     (assoc-ref outputs "out"))
-                    (program (string-append out "/bin/pdfarranger")))
-               (wrap-program program
-                 `("GI_TYPELIB_PATH" ":" prefix
-                   (,(getenv "GI_TYPELIB_PATH"))))))))))
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'wrap-for-typelib
+            (lambda _
+              (let ((program (string-append #$output "/bin/pdfarranger")))
+                (wrap-program program
+                  `("GI_TYPELIB_PATH" ":" prefix
+                    (,(getenv "GI_TYPELIB_PATH"))))))))))
     (native-inputs
      (list intltool python-distutils-extra))
     (inputs
@@ -1478,7 +1540,7 @@ manipulating PDF documents from the command line.  It supports
 (define-public weasyprint
   (package
     (name "weasyprint")
-    (version "54.3")
+    (version "56.1")
     (source
      (origin
        (method git-fetch)
@@ -1488,10 +1550,12 @@ manipulating PDF documents from the command line.  It supports
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cn8gpgyic6pmrnhp0540nbgplpsd5aybi7k89anz6m1sshgjzgs"))))
-    (build-system python-build-system)
+         "08l0yaqg0rxnb2r3x4baf4wng5pxpjbyalnrl4glwh9l69740q7p"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
+      #:test-flags #~(list "-c" "/dev/null"
+                           "-n" (number->string (parallel-job-count)))
       #:phases
       #~(modify-phases %standard-phases
           (add-after 'unpack 'patch-library-paths
@@ -1512,21 +1576,7 @@ manipulating PDF documents from the command line.  It supports
                 (("'pangoft2-1.0-0'")
                  (format #f "~s"
                          (search-input-file inputs
-                                            "lib/libpangoft2-1.0.so"))))))
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "-c" "/dev/null"
-                        "-n" (number->string (parallel-job-count))))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+                                            "lib/libpangoft2-1.0.so")))))))))
     (inputs (list fontconfig glib harfbuzz pango))
     (propagated-inputs
      (list gdk-pixbuf
@@ -1544,7 +1594,6 @@ manipulating PDF documents from the command line.  It supports
      (list font-dejavu                  ;tests depend on it
            ghostscript
            python-flit-core
-           python-pypa-build
            python-pytest
            python-pytest-xdist))
     (home-page "https://weasyprint.org/")

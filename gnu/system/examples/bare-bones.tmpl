@@ -1,3 +1,4 @@
+;; -*- mode: scheme; -*-
 ;; This is an operating system configuration template
 ;; for a "bare bones" setup, with no X11 display server.
 
@@ -16,6 +17,9 @@
   (bootloader (bootloader-configuration
                 (bootloader grub-bootloader)
                 (targets '("/dev/sdX"))))
+  ;; It's fitting to support the equally bare bones ‘-nographic’
+  ;; QEMU option, which also nicely sidesteps forcing QWERTY.
+  (kernel-arguments (list "console=ttyS0,115200"))
   (file-systems (cons (file-system
                         (device (file-system-label "my-root"))
                         (mount-point "/")

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
@@ -36,6 +36,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -54,6 +55,7 @@
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages iso-codes)
   #:use-module (gnu packages logging)
@@ -63,13 +65,16 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages serialization)
+  #:use-module (gnu packages speech)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages unicode)
   #:use-module (gnu packages xorg)
-  #:use-module (gnu packages xdisorg))
+  #:use-module (gnu packages xdisorg)
+  #:use-module (gnu packages xml)
+  #:use-module (srfi srfi-1))
 
-(define-public ibus
+(define-public ibus-minimal
   (package
     (name "ibus")
     (version "1.5.27")
@@ -233,7 +238,17 @@
 input method user interface.  It comes with multilingual input support.  It
 may also simplify input method development.")
     (home-page "https://github.com/ibus/ibus/wiki")
-    (license lgpl2.1+)))
+    (license lgpl2.1+)
+    (properties '((hidden? . #t)))))
+
+(define-public ibus
+  (package/inherit ibus-minimal
+    (arguments (substitute-keyword-arguments (package-arguments ibus-minimal)
+                 ((#:configure-flags flags)
+                  #~(cons* "--enable-gtk4" #$flags))))
+    (inputs (modify-inputs (package-inputs ibus-minimal)
+              (prepend gtk pango)))
+    (properties (alist-delete 'hidden? (package-properties ibus-minimal)))))
 
 (define-public ibus-libpinyin
   (package
@@ -835,6 +850,76 @@ hanja dictionary and small hangul character classification.")
     (description
      "ibus-hangul is a Korean input method engine for IBus.")
     (license gpl2+)))
+
+(define-public ibus-speech-to-text
+  (package
+    (name "ibus-speech-to-text")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/PhilippeRo/IBus-Speech-To-Text")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00p7jfv815dblg20hahch6151rdbxhkdhfj51i0yvvmg3irvf7nm"))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:glib-or-gtk? #true
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'skip-update-desktop-database
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "meson.build"
+               (("update_desktop_database: true")
+                "update_desktop_database: false"))))
+         (add-after 'install 'wrap-with-additional-paths
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Make sure 'ibus-{setup,engine}-stt' find the gst-vosk plugin
+             ;; and run with the correct GUIX_PYTHONPATH and GI_TYPELIB_PATH.
+             (let ((out (assoc-ref outputs "out")))
+               (for-each (lambda (prog)
+                           (wrap-program prog
+                             `("GST_PLUGIN_PATH" ":" prefix
+                               (,(string-append (assoc-ref inputs "gst-vosk")
+                                                "/lib/gstreamer-1.0")
+                                ,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                             `("GUIX_PYTHONPATH" ":" prefix
+                               (,(getenv "GUIX_PYTHONPATH")
+                                ,(string-append (assoc-ref inputs "ibus")
+                                                "/lib/girepository-1.0")
+                                ,(string-append (assoc-ref outputs "out")
+                                                "/share/ibus-stt")))
+                             `("GI_TYPELIB_PATH" ":" prefix
+                               (,(string-append (assoc-ref inputs "ibus")
+                                                "/lib/girepository-1.0")
+                                ,(string-append (assoc-ref outputs "out")
+                                                "/share/ibus-stt")))))
+                         (list (string-append out "/libexec/ibus-engine-stt")
+                               (string-append out "/libexec/ibus-setup-stt")))))))))
+    (inputs
+     (list desktop-file-utils
+           (list glib "bin")
+           gobject-introspection
+           gst-vosk
+           gstreamer
+           gtk
+           ibus
+           libadwaita
+           python
+           python-babel
+           python-pygobject))
+    (native-inputs
+     (list gettext-minimal libxml2 pkg-config))
+    (home-page "https://github.com/PhilippeRo/IBus-Speech-To-Text")
+    (synopsis "Speech to text IBus engine using VOSK")
+    (description "This Input Method uses VOSK for voice recognition and allows
+to dictate text in several languages in any application that supports IBus.
+One of the main adavantages is that VOSK performs voice recognition locally
+and does not rely on an online service.")
+    (license gpl3+)))
 
 (define-public ibus-theme-tools
   (package

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2017, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Ryan Prior <rprior@protonmail.com>
-;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -25,9 +25,11 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system trivial)
   #:use-module (guix utils)
+  #:use-module (gnu packages python-build)
   #:use-module (ice-9 match))
 
 (define-public wyhash
@@ -111,15 +113,17 @@ platforms (both big and little endian).")
 (define-public python-xxhash
   (package
     (name "python-xxhash")
-    (version "2.0.2")
+    (version "3.1.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "xxhash" version))
        (sha256
         (base32
-         "0jbvz19acznq00544gcsjg05fkvrmwbnwdfgrvwss3i1ys6avgmp"))))
-    (build-system python-build-system)
+         "1hdxcscry59gh0znlm71ya23mm9rfmvz8lvvlplzxzf63pib28dc"))))
+    (build-system pyproject-build-system)
+    ;; Needed to embed the correct version string
+    (native-inputs (list python-setuptools-scm))
     (home-page "https://github.com/ifduyue/python-xxhash")
     (synopsis "Python binding for xxHash")
     (description "This package provides Python bindings for the xxHash hash

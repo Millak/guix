@@ -46,10 +46,12 @@
             MS_NOEXEC
             MS_REMOUNT
             MS_NOATIME
+            MS_NODIRATIME
             MS_STRICTATIME
             MS_RELATIME
             MS_BIND
             MS_MOVE
+            MS_REC
             MS_SHARED
             MS_LAZYTIME
             MNT_FORCE
@@ -542,8 +544,10 @@ the last argument of `mknod'."
 (define MS_NOEXEC             8)
 (define MS_REMOUNT           32)
 (define MS_NOATIME         1024)
+(define MS_NODIRATIME      2048)
 (define MS_BIND            4096)
 (define MS_MOVE            8192)
+(define MS_REC            16384)
 (define MS_SHARED       1048576)
 (define MS_RELATIME     2097152)
 (define MS_STRICTATIME 16777216)
@@ -645,7 +649,8 @@ the remaining unprocessed options."
                         ("nodev"      => MS_NODEV)
                         ("noexec"     => MS_NOEXEC)
                         ("relatime"   => MS_RELATIME)
-                        ("noatime"    => MS_NOATIME)))))))
+                        ("noatime"    => MS_NOATIME)
+                        ("nodiratime" => MS_NODIRATIME)))))))
 
 (define (mount-flags mount)
   "Return the mount flags of MOUNT, a <mount> record, as an inclusive or of
@@ -878,7 +883,7 @@ fdatasync(2) on the underlying file descriptor."
      (ST_NODEV      => MS_NODEV)
      (ST_NOEXEC     => MS_NOEXEC)
      (ST_NOATIME    => MS_NOATIME)
-     (ST_NODIRATIME => 0)                         ;FIXME
+     (ST_NODIRATIME => MS_NODIRATIME)
      (ST_RELATIME   => MS_RELATIME))))
 
 (define-c-struct %statfs                          ;<bits/statfs.h>

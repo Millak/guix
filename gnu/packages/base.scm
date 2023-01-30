@@ -21,6 +21,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 zamfofex <zamfofex@twdb.moe>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -130,7 +131,22 @@ command-line arguments, multiple languages, and so on.")
               (substitute* (list (string-append bin "/egrep")
                                  (string-append bin "/fgrep"))
                 (("^exec grep")
-                 (string-append "exec " bin "/grep")))))))))
+                 (string-append "exec " bin "/grep"))))))
+        ,@(if (hurd-target?)
+              '((add-before 'check 'skip-triple-backref-test
+                  (lambda _
+                    ;; This test is marked as malfunctioning on glibc systems
+                    ;; due to
+                    ;; <https://sourceware.org/bugzilla/show_bug.cgi?id=11053>
+                    ;; and it triggers a segfault with glibc 2.33 on GNU/Hurd.
+                    ;; Skip it.
+                    (substitute* "tests/triple-backref"
+                      (("^warn_" all)
+                       (string-append "exit 77\n" all))))))
+              '()))
+      #:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2 equiv-classes") ;XXX
+                        ''())))
    (synopsis "Print lines matching a pattern")
    (description
      "grep is a tool for finding text inside files.  Text is found by
@@ -169,6 +185,10 @@ including, for example, recursive directory searching.")
                     "  CONFIG_HEADER='$(CONFIG_HEADER)'\t\t\\\n")))))
             (modules '((guix build utils)))))
    (build-system gnu-build-system)
+   (arguments
+    `(#:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2")
+                        ''())))
    (synopsis "Stream editor")
    (native-inputs (list perl))                    ;for tests
    (description
@@ -209,6 +229,8 @@ implementation offers several extensions over the standard utility.")
                      ",!concatenated incremental archives (renames)"
                      ",!renamed directory containing subdirectories"
                      ",!renamed subdirectories"
+                     ",!chained renames"
+                     ",!Directory"
                      "'")))
             '())
       #:phases (modify-phases %standard-phases
@@ -280,6 +302,10 @@ differences.")
               "1v4g8gi0lgakqa7iix8s4fq7lq6l92vw3rjd9wfd2rhjng8xggd6"))
             (patches (search-patches "diffutils-fix-signal-processing.patch"))))
    (build-system gnu-build-system)
+   (arguments
+    `(#:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2 large-subopt")
+                        ''())))
    (native-inputs (list perl))
    (synopsis "Comparing and merging files")
    (description
@@ -314,7 +340,10 @@ interactive means to merge two files.")
                      (substitute* '("tests/xargs/verbose-quote.sh"
                                     "tests/find/exec-plus-last-file.sh")
                        (("#!/bin/sh")
-                        (string-append "#!" (which "sh")))))))))
+                        (string-append "#!" (which "sh")))))))
+      #:make-flags ,(if (hurd-target?)
+                        ''("XFAIL_TESTS=test-perror2")
+                        ''())))
    (synopsis "Operating on files matching given criteria")
    (description
     "Findutils supplies the basic file directory searching utilities of the
@@ -367,12 +396,18 @@ used to apply commands with arbitrarily long arguments.")
                                    " tests/misc/nice.sh"
                                    " tests/misc/pwd-long.sh"
                                    " tests/split/fail.sh"
+
+                                   ;; /hurd/fifo issue:
+                                   ;; <https://issues.guix.gnu.org/58803>.
+                                   " tests/df/unreadable.sh"
+
+                                   ;; Gnulib tests.
                                    " test-fdutimensat"
                                    " test-futimens"
                                    " test-linkat"
+                                   " test-perror2"
                                    " test-renameat"
                                    " test-renameatu"
-                                   " test-tls"
                                    " test-utimensat")))
             '())
       #:phases (modify-phases %standard-phases
@@ -391,7 +426,13 @@ used to apply commands with arbitrarily long arguments.")
                      ,@(if (hurd-target?)
                            '((substitute* "Makefile.in"
                                ;; this test hangs
-                               (("^ *tests/misc/timeout-group.sh.*") "")))
+                               (("^ *tests/misc/timeout-group.sh.*") ""))
+                             (substitute* "gnulib-tests/Makefile.in"
+                               ;; This test sometimes fails and sometimes
+                               ;; passes, but it does this consistently, so
+                               ;; there might be some environmental factor
+                               ;; here
+                               ((" test-tls\\$\\(EXEEXT\\) ") " ")))
                            '())
                      (substitute* "Makefile.in"
                        ;; fails on filesystems where inotify cannot be used,
@@ -974,6 +1015,20 @@ The GNU C library is used as the C library in the GNU system and most systems
 with the Linux kernel.")
    (license lgpl2.0+)
    (home-page "https://www.gnu.org/software/libc/")))
+
+;; Define a variation of glibc which uses the default /etc/ld.so.cache, useful
+;; in FHS containers.
+(define-public glibc-for-fhs
+  (hidden-package
+   (package/inherit glibc
+     (name "glibc-for-fhs")
+     (source (origin (inherit (package-source glibc))
+                     ;; Remove Guix's patch to read ld.so.cache from /gnu/store
+                     ;; directories, re-enabling the default /etc/ld.so.cache
+                     ;; behavior.
+                     (patches
+                      (delete (search-patch "glibc-dl-cache.patch")
+                              (origin-patches (package-source glibc)))))))))
 
 ;; Below are old libc versions, which we use mostly to build locale data in
 ;; the old format (which the new libc cannot cope with.)

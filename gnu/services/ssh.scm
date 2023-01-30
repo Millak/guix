@@ -524,9 +524,12 @@ of user-name/file-like tuples."
   (define max-connections
     (openssh-configuration-max-connections config))
 
+  (define config-file
+    (openssh-config-file config))
+
   (define openssh-command
     #~(list (string-append #$(openssh-configuration-openssh config) "/sbin/sshd")
-            "-D" "-f" #$(openssh-config-file config)))
+            "-D" "-f" #$config-file))
 
   (define inetd-style?
     ;; Whether to use 'make-inetd-constructor'.  That procedure appeared in
@@ -568,6 +571,7 @@ of user-name/file-like tuples."
          (stop #~(if #$inetd-style?
                      (make-inetd-destructor)
                      (make-kill-destructor)))
+         (actions (list (shepherd-configuration-action config-file)))
          (auto-start? (openssh-auto-start? config)))))
 
 (define (openssh-pam-services config)

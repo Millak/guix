@@ -62,6 +62,9 @@
   (clear-screen))
 
 (define (exit-error error)
+  ;; Newt may be suspended in the context of the "install-system"
+  ;; procedure. Resume it unconditionnally.
+  (newt-resume)
   (newt-set-color COLORSET-ROOT "white" "red")
   (define action
     (run-textbox-page
@@ -113,11 +116,7 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
   (define command-output "")
   (define (line-accumulator line)
     (set! command-output
-          (string-append/shared command-output line "\n")))
-  (define displayed-command
-    (string-join
-     (map (lambda (s) (string-append "\"" s "\"")) args)
-     " "))
+          (string-append/shared command-output line)))
   (define result (run-external-command-with-line-hooks (list line-accumulator)
                                                        args))
   (define exit-val (status:exit-val result))
@@ -173,8 +172,8 @@ report it by email to ~a.") uploaded-name %guix-bug-report-address)
 (define (timezone-page zonetab)
   (run-timezone-page zonetab))
 
-(define (welcome-page logo)
-  (run-welcome-page logo))
+(define* (welcome-page logo #:key pci-database)
+  (run-welcome-page logo #:pci-database pci-database))
 
 (define (menu-page steps)
   (run-menu-page steps))

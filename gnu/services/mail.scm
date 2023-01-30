@@ -35,6 +35,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages dav)
   #:use-module (gnu packages tls)
+  #:use-module (guix modules)
   #:use-module (guix records)
   #:use-module (guix packages)
   #:use-module (guix gexp)
@@ -1512,64 +1513,61 @@ greyed out, instead of only later giving \"not selectable\" popup error.
              (lambda ()
                (serialize-configuration config
                                         dovecot-configuration-fields)))))))
-    #~(begin
-        (use-modules (guix build utils))
-        (define (mkdir-p/perms directory owner perms)
-          (mkdir-p directory)
-          (chown "/var/run/dovecot" (passwd:uid owner) (passwd:gid owner))
-          (chmod directory perms))
-        (define (build-subject parameters)
-          (string-concatenate
-           (map (lambda (pair)
-                  (let ((k (car pair)) (v (cdr pair)))
-                    (define (escape-char str chr)
-                      (string-join (string-split str chr) (string #\\ chr)))
-                    (string-append "/" k "="
-                                   (escape-char (escape-char v #\=) #\/))))
-                (filter (lambda (pair) (cdr pair)) parameters))))
-        (define* (create-self-signed-certificate-if-absent
-                  #:key private-key public-key (owner (getpwnam "root"))
-                  (common-name (gethostname))
-                  (organization-name "Guix")
-                  (organization-unit-name "Default Self-Signed Certificate")
-                  (subject-parameters `(("CN" . ,common-name)
-                                        ("O" . ,organization-name)
-                                        ("OU" . ,organization-unit-name)))
-                  (subject (build-subject subject-parameters)))
-          ;; Note that by default, OpenSSL outputs keys in PEM format.  This
-          ;; is what we want.
-          (unless (file-exists? private-key)
-            (cond
-             ((zero? (system* (string-append #$openssl "/bin/openssl")
-                              "genrsa" "-out" private-key "2048"))
-              (chown private-key (passwd:uid owner) (passwd:gid owner))
-              (chmod private-key #o400))
-             (else
-              (format (current-error-port)
-                      "Failed to create private key at ~a.\n" private-key))))
-          (unless (file-exists? public-key)
-            (cond
-             ((zero? (system* (string-append #$openssl "/bin/openssl")
-                              "req" "-new" "-x509" "-key" private-key
-                              "-out" public-key "-days" "3650"
-                              "-batch" "-subj" subject))
-              (chown public-key (passwd:uid owner) (passwd:gid owner))
-              (chmod public-key #o444))
-             (else
-              (format (current-error-port)
-                      "Failed to create public key at ~a.\n" public-key)))))
-        (let ((user (getpwnam "dovecot")))
-          (mkdir-p/perms "/var/run/dovecot" user #o755)
-          (mkdir-p/perms "/var/lib/dovecot" user #o755)
-          (mkdir-p/perms "/etc/dovecot" user #o755)
-          (copy-file #$(plain-file "dovecot.conf" config-str)
-                     "/etc/dovecot/dovecot.conf")
-          (mkdir-p/perms "/etc/dovecot/private" user #o700)
-          (create-self-signed-certificate-if-absent
-           #:private-key "/etc/dovecot/private/default.pem"
-           #:public-key "/etc/dovecot/default.pem"
-           #:owner (getpwnam "root")
-           #:common-name (format #f "Dovecot service on ~a" (gethostname)))))))
+    (with-imported-modules (source-module-closure '((gnu build activation)))
+      #~(begin
+          (use-modules (guix build utils) (gnu build activation))
+          (define (build-subject parameters)
+            (string-concatenate
+             (map (lambda (pair)
+                    (let ((k (car pair)) (v (cdr pair)))
+                      (define (escape-char str chr)
+                        (string-join (string-split str chr) (string #\\ chr)))
+                      (string-append "/" k "="
+                                     (escape-char (escape-char v #\=) #\/))))
+                  (filter (lambda (pair) (cdr pair)) parameters))))
+          (define* (create-self-signed-certificate-if-absent
+                    #:key private-key public-key (owner (getpwnam "root"))
+                    (common-name (gethostname))
+                    (organization-name "Guix")
+                    (organization-unit-name "Default Self-Signed Certificate")
+                    (subject-parameters `(("CN" . ,common-name)
+                                          ("O" . ,organization-name)
+                                          ("OU" . ,organization-unit-name)))
+                    (subject (build-subject subject-parameters)))
+            ;; Note that by default, OpenSSL outputs keys in PEM format.  This
+            ;; is what we want.
+            (unless (file-exists? private-key)
+              (cond
+               ((zero? (system* (string-append #$openssl "/bin/openssl")
+                                "genrsa" "-out" private-key "2048"))
+                (chown private-key (passwd:uid owner) (passwd:gid owner))
+                (chmod private-key #o400))
+               (else
+                (format (current-error-port)
+                        "Failed to create private key at ~a.\n" private-key))))
+            (unless (file-exists? public-key)
+              (cond
+               ((zero? (system* (string-append #$openssl "/bin/openssl")
+                                "req" "-new" "-x509" "-key" private-key
+                                "-out" public-key "-days" "3650"
+                                "-batch" "-subj" subject))
+                (chown public-key (passwd:uid owner) (passwd:gid owner))
+                (chmod public-key #o444))
+               (else
+                (format (current-error-port)
+                        "Failed to create public key at ~a.\n" public-key)))))
+          (let ((user (getpwnam "dovecot")))
+            (mkdir-p/perms "/var/run/dovecot" user #o755)
+            (mkdir-p/perms "/var/lib/dovecot" user #o755)
+            (mkdir-p/perms "/etc/dovecot" user #o755)
+            (copy-file #$(plain-file "dovecot.conf" config-str)
+                       "/etc/dovecot/dovecot.conf")
+            (mkdir-p/perms "/etc/dovecot/private" user #o700)
+            (create-self-signed-certificate-if-absent
+             #:private-key "/etc/dovecot/private/default.pem"
+             #:public-key "/etc/dovecot/default.pem"
+             #:owner (getpwnam "root")
+             #:common-name (format #f "Dovecot service on ~a" (gethostname))))))))
 
 (define (dovecot-shepherd-service config)
   "Return a list of <shepherd-service> for CONFIG."
@@ -1653,6 +1651,8 @@ by @code{dovecot-configuration}.  @var{config} may also be created by
   opensmtpd-configuration?
   (package     opensmtpd-configuration-package
                (default opensmtpd))
+  (shepherd-requirement opensmtpd-configuration-shepherd-requirement
+                        (default '())) ; list of symbols
   (config-file opensmtpd-configuration-config-file
                (default %default-opensmtpd-config-file))
   (setgid-commands? opensmtpd-setgid-commands? (default #t)))
@@ -1668,18 +1668,18 @@ action outbound relay
 match from local for any action outbound
 "))
 
-(define opensmtpd-shepherd-service
-  (match-lambda
-    (($ <opensmtpd-configuration> package config-file)
-     (list (shepherd-service
-            (provision '(smtpd))
-            (requirement '(loopback))
-            (documentation "Run the OpenSMTPD daemon.")
-            (start (let ((smtpd (file-append package "/sbin/smtpd")))
-                     #~(make-forkexec-constructor
-                        (list #$smtpd "-f" #$config-file)
-                        #:pid-file "/var/run/smtpd.pid")))
-            (stop #~(make-kill-destructor)))))))
+(define (opensmtpd-shepherd-service config)
+  (match-record config <opensmtpd-configuration>
+                       (package config-file shepherd-requirement)
+    (list (shepherd-service
+           (provision '(smtpd))
+           (requirement `(loopback ,@shepherd-requirement))
+           (documentation "Run the OpenSMTPD daemon.")
+           (start (let ((smtpd (file-append package "/sbin/smtpd")))
+                    #~(make-forkexec-constructor
+                       (list #$smtpd "-f" #$config-file)
+                       #:pid-file "/var/run/smtpd.pid")))
+           (stop #~(make-kill-destructor))))))
 
 (define %opensmtpd-accounts
   (list (user-group
@@ -1700,58 +1700,56 @@ match from local for any action outbound
          (home-directory "/var/empty")
          (shell (file-append shadow "/sbin/nologin")))))
 
-(define opensmtpd-activation
-  (match-lambda
-    (($ <opensmtpd-configuration> package config-file)
-     (let ((smtpd (file-append package "/sbin/smtpd")))
-       #~(begin
-           (use-modules (guix build utils))
-           ;; Create mbox and spool directories.
-           (mkdir-p "/var/mail")
-           (mkdir-p "/var/spool/smtpd")
-           (chmod "/var/spool/smtpd" #o711)
-           (mkdir-p "/var/spool/mail")
-           (chmod "/var/spool/mail" #o711))))))
+(define (opensmtpd-activation config)
+  (match-record config <opensmtpd-configuration> (package config-file)
+    (let ((smtpd (file-append package "/sbin/smtpd")))
+      #~(begin
+          (use-modules (guix build utils))
+          ;; Create mbox and spool directories.
+          (mkdir-p "/var/mail")
+          (mkdir-p "/var/spool/smtpd")
+          (chmod "/var/spool/smtpd" #o711)
+          (mkdir-p "/var/spool/mail")
+          (chmod "/var/spool/mail" #o711)))))
 
 (define %opensmtpd-pam-services
   (list (unix-pam-service "smtpd")))
 
-(define opensmtpd-set-gids
-  (match-lambda
-    (($ <opensmtpd-configuration> package config-file set-gids?)
-     (if set-gids?
-         (list
-          (setuid-program
-           (program (file-append package "/sbin/smtpctl"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq"))
-          (setuid-program
-           (program (file-append package "/sbin/sendmail"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq"))
-          (setuid-program
-           (program (file-append package "/sbin/send-mail"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq"))
-          (setuid-program
-           (program (file-append package "/sbin/makemap"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq"))
-          (setuid-program
-           (program (file-append package "/sbin/mailq"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq"))
-          (setuid-program
-           (program (file-append package "/sbin/newaliases"))
-           (setuid? #false)
-           (setgid? #true)
-           (group "smtpq")))
-         '()))))
+(define (opensmtpd-set-gids config)
+  (match-record config <opensmtpd-configuration> (package config-file setgid-commands?)
+    (if setgid-commands?
+        (list
+         (setuid-program
+          (program (file-append package "/sbin/smtpctl"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq"))
+         (setuid-program
+          (program (file-append package "/sbin/sendmail"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq"))
+         (setuid-program
+          (program (file-append package "/sbin/send-mail"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq"))
+         (setuid-program
+          (program (file-append package "/sbin/makemap"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq"))
+         (setuid-program
+          (program (file-append package "/sbin/mailq"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq"))
+         (setuid-program
+          (program (file-append package "/sbin/newaliases"))
+          (setuid? #false)
+          (setgid? #true)
+          (group "smtpq")))
+        '())))
 
 (define opensmtpd-service-type
   (service-type

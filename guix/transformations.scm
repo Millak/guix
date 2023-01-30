@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -43,11 +43,11 @@
 
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-9)
-  #:use-module (srfi srfi-11)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
   #:use-module (srfi srfi-37)
+  #:use-module (srfi srfi-71)
   #:use-module (ice-9 match)
   #:use-module (ice-9 vlist)
   #:export (options->transformation
@@ -115,8 +115,7 @@ extensions."
   "Return a package based on P but with its source taken from URI.  Extract
 the new package's version number from URI."
   (let ((base (tarball-base-name (basename uri))))
-    (let-values (((_ version*)
-                  (hyphen-package-name->name+version base)))
+    (let ((_ version* (hyphen-package-name->name+version base)))
       (package (inherit p)
                (version (or version version*
                             (package-version p)))
@@ -129,42 +128,45 @@ the new package's version number from URI."
 ;;; Transformations.
 ;;;
 
-(define (transform-package-source sources)
-  "Return a transformation procedure that replaces package sources with the
-matching URIs given in SOURCES."
-  (define new-sources
-    (map (lambda (uri)
-           (match (string-index uri #\=)
-             (#f
-              ;; Determine the package name and version from URI.
-              (call-with-values
-                  (lambda ()
-                    (hyphen-package-name->name+version
-                     (tarball-base-name (basename uri))))
-                (lambda (name version)
-                  (list name version uri))))
-             (index
-              ;; What's before INDEX is a "PKG@VER" or "PKG" spec.
-              (call-with-values
-                  (lambda ()
-                    (package-name->name+version (string-take uri index)))
-                (lambda (name version)
-                  (list name version
-                        (string-drop uri (+ 1 index))))))))
-         sources))
+(define (evaluate-source-replacement-specs specs)
+  "Parse SPECS, a list of strings like \"guile=/tmp/guile-4.2.tar.gz\" or just
+\"/tmp/guile-4.2.tar.gz\" and return a list of package spec/procedure pairs as
+expected by 'package-input-rewriting/spec'.  Raise an error if an element of
+SPECS uses invalid syntax."
+  (define not-equal
+    (char-set-complement (char-set #\=)))
 
-  (lambda (obj)
-    (let loop ((sources  new-sources)
-               (result   '()))
-      (match obj
-        ((? package? p)
-         (match (assoc-ref sources (package-name p))
-           ((version source)
-            (package-with-source p source version))
-           (#f
-            p)))
-        (_
-         obj)))))
+  (map (lambda (spec)
+         (match (string-tokenize spec not-equal)
+           ((uri)
+            (let* ((base (tarball-base-name (basename uri)))
+                   (name (hyphen-package-name->name+version base)))
+              (cons name
+                    (lambda (old)
+                      (package-with-source old uri)))))
+           ((spec uri)
+            (let ((name version (package-name->name+version spec)))
+              ;; Note: Here VERSION is used as the version string of the new
+              ;; package rather than as part of the spec of the package being
+              ;; targeted.
+              (cons name
+                    (lambda (old)
+                      (package-with-source old uri version)))))
+           (_
+            (raise (formatted-message
+                    (G_ "invalid source replacement specification: ~s")
+                    spec)))))
+       specs))
+
+(define (transform-package-source replacement-specs)
+  "Return a transformation procedure that replaces package sources with the
+matching URIs given in REPLACEMENT-SPECS."
+  (let* ((replacements (evaluate-source-replacement-specs replacement-specs))
+         (rewrite      (package-input-rewriting/spec replacements)))
+    (lambda (obj)
+      (if (package? obj)
+          (rewrite obj)
+          obj))))
 
 (define (evaluate-replacement-specs specs proc)
   "Parse SPECS, a list of strings like \"guile=guile@2.1\" and return a list
@@ -755,35 +757,72 @@ additional patches."
         (rewrite obj)
         obj)))
 
+(define* (package-with-upstream-version p #:optional version)
+  "Return package P changed to use the given upstream VERSION or, if VERSION
+is #f, the latest known upstream version."
+  (let ((source (package-latest-release p #:version version)))
+    (cond ((not source)
+           (if version
+               (warning
+                (G_ "could not find version ~a of '~a' upstream~%")
+                version (package-name p))
+               (warning
+                (G_ "could not determine latest upstream release of '~a'~%")
+                (package-name p)))
+           p)
+          ((string=? (upstream-source-version source)
+                     (package-version p))
+           (unless version
+             (info (G_ "~a is already the latest version of '~a'~%")
+                   (package-version p) (package-name p)))
+           p)
+          (else
+           (when (version>? (package-version p)
+                            (upstream-source-version source))
+             (warning (G_ "using ~a ~a, which is older than the packaged \
+version (~a)~%")
+                      (package-name p)
+                      (upstream-source-version source)
+                      (package-version p)))
+
+           (unless (pair? (upstream-source-signature-urls source))
+             (warning (G_ "cannot authenticate source of '~a', version ~a~%")
+                      (package-name p)
+                      (upstream-source-version source)))
+
+           ;; TODO: Take 'upstream-source-input-changes' into account.
+           (package
+             (inherit p)
+             (version (upstream-source-version source))
+             (source source))))))
+
 (define (transform-package-latest specs)
   "Return a procedure that rewrites package graphs such that those in SPECS
 are replaced by their latest upstream version."
-  (define (package-with-latest-upstream p)
-    (let ((source (package-latest-release p)))
-      (cond ((not source)
-             (warning
-              (G_ "could not determine latest upstream release of '~a'~%")
-              (package-name p))
-             p)
-            ((string=? (upstream-source-version source)
-                       (package-version p))
-             p)
-            (else
-             (unless (pair? (upstream-source-signature-urls source))
-               (warning (G_ "cannot authenticate source of '~a', version ~a~%")
-                        (package-name p)
-                        (upstream-source-version source)))
-
-             ;; TODO: Take 'upstream-source-input-changes' into account.
-             (package
-               (inherit p)
-               (version (upstream-source-version source))
-               (source source))))))
-
   (define rewrite
     (package-input-rewriting/spec
      (map (lambda (spec)
-            (cons spec package-with-latest-upstream))
+            (cons spec package-with-upstream-version))
+          specs)))
+
+  (lambda (obj)
+    (if (package? obj)
+        (rewrite obj)
+        obj)))
+
+(define (transform-package-version specs)
+  "Return a procedure that rewrites package graphs such that those in SPECS
+are replaced by the specified upstream version."
+  (define rewrite
+    (package-input-rewriting/spec
+     (map (lambda (spec)
+            (match (string-tokenize spec %not-equal)
+              ((spec version)
+               (cons spec (cut package-with-upstream-version <> version)))
+              (_
+               (raise (formatted-message
+                       (G_ "~a: invalid upstream version specification")
+                       spec)))))
           specs)))
 
   (lambda (obj)
@@ -807,7 +846,8 @@ are replaced by their latest upstream version."
     (with-debug-info . ,transform-package-with-debug-info)
     (without-tests . ,transform-package-tests)
     (with-patch  . ,transform-package-patches)
-    (with-latest . ,transform-package-latest)))
+    (with-latest . ,transform-package-latest)
+    (with-version . ,transform-package-version)))
 
 (define (transformation-procedure key)
   "Return the transformation procedure associated with KEY, a symbol such as
@@ -879,6 +919,8 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
                   (parser 'with-patch))
           (option '("with-latest") #t #f
                   (parser 'with-latest))
+          (option '("with-version") #t #f
+                  (parser 'with-version))
 
           (option '("help-transform") #f #f
                   (lambda _
@@ -913,6 +955,9 @@ building for ~a instead of ~a, so tuning cannot be guessed~%")
   (display (G_ "
       --with-latest=PACKAGE
                          use the latest upstream release of PACKAGE"))
+  (display (G_ "
+      --with-version=PACKAGE=VERSION
+                         use the given upstream VERSION of PACKAGE"))
   (display (G_ "
       --with-c-toolchain=PACKAGE=TOOLCHAIN
                          build PACKAGE and its dependents with TOOLCHAIN"))

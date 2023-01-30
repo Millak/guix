@@ -19,7 +19,6 @@
 
 (define-module (guix build ant-build-system)
   #:use-module ((guix build gnu-build-system) #:prefix gnu:)
-  #:use-module (guix build syscalls)
   #:use-module (guix build utils)
   #:use-module (sxml simple)
   #:use-module (ice-9 match)
@@ -201,7 +200,7 @@ dependencies of this jar file."
 repack them.  This is necessary to ensure that archives are reproducible."
   (define (repack-archive jar)
     (format #t "repacking ~a\n" jar)
-    (let* ((dir (mkdtemp! "jar-contents.XXXXXX"))
+    (let* ((dir (mkdtemp "jar-contents.XXXXXX"))
            (manifest (string-append dir "/META-INF/MANIFEST.MF")))
       (with-directory-excursion dir
         (invoke "jar" "xf" jar))

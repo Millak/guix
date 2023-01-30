@@ -66,7 +66,7 @@
 
 (define %manual-languages
   ;; Available translations for the 'guix-manual' text domain.
-  '("de" "en" "es" "fr" "ru" "zh_CN"))
+  '("de" "en" "es" "fr" "pt_BR" "ru" "zh_CN"))
 
 (define %cookbook-languages
   ;; Available translations for the 'guix-cookbook' text domain.

@@ -9,6 +9,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Zhu Zihao  <all_but_last@163.com>
+;;; Copyright © 2022 Maxim Cournoyer  <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -167,6 +168,28 @@ different programming languages.")
 (define-public fmt
   (package
     (name "fmt")
+    (version "9.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
+                           version "/fmt-" version ".zip"))
+       (sha256
+        (base32 "15n9yi6xzzs7g9rm87kg8y5yhl2zrqj3bjr845saa63f6swlrsyc"))))
+    (build-system cmake-build-system)
+    (arguments '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
+    (native-inputs (list unzip))
+    (home-page "https://fmt.dev")
+    (synopsis "Small and fast C++ formatting library")
+    (description "@code{fmt} (formerly @code{cppformat}) is a formatting
+library for C++.  It can be used as a safe alternative to @code{printf} or as
+a fast alternative to @code{IOStreams}.")
+    ;; The library is bsd-2, but documentation and tests include other licenses.
+    (license (list bsd-2 bsd-3 psfl))))
+
+(define-public fmt-8
+  (package
+    (inherit fmt)
     (version "8.1.1")
     (source
      (origin
@@ -174,25 +197,11 @@ different programming languages.")
        (uri (string-append "https://github.com/fmtlib/fmt/releases/download/"
                            version "/fmt-" version ".zip"))
        (sha256
-        (base32 "0p8f82ijqa57sk72hjf0qviv1wwinmns0p87wiv2v8fvisnqnxr3"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")))
-    (native-inputs
-     (list unzip))
-    (home-page "https://fmt.dev")
-    (synopsis "Small and fast C++ formatting library")
-    (description
-     "@code{fmt} (formerly @code{cppformat}) is a formatting library for C++.
-It can be used as a safe alternative to @code{printf} or as a fast alternative
-to @code{IOStreams}.")
-    ;; The library is bsd-2, but documentation and tests include other licenses.
-    (license (list bsd-2 bsd-3 psfl))))
+        (base32 "0p8f82ijqa57sk72hjf0qviv1wwinmns0p87wiv2v8fvisnqnxr3"))))))
 
-(define-public fmt-for-solidity
+(define-public fmt-8.0
   (package
     (inherit fmt)
-    (name "fmt-for-solidity")
     (version "8.0.1")
     (source
      (origin
@@ -203,7 +212,8 @@ to @code{IOStreams}.")
         (base32 "1gqmsk4r93x65cqs8w7zhfiv70w5fv8279nrblggqm4mmdpaa9x6"))))))
 
 (define-public fmt-7
-  (package (inherit fmt)
+  (package
+    (inherit fmt)
     (version "7.1.3")
     (source
      (origin
@@ -213,10 +223,9 @@ to @code{IOStreams}.")
        (sha256
         (base32 "17sc10hfg087z0s774lnn05wwy3bfzmcv7j448p92pr0s02cb62x"))))))
 
-(define-public fmt-for-irods
+(define-public fmt-6
   (package
     (inherit fmt)
-    (name "fmt-for-irods")
     (version "6.1.2")
     (source
      (origin
@@ -227,7 +236,7 @@ to @code{IOStreams}.")
         (base32 "1s1hxaby5byb07rgmrk4a0q11fxhz7b42khch7sp2qx974y0yrb3"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f ; TODO: posix-mock-test segfaults
+     '(#:tests? #f                      ; TODO: posix-mock-test segfaults
        #:configure-flags
        '("-DBUILD_SHARED_LIBS=ON"
          "-DCMAKE_CXX_COMPILER=clang++"

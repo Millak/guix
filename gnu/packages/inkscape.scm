@@ -47,6 +47,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages ghostscript)
@@ -276,4 +277,24 @@ as the native format.")
                            "inkscape-" version ".tar.xz"))
        (sha256
         (base32 "06scilds4p4bw337ss22nfdxy2kynv5yjw6vq6nlpjm7xfh7vkj6"))))
+    (build-system cmake-build-system)
+    (arguments
+     (substitute-keyword-arguments (package-arguments inkscape/stable)
+       ((#:phases phases)
+        `(modify-phases ,phases
+           (replace 'wrap-program
+             ;; Ensure Python is available at runtime.
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let ((out (assoc-ref outputs "out")))
+                 (wrap-program (string-append out "/bin/inkscape")
+                   `("GUIX_PYTHONPATH" prefix
+                     (,(getenv "GUIX_PYTHONPATH")))
+                   ;; Wrapping GDK_PIXBUF_MODULE_FILE allows Inkscape to load
+                   ;; its own icons in pure environments.
+                   `("GDK_PIXBUF_MODULE_FILE" =
+                     (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))))))
+    (inputs (modify-inputs (package-inputs inkscape/stable)
+              (append bash-minimal
+                      librsvg           ;for the pixbuf loader
+                      python-cssselect)))        ;to render qrcode
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))

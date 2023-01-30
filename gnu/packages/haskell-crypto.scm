@@ -260,7 +260,7 @@ the C implementation.")
     (build-system haskell-build-system)
     (arguments
      `(#:cabal-revision
-       ("1" "0v5ppc7r2lxbk49h1kwj4b5vyb1dw2fnppykvp5m9rm0p3vhlykr")
+       ("1" "1hyzqv30rpj920ddnr0zypyjjlh52vyp2d140pn2byayj820rkgs")
        #:tests? #f)) ; TODO: tasty ==1.1.*
     (native-inputs
      (list ghc-base16-bytestring ghc-sha ghc-tasty ghc-tasty-hunit

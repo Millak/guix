@@ -182,6 +182,11 @@
             interned-file
             interned-file-tree
 
+            %graft?
+            without-grafting
+            set-grafting
+            grafting?
+
             %store-prefix
             store-path
             output-path
@@ -2170,6 +2175,37 @@ connection, and return the result."
           (let ((caches (store-connection-caches new-store)))
             (set-store-connection-caches! store caches)))
         result))))
+
+
+;;;
+;;; Whether to enable grafts.
+;;;
+
+(define %graft?
+  ;; Whether to honor package grafts by default.
+  (make-parameter #t))
+
+(define (call-without-grafting thunk)
+  (lambda (store)
+    (values (parameterize ((%graft? #f))
+              (run-with-store store (thunk)))
+            store)))
+
+(define-syntax-rule (without-grafting mexp ...)
+  "Bind monadic expressions MEXP in a dynamic extent where '%graft?' is
+false."
+  (call-without-grafting (lambda () (mbegin %store-monad mexp ...))))
+
+(define-inlinable (set-grafting enable?)
+  ;; This monadic procedure enables grafting when ENABLE? is true, and
+  ;; disables it otherwise.  It returns the previous setting.
+  (lambda (store)
+    (values (%graft? enable?) store)))
+
+(define-inlinable (grafting?)
+  ;; Return a Boolean indicating whether grafting is enabled.
+  (lambda (store)
+    (values (%graft?) store)))
 
 
 ;;;

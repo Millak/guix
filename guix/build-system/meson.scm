@@ -55,6 +55,7 @@ for TRIPLET."
                          ((target-x86-64? triplet) "x86_64")
                          ((target-arm32? triplet) "arm")
                          ((target-aarch64? triplet) "aarch64")
+                         ((target-mips64el? triplet) "mips64")
                          ((target-powerpc? triplet)
                           (if (target-64bit? triplet)
                               "ppc64"

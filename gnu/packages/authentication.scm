@@ -43,6 +43,7 @@
        (method url-fetch)
        (uri (string-append "https://download.savannah.nongnu.org/releases/"
                            name "/" name "-" version ".tar.gz"))
+       (patches (search-patches "oath-toolkit-xmlsec-compat.patch"))
        (sha256
         (base32 "1aa620k05lsw3l3slkp2mzma40q3p9wginspn9zk8digiz7dzv9n"))))
     (build-system gnu-build-system)
@@ -93,7 +94,7 @@ data.")
 (define-public oauth2l
   (package
     (name "oauth2l")
-    (version "1.2.2")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -102,7 +103,7 @@ data.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a9x0b31ybyjg0k7923xw6zr6crm0kigcn8g6hyr228nbvw35r8w"))))
+        (base32 "0010870xdhf0aysrs2vhl3yxd4gh87qp7mjpyp7qy1n2rz55pgbc"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/oauth2l"))

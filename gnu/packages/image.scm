@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Amirouche Boubekki <amirouche@hypermove.net>
 ;;; Copyright © 2014, 2017 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2020 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017, 2020, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
@@ -28,12 +28,13 @@
 ;;; Copyright © 2020 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2020 Zhu Zihao <all_but_last@163.com>
-;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021 Alexandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1507,32 +1508,32 @@ differences in file encoding, image quality, and other small variations.")
                 "18bxlhbdc3zsmxj84i417xjh0q28kv26q449k23n0a72ldwziix2"))
               (patches (list (search-patch "steghide-fixes.patch")))))
     (build-system gnu-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("perl" ,perl)))                 ;for tests
-    (inputs
-     `(("libmhash" ,libmhash)
-       ("libmcrypt" ,libmcrypt)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
     (arguments
-     `(#:make-flags '("CXXFLAGS=-fpermissive")    ;required for MHashPP.cc
-
-       #:phases (modify-phases %standard-phases
-                  (add-before 'configure 'set-perl-search-path
-                    (lambda _
-                      ;; Work around "dotless @INC" build failure.
-                      (setenv "PERL5LIB"
-                              (string-append (getcwd) "/tests:"
-                                             (getenv "PERL5LIB")))
-                      #t)))))
+     (list #:make-flags
+           #~(list "CXXFLAGS=-fpermissive")  ; required for MHashPP.cc
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'configure 'set-perl-search-path
+                 (lambda _
+                   ;; Work around "dotless @INC" build failure.
+                   (setenv "PERL5LIB"
+                           (string-append (getcwd) "/tests:"
+                                          (getenv "PERL5LIB"))))))))
+    (native-inputs
+     (list gettext-minimal libtool perl))
+    (inputs
+     (list libjpeg-turbo libmhash libmcrypt zlib))
     (home-page "http://steghide.sourceforge.net")
-    (synopsis "Image and audio steganography")
+    (synopsis "`Hide' (nonconfidential) data in image or audio files")
     (description
-     "Steghide is a program to hide data in various kinds of image and audio
-files (known as @dfn{steganography}).  Neither color nor sample frequencies are
-changed, making the embedding resistant against first-order statistical tests.")
+     "Steghide is a program to `hide' data in various kinds of image and audio
+files.  This practice is known as @dfn{steganography}, but the method used by
+steghide is not very secure and should not be used where security is at stake.
+Even if a password is used, steghide offers little plausible deniability.
+
+Nonetheless, neither color nor sample frequencies are changed, making the
+embedding resistant against first-order statistical tests not aimed
+specifically at this tool.")
     (license license:gpl2+)))
 
 (define-public optipng
@@ -1920,22 +1921,23 @@ lightweight animated-GIF viewer, and @command{gifdiff} compares two GIFs for
 identical visual appearance.")
    (license license:gpl2+)))
 
-;; 1.0.7 is buggy and reverted in git repository.
 (define-public jp2a
   (package
     (name "jp2a")
-    (version "1.0.6")
+    (version "1.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "mirror://debian/pool/main/j/jp2a/jp2a_"
-                           version ".orig.tar.gz"))
+       (uri (string-append "https://github.com/Talinx/jp2a/releases/download/v"
+                           version "/jp2a-" version ".tar.gz"))
         (sha256
          (base32
-          "076frk3pa16s4r1b10zgy81vdlz0385zh3ykbnkaij25jn5aqc09"))))
+          "10kwhh1a0ivrzagl2vcxrbqmlr2q8x29ymqwzchpiriy6xqxck8l"))))
     (build-system gnu-build-system)
     (inputs
-     (list curl libjpeg-turbo ncurses))
+     (list curl libpng libjpeg-turbo ncurses))
+    (native-inputs
+     (list doxygen))
     (home-page "https://csl.name/jp2a/")
     (synopsis "Convert JPEG images to ASCII")
     (description
@@ -2150,32 +2152,44 @@ This package can be used to create @code{favicon.ico} files for web sites.")
                 "1yxmgjlxm1srm98zyj79bj8r8vmg67daqnq0ggcvxknq54plkznk"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags '("-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
-                           ,@(if (string-prefix? "x86_64"
-                                                 (or (%current-target-system)
-                                                     (%current-system)))
-                                 '("-DAVIF_CODEC_RAV1E=ON")
-                                 '())
-                           "-DAVIF_BUILD_TESTS=ON")
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             (invoke "./aviftest" "../source/tests/data")))
-         (add-after 'install 'install-readme
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/libavif-" ,version)))
-               (install-file "../source/README.md" doc)))))))
+     (list
+      #:configure-flags
+      #~(list "-DAVIF_CODEC_AOM=ON" "-DAVIF_CODEC_DAV1D=ON"
+              #$@(if (this-package-input "rav1e")
+                   '("-DAVIF_CODEC_RAV1E=ON")
+                   '())
+              "-DAVIF_BUILD_TESTS=ON" "-DAVIF_BUILD_APPS=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./aviftest" "../source/tests/data"))))
+          (add-after 'install 'install-readme
+            (lambda _
+              (let ((doc (string-append #$output "/share/doc/libavif-" #$version)))
+                (install-file "../source/README.md" doc))))
+          (add-after 'install 'split
+            (lambda _
+              (let* ((avifenc  (string-append #$output       "/bin/avifenc"))
+                     (avifenc* (string-append #$output:tools "/bin/avifenc"))
+                     (avifdec  (string-append #$output       "/bin/avifdec"))
+                     (avifdec* (string-append #$output:tools "/bin/avifdec")))
+                (mkdir-p (string-append #$output:tools "/bin"))
+
+                (for-each (lambda (old new)
+                            (copy-file old new)
+                            (delete-file old)
+                            (chmod new #o555))
+                          (list avifenc avifdec)
+                          (list avifenc* avifdec*))))))))
     (inputs
-     `(("dav1d" ,dav1d)
-       ("libaom" ,libaom)
-       ;; XXX: rav1e depends on rust, which currently only works on x86_64.
-       ;; See also the related configure flag when changing this.
-       ,@(if (string-prefix? "x86_64" (or (%current-target-system)
-                                          (%current-system)))
-             `(("rav1e" ,rav1e))
-             '())))
+     (append
+      (if (member (%current-system) (package-transitive-supported-systems rav1e))
+        (list rav1e) '())
+      (list dav1d libaom zlib libpng libjpeg-turbo)))
+    (outputs (list "out"
+                   "tools"))  ; avifenc & avifdec
     (synopsis "Encode and decode AVIF files")
     (description "Libavif is a C implementation of @acronym{AVIF, the AV1 Image
 File Format}.  It can encode and decode all YUV formats and bit depths supported
@@ -2217,57 +2231,56 @@ Format) file format decoder and encoder.")
     (license license:lgpl3+)))
 
 (define-public libjxl
-  (let ((commit "b7076f1869914eee47b3eae107750f3a3ce43a76")
-        (revision "0"))
-    (package
-      (name "libjxl")
-      (version (git-version "0.6.1" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/libjxl/libjxl")
-               (commit commit)
-               (recursive? #t)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0jx0hkd2nk15mmnzlk7y7fp644w336il7nsnp5yhf14j8zfaiqz8"))
-         (modules '((guix build utils)))
-         (snippet
-          ;; Delete the bundles that will not be used. libjxl bundles LCMS,
-          ;; which is in Guix, but a newer version is required.
-          '(begin
-             (for-each (lambda (directory)
-                         (delete-file-recursively
-                          (string-append "third_party/" directory)))
-                       '("brotli" "googletest" "highway"))))))
-      (build-system cmake-build-system)
-      (arguments
-       `(#:configure-flags
-         (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
-               "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
-               ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
-               "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
-      (native-inputs
-       (list asciidoc doxygen googletest pkg-config python))
-      (inputs
-       (list freeglut
-             gflags
-             giflib
-             google-brotli
-             google-highway
-             imath
-             ;; lcms ; requires lcms@2.13
-             libavif
-             libjpeg-turbo
-             libpng
-             libwebp
-             openexr))
-      (home-page "https://github.com/libjxl/libjxl")
-      (synopsis "JPEG XL image format reference implementation")
-      (description "This package contains a reference implementation of JPEG XL
+  (package
+    (name "libjxl")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/libjxl/libjxl")
+             (commit (string-append "v" version))
+             (recursive? #t)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1ysh7kd30wwnq0gc1l8c0j9b6wzd15k0kkvfaacjvjqcz11lnc7l"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; Delete the bundles that will not be used. libjxl bundles LCMS,
+        ;; which is in Guix, but a newer version is required.
+        '(begin
+           (for-each (lambda (directory)
+                       (delete-file-recursively
+                        (string-append "third_party/" directory)))
+                     '("brotli" "googletest" "highway"))))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:configure-flags
+       (list "-DJPEGXL_FORCE_SYSTEM_GTEST=true"
+             "-DJPEGXL_FORCE_SYSTEM_BROTLI=true"
+             ;; "-DJPEGXL_FORCE_SYSTEM_LCMS2=true" ; requires lcms@2.13
+             "-DJPEGXL_FORCE_SYSTEM_HWY=true")))
+    (native-inputs
+     (list asciidoc doxygen googletest pkg-config python))
+    (inputs
+     (list freeglut
+           gflags
+           giflib
+           imath
+           ;; lcms ; requires lcms@2.13
+           libavif
+           libjpeg-turbo
+           libpng
+           libwebp
+           openexr))
+    ;; These are in Requires.private of libjxl.pc.
+    (propagated-inputs
+     (list brotli google-highway))
+    (home-page "https://github.com/libjxl/libjxl")
+    (synopsis "JPEG XL image format reference implementation")
+    (description "This package contains a reference implementation of JPEG XL
 (encoder and decoder).")
-      (license license:bsd-3))))
+    (license license:bsd-3)))
 
 (define-public mtpaint
   (package

@@ -62,7 +62,7 @@ types/functions defined in AbstractFFTs.")
 (define-public julia-abstracttrees
   (package
     (name "julia-abstracttrees")
-    (version "0.3.4")
+    (version "0.4.3")
     (source
      (origin
        (method git-fetch)
@@ -71,7 +71,7 @@ types/functions defined in AbstractFFTs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "16is5n2qa69cci34vfazxsa7ik6q0hbnnqrbrhkq8frh142f1xs8"))))
+        (base32 "04g3b6j4nvxs36rcjm743gwhy0vv0d6pvgx771agjljx109bciyr"))))
     (build-system julia-build-system)
     (home-page "https://juliacollections.github.io/AbstractTrees.jl/stable/")
     (synopsis "Abstract Julia interfaces for working with trees")
@@ -127,7 +127,7 @@ ANSI escape codes to another format.")
 (define-public julia-aqua
   (package
     (name "julia-aqua")
-    (version "0.5.1")
+    (version "0.5.5")
     (source
       (origin
         (method git-fetch)
@@ -136,7 +136,7 @@ ANSI escape codes to another format.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1g0kyzcdykgs247j72jpc2qqall696jwgb3hnn4cxmbi8bkf7wpk"))))
+         (base32 "12hng8czkgynsn1pshavma2wijypl6k05hhgivc3rqiyclfpi89z"))))
     (build-system julia-build-system)
     (arguments
      (list #:parallel-tests? #f))
@@ -149,7 +149,7 @@ provides functions to run a few automatable checks for Julia packages.")
 (define-public julia-arrayinterface
   (package
     (name "julia-arrayinterface")
-    (version "3.1.19")
+    (version "5.0.8")
     (source
       (origin
         (method git-fetch)
@@ -158,7 +158,7 @@ provides functions to run a few automatable checks for Julia packages.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0cmldnzvdgmfnrnrzgj6v1mfr2rvk5096392rwmhd3iyx7v0pq33"))))
+         (base32 "0b0h4ihc8sykd96rn16vpk5kfk0p1si5iim61cixk9x12ma8ia3h"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Unexpected failures for i686, e.g.,
@@ -168,15 +168,17 @@ provides functions to run a few automatable checks for Julia packages.")
      (list #:tests? (not (or (%current-target-system)
                              (target-x86-32?)))))
     (propagated-inputs
-     (list julia-ifelse
+     (list julia-compat
+           julia-ifelse
            julia-requires
-           julia-static))
+           julia-static-0.6))
     (native-inputs
      (list julia-aqua
            julia-bandedmatrices
            julia-blockbandedmatrices
            julia-ifelse
            julia-offsetarrays
+           julia-static-0.6
            julia-staticarrays))
     (home-page "https://github.com/JuliaArrays/ArrayInterface.jl")
     (synopsis "Base array interface primitives")
@@ -192,7 +194,7 @@ no issues with the upgrade.")
 (define-public julia-arraylayouts
   (package
     (name "julia-arraylayouts")
-    (version "0.7.6")
+    (version "0.8.16")
     (source
       (origin
         (method git-fetch)
@@ -201,10 +203,20 @@ no issues with the upgrade.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "05q62pks8j23pgbrfny072rrwzrz6q19l68srnjxxv39ncmdmrvg"))))
+         (base32 "1j11jid4scw9icrbr8g6myp17nabjzmf4f40cichb20lzf1agz8l"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/test_layoutarray.jl"
+                 (("@test all\\(B") "@test_broken all(B")))))))
     (propagated-inputs
      (list julia-fillarrays))
+    (native-inputs
+     (list julia-stablerngs))
     (home-page "https://github.com/JuliaMatrices/ArrayLayouts.jl")
     (synopsis "Array layouts and general fast linear algebra")
     (description "This package implements a trait-based framework for describing
@@ -268,7 +280,7 @@ axis (dimension).")
 (define-public julia-axisarrays
   (package
     (name "julia-axisarrays")
-    (version "0.4.4")
+    (version "0.4.6")
     (source
       (origin
         (method git-fetch)
@@ -277,7 +289,7 @@ axis (dimension).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "03kzan1lm4fxfhzv1xjg3ysf6y7nagcc61vfz15kvdrp1dqxlynk"))))
+         (base32 "1bsd6y866ldfb4072hfm8fvc2k0vy72z2blcwfy2mpj8dlyskx3n"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-rangearrays
@@ -299,7 +311,7 @@ axes, allowing column names or interval selections.")
 (define-public julia-bandedmatrices
   (package
     (name "julia-bandedmatrices")
-    (version "0.16.10")
+    (version "0.17.9")
     (source
       (origin
         (method git-fetch)
@@ -308,13 +320,15 @@ axes, allowing column names or interval selections.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0rlfj9gr9ss621v5kw5b06206yaak21s2vq9vk7r8a7p2ylncism"))))
+         (base32 "0nrcasjdpwf15z7l2lzyhxjqxlnqk5if78s15sh4gdgxf9kzj3a6"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-arraylayouts
+     (list julia-aqua
+           julia-arraylayouts
            julia-fillarrays))
     (native-inputs
-     (list julia-genericlinearalgebra))
+     (list julia-aqua
+           julia-genericlinearalgebra))
     (home-page "https://github.com/JuliaMatrices/BandedMatrices.jl")
     (synopsis "Julia package for representing banded matrices")
     (description "This package supports representing banded matrices by only
@@ -324,7 +338,7 @@ the entries on the bands.")
 (define-public julia-benchmarktools
   (package
     (name "julia-benchmarktools")
-    (version "1.1.1")
+    (version "1.3.2")
     (source
      (origin
        (method git-fetch)
@@ -333,7 +347,7 @@ the entries on the bands.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1xz3kdrphp4b158pg7dwkiry49phs2fjjpdvk1hjpww5ykxacks8"))))
+        (base32 "02n2pi71jvhsnc25a888i6imimd2c1phg6iyr73b12595lrz175d"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -365,32 +379,29 @@ benchmarks as well as comparing benchmark results.")
     (license license:expat)))
 
 (define-public julia-bfloat16s
-  ;; Not tagged upstream
-  (let ((commit "ef6051e4308ed0c02f10168b99d226237e0ae33c")
-        (version "0.2.0"))
-    (package
-      (name "julia-bfloat16s")
-      (version version)
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/JuliaMath/BFloat16s.jl")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "16sr578k4i47lhziri47nvspdrsni2wc1qjhs6hzffh9si6a7jfq"))))
-      (build-system julia-build-system)
-      (home-page "https://github.com/JuliaMath/BFloat16s.jl")
-      (synopsis "Define BFloat16 data type")
-      (description "This package defines the @code{BFloat16} data type.  The
+  (package
+    (name "julia-bfloat16s")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/BFloat16s.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12d5dv5jy8vphczlbnks0qa6wmlz0czxq7gc48bcb94f9qvq0r1n"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/BFloat16s.jl")
+    (synopsis "Define BFloat16 data type")
+    (description "This package defines the @code{BFloat16} data type.  The
 only currently available hardware implementation of this datatype are Google's
 Cloud TPUs.  As such, this package is suitable to evaluate whether using TPUs
 would cause precision problems for any particular algorithm, even without
 access to TPU hardware.  Note that this package is designed for functionality,
 not performance, so this package should be used for precision experiments
 only, not performance experiments.")
-      (license license:expat))))
+    (license license:expat)))
 
 (define-public julia-bioalignments
   (package
@@ -520,7 +531,7 @@ and amino acids that are used ny otherBioJulia packages.")
 (define-public julia-blockarrays
   (package
     (name "julia-blockarrays")
-    (version "0.16.8")
+    (version "0.16.23")
     (source
       (origin
         (method git-fetch)
@@ -529,7 +540,7 @@ and amino acids that are used ny otherBioJulia packages.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1by26036fk9mawmcgqxpwizgbs398v9p6vrbsgg7h6llqn3q9iw1"))))
+         (base32 "14gby25ixbp9ha0y2aj4gnjkzha4c7v4y3sicicgbkysnq921qd0"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -545,7 +556,7 @@ and amino acids that are used ny otherBioJulia packages.")
      (list julia-arraylayouts
            julia-fillarrays))
     (native-inputs
-     (list julia-lazyarrays
+     (list julia-aqua
            julia-offsetarrays
            julia-staticarrays))
     (home-page "https://github.com/JuliaArrays/BlockArrays.jl")
@@ -566,7 +577,7 @@ access to the full matrix to use in in for example a linear solver.")
 (define-public julia-blockbandedmatrices
   (package
     (name "julia-blockbandedmatrices")
-    (version "0.10.7")
+    (version "0.11.9")
     (source
       (origin
         (method git-fetch)
@@ -575,7 +586,7 @@ access to the full matrix to use in in for example a linear solver.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "10n1r6kmmv2wa307jfg9y2m6p16j8hngjp3fjavpbdy1r5haasm9"))))
+         (base32 "1qag5awl8cmsyhpajv6llhpqbzxfii1bacppbjvmb1fqs9s0lifd"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-arraylayouts
@@ -594,7 +605,7 @@ A @code{BlockBandedMatrix} is a subtype of @code{BlockMatrix} of
 (define-public julia-bson
   (package
     (name "julia-bson")
-    (version "0.3.3")
+    (version "0.3.6")
     (source
       (origin
         (method git-fetch)
@@ -603,7 +614,7 @@ A @code{BlockBandedMatrix} is a subtype of @code{BlockMatrix} of
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1l5608ma2ys7v2gpcqbiv9mwfc6yrlqkihrfx1pf7fgv5llhd4fn"))))
+         (base32 "1accra3casg66fhn5r07hz3rgs7qf9ld9ajnz8f80aid85zyp891"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-dataframes))
@@ -672,7 +683,7 @@ methods.")
 (define-public julia-categoricalarrays
   (package
     (name "julia-categoricalarrays")
-    (version "0.9.7")
+    (version "0.10.7")
     (source
      (origin
        (method git-fetch)
@@ -681,16 +692,33 @@ methods.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1bcfylxdaizgasnmlkjjkf4dgfvy2y9ycnphw2d0z6mm9vx3n04x"))))
+        (base32 "17fix7wlwqbif5jbcrbi0a0ghdl3429km3l6lqa962p7jf1gjd2d"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               ;; Plots.jl isn't packaged yet.
+               (substitute* "test/runtests.jl"
+                 ((".*13_arraycommon\\.jl.*") "")))))))
     (native-inputs
-     (list julia-pooledarrays))
+     (list julia-json
+           julia-json3
+           ;julia-plots
+           julia-pooledarrays
+           julia-recipesbase
+           julia-sentinelarrays
+           julia-structtypes))
     (propagated-inputs
      (list julia-dataapi
            julia-json
            julia-json3
            julia-missings
            julia-recipesbase
+           julia-requires
+           julia-sentinelarrays
            julia-structtypes))
     (home-page "https://github.com/JuliaData/CategoricalArrays.jl")
     (synopsis "Arrays for working with categorical data")
@@ -721,7 +749,7 @@ variables, both with unordered (nominal variables) and ordered categories
 (define-public julia-chainrules
   (package
     (name "julia-chainrules")
-    (version "1.1.0")
+    (version "1.35.0")
     (source
      (origin
        (method git-fetch)
@@ -730,18 +758,19 @@ variables, both with unordered (nominal variables) and ordered categories
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0if93pd3b3scg2x3gmk1cbwjk0ax1n792vy8c38y3xl7jpd5cb70"))))
+        (base32 "17irgz3gamyrmzsjhq4s1n1sblvhkj10yg5y5y53yr631cl2fr6a"))))
     (build-system julia-build-system)
-    (inputs                             ;required for test
-     (list julia-chainrulestestutils
-           julia-finitedifferences
-           julia-nanmath
-           julia-specialfunctions))
+    (arguments
+     (list #:tests? #f))        ; JuliaInterpreter.jl not packaged yet.
+    ;(inputs                             ;required for test
+    ; (list julia-chainrulestestutils
+    ;       julia-finitedifferences
+    ;       julia-juliainterpreter))
     (propagated-inputs
      (list julia-chainrulescore
            julia-compat
-           julia-reexport
-           julia-requires))
+           julia-irrationalconstants
+           julia-realdot))
     (home-page "https://github.com/JuliaDiff/ChainRules.jl")
     (synopsis "Common utilities for automatic differentiation")
     (description "The is package provides a variety of common utilities that
@@ -752,7 +781,7 @@ execute forward-, reverse-, and mixed-mode primitives.")
 (define-public julia-chainrulescore
   (package
     (name "julia-chainrulescore")
-    (version "1.0.2")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -761,8 +790,19 @@ execute forward-, reverse-, and mixed-mode primitives.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1866xv30h1bi7f2m993nljzf58wwmv8zlgn6ffn9j3wckch1nfpb"))))
+        (base32 "0lgfcsb7f6c7knhiz5dbqh8x47d370pn71y9ys2y6763g0b4pm61"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/tangent_types/tangent.jl"
+                 ;; This test is disabled after the release.
+                 (("@test haskey.*Float.*") "")
+                 (("@test (.*construct)" _ test)
+                  (string-append "@test_broken " test))))))))
     (inputs                             ;required for tests
      (list julia-benchmarktools
            julia-staticarrays))
@@ -777,7 +817,7 @@ sensitivities for functions without the need to depend on ChainRules itself.")
 (define-public julia-chainrulestestutils
   (package
     (name "julia-chainrulestestutils")
-    (version "1.2.3")
+    (version "1.5.1")
     (source
      (origin
        (method git-fetch)
@@ -786,7 +826,7 @@ sensitivities for functions without the need to depend on ChainRules itself.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vlkyp72d514gyb4k3yhjl1g7f24ncmz61j56p4sdi9f76rk9fx9"))))
+        (base32 "0vk7cpp049pjj7g5zqxr7djp5v0swhvhq3wvkxyw8m8xvqlnfncc"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-chainrulescore
@@ -804,6 +844,33 @@ rules against numerical differentiation (using @code{FiniteDifferences.jl}).
 @code{ChainRulesTestUtils.jl} is separated from @code{ChainRulesCore.jl} so that it
 can be a test-only dependency, allowing it to have potentially heavy
 dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible.")
+    (license license:expat)))
+
+(define-public julia-changesofvariables
+  (package
+    (name "julia-changesofvariables")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/ChangesOfVariables.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1migyhiqr1rq496302wlkb0s5l8zwqs97ajfkip0jzpvrk2s2xxy"))))
+    (build-system julia-build-system)
+    (arguments
+     ;; Pulls in ForwardDiff, would have a cyclical
+     ;; dependency with LogExpFunctions.
+     (list #:tests? #f))
+    (propagated-inputs
+     (list julia-chainrulescore))
+    (home-page "https://github.com/JuliaMath/ChangesOfVariables.jl")
+    (synopsis "Interface for transformation functions in Julia")
+    (description "This package defines functionality to calculate volume element
+changes for functions that perform a change of variables (like coordinate
+transformations).")
     (license license:expat)))
 
 (define-public julia-codeczlib
@@ -832,7 +899,7 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
 (define-public julia-colors
   (package
     (name "julia-colors")
-    (version "0.12.8")
+    (version "0.12.9")
     (source
      (origin
        (method git-fetch)
@@ -841,12 +908,22 @@ dependencies, while keeping @code{ChainRulesCore.jl} as light-weight as possible
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kx3hq7rf8p5zx6ly9k5j90zijmc7yrwmy96cgkl2ibdfbnhmya3"))))
+        (base32 "1g0fvvz09pfk6jxqrdplwkw1yywcqvwjd3ga24hblq71mah367n6"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/runtests.jl"
+                 ((".*detect_ambiguities.*") "")))))))
     (propagated-inputs
      (list julia-colortypes
            julia-fixedpointnumbers
            julia-reexport))
+    (native-inputs
+     (list julia-abstracttrees))
     (home-page "https://github.com/JuliaGraphics/Colors.jl")
     (synopsis "Tools for dealing with color")
     (description "This package provides a wide array of functions for dealing
@@ -882,7 +959,7 @@ color scales for graphics.")
 (define-public julia-colortypes
   (package
     (name "julia-colortypes")
-    (version "0.11.0")
+    (version "0.11.1")
     (source
      (origin
        (method git-fetch)
@@ -891,8 +968,17 @@ color scales for graphics.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0n7h70caqv7yd0khjhn90iax62r73mcif8qzkwj5b4q46li1r8ih"))))
+        (base32 "0cp5wbi2bhnxp4h7wpzkx341d47744f4c9a8n0w0kn016qa16m86"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'skip-failing-test
+             (lambda _
+               (substitute* "test/conversions.jl"
+                 (("@test promote\\(RGB\\{N0f8")
+                  "@test_broken promote(RGB{N0f8")))))))
     (propagated-inputs
      (list julia-fixedpointnumbers))
     (native-inputs
@@ -908,7 +994,7 @@ with.")
 (define-public julia-colorvectorspace
   (package
     (name "julia-colorvectorspace")
-    (version "0.9.7")
+    (version "0.9.9")
     (source
       (origin
         (method git-fetch)
@@ -917,10 +1003,14 @@ with.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "02gk7f5g5wjxdasbjf8bvv1m7clksh7mw1xmygjdirjz1q0d6dwi"))))
+         (base32 "07scws2bn2z3f2crhnx1zxk3zk3vzfv9iz6lv3i9785nplmsgdx9"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:tests? #f))    ; TODO: Reenable the test suite.
     (propagated-inputs
      (list julia-colortypes
+           julia-fixedpointnumbers
            julia-specialfunctions
            julia-tensorcore))
     (native-inputs
@@ -989,6 +1079,14 @@ common subexpression elimination.")
        (sha256
         (base32 "0qzvaqi5gqgc747fnajbvvf5vqbh6cwykwky00c7glvmvdsgk3z0"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-shell-invocation
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "test/runtests.jl"
+                (("shcmd = `sh`") (string-append "shcmd = `" (which "sh") "`"))))))))
     (home-page "https://github.com/JuliaLang/Compat.jl")
     (synopsis "Compatibility across Julia versions")
     (description "The Compat package is designed to ease interoperability
@@ -1066,28 +1164,31 @@ for construction of objects.")
     (license license:expat)))
 
 (define-public julia-coordinatetransformations
-  (package
-    (name "julia-coordinatetransformations")
-    (version "0.6.1")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "15zbkn32v7xlz7559s0r5a0vkwmjwsswxaqpzijly4lky4jnp33d"))))
-    (build-system julia-build-system)
-    (propagated-inputs
-     (list julia-staticarrays))
-    (native-inputs
-    (list julia-documenter
-          julia-forwarddiff
-          julia-unitful))
-    (home-page "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
-    (synopsis "Coordinate transformations in Julia")
-    (description "@code{CoordinateTransformations} is a Julia package to manage
+  ;; Test suite fixed after the last release.
+  (let ((commit "78f5a5cc8cf77f21407b4f175673fa4f6bf86633")
+        (revision "1"))
+    (package
+      (name "julia-coordinatetransformations")
+      (version (git-version "0.6.2" revision commit))
+      (source
+        (origin
+          (method git-fetch)
+          (uri (git-reference
+                 (url "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
+                 (commit commit)))
+          (file-name (git-file-name name version))
+          (sha256
+           (base32 "026g3b2m2z509jdlqvd46yhnhg8y6m00plr3k7cjlbzrfi2yjjn8"))))
+      (build-system julia-build-system)
+      (propagated-inputs
+       (list julia-staticarrays))
+      (native-inputs
+      (list julia-documenter
+            julia-forwarddiff
+            julia-unitful))
+      (home-page "https://github.com/JuliaGeometry/CoordinateTransformations.jl")
+      (synopsis "Coordinate transformations in Julia")
+      (description "@code{CoordinateTransformations} is a Julia package to manage
 simple or complex networks of coordinate system transformations.
 Transformations can be easily applied, inverted, composed, and differentiated
 (both with respect to the input coordinates and with respect to transformation
@@ -1096,7 +1197,7 @@ light-weight and efficient enough for, e.g., real-time graphical applications,
 while support for both explicit and automatic differentiation makes it easy to
 perform optimization and therefore ideal for computer vision applications such
 as SLAM (simultaneous localization and mapping).")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public julia-crayons
   (package
@@ -1166,7 +1267,7 @@ as comma-delimited (csv), tab-delimited (tsv), or otherwise.")
 (define-public julia-dataapi
   (package
     (name "julia-dataapi")
-    (version "1.7.0")
+    (version "1.13.0")
     (source
       (origin
         (method git-fetch)
@@ -1175,7 +1276,7 @@ as comma-delimited (csv), tab-delimited (tsv), or otherwise.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0swk31p83fycz5cdj4fg6b0wfqj473lnx94q2fl7ybxkkc6afba7"))))
+         (base32 "1x5pdpjlbk29766ark7rmzjbl0rhxmsb1cp04lc891aknh30rn3i"))))
     (build-system julia-build-system)
     (home-page "https://github.com/JuliaData/DataAPI.jl")
     (synopsis "Data-focused namespace for packages to share functions")
@@ -1189,7 +1290,7 @@ dependency on it.")
 (define-public julia-dataframes
   (package
     (name "julia-dataframes")
-    (version "1.2.2")
+    (version "1.3.6")
     (source
       (origin
         (method git-fetch)
@@ -1198,7 +1299,7 @@ dependency on it.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1bk0amrghgjrkyn1mm4ac23swwbgszl1d0qyl9137qj5zvv9dasp"))))
+         (base32 "01ybc1ckn5wi7kwp29g5ms4m3g650856z4xv71racbdr8475pmg5"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -1215,24 +1316,33 @@ dependency on it.")
                  (string-append all "return\n")))
               (substitute* "test/join.jl"
                 (("test (levels\\(outerjoin\\(B)" _ test)
-                 (string-append "test_nowarn " test))))))))
+                 (string-append "test_nowarn " test)))
+              ;; Compat with julia-1.8, remove with next package update.
+              (substitute* "test/indexing_offset.jl"
+                (("@test_throws ErrorException")
+                 "@test_throws Base.CanonicalIndexError")))))))
     (propagated-inputs
-     (list julia-dataapi
+     (list julia-categoricalarrays
+           julia-compat
+           julia-dataapi
            julia-invertedindices
            julia-iteratorinterfaceextensions
            julia-missings
            julia-pooledarrays
            julia-prettytables
            julia-reexport
+           julia-shiftedarrays
            julia-sortingalgorithms
            julia-tables
-           julia-tabletraits))
+           julia-tabletraits
+           julia-unitful))
     (native-inputs
      (list julia-categoricalarrays
            julia-combinatorics
            julia-datastructures
            julia-datavalues
            julia-offsetarrays
+           julia-shiftedarrays
            julia-unitful))
     (home-page "https://dataframes.juliadata.org/stable/")
     (synopsis "In-memory tabular data")
@@ -1246,7 +1356,7 @@ Julia from R or Python.")
 (define-public julia-datastructures
   (package
     (name "julia-datastructures")
-    (version "0.18.9")
+    (version "0.18.13")
     (source
      (origin
        (method git-fetch)
@@ -1255,7 +1365,7 @@ Julia from R or Python.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hdqp8ipsqdw5bqqkdvz4j6n67x80sj5azr9vzyxwjfsgkfbnk2l"))))
+        (base32 "1ikrgc4d39980nrr77yzcnr1v74wrjh9xvyi2ajfzbcim58vrcqg"))))
     (propagated-inputs
      (list julia-compat
            julia-orderedcollections))
@@ -1384,7 +1494,7 @@ dictionaries in Julia, for improved productivity and performance.")
 (define-public julia-distances
   (package
     (name "julia-distances")
-    (version "0.10.3")
+    (version "0.10.7")
     (source
       (origin
         (method git-fetch)
@@ -1393,7 +1503,7 @@ dictionaries in Julia, for improved productivity and performance.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1yqd9wg4z15k42mrp4y14j2x0sq7yrjhm5zpqklrw6w6j1c367ig"))))
+         (base32 "0sgrh3bzhmqqz0m28lmk66xhnl62i5r2miaiqml8nhbkaapbwc06"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -1407,7 +1517,14 @@ dictionaries in Julia, for improved productivity and performance.")
                 (("test dyz ≥") "test_nowarn dyz ≥")
                 (("test dist\\(y, x") "test_nowarn dist(y, x")
                 (("test dist\\(z, x") "test_nowarn dist(z, x")
-                (("test dist\\(z, y") "test_nowarn dist(z, y")))))))
+                (("test dist\\(z, y") "test_nowarn dist(z, y"))
+              #$@(if (not (target-64bit?))
+                   ;; A little too much precision
+                   ;; Evaluated: 1.8839055991209719 === 1.8839055991209717
+                   `((substitute* "test/test_dists.jl"
+                       (("@test whamming\\(a, b, w\\) === sum")
+                        "@test_skip whamming(a, b, w) === sum")))
+                   '()))))))
     (propagated-inputs
      (list julia-statsapi))
     (native-inputs
@@ -1472,6 +1589,15 @@ valuable enough at this time.")
                 (("pip install")
                  (string-append (search-input-file inputs "bin/pip")
                                 " install")))))
+          (add-after 'link-depot 'fix-test-git-submodule
+            ;; Git v2.38.1 fixes security issues and changes the default
+            ;; behaviour of `git submodule`.  This substitution is a backport
+            ;; of the upstream patch, not yet released, fixing the test suite.
+            ;; https://github.com/JuliaDocs/Documenter.jl/commit/b5a5c65d02d136743e7c18ffebf8baba900484fc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "test/utilities.jl"
+                (("submodule add")
+                 "-c protocol.file.allow=always submodule add"))))
           (add-after 'link-depot 'remove-javascript-downloads
             (lambda _
               (substitute* "src/Writers/HTMLWriter.jl"
@@ -1488,7 +1614,7 @@ valuable enough at this time.")
     (inputs
      (list python-wrapper))
     (native-inputs
-     (list git-minimal
+     (list git-minimal/fixed                  ;needed for the "Utilities" test
            julia-documentermarkdown
            julia-documentertools))
     (home-page "https://juliadocs.github.io/Documenter.jl")
@@ -1591,7 +1717,7 @@ be passed to in-place differentiation methods instead of an output buffer.")
 (define-public julia-diffrules
   (package
     (name "julia-diffrules")
-    (version "1.0.2")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -1600,11 +1726,15 @@ be passed to in-place differentiation methods instead of an output buffer.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0cwjvj4gma7924fm3yas0nf0jlnwwx4v7fi79ii3s290lkdldzfl"))))
+        (base32 "0l983kzy01y7qqw42pi0ihpvx3yzfnwrhcmk38avw7y513qlm7vf"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-nanmath
+     (list julia-irrationalconstants
+           julia-logexpfunctions
+           julia-nanmath
            julia-specialfunctions))
+    (native-inputs
+     (list julia-finitedifferences))
     (home-page "https://github.com/JuliaDiff/DiffRules.jl")
     (synopsis "Primitive differentiation rules")
     (description "This package provides primitive differentiation rules that
@@ -1671,7 +1801,7 @@ combinations of dual numbers with predefined Julia numeric types.")
 (define-public julia-ellipsisnotation
   (package
     (name "julia-ellipsisnotation")
-    (version "1.1.0")
+    (version "1.6.0")
     (source
       (origin
         (method git-fetch)
@@ -1680,17 +1810,8 @@ combinations of dual numbers with predefined Julia numeric types.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0py46kxl702r8pw3v7x4cqllf7yc91b0dr7vb60xh2qi7d6y3jc7"))))
+         (base32 "0l4fc180chhxlq9d67122c0lgq2hfsxsmcgml2bfl2rnh13gya2b"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'adjust-test-suite
-            (lambda _
-              (substitute* "test/runtests.jl"
-                ;; Seems to not play nicely with Julia-1.6.
-                ((".*basic.jl.*") "")))))))
     (propagated-inputs
      (list julia-arrayinterface))
     (home-page "https://github.com/ChrisRackauckas/EllipsisNotation.jl")
@@ -1758,7 +1879,7 @@ metaprogramming on Julia Expr, the meta programming standard library for
 (define-public julia-exprtools
   (package
     (name "julia-exprtools")
-    (version "0.1.6")
+    (version "0.1.8")
     (source
       (origin
         (method git-fetch)
@@ -1767,7 +1888,7 @@ metaprogramming on Julia Expr, the meta programming standard library for
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "058ax5d96jpym5w3g37ah1c4xq3fskwpjdhchakzax15vqzy7ab4"))))
+         (base32 "0sxrhc5dz1v53zs8sym4csfy28ki00b7x7aihm2zmkrx48if63gb"))))
     (build-system julia-build-system)
     (home-page "https://github.com/invenia/ExprTools.jl")
     (synopsis "Light-weight expression manipulation tools")
@@ -1876,7 +1997,7 @@ working with filesystem paths in Julia.")
 (define-public julia-fillarrays
   (package
     (name "julia-fillarrays")
-    (version "0.12.6")
+    (version "0.13.6")
     (source
      (origin
        (method git-fetch)
@@ -1885,8 +2006,10 @@ working with filesystem paths in Julia.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1sx96pzrgyh8k7x2w8vmyi6cazlmp7rg1n7wbl47qfzqjggka6kz"))))
+        (base32 "1c4i8awmw9qq8dqfhxwjh76mc1nlmzrl5j754fpnbajv8p49gdv5"))))
     (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-aqua))
     (inputs                             ;required by tests
      (list julia-staticarrays))
     (home-page "https://github.com/JuliaArrays/FillArrays.jl")
@@ -1975,40 +2098,35 @@ using finite difference.")
     (license license:expat)))
 
 (define-public julia-fixedpointnumbers
-  (package
-    (name "julia-fixedpointnumbers")
-    (version "0.8.4")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0j0n40n04q9sk68wh9jq90m6c67k4ws02k41djjzkrqmpzv4rcdi"))))
-    (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'link-depot 'disable-failing-test
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* "test/fixed.jl"
-                ;; A deprecation warning is not thrown
-                (("@test_logs.*:warn" all) (string-append "# " all))))))))
-    (propagated-inputs
-     (list julia-compat))
-    (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
-    (synopsis "Fixed point types for Julia")
-    (description "@code{FixedPointNumbers.jl} implements fixed-point number
+  (let ((commit "59ee94b93f2f1ee75544ef44187fc0e440cd8015")
+        (revision "1"))
+    (package
+      (name "julia-fixedpointnumbers")
+      (version (git-version "0.8.4" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/JuliaMath/FixedPointNumbers.jl")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1ghriy7p2fj7mwdx11ssjg28jmwz8pi13c3j8p1grvwb4nvc0jnq"))))
+      (build-system julia-build-system)
+      (arguments
+       (list #:tests? #f))      ; Cycle with julia-documenter
+      (propagated-inputs
+       (list julia-compat))
+      (home-page "https://github.com/JuliaMath/FixedPointNumbers.jl")
+      (synopsis "Fixed point types for Julia")
+      (description "@code{FixedPointNumbers.jl} implements fixed-point number
 types for Julia.  A fixed-point number represents a fractional, or
 non-integral, number.  In contrast with the more widely known floating-point
 numbers, with fixed-point numbers the decimal point doesn't \"float\":
 fixed-point numbers are effectively integers that are interpreted as being
 scaled by a constant factor.  Consequently, they have a fixed number of
 digits (bits) after the decimal (radix) point.")
-    (license license:expat)))
+      (license license:expat))))
 
 (define-public julia-formatting
   (package
@@ -2033,7 +2151,7 @@ c-style numerical formatting.")
 (define-public julia-forwarddiff
   (package
     (name "julia-forwarddiff")
-    (version "0.10.18")
+    (version "0.10.34")
     (source
      (origin
        (method git-fetch)
@@ -2042,7 +2160,7 @@ c-style numerical formatting.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1vb46x8mcn61g1l14qrk22c043khg2ml4q1ci7h4k2v34f2ak5fs"))))
+        (base32 "1lwjw2jzkffwk06hfc30vxhv36ng3gf12qjc43swmqiakkd3m5jx"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Unexpected and non-deterministic failures for i686, e.g.,
@@ -2055,9 +2173,11 @@ c-style numerical formatting.")
      (list julia-calculus
            julia-difftests))
     (propagated-inputs
-     (list julia-commonsubexpressions
+     (list julia-calculus
+           julia-commonsubexpressions
            julia-diffresults
            julia-diffrules
+           julia-difftests
            julia-nanmath
            julia-specialfunctions
            julia-staticarrays))
@@ -2101,7 +2221,7 @@ arbitrary functions.")
 (define-public julia-functors
   (package
     (name "julia-functors")
-    (version "0.2.7")
+    (version "0.4.1")
     (source
       (origin
         (method git-fetch)
@@ -2110,8 +2230,12 @@ arbitrary functions.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "03ry1wn1y2jssq65l29bi6q4ki041aa6gl1nd2w6cgl00k2mrxf3"))))
+         (base32 "00rzbj2rs2lq91wz8qyxq14bg7p9i49dq7y44fvxn6jaikha2ymw"))))
     (build-system julia-build-system)
+    (native-inputs
+     (list julia-documenter
+           julia-staticarrays
+           julia-zygote))
     (home-page "https://fluxml.ai/Functors.jl/stable/")
     (synopsis "Design pattern for structures as in machine learning")
     (description "This package provides tools to express a design pattern for
@@ -2186,7 +2310,7 @@ algebra routines written in Julia (except for optimized BLAS).")
 (define-public julia-genericschur
   (package
     (name "julia-genericschur")
-    (version "0.5.1")
+    (version "0.5.3")
     (source
       (origin
         (method git-fetch)
@@ -2195,7 +2319,7 @@ algebra routines written in Julia (except for optimized BLAS).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "12x6lxzxm91y3k6s9dam46dq5hrby5sr0gy0fdfnp0xhjzdy2j0d"))))
+         (base32 "02f2azi6036ca8nlgyvvfagwbks8jxfz4k0d8a709ixr1n0ylwap"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2204,7 +2328,7 @@ algebra routines written in Julia (except for optimized BLAS).")
           (add-after 'link-depot 'adjust-test-suite
             (lambda _
               (substitute* "test/complex.jl"
-                ;; expected Array{Int32,1}, got a value of type Array{Int64,1}
+                ;; expected Vector{Int32,1}, got a value of type Vector{Int64,1}
                 (("A = _example") "#A = _example")
                 (("schurtest\\(A,20\\)") ""))
               (substitute* "test/runtests.jl"
@@ -2224,7 +2348,7 @@ matrices the Schur form is often more useful.")
 (define-public julia-geometrybasics
   (package
     (name "julia-geometrybasics")
-    (version "0.4.1")
+    (version "0.4.2")
     (source
       (origin
         (method git-fetch)
@@ -2233,7 +2357,7 @@ matrices the Schur form is often more useful.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "057j3hjpli3q5b98cqkpi4p10x2k9pyksrz62hjmv1kb5qzdvhsj"))))
+         (base32 "0kxn7gzv4sm3017qbng70iqb4wzy1k2fj5w6lkz1kn7lx7z7m33x"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2322,7 +2446,7 @@ visualisation applications.")
 (define-public julia-graphics
   (package
     (name "julia-graphics")
-    (version "1.1.0")
+    (version "1.1.2")
     (source
       (origin
         (method git-fetch)
@@ -2331,7 +2455,7 @@ visualisation applications.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "10h1s09v7qkvrjr6l678zamb1p248n8jv4rrwkf8g7d2bpfz9amn"))))
+         (base32 "083fppcbmchgnqp4xqdsd4asavq51jq31w8ak35ns701534hr82p"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-colors
@@ -2368,7 +2492,7 @@ library for parsing HTML.")
 (define-public julia-http
   (package
     (name "julia-http")
-    (version "0.9.12")
+    (version "0.9.17")
     (source
      (origin
        (method git-fetch)
@@ -2377,7 +2501,7 @@ library for parsing HTML.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1jsyk3mhnwj4h19cxclx26igdqdrw51fd3k1hgav0nm67dy4cxyk"))))
+        (base32 "1ynzcl30sf5r42l75l5x1a8z0643hlck2kysyhag9795gzafxzv3"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2408,6 +2532,9 @@ library for parsing HTML.")
                 (("@testset.*Body - .*" all)
                  (string-append all "return\n"))
                 (("@testset.*Write to file.*" all)
+                 (string-append all "return\n")))
+              (substitute* "test/cookies.jl"
+                (("@testset.*Set-Cookie casing.*" all)
                  (string-append all "return\n"))))))))
     (propagated-inputs
      (list julia-inifile
@@ -2421,32 +2548,6 @@ library for parsing HTML.")
     (synopsis "HTTP support for Julia")
     (description "@code{HTTP.jl} is a Julia library for HTTP Messages,
 implementing both a client and a server.")
-    (license license:expat)))
-
-(define-public julia-identityranges
-  (package
-    (name "julia-identityranges")
-    (version "0.3.1")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-               (url "https://github.com/JuliaArrays/IdentityRanges.jl")
-               (commit (string-append "v" version))))
-        (file-name (git-file-name name version))
-        (sha256
-         (base32 "0jvl4xn8f8k70sn473li5q62wbiycl5qi25b5k456h3a0j1lbiml"))))
-    (build-system julia-build-system)
-    (propagated-inputs
-     (list julia-offsetarrays))
-    (home-page "https://github.com/JuliaArrays/IdentityRanges.jl")
-    (synopsis "Ranges that preserve indices of views")
-    (description "@code{IdentityRanges} are Julia-language a helper type for
-creating \"views\" of arrays.  They are a custom type of AbstractUnitRange that
-makes it easy to preserve the indices of array views.  The key property of an
-@code{IdentityRange r} is that @code{r[i] == i} (hence the name of the
-type/package), and that they support arbitrary start/stop indices (i.e., not
-just starting at 1).")
     (license license:expat)))
 
 (define-public julia-ifelse
@@ -2472,7 +2573,7 @@ conditional ifelse.  It is similar to @code{Core.ifelse} but it is extendable.")
 (define-public julia-imageaxes
   (package
     (name "julia-imageaxes")
-    (version "0.6.9")
+    (version "0.6.10")
     (source
       (origin
         (method git-fetch)
@@ -2481,15 +2582,27 @@ conditional ifelse.  It is similar to @code{Core.ifelse} but it is extendable.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "15zqxani1jjh8849s7rdps6b6prqdwv8yxx893y536vkpk7i07qd"))))
+         (base32 "15f3y46vcr88fplr7rlibrm3k852p8rzwid5dgmbhc03a8xqd50s"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/runtests.jl"
+                 ;; Skip the constantly failing grayscale test.
+                 (("@test summary") "@test_broken summary")))))))
     (propagated-inputs
      (list julia-axisarrays
+           julia-imagebase
            julia-imagecore
            julia-reexport
            julia-simpletraits))
     (native-inputs
-     (list julia-unitful))
+     (list julia-aqua
+           julia-documenter
+           julia-unitful))
     (home-page "https://github.com/JuliaImages/ImageAxes.jl")
     (synopsis "Julia package for giving \"meaning\" to the axes of an image")
     (description "This small package supports the representation of images as
@@ -2500,7 +2613,7 @@ such arrays easy via traits.")
 (define-public julia-imagebase
   (package
     (name "julia-imagebase")
-    (version "0.1.1")
+    (version "0.1.5")
     (source
       (origin
         (method git-fetch)
@@ -2509,7 +2622,7 @@ such arrays easy via traits.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1n63f2zs6ail9pcl7rzgv3l0z8v1idjsaza3zgvgy7iacxsdpcj2"))))
+         (base32 "00gi268jsyhlkadkkbyiffph6c8yb7zw34px76n6hs7dkfzp6jm3"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2517,9 +2630,14 @@ such arrays easy via traits.")
      (list julia-imagecore
            julia-reexport))
     ;(native-inputs
-    ; `(("julia-imagemagick" ,julia-imagemagick)
-    ;   ("julia-offsetarrays" ,julia-offsetarrays)
-    ;   ("julia-testimages" ,julia-testimages)))
+    ; (list julia-aqua
+    ;       julia-documenter
+    ;       julia-imagefiltering
+    ;       julia-imageio
+    ;       julia-imagemagick
+    ;       julia-offsetarrays
+    ;       jula-statistics
+    ;       julia-testimages))
     (home-page "https://github.com/JuliaImages/ImageBase.jl")
     (synopsis "Wrapper package around ImageCore")
     (description "This is a twin package to @code{ImageCore} with functions that
@@ -2531,7 +2649,7 @@ dependencies.")
 (define-public julia-imagecore
   (package
     (name "julia-imagecore")
-    (version "0.9.1")
+    (version "0.9.4")
     (source
       (origin
         (method git-fetch)
@@ -2540,7 +2658,7 @@ dependencies.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0h9m3pl3wic1jrgaqkdifz24cya5vxd3m6qdmm37pxg2y2ii2vcq"))))
+         (base32 "0a6m3cszgh2bfsgs08i64f1h1pwh6by4267rvwyvdk470z0ayc8q"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2557,7 +2675,7 @@ dependencies.")
            julia-reexport))
     ;(native-inputs
     ; `(("julia-aqua" ,julia-aqua)
-    ;   ("julia-colorvectorspace" ,julia-colorvectorspace)
+    ;   ("julia-blockarrays" ,julia-blockarrays)
     ;   ("julia-documenter" ,julia-documenter)
     ;   ("julia-fftw" ,julia-fftw)
     ;   ("julia-imageinterminal" ,julia-imageinterminal)
@@ -2657,7 +2775,7 @@ It was split off from @code{Images.jl} to make image I/O more modular.")
 (define-public julia-imagemetadata
   (package
     (name "julia-imagemetadata")
-    (version "0.9.6")
+    (version "0.9.8")
     (source
       (origin
         (method git-fetch)
@@ -2666,15 +2784,26 @@ It was split off from @code{Images.jl} to make image I/O more modular.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0iv154ms370xgcr56bwsjl13iwmy671cbxjl9ld5yfj85pclcwi1"))))
+         (base32 "0rdzvya5szlkg5ds3fw7lpk47hn16655i6265czwf8fxs3hb1gvf"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-tests
+             (lambda _
+               (substitute* "test/operations.jl"
+                 ;; Skip the constantly failing greyscale test.
+                 (("\\@testset \\\"operations.*" all)
+                  (string-append all " return\n"))))))))
     (propagated-inputs
      (list julia-axisarrays
            julia-imageaxes
-           julia-imagecore
-           julia-indirectarrays))
+           julia-imagebase
+           julia-imagecore))
     (native-inputs
-     (list julia-offsetarrays
+     (list julia-indirectarrays
+           julia-offsetarrays
            julia-simpletraits
            julia-unitful))
     (home-page "https://github.com/JuliaImages/ImageMetadata.jl")
@@ -2724,7 +2853,7 @@ inline presentation of greyscale or color images.")
 (define-public julia-imagetransformations
   (package
     (name "julia-imagetransformations")
-    (version "0.8.12")
+    (version "0.9.5")
     (source
       (origin
         (method git-fetch)
@@ -2733,7 +2862,7 @@ inline presentation of greyscale or color images.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0i8gw68hljshsy9wdl5mrpbb31irhmayqyglsxi7jwm88iy9pxhm"))))
+         (base32 "1wavfs5chq8s9ma0k8fxfaqam4560w4l2j3lhbd9aqsjlgvi3swc"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))    ; Cycle with ImageMagick.jl.
@@ -2741,16 +2870,19 @@ inline presentation of greyscale or color images.")
      (list julia-axisalgorithms
            julia-colorvectorspace
            julia-coordinatetransformations
-           julia-identityranges
+           julia-imagebase
            julia-imagecore
            julia-interpolations
            julia-offsetarrays
            julia-rotations
            julia-staticarrays))
     ;(native-inputs
-    ; `(("julia-imagemagick" ,julia-imagemagick)
-    ;   ("julia-referencetests" ,julia-referencetests)
-    ;   ("julia-testimages" ,julia-testimages)))
+    ; (list julia-endpointranges
+    ;       julia-imageio
+    ;       julia-imagemagick
+    ;       julia-referencetests
+    ;       julia-tau
+    ;       julia-testimages))
     (home-page "https://github.com/JuliaImages/ImageTransformations.jl")
     (synopsis "Geometric transformations on images for Julia")
     (description "This package provides support for image resizing, image
@@ -2789,6 +2921,9 @@ number of occurrences of bit @code{b} in @code{bv[1:i]}
 index of i-th occurrence of @code{b} in @code{bv}.
 @end itemize
 and other shortcuts or types.")
+    ;; There are plenty of places in the code which rely on the
+    ;; length of an Integer in a 64-bit system.
+    (supported-systems %64bit-supported-systems)
     (license license:expat)))
 
 (define-public julia-indexing
@@ -2921,7 +3056,7 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
 (define-public julia-interpolations
   (package
     (name "julia-interpolations")
-    (version "0.13.3")
+    (version "0.13.6")
     (source
       (origin
         (method git-fetch)
@@ -2930,7 +3065,7 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1236c20k388qlh7k74mhf7hkbn0vf7ss8b1rgh1a6aj0234ayfnc"))))
+         (base32 "1skzvgd63rhj1zpn45gi3974rbrir9p2y17zyfmkz6c6nird7bkj"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -2943,16 +3078,19 @@ each one has a fixed size.  Currently support inline strings from 1 byte up to
                         (target-x86-32?)))))
     (propagated-inputs
      (list julia-axisalgorithms
+           julia-chainrulescore
            julia-offsetarrays
            julia-ratios
            julia-requires
            julia-staticarrays
            julia-woodburymatrices))
     (native-inputs
-     (list julia-dualnumbers
+     (list julia-colorvectorspace
+           julia-dualnumbers
            julia-forwarddiff
            julia-offsetarrays
-           julia-unitful julia-zygote))
+           julia-unitful
+           julia-zygote))
     (home-page "https://github.com/JuliaMath/Interpolations.jl")
     (synopsis "Continuous interpolation of discrete datasets")
     (description "This package implements a variety of interpolation schemes for
@@ -3026,10 +3164,31 @@ container mapping @code{(K,V)} pairs via the type @code{IntervalTree{K, V}}.
 The type @code{K} may be any ordered type.")
       (license license:expat))))
 
+(define-public julia-inversefunctions
+  (package
+    (name "julia-inversefunctions")
+    (version "0.1.8")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaMath/InverseFunctions.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "05g9f6i735x7syfr56l4yf4fy71kgdisjc6cfxi4jkf46iq86a69"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-documenter))
+    (home-page "https://github.com/JuliaMath/InverseFunctions.jl")
+    (synopsis "Interface for function inversion")
+    (description "This package provides an interface to invert functions.")
+    (license license:expat)))
+
 (define-public julia-invertedindices
   (package
     (name "julia-invertedindices")
-    (version "1.0.0")
+    (version "1.1.0")
     (source
       (origin
         (method git-fetch)
@@ -3038,7 +3197,7 @@ The type @code{K} may be any ordered type.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1179z20yxnkyziip7gn26wr1g3k3ssl1ci7pig3khc900f62di46"))))
+         (base32 "15ym4dzyi4fkz0dznni032w3c84zmfa6mrzj2ljqvlqx1i6agqis"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-offsetarrays))
@@ -3070,10 +3229,56 @@ function, which captures the standard output and standard error, and returns it
 as a string together with the return value.")
     (license license:expat)))
 
+(define-public julia-irrationalconstants
+  (package
+    (name "julia-irrationalconstants")
+    (version "0.1.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaMath/IrrationalConstants.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1a007iyh26x67a1bj6fcz7pfxa43kn2v7jpmnz727jkk3xgppg2s"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/IrrationalConstants.jl")
+    (synopsis "Additional irrationals for Julia")
+    (description "This package provides these irrational constants:
+@itemize
+@item
+@item twoπ       = 2π
+@item fourπ      = 4π
+@item halfπ      = π / 2
+@item quartπ     = π / 4
+@item invπ       = 1 / π
+@item twoinvπ    = 2 / π
+@item fourinvπ   = 4 / π
+@item inv2π      = 1 / (2π)
+@item inv4π      = 1 / (4π)
+@item sqrt2      = √2
+@item sqrt3      = √3
+@item sqrtπ      = √π
+@item sqrt2π     = √2π
+@item sqrt4π     = √4π
+@item sqrthalfπ  = √(π / 2)
+@item invsqrt2   = 1 / √2
+@item invsqrtπ   = 1 / √π
+@item invsqrt2π  = 1 / √2π
+@item loghalf    = log(1 / 2)
+@item logtwo     = log(2)
+@item logten     = log(10)
+@item logπ       = log(π)
+@item log2π      = log(2π)
+@item log4π      = log(4π)
+@end itemize")
+    (license license:expat)))
+
 (define-public julia-irtools
   (package
     (name "julia-irtools")
-    (version "0.4.3")
+    (version "0.4.7")
     (source
      (origin
        (method git-fetch)
@@ -3082,7 +3287,7 @@ as a string together with the return value.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "11334fcg2slpwcj0raxf457brhf7pxglgxc6cy8q58ggrpxqfqql"))))
+        (base32 "1faddim4gp9pgyadgxi7zdqpdn6qkh7acqpdy29ixpbnb0wgla5r"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-macrotools))
@@ -3139,7 +3344,7 @@ extensions to the iterator interface.")
 (define-public julia-jive
   (package
     (name "julia-jive")
-    (version "0.2.20")
+    (version "0.2.27")
     (source
      (origin
        (method git-fetch)
@@ -3148,7 +3353,7 @@ extensions to the iterator interface.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0khwsdh8472jxcfi9lqw14l49sqlbsixql1jb4irnyajxkdjrcsf"))))
+        (base32 "010dxs9p5ab97h80kw12bx5mkraf0584wi0ggk8wnhg10jf3lpam"))))
     (build-system julia-build-system)
     (home-page "https://github.com/wookay/Jive.jl")
     (synopsis "Julia package to help with writing tests")
@@ -3256,7 +3461,7 @@ equations in string literals in the Julia language.")
 (define-public julia-lazyarrays
   (package
     (name "julia-lazyarrays")
-    (version "0.22.2")
+    (version "0.22.16")
     (source
       (origin
         (method git-fetch)
@@ -3265,7 +3470,7 @@ equations in string literals in the Julia language.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "17rhlrmgfvdw8w62pg32ikr9j4xy2ylr7mx7ar0hnpzryv929rp5"))))
+         (base32 "127yld4f26lchw5jwp30g2jkjbm7narfsxwcbggy7dfp43s531c5"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -3278,13 +3483,15 @@ equations in string literals in the Julia language.")
                   (substitute* "test/multests.jl"
                     (("Int64") "Int32"))))))))
     (propagated-inputs
-     (list julia-arraylayouts
+     (list julia-aqua
+           julia-arraylayouts
            julia-fillarrays
            julia-macrotools
            julia-matrixfactorizations
            julia-staticarrays))
     (native-inputs
-     (list julia-tracker))
+     (list julia-aqua
+           julia-tracker))
     (home-page "https://github.com/JuliaArrays/LazyArrays.jl")
     (synopsis "Lazy arrays and linear algebra")
     (description "This package supports lazy analogues of array operations like
@@ -3339,7 +3546,7 @@ implemented in Julia.")
 (define-public julia-logexpfunctions
   (package
     (name "julia-logexpfunctions")
-    (version "0.2.4")
+    (version "0.3.17")
     (source
       (origin
         (method git-fetch)
@@ -3348,12 +3555,17 @@ implemented in Julia.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0rvms3mmq8a1viqlyzdgs2ccddcy6j0c677dlb8m5nk6hkiwr16n"))))
+         (base32 "0272c1256r42y6g4wsjmgpwcl5s7z98b8sfmyycckqf0zp5dzxg4"))))
     (build-system julia-build-system)
     (propagated-inputs
-     (list julia-docstringextensions))
+     (list julia-chainrulescore
+           julia-changesofvariables
+           julia-docstringextensions
+           julia-inversefunctions
+           julia-irrationalconstants))
     (native-inputs
-     (list julia-offsetarrays))
+     (list julia-chainrulestestutils
+           julia-offsetarrays))
     (home-page "https://github.com/JuliaStats/LogExpFunctions.jl")
     (synopsis "Special functions based on @code{log} and @code{exp}")
     (description "Various special functions based on log and exp moved from
@@ -3386,7 +3598,7 @@ that let you do deep transformations of code.")
 (define-public julia-mappedarrays
   (package
     (name "julia-mappedarrays")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
       (origin
         (method git-fetch)
@@ -3395,22 +3607,36 @@ that let you do deep transformations of code.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0l5adird8m1cmnsxwhzi5hcr7q9bm1rf7a6018zc7kcn2yxdshy3"))))
+         (base32 "08kb28dv1zzqbbxblhyllgs4sjxyp76dgjqhdizcq4zg4i1kls6p"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; Fix deprecation warning
+             ;; https://github.com/JuliaArrays/MappedArrays.jl/pull/51
+             (substitute* "src/MappedArrays.jl"
+               (("Vararg\\{<:AbstractArray") "Vararg{AbstractArray"))
+             ;; Fix test failures
+             ;; https://github.com/JuliaArrays/MappedArrays.jl/pull/50
+             (substitute* "test/runtests.jl"
+               (("_zero\\(x\\) = x > 0 \\? x : 0")
+                "_zero(x) = ismissing(x) ? x : (x > 0 ? x : 0)"))))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
-      (if (target-64bit?)
-          #~%standard-phases
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'fix-tests-int32-i686
-                (lambda _
-                  (substitute* "test/runtests.jl"
-                    (("Int64") "Int32"))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'adjust-tests
+            (lambda _
+              (substitute* "test/runtests.jl"
+                ((".*@test_throws ErrorException b.*") ""))
+
+              (when #$(not (target-64bit?))
+                (substitute* "test/runtests.jl"
+                  (("Int64") "Int32"))))))))
     (propagated-inputs
      (list julia-fixedpointnumbers))
     (native-inputs
-     (list julia-colortypes
+     (list julia-colors
            julia-fixedpointnumbers
            julia-offsetarrays))
     (home-page "https://github.com/JuliaArrays/MappedArrays.jl")
@@ -3426,7 +3652,7 @@ comes from the fact that @code{M == map(f, A)}.")
 (define-public julia-matrixfactorizations
   (package
     (name "julia-matrixfactorizations")
-    (version "0.8.4")
+    (version "0.9.3")
     (source
       (origin
         (method git-fetch)
@@ -3435,7 +3661,7 @@ comes from the fact that @code{M == map(f, A)}.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "15zvcv2l4iqmjpnqjyx2kry7a85p652nbjy9pj3wq0piksqcz4jb"))))
+         (base32 "0sqmig01irmvh617h2rsw44hl39qwv2913nlqjsdz9si5vli2hsl"))))
     (build-system julia-build-system)
     (arguments
      (list
@@ -3443,10 +3669,8 @@ comes from the fact that @code{M == map(f, A)}.")
       #~(modify-phases %standard-phases
           (add-after 'link-depot 'skip-failing-test
             (lambda _
-              ;; Tests with math functions are hard.
               (substitute* "test/test_ul.jl"
-                (("@test @inferred\\(logdet") "@test @test_nowarn(logdet")
-                ;; Also skip the REPL test.
+                ;; Don't warn on the REPL test.
                 (("test String") "test_nowarn String")))))))
     (propagated-inputs
      (list julia-arraylayouts))
@@ -3760,7 +3984,7 @@ still being completely generic
 (define-public julia-nanmath
   (package
     (name "julia-nanmath")
-    (version "0.3.5")
+    (version "0.3.7")
     (source
      (origin
        (method git-fetch)
@@ -3769,7 +3993,7 @@ still being completely generic
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hczhz00qj99w63vp627kwk02l2sr2qmzc2rkwwkdwvzy670p25q"))))
+        (base32 "1fwqa2fzl84a86ppjb2xaqh93b5gg42zyrclbjfdm5l0044hwii6"))))
     (build-system julia-build-system)
     (home-page "https://github.com/mlubin/NaNMath.jl")
     (synopsis "Implementations of basic math functions")
@@ -3809,7 +4033,7 @@ interface to interact with these types.")
 (define-public julia-nnlib
   (package
     (name "julia-nnlib")
-    (version "0.7.29")
+    (version "0.7.34")
     (source
       (origin
         (method git-fetch)
@@ -3818,21 +4042,26 @@ interface to interact with these types.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "16vn5w5274kcywh1xp0zqjk5q10xrk125aznz5av6wifwrvghk8s"))))
+         (base32 "1xzlh7pj6aqmbkrskqgwvifprg9a6xkkdh00ls6f6xnzqfrnhwna"))))
     (build-system julia-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'link-depot 'skip-cuda-tests
+          (add-after 'link-depot 'skip-some-tests
             (lambda _
               (substitute* "test/runtests.jl"
+                ;; Skip the CUDA tests
                 (("using CUDA") "")
-                (("&& CUDA\\.functional\\(\\)") ""))
+                (("&& CUDA\\.functional\\(\\)") "")
+
+                ;; UnicodePlots is only used for the doctests
+                (("if VERSION <.*") "if true\n"))
               (setenv "NNLIB_TEST_CUDA" "false"))))))
     (propagated-inputs
      (list julia-adapt
            julia-chainrulescore
+           julia-compat
            julia-requires))
     (native-inputs
      (list julia-chainrulestestutils
@@ -3892,6 +4121,33 @@ doesn't provide any other \"high-level\" functionality like layers or AD.")
 optimization of functions.")
     (license license:expat)))
 
+(define-public julia-optimisers
+  (package
+    (name "julia-optimisers")
+    (version "0.2.13")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/FluxML/Optimisers.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1xs51r365l6r56rpm08kba00nfcl5jlglwy8494w06vbi22ysbq7"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-chainrulescore
+           julia-functors
+           julia-zygote))
+    (native-inputs
+     (list julia-staticarrays
+           julia-zygote))
+    (home-page "https://github.com/FluxML/Optimisers.jl")
+    (synopsis "Optimisers and utilities for learning loops")
+    (description "@code{Optimisers.jl} defines many standard gradient-based
+optimisation rules, and tools for applying them to deeply nested models.")
+    (license license:expat)))
+
 (define-public julia-optimtestproblems
   (package
     (name "julia-optimtestproblems")
@@ -3909,7 +4165,11 @@ optimization of functions.")
     (arguments
      (list
       #:julia-package-name "OptimTestProblems"
-      #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"))
+      #:julia-package-uuid "cec144fc-5a64-5bc6-99fb-dde8f63e154c"
+      #:julia-package-dependencies
+      #~(list '("LinearAlgebra" . "37e2e46d-f89d-539d-b4ee-838fcccc9c8e")
+              '("SparseArrays" . "2f01184e-e22b-5df5-ae63-d93ebab69eaf")
+              '("Test" . "8dfed614-e22c-5e08-85e1-65c5234f0b40"))))
     (home-page "https://github.com/JuliaNLSolvers/OptimTestProblems.jl")
     (synopsis "Collection of optimization test problems")
     (description "The purpose of this package is to provide test problems for
@@ -3941,7 +4201,7 @@ which they were added to the collection.")
 (define-public julia-offsetarrays
   (package
     (name "julia-offsetarrays")
-    (version "1.10.3")
+    (version "1.12.8")
     (source
      (origin
        (method git-fetch)
@@ -3950,7 +4210,7 @@ which they were added to the collection.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0j5a8ar8yc0j9h87gwfyrcqm23wpyv5yv5gn8vzilpg4vr0fiasc"))))
+        (base32 "09cidr42q0xwp6wwyaw09hl580vqi85wb5f78pxrxcfm75yg3xki"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-adapt))
@@ -3966,7 +4226,7 @@ languages like Fortran.")
 (define-public julia-paddedviews
   (package
     (name "julia-paddedviews")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
       (origin
         (method git-fetch)
@@ -3975,7 +4235,7 @@ languages like Fortran.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0ran2vj6ahlzib0g77y7g0jhavy3k9s2mqq23ybpgp9z677wf26h"))))
+         (base32 "1835q06g6ymqh1k7625ssahwm46j08370v2inb61y1lw8vd99f3x"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-offsetarrays))
@@ -4085,7 +4345,7 @@ actual computation.")
 (define-public julia-plotutils
   (package
     (name "julia-plotutils")
-    (version "1.0.15")
+    (version "1.2.0")
     (source
       (origin
         (method git-fetch)
@@ -4094,8 +4354,17 @@ actual computation.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "12aw5gkkcfhpczv2w510k65w1j0hjnh825ihimi223v8plsi5105"))))
+         (base32 "1yml9ayaniqnzx5r8sfjckifcm99ck7qhc19cd8fs0bwzkh7nza7"))))
     (build-system julia-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'adjust-test-suite
+             (lambda _
+               (substitute* "test/runtests.jl"
+                 (("(@test_throws) ErrorException (.*notacolor)" _ @test notacolor)
+                  (string-append @test " ArgumentError " notacolor))))))))
     (propagated-inputs
      (list julia-colors
            julia-colorschemes
@@ -4111,7 +4380,7 @@ plotting components.")
 (define-public julia-pooledarrays
   (package
     (name "julia-pooledarrays")
-    (version "1.3.0")
+    (version "1.4.2")
     (source
       (origin
         (method git-fetch)
@@ -4120,10 +4389,12 @@ plotting components.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0qdwvf1p5z6z0q4s4hn85ysd8wq47zy6hlzddc5ijvhk86ccqlrr"))))
+         (base32 "0g30d46n8cc8vr9icjhfkqz2il2185ijh7xhfy9vhcnmllzpd0yg"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-dataapi))
+    (native-inputs
+     (list julia-offsetarrays))
     (home-page "https://github.com/JuliaData/PooledArrays.jl")
     (synopsis "Pooled representation of arrays in Julia")
     (description "This package provides a pooled representation of arrays for
@@ -4467,6 +4738,29 @@ by Ranges.")
 type, which make some sacrifices but have better computational performance.")
     (license license:expat)))
 
+(define-public julia-realdot
+  (package
+    (name "julia-realdot")
+    (version "0.1.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaMath/RealDot.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "1jr8dq110j8axjfz936b1lqqcnqg3979rfg11w76rq1iz7zgi691"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaMath/RealDot.jl")
+    (synopsis "Compute realdot efficiently")
+    (description "This package only contains and exports a single function
+@code{realdot(x, y)}.  It computes @code{real(LinearAlgebra.dot(x, y))} while
+avoiding computing the imaginary part of @code{LinearAlgebra.dot(x, y)} if
+possible.  The real dot product is useful when one treats complex numbers as
+embedded in a real vector space.")
+    (license license:expat)))
+
 (define-public julia-recipesbase
   (package
     (name "julia-recipesbase")
@@ -4617,7 +4911,7 @@ package can help create and update if need be.")
 (define-public julia-requires
   (package
     (name "julia-requires")
-    (version "1.1.3")
+    (version "1.3.0")
     (source
      (origin
        (method git-fetch)
@@ -4626,14 +4920,13 @@ package can help create and update if need be.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "03hyfy7c0ma45b0y756j76awi3az2ii4bz4s8cxm3xw9yy1z7b01"))))
+        (base32 "0gmqs7f17aq500lbdff4ibws00f8m0pnzskvf4b3ig520xv3n3nm"))))
     (build-system julia-build-system)
     (arguments
-     (list #:parallel-tests? #f))
-    (inputs                             ;required for test
-     (list julia-example))
-    (propagated-inputs
-     (list julia-colors))
+     (list #:parallel-tests? #f))       ; Test suite has race conditions.
+    (native-inputs
+     (list julia-colors
+           julia-example))
     (home-page "https://github.com/JuliaPackaging/Requires.jl/")
     (synopsis "Faster package loader")
     (description "This package make loading packages faster, maybe.  It
@@ -4645,7 +4938,7 @@ can be avoided.")
 (define-public julia-reversediff
   (package
     (name "julia-reversediff")
-    (version "1.9.0")
+    (version "1.14.4")
     (source
       (origin
         (method git-fetch)
@@ -4654,7 +4947,7 @@ can be avoided.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1wrr6sqj2xl9grkvdp88rw3manxy9vbx28zq2wssya5ns1xabsnl"))))
+         (base32 "0hwsjmr4wiscqa5kaj4mw0i4agyyzdcmq4r1gp2i563nc1ziaylg"))))
     (build-system julia-build-system)
     (arguments
      ;; XXXX: Test suite failing for i686, e.g.,
@@ -4664,10 +4957,13 @@ can be avoided.")
      (list #:tests? (not (or (%current-target-system)
                              (target-x86-32?)))))
     (propagated-inputs
-     (list julia-diffresults
+     (list julia-chainrulescore
+           julia-diffresults
            julia-diffrules
+           julia-difftests
            julia-forwarddiff
            julia-functionwrappers
+           julia-logexpfunctions
            julia-macrotools
            julia-nanmath
            julia-specialfunctions
@@ -4762,7 +5058,13 @@ through matrix-vector multiplication.")
       (arguments
        (list
         #:julia-package-name "SafeTestsets"
-        #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"))
+        #:julia-package-uuid "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'link-depot 'fix-package-toml
+              (lambda _
+                (substitute* "Project.toml"
+                  (("version = .*") "version = \"0.0.1\"\n")))))))
       (native-inputs
        (list julia-staticarrays))
       (home-page "https://github.com/YingboMa/SafeTestsets.jl")
@@ -4796,7 +5098,7 @@ a loadable module.")
 (define-public julia-scanbyte
   (package
     (name "julia-scanbyte")
-    (version "0.3")
+    (version "0.3.2")
     (source
       (origin
         (method git-fetch)
@@ -4805,7 +5107,7 @@ a loadable module.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0dqqa3d7c87358144pji6ik8xlki2hj0hkvjs72j5aypfms8rwn3"))))
+         (base32 "1c18hkcb0h6l437v2s02kijjkyly91mqark84czvh8yzxm19hr7k"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-simd))
@@ -4814,6 +5116,8 @@ a loadable module.")
     (description "This package finds the first occurrence of a byte or set of
 bytes in a chunk of memory.  Think of it like a much faster version of
 @code{findfirst} that only iterates over bytes in memory.")
+    ;; https://github.com/jakobnissen/ScanByte.jl/issues/2
+    (supported-systems '("x86_64-linux"))
     (license license:expat)))
 
 (define-public julia-scratch
@@ -4865,6 +5169,26 @@ files that the user must interact with through a file browser.")
 argument.")
     (license license:expat)))
 
+(define-public julia-shiftedarrays
+  (package
+    (name "julia-shiftedarrays")
+    (version "1.0.0")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/JuliaArrays/ShiftedArrays.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "0wy7k29qx2lvj587kiz31fzdc60808mjsgpp41h6b682ypz8rw0c"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaArrays/ShiftedArrays.jl")
+    (synopsis "Lazy shifted arrays for data analysis in Julia")
+    (description
+     "This package provides an implementation of shifted arrays for Julia.")
+    (license license:expat)))
+
 (define-public julia-showoff
   (package
     (name "julia-showoff")
@@ -4889,7 +5213,7 @@ in @code{Gadfly}, @code{Plots} and @code{Makie} to label axes and keys.")
 (define-public julia-simd
   (package
     (name "julia-simd")
-    (version "3.4.0")
+    (version "3.4.2")
     (source
       (origin
         (method git-fetch)
@@ -4898,7 +5222,7 @@ in @code{Gadfly}, @code{Plots} and @code{Makie} to label axes and keys.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "0z7m5fykc6r4bxz4hfm6d3v1h7gg0c322l4zv8r3vrb8hrd6h263"))))
+         (base32 "02pbrg2qa20pqnckbnbg5jyic2ahydql09f3xhzd1xnxicp77lw5"))))
     (build-system julia-build-system)
     (home-page "https://github.com/eschnett/SIMD.jl")
     (synopsis "Explicit SIMD vectorization")
@@ -4989,7 +5313,7 @@ timsort and radixsort.")
 (define-public julia-specialfunctions
   (package
     (name "julia-specialfunctions")
-    (version "1.6.0")
+    (version "1.8.7")
     (source
      (origin
        (method git-fetch)
@@ -4998,12 +5322,13 @@ timsort and radixsort.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0nfpnglx7zl9g20w2mgfkg17hcw9ri0shaq2rwplj0ij5pwz8yf0"))))
+        (base32 "0shlgx9lkbjb1awdf5lrbkq06bmkyahc92qay2a049b4lvqrhj7a"))))
     (build-system julia-build-system)
     (inputs
      (list julia-chainrulestestutils))
     (propagated-inputs
      (list julia-chainrulescore
+           julia-irrationalconstants
            julia-logexpfunctions
            julia-openspecfun-jll))
     (home-page "https://github.com/JuliaMath/SpecialFunctions.jl")
@@ -5105,7 +5430,7 @@ There are multiple ways to understand @code{StackView}:
 (define-public julia-static
   (package
     (name "julia-static")
-    (version "0.3.0")
+    (version "0.8.3")
     (source
       (origin
         (method git-fetch)
@@ -5114,7 +5439,7 @@ There are multiple ways to understand @code{StackView}:
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "19k7h47zhz3zz28i0l4b3cc0r07pzp8kf35z0yammpy361b644l2"))))
+         (base32 "1ilmging187w37vjff8ilnz1f0qygyhbwl6nhq91z3b5vxyf13zr"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-ifelse))
@@ -5125,6 +5450,21 @@ There are multiple ways to understand @code{StackView}:
     (description "Static.jl defines a limited set of statically parameterized
 types and a common interface that is shared between them.")
     (license license:expat)))
+
+(define-public julia-static-0.6
+  (package
+    (inherit julia-static)
+    (name "julia-static")
+    (version "0.6.6")
+    (source
+      (origin
+        (method git-fetch)
+        (uri (git-reference
+               (url "https://github.com/SciML/Static.jl")
+               (commit (string-append "v" version))))
+        (file-name (git-file-name name version))
+        (sha256
+         (base32 "03ri8nl046cz7l433p0nlr84yywxvjykyymqparm8lxxwkv0rxqd"))))))
 
 (define-public julia-staticarrays
   (package
@@ -5177,7 +5517,7 @@ dependency on it.")
 (define-public julia-statsbase
   (package
     (name "julia-statsbase")
-    (version "0.33.8")
+    (version "0.33.10")
     (source
       (origin
         (method git-fetch)
@@ -5186,7 +5526,7 @@ dependency on it.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "02y4pm5yvg713a2pn970bbcfkrn2h133rxbxk1da18svhqw3czhi"))))
+         (base32 "0pjsn531zdz3s34pa418pvyqvrx8nbcc8j0fgwfnadssihqah6g7"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-dataapi
@@ -5508,7 +5848,7 @@ package.")
 (define-public julia-tracker
   (package
     (name "julia-tracker")
-    (version "0.2.12")
+    (version "0.2.22")
     (source
       (origin
         (method git-fetch)
@@ -5517,16 +5857,18 @@ package.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1s4mdywbp7nli7z985fqaj1rs4i6d92b1jx3lhg0qhk1s5wc0v8j"))
-        (patches (search-patches "julia-tracker-16-compat.patch"))))
+         (base32 "0sxncn999dc5j15y0h3cw28x41pv5qjaw64drhy1y4rn3na48504"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-adapt
            julia-diffrules
            julia-forwarddiff
+           julia-functors
+           julia-logexpfunctions
            julia-macrotools
            julia-nanmath
            julia-nnlib
+           julia-optimisers
            julia-requires
            julia-specialfunctions))
     (native-inputs
@@ -5670,7 +6012,7 @@ working with @acronym{URIs,Uniform Resource Identifiers}, as defined in RFC
 (define-public julia-unitful
   (package
     (name "julia-unitful")
-    (version "1.9.0")
+    (version "1.12.2")
     (source
      (origin
        (method git-fetch)
@@ -5679,7 +6021,7 @@ working with @acronym{URIs,Uniform Resource Identifiers}, as defined in RFC
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "10qwscd15dnmvx116dwvg99m7kmwgmj5ahdkq7psiq48lcc554gq"))))
+        (base32 "1b8w6wqc7azqzg2f8zc3bmc72fb01sx0rqh6dv3k54wj01ph15p7"))))
     (build-system julia-build-system)
     (arguments
      (list #:parallel-tests? #f))
@@ -5743,7 +6085,7 @@ allows for efficient string representation and transfer")
 (define-public julia-woodburymatrices
   (package
     (name "julia-woodburymatrices")
-    (version "0.5.3")
+    (version "0.5.5")
     (source
       (origin
         (method git-fetch)
@@ -5752,19 +6094,8 @@ allows for efficient string representation and transfer")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "04yykivi8zrbryxlmb0p5xa6lma8iq22r5s863117dnnqj5gaffd"))))
+         (base32 "1vwy8nlhvjh0ndia4ni40iq4pf2nhwy5iy3rmf4i2jff13vc6aqn"))))
     (build-system julia-build-system)
-    (arguments
-     (list
-      #:phases
-      (if (target-x86-32?)
-          #~(modify-phases %standard-phases
-              (add-after 'unpack 'remove-failing-test-i686
-                (lambda _
-                  (substitute* "test/woodbury.jl"
-                    (("@test logdet\\(W\\)")
-                     "@test_broken logdet(W)")))))
-          #~%standard-phases)))
     (home-page "https://github.com/timholy/WoodburyMatrices.jl")
     (synopsis "Support for the Woodbury matrix identity for Julia")
     (description "This package provides support for the Woodbury matrix identity
@@ -5825,7 +6156,7 @@ archives in Julia.")
 (define-public julia-zygoterules
   (package
     (name "julia-zygoterules")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method git-fetch)
@@ -5834,7 +6165,7 @@ archives in Julia.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "07i2mf6rr5b8i6l82qgwl5arsb5pwyyzyfasgnszhdqllk9501bs"))))
+        (base32 "0h9m9ibxfcw9cqa7p0aylpvibvlxsn5nlfzkz1pk68jy58vkzhca"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-macrotools))
@@ -5847,7 +6178,7 @@ Zygote, without depending on Zygote itself.")
 (define-public julia-zygote
   (package
     (name "julia-zygote")
-    (version "0.6.17")
+    (version "0.6.41")
     (source
      (origin
        (method git-fetch)
@@ -5856,17 +6187,19 @@ Zygote, without depending on Zygote itself.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1cx66sp30s34ln6p0fpqk1ggjxfxg2gp8791zz3cl85dmk4dl14b"))))
+        (base32 "02bgj6m1j25sm3pa5sgmds706qpxk1qsbm0s2j3rjlrz9xn7glgk"))))
     (build-system julia-build-system)
     (arguments
      (list #:tests? #f))                    ;require CUDA, not packaged yet
     (propagated-inputs
      (list julia-abstractffts
            julia-chainrules
+           julia-chainrulescore
            julia-diffrules
            julia-fillarrays
            julia-forwarddiff
            julia-irtools
+           julia-logexpfunctions
            julia-macrotools
            julia-nanmath
            julia-requires

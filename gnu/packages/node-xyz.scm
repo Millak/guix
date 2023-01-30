@@ -658,7 +658,7 @@ defaulting to Node's implementation otherwise.")
        #:tests? #f))
     (inputs (list node-safe-buffer node-inherits))
     (home-page "https://github.com/nodejs/string_decoder")
-    (synopsis "Decode buffers while preserving multi-byte sequences ")
+    (synopsis "Decode buffers while preserving multi-byte sequences")
     (description "This package provides a user-land implementation of
 Node-core's @code{string_decoder}, which serves to decode buffers to
 strings so that the decoded string does not contain incomplete multibyte

@@ -52,12 +52,19 @@
         (option '(#\t "type") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'type (string->symbol arg) result)))
+        (option '("list-types") #f #f
+                (lambda (opt name arg result)
+                  (display (string-join '("guile" "machine") "\n" 'suffix))
+                  (exit 0)))
         (option '("listen") #t #f
                 (lambda (opt name arg result)
                   (alist-cons 'listen arg result)))
         (option '(#\q) #f #f
                 (lambda (opt name arg result)
                   (alist-cons 'ignore-dot-guile? #t result)))
+        (option '(#\i "interactive") #f #f
+                (lambda (opt name arg result)
+                  (alist-cons 'interactive? #t result)))
         (option '(#\L "load-path") #t #f
                 (lambda (opt name arg result)
                   ;; XXX: Imperatively modify the search paths.
@@ -71,11 +78,16 @@
 In the Guix execution environment, run FILE as a Guile script with
 command-line arguments ARGS.  If no FILE is given, start a Guile REPL.\n"))
   (display (G_ "
+      --list-types       display REPL types and exit"))
+  (display (G_ "
   -t, --type=TYPE        start a REPL of the given TYPE"))
   (display (G_ "
       --listen=ENDPOINT  listen to ENDPOINT instead of standard input"))
   (display (G_ "
   -q                     inhibit loading of ~/.guile"))
+  (newline)
+  (display (G_ "
+  -i, --interactive      launch REPL after evaluating FILE"))
   (newline)
   (display (G_ "
   -L, --load-path=DIR    prepend DIR to the package module search path"))
@@ -190,7 +202,7 @@ call THUNK."
          ;; file in %LOAD-PATH.  Thus, pass (getcwd) instead of ".".
          (load-in-vicinity (getcwd) (car script)))))
 
-    (when (null? script)
+    (when (or (null? script) (assoc-ref opts 'interactive?))
       ;; Start REPL
       (let ((type (assoc-ref opts 'type)))
         (call-with-connection (assoc-ref opts 'listen)

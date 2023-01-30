@@ -19,6 +19,7 @@
 
 (define-module (gnu services games)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages games)
@@ -28,12 +29,45 @@
   #:autoload   (guix least-authority) (least-authority-wrapper)
   #:use-module (guix gexp)
   #:use-module (guix modules)
+  #:use-module (guix packages)
   #:use-module (guix records)
   #:use-module (ice-9 match)
-  #:export (wesnothd-configuration
+  #:export (joycond-configuration
+            joycond-configuration?
+            joycond-service-type
+
+            wesnothd-configuration
             wesnothd-configuration?
             wesnothd-service-type))
 
+;;;
+;;; Joycond
+;;;
+
+(define-configuration/no-serialization joycond-configuration
+  (package (package joycond) "The joycond package to use"))
+
+(define (joycond-shepherd-service config)
+  (let ((joycond (joycond-configuration-package config)))
+    (list (shepherd-service
+           (documentation "Run joycond.")
+           (provision '(joycond))
+           (requirement '(bluetooth))
+           (start #~(make-forkexec-constructor
+                     (list #$(file-append joycond "/bin/joycond"))))
+           (stop #~(make-kill-destructor))))))
+
+(define joycond-service-type
+  (service-type
+   (name 'joycond)
+   (description
+    "Run @command{joycond} for pairing Nintendo joycons via Bluetooth.")
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             joycond-shepherd-service)))
+   (default-value (joycond-configuration))))
+
+
 ;;;
 ;;; The Battle for Wesnoth server
 ;;;

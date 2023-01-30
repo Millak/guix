@@ -93,14 +93,14 @@
 (define-public emacs
   (package
     (name "emacs")
-    (version "28.1")
+    (version "28.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/emacs/emacs-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1qbmmmhnjhn4lvzsnyk7l5ganbi6wzbm38jc1a7hhyh3k78b7c98"))
+                "12144dcaihv2ymfm7g2vnvdl4h71hqnsz1mljzf34cpg6ci1h8gf"))
               (patches (search-patches "emacs-exec-path.patch"
                                        "emacs-fix-scheme-indent-function.patch"
                                        "emacs-source-date-epoch.patch"))
@@ -381,8 +381,8 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "0a5477b448e6b62bcedc1803e531ec7686eea48d")
-        (revision "1"))
+  (let ((commit "6adc193ad66445acd84caba6973424ecbd21da26")
+        (revision "4"))
     (package
       (inherit emacs)
       (name "emacs-next")
@@ -395,9 +395,13 @@ languages.")
                (url "https://git.savannah.gnu.org/git/emacs.git/")
                (commit commit)))
          (file-name (git-file-name name version))
+         ;; emacs-source-date-epoch.patch is no longer necessary
+         (patches (search-patches "emacs-exec-path.patch"
+                                  "emacs-fix-scheme-indent-function.patch"
+                                  "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
-           "0dqmrawkvbypxp8gcnspnhhmfamzp3l62gfgp1pw2l6svz58v991"))))
+           "0b48qg9w7fzvhva78gzi3cs2m6asj11fk0kgys49fqhwskigzg1f"))))
       (inputs
        (modify-inputs (package-inputs emacs)
          (prepend sqlite)))
@@ -443,11 +447,11 @@ GTK and also enables xwidgets.")))
        ((#:modules _) (%emacs-modules build-system))
        ((#:phases phases)
         #~(modify-phases #$phases
+            (delete 'set-libgccjit-path)
+            (delete 'patch-compilation-driver)
             (delete 'restore-emacs-pdmp)
             (delete 'strip-double-wrap)))))
-    (inputs (list ncurses coreutils gzip
-                  (make-ld-wrapper "ld-wrapper" #:binutils binutils)
-                  binutils glibc libgccjit zlib))
+    (inputs (list ncurses coreutils gzip))
     (native-inputs (list autoconf pkg-config))))
 
 (define-public emacs-xwidgets

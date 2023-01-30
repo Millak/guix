@@ -22,8 +22,12 @@
   #:use-module (guix git)
   #:use-module (guix tests git)
   #:use-module (guix build utils)
+  #:use-module ((guix utils) #:select (call-with-temporary-directory))
   #:use-module (srfi srfi-1)
-  #:use-module (srfi srfi-64))
+  #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-71)
+  #:use-module (ice-9 popen)
+  #:use-module (ice-9 textual-ports))
 
 ;; Test the (guix git) tools.
 
@@ -238,5 +242,31 @@
         (commit "Second commit")
         (tag "v1.1" "Release 1.1"))
     (remote-refs directory #:tags? #t)))
+
+(unless (which (git-command)) (test-skip 1))
+(test-assert "update-cached-checkout, tag"
+  (call-with-temporary-directory
+   (lambda (cache)
+     (with-temporary-git-repository directory
+         '((add "a.txt" "A")
+           (commit "First commit")
+           (tag "v1.0" "release-1.0")
+           (branch "develop")
+           (checkout "develop")
+           (add "b.txt" "B")
+           (commit "Second commit")
+           (tag "v1.1" "release-1.1"))
+       (let ((directory commit relation
+                        (update-cached-checkout directory
+                                                #:ref '(tag . "v1.1")
+                                                #:cache-directory cache))
+             (head   (let* ((pipe (open-pipe* OPEN_READ (git-command)
+                                              "-C" directory
+                                              "rev-parse" "HEAD"))
+                            (str  (get-string-all pipe)))
+                       (close-pipe pipe)
+                       (string-trim-right str))))
+         ;; COMMIT should be the ID of the commit object, not that of the tag.
+         (string=? commit head))))))
 
 (test-end "git")

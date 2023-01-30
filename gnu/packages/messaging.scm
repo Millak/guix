@@ -9,7 +9,7 @@
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Mekeor Melire <mekeor.melire@gmail.com>
-;;; Copyright © 2017, 2018, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2017, 2018, 2020, 2021, 2022, 2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Theodoros Foradis <theodoros@foradis.org>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
@@ -36,6 +36,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Giovanni Biscuolo <g@xelera.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -87,6 +88,7 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages hunspell)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
   #:use-module (gnu packages kde)
@@ -97,7 +99,6 @@
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libidn)
-  #:use-module (gnu packages libreoffice)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
@@ -115,6 +116,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -727,7 +729,7 @@ identi.ca and status.net).")
   ;; Version 0.4.3 of bitlbee-discord was prepared to work for
   ;; glib@2.68. However, version 2.69 of glib introduced a breaking change
   ;; causing bitlbee-discord to throw:
-  ;; 
+  ;;
   ;; discord - Login error: Failed to switch to websocket mode
   ;;
   ;; This makes the plugin unable to connect and therefore unusable:
@@ -1373,7 +1375,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.3.0")
+    (version "0.3.1")
     (source
      (origin
        (method url-fetch)
@@ -1381,11 +1383,11 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "07nw275xfamczzvzps8hsnpbhzvr4qc726fx92w8ncmdag7wlw1r"))))
+        (base32 "1rs6qpkidiww805cd91q059r2lm5lzblrkyn01zz4g1mls8ghk5a"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
-     (list #:configure-flags #~(list "-DBUILD_TESTS=true")
+     (list #:configure-flags #~(list "-DBUILD_TESTS=true" "-DUSE_SOUP3=true")
            #:parallel-build? #f         ; not supported
            #:modules '((guix build cmake-build-system)
                        ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
@@ -1396,13 +1398,18 @@ Encryption to Gajim.")
            #:phases
            #~(modify-phases %standard-phases
                ;; For A/V support.
+               (add-after 'unpack 'generate-gdk-pixbuf-loaders-cache-file
+                 (assoc-ref glib-or-gtk:%standard-phases
+                            'generate-gdk-pixbuf-loaders-cache-file))
                (add-after 'install 'wrap
                  (lambda* (#:key outputs #:allow-other-keys)
                    (let* ((out (assoc-ref outputs "out"))
                           (dino (string-append out "/bin/dino"))
                           (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
                      (wrap-program dino
-                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))))
+                       `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))
+                       `("GDK_PIXBUF_MODULE_FILE" =
+                         (,(getenv "GDK_PIXBUF_MODULE_FILE")))))))
                (add-after 'install 'glib-or-gtk-wrap
                  (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
                (replace 'check
@@ -1419,7 +1426,8 @@ Encryption to Gajim.")
            pkg-config
            vala))
     (inputs
-     (list atk
+     (list adwaita-icon-theme
+           atk
            cairo
            librsvg
            glib
@@ -1437,7 +1445,7 @@ Encryption to Gajim.")
            libgee
            libnice
            libsignal-protocol-c
-           libsoup-minimal-2
+           libsoup
            libsrtp                      ;for calls support
            pango
            qrencode
@@ -1505,14 +1513,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.11.10")
+    (version "0.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "1q84s9cq7cgzd295qxa2iy0r3vd3v3chbck62bdx3pd6skk19my6"))))
+                "1rch9gzp9ksnniv6r1vskifvfv5wbp8wcfjr0lc2b9013zjbpv57"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
@@ -1536,6 +1544,15 @@ Qt-based XMPP library QXmpp.")
                (("^INSTALLEDCONFIG =.*") "INSTALLEDCONFIG = /etc/prosody\n")
                ;; prosodyctl needs a place to put auto-generated certificates.
                (("^INSTALLEDDATA =.*") "INSTALLEDDATA = /var/lib/prosody\n"))))
+         (add-after 'unpack 'invoke-prosody-wrapper
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             ;; Invoke the prosody wrapper script instead of invoking lua on
+             ;; the actual executable.
+             (substitute* "util/prosodyctl.lua"
+               (("os.execute\\(lua[^;]*")
+                (string-append "os.execute(\""
+                               (assoc-ref outputs "out")
+                               "/bin/prosody -D\")")))))
          (add-after 'install 'wrap-programs
            (lambda* (#:key inputs outputs #:allow-other-keys)
              ;; Make sure all executables in "bin" find the required Lua
@@ -1573,7 +1590,9 @@ Qt-based XMPP library QXmpp.")
                              `("PATH" ":" prefix ,path)))
                          (find-files bin ".*"))))))))
     (inputs
-     (list libidn
+     (list bash-minimal
+           icu4c
+           libidn
            openssl
            lua-5.2
            lua5.2-bitop
@@ -2126,7 +2145,7 @@ is also scriptable and extensible via Guile.")
 (define-public libstrophe
   (package
     (name "libstrophe")
-    (version "0.12.0")
+    (version "0.12.2")
     (source
      (origin
        (method git-fetch)
@@ -2135,7 +2154,7 @@ is also scriptable and extensible via Guile.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1apply301lxyjax2677bd5mc0a3233nm5qb7fiqpawq2n7vh17v0"))))
+        (base32 "1ispq6sf7pq02irrqfga4i1xhrg1pg0f86qvvnix15clm8i1agld"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags '(list "--disable-static")
@@ -2167,7 +2186,7 @@ are both supported).")
 (define-public profanity
   (package
     (name "profanity")
-    (version "0.12.1")
+    (version "0.13.0")
     (source
      (origin
        (method url-fetch)
@@ -2176,7 +2195,7 @@ are both supported).")
                        version ".tar.gz"))
        (sha256
         (base32
-         "0vihmlzxr6n3y6v0vdzzxh5p1i09p0hx6sd1b2pnpcgkgcg4hi73"))))
+         "14n45zwc6fxjargqhwqan8fyb7x0ql0hmw56rbjkjfkhpba2qmks"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      `(#:configure-flags
@@ -2311,7 +2330,7 @@ notifications, and Python scripting support.")
 (define-public libqmatrixclient
   (package
     (name "libqmatrixclient")
-    (version "0.5.3.2")
+    (version "0.6.11")
     (source
      (origin
        (method git-fetch)
@@ -2320,7 +2339,7 @@ notifications, and Python scripting support.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gkwr3yw6k2m0j8cc085b5p2q788rf5nhp1p5hc5d55pc7mci2qs"))))
+        (base32 "072d3irpdd0p4w77s5pp0baqf74hk7vqggw7ic7i42lzjdwp3yql"))))
     (build-system cmake-build-system)
     (inputs
      (list qtbase-5 qtmultimedia-5))
@@ -2367,7 +2386,7 @@ QMatrixClient project.")
            curl
            json-modern-cxx
            libevent
-           libolm
+           olm
            libsodium
            openssl
            spdlog
@@ -2383,7 +2402,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
 (define-public nheko
   (package
     (name "nheko")
-    (version "0.10.1")
+    (version "0.10.2")
     (source
      (origin
        (method git-fetch)
@@ -2392,7 +2411,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0a3wvv7vzh60hvyzy6776v6wa9d6n020684dqbcl4dw608mf4ahk"))
+        (base32 "114hbv58209bwar6qjdjg2l1vh3xk20ppv6n301i7zkmwrf7q9w2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -2402,7 +2421,6 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
       #:tests? #f                       ;no test target
       #:configure-flags
       #~(list "-DCMAKE_BUILD_TYPE=Release"
-              "-DBUILD_DOCS=ON"
               ;; Fix required because we are using a static SingleApplication
               "-DCMAKE_CXX_FLAGS= \"-DQAPPLICATION_CLASS=QApplication\" "
               ;; Compile Qml will make Nheko faster, but you will need to recompile
@@ -2447,11 +2465,11 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            curl
            gst-plugins-base
            gst-plugins-bad              ; sdp & webrtc for voip
-           gst-plugins-good             ; rtpmanager for voip
+           gst-plugins-good-qt          ; rtpmanager for voip
            json-modern-cxx
            libevent
            libnice                      ; for voip
-           libolm
+           olm
            lmdb
            lmdbxx
            mtxclient
@@ -2468,7 +2486,7 @@ for the Matrix protocol.  It is built on to of @code{Boost.Asio}.")
            xcb-util-wm
            zlib))
     (native-inputs
-     (list asciidoc doxygen graphviz pkg-config qttools-5))
+     (list asciidoc pkg-config qttools-5))
     (home-page "https://github.com/Nheko-Reborn/nheko")
     (synopsis "Desktop client for Matrix using Qt and C++14")
     (description "@code{Nheko} want to provide a native desktop app for the
@@ -2482,7 +2500,7 @@ notification, emojis, E2E encryption, and voip calls.")
 (define-public quaternion
   (package
     (name "quaternion")
-    (version "0.0.9.4f")
+    (version "0.0.95.1")
     (outputs '("out" "debug"))
     (source
      (origin
@@ -2492,12 +2510,13 @@ notification, emojis, E2E encryption, and voip calls.")
               (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q9ddz4rs02a0w3lwrsjnh59khv38cq9f0kv09vnwvazvayn87ck"))))
+        (base32 "10mzcr4rpyq5bl3h8wzxxlk8rdz7slhiq863xs77bmsq2pzf6lp8"))))
     (build-system qt-build-system)
     (inputs
      (list libqmatrixclient
            qtbase-5
            qtdeclarative-5
+           qtgraphicaleffects
            qtmultimedia-5
            qtquickcontrols-5
            qtquickcontrols2-5
@@ -2651,15 +2670,15 @@ replacement.")
 (define-public tdlib
   (package
     (name "tdlib")
-    (version "1.8.4")
+    (version "1.8.10")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/tdlib/td")
-             (commit "7eabd8ca60de025e45e99d4e5edd39f4ebd9467e")))
+             (commit "ef4c3902fe082b83192d578af7a0bb956a917fed")))
        (sha256
-        (base32 "1chs0ibghjj275v9arsn3k68ppblpm7ysqk0za9kya5vdnldlld5"))
+        (base32 "1pi53v8qjl0lzann99pv90i4qx2lbjz10rvnwzkbqbn932y3j3gg"))
        (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -2684,6 +2703,21 @@ from almost any programming language with a C-FFI and features first-class
 support for high performance Telegram Bot creation.")
     (home-page "https://core.telegram.org/tdlib")
     (license license:boost1.0)))
+
+(define-public tdlib-1.8.0
+  (package
+    (inherit tdlib)
+    (name "tdlib-1.8.0")
+    (version "1.8.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/tdlib/td")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "tdlib" version))
+              (sha256
+               (base32
+                "19psqpyh9a2kzfdhgqkirpif4x8pzy89phvi59dq155y30a3661q"))))))
 
 (define-public purple-mm-sms
   (package
@@ -2856,7 +2890,7 @@ validating international phone numbers.")
            libgcrypt
            libgee
            libhandy
-           libolm
+           olm
            libphonenumber
            modem-manager
            pidgin
@@ -3382,7 +3416,7 @@ Weechat communicate over the Matrix protocol.")
 (define-public weechat-wee-slack
   (package
     (name "weechat-wee-slack")
-    (version "2.8.0")
+    (version "2.9.1")
     (source
      (origin
        (method git-fetch)
@@ -3392,7 +3426,7 @@ Weechat communicate over the Matrix protocol.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0xfklr0gsc9jgxfyrrb2j756lclz9g8imcb0pk0xgyj8mhsw23zk"))))
+         "1zhiwbljh4rgbj8i9rrcimi9v3a7g1nm7v2m2f754rnddck9343z"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3445,7 +3479,7 @@ for notification of events.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-pillow python-requests python-esprima python-pygobject gobject-introspection gtk+))
-    (synopsis "Show CAPTCHA without running proprietary code.")
+    (synopsis "Show CAPTCHA without running proprietary code")
     (description "This package shows CAPTCHA without running proprietary code.")
     (home-page "https://github.com/taylordotfish/librecaptcha")
     (license license:gpl3+)))

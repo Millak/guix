@@ -1,0 +1,18 @@
+Add a direntry to the Rottlog info manual.
+
+diff --git a/doc/rottlog.texi b/doc/rottlog.texi
+index 0ba8019..0f29916 100644
+--- a/doc/rottlog.texi
++++ b/doc/rottlog.texi
+@@ -18,6 +18,11 @@ Documentation License.''
+ @end quotation
+ @end copying
+ 
++@dircategory System administration
++@direntry
++* Rottlog: (rottlog).         The GNU log management utility.
++@end direntry
++
+ @paragraphindent none
+ 
+ @iftex

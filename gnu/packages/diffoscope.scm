@@ -5,7 +5,7 @@
 ;;; Copyright © 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019 Vagrant Cascadian <vagrant@reproducible-builds.org>
-;;; Copyright © 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -74,7 +74,7 @@
 (define-public diffoscope
   (package
     (name "diffoscope")
-    (version "221")
+    (version "233")
     (source
      (origin
        (method git-fetch)
@@ -83,9 +83,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0b89hygd4m18p3wcx7haz0kwx7gn7irjswxz29lv8sb2r1vqq4za"))
-       (patches
-        (search-patches "diffoscope-fix-llvm-test.patch"))))
+        (base32 "1m6fc7k8cd7ahra05vqccw1fdbjj6d20vr3q8v67ynnyih5nmbnb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -112,8 +110,8 @@
                         (("\\[\"getfacl\",")
                          (string-append "[\"" (which "getfacl") "\",")))))
                   (add-after 'build 'build-man-page
-                    (lambda* (#:key (make-flags '()) #:allow-other-keys)
-                      (apply invoke "make" "-C" "doc" make-flags)))
+                    (lambda _
+                      (invoke "make" "-C" "doc")))
                   (add-before 'check 'writable-test-data
                     (lambda _
                       ;; Tests may need write access to tests directory.
@@ -141,89 +139,90 @@
                       (let* ((out (assoc-ref outputs "out"))
                              (man (string-append out "/share/man/man1")))
                         (install-file "doc/diffoscope.1" man)))))))
-    (inputs (list rpm ;for rpm-python
+    (inputs (list rpm                   ;for rpm-python
                   python-debian
                   python-libarchive-c
                   python-magic
                   python-tlsh
-                  acl ;for getfacl
-                  coreutils ;for stat
-                  diffutils ;for diff
+                  acl                   ;for getfacl
+                  coreutils             ;for stat
+                  diffutils             ;for diff
                   xxd))
     (native-inputs
      (append
-       (list help2man
+      (list help2man
 
-             ;; Below are packages used for tests.
-             binwalk
-             python-pytest
-             python-chardet
-             python-h5py
-             python-pypdf2
-             python-progressbar33
+            ;; Below are packages used for tests.
+            binwalk
+            python-pytest
+            python-chardet
+            python-h5py
+            python-pypdf
+            python-progressbar33
 
-             abootimg
-             bdb
-             binutils
-             bzip2
-             cdrtools
-             colord
-             cpio
-             docx2txt
-             dtc
-             e2fsprogs
-             ffmpeg)
+            abootimg
+            bdb
+            binutils
+            bzip2
+            cdrkit-libre
+            colord
+            cpio
+            docx2txt
+            dtc
+            e2fsprogs
+            ffmpeg)
 
-       (match (%current-system)
-              ;; fpc is only available on x86 currently.
-              ((or "x86_64-linux" "i686-linux")
-               (list fpc))
-              (_ '()))
+      (match (%current-system)
+        ;; fpc is only available on x86 currently.
+        ((or "x86_64-linux" "i686-linux")
+         (list fpc))
+        (_ '()))
 
-       (list gettext-minimal
-             ghostscript
-             `(,giflib "bin")
-             gnumeric
-             gnupg
-             hdf5
-             imagemagick
-             libarchive
-             llvm-9
-             lz4
-             ocaml
-             odt2txt
-             openssh
-             openssl
-             pgpdump
-             poppler
-             python-jsbeautifier
-             r-minimal
-             rpm
-             sng
-             sqlite
-             squashfs-tools
-             tcpdump
-             unzip
-             wabt
-             xxd
-             xz
-             zip
-             zstd)
+      (list gettext-minimal
+            ghostscript
+            `(,giflib "bin")
+            gnumeric
+            gnupg
+            hdf5
+            imagemagick
+            libarchive
+            llvm
+            lz4
+            lzip
+            ocaml
+            odt2txt
+            openssh
+            openssl
+            pgpdump
+            poppler
+            python-jsbeautifier
+            r-minimal
+            rpm
+            sng
+            sqlite
+            squashfs-tools
+            tcpdump
+            unzip
+            wabt
+            xxd
+            xz
+            zip
+            zstd)
 
-       ;; Also for tests.  The test suite skips tests when these are missing.
-       (match (%current-system)
-         ;; ghc is only available on x86 currently.
-         ((or "x86_64-linux" "i686-linux")
-          (list ghc))
-         (_ '()))
-       (match (%current-system)
-         ;; openjdk and dependent packages are only
-         ;; available on x86_64 currently.
-         ((or "x86_64-linux")
-          (list enjarify)
-          ;; No unversioned openjdk available.
-          (list `(,openjdk12 "jdk")))
-         (_ '()))))
+      ;; Also for tests.  The test suite skips tests when these are missing.
+      (match (%current-system)
+        ;; ghc is only available on x86 currently.
+        ((or "x86_64-linux" "i686-linux")
+         (list ghc))
+        (_ '()))
+      (match (%current-system)
+        ;; openjdk and dependent packages are only
+        ;; available on x86_64 currently.
+        ((or "x86_64-linux")
+         (list enjarify)
+         ;; No unversioned openjdk available.
+         (list `(,openjdk12 "jdk")))
+        (_ '()))))
     (home-page "https://diffoscope.org/")
     (synopsis "Compare files, archives, and directories in depth")
     (description
@@ -240,7 +239,7 @@ install.")
 (define-public reprotest
   (package
     (name "reprotest")
-    (version "0.7.21")
+    (version "0.7.22")
     (source
      (origin
        (method git-fetch)
@@ -249,8 +248,7 @@ install.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1jmnp6dwd91w00vfvph89cvgxwk0nvij8his9az5b72265jf9bxz"))))
+        (base32 "0qpjg37x2ha7lb113fb5cic5if3zv30zqijsmkq91ld909x30ggd"))))
     (inputs
      (list python-debian python-distro python-libarchive-c python-rstr))
     (native-inputs
@@ -291,8 +289,7 @@ install.")
                (install-file "doc/reprotest.1" mandir1)
                (mkdir-p docdir)
                (install-file "./README.rst" docdir)
-               (install-file "./README-dev.rst" docdir))
-             #t)))))
+               (install-file "./README-dev.rst" docdir)))))))
     (home-page "https://salsa.debian.org/reproducible-builds/reprotest")
     (synopsis "Build software and check it for reproducibility")
     (description "Reprotest builds the same source code twice in different

@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2021 WinterHound <winterhound@yandex.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -151,7 +152,7 @@ irssi, but graphical.")
 (define-public irssi
   (package
     (name "irssi")
-    (version "1.4.1")
+    (version "1.4.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/irssi/irssi/"
@@ -159,7 +160,7 @@ irssi, but graphical.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "00bmwkpzhqqnsajakk7dviap1i8s89375kwpdyxg65ms3ds94xka"))))
+                "0d04bam0lrk66wi7ygd5si5y6adf2ajhh6mn89zyc8m34d972gxr"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -194,14 +195,14 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
 (define-public weechat
   (package
     (name "weechat")
-    (version "3.6")
+    (version "3.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://weechat.org/files/src/weechat-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1ppj676gwh67krq92xnfkmh3qnwbz8d51djsscxw013x7cdxg1cx"))))
+                "0a5zfkqqdkya111rl2gpwlbfala0305qry9cdz2r1h7q0316bjzp"))))
     (build-system cmake-build-system)
     (outputs '("out" "doc"))
     (native-inputs
@@ -209,9 +210,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
        ("pkg-config" ,pkg-config)
        ,@(if (target-x86?)
            `(("ruby-asciidoctor" ,ruby-asciidoctor))
-           '())
-       ;; For tests.
-       ("cpputest" ,cpputest)))
+           '())))
     (inputs
      (list aspell
            curl
@@ -233,8 +232,7 @@ Conferencing} and @acronym{ICB, Internet Citizen's Band}.")
              ,@(if (target-x86?)
                  '("-DENABLE_MAN=ON"
                    "-DENABLE_DOC=ON")
-                '())
-             "-DENABLE_TESTS=ON")       ; ‘make test’ fails otherwise
+                '()))
        #:phases
        (modify-phases %standard-phases
          ,@(if (target-x86?)
@@ -261,7 +259,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
 (define-public srain
   (package
     (name "srain")
-    (version "1.4.1")
+    (version "1.5.0")
     (source
      (origin
        (method git-fetch)
@@ -270,7 +268,7 @@ using a mouse.  It is customizable and extensible with plugins and scripts.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05n8j36yrmk353nkapc1vywf25wklwbzwkl2a4kz92wv74zrwi6f"))))
+        (base32 "1qswvhx1s90jbsdx5znbc478v2ix3g0p6qm97cj7zzl0kx5kd780"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f ;there are no tests
@@ -345,14 +343,14 @@ for the IRCv3 protocol.")
 (define-public catgirl
   (package
     (name "catgirl")
-    (version "1.9a")
+    (version "2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://git.causal.agency/catgirl/snapshot/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0pci8crcgm33zb58y7ky2aydzyqsirj8ri8ik1zdlz6npadbjj9h"))))
+                "13pfphcfkdzqfb4x7w21xp6rnmg3ix9f39mpqmxxzg15ys1gp2x6"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -386,22 +384,23 @@ highlighted.
 (define-public ii
   (package
     (name "ii")
-    (version "1.9")
+    (version "2.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://dl.suckless.org/tools/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
-                "05wcaszm9hap5gqf58bciqm3ad1kfgp976fs3fsn3ll3nliv6345"))))
+                "0ns2wpzkk7qzhv7addgr0w5as0m7jwag5nxai2dr61wc436syrsg"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f                      ; no tests
-       #:make-flags (list (string-append "PREFIX=" %output)
-                          ,(string-append "CC=" (cc-for-target)))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure))))         ; no configure
+     (list #:tests? #f                  ; no tests
+           #:make-flags
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))   ; no configure script
     (home-page "https://tools.suckless.org/ii/")
     (synopsis "FIFO and file system based IRC client")
     (description
@@ -436,7 +435,7 @@ highlighted.
 (define-public kirc
   (package
     (name "kirc")
-    (version "0.2.9")
+    (version "0.3.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -444,7 +443,7 @@ highlighted.
                      (commit version)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0ahmfxhgcvnlgmxxbv9vga5x6krab1n7qq55ygj7hj3x7s7ra419"))))
+               (base32 "1ighpinss3k6xyqk05wrs76wvp2ahhh0jkkg8h7bhg66b14fsws9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; no tests
@@ -588,14 +587,14 @@ interface for those who are accustomed to the ircII way of doing things.")
 (define-public litterbox
   (package
     (name "litterbox")
-    (version "1.8")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://git.causal.agency/litterbox/snapshot/litterbox-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0ll5d18slngdg2qhaxkvrcq2p1admh0h7sr06wx8347ka0vvrgjl"))))
+        (base32 "1ag5x7h71pxjaaf4b561rwdqr05zzywkc0p3jf2yhg3lbjkjrc7z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.

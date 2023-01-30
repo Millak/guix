@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2014, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2022 LuHui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -49,7 +50,8 @@
              (file-name (string-append name "-" version ".tar.gz"))))
     (build-system gnu-build-system)
     (native-inputs
-     (if (and=> (%current-target-system) target-aarch64?)
+     (if (or (and=> (%current-target-system) target-aarch64?)
+             (and=> (%current-target-system) target-riscv64?))
          `(("config" ,config)) ; for config.sub
          '()))
     (arguments
@@ -66,7 +68,8 @@
                                        ;; Hurd's console client.
                                        "--localstatedir=/var"))
              '())
-       ,@(if (and=> (%current-target-system) target-aarch64?)
+       ,@(if (or (and=> (%current-target-system) target-aarch64?)
+                 (and=> (%current-target-system) target-riscv64?))
              `(#:phases
                (modify-phases %standard-phases
                  (add-before 'configure 'update-config.sub

@@ -24,6 +24,7 @@
 ;;; Copyright © 2021 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Disseminate Dissent <disseminatedissent@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -267,6 +268,7 @@ tmpfs/ramfs filesystems.")
            perl
            python-wrapper
            util-linux))
+    (outputs '("out" "debug"))
     (home-page "https://www.gnu.org/software/parted/")
     (synopsis "Disk partition editor")
     (description
@@ -429,14 +431,14 @@ scheme.")
 (define-public ddrescue
   (package
     (name "ddrescue")
-    (version "1.26")
+    (version "1.27")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://gnu/ddrescue/ddrescue-"
                           version ".tar.lz"))
       (sha256
-       (base32 "07smgh9f2p90zgyyrddzjwaz0v8glh5d95qiv7yhv0frj0xcs4z5"))))
+       (base32 "1srj68c7q0r5m7rzv3km43ndcs7xjw053r336vjiakx4qnc0rj1q"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "CXX=" ,(cxx-for-target)))))
@@ -587,11 +589,10 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
       ;; as ‘/dev/disk/by-id/’.
      `(#:tests? #f))
     (inputs
-     (list `(,util-linux "lib") parted glib gtkmm-3 libxml2))
+     (list `(,util-linux "lib") parted glib gtkmm-3 lvm2 libxml2))
     (native-inputs
      (list intltool
            itstool
-           lvm2 ; for tests
            yelp-tools
            pkg-config))
     (home-page "https://gparted.org/")
@@ -834,6 +835,46 @@ hierarchy.  It ships with @code{rifle}, a file launcher that is good at
 automatically finding out which program to use for what file type.")
     (license license:gpl3)))
 
+(define-public fff
+  (package
+   (name "fff")
+   (version "2.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/dylanaraps/fff")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "14ymdw6l6phnil0xf1frd5kgznaiwppcic0v4hb61s1zpf4wrshg"))))
+   (build-system gnu-build-system)
+   (inputs
+    (list bash
+          file))
+   (arguments
+    (list
+     #:tests? #f                       ; no tests
+     #:make-flags
+     #~(list
+        (string-append "PREFIX=" #$output))
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-after 'unpack 'refer-to-inputs
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((file (assoc-ref inputs "file")))
+               (substitute* "fff"
+                 (("\\bfile [-\"]" match)
+                  (string-append file "/bin/" match))))))
+         (delete 'configure))))         ; no configure script
+   (home-page "https://github.com/dylanaraps/fff")
+   (synopsis "Simple file manager written in bash")
+   (description
+    "@command{fff} (fast file-manager) is a simple, blazing fast and minimal
+file manager for Linux, written in bash.  It only requires bash and coreutils,
+and its highly optimized now for efficient performance.")
+   (license license:expat)))
+
 (define-public volume-key
   (package
     (name "volume-key")
@@ -876,7 +917,7 @@ passphrases.")
 (define-public ndctl
   (package
     (name "ndctl")
-    (version "73")
+    (version "75")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -885,14 +926,19 @@ passphrases.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "19kp1ly74bj7gavs03q7caci0lqr0rsi5y45zx5m8in4h19xk1kb"))))
+                "0i3fmda285qnwnmkxzwji5ffz123yrq9dpcwzg922qpysir7zq40"))))
     (build-system meson-build-system)
     (arguments
+     ;; The test suite runs but SKIPs all tests: do not consider this tested!
      (list #:configure-flags
            #~(list (string-append "-Drootprefix=" #$output)
+                   (string-append "-Dlibdir=" #$output "/lib")
                    (string-append "-Dbashcompletiondir=" #$output
                                   "/share/bash-completion/completions")
                    (string-append "-Dsysconfdir=" #$output "/etc")
+                   (string-append "-Diniparserdir="
+                                  #$(this-package-input "iniparser")
+                                  "/include")
                    "-Dasciidoctor=disabled" ; use docbook-xsl instead
                    "-Dsystemd=disabled")
            #:phases
@@ -979,7 +1025,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
 (define-public libblockdev
   (package
     (name "libblockdev")
-    (version "2.27")
+    (version "2.28")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/storaged-project/"
@@ -987,7 +1033,7 @@ to create devices with respective mappings for the ATARAID sets discovered.")
                                   version "-1/libblockdev-" version ".tar.gz"))
               (sha256
                (base32
-                "05rm9h8v30rahr245jcw6if6b5g16mb5hnz7wl1shzip0wky3k3d"))))
+                "1x3xbgd2dyjhcqvyalpnrp727xidfxmaxgyyvv5gwx4aw90wijc2"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -1100,6 +1146,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
 (define-public lf
   (package
     (name "lf")
+    ;; When updating, remove go-github-com-gdamore-tcell-v2-2.3 from golang.scm.
     (version "27")
     (source (origin
               (method git-fetch)
@@ -1113,7 +1160,7 @@ on your file system and offers to remove it.  @command{rmlint} can find:
     (build-system go-build-system)
     (native-inputs
      (list go-github.com-mattn-go-runewidth go-golang-org-x-term
-           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2))
+           go-gopkg-in-djherbis-times-v1 go-github-com-gdamore-tcell-v2-2.3))
     (arguments
      `(#:import-path "github.com/gokcehan/lf"))
     (home-page "https://github.com/gokcehan/lf")
@@ -1454,3 +1501,51 @@ wrapper for disk usage querying and visualisation.")
 gone and to help you to clean it up.")
     (home-page "https://github.com/shundhammer/qdirstat")
     (license license:gpl2)))
+
+(define-public wipe
+  (package
+    (name "wipe")
+    (version "2.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/wipe/wipe/" version
+                                  "/wipe-" version ".tar.bz2"))
+              (sha256
+               (base32
+                "180snqvh6k6il6prb19fncflf2jcvkihlb4w84sbndcv1wvicfa6"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-makefile
+            (lambda _
+              (substitute* "Makefile.in"
+                ;; The Makefile.in uses install -o root, but during the
+                ;; build there is no root user, so if we leave that in,
+                ;; the build fails with the following error:
+                ;; /gnu/[...]/install: invalid user ‘root’
+                (("-o root") "")
+                ;; It's up to the distribution to strip the binaries or
+                ;; not.
+                (("\\$\\(INSTALL_BIN\\) -s ")
+                 "$(INSTALL_BIN) "))))
+          (add-after 'unpack 'force-autotools-bootstrap
+            (lambda _
+              ;; Rebuild the build system scripts, as the ones in bundles are
+              ;; very old and do not support all the options used by Guix.
+              (delete-file "configure"))))))
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://wipe.sourceforge.net")
+    (synopsis "Secure file/block device wiping utility")
+    (description
+     "Wipe can erase files and block devices securely.  To work properly it
+relies on several assumptions like having the block device write the correct
+sectors, etc.  For files it also doesn't work on log-structured file systems
+such as F2FS, JFFS, LogFS, etc.  You should @emph{not} trust @command{wipe} to
+work as advertised until you have manually verified that all its assumption
+hold true on your system.  To overwrite data it uses the Mersenne Twister
+pseudo-random number generator (PRNG) that is seeded with @file{/dev/urandom}
+or, if unavailable, @file{/dev/random}.")
+    (license license:gpl2+)))

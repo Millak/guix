@@ -122,7 +122,7 @@ readers and is needed to communicate with such devices through the
 (define-public eid-mw
   (package
     (name "eid-mw")
-    (version "5.1.6")
+    (version "5.1.8")
     (source
      (origin
        (method git-fetch)
@@ -131,7 +131,7 @@ readers and is needed to communicate with such devices through the
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19sq9bs1580zrjw0cxykdvrm1rwfw8n0vbvy9kdjnykjjnb7g6g1"))))
+        (base32 "11jf828ag8y5iykcfjmjc3n8g5mchpl3fxkr110civ3qqbdiw882"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list autoconf
@@ -893,7 +893,7 @@ phone is required.")
 (define-public libfido2
   (package
     (name "libfido2")
-    (version "1.11.0")
+    (version "1.12.0")
     (source
      (origin
        (method git-fetch)
@@ -901,21 +901,21 @@ phone is required.")
              (url "https://github.com/Yubico/libfido2")
              (commit version)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1nk4irmdg36930lgc892qmlmd4whz4fq37wknkdx5ap57i5x18i6"))))
+       (sha256 (base32 "123rysl21bmgk6rmpgg5s21a5ksmxnn1hc32ws88h7z0q4icvj87"))))
     (native-inputs (list pkg-config))
     (inputs (list eudev libcbor openssl zlib))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append
+     (list
+      #:configure-flags
+      #~(list (string-append
                "-DPKG_CONFIG_EXECUTABLE="
                (search-input-file %build-inputs
                                   (string-append
-                                    "/bin/" ,(pkg-config-for-target)))))
-       #:phases
-       (modify-phases %standard-phases
-         ;; regress tests enabled only for debug builds
-         (delete 'check))))
+                                   "/bin/" #$(pkg-config-for-target))))
+              (string-append "-DUDEV_RULES_DIR=" #$output "/lib/udev/rules.d"))
+      ;; regress tests enabled only for debug builds
+      #:tests? #f))
     (synopsis "Library functionality and command-line tools for FIDO devices")
     (description "libfido2 provides library functionality and command-line
 tools to communicate with a FIDO device over USB, and to verify attestation

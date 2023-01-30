@@ -18,6 +18,7 @@
 ;;; Copyright © 2021 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021 Stefan Reichör <stefan@xsteve.at>
 ;;; Copyright © 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
+;;; Copyright © 2022 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,12 +43,14 @@
   #:use-module (guix build-system haskell)
   #:use-module (gnu packages)
   #:use-module (gnu packages curl)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages haskell)
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -304,14 +307,14 @@ to @code{cabal repl}).")
 (define-public git-annex
   (package
     (name "git-annex")
-    (version "10.20220822")
+    (version "10.20221212")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://hackage.haskell.org/package/"
                            "git-annex/git-annex-" version ".tar.gz"))
        (sha256
-        (base32 "1qv3cb7p2zyc5mpcr4nfgzdmswfny5jbimd2ip7ygh71jlahrbfc"))))
+        (base32 "0afnl2w29w4j0229rsla93dzkmhcjlp8dv76sr861n186ywv8rzg"))))
     (build-system haskell-build-system)
     (arguments
      `(#:configure-flags
@@ -327,6 +330,17 @@ to @code{cabal repl}).")
              (copy-file "Utility/Shell.hs" "/tmp/Shell.hs")
              (substitute* "Utility/Shell.hs"
                (("/bin/sh") (which "sh")))))
+         (add-before 'configure 'patch-webapp
+           (lambda _
+             ;; Replace loose references to xdg-open so that 'git annex
+             ;; webapp' runs without making the user also install xdg-utils.
+             (substitute* '("Assistant/WebApp/DashBoard.hs"
+                            "Utility/WebApp.hs")
+               (("xdg-open") (which "xdg-open")))
+             ;; Also replace loose references to lsof.
+             (substitute* "Assistant/Threads/Watcher.hs"
+               (("\"lsof\"")
+                (string-append "\"" (which "lsof") "\"")))))
          (add-before 'configure 'factor-setup
            (lambda _
              ;; Factor out necessary build logic from the provided
@@ -406,6 +420,7 @@ to @code{cabal repl}).")
            ghc-bloomfilter
            ghc-byteable
            ghc-case-insensitive
+           ghc-clientsession
            ghc-concurrent-output
            ghc-conduit
            ghc-connection
@@ -462,8 +477,19 @@ to @code{cabal repl}).")
            ghc-utf8-string
            ghc-uuid
            ghc-vector
-           git
-           rsync))
+           ghc-wai
+           ghc-wai-extra
+           ghc-warp
+           ghc-warp-tls
+           ghc-yesod
+           ghc-yesod-core
+           ghc-yesod-form
+           ghc-yesod-static
+           lsof
+           rsync
+           xdg-utils))
+    (propagated-inputs
+     (list git))
     (native-inputs
      (list ghc-tasty ghc-tasty-hunit ghc-tasty-quickcheck ghc-tasty-rerun
            perl))

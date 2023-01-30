@@ -6,7 +6,7 @@
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Benjamin Slade <slade@jnanam.net>
 ;;; Copyright © 2019 Collin J. Doering <collin@rekahsoft.ca>
-;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 aecepoglu <aecepoglu@fastmail.fm>
 ;;; Copyright © 2020 Dion Mendel <guix@dm9.info>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -275,7 +275,7 @@ particularly in catching syntax errors.")
 (define-public grml-zsh-config
   (package
     (name "grml-zsh-config")
-    (version "0.19.3")
+    (version "0.19.5")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -283,7 +283,7 @@ particularly in catching syntax errors.")
                     version ".tar.gz"))
               (sha256
                (base32
-                "05fri77028znjnvmh8mz3424rn8ilysj7hn8br2hk1qwkp4zzwp9"))))
+                "0ifw490z3v9ljccbmm04adz39fj2dmx8mjgayxqj0a9ln90yfdc4"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -369,7 +369,7 @@ between various shells or commands.")
 (define-public trash-cli
   (package
     (name "trash-cli")
-    (version "0.21.10.24")
+    (version "0.22.10.20")
     (source
      (origin
        (method git-fetch)
@@ -379,37 +379,38 @@ between various shells or commands.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "01is32lk6prwhajvlmgn3xs4fcpmiqivizcqkj9k80jx6mqjifzs"))))
+         "0hkn0hmwrag56g447ddqapib0s399a6b4a9wlliif6zmirxlww9n"))))
     (build-system python-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'patch-path-constants
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((libc (assoc-ref inputs "libc"))
-                   (coreutils (assoc-ref inputs "coreutils")))
-               (substitute* "trashcli/list_mount_points.py"
-                 (("\"/lib/libc.so.6\".*")
-                  (string-append "\"" libc "/lib/libc.so.6\"\n"))
-                 (("\"df\"")
-                  (string-append "\"" coreutils "/bin/df\""))))))
-         (add-before 'build 'fix-setup.py
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (mkdir-p bin)
-               (substitute* "setup.py"
-                 (("add_script\\('")
-                  (string-append "add_script('" bin "/" ))))))
-         ;; Whenever setup.py is invoked, scripts in out/bin/ are
-         ;; replaced. Thus we cannot invoke setup.py for testing.
-         ;; Upstream also uses pytest.
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (invoke "pytest")))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'patch-path-constants
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((libc (search-input-file inputs "lib/libc.so.6"))
+                         (df #$(file-append coreutils "/bin/df")))
+                     (substitute* "trashcli/list_mount_points.py"
+                       (("\"/lib/libc.so.6\".*")
+                        (string-append "\"" libc "\"\n"))
+                       (("\"df\"")
+                        (string-append "\"" df "\""))))))
+               (add-before 'build 'fix-setup.py
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (substitute* "setup.py"
+                       (("add_script\\('")
+                        (string-append "add_script('" bin "/" ))))))
+               ;; Whenever setup.py is invoked, scripts in out/bin/ are
+               ;; replaced. Thus we cannot invoke setup.py for testing.
+               ;; Upstream also uses pytest.
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest")))))))
     (native-inputs
      (list python-pytest
+           python-parameterized
+           python-flexmock
            python-mock
            python-six))
     (inputs (list coreutils))
@@ -427,7 +428,7 @@ are already there.")
 (define-public direnv
   (package
     (name "direnv")
-    (version "2.32.1")
+    (version "2.32.2")
     (source
      (origin (method git-fetch)
              (uri (git-reference
@@ -436,7 +437,7 @@ are already there.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "1i473j7j4sx8p83zqlnakskqk0jyd3byajp7jmv2gym9s4k841y7"))))
+               "17nn4qg1fj4i9rh1gdpbddn2nky71h9dkxyz5a4jsdq25bsx0ps2"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/direnv/direnv"
@@ -518,7 +519,7 @@ below the current cursor position, scrolling the screen if necessary.")
 (define-public hstr
   (package
     (name "hstr")
-    (version "2.5")
+    (version "2.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -527,7 +528,7 @@ below the current cursor position, scrolling the screen if necessary.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0xg10jyiq12bcygi6aa9qq9pki7bipdsvsza037p2iqix19jg0x8"))))
+                "1iqvqm4mirx7imwwmz4blxbsr215lcgbw3h31ssbs3fk54hq7xn9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

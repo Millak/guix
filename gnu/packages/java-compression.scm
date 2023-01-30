@@ -322,3 +322,44 @@ It can be used as a replacement for the Apache @code{CBZip2InputStream} /
     (description "Tukaani-xz is an implementation of xz compression/decompression
 algorithms in Java.")
     (license license:public-domain)))
+
+(define-public java-zstd
+  (package
+    (name "java-zstd")
+    (version "1.5.2-3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/luben/zstd-jni")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z26z04sc4j6k0g4gvq4xc86mc4wiyp1j7z5hh6wpqgmy9b6h2zb"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "java-zstd.jar"
+       #:source-dir "src/main/java"
+       #:tests? #f; Require scala
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'generate-version
+           (lambda _
+             (with-output-to-file
+               "src/main/java/com/github/luben/zstd/util/ZstdVersion.java"
+               (lambda _
+                 (format #t "package com.github.luben.zstd.util;
+
+public class ZstdVersion {
+  public static final String VERSION = \"~a\";
+}" ,version))))))))
+    (inputs
+     `(("zstd" ,zstd)))
+    (home-page "https://github.com/luben/zstd-jni")
+    (synopsis "JNI bindings for Zstd native library")
+    (description "Zstd, short for Zstandard, is a lossless compression
+algorithm, which provides both good compression ratio and speed for standard
+compression needs.  This package provides JNI bindings for Zstd native
+library that provides fast and high compression lossless algorithm for
+Android, Java and all JVM languages.")
+    (license license:bsd-2)))

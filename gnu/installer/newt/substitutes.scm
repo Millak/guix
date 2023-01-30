@@ -28,7 +28,7 @@
   (match (current-clients)
     (()
      (case (choice-window
-            (G_ "Substitute server discovery.")
+            (G_ "Substitute server discovery")
             (G_ "Enable") (G_ "Disable")
             (G_ " By turning this option on, you allow Guix to fetch \
 substitutes (pre-built binaries) during installation from servers \

@@ -4,6 +4,7 @@
 ;;; Copyright © 2020,2021 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2022 Oleg Pykhalov <go.wigust@gmail.com>
+;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -611,6 +612,13 @@ used to manage logs from @acronym{VM, virtual machine} consoles.")))
    (magic (bv "\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x03\x00"))
    (mask (bv "\xff\xff\xff\xff\xff\xfe\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff"))))
 
+(define %x86_64
+  (qemu-platform
+   (name "x86_64")
+   (family "i386")
+   (magic (bv "\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x3e\x00"))
+   (mask (bv "\xff\xff\xff\xff\xff\xfe\xfe\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff"))))
+
 (define %alpha
   (qemu-platform
    (name "alpha")
@@ -767,7 +775,7 @@ used to manage logs from @acronym{VM, virtual machine} consoles.")))
    (mask (bv "\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff"))))
 
 (define %qemu-platforms
-  (list %i386 %alpha %arm %sparc32plus %ppc %ppc64 %ppc64le %m68k
+  (list %i386 %x86_64 %alpha %arm %sparc32plus %ppc %ppc64 %ppc64le %m68k
         %mips %mipsel %mipsn32 %mipsn32el %mips64 %mips64el
         %riscv32 %riscv64 %sh4 %sh4eb %s390x %aarch64 %hppa))
 

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2016, 2017, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Timotej Lazar <timotej.lazar@araneo.si>
@@ -66,7 +66,7 @@
 (define-public adcli
   (package
     (name "adcli")
-    (version "0.9.1")
+    (version "0.9.2")
     (source
      (origin
        (method git-fetch)
@@ -75,7 +75,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1mwzd5vakdsssdvs6vljqpp8pw8i97n5lhxvmn9dn9720am7hfv7"))))
+        (base32 "1lg181hpv07zcdybpykjq6h4v6f5sjc60gxqbklm0wqxa8m4sakn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -154,7 +154,7 @@ fundamental object types for C.")
 (define-public sssd
   (package
     (name "sssd")
-    (version "2.7.3")
+    (version "2.8.1")
     (source
      (origin
        (method git-fetch)
@@ -163,9 +163,8 @@ fundamental object types for C.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "18kcg82gcf5wgmaq5w9fszv9sg3d93yqm39p1npr8kw8b9203n4r"))
-       (patches (search-patches "sssd-optional-systemd.patch"
-                                "sssd-system-directories.patch"))))
+        (base32 "19vn2a1r33q6fnw7jmfv3s4kirnviz0rgq0w6wzx6h008iysidsd"))
+       (patches (search-patches "sssd-system-directories.patch"))))
     (build-system gnu-build-system)
     (arguments
      (list

@@ -46,26 +46,36 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages backup)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages crypto)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages cyrus-sasl)
   #:use-module (gnu packages datastructures)
+  #:use-module (gnu packages digest)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages docbook)
+  #:use-module (gnu packages elf)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnupg)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages guile)
+  #:use-module (gnu packages jemalloc)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages libunwind)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages maths)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages nfs)
   #:use-module (gnu packages onc-rpc)
   #:use-module (gnu packages openldap)
@@ -73,6 +83,8 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages popt)
+  #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-crypto)
   #:use-module (gnu packages python-web)
@@ -81,6 +93,7 @@
   #:use-module (gnu packages rsync)
   #:use-module (gnu packages sssd)
   #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages valgrind)
@@ -448,8 +461,8 @@ from a mounted file system.")
     (license license:gpl2+)))
 
 (define-public bcachefs-tools
-  (let ((commit "fd1b84975b960d5e42963bed2c18b8c63d8abce7")
-        (revision "14"))
+  (let ((commit "494421ee6e85514f90bb316d77e1dd4f7dad3420")
+        (revision "15"))
     (package
       (name "bcachefs-tools")
       (version (git-version "0.1" revision commit))
@@ -461,7 +474,7 @@ from a mounted file system.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "08vh0pg2sj833062y4vvnvzqchhflcvysp3xdh0zjk121r3iqm0s"))))
+          (base32 "1sdh9rl8ydnb28646773lsxpdy5jysvjbxs2nwr3hsv4qyv93vc4"))))
       (build-system gnu-build-system)
       (arguments
        (list #:make-flags
@@ -472,7 +485,16 @@ from a mounted file system.")
                      (string-append "PKG_CONFIG=" #$(pkg-config-for-target))
                      (string-append "PYTEST_CMD="
                                     #$(this-package-native-input "python-pytest")
-                                    "/bin/pytest"))
+                                    "/bin/pytest")
+                     (string-append "PYTEST_ARGS=-k '"
+                                    ;; These fail (‘invalid argument’) on
+                                    ;; kernels with a previous bcachefs version.
+                                    "not test_format and "
+                                    "not test_fsck and "
+                                    "not test_list and "
+                                    "not test_list_inodes and "
+                                    "not test_list_dirent"
+                                    "'"))
              #:phases
              #~(modify-phases %standard-phases
                  (delete 'configure)    ; no configure script
@@ -590,7 +612,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
 (define-public exfatprogs
   (package
     (name "exfatprogs")
-    (version "1.1.3")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -599,7 +621,7 @@ from the bcachefs-tools package.  It is meant to be used in initrds.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "14lgwvbg6jibsdpzpcj484p9q4ixawyjxi9hw23w89c6870gglw9"))))
+        (base32 "02a6178brikg12wl80h9qgxyhpm6mly0jnml0rs9phb7lkbv9kzh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -743,6 +765,41 @@ transaction log.
 from the jfsutils package.  It is meant to be used in initrds.")
     (license (package-license jfsutils))))
 
+(define-public nilfs-utils
+  (package
+    (name "nilfs-utils")
+    (version "2.2.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (string-append "https://nilfs.sourceforge.io/download"
+                            "/nilfs-utils-" version ".tar.bz2"))
+        (sha256
+         (base32 "15vsayvzr8nc29n939sz9ddq46vpn53rp8h8qv484h88qac3kxjx"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+       #:configure-flags
+       #~(list "--enable-static=no")
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'bootstrap 'force-bootstrap
+             (lambda _
+               (delete-file "configure")
+               (substitute* "configure.ac"
+                 (("\\[/etc\\]") "[${prefix}/etc]")
+                 (("\\[/sbin\\]") "[${prefix}/sbin]")))))))
+    (inputs
+     (list (list util-linux "lib")))
+    (native-inputs (list autoconf automake libtool))
+    (home-page "https://nilfs.sourceforge.io/")
+    (synopsis "Continuous Snapshotting Filesystem")
+    (description
+     "NILFS is a log-structured file system supporting versioning of the entire
+file system and continuous snapshotting, which allows users to even restore
+files mistakenly overwritten or destroyed just a few seconds ago.")
+    (license license:gpl3+)))
+
 (define-public disorderfs
   (package
     (name "disorderfs")
@@ -878,14 +935,14 @@ All of this is accomplished without a centralized metadata server.")
 (define-public libeatmydata
   (package
     (name "libeatmydata")
-    (version "130")
+    (version "131")        ; also update the "debian-files" input if available
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.flamingspork.com/projects/libeatmydata/"
                            "libeatmydata-" version ".tar.gz"))
        (sha256
-        (base32 "1h212l2s0g3pv6q96d94dk7kpp9qzyxqydrrcgyp7zqjwvbiqws8"))))
+        (base32 "1i5bp9a2vmljci3ihzlxf8482106di2ayy1lpr0qb8rq472sh66g"))))
     (build-system gnu-build-system)
     (arguments
      ;; All tests pass---but only if the host kernel allows PTRACE_TRACEME.
@@ -924,10 +981,12 @@ All of this is accomplished without a centralized metadata server.")
     (native-inputs
      `(("debian-files"                  ; for the man page
         ,(origin
+           ;; Debian being what it is, its version can lag behind a bit.  This
+           ;; is tolerable as the man page is general and the command stable.
            (method url-fetch)
            (uri (string-append "https://deb.debian.org/debian/pool/main/"
-                               "libe/libeatmydata/libeatmydata_" version
-                               "-2.debian.tar.xz"))
+                               "libe/libeatmydata/libeatmydata_130-2"
+                               ".debian.tar.xz"))
            (sha256
             (base32 "1sg9g1nv3wl9ymzz33ig4ns563npkbxj67a64m7p34cc813jl95w"))))
        ;; For the test suite.
@@ -1192,7 +1251,7 @@ with the included @command{xfstests-check} helper.")
 (define-public zfs
   (package
     (name "zfs")
-    (version "2.1.5")
+    (version "2.1.7")
     (outputs '("out" "module" "src"))
     (source
       (origin
@@ -1201,7 +1260,7 @@ with the included @command{xfstests-check} helper.")
                               "/download/zfs-" version
                               "/zfs-" version ".tar.gz"))
           (sha256
-           (base32 "0371j5k28cymqngfl76dfxzggvdf8n0ssij37350gzs4bhg084qr"))))
+           (base32 "06x7mjsgqdl1gqyn0gniklphh6i0fgbnxyjgqq8gzrjx30zfcqk4"))))
     (build-system linux-module-build-system)
     (arguments
      (list
@@ -1457,7 +1516,13 @@ On Guix System, you will need to invoke the included shell scripts as
                                                   "mount"))))
              (substitute* '("libfuse/util/mount.mergerfs.c")
                (("/bin/sh" command)
-                (string-append (assoc-ref inputs "bash-minimal") command))))))))
+                (string-append (assoc-ref inputs "bash-minimal") command))
+               ;; mount.mergerfs tries to execute `mergerfs`, which cannot be found
+               ;; without an absolute path. Hard-coding the path is fine, since we don’t
+               ;; link mount.mergerfs to mount.fuse anyway.
+               (("add_arg\\(&command, type\\);")
+                (string-append "add_arg(&command, \"" (assoc-ref outputs "out")
+                               "/bin/mergerfs\");"))))))))
     ;; Mergerfs bundles a heavily modified copy of fuse.
     (inputs
      (list bash-minimal util-linux))
@@ -1716,3 +1781,186 @@ and modifying @acronym{UDF, Universal Disk Format} file systems.
 and other optical media.  It supports read-only media (DVD/CD-R)
 and rewritable media that wears out (DVD/CD-RW).")
     (license license:gpl2+)))
+
+(define-public fuse-overlayfs
+  (package
+    (name "fuse-overlayfs")
+    (version "1.10")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/containers/fuse-overlayfs")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "085hrz0nrdsjfjci0z2qfyqrydn8wwdp790dx2x67hwdw1kib3wp"))
+              (file-name (git-file-name name version))))
+    (build-system gnu-build-system)
+    (native-inputs
+     (list automake autoconf libtool pkg-config))
+    (inputs
+     (list fuse-3))
+    (home-page "https://github.com/containers/fuse-overlayfs")
+    (synopsis "FUSE implementation of overlayfs")
+    (description "This package provides an implementation of overlay+shiftfs
+in FUSE for rootless containers.")
+    (license license:gpl3)))
+
+(define-public bees
+  (package
+    (name "bees")
+    (version "0.8")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Zygo/bees")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               ;; Unbundle cityhash.
+               #~(begin
+                   (for-each delete-file
+                             '("lib/city.cc" "include/crucible/city.h"))
+                   (substitute* "lib/Makefile"
+                     (("city.o.*") ""))
+                   (substitute* "src/bees-hash.cc"
+                     (("#include .crucible/city.h.") "#include <city.h>"))))
+              (patches
+               (search-patches
+                ;; XXX: Cherry-picked from upstream, remove the patch when
+                ;; bumping version.
+                "bees-beesd-honor-destdir-on-installation.patch"))
+              (sha256
+               (base32
+                "1kxpz1p9k5ir385kpvmfjawki5vg22hlx768k7835w6n5z5a65y4"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "DESTDIR=" #$output)
+                   (string-append "BEES_VERSION=" #$version)
+                   "PREFIX=''")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fixpath
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "scripts/beesd.in"
+                     (((string-append "\\<(" (string-join (list "realpath"
+                                                                "uuidparse"
+                                                                "grep"
+                                                                "false"
+                                                                "sed"
+                                                                "true"
+                                                                "head"
+                                                                "mkdir"
+                                                                "mount"
+                                                                "touch"
+                                                                "du"
+                                                                "cut"
+                                                                "rm"
+                                                                "truncate"
+                                                                "chmod")
+                                                          "|") ")\\>") command)
+                      (search-input-file inputs (string-append "/bin/" command)))
+
+                     (("btrfs sub")
+                      (string-append (search-input-file inputs "/bin/btrfs") " sub"))))))))
+    (inputs (list btrfs-progs cityhash util-linux))
+    (home-page "https://github.com/Zygo/bees")
+    (synopsis "Best-Effort Extent-Same, a btrfs dedupe agent")
+    (description
+     "@code{bees} is a block-oriented userspace deduplication agent designed
+for large btrfs filesystems.  It is an offline dedupe combined with an
+incremental data scan capability to minimize time data spends on disk from
+write to dedupe.")
+    (license license:gpl3+)))
+
+(define-public dwarfs
+  (package
+    (name "dwarfs")
+    (version "0.6.2")
+    (source (origin
+              (method url-fetch)
+              ;; The release archive is needed so that version.h is included.
+              (uri (string-append "https://github.com/mhx/dwarfs/releases/download/v"
+                                  version "/dwarfs-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1kncxf85gsj3anck8ccjmxn2azp5ifqbgkiky2kharmvphkbmfcv"))
+              (snippet
+               #~(begin
+                   (use-modules (guix build utils))
+                   ;; Prefer system libraries instead of submodules.
+                   ;; TODO: Package fbthrift.
+                   ;; TODO: Can we use Guix own folly?  There is no CMake option for it.
+                   ;; TODO: Package parallel-hashmap.
+                   (for-each delete-file-recursively
+                             '(;; "fbthrift"
+                               ;; "folly"
+                               ;; "parallel-hashmap"
+                               "xxHash"
+                               "zstd"))))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f ; TODO: 1 test fails because 'modprobe fuse' needs privileged access.
+       #:configure-flags
+       (list "-DPREFER_SYSTEM_ZSTD=ON"
+             "-DPREFER_SYSTEM_XXHASH=ON"
+             "-DPREFER_SYSTEM_GTEST=ON"
+             "-DWITH_TESTS=ON"
+             ;; Disable man pages since ronn fails to run without hpricot.
+             "-DWITH_MAN_PAGES=OFF")))
+    (native-inputs
+     (list
+      ;; FIXME: Building with ronn fails because hpricot is missing from Guix.
+      folly googletest libdwarf libevent pkg-config))
+    (inputs
+     (list
+      boost
+      double-conversion
+      fmt
+      fuse-3
+      gflags
+      jemalloc
+      libarchive
+      libunwind
+      lz4
+      openssl
+      xxhash
+      xz
+      `(,zstd "lib")))
+    (home-page "https://github.com/mhx/dwarfs")
+    (synopsis "Fast high compression read-only file system")
+    (description "DwarFS is a read-only file system with a focus on achieving
+very high compression ratios in particular for very redundant data.
+
+DwarFS also doesn't compromise on speed and for some cases it is on par with
+or performs better than SquashFS.  For the primary use case, DwarFS
+compression is an order of magnitude better than SquashFS compression, it's 6
+times faster to build the file system, it's typically faster to access files
+on DwarFS and it uses less CPU resources.
+
+Distinct features of DwarFS are:
+
+@itemize
+
+@item Clustering of files by similarity using a similarity hash function.  This
+makes it easier to exploit the redundancy across file boundaries.
+
+@item Segmentation analysis across file system blocks in order to reduce the
+size of the uncompressed file system.  This saves memory when using the
+compressed file system and thus potentially allows for higher cache hit rates
+as more data can be kept in the cache.
+
+@item Highly multi-threaded implementation.  Both the file system creation tool
+as well as the FUSE driver are able to make good use of the many cores of your
+system.
+
+@item Optional experimental Python scripting support to provide custom
+filtering and ordering functionality.
+
+@end itemize\n")
+    (license license:gpl3)))

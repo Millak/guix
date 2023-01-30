@@ -38,14 +38,14 @@
 (define-public lirc
   (package
     (name "lirc")
-    (version "0.10.1")
+    (version "0.10.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/lirc/LIRC/" version
                                   "/lirc-" version ".tar.bz2"))
               (sha256
                (base32
-                "1whlyifvvc7w04ahq07nnk1h18wc8j7c6wnvlb6mszravxh3qxcb"))
+                "0ai27l6hxfgkwvkqa3fy1b1gqzw2y10md030y5ig4748fj1fqi1x"))
               (patches (search-patches "lirc-localstatedir.patch"
                                        "lirc-reproducible-build.patch"))))
     (build-system gnu-build-system)
@@ -63,16 +63,14 @@
              ;; Correct the faulty assumption that systemd support should be
              ;; hard-wired when a build host's /proc/version contains "Ubuntu".
              (substitute* "configure"
-               (("kernelversion=.*") "kernelversion=irrelevant\n"))
-             #t))
+               (("kernelversion=.*") "kernelversion=irrelevant\n"))))
          (add-after 'unpack 'patch-lirc-make-devinput
            (lambda* (#:key inputs #:allow-other-keys)
              ;; 'lirc-make-devinput' script assumes that linux headers
              ;; are placed in "/usr/...".
              (let ((headers (assoc-ref inputs "kernel-headers")))
                (substitute* "tools/lirc-make-devinput"
-                 (("/usr/include") (string-append headers "/include"))))
-             #t))
+                 (("/usr/include") (string-append headers "/include"))))))
          (add-after 'unpack 'patch-doc/Makefile.in
            (lambda _
              ;; Lirc wants to install several images and a useless html page
@@ -82,8 +80,18 @@
              ;; "share/doc/lirc/images/" anyway).
              (substitute* "doc/Makefile.in"
                (("^vardocs_DATA =.*") "vardocs_DATA =\n")
-               (("^varimage_DATA =.*") "varimage_DATA =\n"))
-             #t)))))
+               (("^varimage_DATA =.*") "varimage_DATA =\n"))))
+         (add-after 'unpack 'omit-pip-sourceball
+           ;; ‘make install’ invokes ’setup.py sdist’, which has no known (to
+           ;; nckx) way to enforce mtimes.  The utility of this is questionable,
+           ;; IMO: let's disable it entirely & listen for complaints, if any.
+           (lambda _
+             (substitute* "Makefile.in"
+               (("(PYTHON_TARBALL.*=).*" _ tarball=)
+                (string-append tarball= "\n")))))
+         (add-before 'configure 'build-reproducibly
+           (lambda _
+             (setenv "LIRC_IRDB_CACHE_ID" "build time"))))))
     (native-inputs
      (list pkg-config libxslt))
     (inputs

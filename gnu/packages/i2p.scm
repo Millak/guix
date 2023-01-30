@@ -32,7 +32,7 @@
 (define-public i2pd
   (package
     (name "i2pd")
-    (version "2.41.0")
+    (version "2.44.0")
     (source
      (origin
        (method git-fetch)
@@ -41,7 +41,7 @@
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kh03lb4m8fvlfvq06d4hgwmk43pk7yp7n7y36kb2vplhrjrn2kx"))))
+        (base32 "0fwaalfxqdahgvx5rfkvdmf6gl10w328a18ddhyn5kvpmp9x7fgl"))))
     (build-system cmake-build-system)
     (inputs
      (list boost miniupnpc openssl zlib))

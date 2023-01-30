@@ -215,18 +215,6 @@ lines.")
    (parameter-alist '())
    "Extra options to include."))
 
-(define (serialize-getmail-configuration-file field-name val)
-  (match val
-    (($ <getmail-configuration-file> location
-                                     retriever destination options)
-     #~(string-append
-        "[retriever]\n"
-        #$(serialize-getmail-retriever-configuration #f retriever)
-        "\n[destination]\n"
-        #$(serialize-getmail-destination-configuration #f destination)
-        "\n[options]\n"
-        #$(serialize-getmail-options-configuration #f options)))))
-
 (define-configuration getmail-configuration-file
   (retriever
    (getmail-retriever-configuration (getmail-retriever-configuration))
@@ -237,6 +225,17 @@ lines.")
   (options
    (getmail-options-configuration (getmail-options-configuration))
    "Configure getmail."))
+
+(define (serialize-getmail-configuration-file field-name val)
+  (match-record val <getmail-configuration-file>
+    (retriever destination options)
+    #~(string-append
+       "[retriever]\n"
+       #$(serialize-getmail-retriever-configuration #f retriever)
+       "\n[destination]\n"
+       #$(serialize-getmail-destination-configuration #f destination)
+       "\n[options]\n"
+       #$(serialize-getmail-options-configuration #f options))))
 
 (define (serialize-symbol field-name val) "")
 (define (serialize-getmail-configuration field-name val) "")
@@ -339,29 +338,28 @@ notifications.  This depends on the server supporting the IDLE extension.")
 
 (define (getmail-shepherd-services configs)
   "Return a list of <shepherd-service> for CONFIGS."
-  (map (match-lambda
-         (($ <getmail-configuration> location name package
-                                     user group directory rcfile idle
-                                     environment-variables)
-          (shepherd-service
-           (documentation "Run getmail.")
-           (provision (list (symbol-append 'getmail- name)))
-           (requirement '(networking))
-           (start #~(make-forkexec-constructor
-                     `(#$(file-append package "/bin/getmail")
-                       ,(string-append "--getmaildir=" #$directory)
-                       #$@(map (lambda (idle)
-                                 (string-append "--idle=" idle))
-                               idle)
-                       ,(string-append "--rcfile=" #$rcfile))
-                     #:user #$user
-                     #:group #$group
-                     #:environment-variables
-                     (list #$@environment-variables)
-                     #:log-file
-                     #$(string-append "/var/log/getmail-"
-                                      (symbol->string name))))
-           (stop #~(make-kill-destructor)))))
+  (map (lambda (config)
+         (match-record config <getmail-configuration>
+           (name package user group directory rcfile idle environment-variables)
+           (shepherd-service
+            (documentation "Run getmail.")
+            (provision (list (symbol-append 'getmail- name)))
+            (requirement '(networking))
+            (start #~(make-forkexec-constructor
+                      `(#$(file-append package "/bin/getmail")
+                        ,(string-append "--getmaildir=" #$directory)
+                        #$@(map (lambda (idle)
+                                  (string-append "--idle=" idle))
+                                idle)
+                        ,(string-append "--rcfile=" #$rcfile))
+                      #:user #$user
+                      #:group #$group
+                      #:environment-variables
+                      (list #$@environment-variables)
+                      #:log-file
+                      #$(string-append "/var/log/getmail-"
+                                       (symbol->string name))))
+            (stop #~(make-kill-destructor)))))
        configs))
 
 (define getmail-service-type

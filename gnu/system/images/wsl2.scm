@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2022 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -33,6 +34,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix packages)
+  #:use-module ((guix licenses) #:select (fsdg-compatible))
   #:export (wsl-boot-program
             wsl-os
             wsl2-image))
@@ -74,7 +76,11 @@ USER."
          (let* ((pw (getpw #$user))
                 (shell (passwd:shell pw))
                 (sudo #+(file-append sudo "/bin/sudo"))
-                (args (cdr (command-line))))
+                (args (cdr (command-line)))
+                (uid (passwd:uid pw))
+                (gid (passwd:gid pw))
+                (runtime-dir (string-append "/run/user/"
+                                            (number->string uid))))
            ;; Save the value of $PATH set by WSL.  Useful for finding
            ;; Windows binaries to run with WSL's binfmt interop.
            (setenv "WSLPATH" (getenv "PATH"))
@@ -87,9 +93,15 @@ USER."
                   MS_REMOUNT
                   #:update-mtab? #f)
 
+           ;; Create XDG_RUNTIME_DIR for the login user.
+           (unless (file-exists? runtime-dir)
+             (mkdir runtime-dir)
+             (chown runtime-dir uid gid))
+           (setenv "XDG_RUNTIME_DIR" runtime-dir)
+
            ;; Start login shell as user.
            (apply execl sudo "sudo"
-                  "--preserve-env=WSLPATH"
+                  "--preserve-env=WSLPATH,XDG_RUNTIME_DIR"
                   "-u" #$user
                   "--"
                   shell "-l" args))))))
@@ -113,7 +125,7 @@ USER."
     (home-page #f)
     (synopsis #f)
     (description #f)
-    (license #f)))
+    (license (fsdg-compatible "dummy"))))
 
 (define dummy-bootloader
   (bootloader

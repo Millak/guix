@@ -64,8 +64,7 @@
                  (base32
                   "1yl2cpaqiv1g4nq9v0xfj1vd5faz55k4541vz6hsffvcxgn9nmc5"))))
       (build-system cmake-build-system)
-      (native-inputs
-       (list fmt googletest))
+      (native-inputs (list fmt-8 googletest))
       (synopsis "C++ port of ZXing")
       (description "ZXing-CPP is a barcode scanning library.")
       (home-page "https://github.com/nu-book/zxing-cpp")

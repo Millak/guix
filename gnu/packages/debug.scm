@@ -10,6 +10,7 @@
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
+;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,6 +35,8 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system go)
+  #:use-module (guix gexp)
   #:use-module (gnu packages)
   #:use-module (gnu packages attr)
   #:use-module (gnu packages autotools)
@@ -61,6 +64,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages texinfo)
@@ -596,7 +600,7 @@ the position of the variable and allows you to modify its value.")
 (define-public remake
   (package (inherit gnu-make)
     (name "remake")
-    (version "4.3-1.5")
+    (version "4.3-1.6")
     (source (origin
               (method url-fetch)
               (uri (let ((upstream-version
@@ -608,7 +612,7 @@ the position of the variable and allows you to modify its value.")
               (file-name (string-append "remake-" version ".tar.gz"))
               (sha256
                (base32
-                "0xlx2485y0israv2pfghmv74lxcv9i5y65agy69mif76yc4vfvif"))
+                "11vvch8bi0yhjfz7gn92b3xmmm0cgi3qfiyhbnnj89frkhbwd87n"))
               (patches (search-patches "remake-impure-dirs.patch"))))
     (inputs
      (modify-inputs (package-inputs gnu-make)
@@ -826,3 +830,58 @@ debugger with support for programming, disassembly and reverse
 engineering.")
       (home-page "https://github.com/dlbeer/mspdebug")
       (license license:gpl2+))))
+
+(define-public seer-gdb
+  (package
+    (name "seer-gdb")
+    (version "1.11")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/epasveer/seer.git")
+                     (commit (string-append "v" version))))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0778573rixhdanmzp4slghpwgv7pm08n7cpa24rm3wrvs77ic3kb"))))
+    (build-system cmake-build-system)
+    (arguments
+     `(#:tests? #f ; Those are strangely manual
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'chdir
+           (lambda _
+             (chdir "src"))))))
+    (inputs
+     (list qtbase-5 qtcharts))
+    (synopsis "GUI frontend for GDB")
+    (description "This package provides a frontend to GDB, the GNU debugger.")
+    (home-page "https://github.com/epasveer/seer")
+    ;; Note: Some icons in src/resources are creative commons 3.0 and/or 4.0.
+    (license license:gpl3+)))
+
+(define-public delve
+  (package
+    (name "delve")
+    (version "1.9.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/go-delve/delve")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "07jch3yd1pgqviyy18amn23gazbzi7l51f210c3vmc707v3vbbqr"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/go-delve/delve/cmd/dlv"
+           #:unpack-path "github.com/go-delve/delve"
+           #:install-source? #f
+           #:phases #~(modify-phases %standard-phases (delete 'check))))
+    (propagated-inputs (list go))
+    (home-page "https://github.com/go-delve/delve")
+    (synopsis "Debugger for the Go programming language")
+    (description "Delve is a debugger for the Go programming language.")
+    (license license:expat)))

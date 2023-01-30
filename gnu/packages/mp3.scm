@@ -643,7 +643,7 @@ command-line tool.")
     (inputs
      ;; requires one of FFmpeg (prefered), FFTW3 or vDSP
      ;; use the same ffmpeg version as for acoustid-fingerprinter
-     (list ffmpeg boost))
+     (list ffmpeg-4 boost))
     (home-page "https://acoustid.org/chromaprint")
     (synopsis "Audio fingerprinting library")
     (description "Chromaprint is a library for calculating audio

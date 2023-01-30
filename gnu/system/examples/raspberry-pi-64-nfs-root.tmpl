@@ -1,0 +1,71 @@
+;; -*- mode: scheme; -*-
+;; This is an operating-system configuration template of a
+;; 64-bit minimal system for a Raspberry Pi with an NFS root file-system.
+
+;; It neither installs firmware nor device-tree files for the Raspberry Pi.
+;; It just assumes them to be existing in boot/efi in the same way that some
+;; UEFI firmware with ACPI data is usually assumed to be existing on PCs.
+
+;; It expects the boot/efi directory to be served via TFTP and the root
+;; file-system to be served via NFS. See the grub-efi-netboot-bootloader
+;; description in the manual for more details.
+
+(use-modules (gnu)
+             (gnu artwork)
+             (gnu system nss))
+(use-service-modules admin
+                     avahi
+                     networking
+                     ssh)
+(use-package-modules certs
+                     linux
+                     raspberry-pi
+                     ssh)
+
+(define-public raspberry-pi-64-nfs-root
+  (operating-system
+    (host-name "raspberrypi-guix")
+    (timezone "Europe/Berlin")
+    (bootloader (bootloader-configuration
+                 (bootloader grub-efi-bootloader-chain-raspi-64)
+                 (targets (list "/boot/efi"))
+                 (theme (grub-theme
+                         (resolution '(1920 . 1080))
+                         (image (file-append
+                                 %artwork-repository
+                                 "/grub/GuixSD-fully-black-16-9.svg"))))))
+    (kernel-arguments '("ip=dhcp"))
+    (kernel (customize-linux #:linux linux-libre-arm64-generic
+                             #:extra-version "arm64-generic-netboot"
+                             #:configs '("CONFIG_NFS_SWAP=y"
+                                         "CONFIG_USB_USBNET=y"
+                                         "CONFIG_USB_LAN78XX=y"
+                                         "CONFIG_USB_NET_SMSC95XX=y")))
+    (initrd-modules '())
+    (file-systems (cons* (file-system
+                           (mount-point "/")
+                           (type "nfs")
+                           (device ":/export/raspberrypi/guix")
+                           (options "addr=10.20.30.40,vers=4.1"))
+                         %base-file-systems))
+    (swap-devices (list (swap-space
+                         (target "/run/swapfile"))))
+    (users (cons* (user-account
+                   (name "pi")
+                   (group "users")
+                   (supplementary-groups '("wheel" "netdev" "audio" "video"))
+                   (home-directory "/home/pi"))
+                  %base-user-accounts))
+    (packages (cons* nss-certs
+                     openssh
+                     %base-packages))
+    (services (cons* (service avahi-service-type)
+                     (service dhcp-client-service-type)
+                     (service ntp-service-type)
+                     (service openssh-service-type
+                              (openssh-configuration
+                               (x11-forwarding? #t)))
+                     %base-services))
+    (name-service-switch %mdns-host-lookup-nss)))
+
+raspberry-pi-64-nfs-root

@@ -234,7 +234,7 @@ build-system, and DEPENDENCIES the inputs for the package."
           (fold (lambda (a b)
                   (if (version>? a b) a b)) (car versions) versions)))))
 
-(define* (hexpm->guix-package package-name #:key repo version)
+(define* (hexpm->guix-package package-name #:key version #:allow-other-keys)
   "Fetch the metadata for PACKAGE-NAME from hexpms.io, and return the
 `package' s-expression corresponding to that package, or #f on failure.
 When VERSION is specified, attempt to fetch that version; otherwise fetch the
@@ -328,11 +328,12 @@ latest version of PACKAGE-NAME."
 ;;; Updater
 ;;;
 
-(define (latest-release package)
-  "Return an <upstream-source> for the latest release of PACKAGE."
+(define* (import-release package #:key (version #f))
+  "Return an <upstream-source> for the latest release of PACKAGE. Optionally
+include a VERSION string to fetch a specific version."
   (let* ((hexpm-name (guix-package->hexpm-name package))
          (hexpm      (lookup-hexpm hexpm-name))
-         (version    (hexpm-latest-release hexpm))
+         (version    (or version (hexpm-latest-release hexpm)))
          (url        (hexpm-uri hexpm-name version)))
     (upstream-source
      (package (package-name package))
@@ -344,4 +345,4 @@ latest version of PACKAGE-NAME."
    (name 'hexpm)
    (description "Updater for hex.pm packages")
    (pred (url-prefix-predicate hexpm-package-url))
-   (latest latest-release)))
+   (import import-release)))

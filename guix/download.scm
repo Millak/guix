@@ -97,7 +97,7 @@
        "http://hackage.haskell.org/")
       (savannah           ; http://download0.savannah.gnu.org/mirmon/savannah/
        "https://download.savannah.gnu.org/releases/"
-       "https://nongnu.freemirror.org/nongnu/"
+       "https://de.freedif.org/savannah/"
        "https://ftp.cc.uoc.gr/mirrors/nongnu.org/"
        "http://ftp.twaren.net/Unix/NonGNU/" ; https appears unsupported
        "https://mirror.csclub.uwaterloo.ca/nongnu/"
@@ -112,22 +112,16 @@
       (sourceforge ; https://sourceforge.net/p/forge/documentation/Mirrors/
        "http://downloads.sourceforge.net/project/"
        "http://ufpr.dl.sourceforge.net/project/"
-       "http://heanet.dl.sourceforge.net/project/"
        "http://freefr.dl.sourceforge.net/project/"
        "http://internode.dl.sourceforge.net/project/"
        "http://jaist.dl.sourceforge.net/project/"
-       "http://kent.dl.sourceforge.net/project/"
        "http://liquidtelecom.dl.sourceforge.net/project/"
        ;; "http://nbtelecom.dl.sourceforge.net/project/"  ;never returns 404s
        "http://nchc.dl.sourceforge.net/project/"
-       "http://ncu.dl.sourceforge.net/project/"
        "http://netcologne.dl.sourceforge.net/project/"
        "http://netix.dl.sourceforge.net/project/"
        "http://pilotfiber.dl.sourceforge.net/project/"
-       "http://superb-sea2.dl.sourceforge.net/project/"
-       "http://tenet.dl.sourceforge.net/project/"
-       "http://vorboss.dl.sourceforge.net/project/"
-       "http://netassist.dl.sourceforge.net/project/")
+       "http://tenet.dl.sourceforge.net/project/")
       (netfilter.org ; https://www.netfilter.org/mirrors.html
        "http://ftp.netfilter.org/pub/"
        "ftp://ftp.es.netfilter.org/mirrors/netfilter/"

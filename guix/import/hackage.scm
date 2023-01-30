@@ -7,6 +7,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2019 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -30,10 +31,12 @@
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-1)
+  #:use-module (guix diagnostics)
   #:use-module ((guix download) #:select (download-to-store url-fetch))
   #:use-module ((guix utils) #:select (package-name->name+version
                                        canonical-newline-port))
   #:use-module (guix http-client)
+  #:use-module (guix i18n)
   #:use-module (guix import utils)
   #:use-module (guix import cabal)
   #:use-module (guix store)
@@ -323,7 +326,8 @@ the hash of the Cabal file."
 (define* (hackage->guix-package package-name #:key
                                 (include-test-dependencies? #t)
                                 (port #f)
-                                (cabal-environment '()))
+                                (cabal-environment '())
+                                #:allow-other-keys)
   "Fetch the Cabal file for PACKAGE-NAME from hackage.haskell.org, or, if the
 called with keyword parameter PORT, from PORT.  Return the `package'
 S-expression corresponding to that package, or #f on failure.
@@ -350,7 +354,7 @@ respectively."
 
 (define* (hackage-recursive-import package-name . args)
   (recursive-import package-name
-                    #:repo->guix-package (lambda* (name #:key repo version)
+                    #:repo->guix-package (lambda* (name #:key version #:allow-other-keys)
                                            (apply hackage->guix-package/m
                                                   (cons name args)))
                     #:guix-name hackage-name->package-name))
@@ -359,8 +363,13 @@ respectively."
   (let ((hackage-rx (make-regexp "(https?://hackage.haskell.org|mirror://hackage/)")))
     (url-predicate (cut regexp-exec hackage-rx <>))))
 
-(define (latest-release package)
+(define* (latest-release package #:key (version #f))
   "Return an <upstream-source> for the latest release of PACKAGE."
+  (when version
+    (error
+     (formatted-message
+      (G_ "~a updater doesn't support updating to a specific version, sorry.")
+      "hackage")))
   (let* ((hackage-name (guix-package->hackage-name package))
          (cabal-meta (hackage-fetch hackage-name)))
     (match cabal-meta
@@ -381,6 +390,6 @@ respectively."
    (name 'hackage)
    (description "Updater for Hackage packages")
    (pred hackage-package?)
-   (latest latest-release)))
+   (import latest-release)))
 
 ;;; cabal.scm ends here

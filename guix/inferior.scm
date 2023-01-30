@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -40,7 +40,7 @@
   #:use-module (guix search-paths)
   #:use-module (guix profiles)
   #:use-module (guix channels)
-  #:use-module ((guix git) #:select (update-cached-checkout))
+  #:use-module ((guix git) #:select (update-cached-checkout commit-id?))
   #:use-module (guix monads)
   #:use-module (guix store)
   #:use-module (guix derivations)
@@ -69,6 +69,8 @@
             inferior-exception-arguments
             inferior-exception-inferior
             inferior-exception-stack
+            inferior-protocol-error?
+            inferior-protocol-error-inferior
             read-repl-response
 
             inferior-packages
@@ -147,33 +149,47 @@ custom binary port)."
   ;; the REPL process wouldn't get EOF on standard input.
   (match (socketpair AF_UNIX (logior SOCK_STREAM SOCK_CLOEXEC) 0)
     ((parent . child)
-     (match (primitive-fork)
-       (0
-        (dynamic-wind
-          (lambda ()
-            #t)
-          (lambda ()
-            (close-port parent)
-            (close-fdes 0)
-            (close-fdes 1)
-            (close-fdes 2)
-            (dup2 (fileno child) 0)
-            (dup2 (fileno child) 1)
-            ;; Mimic 'open-pipe*'.
-            (if (file-port? (current-error-port))
-                (let ((error-port-fileno
-                       (fileno (current-error-port))))
-                  (unless (eq? error-port-fileno 2)
-                    (dup2 error-port-fileno
-                          2)))
-                (dup2 (open-fdes "/dev/null" O_WRONLY)
-                      2))
-            (apply execlp command command args))
-          (lambda ()
-            (primitive-_exit 127))))
-       (pid
-        (close-port child)
-        (values parent pid))))))
+     (if (defined? 'spawn)
+         (let* ((void (open-fdes "/dev/null" O_WRONLY))
+                (pid  (catch 'system-error
+                        (lambda ()
+                          (spawn command (cons command args)
+                                 #:input child
+                                 #:output child
+                                 #:error (if (file-port? (current-error-port))
+                                             (current-error-port)
+                                             void)))
+                        (const #f))))         ;can't exec, for instance ENOENT
+           (close-fdes void)
+           (close-port child)
+           (values parent pid))
+         (match (primitive-fork)                  ;Guile < 3.0.9
+           (0
+            (dynamic-wind
+              (lambda ()
+                #t)
+              (lambda ()
+                (close-port parent)
+                (close-fdes 0)
+                (close-fdes 1)
+                (close-fdes 2)
+                (dup2 (fileno child) 0)
+                (dup2 (fileno child) 1)
+                ;; Mimic 'open-pipe*'.
+                (if (file-port? (current-error-port))
+                    (let ((error-port-fileno
+                           (fileno (current-error-port))))
+                      (unless (eq? error-port-fileno 2)
+                        (dup2 error-port-fileno
+                              2)))
+                    (dup2 (open-fdes "/dev/null" O_WRONLY)
+                          2))
+                (apply execlp command command args))
+              (lambda ()
+                (primitive-_exit 127))))
+           (pid
+            (close-port child)
+            (values parent pid)))))))
 
 (define* (inferior-pipe directory command error-port)
   "Return two values: an input/output pipe on the Guix instance in DIRECTORY
@@ -314,6 +330,10 @@ equivalent.  Return #f if the inferior could not be launched."
   (inferior   inferior-exception-inferior)        ;<inferior> | #f
   (stack      inferior-exception-stack))          ;list of (FILE COLUMN LINE)
 
+(define-condition-type &inferior-protocol-error &error
+  inferior-protocol-error?
+  (inferior  inferior-protocol-error-inferior))   ;<inferior>
+
 (define* (read-repl-response port #:optional inferior)
   "Read a (guix repl) response from PORT and return it as a Scheme object.
 Raise '&inferior-exception' when an exception is read from PORT."
@@ -339,7 +359,11 @@ Raise '&inferior-exception' when an exception is read from PORT."
      (raise (condition (&inferior-exception
                         (arguments (cons key (map sexp->object objects)))
                         (inferior inferior)
-                        (stack '())))))))
+                        (stack '())))))
+    (_
+     ;; Protocol error.
+     (raise (condition (&inferior-protocol-error
+                        (inferior inferior)))))))
 
 (define (read-inferior-response inferior)
   (read-repl-response (inferior-socket inferior)
@@ -833,9 +857,9 @@ CHANNEL's 'commit' field is a full SHA1, return it as-is; if it's a SHA1
 prefix, resolve it; and if 'commit' is unset, fetch CHANNEL's branch tip."
   (let ((commit (channel-commit channel))
         (branch (channel-branch channel)))
-    (if (and commit (= (string-length commit) 40))
+    (if (and commit (commit-id? commit))
         commit
-        (let* ((ref (if commit `(commit . ,commit) `(branch . ,branch)))
+        (let* ((ref (if commit `(tag-or-commit . ,commit) `(branch . ,branch)))
                (cache commit relation
                      (update-cached-checkout (channel-url channel)
                                              #:ref ref

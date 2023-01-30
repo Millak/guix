@@ -541,7 +541,9 @@ platform."
                                              (map
                                               search-path-specification->sexp
                                               native-search-paths))
-                   #:phases #$phases
+                   #:phases #$(if (pair? phases)
+                                  (sexp->gexp phases)
+                                  phases)
                    #:locale #$locale
                    #:bootstrap-scripts #$bootstrap-scripts
                    #:configure-flags #$configure-flags

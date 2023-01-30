@@ -43,8 +43,10 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system ocaml)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
+  #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
@@ -103,6 +105,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
   #:use-module (ice-9 match))
 
@@ -401,7 +404,7 @@ training, HMM clustering, HMM mixtures.")
      (list clang-11
            llvm-11
            pkg-config
-           protobuf-c
+           protobuf-c-for-aiscm
            autoconf
            automake
            gettext-minimal
@@ -508,6 +511,7 @@ algorithm.")
        (uri (string-append
              "https://www.imbs.uni-luebeck.de/fileadmin/files/Software"
              "/randomjungle/randomjungle-" version ".tar_.gz"))
+       (file-name (string-append name "-" version ".tar.gz"))
        (patches (search-patches "randomjungle-disable-static-build.patch"))
        (sha256
         (base32
@@ -533,8 +537,7 @@ algorithm.")
     (inputs
      (list boost gsl libxml2 zlib))
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ("gfortran:lib" ,gfortran "lib")))
+     (list gfortran-7 (list gfortran-7 "lib")))
     ;; Non-portable assembly instructions are used so building fails on
     ;; platforms other than x86_64 or i686.
     (supported-systems '("x86_64-linux" "i686-linux"))
@@ -582,6 +585,22 @@ optimizing, and searching weighted finite-state transducers (FSTs).")
                 "038a60w7y8qnbxmcrsim9rafz9mihsny8xv50jpzlr7rl166pp5q"))))
     (arguments '(#:configure-flags '("--enable-ngram-fsts" "CXXFLAGS=-std=c++14")
                  #:make-flags '("CXXFLAGS=-std=c++14")))))
+
+(define openfst-for-vosk
+  (package
+    (inherit openfst)
+    (version "1.8.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append "http://www.openfst.org/twiki/pub/FST/"
+                           "FstDownload/openfst-" version ".tar.gz"))
+       (sha256
+        (base32 "0h2lfhhihg63b804hrcljnkggijbjmp84i5g8q735wb09y9z2c4p"))))
+    (arguments
+     '(#:configure-flags
+       '("--enable-shared" "--enable-far" "--enable-ngram-fsts"
+         "--enable-lookahead-fsts" "--with-pic" "--disable-bin")))))
 
 (define-public shogun
   (package
@@ -1162,6 +1181,52 @@ number of threads used in the threadpool-backed of common native libraries used
 for scientific computing and data science (e.g. BLAS and OpenMP).")
     (license license:bsd-3)))
 
+(define-public python-imbalanced-learn
+  (package
+    (name "python-imbalanced-learn")
+    (version "0.9.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "imbalanced-learn" version))
+              (sha256
+               (base32
+                "0qnrmysnqpc8ii1w5n8mci20gcjhmjr7khvk7f2apdbqc2pgf52f"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'unbreak-tests
+           (lambda _
+             ;; The doctests require tensorflow
+             (substitute* "setup.cfg"
+               (("--doctest-modules") ""))
+             ;; Some tests require a home directory
+             (setenv "HOME" (getcwd))
+             ;; We don't have keras
+             (delete-file "imblearn/keras/tests/test_generator.py")
+             ;; We don't have tensorflow
+             (delete-file "imblearn/tensorflow/tests/test_generator.py"))))))
+    (propagated-inputs
+     (list python-joblib
+           python-numpy
+           python-scikit-learn
+           python-scipy
+           python-threadpoolctl))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-mypy
+           python-pandas
+           python-pytest
+           python-pytest-cov))
+    (home-page "https://github.com/scikit-learn-contrib/imbalanced-learn")
+    (synopsis "Toolbox for imbalanced dataset in machine learning")
+    (description "This is a Python package offering a number of re-sampling
+techniques commonly used in datasets showing strong between-class imbalance.
+It is compatible with @code{scikit-learn}.")
+    (license license:expat)))
+
 (define-public python-pynndescent
   (package
     (name "python-pynndescent")
@@ -1264,6 +1329,76 @@ predictive of the outcome in supervised learning problems, and are especially
 good at identifying feature interactions that are normally overlooked by
 standard feature selection algorithms.")
     (license license:expat)))
+
+(define-public python-cleanlab
+  (package
+    (name "python-cleanlab")
+    (version "2.2.0")
+    ;; The version on pypi does not come with tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cleanlab/cleanlab")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00dqhxpwg781skknw943ynll2s44g4j125dx8aapk1d5d71sbzqy"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'disable-bad-tests
+           (lambda _
+             ;; XXX This requires pytest lazy_fixture
+             (delete-file "tests/test_multilabel_classification.py")
+             ;; Requires tensorflow
+             (delete-file "tests/test_frameworks.py")
+             ;; Tries to download datasets from the internet at runtime.
+             (delete-file "tests/test_dataset.py"))))))
+    (propagated-inputs
+     (list python-numpy
+           python-pandas
+           python-scikit-learn
+           python-termcolor
+           python-tqdm))
+    (native-inputs
+     (list python-pytest
+           python-pytorch
+           python-torchvision))
+    (home-page "https://cleanlab.ai")
+    (synopsis "Automatically find and fix dataset issues")
+    (description
+     "cleanlab automatically finds and fixes errors in any ML dataset. This
+data-centric AI package facilitates machine learning with messy, real-world
+data by providing clean labels during training.")
+    (license license:agpl3+)))
+
+(define-public python-cleanlab-1
+  (package
+    (inherit python-cleanlab)
+    (name "python-cleanlab")
+    (version "1.0.1")
+    ;; The version on pypi does not come with tests.
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/cleanlab/cleanlab")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03kw2agnhadmrq9zvrlvvlc2c37dpflga5nhmsaag8scw223gqyp"))))
+    (build-system pyproject-build-system)
+    (arguments (list))
+    (propagated-inputs
+     (list python-numpy
+           python-scikit-learn
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-pytest))))
 
 (define-public python-cmaes
   (package
@@ -1417,35 +1552,39 @@ interactive learning.")
 (define-public python-hyperopt
   (package
     (name "python-hyperopt")
-    (version "0.2.5")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hyperopt" version))
        (sha256
-        (base32 "1k4ma8ci0bxghw7g4ms944zak1pi83yv2d6bxd7fcslm1zalfq5w"))))
-    (build-system python-build-system)
+        (base32 "0jd1ghmm423kbhjvd6pxq92y5vkz25390687fcnd7fshh3jrmy0v"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
+           (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest" "--ignore"
+               (invoke "python" "-m" "pytest"
                        ;; Needs python-pyspark.
-                       "hyperopt/tests/test_spark.py"
+                       "--ignore" "hyperopt/tests/integration/test_spark.py"
                        ;; Needs both python-scikit-learn and python-lightgbm.
-                       "--ignore" "hyperopt/tests/test_atpe_basic.py"
+                       "--ignore" "hyperopt/tests/unit/test_atpe_basic.py"
                        ;; The tests below need python-lightgbm.
-                       "-k" (string-append "not test_branin"
-                                           " and not test_distractor"
-                                           " and not test_q1lognormal"
-                                           " and not test_quadratic1"
-                                           " and not test_twoarms"))))))))
+                       "-k"
+                       (string-append "not test_branin"
+                                      " and not test_distractor"
+                                      " and not test_q1lognormal"
+                                      " and not test_quadratic1"
+                                      " and not test_twoarms"
+                                      ;; XXX Type error with this version of scipy
+                                      " and not test_distribution_rvs"))))))))
     (propagated-inputs
      (list python-cloudpickle
            python-future
+           python-py4j
            python-networkx
            python-numpy
            python-scipy
@@ -1453,8 +1592,6 @@ interactive learning.")
            python-tqdm))
     (native-inputs
      (list python-black
-           python-ipython
-           python-ipyparallel
            python-nose
            python-pymongo
            python-pytest))
@@ -1467,8 +1604,8 @@ discrete, and conditional dimensions.")
 
 ;; There have been no proper releases yet.
 (define-public kaldi
-  (let ((commit "dd107fd594ac58af962031c1689abfdc10f84452")
-        (revision "0")
+  (let ((commit "be22248e3a166d9ec52c78dac945f471e7c3a8aa")
+        (revision "1")
         (openfst openfst-1.7.3)) ;; Temporary bypass for upstream issues
     (package
       (name "kaldi")
@@ -1481,14 +1618,14 @@ discrete, and conditional dimensions.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0iqbzgn7gzmgwvjfzifpbwwidxx887qmlgmsjkg7b1yzyfv00l21"))))
+                  "1wkxz3p0h68mxbg41i1wygir2r4rraxbb4672xkkvvs85r6c8r8i"))))
       (build-system gnu-build-system)
       (arguments
        `(#:test-target "test"
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
+             (lambda _ (chdir "src")))
            (replace 'configure
              (lambda* (#:key build system inputs outputs #:allow-other-keys)
                (when (not (or (string-prefix? "x86_64" system)
@@ -1534,8 +1671,7 @@ discrete, and conditional dimensions.")
                (invoke "make" "-C" "onlinebin" "depend")
                (invoke "make" "-C" "onlinebin")
                (invoke "make" "-C" "gst-plugin" "depend")
-               (invoke "make" "-C" "gst-plugin")
-               #t))
+               (invoke "make" "-C" "gst-plugin")))
            ;; TODO: also install the executables.
            (replace 'install
              (lambda* (#:key outputs #:allow-other-keys)
@@ -1556,8 +1692,7 @@ discrete, and conditional dimensions.")
                                (install-file file target-dir)))
                            (find-files "." "\\.h"))
                  (install-file "gst-plugin/libgstonlinegmmdecodefaster.so"
-                               (string-append lib "/gstreamer-1.0"))
-                 #t))))))
+                               (string-append lib "/gstreamer-1.0"))))))))
       (inputs
        (list alsa-lib
              `(,gfortran "lib")
@@ -1580,9 +1715,107 @@ discrete, and conditional dimensions.")
 written in C++.")
       (license license:asl2.0))))
 
+(define kaldi-for-vosk
+  (let* ((commit "6417ac1dece94783e80dfbac0148604685d27579")
+         (revision "0")
+         (openfst openfst-for-vosk))
+    (package
+      (inherit kaldi)
+      (name "kaldi")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphacep/kaldi")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "04xw2dpfvpla8skpk08azmgr9k97cd8hn83lj4l85q165gbzql4s"))))
+      (inputs
+       (list alsa-lib
+             lapack ;; compared to base kaldi, replacing `(,gfortran "lib")
+             glib
+             gstreamer
+             jack-1
+             openblas
+             openfst
+             portaudio
+             python))
+      (arguments
+       (list
+        #:test-target "test"
+        #:make-flags ''("online2" "lm" "rnnlm")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda _
+                (let* ((portaudio #$(this-package-input "portaudio"))
+                       (lapack    #$(this-package-input "lapack"))
+                       (openfst   #$(this-package-input "openfst"))
+                       (openblas  #$(this-package-input "openblas")))
+                  #$@(if (target-x86?)
+                         '()
+                         #~((substitute* "makefiles/linux_openblas.mk"
+                              (("-msse -msse2") ""))))
+                  (substitute* "makefiles/default_rules.mk"
+                    (("/bin/bash") (which "bash")))
+                  (substitute* "Makefile"
+                    (("ext_depend: check_portaudio")
+                     "ext_depend:"))
+                  (substitute* '("online/Makefile"
+                                 "onlinebin/Makefile"
+                                 "gst-plugin/Makefile")
+                    (("../../tools/portaudio/install")
+                     portaudio))
+                  (substitute* "matrix/Makefile"     ;temporary test bypass
+                    (("matrix-lib-test sparse-matrix-test") ""))
+
+                  ;; This `configure' script doesn't support variables passed as
+                  ;; arguments, nor does it support "prefix".
+                  (substitute* "configure"
+                    (("check_for_slow_expf;") "")
+                    ;; This affects the RPATH and also serves as the installation
+                    ;; directory.
+                    (("KALDILIBDIR=`pwd`/lib")
+                     (string-append "KALDILIBDIR=" #$output "/lib"))
+                    (("OPENBLASROOT=\\\"\\$\\(rel2abs ..\\/tools\\/OpenBLAS\\/install\\)\\\"")
+                     (string-append "OPENBLASROOT=\"" openblas "\""))
+                    (("-L\\$OPENBLASLIBDIR -l:libopenblas.a -l:libblas.a -l:liblapack.a -l:libf2c.a")
+                     (string-append "-L$OPENBLASLIBDIR -lopenblas "
+                                    "-L" lapack "/lib -lblas -llapack")))
+                  (mkdir-p #$output) ; must exist
+                  (setenv "CONFIG_SHELL" (which "bash"))
+                  (setenv "OPENFST_VER" #$(package-version openfst))
+                  (invoke "./configure"
+                          "--use-cuda=no"
+                          "--mathlib=OPENBLAS_CLAPACK"
+                          "--shared"
+                          (string-append "--fst-root=" openfst)))))
+            (add-after 'configure 'optimize-build
+                       (lambda _ (substitute* "kaldi.mk" ((" -O1") " -O3"))))
+            (replace 'install
+              (lambda _
+                (let* ((inc (string-append #$output "/include"))
+                       (lib (string-append #$output "/lib")))
+                  ;; The build phase installed symlinks to the actual
+                  ;; libraries.  Install the actual targets.
+                  (for-each (lambda (file)
+                              (let ((target (readlink file)))
+                                (delete-file file)
+                                (install-file target lib)))
+                            (find-files lib "\\.so"))
+                  ;; Install headers
+                  (for-each (lambda (file)
+                              (let ((target-dir (string-append inc "/" (dirname file))))
+                                (install-file file target-dir)))
+                            (find-files "." "\\.h")))))))))))
+
 (define-public gst-kaldi-nnet2-online
-  (let ((commit "cb227ef43b66a9835c14eb0ad39e08ee03c210ad")
-        (revision "2"))
+  (let ((commit "7888ae562a65bd7e406783ce2c33535bc66a30ef")
+        (revision "3"))
     (package
       (name "gst-kaldi-nnet2-online")
       (version (git-version "0" revision commit))
@@ -1594,12 +1827,13 @@ written in C++.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1i6ffwiavxx07ri0lxix6s8q0r31x7i4xxvhys5jxkixf5q34w8g"))))
+                  "0xp59a6lmx1y24i8bkmxcm27lhm5x5m6y41670yjzhamcbnx8jcr"))))
       (build-system gnu-build-system)
       (arguments
-       `(#:tests? #f                    ; there are none
-         #:make-flags
-         (list (string-append "SHELL="
+       (list
+        #:tests? #f                    ; there are none
+        #:make-flags
+        '(list (string-append "SHELL="
                               (assoc-ref %build-inputs "bash") "/bin/bash")
                (string-append "KALDI_ROOT="
                               (assoc-ref %build-inputs "kaldi-src"))
@@ -1607,33 +1841,32 @@ written in C++.")
                               (assoc-ref %build-inputs "kaldi") "/lib")
                "KALDI_FLAVOR=dynamic")
          #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'chdir
-             (lambda _ (chdir "src") #t))
-           (replace 'configure
-             (lambda* (#:key inputs #:allow-other-keys)
-               (let ((glib (assoc-ref inputs "glib")))
-                 (setenv "CXXFLAGS" "-fPIC")
-                 (setenv "CPLUS_INCLUDE_PATH"
-                         (string-append glib "/include/glib-2.0:"
-                                        glib "/lib/glib-2.0/include:"
-                                        (assoc-ref inputs "gstreamer")
-                                        "/include/gstreamer-1.0")))
-               (substitute* "Makefile"
-                 (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
-                 (("\\$\\(error Cannot find") "#"))
-               #t))
-           (add-before 'build 'build-depend
-             (lambda* (#:key make-flags #:allow-other-keys)
-               (apply invoke "make" "depend" make-flags)))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (lib (string-append out "/lib/gstreamer-1.0")))
-                 (install-file "libgstkaldinnet2onlinedecoder.so" lib)
-                 #t))))))
+         '(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (let ((glib (assoc-ref inputs "glib")))
+                  (setenv "CXXFLAGS" "-fPIC")
+                  (setenv "CPLUS_INCLUDE_PATH"
+                          (string-append glib "/include/glib-2.0:"
+                                         glib "/lib/glib-2.0/include:"
+                                         (assoc-ref inputs "gstreamer")
+                                         "/include/gstreamer-1.0:"
+                                         (getenv "CPLUS_INCLUDE_PATH"))))
+                (substitute* "Makefile"
+                  (("include \\$\\(KALDI_ROOT\\)/src/kaldi.mk") "")
+                  (("\\$\\(error Cannot find") "#"))))
+            (add-before 'build 'build-depend
+              (lambda* (#:key make-flags #:allow-other-keys)
+                (apply invoke "make" "depend" make-flags)))
+            (replace 'install
+              (lambda* (#:key outputs #:allow-other-keys)
+                (let* ((out (assoc-ref outputs "out"))
+                       (lib (string-append out "/lib/gstreamer-1.0")))
+                  (install-file "libgstkaldinnet2onlinedecoder.so" lib)))))))
       (inputs
-       (list glib gstreamer jansson openfst kaldi))
+       (list glib gstreamer jansson openfst-1.7.3 kaldi))
       (native-inputs
        `(("bash" ,bash)
          ("glib:bin" ,glib "bin")       ; glib-genmarshal
@@ -1649,8 +1882,8 @@ automatically.")
 
 (define-public kaldi-gstreamer-server
   ;; This is the tip of the py3 branch
-  (let ((commit "f68cab490be7eb0da2af1475fbc16655f50a60cb")
-        (revision "2"))
+  (let ((commit "f79e204d751a5964918001822e4520fa2acfd246")
+        (revision "3"))
     (package
       (name "kaldi-gstreamer-server")
       (version (git-version "0" revision commit))
@@ -1662,7 +1895,7 @@ automatically.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "17lh1368vkg8ngrcbn2phvigzlmalrqg6djx2gg61qq1a0nj87dm"))))
+                  "1iijq8jmgdxr7961inal1ggs496ymxradm51m4sqx8vl983x14y8"))))
       (build-system gnu-build-system)
       (arguments
        `(#:tests? #f ; there are no tests that can be run automatically
@@ -1692,8 +1925,7 @@ automatically.")
                                       "-m" "compileall"
                                       "-f" ; force rebuild
                                       ,file)))
-                           (find-files "." "\\.py$")))
-               #t))
+                           (find-files "." "\\.py$")))))
            (replace 'install
              (lambda* (#:key inputs outputs #:allow-other-keys)
                (let* ((out (assoc-ref outputs "out"))
@@ -1732,14 +1964,13 @@ exec ~a ~a/~a \"$@\"~%"
                              (list server client worker)
                              (list "master_server.py"
                                    "client.py"
-                                   "worker.py")))
-                 #t))))))
+                                   "worker.py")))))))))
       (inputs
-       `(("gst-kaldi-nnet2-online" ,gst-kaldi-nnet2-online)
-         ("python" ,python-wrapper)
-         ("python-pygobject" ,python-pygobject)
-         ("python-pyyaml" ,python-pyyaml)
-         ("python-tornado" ,python-tornado-6)))
+       (list gst-kaldi-nnet2-online
+             python-wrapper
+             python-pygobject
+             python-pyyaml
+             python-tornado-6))
       (home-page "https://github.com/alumae/kaldi-gstreamer-server")
       (synopsis "Real-time full-duplex speech recognition server")
       (description "This is a real-time full-duplex speech recognition server,
@@ -2679,7 +2910,7 @@ that:
     (license license:expat)))
 
 (define-public gloo
-  (let ((version "0.0.0") ; no proper version tag
+  (let ((version "0.0.0")                         ; no proper version tag
         (commit "c22a5cfba94edf8ea4f53a174d38aa0c629d070f")
         (revision "1"))
     (package
@@ -2699,15 +2930,22 @@ that:
       (native-inputs
        (list googletest))
       (inputs
-       (list openssl))
+       (append (list openssl)
+               (if (supported-package? rdma-core)
+                   (list rdma-core)
+                   '())))
       (arguments
-       `(#:configure-flags '("-DBUILD_TEST=1")
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "make" "gloo_test")))))))
+       (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                   "-DBUILD_TEST=1"
+                                   #$@(if (this-package-input "rdma-core")
+                                          #~("-DUSE_IBVERBS=ON")
+                                          #~()))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "make" "gloo_test")))))))
       (synopsis "Collective communications library")
       (description
        "Gloo is a collective communications library.  It comes with a
@@ -3009,7 +3247,7 @@ Note: currently this package does not provide GPU support.")
   (package
     (inherit python-pytorch)
     (name "python-pytorch")
-    (version "1.11.0")
+    (version "1.12.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3019,7 +3257,7 @@ Note: currently this package does not provide GPU support.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1zbk7y74r0ycsfa7x59jnhwhs1gj5rs3n89p15y0212iszgbljq8"))
+                "1wimgnmn8kfazc8vhf65b9psdwj80n3chzkd8ic28541ac2zqzpk"))
               (patches (search-patches "python-pytorch-system-libraries.patch"
                                        "python-pytorch-runpath.patch"))
               (modules '((guix build utils)))
@@ -3079,7 +3317,7 @@ Note: currently this package does not provide GPU support.")
     (native-inputs
      (list which python-pytest))
     (home-page "https://pytorch.org/vision/stable/index.html")
-    (synopsis " Datasets, transforms and models specific to computer vision")
+    (synopsis "Datasets, transforms and models specific to computer vision")
     (description
      "The torchvision package consists of popular datasets, model architectures,
 and common image transformations for computer vision.")
@@ -3108,18 +3346,14 @@ Python.")
 (define-public python-hmmlearn
   (package
     (name "python-hmmlearn")
-    (version "0.2.6")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "hmmlearn" version))
        (sha256
         (base32
-         "1my0j3rzp17438idr32ssh0j969a98yjblx5igx5kgiiigr9qa1a"))
-       (snippet
-        #~(begin
-            (use-modules ((guix build utils)))
-            (delete-file "lib/hmmlearn/_hmmc.c")))))
+         "1qgnf1kdxicygy8nvpv866iqvwq0rc6xkd3s6slmvxvsy8h2fjvb"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -3131,7 +3365,11 @@ Python.")
                (with-directory-excursion (string-append (assoc-ref outputs "out") "/lib")
                  (invoke "python" "-m" "pytest"))))))))
     (propagated-inputs
-     (list python-cython python-numpy python-scikit-learn python-scipy
+     (list pybind11
+           python-cython
+           python-numpy
+           python-scikit-learn
+           python-scipy
            python-setuptools-scm))
     (native-inputs
      (list python-pytest))
@@ -3146,7 +3384,7 @@ of Hidden Markov Models.")
 (define-public liblantern
   (package
     (name "liblantern")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method git-fetch)
@@ -3155,7 +3393,7 @@ of Hidden Markov Models.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1q57jsqzv9b70svr6whf04yd08np3x15qq1zm06fbl0sqf0kfn7p"))))
+        (base32 "0bjd0ym547k46ci8xnwsry7x8w5k65cl86snlcrfn4vs3fald2y9"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -3241,7 +3479,7 @@ of Hidden Markov Models.")
     (native-inputs
      (list python-cython python-pytest))
     (home-page "https://github.com/gatagat/lap")
-    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD).")
+    (synopsis "Linear Assignment Problem solver (LAPJV/LAPMOD)")
     (description "Lap is a linear assignment problem solver using Jonker-Volgenant
 algorithm for dense (LAPJV) or sparse (LAPMOD) matrices.")
     (license license:bsd-2)))
@@ -3294,7 +3532,7 @@ and Numpy.")
            python-sphinx
            python-sphinx-rtd-theme))
     (home-page "https://github.com/pyro-ppl/pyro-api")
-    (synopsis "Generic API for dispatch to Pyro backends.")
+    (synopsis "Generic API for dispatch to Pyro backends")
     (description "This package provides a generic API for dispatch to Pyro backends.")
     (license license:asl2.0)))
 
@@ -3371,3 +3609,187 @@ and Numpy.")
      "This package provides a Python library for probabilistic modeling and
 inference.")
     (license license:asl2.0)))
+
+(define-public vosk-api
+  (let* ((openfst openfst-for-vosk)
+         (kaldi kaldi-for-vosk))
+    (package
+      (name "vosk-api")
+      (version "0.3.43")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/alphacep/vosk-api")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0xmp8i140c2hd3rj9dap8a2rnsvzb1k9hnqm12xzbaxrw73rkc29"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "src")))
+            (replace 'configure
+              (lambda _
+                (let* ((lapack   #$(this-package-input "lapack"))
+                       (openfst  #$(this-package-input "openfst"))
+                       (openblas #$(this-package-input "openblas"))
+                       (kaldi    #$(this-package-input "kaldi")))
+                  (substitute* "./Makefile"
+                    (("USE_SHARED\\?=0")
+                     "USE_SHARED?=1")
+                    (("-DFST_NO_DYNAMIC_LINKING")
+                     "")
+                    (("-lopenblas -llapack -lblas -lf2c")
+                     (string-append
+                      "-L" openblas "/lib " "-lopenblas "
+                      "-L" lapack "/lib " "-llapack -lblas "))
+                    (("-lfst -lfstngram")
+                     (string-append
+                      "-L" openfst "/lib " "-lfst -lfstngram "))
+                    (("\\$\\(HOME\\)\\/travis\\/kaldi")
+                     (string-append kaldi "/include"))
+                    (("\\$\\(KALDI_ROOT\\)\\/tools\\/openfst")
+                     openfst)
+                    (("\\$\\(KALDI_ROOT\\)\\/tools\\/OpenBLAS\\/install")
+                     openblas)
+                    (("\\$\\(KALDI_ROOT\\)\\/libs")
+                     (string-append kaldi "/lib"))))))
+            (replace 'install
+              (lambda _
+                (let* ((lib (string-append #$output "/lib"))
+                       (src (string-append #$output "/src")))
+                  (mkdir-p lib)
+                  (mkdir-p src)
+                  (install-file "libvosk.so" lib)
+                  (for-each
+                   (lambda (x) (install-file x src))
+                   (find-files "." "\\.h$"))))))))
+      (inputs (list kaldi openfst lapack openblas))
+      (home-page "https://alphacephei.com/vosk")
+      (synopsis "Speech recognition toolkit based on @code{kaldi}")
+      (description "\
+This package provides a speech recognition toolkit based on @code{kaldi}.  It
+supports more than 20 languages and dialects - English, Indian English,
+German, French, Spanish, Portuguese, Chinese, Russian, Turkish, Vietnamese,
+Italian, Dutch, Catalan, Arabic, Greek, Farsi, Filipino, Ukrainian, Kazakh,
+Swedish, Japanese, Esperanto, Hindi, Czech, Polish. The program works offline,
+even on lightweight devices.  Portable per-language models are about 50Mb each,
+and there are much bigger and precise models available.
+
+Vosk API provides a streaming API allowing to use it `on-the-fly' and bindings
+for different programming languages.  It allows quick reconfiguration of
+vocabulary for better accuracy, and supports speaker identification beside
+simple speech recognition.")
+      (license license:asl2.0))))
+
+(define-public python-vosk
+  (package
+    (inherit vosk-api)
+    (name "python-vosk")
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-cffi python-requests python-tqdm python-srt python-websockets))
+    (inputs (list vosk-api))
+    (arguments
+     (list
+      #:tests? #f  ;; TODO There are tests but not run through Makefile.
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'config
+            (lambda _
+              (chdir "python")
+              (setenv "VOSK_SOURCE" #$vosk-api)))
+          (add-before 'build 'from-abi-to-api
+            (lambda _
+              (substitute* "vosk_builder.py"
+                (("ffibuilder\\.set_source\\(\"vosk.vosk_cffi\", None\\)")
+                 (string-append
+                  "ffibuilder.set_source(\"vosk.vosk_cffi\", "
+                  "r\"\"\"\n#include<vosk_api.h>\n#include<Python.h>\"\"\",\n\t"
+                  "library_dirs=["
+                  "'" #$vosk-api "/lib'"
+                  "],\n\t"
+                  "libraries=['vosk', 'python3.9'],\n\t"
+                  "include_dirs=["
+                  "'" #$vosk-api "/src'" "])")))
+              (substitute* "vosk/__init__.py"
+                (("_c = open_dll\\(\\)")
+                 "")
+                (("_ffi")
+                 "ffi")
+                (("from \\.vosk_cffi import ffi as ffi")
+                 "from .vosk_cffi import ffi, lib")
+                (("_c\\.")
+                 "lib.")))))))))
+
+(define-public nerd-dictation
+  (let* ((commit "53ab129a5ee0f8b5df284e8cf2229219b732c59e")
+         (revision "0"))
+    (package
+      (name "nerd-dictation")
+      (version (git-version "0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/ideasman42/nerd-dictation")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "184qijiva1h1x00dzicik0yzgh78pq2lqr5fkgicgp26mkarlyhc"))))
+      (build-system python-build-system)
+      (arguments
+       '(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'chdir
+             (lambda _ (chdir "package/python"))))))
+      (propagated-inputs (list python-vosk))
+      (inputs (list pulseaudio xdotool))
+      (home-page "https://github.com/ideasman42/nerd-dictation")
+      (synopsis "Offline speech-to-text for desktop Linux")
+      (description "\
+This package provides simple access speech to text for using in
+Linux without being tied to a desktop environment, using the @code{vosk-api}.
+The user configuration lets you manipulate text using Python string
+operations.  It has zero overhead, as this relies on manual activation and
+there are no background processes.  Dictation is accessed manually with
+@code{nerd-dictation begin} and @code{nerd-dictation end} commands.")
+      (license license:gpl3+))))
+
+(define-public nerd-dictation/wayland
+  (package
+    (inherit nerd-dictation)
+    (name "nerd-dictation-wayland")
+    (inputs (list bash-minimal nerd-dictation))
+    (propagated-inputs (list ydotool sox))
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((exe (string-append #$output "/bin/nerd-dictation"))
+                 (original-exe #$(file-append nerd-dictation
+                                              "/bin/nerd-dictation"))
+                 (bash #$(this-package-input "bash-minimal"))
+                 (bash-exe (string-append bash "/bin/bash")))
+            (mkdir-p (dirname exe))
+            (call-with-output-file exe
+              (lambda (port)
+                (format port "#!~a
+if [ \"$1\" = begin ]
+  then
+    exec ~a $@ --input=SOX --simulate-input-tool=YDOTOOL
+  else
+    exec ~a $@
+fi"
+                        bash-exe
+                        original-exe
+                        original-exe)))
+            (chmod exe #o555)))))))

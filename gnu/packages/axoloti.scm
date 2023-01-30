@@ -33,11 +33,11 @@
   #:use-module (gnu packages flashing-tools)
   #:use-module (gnu packages java)
   #:use-module (gnu packages java-graphics)
+  #:use-module (gnu packages java-xml)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages textutils)
-  #:use-module (gnu packages version-control)
-  #:use-module (gnu packages xml))
+  #:use-module (gnu packages version-control))
 
 ;; XXX The patch does not apply to libusb 1.0.24.
 ;; See https://github.com/axoloti/axoloti/issues/464
@@ -98,8 +98,6 @@
                   (srfi srfi-26)
                   (ice-9 match)
                   (ice-9 regex))
-       #:imported-modules ((guix build syscalls)
-                           ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-paths
@@ -232,7 +230,6 @@ runtime.")
                   (sxml xpath)
                   (sxml transform))
        #:imported-modules ((guix build ant-build-system)
-                           (guix build syscalls)
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases
@@ -390,7 +387,6 @@ patcher application.")))
                   (sxml xpath)
                   (sxml transform))
        #:imported-modules ((guix build ant-build-system)
-                           (guix build syscalls)
                            ,@%gnu-build-system-modules)
        #:phases
        (modify-phases %standard-phases

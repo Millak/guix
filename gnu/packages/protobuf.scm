@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Daniel Pimentel <d4n1@d4n1.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017, 2018, 2019, 2022 Ricardo Wurmus <rekado@elephly.net>
@@ -31,11 +31,13 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system ruby)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (gnu packages)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages check)
@@ -47,7 +49,8 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
-  #:use-module (gnu packages ruby))
+  #:use-module (gnu packages ruby)
+  #:use-module (srfi srfi-1))
 
 (define-public fstrm
   (package
@@ -90,55 +93,71 @@ data in motion, or as a file format for data at rest.")
 (define-public protobuf
   (package
     (name "protobuf")
-    (version "3.17.3")
+    (version "3.21.9")
     (source (origin
               (method url-fetch)
-              (uri (string-append "https://github.com/google/protobuf/releases/"
-                                  "download/v" version "/protobuf-cpp-"
-                                  version ".tar.gz"))
+              (uri (string-append
+                    "https://github.com/protocolbuffers/"
+                    "protobuf/releases/download/v"
+                    (string-join (drop (string-split version #\.) 1) ".")
+                    "/protobuf-cpp-" version ".tar.gz"))
+              (modules '((guix build utils)))
+              (snippet '(delete-file-recursively "third_party"))
               (sha256
                (base32
-                "1jzqrklhj9grs6xbddyb5dyxfbgbgbyhl5zig8ml50wb22gwkkji"))))
-    (build-system gnu-build-system)
-    (inputs (list zlib))
+                "01cl4l0rnnzjbhjjs2gyg2pk13505gh86ikh22jqjp54dp8mvp5x"))
+              (patches (search-patches "protobuf-fix-build-on-32bit.patch"))))
     (outputs (list "out"
                    "static"))           ; ~12 MiB of .a files
+    (build-system cmake-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'disable-broken-tests
-           ;; The following tests fail on 32 bit architectures such as
-           ;; i686-linux.
-           (lambda _
-             (let-syntax ((disable-tests
-                           (syntax-rules ()
-                             ((_ file test ...)
-                              (substitute* file
-                                ((test name)
-                                 (string-append "DISABLED_" name)) ...)))))
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8460.
-               (disable-tests "src/google/protobuf/any_test.cc"
-                              "TestPackFromSerializationExceedsSizeLimit")
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8459.
-               (disable-tests "src/google/protobuf/arena_unittest.cc"
-                              "SpaceAllocated_and_Used"
-                              "BlockSizeSmallerThanAllocation")
-               ;; See: https://github.com/protocolbuffers/protobuf/issues/8082.
-               (disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
-                              "LargeOutput"))))
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move static libraries to the "static" output.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (lib    (string-append out "/lib"))
-                    (static (assoc-ref outputs "static"))
-                    (slib   (string-append static "/lib")))
-               (mkdir-p slib)
-               (for-each (lambda (file)
-                           (install-file file slib)
-                           (delete-file file))
-                         (find-files lib "\\.a$"))))))))
-    (home-page "https://github.com/google/protobuf")
+     (list
+      ;; TODO: Add the BUILD_SHARED_LIBS flag to cmake-build-system.
+      #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON"
+                                "-Dprotobuf_USE_EXTERNAL_GTEST=ON")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'disable-broken-tests
+            ;; The following tests fail on 32 bit architectures such as
+            ;; i686-linux.
+            (lambda _
+              (let-syntax ((disable-tests
+                            (syntax-rules ()
+                              ((_ file test ...)
+                               (substitute* file
+                                 ((test name)
+                                  (string-append "DISABLED_" name)) ...)))))
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8460.
+                (disable-tests "src/google/protobuf/any_test.cc"
+                               "TestPackFromSerializationExceedsSizeLimit")
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8459.
+                (disable-tests "src/google/protobuf/arena_unittest.cc"
+                               "SpaceAllocated_and_Used"
+                               "BlockSizeSmallerThanAllocation")
+                ;; See: https://github.com/protocolbuffers/protobuf/issues/8082.
+                (disable-tests "src/google/protobuf/io/zero_copy_stream_unittest.cc"
+                               "LargeOutput"))))
+          (add-before 'configure 'set-c++-standard
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                ;; The 32bit patch requires C++14.
+                ;; TODO: Remove after next release.
+                (("CMAKE_CXX_STANDARD 11") "CMAKE_CXX_STANDARD 14"))))
+          (add-after 'install 'move-static-libraries
+            (lambda* (#:key outputs #:allow-other-keys)
+              ;; Move static libraries to the "static" output.
+              (let* ((out    (assoc-ref outputs "out"))
+                     (lib    (string-append out "/lib"))
+                     (static (assoc-ref outputs "static"))
+                     (slib   (string-append static "/lib")))
+                (mkdir-p slib)
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files lib "\\.a$"))))))))
+    (native-inputs (list googletest))
+    (inputs (list zlib))
+    (home-page "https://github.com/protocolbuffers/protobuf")
     (synopsis "Data encoding for remote procedure calls (RPCs)")
     (description
      "Protocol Buffers are a way of encoding structured data in an efficient
@@ -158,12 +177,19 @@ internal RPC protocols and file formats.")
                                   version ".tar.gz"))
               (sha256
                (base32
-                "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))))
+                "0a955bz59ihrb5wg7dwi12xajdi5pmz4bl0g147rbdwv393jwwxk"))))
+    (build-system gnu-build-system)
+    (arguments (substitute-keyword-arguments (package-arguments protobuf)
+                 ((#:configure-flags _ #f)
+                  #~(list))
+                 ((#:phases phases)
+                  #~(modify-phases #$phases
+                      (delete 'set-c++-standard)))))))
 
 ;; The 3.5 series are the last versions that do not require C++ 11.
 (define-public protobuf-3.5
   (package
-    (inherit protobuf)
+    (inherit protobuf-3.6)
    (version "3.5.1")
    (source (origin
               (method url-fetch)
@@ -186,15 +212,14 @@ internal RPC protocols and file formats.")
               (sha256
                (base32
                 "040rcs9fpv4bslhiy43v7dcrzakz4vwwpyqg4jp8bn24sl95ci7f"))))
-    (arguments (substitute-keyword-arguments (package-arguments protobuf)
-                 ((#:phases phases)
-                  `(modify-phases ,phases
-                     (delete 'disable-broken-tests)))))))
+    (build-system gnu-build-system)
+    (arguments '())
+    (outputs '("out"))))
 
 (define-public protobuf-c
   (package
     (name "protobuf-c")
-    (version "1.3.3")
+    (version "1.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://github.com/protobuf-c/protobuf-c/"
@@ -202,7 +227,7 @@ internal RPC protocols and file formats.")
                                   "/protobuf-c-" version ".tar.gz"))
               (sha256
                (base32
-                "0y3yaanq97si7iyld06p8w20m0shpj7sf4xwzbhhvijhxw36d592"))))
+                "17rk42r3gcc46c2svd1mxs542wnl4mi77a6klkhg6wl1a36zmi2c"))))
     (build-system gnu-build-system)
     (inputs (list protobuf))
     (native-inputs (list pkg-config))
@@ -215,6 +240,20 @@ that implements protobuf encoding and decoding, and @code{protoc-c}, a code
 generator that converts Protocol Buffer @code{.proto} files to C descriptor
 code.")
     (license license:bsd-2)))
+
+(define-public protobuf-c-for-aiscm
+  (package
+    (inherit protobuf-c)
+    (version "1.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://github.com/protobuf-c/protobuf-c/"
+                                  "releases/download/v" version
+                                  "/protobuf-c-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0y3yaanq97si7iyld06p8w20m0shpj7sf4xwzbhhvijhxw36d592"))))
+    (inputs (list protobuf-3.6))))
 
 (define-public protozero
   (package
@@ -285,22 +324,11 @@ any memory-restricted system.")
               (sha256
                (base32
                 "0z03h9k68qvnlyhpk0ndwp01bdx77vrjr6mybxq4ldilkkbksklk"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
           (add-before 'check 'generate-protos-for-tests
             (lambda _
               ;; Generate Python sources.
@@ -324,7 +352,6 @@ any memory-restricted system.")
     (native-inputs
      (list python-grpc-stubs
            python-grpcio-tools
-           python-pypa-build
            python-pytest
            python-typing-extensions-next))
     (propagated-inputs
@@ -379,6 +406,12 @@ from protobuf specification files.")
         (base32
          "1ja2vpk9nklllmsirmil2s4l7ni9yfqvbvj47zz5xx17s1k1bhxd"))))
     (build-system python-build-system)
+    (inputs (list protobuf))
+    (arguments
+     `(;; Favor C++ implementation from protobuf over the native Python
+       ;; implementation. The additional dependency yields significant
+       ;; performance improvements for some workloads.
+       #:configure-flags '("--cpp_implementation")))
     (home-page "https://github.com/google/protobuf")
     (synopsis "Protocol buffers is a data interchange format")
     (description
@@ -435,9 +468,8 @@ structured data.")
        (sha256
         (base32
          "04bqb12smlckzmgkj6vgmpbr3cby0n6726cmz33bqr7kn1vb728l"))))
-    (inputs
-     (cons python-six
-           (package-inputs python-protobuf)))))
+    (arguments '())                            ;no "--cpp_implementation" here
+    (inputs (list python-six))))
 
 (define-public python-proto-plus
   (package

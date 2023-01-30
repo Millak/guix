@@ -76,8 +76,9 @@
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system python)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
@@ -145,6 +146,7 @@ them as it goes.")
        (uri (pypi-uri "afdko" version))
        (sha256
         (base32 "0k1204vykgx32saa495s1lgmz1dixcp8bjiv486imx77killvm02"))
+       (patches (search-patches "python-afdko-suppress-copyright-test.patch"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -227,7 +229,10 @@ them as it goes.")
               (when tests?
                 (setenv "HOME" "/tmp")
                 (invoke "pytest" "-vv" "--dist" "loadfile" "-n"
-                        (number->string (parallel-job-count))))))
+                        (number->string (parallel-job-count))
+                        ;; This test is known to fail on multiple architectures.
+                        ;; https://github.com/adobe-type-tools/afdko/issues/1163
+                        "-k not test_type1mm_inputs"))))
           (add-after 'check 'wrap
             (assoc-ref %standard-phases 'wrap))
           (add-before 'wrap 'wrap-PATH
@@ -591,39 +596,17 @@ process.  FontParts is the successor of RoboFab.")
               (sha256
                (base32
                 "0mkkwd09g76hvif603ij5aqicxh47zvhgyyd0pjcjmpdy6dr70yw"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'build
-            (lambda _
-              ;; The Zip format does not support pre-1980 time stamps.
-              (let ((circa-1980 (* 10 366 24 60 60)))
-                (setenv "SOURCE_DATE_EPOCH" (number->string circa-1980))
-                (invoke "python" "-m" "build" "--wheel" "--no-isolation" "."))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (setenv "GUIX_PYTHONPATH"
-                        (string-append (getcwd) ":" (getenv "GUIX_PYTHONPATH")))
-                (invoke "pytest" "-vv"
-                        ;; These fail because the test data has not yet been
-                        ;; updated for newer FontTools:
-                        ;;   https://github.com/googlefonts/glyphsLib/issues/787
-                        ;; Re-enable for versions > 6.0.7.
-                        "--ignore=tests/builder/designspace_gen_test.py"
-                        "--ignore=tests/builder/interpolation_test.py"
-                        )))))))
+      #:test-flags #~'(;; These fail because the test data has not yet been
+                       ;; updated for newer FontTools:
+                       ;;   https://github.com/googlefonts/glyphsLib/issues/787
+                       ;; Re-enable for versions > 6.0.7.
+                       "--ignore=tests/builder/designspace_gen_test.py"
+                       "--ignore=tests/builder/interpolation_test.py")))
     (native-inputs
-     (list python-pypa-build
-           python-setuptools-scm
-           python-wheel
+     (list python-setuptools-scm
 
            ;; For tests.
            python-pytest
@@ -1581,12 +1564,11 @@ generate bitmaps.")
               (sha256
                (base32
                 "0qavzspxhwnaayj5mxq6ncjjziggabxj157ls04h2rdrpq167706"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list
       #:phases
       #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
           (add-after 'unpack 'adjust-for-older-attrs
             ;; Our older attrs package is using the 'attr' rather than 'attrs'
             ;; namespace.
@@ -1603,27 +1585,9 @@ generate bitmaps.")
                 (("@attrs")
                  "@attr")
                 (("\\battrs\\.")
-                 "attr."))))
-          (replace 'build
-            (lambda _
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv" "tests"
-                        ;;"-n" (number->string (parallel-job-count))
-                        ;; This test requires orjson, which needs the maturin
-                        ;; build system and new Rust dependencies.
-                        ;;"--ignore" "tests/test_preconf.py"
-                        )))))))
+                 "attr.")))))))
     (native-inputs
      (list python-poetry-core
-           python-pypa-build
            python-pytest
            python-ufo2ft))
     (propagated-inputs
@@ -1651,31 +1615,9 @@ with @samp{nameIDs}.")
        (uri (pypi-uri "ufoLib2" version))
        (sha256
         (base32 "0yx4i8q5rfyqhr2fj70a7z1bp1jv7bdlr64ww9z4nv9ycbda4x9j"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          ;; XXX: PEP 517 manual build copied from python-isort.
-          (replace 'build
-            (lambda _
-              ;; ZIP does not support timestamps before 1980.
-              (setenv "SOURCE_DATE_EPOCH" "315532800")
-              (invoke "python" "-m" "build" "--wheel" "--no-isolation" ".")))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-vv"))))
-          (replace 'install
-            (lambda _
-              (let ((whl (car (find-files "dist" "\\.whl$"))))
-                (invoke "pip" "--no-cache-dir" "--no-input"
-                        "install" "--no-deps" "--prefix" #$output whl)))))))
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pypa-build
-           python-pytest
-           python-setuptools-scm
-           python-wheel))
+     (list python-pytest python-setuptools-scm))
     (propagated-inputs (list python-attrs python-fonttools-full))
     (home-page "https://github.com/fonttools/ufoLib2")
     (synopsis "Unified Font Object (UFO) font processing library")

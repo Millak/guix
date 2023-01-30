@@ -166,8 +166,7 @@ link-time.  New implementations can be added as well.")
                   ;; https://github.com/hyperledger/iroha/commit/4dc710d2e9a067af866771318f673c7392797e48
                   ;; Backport unversioned fmt dependency, remove next update:
                   (substitute* "libs/logger/logger.hpp"
-                    (("fmt::v5") "fmt"))
-                  #t))))
+                    (("fmt::v5") "fmt"))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -179,7 +178,11 @@ link-time.  New implementations can be added as well.")
        #:test-target "."))
     ;; https://github.com/hyperledger/iroha/blob/master/vcpkg/VCPKG_DEPS_LIST
     (native-inputs
-     (list fmt googletest rapidjson rxcpp spdlog))
+     (list fmt-8
+           googletest
+           rapidjson
+           rxcpp
+           spdlog))
     (inputs
      (list boost
            gflags

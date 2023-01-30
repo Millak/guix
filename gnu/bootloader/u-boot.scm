@@ -3,6 +3,7 @@
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
             u-boot-puma-rk3399-bootloader
             u-boot-rock64-rk3328-bootloader
             u-boot-rockpro64-rk3399-bootloader
+            u-boot-ts7970-q-2g-1000mhz-c-bootloader
             u-boot-wandboard-bootloader))
 
 (define install-u-boot
@@ -126,6 +128,12 @@
                               image (* 16384 512)))))
 
 (define install-pinebook-pro-rk3399-u-boot install-rockpro64-rk3399-u-boot)
+
+(define install-u-boot-ts7970-q-2g-1000mhz-c-u-boot
+  #~(lambda (bootloader device mount-point)
+      (let ((u-boot.imx (string-append bootloader "/libexec/u-boot.imx"))
+            (install-dir (string-append mount-point "/boot")))
+        (install-file u-boot.imx install-dir))))
 
 
 
@@ -255,3 +263,13 @@
    (inherit u-boot-bootloader)
    (package u-boot-pinebook-pro-rk3399)
    (disk-image-installer install-pinebook-pro-rk3399-u-boot)))
+
+(define u-boot-ts7970-q-2g-1000mhz-c-bootloader
+  ;; This bootloader doesn't really need to be installed, as it is read from
+  ;; an SPI memory chip, not the SD card.  It is copied to /boot/u-boot.imx
+  ;; for convenience and should be manually flashed at the U-Boot prompt.
+  (bootloader
+   (inherit u-boot-bootloader)
+   (package u-boot-ts7970-q-2g-1000mhz-c)
+   (installer install-u-boot-ts7970-q-2g-1000mhz-c-u-boot)
+   (disk-image-installer #f)))

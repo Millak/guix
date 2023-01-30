@@ -1,0 +1,14 @@
+Boolean pixel values are no longer supported in VTK 9.2.
+
+diff --git a/addons/vtk/test_vtkimage.cc b/addons/vtk/test_vtkimage.cc
+--- a/addons/vtk/test_vtkimage.cc
++++ b/addons/vtk/test_vtkimage.cc
+@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE_TEMPLATE( test_mhd_write_read, T, type_mhd )
+        unlink(zrawfilename.str().c_str());
+ }
+ 
+-#if  VTK_MAJOR_VERSION >= 7
++#if  VTK_MAJOR_VERSION >= 7 && VTK_MAJOR_VERSION < 9
+ BOOST_AUTO_TEST_CASE( test_simple_write_read_bool )
+ {
+        C3DBounds size(2, 3, 4);

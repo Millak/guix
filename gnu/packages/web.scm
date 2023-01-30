@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013 Aljosha Papsch <misc@rpapsch.de>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Raoul Jean Pierre Bonnal <ilpuccio.febo@gmail.com>
@@ -13,13 +13,13 @@
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2016 Ben Woodcroft <donttrustben@gmail.com>
-;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2016, 2023 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 Bake Timmons <b3timmons@speedymail.org>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
-;;; Copyright © 2017, 2018, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2017-2018, 2020-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2017 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Petter <petter@mykolab.ch>
 ;;; Copyright © 2017, 2021 Pierre Langlois <pierre.langlois@gmx.com>
@@ -58,6 +58,9 @@
 ;;; Copyright © 2022 cage <cage-dev@twistfold.it>
 ;;; Copyright © 2022 Pradana Aumars <paumars@courrier.dev>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -146,6 +149,7 @@
   #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde)
   #:use-module (gnu packages kerberos)
+  #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libidn)
   #:use-module (gnu packages libunistring)
@@ -188,6 +192,7 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages vim)
   #:use-module (gnu packages wget)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xml)
   #:use-module ((srfi srfi-1) #:select (delete-duplicates)))
 
@@ -383,14 +388,14 @@ the same, being completely separated from the Internet.")
     ;; Track the ‘mainline’ branch.  Upstream considers it more reliable than
     ;; ’stable’ and recommends that “in general you deploy the NGINX mainline
     ;; branch at all times” (https://www.nginx.com/blog/nginx-1-6-1-7-released/)
-    (version "1.23.1")
+    (version "1.23.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nginx.org/download/nginx-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1qpibmnz5kjkd5z61abism1qn5z6dbrz2cjmlivr8fryqb8ipvjy"))))
+                "0m5s8a04jlpv6qhk09sfqbj4rxj38g6923w12j5y3ymrvf3mgjvm"))))
     (build-system gnu-build-system)
     (inputs (list libxml2 libxslt openssl pcre zlib))
     (arguments
@@ -407,6 +412,8 @@ the same, being completely separated from the Internet.")
               "--with-pcre-jit"
               "--with-debug"
               "--with-stream"
+              "--with-stream_ssl_module"
+              "--with-http_stub_status_module"
               ;; Even when not cross-building, we pass the
               ;; --crossbuild option to avoid customizing for the
               ;; kernel version on the build machine.
@@ -478,9 +485,9 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
 
 (define-public nginx-documentation
   ;; This documentation should be relevant for the current nginx package.
-  (let ((version "1.23.1")
-        (revision 2869)
-        (changeset "9383e934e546"))
+  (let ((version "1.23.3")
+        (revision 2916)
+        (changeset "178f55cf631a"))
     (package
       (name "nginx-documentation")
       (version (simple-format #f "~A-~A-~A" version revision changeset))
@@ -492,7 +499,7 @@ and as a proxy to reduce the load on back-end HTTP or mail servers.")
                (file-name (string-append name "-" version))
                (sha256
                 (base32
-                 "0zq89cjj8vpxaanx378yaypvmcxk0my8c773acx545c5p75ghvbk"))))
+                 "0b03dnniwm3p3gd76vqs6lj2z4blqmb7y4lhn9vg7xjz0yqgzvn2"))))
       (build-system gnu-build-system)
       (arguments
        '(#:tests? #f                    ; no test suite
@@ -831,10 +838,61 @@ on-demand streaming from a file on disk and pulling from an upstream RTMP
 stream.  Remote control of the module is possible over HTTP.")
     (license license:bsd-2)))
 
+(define-public nginx-module-vts
+  (package
+    (inherit nginx)
+    (name "nginx-module-vts")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/vozlt/nginx-module-vts")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "017298vpp1ra16xyfdbsczdrz0b0y67x6adkzcc98y6gb3kg52n7"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("nginx-sources" ,(package-source nginx))
+       ,@(package-inputs nginx)))
+    (arguments
+     (substitute-keyword-arguments
+         `(#:make-flags '("modules") ;Only build this module not all of nginx.
+           ,@(package-arguments nginx))
+       ((#:configure-flags flags)
+        #~(cons "--add-dynamic-module=." #$flags))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'unpack-nginx-sources
+              (lambda _
+                (begin
+                  ;; The nginx source code is part of the module’s source.
+                  (format #t "decompressing nginx source code~%")
+                  (invoke "tar" "xvf" #$(this-package-input "nginx-sources")
+                          ;; This package's LICENSE file would be
+                          ;; overwritten with the one from nginx when
+                          ;; unpacking the nginx source, so rename the nginx
+                          ;; one when unpacking.
+                          "--transform=s,/LICENSE$,/LICENSE.nginx,"
+                          "--strip-components=1"))))
+            (replace 'install
+              (lambda _
+                (let ((modules-dir (string-append #$output
+                                                  "/etc/nginx/modules")))
+                  (install-file "objs/ngx_http_vhost_traffic_status_module.so" modules-dir))))
+            (delete 'fix-root-dirs)
+            (delete 'install-man-page)))))
+    (home-page "https://github.com/vozlt/nginx-module-vts")
+    (synopsis "NGINX module for monitoring virtual host traffic status")
+    (description "This NGINX module provides access to virtual host status information,
+similar to live activity monitoring provided with NGINX plus.")
+    (license license:bsd-2)))
+
 (define-public lighttpd
   (package
     (name "lighttpd")
-    (version "1.4.65")
+    (version "1.4.68")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.lighttpd.net/lighttpd/"
@@ -842,7 +900,7 @@ stream.  Remote control of the module is possible over HTTP.")
                                   "lighttpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1gi84fsc7x4d7r5vpg4pcwfk6j80wxvv64m94d041g4zca5ac3xz"))))
+                "111kb3lkcvbxw46dnsrgx9pfbdpzb807ikkn9pd1lgmnaap3fvz5"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -1389,15 +1447,12 @@ current version of any major web browser.")
                   (delete-file-recursively "bin/jsonchecker")))))
     (build-system cmake-build-system)
     (arguments
-     (if (string-prefix? "aarch64" (or (%current-target-system)
-                                       (%current-system)))
-         '(#:phases
-           (modify-phases %standard-phases
-             (add-after 'unpack 'patch-aarch-march-detection
-               (lambda _
-                 (substitute* (find-files "." "^CMakeLists\\.txt$")
-                   (("native") "armv8-a"))))))
-         '()))
+     '(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-march=native
+           (lambda _
+             (substitute* "CMakeLists.txt"
+               (("-m[^-]*=native") "")))))))
     (home-page "https://github.com/Tencent/rapidjson")
     (synopsis "JSON parser/generator for C++ with both SAX/DOM style API")
     (description
@@ -1405,9 +1460,9 @@ current version of any major web browser.")
 style API.")
     (license license:expat)))
 
-(define-public libyajl
+(define-public yajl
   (package
-    (name "libyajl")
+    (name "yajl")
     (version "2.1.0")
     (source (origin
               (method git-fetch)
@@ -1425,14 +1480,16 @@ style API.")
          (add-after 'patch-source-shebangs 'patch-tests
            (lambda _
              (substitute* "test/parsing/run_tests.sh"
-               (("`which echo`") (which "echo")))
-             #t)))))
+               (("`which echo`") (which "echo"))))))))
     (home-page "https://lloyd.github.io/yajl/")
-    (synopsis "C library for parsing JSON")
+    (synopsis "C library for parsing and generating JSON")
     (description
-     "Yet Another JSON Library (YAJL) is a small event-driven (SAX-style) JSON
-parser written in ANSI C and a small validating JSON generator.")
+     "@acronym{YAJL, Yet Another JSON Library} is a small event-driven
+(SAX-style) JSON parser and validating generator written in ANSI C.")
     (license license:isc)))
+
+(define-public libyajl
+  (deprecated-package "libyajl" yajl))
 
 (define-public libwebsockets
   (package
@@ -4666,8 +4723,8 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                    license:freebsd-doc)))) ; documentation
 
 (define-public guix-data-service
-  (let ((commit "ee73d2cc9857533020535eb8e1ad856e04fb5152")
-        (revision "33"))
+  (let ((commit "7b69611755ac3b9132710d83a1139b4c5606578d")
+        (revision "36"))
     (package
       (name "guix-data-service")
       (version (string-append "0.0.1-" revision "." (string-take commit 7)))
@@ -4679,7 +4736,7 @@ CDF, Atom 0.3, and Atom 1.0 feeds.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0rmx728md50nlka61f4gma58avplyaf32k71hazprijdqii2vkgf"))))
+                  "0lmvmalgfbc6q80f8dwqikdd5kna2vl4jlmf2li206hmcq2hzh6p"))))
       (build-system gnu-build-system)
       (arguments
        '(#:modules ((guix build utils)
@@ -4906,6 +4963,69 @@ little effort, and the program to do so is often shorter and simpler than
 you'd expect.")
     (license (list license:expat license:cc-by3.0))))
 
+(define-public go-github-com-itchyny-timefmt-go
+  (package
+    (name "go-github-com-itchyny-timefmt-go")
+    (version "0.1.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/itchyny/timefmt-go")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0z5z8hy5lbjqdxp544mf238i77n7pf7bv3psgr5gffh0630dsyag"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:import-path "github.com/itchyny/timefmt-go"))
+    (home-page "https://github.com/itchyny/timefmt-go")
+    (synopsis "Efficient time formatting library (strftime, strptime) for Golang")
+    (description
+     "@code{timefmt-go} is a Go language package for formatting and parsing date
+time strings.")
+    (license license:expat)))
+
+(define-public go-github-com-itchyny-gojq
+  (package
+    (name "go-github-com-itchyny-gojq")
+    (version "0.12.11")
+    (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/itchyny/gojq")
+               (commit (string-append "v" version))))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1dqmnxnipi497nx9x10ifack09w41579svryss5q2w5wxy0pg764"))))
+    (build-system go-build-system)
+    (inputs
+     (list go-github-com-google-go-cmp-cmp
+           go-github-com-itchyny-timefmt-go
+           go-github-com-mattn-go-isatty
+           go-github-com-mattn-go-runewidth
+           go-gopkg-in-yaml-v3))
+    (arguments
+     (list
+      #:import-path "github.com/itchyny/gojq/cmd/gojq"
+      #:unpack-path "github.com/itchyny/gojq"))
+    (home-page "https://github.com/itchyny/gojq")
+    (synopsis "Pure Go implementation of jq")
+    (description
+     "@command{gojq} is an Go implementation and library of the jq JSON
+processor.")
+    (license license:expat)))
+
+(define-public gojq
+  (package
+    (inherit go-github-com-itchyny-gojq)
+    (name "gojq")
+    (arguments
+     (ensure-keyword-arguments
+      (package-arguments go-github-com-itchyny-gojq)
+      (list #:install-source? #f)))))
+
 (define-public pup
   (let ((revision "1")
         (commit "681d7bb639334bf485476f5872c5bdab10931f9a"))
@@ -4968,15 +5088,16 @@ playback of HTTP request/response traces.")
 (define-public woof
   (package
     (name "woof")
-    (version "2012-05-31")
+    (version "20220202")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://www.home.unix-ag.org/simon/woof-"
-                    version ".py"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/simon-budig/woof")
+                    (commit (string-append name "-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0wjmjhpg6xlid33yi59j47q2qadz20sijrqsjahj30vngz856hyq"))))
+                "0rm8xs5dhy42jhjpx30vwnvps2rnmrh8scfr89j6dnihc6mpjkmn"))))
     (build-system trivial-build-system)
     (arguments
      '(#:modules ((guix build utils))
@@ -4989,11 +5110,10 @@ playback of HTTP request/response traces.")
                 (python (assoc-ref %build-inputs "python")))
            (mkdir-p bin)
            (with-directory-excursion bin
-             (copy-file source "woof")
-             (patch-shebang "woof" (list (string-append python "/bin")))
-             (chmod "woof" #o555))
+             (copy-file (in-vicinity source "woof") "woof")
+             (patch-shebang "woof" (list (string-append python "/bin"))))
            #t))))
-    (inputs `(("python" ,python-2)))
+    (inputs (list python))
     (home-page "http://www.home.unix-ag.org/simon/woof.html")
     (synopsis "Single file web server")
     (description "Woof (Web Offer One File) is a small simple web server that
@@ -5172,28 +5292,34 @@ NetSurf project.")
                          (find-files bin))
                #t))))))
     (native-inputs
-     `(("which" ,which)
-       ("gettext" ,gettext-minimal)
-       ("subversion" ,subversion)
-       ("git" ,git)
-       ("bazaar" ,bazaar)
-       ("cvs" ,cvs)
-       ("mercurial" ,mercurial)))
+     (list which
+           gettext-minimal
+           subversion
+           git
+           bazaar
+           cvs
+           mercurial))
     (inputs
-     `(("python" ,python-wrapper)
-       ("perl-authen-passphrase" ,perl-authen-passphrase)
-       ("perl-cgi-simple" ,perl-cgi-simple)
-       ("perl-db-file" ,perl-db-file)
-       ("perl-file-mimeinfo" ,perl-file-mimeinfo)
-       ("perl-html-tagset" ,perl-html-tagset)
-       ("perl-image-magick" ,perl-image-magick)
-       ("perl-ipc-run" ,perl-ipc-run)
-       ("perl-lwpx-paranoidagent" ,perl-lwpx-paranoidagent)
-       ("perl-xml-feed" ,perl-xml-feed)
-       ("perl-xml-sax" ,perl-xml-sax)
-       ("perl-xml-twig" ,perl-xml-twig)
-       ("perl-yaml-tiny" ,perl-yaml-tiny)
-       ("po4a" ,po4a)))
+     (list python-wrapper
+           perl-authen-passphrase
+           perl-cgi-simple
+           perl-db-file
+           perl-file-mimeinfo
+           perl-html-tagset
+           perl-image-magick
+           perl-ipc-run
+           perl-lwpx-paranoidagent
+           perl-xml-feed
+           perl-xml-sax
+           perl-xml-twig
+           perl-yaml-tiny
+
+           ;; Ikiwiki loads po4a as a library, and thus needs the po4a dependencies
+           ;; available.  Duplicate them here.
+           ;; XXX: It would be ideal to hard code these in po4a somehow.
+           perl-syntax-keyword-try
+           perl-xs-parse-keyword
+           po4a))
     (propagated-inputs
      (list perl-cgi-formbuilder
            perl-cgi-session
@@ -5857,13 +5983,13 @@ deployments.")
   (package
     (name "varnish")
     (home-page "https://varnish-cache.org/")
-    (version "7.1.1")
+    (version "7.2.1")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "_downloads/varnish-" version ".tgz"))
               (sha256
                (base32
-                "14512fjjzwini3fics6sib9y83s45vlrpncamixqmmg7j0jvxbrc"))))
+                "0h590kr7rhp57a4kfx6apyvqk60w78qdjwpr6g2ikv5840bpv4sd"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath=" %output "/lib")
@@ -6250,19 +6376,19 @@ inspired by Ruby's @code{fakeweb}.")
 (define-public jo
   (package
     (name "jo")
-    (version "1.6")
+    (version "1.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/jpmens/jo/releases/download/"
                            version "/jo-" version ".tar.gz"))
        (sha256
-        (base32 "18fizi0368jgajrmy13xpdiks76jwch8lhx1d1sagmd63cpmj5gb"))))
+        (base32 "17y73657z5v792ik3plcvk9f5g5h2yawv6afahhkq42159pwv581"))))
     (build-system gnu-build-system)
     (home-page "https://github.com/jpmens/jo")
     (synopsis "Output JSON from a shell")
-    (description "jo is a command-line utility to create JSON objects or
-arrays.  It creates a JSON string on stdout from words provided as
+    (description "@command{jo} is a command-line utility to create JSON objects
+or arrays.  It creates a JSON string on stdout from words provided as
 command-line arguments or read from stdin.")
     (license (list license:gpl2+
                    license:expat)))) ; json.c, json.h
@@ -7410,6 +7536,73 @@ object.  It's meant as a replacement for @code{HTML::Lint}, which is written
 in Perl but is not nearly as capable as @code{HTML::Tidy}.")
     (license license:artistic2.0)))
 
+(define-public gophernicus
+  ;; Contains some unreleased fixes.
+  (let ((commit "da3390089c2a856db1ab2e3bd9751b9a9101a33a")
+        (revision "0"))
+    (package
+      (name "gophernicus")
+      (version (git-version "3.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/gophernicus/gophernicus")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0a7kpymwqcsqzszdxvcqppbg61bpyg9f7raj783pldm4kf2wjyij"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f                ; No tests
+             #:configure-flags
+             ;; Listener and hostname used only in configuration files, which
+             ;; we don't install.
+             ;; This is what's done in the release.sh script.
+             #~(list "--listener=none" "--hostname=HOSTNAME")
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-version
+                   (lambda _
+                     (substitute* "Makefile.in"
+                       (("^(VERSION += ).*" _ prefix)
+                        (string-append prefix #$version "\n")))
+                     ;; This is done in the release.sh script.
+                     (substitute* "README.md"
+                       (("^(This release: Version )DEVEL\\b.*" _ prefix)
+                        (string-append prefix #$version "\n"))
+                       (("^NOTE: The master branch is rolling Development\\b.*")
+                        ""))))
+                 (replace 'configure
+                   ;; The configure script is hand-written, not from GNU autotools.
+                   (lambda* (#:key configure-flags #:allow-other-keys)
+                     (setenv "CC" #$(cc-for-target))
+                     (setenv "HOSTCC" "gcc")
+                     (apply invoke "./configure"
+                            (string-append "--prefix=" #$output)
+                            configure-flags))))))
+      ;; TODO: Make configure script find libwrap.
+      ;;(inputs
+      ;; (list tcp-wrappers))
+      (home-page "https://gophernicus.org/")
+      (synopsis "Gopher protocol server")
+      (description
+       "Gophernicus is a Gopher protocol server.  Its features include:
+@itemize
+@item written with security in mind;
+@item automatically generated Gopher menus;
+@item gophertags for virtually renaming directories;
+@item personal gopherspaces, located in @file{~/public_gopher/};
+@item virtual hosting;
+@item CGI support;
+@item output filtering and PHP support;
+@item charset support and conversions;
+@item selector rewriting;
+@item session tracking and statistics;
+@item TLS/SSL and proxy support.
+@end itemize")
+      (license license:bsd-2))))
+
 (define-public geomyidae
   (package
     (name "geomyidae")
@@ -7606,7 +7799,7 @@ compressed JSON header blocks.
 (define-public hpcguix-web
   (package
     (name "hpcguix-web")
-    (version "0.2.0")
+    (version "0.3.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -7615,7 +7808,7 @@ compressed JSON header blocks.
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1l856d1vr63ns1sp9fm6v97p71mx00769k6lwzqzppsb9clksnwp"))))
+                "1g1sd5d6fhrblqk3rc8hzkk1sxyiilbb45kdgbrfg7ccd1sbic30"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -7640,9 +7833,11 @@ compressed JSON header blocks.
                     (bs       (assoc-ref inputs "guile-bytestructures"))
                     (json     (assoc-ref inputs "guile-json"))
                     (zlib     (assoc-ref inputs "guile-zlib"))
+                    (syntax   (assoc-ref inputs "guile-syntax-highlight"))
                     (guile-cm (assoc-ref inputs
                                          "guile-commonmark"))
-                    (deps (list guile gcrypt git bs zlib guile-cm guix json))
+                    (deps (list guile gcrypt git bs zlib guile-cm
+                                syntax guix json))
                     (effective
                      (read-line
                       (open-pipe* OPEN_READ
@@ -7664,18 +7859,16 @@ compressed JSON header blocks.
                  `("GUILE_LOAD_PATH" ":" prefix (,path))
                  `("GUILE_LOAD_COMPILED_PATH" ":" prefix (,gopath)))))))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("uglify-js" ,uglify-js)
-       ("pkg-config" ,pkg-config)
-       ("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))))
+     (list autoconf automake uglify-js pkg-config
+           (lookup-package-native-input guix "guile")))
     (inputs
-     `(("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))
-       ("guix" ,guix)
-       ("guile-zlib" ,guile-zlib)
-       ("guile-commonmark" ,guile-commonmark)
-       ("guile-json" ,guile-json-4)
-       ("bash-minimal" ,bash-minimal)))
+     (list (lookup-package-native-input guix "guile")
+           guix
+           guile-zlib
+           guile-commonmark
+           guile-json-4
+           guile-syntax-highlight
+           bash-minimal))
     (home-page "https://github.com/UMCUGenetics/hpcguix-web")
     (synopsis "Web interface for cluster deployments of Guix")
     (description "Hpcguix-web provides a web interface to the list of packages
@@ -7739,6 +7932,46 @@ HTTrack is fully configurable, and has an integrated help system.")
 in an interactive command-line interface that lets you compose and update
 bookmarks directly.  It can also present them in a web interface with
 @command{bukuserver}.")
+    (license license:gpl3+)))
+
+(define-public buku-run
+  (package
+    (name "buku-run")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/carnager/buku_run")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1zyjjf3b8g3dnymcrg683rbnc6qrvx8ravfm833n7kjrqky3bczn"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:make-flags
+           #~(list (string-append "DESTDIR=" #$output)
+                   "PREFIX=")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (add-after 'unpack 'fixpath
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* "buku_run"
+                     ((" \\<(rofi)\\>" all cmd)
+                      (string-append " " (search-input-file inputs "/bin/rofi")))
+                     (("\\<(buku)\\> " all cmd)
+                      (string-append (search-input-file inputs "/bin/buku") " "))
+                     (("\\<(awk|gawk)\\>" cmd)
+                      (search-input-file inputs "/bin/awk"))
+                     (("/etc/buku_run.config" path)
+                      (string-append #$output path))))))))
+    (inputs (list buku rofi))
+    (home-page "https://github.com/carnager/buku_run")
+    (synopsis "rofi frontend for buku bookmarks manager")
+    (description
+     "This package provides a rofi frontend for the buku bookmark manager.")
     (license license:gpl3+)))
 
 (define-public anonip
@@ -7889,7 +8122,7 @@ solution for any project's interface needs:
 (define-public gmid
   (package
     (name "gmid")
-    (version "1.8.4")
+    (version "1.8.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -7897,7 +8130,7 @@ solution for any project's interface needs:
                     version "/gmid-" version ".tar.gz"))
               (sha256
                (base32
-                "0bwxr08n6zzhc70a71jhgr9zr1246d1lxf2pknndxwn2pz1xxv5b"))))
+                "1j0bgnixffz2lv5xgp5c88hl146c1vyk1988gyd70mhgyl9700jy"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "regress"
@@ -7991,6 +8224,48 @@ concurrency, and return status.")
     (description "gmnisrv is a simple Gemini protocol server written in C.")
     (license (list license:gpl3+
                    license:bsd-3)))) ;; for ini.c and ini.h
+
+(define-public vger
+  (package
+    (name "vger")
+    (version "2.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://tildegit.org/solene/vger")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1jiwzn5dqadwq4ih3vzld66yq23gqsf7281sllh29bf6kmf9dz2k"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:test-target "test"
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "PREFIX=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-makefile
+                 (lambda _
+                   (substitute* "Makefile"
+                     (("\\binstall -o root -g wheel vger ")
+                      "install vger ")
+                     (("\\binstall -o root -g wheel vger\\.8 ")
+                      "install -m 644 vger.8 "))))
+               (add-before 'install 'make-install-dirs
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin"))
+                   (mkdir-p (string-append #$output "/man/man8")))))))
+    (inputs
+     (list libbsd))
+    (home-page "https://tildegit.org/solene/vger")
+    (synopsis "Gemini protocol server")
+    (description "Vger is a Gemini protocol server that supports chroots,
+virtualhosts, CGI, default language choice, redirections and MIME-type
+detection.  It delegates TLS support to an external daemon, for example
+@command{stunnel} on @command{inetd}.")
+    (license license:bsd-2)))
 
 (define-public libzim
   (package
@@ -8219,6 +8494,33 @@ provided by a TLS reverse proxy (e.g. tlstunnel, hitch or stunnel).")
       ;; "cpe:2.3:a:comelz:quark" package.  The proper fix is for (guix cve)
       ;; to account for "vendor names".
       (properties '((lint-hidden-cve . ("CVE-2019-15520")))))))
+
+(define-public go-webring
+  (let ((commit "6786a27b0c57df75323217453369c83a4d9f4dea")
+        (revision "0"))
+    (package
+      (name "go-webring")
+      (version (git-version "20220426" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.sr.ht/~amolith/go-webring")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1xra0mapdmda8n0z6zsgcqppdzvxc47p0fahsdyig5qmpk89ar8l"))))
+      (build-system go-build-system)
+      (arguments
+       (list #:import-path "git.sr.ht/~amolith/go-webring"
+             #:install-source? #f))
+      (inputs (list go-github-com-spf13-pflag))
+      (home-page "https://git.sr.ht/~amolith/go-webring")
+      (synopsis "Simple webring implementation")
+      (description
+"@code{go--webring} provides a simple webring implementation as used by
+the Fediring.")
+      (license (list license:cc0 license:bsd-2)))))
 
 (define-public archivebox
   (package

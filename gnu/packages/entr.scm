@@ -5,6 +5,7 @@
 ;;; Copyright © 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -34,14 +35,14 @@
 (define-public entr
   (package
     (name "entr")
-    (version "4.9")
+    (version "5.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://entrproject.org/code/entr-"
+              (uri (string-append "https://eradman.com/entrproject/code/entr-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "18h58k69f0qmqkknbcnhm5dz7mv5gr2blcq88qr62vz4zg9a8mp2"))))
+                "1063b33bqggyqd0h7cvcvznpgiy9s2zqkdsc1q622xdh8sfk0zi3"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -67,7 +68,7 @@
              #t)))))
     (inputs
      (list bash coreutils ncurses))
-    (home-page "http://entrproject.org/")
+    (home-page "https://eradman.com/entrproject/")
     (synopsis "Run arbitrary commands when files change")
     (description
      "entr is a zero-configuration tool with no external build or run-time

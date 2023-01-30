@@ -6,6 +6,7 @@
 ;;; Copyright © 2020 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -27,18 +28,27 @@
   #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages c)
+  #:use-module (gnu packages cpp)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages flex)
+  #:use-module (gnu packages fonts)
   #:use-module (gnu packages fontutils)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
+  #:use-module (gnu packages gtk)
   #:use-module (gnu packages gv)
   #:use-module (gnu packages image)
   #:use-module (gnu packages maths)
@@ -46,12 +56,18 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages serialization)
   #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages sqlite)
+  #:use-module (gnu packages stb)
+  #:use-module (gnu packages tex)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 
@@ -341,68 +357,66 @@ stored with user-specified precision.")
 (define-public gromacs
   (package
     (name "gromacs")
-    (version "2020.2")
+    (version "2022.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.gromacs.org/pub/gromacs/gromacs-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1wyjgcdl30wy4hy6jvi9lkq53bqs9fgfq6fri52dhnb3c76y8rbl"))
+                "15vjwasxjq0h18dmzacjkdim51zrvr0ni42hbc30557j5xhbw4f5"))
               ;; Our version of tinyxml2 is far newer than the bundled one and
               ;; require fixing `testutils' code. See patch header for more info
               (patches (search-patches "gromacs-tinyxml2.patch"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:configure-flags
-       (list "-DGMX_DEVELOPER_BUILD=on" ; Needed to run tests
-             ;; Unbundling
-             "-DGMX_USE_LMFIT=EXTERNAL"
-             "-DGMX_BUILD_OWN_FFTW=off"
-             "-DGMX_EXTERNAL_BLAS=on"
-             "-DGMX_EXTERNAL_LAPACK=on"
-             "-DGMX_EXTERNAL_TNG=on"
-             "-DGMX_EXTERNAL_ZLIB=on"
-             "-DGMX_EXTERNAL_TINYXML2=on"
-             (string-append "-DTinyXML2_DIR="
-                            (assoc-ref %build-inputs "tinyxml2"))
-             ;; Workaround for cmake/FindSphinx.cmake version parsing that does
-             ;; not understand the guix-wrapped `sphinx-build --version' answer
-             (string-append "-DSPHINX_EXECUTABLE_VERSION="
-                            ,(package-version python-sphinx)))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fixes
-           (lambda* (#:key inputs #:allow-other-keys)
-             ;; Still bundled: part of gromacs, source behind registration
-             ;; but free software anyways
-             ;;(delete-file-recursively "src/external/vmd_molfile")
-             ;; Still bundled: threads-based OpenMPI-compatible fallback
-             ;; designed to be bundled like that
-             ;;(delete-file-recursively "src/external/thread_mpi")
-             ;; Unbundling
-             (delete-file-recursively "src/external/lmfit")
-             (delete-file-recursively "src/external/clFFT")
-             (delete-file-recursively "src/external/fftpack")
-             (delete-file-recursively "src/external/build-fftw")
-             (delete-file-recursively "src/external/tng_io")
-             (delete-file-recursively "src/external/tinyxml2")
-             (delete-file-recursively "src/external/googletest")
-             (copy-recursively (assoc-ref inputs "googletest-source")
-                               "src/external/googletest")
-             ;; This test warns about the build host hardware, disable
-             (substitute* "src/gromacs/hardware/tests/hardwaretopology.cpp"
-               (("TEST\\(HardwareTopologyTest, HwlocExecute\\)")
-                "void __guix_disabled()"))
-             #t)))))
+     (list #:configure-flags
+           #~(list "-DGMX_DEVELOPER_BUILD=on"     ; Needed to run tests
+                   ;; Unbundling
+                   "-DGMX_USE_LMFIT=EXTERNAL"
+                   "-DGMX_BUILD_OWN_FFTW=off"
+                   "-DGMX_EXTERNAL_BLAS=on"
+                   "-DGMX_EXTERNAL_LAPACK=on"
+                   "-DGMX_EXTERNAL_TNG=on"
+                   "-DGMX_EXTERNAL_ZLIB=on"
+                   "-DGMX_EXTERNAL_TINYXML2=on"
+                   (string-append "-DTinyXML2_DIR="
+                                  #$(this-package-input "tinyxml2"))
+                   ;; Workaround for cmake/FindSphinx.cmake version parsing that does
+                   ;; not understand the guix-wrapped `sphinx-build --version' answer
+                   (string-append "-DSPHINX_EXECUTABLE_VERSION="
+                                  #$(package-version python-sphinx)))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fixes
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   ;; Still bundled: part of gromacs, source behind registration
+                   ;; but free software anyways
+                   ;;(delete-file-recursively "src/external/vmd_molfile")
+                   ;; Still bundled: threads-based OpenMPI-compatible fallback
+                   ;; designed to be bundled like that
+                   ;;(delete-file-recursively "src/external/thread_mpi")
+                   ;; Unbundling
+                   (delete-file-recursively "src/external/lmfit")
+                   (delete-file-recursively "src/external/clFFT")
+                   (delete-file-recursively "src/external/fftpack")
+                   (delete-file-recursively "src/external/build-fftw")
+                   (delete-file-recursively "src/external/tng_io")
+                   (delete-file-recursively "src/external/tinyxml2")
+                   (delete-file-recursively "src/external/googletest")
+                   (copy-recursively #$(package-source googletest)
+                                     "src/external/googletest")
+                   ;; This test warns about the build host hardware, disable
+                   (substitute* "src/gromacs/hardware/tests/hardwaretopology.cpp"
+                     (("TEST\\(HardwareTopologyTest, HwlocExecute\\)")
+                      "void __guix_disabled()")))))))
     (native-inputs
-     `(("doxygen" ,doxygen)
-       ("googletest-source" ,(package-source googletest))
-       ("graphviz" ,graphviz)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)
-       ("python-pygments" ,python-pygments)
-       ("python-sphinx" ,python-sphinx)))
+     (list doxygen
+           graphviz
+           pkg-config
+           python
+           python-pygments
+           python-sphinx))
     (inputs
      (list fftwf
            `(,hwloc-2 "lib")
@@ -421,7 +435,8 @@ interactions, but since GROMACS is extremely fast at calculating the nonbonded
 interactions (that usually dominate simulations) many groups are also using it
 for research on non-biological systems, e.g. polymers.  GROMACS supports all the
 usual algorithms you expect from a modern molecular dynamics implementation.")
-    (license license:lgpl2.1+)))
+    (license license:lgpl2.1+)
+    (properties '((tunable? . #t)))))
 
 (define-public openbabel
   (package
@@ -565,4 +580,652 @@ symmetries written in C.  Spglib can be used to:
     (description "PyMOL is a capable molecular viewer and renderer.  It can be
 used to prepare publication-quality figures, to share interactive results with
 your colleagues, or to generate pre-rendered animations.")
+    (license license:bsd-3)))
+
+(define-public gemmi
+  (package
+    (name "gemmi")
+    (version "0.5.7")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/project-gemmi/gemmi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00km5q726bslrw7xbfwb3f3mrsk19qbimfnl3hvr4wi1y3z8i18a"))
+              (patches
+               (search-patches "gemmi-fix-sajson-types.patch"
+                               "gemmi-fix-pegtl-usage.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (delete-file-recursively "include/gemmi/third_party")
+                  (delete-file-recursively "third_party")))))
+    (outputs '("out" "bin" "python"))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (site-packages)))
+      #:imported-modules (append %cmake-build-system-modules
+                                 '((guix build python-build-system)))
+      #:configure-flags
+      #~(list "-DUSE_PYTHON=ON"
+              (string-append "-DPYTHON_INSTALL_DIR="
+                             (site-packages %build-inputs %outputs)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-includes
+            (lambda _
+              (substitute* (list "include/gemmi/sprintf.hpp"
+                                 "include/gemmi/dirwalk.hpp"
+                                 "include/gemmi/cif.hpp"
+                                 "include/gemmi/json.hpp"
+                                 "python/gemmi.cpp"
+                                 "include/gemmi/atof.hpp"
+                                 "include/gemmi/numb.hpp"
+                                 "include/gemmi/fourier.hpp")
+                (("<stb/stb_sprintf.h>") "<stb_sprintf.h>")
+                (("\"third_party/tinydir.h\"") "<tinydir.h>")
+                (("\"third_party/tao/pegtl.hpp\"") "<tao/pegtl.hpp>")
+                (("\"third_party/sajson.h\"") "<sajson.h>")
+                (("\"gemmi/third_party/tao/pegtl/parse_error.hpp\"")
+                 "<tao/pegtl/parse_error.hpp>")
+                (("\"third_party/fast_float.h\"")
+                 "<fast_float/fast_float.h>")
+                (("\"third_party/pocketfft_hdronly.h\"")
+                 "<pocketfft_hdronly.h>"))))
+          (add-after 'unpack 'change-bin-prefix
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("install\\(TARGETS program DESTINATION bin\\)")
+                 (string-append
+                  "install(TARGETS program DESTINATION "
+                  #$output:bin "/bin)")))))
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source"
+                  (setenv "PYTHONPATH" "../build")
+                  (invoke "python3" "-m" "unittest" "discover" "-v"
+                          "-s" "tests"))))))))
+    (inputs (list python zlib))
+    (native-inputs
+     (list fast-float
+           optionparser
+           pegtl
+           pocketfft-cpp
+           pybind11
+           sajson-for-gemmi
+           stb-sprintf
+           tinydir))
+    (home-page "https://gemmi.readthedocs.io/en/latest/")
+    (synopsis "Macromolecular crystallography library and utilities")
+    (description "GEMMI is a C++ library for macromolecular crystallography.
+It can be used for working with
+@enumerate
+@item macromolecular models (content of PDB, PDBx/mmCIF and mmJSON files),
+@item refinement restraints (CIF files),
+@item reflection data (MTZ and mmCIF formats),
+@item data on a 3D grid (electron density maps, masks, MRC/CCP4 format)
+@item crystallographic symmetry.
+@end enumerate")
+    (license license:mpl2.0)))
+
+(define-public freesasa
+  (package
+    (name "freesasa")
+    (version "2.1.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mittinatten/freesasa")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07wdnahf3g355ryaiqvfxd5f4rl54wv8jwxcbn0nia89fqysbv0f"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove C files generated by Flex and Bison
+                  (for-each delete-file
+                            '("src/parser.c" "src/parser.h"
+                              "src/lexer.c" "src/lexer.h"))))))
+    (outputs '("out" "doc"))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "--enable-check"
+              "--enable-parser-generator"
+              "CXXFLAGS=-std=c++17"
+              "--enable-doxygen")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-libc++-linking
+            (lambda _
+              (substitute* "src/Makefile.am"
+                (("-lc\\+\\+") ""))))
+          (add-after 'unpack 'build-shared-library
+            (lambda _
+              (substitute* "src/Makefile.am"
+                (("lib_LIBRARIES") "lib_LTLIBRARIES")
+                (("libfreesasa\\.a") "libfreesasa.la")
+                (("freesasa_LDADD \\+= libfreesasa\\.la" prev)
+                 (string-append prev "\nlibfreesasa_la_LIBADD"
+                                " = -ljson-c ${libxml2_LIBS}\n"))
+                (("_a_SOURCES") "_la_SOURCES"))
+              (substitute* "configure.ac"
+                (("AC_PROG_INSTALL" inst)
+                 (string-append "AM_PROG_LIBTOOL\n" inst)))
+              (substitute* "tests/Makefile.am"
+                (("libfreesasa\\.a") "libfreesasa.la"))))
+          (add-before 'build 'build-lexer-and-parser
+            (lambda _
+              (with-directory-excursion "src"
+                (invoke "make" "lexer.h" "parser.h"))))
+          (add-after 'install 'install-doc
+            (lambda _
+              (copy-recursively
+               "doc/html"
+               (string-append #$output:doc "/share/doc/"
+                              #$name "-" #$version)))))))
+    (inputs (list gemmi json-c libxml2))
+    (native-inputs
+     (list autoconf
+           automake
+           bison
+           check
+           doxygen
+           fast-float
+           flex
+           libtool
+           pegtl
+           perl
+           pkg-config))
+    (home-page "https://freesasa.github.io/")
+    (synopsis "Calculate the solvent accessible surface area (SASA) of
+molecules")
+    (description "FreeSASA is a command line tool and C-library for
+calculating @acronym{SASAs, solvent accessible surface areas}.  By default Lee
+& Richards' algorithm is used, but Shrake & Rupley's is also available.  Both
+can be parameterized to arbitrary precision, and for high resolution versions
+of the algorithms, the calculations give identical results.")
+    (license license:expat)))
+
+(define-public maeparser
+  (package
+    (name "maeparser")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/schrodinger/maeparser")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yv4y5hn49fhylziigsg922bb244lb57p69r7vg9q899zd3l5b7l"))))
+    (build-system cmake-build-system)
+    (inputs (list boost zlib))
+    (home-page "https://github.com/schrodinger/maeparser")
+    (synopsis "Maestro file parser")
+    (description "maeparser is a parser for Schrodinger Maestro files.")
+    (license license:expat)))
+
+(define-public coordgenlibs
+  (package
+    (name "coordgenlibs")
+    (version "3.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/schrodinger/coordgenlibs/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0d09x3v38i9y184bml020bq7xizdrdwng38qmdxlplzfhqkjdidv"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DCOORDGEN_RIGOROUS_BUILD=OFF"
+              "-DCOORDGEN_USE_MAEPARSER=ON")))
+    (inputs (list boost maeparser))
+    (home-page "https://github.com/schrodinger/coordgenlibs/")
+    (synopsis "2D molecule coordinate generation")
+    (description "@code{coordgenlibs} contains algorithms to generate 2D
+coordinates of molecules including macrocycles and metal complexes.  It has an
+emphasis on quality rather than speed.")
+    (license license:bsd-3)))
+
+(define-public yaehmop
+  (package
+    (name "yaehmop")
+    (version "2022.09.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/greglandrum/yaehmop")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1x0d75m1hgdb411fiv7c5bwq1n4y0swrll0gigh8v5c73kjxrja0"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Separate program
+                  (delete-file-recursively "viewkel")
+                  ;; Remove example output (some are corrupted)
+                  (for-each delete-file (find-files "examples" "\\.Z$"))
+                  ;; Documentation outputs
+                  (for-each delete-file (find-files "docs" "\\.(ps|pdf)$"))
+                  ;; These are transpiled from Fortran to C, but we build the
+                  ;; Fortran code instead
+                  (delete-file-recursively "tightbind/f2c_files")
+                  (with-directory-excursion "tightbind"
+                    (for-each delete-file '("abfns.c"
+                                            "cboris.c"
+                                            "diag.c"
+                                            "lovlap.c")))))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list
+         "-DUSE_BLAS_LAPACK=ON"
+         (string-append "-DPARM_FILE_LOC=" #$output
+                        "/share/" #$name "-" #$version "/eht_parms.dat")
+         "-DBIND_EXE_NAME=yaehmop-bind")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "tightbind")))
+          (add-after 'chdir 'patch-fortran-functions
+            (lambda _
+              (substitute* '("mov.c" "prototypes.h")
+                (("lovlap\\(") "lovlap_(")
+                (("abfns\\(") "abfns_("))))
+          (add-after 'chdir 'patch-cmake
+            (lambda _
+              (substitute* "CMakeLists.txt"
+                (("project\\(yaehmop C\\)") "project(yaehmop C Fortran)")
+                (("abfns.c") "fortran77/abfns.f")
+                (("lovlap.c") "fortran77/lovlap.f")
+                (("(set\\(PARM_FILE_LOC.*)\\)" all init)
+                 (string-append init " CACHE STRING \"\")"))
+                (("add_library\\(yaehmop_eht" lib)
+                 (string-append lib " SHARED "))
+                (("target_link_libraries\\(test_eht \\$\\{LAPACK_LIBRARIES\\}.*"
+                  all)
+                 (string-append all "\ntarget_link_libraries(yaehmop_eht "
+                                "${LAPACK_LIBRARIES})\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              (with-directory-excursion "../docs"
+                (substitute* "bind_manual.tex"
+                  (("\\\\usepackage\\{bindpage\\}")
+                   (string-append
+                    "\\usepackage[left=2cm,right=2cm,top=4cm,bottom=2cm]"
+                    "{geometry}\n"
+                    "\\pdfsuppressptexinfo=-1\n")))
+                (substitute* "Zmat_appendix.tex"
+                  (("file=dihedral\\.eps")
+                   "file=figs/dihedral.eps"))
+                (setenv "FORCE_SOURCE_DATE" "1")
+                (invoke "latexmk" "-pdf" "bind_manual.tex"))))
+          (add-after 'install 'install-eht-parms
+            (lambda _
+              (install-file "../tightbind/eht_parms.dat"
+                            (string-append #$output "/share/"
+                                           #$name "-" #$version))))
+          (add-after 'install-eht-parms 'install-doc
+            (lambda _
+              (install-file "../docs/bind_manual.pdf"
+                            (string-append #$output "/share/doc/"
+                                           #$name "-" #$version))))
+          (delete 'check)
+          (add-after 'install-doc 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (invoke "./test_eht")))))))
+    (inputs (list openblas))
+    (native-inputs
+     (list gfortran
+           (texlive-updmap.cfg (list texlive-fonts-ec
+                                     texlive-latex-graphics
+                                     texlive-latex-geometry))))
+    (home-page "https://github.com/greglandrum/yaehmop")
+    (synopsis "Perform extended Hückel calculations")
+    (description "@acronym{YAeHMOP, Yet Another extended Hueckel Molecular
+Orbital Package} contains a program and library for performing extended Hückel
+calculations and analyzing the results.")
+    (license license:bsd-2)))
+
+(define-public avalon-toolkit
+  (package
+    (name "avalon-toolkit")
+    (version "1.2.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://sourceforge/avalontoolkit/"
+             "AvalonToolkit_" (substring version 0 3) "/AvalonToolkit_"
+             version ".source.tar"))
+       (sha256
+        (base32
+         "0rnnyy6axs2da7aa4q6l30ldavbk49v6l22llj1adn74h1i67bpv"))
+       (modules '((guix build utils) (ice-9 ftw)))
+       (snippet
+        #~(begin
+            (delete-file-recursively "../SourceDistribution/java")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      ;; There are no intended tests
+      #:tests? #f
+      #:phases
+      #~(let ((programs '("canonizer" "matchtest" "sketch" "smi2mol" "struchk")))
+          (modify-phases %standard-phases
+            (add-after 'unpack 'chdir
+              (lambda _ (chdir "common")))
+            (delete 'configure)
+            (add-before 'build 'dont-free-static-memory
+              (lambda _
+                (substitute* "reaccsio.c"
+                  (("MyFree\\(.*tempdir\\)" m)
+                   (string-append "/* freeing memory from getenv is bad */"
+                                  "// " m)))))
+            ;; The makefile has incorrect compiler flags and is missing some
+            ;; object files, so we build it ourselves.
+            (replace 'build
+              (lambda _
+                (for-each
+                 (lambda (part)
+                   (format #t "Compiling ~a.c ~~> ~a.o~%" part part)
+                   (invoke #$(cc-for-target) "-c" "-fPIC" "-O2"
+                           (string-append part ".c")
+                           "-o" (string-append part ".o")))
+                 (list "aacheck" "casutils" "denormal" "depictutil"
+                       "didepict" "fixcharges" "forio" "geometry"
+                       "graph" "hashcode" "layout" "local" "pattern"
+                       "perceive" "reaccsio" "rtutils" "set" "shortcut"
+                       "sketch" "ssmatch" "stereo" "symbol_lists"
+                       "symboltable" "utilities"))
+                (display "Building libavalontoolkit.so\n")
+                (apply invoke "gcc" "-fPIC" "-shared" "-lm"
+                       "-o" "libavalontoolkit.so" "canonizer.c" "smi2mol.c"
+                       "struchk.c" "patclean.c" (find-files "." "\\.o$"))
+                ;; patclean is not built here as there is an undeclared
+                ;; variable in main().
+                (for-each
+                 (lambda (program)
+                   (display (string-append "Building " program "\n"))
+                   (invoke "gcc" "-L." "-lavalontoolkit" "-lm" "-O2"
+                           (string-append "-Wl,-rpath=" #$output "/lib")
+                           "-DMAIN" (string-append program ".c") "-o" program))
+                 programs)))
+            (replace 'install
+              (lambda _
+                ;; Executables
+                (for-each
+                 (lambda (program)
+                   (install-file program (string-append #$output "/bin")))
+                 programs)
+                (for-each
+                 (lambda (name)
+                   (symlink (string-append #$output "/bin/smi2mol")
+                            (string-append #$output "/bin/" name)))
+                 '("mol2smi" "rdf2smi" "mol2tbl" "mol2sma" "smi2rdf"))
+                ;; Library
+                (install-file "libavalontoolkit.so"
+                              (string-append #$output "/lib"))
+                (for-each
+                 (lambda (file)
+                   (install-file file (string-append #$output
+                                                    "/include/avalontoolkit")))
+                 (find-files "." "\\.h$"))
+                (install-file "../license.txt"
+                              (string-append #$output "/share/doc/"
+                                             #$name "-" #$version "/"))))))))
+    (home-page "https://sourceforge.net/projects/avalontoolkit/")
+    (synopsis "Tools for SMILES and MOL files and for structure fingerprinting")
+    (description "This package contains a library and programs for
+canonicalization of SMILES and MOL files, molecular structure fingerprinting
+and rendering molecules.")
+    (license license:bsd-3)))
+
+(define-public ringdecomposerlib
+  (package
+    (name "ringdecomposerlib")
+    (version "1.1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rareylab/RingDecomposerLib")
+                    (commit (string-append "v" version "_rdkit"))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1rxzs2wpkkdi40wdzxc4sn0brk7dm7ivgqyfh38gf2f5c7pbg0wi"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "-DBUILD_PYTHON_WRAPPER=ON"
+              "-DPYTHON_EXECUTABLE=python3"
+              (string-append "-DPYTHON_FLAGS=;--prefix=" #$output ";--root=/"))
+      #:imported-modules (append %cmake-build-system-modules
+                                 '((guix build python-build-system)))
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (add-installed-pythonpath)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'patch-cmake
+            (lambda _
+              (substitute* (list "src/Test/CMakeLists.txt"
+                                 "src/RingDecomposerLib/CMakeLists.txt")
+                (("build_.*STATIC") "#"))
+              (substitute* "test/CMakeLists.txt"
+                (("STATIC_TEST") "SHARED_TEST"))
+              ;; Link Python library against shared library
+              (substitute* "src/python/CMakeLists.txt"
+                (("RingDecomposerLibStatic") "RingDecomposerLib"))
+              (substitute* "src/python/setup.py.in"
+                (("static_libs =.*") "static_libs = []\n")
+                (("shared_libs\\s*=.*")
+                 (string-append
+                  "shared_libs = ['RingDecomposerLib']"))
+                (("library_dirs\\s*=\\s*\\[\\]")
+                 "library_dirs = ['${CMAKE_BINARY_DIR}/src/RingDecomposerLib']")
+                (("extra_objects=.*")
+                 (string-append
+                  "extra_link_args=['-Wl,-rpath=" #$output "/lib'],\n")))))
+          (add-after 'build 'build-doc
+            (lambda _
+              ;; Disable redundant LaTeX documentation
+              (substitute* "../source/documentation/sphinx/conf.py"
+                (("^(subprocess.*latex|shutil).*") ""))
+              (substitute* "../source/documentation/doxygen.cfg"
+                (("GENERATE_LATEX.*YES") "GENERATE_LATEX = NO"))
+              ;; Build HTML documentation
+              (invoke "sphinx-build" "-b" "html"
+                      "../source/documentation/sphinx" "html")))
+          (add-after 'install 'install-doc
+            (lambda _
+              ;; Not reproducible
+              (delete-file-recursively "html/.doctrees")
+              (copy-recursively "html"
+                                (string-append #$output "/share/doc/"
+                                               #$name "-" #$version "/html"))))
+          (delete 'check)
+          (add-after 'install 'check
+            (assoc-ref %standard-phases 'check))
+          (add-before 'check 'set-pythonpath
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (add-installed-pythonpath inputs outputs))))))
+    (inputs (list python))
+    (native-inputs (list doxygen python python-cython python-sphinx))
+    (home-page "https://github.com/rareylab/RingDecomposerLib")
+    (synopsis "Calculate ring topology descriptions")
+    (description "RingDecomposerLib is a library for the calculation of
+unique ring families, relevant cycles, the smallest set of smallest rings and
+other ring topology descriptions.")
+    (license license:bsd-3)))
+
+(define-public rdkit
+  (package
+    (name "rdkit")
+    (version "2022.03.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rdkit/rdkit")
+                    (commit
+                     (string-append
+                      "Release_" (string-replace-substring version "." "_")))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "19idgilabh04cbr1qj6zgrgsfjm248mmfz6fsr0smrd68d0xnml9"))
+              (patches
+               (search-patches "rdkit-unbundle-external-dependencies.patch"))
+              (modules '((guix build utils)))
+              (snippet
+               #~(begin
+                   ;; Remove pickle files (only used in tests),
+                   ;; as they are compiled programs
+                   (for-each
+                    (lambda (name)
+                      (display (string-append name "\n"))
+                      (delete-file name))
+                    (find-files "." "\\.pkl(\\.gz)?$"))
+                   ;; Remove SQLite data files (can be generated)
+                   (delete-file "Data/RDData.sqlt")
+                   (delete-file "Data/RDTests.sqlt")))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:imported-modules (append %cmake-build-system-modules
+                                 '((guix build python-build-system)))
+      #:modules '((guix build cmake-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system)
+                   #:select (add-installed-pythonpath)))
+      #:configure-flags
+      #~(list "-DRDK_BUILD_AVALON_SUPPORT=ON"
+              "-DRDK_BUILD_CAIRO_SUPPORT=ON"
+              "-DRDK_BUILD_FREESASA_SUPPORT=ON"
+              "-DRDK_BUILD_INCHI_SUPPORT=ON"
+              "-DRDK_BUILD_YAEHMOP_SUPPORT=ON"
+              (string-append "-DCATCH_DIR="
+                             (search-input-directory %build-inputs
+                                                     "/include/catch2"))
+              "-DRDK_INSTALL_INTREE=OFF"
+              "-DRDK_INSTALL_STATIC_LIBS=OFF"
+              (string-append
+               "-DRDK_OPTIMIZE_POPCNT="
+               #$(let ((system (or (%current-target-system)
+                                   (%current-system))))
+                   (cond
+                    ((string-prefix? "x86_64" system) "ON")
+                    ((string-prefix? "i686" system) "ON")
+                    (else "OFF"))))
+              "-DRDK_USE_FLEXBISON=ON"
+              (string-append
+               "-DCMAKE_INCLUDE_PATH="
+               (search-input-directory %build-inputs "/include/avalontoolkit")))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'copy-external-dependencies
+            (lambda _
+              (symlink
+               (string-append
+                (search-input-file
+                 %build-inputs "/share/fonts/truetype/ComicNeue-Regular.ttf"))
+               "Data/Fonts/ComicNeue-Regular.ttf")))
+          (add-after 'unpack 'fix-inchi-include
+            (lambda _
+              (substitute* "Code/cmake/Modules/FindInchi.cmake"
+                (("inchi_api.h.*\\)") "inchi/inchi_api.h)")
+                (("INCHI_LIBRARY NAMES.*\\)")
+                 "INCHI_LIBRARY NAMES inchi PATH_SUFFIXES inchi)")
+                (("find_library" prev)
+                 (string-append
+                  "list(APPEND CMAKE_FIND_LIBRARY_SUFFIXES .so.1)\n"
+                  prev)))
+              (substitute* "External/INCHI-API/inchi.cpp"
+                (("<inchi_api.h>") "<inchi/inchi_api.h>"))))
+          (add-before 'build 'enable-bytecode-determinism
+              (lambda _
+                (setenv "PYTHONHASHSEED" "0")
+                (setenv "PYTHONDONTWRITEBYTECODE" "1")))
+          (add-after 'install 'pre-check
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (with-directory-excursion "../source"
+                (invoke "sqlite3" "Data/RDData.sqlt"
+                        ".read rdkit/Dbase/test_data/RDData.sqlite")
+                (invoke "sqlite3" "Data/RDTests.sqlt"
+                        ".read rdkit/Dbase/test_data/RDTests.sqlite")
+                (setenv "RDBASE" (canonicalize-path ".")))
+              (add-installed-pythonpath inputs outputs)))
+          (delete 'check)
+          (add-after 'pre-check 'check
+            (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
+              (when tests?
+                (let ((job-count (number->string
+                                  (if parallel-tests? (parallel-job-count) 1))))
+                  (invoke
+                   "ctest" "-j" job-count
+                   "-E" (string-append
+                         "("
+                         (string-join
+                          '(;; need pickled data
+                            "pyDiscreteValueVect" "pySparseIntVect"
+                            "graphmoltestPickler" "pyPartialCharges"
+                            "substructLibraryTest" "pyFeatures"
+                            "pythonTestDirML" "pythonTestDirChem"
+                            ;; Catching Python exception fails
+                            "pyRanker") "|")
+                         ")")))))))))
+    (inputs
+     (list avalon-toolkit
+           cairo
+           coordgenlibs
+           font-comic-neue
+           freetype
+           inchi
+           maeparser
+           python
+           ringdecomposerlib
+           sqlite
+           yaehmop))
+    (native-inputs
+     (list bison
+           boost
+           catch2
+           eigen
+           flex
+           freesasa
+           pkg-config
+           rapidjson
+           tar))
+    (propagated-inputs
+     (list python-numpy python-cairocffi python-pillow))
+    (home-page "https://rdkit.org/")
+    (synopsis "Collection of cheminformatics software")
+    (description "RDKit is a C++ and Python library for cheminformatics, which
+includes (among other things) the analysis and modification of molecules in 2D
+and 3D and descriptor generation for machine learning.")
     (license license:bsd-3)))

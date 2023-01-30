@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015, 2019, 2020 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2021 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Lars-Dominik Braun <ldb@leibniz-psychology.org>
@@ -30,6 +30,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cyrus-sasl)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages dbm)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages gettext)
@@ -58,12 +59,75 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 
 (define-public openldap
   (package
-    (name "openldap")
+   (name "openldap")
+   (version "2.4.57")
+   (source (origin
+             (method url-fetch)
+             ;; See <http://www.openldap.org/software/download/> for a list of
+             ;; mirrors.
+             (uri (list (string-append
+                         "ftp://mirror.switch.ch/mirror/OpenLDAP/"
+                         "openldap-release/openldap-" version ".tgz")
+                        (string-append
+                         "https://www.openldap.org/software/download/OpenLDAP/"
+                         "openldap-release/openldap-" version ".tgz")
+                        (string-append
+                         "ftp://ftp.dti.ad.jp/pub/net/OpenLDAP/"
+                         "openldap-release/openldap-" version ".tgz")))
+             (sha256
+              (base32
+               "0nmlyqhc52v24b4awh914sczmvxbazgq2cnlycvb9dgcwvhlgfn7"))))
+   (build-system gnu-build-system)
+   (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
+   (native-inputs (list libtool groff bdb-5.3))
+   (arguments
+    `(#:tests? #f
+      #:configure-flags
+      '("--disable-static"
+        ,@(if (%current-target-system)
+              '("--with-yielding_select=yes"
+                "ac_cv_func_memcmp_working=yes")
+              '()))
+      ;; Disable install stripping as it breaks cross-compiling.
+      #:make-flags '("STRIP=")
+      #:phases
+      (modify-phases %standard-phases
+        ,@(if (%current-target-system)
+              '((add-before 'configure 'fix-cross-gcc
+                  (lambda* (#:key target #:allow-other-keys)
+                    (setenv "CC" (string-append target "-gcc"))
+                    #t)))
+              '())
+        (add-after 'install 'patch-sasl-path
+          ;; Give -L arguments for cyrus-sasl to avoid propagation.
+          (lambda* (#:key inputs outputs #:allow-other-keys)
+            (let ((out (assoc-ref outputs "out"))
+                  (krb5 (assoc-ref inputs "mit-krb5"))) ;propagated from cyrus-sasl
+
+              ;; The ancient Libtool bundled with OpenLDAP copies the linker flags
+              ;; from Cyrus-SASL and embeds them into its own .la files.  Add an
+              ;; absolute reference to Kerberos so it does not have to be propagated.
+              (substitute* (map (lambda (f) (string-append out "/" f))
+                                '("lib/libldap.la" "lib/libldap_r.la"))
+                (("-lkrb5" lib)
+                 (string-append "-L" krb5 "/lib " lib)))
+              #t))))))
+   (synopsis "Implementation of the Lightweight Directory Access Protocol")
+   (description
+    "OpenLDAP is a free implementation of the Lightweight Directory Access Protocol.")
+   (license openldap2.8)
+   (home-page "https://www.openldap.org/")))
+
+;; TODO: Update the main package in the next rebuild cycle.
+(define-public openldap-2.6
+  (package
+    (inherit openldap)
     (version "2.6.3")
     (source (origin
               (method url-fetch)
@@ -81,9 +145,6 @@
               (sha256
                (base32
                 "0ihddk8c6hg9lkjv0wk0w13g8kb75r8dfsn1n6b77mzk3pbs38nj"))))
-    (build-system gnu-build-system)
-    (inputs (list bdb-5.3 cyrus-sasl gnutls libgcrypt zlib))
-    (native-inputs (list libtool groff bdb-5.3))
     (arguments
      (list
       #:tests? #f
@@ -196,155 +257,151 @@ servers from Python programs.")
 (define-public 389-ds-base
   (package
     (name "389-ds-base")
-    (version "1.4.4.17")
+    ;; More recent versions require rust.  That's not bad, but it's a
+    ;; challenge to integrate three build systems.
+    (version "2.2.2")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/389ds/389-ds-base/archive/"
-                                  "389-ds-base-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/389ds/389-ds-base")
+                    (commit (string-append "389-ds-base-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i8m4crbnjjhfb7cq758rd0fxyz36i291yq6fykkprjykz9s3zv4"))))
+                "1sdvfbjfg0091f47562gw3gdc2vgvvhyhdi21lrpwnw9lqc8xdxk"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((srfi srfi-1)
+     (list
+      #:modules '((srfi srfi-1)
                   (guix build gnu-build-system)
                   ((guix build python-build-system)
                    #:select (add-installed-pythonpath python-version))
                   (guix build utils))
-       #:imported-modules ((guix build python-build-system)
+      #:imported-modules `((guix build python-build-system)
                            ,@%gnu-build-system-modules)
-       #:configure-flags
-       (list (string-append "--with-db="
-                            (assoc-ref %build-inputs "bdb"))
-             (string-append "--with-sasl="
-                            (assoc-ref %build-inputs "cyrus-sasl"))
-             (string-append "--with-netsnmp="
-                            (assoc-ref %build-inputs "net-snmp"))
-             (string-append "--with-pcre="
-                            (assoc-ref %build-inputs "pcre"))
-             (string-append "--with-selinux="
-                            (assoc-ref %build-inputs "libselinux"))
-             "--localstatedir=/var"
-             "--with-instconfigdir=/etc/dirsrv"
-             ;; The Perl scripts are being removed in the 1.4.0 release.
-             ;; Building them would require packaging of the outdated Mozilla
-             ;; LDAP SDK (instead of OpenLDAP) and PerLDAP.
-             "--disable-perl")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-references
-           (lambda _
-             (substitute* "include/ldaputil/certmap.h"
-               (("nss3/cert.h") "nss/cert.h"))
-             (substitute* "src/lib389/lib389/utils.py"
-               (("'/sbin/ip'")
-                (string-append "'" (which "ip") "'")))
-             (substitute* "src/lib389/lib389/nss_ssl.py"
-               (("'/usr/bin/certutil'")
-                (string-append "'" (which "certutil") "'"))
-               (("'/usr/bin/openssl'")
-                (string-append "'" (which "openssl") "'"))
-               (("'/usr/bin/c_rehash'")
-                (string-append "'" (which "perl") "', '"
-                               (which "c_rehash") "'")))))
-         (add-after 'unpack 'overwrite-default-locations
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (substitute* "src/lib389/lib389/paths.py"
-                 (("/usr/share/dirsrv/inf/defaults.inf")
-                  (string-append out "/share/dirsrv/inf/defaults.inf")))
-               ;; This directory can only be specified relative to sysconfdir.  This
-               ;; is used to determine where to look for installed directory
-               ;; servers, so in the absence of a search path it needs to be global.
-               (substitute* "ldap/admin/src/defaults.inf.in"
-                 (("^initconfig_dir =.*")
-                  "initconfig_dir = /etc/dirsrv/registry\n"))
-               ;; This is used to determine where to write certificate files
-               ;; when installing new directory server instances.
-               (substitute* '("src/lib389/lib389/instance/setup.py"
-                              "src/lib389/lib389/instance/remove.py")
-                 (("etc_dirsrv_path = .*")
-                  "etc_dirsrv_path = '/etc/dirsrv/'\n")))))
-         (add-after 'unpack 'fix-install-location-of-python-tools
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (pythondir (string-append
-                                out "/lib/python"
-                                (python-version (assoc-ref inputs "python"))
+      #:configure-flags
+      #~(list "--enable-cmocka"
+              (string-append "--with-db="
+                             #$(this-package-input "bdb"))
+              (string-append "--with-netsnmp="
+                             #$(this-package-input "net-snmp"))
+              (string-append "--with-selinux="
+                             #$(this-package-input "libselinux"))
+              "--localstatedir=/var"
+              "--with-instconfigdir=/etc/dirsrv")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-references
+            (lambda _
+              ;; Avoid dependency on systemd-detect-virt
+              (substitute* "src/lib389/lib389/instance/setup.py"
+                (("container_result = subprocess.*") "container_result = 1\n")
+                (("container_result.returncode") "container_result"))
+              (substitute* "ldap/servers/plugins/sync/sync_persist.c"
+                (("nspr4") "nspr"))
+              (substitute* "src/lib389/lib389/utils.py"
+                (("'/sbin/ip'")
+                 (string-append "'" (which "ip") "'")))
+              (substitute* "src/lib389/lib389/nss_ssl.py"
+                (("'/usr/bin/certutil'")
+                 (string-append "'" (which "certutil") "'"))
+                (("'/usr/bin/openssl'")
+                 (string-append "'" (which "openssl") "'")))))
+          (add-after 'unpack 'overwrite-default-locations
+            (lambda _
+              (substitute* "src/lib389/lib389/paths.py"
+                (("/usr/share/dirsrv/inf/defaults.inf")
+                 (string-append #$output "/share/dirsrv/inf/defaults.inf")))
+              ;; This directory can only be specified relative to sysconfdir.  This
+              ;; is used to determine where to look for installed directory
+              ;; servers, so in the absence of a search path it needs to be global.
+              (substitute* "ldap/admin/src/defaults.inf.in"
+                (("^initconfig_dir =.*")
+                 "initconfig_dir = /etc/dirsrv/registry\n"))
+              ;; This is used to determine where to write certificate files
+              ;; when installing new directory server instances.
+              (substitute* "src/lib389/lib389/instance/setup.py"
+                (("etc_dirsrv_path = .*")
+                 "etc_dirsrv_path = '/etc/dirsrv/'\n"))))
+          (add-after 'unpack 'fix-install-location-of-python-tools
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let ((pythondir (string-append
+                                #$output "/lib/python"
+                                (python-version #$(this-package-input "python"))
                                 "/site-packages/")))
-               ;; Install directory must be on PYTHONPATH.
-               (add-installed-pythonpath inputs outputs)
-               ;; Install directory must exist.
-               (mkdir-p pythondir)
-               (substitute* "src/lib389/setup.py"
-                 (("/usr") out))
-               (substitute* "Makefile.am"
-                 (("setup.py install --skip-build" m)
-                  (string-append
-                   m " --prefix=" out
-                   " --root=/ --single-version-externally-managed"))))))
-         (add-after 'build 'build-python-tools
-           (lambda* (#:key make-flags #:allow-other-keys)
-             ;; Set DETERMINISTIC_BUILD to override the embedded mtime in pyc
-             ;; files.
-             (setenv "DETERMINISTIC_BUILD" "1")
-             ;; Use deterministic hashes for strings, bytes, and datetime
-             ;; objects.
-             (setenv "PYTHONHASHSEED" "0")
-             (apply invoke "make" "lib389" make-flags)))
-         (add-after 'install 'install-python-tools
-           (lambda* (#:key make-flags #:allow-other-keys)
-             (apply invoke "make" "lib389-install" make-flags)))
-         (add-after 'install-python-tools 'wrap-python-tools
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out  (assoc-ref outputs "out"))
-                    (pythonpath (getenv "GUIX_PYTHONPATH")))
-               (for-each (lambda (file)
-                           (wrap-program (string-append out file)
-                             `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
-                         '("/sbin/dsconf"
-                           "/sbin/dscreate"
-                           "/sbin/dsctl"
-                           "/sbin/dsidm"
-                           "/bin/ds-logpipe.py"
-                           "/bin/ds-replcheck"))))))))
+                ;; Install directory must be on PYTHONPATH.
+                (add-installed-pythonpath inputs outputs)
+                ;; Install directory must exist.
+                (mkdir-p pythondir)
+                (setenv "INSTALL_PREFIX" #$output)
+                (substitute* "Makefile.am"
+                  (("setup.py install --skip-build" m)
+                   (string-append
+                    m " --prefix=" #$output
+                    " --root=/ --single-version-externally-managed"))))))
+          (add-after 'build 'build-python-tools
+            (lambda* (#:key make-flags #:allow-other-keys)
+              ;; Set DETERMINISTIC_BUILD to override the embedded mtime in pyc
+              ;; files.
+              (setenv "DETERMINISTIC_BUILD" "1")
+              ;; Use deterministic hashes for strings, bytes, and datetime
+              ;; objects.
+              (setenv "PYTHONHASHSEED" "0")
+              (apply invoke "make" "lib389" make-flags)))
+          (add-after 'install 'install-python-tools
+            (lambda* (#:key make-flags #:allow-other-keys)
+              (apply invoke "make" "lib389-install" make-flags)))
+          (add-after 'install-python-tools 'wrap-python-tools
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((pythonpath (getenv "GUIX_PYTHONPATH")))
+                (for-each (lambda (file)
+                            (wrap-program (string-append #$output file)
+                              `("GUIX_PYTHONPATH" ":" prefix (,pythonpath))))
+                          '("/sbin/dsconf"
+                            "/sbin/dscreate"
+                            "/sbin/dsctl"
+                            "/sbin/dsidm"
+                            "/bin/ds-logpipe.py"
+                            "/bin/ds-replcheck"))))))))
     (inputs
-     `(("bdb" ,bdb)
-       ("cracklib" ,cracklib)
-       ("cyrus-sasl" ,cyrus-sasl)
-       ("gnutls" ,gnutls)
-       ("httpd" ,httpd)
-       ("icu4c" ,icu4c)
-       ("iproute" ,iproute)
-       ("libevent" ,libevent)
-       ("libselinux" ,libselinux)
-       ("linux-pam" ,linux-pam)
-       ("mit-krb5" ,mit-krb5)
-       ("net-snmp" ,net-snmp)
-       ("nspr" ,nspr)
-       ("nss" ,nss)
-       ("nss:bin" ,nss "bin")           ; for certutil
-       ("openldap" ,openldap)
-       ("openssl" ,openssl)             ; #included by net-snmp
-       ("pcre" ,pcre)
-       ("perl" ,perl)
-       ("python" ,python)
-       ("python-pyasn1" ,python-pyasn1)
-       ("python-pyasn1-modules" ,python-pyasn1-modules)
-       ("python-pytest" ,python-pytest)
-       ("python-dateutil" ,python-dateutil)
-       ("python-six" ,python-six)
-       ("python-argcomplete" ,python-argcomplete)
-       ("python-argparse-manpage" ,python-argparse-manpage)
-       ("python-ldap" ,python-ldap)))
+     (list bdb
+           cracklib
+           cyrus-sasl
+           gnutls
+           httpd
+           icu4c
+           iproute
+           json-c
+           libevent
+           libselinux
+           linux-pam
+           lmdb
+           mit-krb5
+           net-snmp
+           nspr
+           nss
+           (list nss "bin")             ;for certutil
+           openldap
+           openssl                      ;#included by net-snmp
+           pcre
+           python
+           python-pyasn1
+           python-pyasn1-modules
+           python-pytest
+           python-dateutil
+           python-six
+           python-argcomplete
+           python-argparse-manpage
+           python-ldap))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("doxygen" ,doxygen)
-       ("gettext" ,gettext-minimal)
-       ("libtool" ,libtool)
-       ("rsync" ,rsync)
-       ("pkg-config" ,pkg-config)))
+     (list autoconf
+           automake
+           cmocka
+           doxygen
+           gettext-minimal
+           libtool
+           rsync
+           pkg-config))
     (home-page "https://directory.fedoraproject.org")
     (synopsis "Enterprise-class LDAP server")
     (description "389ds is an enterprise-class LDAP server.  It is hardened by

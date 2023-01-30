@@ -10,6 +10,7 @@
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2020. 2021, 2022 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -42,6 +43,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
@@ -80,6 +82,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
@@ -230,14 +233,14 @@ data as produced by digital cameras.")
 (define-public libgphoto2
   (package
     (name "libgphoto2")
-    (version "2.5.28")
+    (version "2.5.30")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/gphoto/libgphoto/"
                                   version "/libgphoto2-" version ".tar.bz2"))
               (sha256
                (base32
-                "1gayf81nzi8gxmwhgs4k1p0dwqajsx0h9lzjfvnib3100dm5j04n"))))
+                "1d0g3ixxfz3sfm5rzibydqd9ccflls86pq0ls48zfp5dqvda2qgf"))))
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs
@@ -298,7 +301,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.16")
+    (version "12.50")
     (source
      (origin
        (method url-fetch)
@@ -308,24 +311,21 @@ MTP, and much more.")
              ;; New releases may take a while to hit CPAN.
              (string-append "https://www.sno.phy.queensu.ca/~phil/exiftool/"
                             "Image-ExifTool-" version ".tar.gz")))
-       (patches (search-patches "perl-image-exiftool-CVE-2021-22204.patch"))
        (sha256
         (base32
-         "0skm22b3gg1bfk0amklrprpva41m6mkrhqp0gi7z1nmcf9ypjh61"))))
+         "1a605rz00d7p866a22sw0s63m5a6y4xqqrzp7q7jyc0hbky43s5w"))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure the 'exiftool' commands finds the library.
-             ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
-             (let* ((out (assoc-ref outputs "out"))
-                    (pm  (find-files out "^ExifTool\\.pm$"))
-                    (lib (dirname (dirname (car pm)))))
-               (wrap-program (string-append out "/bin/exiftool")
-                 `("PERL5LIB" prefix (,lib)))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'post-install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Make sure the 'exiftool' commands finds the library.
+                   ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
+                   (let* ((pm  (find-files #$output "^ExifTool\\.pm$"))
+                          (lib (dirname (dirname (car pm)))))
+                     (wrap-program (string-append #$output "/bin/exiftool")
+                       `("PERL5LIB" prefix (,lib)))))))))
     (home-page "https://metacpan.org/release/Image-ExifTool")
     (synopsis "Program and Perl library to manipulate EXIF and other metadata")
     (description "This package provides the @code{exiftool} command and the
@@ -460,7 +460,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.0.0")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -468,7 +468,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "0bfcag6bj5vcmg4z4xjirs43iafcx89al6jl41i5mrhpjzszh5hl"))))
+        (base32 "1y8sn7yyqyg1n82byaw5csjr8a6m7g6839krq9k9zc79vxzr3c0q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
@@ -482,6 +482,13 @@ photographic equipment.")
                (("\"libOpenCL\"")
                 (string-append "\"" (assoc-ref inputs "opencl-icd-loader")
                                "/lib/libOpenCL.so\"")))))
+         (add-after 'unpack 'fix-missing-include
+           (lambda _
+             ;; Fix missing include needed to build tests.  See upstream
+             ;; issue: https://github.com/darktable-org/darktable/issues/12604
+             (substitute* "./src/common/variables.h"
+               (("once")
+                "once\n#include \"common/image.h\""))))
          (add-before 'configure 'prepare-build-environment
            (lambda* (#:key inputs #:allow-other-keys)
              ;; Rawspeed fails to build with GCC due to OpenMP error:
@@ -518,10 +525,11 @@ photographic equipment.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("python" ,python-wrapper)
+       ("python-wrapper" ,python-wrapper)
        ("ruby" ,ruby)))
     (inputs
-     (list cairo
+     (list bash-minimal
+           cairo
            colord-gtk ;optional, for color profile support
            cups ;optional, for printing support
            curl
@@ -549,6 +557,7 @@ photographic equipment.")
            libwebp ;optional, for WebP support
            libxml2
            libxslt
+           libheif
            lua-5.4 ;optional, for plugins
            opencl-icd-loader ;optional, for OpenCL support
            openexr ;optional, for EXR import/export
@@ -556,6 +565,7 @@ photographic equipment.")
            osm-gps-map ;optional, for geotagging view
            pugixml
            python-jsonschema
+           sdl2
            sqlite))
     (home-page "https://www.darktable.org")
     (synopsis "Virtual lighttable and darkroom for photographers")
@@ -747,50 +757,51 @@ a complete panorama and stitch any series of overlapping pictures.")
 (define-public rawtherapee
   (package
     (name "rawtherapee")
-    (version "5.8")
+    (version "5.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://rawtherapee.com/shared/source/"
                                   "rawtherapee-" version ".tar.xz"))
               (sha256
                (base32
-                "0lq8qi7g0a28h3rab7bk5bbbd4gvfma42bvlz1dfn8p9mah2h19n"))))
+                "08s81mxnrj183bss2rb0hac1qyn7bmcnk3x2ymg1cp0q5322ibwf"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:tests? #f                      ; no test suite
-       #:build-type "release"
-       #:configure-flags
-       (list (string-append "-DLENSFUNDBDIR="
-                            (assoc-ref %build-inputs "lensfun")
-                            "/share/lensfun")
-             ;; Don't optimize the build for the host machine. See the file
-             ;; 'ProcessorTargets.cmake' in the source distribution for more
-             ;; information.
-             "-DPROC_TARGET_NUMBER=1"
-             ;; These flags are recommended by upstream for distributed packages.
-             ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
-             "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
-             "-DCMAKE_C_FLAGS=-O3 -fPIC"
-             "-DCACHE_NAME_SUFFIX=\"\"")))
+     (list
+      #:tests? #f                      ; no test suite
+      #:build-type "release"
+      #:configure-flags
+      #~(list (string-append "-DLENSFUNDBDIR="
+                             #$(this-package-input "lensfun")
+                             "/share/lensfun")
+              ;; Don't optimize the build for the host machine. See the file
+              ;; 'ProcessorTargets.cmake' in the source distribution for more
+              ;; information.
+              "-DPROC_TARGET_NUMBER=1"
+              ;; These flags are recommended by upstream for distributed packages.
+              ;; See the file 'RELEASE_NOTES.txt' in the source distribution.
+              "-DCMAKE_CXX_FLAGS=-O3 -fPIC"
+              "-DCMAKE_C_FLAGS=-O3 -fPIC"
+              "-DCACHE_NAME_SUFFIX=\"\"")))
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("expat" ,expat)
-       ("fftw" ,fftwf)
-       ("glib" ,glib)
-       ("glibmm" ,glibmm)
-       ("gtk+" ,gtk+)
-       ("gtkmm" ,gtkmm-3)
-       ("lcms" ,lcms)
-       ("lensfun" ,lensfun)
-       ("libcanberra" ,libcanberra)
-       ("libiptcdata" ,libiptcdata)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("librsvg" ,librsvg)
-       ("libsigc++" ,libsigc++)
-       ("libtiff" ,libtiff)
-       ("zlib" ,zlib)))
+     (list expat
+           fftwf
+           glib
+           glibmm
+           gtk+
+           gtkmm-3
+           lcms
+           lensfun
+           libcanberra
+           libiptcdata
+           libjpeg-turbo
+           libpng
+           librsvg
+           libsigc++
+           libtiff
+           zlib))
     (home-page "https://rawtherapee.com")
     (synopsis "Raw image developing and processing")
     (description "RawTherapee is a raw image processing suite.  It comprises a
@@ -799,4 +810,27 @@ photo post-production and is primarily focused on improving a photographer's
 workflow by facilitating the handling of large numbers of images.  Most raw
 formats are supported, including Pentax Pixel Shift, Canon Dual-Pixel, and those
 from Foveon and X-Trans sensors.")
+    (license license:gpl3+)))
+
+(define-public librtprocess
+  (package
+    (name "librtprocess")
+    (version "0.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/CarVac/librtprocess")
+                    (commit version)))
+              (sha256
+               (base32
+                "0v0zwbdbc1fn7iy6wi0m6zgb86qdx1ijnv548d0ydbr8cm4klnpz"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; No tests
+     (list #:tests? #f))
+    (home-page "https://github.com/CarVac/librtprocess")
+    (synopsis "Highly optimized library for processing RAW images")
+    (description
+     "This package provides RawTherapee's highly optimized RAW processing routines.")
     (license license:gpl3+)))

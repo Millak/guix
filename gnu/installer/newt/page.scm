@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2019, 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -278,12 +278,12 @@ input box, such as FLAG-PASSWORD."
                    (destroy-form-and-pop form)
                    input))))))))
 
-(define (run-error-page text title)
-  "Run a page to inform the user of an error. The page contains the given TEXT
-to explain the error and an \"OK\" button to acknowledge the error. The title
-of the page is set to TITLE."
+(define* (run-error-page text title #:key (width 40))
+  "Run a page to inform the user of an error.  The page is WIDTH column wide
+and contains the given TEXT to explain the error and an \"OK\" button to
+acknowledge the error.  The title of the page is set to TITLE."
   (let* ((text-box
-          (make-reflowed-textbox -1 -1 text 40
+          (make-reflowed-textbox -1 -1 text width
                                  #:flags FLAG-BORDER))
          (grid (make-grid 1 2))
          (ok-button (make-button -1 -1 "OK"))

@@ -36,6 +36,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (guix deprecation)
@@ -65,7 +66,7 @@
 (define-public latex2html
   (package
     (name "latex2html")
-    (version "2020.2")
+    (version "2022.2")
     (source
      (origin
        (method git-fetch)
@@ -75,29 +76,26 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1icyl6kl60wh7cavprgbd8q6lpjwr7wn24m34kpiif7ahknhcbcm"))))
+        (base32 "1z71anjzxy5jsdlaqba4w9spncc6iycldarnr2z1dq8xmk6yhpjn"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "configure"
-               (("/usr/local")
-                (assoc-ref outputs "out"))
-               (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
-                (which "bash")))
-             #t))
-         (replace 'configure
-           (lambda _
-             (invoke "./configure")
-             #t))
-         (add-after 'configure 'patch-cfgcache
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "cfgcache.pm"
-               (("/usr/local")
-                (assoc-ref outputs "out")))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-configure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "configure"
+                     (("/usr/local")
+                      #$output)
+                     (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
+                      (which "bash")))))
+               (replace 'configure
+                 (lambda _
+                   (invoke "./configure")))
+               (add-after 'configure 'patch-cfgcache
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "cfgcache.pm"
+                     (("/usr/local")
+                      #$output)))))))
     (inputs
      (list perl))
     (synopsis "LaTeX documents to HTML")
@@ -256,7 +254,7 @@ and to some extent D.")
     (build-system gnu-build-system)
     (native-inputs
      (list flex gettext-minimal))
-    (home-page "http://docpp.sourceforge.net/")
+    (home-page "https://docpp.sourceforge.net")
     (synopsis "Documentation system for C, C++, IDL, and Java")
     (description
      "DOC++ is a documentation system for C, C++, IDL, and Java.  It can
@@ -264,6 +262,32 @@ generate both TeX output for high-quality hardcopies or HTML output for online
 browsing.  The documentation is extracted directly from the C/C++/IDL source
 or Java class files.")
     (license gpl2+)))
+
+(define-public pod2pdf
+  (package
+    (name "pod2pdf")
+    (version "0.42")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                     "mirror://cpan/authors/id/J/JO/JONALLEN/pod2pdf-"
+                     version
+                     ".tar.gz"))
+              (sha256
+                (base32
+                  "0w5p7yy01vph74nfr9qzjb18p1avmhhcpza0qz9r88fmb0blbiyv"))))
+    (build-system perl-build-system)
+    (propagated-inputs
+     (list perl-getopt-argvfile
+           perl-pdf-api2
+           perl-pod-parser))
+    (home-page "https://metacpan.org/release/pod2pdf")
+    (synopsis "Convert Pod to PDF format")
+    (description "pod2pdf converts documents written in Perl's @acronym{POD, Plain Old
+Documentation} format to PDF files.  It also supports some extensions to the POD
+format, and supports the file types JPG, GIF, TIFF, PNG, and PNM for embedded
+objects.")
+    (license artistic2.0)))
 
 (define-public python-docrepr
   (package

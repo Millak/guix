@@ -94,6 +94,90 @@ consists of: @code{test}, @code{is}, @code{signals}, @code{finishes},
 (define-public ecl-2am
   (sbcl-package->ecl-package sbcl-2am))
 
+(define-public sbcl-assertion-error
+  (let ((commit "8eab692a990d4caa193a46bae99af3e13e717b86")
+        (revision "1"))
+    (package
+      (name "sbcl-assertion-error")
+      (version (git-version "0.1.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/noloop/assertion-error")
+               (commit commit)))
+         (file-name (git-file-name "assertion-error" version))
+         (sha256
+          (base32 "0ix23kkakmf4nwx852zsssb831jvajr3qyppqfyks7y1ls617svn"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs (list sbcl-dissect))
+      (home-page "https://github.com/noloop/assertion-error")
+      (synopsis "Error pattern for assertion libraries in Common Lisp")
+      (description "This package provides a Common Lisp assertion system with
+minimal dependencies on DISSECT.")
+      (license license:gpl3))))
+
+(define-public ecl-assertion-error
+  (sbcl-package->ecl-package sbcl-assertion-error))
+
+(define-public cl-assertion-error
+  (sbcl-package->cl-source-package sbcl-assertion-error))
+
+(define-public sbcl-assert-p
+  (package
+    (name "sbcl-assert-p")
+    (version "1.0.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noloop/assert-p")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "assert-p" version))
+       (sha256
+        (base32 "1x24rkqkqiw8zd26swi9rmhfplkmr5scz3bhjwccah9d2s36b1xs"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs (list sbcl-assertion-error sbcl-simplet))
+    (home-page "https://github.com/noloop/assert-p")
+    (synopsis "Common Lisp assertion library")
+    (description "This package provides a Common Lisp collection of assertions.")
+    (license license:gpl3)))
+
+(define-public ecl-assert-p
+  (sbcl-package->ecl-package sbcl-assert-p))
+
+(define-public cl-assert-p
+  (sbcl-package->cl-source-package sbcl-assert-p))
+
+(define-public sbcl-cacau
+  (package
+    (name "sbcl-cacau")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noloop/cacau")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cacau" version))
+       (sha256
+        (base32 "0m8v1xw68cr5ldv045rxgvnhigr4iahh7v6v32z6xlq2sj6r55x0"))))
+    (build-system asdf-build-system/sbcl)
+    (native-inputs (list sbcl-assert-p))
+    (inputs (list sbcl-assertion-error sbcl-eventbus))
+    (home-page "https://github.com/noloop/cacau")
+    (synopsis "Comon Lisp test runner")
+    (description
+     "This package provides a Common Lisp testing framework system CACAU which was
+built to be independent of assertions systems.")
+    (license license:gpl3)))
+
+(define-public ecl-cacau
+  (sbcl-package->ecl-package sbcl-cacau))
+
+(define-public cl-cacau
+  (sbcl-package->cl-source-package sbcl-cacau))
+
 (define-public sbcl-check-it
   (let ((commit "b79c9103665be3976915b56b570038f03486e62f"))
     (package
@@ -634,11 +718,11 @@ by Chris Riesbeck.")
   (sbcl-package->cl-source-package sbcl-nst))
 
 (define-public sbcl-parachute
-  (let ((commit "86563473dc23fb1277d35a3ad2c911a6c8e5b0da")
-        (revision "1"))
+  (let ((commit "8bc3e1b5a1808341967aeb89516f9fab23cd1d9e")
+        (revision "0"))
     (package
       (name "sbcl-parachute")
-      (version (git-version "1.1.1" revision commit))
+      (version (git-version "1.5.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -646,13 +730,14 @@ by Chris Riesbeck.")
           (git-reference
            (url "https://github.com/Shinmera/parachute")
            (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-parachute" version))
          (sha256
-          (base32
-           "026crl465xqh3fnskfd4c1sxa9c33dfy702cf3l5apbjyj1dg20n"))))
+          (base32 "0cppp1sp9xqkgxgkwidhqzlsj03ywnar7z9mzwcliww8y0kv5555"))))
       (build-system asdf-build-system/sbcl)
       (inputs
-       (list sbcl-documentation-utils sbcl-form-fiddle))
+       (list sbcl-documentation-utils
+             sbcl-form-fiddle
+             sbcl-trivial-custom-debugger))
       (synopsis "Extensible and cross-compatible testing framework for Common Lisp")
       (description
        "Parachute is a simple-to-use and extensible testing framework.
@@ -839,6 +924,32 @@ take.")
 
 (define-public ecl-should-test
   (sbcl-package->ecl-package sbcl-should-test))
+
+(define-public sbcl-simplet
+  (package
+    (name "sbcl-simplet")
+    (version  "1.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/noloop/simplet")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "simplet" version))
+       (sha256
+        (base32 "1iwp3a43mns885k2arr7gbmyv5rsrjfvgarxickj7r2bfgwp1cnn"))))
+    (build-system asdf-build-system/sbcl)
+    (home-page "https://github.com/noloop/simplet")
+    (synopsis "Simple test runner in Common Lisp")
+    (description "This package provides a Common Lisp test runner system
+SIMPLET.")
+    (license license:gpl3)))
+
+(define-public ecl-simplet
+  (sbcl-package->ecl-package sbcl-simplet))
+
+(define-public cl-simplet
+  (sbcl-package->cl-source-package sbcl-simplet))
 
 (define-public sbcl-stefil
   (let ((commit "0398548ec95dceb50fc2c2c03e5fb0ce49b86c7a")

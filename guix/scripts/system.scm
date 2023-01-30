@@ -38,7 +38,6 @@
                (sqlite-register store-database-file call-with-database)
   #:autoload   (guix build store-copy) (copy-store-item)
   #:use-module (guix describe)
-  #:use-module (guix grafts)
   #:use-module (guix gexp)
   #:use-module (guix derivations)
   #:use-module (guix diagnostics)
@@ -92,6 +91,7 @@
   #:use-module (ice-9 match)
   #:use-module (rnrs bytevectors)
   #:export (guix-system
+            read-operating-system
 
             service-node-type
             shepherd-service-node-type))
@@ -106,6 +106,11 @@
   (make-user-module '((gnu system)
                       (gnu services)
                       (gnu system shadow))))
+
+;; Note: The procedure below is used in external projects such as Emacs-Guix.
+(define (read-operating-system file)
+  "Read the operating-system declaration from FILE and return it."
+  (load* file %user-module))
 
 
 ;;;
@@ -837,7 +842,10 @@ static checks."
     (check-mapped-devices os)
     (when (zero? (getuid))
       (check-file-system-availability (operating-system-file-systems os))
-      (check-initrd-modules os)))
+      (unless (%current-target-system)
+        ;; Skip the check if the user is making use of --target, as it cannot
+        ;; be checked against the running kernel.
+        (check-initrd-modules os))))
 
   (mlet* %store-monad
       ((sys       (system-derivation-for-action image action
@@ -1040,7 +1048,7 @@ Some ACTIONS support additional ARGS.\n"))
   (newline)
   (display (G_ "
       --graph-backend=BACKEND
-                         use BACKEND for 'extension-graphs' and 'shepherd-graph'"))
+                         use BACKEND for 'extension-graph' and 'shepherd-graph'"))
   (newline)
   (display (G_ "
   -I, --list-installed[=REGEXP]

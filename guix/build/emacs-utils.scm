@@ -75,10 +75,15 @@ true, evaluate using dynamic scoping."
           (string-append "--visit=" file)
           (string-append "--eval=" (expr->string expr))))
 
-(define (emacs-batch-disable-compilation file)
+(define* (emacs-batch-disable-compilation file #:key native?)
+  "Disable byte compilation for FILE.
+If NATIVE?, only disable native compilation."
   (emacs-batch-edit-file file
-    '(progn
-      (add-file-local-variable 'no-byte-compile t)
+    `(progn
+      (add-file-local-variable ',(if native?
+                                     'no-native-compile
+                                     'no-byte-compile)
+                               t)
       (basic-save-buffer))))
 
 (define-condition-type &emacs-batch-error &error
@@ -220,7 +225,7 @@ useful to avoid double quotes being added when the replacement is provided as
 a string."
     ((_ file (variable replacement modifier ...) ...)
      (emacs-substitute-sexps file
-       ((string-append "(def[a-z]+[[:space:]\n]+" variable "\\>")
+       ((string-append "(def[a-z]+[[:space:]\n]+" variable "\\_>")
         replacement
         modifier ...)
        ...))))

@@ -66,6 +66,8 @@
             shepherd-action-documentation
             shepherd-action-procedure
 
+            shepherd-configuration-action
+
             %default-modules
 
             shepherd-service-file
@@ -107,14 +109,15 @@
       (symlink (canonicalize-path "/run/current-system")
                "/run/booted-system")
 
-      ;; Close any remaining open file descriptors to be on the safe
-      ;; side.  This must be the very last thing we do, because
-      ;; Guile has internal FDs such as 'sleep_pipe' that need to be
-      ;; alive.
+      ;; Ensure open file descriptors are close-on-exec so shepherd doesn't
+      ;; inherit them.
       (let loop ((fd 3))
         (when (< fd 1024)
-          (false-if-exception (close-fdes fd))
-          (loop (+ 1 fd))))
+          (false-if-exception
+           (let ((flags (fcntl fd F_GETFD)))
+             (when (zero? (logand flags FD_CLOEXEC))
+               (fcntl fd F_SETFD (logior FD_CLOEXEC flags)))))
+          (loop (+ fd 1))))
 
       ;; Start shepherd.
       (execl #$(file-append shepherd "/bin/shepherd")
@@ -331,6 +334,16 @@ and return the resulting '.go' file. SHEPHERD is used as shepherd package."
                      ;; It's faster to build locally than to download.
                      #:options '(#:local-build? #t
                                  #:substitutable? #f)))))
+
+(define (shepherd-configuration-action file)
+  "Return a 'configuration' action to display FILE, which should be the name
+of the service's configuration file."
+  (shepherd-action
+   (name 'configuration)
+   (documentation "Display the name of this service's configuration file.")
+   (procedure #~(lambda (_)
+                  (format #t "~a~%" #$file)
+                  #$file))))
 
 (define (shepherd-configuration-file services shepherd)
   "Return the shepherd configuration file for SERVICES.  SHEPHERD is used

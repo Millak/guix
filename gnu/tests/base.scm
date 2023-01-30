@@ -1,6 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2022 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
+;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -45,10 +47,16 @@
   #:use-module (guix monads)
   #:use-module (guix modules)
   #:use-module (guix packages)
+  #:use-module (guix utils)
   #:use-module ((srfi srfi-1) #:hide (partition))
   #:use-module (ice-9 match)
   #:export (run-basic-test
             %test-basic-os
+            %test-linux-libre-5.15
+            %test-linux-libre-5.10
+            %test-linux-libre-5.4
+            %test-linux-libre-4.19
+            %test-linux-libre-4.14
             %test-halt
             %test-root-unmount
             %test-cleanup
@@ -423,6 +431,12 @@ info --version")
               (x
                (pk 'failure x #f))))
 
+          (test-assert "nscd configuration action"
+            (marionette-eval '(with-shepherd-action 'nscd ('configuration)
+                                                    results
+                                (file-exists? (car results)))
+                             marionette))
+
           (test-equal "nscd invalidate action"
             '(#t)                                 ;one value, #t
             (marionette-eval '(with-shepherd-action 'nscd ('invalidate "hosts")
@@ -509,32 +523,37 @@ info --version")
                 (file-exists? capture))))
 
           (test-assert "screen text"
-            (let ((text (marionette-screen-text marionette
-                                                #:ocr
-                                                #$(file-append ocrad
-                                                               "/bin/ocrad"))))
-              ;; Check whether the welcome message and shell prompt are
-              ;; displayed.  Note: OCR confuses "y" and "V" for instance, so
-              ;; we cannot reliably match the whole text.
-              (and (string-contains text "This is the GNU")
-                   (string-contains text
-                                    (string-append
-                                     "root@"
-                                     #$(operating-system-host-name os))))))
+            (wait-for-screen-text
+             marionette
+             (lambda (text)
+               ;; Check whether the welcome message and shell prompt are
+               ;; displayed.  Note: OCR confuses "y" and "V" for instance, so
+               ;; we cannot reliably match the whole text.
+               (and (string-contains text "This is the GNU")
+                    (string-contains text
+                                     (string-append
+                                      "root@"
+                                      #$(operating-system-host-name os)))))
+             #:ocr #$(file-append ocrad "/bin/ocrad")))
 
           (test-end))))
 
   (gexp->derivation name test))
 
-(define %test-basic-os
+(define* (test-basic-os #:optional (kernel linux-libre))
   (system-test
-   (name "basic")
+   (name (if (eq? kernel linux-libre)
+             "basic"
+             (string-append (package-name kernel) "-"
+                            (version-major+minor (package-version kernel)))))
    (description
     "Instrument %SIMPLE-OS, run it in a VM, and run a series of basic
-functionality tests.")
+functionality tests, using the given KERNEL.")
    (value
     (let* ((os  (marionette-operating-system
-                 %simple-os
+                 (operating-system
+                   (inherit %simple-os)
+                   (kernel kernel))
                  #:imported-modules '((gnu services herd)
                                       (guix combinators))))
            (vm  (virtual-machine os)))
@@ -542,7 +561,27 @@ functionality tests.")
       ;; set of services as the OS produced by
       ;; 'system-qemu-image/shared-store-script'.
       (run-basic-test (virtualized-operating-system os '())
-                      #~(list #$vm))))))
+                      #~(list #$vm)
+                      name)))))
+
+(define %test-basic-os
+  (test-basic-os))
+
+;; Ensure the LTS kernels are up to snuff, too.
+(define %test-linux-libre-5.15
+  (test-basic-os linux-libre-5.15))
+
+(define %test-linux-libre-5.10
+  (test-basic-os linux-libre-5.10))
+
+(define %test-linux-libre-5.4
+  (test-basic-os linux-libre-5.4))
+
+(define %test-linux-libre-4.19
+  (test-basic-os linux-libre-4.19))
+
+(define %test-linux-libre-4.14
+  (test-basic-os linux-libre-4.14))
 
 
 ;;;
@@ -694,7 +733,13 @@ in a loop.  See <http://bugs.gnu.org/26931>.")
 
             ;; Halt the system.
             (marionette-eval '(system* "/run/current-system/profile/sbin/halt")
-                             marionette))
+                             marionette)
+
+            (display "waiting for marionette to complete...")
+            (force-output)
+            (false-if-exception (waitpid (marionette-pid marionette)))
+            (display " done\n")
+            (force-output))
 
           ;; Remove the sockets used by the marionette above to avoid
           ;; EADDRINUSE.

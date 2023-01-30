@@ -148,12 +148,26 @@ joystick, and graphics hardware.")
                eudev                    ;for discovering input devices
                fcitx                    ;helps with CJK input
                glib
-               ibus
+               ibus-minimal
                libxkbcommon
                libxcursor               ;enables X11 cursor support
                wayland
                wayland-protocols)))
     (license license:bsd-3)))
+
+(define-public sdl2-2.0
+  (package
+    (inherit sdl2)
+    (name "sdl2")
+    (version "2.0.14")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append "https://libsdl.org/release/SDL2-"
+                              version ".tar.gz"))
+              (sha256
+               (base32
+                "1g1jahknv5r4yhh1xq5sf0md20ybdw1zh1i15lry26sq39bmn8fq"))))))
 
 (define-public libmikmod
   (package
@@ -624,14 +638,14 @@ sound and device input (keyboards, joysticks, mice, etc.).")
 (define-public guile-sdl2
   (package
     (name "guile-sdl2")
-    (version "0.7.0")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://files.dthompson.us/guile-sdl2/"
                                   "guile-sdl2-" version ".tar.gz"))
               (sha256
                (base32
-                "197dzkxw8nv92da56iv2r8ih5r3pr4pd5c5j2q83aqb78h4jqjl7"))))
+                "1v57ghgqp9m32b2x47dya9zb0xvvfs5v8q8ak2wi8fzabajfpxap"))))
     (build-system gnu-build-system)
     (arguments
      '(#:make-flags '("GUILE_AUTO_COMPILE=0")))

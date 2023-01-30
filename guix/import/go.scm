@@ -602,7 +602,8 @@ available versions:~{ ~a~}.")
 (define* (go-module->guix-package module-path #:key
                                   (goproxy "https://proxy.golang.org")
                                   version
-                                  pin-versions?)
+                                  pin-versions?
+                                  #:allow-other-keys)
   "Return the package S-expression corresponding to MODULE-PATH at VERSION, a Go package.
 The meta-data is fetched from the GOPROXY server and https://pkg.go.dev/.
 When VERSION is unspecified, the latest version available is used."
@@ -687,7 +688,7 @@ This package and its dependencies won't be imported.~%")
    package-name
    #:repo->guix-package
    (memoize
-    (lambda* (name #:key version repo)
+    (lambda* (name #:key version repo #:allow-other-keys)
       (receive (package-sexp dependencies)
           (go-module->guix-package* name #:goproxy goproxy
                                     #:version version

@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@pobox.com>
 ;;; Copyright © 2015-2017, 2019, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2015, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2017, 2018, 2019, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
@@ -26,7 +26,7 @@
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
 ;;; Copyright © 2021 Robby Zambito <contact@robbyzambito.me>
 ;;; Copyright © 2021, 2022 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2021, 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2021, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Daniel Meißner <daniel.meissner-i4k@ruhr-uni-bochum.de>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
@@ -62,6 +62,7 @@
   #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system qt)
   #:use-module (gnu packages)
   #:use-module (gnu packages acl)
   #:use-module (gnu packages admin)
@@ -74,11 +75,13 @@
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cryptsetup)
+  #:use-module (gnu packages cups)
   #:use-module (gnu packages curl)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages disk)
   #:use-module (gnu packages docbook)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages fcitx)
   #:use-module (gnu packages file)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages gawk)
@@ -92,7 +95,10 @@
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages hunspell)
+  #:use-module (gnu packages ibus)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages language)
   #:use-module (gnu packages libffi)
   #:use-module (gnu packages libunwind)
@@ -386,6 +392,81 @@ inappropriate content.")
      (list
       license:gpl2+
       license:lgpl2.1+))))
+
+(define-public maliit-framework
+  (package
+    (name "maliit-framework")
+    (version "2.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maliit/framework")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1dkjxvfxg56hfy70j6ibfklfyv57jiha4vgc3ggl60r5kjx65s5b"))))
+    (build-system cmake-build-system)
+    (native-inputs (list extra-cmake-modules
+                         wayland-protocols
+                         pkg-config
+                         doxygen
+                         graphviz
+                         `(,glib "bin"))) ;for gdbus-codegen))
+    (inputs (list qtbase-5
+                  qtdeclarative-5
+                  qtwayland-5
+                  wayland
+                  libxkbcommon
+                  dbus
+                  eudev
+                  glib))
+    (home-page "https://github.com/maliit/framework")
+    (synopsis "Core libraries of Maliit")
+    (description "This package provides Maliit provides a flexible input
+method framework.")
+    (license license:lgpl2.1+)))
+
+(define-public maliit-keyboard
+  (package
+    (name "maliit-keyboard")
+    (version "2.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/maliit/keyboard")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0g89lckl4wzwamc89hs8871fbiyrsjwzk5b6ic4vhc4d1clyqzaw"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'install 'install-schemas
+                          (lambda* (#:key source outputs #:allow-other-keys)
+                            (with-directory-excursion (string-append #$output
+                                                       "/share/glib-2.0/schemas")
+                              (invoke "glib-compile-schemas" ".")))))))
+    (native-inputs (list extra-cmake-modules pkg-config gettext-minimal
+                         `(,glib "bin")))
+    (inputs (list hunspell
+                  glib
+                  libchewing
+                  libpinyin
+                  maliit-framework
+                  presage
+                  qtbase-5
+                  qtdeclarative-5
+                  qtmultimedia-5
+                  qtquickcontrols2-5))
+    (home-page "https://github.com/maliit/keyboard")
+    (synopsis "Maliit Keyboard")
+    (description
+     "This package provides virtual keyboard for Wayland and X11
+display servers.  It supports many different languages and emoji.")
+    (license license:gpl3+)))
 
 (define-public xdg-utils
   (package
@@ -739,7 +820,7 @@ of a the system to know what users are logged in, and where.")
 (define-public basu
   (package
     (name "basu")
-    (version "0.2.0")
+    (version "0.2.1")
     (home-page "https://git.sr.ht/~emersion/basu")
     (source
      (origin
@@ -750,7 +831,7 @@ of a the system to know what users are logged in, and where.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h23n7wg18xc7xwldca18wi00iajyliixwicqyvv38qx831d8q18"))))
+        (base32 "054mg6f9aqi0i3i3w8fc37qnns1vng3qq5b8nfd9g51wi8h891nc"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
@@ -912,32 +993,37 @@ with localed.  This package is extracted from the broader systemd package.")
 (define-public packagekit
   (package
     (name "packagekit")
-    (version "1.1.13")
+    (version "1.2.5")
     (source (origin
-             (method url-fetch)
-             (uri (string-append
-                   "https://www.freedesktop.org/software/"
-                   "PackageKit/releases/"
-                   "PackageKit-" version ".tar.xz"))
-             (sha256
-              (base32
-               "1dr1laic65ld95abp2yxbwvijnngh0dwyb1x49x4wjm5rhq43dl8"))))
-    (build-system gnu-build-system)
+              (method url-fetch)
+              (uri (string-append "https://www.freedesktop.org/software/"
+                                  "PackageKit/releases/" "PackageKit-" version
+                                  ".tar.xz"))
+              (sha256
+               (base32
+                "09md23m4fw87x264mls1f5isrswk6iw7y9g4hr1nib008wbbk370"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f
-       #:make-flags (list (string-append "BASH_COMPLETIONS_DIR="
-                                         %output "/etc/bash_completion.d"))
-       #:configure-flags
-       '("--disable-systemd")))
+     (list #:tests? #f
+           #:configure-flags #~'("-Dsystemd=false" "-Doffline_update=false")))
     (native-inputs
-     `(("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("glib:bin" ,glib "bin")))
+     (list bash-completion
+           docbook-xsl
+           gettext-minimal
+           `(,glib "bin")
+           gobject-introspection
+           libxml2                      ;for XML_CATALOG_FILES
+           libxslt
+           pkg-config
+           python-wrapper
+           vala))
     (inputs
-     (list glib bash-completion polkit))
-    (propagated-inputs
-     (list sqlite))
+     (list glib
+           gstreamer
+           gst-plugins-base
+           gtk+
+           polkit))
+    (propagated-inputs (list sqlite))
     (home-page "https://www.freedesktop.org/software/PackageKit/")
     (synopsis "API for package management, through D-Bus")
     (description
@@ -946,6 +1032,66 @@ e.g. updating, removing and installing software.  Through supporting many
 backends, PackageKit can perform these tasks using the appropriate package
 manager for the current system.")
     (license license:gpl2+)))
+
+(define-public power-profiles-daemon
+  (package
+    (name "power-profiles-daemon")
+    (version "0.12")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1wqcajbj358zpyj6y4h1v34y2yncq76wqxd0jm431habcly0bqyr"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:configure-flags #~(list "-Dsystemdsystemunitdir=false")
+           #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'fake-pkexec
+                 (lambda _ (setenv "PKEXEC_UID" "-1")))
+               (add-before 'configure 'correct-polkit-dir
+                 (lambda _
+                   (substitute* "meson.build"
+                     (("polkit_gobject_dep\\..*")
+                      (string-append "'" #$output "/share/polkit-1/actions'")))))
+               (add-after 'install 'wrap-program
+                 (lambda _
+                   (wrap-program
+                       (string-append #$output "/bin/powerprofilesctl")
+                     `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
+                     `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+    (native-inputs
+     (list `(,glib "bin") gobject-introspection pkg-config python vala))
+    (inputs
+     (list bash-minimal                           ;for 'wrap-program'
+           dbus
+           dbus-glib
+           libgudev
+           glib polkit
+           python
+           python-pygobject
+           upower))
+    (home-page "https://gitlab.freedesktop.org/hadess/power-profiles-daemon")
+    (synopsis "Power profile handling over D-Bus")
+    (description
+     "power-profiles-daemon offers to modify system behaviour based upon
+user-selected power profiles.  There are 3 different power profiles, a
+\"balanced\" default mode, a \"power-saver\" mode, as well as a
+\"performance\" mode.  The first 2 of those are available on every system.
+The \"performance\" mode is only available on select systems and is
+implemented by different \"drivers\" based on the system or systems it
+targets.  In addition to those 2 or 3 modes (depending on the system),
+\"actions\" can be hooked up to change the behaviour of a particular device.
+For example, this can be used to disable the fast-charging for some USB
+devices when in power-saver mode.")
+    (license license:gpl3)))
+
 
 (define-public python-libevdev
   (package
@@ -1130,6 +1276,29 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
         . "https://wayland.freedesktop.org/releases.html")))
     (license license:expat)))
 
+(define-public wayland-utils
+  (package
+    (name "wayland-utils")
+    (version "1.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wayland/wayland-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "04k1yhyh7h4xawbhpz9pf6cpfmmp1l862fdgsvvnyp4hg9n3j9aj"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config))
+    (inputs (list libdrm wayland wayland-protocols))
+    (home-page "https://wayland.freedesktop.org/")
+    (synopsis "Display information about the Wayland protocols")
+    (description "This package provides @code{wayland-info} tool that can be
+used to check which Wayland protocols and versions are advertised by the Wayland
+compositor.")
+    (license license:expat)))
+
 (define-public waylandpp
   (package
     (name "waylandpp")
@@ -1160,66 +1329,67 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
 (define-public weston
   (package
     (name "weston")
-    (version "9.0.0")
+    (version "10.0.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                    "https://wayland.freedesktop.org/releases/"
-                    "weston-" version ".tar.xz"))
+                    "https://gitlab.freedesktop.org/wayland/weston/-/releases/"
+                    version "/downloads/weston-" version ".tar.xz"))
               (sha256
                (base32
-                "1zlql0xgiqc3pvgbpnnvj4xvpd91pwva8qf83xfb23if377ddxaw"))))
+                "1rs92p7sfkw9lqlkfnqh5af19ym3x8l3hp3yfv117m7qv6h6qr49"))))
     (build-system meson-build-system)
     (native-inputs
-     (list mscgen pkg-config xorg-server))
+     (list mscgen pkg-config python-3 xorg-server))
     (inputs
-     `(("cairo" ,cairo-xcb)
-       ("colord" ,colord)
-       ("dbus" ,dbus)
-       ("elogind" ,elogind)
-       ("freerdp" ,freerdp)
-       ("glib" ,glib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("lcms" ,lcms)
-       ("libdrm" ,libdrm)
-       ("libevdev" ,libevdev)
-       ("libinput" ,libinput-minimal)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libunwind" ,libunwind)
-       ("libva" ,libva)
-       ("libwebp" ,libwebp)
-       ("libx11" ,libx11)
-       ("libxcb" ,libxcb)
-       ("libxcursor" ,libxcursor)
-       ("libxml2" ,libxml2)
-       ("mesa" ,mesa)
-       ("mtdev" ,mtdev)
-       ("linux-pam" ,linux-pam)
-       ("pango" ,pango)
-       ("pipewire" ,pipewire)
-       ("wayland-protocols" ,wayland-protocols)
-       ("xorg-server-xwayland" ,xorg-server-xwayland)))
+     (list cairo-xcb
+           colord
+           dbus
+           elogind
+           freerdp
+           glib
+           gstreamer
+           gst-plugins-base
+           lcms
+           libdrm
+           libevdev
+           libinput-minimal
+           libjpeg-turbo
+           libpng
+           libunwind
+           libva
+           libwebp
+           libx11
+           libxcb
+           libxcursor
+           libxml2
+           mesa
+           mtdev
+           linux-pam
+           pango
+           pipewire
+           wayland-protocols
+           xorg-server-xwayland))
     (propagated-inputs
      (list libxkbcommon pixman wayland))
     (arguments
-     `(#:configure-flags
-       (list
-        ;; Otherwise, the RUNPATH will lack the final path component.
-        (string-append "-Dc_link_args=-Wl,-rpath="
-                       (assoc-ref %outputs "out") "/lib:"
-                       (assoc-ref %outputs "out") "/lib/weston:"
-                       (assoc-ref %outputs "out") "/lib/libweston-"
-                       ,(version-major (package-version this-package)))
-        "-Dbackend-default=auto"
-        "-Dsystemd=false"
-        (string-append "-Dxwayland-path="
-                       (assoc-ref %build-inputs "xorg-server-xwayland")
-                       "/bin/Xwayland"))
-       #:parallel-tests? #f           ; Parallel tests cause failures.
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list
+         ;; Otherwise, the RUNPATH will lack the final path component.
+         (string-append "-Dc_link_args=-Wl,-rpath="
+                        #$output "/lib:"
+                        #$output "/lib/weston:"
+                        #$output "/lib/libweston-"
+                        #$(version-major (package-version this-package)))
+         "-Dbackend-default=auto"
+         "-Dsystemd=false"
+         (string-append "-Dxwayland-path="
+                        #$(this-package-input "xorg-server-xwayland")
+                        "/bin/Xwayland"))
+      #:parallel-tests? #f              ; Parallel tests cause failures.
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'configure 'use-elogind
            (lambda _
              ;; Use elogind instead of systemd
@@ -1228,23 +1398,19 @@ protocol either in Wayland core, or some other protocol in wayland-protocols.")
              (substitute* '("libweston/launcher-logind.c"
                             "libweston/weston-launch.c")
                (("#include <systemd/sd-login.h>")
-                "#include <elogind/sd-login.h>"))
-             #t))
+                "#include <elogind/sd-login.h>"))))
          (add-after 'configure 'patch-confdefs.h
            (lambda _
-             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")
-             #t))
+             (system "echo \"#define HAVE_SYSTEMD_LOGIN_209 1\" >> confdefs.h")))
          (add-before 'check 'setup
            (lambda _
              (setenv "HOME" (getcwd))
-             (setenv "XDG_RUNTIME_DIR" (getcwd))
-             #t))
+             (setenv "XDG_RUNTIME_DIR" (getcwd))))
          (add-before 'check 'start-xorg-server
            (lambda* (#:key inputs #:allow-other-keys)
              ;; The test suite requires a running X server.
              (system "Xvfb :1 &")
-             (setenv "DISPLAY" ":1")
-             #t)))))
+             (setenv "DISPLAY" ":1"))))))
     (home-page "https://wayland.freedesktop.org")
     (synopsis "Reference implementation of a Wayland compositor")
     (description "Weston is the reference implementation of a Wayland
@@ -1799,7 +1965,7 @@ that wish to perform colour calibration.")
 (define-public libfprint
   (package
     (name "libfprint")
-    (version "1.94.4")
+    (version "1.94.5")
     (source
      (origin
        (method git-fetch)
@@ -1808,7 +1974,7 @@ that wish to perform colour calibration.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1wfd2svsq26wizhsaifnr74havswbc1rlfm79b36yrhw9n7c3jqb"))))
+        (base32 "1l1ak7y2kz0nrdkfj41n7h34dyykgzdg50y752ayk3ginp6szr7r"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags
@@ -2157,14 +2323,14 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
 (define-public udiskie
   (package
     (name "udiskie")
-    (version "2.3.3")
+    (version "2.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "udiskie" version))
        (sha256
         (base32
-         "0sagdmsc5km32h3jvgj843p8bicrrgfz26qhl04ibxmas6725zr0"))))
+         "0z0gk8l6rv4np29kfdalmy4q3900005sxhjg0jz1aa8irdcsp1qz"))))
     (build-system python-build-system)
     (native-inputs
      `(("asciidoc" ,asciidoc)
@@ -2191,8 +2357,7 @@ Python, that binds to the C library @code{uchardet} to increase performance.")
              (let ((out (assoc-ref outputs "out"))
                    (gi-typelib-path (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append out "/bin/udiskie")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))))
     (home-page "https://github.com/coldfix/udiskie")
     (synopsis "Automounter for removable media")
     (description
@@ -2217,7 +2382,7 @@ Its features include:
 (define-public plymouth
   (package
     (name "plymouth")
-    (version "0.9.5")
+    (version "22.02.122")
     (source
      (origin
        (method url-fetch)
@@ -2225,18 +2390,12 @@ Its features include:
                            "plymouth/releases/" name "-" version ".tar.xz"))
        (sha256
         (base32
-         "11nfgw8yzmdbnbmyd1zfvhj4qh19w1nw0nraai08628x6mzjbbpc"))))
+         "1sysx8s7w870iawk5qlaq44x4cfqfinasiy4d3l3q0r14925218h"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-logo="
-                            "/etc/plymouth/logo.png")
-             (string-append "--with-background-color="
-                            "0x00ff00")
-             (string-append "--with-background-start-color-stop="
-                            "0xff0000")
-             (string-append "--with-background-end-color-stop="
-                            "0x0000ff")
+     (list
+      #:configure-flags
+      '(list "--with-logo=/var/run/plymouth/logo.png"
              "--localstatedir=/var"
              "--with-boot-tty=/dev/console"
              "--without-system-root-install"
@@ -2246,31 +2405,31 @@ Its features include:
              ;; Disable GTK to dramatically reduce the closure
              ;; size from ~800 MiB to a little more than 200 MiB
              "--disable-gtk")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'make-reproducible
-           (lambda _
-             (substitute* "src/main.c"
-               (("__DATE__") "\"guix\""))))
-         (add-before 'configure 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "docs/Makefile.in"
-               (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
-                (string-append (assoc-ref inputs "docbook-xsl")
-                               "/xml/xsl/docbook-xsl-"
-                               ,(package-version docbook-xsl)
-                               "/manpages/docbook.xsl")))
-             (setenv "XML_CATALOG_FILES"
-                     (string-append (assoc-ref inputs "docbook-xml")
-                                    "/xml/dtd/docbook/catalog.xml")))))))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'make-reproducible
+            (lambda _
+              (substitute* "src/main.c"
+                (("__DATE__") "\"guix\""))))
+          (add-before 'configure 'fix-docbook
+            (lambda _
+              (substitute* "docs/Makefile.in"
+                (("http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl")
+                 (string-append #$(this-package-native-input "docbook-xsl")
+                                "/xml/xsl/docbook-xsl-"
+                                #$(package-version (this-package-native-input "docbook-xsl"))
+                                "/manpages/docbook.xsl")))
+              (setenv "XML_CATALOG_FILES"
+                      (string-append #$(this-package-native-input "docbook-xml")
+                                     "/xml/dtd/docbook/catalog.xml")))))))
     (inputs
      (list glib pango libdrm libpng eudev))
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("libxslt" ,libxslt)
-       ("docbook-xsl" ,docbook-xsl)
-       ("docbook-xml" ,docbook-xml)))
+     (list gettext-minimal
+           pkg-config
+           libxslt
+           docbook-xsl
+           docbook-xml))
     (synopsis "Graphical boot animation (splash) and logger")
     (home-page "https://www.freedesktop.org/wiki/Software/Plymouth/")
     (description
@@ -2381,6 +2540,83 @@ into the Unity menu bar.  Based on KSNI, it also works in KDE and will
 fallback to generic Systray support if none of those are available.")
       (license license:lgpl2.1+))))
 
+(define-public snixembed
+  (package
+    (name "snixembed")
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~steef/snixembed/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14fkgxww4qbsxyqj9h3yqpdqsdz9r6015c9graas50r5b5ggd3bj"))
+              (modules '((guix build utils)))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f ;no tests
+           #:make-flags #~(list "CC=gcc"
+                                (string-append "PREFIX="
+                                               #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)))) ;no configure
+    (inputs (list gtk+ libdbusmenu))
+    (native-inputs (list pkg-config vala))
+    (synopsis "Proxy StatusNotifierItems as XEmbedded systemtray-spec icons")
+    (home-page "https://git.sr.ht/~steef/snixembed")
+    (description
+     "Snixembed is a program to proxy StatusNotifierItems as
+XEmbedded systemtray-spec icons.  This allows programs that only support the
+newer StatusNotifierItem to have the older XEmbedded systemtray support.
+While snixembed works fine with most setups, some bars and DEs provide their
+own optional SNI support, which should be preferred when available.
+
+Currently supported:
+@itemize
+@item icons (by pixmap and by freedesktop name)
+@item activation on left mouse button
+@item context menu on right mouse button (Menu dbusmenu or ContextMenu)
+@item tooltips (on hover, all markup except hyperlinks)
+@item limited AppIndicator support as a fallback
+@end itemize")
+    (license license:isc)))
+
+(define-public flatpak-xdg-utils
+  (package
+    (name "flatpak-xdg-utils")
+    (version "1.0.5")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/flatpak/flatpak-xdg-utils")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1q8wsc46fcjm737hz10jvgci5wl9sz8hj9aix2y2zdj11bqib9af"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "dbus-run-session" "--" "meson" "test"
+                                      "--print-errorlogs")))))))
+    (inputs (list glib))
+    (native-inputs (list dbus pkg-config))
+    (synopsis
+     "Simple portal-based commandline tools for use inside sandboxes")
+    (description
+     "This package contains a number of commandline utilities for use inside
+Flatpak sandboxes and other containers, like @command{guix shell --container}.
+They work by talking to portals.  Currently, there is flatpak-spawn for
+running commands in sandboxes as well as xdg-open and xdg-email, which are
+compatible with the well-known scripts of the same name.")
+    (home-page "https://github.com/flatpak/flatpak-xdg-utils")
+    (license (list license:lgpl2.0+ license:lgpl2.1+))))
+
 (define-public libportal
   (package
     (name "libportal")
@@ -2450,7 +2686,7 @@ fallback to generic Systray support if none of those are available.")
        ("libportal" ,libportal)
        ("dbus" ,dbus)
        ("geoclue" ,geoclue)
-       ("pipewire" ,pipewire-0.3)
+       ("pipewire" ,pipewire)
        ("fuse" ,fuse-3)))
     (arguments
      `(#:configure-flags
@@ -2541,6 +2777,42 @@ which uses GTK+ and various pieces of GNOME infrastructure, such as the
 interfaces.")
     (license license:lgpl2.1+)))
 
+(define-public xdg-desktop-portal-kde
+  (package
+    (name "xdg-desktop-portal-kde")
+    (version "5.25.5")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://kde/stable/plasma/" version "/"
+                                  name "-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0l3lmwihxyl65y0mkyg3afk1k6gc0ldjw2vg92g7yydbgmn39q7k"))))
+    (build-system qt-build-system)
+    (native-inputs (list extra-cmake-modules pkg-config))
+    (inputs (list cups
+                  kcoreaddons
+                  kconfig
+                  ki18n
+                  kdeclarative
+                  kio
+                  kirigami
+                  knotifications
+                  plasma-framework
+                  plasma-wayland-protocols
+                  kwayland
+                  kwidgetsaddons
+                  kwindowsystem
+                  kiconthemes
+                  qtdeclarative-5
+                  qtwayland-5
+                  wayland))
+    (synopsis "Backend implementation for xdg-desktop-portal using Qt/KF5")
+    (description "This package provides a backend implementation
+for xdg-desktop-portal that is using Qt/KF5.")
+    (home-page "https://invent.kde.org/plasma/xdg-desktop-portal-kde")
+    (license license:lgpl2.0+)))
+
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
@@ -2574,7 +2846,12 @@ interfaces.")
                   (string-append "execl(\"" sh "\", \"" sh "\"")))
                (substitute* "src/screencast/screencast.c"
                  (("execvp\\(\"sh")
-                  (string-append "execvp(\"" sh)))))))))
+                  (string-append "execvp(\"" sh))))))
+         (add-after 'install 'install-documentation
+           (lambda* (#:key outputs #:allow-other-keys)
+             (install-file "../source/README.md"
+                           (string-append (assoc-ref outputs "out")
+                                          "/share/doc/" ,name)))))))
     (native-inputs
      (list cmake pkg-config))
     (inputs (list elogind
@@ -2582,7 +2859,7 @@ interfaces.")
                   grim
                   iniparser
                   libinih
-                  pipewire-0.3
+                  pipewire
                   slurp
                   wayland
                   wayland-protocols))

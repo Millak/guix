@@ -9,9 +9,9 @@
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -59,6 +59,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system haskell)
   #:use-module (guix build-system python)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system go)
   #:use-module (guix build-system qt)
@@ -128,10 +129,10 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages gnuzilla))
 
-(define-public bitcoin-core-0.21
+(define-public bitcoin-core-23.0
   (package
     (name "bitcoin-core")
-    (version "0.21.2")
+    (version "23.0")
     (source (origin
               (method url-fetch)
               (uri
@@ -139,7 +140,7 @@
                               version "/bitcoin-" version ".tar.gz"))
               (sha256
                (base32
-                "17nvir1yc6mf4wr1fn4xsabw49cd5p9vig8wj77vv4anzi8zfij1"))))
+                "01fcb90pqip3v77kljykx51cmg7jdg2cmp7ys0a40svdkps8nx16"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf
@@ -206,23 +207,10 @@ of the bitcoin protocol.  This package provides the Bitcoin Core command
 line client and a client based on Qt.")
     (license license:expat)))
 
-(define-public bitcoin-core-0.20
-  (package
-    (inherit bitcoin-core-0.21)
-    (version "0.20.2")
-    (source (origin
-              (method url-fetch)
-              (uri
-               (string-append "https://bitcoincore.org/bin/bitcoin-core-"
-                              version "/bitcoin-" version ".tar.gz"))
-              (sha256
-               (base32
-                "14smp5vmh7baabl856wlg7w7y5910jhx6c02mlkm4hkywf3yylky"))))))
-
 ;; The support lifetimes for bitcoin-core versions can be found in
 ;; <https://bitcoincore.org/en/lifecycle/#schedule>.
 
-(define-public bitcoin-core bitcoin-core-0.21)
+(define-public bitcoin-core bitcoin-core-23.0)
 
 (define-public hledger
   (package
@@ -239,6 +227,14 @@ line client and a client based on Qt.")
         (base32
          "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
     (build-system haskell-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "hledger.info" (string-append #$output "/share/info"))
+              (install-file "hledger.1" (string-append #$output "/man/man1")))))))
     (inputs
      (list ghc-ansi-terminal
            ghc-base-compat-batteries
@@ -283,14 +279,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.5.6")
+    (version "5.6.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://homebank.free.fr/public/homebank-"
-                                  version ".tar.gz"))
+              (uri (string-append "http://homebank.free.fr/public/sources/"
+                                  "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "1nn75wzk9h82zsakxng1v94nlg7hq3ssicvskl1m5hg4fa68w3j6"))))
+                "03wgyc777bzys32iv32yf7aj3z4hx87dskq1maw9l9jkqlqrqj1s"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -478,6 +474,7 @@ This package provides the Emacs mode.")
                 (uri (git-reference
                       (url "https://github.com/narendraj9/hledger-mode")
                       (commit commit)))
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
                   "0xmcfpr3rxli1adwypg18npl8hb8ak5rg6a6i26inzzqja6vr897"))))
@@ -551,7 +548,7 @@ do so.")
 (define-public electrum
   (package
     (name "electrum")
-    (version "4.2.1")
+    (version "4.3.2")
     (source
      (origin
        (method url-fetch)
@@ -559,7 +556,7 @@ do so.")
                            version "/Electrum-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0w41411zq07kx0351wxkmpn0wr42wd2nx0m6v0iwvpsggx654b6r"))
+        (base32 "1kbyinm9fnxpx9chkyd11yr9rxvcxvw3ml7kzvxcfa8v7jnl0dmx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -626,7 +623,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
 (define-public electron-cash
   (package
     (name "electron-cash")
-    (version "4.2.11")
+    (version "4.2.12")
     (source
      (origin
        (method git-fetch)
@@ -635,7 +632,7 @@ other machines/servers.  Electrum does not download the Bitcoin blockchain.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1g0xnb63c52l379zrqkfhxlkg1d2hf2dgjs2swspa0vah845r282"))))
+        (base32 "1bfnfpdyi3q5zq0zj07dq82aj3cihnr7j82gy4ch97182lsl6nms"))))
     (build-system python-build-system)
     (arguments
      (list
@@ -707,7 +704,7 @@ blockchain.")
   ;; the system's dynamically linked library.
   (package
     (name "monero")
-    (version "0.18.1.1")
+    (version "0.18.1.2")
     (source
      (origin
        (method git-fetch)
@@ -725,7 +722,7 @@ blockchain.")
             delete-file-recursively
             '("external/miniupnp" "external/rapidjson"))))
        (sha256
-        (base32 "050rf4c1i42d0vhcb3hqrrndr2l45w1qg4h62cagk0nmq5va6xj7"))))
+        (base32 "033hfc98gv28x05gc1ln6dmyc45cki4qdylmz35wh4dchyr74pf9"))))
     (build-system cmake-build-system)
     (native-inputs
      (list doxygen
@@ -812,7 +809,7 @@ the Monero command line client and daemon.")
 (define-public monero-gui
   (package
     (name "monero-gui")
-    (version "0.18.1.1")
+    (version "0.18.1.2")
     (source
      (origin
        (method git-fetch)
@@ -828,7 +825,7 @@ the Monero command line client and daemon.")
            ;; See the 'extract-monero-sources' phase.
            (delete-file-recursively "monero")))
        (sha256
-        (base32 "0zh0sf7acr1a4s5kmp9fpjd2wr78qv74z1xhkwrkkn9ainp4qfaz"))))
+        (base32 "1lwlkqj8liflk0jfzmlclm1xca0x3z8v3kcbzd671rgismm8v332"))))
     (build-system qt-build-system)
     (native-inputs
      `(,@(package-native-inputs monero)
@@ -884,9 +881,38 @@ the Monero command line client and daemon.")
                                      "\";")))))
                (replace 'install
                  (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (install-file "../build/bin/monero-wallet-gui" bin))))
+                   ;; Binary
+                   (let ((dir (string-append #$output "/bin")))
+                     (mkdir-p dir)
+                     (install-file "../build/bin/monero-wallet-gui" dir))
+                   ;; Icons
+                   (for-each
+                    (lambda (size)
+                      (let ((dir (string-append #$output
+                                                "/share/icons/hicolor/"
+                                                size
+                                                "/apps")))
+                        (mkdir-p dir)
+                        (copy-file (string-append "../source/images/appicons/"
+                                                  size ".png")
+                                   (string-append dir
+                                                  "/monero-gui.png"))))
+                    '("16x16" "24x24" "32x32" "48x48"
+                      "64x64" "96x96" "128x128" "256x256"))
+                   ;; Menu entry file
+                   (let ((dir (string-append #$output "/share/applications")))
+                     (mkdir-p dir)
+                     (call-with-output-file
+                         (string-append dir "/monero-gui.desktop")
+                       (lambda (port)
+                         (format port
+                                 "[Desktop Entry]~@
+                                  Type=Application~@
+                                  Name=Monero wallet~@
+                                  Exec=~a/bin/monero-wallet-gui~@
+                                  Icon=monero-gui~@
+                                  Categories=Office;Finance;~%"
+                                 #$output))))))
                (add-after 'qt-wrap 'install-monerod-link
                  ;; The monerod program must be available so that
                  ;; monero-wallet-gui can start a Monero daemon if necessary.
@@ -899,6 +925,23 @@ the Monero command line client and daemon.")
      "Monero is a secure, private, untraceable currency.  This package provides
 the Monero GUI client.")
     (license license:bsd-3)))
+
+(define-public python-bech32
+  (package
+    (name "python-bech32")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "bech32" version))
+              (sha256
+               (base32
+                "16fq5cfy5id9hp123ylhpl55pf38xwk0hv7sziqpig838qhvhvbx"))))
+    (build-system python-build-system)
+    (home-page "https://github.com/fiatjaf/bech32")
+    (synopsis "Reference implementation for Bech32 and Segwit addresses")
+    (description "This package provides a python reference implementation for
+Bech32 and segwit addresses.")
+    (license license:expat)))
 
 (define-public python-trezor-agent
   ;; It is called 'libagent' in pypi; i.e. this is the library as opposed to
@@ -1330,25 +1373,25 @@ main features are:
 (define-public silkaj
   (package
     (name "silkaj")
-    (version "0.7.6")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "silkaj" version))
        (sha256
-        (base32 "0hrn0jwg415z7wjkp0myvw85wszlfi18f56j03075xxakr4dmi2j"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:tests? #f))                    ;no test
-    (inputs
-     `(("click" ,python-click)
-       ("duniterpy" ,python-duniterpy)
-       ("pynacl" ,python-pynacl)
-       ("tabulate" ,python-tabulate)
-       ("texttable" ,python-texttable)))
+        (base32 "0p8jqnswrrxri8i2ikdz8mij7gks0yab3wdcb37jf2kjwmrwanpk"))))
+    (build-system pyproject-build-system)
+    (native-inputs
+     (list python-poetry-core))
+    (propagated-inputs
+     (list python-click
+           python-duniterpy
+           python-pendulum
+           python-tabulate
+           python-texttable))
     (home-page "https://git.duniter.org/clients/python/silkaj")
     (synopsis "Command line client for Duniter network")
-    (description "@code{Silkaj} is a command line client for the
+    (description "Silkaj is a command line client for the
 @uref{https://github.com/duniter/duniter/, Duniter} network.
 
 Its features are:
@@ -1639,7 +1682,7 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
 (define-public libofx
   (package
     (name "libofx")
-    (version "0.10.7")
+    (version "0.10.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1648,13 +1691,14 @@ a client based on Qt.  This is a fork of Bitcoin Core.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k3ygavyb9b3f1ra62dsa46iiia0a1588yn3zy7bh7w4vfcrbd6d"))))
+                "120hyhs4fkxrgpvd2p0hpf5v8dq0jjql2fzllk77m33m1c82pr18"))))
     (build-system gnu-build-system)
     (arguments
      (list
       #:parallel-build? #f              ;fails with -j64
       #:configure-flags
-      #~(list (string-append "--with-opensp-includes="
+      #~(list "--disable-static"
+              (string-append "--with-opensp-includes="
                              (search-input-directory %build-inputs
                                                      "include/OpenSP")))))
     (native-inputs
@@ -1899,8 +1943,8 @@ generate a variety of reports from them, and provides a web interface.")
 (define-public emacs-beancount
   ;; Note that upstream has not made any release since this project moved
   ;; into its own repository (it was originally part of beancount itself)
-  (let ((commit "dbafe6a73d90c1f64d457b356b9dbb43499f70d5")
-        (revision "0"))
+  (let ((commit "687775da63784d153a3c1cfee9801090c6b51842")
+        (revision "1"))
     (package
       (name "emacs-beancount")
       (version (git-version "0.0.0" revision commit))
@@ -1912,7 +1956,7 @@ generate a variety of reports from them, and provides a web interface.")
                (commit commit)))
          (sha256
           (base32
-           "0v9bws2gv5b00x829p7hrcxqgdp7iwxvv1vhfjka81qrw6w1fvjw"))
+           "08383yqqanx29al1hg1r6ndx3gwjg6fj7kl340f1zz9m9cfiyvg3"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (home-page "https://github.com/beancount/beancount-mode")
@@ -2132,7 +2176,7 @@ and manipulation.")
 (define-public xmrig
   (package
     (name "xmrig")
-    (version "6.18.0")
+    (version "6.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2140,7 +2184,7 @@ and manipulation.")
              (url "https://github.com/xmrig/xmrig")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "1ncnfjpjwjdv29plyiam2nh01bfni49sgfi3qkijygi1450w71dx"))
+       (sha256 (base32 "0f0kly374pkgnpnx60hac0bg9297a5zhycss6p37iavayn28jg39"))
        (modules '((guix build utils)))
        (snippet
         ;; TODO: Try to use system libraries instead of bundled ones in
@@ -2188,7 +2232,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "2.2.1")
+    (version "2.6")
     (source
      (origin
        (method git-fetch)
@@ -2197,7 +2241,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "19pn7axj96yvza2x7678rs79c2vgmhl8d7f9ki72v2n6l2630fw8"))
+       (sha256 (base32 "0832mv3f4c61w8s25higjbmmajjkvjdriw1xfygjiw5qxdcs202z"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively

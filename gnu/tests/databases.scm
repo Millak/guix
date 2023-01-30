@@ -430,6 +430,9 @@ data double PRECISION NULL
           (test-assert "mysql_upgrade completed"
             (wait-for-file "/var/lib/mysql/mysql_upgrade_info" marionette))
 
+          (test-assert "socket is ready"
+            (wait-for-unix-socket "/run/mysqld/mysqld.sock" marionette))
+
           (test-eq "create database"
             0
             (marionette-eval

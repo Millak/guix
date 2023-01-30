@@ -37,6 +37,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system perl)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
@@ -53,6 +54,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)               ;libnotify
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages image)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
@@ -170,7 +172,7 @@ etc. via a Web interface.  Features include:
 (define-public zabbix-agentd
   (package
     (name "zabbix-agentd")
-    (version "6.0.8")
+    (version "6.0.12")
     (source
      (origin
        (method url-fetch)
@@ -178,7 +180,7 @@ etc. via a Web interface.  Features include:
              "https://cdn.zabbix.com/zabbix/sources/stable/"
              (version-major+minor version) "/zabbix-" version ".tar.gz"))
        (sha256
-        (base32 "0ijf5d0kl2wb6amlz3bqfh7xg4wy00n1prislhszclj01sn0gy1g"))
+        (base32 "04083aa63bzfg5jp958nypbqr0hlcbhj73whlinr1ri3x1z0caz7"))
        (modules '((guix build utils)))
        (snippet
         '(substitute* '("src/zabbix_proxy/proxy.c"
@@ -188,12 +190,17 @@ etc. via a Web interface.  Features include:
             "/run/setuid-programs/fping")))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       '("--enable-agent" "--enable-ipv6" "--with-libpcre2")))
+     (list #:configure-flags
+           #~(list "--enable-agent"
+                   "--enable-ipv6"
+                   "--with-libpcre2"
+                   "--with-gnutls"
+                   (string-append "--with-gnutls="
+                                  (assoc-ref %build-inputs "gnutls")))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list pcre2))
+     (list gnutls pcre2))
     (home-page "https://www.zabbix.com/")
     (synopsis "Distributed monitoring solution (client-side agent)")
     (description "This package provides a distributed monitoring
@@ -202,6 +209,32 @@ solution (client-side agent)")
     (properties
      '((release-monitoring-url . "https://www.zabbix.com/download_sources")
        (upstream-name . "zabbix")))))
+
+(define-public zabbix-agent2
+  (package/inherit zabbix-agentd
+    (name "zabbix-agent2")
+    (arguments
+     (list #:configure-flags
+           #~(list "--disable-agent"
+                   "--enable-agent2"
+                   "--enable-ipv6"
+                   "--with-libpcre2"
+                   ;; agent2 only supports OpenSSL.
+                   (string-append "--with-openssl="
+                                  (dirname (dirname
+                                            (search-input-file
+                                             %build-inputs "lib/libssl.so")))))
+           #:make-flags
+           #~'("BUILD_TIME=00:00:01" "BUILD_DATE=Jan 1 1970")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'build 'set-HOME
+                 (lambda _
+                   (setenv "HOME" "/tmp"))))))
+    (native-inputs
+     (list go pkg-config))
+    (inputs
+     (list openssl pcre2 zlib))))
 
 (define-public zabbix-server
   (package
@@ -239,8 +272,6 @@ solution (client-side agent)")
                         (string-append "--with-libevent="
                                        (assoc-ref %build-inputs "libevent"))
                         "--with-net-snmp"
-                        (string-append "--with-gnutls="
-                                       (assoc-ref %build-inputs "gnutls"))
                         "--with-libcurl"
                         (string-append "--with-zlib="
                                        (assoc-ref %build-inputs "zlib")))
@@ -249,7 +280,6 @@ solution (client-side agent)")
      (modify-inputs (package-inputs zabbix-agentd)
        (prepend curl
                 libevent
-                gnutls
                 net-snmp
                 postgresql
                 zlib)))
@@ -270,7 +300,7 @@ solution (server-side)")))
               (sha256
                (base32
                 "1p8xkq3mxg476srwrgqax76vjzji0rjx32njmgnpa409vaqrbj5p"))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (arguments
      (list #:phases
            #~(modify-phases %standard-phases
@@ -295,10 +325,7 @@ solution (server-side)")))
                                  (string-append #$output "/share/man/man1"))
                    (copy-recursively "docs/_build/singlehtml"
                                      (string-append #$output "/share/doc/"
-                                                    #$name "/html"))))
-               (replace 'check
-                 (lambda _
-                   (invoke "pytest" "-vv"))))))
+                                                    #$name "/html")))))))
     (native-inputs
      (list python-pytest python-sphinx))
     (inputs
@@ -609,7 +636,7 @@ devices.")
                       ;; Required because of patched sources.
                       (invoke "autoreconf" "-vfi"))))))
     (inputs
-     (list rrdtool curl libyajl))
+     (list rrdtool curl yajl))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://collectd.org/")

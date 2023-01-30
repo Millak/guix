@@ -9,6 +9,7 @@
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Sarah Morgensen <iskarian@mgsn.dev>
+;;; Copyright © 2022 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -46,6 +47,7 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 format)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-9)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-37)
   #:use-module (srfi srfi-71)
@@ -181,9 +183,31 @@ specified with `--select'.\n"))
   (newline)
   (show-bug-report-information))
 
-(define (options->packages opts)
-  "Return the list of packages requested by OPTS, honoring options like
-'--recursive'."
+
+;;;
+;;; Utilities.
+;;;
+
+(define-record-type <update-spec>
+  (%update-spec package version)
+  update?
+  (package update-spec-package)
+  (version update-spec-version))
+
+(define* (update-spec package #:optional version)
+  (%update-spec package version))
+
+(define (update-specification->update-spec spec)
+  "Given SPEC, a package name like \"guile@2.0=2.0.8\", return a <update>
+record with two fields: the package to upgrade, and the target version."
+  (match (string-rindex spec #\=)
+    (#f  (update-spec (specification->package spec) #f))
+    (idx (update-spec (specification->package (substring spec 0 idx))
+                      (substring spec (1+ idx))))))
+
+(define (options->update-specs opts)
+  "Return the list of <update-spec> records requested by OPTS, honoring
+options like '--recursive'."
   (define core-package?
     (let* ((input->package (match-lambda
                              ((name (? package? package) _ ...) package)
@@ -218,41 +242,43 @@ update would trigger a complete rebuild."
         (_
          (cons package lst)))))
 
-  (define args-packages
-    ;; Packages explicitly passed as command-line arguments.
-    (match (filter-map (match-lambda
+  (define update-specs
+    ;; Update specs explicitly passed as command-line arguments.
+    (match (append-map (match-lambda
                          (('argument . spec)
                           ;; Take either the specified version or the
                           ;; latest one.
-                          (specification->package spec))
+                          (list (update-specification->update-spec spec)))
                          (('expression . exp)
-                          (read/eval-package-expression exp))
-                         (_ #f))
+                          (list (update-spec (read/eval-package-expression exp))))
+                         (('manifest . manifest)
+                          (map update-spec (packages-from-manifest manifest)))
+                         (_
+                          '()))
                        opts)
       (()                                         ;default to all packages
        (let ((select? (match (assoc-ref opts 'select)
                         ('core core-package?)
                         ('non-core (negate core-package?))
                         (_ (const #t)))))
-         (fold-packages (lambda (package result)
-                          (if (select? package)
-                              (keep-newest package result)
-                              result))
-                        '())))
+         (map update-spec
+              (fold-packages (lambda (package result)
+                               (if (select? package)
+                                   (keep-newest package result)
+                                   result))
+                             '()))))
       (some                                       ;user-specified packages
        some)))
 
-  (define packages
-    (match (assoc-ref opts 'manifest)
-      (#f args-packages)
-      ((? string? file) (packages-from-manifest file))))
-
   (if (assoc-ref opts 'recursive?)
-      (mlet %store-monad ((edges (node-edges %bag-node-type
-                                             (all-packages))))
-        (return (node-transitive-edges packages edges)))
+      (mlet* %store-monad ((edges (node-edges %bag-node-type (all-packages)))
+                           (packages -> (node-transitive-edges
+                                         (map update-spec-package update-specs)
+                                         edges)))
+        ;; FIXME: The 'version' field of each update spec is lost.
+        (return (map update-spec packages)))
       (with-monad %store-monad
-        (return packages))))
+        (return update-specs))))
 
 
 ;;;
@@ -298,7 +324,7 @@ update would trigger a complete rebuild."
            (G_ "no updater for ~a~%")
            (package-name package)))
 
-(define* (update-package store package updaters
+(define* (update-package store package version updaters
                          #:key (key-download 'interactive) warn?)
   "Update the source file that defines PACKAGE with the new version.
 KEY-DOWNLOAD specifies a download policy for missing OpenPGP keys; allowed
@@ -307,7 +333,7 @@ warn about packages that have no matching updater."
   (if (lookup-updater package updaters)
       (let ((version output source
                      (package-update store package updaters
-                                     #:key-download key-download))
+                                     #:key-download key-download #:version version))
             (loc (or (package-field-location package 'version)
                      (package-location package))))
         (when version
@@ -361,10 +387,15 @@ downloaded and authenticated; not updating~%")
       (when warn?
         (warn-no-updater package))))
 
-(define* (check-for-package-update package updaters #:key warn?)
-  "Check whether an update is available for PACKAGE and print a message.  When
-WARN? is true and no updater exists for PACKAGE, print a warning."
-  (match (package-latest-release package updaters)
+(define* (check-for-package-update update-spec updaters #:key warn?)
+  "Check whether UPDATE-SPEC is feasible, and print a message.
+When WARN? is true and no updater exists for PACKAGE, print a warning."
+  (define package
+    (update-spec-package update-spec))
+
+  (match (package-latest-release package updaters
+                                 #:version
+                                 (update-spec-version update-spec))
     ((? upstream-source? source)
      (let ((loc (or (package-field-location package 'version)
                     (package-location package))))
@@ -382,23 +413,34 @@ WARN? is true and no updater exists for PACKAGE, print a warning."
                   (package-version package)
                   (package-name package))))
          (else
-          (when warn?
-            (warning loc
-                     (G_ "~a is greater than \
+          (if (update-spec-version update-spec)
+              (info loc
+                    (G_ "~a would be downgraded from ~a to ~a~%")
+                    (package-name package)
+                    (package-version package)
+                    (upstream-source-version source))
+              (when warn?
+                (warning loc
+                         (G_ "~a is greater than \
 the latest known version of ~a (~a)~%")
-                     (package-version package)
-                     (package-name package)
-                     (upstream-source-version source)))))))
+                         (package-version package)
+                         (package-name package)
+                         (upstream-source-version source))))))))
     (#f
      (when warn?
        ;; Distinguish between "no updater" and "failing updater."
        (match (lookup-updater package updaters)
          ((? upstream-updater? updater)
-          (warning (package-location package)
-                   (G_ "'~a' updater failed to determine available \
+          (if (update-spec-version update-spec)
+              (warning (G_ "'~a' updater failed to find version ~a of '~a'~%")
+                       (upstream-updater-name updater)
+                       (update-spec-version update-spec)
+                       (package-name package))
+              (warning (package-location package)
+                       (G_ "'~a' updater failed to determine available \
 releases for ~a~%")
-                   (upstream-updater-name updater)
-                   (package-name package)))
+                       (upstream-updater-name updater)
+                       (package-name package))))
          (#f
           (warn-no-updater package)))))))
 
@@ -540,12 +582,12 @@ all are dependent packages: ~{~a~^ ~}~%")
     (with-error-handling
       (with-store store
         (run-with-store store
-          (mlet %store-monad ((packages (options->packages opts)))
+          (mlet %store-monad ((update-specs (options->update-specs opts)))
             (cond
              (list-dependent?
-              (list-dependents packages))
+              (list-dependents (map update-spec-package update-specs)))
              (list-transitive?
-              (list-transitive packages))
+              (list-transitive (map update-spec-package update-specs)))
              (update?
               (parameterize ((%openpgp-key-server
                               (or (assoc-ref opts 'key-server)
@@ -558,13 +600,17 @@ all are dependent packages: ~{~a~^ ~}~%")
                                   (string-append (config-directory)
                                                  "/upstream/trustedkeys.kbx"))))
                 (for-each
-                 (cut update-package store <> updaters
-                      #:key-download key-download
-                      #:warn? warn?)
-                 packages)
+                 (lambda (update)
+                   (update-package store
+                                   (update-spec-package update)
+                                   (update-spec-version update)
+                                   updaters
+                                   #:key-download key-download
+                                   #:warn? warn?))
+                 update-specs)
                 (return #t)))
              (else
               (for-each (cut check-for-package-update <> updaters
                              #:warn? warn?)
-                        packages)
+                        update-specs)
               (return #t)))))))))

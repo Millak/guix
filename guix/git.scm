@@ -62,6 +62,7 @@
             commit-difference
             commit-relation
             commit-descendant?
+            commit-id?
 
             remote-refs
 
@@ -219,6 +220,12 @@ of SHA1 string."
     (last (string-split url #\/)) ".git" "")
    "-" (string-take sha1 7)))
 
+(define (commit-id? str)
+  "Return true if STR is likely a Git commit ID, false otherwise---e.g., if it
+is a tag name.  This is based on a simple heuristic so use with care!"
+  (and (= (string-length str) 40)
+       (string-every char-set:hex-digit str)))
+
 (define (resolve-reference repository ref)
   "Resolve the branch, commit or tag specified by REF, and return the
 corresponding Git object."
@@ -265,12 +272,15 @@ corresponding Git object."
                   ;; There's no such tag, so it must be a commit ID.
                   (resolve `(commit . ,str)))))))
       (('tag    . tag)
-       (let ((oid (reference-name->oid repository
-                                       (string-append "refs/tags/" tag))))
-         ;; OID may point to a "tag" object, but it can also point directly
-         ;; to a "commit" object, as surprising as it may seem.  Return that
-         ;; object, whatever that is.
-         (object-lookup repository oid))))))
+       (let* ((oid (reference-name->oid repository
+                                        (string-append "refs/tags/" tag)))
+              (obj (object-lookup repository oid)))
+         ;; OID may designate an "annotated tag" object or a "commit" object.
+         ;; Return the commit object in both cases.
+         (if (= OBJ-TAG (object-type obj))
+             (object-lookup repository
+                            (tag-target-id (tag-lookup repository oid)))
+             obj))))))
 
 (define (switch-to-ref repository ref)
   "Switch to REPOSITORY's branch, commit or tag specified by REF.  Return the

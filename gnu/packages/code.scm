@@ -12,7 +12,7 @@
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2019 Hartmut Goebel <h.goebel@goebel-consult.de>
 ;;; Copyright © 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2020, 2021 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2020, 2021, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2021 lu hui <luhuins@163.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
@@ -58,6 +58,7 @@
   #:use-module (gnu packages emacs)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages golang)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages linux)
@@ -79,6 +80,44 @@
   #:use-module (gnu packages xml))
 
 ;;; Tools to deal with source code: metrics, cross-references, etc.
+
+(define-public automatic-component-toolkit
+  (package
+    (name "automatic-component-toolkit")
+    (version "1.6.0")
+    (home-page "https://github.com/Autodesk/AutomaticComponentToolkit")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference (url home-page)
+                                  (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r0sbw82cf9dbcj3vgnbd4sc1lklzvijic2z5wgkvs21azcm0yzh"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #false              ;no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)
+               (replace 'build
+                 (lambda _
+                   (setenv "HOME" "/tmp")
+                   (invoke "bash" "Build/build.sh")))
+               (replace 'install
+                 (lambda _
+                   (let ((bin (string-append #$output "/bin")))
+                     (mkdir-p bin)
+                     (copy-file "act.linux"
+                                (string-append #$output "/bin/act"))))))))
+    (native-inputs (list go))
+    (synopsis "Automatically generate software components")
+    (description
+     "The Automatic Component Toolkit (@dfn{ACT}) is a code generator that
+takes an instance of an Interface Description Language (@dfn{IDL}) file and
+generates a thin C89-API, implementation stubs, and language bindings of your
+desired software component.")
+    (license license:bsd-2)))
 
 (define-public cflow
   (package
@@ -143,14 +182,14 @@ highlighting your own code that seemed comprehensible when you wrote it.")
 (define-public global                             ; a global variable
   (package
     (name "global")
-    (version "6.6.8")
+    (version "6.6.9")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/global/global-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "1kaphc3gml89p8dpdgh2is8hj46wj05689kxj0bmh5q759rxk4vg"))))
+               "1mgss7ch4izz7ibb23xah6h4iva77g9dq4pkc9g69jk0ipxa1jxa"))))
     (build-system gnu-build-system)
     (arguments
      (list #:configure-flags
@@ -284,7 +323,7 @@ COCOMO model or user-provided parameters.")
 (define-public cloc
   (package
     (name "cloc")
-    (version "1.92")
+    (version "1.94")
     (source
      (origin
        (method git-fetch)
@@ -293,7 +332,7 @@ COCOMO model or user-provided parameters.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hy1hskiw02b7xaxn2qz0v7znj14l49w1anx20z6rkcps7212l5l"))))
+        (base32 "082kkzr168lkv35hvijq95b817lyj2azcwld47xpws9h35556jlv"))))
     (build-system gnu-build-system)
     (inputs
      (list coreutils
@@ -391,7 +430,7 @@ features that are not supported by the standard @code{stdio} implementation.")
 (define-public universal-ctags
   (package
     (name "universal-ctags")
-    (version "5.9.20220807.0")
+    (version "6.0.20230122.0")
     (source
      (origin
        (method git-fetch)
@@ -401,7 +440,7 @@ features that are not supported by the standard @code{stdio} implementation.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1wjj6hlda7xyjm8yrl2zz74ks7azymm9yyrpz36zxxpx2scf6lsk"))
+         "121d1dyc3wd4bzv4wky3x66j1va3d6ywbw71abp3l88fv7sc0f73"))
        (modules '((guix build utils)))
        (snippet
         '(begin

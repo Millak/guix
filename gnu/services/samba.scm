@@ -17,14 +17,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu services samba)
-
   #:use-module (gnu packages)
   #:use-module (gnu packages base)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages samba)
 
   #:use-module (gnu services)
-  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services base)
   #:use-module (gnu system shadow)
@@ -41,19 +39,9 @@
 
   #:export (samba-service-type
             samba-configuration
-            samba-smb-conf
 
             wsdd-service-type
             wsdd-configuration))
-
-(define %smb-conf
-  (plain-file "smb.conf" "[global]
-    workgroup = WORKGROUP
-    server string = Samba Server
-    server role = standalone server
-    log file = /var/log/samba/log.%m
-    logging = file
-"))
 
 (define-record-type* <samba-configuration>
   samba-configuration

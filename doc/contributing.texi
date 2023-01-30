@@ -786,12 +786,29 @@ for instance, the module python-dateutil is packaged under the names
 starts with @code{py} (e.g.@: @code{pytz}), we keep it and prefix it as
 described above.
 
+@quotation Note
+Currently there are two different build systems for Python packages in Guix:
+@var{python-build-system} and @var{pyproject-build-system}.  For the
+longest time, Python packages were built from an informally specified
+@file{setup.py} file.  That worked amazingly well, considering Python's
+success, but was difficult to build tooling around.  As a result, a host
+of alternative build systems emerged and the community eventually settled on a
+@url{https://peps.python.org/pep-0517/, formal standard} for specifying build
+requirements.  @var{pyproject-build-system} is Guix's implementation of this
+standard.  It is considered ``experimental'' in that it does not yet support
+all the various PEP-517 @emph{build backends}, but you are encouraged to try
+it for new Python packages and report any problems.  It will eventually be
+deprecated and merged into @var{python-build-system}.
+@end quotation
+
 @subsubsection Specifying Dependencies
 @cindex inputs, for Python packages
 
 Dependency information for Python packages is usually available in the
 package source tree, with varying degrees of accuracy: in the
-@file{setup.py} file, in @file{requirements.txt}, or in @file{tox.ini}.
+@file{pyproject.toml} file, the @file{setup.py} file, in
+@file{requirements.txt}, or in @file{tox.ini} (the latter mostly for
+test dependencies).
 
 Your mission, when writing a recipe for a Python package, is to map
 these dependencies to the appropriate type of ``input'' (@pxref{package
@@ -802,10 +819,12 @@ following check list to determine which dependency goes where.
 @itemize
 
 @item
-We currently package Python 2 with @code{setuptools} and @code{pip}
-installed like Python 3.4 has per default.  Thus you don't need to
-specify either of these as an input.  @command{guix lint} will warn you
-if you do.
+We currently package Python with @code{setuptools} and @code{pip}
+installed per default.  This is about to change, and users are encouraged
+to use @code{python-toolchain} if they want a build environment for Python.
+
+@command{guix lint} will warn if @code{setuptools} or @code{pip} are
+added as native-inputs because they are generally not necessary.
 
 @item
 Python dependencies required at run time go into
@@ -814,9 +833,10 @@ Python dependencies required at run time go into
 @file{requirements.txt} file.
 
 @item
-Python packages required only at build time---e.g., those listed with
-the @code{setup_requires} keyword in @file{setup.py}---or only for
-testing---e.g., those in @code{tests_require}---go into
+Python packages required only at build time---e.g., those listed under
+@code{build-system.requires} in @file{pyproject.toml} or with the
+@code{setup_requires} keyword in @file{setup.py}---or dependencies only
+for testing---e.g., those in @code{tests_require} or @file{tox.ini}---go into
 @code{native-inputs}.  The rationale is that (1) they do not need to be
 propagated because they are not needed at run time, and (2) in a
 cross-compilation context, it's the ``native'' input that we'd want.
@@ -1069,11 +1089,16 @@ and then to browse them ``by hand'' using @code{car}, @code{cdr},
 notably the fact that it is hard to read, error-prone, and a hindrance
 to proper type error reports.
 
+@findex define-record-type*
+@findex match-record
+@cindex pattern matching
 Guix code should define appropriate data types (for instance, using
 @code{define-record-type*}) rather than abuse lists.  In addition, it
 should use pattern matching, via Guile’s @code{(ice-9 match)} module,
 especially when matching lists (@pxref{Pattern Matching,,, guile, GNU
-Guile Reference Manual}).
+Guile Reference Manual}); pattern matching for records is better done
+using @code{match-record} from @code{(guix records)}, which, unlike
+@code{match}, verifies field names at macro-expansion time.
 
 @node Formatting Code
 @subsection Formatting Code
@@ -1138,8 +1163,8 @@ This mailing list is backed by a Debbugs instance, which allows us to
 keep track of submissions (@pxref{Tracking Bugs and Patches}).  Each
 message sent to that mailing list gets a new tracking number assigned;
 people can then follow up on the submission by sending email to
-@code{@var{NNN}@@debbugs.gnu.org}, where @var{NNN} is the tracking
-number (@pxref{Sending a Patch Series}).
+@code{@var{ISSUE_NUMBER}@@debbugs.gnu.org}, where @var{ISSUE_NUMBER} is
+the tracking number (@pxref{Sending a Patch Series}).
 
 Please write commit logs in the ChangeLog format (@pxref{Change Logs,,,
 standards, GNU Coding Standards}); you can check the commit history for
@@ -1149,15 +1174,6 @@ Before submitting a patch that adds or modifies a package definition,
 please run through this check list:
 
 @enumerate
-@cindex @code{git format-patch}
-@cindex @code{git-format-patch}
-@item
-When generating your patches with @code{git format-patch} or @code{git
-send-email}, we recommend using the option @code{--base=}, perhaps with
-the value @code{auto}.  This option adds a note to the patch stating
-which commit the patch is based on.  This helps reviewers understand how
-to apply and review your patches.
-
 @item
 If the authors of the packaged software provide a cryptographic
 signature for the release tarball, make an effort to verify the
@@ -1341,12 +1357,13 @@ guix pull --url=/path/to/your/checkout --profile=/tmp/guix.master
 When posting a patch to the mailing list, use @samp{[PATCH] @dots{}} as
 a subject, if your patch is to be applied on a branch other than
 @code{master}, say @code{core-updates}, specify it in the subject like
-@samp{[PATCH core-updates] @dots{}}.  You may use your email client or
-the @command{git send-email} command (@pxref{Sending a Patch Series}).
-We prefer to get patches in plain text messages, either inline or as
-MIME attachments.  You are advised to pay attention if your email client
-changes anything like line breaks or indentation which could potentially
-break the patches.
+@samp{[PATCH core-updates] @dots{}}.
+
+You may use your email client or the @command{git send-email} command
+(@pxref{Sending a Patch Series}).  We prefer to get patches in plain
+text messages, either inline or as MIME attachments.  You are advised to
+pay attention if your email client changes anything like line breaks or
+indentation which could potentially break the patches.
 
 Expect some delay when you submit your very first patch to
 @email{guix-patches@@gnu.org}. You have to wait until you get an
@@ -1354,7 +1371,7 @@ acknowledgement with the assigned tracking number. Future acknowledgements
 should not be delayed.
 
 When a bug is resolved, please close the thread by sending an email to
-@email{@var{NNN}-done@@debbugs.gnu.org}.
+@email{@var{ISSUE_NUMBER}-done@@debbugs.gnu.org}.
 
 @node Configuring Git
 @subsection Configuring Git
@@ -1392,26 +1409,152 @@ git config --local format.thread shallow
 git config --local sendemail.thread no
 @end example
 
-@unnumberedsubsec Sending a Patch Series
-@anchor{Sending a Patch Series}
+@node Sending a Patch Series
+@subsection Sending a Patch Series
 @cindex patch series
 @cindex @code{git send-email}
+@cindex @code{git format-patch}
 
-When sending a patch series (e.g., using @code{git send-email}), please
-first send one message to @email{guix-patches@@gnu.org}, and then send
-subsequent patches to @email{@var{NNN}@@debbugs.gnu.org} to make sure
-they are kept together.  See
-@uref{https://debbugs.gnu.org/Advanced.html, the Debbugs documentation}
-for more information.  You can install @command{git send-email} with
-@command{guix install git:send-email}.
-@c Debbugs bug: https://debbugs.gnu.org/db/15/15361.html
+@unnumberedsubsubsec Single Patches
+@anchor{Single Patches}
+The @command{git send-email} command is the best way to send both single
+patches and patch series (@pxref{Multiple Patches}) to the Guix mailing
+list.  Sending patches as email attachments may make them difficult to
+review in some mail clients, and @command{git diff} does not store commit
+metadata.
 
-To maximize the chances that you patch series is reviewed, the preferred
-submission way is to use the @code{etc/teams.scm} script to notify the
-appropriate team members (@pxref{Teams}).
+@quotation Note
+The @command{git send-email} command is provided by the @code{send-email}
+output of the @code{git} package, i.e. @code{git:send-email}.
+@end quotation
 
-@unnumberedsubsec Teams
-@anchor{Teams}
+The following command will create a patch email from the latest commit,
+open it in your @var{EDITOR} or @var{VISUAL} for editing, and send it to
+the Guix mailing list to be reviewed and merged:
+
+@example
+$ git send-email -1 -a --base=auto --to=guix-patches@@gnu.org
+@end example
+
+@quotation Tip
+To add a prefix to the subject of your patch, you may use the
+@option{--subject-prefix} option.  The Guix project uses this to
+specify that the patch is intended for a branch or repository
+other than the @code{master} branch of
+@url{https://git.savannah.gnu.org/cgit/guix.git}.
+
+@example
+git send-email -1 -a --base=auto \
+    --subject-prefix='PATCH core-updates' \
+    --to=guix-patches@@gnu.org
+@end example
+@end quotation
+
+The patch email contains a three-dash separator line after the commit
+message.  You may ``annotate'' the patch with explanatory text by adding
+it under this line.  If you do not wish to annotate the email, you may
+drop the @option{-a} flag (which is short for @option{--annotate}).
+
+The @option{--base=auto} flag automatically adds a note at the bottom
+of the patch of the commit it was based on, making it easier for
+maintainers to rebase and merge your patch.
+
+If you need to send a revised patch, don't resend it like this or send
+a ``fix'' patch to be applied on top of the last one; instead, use
+@command{git commit -a} or @url{https://git-rebase.io, @command{git rebase}}
+to modify the commit, and use the @email{@var{ISSUE_NUMBER}@@debbugs.gnu.org}
+address and the @option{-v} flag with @command{git send-email}.
+
+@example
+$ git commit -a
+$ git send-email -1 -a --base=auto -v@var{REVISION} \
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
+@end example
+
+@quotation Note
+Due to an apparent bug in @command{git send-email},
+@option{-v @var{REVISION}} (with the space) will not work; you
+@emph{must} use @option{-v@var{REVISION}}.
+@end quotation
+
+You can find out @var{ISSUE_NUMBER} either by searching on the mumi
+interface at @url{issues.guix.gnu.org} for the name of your patch or
+reading the acknowledgement email sent automatically by Debbugs in
+reply to incoming bugs and patches, which contains the bug number.
+
+@unnumberedsubsubsec Notifying Teams
+@anchor{Notifying Teams}
+@cindex teams
+The @file{etc/teams.scm} script may be used to notify all those who
+may be interested in your patch of its existence (@pxref{Teams}).
+Use @command{etc/teams.scm list-teams} to display all the teams,
+decide which team(s) your patch relates to, and use
+@command{etc/teams.scm cc} to output various @command{git send-email}
+flags which will notify the appropriate team members, or use
+@command{etc/teams.scm cc-members} to detect the appropriate teams
+automatically.
+
+@unnumberedsubsubsec Multiple Patches
+@anchor{Multiple Patches}
+@cindex cover letter
+While @command{git send-email} alone will suffice for a single
+patch, an unfortunate flaw in Debbugs means you need to be more
+careful when sending multiple patches: if you send them all to the
+@email{guix-patches@@gnu.org} address, a new issue will be created
+for each patch!
+
+When sending a series of patches, it's best to send a Git ``cover
+letter'' first, to give reviewers an overview of the patch series.
+We can create a directory called @file{outgoing} containing both
+our patch series and a cover letter called @file{0000-cover-letter.patch}
+with @command{git format-patch}.
+
+@example
+$ git format-patch -@var{NUMBER_COMMITS} -o outgoing \
+      --cover-letter --base=auto
+@end example
+
+We can now send @emph{just} the cover letter to the
+@email{guix-patches@@gnu.org} address, which will create an issue
+that we can send the rest of the patches to.
+
+@example
+$ git send-email outgoing/0000-cover-letter.patch -a \
+      --to=guix-patches@@gnu.org \
+      $(etc/teams.scm cc-members ...)
+$ rm outgoing/0000-cover-letter.patch # we don't want to resend it!
+@end example
+
+Ensure you edit the email to add an appropriate subject line and
+blurb before sending it.  Note the automatically generated shortlog
+and diffstat below the blurb.
+
+Once the Debbugs mailer has replied to your cover letter email, you
+can send the actual patches to the newly-created issue address.
+
+@example
+$ git send-email outgoing/*.patch \
+      --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org \
+      $(etc/teams.scm cc-members ...)
+$ rm -rf outgoing # we don't need these anymore
+@end example
+
+Thankfully, this @command{git format-patch} dance is not necessary
+to send an amended patch series, since an issue already exists for
+the patchset.
+
+@example
+$ git send-email -@var{NUMBER_COMMITS} \
+      -v@var{REVISION} --base=auto \
+      --to @var{ISSUE_NUMBER}@@debbugs.gnu.org
+@end example
+
+If need be, you may use @option{--cover-letter -a} to send another cover
+letter, e.g. for explaining what's changed since the last revision, and
+these changes are necessary.
+
+@node Teams
+@subsection Teams
 @cindex teams
 
 There are several teams mentoring different parts of the Guix source
@@ -1435,7 +1578,7 @@ You can run the following command to have the @code{Mentors} team put in
 CC of a patch series:
 
 @example
-$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
+$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc mentors) *.patch
 @end example
 
 The appropriate team or teams can also be inferred from the modified
@@ -1444,7 +1587,7 @@ current Git repository to review, you can run:
 
 @example
 $ guix shell -D guix
-[env]$ git send-email --to XXX@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
+[env]$ git send-email --to @var{ISSUE_NUMBER}@@debbugs.gnu.org $(./etc/teams.scm cc-members HEAD~2 HEAD) *.patch
 @end example
 
 @node Tracking Bugs and Patches
@@ -1687,23 +1830,27 @@ It additionally calls @code{make check-channel-news} to be sure
 
 @subsection Commit Policy
 
-If you get commit access, please make sure to follow
-the policy below (discussions of the policy can take place on
+If you get commit access, please make sure to follow the policy below
+(discussions of the policy can take place on
 @email{guix-devel@@gnu.org}).
 
-Non-trivial patches should always be posted to
-@email{guix-patches@@gnu.org} (trivial patches include fixing typos,
-etc.).  This mailing list fills the patch-tracking database
-(@pxref{Tracking Bugs and Patches}).
+Changes should be posted to @email{guix-patches@@gnu.org}.  This mailing
+list fills the patch-tracking database (@pxref{Tracking Bugs and
+Patches}).  It also allows patches to be picked up and tested by the
+quality assurance tooling; the result of that testing eventually shows
+up on the dashboard at
+@indicateurl{https://qa.guix.gnu.org/issue/@var{ISSUE_NUMBER}}, where
+@var{ISSUE_NUMBER} is the number assigned by the issue tracker.  Leave
+time for a review, without committing anything (@pxref{Submitting
+Patches}).  If you didn’t receive any reply after one week (two weeks
+for more significant changes), and if you're confident, it's OK to
+commit.
 
-For patches that just add a new package, and a simple one, it's OK to
-commit, if you're confident (which means you successfully built it in a
-chroot setup, and have done a reasonable copyright and license
-auditing).  Likewise for package upgrades, except upgrades that trigger
-a lot of rebuilds (for example, upgrading GnuTLS or GLib).  We have a
-mailing list for commit notifications (@email{guix-commits@@gnu.org}),
-so people can notice.  Before pushing your changes, make sure to run
-@code{git pull --rebase}.
+As an exception, some changes considered ``trivial'' or ``obvious'' may
+be pushed directly.  This includes changes to fix typos and reverting
+commits that caused immediate problems.  This is subject to being
+adjusted, allowing individuals to commit directly on non-controversial
+changes on parts they’re familiar with.
 
 When pushing a commit on behalf of somebody else, please add a
 @code{Signed-off-by} line at the end of the commit log message---e.g.,
@@ -1717,14 +1864,6 @@ right before pushing:
 @example
 make check-channel-news
 @end example
-
-For anything else, please post to @email{guix-patches@@gnu.org} and
-leave time for a review, without committing anything (@pxref{Submitting
-Patches}).  If you didn’t receive any reply after two weeks, and if
-you're confident, it's OK to commit.
-
-That last part is subject to being adjusted, allowing individuals to commit
-directly on non-controversial changes on parts they’re familiar with.
 
 @subsection Addressing Issues
 

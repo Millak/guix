@@ -9,13 +9,14 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
 ;;; Copyright © 2022 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Tomasz Jeneralczyk <tj@schwi.pl>
+;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -141,7 +142,7 @@ interfaces with pytest.")
     (build-system python-build-system)
     (propagated-inputs (list python-cram python-pytest))
     (home-page "https://github.com/tbekolay/pytest-cram")
-    (synopsis "Run cram tests with pytest.")
+    (synopsis "Run cram tests with pytest")
     (description "Cram tests command line applications; Pytest tests Python
 applications.  @code{pytest-cram} tests Python command line applications by
 letting you write your Python API tests with pytest, and your command line
@@ -395,6 +396,55 @@ detect the absence of a cassette file and once again record all HTTP
 interactions, which will update them to correspond to the new API.")
     (license license:expat)))
 
+(define-public python-pytest-socket
+  (package
+    (name "python-pytest-socket")
+    (version "0.5.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-socket" version))
+              (sha256
+               (base32
+                "1dkr86nxkxc0ka3rdnpmk335m8gl1zh1sy8i7w4w1jsidbf82jvw"))))
+    (build-system python-build-system)
+    (arguments
+     ;; FIXME: Tests fail a lot, probably requiring Internet access.
+     (list #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (replace 'build
+                          (lambda _
+                            (setenv "SETUPTOOLS_SCM_PRETEND_VERSION"
+                                    #$version)
+                            (setenv "SOURCE_DATE_EPOCH" "315532800")
+                            (invoke "python"
+                                    "-m"
+                                    "build"
+                                    "--wheel"
+                                    "--no-isolation"
+                                    ".")))
+                        (add-before 'check 'disable-unsupported-test
+                          (lambda _
+                            (substitute* "tests/test_async.py"
+                              (("def test_asynctest")
+                               "def __off_test_asynctest"))))
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "pytest" "-vvv")))))))
+    (native-inputs (list python-httpx
+                         python-poetry-core
+                         python-pypa-build
+                         python-pytest
+                         python-pytest-httpbin
+                         python-pytest-randomly
+                         python-starlette))
+    (home-page "https://pypi.org/project/pytest-socket/")
+    (synopsis "Pytest plugin to disable socket calls during tests")
+    (description
+     "This package provides Pytest extension which disables all network calls flowing
+through Python's socket interface")
+    (license license:expat)))
+
 (define-public python-pytest-ordering
   (package
     (name "python-pytest-ordering")
@@ -432,13 +482,13 @@ of tests run in a specific order.")
 (define-public python-pytest-astropy-header
 (package
   (name "python-pytest-astropy-header")
-  (version "0.1.2")
+  (version "0.2.2")
   (source
     (origin
       (method url-fetch)
       (uri (pypi-uri "pytest-astropy-header" version))
       (sha256
-        (base32 "1y87agr324p6x5gvhziymxjlw54pyn4gqnd49papbl941djpkp5g"))))
+        (base32 "046v4arinv8b5jz05pvhnc0n1aqqndwvhlsl635ahxabr40i32bp"))))
   (build-system python-build-system)
   (native-inputs
    (list python-pytest python-setuptools-scm))
@@ -455,13 +505,13 @@ Astropy project, but is optimized for use with astropy-related projects.")
 (define-public python-pytest-astropy
   (package
     (name "python-pytest-astropy")
-    (version "0.8.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pytest-astropy" version))
        (sha256
-        (base32 "18j6z6y2fvykmcs5z0mldhhaxxn6wzpnhlm2ps7m8r5z5kmh1631"))))
+        (base32 "04g2rh261s3s6ym8mwi4iv2a6anbgwvwzcvkyilfck6yxrncdqw5"))))
     (build-system python-build-system)
     (arguments
      `(#:tests? #f ; there are no tests
@@ -2218,7 +2268,7 @@ Avocado machine readable outputs this one is streamlined (per test results).
        (sha256
         (base32 "0zhjmsd16xacg4vd7zb75kw8q9khn52wvad634v1bvz7swaivk2c"))))
     (build-system python-build-system)
-    (native-inputs (list python-setuptools)) ;for use_2to3
+    (native-inputs (list python-setuptools-57)) ;for use_2to3
     (home-page
      "https://github.com/msabramo/python_unittest_parameterized_test_case")
     (synopsis "Parameterized tests for Python's unittest module")
@@ -2388,6 +2438,34 @@ servers.")
 documentation by parsing them from their source and evaluating the
 parsed examples as part of your normal test run.  Integration is
 provided for the main Python test runners.")
+    (license license:expat)))
+
+(define-public python-pytest-parawtf
+  (package
+    (name "python-pytest-parawtf")
+    (version "1.0.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pytest-parawtf" version))
+              (sha256
+               (base32
+                "08s86hy58lvrd90cnayzydvac4slaflj0ph9yknakcc42anrm023"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (replace 'check
+             (lambda* (#:key tests? #:allow-other-keys)
+               (when tests?
+                 ;; https://github.com/flub/pytest-parawtf/issues/1
+                 (invoke "pytest" "-k" "not test_mark")))))))
+    (propagated-inputs (list python-pytest))
+    (home-page "https://github.com/flub/pytest-parawtf/")
+    (synopsis "Finally spell paramete?ri[sz]e correctly")
+    (description
+"@code{python-pytest} uses one of four different spellings of
+parametrize.  This plugin allows you to use all four.")
     (license license:expat)))
 
 (define-public python-pytest-httpx

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -16,7 +16,7 @@
 ;;; Copyright © 2019 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020,2021 Vincent Legoll <vincent.legoll@gmail.com>
-;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
+;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
 ;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
@@ -81,6 +81,7 @@
   #:use-module (gnu packages c)
   #:use-module (gnu packages check)
   #:use-module (gnu packages cmake)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
@@ -669,7 +670,7 @@ multipole-accelerated algorithm.")
 (define-public fritzing
   (package
     (name "fritzing")
-    (version "0.9.3b")
+    (version "0.9.6")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -678,7 +679,7 @@ multipole-accelerated algorithm.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0hpyc550xfhr6gmnc85nq60w00rm0ljm0y744dp0z88ikl04f4s3"))))
+                "083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases
@@ -687,24 +688,18 @@ multipole-accelerated algorithm.")
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (copy-recursively (assoc-ref inputs "fritzing-parts-db")
                                "parts")
-             ;; Make compatible with libgit2 > 0.24
-             (substitute* "src/version/partschecker.cpp"
-               (("error = git_remote_connect\\(remote, GIT_DIRECTION_FETCH, &callbacks\\)")
-                "error = git_remote_connect(remote, GIT_DIRECTION_FETCH, &callbacks, NULL, NULL)"))
-
              ;; Use system libgit2 and boost.
              (substitute* "phoenix.pro"
-               (("^LIBGIT2INCLUDE =.*")
-                (string-append "LIBGIT2INCLUDE="
-                               (assoc-ref inputs "libgit2") "/include\n"))
-               (("^    LIBGIT2LIB =.*")
-                (string-append "    LIBGIT2LIB="
-                               (assoc-ref inputs "libgit2") "/lib\n")))
-             ;; This file checks for old versions of Boost, insisting on
-             ;; having us download the boost sources and placing them in the
-             ;; build directory.
-             (substitute* "pri/utils.pri"
-               (("error\\(") "message("))
+               (("^LIBGIT_STATIC.*")
+                (string-append "LIBGIT2INCLUDE=" (assoc-ref inputs "libgit2") "/include\n"
+                               "LIBGIT2LIB=" (assoc-ref inputs "libgit2") "/lib\n"
+                               "INCLUDEPATH += $$LIBGIT2INCLUDE\n"
+                               "LIBS += -L$$LIBGIT2LIB -lgit2\n"))
+               (("^.*pri/libgit2detect.pri.") ""))
+             ;; Trick the internal mechanism to load the parts
+             (substitute* "src/version/partschecker.cpp"
+               ((".*git_libgit2_init.*")
+                "return \"083nz7vj7a334575smjry6257535h68gglh8a381xxa36dw96aqs\";"))
 
              (let ((out (assoc-ref outputs "out")))
                (invoke "qmake"
@@ -723,11 +718,11 @@ multipole-accelerated algorithm.")
            (method git-fetch)
            (uri (git-reference
                  (url "https://github.com/fritzing/fritzing-parts")
-                 (commit version)))
+                 (commit (string-append "release_" version))))
            (file-name (git-file-name "fritzing-parts" version))
            (sha256
             (base32
-             "1d2v8k7p176j0lczx4vx9n9gbg3vw09n2c4b6w0wj5wqmifywhc1"))))))
+             "0wsvn57v6n0ygnhk2my94rrfzb962z1cj4d1xmp1farwck3811h6"))))))
     (home-page "https://fritzing.org")
     (synopsis "Electronic circuit design")
     (description
@@ -949,7 +944,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.7")
+    (version "6.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -957,7 +952,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "10bqn99nif9zyi5v0lkic3na2vac5lgacw01ayil359vaw7d0pzy"))
+                "0pz8d96imc0q3nh7npr5zf0jkzi94wchvw57spcrgqfac9yrld3q"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -970,6 +965,7 @@ Emacs).")
                                #$(this-package-input "opencascade-occt")
                                "/include/opencascade")
                 "-DKICAD_SCRIPTING_WXPYTHON_PHOENIX=ON"
+                "-DKICAD_USE_EGL=ON"    ;because wxWidgets uses EGL
                 "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")
        #:phases
        (modify-phases %standard-phases
@@ -980,16 +976,6 @@ Emacs).")
                 (string-append "NGSPICE_DLL_FILE=\""
                                (assoc-ref inputs "libngspice")
                                "/lib/libngspice.so\"")))))
-         (add-after 'unpack 'fix-python-detection
-           (lambda _
-             (substitute* "CMakeModules/FindPythonLibs.cmake"
-               (("_PYTHON3_VERSIONS 3\\.8 3\\.7")
-                "_PYTHON3_VERSIONS 3.9 3.8 3.7"))))
-         (add-after 'unpack 'add-missing-include
-           (lambda _
-             (substitute* "common/lib_tree_model.cpp"
-               (("#include <eda_pattern_match.h>" all)
-                (string-append "#include <algorithm>\n" all)))))
          (add-after 'install 'wrap-program
            ;; Ensure correct Python at runtime.
            (lambda* (#:key inputs outputs #:allow-other-keys)
@@ -1042,7 +1028,8 @@ Emacs).")
                   python-wrapper
                   gtk+
                   wxwidgets
-                  python-wxpython))
+                  python-wxpython
+                  gdk-pixbuf))
     (home-page "https://www.kicad.org/")
     (synopsis "Electronics Design Automation Suite")
     (description
@@ -1064,7 +1051,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "15arkjjbzd4k09crhsrizmj8ljwpv6xjm59k58pfbd5pmqkklh2d"))))
+                "06aw8f1pnh63dscv2bkii0cpr2m5yc4baka3avszsxnv8mqn0hwx"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -1098,7 +1085,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "006ksx8r6cm6q7v701nalggivp21cmysj8p9zc18y3sch8n1mj4g"))))
+                "1fwnr8x345jbifk71rhyd4b88c4ijp2rcw3pmivnwfb444hbr1lp"))))
     (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no tests exist
@@ -1127,7 +1114,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0c5fm4hlkka0ms43j02kbv7s9yrlkffn0jz6649ac3gpx6pk8lbf"))))
+                "1rs05n1wjb2w3x7xqkkijbdxyw3fj0fph8znvnsxp9bgwaaipd4h"))))
     (synopsis "Official KiCad footprint libraries")
     (description "This package contains the official KiCad footprint libraries.")))
 
@@ -1144,7 +1131,7 @@ libraries.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rdhwyhknrc63sc5ykmq097rzrl36zibnkls7q5hf54lrhn0n3k4"))))
+                "0nmvfchp25i4bkx6yf7fz1rwy7w6whj2w7mlp02ag3w5v4f137vz"))))
     (synopsis "Official KiCad 3D model libraries")
     (description "This package contains the official KiCad 3D model libraries.")))
 
@@ -1643,7 +1630,7 @@ bindings for Python, Java, OCaml and more.")
      `(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'chdir-and-fix-setup-py
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (chdir "bindings/python")
              ;; Do not build the library again, because we already have it.
              (substitute* "setup.py" ((".*   build_libraries.*") ""))
@@ -1651,8 +1638,13 @@ bindings for Python, Java, OCaml and more.")
              ;; library.
              (substitute* "capstone/__init__.py"
                (("pkg_resources.resource_filename.*")
-                (string-append "'" (assoc-ref %build-inputs "capstone") "/lib',\n")))
-             #t)))))))
+                (string-append "'" (dirname (search-input-file
+                                             inputs "lib/libcapstone.so"))
+                               "',\n")))))
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "make" "check")))))))))
 
 
 (define-public python-esptool-3.0
@@ -1786,7 +1778,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
   ;; See <https://debbugs.gnu.org/cgi/bugreport.cgi?bug=27344#236>.
   (package
     (name "libngspice")
-    (version "37")
+    (version "38")
     (source
      (origin
        (method url-fetch)
@@ -1797,7 +1789,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
                             "old-releases/" version
                             "/ngspice-" version ".tar.gz")))
        (sha256
-        (base32 "1gpcic6b6xk3g4956jcsqljf33kj5g43cahmydq6m8rn39sadvlv"))))
+        (base32 "0mkw66d2isyyxssziwramd08amd7l1qm6dfg86r5s5kvqkv24gic"))))
     (build-system gnu-build-system)
     (arguments
      `(;; No tests for libngspice exist.
@@ -2299,7 +2291,7 @@ engineers for reverse engineers.")
 (define-public lib3mf
   (package
     (name "lib3mf")
-    (version "2.1.1")
+    (version "2.2.0")
     (source
      (origin
       (method git-fetch)
@@ -2308,20 +2300,48 @@ engineers for reverse engineers.")
       (file-name (git-file-name name version))
       (sha256
        (base32
-        "1417xlxc1y5jnipixhbjfrrjgkrprbbraj8647sff9051m3hpxc3"))))
+        "05zqvnzmi7j8rhp2mrskvxf1bxl7kb4c72dfx4y86219i1hx7i2q"))
+      (modules '((guix build utils)))
+      (snippet
+       '(begin
+          ;; Delete pre-compiled ACT.
+          (delete-file-recursively "AutomaticComponentToolkit/bin")
+
+          ;; Remove bundled software.  Preserve cpp-base64 as it has been
+          ;; modified and cannot easily be unbundled.
+          (for-each delete-file-recursively
+                    '("Include/Libraries/libzip"
+                      "Include/Libraries/zlib"
+                      "Source/Libraries/libzip"
+                      "Source/Libraries/zlib"))
+
+          ;; Adjust header includes such that system headers are found.
+          (substitute* '("Include/Common/OPC/NMR_OpcPackageReader.h"
+                         "Include/Common/Platform/NMR_ImportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ExportStream_ZIP.h"
+                         "Include/Common/Platform/NMR_ImportStream_Compressed.h"
+                         "Include/Common/Platform/NMR_ExportStream_Compressed.h"
+                         "Source/Common/Platform/NMR_PortableZIPWriterEntry.cpp")
+            (("Libraries/libzip/") "")
+            (("Libraries/zlib/") ""))))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DUSE_INCLUDED_ZLIB=0"
                                "-DUSE_INCLUDED_LIBZIP=0"
                                "-DUSE_INCLUDED_GTEST=0"
-                               "-DUSE_INCLUDED_SSL=0")))
+                               "-DUSE_INCLUDED_SSL=0")
+       #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'provide-act
+                    (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                      (let ((act (search-input-file (or native-inputs inputs)
+                                                    "bin/act"))
+                            (dir "AutomaticComponentToolkit/bin"))
+                        (mkdir-p dir)
+                        (symlink act (string-append dir "/act.linux"))))))))
     (native-inputs
-     (list googletest pkg-config))
+     (list automatic-component-toolkit googletest pkg-config))
     (inputs
-     `(("libuuid" ,util-linux "lib")
-       ("libzip" ,libzip)
-       ("libressl" ,libressl)
-       ("zlib" ,zlib)))
+     (list `(,util-linux "lib") libzip libressl zlib))
     (synopsis "Implementation of the 3D Manufacturing Format (3MF) file standard")
     (description
      "Lib3MF is a C++ implementation of the 3D Manufacturing Format (3MF) file
@@ -2442,7 +2462,7 @@ comments.")))
 (define-public freecad
   (package
     (name "freecad")
-    (version "0.20.1")
+    (version "0.20.2")
     (source
      (origin
        (method git-fetch)
@@ -2451,7 +2471,7 @@ comments.")))
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1pgkjlahisqjvi3dd7ywj1zwhsl3wn3p15sifbmrdfdmw9is3z2b"))))
+        (base32 "0wsfz2jqfhmqshyr1n4qxcc3c6a96gyll4h34vn2zzvvcnncn9rb"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen
@@ -2584,6 +2604,36 @@ computation of nodal connectivity of sub-elements (faces and edges),
 arithmetic operations on fields, entity location functionalities, and
 interpolation toolkit.")
     (license license:gpl3+)))
+
+(define-public cgns
+  (package
+    (name "cgns")
+    (version "4.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/CGNS/CGNS")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0jig1y7lv9qk1ri2gqws7ffpajmhxnank7gbyna9hfaghsxdlnvd"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           '(list "-DCGNS_ENABLE_TESTS=ON"
+                  "-DCGNS_ENABLE_FORTRAN=ON")))
+    (inputs (list hdf5 gfortran))
+    (home-page "https://cgns.org/")
+    (synopsis "Read and write computational fluid dynamics analysis data")
+    (description "This package provides software that reads, writes, and
+modifies data in the @dfn{CFD General Notation System} (CGNS) format.  The
+format is meant for recording and recovering computer data associated with the
+numerical solution of fluid dynamics equations.  The format is a conceptual
+entity established by the documentation; the software is a physical product
+supplied to enable developers to access and produce data recorded in that
+format.")
+    (license license:zlib)))
 
 (define-public libarea
   (let ((revision "1")
@@ -2794,13 +2844,13 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "2.4")
+    (version "3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
-               (base32 "0ivfzslpdy0n9wcdjyascnqczppaxcq0x4x6hblqqwy62xcjh7l4"))
+               (base32 "1pbs6587wcbgdhn4v4l896nzdv7ymgpdmyls95y3534z7krv5abr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2851,7 +2901,11 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
     (arguments
      ;; To build the GUI, add the `--enable-gui' configure flag.
      ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-     `(#:configure-flags '("--enable-mi")))
+     `(#:configure-flags
+       '("--enable-mi"
+         "--disable-static"
+         ;; The emacs files are provided in emacs-poke.
+         "--with-lispdir=/tmp/share/emacs")))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
@@ -2859,6 +2913,24 @@ Not limited to editing basic entities such as bits and bytes, it provides a
 full-fledged procedural, interactive programming language designed to describe
 data structures and to operate on them.")
     (license license:gpl3+)))
+
+(define-public emacs-poke
+  (package
+    (inherit poke)
+    (name "emacs-poke")
+    (build-system emacs-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'expand-load-path 'change-working-directory
+             (lambda _ (chdir "etc"))))))
+    (inputs '())
+    (native-inputs '())
+    (synopsis "GNU Poke major modes for Emacs")
+    (description
+     "This package provides two Emacs major modes for working with GNU Poke:
+@code{Poke Ras mode} and @code{Poke Map mode}.")))
 
 (define-public pcb2gcode
   ;; Take some additional commits after v2.4.0 to fix build against
@@ -3279,7 +3351,7 @@ visualization, matrix manipulation.")
 (define-public prusa-slicer
   (package
     (name "prusa-slicer")
-    (version "2.4.2")
+    (version "2.5.0")
     (source
      (origin
        (method git-fetch)
@@ -3288,7 +3360,7 @@ visualization, matrix manipulation.")
          (url "https://github.com/prusa3d/PrusaSlicer")
          (commit (string-append "version_" version))))
        (file-name (git-file-name name version))
-       (sha256 (base32 "17p56f0zmiryy8k4da02in1l6yxniz286gf9yz8s1gaz5ksqj4af"))
+       (sha256 (base32 "17ic92ww2ny0frxyv7ajwdwa0fq70ygq562ik8sh94jx67jvxdy0"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -3337,15 +3409,19 @@ visualization, matrix manipulation.")
            hidapi
            ilmbase
            libigl
+           libjpeg-turbo
            libpng
            mesa
            mpfr
            nlopt
+           opencascade-occt
            openvdb
            pango
            tbb
            eudev
-           wxwidgets
+           ;; prusa-slicer 2.5 segfaults on startup with wxwidgets 3.2
+           ;; See https://github.com/prusa3d/PrusaSlicer/issues/8299
+           wxwidgets-3.0
            zlib))
     (home-page "https://www.prusa3d.com/prusaslicer/")
     (synopsis "G-code generator for 3D printers (RepRap, Makerbot, Ultimaker etc.)")
@@ -3400,6 +3476,11 @@ BOM creation and has a lot of extra features.")
        #:configure-flags '("-DBUILD_EXAMPLES=OFF")
        #:phases
        (modify-phases %standard-phases
+         (add-after 'unpack 'fix-protobuf-compatibility
+           (lambda _
+             (substitute* "src/Socket_p.h"
+               (("stream\\.SetTotalBytesLimit\\(message_size_maximum,.*\\);")
+                "stream.SetTotalBytesLimit(message_size_maximum);"))))
          (add-before 'configure 'fix-python-sitearch
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "cmake/FindSIP.cmake"
@@ -3863,7 +3944,7 @@ form, numpad.
 (define-public rizin
   (package
     (name "rizin")
-    (version "0.4.0")
+    (version "0.4.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -3871,7 +3952,7 @@ form, numpad.
                     version "/rizin-src-v" version ".tar.xz"))
               (sha256
                (base32
-                "0nkb6v9lks25w5sv5s6p2ghgqnnnsf39md8nlx1cy4z89xlaisq9"))))
+                "1f5zzlnr2na4hkvcwn4n9cjlk6595945vwrw89pa683qk5mrb7b6"))))
     (build-system meson-build-system)
     (arguments
      (list

@@ -115,6 +115,11 @@ network devices were found. Do you want to continue anyway?"))
 (define (wait-service-online)
   "Display a newt scale until connman detects an Internet access. Do
 FULL-VALUE tentatives, spaced by 1 second."
+  (define (url-alive? url)
+    (false-if-exception
+     (= (response-code (http-request url))
+        200)))
+
   (define (ci-available?)
     (dynamic-wind
       (lambda ()
@@ -122,10 +127,8 @@ FULL-VALUE tentatives, spaced by 1 second."
           (lambda _ #f))
         (alarm 3))
       (lambda ()
-        (false-if-exception
-         (= (response-code
-             (http-request "https://ci.guix.gnu.org"))
-            200)))
+        (or (url-alive? "https://ci.guix.gnu.org")
+            (url-alive? "https://bordeaux.guix.gnu.org")))
       (lambda ()
         (alarm 0))))
 

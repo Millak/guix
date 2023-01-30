@@ -53,6 +53,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages emacs)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
@@ -7217,7 +7218,7 @@ online}.")
     (arguments
      `(#:cabal-revision
        ("1"
-        "1f0whk5ncanxfjjanrf6rqyncig2xgc5mh2j0sqy3nrlyjr9aqq9")))
+        "1xllyf26ypk37k807g5v6fl1449mhpvk18dljmqgwj723n0v8rpj")))
     (home-page "https://github.com/chrisdone/lucid")
     (synopsis "Haskell DSL for rendering HTML")
     (description "Clear to write, read and edit Haskell DSL for HTML.
@@ -9212,6 +9213,30 @@ building up, manipulating and serialising @code{Pandoc} structures.")
     (synopsis "Parallel programming library")
     (description
      "This package provides a library for parallel programming.")
+    (license license:bsd-3)))
+
+(define-public ghc-parsec
+  (package
+    (name "ghc-parsec")
+    (version "3.1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "parsec" version))
+              (sha256
+               (base32
+                "132waj2cpn892midbhpkfmb74qq83v0zv29v885frlp1gvh94b67"))))
+    (build-system haskell-build-system)
+    (native-inputs (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
+    (arguments
+     `(#:cabal-revision
+       ("4" "0p65q054iaz2117a5qk1428dic4sb41acclys9k00zna24ks7iq3")))
+    (home-page "https://github.com/haskell/parsec")
+    (synopsis "Monadic parser combinators")
+    (description "Parsec is designed from scratch as an industrial-strength
+parser library.  It is simple, safe, well documented (on the package
+homepage), has extensive libraries, good error messages, and is fast.  It is
+defined as a monad transformer that can be stacked on arbitrary monads, and it
+is also parametric in the input stream type.")
     (license license:bsd-3)))
 
 (define-public ghc-parsec-numbers
@@ -12357,7 +12382,7 @@ literals.")
      (list ghc-hunit))
     (home-page "https://hackage.haskell.org/package/string-qq")
     (synopsis
-     "QuasiQuoter for non-interpolated strings, texts and bytestrings.")
+     "QuasiQuoter for non-interpolated strings, texts and bytestrings")
     (description
      "This package provides a quasiquoter for non-interpolated strings, texts
 and bytestrings.")
@@ -13853,7 +13878,7 @@ for Unix time in Haskell.")
     (native-inputs (list ghc-hspec))
     (home-page "https://github.com/fpco/unliftio")
     (synopsis "Provides MonadUnliftIO typecplass for unlifting monads to
-IO (batteries included)")
+IO")
     (description "This Haskell package provides the core @code{MonadUnliftIO}
 typeclass, a number of common instances, and a collection of common functions
 working with it.")
@@ -16116,6 +16141,33 @@ data Dec a
     (description
      "This package enables integration of terminal screen state in html
 pages.")
+    (license license:bsd-3)))
+
+(define-public ghc-open-browser
+  (package
+    (name "ghc-open-browser")
+    (version "0.2.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "open-browser" version))
+              (sha256
+               (base32
+                "0rna8ir2cfp8gk0rd2q60an51jxc08lx4gl0liw8wwqgh1ijxv8b"))))
+    (build-system haskell-build-system)
+    (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+         (add-before 'configure 'patch-xdg-open
+           (lambda* (#:key inputs #:allow-other-keys)
+             (let ((xdg-open (assoc-ref inputs "xdg-utils")))
+               (substitute* "lib/Web/Browser/Linux.hs"
+                 (("xdg-open")
+                  (search-input-file inputs "/bin/xdg-open")))))))))
+    (inputs (list xdg-utils))
+    (home-page "https://github.com/rightfold/open-browser")
+    (synopsis "Open a web browser from Haskell")
+    (description "Haskell library for opening the web browser.")
     (license license:bsd-3)))
 
 (define-public ghc-singleton-bool

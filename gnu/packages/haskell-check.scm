@@ -899,7 +899,7 @@ minimal dependencies.")
                   ghc-crypto-cipher-types))
     (home-page "https://github.com/vincenthz/hs-crypto-cipher")
     (synopsis "Generic cryptography cipher tests for Haskell")
-    (description " This Haskell package contains generic tests for
+    (description "This Haskell package contains generic tests for
 cryptographic ciphers, and is used by the test runners of various Haskell
 implementations of cryptographic ciphers.")
     (license license:bsd-3)))

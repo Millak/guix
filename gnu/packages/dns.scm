@@ -290,7 +290,7 @@ prompt the user with the option to go with insecure DNS only.")
 (define-public dnsmasq
   (package
     (name "dnsmasq")
-    (version "2.86")
+    (version "2.88")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -298,7 +298,7 @@ prompt the user with the option to go with insecure DNS only.")
                     version ".tar.xz"))
               (sha256
                (base32
-                "027b0ycw8h8yvvkq46vnr7dv8iqn5srm4kr7hm7sq110kvy2rm98"))))
+                "1cy1zci6vyhzczy6ncc5m9d7zsnnzs9mmwd6pr9w0h03l7nlsm13"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -333,14 +333,14 @@ and BOOTP/TFTP for network booting of diskless machines.")
     ;; When updating, check whether isc-dhcp's bundled copy should be as well.
     ;; The BIND release notes are available here:
     ;; https://www.isc.org/bind/
-    (version "9.16.32")
+    (version "9.16.37")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://ftp.isc.org/isc/bind9/" version
                            "/bind-" version ".tar.xz"))
        (sha256
-        (base32 "0w2rcjxqnbhwzgsdsas36dadjq0qn6s1xjx4g4qk0ph2nvf4gj9j"))
+        (base32 "1az2y8zdpn6vfmx4xqnsh5znagcrsvkqa1hz3h8izzm24ban2ihf"))
        (patches
         (search-patches "bind-re-add-attr-constructor-priority.patch"))))
     (build-system gnu-build-system)
@@ -544,14 +544,14 @@ asynchronous fashion.")
 (define-public nsd
   (package
     (name "nsd")
-    (version "4.4.0")
+    (version "4.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.nlnetlabs.nl/downloads/nsd/nsd-"
                            version ".tar.gz"))
        (sha256
-        (base32 "0dl8iriy0mscppfa6ar5qcglgvxw87140abwxyksak1lk7fnzkfg"))))
+        (base32 "0ym2fgkjar94y99lyvp93p7jpj33ysprvqd7py28xxn37shs6q1z"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -666,14 +666,14 @@ BIND and djbdns---whilst using relatively little memory.")
 (define-public unbound
   (package
     (name "unbound")
-    (version "1.13.2")
+    (version "1.17.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.unbound.net/downloads/unbound-"
                            version ".tar.gz"))
        (sha256
-        (base32 "10qs1q26lzw18ljggnbz0cc5f7lr9ksj615xbrmh4amryd3va4qa"))))
+        (base32 "0h8k5yh49vasyzwkm3n1xsidxr7xybqwkvg4cq6937qxi7brbg6w"))))
     (build-system gnu-build-system)
     (outputs '("out" "python"))
     (native-inputs
@@ -871,7 +871,7 @@ Extensions} (DNSSEC).")
 (define-public knot
   (package
     (name "knot")
-    (version "3.1.9")
+    (version "3.2.4")
     (source
      (origin
        (method git-fetch)
@@ -880,15 +880,19 @@ Extensions} (DNSSEC).")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0w3jyz9qgkb34gkv2lr71phk5ad3rycn86qyw7n88ryhdsk45j73"))
+        (base32 "0b6fnrdy5zqn3mnn5cl92j0m7k9l6hh4gnr92qpirqf54bl2lfm2"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; Remove Ragel-generated C files.  We'll recreate them below.
            (for-each delete-file (find-files "." "\\.c\\.[gt]."))
            (delete-file "src/libknot/yparser/ypbody.c")
-           ;; Remove bundled library to ensure we always use the system's.
-           (delete-file-recursively "src/contrib/libbpf")))))
+           ;; Remove bundled libraries to ensure we always use the system's.
+           (with-directory-excursion "src/contrib"
+             (for-each delete-file-recursively
+                       (list "libbpf"
+                             ;; TODO: package this for DoQ (‘QUIC’) support.
+                             "libngtcp2")))))))
     (build-system gnu-build-system)
     (outputs (list "out" "doc" "lib" "tools"))
     (arguments
@@ -1009,14 +1013,14 @@ synthesis, and on-the-fly re-configuration.")
 (define-public knot-resolver
   (package
     (name "knot-resolver")
-    (version "5.4.4")
+    (version "5.5.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://secure.nic.cz/files/knot-resolver/"
                                   "knot-resolver-" version ".tar.xz"))
               (sha256
                (base32
-                "1sic5ccbbqml4c01dbikkg6qx1gg81nqi76cj79pjdllkqqn92aq"))))
+                "0bgdbx66dsfik3sdqi4g2imddalqc1p41n444xk7s8vxig35g3x3"))))
     (build-system meson-build-system)
     (outputs '("out" "doc"))
     (arguments
@@ -1294,7 +1298,7 @@ known public suffixes.")
 (define-public maradns
   (package
     (name "maradns")
-    (version "3.5.0020")
+    (version "3.5.0022")
     (source
      (origin
        (method url-fetch)
@@ -1302,7 +1306,7 @@ known public suffixes.")
                            (version-major+minor version) "/"
                            version "/maradns-" version ".tar.xz"))
        (sha256
-        (base32 "1qgabw6y2bwy6y88dikis62k789i0xh7iwxan8jmqpzvksqwjfgw"))))
+        (base32 "1sw267jxxxngjcar8cj3jpxnpiz0szgkhlz5l46c67qs690w9kdi"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ; need to be root to run tests

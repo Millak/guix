@@ -3,7 +3,7 @@
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Pierre Langlois <pierre.langlois@gmx.com>
 ;;; Copyright © 2021 Oleg Pykhalov <go.wigust@gmail.com>
-;;; Copyright © 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
@@ -48,7 +48,6 @@
   #:use-module (guix derivations)
   #:use-module (guix ui)
   #:autoload   (guix colors) (supports-hyperlinks? file-hyperlink)
-  #:use-module (guix grafts)
   #:use-module (guix packages)
   #:use-module (guix profiles)
   #:use-module (guix store)
@@ -173,7 +172,7 @@ Some ACTIONS support additional ARGS.\n"))
                    (alist-cons 'dry-run? #t result)))
          (option '(#\V "version") #f #f
                  (lambda args
-                   (show-version-and-exit "guix show")))
+                   (show-version-and-exit "guix home")))
          (option '(#\v "verbosity") #t #f
                  (lambda (opt name arg result)
                    (let ((level (string->number* arg)))
@@ -477,7 +476,7 @@ resulting from command-line parsing."
   (define (ensure-home-environment file-or-exp obj)
     (ensure-profile-directory)
     (unless (home-environment? obj)
-      (leave (G_ "'~a' does not return a home environment ~%")
+      (leave (G_ "'~a' does not return a home environment~%")
              file-or-exp))
     obj)
 
@@ -707,7 +706,7 @@ deploy the home environment described by these files.\n")
 (define (service-type-description-string type)
   "Return the rendered and localised description of TYPE, a service type."
   (and=> (service-type-description type)
-         (compose texi->plain-text P_)))
+         (compose texi->plain-text G_)))
 
 (define %service-type-metrics
   ;; Metrics used to estimate the relevance of a search result.

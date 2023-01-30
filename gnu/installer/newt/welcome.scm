@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Mathieu Othacehe <m.othacehe@gmail.com>
-;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Florian Pelz <pelzflorian@pelzflorian.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -17,6 +18,11 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu installer newt welcome)
+  #:use-module ((gnu build linux-modules)
+                #:select (modules-loaded
+                          pci-devices))
+  #:use-module (gnu installer dump)
+  #:use-module (gnu installer hardware)
   #:use-module (gnu installer steps)
   #:use-module (gnu installer utils)
   #:use-module (gnu installer newt page)
@@ -26,6 +32,8 @@
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-34)
   #:use-module (srfi srfi-35)
+  #:use-module (srfi srfi-71)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (ice-9 receive)
   #:use-module (newt)
@@ -117,10 +125,52 @@ we want this page to occupy all the screen space available."
         (lambda ()
           (destroy-form-and-pop form))))))
 
-(define (run-welcome-page logo)
+(define (check-hardware-support pci-database)
+  "Warn about unsupported devices."
+  (when (member "uvesafb" (modules-loaded))
+    (run-error-page (G_ "\
+This may be a false alarm, but possibly your graphics hardware does not
+work well with only free software.  Expect trouble.  If after installation,
+the system does not boot, perhaps you will need to add nomodeset to the
+kernel arguments and need to configure the uvesafb kernel module.")
+                    (G_ "Pre-install warning")))
+
+  (let ((devices (pci-devices)))
+    (match (filter unsupported-pci-device? devices)
+      (()                                         ;no unsupported device
+       #t)
+      (unsupported
+       (run-error-page (format #f (G_ "\
+Devices not supported by free software were found on your computer:
+
+~{  - ~a~%~}
+Unfortunately, it means those devices will not be usable.
+
+To address it, we recommend choosing hardware that respects your freedom as a \
+user--hardware for which free drivers and firmware exist.  See \"Hardware \
+Considerations\" in the manual for more information.")
+                               (map (pci-device-description pci-database)
+                                    unsupported))
+                       (G_ "Hardware support warning")
+                       #:width 76)))))
+
+(define* (run-welcome-page logo #:key pci-database)
   "Run a welcome page with the given textual LOGO displayed at the center of
 the page. Ask the user to choose between manual installation, graphical
 installation and reboot."
+  (when (file-exists? %core-dump)
+    (match (choice-window
+            (G_ "Previous installation failed")
+            (G_ "Continue")
+            (G_ "Report the failure")
+            (G_ "It seems that the previous installation exited unexpectedly \
+and generated a core dump.  Do you want to continue or to report the failure \
+first?"))
+      (1 #t)
+      (2 (raise
+          (condition
+           (&user-abort-error))))))
+
   (run-menu-page
    (G_ "GNU Guix install")
    (G_ "Welcome to GNU Guix system installer!
@@ -134,14 +184,16 @@ Documentation is accessible at any time by pressing Ctrl-Alt-F2.")
    #:listbox-items
    `((,(G_ "Graphical install using a terminal based interface")
       .
-      ,(const #t))
+      ,(lambda ()
+         (check-hardware-support pci-database)))
      (,(G_ "Install using the shell based process")
       .
       ,(lambda ()
+         (check-hardware-support pci-database)
          ;; Switch to TTY3, where a root shell is available for shell based
          ;; install. The other root TTY's would have been ok too.
          (system* "chvt" "3")
-         (run-welcome-page logo)))
+         (run-welcome-page logo #:pci-database pci-database)))
      (,(G_ "Reboot")
       .
       ,(lambda ()

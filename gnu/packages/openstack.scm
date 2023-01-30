@@ -769,7 +769,7 @@ for debugging, and better support for mocking results.")
             python-netaddr
             python-netifaces
             python-pbr
-            python-packaging-next
+            python-packaging
             python-pyparsing
             python-pytz))
     (native-inputs

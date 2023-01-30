@@ -1,0 +1,95 @@
+Fix warnings with recent versions of GCC.
+
+This is a combination of these commits:
+
+  https://github.com/openbios/openbios/commit/14be7d187a327a89c068c4e2551d5012a3c25703
+  https://github.com/openbios/openbios/commit/0e6b8b3cb4a25a4680f238bae76de5e370e706c8
+  https://github.com/openbios/openbios/commit/51067854a7606cceb8b1e0a3d2108da69ff46973
+
+...with minor adaptations to apply on 1.1.
+
+
+diff --git a/arch/sparc32/context.c b/arch/sparc32/context.c
+--- a/arch/sparc32/context.c
++++ b/arch/sparc32/context.c
+@@ -86,7 +86,7 @@ struct context *switch_to(struct context *ctx)
+     __context = ctx;
+     asm __volatile__ ("\n\tcall __switch_context"
+                       "\n\tnop" ::: "g1", "g2", "g3", "g4", "g5", "g6", "g7",
+-                      "o0", "o1", "o2", "o3", "o4", "o5", "sp", "o7",
++                      "o0", "o1", "o2", "o3", "o4", "o5", "o7",
+                       "l0", "l1", "l2", "l3", "l4", "l5", "l6", "l7",
+                       "i0", "i1", "i2", "i3", "i4", "i5", "i7",
+                       "f0", "f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9",
+diff --git a/drivers/cuda.c b/drivers/cuda.c
+--- a/drivers/cuda.c
++++ b/drivers/cuda.c
+@@ -355,7 +355,7 @@ static void
+ rtc_init(char *path)
+ {
+ 	phandle_t ph, aliases;
+-	char buf[64];
++	char buf[128];
+ 
+         snprintf(buf, sizeof(buf), "%s/rtc", path);
+ 	REGISTER_NAMED_NODE(rtc, buf);
+diff --git a/drivers/ide.c b/drivers/ide.c
+--- a/drivers/ide.c
++++ b/drivers/ide.c
+@@ -987,7 +987,7 @@ ob_ide_identify_drive(struct ide_drive *drive)
+ 		drive->sect = id.sectors;
+ 	}
+ 
+-	strncpy(drive->model, (char*)id.model, sizeof(id.model));
++	strncpy(drive->model, (char*)id.model, sizeof(drive->model));
+ 	drive->model[40] = '\0';
+ 	return 0;
+ }
+diff --git a/fs/hfs/hfs_fs.c b/fs/hfs/hfs_fs.c
+--- a/fs/hfs/hfs_fs.c
++++ b/fs/hfs/hfs_fs.c
+@@ -86,7 +86,7 @@ _search( hfsvol *vol, const char *path, const char *sname, hfsfile **ret_fd )
+ 
+ 	strncpy( buf, path, sizeof(buf) );
+ 	if( buf[strlen(buf)-1] != ':' )
+-		strncat( buf, ":", sizeof(buf) );
++		strncat( buf, ":", sizeof(buf) - 1 );
+ 	buf[sizeof(buf)-1] = 0;
+ 	p = buf + strlen( buf );
+ 
+@@ -101,7 +101,7 @@ _search( hfsvol *vol, const char *path, const char *sname, hfsfile **ret_fd )
+ 		*p = 0;
+ 		topdir = 0;
+ 
+-		strncat( buf, ent.name, sizeof(buf) );
++		strncat( buf, ent.name, sizeof(buf) - 1);
+ 		if( (status=_search(vol, buf, sname, ret_fd)) != 2 )
+ 			continue;
+ 		topdir = 1;
+diff --git a/libc/string.c b/libc/string.c
+--- a/libc/string.c
++++ b/libc/string.c
+@@ -349,10 +349,7 @@ int memcmp(const void * cs,const void * ct,size_t count)
+ char *
+ strdup( const char *str )
+ {
+-	char *p;
+-	if( !str )
+-		return NULL;
+-	p = malloc( strlen(str) + 1 );
++	char *p = malloc( strlen(str) + 1 );
+ 	strcpy( p, str );
+ 	return p;
+ }
+diff --git a/packages/nvram.c b/packages/nvram.c
+--- a/packages/nvram.c
++++ b/packages/nvram.c
+@@ -105,7 +105,7 @@ create_free_part( char *ptr, int size )
+ 	nvpart_t *nvp = (nvpart_t*)ptr;
+ 	memset( nvp, 0, size );
+ 
+-	strncpy( nvp->name, "777777777777", sizeof(nvp->name) );
++	strncpy( nvp->name, "77777777777", sizeof(nvp->name) );
+ 	nvp->signature = NV_SIG_FREE;
+ 	nvp->len_hi = (size /16) >> 8;
+ 	nvp->len_lo = size /16;

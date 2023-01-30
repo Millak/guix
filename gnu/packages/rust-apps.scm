@@ -6,19 +6,23 @@
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2020 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
-;;; Copyright © 2020-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
-;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2022 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Laparie <mlaparie@disr.it>
+;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -36,10 +40,12 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages rust-apps)
-  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cargo)
+  #:use-module (guix deprecation)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -53,6 +59,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages fontutils)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages ibus)
@@ -365,7 +372,7 @@ Features include:
 (define-public exa
   (package
     (name "exa")
-    (version "0.9.0")
+    (version "0.10.1")
     (source
      (origin
        (method url-fetch)
@@ -374,14 +381,15 @@ Features include:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1s902xgplz1167k0r7x235p914lprpsqy2if0kpa1mlb0fswqqq4"))))
+         "1dd7waq2bnxc1xwygqphi8k1g2qzykr6fk0q4rgrhhxp2jd09f04"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:install-source? #f
+       #:cargo-inputs
        (("rust-ansi-term" ,rust-ansi-term-0.12)
-        ("rust-datetime" ,rust-datetime-0.4)
+        ("rust-datetime" ,rust-datetime-0.5)
         ("rust-env-logger" ,rust-env-logger-0.6)
-        ("rust-git2" ,rust-git2-0.9)
+        ("rust-git2" ,rust-git2-0.13)
         ("rust-glob" ,rust-glob-0.3)
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-libc" ,rust-libc-0.2)
@@ -389,64 +397,57 @@ Features include:
         ("rust-log" ,rust-log-0.4)
         ("rust-natord" ,rust-natord-1)
         ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-number-prefix" ,rust-number-prefix-0.3)
+        ("rust-number-prefix" ,rust-number-prefix-0.4)
         ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
         ("rust-term-grid" ,rust-term-grid-0.1)
         ("rust-term-size" ,rust-term-size-0.3)
         ("rust-unicode-width" ,rust-unicode-width-0.1)
-        ("rust-users" ,rust-users-0.9)
-        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.4))
+        ("rust-users" ,rust-users-0.11)
+        ("rust-zoneinfo-compiled" ,rust-zoneinfo-compiled-0.5))
        #:cargo-development-inputs
-       (("rust-datetime" ,rust-datetime-0.4))
+       (("rust-datetime" ,rust-datetime-0.5))
        #:phases
        (modify-phases %standard-phases
-         ;; Ignoring failing tests.
-         ;; Reported in https://github.com/ogham/exa/issues/318
-         (add-before 'check 'disable-failing-tests
-           (lambda _
-             (substitute* "src/options/mod.rs"
-               (("^.*fn oneline_across.*" oneline-across)
-                (string-append "#[ignore]\n" oneline-across)))
-
-             (substitute* "src/options/view.rs"
-               (("test!\\(across:.*") "")
-               (("test!\\(cr:.*") "")
-               (("test!\\(empty:.*") "")
-               (("test!\\(gracross:.*") "")
-               (("test!\\(grid:.*") "")
-               (("test!\\(icons:.*") "")
-               (("test!\\(just_binary:.*") "")
-               (("test!\\(just_blocks:.*") "")
-               (("test!\\(just_bytes:.*") "")
-               (("test!\\(just_git:.*") "")
-               (("test!\\(just_group:.*") "")
-               (("test!\\(just_header:.*") "")
-               (("test!\\(just_inode:.*") "")
-               (("test!\\(just_links:.*") "")
-               (("test!\\(leg:.*") "")
-               (("test!\\(lid:.*") "")
-               (("test!\\(original_g:.*") ""))
-             #t))
+         (add-after 'build 'build-manual
+           (lambda* (#:key inputs #:allow-other-keys)
+             (when (assoc-ref inputs "pandoc")
+               (map (lambda (page)
+                      (with-output-to-file page
+                        (lambda _
+                          (invoke "pandoc" "--standalone"
+                                  "-f" "markdown"
+                                  "-t" "man"
+                                  (string-append "man/" page ".md")))))
+                    (list "exa.1" "exa_colors.5")))))
          (add-after 'install 'install-extras
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (share (string-append out "/share"))
-                    (man1  (string-append share "/man/man1")))
-               (install-file "contrib/man/exa.1" man1)
+                    (man1  (string-append share "/man/man1"))
+                    (man5  (string-append share "/man/man5")))
+               (when (file-exists? "exa.1")
+                 (install-file "exa.1" man1))
+               (when (file-exists? "exa_colors.5")
+                 (install-file "exa_colors.5" man5))
                (mkdir-p (string-append out "/etc/bash_completion.d"))
                (mkdir-p (string-append share "/fish/vendor_completions.d"))
                (mkdir-p (string-append share "/zsh/site-functions"))
-               (copy-file "contrib/completions.bash"
+               (copy-file "completions/completions.bash"
                           (string-append out "/etc/bash_completion.d/exa"))
-               (copy-file "contrib/completions.fish"
-                          (string-append share "/fish/vendor_completions.d/exa.fish"))
-               (copy-file "contrib/completions.zsh"
-                          (string-append share "/zsh/site-functions/_exa"))
-               #t))))))
-    (inputs
-     (list libgit2 zlib))
+               (copy-file "completions/completions.fish"
+                          (string-append
+                            share "/fish/vendor_completions.d/exa.fish"))
+               (copy-file "completions/completions.zsh"
+                          (string-append
+                            share "/zsh/site-functions/_exa"))))))))
+    (inputs (list libgit2 zlib))
     (native-inputs
-     (list pkg-config))
+     (append
+       (list pkg-config)
+       (if (member (%current-system)
+                   (package-transitive-supported-systems pandoc))
+         (list pandoc)
+         '())))
     (home-page "https://the.exa.website/")
     (synopsis "Modern replacement for ls")
     (description "@code{exa} is a modern replacement for the command-line
@@ -793,7 +794,167 @@ gitignore rules.")
 associated input devices using the built-in accelerometer; handy for convertible
 touchscreen devices.")
     (license license:expat)))
-                
+
+(define-public rust-swc
+  (package
+    (name "rust-swc")
+    (version "1.2.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/swc-project/swc")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1w9al035x0gmard80vqvah8sy8szs6bnd1ynnyssiiylzg7vhyyv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-ansi-term" ,rust-ansi-term-0.12)
+        ("rust-base64" ,rust-base64-0.12)
+        ("rust-console-error-panic-hook" ,rust-console-error-panic-hook-0.1)
+        ("rust-crc" ,rust-crc-1)
+        ("rust-darling" ,rust-darling-0.10)
+        ("rust-dashmap" ,rust-dashmap-3)
+        ("rust-either" ,rust-either-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-is-macro" ,rust-is-macro-0.1)
+        ("rust-jemallocator" ,rust-jemallocator-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-mimalloc" ,rust-mimalloc-0.1)
+        ("rust-napi" ,rust-napi-0.5)
+        ("rust-napi-build" ,rust-napi-build-0.2)
+        ("rust-napi-derive" ,rust-napi-derive-0.5)
+        ("rust-nom" ,rust-nom-5)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-ordered-float" ,rust-ordered-float-1)
+        ("rust-parking-lot" ,rust-parking-lot-0.7)
+        ("rust-path-clean" ,rust-path-clean-0.1)
+        ("rust-petgraph" ,rust-petgraph-0.5)
+        ("rust-phf" ,rust-phf-0.8)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-radix-fmt" ,rust-radix-fmt-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-relative-path" ,rust-relative-path-1)
+        ("rust-retain-mut" ,rust-retain-mut-0.1)
+        ("rust-scoped-tls" ,rust-scoped-tls-1)
+        ("rust-st-map" ,rust-st-map-0.1)
+        ("rust-string-cache" ,rust-string-cache-0.8)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-wasm-bindgen-futures" ,rust-wasm-bindgen-futures-0.4))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-num-bigint" ,rust-num-bigint-0.2)
+        ("rust-pretty-assertions" ,rust-pretty-assertions-0.6)
+        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-sourcemap" ,rust-sourcemap-6)
+        ("rust-string-cache-codegen" ,rust-string-cache-codegen-0.5)
+        ("rust-tempfile" ,rust-tempfile-3))
+       #:tests? #f ;; tests env_query_chrome_71 and project_env fail
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'enable-unstable-features
+           (lambda _
+             (setenv "RUSTC_BOOTSTRAP" "1")
+             (substitute* "ecmascript/jsdoc/src/lib.rs"
+               (("pub use self" all)
+                (string-append "#![feature(non_exhaustive)]\n" all)))
+             (substitute* "ecmascript/parser/src/lib.rs"
+               (("//! es2019" all)
+                (string-append "#![feature(non_exhaustive)]
+#![feature(mem_take)]
+#![feature(proc_macro_hygiene)]
+" all)))
+             (substitute* "ecmascript/transforms/src/lib.rs"
+               (("#!\\[cfg_attr" all)
+                (string-append "#![feature(mem_take)]\n" all)))
+             #t))
+         (add-after 'enable-unstable-features 'patch-build-failures
+           (lambda _
+             (chmod ".cargo/config" 420)
+             (substitute* "ecmascript/transforms/macros/src/lib.rs"
+               (("use proc_macro::")
+                "extern crate proc_macro;\nuse proc_macro::"))
+             (substitute* "common/src/errors/emitter.rs"
+               (("        #\\[cfg\\(feature = \"tty-emitter\"\\)\\]\n") ""))
+             #t)))))
+    (home-page "https://swc.rs/")
+    (synopsis "Typescript/javascript compiler")
+    (description "@code{rust-swc} is a typescript/javascript compiler.  It
+consumes a javascript or typescript file which uses recently added features
+like async-await and emits javascript code which can be executed on old
+browsers.")
+    (license (list license:expat
+                   license:asl2.0))))
+
+(define-deprecated rust-swc-1 rust-swc)
+
+(define-public rust-cargo-edit
+  (package
+    (name "rust-cargo-edit")
+    (version "0.10.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "cargo-edit" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "19wfjz7z4kqjfjmnq1bl6dhsvskjy6r656fqmbha9dfdspbsnmd0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:install-source? #f
+       #:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cargo-metadata" ,rust-cargo-metadata-0.15)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-concolor-control" ,rust-concolor-control-0.0.7)
+        ("rust-crates-index" ,rust-crates-index-0.18)
+        ("rust-dirs-next" ,rust-dirs-next-2)
+        ("rust-dunce" ,rust-dunce-1)
+        ("rust-env-proxy" ,rust-env-proxy-0.4)
+        ("rust-git2" ,rust-git2-0.14)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-native-tls" ,rust-native-tls-0.2)
+        ("rust-pathdiff" ,rust-pathdiff-0.2)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-subprocess" ,rust-subprocess-0.2)
+        ("rust-termcolor" ,rust-termcolor-1)
+        ("rust-toml-edit" ,rust-toml-edit-0.14)
+        ("rust-ureq" ,rust-ureq-2)
+        ("rust-url" ,rust-url-2))
+       #:cargo-development-inputs
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
+        ("rust-assert-fs" ,rust-assert-fs-1)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-snapbox" ,rust-snapbox-0.2)
+        ("rust-trycmd" ,rust-trycmd-0.13)
+        ("rust-url" ,rust-url-2))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libgit2
+           libssh2
+           openssl
+           zlib))
+    (home-page "https://github.com/killercup/cargo-edit")
+    (synopsis "Add and remove dependencies from the command line")
+    (description
+     "This package extends Cargo to allow you to add and remove dependencies
+by modifying your @file{Cargo.toml} file from the command line.")
+    (license (list license:asl2.0 license:expat))))
+
+(define-deprecated rust-cargo-edit-0.8 rust-cargo-edit)
+
 (define-public git-interactive-rebase-tool
   (package
     (name "git-interactive-rebase-tool")
@@ -830,8 +991,10 @@ touchscreen devices.")
         ("rust-rstest" ,rust-rstest-0.6)
         ("rust-serial-test" ,rust-serial-test-0.5)
         ("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list zlib))
+     (list libgit2-1.3 zlib))
     (home-page "https://gitrebasetool.mitmaro.ca/")
     (synopsis "Terminal based sequence editor for git interactive rebase")
     (description
@@ -868,6 +1031,49 @@ rebase.")
     (description
      "This package provides a tool for generating C/C++ bindings to Rust code.")
     (license license:mpl2.0)))
+
+(define-public rust-cbindgen-0.24
+  (package
+    (inherit rust-cbindgen)
+    (name "rust-cbindgen")
+    (version "0.24.3")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "1yqxqsz2d0cppd8zwihk2139g5gy38wqgl9snj6rnk8gyvnqsdd6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-clap" ,rust-clap-3)
+        ("rust-heck" ,rust-heck-0.4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-toml" ,rust-toml-0.5))
+        #:cargo-development-inputs
+        (("rust-serial-test" ,rust-serial-test-0.5))))
+    (native-inputs
+     (list python-cython))))
+
+(define-public rust-cbindgen-0.23
+  (package
+    (inherit rust-cbindgen-0.24)
+    (name "rust-cbindgen")
+    (version "0.23.0")
+    (source (origin
+             (method url-fetch)
+             (uri (crate-uri "cbindgen" version))
+             (file-name (string-append name "-" version ".tar.gz"))
+             (sha256
+              (base32
+               "006rn3fn4njayjxr2vd24g1awssr9i3894nbmfzkybx07j728vav"))))))
 
 (define-public rust-cbindgen-0.19
   (package
@@ -1108,14 +1314,14 @@ of the project is to be runnable on untrusted networks without crashing.")
 (define-public tectonic
   (package
     (name "tectonic")
-    (version "0.8.2")
+    (version "0.12.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "tectonic" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "041v887a3aybrkn5fnrjwy95wxfk4npl6lj8ar8dnidjmfh92bka"))))
+        (base32 "1q4mz2c32gfypx33zlzgd1q9h4322jrk13fzvsf8h676ylclqzpc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-build-flags '("--release" "--features" "external-harfbuzz")
@@ -1135,18 +1341,17 @@ of the project is to be runnable on untrusted networks without crashing.")
         ("rust-sha2" ,rust-sha2-0.9)
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-tectonic-bridge-core" ,rust-tectonic-bridge-core-0.3)
-        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.2)
-        ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.1)
+        ("rust-tectonic-bundles" ,rust-tectonic-bundles-0.3)
+        ("rust-tectonic-docmodel" ,rust-tectonic-docmodel-0.2)
         ("rust-tectonic-engine-bibtex" ,rust-tectonic-engine-bibtex-0.1)
         ("rust-tectonic-engine-spx2html" ,rust-tectonic-engine-spx2html-0.1)
-        ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.1)
-        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.2)
+        ("rust-tectonic-engine-xdvipdfmx" ,rust-tectonic-engine-xdvipdfmx-0.4)
+        ("rust-tectonic-engine-xetex" ,rust-tectonic-engine-xetex-0.4)
         ("rust-tectonic-errors" ,rust-tectonic-errors-0.2)
         ("rust-tectonic-geturl" ,rust-tectonic-geturl-0.3)
         ("rust-tectonic-io-base" ,rust-tectonic-io-base-0.4)
         ("rust-tectonic-status-base" ,rust-tectonic-status-base-0.2)
         ("rust-tectonic-xdv" ,rust-tectonic-xdv-0.2)
-        ("rust-tectonic-xetex-layout" ,rust-tectonic-xetex-layout-0.1)
         ("rust-tempfile" ,rust-tempfile-3)
         ("rust-termcolor" ,rust-termcolor-1)
         ("rust-toml" ,rust-toml-0.5)
@@ -1716,6 +1921,164 @@ C-compatible) software.")
 consecutive lines and since program start.")
     (license license:expat)))
 
+(define-public skim
+  (package
+    (name "skim")
+    (version "0.9.4")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "skim" version))
+        (file-name
+          (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32
+            "1d5v9vq8frkdjm7bnw3455h6xf3c277d51il2qasn7r20kwik7ab"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-atty-0.2" ,rust-atty-0.2)
+         ("rust-beef" ,rust-beef-0.5)
+         ("rust-bitflags" ,rust-bitflags-1)
+         ("rust-chrono" ,rust-chrono-0.4)
+         ("rust-clap" ,rust-clap-2)
+         ("rust-crossbeam" ,rust-crossbeam-0.8)
+         ("rust-defer-drop" ,rust-defer-drop-1)
+         ("rust-derive-builder" ,rust-derive-builder-0.9)
+         ("rust-env-logger" ,rust-env-logger-0.8)
+         ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-log" ,rust-log-0.4)
+         ("rust-nix" ,rust-nix-0.19)
+         ("rust-rayon" ,rust-rayon-1)
+         ("rust-regex" ,rust-regex-1)
+         ("rust-shlex" ,rust-shlex-0.1)
+         ("rust-time" ,rust-time-0.2)
+         ("rust-timer" ,rust-timer-0.2)
+         ("rust-tuikit" ,rust-tuikit-0.4)
+         ("rust-unicode-width" ,rust-unicode-width-0.1)
+         ("rust-vte" ,rust-vte-0.9))
+        #:phases
+        (modify-phases %standard-phases
+          (add-after 'install 'install-extras
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin (string-append out "/bin"))
+                     (share (string-append out "/share"))
+                     (man (string-append out "/share/man"))
+                     (vimfiles (string-append share "/vim/vimfiles/plugin"))
+                     (bash-completion
+                      (string-append share "/bash-completions/completions"))
+                     (zsh-site (string-append share "/zsh/site-functions"))
+                     (fish-vendor
+                      (string-append share "/fish/vendor-completions.d")))
+                ;; Binaries
+                (for-each
+                 (lambda (binary) (install-file binary bin))
+                 (find-files "bin"))
+                (mkdir-p share)
+                ;; Manpages
+                (copy-recursively "man" man)
+                ;; Vim plugins
+                (mkdir-p vimfiles)
+                (copy-recursively "plugin" vimfiles)
+                ;; Completions
+                (mkdir-p bash-completion)
+                (copy-file
+                 "shell/completion.bash"
+                 (string-append bash-completion "/skim"))
+                (copy-file
+                 "shell/key-bindings.bash"
+                 (string-append bash-completion "/skim-bindings"))
+                (mkdir-p zsh-site)
+                (copy-file
+                 "shell/completion.zsh"
+                 (string-append zsh-site "/_skim"))
+                (copy-file
+                 "shell/key-bindings.zsh"
+                 (string-append zsh-site "/_skim-bindings"))
+                (mkdir-p fish-vendor)
+                (copy-file
+                 "shell/key-bindings.fish"
+                 (string-append fish-vendor "/skim-bindings.fish"))))))))
+    (home-page "https://github.com/lotabout/skim")
+    (synopsis "Fuzzy Finder in Rust")
+    (description "This package provides a fuzzy finder in Rust.")
+    (license license:expat)))
+
+(define-public skim-0.7
+  (package
+    (inherit skim)
+    (name "skim")
+    (version "0.7.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "skim" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "1yiyd6fml5hd2l811sckkzmiiq9bd7018ajk4qk3ai4wyvqnw8mv"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-derive-builder" ,rust-derive-builder-0.9)
+        ("rust-env-logger" ,rust-env-logger-0.6)
+        ("rust-fuzzy-matcher" ,rust-fuzzy-matcher-0.3)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-nix" ,rust-nix-0.14)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-shlex" ,rust-shlex-0.1)
+        ("rust-time" ,rust-time-0.1)
+        ("rust-timer" ,rust-timer-0.2)
+        ("rust-tuikit" ,rust-tuikit-0.2)
+        ("rust-unicode-width" ,rust-unicode-width-0.1)
+        ("rust-vte" ,rust-vte-0.3))))))
+
+(define-public rust-skim-0.7
+  (deprecated-package "rust-skim-0.7" skim-0.7))
+
+(define-public svd2rust
+  (package
+    (name "svd2rust")
+    (version "0.19.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "svd2rust" version))
+        (file-name
+         (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32
+          "0q8slfgjfhpljzlk2myb0i538mfq99q1ljn398jm17r1q2pjjxhv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cast" ,rust-cast-0.2)
+        ("rust-clap" ,rust-clap-2)
+        ("rust-clap-conf" ,rust-clap-conf-0.1)
+        ("rust-env-logger" ,rust-env-logger-0.7)
+        ("rust-inflections" ,rust-inflections-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-svd-parser" ,rust-svd-parser-0.10)
+        ("rust-syn" ,rust-syn-1)
+        ("rust-thiserror" ,rust-thiserror-1))))
+    (home-page "https://github.com/rust-embedded/svd2rust/")
+    (synopsis
+     "Generate Rust register maps (`struct`s) from SVD files")
+    (description
+     "This program can be used to generate Rust register maps (`struct`s) from SVD
+files.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public swayhide
   (package
     (name "swayhide")
@@ -1740,6 +2103,43 @@ process has finished, the terminal is moved back.  This is useful if your
 workflow includes opening graphical programs from the terminal, as the locked
 terminal won't have to take up any space.")
     (license license:gpl3+)))
+
+(define-public swayr
+  (package
+   (name "swayr")
+   (version "0.18.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (crate-uri "swayr" version))
+     (file-name (string-append name "-" version ".tar.gz"))
+     (sha256
+      (base32 "1m443lwbs3lm20kkviw60db56w9i59dm393z1sn6llpfi2xihh3h"))))
+   (build-system cargo-build-system)
+   (arguments
+    `(#:tests? #f
+      #:cargo-inputs
+      (("rust-clap" ,rust-clap-3)
+       ("rust-directories" ,rust-directories-4)
+       ("rust-env-logger" ,rust-env-logger-0.9)
+       ("rust-log" ,rust-log-0.4)
+       ("rust-once-cell" ,rust-once-cell-1)
+       ("rust-rand" ,rust-rand-0.8)
+       ("rust-regex" ,rust-regex-1)
+       ("rust-rt-format" ,rust-rt-format-0.3)
+       ("rust-serde" ,rust-serde-1)
+       ("rust-serde-json" ,rust-serde-json-1)
+       ("rust-swayipc" ,rust-swayipc-3)
+       ("rust-toml" ,rust-toml-0.5))))
+   (home-page "https://sr.ht/~tsdh/swayr/")
+   (synopsis "Window-switcher for the sway window manager")
+   (description
+    "This package provides a last-recently-used window-switcher for the sway
+window manager. Swayr consists of a daemon, and a client. The swayrd daemon
+records window/workspace creations, deletions, and focus changes using sway's
+JSON IPC interface. The swayr client offers subcommands, and sends them to the
+daemon which executes them.")
+   (license license:gpl3+)))
 
 (define-public tealdeer
   (package
@@ -1848,17 +2248,16 @@ Full featured offline client with caching support.")
          (add-after 'unpack 'relax-version-requirements
            (lambda _
              (substitute* "Cargo.toml"
-               (("2.5") "2")
-               (("~2.3\"") "2\"")
-               (("~2.33\"") "2\"")      ; clap
-               (("3.1") "3"))))
+               (("\"~") "\""))))
          (add-after 'install 'install-manual-page
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out   (assoc-ref outputs "out"))
                     (man   (string-append out "/share/man/man1")))
                (install-file "Documentation/git-absorb.1" man)))))))
+    (native-inputs
+     (list pkg-config))
     (inputs
-     (list zlib))
+     (list libgit2-1.3 zlib))
     (home-page "https://github.com/tummychow/git-absorb")
     (synopsis "Git tool for making automatic fixup commits")
     (description
@@ -1871,36 +2270,82 @@ It will then write @code{fixup!} commits for each of those changes.")
 (define-public zoxide
   (package
     (name "zoxide")
-    (version "0.6.0")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "zoxide" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ih01l3xp8plicxhmyxjkq12ncpdb8954jcj3dh3lwvkhvw29nkk"))))
+        (base32 "0y5v2vgl9f3n0n0w4b3iddbfyxv0hls0vw5406ry0hcvnnjyy2l3"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
-       (("rust-anyhow" ,rust-anyhow-1)
-        ("rust-askama" ,rust-askama-0.10)
-        ("rust-bincode" ,rust-bincode-1)
-        ("rust-clap" ,rust-clap-3)
-        ("rust-dirs-next" ,rust-dirs-next-2)
-        ("rust-dunce" ,rust-dunce-1)
-        ("rust-glob" ,rust-glob-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
-        ("rust-ordered-float" ,rust-ordered-float-2)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-tempfile" ,rust-tempfile-3))
-       #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
-        ("rust-seq-macro" ,rust-seq-macro-0.2))))
+     (list #:cargo-inputs
+           `(("rust-anyhow" ,rust-anyhow-1)
+             ("rust-askama" ,rust-askama-0.11)
+             ("rust-bincode" ,rust-bincode-1)
+             ("rust-clap" ,rust-clap-3)
+             ("rust-clap-complete" ,rust-clap-complete-3)
+             ("rust-clap-complete-fig" ,rust-clap-complete-fig-3)
+             ("rust-dirs" ,rust-dirs-4)
+             ("rust-dunce" ,rust-dunce-1)
+             ("rust-fastrand" ,rust-fastrand-1)
+             ("rust-glob" ,rust-glob-0.3)
+             ("rust-nix" ,rust-nix-0.24)
+             ("rust-serde" ,rust-serde-1)
+             ("rust-which" ,rust-which-4))
+           #:cargo-development-inputs
+           `(("rust-assert-cmd" ,rust-assert-cmd-2)
+             ("rust-rstest" ,rust-rstest-0.15)
+             ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
+             ("rust-tempfile" ,rust-tempfile-3))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'use-older-rust
+                 (lambda _
+                   (setenv "RUSTC_BOOTSTRAP" "1")
+                   (substitute* "Cargo.toml"
+                     (("^rust-version = .*$")
+                      (string-append
+                       "rust-version = \""
+                       #$(package-version rust)
+                       "\"\n")))
+                   (substitute* "src/main.rs"
+                     (("#!\\[allow\\(clippy::single_component_path_imports)]")
+                      "#![feature(total_cmp)]"))
+                   (substitute* "src/cmd/query.rs"
+                     (("let handle = &mut io::stdout\\()\\.lock\\();")
+                      "\
+let _stdout = io::stdout();
+let handle = &mut _stdout.lock();")))))))
     (home-page "https://github.com/ajeetdsouza/zoxide/")
     (synopsis "Fast way to navigate your file system")
     (description
      "Zoxide is a fast replacement for your @command{cd} command.  It keeps
 track of the directories you use most frequently, and uses a ranking algorithm
 to navigate to the best match.")
+    (license license:expat)))
+
+(define-public htmlq
+  (package
+    (name "htmlq")
+    (version "0.4.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "htmlq" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "0912cdkz5xji1hzfj1cf42zh1kd860b52xmwwhb7q2jhp6qk25jh"))))
+    (build-system cargo-build-system)
+    (arguments
+      `(#:cargo-inputs
+        (("rust-clap" ,rust-clap-2)
+         ("rust-html5ever" ,rust-html5ever-0.25)
+         ("rust-kuchiki" ,rust-kuchiki-0.8)
+         ("rust-lazy-static" ,rust-lazy-static-1)
+         ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/mgdm/htmlq")
+    (synopsis "Like jq, but for HTML")
+    (description "Extract content from HTML files using CSS selectors.")
     (license license:expat)))
