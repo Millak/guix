@@ -10240,10 +10240,10 @@ programs for inferring phylogenies (evolutionary trees).")
                                      texlive-caption
                                      texlive-cite
                                      texlive-fonts-ec
+                                     texlive-graphics
                                      texlive-grfext
                                      texlive-hyperref
                                      texlive-latex-fancyvrb
-                                     texlive-latex-graphics
                                      texlive-latex-psfrag
                                      texlive-xcolor))))
     (home-page "https://github.com/stephaneguindon/phyml")
@@ -10351,7 +10351,7 @@ applications for tackling some common problems in a user-friendly way.")
              (lambda* (#:key outputs #:allow-other-keys)
                (substitute* "src/test/Makefile"
                  (("^CFLAGS=") "CFLAGS= -fcommon"))
-               
+
                ;; Don't attempt to install the bash completions to
                ;; the home directory.
                (rename-file "extras/.bash_completion"

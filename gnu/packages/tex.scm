@@ -11888,10 +11888,10 @@ and selecting references used in a publication.")
                              texlive-endnotes
                              texlive-etoolbox
                              texlive-generic-xstring
+                             texlive-graphics
                              texlive-latex-draftwatermark
                              texlive-latex-fancyhdr
                              texlive-latex-float
-                             texlive-latex-graphics
                              texlive-lm
                              texlive-substr
                              texlive-times

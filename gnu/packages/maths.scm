@@ -752,7 +752,7 @@ integer programming problems and computes Markov bases for statistics.")
                          libtool
                          texlive-amsfonts
                          texlive-dvips-l3backend
-                         texlive-latex-graphics
+                         texlive-graphics
                          texlive-latex-l3backend
                          texlive-tiny))
     (arguments
