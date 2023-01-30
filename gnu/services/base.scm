@@ -3146,6 +3146,7 @@ to handle."
        (default-session-command (greetd-default-session-command config)))
     (mixed-text-file
      config-file-name
+     "[general]\n"
      "source_profile = " (if source-profile? "true" "false") "\n"
      "[terminal]\n"
      "vt = " terminal-vt "\n"
