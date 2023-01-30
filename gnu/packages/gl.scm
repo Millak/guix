@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017-2019, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2017, 2018, 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -298,8 +298,7 @@ also known as DXTn or DXTC) for Mesa.")
            libxml2
            libxrandr
            libxvmc
-           ;; Note: update the 'clang' input of mesa-opencl when bumping this.
-           llvm
+           llvm-for-mesa
            wayland
            wayland-protocols))
     (native-inputs
@@ -513,7 +512,7 @@ from software emulation to complete hardware acceleration for modern GPUs.")
        (prepend libclc)))
     (native-inputs
      (modify-inputs (package-native-inputs mesa)
-       (prepend clang)))))
+       (prepend clang-15)))))
 
 (define-public mesa-opencl-icd
   (package/inherit mesa-opencl
