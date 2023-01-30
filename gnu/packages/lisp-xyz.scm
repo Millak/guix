@@ -23674,7 +23674,7 @@ JavaScript code.")
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -23684,7 +23684,7 @@ JavaScript code.")
        (file-name (git-file-name "nhooks" version))
        (sha256
         (base32
-         "1379q1wbh38xlkwlpf0xy9wgbbc869zznak3l4yzwfgiw6l2hxa1"))))
+         "1cpd9ydxkrl4vxn2clfwljl4q5hdybxkc96qshq7dczq2jvg1nfs"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-serapeum))
