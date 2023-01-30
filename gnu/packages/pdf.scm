@@ -758,15 +758,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.20.3")
+    (version "1.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32
-         "0s0qclxxdjis04mczgz0fhfpv0j8llk48g82zlfrk0daz0zgcwvg"))
+        (base32 "0876sn5nd8vyw9d3d3bmripm119jy6734rs0ywppqzvccy839936"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -814,14 +813,13 @@ and based on PDF specification 1.7.")
               "USE_SYSTEM_JPEGXR=no # not available"
               "USE_SYSTEM_LCMS2=no # lcms2mt is strongly preferred"
               "USE_SYSTEM_LIBJPEG=yes"
-              "USE_SYSTEM_MUJS=no # not available"
+              "USE_SYSTEM_MUJS=yes"
               "USE_SYSTEM_OPENJPEG=yes"
               "USE_SYSTEM_ZLIB=yes"
               "USE_SYSTEM_GLUT=no"
               "USE_SYSTEM_CURL=yes"
               "USE_SYSTEM_LEPTONICA=yes"
               "USE_SYSTEM_TESSERACT=yes"
-              "USE_SYSTEM_MUJS=yes"
               "shared=yes"
               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
               (string-append "prefix=" #$output))
