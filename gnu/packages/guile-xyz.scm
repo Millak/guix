@@ -5493,44 +5493,37 @@ This module implements this interface by use of Guile's dynamic FFI.")
 (define-public guile-goblins
   (package
     (name "guile-goblins")
-    (version "0.8")
+    (version "0.10")
     (source
      (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://gitlab.com/spritely/guile-goblins/")
-             (commit (string-append "v" version))))
-       (file-name (string-append name "-" version))
+       (method url-fetch)
+       (uri (string-append "https://spritely.institute/files/releases"
+                           "/guile-goblins/guile-goblins-"
+                           version ".tar.gz"))
        (sha256
         (base32
-         "1mmyykh79jwhrfgnhhw94aw7a8m6qw249kj7k60ynj16mcfm5iyy"))))
+         "02riz8rqva3anhwp19xcp27w05g1ryhzs69n9h4sna95a1yfr7h1"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
            #~(list "GUILE_AUTO_COMPILE=0")))
     (native-inputs
-     (list autoconf automake pkg-config texinfo))
+     (list pkg-config texinfo))
     (inputs (list guile-3.0))
     (propagated-inputs
      (list guile-fibers guile-gcrypt))
     (home-page "https://spritely.institute/goblins")
     (synopsis "Distributed programming environment for Guile")
-    ;; In guile-goblins 0.9, OCapN support will be added (it already
-    ;; exists in racket-goblins).  At that point we should add the
-    ;; following to this description:
-    ;;
-    ;;   Goblins allows for cooperation between networked programs
-    ;;   in a mutually suspicious network through OCapN, the Object
-    ;;   Capability Network.  This includes collaboration across
-    ;;   runtimes; for instance, programs written in the Guile and Racket
-    ;;   versions of Goblins are able to speak to each other.
     (description
      "@code{guile-goblins} is the Guile version of
-@url{https://spritely.institute/goblins, Spritely Goblins},
-a transactional, distributed programming environment following object
-capability security designs.  Goblins is a general toolkit, and also
-the core layer of Spritely's work to support healthy distributed
-networked communities.")
+@url{https://spritely.institute/goblins, Spritely Goblins}, a transactional,
+distributed programming environment following object capability security
+designs.  Goblins is a general toolkit, and also the core layer of Spritely's
+work to support healthy distributed networked communities.  Goblins allows for
+cooperation between networked programs in a mutually suspicious network
+through OCapN, the Object Capability Network.  This includes collaboration
+across runtimes; for instance, programs written in the Guile and Racket
+versions of Goblins are able to speak to each other.")
     (license license:asl2.0)))
 
 ;;;
