@@ -10239,11 +10239,11 @@ programs for inferring phylogenies (evolutionary trees).")
            (texlive-updmap.cfg (list texlive-amsfonts
                                      texlive-caption
                                      texlive-cite
+                                     texlive-fancyvrb
                                      texlive-fonts-ec
                                      texlive-graphics
                                      texlive-grfext
                                      texlive-hyperref
-                                     texlive-latex-fancyvrb
                                      texlive-latex-psfrag
                                      texlive-xcolor))))
     (home-page "https://github.com/stephaneguindon/phyml")
