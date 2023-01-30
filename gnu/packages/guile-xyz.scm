@@ -5502,7 +5502,7 @@ This module implements this interface by use of Guile's dynamic FFI.")
                            version ".tar.gz"))
        (sha256
         (base32
-         "02riz8rqva3anhwp19xcp27w05g1ryhzs69n9h4sna95a1yfr7h1"))))
+         "13nzmwi4m0j27rmn2ks0p3k620npnhx736q25n8llj2ivkn2vxd2"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
