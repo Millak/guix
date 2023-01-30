@@ -427,8 +427,8 @@ graphs in Graphviz's DOT language, written in pure Python.")
            ;; the resulting generated TeX files, which \usepackage them.
            texlive-bin
            texlive-amsmath
-           texlive-geometry
-           texlive-latex-graphics
+           texlive-graphics
+           texlive-latex-geometry
            texlive-latex-base
            texlive-latex-preview
            texlive-latex-xkeyval

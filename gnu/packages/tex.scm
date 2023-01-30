@@ -11887,10 +11887,10 @@ and selecting references used in a publication.")
                              texlive-booktabs
                              texlive-endnotes
                              texlive-etoolbox
+                             texlive-fancyhdr
                              texlive-generic-xstring
                              texlive-graphics
                              texlive-latex-draftwatermark
-                             texlive-latex-fancyhdr
                              texlive-latex-float
                              texlive-lm
                              texlive-substr
