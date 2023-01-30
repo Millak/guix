@@ -121,6 +121,7 @@ provides a 'SConstruct' file as its build system."
   (gexp->derivation name builder
                     #:system system
                     #:target #f
+                    #:graft? #f
                     #:guile-for-build guile))
 
 (define scons-build-system
