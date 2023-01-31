@@ -144,14 +144,14 @@
 (define-public imake
   (package
     (name "imake")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://xorg/individual/util/imake-"
-                          version ".tar.bz2"))
+                          version ".tar.xz"))
       (sha256
-       (base32 "00m7l90ws72k1qm101sd2rx92ckd50cszyng5d4dd77jncbf9lmq"))))
+       (base32 "10wgw3l0rsnvc2191awyg5j24n3g552xgc671qr5vnbliwkrvpkj"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
