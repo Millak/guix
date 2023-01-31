@@ -4277,17 +4277,17 @@ up your screen.")
 (define-public xsetroot
   (package
     (name "xsetroot")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xsetroot-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0z21mqvmdl6rl63q77479wgkfygnll57liza1i3va7sr4fx45i0h"))))
+            "1l9qcv4mldj70slnmfg56nv7yh9j9ca1x795bl26whmlkrdb90b0"))))
     (build-system gnu-build-system)
     (inputs
       (list libxmu libxcursor xbitmaps))
