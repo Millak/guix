@@ -1513,14 +1513,14 @@ Qt-based XMPP library QXmpp.")
 (define-public prosody
   (package
     (name "prosody")
-    (version "0.12.1")
+    (version "0.12.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://prosody.im/downloads/source/"
                                   "prosody-" version ".tar.gz"))
               (sha256
                (base32
-                "1rch9gzp9ksnniv6r1vskifvfv5wbp8wcfjr0lc2b9013zjbpv57"))))
+                "05ma72wr6iypr62vq748jhzx8i3lmgnsjshrx6w0z7sg24jfhqmn"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f                      ;tests require "busted"
