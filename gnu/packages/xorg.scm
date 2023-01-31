@@ -3623,17 +3623,17 @@ configuring modelines and gamma.")
 (define-public xgamma
   (package
     (name "xgamma")
-    (version "1.0.6")
+    (version "1.0.7")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xgamma-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1lr2nb1fhg5fk2fchqxdxyl739602ggwhmgl2wiv5c8qbidw7w8f"))))
+            "13xw2fqp9cs7xj3nqi8khqxv81rk0dd8khp59xgs2lw9bbldly8w"))))
     (build-system gnu-build-system)
     (inputs
       (list libxxf86vm libx11))
