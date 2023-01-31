@@ -3813,14 +3813,14 @@ requested commands if they occur.")
 (define-public xkbprint
   (package
     (name "xkbprint")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append  "mirror://xorg/individual/app/"
-                             "xkbprint-" version ".tar.bz2"))
+                             "xkbprint-" version ".tar.xz"))
         (sha256
-          (base32 "1yi3232g25hhp241irncd8znv3090k2gm0yjcdnz08h89y1zwn2v"))))
+          (base32 "1c57kb8d8cbf720n9bcjhhaqpk08lac0sk4l0jp8j0mryw299k4r"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxkbfile xorgproto))
