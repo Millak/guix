@@ -22302,28 +22302,25 @@ within Emacs.")
       (license license:gpl3+))))
 
 (define-public emacs-ibrowse
-  (let* ((commit "7e4a2987fc63861514b441f65db2008da5949ef2")
-         (revision "0"))
-    (package
-      (name "emacs-ibrowse")
-      (version (git-version "0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.sr.ht/~ngraves/ibrowse.el")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "15661xgjxdxk1p0g87dsas9jd9v7g64y6n9irlbyzww09gjsjwwd"))))
-      (build-system emacs-build-system)
-      (inputs (list sqlite))
-      (propagated-inputs (list emacs-embark emacs-marginalia))
-      (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
-      (synopsis "Interact with your browser from emacs")
-      (description "This package provides some commands to act on the browser
+  (package
+    (name "emacs-ibrowse")
+    (version "0.1.8")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.sr.ht/~ngraves/ibrowse.el")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0q3imid9byaay0lqvv5n2klwk680w8x3qzdb279rdr08bb36w5ya"))))
+    (build-system emacs-build-system)
+    (inputs (list sqlite))
+    (home-page "https://git.sr.ht/~ngraves/ibrowse.el")
+    (synopsis "Interact with your browser from emacs")
+    (description "This package provides some commands to act on the browser
 tabs, history, or bookmarks from Emacs.")
-      (license license:gpl3+))))
+    (license license:gpl3+)))
 
 (define-public emacs-ibuffer-projectile
   (package
