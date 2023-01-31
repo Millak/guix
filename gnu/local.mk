@@ -2007,7 +2007,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/xdg-desktop-portal-wlr-harcoded-length.patch\
   %D%/packages/patches/xf86-video-ark-remove-mibstore.patch	\
   %D%/packages/patches/xf86-video-nouveau-fixup-ABI.patch	\
-  %D%/packages/patches/xf86-video-qxl-fix-build.patch	\
   %D%/packages/patches/xf86-video-savage-xorg-compat.patch 	\
   %D%/packages/patches/xf86-video-siliconmotion-fix-ftbfs.patch \
   %D%/packages/patches/xf86-video-tga-remove-mibstore.patch	\

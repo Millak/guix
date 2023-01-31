@@ -3111,17 +3111,15 @@ UniChrome Pro and Chrome9 integrated graphics processors.")
 (define-public xf86-video-qxl
   (package
     (name "xf86-video-qxl")
-    (version "0.1.5")
+    (version "0.1.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
                 "mirror://xorg/individual/driver/"
-                "xf86-video-qxl-" version ".tar.bz2"))
+                "xf86-video-qxl-" version ".tar.xz"))
               (sha256
                (base32
-                "14jc24znnahhmz4kqalafmllsg8awlz0y6gpgdpk5ih38ph851mi"))
-              (patches (search-patches
-                        "xf86-video-qxl-fix-build.patch"))))
+                "0pwncx60r1xxk8kpp9a46ga5h7k7hjqf14726v0gra27vdc9blra"))))
     (build-system gnu-build-system)
     (inputs
       (list libxfont2 spice-protocol xorg-server xorgproto))
