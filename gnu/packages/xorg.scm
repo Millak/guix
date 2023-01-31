@@ -3473,17 +3473,17 @@ server driver works.")
 (define-public xf86-video-vmware
   (package
     (name "xf86-video-vmware")
-    (version "13.3.0")
+    (version "13.4.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-vmware-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "0v06qhm059klq40m2yx4wypzb7h53aaassbjfmm6clcyclj1k5s7"))))
+           "06mq7spifsrpbwq9b8kn2cn61xq6mpkq6lvh4qi6xk2yxpjixlxf"))))
     (build-system gnu-build-system)
     (inputs
      (list libx11
