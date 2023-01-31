@@ -6,7 +6,7 @@
 ;;; Copyright © 2015 Eric Dvorsak <eric@dvorsak.fr>
 ;;; Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2015 Cyrill Schenkel <cyrill.schenkel@gmail.com>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016 David Craven <david@craven.ch>
@@ -3504,19 +3504,17 @@ server driver works.")
 (define-public xf86-video-voodoo
   (package
     (name "xf86-video-voodoo")
-    (version "1.2.5")
+    (version "1.2.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-voodoo-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "1s6p7yxmi12q4y05va53rljwyzd6ry492r1pgi7wwq6cznivhgly"))
-        (patches
-         (search-patches "xf86-video-voodoo-pcitag.patch"))))
+           "00pn5826aazsdipf7ny03s1lypzid31fmswl8y2hrgf07bq76ab2"))))
     (build-system gnu-build-system)
     (inputs (list xorgproto xorg-server))
     (native-inputs (list pkg-config))
