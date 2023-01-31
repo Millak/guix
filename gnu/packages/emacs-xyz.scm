@@ -6975,6 +6975,32 @@ direct access to the SQLite C interface.  It only exposes a subset of the full
 SQLite C interface, but should satisfy most user's needs.")
     (license license:gpl3+)))
 
+(define-public emacs-pretty-speedbar
+  (let ((commit "56dc9f114fcc55843e182cde1fc9d7a14c261c6a")
+        (revision "0"))
+    (package
+      (name "emacs-pretty-speedbar")
+      (version (git-version "0.2" revision commit))
+      (source (origin
+                (uri (git-reference
+                      (url "https://github.com/kcyarn/pretty-speedbar")
+                      (commit commit)))
+                (method git-fetch)
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1hz67jhvg9n9d07lil6zqciqhh512k0fv54dl605p7vi704ma2ir"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list font-awesome))
+      (home-page "https://github.com/kcyarn/pretty-speedbar")
+      (synopsis "SVG icons for the Emacs Speedbar")
+      (description
+       "This package generates and implements appealing SVG icons for the
+Emacs Speedbar.  By default, it generates icons from the Font Awesome fontset.
+However, alternative fontsets may also be used, and the color of the icons may
+be customized.")
+      (license license:gpl3+))))
+
 (define-public emacs-sr-speedbar
   (let ((commit "77a83fb50f763a465c021eca7343243f465b4a47")
         (revision "0"))
