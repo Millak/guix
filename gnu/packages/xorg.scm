@@ -3350,17 +3350,17 @@ X server.")
 (define-public xf86-video-vesa
   (package
     (name "xf86-video-vesa")
-    (version "2.5.0")
+    (version "2.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-vesa-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0nf6ai74c60xk96kgr8q9mx6lrxm5id3765ws4d801irqzrj85hz"))))
+            "1ccvaigb1f1kz8nxxjmkfn598nabd92p16rx1g35kxm8n5qjf20h"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
