@@ -1519,17 +1519,17 @@ input from UTF-8 into the locale's encoding.")
 (define-public makedepend
   (package
     (name "makedepend")
-    (version "1.0.6")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/util/makedepend-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "072h9nzh8s5vqfz35dli4fba36fnr219asjrb7p89n8ph0paan6m"))))
+            "0nxs5ibrghym3msbnh0b8i3yd3xgqandmrkc500jm6qq4n06zcmz"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto))
