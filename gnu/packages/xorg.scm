@@ -1738,14 +1738,14 @@ features and to query screensaver info on specific windows.")
 (define-public sessreg
   (package
     (name "sessreg")
-    (version "1.1.2")
+    (version "1.1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "mirror://xorg/individual/app/sessreg-" version ".tar.bz2"))
+             "mirror://xorg/individual/app/sessreg-" version ".tar.xz"))
        (sha256
-        (base32 "0crczl25zynkrslmm8sjaxszhrh4i33m7h5fg4wfdb3k8aarxjyz"))))
+        (base32 "1hmc9wsfgl2wmy0kccwa4brxbv02w5wiz5hrz72dsz87x1fwsah2"))))
     (build-system gnu-build-system)
     (inputs
       (list xorgproto))
