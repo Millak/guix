@@ -1457,14 +1457,14 @@ treat it as part of their software base when porting.")
 (define-public libxxf86dga
   (package
     (name "libxxf86dga")
-    (version "1.1.5")
+    (version "1.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://xorg/individual/lib/"
-                           "libXxf86dga-" version ".tar.bz2"))
+                           "libXxf86dga-" version ".tar.xz"))
        (sha256
-        (base32 "00vjvcdlc1sga251jkxn6gkxmx9h5n290ffxxpa40qbca1gvr61b"))))
+        (base32 "03wqsxbgyrdbrhw8fk3fxc9nk8jnwz5537ym2yif73w0g5sl4i5y"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
