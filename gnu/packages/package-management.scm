@@ -1357,8 +1357,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "3768aec91daebb8db58e28cffe481e8878b59700")
-        (revision "68"))
+  (let ((commit "8ca5f045d232124e97069a30253853abc66be03e")
+        (revision "69"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1369,7 +1369,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0vh4hndqgpz8rwrlfc6vhypy1hxayb8lvxw1jc41ags3lhw75dcz"))
+                  "0aq0hca9bfy0djn6vwqbxwpirbd0zmpwbj5m7lq4lpfmn2121lkd"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1434,14 +1434,7 @@ environments.")
                                          (assoc-ref inputs input)
                                          version))
                                       guile-inputs)
-                                 ":"))))
-                      (when target
-                        ;; XXX work around wrap-program picking bash for the
-                        ;; host rather than target
-                        (let ((bash (assoc-ref inputs "bash")))
-                          (substitute* file
-                            (("^#!.*/bash")
-                             (string-append "#! " bash "/bin/bash")))))))
+                                 ":"))))))
                   (find-files bin)))
                #t))
            (delete 'strip))))             ; As the .go files aren't compatible
