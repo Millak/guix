@@ -2627,16 +2627,16 @@ X server.")
 (define-public xf86-video-ast
   (package
     (name "xf86-video-ast")
-    (version "1.1.5")
+    (version "1.1.6")
     (home-page "https://cgit.freedesktop.org/xorg/driver/xf86-video-ast/")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/driver/xf86-video-ast-"
-                    version ".tar.bz2"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "1pm2cy81ma7ldsw0yfk28b33h9z2hcj5rccrxhfxfgvxsiavrnqy"))))
+                "1bqdjcxi8fj48821322djdqnrla2i48wqckdf364zagrqyllyxbm"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
