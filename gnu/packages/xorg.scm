@@ -4031,15 +4031,15 @@ Font Description (XLFD) full name for a font.")
 (define-public xfd
   (package
     (name "xfd")
-    (version "1.1.3")
+    (version "1.1.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "mirror://xorg/individual/app/xfd-"
-                    version ".tar.bz2"))
+                    version ".tar.xz"))
               (sha256
                (base32
-                "0n6r1v8sm0z0ycqch035xpm46nv5v4mav3kxh36883l3ln5r6bqr"))))
+                "1zbnj0z28dx2rm2h7pjwcz7z1jnl28gz0v9xn3hs2igxcvxhyiym"))))
     (build-system gnu-build-system)
     (arguments
        `(#:configure-flags
