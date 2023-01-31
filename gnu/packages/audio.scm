@@ -2577,13 +2577,12 @@ audio signal streaming.")
      (list lv2
            lilv
            suil
-           gtk
-           gtkmm
+           gtk+
            qtbase-5
            jack-1))
     (native-inputs
      (list pkg-config))
-    (home-page "https://drobilla.net/software/jalv/")
+    (home-page "https://drobilla.net/software/jalv.html")
     (synopsis "Simple LV2 host for JACK")
     (description
      "Jalv is a simple but fully featured LV2 host for JACK.  It runs LV2
