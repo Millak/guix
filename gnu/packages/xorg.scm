@@ -3898,17 +3898,17 @@ can be combined together using the @code{rules} component of this database.")
 (define-public xkill
   (package
     (name "xkill")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xkill-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0szzd9nzn0ybkhnfyizb876irwnjsnb78rcaxx6prb71jmmbpw65"))))
+            "01xrmqw498hqlhn6l1sq89s31k6sjf6xlij6a08pnrvmqiwama75"))))
     (build-system gnu-build-system)
     (inputs
       (list libxmu libx11))
