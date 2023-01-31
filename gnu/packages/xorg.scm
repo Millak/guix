@@ -2209,17 +2209,17 @@ left-handed version of the cursors is also included.")
 (define-public xcursorgen
   (package
     (name "xcursorgen")
-    (version "1.0.7")
+    (version "1.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xcursorgen-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "0ggbv084cavp52hjgcz3vdj0g018axs0m23c03lpc5sgn92gidim"))))
+            "16yc82k4vp7icmf9247z4v38r65pdf032mrpzxj5wa2fggi3rcrj"))))
     (build-system gnu-build-system)
     (inputs
       (list libxcursor libpng))
