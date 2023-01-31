@@ -3134,14 +3134,14 @@ This driver is intended for the spice qxl virtio device.")
 (define-public xf86-video-r128
   (package
     (name "xf86-video-r128")
-    (version "6.12.0")
+    (version "6.12.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/driver/"
-                                  name "-" version ".tar.bz2"))
+                                  name "-" version ".tar.xz"))
               (sha256
                (base32
-                "0mz0v5mqmmbncr2drd5zvia1fb7frz2xqwflhhqbnaxx5j48c740"))))
+                "0hf7h54wxgs8njavp0kgadjq1787fhbd588j7pj685hz2wmkq0kx"))))
     (build-system gnu-build-system)
     (inputs (list mesa xorgproto xorg-server))
     (native-inputs
