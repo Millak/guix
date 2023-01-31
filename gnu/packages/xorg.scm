@@ -2445,17 +2445,17 @@ provide all features that libinput supports it does little beyond.")
 (define-public xf86-input-joystick
   (package
     (name "xf86-input-joystick")
-    (version "1.6.3")
+    (version "1.6.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-input-joystick-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1awfq496d082brgjbr60lhm6jvr9537rflwxqdfqwfzjy3n6jxly"))))
+            "1lnc6cvrg81chb2hj3jphgx7crr4ab8wn60mn8f9nsdwza2w8plh"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
