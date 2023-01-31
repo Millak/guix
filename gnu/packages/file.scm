@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016-2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
@@ -31,14 +31,14 @@
 (define-public file
   (package
     (name "file")
-    (version "5.43")
+    (version "5.44")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.astron.com/pub/file/file-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "148rzfmr8n79q0401pja1k3xpy9fi4wq5iwl3lrd1s703blib04c"))))
+                "0fsz8wld09qai2qghphmwn69ni9m23razj3wip5k3j6vm3xwfl9p"))))
    (build-system gnu-build-system)
 
    ;; When cross-compiling, this package depends upon a native install of
