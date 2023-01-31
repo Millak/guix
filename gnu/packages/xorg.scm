@@ -2841,30 +2841,6 @@ compositing.  Both support Xv overlay and dynamic rotation with XRandR.")
 ;;      "xf86-video-glide is a Glide video driver for the Xorg X server.")
 ;;     (license license:x11)))
 
-(define-public xf86-video-glint
-  (package
-    (name "xf86-video-glint")
-    (version "1.2.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-glint-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-           "1lkpspvrvrp9s539bhfdjfh4andaqyk63l6zjn8m3km95smk6a45"))))
-    (build-system gnu-build-system)
-    (inputs (list xorgproto xorg-server))
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "GLINT/Permedia video driver for X server")
-    (description
-     "xf86-video-glint is a GLINT/Permedia video driver for the Xorg
-X server.")
-    (license license:x11)))
-
 (define-public xf86-video-i128
   (package
     (name "xf86-video-i128")
@@ -3077,37 +3053,6 @@ supported, and the RENDER extension is not accelerated by this driver.")
 graphics cards.")
     (license license:x11)))
 
-(define-public xf86-video-openchrome
-  (package
-    (name "xf86-video-openchrome")
-    (version "0.6.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-openchrome-"
-               version
-               ".tar.bz2"))
-        (sha256
-         (base32
-          "0x9gq3hw6k661k82ikd1y2kkk4dmgv310xr5q59dwn4k6z37aafs"))))
-    (build-system gnu-build-system)
-    (inputs (list libx11
-                  libxext
-                  libxvmc
-                  mesa
-                  xorgproto
-                  xorg-server))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "Openchrome video driver for X server")
-    (description
-     "xf86-video-openchrome is a video driver for the Xorg X server.
-This driver is intended for VIA chipsets featuring the VIA UniChrome,
-UniChrome Pro and Chrome9 integrated graphics processors.")
-    (license license:x11)))
-
 (define-public xf86-video-qxl
   (package
     (name "xf86-video-qxl")
@@ -3227,52 +3172,6 @@ Xorg X server.")
 This driver supports SiS chipsets of 300/315/330/340 series.")
     (license license:bsd-3)))
 
-(define-public xf86-video-suncg6
-  (package
-    (name "xf86-video-suncg6")
-    (version "1.1.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-suncg6-"
-               version
-               ".tar.xz"))
-        (sha256
-          (base32
-            "16c3g5m0f5y9nx2x6w9jdzbs9yr6xhq31j37dcffxbsskmfxq57w"))))
-    (build-system gnu-build-system)
-    (inputs (list xorg-server))
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "GX/TurboGX video driver for X server")
-    (description
-     "xf86-video-suncg6 is a GX/TurboGX video driver for the Xorg X server.")
-    (license license:x11)))
-
-(define-public xf86-video-sunffb
-  (package
-    (name "xf86-video-sunffb")
-    (version "1.2.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-sunffb-"
-               version
-               ".tar.xz"))
-        (sha256
-          (base32
-            "0pf4ddh09ww7sxpzs5gr9pxh3gdwkg3f54067cp802nkw1n8vypi"))))
-    (build-system gnu-build-system)
-    (inputs (list xorg-server))
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "SUNFFB video driver for X server")
-    (description
-     "xf86-video-sunffb is a SUNFFB video driver for the Xorg X server.")
-    (license license:x11)))
-
 (define-public xf86-video-tdfx
   (package
     (name "xf86-video-tdfx")
@@ -3294,54 +3193,6 @@ This driver supports SiS chipsets of 300/315/330/340 series.")
     (synopsis "3Dfx video driver for X server")
     (description
      "xf86-video-tdfx is a 3Dfx video driver for the Xorg X server.")
-    (license license:x11)))
-
-(define-public xf86-video-tga
-  (package
-    (name "xf86-video-tga")
-    (version "1.2.2")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-tga-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-           "0cb161lvdgi6qnf1sfz722qn38q7kgakcvj7b45ba3i0020828r0"))
-        (patches (search-patches "xf86-video-tga-remove-mibstore.patch"))))
-    (build-system gnu-build-system)
-    (inputs (list xorgproto xorg-server))
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "TGA video driver for X server")
-    (description
-     "xf86-video-tga is a TGA (DEC 21030) video driver for the Xorg
-X server.")
-    (license license:x11)))
-
-(define-public xf86-video-trident
-  (package
-    (name "xf86-video-trident")
-    (version "1.3.8")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (string-append
-               "mirror://xorg/individual/driver/xf86-video-trident-"
-               version
-               ".tar.bz2"))
-        (sha256
-          (base32
-           "0gxcar434kx813fxdpb93126lhmkl3ikabaljhcj5qn3fkcijlcy"))))
-    (build-system gnu-build-system)
-    (inputs (list xorgproto xorg-server))
-    (native-inputs (list pkg-config))
-    (home-page "https://www.x.org/wiki/")
-    (synopsis "Trident video driver for X server")
-    (description
-     "xf86-video-trident is a Trident video driver for the Xorg X server.")
     (license license:x11)))
 
 ;; no license
