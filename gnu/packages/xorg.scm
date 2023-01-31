@@ -3497,6 +3497,8 @@ server driver works.")
     (synopsis "VMware SVGA video driver for X server")
     (description
      "xf86-video-vmware is a VMware SVGA video driver for the Xorg X server.")
+    ;; This package only makes sense on some architectures.
+    (supported-systems (list "x86_64-linux" "i686-linux"))
     (license license:x11)))
 
 (define-public xf86-video-voodoo
