@@ -3650,22 +3650,22 @@ monitor via the X video mode extension.")
 (define-public xhost
   (package
     (name "xhost")
-    (version "1.0.8")
+    (version "1.0.9")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xhost-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "15n3mnd4i5kh4z32qv11580qjgvnng0wry2y753ljrqkkrbkrp52"))))
+            "0ib66h78ykc4zki4arh8hkcsgk1mk8yyy0ay5sdb2d908qqvb1pa"))))
     (build-system gnu-build-system)
     (inputs
       (list libxmu libxau libx11))
     (native-inputs
-      (list pkg-config))
+      (list gettext-minimal pkg-config))
     (home-page "https://gitlab.freedesktop.org/xorg/app/xhost")
     (synopsis "Xorg server access control utility")
     (description
