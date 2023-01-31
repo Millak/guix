@@ -3031,17 +3031,17 @@ the same level of support for generic VGA or 8514/A adapters.")
 (define-public xf86-video-nv
   (package
     (name "xf86-video-nv")
-    (version "2.1.21")
+    (version "2.1.22")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/driver/xf86-video-nv-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-           "0bdk3pc5y0n7p53q4gc2ff7bw16hy5hwdjjxkm5j3s7hdyg6960z"))))
+           "126j60dgnmiahjk5mxbnaav23hv7nvxvh49vhn6qg2f3nlnr6632"))))
     (build-system gnu-build-system)
     (inputs (list xorg-server))
     (native-inputs (list pkg-config))
