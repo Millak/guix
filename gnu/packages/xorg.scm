@@ -5817,14 +5817,14 @@ The XCB util-wm module provides the following libraries:
 (define-public xinit
   (package
     (name "xinit")
-    (version "1.4.1")
+    (version "1.4.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://xorg/individual/app/xinit-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "1fdbakx59vyh474skjydj1bbglpby3y03nl7mxn0z9v8gdhqz6yy"))))
+                "08qz6f6yhis6jdcp6hzspql6ib9a9zp0ddhhbac1b7zg4a6xrn5p"))))
     (build-system gnu-build-system)
     (inputs
      (list xorgproto libx11))
