@@ -1431,17 +1431,17 @@ treat it as part of their software base when porting.")
 (define-public libxscrnsaver
   (package
     (name "libxscrnsaver")
-    (version "1.2.3")
+    (version "1.2.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/lib/libXScrnSaver-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "1y4vx1vabg7j9hamp0vrfrax5b0lmgm3h0lbgbb3hnkv3dd0f5zr"))))
+            "1zi0r6mqa1g0hhsp02cdsjcxmsbipiv0v65c1h4pl84fydcjikbm"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags '("--disable-static")))
