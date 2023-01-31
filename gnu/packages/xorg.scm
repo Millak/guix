@@ -3925,17 +3925,17 @@ programs that have displayed undesired windows on a user's screen.")
 (define-public xlsatoms
   (package
     (name "xlsatoms")
-    (version "1.1.3")
+    (version "1.1.4")
     (source
       (origin
         (method url-fetch)
         (uri (string-append
                "mirror://xorg/individual/app/xlsatoms-"
                version
-               ".tar.bz2"))
+               ".tar.xz"))
         (sha256
           (base32
-            "10m3a046jvaw5ywx4y65kl84lsxqan70gww1g1r7cf96ijaqz1jp"))))
+            "1dviriynilkw0jwl0s2h8y95pwh8cxj95cnmllkd6rn0args3gzl"))))
     (build-system gnu-build-system)
     (inputs
       (list libxcb))
