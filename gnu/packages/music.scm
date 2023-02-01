@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014, 2019 Eric Bavier <bavier@member.fsf.org>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Paul van der Walt <paul@denknerd.org>
 ;;; Copyright © 2016 Al McElrath <hello@yrns.org>
 ;;; Copyright © 2016, 2017, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -4853,7 +4853,9 @@ standalone JACK client and an LV2 plugin is also available.")
               (snippet
                '(for-each delete-file-recursively
                           '("external/abseil-cpp"
-                            "external/simde"
+                            ;; This package needs an unreleased version of
+                            ;; simde.
+                            ;; "external/simde"
                             "plugins/editor/external/vstgui4"
                             "plugins/vst"
                             "src/external/pugixml")))))
