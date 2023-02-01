@@ -938,7 +938,7 @@ name = Guix Builder")
          ("ocaml-cppo" ,ocaml-cppo)
 
          ;; For tests.
-         ("git" ,git-minimal/fixed)
+         ("git" ,git-minimal/pinned)
          ("openssl" ,openssl)
          ("python" ,python-wrapper)
          ("rsync" ,rsync)
@@ -8656,7 +8656,7 @@ defined in OCaml 4.12.0.")
             ocaml-uuseg
             ocaml-uutf))
     (native-inputs
-      (list git-minimal/fixed                     ;for tests
+      (list git-minimal/pinned                     ;for tests
             ocaml-alcotest ocaml-ocp-indent ocaml-bisect-ppx))
     (home-page "https://github.com/ocaml-ppx/ocamlformat")
     (synopsis "Auto-formatter for OCaml code")

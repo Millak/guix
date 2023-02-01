@@ -909,7 +909,7 @@ tomorrow, the rest of the week and for special occasions.")
      (list dbus
            desktop-file-utils
            gettext-minimal
-           git-minimal/fixed
+           git-minimal/pinned
            `(,glib "bin")
            gobject-introspection
            gsettings-desktop-schemas

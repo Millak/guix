@@ -2519,7 +2519,7 @@ Parcellite and adds bugfixes and features.")
               '("-Dintrospection=false")
               '()))))
     (native-inputs
-     `(("git" ,git-minimal/fixed)
+     `(("git" ,git-minimal/pinned)
        ("gobject-introspection" ,gobject-introspection)
        ("mutest" ,mutest)
        ("pkg-config" ,pkg-config)))

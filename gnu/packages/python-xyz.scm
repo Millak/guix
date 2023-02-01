@@ -25933,7 +25933,7 @@ also be usable with other GSSAPI mechanisms.")
              (invoke "git" "config" "--global"
                      "protocol.file.allow" "always"))))))
     (native-inputs
-     (list git-minimal/fixed python-pytest))
+     (list git-minimal/pinned python-pytest))
     (propagated-inputs
      (list python-pypa-build python-setuptools python-tomli))
     (home-page "https://github.com/mgedmin/check-manifest")
@@ -28578,7 +28578,7 @@ and frame grabber interface.")
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal/fixed                      ;for tests
+           git-minimal/pinned                      ;for tests
            ninja
            python-coverage
            python-cython
