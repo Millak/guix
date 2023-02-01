@@ -15651,14 +15651,14 @@ automatically discovered and presented in recency order.")
 (define-public emacs-url-scgi
   (package
     (name "emacs-url-scgi")
-    (version "0.8")
+    (version "0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://elpa.gnu.org/packages/"
                                   "url-scgi-" version ".tar"))
               (sha256
                (base32
-                "1837vyamwk5mp2nf3k477hyr5pq1xy6p7br7kl6h2k8jmxqy3mlj"))))
+                "0mfbqr03302gk38aamlg1lgdznd6y3blcc3zizfb72ppb87j78mc"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/skangas/url-scgi/")
     (synopsis "SCGI support for url.el")
