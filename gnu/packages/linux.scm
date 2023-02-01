@@ -2848,7 +2848,7 @@ external rate conversion.")
     (native-inputs
      (list pkg-config flex bison))
     (inputs
-     (list libmnl libnftnl/fixed))
+     (list libmnl libnftnl/pinned))
     (arguments
      (list #:tests? #f             ; no test suite
            #:configure-flags       ; add $libdir to the RUNPATH of executables
@@ -7654,9 +7654,13 @@ libnftnl has been previously known as libnftables.  This library is currently
 used by nftables.")
     (license license:gpl2+)))
 
+;;; The symbol libnftl/fixed should be used when libnftnl needs fixes
+;;; (security or else) and this deprecation could be removed.
+(define-deprecated/public-alias libnftnl/fixed libnftnl/pinned)
+
 ;; This is used in iptables, which contributes to rust.  We're pinning this
 ;; variant to avoid accidental rebuilds of rust.
-(define-public libnftnl/fixed
+(define-public libnftnl/pinned
   (package (inherit libnftnl)
     (version "1.2.0")
     (source
