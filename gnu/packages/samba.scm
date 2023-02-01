@@ -275,14 +275,14 @@ Samba is an important component to seamlessly integrate Linux/Unix Servers and
 Desktops into Active Directory environments using the winbind daemon.")
     (license license:gpl3+)))
 
-;;; FIXME: Invert inheritance relationship; the "fixed" package shouldn't be
+;;; FIXME: Invert inheritance relationship; the "pinned" package shouldn't be
 ;;; susceptible to changes in the free one.
-(define-public samba/fixed
+(define-public samba/pinned
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
    (package
      (inherit samba)
-     (replacement samba/fixed-patched)
+     (replacement samba/fixed)
      (version "4.15.3")
      (source
       (origin
@@ -306,9 +306,9 @@ Desktops into Active Directory environments using the winbind daemon.")
             libxslt
             libxml2)))))
 
-(define-public samba/fixed-patched
+(define-public samba/fixed
   (package
-    (inherit samba/fixed)
+    (inherit samba/pinned)
     ;; This is 4.15.13, but we need to trim the store file name to have
     ;; the same length as the one we are grafting above.
     (version "4.15.A")
