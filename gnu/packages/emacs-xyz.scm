@@ -13556,6 +13556,32 @@ as well as features for editing search results.")
      "This Emacs library provides a Helm interface for Projectile.")
     (license license:gpl3+)))
 
+(define-public emacs-hexrgb
+  (let ((commit "90e5f07f14bdb9966648977965094c75072691d4"))
+    (package
+      (name "emacs-hexrgb")
+      (version "0")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/emacsmirror/hexrgb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y5l6hrzm5j2jfrm5jp5zrxhxgvf930m2k4nyvk0rllpx0i1271z"))))
+      (build-system emacs-build-system)
+      (home-page "https://www.emacswiki.org/emacs/hexrgb.el")
+      (synopsis "Emacs functions to convert color formats")
+      (description
+       "HexRGB provides functions for converting between RGB (red, green, blue)
+color components and HSV (hue, saturation, value) color components.  More
+accurately, it converts Emacs color components (whole numbers from 0 through
+65535), RGB and HSV floating-point components (0.0 through 1.0), Emacs
+color-name strings (such as \"blue\") and hex RGB color strings (such as
+\"#FC43A7912\").")
+      (license license:gpl2+))))
+
 (define-public emacs-taskrunner
   (let ((commit "3afd4a546d42339543d3d4e51b175fc3e82b3358")
         (revision "1"))
