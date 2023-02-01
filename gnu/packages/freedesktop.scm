@@ -827,7 +827,8 @@ of a the system to know what users are logged in, and where.")
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
-    (inputs
+    (propagated-inputs
+     ;; Propagated because of pkg-config
      (list libcap))
     (synopsis "The sd-bus library, extracted from systemd")
     (description "Some projects rely on the sd-bus library for DBus support.
