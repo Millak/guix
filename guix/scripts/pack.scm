@@ -194,104 +194,144 @@ target the profile's @file{bin/env} file:
      (leave (G_ "~a: invalid symlink specification~%")
             arg))))
 
+(define (set-utf8-locale profile)
+  "Configure the environment to use the \"en_US.utf8\" locale provided by the
+GLIBC-UT8-LOCALES package."
+  ;; Arrange to not depend on 'glibc-utf8-locales' when using '--bootstrap'.
+  (and (or (not (profile? profile))
+           (profile-locales? profile))
+       #~(begin
+           (setenv "GUIX_LOCPATH"
+                   #+(file-append glibc-utf8-locales "/lib/locale"))
+           (setlocale LC_ALL "en_US.utf8"))))
+
+(define* (populate-profile-root profile
+                                #:key (profile-name "guix-profile")
+                                target
+                                localstatedir?
+                                deduplicate?
+                                (symlinks '()))
+  "Populate the root profile directory with SYMLINKS and a Guix database, when
+LOCALSTATEDIR? is set.  When DEDUPLICATE? is true, deduplicate the store
+items, which relies on hard links."
+  (define database
+    (and localstatedir?
+         (file-append (store-database (list profile))
+                      "/db/db.sqlite")))
+
+  (define (import-module? module)
+    ;; Since we don't use deduplication support in 'populate-store', don't
+    ;; import (guix store deduplication) and its dependencies, which includes
+    ;; Guile-Gcrypt, unless DEDUPLICATE? is #t.  This makes it possible to run
+    ;; tests with '--bootstrap'.
+    (and (not-config? module)
+         (or deduplicate? (not (equal? '(guix store deduplication) module)))))
+
+  (computed-file "profile-directory"
+    (with-imported-modules (source-module-closure
+                            `((guix build pack)
+                              (guix build store-copy)
+                              (guix build utils)
+                              (guix build union)
+                              (gnu build install))
+                            #:select? import-module?)
+      #~(begin
+          (use-modules (guix build pack)
+                       (guix build store-copy)
+                       (guix build utils)
+                       ((guix build union) #:select (relative-file-name))
+                       (gnu build install)
+                       (srfi srfi-1)
+                       (srfi srfi-26)
+                       (ice-9 match))
+
+          (define symlink->directives
+            ;; Return "populate directives" to make the given symlink and its
+            ;; parent directories.
+            (match-lambda
+              ((source '-> target)
+               (let ((target (string-append #$profile "/" target))
+                     (parent (dirname source)))
+                 ;; Never add a 'directory' directive for "/" so as to
+                 ;; preserve its ownership when extracting the archive (see
+                 ;; below), and also because this would lead to adding the
+                 ;; same entries twice in the tarball.
+                 `(,@(if (string=? parent "/")
+                         '()
+                         `((directory ,parent)))
+                   ;; Use a relative file name for compatibility with
+                   ;; relocatable packs.
+                   (,source -> ,(relative-file-name parent target)))))))
+
+          (define directives
+            ;; Fully-qualified symlinks.
+            (append-map symlink->directives '#$symlinks))
+
+          ;; Make sure non-ASCII file names are properly handled.
+          #+(set-utf8-locale profile)
+
+          ;; Note: there is not much to gain here with deduplication and there
+          ;; is the overhead of the '.links' directory, so turn it off by
+          ;; default.  Furthermore GNU tar < 1.30 sometimes fails to extract
+          ;; tarballs with hard links:
+          ;; <http://lists.gnu.org/archive/html/bug-tar/2017-11/msg00009.html>.
+          (populate-store (list "profile") #$output
+                          #:deduplicate? #$deduplicate?)
+
+          (when #+localstatedir?
+            (install-database-and-gc-roots #$output #+database #$profile
+                                           #:profile-name #$profile-name))
+
+          ;; Create SYMLINKS.
+          (for-each (cut evaluate-populate-directive <> #$output)
+                    directives)))
+    #:local-build? #f
+    #:options (list #:references-graphs `(("profile" ,profile))
+                    #:target target)))
+
 
 ;;;
 ;;; Tarball format.
 ;;;
 (define* (self-contained-tarball/builder profile
                                          #:key (profile-name "guix-profile")
-                                         (compressor (first %compressors))
+                                         target
                                          localstatedir?
-                                         (symlinks '())
-                                         (archiver tar)
-                                         (extra-options '()))
-  "Return the G-Expression of the builder used for self-contained-tarball."
-  (define database
-    (and localstatedir?
-         (file-append (store-database (list profile))
-                      "/db/db.sqlite")))
+                                         deduplicate?
+                                         symlinks
+                                         compressor
+                                         archiver)
+  "Return a GEXP that can build a self-contained tarball."
 
-  (define set-utf8-locale
-    ;; Arrange to not depend on 'glibc-utf8-locales' when using '--bootstrap'.
-    (and (or (not (profile? profile))
-             (profile-locales? profile))
-         #~(begin
-             (setenv "GUIX_LOCPATH"
-                     #+(file-append glibc-utf8-locales "/lib/locale"))
-             (setlocale LC_ALL "en_US.utf8"))))
+  (define root (populate-profile-root profile
+                                      #:profile-name profile-name
+                                      #:target target
+                                      #:localstatedir? localstatedir?
+                                      #:deduplicate? deduplicate?
+                                      #:symlinks symlinks))
 
-  (define (import-module? module)
-    ;; Since we don't use deduplication support in 'populate-store', don't
-    ;; import (guix store deduplication) and its dependencies, which includes
-    ;; Guile-Gcrypt.  That way we can run tests with '--bootstrap'.
-    (and (not-config? module)
-         (not (equal? '(guix store deduplication) module))))
-
-  (with-imported-modules (source-module-closure
-                          `((guix build pack)
-                            (guix build store-copy)
-                            (guix build utils)
-                            (guix build union)
-                            (gnu build install))
-                          #:select? import-module?)
+  (with-imported-modules (source-module-closure '((guix build pack)
+                                                  (guix build utils)))
     #~(begin
         (use-modules (guix build pack)
-                     (guix build store-copy)
-                     (guix build utils)
-                     ((guix build union) #:select (relative-file-name))
-                     (gnu build install)
-                     (srfi srfi-1)
-                     (srfi srfi-26)
-                     (ice-9 match))
-
-        (define %root "root")
-
-        (define symlink->directives
-          ;; Return "populate directives" to make the given symlink and its
-          ;; parent directories.
-          (match-lambda
-            ((source '-> target)
-             (let ((target (string-append #$profile "/" target))
-                   (parent (dirname source)))
-               ;; Never add a 'directory' directive for "/" so as to
-               ;; preserve its ownership when extracting the archive (see
-               ;; below), and also because this would lead to adding the
-               ;; same entries twice in the tarball.
-               `(,@(if (string=? parent "/")
-                       '()
-                       `((directory ,parent)))
-                 ;; Use a relative file name for compatibility with
-                 ;; relocatable packs.
-                 (,source -> ,(relative-file-name parent target)))))))
-
-        (define directives
-          ;; Fully-qualified symlinks.
-          (append-map symlink->directives '#$symlinks))
+                     (guix build utils))
 
         ;; Make sure non-ASCII file names are properly handled.
-        #+set-utf8-locale
+        #+(set-utf8-locale profile)
 
         (define tar #+(file-append archiver "/bin/tar"))
 
-        ;; Note: there is not much to gain here with deduplication and there
-        ;; is the overhead of the '.links' directory, so turn it off.
-        ;; Furthermore GNU tar < 1.30 sometimes fails to extract tarballs
-        ;; with hard links:
-        ;; <http://lists.gnu.org/archive/html/bug-tar/2017-11/msg00009.html>.
-        (populate-store (list "profile") %root #:deduplicate? #f)
+        (define %root (if #$localstatedir? "." #$root))
 
-        (when #+localstatedir?
-          (install-database-and-gc-roots %root #+database #$profile
-                                         #:profile-name #$profile-name))
+        (when #$localstatedir?
+          ;; Fix the permission of the Guix database file, which was made
+          ;; read-only when copied to the store in populate-profile-root.
+          (copy-recursively #$root %root)
+          (chmod (string-append %root "/var/guix/db/db.sqlite") #o644))
 
-        ;; Create SYMLINKS.
-        (for-each (cut evaluate-populate-directive <> %root)
-                  directives)
-
-        ;; Create the tarball.
         (with-directory-excursion %root
           ;; GNU Tar recurses directories by default.  Simply add the whole
-          ;; current directory, which contains all the generated files so far.
+          ;; current directory, which contains all the files to be archived.
           ;; This avoids creating duplicate files in the archives that would
           ;; be stored as hard links by GNU Tar.
           (apply invoke tar "-cvf" #$output "."
@@ -320,17 +360,16 @@ added to the pack."
     (warning (G_ "entry point not supported in the '~a' format~%")
              'tarball))
 
-  (gexp->derivation
-   (string-append name ".tar"
-                  (compressor-extension compressor))
-   (self-contained-tarball/builder profile
-                                   #:profile-name profile-name
-                                   #:compressor compressor
-                                   #:localstatedir? localstatedir?
-                                   #:symlinks symlinks
-                                   #:archiver archiver)
-   #:target target
-   #:references-graphs `(("profile" ,profile))))
+  (gexp->derivation (string-append name ".tar"
+                                   (compressor-extension compressor))
+    (self-contained-tarball/builder profile
+                                    #:profile-name profile-name
+                                    #:target target
+                                    #:localstatedir? localstatedir?
+                                    #:deduplicate? deduplicate?
+                                    #:symlinks symlinks
+                                    #:compressor compressor
+                                    #:archiver archiver)))
 
 
 ;;;
@@ -676,13 +715,15 @@ Valid compressors are: ~a~%") compressor-name %valid-compressors)))
              'deb))
 
   (define data-tarball
-    (computed-file (string-append "data.tar"
-                                  (compressor-extension compressor))
+    (computed-file (string-append "data.tar" (compressor-extension
+                                              compressor))
       (self-contained-tarball/builder profile
+                                      #:target target
                                       #:profile-name profile-name
-                                      #:compressor compressor
                                       #:localstatedir? localstatedir?
+                                      #:deduplicate? deduplicate?
                                       #:symlinks symlinks
+                                      #:compressor compressor
                                       #:archiver archiver)
       #:local-build? #f                 ;allow offloading
       #:options (list #:references-graphs `(("profile" ,profile))
@@ -811,10 +852,7 @@ Section: misc
                       "debian-binary"
                       control-tarball-file-name data-tarball-file-name))))))
 
-  (gexp->derivation (string-append name ".deb")
-    build
-    #:target target
-    #:references-graphs `(("profile" ,profile))))
+  (gexp->derivation (string-append name ".deb") build))
 
 
 ;;;
