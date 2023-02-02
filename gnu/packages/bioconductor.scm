@@ -14989,6 +14989,47 @@ be applied to the analysis of other NGS data obtained from experimental
 procedures that induce nucleotide substitutions (e.g. BisSeq).")
     (license license:gpl2)))
 
+(define-public r-tilingarray
+  (package
+    (name "r-tilingarray")
+    (version "1.76.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "tilingArray" version))
+              (sha256
+               (base32
+                "19bkgblpkcp3w3sdyn82c37gkz1sv3r4d546zpbnh36q2pi3l4zd"))))
+    (properties `((upstream-name . "tilingArray")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affy
+           r-biobase
+           r-genefilter
+           r-pixmap
+           r-rcolorbrewer
+           r-strucchange
+           r-vsn))
+    (home-page "https://bioconductor.org/packages/tilingArray")
+    (synopsis "Transcript mapping with high-density oligonucleotide tiling arrays")
+    (description
+     "The package provides functionality that can be useful for the analysis
+of the high-density tiling microarray data (such as from Affymetrix genechips)
+or for measuring the transcript abundance and the architecture.  The main
+functionalities of the package are:
+
+@enumerate
+@item the class segmentation for representing partitionings of a linear series
+  of data;
+@item the function segment for fitting piecewise constant models using a
+  dynamic programming algorithm that is both fast and exact;
+@item the function @code{confint} for calculating confidence intervals using
+  the @code{strucchange} package;
+@item the function @code{plotAlongChrom} for generating pretty plots;
+@item the function @code{normalizeByReference} for probe-sequence dependent
+  response adjustment from a (set of) reference hybridizations.
+@end enumerate")
+    (license license:artistic2.0)))
+
 (define-public r-timeseriesexperiment
   (package
     (name "r-timeseriesexperiment")
