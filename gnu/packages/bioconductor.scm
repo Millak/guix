@@ -17111,6 +17111,26 @@ variety of commonly used matrix types, including sparse and HDF5-backed
 matrices.")
     (license license:gpl3)))
 
+(define-public r-beadarraysnp
+  (package
+    (name "r-beadarraysnp")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "beadarraySNP" version))
+       (sha256
+        (base32 "06hy89pclbyxjw5yf5i9bc3wr789b9pmhd9sdchgljlijs9vcj6g"))))
+    (properties `((upstream-name . "beadarraySNP")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase r-quantsmooth))
+    (home-page "https://bioconductor.org/packages/beadarraySNP")
+    (synopsis "Normalization and reporting of Illumina SNP bead arrays")
+    (description
+     "This package is importing data from Illumina SNP experiments and it
+performs copy number calculations and reports.")
+    (license license:gpl2)))
+
 ;; This package includes files that have been taken from kentutils.  Some
 ;; parts of kentutils are not released under a free license, but this package
 ;; only uses files that are also found in the free parts of kentutils.
