@@ -2,6 +2,7 @@
 ;;; Copyright © 2017 Peter Mikkelsen <petermikkelsen10@gmail.com>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -21,13 +22,15 @@
 (define-module (gnu services audio)
   #:use-module (guix gexp)
   #:use-module (gnu services)
+  #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages mpd)
   #:use-module (guix records)
   #:use-module (ice-9 match)
-  #:use-module (ice-9 format)
+  #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:export (mpd-output
             mpd-output?
             mpd-configuration
@@ -40,93 +43,134 @@
 ;;;
 ;;; Code:
 
-(define-record-type* <mpd-output>
-  mpd-output make-mpd-output
-  mpd-output?
-  (type          mpd-output-type
-                 (default "pulse"))
-  (name          mpd-output-name
-                 (default "MPD"))
-  (enabled?      mpd-output-enabled?
-                 (default #t))
-  (tags?         mpd-output-tags?
-                 (default #t))
-  (always-on?    mpd-output-always-on?
-                 (default #f))
-  (mixer-type    mpd-output-mixer-type
-                 ;; valid: hardware, software, null, none
-                 (default #f))
-  (extra-options mpd-output-extra-options
-                 (default '())))
+(define (uglify-field-name field-name)
+  (let ((str (symbol->string field-name)))
+    (string-join (string-split (if (string-suffix? "?" str)
+                                   (string-drop-right str 1)
+                                   str)
+                               #\-) "_")))
 
-(define-record-type* <mpd-configuration>
-  mpd-configuration make-mpd-configuration
-  mpd-configuration?
-  (user         mpd-configuration-user
-                (default "mpd"))
-  (music-dir    mpd-configuration-music-dir
-                (default "~/Music"))
-  (playlist-dir mpd-configuration-playlist-dir
-                (default "~/.mpd/playlists"))
-  (db-file      mpd-configuration-db-file
-                (default "~/.mpd/tag_cache"))
-  (state-file   mpd-configuration-state-file
-                (default "~/.mpd/state"))
-  (sticker-file mpd-configuration-sticker-file
-                (default "~/.mpd/sticker.sql"))
-  (port         mpd-configuration-port
-                (default "6600"))
-  (address      mpd-configuration-address
-                (default "any"))
-  (outputs      mpd-configuration-outputs
-                (default (list (mpd-output)))))
+(define (mpd-serialize-field field-name value)
+  #~(format #f "~a ~s~%" #$(if (string? field-name)
+                               field-name
+                               (uglify-field-name field-name))
+            #$(if (string? value)
+                  value
+                  (object->string value))))
 
-(define (mpd-output->string output)
-  "Convert the OUTPUT of type <mpd-output> to a configuration file snippet."
-  (let ((extra (string-join
-                (map (match-lambda
-                       ((key . value)
-                        (format #f "  ~a \"~a\""
-                                (string-map
-                                 (lambda (c) (if (char=? c #\-) #\_ c))
-                                 (symbol->string key))
-                                value)))
-                     (mpd-output-extra-options output))
-                "\n")))
-    (format #f "\
-audio_output {
-  type \"~a\"
-  name \"~a\"
-~:[  enabled \"no\"~%~;~]\
-~:[  tags \"no\"~%~;~]\
-~:[~;  always_on \"yes\"~%~]\
-~@[  mixer_type \"~a\"~%~]\
-~a~%}~%"
-            (mpd-output-type output)
-            (mpd-output-name output)
-            (mpd-output-enabled? output)
-            (mpd-output-tags? output)
-            (mpd-output-always-on? output)
-            (mpd-output-mixer-type output)
-            extra)))
+(define (mpd-serialize-alist field-name value)
+  #~(string-append #$@(generic-serialize-alist list mpd-serialize-field
+                                               value)))
 
-(define (mpd-config->file config)
-  (apply
-   mixed-text-file "mpd.conf"
-   "pid_file \"" (mpd-file-name config "pid") "\"\n"
-   (append (map mpd-output->string
-                (mpd-configuration-outputs config))
-           (map (match-lambda
-                  ((config-name config-val)
-                   (string-append config-name " \"" (config-val config) "\"\n")))
-                `(("user" ,mpd-configuration-user)
-                  ("music_directory" ,mpd-configuration-music-dir)
-                  ("playlist_directory" ,mpd-configuration-playlist-dir)
-                  ("db_file" ,mpd-configuration-db-file)
-                  ("state_file" ,mpd-configuration-state-file)
-                  ("sticker_file" ,mpd-configuration-sticker-file)
-                  ("port" ,mpd-configuration-port)
-                  ("bind_to_address" ,mpd-configuration-address))))))
+(define mpd-serialize-string mpd-serialize-field)
+
+(define (mpd-serialize-boolean field-name value)
+  (mpd-serialize-field field-name (if value "yes" "no")))
+
+(define (mpd-serialize-list-of-mpd-output field-name value)
+  #~(string-append "\naudio_output {\n"
+                   #$@(map (cut serialize-configuration <>
+                                mpd-output-fields)
+                           value)
+                   "}\n"))
+
+(define (mpd-serialize-configuration configuration)
+  (mixed-text-file
+   "mpd.conf"
+   (serialize-configuration configuration mpd-configuration-fields)))
+
+(define-configuration mpd-output
+  (name
+   (string "MPD")
+   "The name of the audio output.")
+
+  (type
+   (string "pulse")
+   "The type of audio output.")
+
+  (enabled?
+   (boolean #t)
+   "Specifies whether this audio output is enabled when MPD is started. By
+default, all audio outputs are enabled. This is just the default
+setting when there is no state file; with a state file, the previous
+state is restored.")
+
+  (tags?
+   (boolean #t)
+   "If set to @code{#f}, then MPD will not send tags to this output. This
+is only useful for output plugins that can receive tags, for example the
+@code{httpd} output plugin.")
+
+  (always-on?
+   (boolean #f)
+   "If set to @code{#t}, then MPD attempts to keep this audio output always
+open. This may be useful for streaming servers, when you don’t want to
+disconnect all listeners even when playback is accidentally stopped.")
+
+  (mixer-type
+   (string "none")
+   "This field accepts a symbol that specifies which mixer should be used
+for this audio output: the @code{hardware} mixer, the @code{software}
+mixer, the @code{null} mixer (allows setting the volume, but with no
+effect; this can be used as a trick to implement an external mixer
+External Mixer) or no mixer (@code{none}).")
+
+  (extra-options
+   (alist '())
+   "An association list of option symbols to string values to be appended to
+the audio output configuration.")
+
+  (prefix mpd-))
+
+(define list-of-mpd-output?
+  (list-of mpd-output?))
+
+(define-configuration mpd-configuration
+  (user
+   (string "mpd")
+   "The user to run mpd as.")
+
+  (music-dir
+   (string "~/Music")
+   "The directory to scan for music files."
+   (lambda (_ x)
+     (mpd-serialize-field "music_directory" x)))
+
+  (playlist-dir
+   (string "~/.mpd/playlists")
+   "The directory to store playlists."
+   (lambda (_ x)
+     (mpd-serialize-field "playlist_directory" x)))
+
+  (db-file
+   (string "~/.mpd/tag_cache")
+   "The location of the music database.")
+
+  (state-file
+   (string "~/.mpd/state")
+   "The location of the file that stores current MPD's state.")
+
+  (sticker-file
+   (string "~/.mpd/sticker.sql")
+   "The location of the sticker database.")
+
+  (port
+   (string "6600")
+   "The port to run mpd on.")
+
+  (address
+   (string "any")
+   "The address that mpd will bind to.
+To use a Unix domain socket, an absolute path can be specified here."
+   (lambda (_ x)
+     (mpd-serialize-field "bind_to_address" x)))
+
+  (outputs
+   (list-of-mpd-output (list (mpd-output)))
+   "The audio outputs that MPD can use.
+By default this is a single output using pulseaudio.")
+
+  (prefix mpd-))
 
 (define (mpd-file-name config file)
   "Return a path in /var/run/mpd/ that is writable
@@ -143,7 +187,7 @@ audio_output {
    (start #~(make-forkexec-constructor
              (list #$(file-append mpd "/bin/mpd")
                    "--no-daemon"
-                   #$(mpd-config->file config))
+                   #$(mpd-serialize-configuration config))
              #:environment-variables
              ;; Required to detect PulseAudio when run under a user account.
              (list (string-append
