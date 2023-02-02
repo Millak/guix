@@ -316,6 +316,11 @@ to be appended to the audio output configuration.")
 will depend on."
    empty-serializer)
 
+  (environment-variables
+   (list-of-string '())
+   "A list of strings specifying environment variables."
+   empty-serializer)
+
   (log-file
    (maybe-string "/var/log/mpd/log")
    "The location of the log file. Set to @code{syslog} to use the
@@ -464,7 +469,8 @@ appended to the configuration.")
 (define (mpd-shepherd-service config)
   (match-record config <mpd-configuration> (user package shepherd-requirement
                                             log-file playlist-directory
-                                            db-file state-file sticker-file)
+                                            db-file state-file sticker-file
+                                            environment-variables)
     (let* ((config-file (mpd-serialize-configuration config)))
       (shepherd-service
        (documentation "Run the MPD (Music Player Daemon)")
@@ -489,11 +495,7 @@ appended to the configuration.")
                    (list #$(file-append package "/bin/mpd")
                          "--no-daemon"
                          #$config-file)
-                   #:environment-variables
-                   ;; Required to detect PulseAudio when run under a user account.
-                   (list (string-append
-                          "XDG_RUNTIME_DIR=/run/user/"
-                          (number->string (passwd:uid (getpwnam #$user))))))))
+                   #:environment-variables '#$environment-variables)))
        (stop  #~(make-kill-destructor))
        (actions
         (list (shepherd-configuration-action config-file)

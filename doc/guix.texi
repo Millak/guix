@@ -33199,6 +33199,9 @@ The group to run mpd as.
 This is a list of symbols naming Shepherd services that this service
 will depend on.
 
+@item @code{environment-variables} (default: @code{()}) (type: list-of-string)
+A list of strings specifying environment variables.
+
 @item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
 The location of the log file.  Set to @code{syslog} to use the local
 syslog daemon or @code{%unset-value} to omit this directive from the
