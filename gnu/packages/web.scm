@@ -61,6 +61,7 @@
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1556,6 +1557,53 @@ header file.
 These tools are intended for use in (or for development of) toolchains or
 other systems that want to manipulate WebAssembly files.")
     (license license:asl2.0)))
+
+(define-public wasm3
+  (package
+    (name "wasm3")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wasm3/wasm3")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "07zzmk776j8ydyxhrnnjiscbhhmz182a62r6aix6kfk5kq2cwia2"))))
+    (build-system cmake-build-system)
+    (arguments
+     ;; The default WASI option "uvwasi" causes CMake to initiate a 'git
+     ;; clone' which cannot happen within the build container.
+     '(#:configure-flags '("-DBUILD_WASI=simple")
+       ;; No check target.  There are tests but they require a network
+       ;; connection to download the WebAssembly core test suite.
+       #:tests? #f
+       ;; There is no install target.  Instead, we have to manually copy the
+       ;; wasm3 build artifacts to the output directory.
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out (assoc-ref outputs "out"))
+                    (bindir (string-append out "/bin"))
+                    (includedir (string-append out "/include"))
+                    (libdir (string-append out "/lib")))
+               (mkdir-p bindir)
+               (mkdir-p includedir)
+               (mkdir-p libdir)
+               (copy-file "wasm3" (string-append bindir "/wasm3"))
+               (for-each (lambda (header)
+                           (copy-file header
+                                      (string-append includedir "/"
+                                                     (basename header))))
+                         (find-files "../source/source" "\\.h$"))
+               (copy-file "source/libm3.a"
+                          (string-append libdir "/libm3.a"))))))))
+    (home-page "https://github.com/wasm3/wasm3")
+    (synopsis "WebAssembly interpreter")
+    (description "WASM3 is a fast WebAssembly interpreter.")
+    (license license:expat)))
 
 (define-public websocketpp
   (package
