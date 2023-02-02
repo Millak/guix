@@ -1826,6 +1826,48 @@ expression level and gene-specific dispersion, that might facilitate the gene
 ranking by fold-change and visualization.")
     (license license:gpl3+)))
 
+(define-public r-adacgh2
+  (package
+    (name "r-adacgh2")
+    (version "2.38.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ADaCGH2" version))
+       (sha256
+        (base32 "0g9x3lnr56035wq9ijdcri4sz5pwj8184yxm415gmsxrii9xvpfd"))))
+    (properties `((upstream-name . "ADaCGH2")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'python3-compatibility
+           (lambda _
+             (substitute* "inst/imagemap-example/toMap.py"
+               (("print nameMap") "print(nameMap)")))))))
+    (inputs (list python-wrapper))
+    (propagated-inputs
+     (list r-acgh
+           r-bit
+           r-cluster
+           r-dnacopy
+           r-ff
+           r-glad
+           r-snapcgh
+           r-tilingarray
+           r-waveslim))
+    (home-page "https://github.com/rdiaz02/adacgh2")
+    (synopsis "Big data analysis from aCGH experiments")
+    (description
+     "This package analyzes and creates plots of array @acronym{CGH,
+comparative genomic hybridization} data.  Also, it allows usage of
+@acronym{CBS, Circular Binary Segementation}, wavelet-based smoothing, HMM,
+BioHMM, GLAD, CGHseg.  Most computations are parallelized (either via forking
+or with clusters, including MPI and sockets clusters) and use @code{ff} for
+storing data.")
+    (license license:gpl3+)))
+
 (define-public r-adam
   (package
     (name "r-adam")
