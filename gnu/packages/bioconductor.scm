@@ -8767,6 +8767,33 @@ arrays (expression/SNP/tiling/exon) at probe-level.  It currently supports
 Affymetrix (CEL files) and NimbleGen arrays (XYS files).")
     (license license:lgpl2.0+)))
 
+(define-public r-quantsmooth
+  (package
+    (name "r-quantsmooth")
+    (version "1.64.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "quantsmooth" version))
+       (sha256
+        (base32 "1adwws3brb01d4g6yidipnd8akkiyc3gpdr876hy57qnmcq8xipp"))))
+    (properties `((upstream-name . "quantsmooth")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-quantreg))
+    (home-page "https://bioconductor.org/packages/quantsmooth")
+    (synopsis "Quantile smoothing and genomic visualization of array data")
+    (description
+     "This package implements quantile smoothing.  It contains a dataset used
+to produce human chromosomal ideograms for plotting purposes and a collection
+of arrays that contains data of chromosome 14 of 3 colorectal tumors.  The
+package provides functions for painting chromosomal icons, chromosome or
+chromosomal idiogram and other types of plots.  Quantsmooth offers options
+like converting chromosomal ids to their numeric form, retrieving the human
+chromosomal length from NCBI data, retrieving regions of interest in a vector
+of intensities using quantile smoothing, determining cytoband position based
+on the location of the probe, and other useful tools.")
+    (license license:gpl2)))
+
 (define-public r-qvalue
   (package
     (name "r-qvalue")
