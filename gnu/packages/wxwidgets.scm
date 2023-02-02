@@ -120,20 +120,12 @@
                             "--with-sdl"
                             "--enable-gui"
                             "--enable-mediactrl"
-                            "--enable-webview"
-                            "--enable-webviewwebkit")
+                            "--enable-webview")
       #:make-flags
       #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
       #:tests? #f                       ;TODO
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'use-newer-webkit
-            (lambda _
-              ;; XXX: The configure script tests only for an ancient
-              ;; WebKitGTK version.
-              (substitute* "configure"
-                (("webkit2gtk-4\\.0")
-                 "webkit2gtk-4.1"))))
           (add-after 'unpack 'refer-to-inputs
             (lambda* (#:key inputs #:allow-other-keys)
               (let ((catch (search-input-file inputs "include/catch.hpp"))
