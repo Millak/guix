@@ -38,6 +38,7 @@
 ;;; Copyright © 2022 Dhruvin Gandhi <contact@dhruvin.dev>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -886,6 +887,27 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                                                 #$output "/share/doc/go")))
                           '("CONTRIBUTING.md" "PATENTS" "README.md"
                             "SECURITY.md"))))))))))
+
+(define-public go-1.20
+  (package
+    (inherit go-1.19)
+    (name "go")
+    (version "1.20")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/golang/go")
+                    (commit (string-append "go" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a7wjzv14kaqg5l7ambv5zj4rj7sgah9yhcg6k6da6ygm6bs4dv3"))))
+    (native-inputs
+     ;; Go 1.20 and later requires Go 1.17 as the bootstrap toolchain.
+     ;; See 'src/cmd/dist/notgo117.go' in the source code distribution,
+     ;; as well as the upstream discussion of this topic:
+     ;; https://go.dev/issue/44505
+     (alist-replace "go" (list go-1.17) (package-native-inputs go-1.17)))))
 
 (define-public go go-1.17)
 
