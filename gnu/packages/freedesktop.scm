@@ -2666,7 +2666,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.14.4")
+    (version "1.14.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2674,7 +2674,7 @@ compatible with the well-known scripts of the same name.")
                     version "/xdg-desktop-portal-" version ".tar.xz"))
               (sha256
                (base32
-                "0wqc9x3k7lf3mig53i4rjazi0xi8bcykwaaw7r7prvnscnd1k405"))))
+                "1q0djpnwlrqm0h0alyh1r6dlkqdrr7mj5hiam4mqzxqa5jbqkrgj"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)
