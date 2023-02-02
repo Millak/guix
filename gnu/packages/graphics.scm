@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -233,6 +234,52 @@ systems in mind.  It offers maximum hardware accelerated performance at a
 minimum of resource usage and overhead.")
     (home-page "https://github.com/deniskropp/DirectFB")
     (license license:lgpl2.1+)))
+
+(define-public minifb
+  (let ((commit "43f8c1309341f4709a471b592d04434326042483")
+        (revision "1"))
+    (package
+      (name "minifb")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri
+                 (git-reference
+                  (url "https://github.com/emoon/minifb")
+                  (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1z0720azsgi83yg4ysmfvpvsg0566s2cq59xx52w8w5rpkla4cjh"))))
+      (build-system cmake-build-system)
+      (arguments
+       ;; Don't build examples.
+       '(#:configure-flags '("-DMINIFB_BUILD_EXAMPLES=0")
+         #:phases
+         ;; There is no install target, so we have to copy the static library
+         ;; and headers to the output directory ourselves.
+         (modify-phases %standard-phases
+           (replace 'install
+             (lambda* (#:key outputs #:allow-other-keys)
+               (let* ((out (assoc-ref outputs "out"))
+                      (includedir (string-append out "/include"))
+                      (libdir (string-append out "/lib")))
+                 (mkdir-p includedir)
+                 (mkdir-p libdir)
+                 (for-each (lambda (header)
+                             (copy-file header
+                                        (string-append includedir "/"
+                                                       (basename header))))
+                           (find-files "../source/include" "\\.h$"))
+                 (copy-file "libminifb.a" (string-append libdir "/libminifb.a"))))))
+         ;; No check target.
+         #:tests? #f))
+      ;; libminifb.a won't work without these libraries, so propagate them.
+      (propagated-inputs (list libx11 libxkbcommon mesa))
+      (synopsis "Small library for rendering pixels to a framebuffer")
+      (description "MiniFB (Mini FrameBuffer) is a small, cross-platform
+library that makes it easy to render (32-bit) pixels in a window.")
+      (home-page "https://github.com/emoon/minifb")
+      (license license:expat))))
 
 (define-public flux
   (package
