@@ -1138,6 +1138,37 @@ protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
 
+(define-public python-pegasusio
+  (package
+    (name "python-pegasusio")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pegasusio" version))
+              (sha256
+               (base32
+                "0gqygspdy398vjymdy6756jmk99s7fhwav9rivdx59kpqjcdxaz9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anndata
+           python-docopt
+           python-h5py
+           python-importlib-metadata
+           python-loompy
+           python-natsort
+           python-numpy
+           python-pandas
+           python-pillow
+           python-scipy
+           python-zarr))
+    (native-inputs (list python-cython python-setuptools-scm))
+    (home-page "https://github.com/lilab-bcb/pegasusio")
+    (synopsis "Read or write single-cell genomics data")
+    (description
+     "Pegasusio is a Python package for reading or writing single-cell
+genomics data.")
+    (license license:bsd-3)))
+
 (define-public python-phylophlan
   (package
     (name "python-phylophlan")
