@@ -1454,6 +1454,25 @@ genomation package.  Included are Chip Seq, Methylation and Cage data,
 downloaded from Encode.")
     (license license:gpl3+)))
 
+(define-public r-italicsdata
+  (package
+    (name "r-italicsdata")
+    (version "2.36.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ITALICSData" version 'experiment))
+       (sha256
+        (base32 "09d2igic3b5p7wpq98hb2lffxm1nfq9mwmnqlbdn3jv49pgz3hmw"))))
+    (properties `((upstream-name . "ITALICSData")))
+    (build-system r-build-system)
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "ITALICS data")
+    (description "This package provides data needed to use the ITALICS
+package.")
+    ;; Expanded from GPL
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-macrophage
   (package
     (name "r-macrophage")
