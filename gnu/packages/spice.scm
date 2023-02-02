@@ -56,6 +56,7 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
@@ -87,22 +88,23 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "0.7.0")
+    (version "0.10.4")
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                "https://www.freedesktop.org/software/virgl/"
-                "virglrenderer-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/virgl/virglrenderer")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "041agg1d6i8hg250y30f08n3via0hs9rbijxdrfifb8ara805v0m"))))
-    (build-system gnu-build-system)
-    (inputs (list eudev libepoxy mesa))
-    (native-inputs (list pkg-config))
+                "06pwavrknyhghlxyh7ckq4scjx47v9fhy08r6pn194whzvzivmqg"))))
+    (build-system meson-build-system)
+    (inputs (list libepoxy mesa))
+    (native-inputs (list pkg-config python))
     (synopsis "Virtual 3D GPU library")
     (description "A virtual 3D GPU library that enables a virtualized operating
 system to use the host GPU to accelerate 3D rendering.")
-    (home-page "https://virgil3d.github.io")
+    (home-page "https://gitlab.freedesktop.org/virgl/virglrenderer")
     (license (list license:expat license:bsd-3))))
 
 (define-public spice-protocol
