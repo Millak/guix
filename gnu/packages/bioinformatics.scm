@@ -1092,6 +1092,35 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 and sequence consensus.")
     (license license:expat)))
 
+(define-public python-demuxem
+  (package
+    (name "python-demuxem")
+    (version "0.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "demuxEM" version))
+              (sha256
+               (base32
+                "1bhyxqjk44bmyd26m1smapf68wyf7252kk65i27k50dd3kswgnd6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-docopt
+           python-importlib-metadata
+           python-numpy
+           python-pandas
+           python-pegasusio
+           python-scikit-learn
+           python-scipy
+           python-seaborn))
+    (native-inputs (list python-cython python-setuptools-scm))
+    (home-page "https://github.com/lilab-bcb/demuxEM")
+    (synopsis "Analyze cell-hashing/nucleus-hashing data")
+    (description
+     "This is a Python module for analyzing cell-hashing/nucleus-hashing data.
+It is the demultiplexing module of Pegasus, which is used by Cumulus in the
+demultiplexing step.")
+    (license license:bsd-3)))
+
 (define-public python-hclust2
   (package
     (name "python-hclust2")
