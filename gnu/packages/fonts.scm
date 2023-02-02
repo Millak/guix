@@ -982,11 +982,15 @@ display all Unicode symbols.")
      (list
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'remove-unsupported
+          (add-after 'unpack 'enter-font-directory
+            (lambda _
+              ;; Note this ensures the correct license file is installed.
+              (chdir "fonts")))
+          (add-after 'enter-font-directory 'remove-unsupported
             (lambda* _
-              (delete-file "fonts/NotoColorEmoji_WindowsCompatible.ttf")
-              (delete-file "fonts/Noto-COLRv1-noflags.ttf")
-              (delete-file "fonts/Noto-COLRv1.ttf"))))))
+              (delete-file "NotoColorEmoji_WindowsCompatible.ttf")
+              (delete-file "Noto-COLRv1-noflags.ttf")
+              (delete-file "Noto-COLRv1.ttf"))))))
     (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
     (synopsis "Font for rendering color emoji characters")
     (description
