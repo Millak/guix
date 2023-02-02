@@ -115,6 +115,33 @@ analysis.")
 based on mapping using Entrez Gene identifiers.")
     (license license:artistic2.0)))
 
+(define-public r-pd-mapping50k-xba240
+  (package
+    (name "r-pd-mapping50k-xba240")
+    (version "3.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "pd.mapping50k.xba240" version
+                              'annotation))
+       (sha256
+        (base32 "1a1f3lh5ywhyjawdbj2fzban85c8jz70lfcv3pagd5piincjwxq8"))))
+    (properties `((upstream-name . "pd.mapping50k.xba240")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biostrings
+           r-dbi
+           r-iranges
+           r-oligo
+           r-oligoclasses
+           r-rsqlite
+           r-s4vectors))
+    (home-page "https://bioconductor.org/packages/pd.mapping50k.xba240")
+    (synopsis "Platform design info for Affymetrix Mapping50K_Xba240")
+    (description "This package provides platform design info for Affymetrix
+Mapping50K_Xba240 (pd.mapping50k.xba240).")
+    (license license:artistic2.0)))
+
 (define-public r-reactome-db
   (package
     (name "r-reactome-db")
