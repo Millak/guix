@@ -6547,6 +6547,29 @@ containing the location/probe set membership mapping.  The other one creates a
 package that automatically loads that environment.")
     (license license:gpl2+)))
 
+(define-public r-manor
+  (package
+    (name "r-manor")
+    (version "1.70.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MANOR" version))
+       (sha256
+        (base32 "16b30bmyzml97cjdbh6h9ky5c4h5ws2a3g2xkxnd55sd3jg64jgx"))))
+    (properties `((upstream-name . "MANOR")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-glad))
+    (native-inputs (list r-knitr))
+    (home-page "http://bioinfo.curie.fr/projects/manor/index.html")
+    (synopsis "CGH micro-array normalization")
+    (description
+     "This package ofers functions for importation, normalization,
+visualization, and quality control to correct identified sources of
+variability in array of @acronym{CGH, comparative genomic hybridization}
+experiments.")
+    (license license:gpl2)))
+
 (define-public r-maser
   (package
     (name "r-maser")
