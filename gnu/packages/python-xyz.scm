@@ -11433,6 +11433,27 @@ removal, line continuation, indentation, comment processing, identifier
 processing, values parsing, case insensitive comparison, and more.")
     (license license:expat)))
 
+(define-public python-pypytools
+  (package
+    (name "python-pypytools")
+    (version "0.6.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "pypytools" version))
+       (sha256
+        (base32 "0ag5xyzagprji0m2pkqsfy8539s003mn41pl6plbmh6iwi9w0h51"))))
+    (build-system python-build-system)
+    (arguments (list #:tests? #f)) ; no tests
+    (propagated-inputs (list python-py))
+    (home-page "https://github.com/antocuni/pypytools/")
+    (synopsis
+     "Tools to use PyPy-specific features, with CPython fallbacks")
+    (description
+     "This package provides a collection of useful tools to use PyPy-specific
+features, with CPython fallbacks.")
+    (license license:x11)))
+
 (define-public python-simplegeneric
   (package
     (name "python-simplegeneric")
