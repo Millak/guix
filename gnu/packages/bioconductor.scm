@@ -4536,6 +4536,37 @@ domains etc.) from quantification of all types of RNASeq by tools such as
 Kallisto, Salmon, StringTie, Cufflinks/Cuffdiff etc.")
     (license license:gpl2+)))
 
+(define-public r-italics
+  (package
+    (name "r-italics")
+    (version "2.58.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "ITALICS" version))
+       (sha256
+        (base32 "0g937h9zxkxnm424wh58b46mfasdd7pqy5c04r0a46mx9lxibgbs"))))
+    (properties `((upstream-name . "ITALICS")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-affxparser
+           r-dbi
+           r-glad
+           r-italicsdata
+           r-oligo
+           r-oligoclasses
+           r-pd-mapping50k-xba240))
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "Normalizing of the Affymetrix GeneChip human mapping")
+    (description
+     "This package provides tools for normalizing and analyzing of GeneChip
+Mapping 100K and 500K Set.  Affymetrix GeneChip Human Mapping 100K and 500K
+Set allows the DNA copy number mea- surement of respectively 2× 50K and 2×
+250K SNPs along the genome.  Their high density allows a precise localization
+of genomic alterations and makes them a powerful tool for cancer and copy
+number polymorphism study.")
+    (license license:gpl2)))
+
 ;; This is a CRAN package, but it depends on r-biobase and r-limma from Bioconductor.
 (define-public r-absfiltergsea
   (package
