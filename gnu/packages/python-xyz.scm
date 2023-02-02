@@ -136,6 +136,7 @@
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 Dominik Delgado Steuter <d@delgado.nrw>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2023 Ontje Lünsdorf <ontje.luensdorf@dlr.de>
@@ -14244,6 +14245,41 @@ Markdown.  The library features international input, various Markdown
 extensions, and several HTML output formats.  A command line wrapper
 markdown_py is also provided to convert Markdown files to HTML.")
     (license license:bsd-3)))
+
+(define-public python-markdown2
+  (package
+    (name "python-markdown2")
+    (version "2.4.13")
+    (source
+     (origin
+       (method git-fetch) ; no tests data in PyPi package
+       (uri (git-reference
+             (url "https://github.com/trentm/python-markdown2")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0m1wy8i4xmna5b97dvks8cfjmc1wid8pxmd2h82869d0ajva3r6a"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  (invoke "python" "testall.py"))))))))
+    (native-inputs
+     (list python-pygments))
+    (home-page "https://github.com/trentm/python-markdown2")
+    (synopsis "Fast and complete Python implementation of Markdown")
+    (description
+     "This package provides a fast and complete Python implementation of
+Markdown.  It was written to closely match the behaviour of the original
+Perl-implemented Markdown.pl.  It also comes with a number of
+extensions (called @code{extras}) for things like syntax coloring, tables,
+header-ids.")
+    (license license:expat)))
 
 (define-public python-mdx-include
   (package
