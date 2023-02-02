@@ -1428,6 +1428,27 @@ queues header library based on circular buffer with @code{std::atomic}.")
 conversions to and from strings, iteration and related functionality.")
     (license license:expat)))
 
+(define-public mcpp
+  (package
+    (name "mcpp")
+    (version "2.7.2")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://sourceforge/mcpp/mcpp/"
+                                  "V." version "/mcpp-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0r48rfghjm90pkdyr4khxg783g9v98rdx2n69xn8f6c5i0hl96rv"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:configure-flags #~(list "--enable-mcpplib" "--disable-static")))
+    (home-page "https://mcpp.sourceforge.net/")
+    (synopsis "C/C++ preprocessor")
+    (description
+     "@code{mcpp} is Matsui's CPP implementation precisely conformed to
+standards.")
+    (license license:bsd-2)))
+
 (define-public cli11
   (package
     (name "cli11")
