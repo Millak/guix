@@ -6145,6 +6145,30 @@ GenomicRanges package defines general purpose containers for storing and
 manipulating genomic intervals and variables defined along a genome.")
     (license license:artistic2.0)))
 
+(define-public r-glad
+  (package
+    (name "r-glad")
+    (version "2.62.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "GLAD" version))
+              (sha256
+               (base32
+                "0gb52ic5r6nkgm2ynm174vcvbmkbhhjgv71lsmxpxzcsb6rr7qj6"))))
+    (properties `((upstream-name . "GLAD")))
+    (build-system r-build-system)
+    (inputs (list gsl))
+    (propagated-inputs (list r-aws))
+    (native-inputs (list pkg-config))
+    (home-page "http://bioinfo.curie.fr")
+    (synopsis "Gain and loss analysis of DNA")
+    (description
+     "This package helps with the analysis of array @acronym{CGH, comparative
+genomic hybridization} data by detecting of the breakpoints in the genomic
+profiles and assignment of a status (gain, normal or loss) to each chromosomal
+regions identified.")
+    (license license:gpl2)))
+
 (define-public r-gostats
   (package
     (name "r-gostats")
