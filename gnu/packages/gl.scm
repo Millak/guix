@@ -796,6 +796,32 @@ Both GLX and EGL are supported, in any combination with OpenGL and OpenGL ES.")
                    license:x11
                    license:expat))))
 
+(define-public libopenglrecorder
+  (package
+    (name "libopenglrecorder")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/Benau/libopenglrecorder")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0sfx2kdw2mca3mx4fnk1yy74pilp2i9npcpyj894qkngz5aaz2wl"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no test suite
+    (native-inputs (list pkg-config))
+    (inputs (list libjpeg-turbo))
+    (home-page "https://github.com/Benau/libopenglrecorder")
+    (synopsis "Async readback OpenGL frame buffer with audio recording")
+    (description
+     "libopenglrecorder is a library allowing optional async readback OpenGL
+frame buffer with optional audio recording.  It will do video and audio
+encoding together.")
+    (license license:bsd-3)))
+
 (define-public soil
   (package
     (name "soil")
