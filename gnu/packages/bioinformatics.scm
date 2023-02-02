@@ -690,6 +690,41 @@ high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
 
+(define-public r-streamgraph
+  (let ((commit "76f7173ec89d456ace5943a512e20b1f6810bbcb")
+        (revision "1"))
+    (package
+      (name "r-streamgraph")
+      (version (git-version "0.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hrbrmstr/streamgraph")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "010rhnby5a9dg08jvlkr65b3p9iipdxi2f5m1k6j53s80p25yvig"))))
+      (properties `((upstream-name . "streamgraph")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-dplyr
+             r-htmltools
+             r-htmlwidgets
+             r-magrittr
+             r-tidyr
+             r-xts))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/hrbrmstr/streamgraph")
+      (synopsis "Htmlwidget for building streamgraph visualizations")
+      (description
+       "A streamgraph is a type of stacked area chart.  It represents the
+evolution of a numeric variable for several groups.  Areas are usually
+displayed around a central axis, and edges are rounded to give a flowing
+shape.  This package provides an @code{htmlwidget} for building streamgraph
+visualizations.")
+      (license license:expat))))
+
 (define-public pbbam
   (package
     (name "pbbam")
