@@ -58,6 +58,7 @@
 ;;; Copyright © 2022 msimonin <matthieu.simonin@inria.fr>
 ;;; Copyright © 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Baptiste Strazzulla <bstrazzull@hotmail.fr>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
 ;;; Copyright © 2024 Troy Figiel <troy@troyfigiel.com>
@@ -1278,6 +1279,62 @@ over a different origin than that of the web application.")
      "A comprehensive HTTP client library supporting many features left out of
 other HTTP libraries.")
     (license license:expat)))
+
+(define-public python-cheroot
+  (package
+    (name "python-cheroot")
+    (version "10.0.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "cheroot" version))
+       (sha256
+        (base32
+         "1w0ind0dza9j1py56y23344piqkpyfmcm060qfrnk6gggy3s3i2r"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:test-flags
+      #~(list "--cov=cheroot"
+              ;; Tests are flaky in parallel invocation.
+              ;; "--numprocesses=auto"
+              "--doctest-modules"
+              "--showlocals"
+              ;; Disable test requiring networking.
+              "-k" "not test_tls_client_auth")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? test-flags #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "/tmp"
+                  (apply invoke "pytest" "-v"
+                         (append test-flags (list #$output))))))))))
+    (propagated-inputs
+     (list python-jaraco-functools
+           python-more-itertools
+           python-six))
+    (native-inputs
+     (list python-cryptography
+           python-jaraco-text
+           python-portend
+           python-pyopenssl
+           python-pypytools
+           python-pytest
+           python-pytest-cov
+           python-pytest-mock
+           python-pytest-xdist
+           python-requests
+           python-requests-toolbelt
+           python-requests-unixsocket
+           python-setuptools-scm
+           python-setuptools-scm-git-archive
+           python-trustme))
+    (home-page "https://cheroot.cherrypy.dev")
+    (synopsis "Highly-optimized, pure-python HTTP server")
+    (description
+     "Cheroot is a high-performance, pure-Python HTTP server.")
+    (license license:bsd-3)))
 
 (define-public httpie
   (package
