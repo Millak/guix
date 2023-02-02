@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
 ;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6159,3 +6160,39 @@ streams.  For shoutcast style streams it finds the “meta data” or track
 separation data, and uses that as a marker for where the track should
 be separated.")
     (license license:gpl2+)))
+
+(define-public cubeb
+  (let ((commit "9e29d728b0025c674904f83f5a13a88d1a6a5edc")
+        (revision "1"))
+    (package
+      (name "cubeb")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mozilla/cubeb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sxkr3h8a4hd3c3a3cjydrszz6npxk3vh6ra3y67lds3zgc69c7n"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags
+         ;; Sanitizers-cmake requires a git submodule.
+         '("-DUSE_SANITIZERS=0"
+           ;; Tests require a git submodule for googletest.
+           "-DBUILD_TESTS=0"
+           ;; Use our speex, not a bundled one.
+           "-DBUNDLE_SPEEX=0"
+           ;; A static library would be built by default.
+           "-DBUILD_SHARED_LIBS=1"
+           ;; Explicitly link against audio libraries so they are on the
+           ;; runpath.  Otherwise cubeb tries to dlopen them at runtime.
+           "-DCMAKE_SHARED_LINKER_FLAGS=-lasound -lpulse -lspeex")
+         #:tests? #f))
+      (inputs (list alsa-lib pulseaudio speex))
+      (synopsis "Cross-platform audio library")
+      (description "Cubeb is Mozilla's cross-platform audio library.")
+      (home-page "https://github.com/mozilla/cubeb")
+      (license license:isc))))
