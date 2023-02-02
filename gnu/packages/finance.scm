@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
+;;; Copyright © 2023 dan <i@dan.games>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
@@ -2025,6 +2026,55 @@ that allows you to run services and through them access the Bitcoin Cash network
 define financial transaction records in a text file, read them in memory,
 generate a variety of reports from them, and provides a web interface.")
     (license license:gpl2)))
+
+(define-public fava
+  (package
+    (name "fava")
+    ;; XXX: A newer version requires Flask > 2.2, which is not available in
+    ;; Guix yet.
+    (version "1.24.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "fava" version))
+       (sha256
+        (base32 "1iwha9vx223iiyjqbixpz1lp8q766ikhi7xcap3pscjhldxlym4j"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "setup.cfg"
+               ((">=8,<10") ">8"))))
+          ;; Tests write to $HOME.
+          ;; FileNotFoundError: [Errno 2] No such file or directory
+          (add-before 'check 'set-home
+            (lambda _
+              (setenv "HOME" "/tmp"))))))
+    (propagated-inputs
+     (list beancount
+           python-babel
+           python-cheroot
+           python-click
+           python-flask
+           python-flask-babel
+           python-jinja2
+           python-markdown2
+           python-ply
+           python-simplejson
+           python-werkzeug))
+    (native-inputs
+     (list python-pytest
+           python-chardet
+           python-dateutil
+           python-setuptools-scm))
+    (home-page "https://beancount.github.io/fava/")
+    (synopsis "Web interface for the accounting tool Beancount")
+    (description "Fava is a web interface for the double-entry bookkeeping
+software Beancount with a focus on features and usability.")
+    (license license:expat)))
 
 (define-public emacs-beancount
   ;; Note that upstream has not made any release since this project moved
