@@ -4812,24 +4812,32 @@ audio samples and various soft sythesizers.  It can receive input from a MIDI ke
 (define-public liquidsfz
   (package
     (name "liquidsfz")
-    (version "0.2.3")
+    (version "0.3.1")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://space.twc.de/~stefan/liquidsfz/"
-                                  "liquidsfz-" version ".tar.bz2"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/swesterfeld/liquidsfz")
+                    (commit version)))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1hb4hc3gkvjfbx0ls6wxzavhv2hf9ix11cz8yvndyb6q9lwkimwl"))))
+                "0kijisxv8f8ihv8rk5cg1cmdh29zkr7i2ghds6wz0iq9mdkga12s"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-shared")))
+     (list
+      #:configure-flags '(list "--enable-shared")
+      #:phases
+      '(modify-phases %standard-phases
+         (replace 'bootstrap
+           (lambda _
+             ;; The default 'bootstrap' phase would run 'autogen.sh', which
+             ;; would try to run ./configure and fail due to unpatched
+             ;; shebangs.
+             (invoke "autoreconf" "-v" "--install"))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake libtool pkg-config))
     (inputs
-     `(("jack" ,jack-2)
-       ("lv2" ,lv2)
-       ("readline" ,readline)
-       ("libsndfile" ,libsndfile)))
+     (list jack-2 libsndfile lv2 readline))
     (home-page "https://github.com/swesterfeld/liquidsfz")
     (synopsis "Sampler library")
     (description "The main goal of liquidsfz is to provide an SFZ sampler
