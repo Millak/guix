@@ -4082,7 +4082,7 @@ This package expects the game(s) to be placed in subdirectories of
 (define-public supertuxkart
   (package
     (name "supertuxkart")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method url-fetch)
@@ -4091,7 +4091,7 @@ This package expects the game(s) to be placed in subdirectories of
                            version "/SuperTuxKart-" version "-src.tar.xz"))
        (sha256
         (base32
-         "1z9z13zarv28h4jrmjna5hr6m9266pm7c2kgiwhqls01k06ypazf"))
+         "00qg5i9y4i5gdiiq1dbfsgp7dwj60zb5lkgi2d9p3x5s34j3k44q"))
        (modules '((guix build utils)))
        (snippet
         ;; Delete bundled library sources
@@ -4099,10 +4099,11 @@ This package expects the game(s) to be placed in subdirectories of
            ;; Supertuxkart uses modified versions of the Irrlicht engine
            ;; and the bullet library.  The developers gave an explanation
            ;; here: http://forum.freegamedev.net/viewtopic.php?f=17&t=3906
-           ;; FIXME: try to unbundle angelscript, libmcpp and libraqm
+           ;; FIXME: try to unbundle angelscript and libraqm
            (for-each delete-file-recursively
                      '("lib/dnsc"
                        "lib/enet"
+                       "lib/mcpp"
                        "lib/mojoal"
                        "lib/wiiuse"))
            #t))))
@@ -4115,15 +4116,14 @@ This package expects the game(s) to be placed in subdirectories of
              "-DUSE_CRYPTO_OPENSSL=TRUE"
              ;; In order to use the system ENet library, IPv6 support (added in
              ;; SuperTuxKart version 1.1) must be disabled.
-             "-DUSE_IPV6=FALSE"
-             ;; FIXME: needs libopenglrecorder
-             "-DBUILD_RECORDER=0")))
+             "-DUSE_IPV6=FALSE")))
     (inputs
      `(("curl" ,curl)
        ("freetype" ,freetype)
        ("fribidi" ,fribidi)
        ("glew" ,glew)
        ("harfbuzz" ,harfbuzz)
+       ("libopenglrecorder" ,libopenglrecorder)
        ("libvorbis" ,libvorbis)
        ("libx11" ,libx11)
        ("libxrandr" ,libxrandr)
@@ -4137,8 +4137,7 @@ This package expects the game(s) to be placed in subdirectories of
        ("enet" ,enet)
        ("libjpeg" ,libjpeg-turbo)
        ("openssl" ,openssl)))
-    (native-inputs
-     (list pkg-config))
+    (native-inputs (list mcpp pkg-config python))
     (home-page "https://supertuxkart.net/Main_Page")
     (synopsis "3D kart racing game")
     (description "SuperTuxKart is a 3D kart racing game, with a focus on
