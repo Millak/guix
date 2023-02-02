@@ -21,9 +21,13 @@
 
 (define-module (gnu services audio)
   #:use-module (guix gexp)
+  #:use-module (guix deprecation)
+  #:use-module (guix diagnostics)
+  #:use-module (guix i18n)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
+  #:use-module (gnu services admin)
   #:use-module (gnu system shadow)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages mpd)
@@ -31,10 +35,61 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
   #:export (mpd-output
             mpd-output?
+            mpd-output-name
+            mpd-output-type
+            mpd-output-enabled?
+            mpd-output-format
+            mpd-output-tags?
+            mpd-output-always-on?
+            mpd-output-mixer-type
+            mpd-output-replay-gain-handler
+            mpd-output-extra-options
+
+            mpd-plugin
+            mpd-plugin?
+            mpd-plugin-plugin
+            mpd-plugin-name
+            mpd-plugin-enabled?
+            mpd-plugin-extra-options
+
+            mpd-partition
+            mpd-partition?
+            mpd-partition-name
+            mpd-partition-extra-options
+
             mpd-configuration
             mpd-configuration?
+            mpd-configuration-package
+            mpd-configuration-user
+            mpd-configuration-group
+            mpd-configuration-shepherd-requirement
+            mpd-configuration-log-file
+            mpd-configuration-log-level
+            mpd-configuration-music-directory
+            mpd-configuration-music-dir
+            mpd-configuration-playlist-directory
+            mpd-configuration-playlist-dir
+            mpd-configuration-db-file
+            mpd-configuration-state-file
+            mpd-configuration-sticker-file
+            mpd-configuration-default-port
+            mpd-configuration-endpoints
+            mpd-configuration-address
+            mpd-configuration-database
+            mpd-configuration-partitions
+            mpd-configuration-neighbors
+            mpd-configuration-inputs
+            mpd-configuration-archive-plugins
+            mpd-configuration-input-cache-size
+            mpd-configuration-decoders
+            mpd-configuration-resampler
+            mpd-configuration-filters
+            mpd-configuration-outputs
+            mpd-configuration-playlist-plugins
+            mpd-configuration-extra-options
             mpd-service-type))
 
 ;;; Commentary:
@@ -50,34 +105,125 @@
                                    str)
                                #\-) "_")))
 
+(define list-of-string?
+  (list-of string?))
+
+(define list-of-symbol?
+  (list-of symbol?))
+
 (define (mpd-serialize-field field-name value)
-  #~(format #f "~a ~s~%" #$(if (string? field-name)
-                               field-name
-                               (uglify-field-name field-name))
-            #$(if (string? value)
-                  value
-                  (object->string value))))
+  (let ((field (if (string? field-name) field-name
+                   (uglify-field-name field-name)))
+        (value (cond
+                ((boolean? value) (if value "yes" "no"))
+                ((string? value) value)
+                (else (object->string value)))))
+    #~(format #f "~a ~s~%" #$field #$value)))
 
 (define (mpd-serialize-alist field-name value)
   #~(string-append #$@(generic-serialize-alist list mpd-serialize-field
                                                value)))
 
 (define mpd-serialize-string mpd-serialize-field)
+(define mpd-serialize-boolean mpd-serialize-field)
 
-(define (mpd-serialize-boolean field-name value)
-  (mpd-serialize-field field-name (if value "yes" "no")))
+(define (mpd-serialize-list-of-string field-name value)
+  #~(string-concatenate #$(map (cut mpd-serialize-string field-name <>) value)))
 
-(define (mpd-serialize-list-of-mpd-output field-name value)
-  #~(string-append "\naudio_output {\n"
-                   #$@(map (cut serialize-configuration <>
-                                mpd-output-fields)
-                           value)
-                   "}\n"))
+(define-maybe string (prefix mpd-))
+(define-maybe list-of-string (prefix mpd-))
+(define-maybe boolean (prefix mpd-))
 
-(define (mpd-serialize-configuration configuration)
-  (mixed-text-file
-   "mpd.conf"
-   (serialize-configuration configuration mpd-configuration-fields)))
+;;; TODO: Procedures for deprecated fields, to be removed.
+
+(define mpd-deprecated-fields '((music-dir . music-directory)
+                                (playlist-dir . playlist-directory)
+                                (address . endpoints)))
+
+(define (port? value) (or (string? value) (integer? value)))
+
+(define (mpd-serialize-deprecated-field field-name value)
+  (if (maybe-value-set? value)
+      (begin
+        (warn-about-deprecation
+         field-name #f
+         #:replacement (assoc-ref mpd-deprecated-fields field-name))
+        (match field-name
+          ('playlist-dir (mpd-serialize-string "playlist_directory" value))
+          ('music-dir (mpd-serialize-string "music_directory" value))
+          ('address (mpd-serialize-string "bind_to_address" value))))
+      ""))
+
+(define (mpd-serialize-port field-name value)
+  (when (string? value)
+    (warning
+     (G_ "string value for '~a' is deprecated, use integer instead~%")
+     field-name))
+  (mpd-serialize-field "port" value))
+
+(define-maybe port (prefix mpd-))
+
+;;;
+
+;; Generic MPD plugin record, lists only the most prevalent fields.
+(define-configuration mpd-plugin
+  (plugin
+   maybe-string
+   "Plugin name.")
+
+  (name
+   maybe-string
+   "Name.")
+
+  (enabled?
+   maybe-boolean
+   "Whether the plugin is enabled/disabled.")
+
+  (extra-options
+   (alist '())
+   "An association list of option symbols/strings to string values
+to be appended to the plugin configuration. See
+@uref{https://mpd.readthedocs.io/en/latest/plugins.html,MPD plugin reference}
+for available options.")
+
+  (prefix mpd-))
+
+(define (mpd-serialize-mpd-plugin field-name value)
+  #~(format #f "~a {~%~a}~%"
+            '#$field-name
+            #$(serialize-configuration value mpd-plugin-fields)))
+
+(define (mpd-serialize-list-of-mpd-plugin field-name value)
+  #~(string-append #$@(map (cut mpd-serialize-mpd-plugin field-name <>)
+                           value)))
+
+(define list-of-mpd-plugin? (list-of mpd-plugin?))
+
+(define-maybe mpd-plugin (prefix mpd-))
+
+(define-configuration mpd-partition
+  (name
+   string
+   "Partition name.")
+
+  (extra-options
+   (alist '())
+   "An association list of option symbols/strings to string values
+to be appended to the partition configuration. See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions,Configuring Partitions}
+for available options.")
+
+  (prefix mpd-))
+
+(define (mpd-serialize-mpd-partition field-name value)
+  #~(format #f "partition {~%~a}~%"
+            #$(serialize-configuration value mpd-partition-fields)))
+
+(define (mpd-serialize-list-of-mpd-partition field-name value)
+  #~(string-append #$@(map (cut mpd-serialize-mpd-partition #f <>) value)))
+
+(define list-of-mpd-partition?
+  (list-of mpd-partition?))
 
 (define-configuration mpd-output
   (name
@@ -95,6 +241,12 @@ default, all audio outputs are enabled. This is just the default
 setting when there is no state file; with a state file, the previous
 state is restored.")
 
+  (format
+   maybe-string
+   "Force a specific audio format on output. See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#audio-output-format,Global Audio Format}
+for a more detailed description.")
+
   (tags?
    (boolean #t)
    "If set to @code{#f}, then MPD will not send tags to this output. This
@@ -109,125 +261,268 @@ disconnect all listeners even when playback is accidentally stopped.")
 
   (mixer-type
    (string "none")
-   "This field accepts a symbol that specifies which mixer should be used
+   "This field accepts a string that specifies which mixer should be used
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
 External Mixer) or no mixer (@code{none}).")
 
+  (replay-gain-handler
+   maybe-string
+   "This field accepts a string that specifies how
+@uref{https://mpd.readthedocs.io/en/latest/user.html#replay-gain,Replay Gain}
+is to be applied. @code{software} uses an internal software volume control,
+@code{mixer} uses the configured (hardware) mixer control and @code{none}
+disables replay gain on this audio output.")
+
   (extra-options
    (alist '())
-   "An association list of option symbols to string values to be appended to
-the audio output configuration.")
+   "An association list of option symbols/strings to string values
+to be appended to the audio output configuration.")
 
   (prefix mpd-))
 
-(define list-of-mpd-output?
-  (list-of mpd-output?))
+(define (mpd-serialize-mpd-output field-name value)
+  #~(format #f "audio_output {~%~a}~%"
+            #$(serialize-configuration value mpd-output-fields)))
+
+(define (mpd-serialize-list-of-mpd-plugin-or-output field-name value)
+  (let ((plugins outputs (partition mpd-plugin? value)))
+    #~(string-append #$@(map (cut mpd-serialize-mpd-plugin "audio_output" <>)
+                             plugins)
+                     #$@(map (cut mpd-serialize-mpd-output #f <>) outputs))))
+
+(define list-of-mpd-plugin-or-output?
+  (list-of (lambda (x)
+             (or (mpd-output? x) (mpd-plugin? x)))))
 
 (define-configuration mpd-configuration
+  (package
+   (file-like mpd)
+   "The MPD package."
+   empty-serializer)
+
   (user
    (string "mpd")
    "The user to run mpd as.")
 
-  (music-dir
-   (string "~/Music")
-   "The directory to scan for music files."
-   (lambda (_ x)
-     (mpd-serialize-field "music_directory" x)))
+  (group
+   (string "mpd")
+   "The group to run mpd as.")
 
-  (playlist-dir
-   (string "~/.mpd/playlists")
+  (shepherd-requirement
+   (list-of-symbol '())
+   "This is a list of symbols naming Shepherd services that this service
+will depend on."
+   empty-serializer)
+
+  (log-file
+   (maybe-string "/var/log/mpd/log")
+   "The location of the log file. Set to @code{syslog} to use the
+local syslog daemon or @code{%unset-value} to omit this directive
+from the configuration file.")
+
+  (log-level
+   maybe-string
+   "Supress any messages below this threshold.
+Available values: @code{notice}, @code{info}, @code{verbose},
+@code{warning} and @code{error}.")
+
+  (music-directory
+   maybe-string
+   "The directory to scan for music files.")
+
+  (music-dir ; TODO: deprecated, remove later
+   maybe-string
+   "The directory to scan for music files."
+   mpd-serialize-deprecated-field)
+
+  (playlist-directory
+   maybe-string
+   "The directory to store playlists.")
+
+  (playlist-dir ; TODO: deprecated, remove later
+   maybe-string
    "The directory to store playlists."
-   (lambda (_ x)
-     (mpd-serialize-field "playlist_directory" x)))
+   mpd-serialize-deprecated-field)
 
   (db-file
-   (string "~/.mpd/tag_cache")
+   maybe-string
    "The location of the music database.")
 
   (state-file
-   (string "~/.mpd/state")
+   maybe-string
    "The location of the file that stores current MPD's state.")
 
   (sticker-file
-   (string "~/.mpd/sticker.sql")
+   maybe-string
    "The location of the sticker database.")
 
-  (port
-   (string "6600")
-   "The port to run mpd on.")
+  (default-port
+   (maybe-port 6600)
+   "The default port to run mpd on.")
 
-  (address
-   (string "any")
+  (endpoints
+   maybe-list-of-string
+   "The addresses that mpd will bind to. A port different from
+@var{default-port} may be specified, e.g. @code{localhost:6602} and
+IPv6 addresses must be enclosed in square brackets when a different
+port is used.
+To use a Unix domain socket, an absolute path or a path starting with @code{~}
+can be specified here."
+   (lambda (_ endpoints)
+     (if (maybe-value-set? endpoints)
+         (mpd-serialize-list-of-string "bind_to_address" endpoints)
+         "")))
+
+  (address ; TODO: deprecated, remove later
+   maybe-string
    "The address that mpd will bind to.
 To use a Unix domain socket, an absolute path can be specified here."
+   mpd-serialize-deprecated-field)
+
+  (database
+   maybe-mpd-plugin
+   "MPD database plugin configuration.")
+
+  (partitions
+   (list-of-mpd-partition '())
+   "List of MPD \"partitions\".")
+
+  (neighbors
+   (list-of-mpd-plugin '())
+   "List of MPD neighbor plugin configurations.")
+
+  (inputs
+   (list-of-mpd-plugin '())
+   "List of MPD input plugin configurations."
    (lambda (_ x)
-     (mpd-serialize-field "bind_to_address" x)))
+     (mpd-serialize-list-of-mpd-plugin "input" x)))
+
+  (archive-plugins
+   (list-of-mpd-plugin '())
+   "List of MPD archive plugin configurations."
+   (lambda (_ x)
+     (mpd-serialize-list-of-mpd-plugin "archive_plugin" x)))
+
+  (input-cache-size
+   maybe-string
+   "MPD input cache size."
+   (lambda (_ x)
+     (if (maybe-value-set? x)
+         #~(string-append "\ninput_cache {\n"
+                          #$(mpd-serialize-string "size" x)
+                          "}\n") "")))
+
+  (decoders
+   (list-of-mpd-plugin '())
+   "List of MPD decoder plugin configurations."
+   (lambda (_ x)
+     (mpd-serialize-list-of-mpd-plugin "decoder" x)))
+
+  (resampler
+   maybe-mpd-plugin
+   "MPD resampler plugin configuration.")
+
+  (filters
+   (list-of-mpd-plugin '())
+   "List of MPD filter plugin configurations."
+   (lambda (_ x)
+     (mpd-serialize-list-of-mpd-plugin "filter" x)))
 
   (outputs
-   (list-of-mpd-output (list (mpd-output)))
+   (list-of-mpd-plugin-or-output (list (mpd-output)))
    "The audio outputs that MPD can use.
 By default this is a single output using pulseaudio.")
 
+  (playlist-plugins
+   (list-of-mpd-plugin '())
+   "List of MPD playlist plugin configurations."
+   (lambda (_ x)
+     (mpd-serialize-list-of-mpd-plugin "playlist_plugin" x)))
+
+  (extra-options
+   (alist '())
+   "An association list of option symbols/strings to string values to be
+appended to the configuration.")
+
   (prefix mpd-))
 
-(define (mpd-file-name config file)
-  "Return a path in /var/run/mpd/ that is writable
-   by @code{user} from @code{config}."
-  (string-append "/var/run/mpd/"
-                 (mpd-configuration-user config)
-                 "/" file))
+(define (mpd-serialize-configuration configuration)
+  (mixed-text-file
+   "mpd.conf"
+   (serialize-configuration configuration mpd-configuration-fields)))
+
+(define (mpd-log-rotation config)
+  (match-record config <mpd-configuration> (log-file)
+    (log-rotation
+     (files (list log-file))
+     (post-rotate #~(begin
+                      (use-modules (gnu services herd))
+                      (with-shepherd-action 'mpd ('reopen) #f))))))
 
 (define (mpd-shepherd-service config)
-  (shepherd-service
-   (documentation "Run the MPD (Music Player Daemon)")
-   (requirement '(user-processes))
-   (provision '(mpd))
-   (start #~(make-forkexec-constructor
-             (list #$(file-append mpd "/bin/mpd")
-                   "--no-daemon"
-                   #$(mpd-serialize-configuration config))
-             #:environment-variables
-             ;; Required to detect PulseAudio when run under a user account.
-             (list (string-append
-                    "XDG_RUNTIME_DIR=/run/user/"
-                    (number->string
-                     (passwd:uid
-                      (getpwnam #$(mpd-configuration-user config))))))
-             #:log-file #$(mpd-file-name config "log")))
-   (stop  #~(make-kill-destructor))))
+  (match-record config <mpd-configuration> (user package shepherd-requirement
+                                            log-file playlist-directory
+                                            db-file state-file sticker-file)
+    (let* ((config-file (mpd-serialize-configuration config)))
+      (shepherd-service
+       (documentation "Run the MPD (Music Player Daemon)")
+       (requirement `(user-processes loopback ,@shepherd-requirement))
+       (provision '(mpd))
+       (start #~(begin
+                  (and=> #$(maybe-value log-file)
+                         (compose mkdir-p dirname))
 
-(define (mpd-service-activation config)
-  (with-imported-modules '((guix build utils))
-    #~(begin
-        (use-modules (guix build utils))
-        (define %user
-          (getpw #$(mpd-configuration-user config)))
+                  (let ((user (getpw #$user)))
+                    (for-each
+                     (lambda (x)
+                       (when (and x (not (file-exists? x)))
+                         (mkdir-p x)
+                         (chown x (passwd:uid user) (passwd:gid user))))
+                     (list #$(maybe-value playlist-directory)
+                           (and=> #$(maybe-value db-file) dirname)
+                           (and=> #$(maybe-value state-file) dirname)
+                           (and=> #$(maybe-value sticker-file) dirname))))
 
-        (let ((directory #$(mpd-file-name config ".mpd")))
-          (mkdir-p directory)
-          (chown directory (passwd:uid %user) (passwd:gid %user))
+                  (make-forkexec-constructor
+                   (list #$(file-append package "/bin/mpd")
+                         "--no-daemon"
+                         #$config-file)
+                   #:environment-variables
+                   ;; Required to detect PulseAudio when run under a user account.
+                   (list (string-append
+                          "XDG_RUNTIME_DIR=/run/user/"
+                          (number->string (passwd:uid (getpwnam #$user))))))))
+       (stop  #~(make-kill-destructor))
+       (actions
+        (list (shepherd-configuration-action config-file)
+              (shepherd-action
+               (name 'reopen)
+               (documentation "Re-open log files and flush caches.")
+               (procedure
+                #~(lambda (pid)
+                    (if pid
+                        (begin
+                          (kill pid SIGHUP)
+                          (format #t
+                                  "Issued SIGHUP to Service MPD (PID ~a)."
+                                  pid))
+                        (format #t "Service MPD is not running.")))))))))))
 
-          ;; Make /var/run/mpd/USER user-owned as well.
-          (chown (dirname directory)
-                 (passwd:uid %user) (passwd:gid %user))))))
-
-
-(define %mpd-accounts
-  ;; Default account and group for MPD.
-  (list (user-group (name "mpd") (system? #t))
-        (user-account
-         (name "mpd")
-         (group "mpd")
-         (system? #t)
-         (comment "Music Player Daemon (MPD) user")
-
-         ;; Note: /var/run/mpd hosts one sub-directory per user, of which
-         ;; /var/run/mpd/mpd corresponds to the "mpd" user.
-         (home-directory "/var/run/mpd/mpd")
-
-         (shell (file-append shadow "/sbin/nologin")))))
+(define (mpd-accounts config)
+  (match-record config <mpd-configuration> (user group)
+    (list (user-group
+           (name group)
+           (system? #t))
+          (user-account
+           (name user)
+           (group group)
+           (system? #t)
+           (comment "Music Player Daemon (MPD) user")
+           ;; MPD can use $HOME (or $XDG_CONFIG_HOME) to place its data
+           (home-directory "/var/lib/mpd")
+           (shell (file-append shadow "/sbin/nologin"))))))
 
 (define mpd-service-type
   (service-type
@@ -237,7 +532,7 @@ By default this is a single output using pulseaudio.")
     (list (service-extension shepherd-root-service-type
                              (compose list mpd-shepherd-service))
           (service-extension account-service-type
-                             (const %mpd-accounts))
-          (service-extension activation-service-type
-                             mpd-service-activation)))
+                             mpd-accounts)
+          (service-extension rottlog-service-type
+                             (compose list mpd-log-rotation))))
    (default-value (mpd-configuration))))

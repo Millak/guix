@@ -109,6 +109,7 @@ Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
+Copyright @copyright{} 2022 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
 Copyright @copyright{} 2023 Giacomo Leidi@*
 Copyright @copyright{} 2022 Antero Mejr@*
@@ -33185,79 +33186,187 @@ The service type for @command{mpd}
 Data type representing the configuration of @command{mpd}.
 
 @table @asis
-@item @code{user} (default: @code{"mpd"})
+@item @code{package} (default: @code{mpd}) (type: file-like)
+The MPD package.
+
+@item @code{user} (default: @code{"mpd"}) (type: string)
 The user to run mpd as.
 
-@item @code{music-dir} (default: @code{"~/Music"})
+@item @code{group} (default: @code{"mpd"}) (type: string)
+The group to run mpd as.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
+The location of the log file.  Set to @code{syslog} to use the local
+syslog daemon or @code{%unset-value} to omit this directive from the
+configuration file.
+
+@item @code{log-level} (type: maybe-string)
+Supress any messages below this threshold.  Available values:
+@code{notice}, @code{info}, @code{verbose}, @code{warning} and
+@code{error}.
+
+@item @code{music-directory} (type: maybe-string)
 The directory to scan for music files.
 
-@item @code{playlist-dir} (default: @code{"~/.mpd/playlists"})
+@item @code{playlist-directory} (type: maybe-string)
 The directory to store playlists.
 
-@item @code{db-file} (default: @code{"~/.mpd/tag_cache"})
+@item @code{db-file} (type: maybe-string)
 The location of the music database.
 
-@item @code{state-file} (default: @code{"~/.mpd/state"})
+@item @code{state-file} (type: maybe-string)
 The location of the file that stores current MPD's state.
 
-@item @code{sticker-file} (default: @code{"~/.mpd/sticker.sql"})
+@item @code{sticker-file} (type: maybe-string)
 The location of the sticker database.
 
-@item @code{port} (default: @code{"6600"})
-The port to run mpd on.
+@item @code{default-port} (default: @code{6600}) (type: maybe-integer)
+The default port to run mpd on.
 
-@item @code{address} (default: @code{"any"})
-The address that mpd will bind to.  To use a Unix domain socket,
-an absolute path can be specified here.
+@item @code{endpoints} (type: maybe-list-of-string)
+The addresses that mpd will bind to.  A port different from @var{default-port}
+may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
+enclosed in square brackets when a different port is used.
+To use a Unix domain socket, an absolute path or a path starting with @code{~}
+can be specified here.
 
-@item @code{outputs} (default: @code{"(list (mpd-output))"})
-The audio outputs that MPD can use.  By default this is a single output using pulseaudio.
+@item @code{database} (type: maybe-mpd-plugin)
+MPD database plugin configuration.
+
+@item @code{partitions} (default: @code{()}) (type: list-of-mpd-partition)
+List of MPD "partitions".
+
+@item @code{neighbors} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD neighbor plugin configurations.
+
+@item @code{inputs} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD input plugin configurations.
+
+@item @code{archive-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD archive plugin configurations.
+
+@item @code{input-cache-size} (type: maybe-string)
+MPD input cache size.
+
+@item @code{decoders} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD decoder plugin configurations.
+
+@item @code{resampler} (type: maybe-mpd-plugin)
+MPD resampler plugin configuration.
+
+@item @code{filters} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD filter plugin configurations.
+
+@item @code{outputs} (type: list-of-mpd-plugin-or-output)
+The audio outputs that MPD can use.  By default this is a single output
+using pulseaudio.
+
+@item @code{playlist-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD playlist plugin configurations.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the configuration.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-plugin
+Data type representing a @command{mpd} plugin.
+
+@table @asis
+@item @code{plugin} (type: maybe-string)
+Plugin name.
+
+@item @code{name} (type: maybe-string)
+Name.
+
+@item @code{enabled?} (type: maybe-boolean)
+Whether the plugin is enabled/disabled.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the plugin configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/plugins.html,MPD plugin
+reference} for available options.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-partition
+Data type representing a @command{mpd} partition.
+
+@table @asis
+@item @code{name} (type: string)
+Partition name.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the partition configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions,Configuring
+Partitions} for available options.
 
 @end table
 @end deftp
 
 @deftp {Data Type} mpd-output
-Data type representing an @command{mpd} audio output.
+Data type representing a @command{mpd} audio output.
 
 @table @asis
-@item @code{name} (default: @code{"MPD"})
+@item @code{name} (default: @code{"MPD"}) (type: string)
 The name of the audio output.
 
-@item @code{type} (default: @code{"pulse"})
+@item @code{type} (default: @code{"pulse"}) (type: string)
 The type of audio output.
 
-@item @code{enabled?} (default: @code{#t})
+@item @code{enabled?} (default: @code{#t}) (type: boolean)
 Specifies whether this audio output is enabled when MPD is started.  By
 default, all audio outputs are enabled.  This is just the default
 setting when there is no state file; with a state file, the previous
 state is restored.
 
-@item @code{tags?} (default: @code{#t})
+@item @code{format} (type: maybe-string)
+Force a specific audio format on output.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#audio-output-format,Global
+Audio Format} for a more detailed description.
+
+@item @code{tags?} (default: @code{#t}) (type: boolean)
 If set to @code{#f}, then MPD will not send tags to this output.  This
 is only useful for output plugins that can receive tags, for example the
 @code{httpd} output plugin.
 
-@item @code{always-on?} (default: @code{#f})
+@item @code{always-on?} (default: @code{#f}) (type: boolean)
 If set to @code{#t}, then MPD attempts to keep this audio output always
-open.  This may be useful for streaming servers, when you don’t want to
+open.  This may be useful for streaming servers, when you don?t want to
 disconnect all listeners even when playback is accidentally stopped.
 
-@item @code{mixer-type}
-This field accepts a symbol that specifies which mixer should be used
+@item @code{mixer-type} (default: @code{"none"}) (type: string)
+This field accepts a string that specifies which mixer should be used
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
 External Mixer) or no mixer (@code{none}).
 
-@item @code{extra-options} (default: @code{'()})
-An association list of option symbols to string values to be appended to
-the audio output configuration.
+@item @code{replay-gain-handler} (type: maybe-string)
+This field accepts a string that specifies how
+@uref{https://mpd.readthedocs.io/en/latest/user.html#replay-gain,Replay
+Gain} is to be applied.  @code{software} uses an internal software
+volume control, @code{mixer} uses the configured (hardware) mixer
+control and @code{none} disables replay gain on this audio output.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the audio output configuration.
 
 @end table
 @end deftp
 
-The following example shows a configuration of @code{mpd} that provides
-an HTTP audio streaming output.
+The following example shows a configuration of @command{mpd} that
+configures some of its plugins and provides a HTTP audio streaming output.
 
 @lisp
 (service mpd-service-type
@@ -33269,7 +33378,19 @@ an HTTP audio streaming output.
                      (mixer-type 'null)
                      (extra-options
                       `((encoder . "vorbis")
-                        (port    . "8080"))))))))
+                        (port    . "8080"))))))
+           (decoders
+             (list (mpd-plugin
+                     (plugin "mikmod")
+                     (enabled? #f))
+                   (mpd-plugin
+                     (plugin "openmpt")
+                     (enabled? #t)
+                     (extra-options `((repeat-count . -1)
+                                      (interpolation-filter . 1))))))
+           (resampler (mpd-plugin
+                        (plugin "libsamplerate")
+                        (extra-options `((type . 0)))))))
 @end lisp
 
 
