@@ -950,6 +950,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
 (define-public go-std-1.17 (make-go-std go-1.17))
 (define-public go-std-1.18 (make-go-std go-1.18))
 (define-public go-std-1.19 (make-go-std go-1.19))
+(define-public go-std-1.20 (make-go-std go-1.20))
 
 (define-public go-0xacab-org-leap-shapeshifter
   (let ((commit "0aa6226582efb8e563540ec1d3c5cfcd19200474")
