@@ -4551,28 +4551,27 @@ point numbers.")
 (define-public wxmaxima
   (package
     (name "wxmaxima")
-    (version "22.05.0")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/wxMaxima-developers/wxmaxima")
-             (commit (string-append "Version-" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1va56v9dys97yln4m1z3fz3k90lpy8i3kvcq0v1cbg36689aghm5"))))
+    (version "22.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/wxMaxima-developers/wxmaxima")
+                    (commit (string-append "Version-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12bjadmy2mf7d8v4iszmzckahfcwjzaba8wpbigksh4brvhb4gj5"))))
     (build-system cmake-build-system)
-    (native-inputs
-     `(("gettext" ,gettext-minimal)))
-    (inputs
-     (list wxwidgets
-           maxima
-           ;; Runtime support.
-           adwaita-icon-theme
-           gtk+
-           shared-mime-info))
+    (native-inputs (list gettext-minimal))
+    (inputs (list bash-minimal
+                  wxwidgets
+                  maxima
+                  ;; Runtime support.
+                  adwaita-icon-theme
+                  gtk+
+                  shared-mime-info))
     (arguments
-     `(#:tests? #f                      ; tests fail non-deterministically
+     `(#:tests? #f ; tests fail non-deterministically
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-doc-path
@@ -4581,8 +4580,8 @@ point numbers.")
              ;; documentation.  Only licensing information is placed there by
              ;; Guix.
              (substitute* "src/Dirstructure.cpp"
-               (("/doc/wxmaxima-\\%s") "/doc/wxmaxima"))
-             #t))
+               (("/doc/wxmaxima-\\%s")
+                "/doc/wxmaxima"))))
          (add-after 'install 'wrap-program
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (wrap-program (string-append (assoc-ref outputs "out")
@@ -4595,15 +4594,15 @@ point numbers.")
                  (,(string-append (assoc-ref inputs "gtk+")
                                   "/share/glib-2.0/schemas")))
                `("XDG_DATA_DIRS" ":" prefix
-                 (;; Needed by gdk-pixbuf to know supported icon formats.
-                  ,(string-append
-                    (assoc-ref inputs "shared-mime-info") "/share")
+                 ( ;; Needed by gdk-pixbuf to know supported icon formats.
+                  ,(string-append (assoc-ref inputs "shared-mime-info")
+                                  "/share")
                   ;; The default icon theme of GTK+.
-                  ,(string-append
-                    (assoc-ref inputs "adwaita-icon-theme") "/share"))))
-             #t)))))
+                  ,(string-append (assoc-ref inputs "adwaita-icon-theme")
+                                  "/share")))))))))
     (home-page "https://wxmaxima-developers.github.io/wxmaxima/")
-    (synopsis "Graphical user interface for the Maxima computer algebra system")
+    (synopsis
+     "Graphical user interface for the Maxima computer algebra system")
     (description
      "wxMaxima is a graphical user interface for the Maxima computer algebra
 system.  It eases the use of Maxima by making most of its commands available
