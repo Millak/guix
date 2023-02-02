@@ -7,6 +7,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2023 Kaelyn Takata <kaelyn.alexi@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -76,7 +77,7 @@
 (define-public wine
   (package
     (name "wine")
-    (version "7.19")
+    (version "8.0")
     (source
      (origin
        (method url-fetch)
@@ -88,7 +89,7 @@
               (string-append "https://dl.winehq.org/wine/source/" dir
                              "wine-" version ".tar.xz")))
        (sha256
-        (base32 "08cxigkd83as6gkqgiwdpvr7cyy5ajsnhan3jbadwzqxdrz4kb23"))))
+        (base32 "0bkr3klvjy8h4djddr31fvapsi9pc2rsiyhaa7j1lwpq704w4wh2"))))
     (build-system gnu-build-system)
     (native-inputs
      (list bison flex gettext-minimal perl pkg-config))
@@ -142,9 +143,6 @@
        ;; pass.
        #:tests? #f
 
-       #:configure-flags
-       #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/wine32"))
-
        #:make-flags
        #~(list "SHELL=bash"
                (string-append "libdir=" #$output "/lib/wine32"))
@@ -197,7 +195,7 @@
                (substitute* "tools/makedep.c"
                  (("output_filenames\\( unix_libs \\);" all)
                   (string-append all
-                                 "output ( \" -Wl,-rpath=%s \", so_dir );"))))))))
+                                 "output ( \" -Wl,-rpath=%s \", arch_install_dirs[arch] );"))))))))
     (home-page "https://www.winehq.org/")
     (synopsis "Implementation of the Windows API (32-bit only)")
     (description
@@ -260,7 +258,7 @@ integrate Windows applications into your desktop.")
               (substitute* "tools/makedep.c"
                 (("output_filenames\\( unix_libs \\);" all)
                  (string-append all
-                                "output ( \" -Wl,-rpath=%s \", so_dir );")))))
+                                "output ( \" -Wl,-rpath=%s \", arch_install_dirs[arch] );")))))
           (add-after 'install 'copy-wine32-binaries
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (let ((out (assoc-ref %outputs "out")))
@@ -293,8 +291,7 @@ integrate Windows applications into your desktop.")
                   (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
                    (format #f "~a\"~a\"" defso (find-so soname))))))))
       #:configure-flags
-      #~(list "--enable-win64"
-              (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib/wine64"))
+      #~(list "--enable-win64")
       (strip-keyword-arguments '(#:configure-flags #:make-flags #:phases
                                  #:system)
                                (package-arguments wine))))
