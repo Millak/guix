@@ -74,9 +74,11 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-(define-public wine
+;; This minimal build of Wine is needed to prevent a circular dependency with
+;; vkd3d.
+(define-public wine-minimal
   (package
-    (name "wine")
+    (name "wine-minimal")
     (version "8.0")
     (source
      (origin
@@ -91,8 +93,72 @@
        (sha256
         (base32 "0bkr3klvjy8h4djddr31fvapsi9pc2rsiyhaa7j1lwpq704w4wh2"))))
     (build-system gnu-build-system)
+    (native-inputs (list bison flex))
+    (inputs `())
+    (arguments
+     (list
+      ;; Force a 32-bit build targeting a similar architecture, i.e.:
+      ;; armhf for armhf/aarch64, i686 for i686/x86_64.
+      #:system (match (%current-system)
+                 ((or "armhf-linux" "aarch64-linux") "armhf-linux")
+                 (_ "i686-linux"))
+
+       ;; XXX: There's a test suite, but it's unclear whether it's supposed to
+       ;; pass.
+       #:tests? #f
+
+       #:make-flags
+       #~(list "SHELL=bash"
+               (string-append "libdir=" #$output "/lib/wine32"))
+
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'patch-SHELL
+             (lambda _
+               (substitute* "configure"
+                 ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
+                 (("/bin/sh")
+                  (which "bash")))))
+           (add-after 'configure 'patch-dlopen-paths
+             ;; Hardcode dlopened sonames to absolute paths.
+             (lambda _
+               (let* ((library-path (search-path-as-string->list
+                                     (getenv "LIBRARY_PATH")))
+                      (find-so (lambda (soname)
+                                 (search-path library-path soname))))
+                 (substitute* "include/config.h"
+                   (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
+                    (format #f "~a\"~a\"" defso (find-so soname)))))))
+           (add-after 'patch-generated-file-shebangs 'patch-makedep
+             (lambda* (#:key outputs #:allow-other-keys)
+               (substitute* "tools/makedep.c"
+                 (("output_filenames\\( unix_libs \\);" all)
+                  (string-append all
+                   "output ( \" -Wl,-rpath=%s \", arch_install_dirs[arch] );"))))))
+       #:configure-flags
+       #~(list "--without-freetype"
+               "--without-x")))
+    (home-page "https://www.winehq.org/")
+    (synopsis "Implementation of the Windows API (32-bit only)")
+    (description
+     "Wine (originally an acronym for \"Wine Is Not an Emulator\") is a
+compatibility layer capable of running Windows applications.  Instead of
+simulating internal Windows logic like a virtual machine or emulator, Wine
+translates Windows API calls into POSIX calls on-the-fly, eliminating the
+performance and memory penalties of other methods and allowing you to cleanly
+integrate Windows applications into your desktop.")
+    ;; Any platform should be able to build wine, but based on '#:system' these
+    ;; are the ones we currently support.
+    (supported-systems '("i686-linux" "x86_64-linux" "armhf-linux"))
+    (license license:lgpl2.1+)))
+
+(define-public wine
+  (package
+    (inherit wine-minimal)
+    (name "wine")
     (native-inputs
-     (list bison flex gettext-minimal perl pkg-config))
+     (modify-inputs (package-native-inputs wine-minimal)
+       (prepend gettext-minimal perl pkg-config)))
     (inputs
      ;; Some libraries like libjpeg are now compiled into native PE objects.
      ;; The ELF objects provided by Guix packages are of no use.  Whilst this
@@ -100,6 +166,7 @@
      ;; to build some of these from Guix PACKAGE-SOURCE but attempts were not
      ;; fruitful so far.  See <https://www.winehq.org/announce/7.0>.
      (list alsa-lib
+           bash-minimal
            cups
            dbus
            eudev
@@ -132,23 +199,9 @@
            vkd3d
            vulkan-loader))
     (arguments
-     (list
-      ;; Force a 32-bit build targeting a similar architecture, i.e.:
-      ;; armhf for armhf/aarch64, i686 for i686/x86_64.
-      #:system (match (%current-system)
-                 ((or "armhf-linux" "aarch64-linux") "armhf-linux")
-                 (_ "i686-linux"))
-
-       ;; XXX: There's a test suite, but it's unclear whether it's supposed to
-       ;; pass.
-       #:tests? #f
-
-       #:make-flags
-       #~(list "SHELL=bash"
-               (string-append "libdir=" #$output "/lib/wine32"))
-
-       #:phases
-       #~(modify-phases %standard-phases
+     (substitute-keyword-arguments (package-arguments wine-minimal)
+       ((#:phases phases)
+        #~(modify-phases #$phases
            ;; Explicitly set the 32-bit version of vulkan-loader when installing
            ;; to i686-linux or x86_64-linux.
            ;; TODO: Add more JSON files as they become available in Mesa.
@@ -173,42 +226,8 @@
                                               "/radeon_icd.i686.json" ":"
                                               icd "/intel_icd.i686.json")))))))))
                 (_
-                 `()))
-           (add-after 'unpack 'patch-SHELL
-             (lambda _
-               (substitute* "configure"
-                 ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
-                 (("/bin/sh")
-                  (which "bash")))))
-           (add-after 'configure 'patch-dlopen-paths
-             ;; Hardcode dlopened sonames to absolute paths.
-             (lambda _
-               (let* ((library-path (search-path-as-string->list
-                                     (getenv "LIBRARY_PATH")))
-                      (find-so (lambda (soname)
-                                 (search-path library-path soname))))
-                 (substitute* "include/config.h"
-                   (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                    (format #f "~a\"~a\"" defso (find-so soname)))))))
-           (add-after 'patch-generated-file-shebangs 'patch-makedep
-             (lambda* (#:key outputs #:allow-other-keys)
-               (substitute* "tools/makedep.c"
-                 (("output_filenames\\( unix_libs \\);" all)
-                  (string-append all
-                                 "output ( \" -Wl,-rpath=%s \", arch_install_dirs[arch] );"))))))))
-    (home-page "https://www.winehq.org/")
-    (synopsis "Implementation of the Windows API (32-bit only)")
-    (description
-     "Wine (originally an acronym for \"Wine Is Not an Emulator\") is a
-compatibility layer capable of running Windows applications.  Instead of
-simulating internal Windows logic like a virtual machine or emulator, Wine
-translates Windows API calls into POSIX calls on-the-fly, eliminating the
-performance and memory penalties of other methods and allowing you to cleanly
-integrate Windows applications into your desktop.")
-    ;; Any platform should be able to build wine, but based on '#:system' these
-    ;; are thr ones we currently support.
-    (supported-systems '("i686-linux" "x86_64-linux" "armhf-linux"))
-    (license license:lgpl2.1+)))
+                 `()))))
+       ((#:configure-flags _ '()) #~'())))))
 
 (define-public wine64
   (package
@@ -297,41 +316,6 @@ integrate Windows applications into your desktop.")
                                (package-arguments wine))))
     (synopsis "Implementation of the Windows API (WoW64 version)")
     (supported-systems '("x86_64-linux" "aarch64-linux"))))
-
-;; This minimal build of Wine is needed to prevent a circular dependency with
-;; vkd3d.
-(define-public wine-minimal
-  (package
-    (inherit wine)
-    (name "wine-minimal")
-    (native-inputs (modify-inputs (package-native-inputs wine)
-                     (delete "gettext" "perl" "pkg-config")))
-    (inputs `())
-    (arguments
-     `(#:validate-runpath? #f
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-SHELL
-           (lambda _
-             (substitute* "configure"
-               ;; configure first respects CONFIG_SHELL, clobbers SHELL later.
-               (("/bin/sh")
-                (which "bash")))))
-         (add-after 'configure 'patch-dlopen-paths
-           ;; Hardcode dlopened sonames to absolute paths.
-           (lambda _
-             (let* ((library-path (search-path-as-string->list
-                                   (getenv "LIBRARY_PATH")))
-                    (find-so (lambda (soname)
-                               (search-path library-path soname))))
-               (substitute* "include/config.h"
-                 (("(#define SONAME_.* )\"(.*)\"" _ defso soname)
-                  (format #f "~a\"~a\"" defso (find-so soname))))))))
-       #:configure-flags
-       (list "--without-freetype"
-             "--without-x")
-       ,@(strip-keyword-arguments '(#:configure-flags #:phases)
-                                  (package-arguments wine))))))
 
 (define-public wine-staging-patchset-data
   (package
