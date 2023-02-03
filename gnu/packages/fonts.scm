@@ -419,7 +419,7 @@ all characters maximally distinguishable from one another.")
     (name "font-lato")
     (version "2.015")                   ; also update description
     (source (origin
-              (method url-fetch/zipbomb)
+              (method url-fetch)
               (uri (string-append "https://www.latofonts.com/download/Lato2OFL.zip"))
               (sha256
                (base32
