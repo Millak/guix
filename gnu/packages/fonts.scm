@@ -337,12 +337,14 @@ itself."))))
     (name "font-canada1500")
     (version "1.101")
     (source (origin
-              (method url-fetch)
+              (method url-fetch/zipbomb)
               (uri "https://typodermicfonts.com/wp-content/uploads/2017/06/canada1500.zip")
               (sha256
                (base32
                 "0cdcb89ab6q7b6jd898bnvrd1sifbd2xr42qgji98h8d5cq4b6fp"))))
     (build-system font-build-system)
+    (arguments
+     '(#:license-file-regexp "^license.pdf$"))
     (home-page "https://typodermicfonts.com/canada1500/")
     (synopsis "Canadian typeface that supports English, French and Aboriginal languages")
     (description "Canada1500 is a display typeface originally created for the
