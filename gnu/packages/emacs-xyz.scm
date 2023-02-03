@@ -17550,6 +17550,43 @@ for the current file, using the major mode as a hint.  It prompts you to enter
 one if it fails.")
     (license license:gpl3+)))
 
+(define-public emacs-jabber
+  ;; No releases available.
+  (let ((commit "af0315e174fa6446d5c4dd3e6465d48912950e58")
+        (revision "0"))
+    (package
+      (name "emacs-jabber")
+      (version (git-version "0.8.92" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://codeberg.org/emacs-jabber/emacs-jabber")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "08q0hbm4pvp8sf261w1ihqa93sg8blfybfkhq7wrnvgs6kasgwvq"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:emacs emacs                   ;requires gnutls
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'make-info
+              (lambda _
+                (invoke "makeinfo" "jabber.texi")
+                (install-file "jabber.info"
+                              (string-append #$output "/share/info")))))))
+      (native-inputs (list texinfo))
+      (propagated-inputs (list emacs-fsm emacs-hexrgb emacs-srv gnutls))
+      (home-page "https://codeberg.org/emacs-jabber/emacs-jabber")
+      (synopsis "XMPP (Jabber) client for Emacs")
+      (description
+       "@code{jabber.el} is an XMPP client for Emacs.  XMPP (also known as
+\"Jabber\") is an instant messaging system; see @url{https://xmpp.org} for
+more information.")
+      (license license:gpl2+))))
+
 (define-public emacs-jarchive
   (package
     (name "emacs-jarchive")
