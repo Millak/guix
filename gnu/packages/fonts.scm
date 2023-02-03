@@ -3114,7 +3114,10 @@ modified to cover most CJK unified ideograph characters.")
              ;; which makes rename-file fail. Instead, use shell globbing to
              ;; select and rename the directory.
              (invoke "sh" "-c" "mv TrueType* TrueType")
-             #t)))))
+             #t))
+         (add-before 'install-license-files 'enter-license-directory
+           (lambda _
+             (chdir "IPAexfont00201"))))))
     (native-inputs
      `(("bash" ,bash-minimal)
        ("coreutils" ,coreutils)))
