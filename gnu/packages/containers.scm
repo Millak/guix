@@ -26,6 +26,7 @@
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
+  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)
@@ -46,7 +47,8 @@
   #:use-module (gnu packages selinux)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages virtualization)
-  #:use-module (gnu packages web))
+  #:use-module (gnu packages web)
+  #:use-module (gnu packages wget))
 
 (define-public crun
   (let ((commit "c381048530aa750495cf502ddb7181f2ded5b400"))
@@ -152,6 +154,41 @@ Container Runtime fully written in C.")
 manager (like Podman or CRI-O) and an Open Container Initiative (OCI)
 runtime (like runc or crun) for a single container.")
     (license license:asl2.0)))
+
+(define-public distrobox
+  (package
+    (name "distrobox")
+    (version "1.4.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/89luca89/distrobox")
+             (commit version)))
+       (sha256
+        (base32 "0gs81m1bvlyq6ad22zsdsw1q6s3agy79vx94kdf6zjzngbanlydk"))
+       (file-name (git-file-name name version))))
+    (build-system copy-build-system)
+    (inputs
+     (list podman wget))
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'install 'refer-to-inputs
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (substitute* (find-files "." "^distrobox.*")
+                     (("podman") (search-input-file inputs "/bin/podman"))
+                     (("wget") (search-input-file inputs "/bin/wget"))
+                     (("command -v") "test -x"))))
+               (replace 'install
+                 (lambda _
+                   (invoke "./install" "--prefix" #$output))))))
+    (home-page "https://distrobox.privatedns.org/")
+    (synopsis "Create and start containers highly integrated with the hosts")
+    (description
+     "Distrobox is a fancy wrapper around Podman or Docker to create and start
+containers highly integrated with the hosts.")
+    (license license:gpl3)))
 
 (define-public libslirp
   (package
