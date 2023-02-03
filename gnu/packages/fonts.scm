@@ -2729,13 +2729,7 @@ a different style of marking.")
            ;; Find the license file outside of the default subdirectory.
            (lambda _
              (chdir "..")
-             #t))
-         (replace 'install-license-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "OFL.txt" doc)
-               #t))))))
+             #t)))))
     (home-page "https://www.jetbrains.com/lp/mono/")
     (synopsis "Mono typeface for developers")
     (description
