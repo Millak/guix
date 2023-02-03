@@ -25001,6 +25001,29 @@ later.")
 them in your web browser.")
       (license license:expat))))
 
+(define-public emacs-srv
+  (package
+    (name "emacs-srv")
+    (version "0.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/legoscia/srv.el")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1a8pqhdi7m3lis5ad2f74s1sy8zpxlwvfsvd80lw746235x2v06z"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/legoscia/srv.el")
+    (synopsis "Emacs Lisp library to perform SRV DNS requests")
+    (description
+     "SRV implements RFC 2782 (SRV records).  It is used to look up hostname
+and port for a service at a specific domain.  There might be multiple results,
+and the caller is supposed to attempt to connect to each hostname+port in
+turn.")
+    (license license:gpl2+)))
+
 (define-public emacs-github-review
   (let ((commit "a13a3b4f1b6114a32af843971a145ab880f51232")
         (revision "2"))
