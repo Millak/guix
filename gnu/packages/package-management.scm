@@ -1666,8 +1666,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "550e6aa414ec143435a8ace061c17e34dcfb4eec")
-        (revision "12"))
+  (let ((commit "66a2862b68087c9bd100b903fe32066d790cbe2c")
+        (revision "13"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1678,7 +1678,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1n7wq242rcpjb19sag4mhgyj6kkki43g4pvlczpfhj6w5cna7c05"))
+                  "0ry5m4h80mm1za4aqg73753083pjwajzzbs2hzpwng516ylh5c3r"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
