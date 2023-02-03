@@ -2340,7 +2340,7 @@ variants.")
     (version "1.7")
     (source
      (origin
-       (method url-fetch/zipbomb)
+       (method url-fetch)
        (uri (string-append "https://web.archive.org/web/20180228233737/"
                            "https://www.impallari.com/media/releases/dosis-"
                            "v" version ".zip"))
