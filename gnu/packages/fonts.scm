@@ -3347,6 +3347,7 @@ optimized for using musical symbols inline with regular text.")
          (sha256
           (base32 "1j8iv2dl695zrabs2knb7jsky8mjis29a2ddpna4by8mlvqrf0ml"))))
       (build-system font-build-system)
+      (arguments (list #:license-file-regexp "^Charter license.txt$"))
       (home-page "https://practicaltypography.com/charter.html")
       (synopsis "Charter fonts in OpenType and TrueType formats")
       (description "Charter was designed by Matthew Carter in 1987 and was
