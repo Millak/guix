@@ -58,8 +58,9 @@ archive, or a font file."
               (find-files source "\\.(woff|woff2)$"))))
 
 (define %license-file-regexp
-  ;; Regexp matching license files.
-  "^(COPYING.*|LICEN[CS]E.*|[Ll]icen[cs]e.*|Copy[Rr]ight(\\.(txt|md))?)$")
+  ;; Regexp matching license files commonly found in font packages.
+  "^((COPY(ING|RIGHT)|LICEN[CS]E).*\
+|(([Cc]opy[Rr]ight|[Ll]icen[cs]es?|IPA_.*|OFL(-?1\\.?1)?)(\\.(txt|md)?))$)")
 
 (define %standard-phases
   (modify-phases gnu:%standard-phases
