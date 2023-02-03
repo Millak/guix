@@ -1656,7 +1656,10 @@ Terminal, and is now the default font in Visual Studio as well.")
              (match (find-files "." (format #f "^Fira_~a_[0-9]" variant)
                                 #:directories? #t)
                ((dir)
-                (chdir dir))))))))
+                (chdir dir)))))
+         (add-before 'install-license-files 'enter-license-directory
+           (lambda _
+             (chdir "../OFL_Licence"))))))
     ;; While the repository has moved,
     ;; this specimen still works well as the home-page:
     (home-page "https://mozilla.github.io/Fira/")
