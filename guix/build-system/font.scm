@@ -76,6 +76,7 @@
                      (tests? #t)
                      (test-target "test")
                      (configure-flags ''())
+                     (license-file-regexp '%license-file-regexp)
                      (phases '%standard-phases)
                      (outputs '("out"))
                      (search-paths '())
@@ -97,6 +98,7 @@
                             #:system #$system
                             #:test-target #$test-target
                             #:tests? #$tests?
+                            #:license-file-regexp #$license-file-regexp
                             #:phases #$(if (pair? phases)
                                            (sexp->gexp phases)
                                            phases)
