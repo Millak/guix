@@ -2505,3 +2505,39 @@ on the command line.  It supports a range of file formats (including animated
 glTF, STL, STEP, PLY, OBJ, FBX), and provides numerous rendering and texturing
 options.")
     (license license:bsd-3)))
+
+(define-public gpaint
+  (package
+    (name "gpaint")
+    (version "0.3.3")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "http://alpha.gnu.org/gnu/"
+                                  name "/"
+                                  name "-2-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1syh5l5fnzk7cw77iykafn73fvmnc83kg815fa8vvj0h0r30c5sl"))))
+    (build-system gnu-build-system)
+    (inputs (list gtk+-2 libglade))
+    (native-inputs
+     (list gettext-minimal `(,glib "bin") pkg-config))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'remove-undefined-references
+                          (lambda _
+                            (substitute* "src/drawing.c"
+                              (("GTK_STOCK_DISCARD,GTK_RESPONSE_DISCARD")
+                               "GTK_STOCK_DISCARD,GTK_RESPONSE_NO"))
+                            (substitute* "src/menu.c"
+                              (("\\#include \"menu.h\"")
+                               "")))))))
+
+    (synopsis "Simple paint program for GNOME")
+    (description
+     "GNU Paint is a simple, easy-to-use paint program for the GNOME
+environment.  It supports drawing freehand as well as basic shapes and text.
+It features cut-and-paste for irregular regions or polygons.")
+    (home-page "https://www.gnu.org/software/gpaint/")
+    (license license:gpl3+)))
+
