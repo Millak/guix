@@ -13430,6 +13430,13 @@ by Python's Jinja.")
                (base32
                 "16qg5dpg7hms5dmh92ksnjahf6010pw97ggi7sb0mfafd6iwps0a"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "emacs" "--batch" "-Q"
+                             "-l" "wgrep-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (native-inputs (list emacs-dash emacs-s))
     (home-page "https://github.com/mhayashi1120/Emacs-wgrep")
     (synopsis "Edit a grep buffer and apply those changes to the files")
     (description
