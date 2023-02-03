@@ -8258,6 +8258,52 @@ doublet-detection methods.  In addition, this tool is used for execution and
 benchmark of those eight mentioned methods.")
       (license license:gpl3+))))
 
+(define-public r-psupertime
+  (let ((commit "73825a28d3bd9bc881c15ee0c4c218eec1c9c207")
+        (revision "1"))
+    (package
+      (name "r-psupertime")
+      (version (git-version "0.2.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wmacnair/psupertime")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "00h1r3ffz6m9dwcgkvyki8405b059qn6mnjsd8d76a1rabaf2vfh"))))
+      (properties `((upstream-name . "psupertime")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-cowplot
+             r-data-table
+             r-fastcluster
+             r-forcats
+             r-ggplot2
+             r-glmnet
+             r-knitr
+             r-matrix
+             r-rcolorbrewer
+             r-scales
+             r-scran
+             r-singlecellexperiment
+             r-stringr
+             r-summarizedexperiment
+             r-topgo))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wmacnair/psupertime")
+      (synopsis
+       "Psupertime is supervised pseudotime for single cell RNAseq data")
+      (description
+       "Psupertime is supervised pseudotime for single cell RNAseq data.  It
+uses single cell RNAseq data, where the cells have a known ordering.  This
+ordering helps to identify a small number of genes which place cells in that
+known order.  It can be used for discovery of relevant genes, for
+identification of subpopulations, and characterization of further unknown or
+differently labelled data.")
+      (license license:gpl3))))
+
 (define-public r-pando
   (package
     (name "r-pando")
