@@ -2189,15 +2189,6 @@ most CJK characters are same height, and double width as ASCII characters.")))
         (base32 "1aiivn0rl7ydiyqvsr0fa2hx82h3br3x48w3100fcly23n0fdcby"))))
     (build-system font-build-system)
     ;; TODO: Package fontmake and gftools and build from source.
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'install-license-files
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/" ,name "-" ,version)))
-               (install-file "OFL.txt" doc)
-               #t))))))
     (home-page "https://floriankarsten.github.io/space-grotesk/")
     (synopsis "Proportional variant of the fixed-width Space Mono family")
     (description
