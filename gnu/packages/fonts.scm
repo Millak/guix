@@ -594,7 +594,8 @@ and Bitstream Vera Sans Mono).
                 "0x7cz6hvhpil1rh03rax9zsfzm54bh7r4bbrq8rz673gl9h47v0v"))))
     (build-system font-build-system)
     (arguments
-     `(#:phases
+     `(#:license-file-regexp "^(GPL|LICENCE|OFL-1\\.1)\\.txt$"
+       #:phases
        (modify-phases %standard-phases
          (add-before 'install 'build
            (lambda _
