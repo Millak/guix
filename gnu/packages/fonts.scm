@@ -1858,8 +1858,7 @@ later hand-tweaked with the gbdfed(1) editor:
          ;; several hidden files to be installed.
          (add-before 'install 'delete-macosx-files
            (lambda _
-             (delete-file-recursively "__MACOSX")
-             #t))
+             (delete-file-recursively "__MACOSX")))
          (add-after 'install 'install-conf
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((conf-dir (string-append (assoc-ref outputs "out")
@@ -1878,8 +1877,10 @@ later hand-tweaked with the gbdfed(1) editor:
       <family>Comic Neue</family>
     </prefer>
   </alias>
-</fontconfig>\n"))))
-             #t)))))
+</fontconfig>\n"))))))
+         (add-before 'install-license-files 'enter-license-directory
+           (lambda _
+             (chdir (string-append "comic-neue-" ,version)))))))
     (home-page "https://www.comicneue.com/")
     (synopsis "Font that fixes the shortcomings of Comic Sans")
     (description
