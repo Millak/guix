@@ -19036,14 +19036,14 @@ database of references on life sciences.")
 (define-public emacs-websocket
   (package
     (name "emacs-websocket")
-    (version "1.13.1")
+    (version "1.14")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "websocket-" version ".tar"))
        (sha256
-        (base32 "1x664zswas0fpml7zaj59zy97avrm49zb80zd69rlkqzz1m45psc"))))
+        (base32 "0g75kaw9bdk30apiyk09583amnw9458kkmgbbcl2myqfqspywnva"))))
     (build-system emacs-build-system)
     (home-page "https://elpa.gnu.org/packages/websocket.html")
     (synopsis "Emacs WebSocket client and server")
