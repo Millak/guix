@@ -362,7 +362,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/kde-systemtools.scm		\
   %D%/packages/kde-utils.scm			\
   %D%/packages/kerberos.scm			\
-  %D%/packages/key-mon.scm			\
   %D%/packages/kodi.scm				\
   %D%/packages/language.scm			\
   %D%/packages/lean.scm				\
