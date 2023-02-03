@@ -858,6 +858,8 @@ variants.")
                (base32
                 "1mkmxq8g2hjcglb3zajfqj20r4r88l78ymsp2xyl5yav8w3f7dz4"))))
     (build-system font-build-system)
+    (arguments
+     '(#:license-file-regexp "^(COPYING|README)$"))
     (home-page "http://wenq.org/wqy2/")
     (synopsis "CJK font")
     (description
