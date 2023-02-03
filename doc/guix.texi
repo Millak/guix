@@ -36836,6 +36836,42 @@ advertised.
 Log level to use, specify a log level like @code{'INFO} to stop logging
 individual requests.
 
+@item @code{cached-compressions} (default: @code{'()})
+Activate generating cached nars with different compression details from
+the stored nars.  This is a list of
+nar-herder-cached-compression-configuration records.
+
+@item @code{min-uses} (default: @code{3})
+When cached-compressions are enabled, generate cached nars when at least
+this number of requests are made for a nar.
+
+@item @code{workers} (default: @code{2})
+Number of cached nars to generate at a time.
+
+@item @code{nar-source} (default: @code{#f})
+Location to fetch nars from when computing cached compressions.  By
+default, the storage location will be used.
+
+@end table
+@end deftp
+
+@deftp {Data Type} nar-herder-cached-compression-configuration
+Data type representing the cached compression configuration.
+
+@table @asis
+@item @code{type}
+Type of compression to use, e.g. @code{'zstd}.
+
+@item @code{workers} (default: @code{#f})
+Level of the compression to use.
+
+@item @code{directory} (default: @code{#f})
+Location to store the cached nars.  If unspecified, they will be stored
+in /var/cache/nar-herder/nar/TYPE.
+
+@item @code{directory-max-size} (default: @code{#f})
+Maximum size in bytes of the directory.
+
 @end table
 @end deftp
 
