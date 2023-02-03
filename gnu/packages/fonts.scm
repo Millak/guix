@@ -2668,7 +2668,8 @@ have been designed to be very distinguishable from each other.")
           (base32 "13133kpa1ndsji9yq5ppkds5yq2y094qvrv2f83ah74p40sz9hm6"))))
     (build-system font-build-system)
     (arguments
-     `(#:phases
+     `(#:license-file-regexp "^DSEG-LICENSE.txt$"
+       #:phases
        (modify-phases %standard-phases
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
