@@ -2219,12 +2219,16 @@ and stylistic alternates.")
                   "1aq6mnjayks55gd9ahavk6jfydlq5lm4xm0xk4pd5sqa74p5p74d"))))
       (build-system font-build-system)
       (arguments
-       `(#:phases
+       `(#:license-file-regexp "^(LICENSE|PATENTS)$"
+         #:phases
          (modify-phases %standard-phases
            (add-before 'install 'chdir
              (lambda _
                (chdir "font/gofont/ttfs")
-               #t)))))
+               #t))
+           (add-before 'install-license-files 'enter-license-directory
+             (lambda _
+               (chdir "../../.."))))))
       (home-page "https://blog.golang.org/go-fonts")
       (synopsis "The Go font family")
       (description
