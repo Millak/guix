@@ -2374,7 +2374,8 @@ ExtraLight, Light, Book, Medium, Semibold, Bold & ExtraBold")
          "02akysgsqhi15cck54xcacm16q5raf4l7shgb8fnj7xr3c1pbfyp"))))
     (build-system font-build-system)
     (arguments
-     `(#:phases
+     `(#:license-file-regexp "^GNU-GPL|LICENSE"
+       #:phases
        (modify-phases %standard-phases
          (add-before 'install 'build
            (lambda _
