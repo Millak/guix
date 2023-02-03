@@ -1699,6 +1699,13 @@ It includes regular, medium, and bold weights.")
                (base32
                 "10rcfg1fijv00yxv5n9l3lm0axhafa1irkg42zpmasd70flgg655"))))
     (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install-license-files 'enter-license-directory
+            (lambda _
+              (chdir "OFL_Licence"))))))
     (home-page "https://github.com/bBoxType/FiraGO")
     (synopsis "Multilingual extension of the Fira Sans font family")
     (description "FiraGO is a multilingual extension of the Fira Sans font
