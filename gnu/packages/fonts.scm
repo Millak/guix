@@ -887,6 +887,8 @@ ko (Korean) locales for @code{fontconfig}.")
                (base32
                 "0gi1yxqph8xx869ichpzzxvx6y50wda5hi77lrpacdma4f0aq0i8"))))
     (build-system font-build-system)
+    (arguments
+     '(#:license-file-regexp "^(LICENSE.*|README)\\.txt$"))
     (home-page "http://wenq.org/wqy2/")
     (synopsis "CJK font")
     (description
