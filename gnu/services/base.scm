@@ -65,6 +65,7 @@
                 #:select (coreutils glibc glibc-utf8-locales tar
                           canonical-package))
   #:use-module ((gnu packages compression) #:select (gzip))
+  #:use-module (gnu packages fonts)
   #:autoload   (gnu packages guile-xyz) (guile-netlink)
   #:autoload   (gnu packages hurd) (hurd)
   #:use-module (gnu packages package-management)
@@ -824,10 +825,8 @@ host names."
 of console keymaps with @command{loadkeys}.")))
 
 (define %default-console-font
-  ;; Note: 'LatGrkCyr-8x16' has the advantage of providing three common
-  ;; scripts as well as glyphs for em dash, quotation marks, and other Unicode
-  ;; codepoints notably found in the UTF-8 manual.
-  "LatGrkCyr-8x16")
+  #~(string-append #$font-gnu-unifont:psf
+                   "/share/consolefonts/Unifont-APL8x16.psf.gz"))
 
 (define (console-font-shepherd-services tty+font)
   "Return a list of Shepherd services for each pair in TTY+FONT."
