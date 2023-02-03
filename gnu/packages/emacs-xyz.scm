@@ -13419,7 +13419,7 @@ by Python's Jinja.")
 (define-public emacs-wgrep
   (package
     (name "emacs-wgrep")
-    (version "2.3.2")
+    (version "3.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -13428,7 +13428,7 @@ by Python's Jinja.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00cwqzb94jlq4mwgv8z7r3mn0a6mhq95z6j189kacq9g4473zh8d"))))
+                "16qg5dpg7hms5dmh92ksnjahf6010pw97ggi7sb0mfafd6iwps0a"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/mhayashi1120/Emacs-wgrep")
     (synopsis "Edit a grep buffer and apply those changes to the files")
