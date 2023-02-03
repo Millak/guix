@@ -18695,7 +18695,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
 (define-public binwalk
   (package
     (name "binwalk")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -18704,7 +18704,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0phqyqv34vhh80dgipiggs4n3iq2vfjk9ywx2c5d8g61vzgbd2g8"))
+        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
