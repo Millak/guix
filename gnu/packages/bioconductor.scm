@@ -1248,6 +1248,29 @@ demonstration purposes in the @code{AneuFinder} package.")
 from Illumina 450k methylation arrays.")
     (license license:artistic2.0)))
 
+(define-public r-bcellviper
+  (package
+    (name "r-bcellviper")
+    (version "1.34.0")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "bcellViper" version
+                                     'experiment))
+              (sha256
+               (base32
+                "1fpgh70x2r68v0ximgcdphnyzq2hgiwbamyhbac3yka8flhrd1fm"))))
+    (properties `((upstream-name . "bcellViper")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-biobase))
+    (home-page "https://bioconductor.org/packages/bcellViper")
+    (synopsis
+     "Transcriptional interactome and normal human B-cell expression data")
+    (description
+     "This is a tool for human B-cell context-specific transcriptional
+regulatory network.  In addition, this package provides a human normal B-cells
+dataset for the examples in package viper.")
+    (license license:gpl2+)))
+
 (define-public r-bladderbatch
   (package
     (name "r-bladderbatch")
