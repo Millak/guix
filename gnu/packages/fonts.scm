@@ -2657,7 +2657,7 @@ have been designed to be very distinguishable from each other.")
     (version "0.46")
     (source
       (origin
-        (method url-fetch/zipbomb)
+        (method url-fetch)
         (uri
           (string-append "https://github.com/keshikan/DSEG/"
                          "releases/download/v" version
@@ -2675,13 +2675,9 @@ have been designed to be very distinguishable from each other.")
              (let* ((out (assoc-ref outputs "out"))
                     (font-dir (string-append out "/share/fonts"))
                     (truetype-dir (string-append font-dir "/truetype")))
-               (with-directory-excursion
-                 (string-append "fonts-DSEG_v"
-                                (apply string-append (string-split ,version
-                                                                   #\.)))
-                 (for-each (lambda (f) (install-file f truetype-dir))
-                           (find-files "." "\\.ttf$"))
-               #t)))))))
+               (for-each (lambda (f) (install-file f truetype-dir))
+                         (find-files "." "\\.ttf$"))
+               #t))))))
     (home-page "https://www.keshikan.net/fonts-e.html")
     (synopsis "DSEG: 7-segment and 14-segment fonts")
     (description
