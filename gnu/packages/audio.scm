@@ -2583,60 +2583,6 @@ plugin function as a JACK application.")
 to be plugged into a wide range of audio synthesis and recording packages.")
     (license license:lgpl2.1+)))
 
-(define-public lash
-  (package
-    (name "lash")
-    (version "0.6.0-rc2")
-    (source (origin
-              (method url-fetch)
-              ;; The tilde is not permitted in the builder name, but is used
-              ;; in the tarball.
-              (uri (string-append
-                    "mirror://savannah/lash/lash-"
-                    (string-join (string-split version #\-) "~")
-                    ".tar.bz2"))
-              (file-name (string-append name "-" version ".tar.bz2"))
-              (sha256
-               (base32
-                "12z1vx3krrzsfccpah9xjs68900xvr7bw92wx8np5871i2yv47iw"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(;; Glibc no longer includes Sun RPC support, so tell the build system
-       ;; to use libtirpc instead.
-       #:make-flags (list (string-append "CFLAGS=-I"
-                                         (assoc-ref %build-inputs "libtirpc")
-                                         "/include/tirpc -ltirpc"))
-       #:phases
-       (modify-phases %standard-phases
-         ;; lashd embeds an ancient version of sigsegv so we just skip it
-         (add-after 'unpack 'skip-lashd
-           (lambda _
-             (substitute* '("Makefile.am" "Makefile.in")
-               (("lashd ") ""))
-             #t)))
-       #:configure-flags '("--disable-static")))
-    (inputs
-     `(("bdb" ,bdb)
-       ("gtk" ,gtk+-2)
-       ("jack" ,jack-1)
-       ("libtirpc" ,libtirpc)
-       ("readline" ,readline)
-       ("python" ,python-2)))
-    ;; According to pkg-config, packages depending on lash also need to have
-    ;; at least the following packages declared as inputs.
-    (propagated-inputs
-     (list alsa-lib dbus libxml2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://www.nongnu.org/lash/")
-    (synopsis "Audio application session manager")
-    (description
-     "LASH is a session management system for audio applications.  It allows
-you to save and restore audio sessions consisting of multiple interconneced
-applications, restoring program state (i.e. loaded patches) and the
-connections between them.")
-    (license license:gpl2+)))
-
 (define-public libbs2b
   (package
     (name "libbs2b")
