@@ -20406,69 +20406,77 @@ object has been freed.")
   (license license:unlicense)))
 
 (define-public emacs-emacsql
-  (package
-    (name "emacs-emacsql")
-    (version "3.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/magit/emacsql")
-             (commit (string-append version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1xpmji2qgr9r38cdhws65x9s9jy7fk93q8g1j2fm7j8kcfjh9x3g"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:tests? #true
-      #:test-command #~(list "emacs" "-Q" "--batch"
-                             "-L" "tests"
-                             "-L" "."
-                             "-l" "tests/emacsql-tests.el"
-                             "-f" "ert-run-tests-batch-and-exit")
-      #:modules '((guix build emacs-build-system)
-                  (guix build utils)
-                  (guix build emacs-utils)
-                  (srfi srfi-26))
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'install 'patch-elisp-shell-shebangs
-            (lambda _
-              (substitute* (find-files "." "\\.el")
-                (("/bin/sh") (which "sh")))))
-          (add-after 'patch-elisp-shell-shebangs 'setenv-shell
-            (lambda _
-              (setenv "SHELL" "sh")))
-          (add-after 'setenv-shell 'build-emacsql-sqlite
-            (lambda _
-              (invoke "make" "binary" (string-append "CC=" #$(cc-for-target)))))
-          (add-after 'build-emacsql-sqlite 'install-emacsql-sqlite
-            ;; This build phase installs emacs-emacsql binary.
-            (lambda _
-              (install-file "sqlite/emacsql-sqlite"
-                            (string-append #$output "/bin"))))
-          (add-after 'install-emacsql-sqlite 'patch-emacsql-sqlite.el
-            ;; This build phase removes interactive prompts
-            ;; and makes sure Emacs look for binaries in the right places.
-            (lambda _
-              (emacs-substitute-variables "emacsql-sqlite.el"
-                ("emacsql-sqlite-executable"
-                 (string-append #$output "/bin/emacsql-sqlite"))
-                ;; Make sure Emacs looks for ‘GCC’ binary in the right place.
-                ("emacsql-sqlite-c-compilers"
-                 `(list ,(which "gcc")))))))))
-    (inputs
-     (list emacs-minimal `(,mariadb "dev") `(,mariadb "lib") postgresql))
-    (propagated-inputs
-     (list emacs-finalize emacs-pg))
-    (home-page "https://github.com/magit/emacsql")
-    (synopsis "Emacs high-level SQL database front-end")
-    (description "Any readable Lisp value can be stored as a value in EmacSQL,
+  (let ((commit "e1baaf2f874df7f9259a8ecca978e03d3ddae5b5")
+        (revision "0"))
+    (package
+      (name "emacs-emacsql")
+      (version (git-version "3.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/magit/emacsql")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0dvqs1jg5zqn0i3r67sn1a40h5rm961q9vxvmqxbgvdhkjvip8fn"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #true
+        #:test-command #~(list "emacs" "-Q" "--batch"
+                               "-L" "tests"
+                               "-L" "."
+                               "-l" "tests/emacsql-tests.el"
+                               "-f" "ert-run-tests-batch-and-exit")
+        #:modules '((guix build emacs-build-system)
+                    (guix build utils)
+                    (guix build emacs-utils)
+                    (srfi srfi-26))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'remove-sqlite-builtin
+              ;; Current emacs 28.2 doesn't have sqlite feature and compilation
+              ;; of this file fails.  This phase should be removed, when emacs
+              ;; package is updated to 29.
+              (lambda _
+                (delete-file "emacsql-sqlite-builtin.el")))
+            (add-before 'install 'patch-elisp-shell-shebangs
+              (lambda _
+                (substitute* (find-files "." "\\.el")
+                  (("/bin/sh") (which "sh")))))
+            (add-after 'patch-elisp-shell-shebangs 'setenv-shell
+              (lambda _
+                (setenv "SHELL" "sh")))
+            (add-after 'setenv-shell 'build-emacsql-sqlite
+              (lambda _
+                (invoke "make" "binary" (string-append "CC=" #$(cc-for-target)))))
+            (add-after 'build-emacsql-sqlite 'install-emacsql-sqlite
+              ;; This build phase installs emacs-emacsql binary.
+              (lambda _
+                (install-file "sqlite/emacsql-sqlite"
+                              (string-append #$output "/bin"))))
+            (add-after 'install-emacsql-sqlite 'patch-emacsql-sqlite.el
+              ;; This build phase removes interactive prompts
+              ;; and makes sure Emacs look for binaries in the right places.
+              (lambda _
+                (emacs-substitute-variables "emacsql-sqlite.el"
+                  ("emacsql-sqlite-executable"
+                   (string-append #$output "/bin/emacsql-sqlite"))
+                  ;; Make sure Emacs looks for ‘GCC’ binary in the right place.
+                  ("emacsql-sqlite-c-compilers"
+                   `(list ,(which "gcc")))))))))
+      (inputs
+       (list emacs-minimal `(,mariadb "dev") `(,mariadb "lib") postgresql))
+      (propagated-inputs
+       (list emacs-finalize emacs-pg emacs-sqlite3-api))
+      (home-page "https://github.com/magit/emacsql")
+      (synopsis "Emacs high-level SQL database front-end")
+      (description "Any readable Lisp value can be stored as a value in EmacSQL,
 including numbers, strings, symbols, lists, vectors, and closures.  EmacSQL
 has no concept of @code{TEXT} values; it's all just Lisp objects.  The Lisp
 object @code{nil} corresponds 1:1 with @code{NULL} in the database.")
-    (license license:gpl3+)))
+      (license license:gpl3+))))
 
 (define-public emacs-emacsql-sqlite3
   (package
