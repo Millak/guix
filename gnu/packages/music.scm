@@ -4987,7 +4987,6 @@ sample library.")
            glib
            jack-1
            ladspa
-           lash
            libinstpatch
            liblo
            libsamplerate
@@ -5004,10 +5003,10 @@ sample library.")
            rubberband
            sord))
     (native-inputs
-     `(("perl" ,perl)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("qttools-5" ,qttools-5)))
+     (list perl
+           pkg-config
+           python-wrapper
+           qttools-5))
     (home-page "https://muse-sequencer.github.io/")
     (synopsis "MIDI/Audio sequencer")
     (description "MusE is a MIDI/Audio sequencer with recording and editing
