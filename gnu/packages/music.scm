@@ -3218,7 +3218,7 @@ on the library.")
          "0mzmg8aavybcfdlq2yd9d0vscqd6is5p6jzrgfpfm5j3xdcvh2s3"))))
     (build-system gnu-build-system)
     (inputs
-     (list jack-1 lash gtk+-2))
+     (list jack-1 gtk+-2))
     (native-inputs
      (list pkg-config))
     (home-page "http://jack-keyboard.sourceforge.net/")
