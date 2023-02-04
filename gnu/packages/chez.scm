@@ -4,7 +4,7 @@
 ;;; Copyright © 2017, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Brendan Tildesley <mail@brendan.scot>
-;;; Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
+;;; Copyright © 2021, 2022, 2023 Philip McGrath <philip@philipmcgrath.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -251,10 +251,9 @@ provided and is #f."
                  (if (target-64bit? system)
                      "64"
                      "32")
-                 ;; missing (guix utils) predicate target-little-endian?
-                 (if (target-ppc32? system)
-                     "b"
-                     "l")))
+                 (if (target-little-endian? system)
+                     "l"
+                     "b")))
 
 (define* (racket-cs-native-supported-system? #:optional
                                              (system
