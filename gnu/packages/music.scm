@@ -4626,11 +4626,9 @@ defined as tabs in the main control surface.")
                 "12dphdhnvfk1k0vmagi1v2lhyxjyj1j3cz6ksjw0ydcvid1x8ap2"))
               (patches (search-patches "seq24-rename-mutex.patch"))))
     (build-system gnu-build-system)
-    (inputs
-     (list gtkmm-2 alsa-lib jack-1 lash))
-    (native-inputs
-     (list pkg-config))
-    (home-page "https://edge.launchpad.net/seq24/")
+    (inputs (list gtkmm-2 alsa-lib jack-1))
+    (native-inputs (list pkg-config))
+    (home-page "https://launchpad.net/seq24/")
     (synopsis "Real-time MIDI sequencer")
     (description "Seq24 is a real-time MIDI sequencer.  It was created to
 provide a very simple interface for editing and playing MIDI loops.")
