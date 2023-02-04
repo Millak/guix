@@ -2092,7 +2092,6 @@ follower.")
      (list alsa-lib
            glib
            jack-1
-           lash
            libsndfile
            readline))
     (home-page "https://www.fluidsynth.org/")
