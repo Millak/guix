@@ -124,7 +124,7 @@ the WPE-flavored port of WebKit.")
 engine that uses Wayland for graphics output.")
     (license license:bsd-2)))
 
-(define %webkit-version "2.38.3")
+(define %webkit-version "2.38.4")
 
 (define-public webkitgtk
   (package
@@ -135,7 +135,7 @@ engine that uses Wayland for graphics output.")
               (uri (string-append "https://www.webkitgtk.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "0njac0878ksh53gn50phly1vzvj08q7g5aclncv6k324xp8h3w21"))
+               (base32 "0dhxrj9rdkqwbr2n8grshvgfhrzhqvbf5j9xxxgg3mfll8lylisg"))
               (patches (search-patches
                         "webkitgtk-adjust-bubblewrap-paths.patch"))))
     (build-system cmake-build-system)
@@ -317,7 +317,7 @@ propagated by default) such as @code{gst-plugins-good} and
               (uri (string-append "https://wpewebkit.org/releases/"
                                   name "-" version ".tar.xz"))
               (sha256
-               (base32 "160456k4yiml0zn2fxba9qwp94dvvn93z9rqs2qa2lvjxig0gn8x"))))
+               (base32 "0yx06ycmiv770nya3dss56bxqmf77cr4v0j04szb07qmxw9w26wc"))))
     (arguments
      (substitute-keyword-arguments (package-arguments webkitgtk)
        ((#:configure-flags flags)
