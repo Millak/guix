@@ -766,17 +766,15 @@ settings (aliasing, linear interpolation and cubic interpolation).")
              (substitute* "CMakeLists.txt"
                (("/usr/share/pixmaps")
                 (string-append (assoc-ref outputs "out")
-                               "/share/pixmaps")))
-             #t)))))
+                               "/share/pixmaps"))))))))
     (native-inputs
-     `(("cppunit" ,cppunit)
-       ("pkg-config" ,pkg-config)
-       ("qtlinguist" ,qttools-5)))
+     (list cppunit
+           pkg-config
+           qttools-5))
     (inputs
      (list alsa-lib
            jack-1
            ;; ("ladspa" ,ladspa) ; require LADSPA_PATH to be set
-           lash
            libarchive
            liblo
            libsndfile
@@ -785,7 +783,7 @@ settings (aliasing, linear interpolation and cubic interpolation).")
            qtbase-5
            qtxmlpatterns
            zlib))
-    (home-page "http://www.hydrogen-music.org")
+    (home-page "http://hydrogen-music.org/")
     (synopsis "Drum machine")
     (description
      "Hydrogen is an advanced drum machine for GNU/Linux.  Its main goal is to
