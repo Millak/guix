@@ -1160,7 +1160,6 @@ plugins are provided.")
            glib
            gtk+-2
            cairo
-           lash
            jack-1
            lv2
            ladspa
