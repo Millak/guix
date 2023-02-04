@@ -1323,6 +1323,7 @@ creating routes by drag and drop and more.")
            qca
            qtdeclarative-5
            qtsvg-5
+           qtwayland-5
            threadweaver
            kcrash
            kjs))
