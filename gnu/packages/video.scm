@@ -3553,7 +3553,7 @@ programs on your current machine or on other machines.")
 (define-public obs-wlrobs
   (package
     (name "obs-wlrobs")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method hg-fetch)
@@ -3563,7 +3563,7 @@ programs on your current machine or on other machines.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1faiq2gdb7qis3m1hilm4pz8lkmkab75vzm608dbiazahhybf96p"))))
+          "1whdb2ykisz50qw19nv1djw5qp17rpnpkc8s8470ja8iz894mmwd"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
