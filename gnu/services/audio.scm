@@ -25,6 +25,7 @@
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)
   #:use-module (gnu services)
+  #:use-module (gnu services admin)
   #:use-module (gnu services configuration)
   #:use-module (gnu services shepherd)
   #:use-module (gnu services admin)
@@ -32,6 +33,7 @@
   #:use-module (gnu packages admin)
   #:use-module (gnu packages mpd)
   #:use-module (guix records)
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -90,7 +92,37 @@
             mpd-configuration-outputs
             mpd-configuration-playlist-plugins
             mpd-configuration-extra-options
-            mpd-service-type))
+            mpd-service-type
+
+            mympd-service-type
+            mympd-configuration
+            mympd-configuration?
+            mympd-configuration-package
+            mympd-configuration-shepherd-requirement
+            mympd-configuration-user
+            mympd-configuration-group
+            mympd-configuration-work-directory
+            mympd-configuration-cache-directory
+            mympd-configuration-acl
+            mympd-configuration-covercache-ttl
+            mympd-configuration-http?
+            mympd-configuration-host
+            mympd-configuration-port
+            mympd-configuration-log-level
+            mympd-configuration-log-to
+            mympd-configuration-lualibs
+            mympd-configuration-uri
+            mympd-configuration-script-acl
+            mympd-configuration-ssl?
+            mympd-configuration-ssl-port
+            mympd-configuration-ssl-cert
+            mympd-configuration-ssl-key
+            mympd-configuration-pin-hash
+            mympd-configuration-save-caches?
+            mympd-ip-acl
+            mympd-ip-acl?
+            mympd-ip-acl-allow
+            mympd-ip-acl-deny))
 
 ;;; Commentary:
 ;;;
@@ -538,3 +570,238 @@ appended to the configuration.")
           (service-extension rottlog-service-type
                              (compose list mpd-log-rotation))))
    (default-value (mpd-configuration))))
+
+
+;;;
+;;; myMPD
+;;;
+
+(define (string-or-symbol? x)
+  (or (symbol? x) (string? x)))
+
+(define-configuration/no-serialization mympd-ip-acl
+  (allow
+   (list-of-string '())
+   "Allowed IP addresses.")
+
+  (deny
+   (list-of-string '())
+   "Disallowed IP addresses."))
+
+(define-maybe/no-serialization integer)
+(define-maybe/no-serialization mympd-ip-acl)
+
+;; XXX: The serialization procedures are insufficient since we require
+;; access to multiple fields at once.
+;; Fields marked with empty-serializer are never serialized and are
+;; used for command-line arguments or by the service definition.
+(define-configuration/no-serialization mympd-configuration
+  (package
+    (file-like mympd)
+    "The package object of the myMPD server."
+    empty-serializer)
+
+  (shepherd-requirement
+   (list-of-symbol '())
+   "This is a list of symbols naming Shepherd services that this service
+will depend on."
+   empty-serializer)
+
+  (user
+   (string "mympd")
+   "Owner of the @command{mympd} process."
+   empty-serializer)
+
+  (group
+   (string "nogroup")
+   "Owner group of the @command{mympd} process."
+   empty-serializer)
+
+  (work-directory
+   (string "/var/lib/mympd")
+   "Where myMPD will store its data."
+   empty-serializer)
+
+  (cache-directory
+   (string "/var/cache/mympd")
+   "Where myMPD will store its cache."
+   empty-serializer)
+
+  (acl
+   maybe-mympd-ip-acl
+   "ACL to access the myMPD webserver.")
+
+  (covercache-ttl
+   (maybe-integer 31)
+   "How long to keep cached covers, @code{0} disables cover caching.")
+
+  (http?
+   (boolean #t)
+   "HTTP support.")
+
+  (host
+   (string "[::]")
+   "Host name to listen on.")
+
+  (port
+   (maybe-port 80)
+   "HTTP port to listen on.")
+
+  (log-level
+   (integer 5)
+   "How much detail to include in logs, possible values: @code{0} to @code{7}.")
+
+  (log-to
+   (string-or-symbol "/var/log/mympd/log")
+   "Where to send logs. By default, the service logs to
+@file{/var/log/mympd.log}. The alternative is @code{'syslog}, which
+sends output to the running syslog service under the @samp{daemon} facility."
+   empty-serializer)
+
+  (lualibs
+   (maybe-string "all")
+   "See
+@url{https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries}.")
+
+  (uri
+   maybe-string
+   "Override URI to myMPD.
+See @url{https://github.com/jcorporation/myMPD/issues/950}.")
+
+  (script-acl
+   (maybe-mympd-ip-acl (mympd-ip-acl
+                        (allow '("127.0.0.1"))))
+   "ACL to access the myMPD script backend.")
+
+  (ssl?
+   (boolean #f)
+   "SSL/TLS support.")
+
+  (ssl-port
+   (maybe-port 443)
+   "Port to listen for HTTPS.")
+
+  (ssl-cert
+   maybe-string
+   "Path to PEM encoded X.509 SSL/TLS certificate (public key).")
+
+  (ssl-key
+   maybe-string
+   "Path to PEM encoded SSL/TLS private key.")
+
+  (pin-hash
+   maybe-string
+   "SHA-256 hashed pin used by myMPD to control settings access by
+prompting a pin from the user.")
+
+  (save-caches?
+   maybe-boolean
+   "Whether to preserve caches between service restarts."))
+
+(define (mympd-serialize-configuration config)
+  (define serialize-value
+    (match-lambda
+      ((? boolean? val) (if val "true" "false"))
+      ((? integer? val) (number->string val))
+      ((? mympd-ip-acl? val) (ip-acl-serialize-configuration val))
+      ((? string? val) val)))
+
+  (define (ip-acl-serialize-configuration config)
+    (define (serialize-list-of-string prefix lst)
+      (map (cut format #f "~a~a" prefix <>) lst))
+    (string-join
+     (append
+      (serialize-list-of-string "+" (mympd-ip-acl-allow config))
+      (serialize-list-of-string "-" (mympd-ip-acl-deny config))) ","))
+
+  ;; myMPD configuration fields are serialized as individual files under
+  ;; <work-directory>/config/.
+  (match-record config <mympd-configuration> (work-directory acl
+                                              covercache-ttl http? host port
+                                              log-level lualibs uri script-acl
+                                              ssl? ssl-port ssl-cert ssl-key
+                                              pin-hash save-caches?)
+    (define (serialize-field filename value)
+      (when (maybe-value-set? value)
+        (list (format #f "~a/config/~a" work-directory filename)
+              (mixed-text-file filename (serialize-value value)))))
+
+    (let ((filename-to-field `(("acl" . ,acl)
+                               ("covercache_keep_days" . ,covercache-ttl)
+                               ("http"                 . ,http?)
+                               ("http_host"            . ,host)
+                               ("http_port"            . ,port)
+                               ("loglevel"             . ,log-level)
+                               ("lualibs"              . ,lualibs)
+                               ("mympd_uri"            . ,uri)
+                               ("scriptacl"            . ,script-acl)
+                               ("ssl"                  . ,ssl?)
+                               ("ssl_port"             . ,ssl-port)
+                               ("ssl_cert"             . ,ssl-cert)
+                               ("ssl_key"              . ,ssl-key)
+                               ("pin_hash"             . ,pin-hash)
+                               ("save_caches"          . ,save-caches?))))
+      (filter list?
+              (generic-serialize-alist list serialize-field
+                                       filename-to-field)))))
+
+(define (mympd-shepherd-service config)
+  (match-record config <mympd-configuration> (package shepherd-requirement
+                                              user work-directory
+                                              cache-directory log-level log-to)
+    (let ((log-level* (format #f "MYMPD_LOGLEVEL=~a" log-level)))
+      (shepherd-service
+       (documentation "Run the myMPD daemon.")
+       (requirement `(loopback user-processes ,@shepherd-requirement))
+       (provision '(mympd))
+       (start #~(begin
+                  (let* ((pw (getpwnam #$user))
+                         (uid (passwd:uid pw))
+                         (gid (passwd:gid pw)))
+                    (for-each (lambda (dir)
+                                (mkdir-p dir)
+                                (chown dir uid gid))
+                              (list #$work-directory #$cache-directory)))
+
+                  (make-forkexec-constructor
+                   `(#$(file-append package "/bin/mympd")
+                     "--user" #$user
+                     #$@(if (eqv? log-to 'syslog) '("--syslog") '())
+                     "--workdir" #$work-directory
+                     "--cachedir" #$cache-directory)
+                   #:environment-variables (list #$log-level*)
+                   #:log-file #$(if (string? log-to) log-to #f))))
+       (stop #~(make-kill-destructor))))))
+
+(define (mympd-accounts config)
+  (match-record config <mympd-configuration> (user group)
+                (list (user-group (name group)
+                                  (system? #t))
+                      (user-account (name user)
+                                    (group group)
+                                    (system? #t)
+                                    (comment "myMPD user")
+                                    (home-directory "/var/empty")
+                                    (shell (file-append shadow "/sbin/nologin"))))))
+
+(define (mympd-log-rotation config)
+  (match-record config <mympd-configuration> (log-to)
+    (if (string? log-to)
+        (list (log-rotation
+               (files (list log-to))))
+        '())))
+
+(define mympd-service-type
+  (service-type
+   (name 'mympd)
+   (extensions
+    (list  (service-extension shepherd-root-service-type
+                              (compose list mympd-shepherd-service))
+           (service-extension account-service-type
+                              mympd-accounts)
+           (service-extension special-files-service-type
+                              mympd-serialize-configuration)
+           (service-extension rottlog-service-type
+                              mympd-log-rotation)))
+   (description "Run myMPD, a frontend for MPD. (Music Player Daemon)")
+   (default-value (mympd-configuration))))
