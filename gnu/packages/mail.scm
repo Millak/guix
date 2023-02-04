@@ -2905,6 +2905,8 @@ easily (one at a time).")
     (native-inputs
      (list pkg-config))
     (home-page "https://marlam.de/mpop/")
+    (properties
+     '((release-monitoring-url . "https://marlam.de/mpop/download/")))
     (synopsis "POP3 mail client")
     (description "mpop is a small and fast POP3 client suitable as a
 fetchmail replacement.
