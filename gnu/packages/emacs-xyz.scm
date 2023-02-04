@@ -562,10 +562,10 @@ configuration language which makes it trivial to write your own themes.")
       (license license:gpl3+))))
 
 (define-public emacs-inspector
-  (let ((commit "cab7ea001baa54eff6393f171e9ef1f69258d5ac")) ;version bump
+  (let ((commit "32f752c5cd996991c4dba67733cfb4e4159c2e75")) ;version bump
     (package
       (name "emacs-inspector")
-      (version "0.15")
+      (version "0.16")
       (source
        (origin
          (uri (git-reference
@@ -573,7 +573,7 @@ configuration language which makes it trivial to write your own themes.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "00gh9s3868w0zbhcsqsvq5wqgcfpa4j7sxqwzxcxb51cmrnhp30l"))
+          (base32 "1zsj24f0qjdy8vxwbn8kc9xy0ffwfc54dyy3dya8j59rlqx5nmdh"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -589,9 +589,14 @@ configuration language which makes it trivial to write your own themes.")
             (add-after 'unpack 'preserve-emacs-28-compatibility
               ;; XXX: `cl-constantly' function is defined in "cl-lib" starting
               ;; from Emacs 29+.  For now, replace it with its definition.
+              ;; Also, the variables `pp-max-width' and `pp-use-max-width' are
+              ;; from Emacs 29+.  Replace them with their default value.
               (lambda _
                 (substitute* "tree-inspector.el"
-                  (("cl-constantly") "lambda (_)"))))
+                  (("cl-constantly") "lambda (_)"))
+                (substitute* "inspector.el"
+                  (("(defcustom inspector-.*? )pp(-use)?-max-width" _ lead flag)
+                   (string-append lead (if flag "nil" "t"))))))
             (add-before 'check 'skip-failing-test
               (lambda _
                 (substitute* "tree-inspector-tests.el"
