@@ -1911,6 +1911,34 @@ persisted.
 ")
     (license license:expat)))
 
+(define-public libmseed
+  (package
+    (name "libmseed")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/EarthScope/libmseed")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "05sk2h19c7ja98s75b7hbn2cwnjc5l6dr59c23fgnaimmad2rfn7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                                (string-append "PREFIX=" #$output))
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure))))
+    (home-page "https://earthscope.github.io/libmseed/")
+    (synopsis "Library for the miniSEED data format")
+    (description "The miniSEED library provides a framework for manipulation
+of SEED data records, a format for commonly used for seismological time
+series and related data.  The library includes the functionality to read
+and write data records, in addition to reconstructing time series
+from multiple records.")
+    (license license:asl2.0)))
+
 (define-public python-rtree
   (package
     (name "python-rtree")
