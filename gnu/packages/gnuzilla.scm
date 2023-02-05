@@ -771,7 +771,8 @@ variable defined below.  It requires guile-json to be installed."
          "--disable-tests"
          "--disable-updater"
          "--disable-crashreporter"
-         "--disable-eme"
+         ;; The --disable-eme option is not available on aarch64.
+         #$(if (target-aarch64?) "" "--disable-eme")
 
          ;; Building with debugging symbols takes ~5GiB, so disable it.
          "--disable-debug"
