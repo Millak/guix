@@ -762,17 +762,15 @@ displayed in a terminal.")
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'record-absolute-file-names
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; 'imv' is a script that execs 'imv-x11' or 'imv-wayland'.
-             ;; Record their absolute file name.
-             (let* ((out (assoc-ref outputs "out"))
-                    (bin (string-append out "/bin")))
-               (substitute* (string-append bin "/imv")
-                 (("imv-")
-                  (string-append bin "/imv-")))))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'record-absolute-file-names
+                 (lambda _
+                   ;; 'imv' is a script that execs 'imv-x11' or 'imv-wayland'.
+                   ;; Record their absolute file name.
+                   (let ((bin (string-append #$output "/bin")))
+                     (substitute* (string-append bin "/imv")
+                       (("imv-") (string-append bin "/imv-")))))))))
     (native-inputs
      (list asciidoc
            pkg-config))
