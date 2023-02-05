@@ -2509,7 +2509,7 @@ options.")
 (define-public gpaint
   (package
     (name "gpaint")
-    (version "0.3.3")
+    (version "0.3.4")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://alpha.gnu.org/gnu/"
@@ -2517,22 +2517,11 @@ options.")
                                   name "-2-" version ".tar.gz"))
               (sha256
                (base32
-                "1syh5l5fnzk7cw77iykafn73fvmnc83kg815fa8vvj0h0r30c5sl"))))
+                "13jv0zqbnyxjw7fa9x0yl08rrkqq0mdvki0yzbj6vqifvs393v5h"))))
     (build-system gnu-build-system)
     (inputs (list gtk+-2 libglade))
     (native-inputs
      (list gettext-minimal `(,glib "bin") pkg-config))
-    (arguments
-     (list #:phases #~(modify-phases %standard-phases
-                        (add-after 'unpack 'remove-undefined-references
-                          (lambda _
-                            (substitute* "src/drawing.c"
-                              (("GTK_STOCK_DISCARD,GTK_RESPONSE_DISCARD")
-                               "GTK_STOCK_DISCARD,GTK_RESPONSE_NO"))
-                            (substitute* "src/menu.c"
-                              (("\\#include \"menu.h\"")
-                               "")))))))
-
     (synopsis "Simple paint program for GNOME")
     (description
      "GNU Paint is a simple, easy-to-use paint program for the GNOME
