@@ -692,7 +692,7 @@ are detected, the user is notified.")))
 (define-public neovim
   (package
     (name "neovim")
-    (version "0.8.2")
+    (version "0.8.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -701,7 +701,7 @@ are detected, the user is notified.")))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jjw9a42l7wrziki2qznn7wiw5r59n4hs9i6g2hxnjyzixpg9xvl"))))
+                "1zff73yxbnxym6sn43xk6r0zc2ncingsib81v9g39ibrcinpwaa9"))))
     (build-system cmake-build-system)
     (arguments
      (list #:modules
