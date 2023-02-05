@@ -750,7 +750,7 @@ displayed in a terminal.")
 (define-public imv
   (package
     (name "imv")
-    (version "4.3.1")
+    (version "4.4.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -758,7 +758,7 @@ displayed in a terminal.")
                     (commit (string-append "v" version))))
               (sha256
                (base32
-                "01x6qg7nhikqh68gnzrdvq0rxma5v9z19il89y8bvdrcr7r1vh40"))
+                "1zlds43z17jrnsrfz3rf3sb3pa5gkmxaibq87509ikc7p1p09c9c"))
               (file-name (git-file-name name version))))
     (build-system meson-build-system)
     (arguments
