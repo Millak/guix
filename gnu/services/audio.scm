@@ -160,7 +160,7 @@
 (define mpd-serialize-boolean mpd-serialize-field)
 
 (define (mpd-serialize-list-of-string field-name value)
-  #~(string-concatenate #$(map (cut mpd-serialize-string field-name <>) value)))
+  #~(string-append #$@(map (cut mpd-serialize-string field-name <>) value)))
 
 (define-maybe string (prefix mpd-))
 (define-maybe list-of-string (prefix mpd-))
