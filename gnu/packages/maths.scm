@@ -2968,61 +2968,6 @@ script files.")
                #t))))))
     (synopsis "High-level language for numerical computation (with GUI)")))
 
-(define-public opencascade-oce
-  (package
-    (name "opencascade-oce")
-    (version "0.17.2")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
-              (url "https://github.com/tpaviot/oce")
-              (commit (string-append "OCE-" version))))
-        (file-name (git-file-name name version))
-        (patches (search-patches "opencascade-oce-glibc-2.26.patch"))
-        (sha256
-          (base32 "0rg5wzkvfmzfl6v2amyryb8dnjad0nn9kyr607wy2gch6rciah69"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags
-        (list "-DOCE_TESTING:BOOL=ON"
-              "-DOCE_USE_TCL_TEST_FRAMEWORK:BOOL=ON"
-              "-DOCE_DRAW:BOOL=ON"
-              (string-append "-DOCE_INSTALL_PREFIX:PATH="
-                        (assoc-ref %outputs "out"))
-              "-UCMAKE_INSTALL_RPATH")))
-    (inputs
-      (list freetype
-            glu
-            libxmu
-            mesa
-            tcl
-            tk))
-    (native-inputs
-      `(("python" ,python-wrapper)))
-    (home-page "https://github.com/tpaviot/oce")
-    (synopsis "Libraries for 3D modeling and numerical simulation")
-    (description
-     "Open CASCADE is a set of libraries for the development of applications
-dealing with 3D CAD data or requiring industrial 3D capabilities.  It includes
-C++ class libraries providing services for 3D surface and solid modeling, CAD
-data exchange, and visualization.  It is used for development of specialized
-software dealing with 3D models in design (CAD), manufacturing (CAM),
-numerical simulation (CAE), measurement equipment (CMM), and quality
-control (CAQ) domains.
-
-This is the ``Community Edition'' (OCE) of Open CASCADE, which gathers
-patches, improvements, and experiments contributed by users over the official
-Open CASCADE library.")
-    (license (list license:lgpl2.1; OCE libraries, with an exception for the
-                                  ; use of header files; see
-                                  ; OCCT_LGPL_EXCEPTION.txt
-                   license:public-domain; files
-                                  ; src/Standard/Standard_StdAllocator.hxx and
-                                  ; src/NCollection/NCollection_StdAllocator.hxx
-                   license:expat; file src/OpenGl/OpenGl_glext.h
-                   license:bsd-3)))); test framework gtest
-
 (define-public opencascade-occt
   (package
     (name "opencascade-occt")

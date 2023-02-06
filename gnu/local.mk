@@ -38,7 +38,7 @@
 # Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 # Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 # Copyright © 2020 Malte Frank Gerdes <mate.f.gerdes@gmail.com>
-# Copyright © 2020 Vinicius Monego <monego@posteo.net>
+# Copyright © 2020, 2023 Vinicius Monego <monego@posteo.net>
 # Copyright © 2021 Björn Höfling <bjoern.hoefling@bjoernhoefling.de>
 # Copyright © 2021 Greg Hogan <code@greghogan.com>
 # Copyright © 2021, 2022 Philip McGrath <philip@philipmcgrath.com>
@@ -1601,7 +1601,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/openboardview-use-system-imgui.patch	\
   %D%/packages/patches/openboardview-use-system-utf8.patch	\
   %D%/packages/patches/openbox-python3.patch			\
-  %D%/packages/patches/opencascade-oce-glibc-2.26.patch		\
   %D%/packages/patches/openfoam-4.1-cleanup.patch			\
   %D%/packages/patches/openjdk-10-idlj-reproducibility.patch	\
   %D%/packages/patches/openjdk-15-xcursor-no-dynamic.patch	\
