@@ -24549,6 +24549,34 @@ the GIF result.")
 on-line service.")
     (license license:gpl3+)))
 
+(define-public emacs-langtool
+  (package
+    (name "emacs-langtool")
+    (version "2.3.7")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/mhayashi1120/Emacs-langtool")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0vzs3hkhmvdrbii1hmg87brddpjfmqfqykf7a2hnwmdbkihiwwk9"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #true
+      #:test-command #~(list "make" "test")))
+    (propagated-inputs (list emacs-popup))
+    (home-page "https://github.com/mhayashi1120/Emacs-langtool")
+    (synopsis "Emacs interface to LanguageTool")
+    (description
+     "Emacs Langtool offers a frontend to @url{https://languagetool.org,
+LanguageTool} server.")
+    (license license:gpl3+)))
+
 (define-public emacs-lingva
   (let ((commit "6c33594068fa33de622172503deeec6778d9c744")
         (revision "1"))
