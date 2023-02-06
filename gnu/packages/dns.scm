@@ -19,6 +19,7 @@
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -64,6 +65,7 @@
   #:use-module (gnu packages nettle)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
@@ -81,6 +83,7 @@
   #:use-module (guix gexp)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module ((guix search-paths) #:select ($SSL_CERT_DIR $SSL_CERT_FILE))
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix utils)
@@ -1098,7 +1101,7 @@ LuaJIT, both a resolver library and a daemon.")
 (define-public ddclient
   (package
     (name "ddclient")
-    (version "3.9.1")
+    (version "3.10.0")
     (source
      (origin
        (method git-fetch)
@@ -1107,62 +1110,46 @@ LuaJIT, both a resolver library and a daemon.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0hf377g4j9r9sac75xp17nk2h58mazswz4vkg4g2gl2yyhvzq91w"))))
-    (build-system trivial-build-system) ; no Makefile.PL
+        (base32 "0l87d72apwrg6ipc9gix5gv64d4hr1ykxmss8x4r8d8mgj6j8rf1"))
+       (modules '((guix build utils)))
+       (snippet
+        ;; XXX: erroneous version value, this is fixed in master
+        #~(begin
+            (substitute* "configure.ac"
+              (("3.10.0_2") #$version))))
+       (patches (search-patches "ddclient-skip-test.patch"))))
+    (build-system gnu-build-system)
     (native-inputs
-     (list bash perl))
+     (list autoconf automake libtool
+           perl-test-warnings perl-test-mockmodule))
     (inputs
      (list inetutils ; logger
            net-tools
-           perl-data-validate-ip
+           bash-minimal                           ;for 'wrap-program'
+           perl
            perl-digest-sha1
-           perl-io-socket-ssl))
+           perl-io-socket-ssl
+           perl-io-socket-inet6  ;; XXX: this is likely to be removed in a future ddclient release
+                                 ;; https://github.com/ddclient/ddclient/issues/461
+           perl-json))
     (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (ice-9 match)
-                      (srfi srfi-26))
-         (setenv "PATH" (string-append
-                         (assoc-ref %build-inputs "bash") "/bin" ":"
-                         (assoc-ref %build-inputs "perl") "/bin"))
-
-         ;; Copy the (read-only) source into the (writable) build directory.
-         (copy-recursively (assoc-ref %build-inputs "source") ".")
-
-         ;; Install.
-         (let* ((out (assoc-ref %outputs "out"))
-                (bin (string-append out "/bin")))
-           (let ((file "ddclient"))
-             (substitute* file
-               (("/usr/bin/perl") (which "perl"))
-               ;; Strictly use ‘/etc/ddclient/ddclient.conf’.
-               (("\\$\\{program\\}\\.conf") "/etc/ddclient/ddclient.conf")
-               (("\\$etc\\$program.conf") "/etc/ddclient/ddclient.conf")
-               ;; Strictly use ‘/var/cache/ddclient/ddclient.cache’
-               (("\\$cachedir\\$program\\.cache")
-                "/var/cache/ddclient/ddclient.cache"))
-             (install-file file bin)
-             (wrap-program (string-append bin "/" file)
-               `("PATH" ":" =
-                 ("$PATH"
-                  ,@(map (lambda (input)
-                           (match input
-                                  ((name . store)
-                                   (string-append store "/bin"))))
-                         %build-inputs)))
-               `("PERL5LIB" ":" =
-                 ,(delete
-                   ""
-                   (map (match-lambda
-                         (((? (cut string-prefix? "perl-" <>) name) . dir)
-                          (string-append dir "/lib/perl5/site_perl"))
-                         (_ ""))
-                        %build-inputs)))))
-           (for-each (cut install-file <> (string-append out
-                                                         "/share/ddclient"))
-                     (find-files "." "sample.*$"))))))
+     (list
+      #:configure-flags #~(list "--localstatedir=/var")
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'install
+            (lambda _
+              ;; XXX: Do not create /var
+              (invoke "make" "localstatedir=/tmp/discard" "install")))
+          (add-after 'wrap 'wrap-ddclient
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/ddclient")
+                `("PERL5LIB" ":" prefix ,(string-split (getenv "PERL5LIB") #\:))
+                `("PATH" prefix ,(map (lambda (x)
+                                        (string-append (assoc-ref inputs x) "/bin"))
+                                      '("inetutils" "net-tools")))))))))
+    (native-search-paths
+     (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (home-page "https://ddclient.net/")
     (synopsis "Address updating utility for dynamic DNS services")
     (description "This package provides a client to update dynamic IP
