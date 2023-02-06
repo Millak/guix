@@ -7995,6 +7995,36 @@ sequence.")
 3D perspective axes, 3D perspective annotations, and wireframe plots.")
       (license license:gpl3+))))
 
+(define-public r-ggsankey
+  (let ((commit "be08dd0f86eaee9f9ff9e7ff95d47930660a3c36")
+        (revision "1"))
+    (package
+      (name "r-ggsankey")
+      (version (git-version "0.0.99999" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/davidsjoberg/ggsankey")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0acpmydqqc91pq5p9wpkpmgqp3nhiljabd7d3i00kwhjxgm2bvba"))))
+      (properties `((upstream-name . "ggsankey")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr
+                               r-ggplot2
+                               r-magrittr
+                               r-purrr
+                               r-stringr
+                               r-tidyr))
+      (home-page "https://github.com/davidsjoberg/ggsankey")
+      (synopsis "Sankey, Alluvial and Sankey bump plots")
+      (description
+       "This package provides a package that makes it easy to implement
+sankey, alluvial and sankey bump plots in @code{ggplot2}.")
+      (license license:expat))))
+
 (define-public r-gutils
   (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
         (revision "1"))
