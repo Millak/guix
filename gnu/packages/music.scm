@@ -50,6 +50,7 @@
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1412,35 +1413,36 @@ and auto-mapping slices to MIDI note numbers.")
                       (("\"/bin/sh\"")
                        (string-append "\"" (search-input-file inputs "bin/sh") "\""))))))))
     (inputs
-     `(("guile" ,guile-3.0)
-       ("extractpdfmark" ,extractpdfmark)
-       ("font-dejavu" ,font-dejavu)
-       ("font-tex-gyre" ,font-tex-gyre)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("ghostscript" ,ghostscript)
-       ("pango" ,pango)
-       ("python" ,python)))
+     (list extractpdfmark
+           font-dejavu
+           font-tex-gyre
+           fontconfig
+           freetype
+           ghostscript
+           guile-3.0
+           pango
+           python))
     (native-inputs
-     `(("bison" ,bison)
-       ("perl" ,perl)
-       ("flex" ,flex)
-       ("fontforge" ,fontforge)
-       ("dblatex" ,dblatex)
-       ("gettext" ,gettext-minimal)
-       ("imagemagick" ,imagemagick)
-       ("netpbm" ,netpbm)               ;for pngtopnm
-       ("texlive" ,(texlive-updmap.cfg (list texlive-metapost
-                                        texlive-epsf
-                                        texlive-fontinst
-                                        texlive-lh
-                                        texlive-lm
-                                        texlive-latex-cyrillic)))
-       ("texinfo" ,texinfo)
-       ("texi2html" ,texi2html-1.82)
-       ("rsync" ,rsync)
-       ("pkg-config" ,pkg-config)
-       ("zip" ,zip)))
+     (list bison
+           dblatex
+           flex
+           fontforge
+           gettext-minimal
+           imagemagick
+           netpbm
+           perl
+           pkg-config
+           rsync
+           texinfo
+           texi2html-1.82
+           (texlive-updmap.cfg
+            (list texlive-epsf
+                  texlive-fontinst
+                  texlive-latex-cyrillic
+                  texlive-lh
+                  texlive-lm
+                  texlive-metapost))
+           zip))
     (home-page "https://lilypond.org")
     (synopsis "Music typesetting")
     (description
