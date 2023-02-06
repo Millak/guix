@@ -387,7 +387,11 @@
                         file "/" (symbol->string algo) "/"
                         (bytevector->nix-base32-string hash))))
 
-     (list (guix-publish "ci.guix.gnu.org")
+     (list (guix-publish
+            ;; bordeaux.guix.gnu.org uses the nar-herder rather than guix
+            ;; publish, but it supports the same style of requests
+            "bordeaux.guix.gnu.org")
+           (guix-publish "ci.guix.gnu.org")
            (lambda (file algo hash)
              ;; 'tarballs.nixos.org' supports several algorithms.
              (string-append "https://tarballs.nixos.org/"
