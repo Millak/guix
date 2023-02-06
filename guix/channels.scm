@@ -952,6 +952,10 @@ be used as a profile hook."
                       (backtrace))))
               (mkdir #$output))))
 
+    (define channels
+      (map (compose string->symbol manifest-entry-name)
+           (manifest-entries manifest)))
+
     (gexp->derivation-in-inferior "guix-package-cache" build
                                   profile
 
@@ -960,8 +964,9 @@ be used as a profile hook."
                                   ;; instead of failing.
                                   #:silent-failure? #t
 
-                                  #:properties '((type . profile-hook)
-                                                 (hook . package-cache))
+                                  #:properties `((type . profile-hook)
+                                                 (hook . package-cache)
+                                                 (channels . ,channels))
                                   #:local-build? #t)))
 
 (define %channel-profile-hooks

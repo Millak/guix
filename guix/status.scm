@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2017-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018, 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -22,6 +22,7 @@
   #:use-module (guix i18n)
   #:use-module (guix colors)
   #:use-module (guix progress)
+  #:autoload   (guix ui) (display-hint)
   #:autoload   (guix build syscalls) (terminal-columns)
   #:autoload   (guix build download) (nar-uri-abbreviation)
   #:use-module (guix store)
@@ -526,6 +527,21 @@ substitutes being downloaded."
      (erase-current-line*)                      ;erase spinner or progress bar
      (format port (failure (G_ "build of ~a failed")) drv)
      (newline port)
+     (let ((properties (and=> (false-if-exception
+                               (read-derivation-from-file drv))
+                              derivation-properties)))
+       (when (and (pair? properties)
+                  (eq? (assq-ref properties 'type) 'profile-hook)
+                  (eq? (assq-ref properties 'hook) 'package-cache))
+         (display-hint (format #f (G_ "This usually indicates a bug in one of
+the channels you are pulling from, or some incompatibility among them.  You
+can check the build log and report the issue to the channel developers.
+
+The channels you are pulling from are: ~a.")
+                               (string-join
+                                (map symbol->string
+                                     (or (assq-ref properties 'channels)
+                                         '(guix))))))))
      (match (derivation-log-file drv)
        (#f
         (format port (failure (G_ "Could not find build log for '~a'."))
