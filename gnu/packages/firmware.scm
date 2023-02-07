@@ -534,6 +534,7 @@ executing in M-mode.")
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:target #f                       ; Package produces firmware.
       #:make-flags
       ;; If EXTRAVERSION is not set the build system will embed the current
       ;; date in binaries.  Use this opportunity to personalize as recommended
