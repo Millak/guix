@@ -4702,9 +4702,9 @@ inventory, and orders.")
     (home-page "http://libsmf.sourceforge.net/")
     (synopsis "Standard MIDI File format library")
     (description
-     "LibSMF is a C library for handling SMF (\"*.mid\") files.  It transparently handles
-conversions between time and pulses, tempo map handling and more.  The only dependencies
-are a C compiler and glib.  Full API documentation and examples are included.")
+     "LibSMF is a C library for handling SMF (\"*.mid\") files.  It
+transparently handles conversions between time and pulses, tempo map handling
+and more.  Full API documentation and examples are included.")
     (license license:bsd-2)))
 
 (define-public lmms
