@@ -4781,9 +4781,10 @@ are a C compiler and glib.  Full API documentation and examples are included.")
            sdl))
     (home-page "https://lmms.io/")
     (synopsis "Music composition tool")
-    (description "LMMS is a digital audio workstation.  It includes tools for sequencing
-melodies and beats and for mixing and arranging songs.  LMMS includes instruments based on
-audio samples and various soft sythesizers.  It can receive input from a MIDI keyboard.")
+    (description "LMMS is a digital audio workstation.  It includes tools for
+sequencing melodies and beats and for mixing and arranging songs.  LMMS
+includes instruments based on audio samples and various soft sythesizers.  It
+can receive input from a MIDI keyboard.")
     (license license:gpl2+)))
 
 (define-public liquidsfz
