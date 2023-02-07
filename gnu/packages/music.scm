@@ -2612,22 +2612,19 @@ Laurens Hammond and Don Leslie.")
              (when (not (or (string-prefix? "x86_64" system)
                             (string-prefix? "i686" system)))
                (substitute* "bristol/Makefile.in"
-                 (("-msse -mfpmath=sse") "")))
-             #t))
+                 (("-msse -mfpmath=sse") "")))))
          ;; alsa-lib 1.1.x no longer provides iatomic.h.  That's okay because
          ;; bristol actually doesn't use it.
          (add-after 'unpack 'do-not-use-alsa-iatomic
            (lambda _
              (substitute* "libbristolaudio/audioEngineJack.c"
-               (("#include <alsa/iatomic.h>") ""))
-             #t))
+               (("#include <alsa/iatomic.h>") ""))))
          ;; We know that Bristol has been linked with JACK and we don't have
          ;; ldd, so we can just skip this check.
          (add-after 'unpack 'do-not-grep-for-jack
            (lambda _
              (substitute* "bin/startBristol.in"
-               (("ldd `which bristol` | grep jack") "echo guix"))
-             #t)))))
+               (("ldd `which bristol` | grep jack") "echo guix")))))))
     (inputs
      (list alsa-lib jack-1 liblo libx11))
     (native-inputs
