@@ -3603,7 +3603,7 @@ tempo and pitch of an audio recording independently of one another.")
                 "1ff2yfq3k4l209fr71v3w98fpjjv1chs09vkbmxj03lcikahxns8"))))
     (build-system gnu-build-system)
     (inputs
-     (list jack-1 alsa-lib))
+     (list alsa-lib jack-2))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://www.music.mcgill.ca/~gary/rtmidi")
