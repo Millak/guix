@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -414,6 +414,11 @@ provide OpenFirmware functionality on top of an already running system.")
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
+         ((#:system system (%current-system))
+          (if (string-prefix? "aarch64-linux" (or (%current-system)
+                                                  (%current-target-system)))
+            "armhf-linux"
+            system))
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'install 'rename-executable
