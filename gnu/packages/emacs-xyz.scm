@@ -17724,10 +17724,10 @@ running tests easier.")
     (license license:gpl3+)))
 
 (define-public emacs-org-transclusion
-  (let ((commit "cf51df7b87e0d32ba13ac5380557e81d9845d81b")) ;version bump
+  (let ((commit "7f4ad67bf1944b814a8763d304d4d27325504eb4")) ;version bump
     (package
       (name "emacs-org-transclusion")
-      (version "1.3.1")
+      (version "1.3.2")
       (source
        (origin
          (method git-fetch)
@@ -17736,7 +17736,7 @@ running tests easier.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0ix5l8cjcafw8lqhkmwa3cpdw6cbpx65k0iww426nxya849y61yx"))))
+          (base32 "0dgqbazr22y0kmyw5ki1rkca10j6fy0ps5s9gx247gqlbmqz7088"))))
       (build-system emacs-build-system)
       (arguments
        (list
@@ -17745,8 +17745,6 @@ running tests easier.")
                                "-l" "org-transclusion.el"
                                "-l" "test/unit-tests.el"
                                "-f" "ert-run-tests-batch-and-exit")))
-      (native-inputs
-       (list emacs-ert-runner))
       (home-page "https://nobiot.github.io/org-transclusion/")
       (synopsis "Enable transclusion with Org Mode")
       (description "Org-transclusion lets you insert a copy of text content via
