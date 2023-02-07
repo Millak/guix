@@ -46,7 +46,7 @@
 ;;; Copyright © 2021 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022, 2023 Sughosha <sughosha@disroot.org>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Wamm K. D. <jaft.r@outlook.com>
 ;;; Copyright © 2022 Jose G Perez Taveras <josegpt27@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
@@ -3207,7 +3207,7 @@ on the library.")
 (define-public jack-keyboard
   (package
     (name "jack-keyboard")
-    (version "2.5")
+    (version "2.7.2")
     (source
      (origin
        (method url-fetch)
@@ -3215,13 +3215,21 @@ on the library.")
                            version "/jack-keyboard-" version ".tar.gz"))
        (sha256
         (base32
-         "0mzmg8aavybcfdlq2yd9d0vscqd6is5p6jzrgfpfm5j3xdcvh2s3"))))
-    (build-system gnu-build-system)
-    (inputs
-     (list jack-1 gtk+-2))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://jack-keyboard.sourceforge.net/")
+         "1z34ga1z6ivgxbp0afsfghz7rn6s8vc9fxnb9ini8mx0dackr5ar"))))
+    (build-system cmake-build-system)
+    ;; Disable Lash support, as it is unmaintained and depends on Python 2.
+    (arguments
+     (list #:tests? #f                  ;no test suite
+           #:configure-flags
+           #~(list "-DLashEnable=OFF"
+                   ;; XXX: FindGTK2.cmake from CMake expects the
+                   ;; headers to be in FHS locations; give it some
+                   ;; clues.
+                   (string-append "-DGTK2_ADDITIONAL_SUFFIXES="
+                                  "lib/glib-2.0;" ;for glibconfig.h
+                                  "lib/gtk-2.0")))) ;for gdkconfig.h
+    (inputs (list jack-1 gtk+-2))
+    (home-page "https://jack-keyboard.sourceforge.net/")
     (synopsis "Virtual MIDI keyboard")
     (description "Jack-keyboard is a virtual MIDI keyboard, a program that
 allows you to send JACK MIDI events (i.e. play) using your PC keyboard.")
