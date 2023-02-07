@@ -91,7 +91,8 @@
     (outputs '("out" "doc"))
     (arguments
      (list
-      #:configure-flags #~(list "--enable-gtk-doc"
+      #:configure-flags #~(list "--disable-gtk2"
+                                "--enable-gtk-doc"
                                 "--enable-memconf"
                                 (string-append
                                  "--with-unicode-emoji-dir="
@@ -195,7 +196,6 @@
            dbus
            dconf
            glib
-           gtk+-2
            gtk+
            iso-codes
            json-glib
