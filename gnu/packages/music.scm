@@ -4765,7 +4765,7 @@ and more.  Full API documentation and examples are included.")
            fltk
            fluidsynth
            freetype
-           jack-1
+           jack-2
            ladspa
            libogg
            libsamplerate
