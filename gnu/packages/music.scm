@@ -3155,7 +3155,7 @@ capabilities, custom envelopes, effects, etc.")
            fftwf
            fltk
            fontconfig
-           jack-1
+           jack-2
            lv2
            mesa
            minixml
