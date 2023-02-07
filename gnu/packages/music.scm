@@ -4030,10 +4030,10 @@ using the beets FetchArt plugin.")
     (native-inputs
      (list pkg-config))
     (synopsis "Music tracker for working with .MOD/.XM module files")
-    (description "MilkyTracker is a music application for creating .MOD and .XM
-    module files.  It attempts to recreate the module replay and user experience of
-    the popular DOS program Fasttracker II, with special playback modes available
-    for improved Amiga ProTracker 2/3 compatibility.")
+    (description "MilkyTracker is a music application for creating .MOD and
+.XM module files.  It attempts to recreate the module replay and user
+experience of the popular DOS program Fasttracker II, with special playback
+modes available for improved Amiga ProTracker 2/3 compatibility.")
     (home-page "https://milkytracker.titandemo.org/")
     ;; 'src/milkyplay' is under Modified BSD, the rest is under GPL3 or later.
     (license (list license:bsd-3 license:gpl3+))))
