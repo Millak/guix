@@ -618,7 +618,7 @@ OpenSSL for TARGET."
   (package
     (inherit openssl-1.1)
     (name "openssl")
-    (version "1.1.1s")
+    (version "1.1.1t")
     (source (origin
               (method url-fetch)
               (uri (list (string-append "https://www.openssl.org/source/openssl-"
@@ -631,7 +631,7 @@ OpenSSL for TARGET."
               (patches (search-patches "openssl-1.1-c-rehash-in.patch"))
               (sha256
                (base32
-                "1amnwis6z2piqs022cpbcg828rql62yjnsqxnvdg0vzfc3kh3b65"))))))
+                "0fwxhlv7ary9nzg5mx07x1jj3wkbizxh56qy7l6bzp5iplj9pvld"))))))
 
 (define-public openssl-3.0
   (package
