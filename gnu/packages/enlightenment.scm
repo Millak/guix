@@ -91,7 +91,7 @@
        ("giflib" ,giflib)
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
-       ("ibus" ,ibus)
+       ("ibus-minimal" ,ibus-minimal)
        ("mesa" ,mesa)
        ("libraw" ,libraw)
        ("librsvg" ,(librsvg-for-system))
