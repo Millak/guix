@@ -2630,7 +2630,7 @@ Laurens Hammond and Don Leslie.")
              (substitute* "bin/startBristol.in"
                (("ldd `which bristol` | grep jack") "echo guix")))))))
     (inputs
-     (list alsa-lib jack-1 liblo libx11))
+     (list alsa-lib jack-2 liblo libx11))
     (native-inputs
      (list pkg-config))
     (home-page "http://bristol.sourceforge.net/")
