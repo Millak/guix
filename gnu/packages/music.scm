@@ -5971,10 +5971,10 @@ and debugging of event signal flows inside plugin graphs.")
                (("-march=native") ""))
              #t)))))
     (inputs
-     `(("jack" ,jack-1)
-       ("lv2" ,lv2)
-       ("cairo" ,cairo)
-       ("gtk" ,gtk+-2)))
+     (list cairo
+           gtk+-2
+           jack-1
+           lv2))
     (native-inputs
      (list faust pkg-config))
     (home-page "https://foo-yc20.codeforcode.com/")
