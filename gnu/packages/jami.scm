@@ -147,7 +147,9 @@
 ;; from the jami/daemon/contrib/src/ffmpeg/rules.mak file.  We try to keep it
 ;; as close to the official Jami package as possible, to provide all the
 ;; codecs and extra features that are expected (see:
-;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak)
+;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak).
+;; An exception are the ffnvcodec-related switches, which is not packaged in
+;; Guix and would not work with Mesa.
 (define %ffmpeg-default-configure-flags
   '("--disable-everything"
     "--enable-zlib"
@@ -339,34 +341,12 @@
     "--enable-encoder=mjpeg_vaapi"
     "--enable-encoder=hevc_vaapi"))
 
-;; ffnvcodec is not supported on ARM; enable it only for the i386 and x86_64
-;; architectures.
-(define %ffmpeg-linux-x86-configure-flags
-  '("--arch=x86"
-    "--enable-cuvid"
-    "--enable-ffnvcodec"
-    "--enable-nvdec"
-    "--enable-nvenc"
-    "--enable-hwaccel=h264_nvdec"
-    "--enable-hwaccel=hevc_nvdec"
-    "--enable-hwaccel=vp8_nvdec"
-    "--enable-hwaccel=mjpeg_nvdec"
-    "--enable-encoder=h264_nvenc"
-    "--enable-encoder=hevc_nvenc"))
-
-;; This procedure composes the configure flags list for ffmpeg-jami.
 (define (ffmpeg-compose-configure-flags)
-  (define (system=? s)
-    (string-prefix? s (%current-system)))
-
-  `(,@%ffmpeg-default-configure-flags
-    ,@(if (string-contains (%current-system) "linux")
-          (if (or (system=? "i686")
-                  (system=? "x86_64"))
-              (append %ffmpeg-linux-configure-flags
-                      %ffmpeg-linux-x86-configure-flags)
-              %ffmpeg-linux-configure-flags)
-          '())))
+  "Compose the configure flag lists of ffmpeg-jami."
+  #~(append '#$%ffmpeg-default-configure-flags
+            (if (string-contains #$(%current-system) "linux")
+                '#$%ffmpeg-linux-configure-flags
+                '())))
 
 (define-public ffmpeg-jami
   (package
@@ -384,8 +364,10 @@
                 "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
-       ((#:configure-flags '())
-        (ffmpeg-compose-configure-flags))
+       ((#:configure-flags _ '())
+        #~(cons* "--disable-static"
+                 "--enable-shared"
+                 #$(ffmpeg-compose-configure-flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'apply-patches
