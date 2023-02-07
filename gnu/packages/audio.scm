@@ -1102,7 +1102,8 @@ formant warp.")
               (sha256
                (base32
                 "18mdw6nc0vgj6k9rsy0x8w64wvzld0frqshrxxbxfj9qi9843vlc"))
-              (patches (search-patches "azr3.patch"))))
+              (patches (search-patches "azr3.patch"
+                                       "azr3-remove-lash.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no check target
@@ -1118,7 +1119,7 @@ formant warp.")
                (utime "azr3.1" early-1980 early-1980))
              #t)))))
     (inputs
-     (list gtkmm-2 lvtk jack-1 lash))
+     (list gtkmm-2 lvtk jack-1))
     (native-inputs
      (list pkg-config))
     (home-page "http://ll-plugins.nongnu.org/azr3/")
