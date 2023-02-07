@@ -2062,7 +2062,7 @@ follower.")
 (define-public fluidsynth
   (package
     (name "fluidsynth")
-    (version "2.2.4")
+    (version "2.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2071,7 +2071,7 @@ follower.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1061rdj69503spkd8vmfl3fqvyg4l41k5xcc4gw7niy31hnpnjmn"))))
+                "05lr9f0q4x1kvgfa3xrfmagpwvijv9m1s316aa9figqlkcc5vv4k"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; no check target
