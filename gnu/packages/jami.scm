@@ -362,11 +362,13 @@
               (sha256
                (base32
                 "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
+    (outputs '("out" "debug"))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
        ((#:configure-flags _ '())
         #~(cons* "--disable-static"
                  "--enable-shared"
+                 "--disable-stripping"
                  #$(ffmpeg-compose-configure-flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
