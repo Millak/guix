@@ -3226,7 +3226,7 @@ on the library.")
                    (string-append "-DGTK2_ADDITIONAL_SUFFIXES="
                                   "lib/glib-2.0;" ;for glibconfig.h
                                   "lib/gtk-2.0")))) ;for gdkconfig.h
-    (inputs (list jack-1 gtk+-2))
+    (inputs (list jack-2 gtk+-2))
     (home-page "https://jack-keyboard.sourceforge.net/")
     (synopsis "Virtual MIDI keyboard")
     (description "Jack-keyboard is a virtual MIDI keyboard, a program that
