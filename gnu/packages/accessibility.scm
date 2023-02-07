@@ -245,11 +245,11 @@ available to help to click.")
     (license license:gpl2+)))
 
 (define-public footswitch
-  (let ((commit "ca43d53fc2002520cc825d119702afc124303e73")
-        (revision "2"))
+  (let ((commit "e455d6752221b9e9c3818cc304c873b9c2792490")
+        (revision "0"))
     (package
       (name "footswitch")
-      (version (git-version "0.1" revision commit))
+      (version (git-version "1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -258,7 +258,7 @@ available to help to click.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "14pyzc4ws1mj859xs9n4x83wzxxvd3bh5bdxzr6nv267xwx1mq68"))))
+                  "0xkk60sg3szpgbl3z8djlpagglsldv9viqibsih6wcnbhikzlc6j"))))
       (build-system gnu-build-system)
       (native-inputs
        (list pkg-config))
@@ -278,11 +278,13 @@ available to help to click.")
                           (install-file "scythe" bin)
                           #t))))))
       (home-page "https://github.com/rgerganov/footswitch")
-      (synopsis "Command line utility for PCsensor foot switch")
+      (synopsis "Command line utilities for PCsensor and Scythe foot switches")
       (description
-       "Command line utility for programming foot switches sold by PCsensor.
-It works for both single pedal devices and three pedal devices.  All supported
-devices have vendorId:productId = 0c45:7403 or 0c45:7404.")
+       "This package provides command line utilities for programming PCsensor
+and Scythe foot switches.  It works for both single pedal and three pedal
+devices.  The \"footswitch\" command programs devices with vendorId:productId
+combinations matching 0c45:7403, 0c45:7404, 413d:2107, and 1a86:e026.  The
+\"scythe\" command programs switches matching 0426:3011.")
     (license license:expat))))
 
 (define-public xmagnify
