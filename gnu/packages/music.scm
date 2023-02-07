@@ -3308,12 +3308,12 @@ can connect to any JACK port and record the output into a stereo WAV file.")
     (native-inputs
      (list pkg-config))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("python" ,python-wrapper)
-       ("python-pyudev" ,python-pyudev)
-       ("python-pyxdg" ,python-pyxdg)
-       ("python-dbus" ,python-dbus)
-       ("python-pygobject" ,python-pygobject)))
+     (list alsa-lib
+           python-dbus
+           python-pygobject
+           python-pyudev
+           python-pyxdg
+           python-wrapper))
     (home-page "https://github.com/SpotlightKid/jack-select")
     (synopsis "Systray application to quickly change the JACK-DBus configuration")
     (description "This application displays an icon in the system tray (also
