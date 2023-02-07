@@ -4013,8 +4013,7 @@ using the beets FetchArt plugin.")
                '(begin
                   (delete-file-recursively "resources/music")
                   (substitute* "CMakeLists.txt"
-                    (("add_subdirectory\\(resources/music\\)") ""))
-                  #t))))
+                    (("add_subdirectory\\(resources/music\\)") ""))))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f ; no check target
