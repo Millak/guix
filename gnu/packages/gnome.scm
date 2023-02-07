@@ -5597,7 +5597,6 @@ file.")
                                 "-Ddocs=false"
                                 "-Dlocalstatedir=/var"
                                 "-Dman=false"
-                                "-Dsane=true"
                                 "-Dsystemd=false") ;no systemd
       #:phases
       #~(modify-phases %standard-phases
@@ -5639,8 +5638,7 @@ file.")
            libusb
            polkit
            python-wrapper
-           sqlite
-           sane-backends))
+           sqlite))
     (home-page "https://www.freedesktop.org/software/colord/")
     (synopsis "Color management service")
     (description "Colord is a system service that makes it easy to manage,
@@ -5667,6 +5665,7 @@ output devices.")
             (append '("-Dbash_completion=true"
                       "-Ddocs=true"
                       "-Dman=true"
+                      "-Dsane=true"
                       "-Dvapi=true")
                     (fold delete #$flags '("-Dbash_completion=false"
                                            "-Ddocs=false"
@@ -5687,6 +5686,7 @@ output devices.")
                gtk-doc/stable
                libxml2                  ;for XML_CATALOG_FILES
                libxslt
+               sane-backends
                vala)))))                ;for VAPI, needed by simple-scan
 
 (define-public geoclue
