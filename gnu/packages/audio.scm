@@ -1129,7 +1129,7 @@ formant warp.")
                 (let ((early-1980 315619200)) ; 1980-01-02 UTC
                   (utime "azr3.1" early-1980 early-1980)))))))
       (inputs
-       (list gtkmm-2 lvtk jack-1))
+       (list gtkmm-2 jack-2 lvtk))
       (native-inputs
        (list pkg-config))
       (home-page "http://ll-plugins.nongnu.org/azr3/")
