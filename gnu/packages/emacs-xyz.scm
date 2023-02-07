@@ -34723,6 +34723,29 @@ line.  This minor mode provides an easy way to run it from Emacs on the
 current region or entire buffer.")
       (license license:gpl3+))))
 
+(define-public emacs-discover
+  (package
+    (name "emacs-discover")
+    (version "0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri
+        (git-reference
+         (url "https://github.com/mickeynp/discover.el")
+         (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0qxw30zrlcxhxb0alrgyiclrk44dysal8xsbz2mvgrb6jli8wg18"))))
+    (build-system emacs-build-system)
+    (propagated-inputs (list emacs-makey))
+    (home-page "https://github.com/mickeynp/discover.el")
+    (synopsis "Discover more of Emacs using context menus")
+    (description
+     "Discover adds context menus to commonly-used features in Emacs.")
+    (license license:gpl3+)))
+
 (define-public emacs-nasm-mode
   (package
     (name "emacs-nasm-mode")
