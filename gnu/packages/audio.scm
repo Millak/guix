@@ -1106,13 +1106,14 @@ formant warp.")
                                        "azr3-remove-lash.patch"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags
-       (list "LV2PEG=ttl2c"
-             (string-append "prefix=" %output)
-             (string-append "pkgdatadir=" %output "/share/azr3-jack"))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:tests? #f ; no check target
+      #:make-flags
+      #~(list "LV2PEG=ttl2c"
+              (string-append "prefix=" #$output)
+              (string-append "pkgdatadir=" #$output "/share/azr3-jack"))
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'install 'fix-timestamp
            (lambda _
              (let ((early-1980 315619200)) ; 1980-01-02 UTC
