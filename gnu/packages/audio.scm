@@ -1091,46 +1091,56 @@ formant warp.")
     (license license:gpl2+)))
 
 (define-public azr3
-  (package
-    (name "azr3")
-    (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/ll-plugins/azr3-jack-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "18mdw6nc0vgj6k9rsy0x8w64wvzld0frqshrxxbxfj9qi9843vlc"))
-              (patches (search-patches "azr3.patch"
-                                       "azr3-remove-lash.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:tests? #f ; no check target
-      #:make-flags
-      #~(list "LV2PEG=ttl2c"
-              (string-append "prefix=" #$output)
-              (string-append "pkgdatadir=" #$output "/share/azr3-jack"))
-      #:phases
-      '(modify-phases %standard-phases
-         (add-before 'install 'fix-timestamp
-           (lambda _
-             (let ((early-1980 315619200)) ; 1980-01-02 UTC
-               (utime "azr3.1" early-1980 early-1980)))))))
-    (inputs
-     (list gtkmm-2 lvtk jack-1))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://ll-plugins.nongnu.org/azr3/")
-    (synopsis "Tonewheel organ synthesizer")
-    (description
-     "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
+  (let ((commit "3391a0a509e7fa3fb46c7627fd5979b67e468038")
+        (revision "1"))
+    (package
+      (name "azr3")
+      (version (git-version "1.2.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/ll-plugins/azr3-jack.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09wy0z4kiid7mwf5b5j8rzzgxafi4mg88xs550n7864p0n351chx"))
+                (patches (search-patches "azr3.patch"
+                                         "azr3-remove-lash.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                       ; no check target
+        #:make-flags
+        #~(list "LV2PEG=ttl2c"
+                (string-append "prefix=" #$output)
+                (string-append "pkgdatadir=" #$output "/share/azr3-jack"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (call-with-output-file "Makefile.config"
+                  (lambda (port) (display "" port)))
+                (substitute* "Makefile"
+                  (("^PACKAGE_VERSION =.*")
+                   (string-append "PACKAGE_VERSION = \"" #$version "\"\n")))))
+            (add-before 'install 'fix-timestamp
+              (lambda _
+                (let ((early-1980 315619200)) ; 1980-01-02 UTC
+                  (utime "azr3.1" early-1980 early-1980)))))))
+      (inputs
+       (list gtkmm-2 lvtk jack-1))
+      (native-inputs
+       (list pkg-config))
+      (home-page "http://ll-plugins.nongnu.org/azr3/")
+      (synopsis "Tonewheel organ synthesizer")
+      (description
+       "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
 with drawbars, distortion and rotating speakers.  The organ has three
 sections, two polyphonic sections with nine drawbars each and one monophonic
 bass section with five drawbars.  A standalone JACK application and LV2
 plugins are provided.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public calf
   (package

@@ -19,7 +19,7 @@ index 7c9f4f0..f82ba75 100644
  	textbox.hpp textbox.cpp
  azr3_SOURCEDIR = azr3
 -azr3_CFLAGS = `pkg-config --cflags gtkmm-2.4 jack lash-1.0` -DDATADIR=\"$(pkgdatadir)\"
--azr3_LDFLAGS = `pkg-config --libs gtkmm-2.4 jack lash-1.0`
+-azr3_LDFLAGS = `pkg-config --libs gtkmm-2.4 jack lash-1.0` -lpthread
 +azr3_CFLAGS = `pkg-config --cflags gtkmm-2.4 jack` -DDATADIR=\"$(pkgdatadir)\"
 +azr3_LDFLAGS = `pkg-config --libs gtkmm-2.4 jack` -lpthread
  azr3_cpp_CFLAGS = $(shell if pkg-config --atleast-version=0.107 jack ; then echo -include azr3/newjack.hpp; fi)
