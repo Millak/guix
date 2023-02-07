@@ -3258,7 +3258,7 @@ allows you to send JACK MIDI events (i.e. play) using your PC keyboard.")
      (list pkg-config which))
     (inputs
      (list gtk+-2
-           jack-1
+           jack-2
            libogg
            liblo
            lame
