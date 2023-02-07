@@ -2613,6 +2613,10 @@ Laurens Hammond and Don Leslie.")
                             (string-prefix? "i686" system)))
                (substitute* "bristol/Makefile.in"
                  (("-msse -mfpmath=sse") "")))))
+         ;; This is needed to build brighton
+         (add-after 'unpack 'add-fcommon
+           (lambda _
+             (setenv "CFLAGS" "-fcommon")))
          ;; alsa-lib 1.1.x no longer provides iatomic.h.  That's okay because
          ;; bristol actually doesn't use it.
          (add-after 'unpack 'do-not-use-alsa-iatomic
