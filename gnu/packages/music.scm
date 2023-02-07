@@ -4021,13 +4021,13 @@ using the beets FetchArt plugin.")
        ;; This flag ensures that MilkyTracker links with the JACK library.
        #:configure-flags '("-DCMAKE_CXX_FLAGS=-ljack")))
     (inputs
-     `(("alsa-lib" ,alsa-lib)
-       ("lhasa" ,lhasa)
-       ("jack" ,jack-1)
-       ("rtmidi" ,rtmidi-4.0)
-       ("sdl" ,sdl2)
-       ("zlib" ,zlib)
-       ("zziplib" ,zziplib)))
+     (list alsa-lib
+           lhasa
+           jack-1
+           rtmidi-4.0
+           sdl2
+           zlib
+           zziplib))
     (native-inputs
      (list pkg-config))
     (synopsis "Music tracker for working with .MOD/.XM module files")
