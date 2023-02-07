@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Alexandru-Sergiu Marton <brown121407@member.fsf.org>
 ;;; Copyright © 2020 Carlo Holl <carloholl@gmail.com>
 ;;; Copyright © 2020 Christine Lemmer-Webber <cwebber@dustycloud.org>
-;;; Copyright © 2021, 2022 Alice BRENON <alice.brenon@ens-lyon.fr>
+;;; Copyright © 2021–2023 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;;
@@ -5426,6 +5426,26 @@ with Hspec.")
 that interconverts between various bibliography formats using a common
 MODS-format XML intermediate.")
     (license license:gpl2+)))
+
+(define-public ghc-hs-conllu
+  (package
+    (name "ghc-hs-conllu")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "hs-conllu" version))
+              (sha256
+               (base32
+                "1azh4g5kdng8v729ldgblkmrdqrc501rgm9wwqx6gkqwwzn8w3r4"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-megaparsec ghc-void))
+    (home-page "https://github.com/arademaker/hs-conllu")
+    (synopsis "CoNLL-U validating parser and utils")
+    (description
+     "Utilities to parse, print, diff, and analyse data in CoNLL-U, a format
+used in linguistics to represent the syntactic annotation of sentences.  See
+@url{https://universaldependencies.org/format.html}")
+    (license license:lgpl3)))
 
 (define-public ghc-hslogger
   (package
