@@ -3716,7 +3716,7 @@ TLS} and cryptography C library for Julia.")
 (define-public julia-measurements
   (package
     (name "julia-measurements")
-    (version "2.6.0")
+    (version "2.8.0")
     (source
       (origin
         (method git-fetch)
@@ -3725,14 +3725,15 @@ TLS} and cryptography C library for Julia.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "05p3f0gr4sv4maq8cix5fi8ldq0zagswqsd43xn6fhy046f936mz"))))
+         (base32 "1rn7qaf2s3l7awm8q5fjxlp1503g9mjgmsnvrbhjjvwyyn1k705r"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-calculus
            julia-recipesbase
            julia-requires))
     (native-inputs
-     (list julia-quadgk
+     (list julia-aqua
+           julia-quadgk
            julia-specialfunctions
            julia-unitful))
     (home-page "https://juliaphysics.github.io/Measurements.jl/stable/")
