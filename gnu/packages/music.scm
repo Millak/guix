@@ -4682,21 +4682,19 @@ inventory, and orders.")
     (outputs '("out"
                "static")) ; 88KiB of .a files
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'move-static-libraries
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Move static libraries to the "static" output.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (lib    (string-append out "/lib"))
-                    (static (assoc-ref outputs "static"))
-                    (slib   (string-append static "/lib")))
-               (mkdir-p slib)
-               (for-each (lambda (file)
-                           (install-file file slib)
-                           (delete-file file))
-                         (find-files lib "\\.a$"))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              ;; Move static libraries to the "static" output.
+              (let ((lib  (string-append #$output "/lib"))
+                    (slib (string-append #$output:static "/lib")))
+                (mkdir-p slib)
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files lib "\\.a$"))))))))
     (inputs
      (list readline glib))
     (native-inputs
