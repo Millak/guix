@@ -4022,7 +4022,7 @@ using the beets FetchArt plugin.")
     (inputs
      (list alsa-lib
            lhasa
-           jack-1
+           jack-2
            rtmidi-4.0
            sdl2
            zlib
