@@ -4725,29 +4725,25 @@ are a C compiler and glib.  Full API documentation and examples are included.")
          "11xgf461cnmq0jkgdgx5bddi87ammpik4whg1m4fcvd3i0d5i601"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f ; no tests
-       ;; Qt 5 support must be explicitly enabled in the 1.2 stable versions of
-       ;; LMMS, so try removing "-DWANT_QT5=ON" in later versions.
-       ;; Also, explicitly disabling VST support gets rid of the in-tree
-       ;; dependency on qt5-x11embed.
-       #:configure-flags '("-DWANT_QT5=ON"
-                           "-DWANT_VST=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'unpack-rpmalloc
-           (lambda* (#:key inputs #:allow-other-keys)
-             (copy-recursively (assoc-ref inputs "rpmalloc")
-                               "src/3rdparty/rpmalloc/rpmalloc")
-             #t))
-         (add-before 'configure 'set-ldflags
-           (lambda* (#:key outputs #:allow-other-keys)
-             (setenv "LDFLAGS"
-                     (string-append
-                      "-Wl,-rpath=\""
-                      (assoc-ref outputs "out") "/lib/lmms"
-                      ":"
-                      (assoc-ref outputs "out") "/lib/lmms/ladspa"
-                      "\"")))))))
+     (list
+      #:tests? #f                       ; no tests
+      ;; Qt 5 support must be explicitly enabled in the 1.2 stable versions of
+      ;; LMMS, so try removing "-DWANT_QT5=ON" in later versions.
+      ;; Also, explicitly disabling VST support gets rid of the in-tree
+      ;; dependency on qt5-x11embed.
+      #:configure-flags '(list "-DWANT_QT5=ON" "-DWANT_VST=OFF")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'unpack-rpmalloc
+            (lambda* (#:key inputs #:allow-other-keys)
+              (copy-recursively (assoc-ref inputs "rpmalloc")
+                                "src/3rdparty/rpmalloc/rpmalloc")))
+          (add-before 'configure 'set-ldflags
+            (lambda _
+              (setenv "LDFLAGS"
+                      (string-append
+                       "-Wl,-rpath=\"" #$output "/lib/lmms"
+                       ":" #$output "/lib/lmms/ladspa" "\"")))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
        ("qttools-5" ,qttools-5)
