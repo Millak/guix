@@ -706,6 +706,7 @@ coreboot.")
                      "HOSTCC=gcc")
              #:parallel-build? #f
              #:tests? #f   ;no tests
+             #:target #f   ; Package produces firmware.
              #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'build-reproducibly
