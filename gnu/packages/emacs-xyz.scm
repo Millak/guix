@@ -562,10 +562,10 @@ configuration language which makes it trivial to write your own themes.")
       (license license:gpl3+))))
 
 (define-public emacs-inspector
-  (let ((commit "32f752c5cd996991c4dba67733cfb4e4159c2e75")) ;version bump
+  (let ((commit "0766ce48dfbf193df73a1fd343a84a9d41ded8ba")) ;version bump
     (package
       (name "emacs-inspector")
-      (version "0.16")
+      (version "0.19")
       (source
        (origin
          (uri (git-reference
@@ -573,7 +573,7 @@ configuration language which makes it trivial to write your own themes.")
                (commit commit)))
          (method git-fetch)
          (sha256
-          (base32 "1zsj24f0qjdy8vxwbn8kc9xy0ffwfc54dyy3dya8j59rlqx5nmdh"))
+          (base32 "0wi8j3r5lz9ww54jdjb6dv4f2rgjv41v8cb5k652skpxllr4cfwy"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
       (arguments
@@ -583,26 +583,7 @@ configuration language which makes it trivial to write your own themes.")
                                "-L" "."
                                "-l" "inspector-tests.el"
                                "-l" "tree-inspector-tests.el"
-                               "-f" "ert-run-tests-batch-and-exit")
-        #:phases
-        #~(modify-phases %standard-phases
-            (add-after 'unpack 'preserve-emacs-28-compatibility
-              ;; XXX: `cl-constantly' function is defined in "cl-lib" starting
-              ;; from Emacs 29+.  For now, replace it with its definition.
-              ;; Also, the variables `pp-max-width' and `pp-use-max-width' are
-              ;; from Emacs 29+.  Replace them with their default value.
-              (lambda _
-                (substitute* "tree-inspector.el"
-                  (("cl-constantly") "lambda (_)"))
-                (substitute* "inspector.el"
-                  (("(defcustom inspector-.*? )pp(-use)?-max-width" _ lead flag)
-                   (string-append lead (if flag "nil" "t"))))))
-            (add-before 'check 'skip-failing-test
-              (lambda _
-                (substitute* "tree-inspector-tests.el"
-                  (("\\(ert-deftest inspector-tests--inspect-struct-test.*" all)
-                   (string-append all " (skip-unless nil)"))))))))
-      (native-inputs (list emacs-ert-runner))
+                               "-f" "ert-run-tests-batch-and-exit")))
       (propagated-inputs (list emacs-treeview))
       (home-page "https://github.com/mmontone/emacs-inspector")
       (synopsis "Inspection tool for Emacs Lisp objects")
