@@ -4591,7 +4591,7 @@ Julia with little or no overhead (arrays are passed without making a copy).")
 (define-public julia-quadgk
   (package
     (name "julia-quadgk")
-    (version "2.4.1")
+    (version "2.5.0")
     (source
       (origin
         (method git-fetch)
@@ -4600,7 +4600,7 @@ Julia with little or no overhead (arrays are passed without making a copy).")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1hy0629yai6xflgxaflk9764lzr1lzhlghimxk1aqi212q9c6n33"))))
+         (base32 "0f14dhn0f7ln2j96qvmnsyy9ffzqsngd16ikc136snlxv4k4whiv"))))
     (build-system julia-build-system)
     (propagated-inputs
      (list julia-datastructures))
