@@ -3124,31 +3124,30 @@ capabilities, custom envelopes, effects, etc.")
         (base32 "1axrbk1qwsiq77g5957db744481zb2v158psnk2w530wxhls2442"))))
     (build-system cmake-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:configure-flags
-       (list (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
-                            (assoc-ref %outputs "out") "/share"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'configure 'enter-dir
-           (lambda _ (chdir "src") #t))
-         ;; Move SSE compiler optimization flags from generic target to
-         ;; athlon64 and core2 targets, because otherwise the build would fail
-         ;; on non-Intel machines.
-         (add-after 'unpack 'fix-paths
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* (list "src/Interface/InterChange.cpp"
-                                "src/Misc/Bank.cpp"
-                                "src/Misc/Config.cpp")
-               (("/usr/share") (string-append (assoc-ref outputs "out")
-                                              "/share")))))
-         (add-after 'unpack 'remove-sse-flags-from-generic-target
-           (lambda _
-             (substitute* "src/CMakeLists.txt"
-               (("-msse -msse2 -mfpmath=sse") "")
-               (("-march=(athlon64|core2)" flag)
-                (string-append flag " -msse -msse2 -mfpmath=sse")))
-             #t)))))
+     (list
+      #:tests? #f                       ; there are no tests
+      #:configure-flags
+      #~(list (string-append "-DCMAKE_INSTALL_DATAROOTDIR="
+                             #$output "/share"))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'configure 'enter-dir
+            (lambda _ (chdir "src")))
+          (add-after 'unpack 'fix-paths
+            (lambda _
+              (substitute* (list "src/Interface/InterChange.cpp"
+                                 "src/Misc/Bank.cpp"
+                                 "src/Misc/Config.cpp")
+                (("/usr/share") (string-append #$output "/share")))))
+          ;; Move SSE compiler optimization flags from generic target to
+          ;; athlon64 and core2 targets, because otherwise the build would fail
+          ;; on non-Intel machines.
+          (add-after 'unpack 'remove-sse-flags-from-generic-target
+            (lambda _
+              (substitute* "src/CMakeLists.txt"
+                (("-msse -msse2 -mfpmath=sse") "")
+                (("-march=(athlon64|core2)" flag)
+                 (string-append flag " -msse -msse2 -mfpmath=sse"))))))))
     (inputs
      (list alsa-lib
            boost
