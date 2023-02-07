@@ -3150,19 +3150,19 @@ capabilities, custom envelopes, effects, etc.")
                 (string-append flag " -msse -msse2 -mfpmath=sse")))
              #t)))))
     (inputs
-     `(("boost" ,boost)
-       ("fftwf" ,fftwf)
-       ("alsa-lib" ,alsa-lib)
-       ("jack" ,jack-1)
-       ("fontconfig" ,fontconfig)
-       ("minixml" ,minixml)
-       ("mesa" ,mesa)
-       ("fltk" ,fltk)
-       ("lv2" ,lv2)
-       ("readline" ,readline)
-       ("ncurses" ,ncurses)
-       ("cairo" ,cairo)
-       ("zlib" ,zlib)))
+     (list alsa-lib
+           boost
+           cairo
+           fftwf
+           fltk
+           fontconfig
+           jack-1
+           lv2
+           mesa
+           minixml
+           ncurses
+           readline
+           zlib))
     (native-inputs
      (list pkg-config))
     (home-page "http://yoshimi.sourceforge.net/")
