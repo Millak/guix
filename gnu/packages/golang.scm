@@ -626,9 +626,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                  (("^#!.*") "#!/usr/bin/env perl\n"))))))))
     (native-inputs
      `(("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
-       ,@(if (not (member (%current-system) (package-supported-systems go-1.4)))
-             (alist-replace "go" (list gccgo-10) (package-native-inputs go-1.14))
-             (package-native-inputs go-1.14))))))
+       ,@(package-native-inputs go-1.14)))))
 
 (define-public go-1.17
   (package
