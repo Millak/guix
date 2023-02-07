@@ -1116,8 +1116,7 @@ formant warp.")
          (add-before 'install 'fix-timestamp
            (lambda _
              (let ((early-1980 315619200)) ; 1980-01-02 UTC
-               (utime "azr3.1" early-1980 early-1980))
-             #t)))))
+               (utime "azr3.1" early-1980 early-1980)))))))
     (inputs
      (list gtkmm-2 lvtk jack-1))
     (native-inputs
