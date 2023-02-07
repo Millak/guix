@@ -419,6 +419,8 @@ provide OpenFirmware functionality on top of an already running system.")
                                                   (%current-target-system)))
             "armhf-linux"
             system))
+         ;; No need to cross-compile, package produces reproducible firmware.
+         ((#:target _ #f) #f)
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'install 'rename-executable
