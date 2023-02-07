@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Nicolò Balzarotti <nicolo@nixo.xyz>
 ;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
-;;; Copyright © 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;;
@@ -3439,7 +3439,7 @@ fixes.  The Julia IDE effort is pointed to extension for VSCode.")
 (define-public julia-latexstrings
   (package
     (name "julia-latexstrings")
-    (version "1.2.1")
+    (version "1.3.0")
     (source
       (origin
         (method git-fetch)
@@ -3448,7 +3448,7 @@ fixes.  The Julia IDE effort is pointed to extension for VSCode.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "117z27krcf8fydgp6mb0pgn75r4gng9qs7v90qb4bqzsry3faadp"))))
+         (base32 "0iijp96ca9mqg5skr6ps7q0lvqaa374lr2zkbbia5q6qgpq0j5ww"))))
     (build-system julia-build-system)
     (native-inputs
      (list julia-documenter))
