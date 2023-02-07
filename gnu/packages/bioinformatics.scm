@@ -512,6 +512,63 @@ BED, GFF/GTF, VCF.")
     (inputs
      (list samtools zlib))))
 
+(define-public bitmapperbs
+  (package
+    (name "bitmapperbs")
+    (version "1.0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chhylp123/BitMapperBS/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02ksssfnvmpskld0a2016smfz5nrzm3d90v8974f3cpzywckvp8v"))
+              (modules '((guix build utils)))
+              ;; This package bundles a modified copy of htslib, so we cannot
+              ;; unbundle it.
+              (snippet
+               '(begin
+                  (delete-file-recursively "libdivsufsort-2.0.1")
+                  (delete-file-recursively "pSAscan-0.1.0")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false
+      #:make-flags '(list "bitmapperBS")
+      ;; The build system checks for CPU features.  For this reason, we want
+      ;; users to build it locally instead of using substitutes.
+      #:substitutable? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              (substitute* "Makefile"
+                (("make prefix=../htslib_aim install")
+                 (string-append "make prefix=" #$output " install-so"))
+                (("htslib_aim/include") "htslib")
+                (("htslib_aim/lib")
+                 (string-append #$output "/lib")))))
+          (add-after 'unpack 'patch-references-to-psascan
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("\"(./)?psascan" pre all)
+                 (string-append "\"" pre (search-input-file inputs "/bin/psascan"))))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "bitmapperBS"
+                            (string-append #$output "/bin/")))))))
+    (inputs
+     (list libdivsufsort psascan zlib))
+    (home-page "https://github.com/chhylp123/BitMapperBS/")
+    (synopsis "Read aligner for whole-genome bisulfite sequencing")
+    (description
+     "BitMapperBS is memory-efficient aligner that is designed for
+whole-genome bisulfite sequencing (WGBS) reads from directional protocol.")
+    (license license:asl2.0)))
+
 (define-public cellsnp-lite
   ;; Last release is from November 2021 and does not contain fixes.
   (let ((commit "0885d746b0b1ea65c8ef92f8943ca7669ca9734a")
