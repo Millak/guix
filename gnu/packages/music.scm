@@ -4766,23 +4766,23 @@ are a C compiler and glib.  Full API documentation and examples are included.")
             (base32
              "0g9pls46iggg7rdm65vzfj8nyr3v2n5xkp54c4qbh9hhalpsw4ay"))))))
     (inputs
-     `(("sdl" ,sdl)
-       ("qtbase" ,qtbase-5)
-       ("qtx11extras" ,qtx11extras)
-       ("fltk" ,fltk)
-       ("libogg" ,libogg)
-       ("libsamplerate" ,libsamplerate)
-       ("fluidsynth" ,fluidsynth)
-       ("libvorbis" ,libvorbis)
-       ("alsa-lib" ,alsa-lib)
-       ("portaudio" ,portaudio)
-       ("ladspa" ,ladspa)
-       ("libsndfile1" ,libsndfile)
-       ("libxft" ,libxft)
-       ("freetype2" ,freetype)
-       ("fftw3f" ,fftwf)
-       ("jack" ,jack-1)
-       ("carla" ,carla)))
+     (list alsa-lib
+           carla
+           fftwf
+           fltk
+           fluidsynth
+           freetype
+           jack-1
+           ladspa
+           libogg
+           libsamplerate
+           libsndfile
+           libvorbis
+           libxft
+           portaudio
+           qtbase-5
+           qtx11extras
+           sdl))
     (home-page "https://lmms.io/")
     (synopsis "Music composition tool")
     (description "LMMS is a digital audio workstation.  It includes tools for sequencing
