@@ -5959,17 +5959,17 @@ and debugging of event signal flows inside plugin graphs.")
          "1drzfyr7mzb58pdv0gsqkg6ds6kbgp6g25rrv1yya1611cljgvjh"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
-       #:tests? #f  ; no automated test
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:tests? #f  ; no automated test
+      #:phases
+      '(modify-phases %standard-phases
          (replace 'configure
            (lambda _
              (substitute* "Makefile"
                (("-mtune=native") "")
-               (("-march=native") ""))
-             #t)))))
+               (("-march=native") "")))))))
     (inputs
      (list cairo
            gtk+-2
