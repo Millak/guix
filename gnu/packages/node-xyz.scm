@@ -431,10 +431,9 @@ written in Javascript.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("standard" "tape")))))))
     (inputs (list node-protocol-buffers-schema))
     (home-page "https://github.com/mafintosh/resolve-protobuf-schema")
     (synopsis "Resolve protobuf imports")
