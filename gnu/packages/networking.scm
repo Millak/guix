@@ -3719,7 +3719,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (sha256
                (base32
                 "1kcc9vmi4swvahq2gikflgba9xfmix80dr9wa3v6xcj1ba2fjd6s"))))
-    (outputs '("out" "tools" "debug"))
+    (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3754,7 +3754,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "python/Makefile.am"
                 (("--root=\\$\\(DESTDIR)/")
                  (string-append "--root=/ --single-version-externally-managed "
-                                "--prefix=" #$output)))))
+                                "--prefix=" #$output:python)))))
           (add-after 'unpack 'specify-runpath-for-python-module
             (lambda _
               (substitute* "python/setup.py.in"
@@ -3792,7 +3792,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            gnutls
            jsoncpp
            nettle
-           openssl))                    ;required for the DHT proxy
+           openssl                      ;required for the DHT proxy
+           python))
     (native-inputs
      (list autoconf
            automake
