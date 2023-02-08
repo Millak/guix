@@ -475,28 +475,40 @@ the GStreamer multimedia framework.")
          "0aisl8nazcfi4b5j6fz8zwpp0k9csb022zniz65b2pxxpdjayzb0"))))
     (build-system meson-build-system)
     (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               #$@%common-gstreamer-phases
-               #$@(if (string-prefix? "i686" (or (%current-target-system)
-                                                 (%current-system)))
-                      ;; FIXME: These tests consistently fail in the Guix CI:
-                      ;;   https://issues.guix.gnu.org/57868
-                      '((add-after 'unpack 'disable-systemclock-test
-                          (lambda _
-                            (substitute* "tests/check/gst/gstsystemclock.c"
-                              (("tcase_add_test \\(tc_chain, \
+     (list
+      #:disallowed-references (list python)
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@%common-gstreamer-phases
+          #$@(if (string-prefix? "i686" (or (%current-target-system)
+                                            (%current-system)))
+                 ;; FIXME: These tests consistently fail in the Guix CI:
+                 ;;   https://issues.guix.gnu.org/57868
+                 '((add-after 'unpack 'disable-systemclock-test
+                     (lambda _
+                       (substitute* "tests/check/gst/gstsystemclock.c"
+                         (("tcase_add_test \\(tc_chain, \
 test_stress_cleanup_unschedule.*")
-                               "")
-                              (("tcase_add_test \\(tc_chain, \
+                          "")
+                         (("tcase_add_test \\(tc_chain, \
 test_stress_reschedule.*")
-                               "")))))
-                      '()))))
+                          "")))))
+                 '())
+          (add-after 'patch-shebangs 'do-not-capture-python
+            (lambda _
+              ;; The patch-source-shebangs phase causes the following build
+              ;; script to reference Python in its shebang, which is
+              ;; unnecessary.
+              (substitute* (string-append #$output
+                                          "/libexec/gstreamer-1.0/"
+                                          "gst-plugins-doc-cache-generator")
+                (((which "python3"))
+                 "/usr/bin/env python3")))))))
     (propagated-inputs
      ;; In gstreamer-1.0.pc:
      ;;   Requires: glib-2.0, gobject-2.0
      ;;   Requires.private: gmodule-no-export-2.0 libunwind libdw
-     (list elfutils ; libdw
+     (list elfutils                     ;libdw
            glib libunwind))
     (native-inputs
      (list bash-completion
@@ -506,7 +518,7 @@ test_stress_reschedule.*")
            gobject-introspection
            perl
            pkg-config
-           python-wrapper))
+           python))
     (inputs
      (list gmp libcap
            ;; For tests.
