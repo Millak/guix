@@ -3729,7 +3729,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   (guix build gnu-build-system)
                   (guix build utils))
       #:configure-flags
-      #~(list "--enable-tests"
+      #~(list "--disable-static"        ;to reduce size
+              "--enable-tests"
               "--enable-proxy-server"
               "--enable-push-notifications"
               "--enable-proxy-server-identity"
