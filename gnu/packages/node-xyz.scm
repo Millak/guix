@@ -123,10 +123,9 @@ architecture supporting plugins.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("tap")))))))
     (home-page "https://github.com/brianloveswords/buffer-crc32")
     (synopsis "CRC32 implementation in Javascript")
     (description
