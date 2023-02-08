@@ -564,6 +564,13 @@ rsnapshot uses hard links to deduplicate identical files.")
               (modules '((guix build utils)))
               (snippet
                '(begin
+                  ;; Gnulib's <stdio.h> refers to 'gets' for the purposes of
+                  ;; warning against its use, but 'gets' is no longer declared
+                  ;; in glibc's <stdio.h>.  Remove that warning.
+                  (substitute* "lib/stdio.in.h"
+                    (("_GL_WARN_ON_USE \\(gets,.*")
+                     "\n/* 'gets' is gone, rejoice! */\n"))
+
                   ;; Include all the libtirpc headers necessary to get the
                   ;; definitions of 'u_int', etc.
                   (substitute* '("src/block-server.c"
@@ -572,8 +579,7 @@ rsnapshot uses hard links to deduplicate identical files.")
                     (("#include <rpc/(.*)\\.h>" _ header)
                      (string-append "#include <rpc/types.h>\n"
                                     "#include <rpc/rpc.h>\n"
-                                    "#include <rpc/" header ".h>\n")))
-                  #t))))
+                                    "#include <rpc/" header ".h>\n")))))))
     (build-system gnu-build-system)
     (arguments
      '(;; Link against libtirpc.
@@ -598,12 +604,16 @@ rsnapshot uses hard links to deduplicate identical files.")
                                   (string-append (getenv "CPATH")
                                                  ":" tirpc))
                           (setenv "CPATH" tirpc)))))
-                  (add-before 'check 'skip-test
+                  (add-before 'check 'adjust-test
                     (lambda _
-                      ;; XXX: This test fails (1) because current GnuTLS no
-                      ;; longer supports OpenPGP authentication, and (2) for
-                      ;; some obscure reason.  Better skip it.
-                      (setenv "XFAIL_TESTS" "utils/block-server"))))))
+                      ;; This test uses a weird construct to spawn
+                      ;; 'chop-block-server' in the background.  Replace it
+                      ;; with something that actually works.
+                      (substitute* "tests/utils/block-server"
+                        (("chop_fail_if ! chop-block-server")
+                         "chop-block-server")
+                        (("'&'")
+                         "&")))))))
     (native-inputs
      (list guile-2.0 gperf-3.0 ;see <https://bugs.gnu.org/32382>
            pkg-config rpcsvc-proto))           ;for 'rpcgen'
