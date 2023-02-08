@@ -58157,7 +58157,7 @@ without a mutable reference.")
 (define-public rust-tar-0.4
   (package
     (name "rust-tar")
-    (version "0.4.26")
+    (version "0.4.36")
     (source
       (origin
         (method url-fetch)
@@ -58165,7 +58165,7 @@ without a mutable reference.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1lr6v3cpkfxd2lk5ll2jd8wr1xdskwj35smnh5sfb8xvzzxnn6dk"))))
+          "0iz40bd47xr69dsbckd6rv5ry2nqb2dp3z850q41pvpnmk6xk441"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Test tarballs not included in crate.
