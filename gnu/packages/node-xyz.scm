@@ -1588,10 +1588,9 @@ default set of parsers and bindings.")))
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("airtap" "bl" "istanbul" "yauzl")))))))
     (inputs (list node-buffer-crc32))
     (home-page "https://github.com/thejoshwolfe/yazl")
     (synopsis "Yet another zip library for node")
