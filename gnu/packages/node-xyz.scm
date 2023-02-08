@@ -364,10 +364,19 @@ while being as light-weight and simple as possible.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies
+                       '("benchmark"
+                         "browserify"
+                         "eslint"
+                         "eslint-config-mourner"
+                         "mkdirp"
+                         "protobufjs"
+                         "protocol-buffers"
+                         "tap"
+                         "tile-stats-runner"
+                         "uglify-js")))))))
     (inputs (list node-ieee754 node-resolve-protobuf-schema))
     (home-page "https://github.com/mapbox/pbf")
     (synopsis "Decode and encode protocol buffers in Javascript")
