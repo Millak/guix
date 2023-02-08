@@ -13323,7 +13323,7 @@ to the @code{is_x86_feature_detected!} macro.")
 (define-public rust-crates-io-0.33
   (package
     (name "rust-crates-io")
-    (version "0.33.0")
+    (version "0.33.1")
     (source
      (origin
        (method url-fetch)
@@ -13332,7 +13332,7 @@ to the @code{is_x86_feature_detected!} macro.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "147mggf85fz77vsrzsvsxxwid4f4fg30zwfyirx7sl1k7y33hw91"))))
+         "0nmpzr697a6v12ljwpmjrhqpmkf784nsm8m1g6jwadmkq96p3mxj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
