@@ -680,7 +680,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* (find-files "bin" "\\.in$")
                   (("/bin/pwd")
-                   (search-input-file inputs "bin/pwd")))
+                   (search-input-file inputs "bin/pwd"))
+                  ;; Do not keep a reference to cmake-minimal; it is looked
+                  ;; from PATH anyway.
+                  (("original_cmake_path=\"@CMAKE_COMMAND@\"")
+                   "original_cmake_path=\"\""))
                 (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
                   (("\"xdg-open\"")
                    (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
