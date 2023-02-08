@@ -1320,7 +1320,7 @@ Encryption to Gajim.")
 (define-public dino
   (package
     (name "dino")
-    (version "0.3.1")
+    (version "0.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1328,7 +1328,7 @@ Encryption to Gajim.")
         (string-append "https://github.com/dino/dino/releases/download/v"
                        version "/dino-" version ".tar.gz"))
        (sha256
-        (base32 "1rs6qpkidiww805cd91q059r2lm5lzblrkyn01zz4g1mls8ghk5a"))))
+        (base32 "115p7mjk0q68nvv8asrm6hsv0dzsz7hy2bnvhwhxmcfbilr8fq68"))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -1367,12 +1367,13 @@ Encryption to Gajim.")
      (list gettext-minimal
            `(,glib "bin")
            gobject-introspection
-           `(,gtk+ "bin")
+           `(,gtk "bin")
            pkg-config
            vala))
     (inputs
      (list adwaita-icon-theme
            atk
+           bash-minimal
            cairo
            librsvg
            glib
@@ -1383,8 +1384,9 @@ Encryption to Gajim.")
            gstreamer                    ;for A/V support
            gst-plugins-base
            gst-plugins-good
-           gtk+
+           gtk
            icu4c                        ;for emoji support
+           libadwaita
            libcanberra                  ;for sound-notification support
            libgcrypt
            libgee
@@ -1392,7 +1394,7 @@ Encryption to Gajim.")
            libsignal-protocol-c
            libsoup
            libsrtp                      ;for calls support
-           pango
+           pango-next                   ;gtk4 wants pango 1.5+
            qrencode
            sqlite
            webrtc-audio-processing))    ;for A/V support
