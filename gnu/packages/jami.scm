@@ -543,9 +543,6 @@ service definitions.")
            pkg-config
            python
            qttools
-           doxygen
-           graphviz
-           gsettings-desktop-schemas    ;for tests
            vulkan-headers))
     (inputs
      (list ffmpeg-jami
