@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022 Paul Alesius <paul@unnservice.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -9546,6 +9547,25 @@ optional dependency graph analysis.")
     (synopsis "Target platform abstraction for Cargo")
     (description "This package provides abstractions for the target platforms
 supported by Cargo.")
+    (license (list license:expat license:asl2.0))))
+
+(define-public rust-cargo-util-0.1
+  (package
+    (name "rust-cargo-util")
+    (version "0.1.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-util" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "1sz0gzcyp9ycb4zwj69qs9gd8kn9hv9nh2dq42c59x5xccqph755"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Utilities for Cargo")
+    (description "Miscellaneous support code used by Cargo.")
     (license (list license:expat license:asl2.0))))
 
 (define-public rust-cassowary-0.3
