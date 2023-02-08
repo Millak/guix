@@ -5,6 +5,7 @@
 ;;; Copyright © 2021 Charles <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Jelle Licht <jlicht@fsfe.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,7 +76,30 @@
                                                               #t))
                                                            scripts-alist)))
                                   (other other))
-                                pkg-meta-alist))))))))))
+                                pkg-meta-alist)))))))
+         (replace 'build
+           (lambda* (#:key inputs native-inputs #:allow-other-keys)
+             (let ((esbuild (search-input-file (or native-inputs inputs)
+                                        "/bin/esbuild")))
+               (invoke esbuild
+                     "src/index.js"
+                     "--outfile=dist/acorn.js"
+                     "--format=cjs"
+                     "--bundle"
+                     "--platform=node")
+               (invoke esbuild
+                     "src/index.js"
+                     "--outfile=dist/acorn.mjs"
+                     "--format=esm"
+                     "--bundle"
+                     "--platform=node")
+               (invoke esbuild
+                     "src/bin/acorn.js"
+                     "--outfile=dist/bin.js"
+                     "--format=cjs"
+                     "--platform=node")))))))
+    (native-inputs
+     (list esbuild))
     (home-page "https://github.com/acornjs/acorn/tree/master/acorn")
     (synopsis "Javascript-based Javascript parser")
     (description "Acornjs is a Javascript parser with many options and an
