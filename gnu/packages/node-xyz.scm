@@ -47,11 +47,35 @@
     (build-system node-build-system)
     (arguments
      '(#:tests? #f
+       #:modules
+       ((guix build node-build-system)
+        (srfi srfi-1)
+        (ice-9 match)
+        (guix build utils))
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'change-directory
            (lambda _
-             (chdir "acorn"))))))
+             (chdir "acorn")))
+         (add-before 'configure 'avoid-prepare-scripts
+           (lambda _
+             ;; We need to remove the prepare script from "package.json", as
+             ;; it would try to use the build environment and would block the
+             ;; automatic building by other packages making use of node-acorn.
+             ;; TODO: Add utility function
+             (with-atomic-json-file-replacement "package.json"
+               (match-lambda
+                 (('@ . pkg-meta-alist)
+                  (cons '@ (map (match-lambda
+                                  (("scripts" @ . scripts-alist)
+                                   `("scripts" @ ,@(filter (match-lambda
+                                                             (("prepare" . _)
+                                                              #f)
+                                                             (_
+                                                              #t))
+                                                           scripts-alist)))
+                                  (other other))
+                                pkg-meta-alist))))))))))
     (home-page "https://github.com/acornjs/acorn/tree/master/acorn")
     (synopsis "Javascript-based Javascript parser")
     (description "Acornjs is a Javascript parser with many options and an
