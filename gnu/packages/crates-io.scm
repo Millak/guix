@@ -15031,14 +15031,14 @@ use with bindgen.")
 (define-public rust-curl-0.4
   (package
     (name "rust-curl")
-    (version "0.4.34")
+    (version "0.4.43")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0vkm6fyizf8m9yxpv3n5pm9ag3bwlyqa6nz2ga8qkzm5y4m1cs72"))))
+        (base32 "07v5s3qafyl9gnnlzbddgg5fzy41gncy00ahbbv46nr0xyp5bn1p"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;require internet access
