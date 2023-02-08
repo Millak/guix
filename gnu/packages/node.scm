@@ -668,7 +668,7 @@ parser definition into a C output.")
 (define-public llhttp-bootstrap
   (package
     (name "llhttp")
-    (version "2.1.4")
+    (version "6.0.10")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -677,8 +677,7 @@ parser definition into a C output.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "115mwyds9655p76lhglxg2blc1ksgrix6zhigaxnc2q6syy3pa6x"))
-              (patches (search-patches "llhttp-bootstrap-CVE-2020-8287.patch"))
+                "0izwqa77y007xdi0bj3ccw821n19rz89mz4hx4lg99fwkwylr6x8"))
               (modules '((guix build utils)))
               (snippet
                '(begin

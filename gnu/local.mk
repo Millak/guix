@@ -1515,7 +1515,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/linuxdcpp-openssl-1.1.patch		\
   %D%/packages/patches/lirc-localstatedir.patch			\
   %D%/packages/patches/lirc-reproducible-build.patch		\
-  %D%/packages/patches/llhttp-bootstrap-CVE-2020-8287.patch	\
   %D%/packages/patches/llvm-3.5-fix-clang-build-with-gcc5.patch	\
   %D%/packages/patches/llvm-3.6-fix-build-with-gcc-10.patch	\
   %D%/packages/patches/llvm-3.x.1-fix-build-with-gcc.patch	\
