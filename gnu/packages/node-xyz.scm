@@ -179,10 +179,16 @@ and fancy character sets, signed or unsigned data and has tests, for Node.")
                       (substitute* "lib/configuration.js"
                         (("mri")
                          "minimist"))))
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("c8"
+                                             "docdash"
+                                             "eslint"
+                                             "eslint-plugin-jsdoc"
+                                             "jsdoc"
+                                             "tap-diff"
+                                             "tape"
+                                             "tape-catch")))))))
     (inputs (list node-minimist node-pbf node-yazl))
     (home-page "https://github.com/ahwayakchih/crx3")
     (synopsis "Create CRXv3 browser extensions with Javascript")
