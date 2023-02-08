@@ -402,7 +402,7 @@
     (name "libjami")
     (version %jami-version)
     (source %jami-sources)
-    (outputs '("out" "debug"))
+    (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
      (list
@@ -425,7 +425,20 @@
             (lambda _
               (for-each delete-file
                         (find-files (string-append #$output "/lib")
-                                    "\\.a$")))))))
+                                    "\\.a$"))))
+          (add-after 'install 'move-jamid
+            ;; This nearly halves the size of the main output (from 1566.2 MiB
+            ;; to 833.6 MiB), due to not depending on dbus-c++ and its large
+            ;; dependencies.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((libexec (string-append #$output:bin "/libexec"))
+                    (share (string-append #$output:bin "/share")))
+                (mkdir-p libexec)
+                (rename-file (search-input-file outputs "libexec/jamid")
+                             (string-append libexec "/jamid"))
+                (mkdir-p share)
+                (rename-file (search-input-directory outputs "share/dbus-1")
+                             (string-append share "/dbus-1"))))))))
     (inputs
      (list alsa-lib
            asio
@@ -461,7 +474,9 @@
 Jami core functionality.  Jami is a secure and distributed voice, video and
 chat communication platform that requires no centralized server and leaves the
 power of privacy in the hands of the user.  It supports the SIP and IAX
-protocols, as well as decentralized calling using P2P-DHT.")
+protocols, as well as decentralized calling using P2P-DHT.  The @samp{\"bin\"}
+output contains the D-Bus daemon (@command{jamid}) as well as the Jami D-Bus
+service definitions.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
