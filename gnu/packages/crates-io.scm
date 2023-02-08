@@ -37997,10 +37997,10 @@ the system.")
        (("rust-pathdiff" ,rust-pathdiff-0.2)
         ("rust-winapi" ,rust-winapi-0.3))))))
 
-(define-public rust-opener-0.4
+(define-public rust-opener-0.5
   (package
     (name "rust-opener")
-    (version "0.4.1")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
@@ -38009,7 +38009,7 @@ the system.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1bpknqvhqkalhmq8n2m97apc0r3y194ppybl1qxay34xr83p848k"))))
+         "0lkrn4fv1h4m8gmp7ll6x7vjvb6kls2ngwa5cgsh2ix5fb6yp8sf"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
