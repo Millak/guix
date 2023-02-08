@@ -695,6 +695,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
+            (add-after 'patch-source-shebangs 'do-not-capture-python
+              (lambda _
+                (substitute* '("mkspecs/features/uikit/devices.py"
+                               "util/testrunner/qt-testrunner.py")
+                  (((which "python3"))
+                   "/usr/bin/env python3"))))
             (replace 'configure
               (assoc-ref %standard-phases 'configure))
             (replace 'build
