@@ -38420,14 +38420,14 @@ under its new name.")
 (define-public rust-os-info-3
   (package
     (name "rust-os-info")
-    (version "3.0.6")
+    (version "3.0.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "os_info" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1pbcf2in8i9w6zjzk6jmrd89gm5h7qpyqi3hvkl0axpzp1m57lmk"))))
+        (base32 "09x2sm4pgcpk14hakj4iq0zkglx1bwxlq3a5mbwc737dpwh11jba"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
