@@ -1287,6 +1287,10 @@ with JavaScript and C++.")))
                     ;; qrc). Import paths used:
                     ;; /gnu/store/...-qtbase-6.3.1/lib/qt6/qml"
                     "tst_qmltc_qprocess"
+                    ;; This test is non-deterministic; may fail under high
+                    ;; load (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-111008).
+                    "tst_qqmlprofilerservice"
                     ;; These test fail when running qmlimportscanner; perhaps
                     ;; an extra CMAKE_PREFIX_PATH location is missing to
                     ;; correctly locate the imports.
