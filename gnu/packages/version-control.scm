@@ -67,6 +67,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -224,14 +225,14 @@ Python 3.3 and later, rather than on Python 2.")
 (define-public git
   (package
    (name "git")
-   (version "2.39.0")
+   (version "2.39.1")
    (source (origin
             (method url-fetch)
             (uri (string-append "mirror://kernel.org/software/scm/git/git-"
                                 version ".tar.xz"))
             (sha256
              (base32
-              "0nr6d46z3zfxbr1psww7vylva3mw6vbhnywixhywm6aszc9rn6ds"))))
+              "0qf1wly7zagg23svpv533va5v213y7y3lfw76ldkf35k8w48m8s0"))))
    (build-system gnu-build-system)
    (native-inputs
     `(("native-perl" ,perl)
@@ -251,7 +252,7 @@ Python 3.3 and later, rather than on Python 2.")
                 version ".tar.xz"))
           (sha256
            (base32
-            "0rwl3rkj50r1dkrlgf3d2paxbz5fz7bq4azhzb6a4d6c8bazcw3p"))))
+            "0xf7ki90xw77nvmnkw50xaivyfi8jddfq0h8crzi7m9zjs7aa8mm"))))
       ;; For subtree documentation.
       ("asciidoc" ,asciidoc)
       ("docbook-xsl" ,docbook-xsl)
@@ -670,7 +671,11 @@ everything from small to very large projects with speed and efficiency.")
            perl
            zlib))))
 
-(define-public git-minimal/fixed
+;;; The symbol git-minimal/fixed should be used when git-minimal needs fixes
+;;; (security or else) and this deprecation could be removed.
+(define-deprecated/public-alias git-minimal/fixed git-minimal/pinned)
+
+(define-public git-minimal/pinned
   ;; Version that rarely changes, depended on by Graphene/GTK+.
   (package/inherit git-minimal
     (version "2.33.1")
@@ -2243,7 +2248,7 @@ standards-compliant ChangeLog entries based on the changes that it detects.")
 (define-public diffstat
   (package
     (name "diffstat")
-    (version "1.64")
+    (version "1.65")
     (source (origin
               (method url-fetch)
               (uri
@@ -2254,7 +2259,7 @@ standards-compliant ChangeLog entries based on the changes that it detects.")
                                 "diffstat-" version ".tgz")))
               (sha256
                (base32
-                "1z7pwcv48fjnhxrjcsjdy83x8b9ckl582mbbds90a79fkn6y7bmq"))))
+                "12m2aysq6syw83bn4gqhpm284a2ran8w6m8pja2wvsvdj8j79wlc"))))
     (build-system gnu-build-system)
     (home-page "https://invisible-island.net/diffstat/")
     (synopsis "Make histograms from the output of @command{diff}")
@@ -2398,82 +2403,6 @@ changes back into the master source of the program, with as little disruption
 as possible.  Resolution of contention for source files, a major headache for
 any project with more than one developer, is one of Aegis's major functions.")
     (license license:gpl3+)))
-
-(define-public reposurgeon
-  (package
-    (name "reposurgeon")
-    (version "3.43")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "http://www.catb.org/~esr/" name "/"
-                                  name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "1af0z14wcm4bk5a9ysinbwq2fp3lf5f7i8mvwh7286hr3fnagcaz"))
-              (patches (search-patches
-                        "reposurgeon-add-missing-docbook-files.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:make-flags
-       (list "ECHO=echo"
-             (string-append "target=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-inputs
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tzdata (assoc-ref inputs "tzdata")))
-               (substitute* "reposurgeon"
-                 (("/usr/share/zoneinfo")
-                  (string-append tzdata "/share/zoneinfo")))
-               (substitute* "test/svn-to-svn"
-                 (("/bin/echo") "echo"))
-               #t)))
-         (delete 'configure)            ; no configure script
-         (add-before 'build 'fix-docbook
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (find-files "." "\\.xml$")
-               (("docbook/docbookx.dtd")
-                (string-append (assoc-ref inputs "docbook-xml")
-                               "/xml/dtd/docbook/docbookx.dtd")))
-             #t))
-         (add-before 'check 'set-up-test-environment
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((tzdata (assoc-ref inputs "tzdata")))
-               (setenv "TZDIR" (string-append tzdata "/share/zoneinfo"))
-               #t)))
-         (add-after 'install 'install-emacs-data
-           (lambda* (#:key outputs #:allow-other-keys)
-             (install-file "reposurgeon-mode.el"
-                           (string-append (assoc-ref outputs "out")
-                                          "/share/emacs/site-lisp"))
-             #t)))))
-    (inputs
-     `(("python" ,python-wrapper)
-       ("tzdata" ,tzdata)))
-    (native-inputs
-     (list ;; For building documentation.
-           asciidoc
-           docbook-xml
-           docbook-xsl
-           libxml2
-           xmlto
-           ;; For tests.
-           cvs
-           git
-           mercurial
-           subversion))
-    (home-page "http://www.catb.org/~esr/reposurgeon/")
-    (synopsis "Edit version-control repository history")
-    (description "Reposurgeon enables risky operations that version-control
-systems don't want to let you do, such as editing past comments and metadata
-and removing commits.  It works with any version control system that can
-export and import Git fast-import streams, including Git, Mercurial, Fossil,
-Bazaar, CVS, RCS, and Src.  It can also read Subversion dump files directly
-and can thus be used to script production of very high-quality conversions
-from Subversion to any supported Distributed Version Control System (DVCS).")
-    ;; Most files are distributed under bsd-2, except 'repocutter' which is
-    ;; under bsd-3.
-    (license (list license:bsd-2 license:bsd-3))))
 
 (define-public tig
   (package

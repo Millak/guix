@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -149,33 +149,47 @@ custom binary port)."
   ;; the REPL process wouldn't get EOF on standard input.
   (match (socketpair AF_UNIX (logior SOCK_STREAM SOCK_CLOEXEC) 0)
     ((parent . child)
-     (match (primitive-fork)
-       (0
-        (dynamic-wind
-          (lambda ()
-            #t)
-          (lambda ()
-            (close-port parent)
-            (close-fdes 0)
-            (close-fdes 1)
-            (close-fdes 2)
-            (dup2 (fileno child) 0)
-            (dup2 (fileno child) 1)
-            ;; Mimic 'open-pipe*'.
-            (if (file-port? (current-error-port))
-                (let ((error-port-fileno
-                       (fileno (current-error-port))))
-                  (unless (eq? error-port-fileno 2)
-                    (dup2 error-port-fileno
-                          2)))
-                (dup2 (open-fdes "/dev/null" O_WRONLY)
-                      2))
-            (apply execlp command command args))
-          (lambda ()
-            (primitive-_exit 127))))
-       (pid
-        (close-port child)
-        (values parent pid))))))
+     (if (defined? 'spawn)
+         (let* ((void (open-fdes "/dev/null" O_WRONLY))
+                (pid  (catch 'system-error
+                        (lambda ()
+                          (spawn command (cons command args)
+                                 #:input child
+                                 #:output child
+                                 #:error (if (file-port? (current-error-port))
+                                             (current-error-port)
+                                             void)))
+                        (const #f))))         ;can't exec, for instance ENOENT
+           (close-fdes void)
+           (close-port child)
+           (values parent pid))
+         (match (primitive-fork)                  ;Guile < 3.0.9
+           (0
+            (dynamic-wind
+              (lambda ()
+                #t)
+              (lambda ()
+                (close-port parent)
+                (close-fdes 0)
+                (close-fdes 1)
+                (close-fdes 2)
+                (dup2 (fileno child) 0)
+                (dup2 (fileno child) 1)
+                ;; Mimic 'open-pipe*'.
+                (if (file-port? (current-error-port))
+                    (let ((error-port-fileno
+                           (fileno (current-error-port))))
+                      (unless (eq? error-port-fileno 2)
+                        (dup2 error-port-fileno
+                              2)))
+                    (dup2 (open-fdes "/dev/null" O_WRONLY)
+                          2))
+                (apply execlp command command args))
+              (lambda ()
+                (primitive-_exit 127))))
+           (pid
+            (close-port child)
+            (values parent pid)))))))
 
 (define* (inferior-pipe directory command error-port)
   "Return two values: an input/output pipe on the Guix instance in DIRECTORY

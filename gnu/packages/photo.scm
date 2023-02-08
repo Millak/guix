@@ -43,6 +43,7 @@
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages build-tools)
   #:use-module (gnu packages check)
@@ -81,6 +82,7 @@
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
+  #:use-module (gnu packages sdl)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages time)
@@ -299,7 +301,7 @@ MTP, and much more.")
 (define-public perl-image-exiftool
   (package
     (name "perl-image-exiftool")
-    (version "12.16")
+    (version "12.50")
     (source
      (origin
        (method url-fetch)
@@ -309,24 +311,21 @@ MTP, and much more.")
              ;; New releases may take a while to hit CPAN.
              (string-append "https://www.sno.phy.queensu.ca/~phil/exiftool/"
                             "Image-ExifTool-" version ".tar.gz")))
-       (patches (search-patches "perl-image-exiftool-CVE-2021-22204.patch"))
        (sha256
         (base32
-         "0skm22b3gg1bfk0amklrprpva41m6mkrhqp0gi7z1nmcf9ypjh61"))))
+         "1a605rz00d7p866a22sw0s63m5a6y4xqqrzp7q7jyc0hbky43s5w"))))
     (build-system perl-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'post-install
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Make sure the 'exiftool' commands finds the library.
-             ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
-             (let* ((out (assoc-ref outputs "out"))
-                    (pm  (find-files out "^ExifTool\\.pm$"))
-                    (lib (dirname (dirname (car pm)))))
-               (wrap-program (string-append out "/bin/exiftool")
-                 `("PERL5LIB" prefix (,lib)))
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'post-install
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; Make sure the 'exiftool' commands finds the library.
+                   ;; XXX: Shouldn't it be handled by PERL-BUILD-SYSTEM?
+                   (let* ((pm  (find-files #$output "^ExifTool\\.pm$"))
+                          (lib (dirname (dirname (car pm)))))
+                     (wrap-program (string-append #$output "/bin/exiftool")
+                       `("PERL5LIB" prefix (,lib)))))))))
     (home-page "https://metacpan.org/release/Image-ExifTool")
     (synopsis "Program and Perl library to manipulate EXIF and other metadata")
     (description "This package provides the @code{exiftool} command and the
@@ -461,7 +460,7 @@ photographic equipment.")
 (define-public darktable
   (package
     (name "darktable")
-    (version "4.0.1")
+    (version "4.2.0")
     (source
      (origin
        (method url-fetch)
@@ -469,7 +468,7 @@ photographic equipment.")
              "https://github.com/darktable-org/darktable/releases/"
              "download/release-" version "/darktable-" version ".tar.xz"))
        (sha256
-        (base32 "0s0xwp5n4jhzdhbmsg02dlsc503jfznpwqn3rnipg687q3h83vsz"))))
+        (base32 "1y8sn7yyqyg1n82byaw5csjr8a6m7g6839krq9k9zc79vxzr3c0q"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags '("-DBINARY_PACKAGE_BUILD=On"
@@ -526,10 +525,11 @@ photographic equipment.")
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)
        ("po4a" ,po4a)
-       ("python" ,python-wrapper)
+       ("python-wrapper" ,python-wrapper)
        ("ruby" ,ruby)))
     (inputs
-     (list cairo
+     (list bash-minimal
+           cairo
            colord-gtk ;optional, for color profile support
            cups ;optional, for printing support
            curl
@@ -557,6 +557,7 @@ photographic equipment.")
            libwebp ;optional, for WebP support
            libxml2
            libxslt
+           libheif
            lua-5.4 ;optional, for plugins
            opencl-icd-loader ;optional, for OpenCL support
            openexr ;optional, for EXR import/export
@@ -564,6 +565,7 @@ photographic equipment.")
            osm-gps-map ;optional, for geotagging view
            pugixml
            python-jsonschema
+           sdl2
            sqlite))
     (home-page "https://www.darktable.org")
     (synopsis "Virtual lighttable and darkroom for photographers")

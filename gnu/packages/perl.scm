@@ -34,6 +34,7 @@
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 Evgeny Pisemsky <evgeny@pisemsky.com>
 ;;; Copyright © 2022 gemmaro <gemmaro.dev@gmail.com>
+;;; Copyright © 2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -6607,6 +6608,30 @@ return values, trading space for time.")
 follows LRU semantics, that is, the last n results, where n is specified as
 the argument to the CACHESIZE parameter, will be cached.")
     (license (package-license perl))))
+
+(define-public perl-memory-usage
+  (package
+    (name "perl-memory-usage")
+    (version "0.201")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/D/DO/DONEILL/Memory-Usage-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "0jakrq9yk2njzc5qhbgvp7fi933ir903w3wc3kl4i9s03v9glalg"))))
+    (build-system perl-build-system)
+    (native-inputs
+      (list perl-module-install
+            perl-test-pod
+            perl-test-pod-coverage))
+    (home-page "https://metacpan.org/release/Memory-Usage")
+    (synopsis "Tools to determine actual memory usage")
+    (description
+     "This module lets you attempt to measure, from your operating system's
+perspective, how much memory a process is using at any given time.")
+    (license license:perl-license)))
 
 (define-public perl-mime-base64
   (package

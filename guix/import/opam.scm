@@ -382,8 +382,8 @@ or #f on failure."
                       ,(list 'quasiquote `((upstream-name . ,name))))))
               (home-page ,(metadata-ref opam-content "homepage"))
               (synopsis ,(metadata-ref opam-content "synopsis"))
-              (description ,(beautify-description
-                             (metadata-ref opam-content "description")))
+              (description ,(and=> (metadata-ref opam-content "description")
+                                   beautify-description))
               (license ,(spdx-string->license
                          (metadata-ref opam-content "license"))))
            (filter

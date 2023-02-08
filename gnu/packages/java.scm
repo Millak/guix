@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2017, 2019, 2021 Carlo Zancanaro <carlo@zancanaro.id.au>
@@ -1493,8 +1493,25 @@ blacklisted.certs.pem"
   (make-openjdk openjdk17 "18.0.2"
                 "1yimfdkwpinhg5cf1mcrzk9xvjwnray3cx762kypb9jcwbranjwx"))
 
+(define-public openjdk19
+  (make-openjdk openjdk18 "19.0.1"
+                "0kyalb391znw6idmfn3dsx6c2mal1hl63f0bwa4mlnsxfl380bi1"
+   (arguments
+    (substitute-keyword-arguments (package-arguments openjdk18)
+      ((#:phases phases)
+       #~(modify-phases #$phases
+           (replace 'fix-java-shebangs
+             (lambda _
+               ;; Update file path.
+               (substitute* "src/java.base/share/data/blockedcertsconverter/blocked.certs.pem"
+                 (("^#!.*") "#! java BlockedCertsConverter SHA-256\n"))))
+           (add-before 'configure 'define-java-environment-variables
+             (lambda* (#:key inputs #:allow-other-keys)
+               ;; Fix for "valid range 1980-01-01T00:00:02Z to 2099-12-31T23:59:59Z".
+               (setenv "SOURCE_DATE_EPOCH" "1234567890")))))))))
+
 ;;; Convenience alias to point to the latest version of OpenJDK.
-(define-public openjdk openjdk18)
+(define-public openjdk openjdk19)
 
 
 (define-public ant/java8
@@ -12914,18 +12931,17 @@ static code analysis or code manipulation.")))
     (name "java-logback-core")
     (version "1.2.3")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/qos-ch/logback/archive/v_"
-                                  version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/qos-ch/logback/")
+                    (commit (string-append "v_" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "1x6ga74yfgm94cfx98gybakbrlilx8i2gn6dx13l40kasmys06mi"))
+                "055jbfpg3l5qw7pw2snkdag0gjkb4vcxfg9110cqqyc40k2nd17z"))
               (modules '((guix build utils)))
               (snippet
-               '(begin
-                  (delete-file-recursively "logback-access/lib")
-                  #t))))
+               '(delete-file-recursively "logback-access/lib"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "logback.jar"
@@ -12943,22 +12959,20 @@ static code analysis or code manipulation.")))
        #:phases
        (modify-phases %standard-phases
          (add-before 'configure 'chdir
-           (lambda _
-             (chdir "logback-core")
-             #t)))))
+           (lambda _ (chdir "logback-core"))))))
     (inputs
-     `(("java-javax-mail" ,java-javax-mail)
-       ("servlet" ,java-javaee-servletapi)
-       ("java-commons-compiler" ,java-commons-compiler)
-       ("java-janino" ,java-janino)))
+     (list java-javax-mail
+           java-javaee-servletapi
+           java-commons-compiler
+           java-janino))
     (native-inputs
-     `(("java-junit" ,java-junit)
-       ("java-hamcrest-core" ,java-hamcrest-core)
-       ("java-mockito-1" ,java-mockito-1)
-       ("java-cglib" ,java-cglib)
-       ("java-asm" ,java-asm)
-       ("java-objenesis" ,java-objenesis)
-       ("java-joda-time" ,java-joda-time)))
+     (list java-junit
+           java-hamcrest-core
+           java-mockito-1
+           java-cglib
+           java-asm
+           java-objenesis
+           java-joda-time))
     (home-page "https://logback.qos.ch")
     (synopsis "Logging for java")
     (description "Logback is intended as a successor to the popular log4j project.
@@ -12992,7 +13006,7 @@ This module lays the groundwork for the other two modules.")
                                             (find-files (assoc-ref inputs input)
                                                         ".*.jar"))
                                           '("java-logback-core" "java-slf4j-api"
-                                            "java-commons-compiler" "servlet"
+                                            "java-commons-compiler" "java-javaee-servletapi"
                                             "groovy")))
                        ":"))
              (apply invoke "groovyc" "-d" "build/classes" "-j"

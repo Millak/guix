@@ -44,7 +44,7 @@
     (arguments
      ;; 'sexp-conv' and other programs need to have their RUNPATH point to
      ;; $libdir, which is not the case by default.  Work around it.
-     '(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath="
+     `(#:configure-flags (list (string-append "LDFLAGS=-Wl,-rpath="
                                               (assoc-ref %outputs "out")
                                               "/lib"))
        #:phases (modify-phases %standard-phases
@@ -59,7 +59,13 @@
                                       (rename-file ar (string-append
                                                        slib "/"
                                                        (basename ar))))
-                                    (find-files "." "\\.a$")))
+                                    (find-files
+                                     "."
+                                     ,(if (target-mingw?)
+                                          '(lambda (filename _)
+                                             (and (string-suffix? ".a" filename)
+                                                  (not (string-suffix? ".dll.a" filename))))
+                                          "\\.a$"))))
                         #t))))))
     (outputs '("out" "debug" "static"))
     (native-inputs (list m4))

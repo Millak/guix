@@ -2,6 +2,7 @@
 ;;; Copyright © 2019 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2020 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Jonathan Brielmaier <jonathan.brielmaier@web.de>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -94,6 +95,7 @@
                                  %standard-phases))
                      (system (%current-system))
                      (target #f)
+                     (substitutable? #t)
                      (imported-modules %copy-build-system-modules)
                      (modules '((guix build copy-build-system)
                                 (guix build utils))))
@@ -129,6 +131,8 @@
     (gexp->derivation name builder
                       #:system system
                       #:target #f
+                      #:substitutable? substitutable?
+                      #:graft? #f
                       #:guile-for-build guile)))
 
 (define copy-build-system

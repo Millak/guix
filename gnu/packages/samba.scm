@@ -71,49 +71,34 @@
 (define-public cifs-utils
   (package
     (name "cifs-utils")
-    (version "6.14")
+    (version "7.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://download.samba.org/pub/linux-cifs/"
                            "cifs-utils/cifs-utils-" version ".tar.bz2"))
        (sha256 (base32
-                "1f2n0yzqsy5v5qv83731bi0mi86rrh11z8qjy1gjj8al9c3yh2b6"))))
+                "0qc1ph94yvg87m87xangw9dd0m5ds2q1zd2sqkzldsnkbfwamvqd"))))
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake pkg-config
            ;; To generate the manpages.
            python-docutils)) ; rst2man
     (inputs
-     `(("keytuils" ,keyutils)
-       ("linux-pam" ,linux-pam)
-       ("libcap-ng" ,libcap-ng)
-       ("mit-krb5" ,mit-krb5)
-       ("samba" ,samba)
-       ("talloc" ,talloc)))
+     (list keyutils libcap-ng linux-pam mit-krb5 samba talloc))
     (arguments
-     `(#:configure-flags
-       (list "--enable-man")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'bootstrap 'trigger-bootstrap
-           ;; The shipped configure script is buggy, e.g., it contains a
-           ;; unexpanded literal ‘LIBCAP_NG_PATH’ line).
-           (lambda _
-             (delete-file "configure")))
-         (add-before 'configure 'set-root-sbin
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Don't try to install into "/sbin".
-             (setenv "ROOTSBINDIR"
-                     (string-append (assoc-ref outputs "out") "/sbin"))))
-         (add-before 'install 'install-man-pages
-           ;; Create a directory that isn't created since version 6.10.
-           (lambda* (#:key make-flags parallel-build? #:allow-other-keys)
-             (apply invoke "make" "install-man"
-                    `(,@(if parallel-build?
-                            `("-j" ,(number->string (parallel-job-count)))
-                            '())
-                      ,@make-flags)))))))
+     (list #:configure-flags #~(list "--enable-man")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'bootstrap 'trigger-bootstrap
+                 ;; The shipped configure script is buggy, e.g., it contains a
+                 ;; unexpanded literal ‘LIBCAP_NG_PATH’ line).
+                 (lambda _
+                   (delete-file "configure")))
+               (add-before 'configure 'set-root-sbin
+                 ;; Don't try to install into "/sbin".
+                 (lambda _
+                   (setenv "ROOTSBINDIR" (string-append #$output "/sbin")))))))
     (synopsis "User-space utilities for Linux CIFS (Samba) mounts")
     (description "@code{cifs-utils} is a set of user-space utilities for
 mounting and managing @acronym{CIFS, Common Internet File System} shares using
@@ -290,14 +275,14 @@ Samba is an important component to seamlessly integrate Linux/Unix Servers and
 Desktops into Active Directory environments using the winbind daemon.")
     (license license:gpl3+)))
 
-;;; FIXME: Invert inheritance relationship; the "fixed" package shouldn't be
+;;; FIXME: Invert inheritance relationship; the "pinned" package shouldn't be
 ;;; susceptible to changes in the free one.
-(define-public samba/fixed
+(define-public samba/pinned
   ;; Version that rarely changes, depended on by libsoup.
   (hidden-package
    (package
      (inherit samba)
-     (replacement samba/fixed-patched)
+     (replacement samba/fixed)
      (version "4.15.3")
      (source
       (origin
@@ -321,9 +306,9 @@ Desktops into Active Directory environments using the winbind daemon.")
             libxslt
             libxml2)))))
 
-(define-public samba/fixed-patched
+(define-public samba/fixed
   (package
-    (inherit samba/fixed)
+    (inherit samba/pinned)
     ;; This is 4.15.13, but we need to trim the store file name to have
     ;; the same length as the one we are grafting above.
     (version "4.15.A")

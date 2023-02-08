@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2018-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2019 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
@@ -1057,7 +1057,9 @@ true, include its introduction, if any."
       (name ',(channel-name channel))
       (url ,(channel-url channel))
       (branch ,(channel-branch channel))
-      (commit ,(channel-commit channel))
+      ,@(if (channel-commit channel)
+            `((commit ,(channel-commit channel)))
+            '())
       ,@(if intro
             `((introduction (make-channel-introduction
                              ,(channel-introduction-first-signed-commit intro)

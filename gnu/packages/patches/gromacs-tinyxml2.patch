@@ -1,10 +1,7 @@
 Unbundling tinyxml2 from gromacs and using our own, which is newer, broke gromacs
 build.
 
-This patch fixes three issues:
-
-- cmake now errors out if using multiple target_link_libraries with mixed styles
-  of signatures.
+This patch fixes this issue:
 
 - Error handling API changed, fix the testutils/refdata_xml.cpp code by using the
   new API: document.ErrorStr() & tinyxml2::XML_SUCCESS.
@@ -15,22 +12,25 @@ there as long as they still keep the old version bundled.
 First hunk has already been requested for merging. Third is in discussion. Second
 will only be sent if third is OK'ed.
 
-diff -ruN gromacs-2020.2/src/testutils/CMakeLists.txt gromacs-2020.2-fixed/src/testutils/CMakeLists.txt
---- gromacs-2020.2/src/testutils/CMakeLists.txt 2020-04-30 18:33:44.000000000 +0200
-+++ gromacs-2020.2-fixed/src/testutils/CMakeLists.txt   2020-05-01 22:52:16.356000000 +0200
-@@ -73,7 +73,7 @@
- 
- if(HAVE_TINYXML2)
-     include_directories(SYSTEM ${TinyXML2_INCLUDE_DIR})
--    target_link_libraries(testutils ${TinyXML2_LIBRARIES})
-+    target_link_libraries(testutils PRIVATE ${TinyXML2_LIBRARIES})
- else()
-     include_directories(BEFORE SYSTEM "../external/tinyxml2")
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index cd748c9..1e90c95 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -539,9 +539,6 @@ if(GMX_EXTERNAL_TINYXML2)
+     if(NOT HAVE_TINYXML2)
+         message(FATAL_ERROR "External TinyXML-2 could not be found, please adjust your search paths")
+     endif()
+-    if (TinyXML2_FOUND AND TinyXML2_VERSION VERSION_GREATER "6")
+-        message(FATAL_ERROR "External TinyXML-2 is later than the highest supported version 6. Please adjust your search paths to include a supported version")
+-    endif()
  endif()
-diff -ruN gromacs-2020.2/src/testutils/refdata_xml.cpp gromacs-2020.2-fixed/src/testutils/refdata_xml.cpp
---- gromacs-2020.2/src/testutils/refdata_xml.cpp        2020-04-30 18:33:44.000000000 +0200
-+++ gromacs-2020.2-fixed/src/testutils/refdata_xml.cpp  2020-05-01 23:17:09.556000000 +0200
-@@ -206,21 +206,12 @@
+ 
+ option(GMX_EXTRAE "Add support for tracing using EXTRAE" OFF)
+diff --git a/src/testutils/refdata_xml.cpp b/src/testutils/refdata_xml.cpp
+index 0eb2209..57cebff 100644
+--- a/src/testutils/refdata_xml.cpp
++++ b/src/testutils/refdata_xml.cpp
+@@ -206,21 +206,12 @@ ReferenceDataEntry::EntryPointer readReferenceDataFile(const std::string& path)
      document.LoadFile(path.c_str());
      if (document.Error())
      {
@@ -56,7 +56,7 @@ diff -ruN gromacs-2020.2/src/testutils/refdata_xml.cpp gromacs-2020.2-fixed/src/
          GMX_THROW(TestException("Reference data not parsed successfully: " + path + "\n."
                                  + errorString + "\n"));
      }
-@@ -371,7 +362,7 @@
+@@ -371,7 +362,7 @@ void writeReferenceDataFile(const std::string& path, const ReferenceDataEntry& r
      XMLElementPtr rootElement = createRootElement(&document);
      createChildElements(rootElement, rootEntry);
  

@@ -42,11 +42,11 @@
   (max-count integer "Cache size.")
   (max-time integer "Cache time."))
 
-(define serialize-fail2ban-ignore-cache-configuration
-  (match-lambda
-    (($ <fail2ban-ignore-cache-configuration> _ key max-count max-time)
-     (format #f "key=\"~a\", max-count=~d, max-time=~d"
-             key max-count max-time))))
+(define (serialize-fail2ban-ignore-cache-configuration config)
+  (match-record config <fail2ban-ignore-cache-configuration>
+    (key max-count max-time)
+    (format #f "key=\"~a\", max-count=~d, max-time=~d"
+            key max-count max-time)))
 
 (define-maybe/no-serialization string)
 
@@ -54,10 +54,10 @@
   (name string "Filter to use.")
   (mode maybe-string "Mode for filter."))
 
-(define serialize-fail2ban-jail-filter-configuration
-  (match-lambda
-    (($ <fail2ban-jail-filter-configuration> _ name mode)
-     (format #f "~a~@[[mode=~a]~]" name (maybe-value mode)))))
+(define (serialize-fail2ban-jail-filter-configuration config)
+  (match-record config <fail2ban-jail-filter-configuration>
+    (name mode)
+    (format #f "~a~@[[mode=~a]~]" name (maybe-value mode))))
 
 (define (argument? a)
   (and (pair? a)
@@ -86,17 +86,17 @@
             (format #f "~a=~a" (car e) (any-value (cdr e))))))
     (format #f "~a" (string-join (map key-value args) ","))))
 
-(define serialize-fail2ban-jail-action-configuration
-  (match-lambda
-    (($ <fail2ban-jail-action-configuration> _ name arguments)
-     (format
-      #f "~a~a"
-      name
-      (if (null? arguments) ""
-          (format
-           #f "[~a]"
-           (serialize-fail2ban-jail-action-configuration-arguments
-            arguments)))))))
+(define (serialize-fail2ban-jail-action-configuration config)
+  (match-record config <fail2ban-jail-action-configuration>
+    (name arguments)
+    (format
+     #f "~a~a"
+     name
+     (if (null? arguments) ""
+         (format
+          #f "[~a]"
+          (serialize-fail2ban-jail-action-configuration-arguments
+           arguments))))))
 
 (define fail2ban-backend->string
   (match-lambda

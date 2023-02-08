@@ -7,7 +7,7 @@
 ;;; Copyright © 2018, 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018, 2019, 2020, 2021 Julien Lepiller <julien@lepiller.eu>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2019, 2021 Wiktor Żelazny <wzelazny@vurv.cz>
 ;;; Copyright © 2019, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -15,7 +15,7 @@
 ;;; Copyright © 2020 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020, 2021, 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.com>
-;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2021, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2021, 2022 Nikolay Korotkiy <sikmir@disroot.org>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -1167,13 +1167,13 @@ utilities for data translation and processing.")
   (package
     (name "python-cartopy")
     ;; This is a post-release fix that adds build_ext to setup.py.
-    (version "0.21.0")
+    (version "0.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Cartopy" version))
        (sha256
-        (base32 "0hnfs75dcnz12ximah5xn9566r8zz189lxikmj4lrs9jl4l3l7ff"))))
+        (base32 "02i5rjhvrsi3vgj8kfsdx77g1xl59jh2a671qqqj4n682abn9mc9"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1281,7 +1281,7 @@ extension.")
 (define-public tegola
   (package
     (name "tegola")
-    (version "0.7.0")
+    (version "0.16.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1290,20 +1290,13 @@ extension.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0agqj1b7l41m0imvxjriw44jcpa99mhq1z1vbsfzjhcr94zhwmfr"))))
+                "1mjfn0izf1lj402845mx0cv9fald8s5443q35y16d9crqf3i6mav"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/go-spatial/tegola/cmd/tegola"
        #:unpack-path "github.com/go-spatial/tegola"
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-version
-           (lambda _
-             (with-directory-excursion "src/github.com/go-spatial/tegola"
-               (substitute* '("cmd/tegola/cmd/root.go"
-                              "cmd/tegola_lambda/main.go")
-                 (("version not set") ,version)))
-             #t)))))
+       #:build-flags '(,(string-append "-ldflags=-X github.com/go-spatial/tegola/internal/build.Version=" version))
+       #:install-source? #f))
     (home-page "https://tegola.io")
     (synopsis "Vector tile server for maps")
     (description "Tegola is a free vector tile server written in Go.  Tegola
@@ -2739,6 +2732,51 @@ architecture.")
       license:public-domain
       license:qwt1.0))))
 
+(define-public splat
+  (package
+    (name "splat")
+    (version "1.5.0b3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hoche/splat")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10djwjwb1pvznr0fjwnxdm5d961f3yngispb4zj9hyzdgq1xh217"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; Delete pre-compiled libraries.
+           (delete-file-recursively "vstudio")))))
+    (build-system gnu-build-system)
+    (inputs
+     (list bzip2 libjpeg-turbo libpng zlib))
+    (arguments
+     (list #:tests? #f ; No test suite.
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'fix-installation-scripts
+                 (lambda _
+                   (substitute* (list "install" "utils/install")
+                     (("/usr/local")
+                      #$output)
+                     (("whoami=`whoami`")
+                      "whoami=root"))))
+               (delete 'configure)
+               (add-before 'install 'create-bin-directory
+                 (lambda _
+                   (mkdir-p (string-append #$output "/bin")))))))
+    (synopsis "Signal propagation and coverage analysis tool")
+    (description
+     "The SPLAT (Signal Propagation, Loss, And Terrain) program can use the
+Longley-Rice path loss and coverage prediction using the Irregular Terrain
+Model to predict the behaviour and reliability of radio links, and to predict
+path loss.")
+    (home-page "https://www.qsl.net/kd2bd/splat.html")
+    (license license:gpl2+)))
+
 (define-public python-geographiclib
   (package
     (name "python-geographiclib")
@@ -2786,6 +2824,36 @@ architecture.")
 web services.  @code{geopy} makes it easy for Python developers to locate the
 coordinates of addresses, cities, countries, and landmarks across the globe
 using third-party geocoders and other data sources.")
+    (license license:expat)))
+
+(define-public python-haversine
+  (package
+    (name "python-haversine")
+    (version "2.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    ;; There are no tests in the PyPi archive.
+                    (url "https://github.com/mapado/haversine")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0inxyj5n4jzgg5xiadqx9sk83gdx5ff989l9s04smdzbd3b8c0c8"))))
+    (build-system python-build-system)
+    (native-inputs (list python-pytest python-numpy))
+    (arguments
+      (list #:phases
+            #~(modify-phases %standard-phases
+                (replace 'check
+                  (lambda* (#:key tests? inputs #:allow-other-keys)
+                    (when tests?
+                      (invoke "pytest")))))))
+    (home-page "https://github.com/mapado/haversine")
+    (synopsis "Calculate the distance between 2 points on Earth")
+    (description "This package provides functions to calculate the
+distance in various units between two points on Earth using their
+latitude and longitude.")
     (license license:expat)))
 
 (define-public gplates

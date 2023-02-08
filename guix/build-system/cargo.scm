@@ -123,6 +123,7 @@ to NAME and VERSION."
   (gexp->derivation name builder
                     #:system system
                     #:target #f
+                    #:graft? #f
                     #:guile-for-build guile))
 
 (define (package-cargo-inputs p)

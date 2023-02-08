@@ -333,7 +333,8 @@ reading and writing archives compressed using various compression filters such
 as gzip and bzip2.  The library is inherently stream-oriented; readers
 serially iterate through the archive, writers serially add things to the
 archive.  In particular, note that there is currently no built-in support for
-random access nor for in-place modification.")
+random access nor for in-place modification.  This package provides the
+@command{bsdcat}, @command{bsdcpio} and @command{bsdtar} commands.")
     (license license:bsd-2)))
 
 (define-public rdup
@@ -523,7 +524,7 @@ rdiff-backup is easy to use and settings have sensible defaults.")
 (define-public rsnapshot
   (package
     (name "rsnapshot")
-    (version "1.4.4")
+    (version "1.4.5")
     (source
      (origin
        (method url-fetch)
@@ -531,7 +532,7 @@ rdiff-backup is easy to use and settings have sensible defaults.")
              "https://github.com/rsnapshot/rsnapshot/releases/download/"
              version "/rsnapshot-" version ".tar.gz"))
        (sha256
-        (base32 "0yc5k2fhm54ypxgm1fsaf8vrg5b7qbvbsqk371n6baf592vprjy1"))))
+        (base32 "0hl2ncld0xkwlnv1cqjmmnld2nlp65alkkdacs11wl95r80mxdqh"))))
     (build-system gnu-build-system)
     (arguments
      `(#:phases

@@ -309,14 +309,14 @@ commands would.")
 (define-public i3-wm
   (package
     (name "i3-wm")
-    (version "4.20.1")
+    (version "4.22")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://i3wm.org/downloads/i3-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "1rpwdgykcvmrmdz244f0wm7446ih1dcw8rlc1hm1c7cc42pyrq93"))))
+                "0jrya4rhh46sivlmqaqc4n9abpp1yn1ajhi616gn75cxwl8rjqr8"))))
     (build-system meson-build-system)
     (arguments
      `(;; The test suite requires the unpackaged Xephyr X server.
@@ -346,7 +346,7 @@ commands would.")
            xmlto
            perl-pod-simple
            libx11
-           pcre
+           pcre2
            startup-notification
            pango
            cairo))
@@ -375,36 +375,7 @@ many programming languages.")
     (license license:bsd-3)))
 
 (define-public i3-gaps
-  (package
-    (inherit i3-wm)
-    (name "i3-gaps")
-    (version "4.20.1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/Airblader/i3")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0g0qmv2gpv9qbhj9h5f4c4vfs6ndzq2rblgx9md85iharwp5sbb9"))))
-    (home-page "https://github.com/Airblader/i3")
-    (synopsis "Tiling window manager with gaps")
-    (description
-     "i3-gaps is a fork of i3wm, a tiling window manager
-for X11.  It is kept up to date with upstream, adding a few additional
-features such as gaps between windows.
-
-i3 is a tiling X11 window manager that dynamically manages tiled, stacked,
-and tabbed window layouts.
-
-i3 primarily targets advanced users.  Windows are managed manually and
-organised inside containers, which can be split vertically or horizontally,
-and optionally resized.
-
-i3 uses a plain-text configuration file, and can be extended and controlled
-from many programming languages.")
-    (license license:bsd-3)))
+  (deprecated-package "i3-gaps" i3-wm))
 
 (define-public i3lock
   (package
@@ -1722,6 +1693,57 @@ display a clock or apply image manipulation techniques to the background image."
     (description "Swaybg is a wallpaper utility for Wayland compositors.")
     (license license:expat))) ; MIT license
 
+
+(define-public swaynotificationcenter
+  (package
+    (name "swaynotificationcenter")
+    (version "0.7.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ErikReider/SwayNotificationCenter")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32 "1xvr5m5sqznr3dd512i5pk0d56v7n0ywdcy6rnz85vbf2k7b6kj5"))))
+    (build-system meson-build-system)
+    (arguments (list #:configure-flags #~(list "-Dsystemd-service=false")))
+    (native-inputs
+     (list `(,glib "bin")
+           gobject-introspection
+           pkg-config
+           python-minimal
+           scdoc
+           vala-next))
+    (inputs
+     (list json-glib
+           glib
+           gtk+
+           gtk-layer-shell
+           libhandy
+           wayland-protocols))
+    (synopsis "Notification daemon with a graphical interface")
+    (description
+     "This package provides a notification daemon for the Sway Wayland
+compository, supporting the following featuers:
+
+@itemize
+@item Keyboard shortcuts
+@item Notification body markup with image support
+@item A panel to view previous notifications
+@item Show album art for notifications like Spotify
+@item Do not disturb
+@item Click notification to execute default action
+@item Show alternative notification actions
+@item Customization through a CSS file
+@item Trackpad/mouse gesture to close notification
+@item The same features as any other basic notification daemon
+@item Basic configuration through a JSON config file
+@item Hot-reload config through swaync-client
+@end itemize")
+    (home-page "https://github.com/ErikReider/SwayNotificationCenter")
+    (license license:expat)))
+
 (define-public waybar
   (package
     (name "waybar")
@@ -2672,7 +2694,7 @@ for wayland conceptually based on the X11 window manager
 (define-public libucl
   (package
     (name "libucl")
-    (version "0.8.1")
+    (version "0.8.2")
     (source
      (origin
        (method git-fetch)
@@ -2681,8 +2703,7 @@ for wayland conceptually based on the X11 window manager
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1h52ldxankyhbbm1qbqz1f2q0j03c1b4mig7343bs3mc6fpm18gf"))))
+        (base32 "1j8npymjhcnzbwhx1wggr88148cga921438flf1sn7mw1b9dr55f"))))
     (native-inputs
      (list autoconf automake pkg-config libtool))
     (build-system gnu-build-system)
@@ -2849,7 +2870,7 @@ which do not support it.")
 (define-public berry
   (package
     (name "berry")
-    (version "0.1.11")
+    (version "0.1.12")
     (source
       (origin
         (method git-fetch)
@@ -2858,7 +2879,7 @@ which do not support it.")
           (commit version)))
         (file-name (git-file-name name version))
         (sha256
-          (base32 "1qyq3g0m7rb9gpk1i5kfy9nr8sqivjiilbi4g0nw4d400rblvkbj"))))
+          (base32 "0ygqzgi7ncc6whvwdifds2cq9cllq9fhiqnigx859hbdnf453hn4"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; There are no tests.

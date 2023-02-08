@@ -20,7 +20,7 @@
 ;;; Copyright © 2020 Dimakis Dimakakos <me@bendersteed.tech>
 ;;; Copyright © 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Adam Kandur <rndd@tuta.io>
-;;; Copyright © 2020, 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2020-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021, 2022 Aurora <rind38@disroot.org>
 ;;; Copyright © 2021 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2021, 2022, 2023 André A. Gomes <andremegafone@gmail.com>
@@ -32,7 +32,7 @@
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
-;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
+;;; Copyright © 2022, 2023 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Thomas Albers Raviola <thomas@thomaslabs.org>
 ;;; Copyright © 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Trevor Richards <trev@trevdev.ca>
@@ -85,6 +85,7 @@
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages gnupg)
+  #:use-module (gnu packages graphics)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
@@ -847,6 +848,69 @@ Common Lisp, heavily influenced by Python's @code{optparse} and
 
 (define-public cl-adopt
   (sbcl-package->cl-source-package sbcl-adopt))
+
+(define-public sbcl-clingon
+  (let ((commit "4b99dcb4eb4433118a95f5b4ca49ae32b0a57492")
+        (revision "0"))
+    (package
+      (name "sbcl-clingon")
+      (version (git-version "0.4.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/dnaeon/clingon")
+               (commit commit)))
+         (file-name (git-file-name "cl-clingon" version))
+         (sha256
+          (base32 "1nn1zs8n6rsys9s791y6sarpy3416aq848mkfr767g5s5y44ij7j"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-rove))
+      (inputs
+       (list sbcl-bobbin
+             sbcl-cl-reexport
+             sbcl-split-sequence
+             sbcl-with-user-abort))
+      (home-page "https://github.com/dnaeon/clingon")
+      (synopsis "Command-line option parsing library for Common Lisp")
+      (description
+       "@code{clingon} is a command-line option parsing library for Common
+Lisp.  Its features include:
+@itemize
+@item Support for subcommands
+@item Support for command aliases
+@item Support for short and long options
+@item Related options may be grouped into categories
+@item Short options may be collapsed into a single argument, as in
+@option{-xyz}
+@item Long options support the notations @option{--long-opt arg} and
+@option{--long-opt=arg}
+@item Automatic generation of help/usage information for commands and
+subcommands
+@item Out-of-the-box support for @option{--version} and @option{--help}
+@item Support for various kinds of options including string, integer,
+boolean, switch, enum, list, counter, filepath, etc.
+@item Subcommands can look up global options defined in parent commands
+@item Support for required options
+@item Options can be initialized via environment variables
+@item Single interface for creating options using @code{CLINGON:MAKE-OPTION}
+@item Generate documentation for your command-line application
+@item Support for @code{pre-hook} and @code{post-hook} actions for commands,
+which allow invoking functions before and after the respective handler of the
+command is executed
+@item Support for Bash and Zsh completions
+@item Extensibility, so if you don't find something you need you can extend it
+by developing a new option kind, or even a new mechanism for initializing
+options, e.g., by looking up an external key/value store
+@end itemize")
+      (license license:bsd-2))))
+
+(define-public cl-clingon
+  (sbcl-package->cl-source-package sbcl-clingon))
+
+(define-public ecl-clingon
+  (sbcl-package->ecl-package sbcl-clingon))
 
 (define-public sbcl-cl-irc
   (let ((commit "963823537c7bfcda2edd4c44d172192da6722175")
@@ -8418,6 +8482,35 @@ can contain any kind of values.")
 (define-public ecl-bst
   (sbcl-package->ecl-package sbcl-bst))
 
+(define-public sbcl-trivial-octet-streams
+  (let ((commit "bc5d398b18549fd42e9c2a365df28ad865f1b85d")
+        (revision "0"))
+    (package
+      (name "sbcl-trivial-octet-streams")
+      (version (git-version "0.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/sharplispers/trivial-octet-streams")
+               (commit commit)))
+         (file-name (git-file-name "cl-trivial-octet-streams" version))
+         (sha256
+          (base32 "0ysnsarlzynb7jf4b63b6kkxjancxc66jwmn0sb3vxyh87siiv6n"))))
+      (build-system asdf-build-system/sbcl)
+      (home-page "https://github.com/sharplispers/trivial-octet-streams")
+      (synopsis "In-memory octet streams for Common Lisp")
+      (description
+       "TRIVIAL-OCTET-STREAMS is a Common Lisp library implementing in-memory
+octet streams analogous to string streams.")
+      (license license:bsd-3))))
+
+(define-public cl-trivial-octet-streams
+  (sbcl-package->cl-source-package sbcl-trivial-octet-streams))
+
+(define-public ecl-trivial-octet-streams
+  (sbcl-package->ecl-package sbcl-trivial-octet-streams))
+
 (define-public sbcl-cl-octet-streams
   (package
     (name "sbcl-cl-octet-streams")
@@ -10283,6 +10376,63 @@ Common Lisp.  It uses the libuv library as backend.")
 
 (define-public ecl-cl-async
   (sbcl-package->ecl-package sbcl-cl-async))
+
+(define-public sbcl-classimp
+  (let ((commit "d82a14c59bc733f89a1ea0b3447ebedddce5756e")
+        (revision "0"))
+    (package
+      (name "sbcl-classimp")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/3b/classimp")
+               (commit commit)))
+         (file-name (git-file-name "cl-classimp" version))
+         (sha256
+          (base32 "0pbnz6cf1zb2ayk4kbw0gphjb8nflnjns2rwhv86jz0kf0z1hqha"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-assimp-lib-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "library.lisp"
+                  (("libassimp.so.5" _)
+                   (search-input-file inputs "/lib/libassimp.so.5.0.0"))))))))
+      (inputs
+       (list assimp-5.0
+             sbcl-cffi
+             sbcl-split-sequence))
+      (home-page "https://github.com/3b/classimp")
+      (synopsis "Common Lisp CFFI bindings for Open Asset Import Library")
+      (description
+       "This package provides CFFI bindings to the @acronym{ASSIMP, Asset
+Import} library for Common Lisp.")
+      (license license:expat))))
+
+;; FIXME: The cl and ecl packages get the latest version of assimp as
+;; dependency instead of the one specified in the sbcl package. Specifying
+;; the dependencies explicitly works around the issue.
+(define-public cl-classimp
+  (let ((pkg (sbcl-package->cl-source-package sbcl-classimp)))
+    (package
+      (inherit pkg)
+      (inputs
+       (list assimp-5.0
+             cl-cffi
+             cl-split-sequence)))))
+
+(define-public ecl-classimp
+  (let ((pkg (sbcl-package->ecl-package sbcl-classimp)))
+    (package
+      (inherit pkg)
+      (inputs
+       (list assimp-5.0
+             ecl-cffi
+             ecl-split-sequence)))))
 
 (define-public sbcl-blackbird
   (let ((commit "d361f81c1411dec07f6c2dcb11c78f7aea9aaca8")
@@ -16279,10 +16429,10 @@ standard library.")
   (sbcl-package->cl-source-package sbcl-shlex))
 
 (define-public sbcl-cmd
-  (let ((commit "fda9e6bd9137ea806313151716fd87578cdbc882"))
+  (let ((commit "dda16c251992d2711dd98a073c436e73355cdb15"))
     (package
       (name "sbcl-cmd")
-      (version (git-version "0.0.1" "6" commit))
+      (version (git-version "0.0.1" "7" commit))
       (source
        (origin
          (method git-fetch)
@@ -16291,7 +16441,7 @@ standard library.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0j2yns565mp2rsiz8lc75psk7wws9qz8rh74n4vf9zdyrw16ckpf"))))
+          (base32 "1m72vir64h21y3z1dmdywr0r3dl9lwawgd5p9g0cl3bgmz2wjgqr"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        `(("alexandria" ,sbcl-alexandria)
@@ -17974,8 +18124,8 @@ abstract, final and singleton classes.")
   (sbcl-package->cl-source-package sbcl-abstract-classes))
 
 (define-public sbcl-coalton
-  (let ((commit "012f6c8db6d73df16f7729090a12a929fb82db17")
-        (revision "2"))
+  (let ((commit "ba758062bdc7c316438198601f43900c51df25d8")
+        (revision "3"))
     (package
       (name "sbcl-coalton")
       (version (git-version "0.0.1" revision commit))
@@ -17985,9 +18135,9 @@ abstract, final and singleton classes.")
          (uri (git-reference
                (url "https://github.com/coalton-lang/coalton")
                (commit commit)))
-         (file-name (git-file-name "coalton" version))
+         (file-name (git-file-name "cl-coalton" version))
          (sha256
-          (base32 "1j3d12vyyn7y9nz2an4xmaa5si0jbxbwq7y61hq2b7vk376zvw18"))))
+          (base32 "08sxfla1gyf9pczylaq1cn2j1nr2gzc9w0pk6aarsa4q2770zhf7"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiasco))
@@ -17995,10 +18145,9 @@ abstract, final and singleton classes.")
        (list sbcl-alexandria
              sbcl-float-features
              sbcl-fset
-             sbcl-global-vars
              sbcl-json-streams
-             sbcl-serapeum
-             sbcl-trivia))
+             sbcl-split-sequence
+             sbcl-trivial-garbage))
       (home-page "https://coalton-lang.github.io")
       (synopsis "Dialect of ML in Common Lisp")
       (description
@@ -19138,7 +19287,7 @@ CL-I18N and CL-L10N.")
              sbcl-parser-combinators
              sbcl-split-sequence
              sbcl-trivial-backtrace))
-      (home-page "https://mmontone.github.io/djula/")
+      (home-page "https://mmontone.github.io/djula/djula/")
       (synopsis "Common Lisp port of the Django templating language")
       (description
        "This package provides a Common Lisp templating system based on Python
@@ -23525,7 +23674,7 @@ JavaScript code.")
 (define-public sbcl-nhooks
   (package
     (name "sbcl-nhooks")
-    (version "1.1.1")
+    (version "1.2.0")
     (source
      (origin
        (method git-fetch)
@@ -23535,7 +23684,7 @@ JavaScript code.")
        (file-name (git-file-name "nhooks" version))
        (sha256
         (base32
-         "1379q1wbh38xlkwlpf0xy9wgbbc869zznak3l4yzwfgiw6l2hxa1"))))
+         "1cpd9ydxkrl4vxn2clfwljl4q5hdybxkc96qshq7dczq2jvg1nfs"))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-serapeum))

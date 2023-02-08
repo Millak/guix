@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2017, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017 Muriithi Frederick Muriuki <fredmanglis@gmail.com>
 ;;; Copyright © 2017, 2018 Oleg Pykhalov <go.wigust@gmail.com>
@@ -18,7 +18,7 @@
 ;;; Copyright © 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2021 Ivan Gankevich <i.gankevich@spbu.ru>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;;
@@ -165,8 +165,8 @@
   ;; Note: the 'update-guix-package.scm' script expects this definition to
   ;; start precisely like this.
   (let ((version "1.4.0")
-        (commit "9fe5b490df83ff32e2e0a604bf636eca48b9e240")
-        (revision 1))
+        (commit "d5fece6bfe6b2eaf93f936a4a6dea8fbfe118140")
+        (revision 3))
     (package
       (name "guix")
 
@@ -182,7 +182,7 @@
                       (commit commit)))
                 (sha256
                  (base32
-                  "1lglxp2jydxlzk7a1bpv8h7zi4qfpfbr3m57133j1ljija062j71"))
+                  "1q7qfxhfayhcia30w60klnv3q29a2n72vvf1wkdvwx55q3p8prsc"))
                 (file-name (string-append "guix-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -407,7 +407,7 @@ $(prefix)/etc/openrc\n")))
                        ;; cross-compilation.
                        ("guile" ,guile-3.0-latest) ;for faster builds
                        ("guile-gnutls" ,guile-gnutls)
-                       ,@(if (%current-target-system)
+                       ,@(if (hurd-target?)
                              '()
                              `(("guile-avahi" ,guile-avahi)))
                        ("guile-gcrypt" ,guile-gcrypt)
@@ -466,7 +466,7 @@ $(prefix)/etc/openrc\n")))
       (propagated-inputs
        `(("guile-gnutls" ,guile-gnutls)
          ;; Avahi requires "glib" which doesn't cross-compile yet.
-         ,@(if (%current-target-system)
+         ,@(if (hurd-target?)
                '()
                `(("guile-avahi" ,guile-avahi)))
          ("guile-gcrypt" ,guile-gcrypt)
@@ -493,8 +493,7 @@ also a distribution thereof.  It includes a virtual machine image.  Besides
 the usual package management features, it also supports transactional
 upgrades and roll-backs, per-user profiles, and much more.  It is based on
 the Nix package manager.")
-      (license license:gpl3+)
-      (properties '((ftp-server . "alpha.gnu.org"))))))
+      (license license:gpl3+))))
 
 (define* (channel-source->package source #:key commit)
   "Return a package for the given channel SOURCE, a lowerable object."
@@ -510,30 +509,6 @@ the Nix package manager.")
     (propagated-inputs '())))
 
 (export channel-source->package)
-
-(define-public guix-for-cuirass
-  ;; Known-good revision before commit
-  ;; bd86bbd300474204878e927f6cd3f0defa1662a5, which introduced
-  ;; 'primitive-fork' in 'open-inferior'.
-  (let ((version "1.3.0")
-        (commit "a27e47f9d1e22dc32bb250cfeef88cfacb930e23")
-        (revision 23))
-    (package
-      (inherit guix)
-      (version (string-append version "-"
-                              (number->string revision)
-                              "." (string-take commit 7)))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://git.savannah.gnu.org/git/guix.git")
-                      (commit commit)))
-                (sha256
-                 (base32
-                  "12jmvagbw05hmmlrb82i0qazhlv7mcfnl4dmknwx3a9hd760g9y1"))
-                (file-name (string-append "guix-" version "-checkout"))))
-      (properties `((hidden? . #t)
-                    ,@(package-properties guix))))))
 
 (define-public guix-daemon
   ;; This package is for internal consumption: it allows us to quickly build
@@ -855,7 +830,7 @@ features of Stow with some extensions.")
 (define-public rpm
   (package
     (name "rpm")
-    (version "4.17.1")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://ftp.rpm.org/releases/rpm-"
@@ -863,36 +838,35 @@ features of Stow with some extensions.")
                                   version ".tar.bz2"))
               (sha256
                (base32
-                "0pbfj94ha59lbnd8dk0aqyxjv37xixfdcazq3y2mhwkf8s9vf48c"))))
+                "0m250plyananjn0790xmwy6kixmxcdj5iyy2ybnk1aw7f4nia5ra"))))
+    (outputs '("out" "debug"))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--with-external-db" ;use the system's bdb
-                           "--enable-python")
+     '(#:configure-flags '("--enable-python"
+                           ;; The RPM database must be writable.
+                           "--localstatedir=/var")
        #:phases (modify-phases %standard-phases
                   (add-after 'unpack 'fix-lua-check
                     (lambda _
                       (substitute* "configure"
-                        (("lua >= 5.3")
+                        (("lua >= ?.?")
                          "lua-5.3 >= 5.3"))))
-                  (add-before 'configure 'set-nss-library-path
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((nss (assoc-ref inputs "nss")))
-                        (setenv "LIBRARY_PATH"
-                                (string-append (getenv "LIBRARY_PATH") ":"
-                                               nss "/lib/nss"))))))))
+                  (add-after 'unpack 'patch-build-system
+                    (lambda _
+                      ;; The build system attempts to create /var in the build
+                      ;; chroot, and fails.
+                      (substitute* "Makefile.in"
+                        ((".*MKDIR_P) \\$\\(DESTDIR)\\$\\(localstatedir.*")
+                         "")))))))
     (native-inputs
-     (list pkg-config))
+     (list pkg-config
+           python))
     (inputs
-     (list bdb
-           bzip2
-           cpio
+     (list bzip2
            file
            libarchive
            libgcrypt
            lua
-           nspr
-           nss
-           python
            sqlite
            xz
            zlib))
@@ -1383,8 +1357,8 @@ environments.")
                   "0k9zkdyyzir3fvlbcfcqy17k28b51i20rpbjwlx2i1mwd2pw9cxc")))))))
 
 (define-public guix-build-coordinator
-  (let ((commit "3768aec91daebb8db58e28cffe481e8878b59700")
-        (revision "68"))
+  (let ((commit "6b1aa0654bf576f0adbb6adc68c5f7e4e0bae874")
+        (revision "70"))
     (package
       (name "guix-build-coordinator")
       (version (git-version "0" revision commit))
@@ -1395,7 +1369,7 @@ environments.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "0vh4hndqgpz8rwrlfc6vhypy1hxayb8lvxw1jc41ags3lhw75dcz"))
+                  "1dnwjfax5mdmzd9xcwgsz0i3x4pvwswnz7a264qg684vdb2h4iz0"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1460,14 +1434,7 @@ environments.")
                                          (assoc-ref inputs input)
                                          version))
                                       guile-inputs)
-                                 ":"))))
-                      (when target
-                        ;; XXX work around wrap-program picking bash for the
-                        ;; host rather than target
-                        (let ((bash (assoc-ref inputs "bash")))
-                          (substitute* file
-                            (("^#!.*/bash")
-                             (string-append "#! " bash "/bin/bash")))))))
+                                 ":"))))))
                   (find-files bin)))
                #t))
            (delete 'strip))))             ; As the .go files aren't compatible
@@ -1630,7 +1597,7 @@ This package just includes the agent component.")))
                   (ice-9 rdelim)
                   (guix build utils)
                   (guix build gnu-build-system))
-       #:parallel-tests? #f         ;kernels.scm frequently breaks in parallel
+
        #:phases
        (modify-phases %standard-phases
          (add-after 'install 'sed-kernel-json
@@ -1666,9 +1633,17 @@ This package just includes the agent component.")))
                          "-s")
                    "\",\n\t\t\""))
                  (("guix-jupyter-kernel.scm")
-                  (string-append out "/share/guile/site/3.0/"
-                                 "guix-jupyter-kernel.scm")))
-               #t))))))
+                  (string-append out "/share/guile/site/" effective
+                                 "/guix-jupyter-kernel.scm"))))))
+         (add-before 'check 'define-home
+           (lambda _
+             ;; IPython goes awry when HOME points to a non-existent
+             ;; directory:
+             ;;
+             ;; IPython/paths.py:70: UserWarning: IPython parent '/homeless-shelter' is not a writable location, using a temp directory.
+             ;;
+             ;; This in turn leads to test failures, so define HOME.
+             (setenv "HOME" (getcwd)))))))
     (native-inputs
      (list autoconf
            automake
@@ -1678,8 +1653,7 @@ This package just includes the agent component.")))
            python-ipython
            python-ipykernel))
     (inputs
-     `(("guix" ,guix)
-       ("guile" ,@(assoc-ref (package-native-inputs guix) "guile"))))
+     (list guix (lookup-package-native-input guix "guile")))
     (propagated-inputs
      (list guile-json-4 guile-simple-zmq guile-gcrypt))
     (synopsis "Guix kernel for Jupyter")
@@ -1692,8 +1666,8 @@ in an isolated environment, in separate namespaces.")
     (license license:gpl3+)))
 
 (define-public nar-herder
-  (let ((commit "5acfcc0a9d99d78a167c365534aa5bf592f5625e")
-        (revision "9"))
+  (let ((commit "8f7b2b24e36b306d543670b6a4d3310e5be2f944")
+        (revision "14"))
     (package
       (name "nar-herder")
       (version (git-version "0" revision commit))
@@ -1704,7 +1678,7 @@ in an isolated environment, in separate namespaces.")
                       (commit commit)))
                 (sha256
                  (base32
-                  "1mxdkay3l1la7b6m0455s8cansd6qcdhv0k231aik0ayhbck8kby"))
+                  "1bgcsldrihsv357kyfcgv2brvdai03d7lrqs7sfgm7zfb75xvbl1"))
                 (file-name (string-append name "-" version "-checkout"))))
       (build-system gnu-build-system)
       (arguments
@@ -1736,10 +1710,11 @@ in an isolated environment, in separate namespaces.")
                                          "guix"
                                          "guile-lib"
                                          "guile-lzlib"
+                                         "guile-zstd"
                                          "guile-prometheus"
                                          "guile-sqlite3"
                                          "guile-gnutls"
-                                         "guile-fibers")))
+                                         "guile-fibers-next")))
                       (wrap-program file
                         `("GUILE_LOAD_PATH" ":" prefix
                           (,scm ,(string-join
@@ -1772,10 +1747,11 @@ in an isolated environment, in separate namespaces.")
              guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-prometheus
              guile-lib
              guile-lzlib
+             guile-zstd
              guile-sqlite3))
       (inputs
        (list bash-minimal
@@ -1784,10 +1760,11 @@ in an isolated environment, in separate namespaces.")
        (list guile-json-4
              guile-gcrypt
              guix
-             guile-fibers-1.1
+             guile-fibers-next
              guile-prometheus
              guile-lib
              guile-lzlib
+             guile-zstd
              guile-sqlite3
              guile-gnutls))
       (home-page "https://git.cbaines.net/guix/nar-herder")

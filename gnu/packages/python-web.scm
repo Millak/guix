@@ -37,7 +37,7 @@
 ;;; Copyright © 2020 Holger Peters <holger.peters@posteo.de>
 ;;; Copyright © 2020 Noisytoot <noisytoot@gmail.com>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020, 2022 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;; Copyright © 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
@@ -2059,22 +2059,17 @@ RFC6455, regardless of your programming paradigm.")
 (define-public hypercorn
   (package
     (name "hypercorn")
-    (version "0.11.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "Hypercorn" version))
-       (sha256
-        (base32 "16kai5d12f05jr89mj611zslxqri4cd7ixcgd6yhl211qlcyg8av"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key inputs outputs tests? #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "python" "-m" "pytest")))))))
+    (version "0.14.3")
+    (source (origin
+              (method git-fetch) ;PyPI does not have tests
+              (uri (git-reference
+                    (url "https://github.com/pgjones/hypercorn")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hkph0sdr94hxmrq1grnh842snm561sw4az5q6a3ba9hqnrl890h"))))
+    (build-system pyproject-build-system)
     ;; Propagate because Hypercorn also exposes functionality over a module.
     (propagated-inputs
      (list python-h11
@@ -2086,6 +2081,7 @@ RFC6455, regardless of your programming paradigm.")
     (native-inputs
      (list python-hypothesis
            python-mock
+           python-poetry-core
            python-pytest
            python-pytest-asyncio
            python-pytest-cov
@@ -2096,8 +2092,8 @@ RFC6455, regardless of your programming paradigm.")
     (description
      "Hypercorn is an ASGI web server based on the sans-io hyper, h11, h2, and
 wsproto libraries and inspired by Gunicorn.  It supports HTTP/1, HTTP/2,
-WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It can
-utilise asyncio, uvloop, or trio worker types.")
+WebSockets (over HTTP/1 and HTTP/2), ASGI/2, and ASGI/3 specifications.  It
+can utilise asyncio, uvloop, or trio worker types.")
     (license license:expat)))
 
 (define-public python-hypercorn
@@ -3571,22 +3567,31 @@ Python.")
 (define-public python-responses
   (package
     (name "python-responses")
-    (version "0.10.6")
+    (version "0.22.0")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "responses" version))
               (sha256
                (base32
-                "147pacwkkqy3qf3hr33fnl1xbzgw0zsm3qppvvy9qhq8h069qbah"))))
+                "0bhhffwl0zqin4xc89nc97ynzr7l3j4b8rjqk9w9flnj2cmcnsir"))))
     (build-system python-build-system)
     (arguments
-     `(;; Test suite is not distributed:
-       ;; https://github.com/getsentry/responses/issues/38
-       #:tests? #f))
+     '(#:phases
+       (modify-phases %standard-phases
+         (replace 'check
+           (lambda* (#:key tests? #:allow-other-keys)
+             (when tests?
+               (invoke "pytest" "-v")))))))
     (native-inputs
-     (list python-mock))
+     (list python-mock
+           python-pytest
+           python-pytest-asyncio
+           python-pytest-httpserver))
     (propagated-inputs
-     (list python-requests python-cookies python-six))
+     (list python-requests
+           python-cookies
+           python-six
+           python-types-toml))
     (home-page "https://github.com/getsentry/responses")
     (synopsis "Utility for mocking out the `requests` Python library")
     (description "A utility library for mocking out the `requests` Python
@@ -4823,14 +4828,14 @@ Google search engine.  Its module is called @code{googlesearch}.")
 (define-public whoogle-search
   (package
     (name "whoogle-search")
-    (version "0.8.0")
+    (version "0.8.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "whoogle-search" version))
               (sha256
                (base32
-                "0h8cl9bkd3vx17kbvcnmc8cy6pc29lxr0drxm84kj37ka788cj2g"))))
-    (build-system python-build-system)
+                "1kqkb23wb9a4a8zdky2066887vgv7ywhivhxi5nipkx07mf8v01k"))))
+    (build-system pyproject-build-system)
     (arguments
      (list
       ;; The tests need network access
@@ -7731,13 +7736,13 @@ regular expressions.")
 (define-public python-scrapy
   (package
     (name "python-scrapy")
-    (version "2.6.1")
+    (version "2.7.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Scrapy" version))
        (sha256
-        (base32 "09rqalbwcz9ix8h0992mzjs50sssxsmmh8w9abkrqchgknjmbzan"))))
+        (base32 "0kpi3hg2ycs6s8cg41r2zc1axd0rpnps8bnzg7wisjyjaf1l1yih"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -7986,6 +7991,27 @@ resources using Web Application Description Language (WADL) files as guides.")
 @item Experimental support for XOP messages.
 @end itemize")
     (license license:expat)))
+
+(define-public python-pysimplesoap
+  (package
+    (name "python-pysimplesoap")
+    (version "1.16.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PySimpleSOAP" version))
+              (sha256
+               (base32
+                "1qb7dn8m1cjwzql7vqj9i1hsscb7nyhimmlp45jrpzxds38g9fxi"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:tests? #f))               ;tests fail due to attempted web access
+    (home-page "https://github.com/pysimplesoap/pysimplesoap")
+    (synopsis "Simple and lightweight SOAP library for Python")
+    (description
+     "This package provides a simple and lightweight Python SOAP library for
+client and server webservices interfaces, aimed to be as small and easy as
+possible, supporting most common functionality.")
+    (license license:lgpl3+)))
 
 (define-public python-http-client
   (package

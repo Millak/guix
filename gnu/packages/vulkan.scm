@@ -128,11 +128,6 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
     (arguments
      `(#:configure-flags
        (list "-DSPIRV_CROSS_SHARED=YES")
-       ;; FIXME: The following tests fail:
-       ;;   15 - spirv-cross-test-opt
-       ;;   16 - spirv-cross-test-metal-opt
-       ;;   17 - spirv-cross-test-hlsl-opt
-       #:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-tests-to-find-deps
@@ -142,8 +137,11 @@ parser,disassembler, validator, and optimizer for SPIR-V.")
                 (string-append (assoc-ref inputs "glslang") "/bin")))
              (substitute* "CMakeLists.txt"
                (("\\$\\{CMAKE_(.*)_DIR\\}/external/spirv-tools(.*)/bin")
-                (string-append (assoc-ref inputs "spirv-tools") "/bin")))
-             #t)))))
+                (string-append (assoc-ref inputs "spirv-tools") "/bin")))))
+         (add-before 'check 'update-reference-shaders
+           (lambda _
+             (with-directory-excursion "../source"
+               (invoke "./update_test_shaders.sh")))))))
     (inputs
      (list glslang spirv-headers spirv-tools))
     (native-inputs (list python))

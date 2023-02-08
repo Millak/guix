@@ -178,12 +178,11 @@ library.  It supports almost all PNG features and is extensible.")
    (license license:zlib)
    (home-page "http://www.libpng.org/pub/png/libpng.html")))
 
-;; libpng-apng should be updated when the APNG patch is released:
-;; <https://bugs.gnu.org/27556>
 (define-public libpng-apng
+  ;; The APNG patch is maintained separately and may lag behind upstream libpng.
   (package
     (name "libpng-apng")
-    (version "1.6.37")
+    (version "1.6.39")
     (source
      (origin
        (method url-fetch)
@@ -196,8 +195,7 @@ library.  It supports almost all PNG features and is extensible.")
                    "ftp://ftp.simplesystems.org/pub/libpng/png/src/history"
                    "/libpng16/libpng-" version ".tar.xz")))
        (sha256
-        (base32
-         "1jl8in381z0128vgxnvn33nln6hzckl7l7j9nqvkaf1m9n1p0pjh"))))
+        (base32 "0dv90dxvmqpk7mbywyjbz8lh08cv4b0ksqp1y62mzvmlf379cihz"))))
     (build-system gnu-build-system)
     (arguments
      `(#:modules ((guix build gnu-build-system)
@@ -215,14 +213,12 @@ library.  It supports almost all PNG features and is extensible.")
                        apng.gz)
                (invoke "sh" "-c"
                        (string-append "gunzip < " apng.gz " > the-patch"))
-               (apply-patch "the-patch")
-               #t)))
+               (apply-patch "the-patch"))))
          (add-before 'configure 'no-checks
            (lambda _
              (substitute* "Makefile.in"
                (("^scripts/symbols.chk") "")
-               (("check: scripts/symbols.chk") ""))
-             #t)))))
+               (("check: scripts/symbols.chk") "")))))))
     (inputs
      `(("apng" ,(origin
                   (method url-fetch)
@@ -231,7 +227,7 @@ library.  It supports almost all PNG features and is extensible.")
                                   version "/libpng-" version "-apng.patch.gz"))
                   (sha256
                    (base32
-                    "1dh0250mw9b2hx7cdmnb2blk7ddl49n6vx8zz7jdmiwxy38v4fw2"))))))
+                    "1z8cx011a2c7vagwgi92rbmky1wi8awmrdldqh9f5k80pbmbdi2a"))))))
     (native-inputs
      (list libtool))
     ;; libpng.la says "-lz", so propagate it.
@@ -2407,7 +2403,7 @@ Wacom-style graphics tablets.")
 (define-public phockup
   (package
     (name "phockup")
-    (version "1.9.0")
+    (version "1.9.2")
     (source
      (origin
        (method git-fetch)
@@ -2416,8 +2412,7 @@ Wacom-style graphics tablets.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32
-         "1xs2h3nj19wsfffl87akinx14drk5nn2svjwyj0csv10apk0q4pp"))))
+        (base32 "0j4mnsy12bhsmd80vgqknv004xbqd165y8gpalw87gp8i8xv172r"))))
     (build-system copy-build-system)
     (arguments
      `(#:install-plan '(("src" "share/phockup/")
@@ -2426,12 +2421,18 @@ Wacom-style graphics tablets.")
        (modify-phases %standard-phases
          (add-after 'unpack 'configure
            (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* (list "src/dependency.py" "src/exif.py")
-               (("'exiftool'")
-                (string-append "'" (search-input-file inputs "/bin/exiftool") "'")))))
+             (substitute* (list "src/dependency.py"
+                                "src/exif.py")
+               (("'exiftool")
+                (string-append "'" (search-input-file inputs "bin/exiftool"))))))
          (add-before 'install 'check
            (lambda _
-             (invoke "pytest")))
+             ;; Test without PATH to make sure ‘exiftool’ is properly found.
+             (let ((path (getenv "PATH"))
+                   (pytest (which "pytest")))
+               (setenv "PATH" "")
+               (invoke pytest)
+               (setenv "PATH" path))))
          (add-after 'install 'install-bin
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))

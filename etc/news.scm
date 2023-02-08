@@ -1,6 +1,6 @@
 ;; GNU Guix news, for use by 'guix pull'.
 ;;
-;; Copyright © 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;; Copyright © 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;; Copyright © 2019–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;; Copyright © 2019, 2020 Miguel Ángel Arruga Vivas <rosen644835@gmail.com>
 ;; Copyright © 2019, 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
@@ -25,6 +25,85 @@
 
 (channel-news
  (version 0)
+
+ (entry (commit "137b91f03bbb7f1df71cf10c4f79ae57fbcea400")
+        (title
+         (en "New @option{--with-version} package transformation option")
+         (de "Neue Paketumwandlungsoption @option{--with-version}")
+         (fr "Nouvelle option de transformation @option{--with-version}"))
+        (body
+         (en "The new @option{--with-version} package transformation option
+generalizes @option{--with-latest}: it gets the specified upstream release of
+a package and uses it instead of the currently-packaged version.
+
+For example, the command below would spawn GNOME Clocks built against GTK
+4.7.0, skipping its test suite:
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Run @command{info \"(guix) Package Transformation Options\"} for more info.")
+         (de "Die neue Paketumwandlungsoption @option{--with-version}
+verallgemeinert @option{--with-latest}: Mit ihr kann man angeben, welche
+vom Anbieter veröffentlichte Version man anstelle der derzeit im Paket
+vorgegebenen haben möchte.
+
+Zum Beispiel kann mit folgendem Befehl ein für die GTK-Version 4.7.0
+erstelltes GNOME Clocks aufgerufen werden, wobei der Testkatalog dafür
+übersprungen wird.
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Führen Sie für mehr Informationen @command{info \"(guix.de)
+Paketumwandlungsoptionen\"} aus.")
+         (fr "La nouvelle option de transformation de paquets
+@option{--with-version} généralise @option{--with-latest} : elle permet de
+spécifier quelle version amont d'un logiciel utiliser à la place de celle
+actuellement fournie.
+
+Par exemple, la commande ci-dessous démarre GNOME Clocks construit avec GTK
+4.7.0, sans lancer sa suite de tests :
+
+@example
+guix shell gnome-clocks --with-version=gtk=4.7.0 \\
+  --without-tests=gtk -- gnome-clocks
+@end example
+
+Voir @command{info \"(guix.fr) Options de transformation de paquets\"} pour
+plus de détails.")))
+
+ (entry (commit "9ea37eb9f5329c213757bbfe5d9241cde8433858")
+        (title
+          (en "Linux-libre 6.0 removed due to end of upstream support")
+          (de "Linux-libre 6.0 wurde entfernt"))
+        (body
+          (en "The linux-libre 6.0 kernel series has reached the end of
+             its life, and no longer supported upstream.  For this
+             reason, it has been removed from GNU Guix.")
+          (de "Vom Kernel @code{linux-libre} wird die 6.0-Versionsreihe keine
+Unterstützung von dessen Anbieter mehr erfahren („end of life“).  Daher ist es
+aus GNU Guix entfernt worden.")))
+
+ (entry (commit "ce8a34bc9ab89f31f107383ba791954864aed372")
+        (title
+         (en "Linux-libre kernel updated to 6.1")
+         (de "Linux-libre-Kernel wird auf 6.1 aktualisiert")
+         (fr "Le noyau linux-libre est mis à jour vers la 6.1")
+         (pt "Kernel linux-libre atualizado para 6.1"))
+        (body
+         (en "The default version of the linux-libre kernel has been updated to
+              the 6.1 release series.")
+         (de "Der standardmäßig verwendete @code{linux-libre}-Kernel basiert
+              jetzt auf der 6.1-Versionsreihe.")
+         (fr "La version par défaut du noyau linux-libre est mise à jour
+              vers la série des 6.1.")
+         (pt "A versão padrão do kernel linux-libre foi atualizada para a
+              série do kernel 6.1.")))
 
  (entry (commit "064c5b7e450f9f6d55cfcd0ec2bc9e96ee0b2958")
         (title

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2016, 2017, 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016, 2017, 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -31,7 +31,8 @@
   #:use-module (guix tests)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-64)
-  #:use-module (ice-9 match))
+  #:use-module (ice-9 match)
+  #:use-module ((ice-9 ftw) #:select (scandir)))
 
 (define (assert-exit x)
   (primitive-exit (if x 0 1)))
@@ -176,21 +177,11 @@
                   (close start-in)
                   (container-excursion pid
                     (lambda ()
-                      ;; Fork again so that the pid is within the context of
-                      ;; the joined pid namespace instead of the original pid
-                      ;; namespace.
-                      (match (primitive-fork)
-                        (0
-                         ;; Check that all of the namespace identifiers are
-                         ;; the same as the container process.
-                         (assert-exit
-                          (equal? container-namespaces
-                                  (namespaces (getpid)))))
-                        (fork-pid
-                         (match (waitpid fork-pid)
-                           ((_ . status)
-                            (primitive-exit
-                             (status:exit-val status)))))))))))
+                      ;; Check that all of the namespace identifiers are
+                      ;; the same as the container process.
+                      (assert-exit
+                       (equal? container-namespaces
+                               (namespaces (getpid)))))))))
           (close end-in)
           ;; Stop the container.
           (write 'done end-out)
@@ -203,9 +194,10 @@
   42
   ;; The parent and child are in the same namespaces.  'container-excursion'
   ;; should notice that and avoid calling 'setns' since that would fail.
-  (container-excursion (getpid)
-    (lambda ()
-      (primitive-exit 42))))
+  (status:exit-val
+   (container-excursion (getpid)
+     (lambda ()
+       (primitive-exit 42)))))
 
 (skip-if-unsupported)
 (test-assert "container-excursion*"
@@ -234,6 +226,27 @@
   (container-excursion* (getpid)
     (lambda ()
       (* 6 7))))
+
+(skip-if-unsupported)
+(test-equal "container-excursion*, /proc"
+  '("1" "2")
+  (call-with-temporary-directory
+   (lambda (root)
+     (let* ((pid    (run-container root '()
+                                   %namespaces 1
+                                   (lambda ()
+                                     (sleep 100))))
+            (result (container-excursion* pid
+                      (lambda ()
+                        ;; We expect to see exactly two processes in this
+                        ;; namespace.
+                        (scandir "/proc"
+                                 (lambda (file)
+                                   (char-set-contains?
+                                    char-set:digit
+                                    (string-ref file 0))))))))
+       (kill pid SIGKILL)
+       result))))
 
 (skip-if-unsupported)
 (test-equal "eval/container, exit status"

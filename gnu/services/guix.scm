@@ -126,7 +126,18 @@
             nar-herder-configuration-storage
             nar-herder-configuration-storage-limit
             nar-herder-configuration-storage-nar-removal-criteria
-            nar-herder-configuration-log-level))
+            nar-herder-configuration-log-level
+            nar-herder-configuration-cached-compressions
+            nar-herder-configuration-cached-compression-min-uses
+            nar-herder-configuration-cached-compression-workers
+            nar-herder-configuration-cached-compression-nar-source
+
+            nar-herder-cached-compression-configuration
+            nar-herder-cached-compression-configuration?
+            nar-herder-cached-compression-configuration-type
+            nar-herder-cached-compression-configuration-level
+            nar-herder-cached-compression-configuration-directory
+            nar-herder-cached-compression-configuration-directory-max-size))
 
 ;;;; Commentary:
 ;;;
@@ -828,17 +839,67 @@ ca-certificates.crt file in the system profile."
   (negative-ttl  nar-herder-configuration-negative-ttl
                  (default #f))
   (log-level     nar-herder-configuration-log-level
-                 (default 'DEBUG)))
+                 (default 'DEBUG))
+  (cached-compressions
+   nar-herder-configuration-cached-compressions
+   (default '()))
+  (cached-compression-min-uses
+   nar-herder-configuration-cached-compression-min-uses
+   (default 3))
+  (cached-compression-workers
+   nar-herder-configuration-cached-compression-workers
+   (default 2))
+  (cached-compression-nar-source
+   nar-herder-configuration-cached-compression-nar-source
+   (default #f)))
 
+(define-record-type* <nar-herder-cached-compression-configuration>
+  nar-herder-cached-compression-configuration
+  make-nar-herder-cached-compression-configuration
+  nar-herder-cached-compression-configuration?
+  (type                nar-herder-cached-compression-configuration-type)
+  (level               nar-herder-cached-compression-configuration-level
+                       (default #f))
+  (directory           nar-herder-cached-compression-configuration-directory
+                       (default #f))
+  (directory-max-size
+   nar-herder-cached-compression-configuration-directory-max-size
+   (default #f)))
 
 (define (nar-herder-shepherd-services config)
+  (define (cached-compression-configuration->options cached-compression)
+    (match-record
+        cached-compression
+        <nar-herder-cached-compression-configuration>
+      (type level directory directory-max-size)
+
+      `(,(simple-format #f "--enable-cached-compression=~A~A"
+                        type
+                        (if level
+                            (simple-format #f ":~A" level)
+                            ""))
+        ,@(if directory
+              (list
+               (simple-format #f "--cached-compression-directory=~A=~A"
+                              type
+                              directory))
+              '())
+        ,@(if directory-max-size
+              (list
+               (simple-format #f "--cached-compression-directory-max-size=~A=~A"
+                              type
+                              directory-max-size))
+              '()))))
+
   (match-record config <nar-herder-configuration>
     (package user group
              mirror
              database database-dump
              host port
              storage storage-limit storage-nar-removal-criteria
-             ttl negative-ttl log-level)
+             ttl negative-ttl log-level
+             cached-compressions cached-compression-min-uses
+             cached-compression-workers cached-compression-nar-source)
 
     (unless (or mirror storage)
       (error "nar-herder: mirror or storage must be set"))
@@ -882,6 +943,24 @@ ca-certificates.crt file in the system profile."
                              '())
                       #$@(if log-level
                              (list (simple-format #f "--log-level=~A" log-level))
+                             '())
+                      #$@(append-map
+                          cached-compression-configuration->options
+                          cached-compressions)
+                      #$@(if cached-compression-min-uses
+                             (list (simple-format
+                                    #f "--cached-compression-min-uses=~A"
+                                    cached-compression-min-uses))
+                             '())
+                      #$@(if cached-compression-workers
+                             (list (simple-format
+                                    #f "--cached-compression-workers=~A"
+                                    cached-compression-workers))
+                             '())
+                      #$@(if cached-compression-nar-source
+                             (list (simple-format
+                                    #f "--cached-compression-nar-source=~A"
+                                    cached-compression-nar-source))
                              '()))
                 #:user #$user
                 #:group #$group

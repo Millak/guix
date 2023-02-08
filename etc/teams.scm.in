@@ -416,11 +416,14 @@ importer."
         #:scope (list "gnu/packages/chez.scm"
                       "gnu/packages/racket.scm")))
 
-
-(define-member (person "Thiago Jung Bauermann"
-                       "bauermann@kolabnow.com")
-  embedded-bootstrap translations)
+(define-team reproduciblebuilds
+  (team 'reproduciblebuilds
+        #:name "Reproducible Builds team"
+        #:description
+        "Reproducible Builds tooling and issues that affect any guix packages."
+        #:scope (list "gnu/packages/diffoscope.scm")))
 
+
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
   science)
@@ -520,6 +523,10 @@ importer."
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
   games localization)
+
+(define-member (person "Vagrant Cascadian"
+                       "vagrant@reproducible-builds.org")
+  reproduciblebuilds)
 
 
 (define (find-team name)

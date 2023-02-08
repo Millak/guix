@@ -36,6 +36,7 @@
 ;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Ahmad Jarara <git@ajarara.io>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
+;;; Copyright © 2021 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2325,7 +2326,7 @@ decompression is a little bit slower.")
 (define-public upx
   (package
     (name "upx")
-    (version "4.0.0")
+    (version "4.0.1")
     (source
      (origin
        (method url-fetch)
@@ -2333,7 +2334,7 @@ decompression is a little bit slower.")
                            version "/upx-" version "-src.tar.xz"))
        (sha256
         (base32
-         "1sinky0rq40q2qqzly99c5hdd6ilz2bxlbqla9lg0rafhbw3iyga"))))
+         "1471nxzrbv8sw2pmxn817q5l40sr0l7v7bpvw829iai95s73q03p"))))
     (build-system cmake-build-system)
     (home-page "https://upx.github.io/")
     (synopsis "Compression tool for executables")
@@ -2384,7 +2385,7 @@ reading from and writing to ZIP archives.")
   (package
     (inherit quazip-0)
     (name "quazip")
-    (version "1.3")
+    (version "1.4")
     (source
      (origin
        (method git-fetch)
@@ -2393,7 +2394,7 @@ reading from and writing to ZIP archives.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0njgbdm3dm5p7xic5mhppbqsl36zn83zz0xfsfh624hlk0ff7n0a"))))))
+        (base32 "1jsw4xm5wyaqcj1pma5zzd8f5xbgd5lcjh18ah3kg36xz5i69yi4"))))))
 
 (define-public zchunk
   (package
@@ -2832,4 +2833,34 @@ serializations such as ASN.1 and MessagePack.")
     (home-page "http://oldhome.schmorp.de/marc/fcrackzip.html")
     (synopsis "Zip password cracker")
     (description "Fcrackzip is a Zip file password cracker.")
+    (license license:gpl2+)))
+
+(define-public unrar-free
+  (package
+    (name "unrar-free")
+    (version "0.1.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://gitlab.com/bgermann/unrar-free")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "12idmr5rjmw7dg2mi6250q599nywrirgc8553353a4swf5n1pmx4"))))
+    (build-system gnu-build-system)
+    (inputs
+     `(("libarchive" ,libarchive)))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("pkg-config" ,pkg-config)))
+    (home-page "https://gitlab.com/bgermann/unrar-free")
+    (synopsis "Extract files from RAR archives")
+    (description
+     "@code{unrar-free} is a free software version of the non-free @code{unrar}
+utility.  This program is a simple command-line front-end to libarchive, and can
+list and extract not only RAR archives but also other formats supported by
+libarchive.  It does not rival the non-free @code{unrar} in terms of features,
+but special care has been taken to ensure it meets most user's needs.")
     (license license:gpl2+)))

@@ -376,7 +376,7 @@ Markdown.")
     (propagated-inputs
      (list erlang-cf))
     (native-inputs
-     (list git-minimal/fixed))  ;; Required for tests
+     (list git-minimal/pinned))  ;; Required for tests
     (arguments
      `(#:phases
        (modify-phases %standard-phases
@@ -701,7 +701,7 @@ applications as a dependent libraries.")
           (base32 "1dfz56034pa25axly9vqdzv3phkn8ll0qwrkws96pbgcprhky1hx"))))
     (build-system rebar-build-system)
     (inputs
-     (list git-minimal/fixed))
+     (list git-minimal/pinned))
     (arguments
      `(;; Running the tests require binary artifact (tar-file containing
        ;; samples git repos)  TODO: remove these from the source

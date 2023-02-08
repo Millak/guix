@@ -29,6 +29,7 @@
   #:use-module (gnu system shadow)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages admin)
+  #:use-module (guix deprecation)
   #:use-module (guix records)
   #:use-module (guix gexp)
   #:use-module (guix store)
@@ -178,7 +179,8 @@
 protocol.")
    (default-value (git-daemon-configuration))))
 
-(define* (git-daemon-service #:key (config (git-daemon-configuration)))
+(define-deprecated (git-daemon-service #:key (config (git-daemon-configuration)))
+  git-daemon-service-type
   "Return a service that runs @command{git daemon}, a simple TCP server to
 expose repositories over the Git protocol for anonymous access.
 

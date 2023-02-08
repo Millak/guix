@@ -15,7 +15,7 @@
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
 ;;; Copyright © 2020 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1399,6 +1399,31 @@ data by providing clean labels during training.")
            python-tqdm))
     (native-inputs
      (list python-pytest))))
+
+(define-public python-cma
+  (package
+    (name "python-cma")
+    (version "3.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "cma" version))
+              (sha256
+               (base32
+                "1v31b2vnnr4v6ack7zfmw7zb47vbzjr9nyvx2lbfhyjf7zhbhj5p"))))
+    (build-system python-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "python" "-m" "cma.test")))))))
+    (propagated-inputs (list python-numpy))
+    (home-page "https://github.com/CMA-ES/pycma")
+    (synopsis "Python implementation of CMA-ES")
+    (description "This package provides a Python implementation of the
+@acronym{CMA-ES, Covariance Matrix Adaptation Evolution Strategy} algorithm
+and a few related numerical optimization tools.")
+    (license license:bsd-3)))
 
 (define-public python-cmaes
   (package
@@ -2910,7 +2935,7 @@ that:
     (license license:expat)))
 
 (define-public gloo
-  (let ((version "0.0.0") ; no proper version tag
+  (let ((version "0.0.0")                         ; no proper version tag
         (commit "c22a5cfba94edf8ea4f53a174d38aa0c629d070f")
         (revision "1"))
     (package
@@ -2930,15 +2955,22 @@ that:
       (native-inputs
        (list googletest))
       (inputs
-       (list openssl))
+       (append (list openssl)
+               (if (supported-package? rdma-core)
+                   (list rdma-core)
+                   '())))
       (arguments
-       `(#:configure-flags '("-DBUILD_TEST=1")
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'check
-             (lambda* (#:key tests? #:allow-other-keys)
-               (when tests?
-                 (invoke "make" "gloo_test")))))))
+       (list #:configure-flags #~'("-DBUILD_SHARED_LIBS=ON"
+                                   "-DBUILD_TEST=1"
+                                   #$@(if (this-package-input "rdma-core")
+                                          #~("-DUSE_IBVERBS=ON")
+                                          #~()))
+             #:phases
+             #~(modify-phases %standard-phases
+                 (replace 'check
+                   (lambda* (#:key tests? #:allow-other-keys)
+                     (when tests?
+                       (invoke "make" "gloo_test")))))))
       (synopsis "Collective communications library")
       (description
        "Gloo is a collective communications library.  It comes with a

@@ -26,6 +26,7 @@
 ;;; Copyright © 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
+;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -187,6 +188,49 @@ settings (such as icons, themes, and fonts) in desktop environments or
 window managers, that don't provide Qt integration by themselves.")
     (home-page "https://qt5ct.sourceforge.io/")
     (license license:bsd-2)))
+
+(define-public kvantum
+  (package
+    (name "kvantum")
+    (version "1.0.7")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/tsujan/Kvantum/releases/download/V"
+                    version "/Kvantum-" version ".tar.xz"))
+              (sha256
+               (base32
+                "0zwxswbgd3wc7al3fhrl5qc0fmmb6mkygywjh1spbqpl7s8jw5s3"))))
+    (build-system qt-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ;no tests
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'chdir
+            (lambda _
+              (chdir "Kvantum")))
+          (add-after 'chdir 'patch-style-dir
+            (lambda _
+              (substitute* "style/CMakeLists.txt"
+                (("\\$\\{KVANTUM_STYLE_DIR\\}")
+                 (string-append #$output
+                                "/lib/qt5/plugins/styles"))))))))
+    (native-inputs (list qttools-5))
+    (inputs (list
+             kwindowsystem
+             libx11
+             libxext
+             qtbase-5
+             qtsvg-5
+             qtx11extras))
+    (synopsis "SVG-based theme engine for Qt")
+    (description
+     "Kvantum is an SVG-based theme engine for Qt,
+tuned to KDE and LXQt, with an emphasis on elegance, usability and
+practicality.")
+    (home-page "https://github.com/tsujan/Kvantum")
+    (license license:gpl3+)))
 
 (define-public materialdecoration
   (let ((commit "6a5de23f2e5162fbee39d16f938473ff970a2ec0")
@@ -636,7 +680,11 @@ developers using C++ or QML, a CSS & JavaScript like language.")
               (lambda* (#:key inputs #:allow-other-keys)
                 (substitute* (find-files "bin" "\\.in$")
                   (("/bin/pwd")
-                   (search-input-file inputs "bin/pwd")))
+                   (search-input-file inputs "bin/pwd"))
+                  ;; Do not keep a reference to cmake-minimal; it is looked
+                  ;; from PATH anyway.
+                  (("original_cmake_path=\"@CMAKE_COMMAND@\"")
+                   "original_cmake_path=\"\""))
                 (substitute* "src/gui/platform/unix/qgenericunixservices.cpp"
                   (("\"xdg-open\"")
                    (format #f "~s" (search-input-file inputs "bin/xdg-open"))))
@@ -647,6 +695,12 @@ developers using C++ or QML, a CSS & JavaScript like language.")
                 (substitute* "src/corelib/CMakeLists.txt"
                   (("/bin/ls")
                    (search-input-file inputs "bin/ls")))))
+            (add-after 'patch-source-shebangs 'do-not-capture-python
+              (lambda _
+                (substitute* '("mkspecs/features/uikit/devices.py"
+                               "util/testrunner/qt-testrunner.py")
+                  (((which "python3"))
+                   "/usr/bin/env python3"))))
             (replace 'configure
               (assoc-ref %standard-phases 'configure))
             (replace 'build
@@ -1233,6 +1287,10 @@ with JavaScript and C++.")))
                     ;; qrc). Import paths used:
                     ;; /gnu/store/...-qtbase-6.3.1/lib/qt6/qml"
                     "tst_qmltc_qprocess"
+                    ;; This test is non-deterministic; may fail under high
+                    ;; load (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-111008).
+                    "tst_qqmlprofilerservice"
                     ;; These test fail when running qmlimportscanner; perhaps
                     ;; an extra CMAKE_PREFIX_PATH location is missing to
                     ;; correctly locate the imports.
@@ -1522,7 +1580,9 @@ set of plugins for interacting with pulseaudio and GStreamer.")
     (source (origin
              (method url-fetch)
              (uri (qt-urls name version))
-             (patches (search-patches "qtwayland-gcc-11.patch"))
+             (patches (search-patches "qtwayland-gcc-11.patch"
+                                      "qtwayland-dont-recreate-callbacks.patch"
+                                      "qtwayland-cleanup-callbacks.patch"))
              (sha256
               (base32
                "0yy8qf9kn15iqsxi2r7jbcsc0vsdyfz7bbxmfn4i9qmz1yvg0jgr"))))

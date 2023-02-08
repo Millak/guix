@@ -133,7 +133,7 @@
 (define-public appstream
   (package
     (name "appstream")
-    (version "0.15.5")
+    (version "0.15.6")
     (source
      (origin
        (method url-fetch)
@@ -142,7 +142,7 @@
                        "appstream/releases/"
                        "AppStream-" version ".tar.xz"))
        (sha256
-        (base32 "1hh41r82a2p7anyadfsp9lmylrrj1a6gknx2g4w6ha97riifs5fb"))))
+        (base32 "03pirmc5r4izl6mzff879g7pk1nxq03kgpr2yvnnqnlb6r0ckmi3"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -782,7 +782,7 @@ of a the system to know what users are logged in, and where.")
 (define-public basu
   (package
     (name "basu")
-    (version "0.2.0")
+    (version "0.2.1")
     (home-page "https://git.sr.ht/~emersion/basu")
     (source
      (origin
@@ -793,7 +793,7 @@ of a the system to know what users are logged in, and where.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0h23n7wg18xc7xwldca18wi00iajyliixwicqyvv38qx831d8q18"))))
+        (base32 "054mg6f9aqi0i3i3w8fc37qnns1vng3qq5b8nfd9g51wi8h891nc"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config python gperf))
@@ -2636,7 +2636,7 @@ compatible with the well-known scripts of the same name.")
 (define-public xdg-desktop-portal
   (package
     (name "xdg-desktop-portal")
-    (version "1.14.4")
+    (version "1.14.6")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2644,7 +2644,7 @@ compatible with the well-known scripts of the same name.")
                     version "/xdg-desktop-portal-" version ".tar.xz"))
               (sha256
                (base32
-                "0wqc9x3k7lf3mig53i4rjazi0xi8bcykwaaw7r7prvnscnd1k405"))))
+                "1q0djpnwlrqm0h0alyh1r6dlkqdrr7mj5hiam4mqzxqa5jbqkrgj"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("pkg-config" ,pkg-config)

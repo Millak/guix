@@ -9215,6 +9215,30 @@ building up, manipulating and serialising @code{Pandoc} structures.")
      "This package provides a library for parallel programming.")
     (license license:bsd-3)))
 
+(define-public ghc-parsec
+  (package
+    (name "ghc-parsec")
+    (version "3.1.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "parsec" version))
+              (sha256
+               (base32
+                "132waj2cpn892midbhpkfmb74qq83v0zv29v885frlp1gvh94b67"))))
+    (build-system haskell-build-system)
+    (native-inputs (list ghc-hunit ghc-test-framework ghc-test-framework-hunit))
+    (arguments
+     `(#:cabal-revision
+       ("4" "0p65q054iaz2117a5qk1428dic4sb41acclys9k00zna24ks7iq3")))
+    (home-page "https://github.com/haskell/parsec")
+    (synopsis "Monadic parser combinators")
+    (description "Parsec is designed from scratch as an industrial-strength
+parser library.  It is simple, safe, well documented (on the package
+homepage), has extensive libraries, good error messages, and is fast.  It is
+defined as a monad transformer that can be stacked on arbitrary monads, and it
+is also parametric in the input stream type.")
+    (license license:bsd-3)))
+
 (define-public ghc-parsec-numbers
   (package
     (name "ghc-parsec-numbers")

@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Sandeep Subramanian <sandeepsubramanian94@gmail.com>
 ;;; Copyright © 2018 Charlie Ritter <chewzeirta@posteo.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
-;;; Copyright © 2018, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018, 2020-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2018 Laura Lazzati <laura.lazzati.15@gmail.com>
 ;;; Copyright © 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2018 Marius Bakke <mbakke@fastmail.com>
@@ -31,11 +31,11 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2020 Magali Lemes <magalilemes00@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2020 Aniket Patil <aniket112.patil@gmail.com>
 ;;; Copyright © 2021 Marcel Schilling <marcel.schilling@uni-luebeck.de>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
-;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -255,6 +255,33 @@ multiple and joint correspondence analysis.")
 can limit either their total size or the age of the oldest object (or both),
 automatically pruning objects to maintain the constraints.")
     (license license:expat)))
+
+(define-public r-castor
+  (package
+    (name "r-castor")
+    (version "1.7.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "castor" version))
+              (sha256
+               (base32
+                "1qbndwmzzpkzgiah0hgid9z5f9iv2j53d515bjcci1591gx1fk36"))))
+    (properties `((upstream-name . "castor")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-matrix r-naturalsort r-rcpp r-rspectra))
+    (home-page "https://cran.r-project.org/package=castor")
+    (synopsis "Efficient phylogenetics on large trees")
+    (description
+     "This tool supports analyses on massive phylogenies comprising up to
+millions of tips.  Functions include pruning, rerooting, calculation of
+most-recent common ancestors, calculating distances from the tree root and
+calculating pairwise distances.  In addition, this tool takes care of
+calculation of phylogenetic signal and mean trait depth (trait conservatism),
+ancestral state reconstruction and hidden character prediction of discrete
+characters, simulating and fitting models of trait evolution, fitting and
+simulating diversification models, dating trees, comparing trees, and
+reading/writing trees in Newick format.")
+    (license license:gpl2+)))
 
 (define-public r-collections
   (package
@@ -716,6 +743,57 @@ Feature-based statistical methods include linear model-based methods for
 differential abundance analysis of zero-inflated high-dimensional
 compositional data.")
     (license license:gpl3)))
+
+(define-public r-gwidgets2
+  (package
+    (name "r-gwidgets2")
+    (version "1.0-9")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gWidgets2" version))
+              (sha256
+               (base32
+                "1ifljpdazzmwf3mgkg9g76365n2cmw8dd3da161fpvw84xxyznfl"))))
+    (properties `((upstream-name . "gWidgets2")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-digest))
+    (home-page "https://github.com/gWidgets3/gWidgets2")
+    (synopsis "Rewrite of gWidgets API for simplified GUI construction")
+    (description
+     "This package provides a re-implementation of the @code{gWidgets} API.
+The API is defined in this package.  A second, toolkit-specific package is
+required to use it.")
+    (license license:gpl3+)))
+
+(define-public r-gwidgets2tcltk
+  (package
+    (name "r-gwidgets2tcltk")
+    (version "1.0-8")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gWidgets2tcltk" version))
+              (sha256
+               (base32
+                "02ic4avpa33dnqsnm1mzg7ci1psngk1p169pqf259szf6v39qf8h"))))
+    (properties `((upstream-name . "gWidgets2tcltk")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'start-x-server
+            (lambda _
+              ;; Tests require a running X server.
+              (system "Xvfb :1 +extension GLX &")
+              (setenv "DISPLAY" ":1"))))))
+    (propagated-inputs (list r-digest r-gwidgets2 r-memoise))
+    (native-inputs
+     (list xorg-server-for-tests))
+    (home-page "https://github.com/jverzani/gWidgets2tcltk")
+    (synopsis "Toolkit implementation of gWidgets2 for tcltk")
+    (description "This package is a port of the @code{gWidgets2} API for the
+@code{tcltk} package.")
+    (license license:gpl2+)))
 
 (define-public r-ids
   (package
@@ -3200,6 +3278,30 @@ by htmltools (e.g. shiny, htmlwidgets, and rmarkdown).  Most R users don't
 need to use this package directly, but other R packages (e.g. shiny,
 rmarkdown, etc.) depend on this package to avoid bundling redundant copies of
 jQuery.")
+    (license license:expat)))
+
+(define-public r-jqr
+  (package
+    (name "r-jqr")
+    (version "1.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "jqr" version))
+              (sha256
+               (base32
+                "1a91zcjxdilhqdyr2lipnwc35f90h0wyqlbg0vw9ay7sq6llxgs9"))))
+    (properties `((upstream-name . "jqr")))
+    (build-system r-build-system)
+    (inputs (list jq))
+    (propagated-inputs (list r-lazyeval r-magrittr))
+    (native-inputs (list pkg-config))
+    (home-page "https://docs.ropensci.org/jqr/")
+    (synopsis "R client for jq, a JSON Processor")
+    (description
+     "This package provides an R client for @command{jq}, a JSON processor.
+@command{jq} allows the following with JSON data: index into, parse, do
+calculations, cut up and filter, change key names and values, perform
+conditionals and comparisons, and more.")
     (license license:expat)))
 
 (define-public r-sass
@@ -9190,6 +9292,27 @@ facilitate data exploration.")
 experimental designs and random samples for common sampling designs.")
     (license license:expat)))
 
+(define-public r-roptim
+  (package
+    (name "r-roptim")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "roptim" version))
+              (sha256
+               (base32
+                "11h6qdi0rsv0bpps6nxkzzapan284q0gldzkmgx3ww5kvnic5w3y"))))
+    (properties `((upstream-name . "roptim")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcpparmadillo))
+    (home-page "https://github.com/ypan1988/roptim/")
+    (synopsis "General purpose optimization in R using C++")
+    (description
+     "This package performs optimization in R using C++.  A unified wrapper
+interface is provided to call C functions of the five optimization algorithms
+(Nelder-Mead, BFGS, CG, L-BFGS-B and SANN) underlying @code{optim()}.")
+    (license license:gpl2+)))
+
 (define-public r-base64url
   (package
     (name "r-base64url")
@@ -9216,6 +9339,34 @@ and thus are safe to use in URLs or for file names.  The package also comes
 with a simple base32 encoder/decoder suited for case insensitive file
 systems.")
     (license license:gpl3)))
+
+(define-public r-baseline
+  (package
+    (name "r-baseline")
+    (version "1.3-4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "baseline" version))
+              (sha256
+               (base32
+                "1kl68zvyi2zd73jy3axrvrymwn4y6l4pd62nz0fciwbgkjhz3yyx"))))
+    (properties `((upstream-name . "baseline")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-gwidgets2tcltk ;for GUI
+           r-limsolve
+           r-sparsem))
+    (home-page "https://github.com/khliland/baseline/")
+    (synopsis "Baseline correction of spectra")
+    (description
+     "This package is a collection of baseline correction algorithms.  Beside
+those it provides a framework and a Tcl/Tk enabled GUI for optimizing baseline
+algorithm parameters.  Typical use is the removal of the background effects from
+spectra, which are originating from various types of spectroscopy and spectrometry.
+Also, there is a possibility of optimizing this with regard to regression or
+classification results.  Correction methods include polynomial fitting, weighted
+local smoothers and many more.")
+    (license license:gpl2)))
 
 (define-public r-radiant-data
   (package
@@ -10227,6 +10378,28 @@ using D3.js, where every node can be expanded and collapsed by clicking on it.
 Tooltips and color gradients can be mapped to nodes using a numeric column in
 the source data frame.")
     (license license:gpl3+)))
+
+(define-public r-rapiclient
+  (package
+    (name "r-rapiclient")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "rapiclient" version))
+              (sha256
+               (base32
+                "1pm4kdga2nz1cpmchdb0ad8gr3bqfm84b1kl32cyc0x3x5rr2syz"))))
+    (properties `((upstream-name . "rapiclient")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-httr r-jsonlite r-yaml))
+    (home-page "https://github.com/bergant/rapiclient")
+    (synopsis "Dynamic OpenAPI/Swagger client")
+    (description
+     "This package lets you access services specified in OpenAPI (formerly
+Swagger) format.  It is not a code generator.  The client is generated
+dynamically as a list of R functions.")
+    (license license:expat)))
 
 (define-public r-rappdirs
   (package
@@ -15177,6 +15350,36 @@ simple multicore parallelism.")
 isosurfaces.")
     ;; Any version of the GPL.
     (license (list license:gpl2+ license:gpl3+))))
+
+(define-public r-missforest
+  (package
+    (name "r-missforest")
+    (version "1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "missForest" version))
+              (sha256
+               (base32
+                "13c38hpl60ca1kwyv61cxsla6ccmsj4qzp0vrxcq7b827fh5aw21"))))
+    (properties `((upstream-name . "missForest")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dorng
+           r-foreach
+           r-iterators
+           r-itertools
+           r-randomforest))
+    (home-page "https://github.com/stekhoven/missForest")
+    (synopsis "Nonparametric missing value imputation using Random Forest")
+    (description
+     "The function @code{missForest} in this package is used to impute missing
+values, particularly in the case of mixed-type data.  It uses a random forest
+trained on the observed values of a data matrix to predict the missing values.
+It can be used to impute continuous and/or categorical data, including complex
+interactions and non-linear relations.  It yields an @acronym{OOB, out-of-bag}
+imputation error estimate without the need of a test set or elaborate cross-
+validation.  It can be run in parallel to save computation time.")
+    (license license:gpl2+)))
 
 (define-public r-ks
   (package

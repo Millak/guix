@@ -1467,9 +1467,15 @@ address and the @option{-v} flag with @command{git send-email}.
 
 @example
 $ git commit -a
-$ git send-email -1 -a --base=auto -v @var{REVISION} \
+$ git send-email -1 -a --base=auto -v@var{REVISION} \
       --to=@var{ISSUE_NUMBER}@@debbugs.gnu.org
 @end example
+
+@quotation Note
+Due to an apparent bug in @command{git send-email},
+@option{-v @var{REVISION}} (with the space) will not work; you
+@emph{must} use @option{-v@var{REVISION}}.
+@end quotation
 
 You can find out @var{ISSUE_NUMBER} either by searching on the mumi
 interface at @url{issues.guix.gnu.org} for the name of your patch or
@@ -1824,23 +1830,27 @@ It additionally calls @code{make check-channel-news} to be sure
 
 @subsection Commit Policy
 
-If you get commit access, please make sure to follow
-the policy below (discussions of the policy can take place on
+If you get commit access, please make sure to follow the policy below
+(discussions of the policy can take place on
 @email{guix-devel@@gnu.org}).
 
-Non-trivial patches should always be posted to
-@email{guix-patches@@gnu.org} (trivial patches include fixing typos,
-etc.).  This mailing list fills the patch-tracking database
-(@pxref{Tracking Bugs and Patches}).
+Changes should be posted to @email{guix-patches@@gnu.org}.  This mailing
+list fills the patch-tracking database (@pxref{Tracking Bugs and
+Patches}).  It also allows patches to be picked up and tested by the
+quality assurance tooling; the result of that testing eventually shows
+up on the dashboard at
+@indicateurl{https://qa.guix.gnu.org/issue/@var{ISSUE_NUMBER}}, where
+@var{ISSUE_NUMBER} is the number assigned by the issue tracker.  Leave
+time for a review, without committing anything (@pxref{Submitting
+Patches}).  If you didn’t receive any reply after one week (two weeks
+for more significant changes), and if you're confident, it's OK to
+commit.
 
-For patches that just add a new package, and a simple one, it's OK to
-commit, if you're confident (which means you successfully built it in a
-chroot setup, and have done a reasonable copyright and license
-auditing).  Likewise for package upgrades, except upgrades that trigger
-a lot of rebuilds (for example, upgrading GnuTLS or GLib).  We have a
-mailing list for commit notifications (@email{guix-commits@@gnu.org}),
-so people can notice.  Before pushing your changes, make sure to run
-@code{git pull --rebase}.
+As an exception, some changes considered ``trivial'' or ``obvious'' may
+be pushed directly.  This includes changes to fix typos and reverting
+commits that caused immediate problems.  This is subject to being
+adjusted, allowing individuals to commit directly on non-controversial
+changes on parts they’re familiar with.
 
 When pushing a commit on behalf of somebody else, please add a
 @code{Signed-off-by} line at the end of the commit log message---e.g.,
@@ -1854,14 +1864,6 @@ right before pushing:
 @example
 make check-channel-news
 @end example
-
-For anything else, please post to @email{guix-patches@@gnu.org} and
-leave time for a review, without committing anything (@pxref{Submitting
-Patches}).  If you didn’t receive any reply after two weeks, and if
-you're confident, it's OK to commit.
-
-That last part is subject to being adjusted, allowing individuals to commit
-directly on non-controversial changes on parts they’re familiar with.
 
 @subsection Addressing Issues
 

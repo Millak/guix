@@ -6,7 +6,7 @@
 ;;; Copyright © 2020 Jack Hill <jackhill@jackhill.us>
 ;;; Copyright © 2020 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2020 Ekaitz Zarraga <ekaitz@elenq.tech>
-;;; Copyright © 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2020, 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Ryan Prior <rprior@protonmail.com>
 ;;; Copyright © 2020 Ellis Kenyo <me@elken.dev>
 ;;; Copyright © 2020 Stefan Reichör <stefan@xsteve.at>
@@ -198,7 +198,7 @@ simple and consistent.")
 (define-public papirus-icon-theme
   (package
     (name "papirus-icon-theme")
-    (version "20220508")
+    (version "20230104")
     (source
      (origin
        (method git-fetch)
@@ -206,7 +206,7 @@ simple and consistent.")
              (url "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme")
              (commit version)))
        (sha256
-        (base32 "0rpcniaw8xbn23q67m26vgx3fynn4v056azrfp63lxdh46gfsvmc"))
+        (base32 "1x40gdqyw0gj389by6904g5a64r72by544k3nlyiamjhg2zmpx97"))
        (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -216,7 +216,23 @@ simple and consistent.")
        (modify-phases %standard-phases
          (delete 'bootstrap)
          (delete 'configure)
-         (delete 'build))))
+         (delete 'build)
+         (add-after 'install 'halve-inode-consumption
+           ;; This package uses over 100K inodes, which is a lot.  We can easily
+           ;; halve that number by using (hard) links, to no ill effect.
+           ;; See <https://logs.guix.gnu.org/guix/2023-01-31.log#171227>.
+           ;; However, the source checkout will still use the full amount!
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (symlink? (lambda (_ stat)
+                               (eq? 'symlink (stat:type stat)))))
+               (for-each (lambda (file)
+                           (with-directory-excursion (dirname file)
+                             (let ((target (readlink file)))
+                               (when (eq? 'regular (stat:type (stat target)))
+                                 (delete-file file)
+                                 (link target file)))))
+                         (find-files out symlink?))))))))
     (native-inputs
      (list `(,gtk+ "bin")))
     (home-page "https://git.io/papirus-icon-theme")
@@ -1093,7 +1109,7 @@ GNOME Shell, including the top panel, dash and overview.")
 (define-public gnome-shell-extension-radio
   (package
     (name "gnome-shell-extension-radio")
-    (version "19")
+    (version "20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1103,7 +1119,7 @@ GNOME Shell, including the top panel, dash and overview.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1qsi6c57hxh4jqdw18knm06601lhag6jdbvzg0r79aa9572zy8a0"))))
+                "01dmziad9g7bs3hr59aaz3mivkc6rqfyb9bz2v202zk22vcr5a2y"))))
     (build-system copy-build-system)
     (arguments
      (list
@@ -1189,7 +1205,7 @@ of windows.")
 (define-public arc-theme
   (package
     (name "arc-theme")
-    (version "20220405")
+    (version "20221218")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1198,11 +1214,11 @@ of windows.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1gjwf75sg4xyfypb08qiy2cmqyr2mamjc4i46ifrq7snj15gy608"))))
+                "0yznqjz1a1mcwks8z7pybgzrjiwg978bfpdmkaq926wy82qslngd"))))
     (build-system meson-build-system)
     (arguments
      '(#:configure-flags
-       '("-Dthemes=gnome-shell,gtk2,gtk3,metacity,plank,unity,xfwm")
+       '("-Dthemes=gnome-shell,gtk2,gtk3,gtk4,metacity,plank,unity,xfwm")
        #:phases
        (modify-phases %standard-phases
          (add-before 'build 'set-home   ;placate Inkscape
@@ -1217,6 +1233,7 @@ of windows.")
            pkg-config
            python
            sassc/libsass-3.5))
+    (inputs (list gtk-engines)) ;for gtk+-2 to work properly
     (synopsis "Flat GTK+ theme with transparent elements")
     (description "Arc is a flat theme with transparent elements for GTK 3, GTK
 2, and GNOME Shell which supports GTK 3 and GTK 2 based desktop environments
@@ -1301,7 +1318,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
 (define-public materia-theme
   (package
     (name "materia-theme")
-    (version "20200916")
+    (version "20210322")
     (source
       (origin
         (method git-fetch)
@@ -1312,7 +1329,7 @@ like Gnome, Unity, Budgie, Pantheon, XFCE, Mate and others.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "0qaxxafsn5zd2ysgr0jyv5j73360mfdmxyd55askswlsfphssn74"))))
+            "1fsicmcni70jkl4jb3fvh7yv0v9jhb8nwjzdq8vfwn256qyk0xvl"))))
     (build-system meson-build-system)
     (native-inputs
      (list gtk+ sassc))

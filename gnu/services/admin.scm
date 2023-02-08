@@ -1,7 +1,8 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2016 Jan Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2020 Brice Waegeneire <brice@waegenei.re>
+;;; Copyright © 2023 Giacomo Leidi <goodoldpaul@autistici.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -58,6 +59,7 @@
             unattended-upgrade-configuration
             unattended-upgrade-configuration?
             unattended-upgrade-configuration-operating-system-file
+            unattended-upgrade-configuration-operating-system-expression
             unattended-upgrade-configuration-channels
             unattended-upgrade-configuration-schedule
             unattended-upgrade-configuration-services-to-restart
@@ -263,6 +265,8 @@ Old log files are removed or compressed according to the configuration.")
   unattended-upgrade-configuration?
   (operating-system-file unattended-upgrade-operating-system-file
                          (default "/run/current-system/configuration.scm"))
+  (operating-system-expression unattended-upgrade-operating-system-expression
+                               (default #f))
   (schedule             unattended-upgrade-configuration-schedule
                         (default "30 01 * * 0"))
   (channels             unattended-upgrade-configuration-channels
@@ -295,6 +299,14 @@ Old log files are removed or compressed according to the configuration.")
 
   (define config-file
     (unattended-upgrade-operating-system-file config))
+
+  (define expression
+    (unattended-upgrade-operating-system-expression config))
+
+  (define arguments
+    (if expression
+        #~(list "-e" (object->string '#$expression))
+        #~(list #$config-file)))
 
   (define code
     (with-imported-modules (source-module-closure '((guix build utils)
@@ -333,9 +345,9 @@ Old log files are removed or compressed according to the configuration.")
           (format #t "~a starting upgrade...~%" (timestamp))
           (guard (c ((invoke-error? c)
                      (report-invoke-error c)))
-            (invoke #$(file-append guix "/bin/guix")
-                    "time-machine" "-C" #$channels
-                    "--" "system" "reconfigure" #$config-file)
+            (apply invoke #$(file-append guix "/bin/guix")
+                   "time-machine" "-C" #$channels
+                   "--" "system" "reconfigure" #$arguments)
 
             ;; 'guix system delete-generations' fails when there's no
             ;; matching generation.  Thus, catch 'invoke-error?'.

@@ -909,7 +909,7 @@ tomorrow, the rest of the week and for special occasions.")
      (list dbus
            desktop-file-utils
            gettext-minimal
-           git-minimal/fixed
+           git-minimal/pinned
            `(,glib "bin")
            gobject-introspection
            gsettings-desktop-schemas
@@ -1048,7 +1048,7 @@ between different kinds of computer systems.")
 (define-public tepl
   (package
     (name "tepl")
-    (version "6.1.2")
+    (version "6.4.0")
     (source
      (origin
        (method url-fetch)
@@ -1058,7 +1058,7 @@ between different kinds of computer systems.")
                        name "-" version ".tar.xz"))
        (sha256
         (base32
-         "16x14j3nvsjj7jb2qmxpzygnlcy7sd7p6skv0sqshkwdlp4jxzha"))))
+         "08bkp3wrvmcks0082lfw4a0ian9c6j68rdb43px0bkyhd43b4mjy"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -4599,7 +4599,7 @@ targeting the GNOME stack simple.")
 (define-public vte
   (package
     (name "vte")
-    (version "0.69.99")
+    (version "0.70.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/vte/"
@@ -4607,7 +4607,7 @@ targeting the GNOME stack simple.")
                                   "vte-" version ".tar.xz"))
               (sha256
                (base32
-                "1v3i38yrjhc48nvs1g333s3q709mq824qq0k2fnsmrrwv15c3cg9"))))
+                "102d6cd9f96czlq01ixhymfp0z20khw0dl5bgvan9xg31lwb85ad"))))
     (build-system meson-build-system)
     (arguments
      (list #:configure-flags #~(list "-Dvapi=true"
@@ -4633,6 +4633,15 @@ GTK+, and a minimal sample application (vte) using that.  Vte is mainly used in
 gnome-terminal, but can also be used to embed a console/terminal in games,
 editors, IDEs, etc.")
     (license license:lgpl2.1+)))
+
+(define-public vte-with-gtk-4
+  (package/inherit vte
+    (name "vte-with-gtk4")
+    (arguments (substitute-keyword-arguments (package-arguments vte)
+                 ((#:configure-flags flags #~'())
+                  #~(cons* "-Dgtk4=true" "-Dgtk3=false" #$flags))))
+    (propagated-inputs (modify-inputs (package-propagated-inputs vte)
+                         (replace "gtk+" gtk)))))
 
 (define-public vte-ng
   (package
@@ -5190,7 +5199,7 @@ as OpenStreetMap, OpenCycleMap, OpenAerialMap and Maps.")
            sqlite
            zlib))
     (inputs
-     (list mit-krb5 samba/fixed))     ; For ntlm_auth support
+     (list mit-krb5 samba/pinned))     ; For ntlm_auth support
     (home-page "https://wiki.gnome.org/Projects/libsoup")
     (synopsis "GLib-based HTTP Library")
     (description
@@ -6216,7 +6225,7 @@ which are easy to play with the aid of a mouse.")
 (define-public amtk
   (package
     (name "amtk")
-    (version "5.5.1")
+    (version "5.6.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/amtk/"
@@ -6224,7 +6233,7 @@ which are easy to play with the aid of a mouse.")
                                   "amtk-" version ".tar.xz"))
               (sha256
                (base32
-                "176vplk3inf0pp0prma8478hp0yhziq0krp5a9l47hg22z86v2gc"))))
+                "0a1j2ynsa2nx1rzd55mdyp35d89zd9rfxd9ld4lsqal7bjw1a0fm"))))
     (build-system meson-build-system)
     (native-inputs
      (list gobject-introspection
@@ -6243,7 +6252,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
 (define-public devhelp
   (package
     (name "devhelp")
-    (version "41.3")
+    (version "43.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -6251,7 +6260,7 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1rxn6kciyfdhnjrcjyf02cn3rki2xgwb4wrg5plbzjvpqasq66ml"))))
+                "016xhpz16b9b13y7wnvkllymb4s2fb6ixvw190204bir0pyyxkk3"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -6260,8 +6269,9 @@ both a traditional UI or a modern UI with a GtkHeaderBar.")
          (add-after 'unpack 'skip-gtk-update-icon-cache
            ;; Don't create 'icon-theme.cache'.
            (lambda _
-             (substitute* "build-aux/meson/meson_post_install.py"
-               (("gtk-update-icon-cache") "true")))))))
+             (substitute* "meson.build"
+               (("gtk_update_icon_cache: true")
+                "gtk_update_icon_cache: false")))))))
     (propagated-inputs
      (list gsettings-desktop-schemas))
     (native-inputs
@@ -7074,7 +7084,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
 (define-public gvfs
   (package
     (name "gvfs")
-    (version "1.50.2")
+    (version "1.50.3")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/gvfs/"
@@ -7082,7 +7092,7 @@ part of udev-extras, then udev, then systemd.  It's now a project on its own.")
                                   "gvfs-" version ".tar.xz"))
               (sha256
                (base32
-                "0pmc0vda1ksm9l7v64h4bm8qnv16amb7nifgy0882hzg2n62pmq3"))))
+                "1z8332qg4kpa3lm3lbwb3xir4rba9ajsbqbq4yfh45mvjyg135v8"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
@@ -7754,7 +7764,7 @@ share them with others via social networking and more.")
     (description "File Roller is an archive manager for the GNOME desktop
 environment that allows users to view, unpack, and create compressed archives
 such as gzip tarballs.")
-    (home-page "http://fileroller.sourceforge.net/")
+    (home-page "https://fileroller.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public gnome-session
@@ -7872,7 +7882,7 @@ javascript engine and the GObject introspection framework.")
 (define-public gedit
   (package
     (name "gedit")
-    (version "42.2")
+    (version "44.1")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -7880,7 +7890,7 @@ javascript engine and the GObject introspection framework.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1jlgzihi4ywvlr4xj2vbnnxzar8j3mwj0jcn8jp6dh0a3w8jjqiw"))))
+                "1nlgbnagahymb8l41kgz3nwc4p9cj3zx39428z6zik44fa6kfqh4"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -7916,6 +7926,7 @@ javascript engine and the GObject introspection framework.")
      (list desktop-file-utils           ;for update-desktop-database
            `(,glib "bin")               ;for glib-mkenums, etc.
            gobject-introspection
+           gtk-doc
            intltool
            itstool
            libxml2
@@ -7924,6 +7935,7 @@ javascript engine and the GObject introspection framework.")
            vala))
     (inputs
      (list adwaita-icon-theme
+           amtk
            bash-minimal
            glib
            gsettings-desktop-schemas
@@ -7933,7 +7945,8 @@ javascript engine and the GObject introspection framework.")
            libpeas
            libsoup
            python
-           python-pygobject))
+           python-pygobject
+           tepl))
     (home-page "https://wiki.gnome.org/Apps/Gedit")
     (synopsis "GNOME text editor")
     (description "While aiming at simplicity and ease of use, gedit is a
@@ -11441,7 +11454,7 @@ photo-booth-like software, such as Cheese.")
 (define-public cheese
   (package
     (name "cheese")
-    (version "41.1")
+    (version "43.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -11449,25 +11462,29 @@ photo-booth-like software, such as Cheese.")
                                   version ".tar.xz"))
               (sha256
                (base32
-                "0iz5cwndl65j13z5pmv0ansln2lyii0h82q775jgc3vk53560aaj"))))
+                "02vzcvk2s6cwvdw6v6qmlq3znamy6zwv7l6nlbqjfwrj7i54qmvl"))))
     (arguments
-     `(#:glib-or-gtk? #t
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'skip-gtk-update-icon-cache
-           (lambda _
-             ;; Don't create 'icon-theme.cache'
-             (substitute* "meson_post_install.py"
-               (("gtk-update-icon-cache") (which "true")))))
-         (add-after 'install 'wrap-cheese
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/cheese")
-               `("GST_PLUGIN_SYSTEM_PATH" ":" prefix
-                 (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
+     (list #:glib-or-gtk? #t
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'skip-gtk-update-icon-cache
+                 (lambda _
+                   ;; Don't create 'icon-theme.cache'.
+                   (substitute* "meson_post_install.py"
+                     (("gtk-update-icon-cache") (which "true")))))
+               (add-after 'install 'wrap-cheese
+                 (lambda* (#:key inputs outputs #:allow-other-keys)
+                   (wrap-program (search-input-file outputs "bin/cheese")
+                     `("GST_PLUGIN_SYSTEM_PATH" prefix
+                       (,(getenv "GST_PLUGIN_SYSTEM_PATH")))
+                     `("GST_PRESET_PATH" prefix
+                       (,(dirname (search-input-file inputs
+                                                     "share/gstreamer-1.0\
+/presets/GstVP8Enc.prs"))))))))))
     (build-system meson-build-system)
     (native-inputs
-     (list docbook-xsl
-           docbook-xml-4.3
+     (list docbook-xml-4.3
+           docbook-xsl
            gettext-minimal
            `(,glib "bin")
            gobject-introspection
@@ -11478,20 +11495,20 @@ photo-booth-like software, such as Cheese.")
            pkg-config
            vala))
     (propagated-inputs
-     (list bash-minimal
-           gnome-video-effects
-           clutter
+     (list clutter
            clutter-gst
            clutter-gtk
-           libcanberra
            gdk-pixbuf
            glib
-           gstreamer))
+           gnome-video-effects
+           gstreamer
+           libcanberra))
     (inputs
-     (list gnome-desktop
+     (list bash-minimal
+           gnome-desktop
+           gst-plugins-bad
            gst-plugins-base
            gst-plugins-good
-           gst-plugins-bad
            gtk+
            libx11
            libxtst))
@@ -11924,7 +11941,7 @@ advanced image management tool")
 (define-public terminator
   (package
     (name "terminator")
-    (version "2.1.1")
+    (version "2.1.2")
     (source
      (origin
        (method url-fetch)
@@ -11932,7 +11949,7 @@ advanced image management tool")
                            "releases/download/v" version "/"
                            name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xdgmam7ghnxw6g38a4gjw3kk3rhga8c66lns18k928jlr9fmddw"))))
+        (base32 "10shpn8id7z43d4dpx16x76mgxnk4mr976j5cg28icjiiaidyfc2"))))
     (build-system python-build-system)
     (native-inputs
      `(("gettext" ,gettext-minimal)
@@ -12638,7 +12655,7 @@ card sheets that you’ll find at most office supply stores.")
 (define-public gnome-latex
   (package
     (name "gnome-latex")
-    (version "3.41.2")
+    (version "3.44.0")
     (source
      (origin
        (method url-fetch)
@@ -12646,7 +12663,7 @@ card sheets that you’ll find at most office supply stores.")
                            (version-major+minor version)  "/"
                            "gnome-latex-" version ".tar.xz"))
        (sha256
-        (base32 "0cynhmrn99f4f3kddczsc58ak4b9sv2zkfbcyz7z16848nhz047k"))))
+        (base32 "0i77m431ilbaprcwcnnzfckr1g9bfc03lslnqw0yvir8pm057gc8"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal
@@ -13204,7 +13221,7 @@ profiler via Sysprof, debugging support, and more.")
 (define-public komikku
   (package
     (name "komikku")
-    (version "1.7.0")
+    (version "1.10.1")
     (source
      (origin
        (method git-fetch)
@@ -13214,7 +13231,7 @@ profiler via Sysprof, debugging support, and more.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0pgls9lfmgx1wgk7navvr44hdp6ziac19979lkqw2a09jn8y6xxa"))))
+         "17nyfpg15i87204017as2dq491bq3dy261flwx71b2z4f4k6q83b"))))
     (build-system meson-build-system)
     (arguments
      (list

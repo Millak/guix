@@ -1,6 +1,7 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2015 David Thompson <davet@gnu.org>
-# Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2022, 2023 John Kehayias <john.kehayias@protonmail.com>
+# Copyright © 2023 Ludovic Courtès <ludo@gnu.org>
 #
 # This file is part of GNU Guix.
 #
@@ -241,6 +242,16 @@ guix shell -CF --bootstrap guile-bootstrap glibc \
                             "glibc-for-fhs")
                            0
                            1))'
+
+# Test that $PATH inside the container includes the FHS directories.
+guix shell -CF coreutils -- env | grep ^PATH=/bin:/usr/bin:/sbin:/usr/sbin.*
+
+# Make sure '--preserve' is honored for $PATH, which the '--emulate-fhs'
+# option modifies.  We can't (easily) check the whole $PATH as it will differ
+# inside and outside the container, so just check our test $PATH is still
+# present.  See <https://issues.guix.gnu.org/60566>.
+PATH=/foo $(type -P guix) shell -CF -E ^PATH$ coreutils \
+     -- env | grep ^PATH=.*:/foo
 
 # '--symlink' works.
 echo "TESTING SYMLINK IN CONTAINER"

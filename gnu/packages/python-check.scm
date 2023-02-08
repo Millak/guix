@@ -9,7 +9,7 @@
 ;;; Copyright © 2020 Edouard Klein <edk@beaver-labs.com>
 ;;; Copyright © 2020, 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2021-2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Brendan Tildesley <mail@brendan.scot>
 ;;; Copyright © 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2021 Bonface Munyoki Kilyungi <me@bonfacemunyoki.com>
@@ -39,8 +39,8 @@
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
-  #:use-module (gnu packages docker)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages docker)
   #:use-module (gnu packages openstack)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python-build)
@@ -50,13 +50,14 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (guix utils)
   #:use-module ((guix licenses) #:prefix license:)
-  #:use-module (guix packages)
+  #:use-module (guix build-system pyproject)
+  #:use-module (guix build-system python)
+  #:use-module (guix download)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
-  #:use-module (guix download)
-  #:use-module (guix build-system python))
+  #:use-module (guix packages)
+  #:use-module (guix utils))
 
 (define-public python-tappy
   (package
@@ -2337,6 +2338,56 @@ Python objects.  It tries to use the objects available in the standard
     (description
      "This package provides a collection of utility functions and classes
 which make writing and running functional and integration tests easier.")
+    (license license:asl2.0)))
+
+(define-public python-nox
+  (package
+    (name "python-nox")
+    (version "2022.11.21")
+    (source
+     (origin
+       ;; No tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/wntrblm/nox")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1xfd63h75wiiyri4f7qyvy50f2ny0v4r4wx2h4px9ddbkh2k5g9p"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases
+           #~(modify-phases %standard-phases
+               ;; NOTE: This manipulation looks not clear as upstream package
+               ;; contains "nox/tox_to_nox.jinja2" file which is not copied
+               ;; during install phase and causes check and sanity-check
+               ;; phases fail due to missing file. Try to find more simple
+               ;; solution.
+               (add-after 'unpack 'rename-tox-to-nox-jinja2
+                 (lambda _
+                   (rename-file "nox/tox_to_nox.jinja2" "nox/tox_to_nox.jinja2.py")))
+               (add-after 'install 'rename-tox-to-nox-jinja2-back
+                 (lambda _
+                   (let* ((src-file (car (find-files (string-append #$output "/lib")
+                                                     "tox_to_nox\\.jinja2\\.py$")))
+                          (dst-file (string-drop-right src-file 3)))
+                     (rename-file src-file dst-file)))))))
+    (propagated-inputs
+     (list python-argcomplete
+           python-colorlog
+           python-packaging
+           python-py
+           python-virtualenv))
+    (native-inputs
+     (list python-jinja2
+           python-pytest
+           python-tox))
+    (home-page "https://nox.thea.codes/")
+    (synopsis "Flexible test automation")
+    (description
+     "@code{nox} is a command-line tool that automates testing in multiple
+Python environments, similar to @code{tox}.  Unlike tox, Nox uses a standard
+Python file for configuration.")
     (license license:asl2.0)))
 
 (define-public python-tox

@@ -652,9 +652,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                      %u-boot-sifive-prevent-relocating-initrd-fdt
                      %u-boot-rk3399-enable-emmc-phy-patch
                      (search-patch "u-boot-infodocs-target.patch")
-                     (search-patch "u-boot-patman-fix-help.patch")
-                     (search-patch "u-boot-patman-local-conf.patch")
-                     (search-patch "u-boot-patman-get-maintainer.patch")))
+                     (search-patch "u-boot-patman-guix-integration.patch")))
               (method url-fetch)
               (uri (string-append
                     "https://ftp.denx.de/pub/u-boot/"
@@ -664,8 +662,7 @@ tree binary files.  These are board description files used by Linux and BSD.")
                 "1y5x8vxdgsqdqlsvq01mn8lmw53fqairkhvhhjx83hjva0m4id2h"))))
     (build-system  gnu-build-system)
     (native-inputs
-     (list bc
-           bison
+     (list bison
            dtc
            gnutls
            flex
@@ -674,9 +671,6 @@ tree binary files.  These are board description files used by Linux and BSD.")
            perl
            pkg-config                   ;for 'make menuconfig'
            python
-           python-coverage
-           python-pycryptodomex
-           python-pytest
            swig
            (list util-linux "lib")))
     (home-page "https://www.denx.de/wiki/U-Boot/")
@@ -727,7 +721,7 @@ Info manual.")))
     (name "u-boot-tools")
     (native-inputs
      (modify-inputs (package-native-inputs u-boot)
-       (prepend sdl2)))
+       (prepend python-coverage python-pycryptodomex python-pytest sdl2)))
     (arguments
      `(#:make-flags '("HOSTCC=gcc")
        #:test-target "tcheck"
@@ -862,14 +856,18 @@ def test_ctrl_c"))
                                      defconfig
                                      configs
                                      name-suffix
-                                     append-description)
+                                     append-description
+                                     (u-boot u-boot))
   "Return a U-Boot package for BOARD cross-compiled for TRIPLET with the
 optional DEFCONFIG file and optional configuration changes from CONFIGS.
-NAME-SUFFIX is appended to the package name, while APPEND-DESCRIPTION is
-appended to the package description."
-  (let ((same-arch? (lambda ()
-                      (string=? (%current-system)
-                                (gnu-triplet->nix-system triplet)))))
+TRIPLET may also be set to #f to disable cross-compilation.  NAME-SUFFIX is
+appended to the package name, while APPEND-DESCRIPTION is appended to the
+package description.  U-BOOT can be used when a fork or a different version of
+U-Boot must be used."
+  (let ((native-build? (lambda ()
+                         (or (not triplet) ;disable cross-compilation
+                             (string=? (%current-system)
+                                       (gnu-triplet->nix-system triplet))))))
     (package
       (inherit u-boot)
       (name (string-append "u-boot-"
@@ -880,95 +878,98 @@ appended to the package description."
                        (string-append (package-description u-boot)
                                       "\n\n" append-description)
                        (package-description u-boot)))
-      (native-inputs
-       `(,@(if (not (same-arch?))
-               `(("cross-gcc" ,(cross-gcc triplet))
-                 ("cross-binutils" ,(cross-binutils triplet)))
-               `())
-         ,@(package-native-inputs u-boot)))
+      (build-system gnu-build-system)
       (arguments
-       `(#:modules ((ice-9 ftw)
-                    (srfi srfi-1)
-                    (guix build gnu-build-system)
-                    (guix build kconfig)
-                    (guix build utils))
-         #:imported-modules (,@%gnu-build-system-modules
-                             (guix build kconfig))
-         #:test-target "test"
-         #:make-flags
-         (list "HOSTCC=gcc"
-               "KBUILD_VERBOSE=1"
-               ,@(if (not (same-arch?))
-                     `((string-append "CROSS_COMPILE=" ,triplet "-"))
-                     '()))
-         #:phases
-         (modify-phases %standard-phases
-           (replace 'configure
-             (lambda* (#:key outputs make-flags #:allow-other-keys)
-               (let* ((config-name (string-append ,board "_defconfig"))
-                      (config-file (string-append "configs/" config-name))
-                      (defconfig ,defconfig)
-                      (configs ',configs))
-                 (when defconfig
-                   ;; Replace the board-specific defconfig with the given one.
-                   (copy-file defconfig config-file))
-                 (if (file-exists? config-file)
-                     (begin
-                       (when configs
-                         (modify-defconfig config-file configs))
-                       (apply invoke "make" `(,@make-flags ,config-name))
-                       (verify-config ".config" config-file))
-                     (begin
-                       (display "invalid board name; valid board names are:"
-                                (current-error-port))
-                       (let ((suffix-len (string-length "_defconfig"))
-                             (entries (scandir "configs")))
-                         (for-each (lambda (file-name)
-                                     (when (string-suffix? "_defconfig" file-name)
-                                       (format (current-error-port)
-                                               "- ~A\n"
-                                               (string-drop-right file-name
-                                                                  suffix-len))))
-                                   (sort entries string-ci<)))
-                       (error "invalid boardname ~s" ,board))))))
-           (add-after 'configure 'disable-tools-libcrypto
-             ;; Disable libcrypto due to GPL and OpenSSL license
-             ;; incompatibilities
-             (lambda _
-               (substitute* ".config"
-                 (("CONFIG_TOOLS_LIBCRYPTO=.*$") "CONFIG_TOOLS_LIBCRYPTO=n"))))
-           (replace 'install
-             (lambda* (#:key outputs #:allow-other-keys)
-               (let* ((out (assoc-ref outputs "out"))
-                      (libexec (string-append out "/libexec"))
-                      (uboot-files (append
-                                    (remove
-                                     ;; Those would not be reproducible
-                                     ;; because of the randomness used
-                                     ;; to produce them.
-                                     ;; It's expected that the user will
-                                     ;; use u-boot-tools to generate them
-                                     ;; instead.
-                                     (lambda (name)
-                                       (string-suffix?
-                                        "sunxi-spl-with-ecc.bin"
-                                        name))
-                                     (find-files "." ".*\\.(bin|efi|img|spl|itb|dtb|rksd)$"))
-                                    (find-files "." "^(MLO|SPL)$"))))
-                 (mkdir-p libexec)
-                 (install-file ".config" libexec)
-                 ;; Useful for "qemu -kernel".
-                 (install-file "u-boot" libexec)
-                 (for-each
-                  (lambda (file)
-                    (let ((target-file (string-append libexec "/" file)))
-                      (mkdir-p (dirname target-file))
-                      (copy-file file target-file)))
-                  uboot-files)
-                 #t)))))))))
-
-(define-public u-boot-malta
-  (make-u-boot-package "malta" "mips64el-linux-gnuabi64"))
+       (substitute-keyword-arguments (package-arguments u-boot)
+         ((#:target _ #f)
+          (and (not (native-build?)) triplet))
+         ((#:modules modules '())
+          `((ice-9 ftw)
+            (srfi srfi-1)
+            (guix build gnu-build-system)
+            (guix build kconfig)
+            (guix build utils)
+            ,@modules))
+         ((#:imported-modules imported-modules '())
+          `((guix build kconfig)
+            ,@%gnu-build-system-modules
+            ,@imported-modules))
+         ((#:test-target _ "test")
+          "test")
+         ((#:make-flags make-flags '())
+          #~(list "HOSTCC=gcc"
+                  "KBUILD_VERBOSE=1"
+                  #$@(if (not (native-build?))
+                         (list (string-append "CROSS_COMPILE=" triplet "-"))
+                         '())
+                  #$@make-flags))
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (replace 'configure
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (let* ((config-name (string-append #$board "_defconfig"))
+                         (config-file (string-append "configs/" config-name))
+                         (defconfig #$defconfig)
+                         (configs '#$configs))
+                    (when defconfig
+                      ;; Replace the board-specific defconfig with the given
+                      ;; one.
+                      (copy-file defconfig config-file))
+                    (if (file-exists? config-file)
+                        (begin
+                          (when configs
+                            (modify-defconfig config-file configs))
+                          (apply invoke "make" `(,@make-flags ,config-name))
+                          (verify-config ".config" config-file))
+                        (begin
+                          (display "invalid board name; valid board names are:"
+                                   (current-error-port))
+                          (let ((suffix-len (string-length "_defconfig"))
+                                (entries (scandir "configs")))
+                            (for-each (lambda (file-name)
+                                        (when (string-suffix? "_defconfig"
+                                                              file-name)
+                                          (format (current-error-port)
+                                                  "- ~A\n"
+                                                  (string-drop-right
+                                                   file-name suffix-len))))
+                                      (sort entries string-ci<)))
+                          (error "invalid boardname ~s" #$board))))))
+              (add-after 'configure 'disable-tools-libcrypto
+                ;; Disable libcrypto due to GPL and OpenSSL license
+                ;; incompatibilities
+                (lambda _
+                  (substitute* ".config"
+                    (("CONFIG_TOOLS_LIBCRYPTO=.*$")
+                     "CONFIG_TOOLS_LIBCRYPTO=n"))))
+              (replace 'install
+                (lambda _
+                  (let ((libexec (string-append #$output "/libexec"))
+                        (uboot-files
+                         (append
+                          (remove
+                           ;; Those would not be reproducible
+                           ;; because of the randomness used to
+                           ;; produce them.  It's expected that the
+                           ;; user will use u-boot-tools to generate
+                           ;; them instead.
+                           (lambda (name)
+                             (string-suffix?
+                              "sunxi-spl-with-ecc.bin"
+                              name))
+                           (find-files "."
+                                       ".*\\.(bin|efi|img|imx|spl|itb|dtb|rksd)$"))
+                          (find-files "." "^(MLO|SPL)$"))))
+                    (mkdir-p libexec)
+                    (install-file ".config" libexec)
+                    ;; Useful for "qemu -kernel".
+                    (install-file "u-boot" libexec)
+                    (for-each
+                     (lambda (file)
+                       (let ((target-file (string-append libexec "/" file)))
+                         (mkdir-p (dirname target-file))
+                         (copy-file file target-file)))
+                     uboot-files)))))))))))
 
 (define-public u-boot-am335x-boneblack
   (let ((base (make-u-boot-package
@@ -1000,17 +1001,13 @@ removed so that it fits within common partitioning schemes.")))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key native-inputs inputs #:allow-other-keys)
-                 (let ((bl31
-                        (string-append
-                         (assoc-ref (or native-inputs inputs) "firmware")
-                         "/bl31.bin")))
-                   (setenv "BL31" bl31))))))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-sun50i-a64)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.bin"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-sun50i-a64))))))
 
 (define-public u-boot-pine64-plus
   (make-u-boot-sunxi64-package "pine64_plus" "aarch64-linux-gnu"))
@@ -1094,23 +1091,62 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "BL31"
-                         (search-input-file inputs "/bl31.elf"))))
-             ;; Phases do not succeed on the bl31 ELF.
-             (delete 'strip)
-             (delete 'validate-runpath)))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3399)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
+              ;; Phases do not succeed on the bl31 ELF.
+              (delete 'strip)
+              (delete 'validate-runpath)))))
+      (inputs
+       (modify-inputs (package-native-inputs base)
+         (append arm-trusted-firmware-rk3399))))))
 
 (define-public u-boot-qemu-riscv64
   (make-u-boot-package "qemu-riscv64" "riscv64-linux-gnu"))
 
 (define-public u-boot-qemu-riscv64-smode
   (make-u-boot-package "qemu-riscv64_smode" "riscv64-linux-gnu"))
+
+(define-public u-boot-sandbox
+  (let ((base (make-u-boot-package
+               "sandbox" #f             ;build for the native system
+               ;; Disable CONFIG_TOOLS_LIBCRYPTO, CONFIG_FIT_SIGNATURE and
+               ;; CONFIG_FIT_CIPHER and their selectors as these features
+               ;; require OpenSSL, which is incompatible with the GPLv2-only
+               ;; parts of U-boot.  The options below replicate the changes
+               ;; that disabling the above features in 'make menuconfig' then
+               ;; refreshing the defconfig with 'make savedefconfig' would do.
+               #:configs (list "# CONFIG_FIT_RSASSA_PSS is not set"
+                               "# CONFIG_FIT_CIPHER is not set"
+                               "# CONFIG_LEGACY_IMAGE_FORMAT is not set"
+                               "# CONFIG_IMAGE_PRE_LOAD is not set"
+                               "# CONFIG_IMAGE_PRE_LOAD_SIG is not set"
+                               "# CONFIG_CMD_BOOTM_PRE_LOAD is not set"
+                               "CONFIG_RSA=y"
+                               "# CONFIG_EFI_SECURE_BOOT is not set"
+                               "# CONFIG_TOOLS_LIBCRYPTO is not set")
+               #:append-description
+               "The sandbox configuration of U-Boot provides a
+@command{u-boot} command that runs as a normal user space application.  It can
+be used to test the functionality of U-Boot interactively without having to
+deploy to an actual target device.  @xref{Sandbox<6>,,,u-boot, The U-Boot
+Documentation} for more information (for example by running @samp{info
+\"(u-boot) Sandbox<6>\"}).")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'install 'symlink-u-boot-command
+                (lambda* (#:key outputs #:allow-other-keys)
+                  ;; For ease of discovery.
+                  (mkdir (string-append #$output "/bin"))
+                  (symlink (search-input-file outputs "libexec/u-boot")
+                           (string-append #$output "/bin/u-boot"))))))))
+      (inputs (modify-inputs (package-inputs base)
+                (append sdl2))))))
 
 (define-public u-boot-sifive-unleashed
   (make-u-boot-package "sifive_unleashed" "riscv64-linux-gnu"))
@@ -1122,15 +1158,14 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((opensbi (string-append (assoc-ref inputs "firmware")
-                                               "/fw_dynamic.bin")))
-                   (setenv "OPENSBI" opensbi))))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "OPENSBI" (search-input-file inputs
+                                                       "fw_dynamic.bin"))))))))
       (inputs
-       `(("firmware" ,opensbi-generic)
-         ,@(package-inputs base))))))
+       (modify-inputs (package-inputs base)
+         (append opensbi-generic))))))
 
 (define-public u-boot-rock64-rk3328
   (let ((base (make-u-boot-package "rock64-rk3328" "aarch64-linux-gnu")))
@@ -1139,14 +1174,13 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (let ((bl31 (search-input-file inputs "/bl31.elf")))
-                   (setenv "BL31" bl31))))))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3328)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31 "(search-input-file inputs "bl31.elf"))))))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3328))))))
 
 (define-public u-boot-firefly-rk3399
   (let ((base (make-u-boot-package "firefly-rk3399" "aarch64-linux-gnu")))
@@ -1155,16 +1189,16 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
-             ;; Phases do not succeed on the bl31 ELF.
-             (delete 'strip)
-             (delete 'validate-runpath)))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3399)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))
+              ;; Phases do not succeed on the bl31 ELF.
+              (delete 'strip)
+              (delete 'validate-runpath)))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3399))))))
 
 (define-public u-boot-rockpro64-rk3399
   (let ((base (make-u-boot-package "rockpro64-rk3399" "aarch64-linux-gnu"
@@ -1181,37 +1215,36 @@ partition."))
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "BL31"
-                         (search-input-file inputs "/bl31.elf"))))
-             (add-after 'unpack 'patch-header
-               (lambda _
-                 (substitute* "include/config_distro_bootcmd.h"
-                   (("\"scsi_need_init=false")
-                    "\"setenv scsi_need_init false")
-                   (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
-                    "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
-                 (substitute* "include/configs/rockchip-common.h"
-                   (("#define BOOT_TARGET_DEVICES\\(func\\)")
-                    "
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "/bl31.elf"))))
+              (add-after 'unpack 'patch-header
+                (lambda _
+                  (substitute* "include/config_distro_bootcmd.h"
+                    (("\"scsi_need_init=false")
+                     "\"setenv scsi_need_init false")
+                    (("#define BOOTENV_SET_SCSI_NEED_INIT \"scsi_need_init=;")
+                     "#define BOOTENV_SET_SCSI_NEED_INIT \"setenv scsi_need_init;"))
+                  (substitute* "include/configs/rockchip-common.h"
+                    (("#define BOOT_TARGET_DEVICES\\(func\\)")
+                     "
 #if CONFIG_IS_ENABLED(CMD_SCSI)
        #define BOOT_TARGET_SCSI(func) func(SCSI, scsi, 0)
 #else
        #define BOOT_TARGET_SCSI(func)
 #endif
 #define BOOT_TARGET_DEVICES(func)")
-                   (("BOOT_TARGET_NVME\\(func\\) \\\\")
-                    "\
+                    (("BOOT_TARGET_NVME\\(func\\) \\\\")
+                     "\
 BOOT_TARGET_NVME(func) \\
        BOOT_TARGET_SCSI(func) \\"))))
-             ;; Phases do not succeed on the bl31 ELF.
-             (delete 'strip)
-             (delete 'validate-runpath)))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3399)
-         ,@(package-native-inputs base))))))
+              ;; Phases do not succeed on the bl31 ELF.
+              (delete 'strip)
+              (delete 'validate-runpath)))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3399))))))
 
 (define-public u-boot-pinebook-pro-rk3399
   (let ((base (make-u-boot-package "pinebook-pro-rk3399" "aarch64-linux-gnu")))
@@ -1220,17 +1253,16 @@ BOOT_TARGET_NVME(func) \\
       (arguments
        (substitute-keyword-arguments (package-arguments base)
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'unpack 'set-environment
-               (lambda* (#:key inputs #:allow-other-keys)
-                 (setenv "BL31"
-                         (search-input-file inputs "/bl31.elf"))))
-             ;; Phases do not succeed on the bl31 ELF.
-             (delete 'strip)
-             (delete 'validate-runpath)))))
-      (native-inputs
-       `(("firmware" ,arm-trusted-firmware-rk3399)
-         ,@(package-native-inputs base))))))
+          #~(modify-phases #$phases
+              (add-after 'unpack 'set-environment
+                (lambda* (#:key native-inputs inputs #:allow-other-keys)
+                  (setenv "BL31" (search-input-file inputs "bl31.elf"))))
+              ;; Phases do not succeed on the bl31 ELF.
+              (delete 'strip)
+              (delete 'validate-runpath)))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (append arm-trusted-firmware-rk3399))))))
 
 (define*-public (make-u-boot-bin-package u-boot-package
                                          #:key
@@ -1343,6 +1375,158 @@ grub-efi-netboot-removable-bootloader.")
 
 (define-public u-boot-rpi-arm64-efi-bin
   (make-u-boot-bin-package u-boot-rpi-arm64-efi))
+
+(define u-boot-ts-mx6
+  ;; There is no release; use the latest commit of the
+  ;; 'imx_v2015.04_3.14.52_1.1.0_ga' branch.
+  (let ((revision "0")
+        (commit "08809160fbc60d6e949fa9d37d9a41aab8fef742"))
+    (package
+      (inherit u-boot)
+      (name "u-boot-ts-mx6")
+      (version (git-version "2015.04_3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/embeddedTS/u-boot-imx")
+                      (commit commit)))
+                (file-name (git-file-name "u-boot-imx-ts" version))
+                (sha256
+                 (base32
+                  "01mja33351hkcs59rmfvppqlxqw4rh9gng7a7hx2cfspqwh2y6kr"))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments u-boot)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'patch-u-boot
+                (lambda _
+                  (substitute* (find-files "include/configs" "^ts[0-9]{4}\\.h$")
+                    ;; Default to boot a standard zImage instead of a uImage.
+                    (("/boot/uImage")
+                     "/boot/zImage")
+                    (("uimage")
+                     "zimage")
+                    (("bootm \\$\\{loadaddr}")
+                     "bootz ${loadaddr}")
+                    ;; This reference DTB is not available in mainline.
+                    (("ts7970-revf.dtb")
+                     "ts7970.dtb")
+                    ;; Enable support for DISTRO_DEFAULTS, which enables to
+                    ;; use 'sysboot' to boot Guix System.  Also enable
+                    ;; "standard" boot commands for dealing with discovery and
+                    ;; booting of syslinux configurations (extlinux.conf).
+
+                    ;; Disable the stock CONFIG_BOOTCOMMAND to avoid a
+                    ;; redefinition error.
+                    (("CONFIG_BOOTCOMMAND")
+                     "CONFIG_BOOTCOMMAND_DISABLED")
+                    (("CONFIG_BOOTDELAY")
+                     "CONFIG_BOOTDELAY_DISABLED")
+                    ;; Inspired by include/configs/embestmx6boards.h
+                    (("#define CONFIG_EXTRA_ENV_SETTINGS.*" anchor)
+                     (string-append "\
+#include <config_distro_defaults.h>
+
+#define MEM_LAYOUT_ENV_SETTINGS    \\
+\t\"bootm_size=0x10000000\\0\"     \\
+\t\"kernel_addr_r=0x10800000\\0\"  \\
+\t\"fdt_addr_r=0x18000000\\0\"     \\
+\t\"scriptaddr=0x18100000\\0\"     \\
+\t\"pxefile_addr_r=0x18200000\\0\" \\
+\t\"ramdisk_addr_r=0x18300000\\0\"
+
+#define BOOT_TARGET_DEVICES(func)  \\
+\tfunc(MMC, mmc, 0)                \\
+\tfunc(MMC, mmc, 1)                \\
+\tfunc(SATA, sata, 0)              \\
+\tfunc(USB, usb, 0)                \\
+\tfunc(PXE, pxe, na)               \\
+\tfunc(DHCP, dhcp, na)
+
+#include <config_distro_bootcmd.h>
+
+" anchor
+
+;; Sadly, the user config CONFIG_DEFAULT_FDT_FILE did not exist in that older
+;; U-Boot.  A placeholder is added here, to be substituted in each TS U-Boot
+;; board package.
+"\
+\t\"fdtfile=DEFAULT_FDT_FILE\\0\" \\
+\tMEM_LAYOUT_ENV_SETTINGS \\
+\tBOOTENV \\\n")))))
+              (add-after 'unpack 'patch-for-reproducibility
+                (lambda _
+                  ;; Substitute dynamically computed timestamps with static
+                  ;; ones.
+                  (substitute* "Makefile"
+                    (("U_BOOT_DATE \"%b %d %C%y\"")
+                     "U_BOOT_DATE \"Jan 01 1969\"")
+                    (("U_BOOT_TIME \"%T\"")
+                     "U_BOOT_TIME \"00:00:00\""))))
+              (add-before 'build 'adjust-for-gcc10
+                (lambda _
+                  (copy-file "include/linux/compiler-gcc6.h"
+                             "include/linux/compiler-gcc10.h")
+                  (substitute* "arch/arm/Makefile"
+                    (("march=armv5")
+                     "march=armv5te"))))
+              (add-after 'install 'build+install-tools
+                (lambda* (#:key make-flags #:allow-other-keys)
+                  (apply invoke "make" "tools-all" make-flags)
+                  (install-file "tools/env/fw_printenv"
+                                (string-append #$output "/bin"))
+                  (symlink (string-append #$output "/bin/fw_printenv")
+                           (string-append #$output "/bin/fw_setenv"))))))))
+      (native-inputs
+       (modify-inputs (package-native-inputs u-boot)
+         (delete "dtc"))))))            ;otherwise the build fails
+
+;;; Note: the default cross-build of this package is currently broken on
+;;; master; the fix exists as commit 6454208222d6e7760daa964b590f35ea75ffe0e5
+;;; ("build: gnu-build-system: Remove source from native inputs.") on
+;;; core-updates.
+(define-public u-boot-ts7970-q-2g-1000mhz-c
+  (let ((base
+         (make-u-boot-package "ts7970-q-2g-1000mhz-c" "arm-linux-gnueabihf"
+                              #:u-boot u-boot-ts-mx6
+                              #:append-description
+                              "This U-Boot variant is for the Technologic
+Systems TS-7970 revision C board, which includes a quad core Freescale i.MX6
+CPU and 2 GiB of RAM clocked at 1000MHz.  The binary U-Boot image to flash is
+the @file{libexec/u-boot.imx} file.  It can be used with the @file{zImage} and
+the @file{imx6q-ts7970.dtb} files provided by the
+@code{linux-libre-arm-generic} image.
+
+To flash this bootloader, write it to an SD card, then using the U-Boot serial
+console:
+@example
+mmc dev 0
+load mmc 0:1 ${loadaddr} /u-boot.imx
+sf probe
+sf erase 0 0x80000
+sf write ${loadaddr} 0x400 $filesize
+@end example
+
+The factory values of U-Boot must also be reset so that it boots using a
+zImage instead of the default uImage:
+@example
+run clearenv
+reset
+@end example
+
+For more information, refer to
+@url{https://docs.embeddedts.com/TS-7970#Update_U-Boot}.")))
+    (package
+      (inherit base)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:phases phases '%standard-phases)
+          #~(modify-phases #$phases
+              (add-after 'patch-u-boot 'set-default-fdt-file
+                (lambda _
+                  (substitute* "include/configs/ts7970.h"
+                    (("DEFAULT_FDT_FILE")
+                     "imx6q-ts7970.dtb")))))))))))
 
 (define-public vboot-utils
   (package

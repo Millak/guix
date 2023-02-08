@@ -2,13 +2,13 @@
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Petr Hodina <phodina@protonmail.com>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -414,6 +414,13 @@ provide OpenFirmware functionality on top of an already running system.")
       (inherit base)
       (arguments
        (substitute-keyword-arguments (package-arguments base)
+         ((#:system system (%current-system))
+          (if (string-prefix? "aarch64-linux" (or (%current-system)
+                                                  (%current-target-system)))
+            "armhf-linux"
+            system))
+         ;; No need to cross-compile, package produces reproducible firmware.
+         ((#:target _ #f) #f)
          ((#:phases phases)
           #~(modify-phases #$phases
               (add-after 'install 'rename-executable
@@ -527,6 +534,7 @@ executing in M-mode.")
     (arguments
      (list
       #:tests? #f                       ;no tests
+      #:target #f                       ; Package produces firmware.
       #:make-flags
       ;; If EXTRAVERSION is not set the build system will embed the current
       ;; date in binaries.  Use this opportunity to personalize as recommended
@@ -698,6 +706,7 @@ coreboot.")
                      "HOSTCC=gcc")
              #:parallel-build? #f
              #:tests? #f   ;no tests
+             #:target #f   ; Package produces firmware.
              #:phases
              #~(modify-phases %standard-phases
                  (add-after 'unpack 'build-reproducibly
@@ -894,11 +903,11 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'set-env
-              (lambda _
-                #$@(if (not (string-prefix? "aarch64" (%current-system)))
-                       #~((setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-"))
-                       #~())))
+            #$@(if (string-prefix? "aarch64" (%current-system))
+                   '()
+                   '((add-before 'configure 'set-env
+                       (lambda _
+                         (setenv "GCC49_AARCH64_PREFIX" "aarch64-linux-gnu-")))))
             (replace 'build
               (lambda _
                 (invoke "build" "-a" "AARCH64" "-t" "GCC49"
@@ -926,11 +935,11 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
      (substitute-keyword-arguments (package-arguments ovmf)
        ((#:phases phases)
         #~(modify-phases #$phases
-            (add-before 'configure 'set-env
-              (lambda _
-                #$@(if (not (string-prefix? "armhf" (%current-system)))
-                       #~((setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-"))
-                       #~())))
+            #$@(if (string-prefix? "armhf" (%current-system))
+                   '()
+                   '((add-before 'configure 'set-env
+                       (lambda _
+                         (setenv "GCC49_ARM_PREFIX" "arm-linux-gnueabihf-")))))
             (replace 'build
               (lambda _
                 (invoke "build" "-a" "ARM" "-t" "GCC49"
@@ -944,70 +953,58 @@ Virtual Machines.  OVMF contains a sample UEFI firmware for QEMU and KVM.")
                              (string-append fmw "/ovmf_arm.bin")))))))))
     (supported-systems %supported-systems)))
 
-(define* (make-arm-trusted-firmware platform #:optional (arch "aarch64"))
-  (package
-    (name (string-append "arm-trusted-firmware-" platform))
-    (version "2.8")
-    (source
-      (origin
-        (method git-fetch)
-        (uri (git-reference
+(define* (make-arm-trusted-firmware platform
+                                    #:key (triplet "aarch64-linux-gnu"))
+  (let ((native-build? (lambda ()
+                         ;; Note: %current-system is a *triplet*, unlike its
+                         ;; name would suggest.
+                         (or (not triplet) ;disable cross-compilation
+                             (string=? (%current-system)
+                                       (gnu-triplet->nix-system triplet))))))
+    (package
+      (name (string-append "arm-trusted-firmware-" platform))
+      (version "2.8")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
                ;; There are only GitHub generated release snapshots.
                (url "https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/")
                (commit (string-append "v" version))))
-        (file-name (git-file-name "arm-trusted-firmware" version))
-       (sha256
-        (base32
-         "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))
-       (snippet
-        #~(begin
-            (use-modules (guix build utils))
-            ;; Remove binary blobs which do not contain source or proper license.
-            (for-each (lambda (file)
-                        (delete-file file))
-                      (find-files "." "\\.bin$"))))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (delete 'configure) ; no configure script
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (bin (find-files "." "\\.(bin|elf)$")))
-               (for-each
-                 (lambda (file)
-                   (install-file file out))
-                 bin)))))
-       #:make-flags (list (string-append "PLAT=" ,platform)
-                          ,@(if (and (not (string-prefix? "aarch64"
-                                                          (%current-system)))
-                                     (string-prefix? "aarch64" arch))
-                              `("CROSS_COMPILE=aarch64-linux-gnu-")
-                              '())
-                          ,@(if (and (not (string-prefix? "armhf"
-                                                          (%current-system)))
-                                     (string-prefix? "armhf" arch))
-                              `("CROSS_COMPILE=arm-linux-gnueabihf-")
-                              '())
-                          "DEBUG=1")
-       #:tests? #f)) ; no tests
-    (native-inputs
-     (let ((system (%current-system)))
-       (cond
-        ((and (not (string-prefix? "aarch64" system))
-              (string-prefix? "aarch64" arch))
-         (list (cross-gcc "aarch64-linux-gnu")
-               (cross-binutils "aarch64-linux-gnu")))
-        ((and (not (string-prefix? "armhf" system))
-              (string-prefix? "armhf" arch))
-         (list (cross-gcc "arm-linux-gnueabihf")
-               (cross-binutils "arm-linux-gnueabihf")))
-        (else '()))))
-    (home-page "https://www.trustedfirmware.org/")
-    (synopsis "Implementation of \"secure world software\"")
-    (description
-     "ARM Trusted Firmware provides a reference implementation of secure world
+         (file-name (git-file-name "arm-trusted-firmware" version))
+         (sha256
+          (base32
+           "0grq3fgxi9xhcljnhwlxjvdghyz15gaq50raw41xy4lm8rkmnzp3"))
+         (snippet
+          #~(begin
+              (use-modules (guix build utils))
+              ;; Remove binary blobs which do not contain source or proper
+              ;; license.
+              (for-each (lambda (file)
+                          (delete-file file))
+                        (find-files "." "\\.bin$"))))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:target (and (not (native-build?)) triplet)
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ;no configure script
+            (replace 'install
+              (lambda _
+                (for-each (lambda (file)
+                            (install-file file #$output))
+                          (find-files "." "\\.(bin|elf)$")))))
+        #:make-flags #~(list (string-append "PLAT=" #$platform)
+                             #$@(if (not (native-build?))
+                                    (list (string-append "CROSS_COMPILE=" triplet "-"))
+                                    '())
+                             "DEBUG=1")
+        #:tests? #f))                   ;no test suite
+      (home-page "https://www.trustedfirmware.org/")
+      (synopsis "Implementation of \"secure world software\"")
+      (description
+       "ARM Trusted Firmware provides a reference implementation of secure world
 software for ARMv7A and ARMv8-A, including a Secure Monitor executing at
 @dfn{Exception Level 3} (EL3).  It implements various ARM interface standards,
 such as:
@@ -1018,8 +1015,8 @@ such as:
 @item System Control and Management Interface
 @item Software Delegated Exception Interface (SDEI)
 @end enumerate\n")
-    (license (list license:bsd-3
-                   license:bsd-2)))) ; libfdt
+      (license (list license:bsd-3
+                     license:bsd-2))))) ; libfdt
 
 (define-public arm-trusted-firmware-sun50i-a64
   (let ((base (make-arm-trusted-firmware "sun50i_a64")))

@@ -151,6 +151,9 @@ alias grep='grep --color=auto'\n"))
 'useradd' in the home directory of newly created user accounts."
 
   (let ((profile (plain-file "bash_profile" "\
+# Set up Guix Home profile
+if [ -f ~/.profile ]; then . ~/.profile; fi
+
 # Honor per-interactive-shell startup file
 if [ -f ~/.bashrc ]; then . ~/.bashrc; fi\n"))
         (bashrc  %default-bashrc)

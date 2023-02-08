@@ -22,12 +22,18 @@
   #:use-module (guix records)
   #:use-module (guix ui)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-34)
+  #:use-module (srfi srfi-35)
   #:export (platform
             platform?
             platform-target
             platform-system
             platform-linux-architecture
             platform-glibc-dynamic-linker
+
+            &platform-not-found-error
+            platform-not-found-error?
+            false-if-platform-not-found
 
             platform-modules
             platforms
@@ -72,6 +78,20 @@
 
 
 ;;;
+;;; Exceptions.
+;;;
+(define-condition-type &platform-not-found-error &error
+  platform-not-found-error?
+  (target-or-system platform-not-found-error-target-or-system))
+
+(define-syntax-rule (false-if-platform-not-found exp)
+  "Evaluate EXP but return #f if it raises a platform-not-found-error?
+exception."
+  (guard (ex ((platform-not-found-error? ex) #f))
+    exp))
+
+
+;;;
 ;;; Platforms.
 ;;;
 
@@ -94,23 +114,32 @@
                                    (platform-modules)))))
 
 (define (lookup-platform-by-system system)
-  "Return the platform corresponding to the given SYSTEM."
-  (find (lambda (platform)
-          (let ((s (platform-system platform)))
-            (and (string? s) (string=? s system))))
-        (platforms)))
+  "Return the platform corresponding to the given SYSTEM.  Raise
+&PLATFORM-NOT-FOUND-ERROR when no platform could be found."
+  (or (find (lambda (platform)
+              (let ((s (platform-system platform)))
+                (and (string? s) (string=? s system))))
+            (platforms))
+      (raise-exception (condition (&platform-not-found-error
+                                   (target-or-system system))))))
 
 (define (lookup-platform-by-target target)
-  "Return the platform corresponding to the given TARGET."
-  (find (lambda (platform)
-          (let ((t (platform-target platform)))
-            (and (string? t) (string=? t target))))
-        (platforms)))
+  "Return the platform corresponding to the given TARGET.  Raise
+&PLATFORM-NOT-FOUND-ERROR when no platform could be found."
+  (or (find (lambda (platform)
+              (let ((t (platform-target platform)))
+                (and (string? t) (string=? t target))))
+            (platforms))
+      (raise-exception (condition (&platform-not-found-error
+                                   (target-or-system target))))))
 
 (define (lookup-platform-by-target-or-system target-or-system)
-  "Return the platform corresponding to the given TARGET or SYSTEM."
-  (or (lookup-platform-by-target target-or-system)
-      (lookup-platform-by-system target-or-system)))
+  "Return the platform corresponding to the given TARGET or SYSTEM.  Raise
+&PLATFORM-NOT-FOUND-ERROR when no platform could be found."
+  (or (false-if-platform-not-found (lookup-platform-by-target target-or-system))
+      (false-if-platform-not-found (lookup-platform-by-system target-or-system))
+      (raise-exception (condition (&platform-not-found-error
+                                   (target-or-system target-or-system))))))
 
 (define (platform-system->target system)
   "Return the target matching the given SYSTEM if it exists or false

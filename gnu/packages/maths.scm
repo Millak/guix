@@ -12,7 +12,7 @@
 ;;; Copyright © 2015 Fabian Harfert <fhmgufs@web.de>
 ;;; Copyright © 2016 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2016, 2018, 2020, 2021 Kei Kebreau <kkebreau@posteo.net>
-;;; Copyright © 2016-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2016-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021 Paul Garlick <pgarlick@tourbillion-technology.com>
@@ -2850,7 +2850,7 @@ can solve two kinds of problems:
 (define-public octave-cli
   (package
     (name "octave-cli")
-    (version "7.2.0")
+    (version "7.3.0")
     (source
      (origin
       (method url-fetch)
@@ -2858,7 +2858,7 @@ can solve two kinds of problems:
                           version ".tar.xz"))
       (sha256
        (base32
-        "0w81ncl9d4x1ay3ylsag87k20c0byiyjcmfd9kb7b7ylr71pivsa"))))
+        "1wap9p9imxxqpnm27rxcvpjahk1wg440lzlygjb6iyncxdmfw255"))))
     (build-system gnu-build-system)
     (inputs
      `(("alsa-lib" ,alsa-lib)
@@ -2890,7 +2890,6 @@ can solve two kinds of problems:
        ("qhull" ,qhull)
        ("readline" ,readline)
        ("suitesparse" ,suitesparse)
-       ("texinfo" ,texinfo)
        ("zlib" ,zlib)))
     (native-inputs
      (list gfortran
@@ -2905,7 +2904,8 @@ can solve two kinds of problems:
            ;; provide.
            less
            ghostscript
-           gnuplot))
+           gnuplot
+           texinfo))
     ;; Octave code uses this variable to detect directories holding multiple CA
     ;; certificates to verify peers with.  This is required for the networking
     ;; functions that require encryption to work properly.
@@ -5884,6 +5884,7 @@ set.")
 solvers for the solution of large, sparse linear systems of equations.  It
 features multigrid solvers for both structured and unstructured grid
 problems.")
+    (properties '((tunable? . #t)))
     (license license:lgpl2.1)))
 
 (define-public hypre-openmpi

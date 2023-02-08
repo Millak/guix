@@ -113,6 +113,7 @@
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages imagemagick)
   #:use-module (gnu packages kde-frameworks)
   #:use-module (gnu packages libbsd)
   #:use-module (gnu packages libevent)
@@ -211,14 +212,14 @@ command line, without displaying a keyboard at all.")
 (define-public arandr
   (package
     (name "arandr")
-    (version "0.1.10")
+    (version "0.1.11")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://christian.amsuess.com/tools/arandr"
                                   "/files/arandr-" version ".tar.gz"))
               (sha256
                (base32
-                "135q0llvm077jil2fr92ssw3p095m4r8jfj0lc5rr3m71n4srj6v"))
+                "00mfhaqjxx4m3y0ml44infpbp500prs031vhawwjp0dvk0vbxjz4"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -226,8 +227,7 @@ command line, without displaying a keyboard at all.")
                   ;; pages (this is equivalent to 'gzip --no-name'.)
                   (substitute* "setup.py"
                     (("gzip\\.open\\(gzfile, 'w', 9\\)")
-                     "gzip.GzipFile('', 'wb', 9, open(gzfile, 'wb'), 0.)"))
-                  #t))))
+                     "gzip.GzipFile('', 'wb', 9, open(gzfile, 'wb'), 0.)"))))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -236,22 +236,16 @@ command line, without displaying a keyboard at all.")
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "screenlayout/xrandr.py"
                (("\"xrandr\"") (string-append "\"" (assoc-ref inputs "xrandr")
-                                              "/bin/xrandr\"")))
-             #t))
+                                              "/bin/xrandr\"")))))
          (add-after 'install 'wrap-gi-typelib
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let ((out               (assoc-ref outputs "out"))
                    (gi-typelib-path   (getenv "GI_TYPELIB_PATH")))
                (wrap-program (string-append out "/bin/arandr")
-                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
-             #t)))
+                 `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path)))))))
        #:tests? #f)) ;no tests
-    (inputs `(("gtk+" ,gtk+)
-              ("pycairo" ,python-pycairo)
-              ("pygobject" ,python-pygobject)
-              ("xrandr" ,xrandr)))
-    (native-inputs `(("gettext"           ,gettext-minimal)
-                     ("python-docutils"   ,python-docutils)))
+    (inputs (list gtk+ python-pycairo python-pygobject xrandr))
+    (native-inputs (list gettext-minimal python-docutils))
     (home-page "https://christian.amsuess.com/tools/arandr/")
     (synopsis "Another RandR graphical user interface")
     ;; TRANSLATORS: "X11 resize-and-rotate" should not be translated.
@@ -1363,7 +1357,7 @@ Escape key when Left Control is pressed and released on its own.")
 (define-public libwacom
   (package
     (name "libwacom")
-    (version "2.4.0")
+    (version "2.6.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -1371,18 +1365,11 @@ Escape key when Left Control is pressed and released on its own.")
                     "libwacom-" version "/libwacom-" version ".tar.xz"))
               (sha256
                (base32
-                "056l5dndd8654bmwlxxhvx8082s7pp9bg0wm68zb56iz3rv25l6h"))))
+                "13x978gzyw28cqd985m5smiqgza0xp3znb1s0msmn8vmjjlwqxi3"))))
     (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--default-library=shared")
-      #:phases #~(modify-phases %standard-phases
-                   (add-after 'unpack 'fix-tests
-                     (lambda _
-                       ;; Do not attempt to run systemd-specific commands.
-                       (substitute* "test/test_udev_rules.py"
-                         (("(systemd-hwdb|systemctl)")
-                          "true")))))))
+      #:configure-flags #~(list "--default-library=shared")))
     (native-inputs
      (list pkg-config
            ;; For tests.
@@ -1397,9 +1384,9 @@ Escape key when Left Control is pressed and released on its own.")
      ;; libwacom.pc 'Requires' these:
      (list glib libgudev))
     (home-page "https://linuxwacom.github.io/")
-    (synopsis "Helper library for Wacom tablet settings")
+    (synopsis "Helper library for graphics tablet settings")
     (description
-     "Libwacom is a library to help implement Wacom tablet settings.  It is
+     "Libwacom is a library to help implement graphics tablet settings.  It is
 intended to be used by client-programs that need model identification.  It is
 already being used by the gnome-settings-daemon and the GNOME Control Center
 Wacom tablet applet.")
@@ -2477,6 +2464,48 @@ binary to setuid-binaries:
   %setuid-programs))
 @end example")
     (license license:asl2.0)))
+
+(define-public wl-color-picker
+  (package
+    (name "wl-color-picker")
+    (version "1.3")
+    (home-page "https://github.com/jgmdev/wl-color-picker")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h5b8qfwri7a1invk8dran3436ac37x6r8fic3l5cxqj5rgnky4n"))))
+    (build-system copy-build-system)
+    (arguments
+     `(#:install-plan '(("wl-color-picker.sh" "bin/wl-color-picker")
+                        ("wl-color-picker.png" "share/pixmaps/")
+                        ("wl-color-picker.svg"
+                         "share/icons/hicolor/scalable/apps/")
+                        ("wl-color-picker.desktop" "share/applications/"))
+       #:phases (modify-phases %standard-phases
+                  (add-after 'install 'wrap-script
+                    (lambda* (#:key outputs #:allow-other-keys)
+                      (wrap-program (string-append (assoc-ref outputs "out")
+                                                   "/bin/wl-color-picker")
+                                    `("PATH" =
+                                      (,(getenv "PATH")))))))))
+    (inputs (list coreutils-minimal
+                  bash-minimal
+                  grim
+                  hicolor-icon-theme
+                  imagemagick
+                  slurp
+                  wl-clipboard
+                  zenity))
+    (synopsis "Wayland color picker")
+    (description
+     "@command{wl-color-picker} is a script that provides color picker for
+Wayland and @code{wlroots} by leveraging @command{grim} and @command{slurp}.")
+    (license license:expat)))
 
 (define-public wl-clipboard
   (package

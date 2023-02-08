@@ -6,7 +6,7 @@
 ;;; Copyright © 2016 Raimon Grau <raimonster@gmail.com>
 ;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
-;;; Copyright © 2016-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Arun Isaac <arunisaac@systemreboot.net>
@@ -111,6 +111,7 @@
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages freedesktop)
+  #:use-module (gnu packages gd)
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gnome)
@@ -1754,14 +1755,14 @@ of the same name.")
 (define-public wireshark
   (package
     (name "wireshark")
-    (version "4.0.2")
+    (version "4.0.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://www.wireshark.org/download/src/wireshark-"
                            version ".tar.xz"))
        (sha256
-        (base32 "07a18jx88jaa2j1i949w9n1yb149xi02s80inbfji6rgkxliangk"))))
+        (base32 "04cmgvmkyvxdpfy08adxf3smklgzakrvyvb89rrr7yqaridy2lbc"))))
     (build-system cmake-build-system)
     (arguments
      `(#:phases
@@ -3718,7 +3719,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (sha256
                (base32
                 "1kcc9vmi4swvahq2gikflgba9xfmix80dr9wa3v6xcj1ba2fjd6s"))))
-    (outputs '("out" "tools" "debug"))
+    (outputs '("out" "python" "tools" "debug"))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -3728,7 +3729,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
                   (guix build gnu-build-system)
                   (guix build utils))
       #:configure-flags
-      #~(list "--enable-tests"
+      #~(list "--disable-static"        ;to reduce size
+              "--enable-tests"
               "--enable-proxy-server"
               "--enable-push-notifications"
               "--enable-proxy-server-identity"
@@ -3752,7 +3754,7 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
               (substitute* "python/Makefile.am"
                 (("--root=\\$\\(DESTDIR)/")
                  (string-append "--root=/ --single-version-externally-managed "
-                                "--prefix=" #$output)))))
+                                "--prefix=" #$output:python)))))
           (add-after 'unpack 'specify-runpath-for-python-module
             (lambda _
               (substitute* "python/setup.py.in"
@@ -3790,7 +3792,8 @@ and targeted primarily for asynchronous processing of HTTP-requests.")
            gnutls
            jsoncpp
            nettle
-           openssl))                    ;required for the DHT proxy
+           openssl                      ;required for the DHT proxy
+           python))
     (native-inputs
      (list autoconf
            automake
@@ -4478,6 +4481,45 @@ on hub/switched networks.  It is based on @acronym{ARP} packets, it will send
    (home-page "https://github.com/netdiscover-scanner/netdiscover")
    (license license:gpl3+)))
 
+(define-public phantomsocks
+  (package
+    (name "phantomsocks")
+    (version "0.0.0-20221222155609-14291e2c889e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/macronut/phantomsocks")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13lllmh46xwns5ksqqdkl2p7vvnbzkzb6va005nk37bx6c4x2ixp"))))
+    (build-system go-build-system)
+    (arguments
+     (list #:install-source? #f
+           #:import-path "github.com/macronut/phantomsocks"
+           #:build-flags #~'("-tags" #$(if (target-linux?)
+                                           "rawsocket"
+                                           "pcap"))))
+    (propagated-inputs
+     (list go-github-com-google-gopacket
+           go-github-com-macronut-go-tproxy))
+    (inputs
+     (if (target-linux?)
+         '()
+         (list libpcap)))
+    (home-page "https://github.com/macronut/phantomsocks")
+    (synopsis "Internet censorship circumvention tool")
+    (description
+     "Phantomsocks is an Internet censorship circumvention tool based on the
+desync technique, which was introduced in the 2017 paper
+@url{https://doi.org/10.1145/3131365.3131374, @cite{Your State is Not Mine: A
+Closer Look at Evading Stateful Internet Censorship}}.
+
+Further information on the usage could be found on the Wikibooks page
+@url{https://zh.wikibooks.org/wiki/Phantomsocks, @cite{Phantomsocks}}.")
+    (license license:lgpl3+)))
+
 (define-public putty
   (package
     (name "putty")
@@ -4523,7 +4565,7 @@ implementations.")
 (define-public vnstat
   (package
    (name "vnstat")
-   (version "2.9")
+   (version "2.10")
    (source
     (origin
       (method url-fetch)
@@ -4531,20 +4573,21 @@ implementations.")
                           version ".tar.gz"))
       (sha256
        (base32
-        "1iwxmnpabfljvyng7c8k3z83yw1687i66z5s1980c5x9vrsi98hi"))))
+        "09bx8mz9jdq94i0mpmjbc7dis0klvjx85lml5mp3d36dwm21gim9"))))
    (build-system gnu-build-system)
-   (inputs (list sqlite))
+   (inputs (list sqlite gd))
    (native-inputs (list pkg-config check))
    (arguments
-    `(#:phases
-      (modify-phases %standard-phases
-        (add-before 'check 'disable-id-tests
-          (lambda _
-            (substitute*
-                '("Makefile" "tests/vnstat_tests.c")
-              (("tests/id_tests.c \\$") "\\")
-              (("tests/id_tests.h h") "h")
-              (("^.*id_tests.*$") "")))))))
+    (list
+     #:phases
+     #~(modify-phases %standard-phases
+         (add-before 'check 'disable-id-tests
+           (lambda _
+             (substitute*
+                 '("Makefile" "tests/vnstat_tests.c")
+               (("tests/id_tests.c \\$") "\\")
+               (("tests/id_tests.h h") "h")
+               (("^.*id_tests.*$") "")))))))
    (home-page "https://humdi.net/vnstat/")
    (synopsis "Network traffic monitoring tool")
    (description "vnStat is a console-based network traffic monitor that keeps

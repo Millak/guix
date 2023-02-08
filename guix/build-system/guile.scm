@@ -114,6 +114,7 @@
     (gexp->derivation name builder
                       #:system system
                       #:target #f
+                      #:graft? #f
                       #:guile-for-build guile)))
 
 (define* (guile-cross-build name
@@ -170,6 +171,7 @@
     (gexp->derivation name builder
                       #:system system
                       #:target target
+                      #:graft? #f
                       #:guile-for-build guile)))
 
 (define guile-build-system

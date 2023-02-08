@@ -102,4 +102,12 @@ and the other containing arguments for the command to be executed."
                                        environment)
                              (apply execlp program program program-args)))))))
           (unless (zero? result)
-            (leave (G_ "exec failed with status ~d~%") result)))))))
+            (match (status:exit-val result)
+              (#f
+               (if (status:term-sig result)
+                   (leave (G_ "process terminated with signal ~a~%")
+                          (status:term-sig result))
+                   (leave (G_ "process stopped with signal ~a~%")
+                          (status:stop-sig result))))
+              (code
+               (leave (G_ "process exited with status ~d~%") code)))))))))

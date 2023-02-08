@@ -30,8 +30,9 @@
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
-  #:use-module ((guix licenses) #:select (gpl3+ lgpl3+ lgpl2.0+))
+  #:use-module ((guix licenses) #:select (gpl3+ lgpl3+ lgpl2.0+ lgpl2.1 gpl2 bsd-2))
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages compression)
@@ -282,3 +283,31 @@ changed.")
     (properties
      '((release-monitoring-url . "https://github.com/NixOS/patchelf/releases")))
     (license gpl3+)))
+
+(define-public libdwarf
+  (package
+    (name "libdwarf")
+    (version "0.5.0")
+    (source (origin
+              (method git-fetch)
+              ;; The archive at
+              ;; https://www.prevanders.net/libdwarf-0.5.0.tar.xz
+              ;; has a bad date header (3600).
+              (uri (git-reference
+                    (url "https://github.com/davea42/libdwarf-code")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "17sgjxx666nxvxn3g1xc8fj0b89jazq9v8ddp3j3ck0r257ki8n2"))))
+    (build-system gnu-build-system)
+    (arguments
+     '(#:configure-flags '("--enable-shared")))
+    (native-inputs (list autoconf automake libtool pkg-config python))
+    (inputs (list elfutils))
+    (home-page "https://www.prevanders.net/dwarf.html")
+    (synopsis "Handle DWARF debugging information")
+    (description "@code{libdwarf} is a library that handles the DWARF
+debugging information format.")
+    ;; See https://www.prevanders.net/dwarflicense.html:
+    (license (list lgpl2.1 gpl2 bsd-2))))

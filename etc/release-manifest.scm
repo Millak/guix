@@ -82,7 +82,7 @@ TARGET."
   ;; Packages that must be cross-buildable from x86_64-linux.
   ;; FIXME: Add (@ (gnu packages gcc) gcc) when <https://bugs.gnu.org/40463>
   ;; is fixed.
-  (append (list (@ (gnu packages guile) guile-3.0/fixed))
+  (append (list (@ (gnu packages guile) guile-3.0/pinned))
           (map specification->package
                '("coreutils" "grep" "sed" "findutils" "diffutils" "patch"
                  "gawk" "gettext" "gzip" "xz"

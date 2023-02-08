@@ -286,6 +286,30 @@ The Lato 2.010 family supports more than 100 Latin-based languages, over
 50 Cyrillic-based languages as well as Greek and IPA phonetics.")
     (license license:silofl1.1)))
 
+(define-public font-carlito
+  (let ((commit "64cab86c9b602088697294736b86f2831f3f44be")
+        (revision "0"))
+    (package
+      (name "font-carlito")
+      (version (git-version "0.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/googlefonts/carlito")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "02wy8vs5m4whm5apl3p6cpz0qa9jwjj9qi219zjspiszha2ivssz"))))
+      (build-system font-build-system)
+      (home-page "https://github.com/googlefonts/carlito")
+      (synopsis "Free alternative to Calibri")
+      (description
+       "Carlito is a font designed by Łukasz Dziedzic derived from
+Lato (also designed by Łukasz Dziedzic) that is metric-compatible with
+Calibri.")
+      (license license:silofl1.1))))
+
 (define-public font-gfs-ambrosia
   ;; Based on
   ;; https://src.fedoraproject.org/rpms/gfs-ambrosia-fonts
@@ -937,6 +961,37 @@ utilities to ease adding new glyphs to the font.")
     (description "Google Noto Fonts is a family of fonts designed to support
 all languages with a consistent look and aesthetic.  Its goal is to properly
 display all Unicode symbols.")
+    (license license:silofl1.1)))
+
+(define-public font-google-noto-emoji
+  (package
+    (name "font-google-noto-emoji")
+    (version "2.038")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/googlefonts/noto-emoji")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "1rgmcc6nqq805iqr8kvxxlk5cf50q714xaxk3ld6rjrd69kb8ix9"))))
+    (build-system font-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'remove-unsupported
+            (lambda* _
+              (delete-file "fonts/NotoColorEmoji_WindowsCompatible.ttf")
+              (delete-file "fonts/Noto-COLRv1-noflags.ttf")
+              (delete-file "fonts/Noto-COLRv1.ttf"))))))
+    (home-page "https://fonts.google.com/noto/specimen/Noto+Color+Emoji")
+    (synopsis "Font for rendering color emoji characters")
+    (description
+     "This package provides the color emoji font from the Google Noto font
+family.")
     (license license:silofl1.1)))
 
 (define-public font-google-noto-sans-cjk
@@ -1666,7 +1721,7 @@ programming.  Iosevka is completely generated from its source code.")
 (define-public font-sarasa-gothic
   (package
     (name "font-sarasa-gothic")
-    (version "0.37.4")
+    (version "0.39.0")
     (source
      (origin
        (method url-fetch)
@@ -1674,7 +1729,7 @@ programming.  Iosevka is completely generated from its source code.")
                            "/releases/download/v" version
                            "/sarasa-gothic-ttc-" version ".7z"))
        (sha256
-        (base32 "12i8lccl4ysinhz40s2fz6249r9n35in4rqmk3a0fgcjfaby3kfm"))))
+        (base32 "19a4a9zsfzkg7xak2sys6jiia7qw1j69206qzn8r2vchrib5lvcz"))))
     (build-system font-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
@@ -2823,7 +2878,7 @@ and readability.  This package bundles those icons into a font.")
 (define-public font-lxgw-wenkai
   (package
     (name "font-lxgw-wenkai")
-    (version "1.245.1")
+    (version "1.250")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2831,7 +2886,7 @@ and readability.  This package bundles those icons into a font.")
                     version "/lxgw-wenkai-v" version ".tar.gz"))
               (sha256
                (base32
-                "13hvr1jz9xpb0cgi4xk3zfbn6w5x258zja55hznbgny2sijnjn8a"))))
+                "04c1cszxhs2zw3qn7rs3ik2aaczvf8n28gq9ch6iv782fv2p8irn"))))
     (build-system font-build-system)
     (home-page "https://lxgw.github.io/2021/01/28/Klee-Simpchin/")
     (synopsis "Simplified Chinese Imitation Song typeface")
@@ -2845,7 +2900,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
   (package
     (inherit font-lxgw-wenkai)
     (name "font-lxgw-wenkai-tc")
-    (version "0.922.1")
+    (version "0.932")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2853,7 +2908,7 @@ within GB 2312, standard glyphs for Mainland China is used.")
                     version "/lxgw-wenkai-tc-v" version ".tar.gz"))
               (sha256
                (base32
-                "0a1n0yfnh3sc3ldgjxxglw4xyg82i2pk432sk8hfdzrrl4zzjyz3"))))
+                "12yp3q3hhv847qj7a51cjxxqb2rqm4lvbm54wdr2j4awg3g8lflg"))))
     (home-page "https://github.com/lxgw/LxgwWenKaitc")
     (synopsis "Traditional Chinese Imitation Song typeface")
     (description

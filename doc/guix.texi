@@ -22,14 +22,14 @@
 @set SUBSTITUTE-URLS https://@value{SUBSTITUTE-SERVER-1} https://@value{SUBSTITUTE-SERVER-2}
 
 @copying
-Copyright @copyright{} 2012-2022 Ludovic Courtès@*
+Copyright @copyright{} 2012-2023 Ludovic Courtès@*
 Copyright @copyright{} 2013, 2014, 2016 Andreas Enge@*
 Copyright @copyright{} 2013 Nikita Karetnikov@*
 Copyright @copyright{} 2014, 2015, 2016 Alex Kost@*
 Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
-Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021 Leo Famulari@*
+Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
 Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
@@ -109,7 +109,11 @@ Copyright @copyright{} 2022 Reily Siegel@*
 Copyright @copyright{} 2022 Simon Streit@*
 Copyright @copyright{} 2022 (@*
 Copyright @copyright{} 2022 John Kehayias@*
+Copyright @copyright{} 2022 Bruno Victal@*
 Copyright @copyright{} 2022 Ivan Vilata-i-Balaguer@*
+Copyright @copyright{} 2023 Giacomo Leidi@*
+Copyright @copyright{} 2022 Antero Mejr@*
+Copyright @copyright{} 2022 Bruno Victal@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -8072,8 +8076,9 @@ vintage!):
                 "0lappv4slgb5spyqbh6yl5r013zv72yqg2pcl30mginf3wdqd8k9"))))))
 @end lisp
 
-The example above corresponds to what the @option{--with-source} package
-transformation option does.  Essentially @code{hello-2.2} preserves all
+The example above corresponds to what the @option{--with-version}
+or @option{--with-source} package transformations option do.
+Essentially @code{hello-2.2} preserves all
 the fields of @code{hello}, except @code{version} and @code{source},
 which it overrides.  Note that the original @code{hello} variable is
 still there, in the @code{(gnu packages base)} module, unchanged.  When
@@ -8637,7 +8642,7 @@ The main build system is @code{gnu-build-system}, which implements the
 standard build procedure for GNU and many other packages.  It
 is provided by the @code{(guix build-system gnu)} module.
 
-@defvr {Scheme Variable} gnu-build-system
+@defvar gnu-build-system
 @code{gnu-build-system} represents the GNU Build System, and variants
 thereof (@pxref{Configuration, configuration and makefile conventions,,
 standards, GNU Coding Standards}).
@@ -8728,7 +8733,7 @@ guix size}).
 @end table
 
 Most other build systems support these keyword arguments.
-@end defvr
+@end defvar
 
 Other @code{<build-system>} objects are defined to support other
 conventions and tools used by free software packages.  They inherit most
@@ -8736,7 +8741,7 @@ of @code{gnu-build-system}, and differ mainly in the set of inputs
 implicitly added to the build process, and in the list of phases
 executed.  Some of these build systems are listed below.
 
-@defvr {Scheme Variable} ant-build-system
+@defvar ant-build-system
 This variable is exported by @code{(guix build-system ant)}.  It
 implements the build procedure for Java packages that can be built with
 @url{https://ant.apache.org/, Ant build tool}.
@@ -8764,9 +8769,9 @@ The parameter @code{#:build-target} can be used to specify the Ant task
 that should be run during the @code{build} phase.  By default the
 ``jar'' task will be run.
 
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} android-ndk-build-system
+@defvar android-ndk-build-system
 @cindex Android distribution
 @cindex Android NDK build system
 This variable is exported by @code{(guix build-system android-ndk)}.  It
@@ -8783,11 +8788,11 @@ has no conflicting files.
 For the time being, cross-compilation is not supported - so right now
 the libraries and header files are assumed to be host tools.
 
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} asdf-build-system/source
-@defvrx {Scheme Variable} asdf-build-system/sbcl
-@defvrx {Scheme Variable} asdf-build-system/ecl
+@defvar asdf-build-system/source
+@defvarx asdf-build-system/sbcl
+@defvarx asdf-build-system/ecl
 
 These variables, exported by @code{(guix build-system asdf)}, implement
 build procedures for Common Lisp packages using
@@ -8831,9 +8836,9 @@ naming conventions suggest, or if several systems must be compiled, the
 @code{#:asd-systems} parameter can be used to specify the list of system
 names.
 
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} cargo-build-system
+@defvar cargo-build-system
 @cindex Rust programming language
 @cindex Cargo (Rust build system)
 This variable is exported by @code{(guix build-system cargo)}.  It
@@ -8862,9 +8867,9 @@ to create a source crate for future use.  The @code{install} phase installs
 the binaries defined by the crate.  Unless @code{install-source? #f} is
 defined it will also install a source crate repository of itself and unpacked
 sources, to ease in future hacking on rust packages.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} chicken-build-system
+@defvar chicken-build-system
 This variable is exported by @code{(guix build-system chicken)}.  It
 builds @uref{https://call-cc.org/, CHICKEN Scheme} modules, also called
 ``eggs'' or ``extensions''.  CHICKEN generates C source code, which then
@@ -8886,9 +8891,9 @@ For example, if you are packaging the @code{srfi-1} egg:
 Egg dependencies must be defined in @code{propagated-inputs}, not @code{inputs}
 because CHICKEN doesn't embed absolute references in compiled eggs.
 Test dependencies should go to @code{native-inputs}, as usual.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} copy-build-system
+@defvar copy-build-system
 This variable is exported by @code{(guix build-system copy)}.  It
 supports builds of simple packages that don't require much compiling,
 mostly just moving files around.
@@ -8947,12 +8952,12 @@ e.g., install @file{foo/sub/file} to @file{share/my-app/sub/file}.
 @item @code{("foo/sub" "share/my-app" #:include ("file"))}: Install @file{foo/sub/file} to
 @file{share/my-app/file}.
 @end itemize
-@end defvr
+@end defvar
 
 
 @cindex Clojure (programming language)
 @cindex simple Clojure build system
-@defvr {Scheme Variable} clojure-build-system
+@defvar clojure-build-system
 This variable is exported by @code{(guix build-system clojure)}.  It implements
 a simple build procedure for @uref{https://clojure.org/, Clojure} packages
 using plain old @code{compile} in Clojure.  Cross-compilation is not supported
@@ -9005,9 +9010,9 @@ This phase installs all top-level files with base name matching
 @code{#:doc-regex} parameter.  All files (recursively) inside the documentation
 directories specified in @code{#:doc-dirs} are installed as well.
 @end table
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} cmake-build-system
+@defvar cmake-build-system
 This variable is exported by @code{(guix build-system cmake)}.  It
 implements the build procedure for packages using the
 @url{https://www.cmake.org, CMake build tool}.
@@ -9022,9 +9027,9 @@ parameter specifies in abstract terms the flags passed to the compiler;
 it defaults to @code{"RelWithDebInfo"} (short for ``release mode with
 debugging information''), which roughly means that code is compiled with
 @code{-O2 -g}, as is the case for Autoconf-based packages by default.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} dune-build-system
+@defvar dune-build-system
 This variable is exported by @code{(guix build-system dune)}.  It
 supports builds of packages using @uref{https://dune.build/, Dune}, a build
 tool for the OCaml programming language.  It is implemented as an extension
@@ -9049,9 +9054,9 @@ is useful when a package contains multiple packages and you want to build
 only one of them.  This is equivalent to passing the @code{-p} argument to
 @code{dune}.
 
-@end defvr
+@end defvar
 
-@defvr {Scheme variable} elm-build-system
+@defvar elm-build-system
 This variable is exported by @code{(guix build-system elm)}.  It implements a
 build procedure for @url{https://elm-lang.org, Elm} packages similar to
 @samp{elm install}.
@@ -9103,9 +9108,9 @@ We are not yet able to run tests for Elm projects because neither
 Node.js-based @url{https://github.com/rtfeldman/node-test-runner,
 @command{elm-test}} runner has been packaged for Guix yet.
 @end itemize
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} go-build-system
+@defvar go-build-system
 This variable is exported by @code{(guix build-system go)}.  It
 implements a build procedure for Go packages using the standard
 @url{https://golang.org/cmd/go/#hdr-Compile_packages_and_dependencies,
@@ -9133,9 +9138,13 @@ can be used to force the package to be built for that architecture and
 operating system.  The combinations known to Go can be found
 @url{https://golang.org/doc/install/source#environment,
 in their documentation}.
-@end defvr
 
-@defvr {Scheme Variable} glib-or-gtk-build-system
+The key @code{#:go} can be used to specify the Go compiler package with
+which to build the package.
+
+@end defvar
+
+@defvar glib-or-gtk-build-system
 This variable is exported by @code{(guix build-system glib-or-gtk)}.  It
 is intended for use with packages making use of GLib or GTK+.
 
@@ -9169,9 +9178,9 @@ specified with the @code{#:glib} parameter.
 @end table
 
 Both phases are executed after the @code{install} phase.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} guile-build-system
+@defvar guile-build-system
 This build system is for Guile packages that consist exclusively of Scheme
 code and that are so lean that they don't even have a makefile, let alone a
 @file{configure} script.  It compiles Scheme code using @command{guild
@@ -9184,9 +9193,9 @@ This build system supports cross-compilation by using the
 
 Packages built with @code{guile-build-system} must provide a Guile package in
 their @code{native-inputs} field.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} julia-build-system
+@defvar julia-build-system
 This variable is exported by @code{(guix build-system julia)}.  It
 implements the build procedure used by @uref{https://julialang.org/,
 julia} packages, which essentially is similar to running @samp{julia -e
@@ -9229,9 +9238,9 @@ Some older packages that aren't using @file{Project.toml} yet, will
 require this file to be created, too.  It is internally done if the
 arguments @code{#:julia-package-name} and @code{#:julia-package-uuid}
 are provided.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} maven-build-system
+@defvar maven-build-system
 This variable is exported by @code{(guix build-system maven)}.  It implements
 a build procedure for @uref{https://maven.apache.org, Maven} packages.  Maven
 is a dependency and lifecycle management tool for Java.  A user of Maven
@@ -9271,17 +9280,17 @@ The @code{#:maven-plugins} argument is a list of maven plugins used during
 the build, with the same format as the @code{inputs} fields of the package
 declaration.  Its default value is @code{(default-maven-plugins)} which is
 also exported.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} minetest-mod-build-system
+@defvar minetest-mod-build-system
 This variable is exported by @code{(guix build-system minetest)}.  It
 implements a build procedure for @uref{https://www.minetest.net, Minetest}
 mods, which consists of copying Lua code, images and other resources to
 the location Minetest searches for mods.  The build system also minimises
 PNG images and verifies that Minetest can load the mod without errors.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} minify-build-system
+@defvar minify-build-system
 This variable is exported by @code{(guix build-system minify)}.  It
 implements a minification procedure for simple JavaScript packages.
 
@@ -9294,9 +9303,9 @@ output.
 When the input JavaScript files are not all located in the @file{src}
 directory, the parameter @code{#:javascript-files} can be used to
 specify a list of file names to feed to the minifier.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} ocaml-build-system
+@defvar ocaml-build-system
 This variable is exported by @code{(guix build-system ocaml)}.  It implements
 a build procedure for @uref{https://ocaml.org, OCaml} packages, which consists
 of choosing the correct set of commands to run for each package.  OCaml
@@ -9337,9 +9346,9 @@ fine because it is in the OCaml compiler directory.  In guix though, these
 libraries cannot be found and we use @env{CAML_LD_LIBRARY_PATH}.  This
 variable points to @file{lib/ocaml/site-lib/stubslibs} and this is where
 @file{.so} libraries should be installed.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} python-build-system
+@defvar python-build-system
 This variable is exported by @code{(guix build-system python)}.  It
 implements the more or less standard build procedure used by Python
 packages, which consists in running @code{python setup.py build} and
@@ -9366,9 +9375,9 @@ instead of the default @code{"out"} output. This is useful for packages that
 include a Python package as only a part of the software, and thus want to
 combine the phases of @code{python-build-system} with another build system.
 Python bindings are a common usecase.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} pyproject-build-system
+@defvar pyproject-build-system
 This is a variable exported by @code{guix build-system pyproject}.  It
 is based on @var{python-build-system}, and adds support for
 @file{pyproject.toml} and @url{https://peps.python.org/pep-0517/, PEP 517}.
@@ -9397,9 +9406,9 @@ change, but any breaking changes in the Guix channel will be dealt with.
 
 Eventually this build system will be deprecated and merged back into
 @var{python-build-system}, probably some time in 2024.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} perl-build-system
+@defvar perl-build-system
 This variable is exported by @code{(guix build-system perl)}.  It
 implements the standard build procedure for Perl packages, which either
 consists in running @code{perl Build.PL --prefix=/gnu/store/@dots{}},
@@ -9417,9 +9426,9 @@ passes flags specified by the @code{#:make-maker-flags} or
 @code{#:module-build-flags} parameter, respectively.
 
 Which Perl package is used can be specified with @code{#:perl}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} renpy-build-system
+@defvar renpy-build-system
 This variable is exported by @code{(guix build-system renpy)}.  It implements
 the more or less standard build procedure used by Ren'py games, which consists
 of loading @code{#:game} once, thereby creating bytecode for it.
@@ -9430,9 +9439,9 @@ It further creates a wrapper script in @code{bin/} and a desktop entry in
 Which Ren'py package is used can be specified with @code{#:renpy}.
 Games can also be installed in outputs other than ``out'' by using
 @code{#:output}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} qt-build-system
+@defvar qt-build-system
 This variable is exported by @code{(guix build-system qt)}.  It
 is intended for use with applications using Qt or KDE.
 
@@ -9466,9 +9475,9 @@ or such.
 
 This phase is added after the @code{install} phase.
 @end table
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} r-build-system
+@defvar r-build-system
 This variable is exported by @code{(guix build-system r)}.  It
 implements the build procedure used by @uref{https://r-project.org, R}
 packages, which essentially is little more than running @samp{R CMD
@@ -9476,9 +9485,9 @@ INSTALL --library=/gnu/store/@dots{}} in an environment where
 @env{R_LIBS_SITE} contains the paths to all R package inputs.  Tests are
 run after installation using the R function
 @code{tools::testInstalledPackage}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} rakudo-build-system
+@defvar rakudo-build-system
 This variable is exported by @code{(guix build-system rakudo)}.  It
 implements the build procedure used by @uref{https://rakudo.org/,
 Rakudo} for @uref{https://perl6.org/, Perl6} packages.  It installs the
@@ -9494,9 +9503,9 @@ Which perl6-tap-harness package used for the tests can be specified with
 Which perl6-zef package used for tests and installing can be specified
 with @code{#:zef} or removed by passing @code{#f} to the
 @code{with-zef?} parameter.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} rebar-build-system
+@defvar rebar-build-system
 This variable is exported by @code{(guix build-system rebar)}.  It
 implements a build procedure around @uref{https://rebar3.org,rebar3},
 a build system for programs written in the Erlang language.
@@ -9537,9 +9546,9 @@ This installs the files created in the @i{default} profile, or some
 other profile specified with @code{#:install-profile}.
 
 @end table
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} texlive-build-system
+@defvar texlive-build-system
 This variable is exported by @code{(guix build-system texlive)}.  It is
 used to build TeX packages in batch mode with a specified engine.  The
 build system sets the @env{TEXINPUTS} variable to find all TeX source
@@ -9556,9 +9565,9 @@ and @code{#:texlive-latex-base}, respectively.
 
 The @code{#:tex-directory} parameter tells the build system where to
 install the built files under the texmf tree.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} ruby-build-system
+@defvar ruby-build-system
 This variable is exported by @code{(guix build-system ruby)}.  It
 implements the RubyGems build procedure used by Ruby packages, which
 involves running @code{gem build} followed by @code{gem install}.
@@ -9574,9 +9583,9 @@ a traditional source release tarball.
 Which Ruby package is used can be specified with the @code{#:ruby}
 parameter.  A list of additional flags to be passed to the @command{gem}
 command can be specified with the @code{#:gem-flags} parameter.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} waf-build-system
+@defvar waf-build-system
 This variable is exported by @code{(guix build-system waf)}.  It
 implements a build procedure around the @code{waf} script.  The common
 phases---@code{configure}, @code{build}, and @code{install}---are
@@ -9586,9 +9595,9 @@ script.
 The @code{waf} script is executed by the Python interpreter.  Which
 Python package is used to run the script can be specified with the
 @code{#:python} parameter.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} scons-build-system
+@defvar scons-build-system
 This variable is exported by @code{(guix build-system scons)}.  It
 implements the build procedure used by the SCons software construction
 tool.  This build system runs @code{scons} to build the package,
@@ -9601,9 +9610,9 @@ can be overridden with @code{#:build-targets} and
 @code{#:install-targets} respectively.  The version of Python used to
 run SCons can be specified by selecting the appropriate SCons package
 with the @code{#:scons} parameter.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} haskell-build-system
+@defvar haskell-build-system
 This variable is exported by @code{(guix build-system haskell)}.  It
 implements the Cabal build procedure used by Haskell packages, which
 involves running @code{runhaskell Setup.hs configure
@@ -9620,9 +9629,9 @@ not found, the build system looks for @code{Setup.lhs} instead.
 
 Which Haskell compiler is used can be specified with the @code{#:haskell}
 parameter which defaults to @code{ghc}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} dub-build-system
+@defvar dub-build-system
 This variable is exported by @code{(guix build-system dub)}.  It
 implements the Dub build procedure used by D packages, which
 involves running @code{dub build} and @code{dub run}.
@@ -9630,10 +9639,10 @@ Installation is done by copying the files manually.
 
 Which D compiler is used can be specified with the @code{#:ldc}
 parameter which defaults to @code{ldc}.
-@end defvr
+@end defvar
 
 @anchor{emacs-build-system}
-@defvr {Scheme Variable} emacs-build-system
+@defvar emacs-build-system
 This variable is exported by @code{(guix build-system emacs)}.  It
 implements an installation procedure similar to the packaging system
 of Emacs itself (@pxref{Packages,,, emacs, The GNU Emacs Manual}).
@@ -9643,17 +9652,17 @@ byte compiles all Emacs Lisp files.  Differently from the Emacs
 packaging system, the Info documentation files are moved to the standard
 documentation directory and the @file{dir} file is deleted.  The Elisp
 package files are installed directly under @file{share/emacs/site-lisp}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} font-build-system
+@defvar font-build-system
 This variable is exported by @code{(guix build-system font)}.  It
 implements an installation procedure for font packages where upstream
 provides pre-compiled TrueType, OpenType, etc.@: font files that merely
 need to be copied into place.  It copies font files to standard
 locations in the output directory.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} meson-build-system
+@defvar meson-build-system
 This variable is exported by @code{(guix build-system meson)}.  It
 implements the build procedure for packages that use
 @url{https://mesonbuild.com, Meson} as their build system.
@@ -9707,9 +9716,9 @@ is not enabled by default.  It can be enabled with @code{#:glib-or-gtk?}.
 This phase is the phase provided by @code{glib-or-gtk-build-system}, and it
 is not enabled by default.  It can be enabled with @code{#:glib-or-gtk?}.
 @end table
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} linux-module-build-system
+@defvar linux-module-build-system
 @code{linux-module-build-system} allows building Linux kernel modules.
 
 @cindex build phases
@@ -9734,9 +9743,9 @@ kernel module.
 It is possible and useful to specify the Linux kernel to use for building
 the module (in the @code{arguments} form of a package using the
 @code{linux-module-build-system}, use the key @code{#:linux} to specify it).
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} node-build-system
+@defvar node-build-system
 This variable is exported by @code{(guix build-system node)}.  It
 implements the build procedure used by @uref{https://nodejs.org,
 Node.js}, which implements an approximation of the @code{npm install}
@@ -9745,23 +9754,23 @@ command, followed by an @code{npm test} command.
 Which Node.js package is used to interpret the @code{npm} commands can
 be specified with the @code{#:node} parameter which defaults to
 @code{node}.
-@end defvr
+@end defvar
 
 Lastly, for packages that do not need anything as sophisticated, a
 ``trivial'' build system is provided.  It is trivial in the sense that
 it provides basically no support: it does not pull any implicit inputs,
 and does not have a notion of build phases.
 
-@defvr {Scheme Variable} trivial-build-system
+@defvar trivial-build-system
 This variable is exported by @code{(guix build-system trivial)}.
 
 This build system requires a @code{#:builder} argument.  This argument
 must be a Scheme expression that builds the package output(s)---as
 with @code{build-expression->derivation} (@pxref{Derivations,
 @code{build-expression->derivation}}).
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} channel-build-system
+@defvar channel-build-system
 This variable is exported by @code{(guix build-system channel)}.
 
 This build system is meant primarily for internal use.  A package using
@@ -9772,7 +9781,7 @@ supplied to specify the commit being built (a hexadecimal string).
 
 The resulting package is a Guix instance of the given channel, similar
 to how @command{guix time-machine} would build it.
-@end defvr
+@end defvar
 
 @node Build Phases
 @section Build Phases
@@ -10624,11 +10633,11 @@ Some search paths are not tied by a single package but to many packages.
 To reduce duplications, some of them are pre-defined in @code{(guix
 search-paths)}.
 
-@defvr {Scheme Variable} $SSL_CERT_DIR
-@defvrx {Scheme Variable} $SSL_CERT_FILE
+@defvar $SSL_CERT_DIR
+@defvarx $SSL_CERT_FILE
 These two search paths indicate where X.509 certificates can be found
 (@pxref{X.509 Certificates}).
-@end defvr
+@end defvar
 
 These pre-defined search paths can be used as in the following example:
 
@@ -10767,10 +10776,10 @@ location given the options that were passed to @command{configure}.
 Close the connection to @var{server}.
 @end deffn
 
-@defvr {Scheme Variable} current-build-output-port
+@defvar current-build-output-port
 This variable is bound to a SRFI-39 parameter, which refers to the port
 where build and error logs sent by the daemon should be written.
-@end defvr
+@end defvar
 
 Procedures that make RPCs all take a server object as their first
 argument.
@@ -11195,7 +11204,7 @@ The @code{(guix monads)} module provides the @dfn{state monad}, which
 allows an additional value---the state---to be @emph{threaded} through
 monadic procedure calls.
 
-@defvr {Scheme Variable} %state-monad
+@defvar %state-monad
 The state monad.  Procedures in the state monad can access and change
 the state that is threaded.
 
@@ -11217,7 +11226,7 @@ increments the current state value:
 
 When ``run'' through @code{%state-monad}, we obtain that additional state
 value, which is the number of @code{square} calls.
-@end defvr
+@end defvar
 
 @deffn {Monadic Procedure} current-state
 Return the current state as a monadic value.
@@ -11246,13 +11255,13 @@ state.  Return two values: the resulting value, and the resulting state.
 The main interface to the store monad, provided by the @code{(guix
 store)} module, is as follows.
 
-@defvr {Scheme Variable} %store-monad
+@defvar %store-monad
 The store monad---an alias for @code{%state-monad}.
 
 Values in the store monad encapsulate accesses to the store.  When its
 effect is needed, a value of the store monad must be ``evaluated'' by
 passing it to the @code{run-with-store} procedure (see below).
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} run-with-store @var{store} @var{mval} [#:guile-for-build] [#:system (%current-system)]
 Run @var{mval}, a monadic value in the store monad, in @var{store}, an
@@ -12006,6 +12015,14 @@ lines at the top of the script:
 @code{!#}
 @end example
 
+To make a script that launches an interactive REPL directly from the
+shell, use the @code{--interactive} flag:
+
+@example
+@code{#!/usr/bin/env -S guix repl --interactive}
+@code{!#}
+@end example
+
 Without a file name argument, a Guile REPL is started, allowing for
 interactive use (@pxref{Using Guix Interactively}):
 
@@ -12025,6 +12042,10 @@ of Guix.
 The available options are as follows:
 
 @table @code
+@item --list-types
+Display the @var{TYPE} options for @command{guix repl --type=TYPE} and
+exit.
+
 @item --type=@var{type}
 @itemx -t @var{type}
 Start a REPL of the given @var{TYPE}, which can be one of the following:
@@ -12049,6 +12070,10 @@ Accept connections on localhost on port 37146.
 @item --listen=unix:/tmp/socket
 Accept connections on the Unix-domain socket @file{/tmp/socket}.
 @end table
+
+@item --interactive
+@itemx -i
+Launch the interactive REPL after @var{file} is executed.
 
 @item --load-path=@var{directory}
 @itemx -L @var{directory}
@@ -12735,7 +12760,9 @@ Coreutils in the dependency graph is rebuilt.
 
 @cindex upstream, latest version
 @item --with-latest=@var{package}
-So you like living on the bleeding edge?  This option is for you!  It
+@itemx --with-version=@var{package}=@var{version}
+So you like living on the bleeding edge?  The @option{--with-latest}
+option is for you!  It
 replaces occurrences of @var{package} in the dependency graph with its
 latest upstream version, as reported by @command{guix refresh}
 (@pxref{Invoking guix refresh}).
@@ -12751,6 +12778,26 @@ of Guile-JSON:
 guix build guix --with-latest=guile-json
 @end example
 
+The @option{--with-version} works similarly except that it lets you
+specify that you want precisely @var{version}, assuming that version
+exists upstream.  For example, to spawn a development environment with
+SciPy built against version 1.22.4 of NumPy (skipping its test suite
+because hey, we're not gonna wait this long), you would run:
+
+@example
+guix shell python python-scipy --with-version=python-numpy=1.22.4
+@end example
+
+@quotation Warning
+Because they depend on source code published at a given point in time on
+upstream servers, deployments made with @option{--with-latest} and
+@option{--with-version} may be non-reproducible: source might disappear
+or be modified in place on the servers.
+
+To deploy old software versions without compromising on reproducibility,
+@pxref{Invoking guix time-machine, @command{guix time-machine}}.
+@end quotation
+
 There are limitations.  First, in cases where the tool cannot or does
 not know how to authenticate source code, you are at risk of running
 malicious code; a warning is emitted in this case.  Second, this option
@@ -12759,10 +12806,10 @@ which is not always sufficient: there might be additional dependencies
 that need to be added, patches to apply, and more generally the quality
 assurance work that Guix developers normally do will be missing.
 
-You've been warned!  In all the other cases, it's a snappy way to stay
-on top.  We encourage you to submit patches updating the actual package
-definitions once you have successfully tested an upgrade
-(@pxref{Contributing}).
+You've been warned!  When those limitations are acceptable, it's a
+snappy way to stay on top.  We encourage you to submit patches updating
+the actual package definitions once you have successfully tested an
+upgrade with @option{--with-latest} (@pxref{Contributing}).
 
 @cindex test suite, skipping
 @item --without-tests=@var{package}
@@ -14093,7 +14140,8 @@ the updater for @uref{https://crates.io, Crates} packages.
 the updater for @uref{https://launchpad.net, Launchpad} packages.
 @item generic-html
 a generic updater that crawls the HTML page where the source tarball of
-the package is hosted, when applicable.
+the package is hosted, when applicable, or the HTML page specified by
+the @code{release-monitoring-url} property of the package.
 
 @item generic-git
 a generic updater for packages hosted on Git repositories.  It tries to
@@ -15952,9 +16000,9 @@ $ file /gnu/store/9926by9qrxa91ijkhw9ndgwp4bn24g9h-hello-2.12/bin/hello
 @end example
 
 The major benefit of cross-compilation is that there are no performance
-penaly compared to emulation using QEMU.  There are however higher risks
-that some packages fail to cross-compile because few users are using
-this mechanism extensively.
+penalty compared to emulation using QEMU.  There are however higher
+risks that some packages fail to cross-compile because fewer users are
+using this mechanism extensively.
 
 @node Native Builds
 @section Native Builds
@@ -16758,28 +16806,28 @@ than by device name.  See above for examples.
 The @code{(gnu system file-systems)} exports the following useful
 variables.
 
-@defvr {Scheme Variable} %base-file-systems
+@defvar %base-file-systems
 These are essential file systems that are required on normal systems,
 such as @code{%pseudo-terminal-file-system} and @code{%immutable-store} (see
 below).  Operating system declarations should always contain at least
 these.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %pseudo-terminal-file-system
+@defvar %pseudo-terminal-file-system
 This is the file system to be mounted as @file{/dev/pts}.  It supports
 @dfn{pseudo-terminals} created @i{via} @code{openpty} and similar
 functions (@pxref{Pseudo-Terminals,,, libc, The GNU C Library Reference
 Manual}).  Pseudo-terminals are used by terminal emulators such as
 @command{xterm}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %shared-memory-file-system
+@defvar %shared-memory-file-system
 This file system is mounted as @file{/dev/shm} and is used to support
 memory sharing across processes (@pxref{Memory-mapped I/O,
 @code{shm_open},, libc, The GNU C Library Reference Manual}).
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %immutable-store
+@defvar %immutable-store
 This file system performs a read-only ``bind mount'' of
 @file{/gnu/store}, making it read-only for all the users including
 @code{root}.  This prevents against accidental modification by software
@@ -16787,19 +16835,19 @@ running as @code{root} or by system administrators.
 
 The daemon itself is still able to write to the store: it remounts it
 read-write in its own ``name space.''
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %binary-format-file-system
+@defvar %binary-format-file-system
 The @code{binfmt_misc} file system, which allows handling of arbitrary
 executable file types to be delegated to user space.  This requires the
 @code{binfmt.ko} kernel module to be loaded.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %fuse-control-file-system
+@defvar %fuse-control-file-system
 The @code{fusectl} file system, which allows unprivileged users to mount
 and unmount user-space FUSE file systems.  This requires the
 @code{fuse.ko} kernel module to be loaded.
-@end defvr
+@end defvar
 
 The @code{(gnu system uuid)} module provides tools to deal with file
 system ``unique identifiers'' (UUIDs).
@@ -16984,26 +17032,26 @@ This must be a @code{mapped-device-kind} object, which specifies how
 @end table
 @end deftp
 
-@defvr {Scheme Variable} luks-device-mapping
+@defvar luks-device-mapping
 This defines LUKS block device encryption using the @command{cryptsetup}
 command from the package with the same name.  It relies on the
 @code{dm-crypt} Linux kernel module.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} raid-device-mapping
+@defvar raid-device-mapping
 This defines a RAID device, which is assembled using the @code{mdadm}
 command from the package with the same name.  It requires a Linux kernel
 module for the appropriate RAID level to be loaded, such as @code{raid456}
 for RAID-4, RAID-5 or RAID-6, or @code{raid10} for RAID-10.
-@end defvr
+@end defvar
 
 @cindex LVM, logical volume manager
-@defvr {Scheme Variable} lvm-device-mapping
+@defvar lvm-device-mapping
 This defines one or more logical volumes for the Linux
 @uref{https://www.sourceware.org/lvm2/, Logical Volume Manager (LVM)}.
 The volume group is activated by the @command{vgchange} command from the
 @code{lvm2} package.
-@end defvr
+@end defvar
 
 @cindex disk encryption
 @cindex LUKS
@@ -17424,20 +17472,20 @@ What, user groups can have a password?  Well, apparently yes.  Unless
 For convenience, a variable lists all the basic user groups one may
 expect:
 
-@defvr {Scheme Variable} %base-groups
+@defvar %base-groups
 This is the list of basic user groups that users and/or packages expect
 to be present on the system.  This includes groups such as ``root'',
 ``wheel'', and ``users'', as well as groups used to control access to
 specific devices such as ``audio'', ``disk'', and ``cdrom''.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %base-user-accounts
+@defvar %base-user-accounts
 This is the list of basic system accounts that programs may expect to
 find on a GNU/Linux system, such as the ``nobody'' account.
 
 Note that the ``root'' account is not included here.  It is a
 special-case and is automatically added whether or not it is specified.
-@end defvr
+@end defvar
 
 @node Keyboard Layout
 @section Keyboard Layout
@@ -17660,7 +17708,7 @@ IANA}.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %default-locale-definitions
+@defvar %default-locale-definitions
 A list of commonly used UTF-8 locales, used as the default
 value of the @code{locale-definitions} field of @code{operating-system}
 declarations.
@@ -17672,7 +17720,7 @@ that follows the dot in the name (@pxref{Using gettextized software,
 normalized codeset,, libc, The GNU C Library Reference Manual}).  So for
 instance it has @code{uk_UA.utf8} but @emph{not}, say,
 @code{uk_UA.UTF-8}.
-@end defvr
+@end defvar
 
 @subsection Locale Data Compatibility Considerations
 
@@ -17831,7 +17879,7 @@ The @code{(gnu services base)} module provides definitions for the basic
 services that one expects from the system.  The services exported by
 this module are listed below.
 
-@defvr {Scheme Variable} %base-services
+@defvar %base-services
 This variable contains a list of basic services (@pxref{Service Types
 and Services}, for more information on service objects) one would
 expect from the system: a login service (mingetty) on each tty, syslogd,
@@ -17848,9 +17896,9 @@ this:
               (service openssh-service-type))
         %base-services)
 @end lisp
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} special-files-service-type
+@defvar special-files-service-type
 This is the service that sets up ``special files'' such as
 @file{/bin/sh}; an instance of it is part of @code{%base-services}.
 
@@ -17881,7 +17929,7 @@ Since this is part of @code{%base-services}, you can use
 (@pxref{Service Reference, @code{modify-services}}).  But the simple way
 to add a special file is @i{via} the @code{extra-special-file} procedure
 (see below).
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} extra-special-file @var{file} @var{target}
 Use @var{target} as the ``special file'' @var{file}.
@@ -17900,7 +17948,7 @@ symlink:
 Return a service that sets the host name to @var{name}.
 @end deffn
 
-@defvr {Scheme Variable} console-font-service-type
+@defvar console-font-service-type
 Install the given fonts on the specified ttys (fonts are per
 virtual console on the kernel Linux).  The value of this service is a list of
 tty/font pairs.  The font can be the name of a font provided by the @code{kbd}
@@ -17915,7 +17963,7 @@ package or any valid argument to @command{setfont}, as in this example:
                 font-terminus
                 "/share/consolefonts/ter-132n"))) ; for HDPI
 @end lisp
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} login-service @var{config}
 Return a service to run login according to @var{config}, a
@@ -18239,11 +18287,11 @@ and caches.
 
 @end deffn
 
-@defvr {Scheme Variable} %nscd-default-configuration
+@defvar %nscd-default-configuration
 This is the default @code{<nscd-configuration>} value (see below) used
 by @code{nscd-service}.  It uses the caches defined by
 @code{%nscd-default-caches}; see below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} nscd-configuration
 This is the data type representing the name service cache daemon (nscd)
@@ -18313,7 +18361,7 @@ Maximum size in bytes of the database cache.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %nscd-default-caches
+@defvar %nscd-default-caches
 List of @code{<nscd-cache>} objects used by default by
 @code{nscd-configuration} (see above).
 
@@ -18322,7 +18370,7 @@ lookups.  The latter provides better host name lookup performance,
 resilience in the face of unreliable name servers, and also better
 privacy---often the result of host name lookups is in local cache, so
 external name servers do not even need to be queried.
-@end defvr
+@end defvar
 
 @anchor{syslog-configuration-type}
 @cindex syslog
@@ -18349,11 +18397,11 @@ Return a service that runs a syslog daemon according to @var{config}.
 information on the configuration file syntax.
 @end deffn
 
-@defvr {Scheme Variable} guix-service-type
+@defvar guix-service-type
 This is the type of the service that runs the build daemon,
 @command{guix-daemon} (@pxref{Invoking guix-daemon}).  Its value must be a
 @code{guix-configuration} record as described below.
-@end defvr
+@end defvar
 
 @anchor{guix-configuration-type}
 @deftp {Data Type} guix-configuration
@@ -18613,22 +18661,22 @@ well as in the @var{groups} of the @code{udev-rules-service} procedure.
           %desktop-services)))
 @end lisp
 
-@defvr {Scheme Variable} urandom-seed-service-type
+@defvar urandom-seed-service-type
 Save some entropy in @code{%random-seed-file} to seed @file{/dev/urandom}
 when rebooting.  It also tries to seed @file{/dev/urandom} from
 @file{/dev/hwrng} while booting, if @file{/dev/hwrng} exists and is
 readable.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %random-seed-file
+@defvar %random-seed-file
 This is the name of the file where some random bytes are saved by
 @var{urandom-seed-service} to seed @file{/dev/urandom} when rebooting.
 It defaults to @file{/var/lib/random-seed}.
-@end defvr
+@end defvar
 
 @cindex mouse
 @cindex gpm
-@defvr {Scheme Variable} gpm-service-type
+@defvar gpm-service-type
 This is the type of the service that runs GPM, the @dfn{general-purpose
 mouse daemon}, which provides mouse support to the Linux console.  GPM
 allows users to use the mouse in the console, notably to select, copy,
@@ -18636,7 +18684,7 @@ and paste text.
 
 The value for services of this type must be a @code{gpm-configuration}
 (see below).  This service is not part of @code{%base-services}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} gpm-configuration
 Data type representing the configuration of GPM.
@@ -18655,7 +18703,7 @@ The GPM package to use.
 @end deftp
 
 @anchor{guix-publish-service-type}
-@deffn {Scheme Variable} guix-publish-service-type
+@defvar guix-publish-service-type
 This is the service type for @command{guix publish} (@pxref{Invoking
 guix publish}).  Its value must be a @code{guix-publish-configuration}
 object, as described below.
@@ -18663,7 +18711,7 @@ object, as described below.
 This assumes that @file{/etc/guix} already contains a signing key pair as
 created by @command{guix archive --generate-key} (@pxref{Invoking guix
 archive}).  If that is not the case, the service will fail to start.
-@end deffn
+@end defvar
 
 @deftp {Data Type} guix-publish-configuration
 Data type representing the configuration of the @code{guix publish}
@@ -18794,7 +18842,7 @@ about the Pluggable Authentication Module (PAM) limits, refer to the
 @samp{pam_limits} man page from the @code{linux-pam} package.
 @end deffn
 
-@defvr {Scheme Variable} greetd-service-type
+@defvar greetd-service-type
 @uref{https://git.sr.ht/~kennylevinsen/greetd, @code{greetd}} is a minimal and
 flexible login manager daemon, that makes no assumptions about what you
 want to launch.
@@ -18855,7 +18903,7 @@ Here is example of switching from @code{mingetty-service-type} to
     ;; as illustrated above
     #| (service mingetty-service-type (mingetty-configuration (tty "tty8"))) |#))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} greetd-configuration
 Configuration record for the @code{greetd-service-type}.
@@ -18902,6 +18950,10 @@ is recommended.
 
 @item @code{terminal-switch} (default: @code{#f})
 Make this terminal active on start of @code{greetd}.
+
+@item @code{source-profile?} (default: @code{#t})
+Whether to source @file{/etc/profile} and @file{~/.profile}, when they
+exist.
 
 @item @code{default-session-user} (default: @samp{"greeter"})
 The user to use for running the greeter.
@@ -19142,7 +19194,7 @@ also specify the number of tasks to display:
 # herd schedule mcron 10
 @end example
 
-@defvr {Scheme Variable} mcron-service-type
+@defvar mcron-service-type
 This is the type of the @code{mcron} service, whose value is an
 @code{mcron-configuration} object.
 
@@ -19150,7 +19202,7 @@ This service type can be the target of a service extension that provides
 additional job specifications (@pxref{Service Composition}).  In other
 words, it is possible to define services that provide additional mcron
 jobs to run.
-@end defvr
+@end defvar
 
 @c Generated via (generate-documentation) at the bottom of (gnu services
 @c mcron).
@@ -19216,7 +19268,7 @@ produce log files already take care of that):
                   %base-services)))
 @end lisp
 
-@defvr {Scheme Variable} rottlog-service-type
+@defvar rottlog-service-type
 This is the type of the Rottlog service, whose value is a
 @code{rottlog-configuration} object.
 
@@ -19225,7 +19277,7 @@ Other services can extend this one with new @code{log-rotation} objects
 
 This service type can define mcron jobs (@pxref{Scheduled Job
 Execution}) to run the rottlog service.
-@end defvr
+@end defvar
 
 @deftp {Data Type} rottlog-configuration
 Data type representing the configuration of rottlog.
@@ -19283,16 +19335,16 @@ Either @code{#f} or a gexp to execute once the rotation has completed.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %default-rotations
+@defvar %default-rotations
 Specifies weekly rotation of @code{%rotated-files} and of
 @file{/var/log/guix-daemon.log}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %rotated-files
+@defvar %rotated-files
 The list of syslog-controlled files to be rotated.  By default it is:
 @code{'("/var/log/messages" "/var/log/secure" "/var/log/debug" \
 "/var/log/maillog")}.
-@end defvr
+@end defvar
 
 Some log files just need to be deleted periodically once they are old,
 without any other criterion and without any archival step.  This is the
@@ -19310,10 +19362,10 @@ case of build logs stored by @command{guix-daemon} under
 
 That ensures build logs do not accumulate endlessly.
 
-@defvr {Scheme Variable} log-cleanup-service-type
+@defvar log-cleanup-service-type
 This is the type of the service to delete old logs.  Its value must be a
 @code{log-cleanup-configuration} record as described below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} log-cleanup-configuration
 Data type representing the log cleanup configuration
@@ -19422,7 +19474,7 @@ configuration or a simple DHCP client are often more appropriate.
 This section describes the various network setup services available,
 starting with static network configuration.
 
-@defvr {Scheme Variable} static-networking-service-type
+@defvar static-networking-service-type
 This is the type for statically-configured network interfaces.  Its
 value must be a list of @code{static-networking} records.  Each of them
 declares a set of @dfn{addresses}, @dfn{routes}, and @dfn{links}, as
@@ -19455,7 +19507,7 @@ a 24-bit netmask for the local network---meaning that any 10.0.2.@var{x}
 address is on the local area network (LAN).  Traffic to addresses
 outside the local network is routed @i{via} 10.0.2.2.  Host names are
 resolved by sending domain name system (DNS) queries to 10.0.2.3.
-@end defvr
+@end defvar
 
 @deftp {Data Type} static-networking
 This is the data type representing a static network configuration.
@@ -19584,25 +19636,25 @@ List of arguments for this type of link.
 @end deftp
 
 @cindex loopback device
-@defvr {Scheme Variable} %loopback-static-networking
+@defvar %loopback-static-networking
 This is the @code{static-networking} record representing the ``loopback
 device'', @code{lo}, for IP addresses 127.0.0.1 and ::1, and providing
 the @code{loopback} Shepherd service.
-@end defvr
+@end defvar
 
 @cindex networking, with QEMU
 @cindex QEMU, networking
-@defvr {Scheme Variable} %qemu-static-networking
+@defvar %qemu-static-networking
 This is the @code{static-networking} record representing network setup
 when using QEMU's user-mode network stack on @code{eth0} (@pxref{Using
 the user mode network stack,,, QEMU, QEMU Documentation}).
-@end defvr
+@end defvar
 
 @cindex DHCP, networking service
-@defvr {Scheme Variable} dhcp-client-service-type
+@defvar dhcp-client-service-type
 This is the type of services that run @var{dhcp}, a Dynamic Host Configuration
 Protocol (DHCP) client.
-@end defvr
+@end defvar
 
 @deftp {Data Type} dhcp-client-configuration
 Data type representing the configuration of the DHCP client service.
@@ -19623,7 +19675,7 @@ client listens only on the specified interfaces.
 
 @cindex NetworkManager
 
-@defvr {Scheme Variable} network-manager-service-type
+@defvar network-manager-service-type
 This is the service type for the
 @uref{https://wiki.gnome.org/Projects/NetworkManager, NetworkManager}
 service. The value for this service type is a
@@ -19631,7 +19683,7 @@ service. The value for this service type is a
 
 This service is part of @code{%desktop-services} (@pxref{Desktop
 Services}).
-@end defvr
+@end defvar
 
 @deftp {Data Type} network-manager-configuration
 Data type representing the configuration of NetworkManager.
@@ -19696,7 +19748,7 @@ option is set to @code{#t}, otherwise it will use wpa-supplicant.
 @end deftp
 
 @cindex Connman
-@deffn {Scheme Variable} connman-service-type
+@defvar connman-service-type
 This is the service type to run @url{https://01.org/connman,Connman},
 a network connection manager.
 
@@ -19710,7 +19762,7 @@ Its value must be an
 @end lisp
 
 See below for details about @code{connman-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} connman-configuration
 Data Type representing the configuration of connman.
@@ -19721,15 +19773,18 @@ The connman package to use.
 
 @item @code{disable-vpn?} (default: @code{#f})
 When true, disable connman's vpn plugin.
+
+@item @code{iwd?} (default: @code{#f})
+When true, ConnMan uses iwd to connect to wireless networks.
 @end table
 @end deftp
 
 @cindex WPA Supplicant
-@defvr {Scheme Variable} wpa-supplicant-service-type
+@defvar wpa-supplicant-service-type
 This is the service type to run @url{https://w1.fi/wpa_supplicant/,WPA
 supplicant}, an authentication daemon required to authenticate against
 encrypted WiFi or ethernet networks.
-@end defvr
+@end defvar
 
 @deftp {Data Type} wpa-supplicant-configuration
 Data type representing the configuration of WPA Supplicant.
@@ -19765,7 +19820,7 @@ List of additional command-line arguments to pass to the daemon.
 Some networking devices such as modems require special care, and this is
 what the services below focus on.
 
-@defvr {Scheme Variable} modem-manager-service-type
+@defvar modem-manager-service-type
 This is the service type for the
 @uref{https://wiki.gnome.org/Projects/ModemManager, ModemManager}
 service.  The value for this service type is a
@@ -19773,7 +19828,7 @@ service.  The value for this service type is a
 
 This service is part of @code{%desktop-services} (@pxref{Desktop
 Services}).
-@end defvr
+@end defvar
 
 @deftp {Data Type} modem-manager-configuration
 Data type representing the configuration of ModemManager.
@@ -19788,7 +19843,7 @@ The ModemManager package to use.
 @cindex USB_ModeSwitch
 @cindex Modeswitching
 
-@defvr {Scheme Variable} usb-modeswitch-service-type
+@defvar usb-modeswitch-service-type
 This is the service type for the
 @uref{https://www.draisberghof.de/usb_modeswitch/, USB_ModeSwitch}
 service.  The value for this service type is
@@ -19802,7 +19857,7 @@ plugged in.
 
 This service is part of @code{%desktop-services} (@pxref{Desktop
 Services}).
-@end defvr
+@end defvar
 
 @deftp {Data Type} usb-modeswitch-configuration
 Data type representing the configuration of USB_ModeSwitch.
@@ -19882,7 +19937,7 @@ interfaces here; see @code{man dhcpd} for details.
 
 @cindex hostapd service, for Wi-Fi access points
 @cindex Wi-Fi access points, hostapd service
-@defvr {Scheme Variable} hostapd-service-type
+@defvar hostapd-service-type
 This is the service type to run the @uref{https://w1.fi/hostapd/,
 hostapd} daemon to set up WiFi (IEEE 802.11) access points and
 authentication servers.  Its associated value must be a
@@ -19896,7 +19951,7 @@ authentication servers.  Its associated value must be a
           (ssid "My Network")
           (channel 12)))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} hostapd-configuration
 This data type represents the configuration of the hostapd service, with
@@ -19931,7 +19986,7 @@ configuration file reference.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} simulated-wifi-service-type
+@defvar simulated-wifi-service-type
 This is the type of a service to simulate WiFi networking, which can be
 useful in virtual machines for testing purposes.  The service loads the
 Linux kernel
@@ -19940,11 +19995,11 @@ Linux kernel
 network that can be seen on @code{wlan0}, by default.
 
 The service's value is a @code{hostapd-configuration} record.
-@end defvr
+@end defvar
 
 
 @cindex iptables
-@defvr {Scheme Variable} iptables-service-type
+@defvar iptables-service-type
 This is the service type to set up an iptables configuration.  iptables is a
 packet filtering framework supported by the Linux kernel.  This service
 supports configuring iptables for both IPv4 and IPv6.  A simple example
@@ -19973,7 +20028,7 @@ COMMIT
 COMMIT
 "))))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} iptables-configuration
 The data type representing the configuration of iptables.
@@ -19994,7 +20049,7 @@ objects}).
 @end deftp
 
 @cindex nftables
-@defvr {Scheme Variable} nftables-service-type
+@defvar nftables-service-type
 This is the service type to set up a nftables configuration.  nftables is a
 netfilter project that aims to replace the existing iptables, ip6tables,
 arptables and ebtables framework.  It provides a new packet filtering
@@ -20006,7 +20061,7 @@ except those to the ssh port 22.  To use it, simply write:
 @lisp
 (service nftables-service-type)
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} nftables-configuration
 The data type representing the configuration of nftables.
@@ -20023,14 +20078,14 @@ The nftables ruleset to use.  This may be any ``file-like'' object
 @cindex NTP (Network Time Protocol), service
 @cindex ntpd, service for the Network Time Protocol daemon
 @cindex real time clock
-@defvr {Scheme Variable} ntp-service-type
+@defvar ntp-service-type
 This is the type of the service running the @uref{https://www.ntp.org,
 Network Time Protocol (NTP)} daemon, @command{ntpd}.  The daemon will keep the
 system clock synchronized with that of the specified NTP servers.
 
 The value of this service is an @code{ntpd-configuration} object, as described
 below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ntp-configuration
 This is the data type for the NTP service configuration.
@@ -20050,10 +20105,10 @@ The NTP package to use.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %ntp-servers
+@defvar %ntp-servers
 List of host names used as the default NTP servers.  These are servers of the
 @uref{https://www.ntppool.org/en/, NTP Pool Project}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ntp-server
 The data type representing the configuration of a NTP server.
@@ -20099,15 +20154,15 @@ clock synchronized with that of the given servers.
 @end lisp
 @end deffn
 
-@defvr {Scheme Variable} %openntpd-servers
+@defvar %openntpd-servers
 This variable is a list of the server addresses defined in
 @code{%ntp-servers}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} openntpd-configuration
 @table @asis
-@item @code{openntpd} (default: @code{(file-append openntpd "/sbin/ntpd")})
-The openntpd executable to use.
+@item @code{openntpd} (default: @code{openntpd})
+The openntpd package to use.
 @item @code{listen-on} (default: @code{'("127.0.0.1" "::1")})
 A list of local IP addresses or hostnames the ntpd daemon should listen on.
 @item @code{query-from} (default: @code{'()})
@@ -20136,7 +20191,7 @@ IP addresses, @code{ntpd} will calculate a median constraint from all of them.
 @end deftp
 
 @cindex inetd
-@deffn {Scheme variable} inetd-service-type
+@defvar inetd-service-type
 This service runs the @command{inetd} (@pxref{inetd invocation,,,
 inetutils, GNU Inetutils}) daemon.  @command{inetd} listens for
 connections on internet sockets, and lazily starts the specified server
@@ -20173,7 +20228,7 @@ gateway @code{hostname}:
 @end lisp
 
 See below for more details about @code{inetd-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} inetd-configuration
 Data type representing the configuration of @command{inetd}.
@@ -20230,7 +20285,7 @@ detailed discussion of each configuration field.
 
 @cindex opendht, distributed hash table network service
 @cindex dhtproxy, for use with jami
-@defvr {Scheme Variable} opendht-service-type
+@defvar opendht-service-type
 This is the type of the service running a @uref{https://opendht.net,
 OpenDHT} node, @command{dhtnode}.  The daemon can be used to host your
 own proxy service to the distributed hash table (DHT), for example to
@@ -20249,7 +20304,7 @@ leading to connectivity problems.
 
 The value of this service is a @code{opendht-configuration} object, as
 described below.
-@end defvr
+@end defvar
 
 @c The fields documentation has been auto-generated using the
 @c configuration->documentation procedure from
@@ -20294,13 +20349,13 @@ Spawn a proxy server listening to TLS connections on the specified port.
 @end deftp
 
 @cindex Tor
-@defvr {Scheme Variable} tor-service-type
+@defvar tor-service-type
 This is the type for a service that runs the @uref{https://torproject.org,
 Tor} anonymous networking daemon.  The service is configured using a
 @code{<tor-configuration>} record.  By default, the Tor daemon runs as the
 @code{tor} unprivileged user, which is a member of the @code{tor} group.
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} tor-configuration
 @table @asis
@@ -20374,7 +20429,7 @@ You might want an rsync daemon if you have files that you want available
 so anyone (or just yourself) can download existing files or upload new
 files.
 
-@deffn {Scheme Variable} rsync-service-type
+@defvar rsync-service-type
 This is the service type for the @uref{https://rsync.samba.org, rsync} daemon,
 The value for this service type is a
 @command{rsync-configuration} record as in this example:
@@ -20394,7 +20449,7 @@ The value for this service type is a
 @end lisp
 
 See below for details about @code{rsync-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} rsync-configuration
 Data type representing the configuration for @code{rsync-service}.
@@ -20480,7 +20535,7 @@ You might want a syncthing daemon if you have files between two or more
 computers and want to sync them in real time, safely protected from
 prying eyes.
 
-@deffn {Scheme Variable} syncthing-service-type
+@defvar syncthing-service-type
 This is the service type for the @uref{https://syncthing.net/,
 syncthing} daemon, The value for this service type is a
 @command{syncthing-configuration} record as in this example:
@@ -20520,7 +20575,7 @@ directory is @file{$HOME} of the specified Syncthing @code{user}.
 
 @end table
 @end deftp
-@end deffn
+@end defvar
 
 Furthermore, @code{(gnu services ssh)} provides the following services.
 @cindex SSH
@@ -20564,7 +20619,7 @@ The other options should be self-descriptive.
 
 @cindex SSH
 @cindex SSH server
-@deffn {Scheme Variable} openssh-service-type
+@defvar openssh-service-type
 This is the type for the @uref{http://www.openssh.org, OpenSSH} secure
 shell daemon, @command{sshd}.  Its value must be an
 @code{openssh-configuration} record as in this example:
@@ -20589,7 +20644,7 @@ example:
                    (const `(("charlie"
                              ,(local-file "charlie.pub")))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} openssh-configuration
 This is the configuration record for OpenSSH's @command{sshd}.
@@ -20796,7 +20851,7 @@ Whether to enable password-based authentication.
 @end deftp
 
 @cindex AutoSSH
-@deffn {Scheme Variable} autossh-service-type
+@defvar autossh-service-type
 This is the type for the @uref{https://www.harding.motd.ca/autossh,
 AutoSSH} program that runs a copy of @command{ssh} and monitors it,
 restarting it as necessary should it die or stop passing traffic.
@@ -20820,7 +20875,7 @@ system's @code{services} field:
           (user "pino")
           (ssh-options (list "-T" "-N" "-L" "8081:localhost:8081" "remote.net"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} autossh-configuration
 This data type represents the configuration of an AutoSSH service.
@@ -20876,7 +20931,7 @@ may cause undefined behaviour.
 @end deftp
 
 @cindex WebSSH
-@deffn {Scheme Variable} webssh-service-type
+@defvar webssh-service-type
 This is the type for the @uref{https://webssh.huashengdun.org/, WebSSH}
 program that runs a web SSH client.  WebSSH can be run manually from the
 command-line by passing arguments to the binary @command{wssh} from the
@@ -20913,7 +20968,7 @@ for HTTPS connection, add this call to the operating system's
                      (body '("root /var/www;")))
                     (nginx-server-configuration-locations %webssh-configuration-nginx))))))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} webssh-configuration
 Data type representing the configuration for @code{webssh-service}.
@@ -20950,7 +21005,7 @@ Logging level.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %facebook-host-aliases
+@defvar %facebook-host-aliases
 This variable contains a string for use in @file{/etc/hosts}
 (@pxref{Host Names,,, libc, The GNU C Library Reference Manual}).  Each
 line contains a entry that maps a known server name of the Facebook
@@ -20977,11 +21032,11 @@ This variable is typically used in the @code{hosts-file} field of an
 
 This mechanism can prevent programs running locally, such as Web
 browsers, from accessing Facebook.
-@end defvr
+@end defvar
 
 The @code{(gnu services avahi)} provides the following definition.
 
-@defvr {Scheme Variable} avahi-service-type
+@defvar avahi-service-type
 This is the service that runs @command{avahi-daemon}, a system-wide
 mDNS/DNS-SD responder that allows for service discovery and
 ``zero-configuration'' host name lookups (see @uref{https://avahi.org/}).
@@ -20994,7 +21049,7 @@ Service Switch}, for information on host name resolution.
 
 Additionally, add the @var{avahi} package to the system profile so that
 commands such as @command{avahi-browse} are directly usable.
-@end defvr
+@end defvar
 
 @deftp {Data Type} avahi-configuration
 Data type representation the configuration for Avahi.
@@ -21030,11 +21085,11 @@ This is a list of domains to browse.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} openvswitch-service-type
+@defvar openvswitch-service-type
 This is the type of the @uref{https://www.openvswitch.org, Open vSwitch}
 service, whose value should be an @code{openvswitch-configuration}
 object.
-@end deffn
+@end defvar
 
 @deftp {Data Type} openvswitch-configuration
 Data type representing the configuration of Open vSwitch, a multilayer
@@ -21048,7 +21103,7 @@ Package object of the Open vSwitch.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} pagekite-service-type
+@defvar pagekite-service-type
 This is the service type for the @uref{https://pagekite.net, PageKite} service,
 a tunneling solution for making localhost servers publicly visible, even from
 behind restrictive firewalls or NAT without forwarded ports.  The value for
@@ -21063,7 +21118,7 @@ Here's an example exposing the local HTTP and SSH daemons:
                     "raw/22:@@kitename:localhost:22:@@kitesecret"))
            (extra-file "/etc/pagekite.rc")))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} pagekite-configuration
 Data type representing the configuration of PageKite.
@@ -21094,7 +21149,7 @@ Use this to add additional options and manage shared secrets out-of-band.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} yggdrasil-service-type
+@defvar yggdrasil-service-type
 The service type for connecting to the @uref{https://yggdrasil-network.github.io/,
 Yggdrasil network}, an early-stage implementation of a fully end-to-end
 encrypted IPv6 network.
@@ -21137,7 +21192,7 @@ signing and encryption keys are defined in @file{/etc/yggdrasil-private.conf}
   PrivateKey: 5c750...
 @}
 @end example
-@end defvr
+@end defvar
 
 @deftp {Data Type} yggdrasil-configuration
 Data type representing the configuration of Yggdrasil.
@@ -21183,7 +21238,7 @@ address, delete everything except these options:
 @end deftp
 
 @cindex IPFS
-@defvr {Scheme Variable} ipfs-service-type
+@defvar ipfs-service-type
 The service type for connecting to the @uref{https://ipfs.io,IPFS network},
 a global, versioned, peer-to-peer file system. Pass it a
 @code{ipfs-configuration} to change the ports used for the gateway and API.
@@ -21196,7 +21251,7 @@ Here's an example configuration, using some non-standard ports:
           (gateway "/ip4/127.0.0.1/tcp/8880")
           (api "/ip4/127.0.0.1/tcp/8881")))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} ipfs-configuration
 Data type representing the configuration of IPFS.
@@ -21214,7 +21269,7 @@ Address of the API endpoint, in ‘multiaddress’ format.
 @end deftp
 
 @cindex keepalived
-@deffn {Scheme Variable} keepalived-service-type
+@defvar keepalived-service-type
 This is the type for the @uref{https://www.keepalived.org/, Keepalived}
 routing software, @command{keepalived}.  Its value must be an
 @code{keepalived-configuration} record as in this example for master
@@ -21263,7 +21318,7 @@ vrrp_instance my-group @{
   @}
 @}
 @end example
-@end deffn
+@end defvar
 
 @node Unattended Upgrades
 @subsection Unattended Upgrades
@@ -21315,14 +21370,14 @@ To ensure that upgrades are actually happening, you can run
 @command{guix system describe}.  To investigate upgrade failures, visit
 the unattended upgrade log file (see below).
 
-@defvr {Scheme Variable} unattended-upgrade-service-type
+@defvar unattended-upgrade-service-type
 This is the service type for unattended upgrades.  It sets up an mcron
 job (@pxref{Scheduled Job Execution}) that runs @command{guix system
 reconfigure} from the latest version of the specified channels.
 
 Its value must be a @code{unattended-upgrade-configuration} record (see
 below).
-@end defvr
+@end defvar
 
 @deftp {Data Type} unattended-upgrade-configuration
 This data type represents the configuration of the unattended upgrade
@@ -21361,6 +21416,17 @@ store, and to refer to @file{config.scm} within that directory.
 Therefore, uses of @code{local-file} within @file{config.scm} will work
 as expected.  @xref{G-Expressions}, for information about
 @code{local-file} and @code{file-append}.
+
+@item @code{operating-system-expression} (default: @code{#f})
+This field specifies an expression that evaluates to the operating
+system to use for the upgrade.  If no value is provided the
+@code{operating-system-file} field value is used.
+
+@lisp
+(unattended-upgrade-configuration
+  (operating-system-expression
+    #~(@@ (guix system install) installation-os)))
+@end lisp
 
 @item @code{services-to-restart} (default: @code{'(mcron)})
 This field specifies the Shepherd services to restart when the upgrade
@@ -21433,7 +21499,7 @@ its user interface, and it can also start Wayland sessions.  The former is
 required for the latter, to enable, set @code{wayland?} to @code{#t} in
 @code{gdm-configuration}.
 
-@defvr {Scheme Variable} gdm-service-type
+@defvar gdm-service-type
 This is the type for the @uref{https://wiki.gnome.org/Projects/GDM/, GNOME
 Desktop Manager} (GDM), a program that manages graphical display servers and
 handles graphical user logins.  Its value must be a @code{gdm-configuration}
@@ -21451,7 +21517,7 @@ automatically makes them available at the log-in screen.
 In addition, @file{~/.xsession} files are honored.  When available,
 @file{~/.xsession} must be an executable that starts a window manager
 and/or other X clients.
-@end defvr
+@end defvar
 
 @deftp {Data Type} gdm-configuration
 @table @asis
@@ -21501,7 +21567,7 @@ environment.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} slim-service-type
+@defvar slim-service-type
 This is the type for the SLiM graphical login manager for X11.
 
 Like GDM, SLiM looks for session types described by @file{.desktop} files and
@@ -21532,7 +21598,7 @@ and tty8.
                      (delete gdm-service-type)))))
 @end lisp
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} slim-configuration
 Data type representing the configuration of @code{slim-service-type}.
@@ -21598,15 +21664,15 @@ The SLiM package to use.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %default-theme
-@defvrx {Scheme Variable} %default-theme-name
+@defvar %default-theme
+@defvarx %default-theme-name
 The default SLiM theme and its name.
-@end defvr
+@end defvar
 
 
 @cindex login manager
 @cindex X11 login
-@defvr {Scheme Variable} sddm-service-type
+@defvar sddm-service-type
 This is the type of the service to run the
 @uref{https://github.com/sddm/sddm,SDDM display manager}.  Its value
 must be a @code{sddm-configuration} record (see below).
@@ -21619,7 +21685,7 @@ Here's an example use:
            (auto-login-user "alice")
            (auto-login-session "xfce.desktop")))
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} sddm-configuration
 This data type represents the configuration of the SDDM login manager.
@@ -21719,7 +21785,7 @@ Relogin after logout.
 @cindex lightdm, graphical login manager
 @cindex display manager, lightdm
 @anchor{lightdm}
-@defvr {Scheme Variable} lightdm-service-type
+@defvar lightdm-service-type
 This is the type of the service to run the
 @url{https://github.com/canonical/lightdm,LightDM display manager}.  Its
 value must be a @code{lightdm-configuration} record, which is documented
@@ -21751,7 +21817,7 @@ more features and verbose logs could look like:
                   (name "*")
                   (user-session "ratpoison"))))))
 @end lisp
-@end defvr
+@end defvar
 
 @c The LightDM service documentation can be auto-generated via the
 @c 'generate-doc' procedure at the bottom of the (gnu services lightdm)
@@ -22009,14 +22075,14 @@ The @code{(gnu services cups)} module provides a Guix service definition
 for the CUPS printing service.  To add printer support to a Guix
 system, add a @code{cups-service} to the operating system definition:
 
-@deffn {Scheme Variable} cups-service-type
+@defvar cups-service-type
 The service type for the CUPS print server.  Its value should be a valid
 CUPS configuration (see below).  To use the default settings, simply
 write:
 @lisp
 (service cups-service-type)
 @end lisp
-@end deffn
+@end defvar
 
 The CUPS configuration controls the basic things about your CUPS
 installation: what interfaces it listens on, what to do if a print job
@@ -22869,7 +22935,7 @@ To simplify things, the module defines a variable containing the set of
 services that users typically expect on a machine with a graphical
 environment and networking:
 
-@defvr {Scheme Variable} %desktop-services
+@defvar %desktop-services
 This is a list of services that builds upon @code{%base-services} and
 adds or adjusts services for a typical ``desktop'' setup.
 
@@ -22883,7 +22949,7 @@ AccountsService daemon that allows authorized users change system passwords,
 an NTP client (@pxref{Networking Services}), the Avahi daemon, and has the
 name service switch service configured to be able to use @code{nss-mdns}
 (@pxref{Name Service Switch, mDNS}).
-@end defvr
+@end defvar
 
 The @code{%desktop-services} variable can be used as the @code{services}
 field of an @code{operating-system} declaration (@pxref{operating-system
@@ -22922,14 +22988,14 @@ Alternatively you can also try starting GNOME on Wayland manually from a
 TTY with the command ``XDG_SESSION_TYPE=wayland exec dbus-run-session
 gnome-session``.  Currently only GNOME has support for Wayland.
 
-@defvr {Scheme Variable} gnome-desktop-service-type
+@defvar gnome-desktop-service-type
 This is the type of the service that adds the @uref{https://www.gnome.org,
 GNOME} desktop environment.  Its value is a @code{gnome-desktop-configuration}
 object (see below).
 
 This service adds the @code{gnome} package to the system profile, and extends
 polkit with the actions from @code{gnome-settings-daemon}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} gnome-desktop-configuration
 Configuration record for the GNOME desktop environment.
@@ -22940,7 +23006,7 @@ The GNOME package to use.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} xfce-desktop-service-type
+@defvar xfce-desktop-service-type
 This is the type of a service to run the @uref{Xfce, https://xfce.org/}
 desktop environment.  Its value is an @code{xfce-desktop-configuration} object
 (see below).
@@ -22955,7 +23021,7 @@ the same profile to ensure compatibility.  When using this service, you should
 add extra plugins (@code{xfce4-whiskermenu-plugin},
 @code{xfce4-weather-plugin}, etc.) to the @code{packages} field of your
 @code{operating-system}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} xfce-desktop-configuration
 Configuration record for the Xfce desktop environment.
@@ -22966,7 +23032,7 @@ The Xfce package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} mate-desktop-service-type
+@defvar mate-desktop-service-type
 This is the type of the service that runs the @uref{https://mate-desktop.org/,
 MATE desktop environment}.  Its value is a @code{mate-desktop-configuration}
 object (see below).
@@ -22974,7 +23040,7 @@ object (see below).
 This service adds the @code{mate} package to the system
 profile, and extends polkit with the actions from
 @code{mate-settings-daemon}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} mate-desktop-configuration
 Configuration record for the MATE desktop environment.
@@ -22985,14 +23051,14 @@ The MATE package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} lxqt-desktop-service-type
+@defvar lxqt-desktop-service-type
 This is the type of the service that runs the @uref{https://lxqt-project.org,
 LXQt desktop environment}.  Its value is a @code{lxqt-desktop-configuration}
 object (see below).
 
 This service adds the @code{lxqt} package to the system
 profile.
-@end deffn
+@end defvar
 
 @deftp {Data Type} lxqt-desktop-configuration
 Configuration record for the LXQt desktop environment.
@@ -23003,10 +23069,10 @@ The LXQT package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} enlightenment-desktop-service-type
+@defvar enlightenment-desktop-service-type
 Return a service that adds the @code{enlightenment} package to the system
 profile, and extends dbus with actions from @code{efl}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} enlightenment-desktop-service-configuration
 @table @asis
@@ -23155,21 +23221,21 @@ capabilities to ordinary users.  For example, an ordinary user can be granted
 the capability to suspend the system if the user is logged in locally.
 @end deffn
 
-@defvr {Scheme Variable} polkit-wheel-service
+@defvar polkit-wheel-service
 Service that adds the @code{wheel} group as admins to the Polkit
 service.  This makes it so that users in the @code{wheel} group are queried
 for their own passwords when performing administrative actions instead of
 @code{root}'s, similar to the behaviour used by @code{sudo}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} upower-service-type
+@defvar upower-service-type
 Service that runs @uref{https://upower.freedesktop.org/, @command{upowerd}}, a
 system-wide monitor for power consumption and battery levels, with the given
 configuration settings.
 
 It implements the @code{org.freedesktop.UPower} D-Bus interface, and is
 notably used by GNOME.
-@end defvr
+@end defvar
 
 @deftp {Data Type} upower-configuration
 Data type representation the configuration for UPower.
@@ -23249,30 +23315,30 @@ file-systems in read and write fashion, you'll need to have
 @code{ntfs-3g} installed system-wide.
 @end deffn
 
-@deffn {Scheme Variable} colord-service-type
+@defvar colord-service-type
 This is the type of the service that runs @command{colord}, a system
 service with a D-Bus
 interface to manage the color profiles of input and output devices such as
 screens and scanners.  It is notably used by the GNOME Color Manager graphical
 tool.  See @uref{https://www.freedesktop.org/software/colord/, the colord web
 site} for more information.
-@end deffn
+@end defvar
 
 @cindex scanner access
-@defvr {Scheme Variable} sane-service-type
+@defvar sane-service-type
 This service provides access to scanners @i{via}
 @uref{http://www.sane-project.org, SANE} by installing the necessary
 udev rules.  It is included in @code{%desktop-services} (@pxref{Desktop
 Services}) and relies by default on @code{sane-backends-minimal} package
 (see below) for hardware support.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} sane-backends-minimal
+@defvar sane-backends-minimal
 The default package which the @code{sane-service-type} installs.  It
 supports many recent scanners.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} sane-backends
+@defvar sane-backends
 This package includes support for all scanners that
 @code{sane-backends-minimal} supports, plus older Hewlett-Packard
 scanners supported by @code{hplip} package.  In order to use this on
@@ -23298,7 +23364,7 @@ a system which relies on @code{%desktop-services}, you may use
   @dots{}
   (services %my-desktop-services))
 @end lisp
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} geoclue-application name [#:allowed? #t] [#:system? #f] [#:users '()]
 Return a configuration allowing an application to access GeoClue
@@ -23311,14 +23377,14 @@ this application is allowed location info access.  An empty users list
 means that all users are allowed.
 @end deffn
 
-@defvr {Scheme Variable} %standard-geoclue-applications
+@defvar %standard-geoclue-applications
 The standard list of well-known GeoClue application configurations,
 granting authority to the GNOME date-and-time utility to ask for the
 current location in order to set the time zone, and allowing the
 IceCat and Epiphany web browsers to request location information.
 IceCat and Epiphany both query the user before allowing a web page to
 know the user's location.
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} geoclue-service [#:colord @var{colord}] @
                          [#:whitelist '()] @
@@ -23344,7 +23410,7 @@ powered automatically at boot, which can be useful when using a
 bluetooth keyboard or mouse.
 @end deffn
 
-@deffn {Scheme Variable} bluetooth-service-type
+@defvar bluetooth-service-type
 This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
 Stack} (BlueZ) system, which generates the @file{/etc/bluetooth/main.conf}
 configuration file.  The value for this type is a @command{bluetooth-configuration}
@@ -23355,7 +23421,7 @@ record as in this example:
 @end lisp
 
 See below for details about @code{bluetooth-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} bluetooth-configuration
 Data type representing the configuration for @code{bluetooth-service}.
@@ -23786,7 +23852,7 @@ Possible values are:
 @end table
 @end deftp
 
-@defvr {Scheme Variable} gnome-keyring-service-type
+@defvar gnome-keyring-service-type
 This is the type of the service that adds the
 @uref{https://wiki.gnome.org/Projects/GnomeKeyring, GNOME Keyring}.  Its
 value is a @code{gnome-keyring-configuration} object (see below).
@@ -23794,7 +23860,7 @@ value is a @code{gnome-keyring-configuration} object (see below).
 This service adds the @code{gnome-keyring} package to the system profile
 and extends PAM with entries using @code{pam_gnome_keyring.so}, unlocking
 a user's login keyring when they log in or setting its password with passwd.
-@end defvr
+@end defvar
 
 @deftp {Data Type} gnome-keyring-configuration
 Configuration record for the GNOME Keyring service.
@@ -23820,7 +23886,7 @@ and ``passwd'' is with the value @code{passwd}.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} seatd-service-type
+@defvar seatd-service-type
 @uref{https://sr.ht/~kennylevinsen/seatd/, seatd} is a minimal seat
 management daemon.
 
@@ -23861,7 +23927,7 @@ Depending on your setup, you will have to not only add regular users,
 but also system users to this group.  For instance, some greetd greeters
 require graphics and therefore also need to negotiate with seatd.
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} seatd-configuration
 Configuration record for the seatd daemon service.
@@ -23898,7 +23964,7 @@ The @code{(gnu services sound)} module provides a service to configure the
 Advanced Linux Sound Architecture (ALSA) system, which makes PulseAudio the
 preferred ALSA output driver.
 
-@deffn {Scheme Variable} alsa-service-type
+@defvar alsa-service-type
 This is the type for the @uref{https://alsa-project.org/, Advanced Linux Sound
 Architecture} (ALSA) system, which generates the @file{/etc/asound.conf}
 configuration file.  The value for this type is a @command{alsa-configuration}
@@ -23909,7 +23975,7 @@ record as in this example:
 @end lisp
 
 See below for details about @code{alsa-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} alsa-configuration
 Data type representing the configuration for @code{alsa-service}.
@@ -23967,7 +24033,7 @@ pcm.!default @{
 See @uref{https://www.alsa-project.org/main/index.php/Asoundrc} for the
 details.
 
-@deffn {Scheme Variable} pulseaudio-service-type
+@defvar pulseaudio-service-type
 This is the type for the  @uref{https://www.pulseaudio.org/, PulseAudio}
 sound server.  It exists to allow system overrides of the default settings
 via @code{pulseaudio-configuration}, see below.
@@ -23986,7 +24052,7 @@ detailed below.  In the (admittedly unlikely) case, that you find yourself
 without a @code{pulseaudio} package, consider enabling it through the
 @code{alsa-service-type} above.
 @end quotation
-@end deffn
+@end defvar
 
 @deftp {Data Type} pulseaudio-configuration
 Data type representing the configuration for @code{pulseaudio-service}.
@@ -24043,7 +24109,7 @@ above example to modify the existing @code{pulseaudio-service-type} via
 
 @end deftp
 
-@deffn {Scheme Variable} ladspa-service-type
+@defvar ladspa-service-type
 This service sets the @var{LADSPA_PATH} variable, so that programs, which
 respect it, e.g. PulseAudio, can load LADSPA plugins.
 
@@ -24058,7 +24124,7 @@ The following example will setup the service to enable modules from the
 See @uref{http://plugin.org.uk/ladspa-swh/docs/ladspa-swh.html} for the
 details.
 
-@end deffn
+@end defvar
 
 @node Database Services
 @subsection Database Services
@@ -24229,7 +24295,7 @@ here}.
 @end table
 @end deftp
 
-@deffn {Scheme Variable} postgresql-role-service-type
+@defvar postgresql-role-service-type
 This service allows to create PostgreSQL roles and databases after
 PostgreSQL service start.  Here is an example of its use.
 
@@ -24251,7 +24317,7 @@ example:
                            (name "alice")
                            (create-database? #t))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} postgresql-role
 PostgreSQL manages database access permissions using the concept of
@@ -24293,11 +24359,11 @@ The initial PostgreSQL roles to create.
 
 @subsubheading MariaDB/MySQL
 
-@defvr {Scheme Variable} mysql-service-type
+@defvar mysql-service-type
 This is the service type for a MySQL or MariaDB database server.  Its value
 is a @code{mysql-configuration} object that specifies which package to use,
 as well as various settings for the @command{mysqld} daemon.
-@end defvr
+@end defvar
 
 @deftp {Data Type} mysql-configuration
 Data type representing the configuration of @var{mysql-service-type}.
@@ -24337,11 +24403,11 @@ be disabled if you would rather do that manually.
 
 @subsubheading Memcached
 
-@defvr {Scheme Variable} memcached-service-type
+@defvar memcached-service-type
 This is the service type for the @uref{https://memcached.org/,
 Memcached} service, which provides a distributed in memory cache.  The
 value for the service type is a @code{memcached-configuration} object.
-@end defvr
+@end defvar
 
 @lisp
 (service memcached-service-type)
@@ -24371,10 +24437,10 @@ Additional command line options to pass to @code{memcached}.
 
 @subsubheading Redis
 
-@defvr {Scheme Variable} redis-service-type
+@defvar redis-service-type
 This is the service type for the @uref{https://redis.io/, Redis}
 key/value store, whose value is a @code{redis-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} redis-configuration
 Data type representing the configuration of redis.
@@ -25814,7 +25880,7 @@ could instantiate a dovecot service like this:
 
 @subsubheading OpenSMTPD Service
 
-@deffn {Scheme Variable} opensmtpd-service-type
+@defvar opensmtpd-service-type
 This is the type of the @uref{https://www.opensmtpd.org, OpenSMTPD}
 service, whose value should be an @code{opensmtpd-configuration} object
 as in this example:
@@ -25824,7 +25890,7 @@ as in this example:
          (opensmtpd-configuration
            (config-file (local-file "./my-smtpd.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} opensmtpd-configuration
 Data type representing the configuration of opensmtpd.
@@ -25858,7 +25924,7 @@ executed: @command{smtpctl}, @command{sendmail}, @command{send-mail},
 @cindex MTA (mail transfer agent)
 @cindex SMTP
 
-@deffn {Scheme Variable} exim-service-type
+@defvar exim-service-type
 This is the type of the @uref{https://exim.org, Exim} mail transfer
 agent (MTA), whose value should be an @code{exim-configuration} object
 as in this example:
@@ -25868,7 +25934,7 @@ as in this example:
          (exim-configuration
            (config-file (local-file "./my-exim.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 In order to use an @code{exim-service-type} service you must also have a
 @code{mail-aliases-service-type} service present in your
@@ -25896,10 +25962,10 @@ variables.
 @cindex IMAP
 @cindex POP
 
-@deffn {Scheme Variable} getmail-service-type
+@defvar getmail-service-type
 This is the type of the @uref{http://pyropus.ca/software/getmail/, Getmail}
 mail retriever, whose value should be an @code{getmail-configuration}.
-@end deffn
+@end defvar
 
 Available @code{getmail-configuration} fields are:
 
@@ -26187,7 +26253,7 @@ Defaults to @samp{()}.
 @cindex email aliases
 @cindex aliases, for email addresses
 
-@deffn {Scheme Variable} mail-aliases-service-type
+@defvar mail-aliases-service-type
 This is the type of the service which provides @code{/etc/aliases},
 specifying how to deliver mail to users on this system.
 
@@ -26196,7 +26262,7 @@ specifying how to deliver mail to users on this system.
          '(("postmaster" "bob")
            ("bob" "bob@@example.com" "bob@@example2.com")))
 @end lisp
-@end deffn
+@end defvar
 
 The configuration for a @code{mail-aliases-service-type} service is an
 association list denoting how to deliver mail that comes to this
@@ -26213,7 +26279,7 @@ deliver mail to @code{bob@@example.com} and @code{bob@@example2.com}).
 @subsubheading GNU Mailutils IMAP4 Daemon
 @cindex GNU Mailutils IMAP4 Daemon
 
-@deffn {Scheme Variable} imap4d-service-type
+@defvar imap4d-service-type
 This is the type of the GNU Mailutils IMAP4 Daemon (@pxref{imap4d,,,
 mailutils, GNU Mailutils Manual}), whose value should be an
 @code{imap4d-configuration} object as in this example:
@@ -26223,7 +26289,7 @@ mailutils, GNU Mailutils Manual}), whose value should be an
          (imap4d-configuration
            (config-file (local-file "imap4d.conf"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} imap4d-configuration
 Data type representing the configuration of @command{imap4d}.
@@ -26244,10 +26310,10 @@ Mailutils Manual}, for details.
 @cindex CalDAV
 @cindex CardDAV
 
-@deffn {Scheme Variable} radicale-service-type
+@defvar radicale-service-type
 This is the type of the @uref{https://radicale.org, Radicale} CalDAV/CardDAV
 server whose value should be a @code{radicale-configuration}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} radicale-configuration
 Data type representing the configuration of @command{radicale}.
@@ -26276,7 +26342,7 @@ services:
 
 @subsubheading Prosody Service
 
-@deffn {Scheme Variable} prosody-service-type
+@defvar prosody-service-type
 This is the type for the @uref{https://prosody.im, Prosody XMPP
 communication server}.  Its value must be a @code{prosody-configuration}
 record as in this example:
@@ -26299,7 +26365,7 @@ record as in this example:
 
 See below for details about @code{prosody-configuration}.
 
-@end deffn
+@end defvar
 
 By default, Prosody does not need much configuration.  Only one
 @code{virtualhosts} field is needed: it specifies the domain you wish
@@ -26700,7 +26766,7 @@ string, you could instantiate a prosody service like this:
 @url{https://bitlbee.org,BitlBee} is a gateway that provides an IRC
 interface to a variety of messaging protocols such as XMPP.
 
-@defvr {Scheme Variable} bitlbee-service-type
+@defvar bitlbee-service-type
 This is the service type for the @url{https://bitlbee.org,BitlBee} IRC
 gateway daemon.  Its value is a @code{bitlbee-configuration} (see
 below).
@@ -26711,7 +26777,7 @@ services:
 @lisp
 (service bitlbee-service-type)
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} bitlbee-configuration
 This is the configuration for BitlBee, with the following fields:
@@ -26744,11 +26810,11 @@ Configuration snippet added as-is to the BitlBee configuration file.
 meaning that one or more clients can attach to and detach from the
 central core.
 
-@defvr {Scheme Variable} quassel-service-type
+@defvar quassel-service-type
 This is the service type for the @url{https://quassel-irc.org/,Quassel}
 IRC backend daemon.  Its value is a @code{quassel-configuration}
 (see below).
-@end defvr
+@end defvar
 
 @deftp {Data Type} quassel-configuration
 This is the configuration for Quassel, with the following fields:
@@ -27228,7 +27294,7 @@ Transmission's headless variant, @command{transmission-daemon}, as a
 system service, allowing users to share files via BitTorrent even when
 they are not logged in.
 
-@deffn {Scheme Variable} transmission-daemon-service-type
+@defvar transmission-daemon-service-type
 The service type for the Transmission Daemon BitTorrent client. Its
 value must be a @code{transmission-daemon-configuration} object as in
 this example:
@@ -27260,7 +27326,7 @@ this example:
           (alt-speed-time-end
            (+ (* 60 (+ 12 5)) 30))))  ; 5:30 pm
 @end lisp
-@end deffn
+@end defvar
 
 Once the service is started, users can interact with the daemon through
 its Web interface (at @code{http://localhost:9091/}) or by using the
@@ -28127,7 +28193,7 @@ the 2nd element of the pair is the password.
 Darkstat is a packet sniffer that captures network traffic, calculates
 statistics about usage, and serves reports over HTTP.
 
-@defvar {Scheme Variable} darkstat-service-type
+@defvar darkstat-service-type
 This is the service type for the
 @uref{https://unix4lyfe.org/darkstat/, darkstat}
 service,  its value must be a @code{darkstat-configuration} record as in
@@ -28172,7 +28238,7 @@ provided by the Linux kernel available for the Prometheus monitoring system.
 This service should be deployed on all physical nodes and virtual machines,
 where monitoring these statistics is desirable.
 
-@defvar {Scheme variable} prometheus-node-exporter-service-type
+@defvar prometheus-node-exporter-service-type
 This is the service type for the
 @uref{https://github.com/prometheus/node_exporter/, prometheus-node-exporter}
 service, its value must be a @code{prometheus-node-exporter-configuration}.
@@ -28217,7 +28283,7 @@ and display results, and optionally @ref{zabbix-agent,
 data sources are supported, such as @ref{prometheus-node-exporter,
 Prometheus Node Exporter}).
 
-@defvar {Scheme variable} zabbix-server-service-type
+@defvar zabbix-server-service-type
 This is the service type for the Zabbix server service.  Its value must be a
 @code{zabbix-server-configuration} record, shown below.
 @end defvar
@@ -28303,7 +28369,7 @@ with custom
 @uref{https://www.zabbix.com/documentation/current/en/manual/config/items/userparameters,
 @dfn{user parameters}}.
 
-@defvar {Scheme variable} zabbix-agent-service-type
+@defvar zabbix-agent-service-type
 This is the service type for the Zabbix agent service.  Its value must be a
 @code{zabbix-agent-configuration} record, shown below.
 @end defvar
@@ -28380,7 +28446,7 @@ to run on the same machine as the Zabbix server.  This service works by
 extending the @ref{PHP-FPM} and @ref{NGINX} services with the configuration
 necessary for loading the Zabbix user interface.
 
-@defvar {Scheme variable} zabbix-front-end-service-type
+@defvar zabbix-front-end-service-type
 This is the service type for the Zabbix web frontend.  Its value must be a
 @code{zabbix-front-end-configuration} record, shown below.
 @end defvar
@@ -28451,9 +28517,9 @@ No ``keytab'' files are provided by this service---you must explicitly create th
 This service is known to work with the MIT client library, @code{mit-krb5}.
 Other implementations have not been tested.
 
-@defvr {Scheme Variable} krb5-service-type
+@defvar krb5-service-type
 A service type for Kerberos 5 clients.
-@end defvr
+@end defvar
 
 @noindent
 Here is an example of its use:
@@ -28540,9 +28606,9 @@ management via Kerberos.
 You will need this service if you want PAM enabled applications to authenticate
 users using Kerberos.
 
-@defvr {Scheme Variable} pam-krb5-service-type
+@defvar pam-krb5-service-type
 A service type for the Kerberos 5 PAM module.
-@end defvr
+@end defvar
 
 @deftp {Data Type} pam-krb5-configuration
 Data type representing the configuration of the Kerberos 5 PAM module.
@@ -29233,7 +29299,7 @@ the nginx web server, and also a fastcgi wrapper daemon.
 
 @subsubheading Apache HTTP Server
 
-@deffn {Scheme Variable} httpd-service-type
+@defvar httpd-service-type
 Service type for the @uref{https://httpd.apache.org/,Apache HTTP} server
 (@dfn{httpd}).  The value for this service type is a
 @code{httpd-configuration} record.
@@ -29261,7 +29327,7 @@ the configuration.
                                           "DocumentRoot /srv/http/www.example.com")
                                        "\n")))))
 @end lisp
-@end deffn
+@end defvar
 
 The details for the @code{httpd-configuration}, @code{httpd-module},
 @code{httpd-config-file} and @code{httpd-virtualhost} record types are
@@ -29302,9 +29368,9 @@ within the store, for example @code{(file-append mod-wsgi
 @end table
 @end deffn
 
-@defvr {Scheme Variable} %default-httpd-modules
+@defvar %default-httpd-modules
 A default list of @code{httpd-module} objects.
-@end defvr
+@end defvar
 
 @deffn {Data Type} httpd-config-file
 This data type represents a configuration file for the httpd service.
@@ -29416,7 +29482,7 @@ of strings and G-expressions.
 @anchor{NGINX}
 @subsubheading NGINX
 
-@deffn {Scheme Variable} nginx-service-type
+@defvar nginx-service-type
 Service type for the @uref{https://nginx.org/,NGinx} web server.  The
 value for this service type is a @code{<nginx-configuration>} record.
 
@@ -29441,7 +29507,7 @@ blocks, as in this example:
                         (root "/srv/http/extra-website")
                         (try-files (list "$uri" "$uri/index.html")))))
 @end lisp
-@end deffn
+@end defvar
 
 At startup, @command{nginx} has not yet read its configuration file, so
 it uses a default file to log error messages.  If it fails to load its
@@ -29715,9 +29781,9 @@ and end users.  It proxies requests from clients and caches the
 accessed URLs such that multiple requests for the same resource only
 creates one request to the back-end.
 
-@defvr {Scheme Variable} varnish-service-type
+@defvar varnish-service-type
 Service type for the Varnish daemon.
-@end defvr
+@end defvar
 
 @deftp {Data Type} varnish-configuration
 Data type representing the @code{varnish} service configuration.
@@ -29791,9 +29857,9 @@ Additional arguments to pass to the @command{varnishd} process.
 Patchwork is a patch tracking system.  It can collect patches sent to a
 mailing list, and display them in a web interface.
 
-@defvr {Scheme Variable} patchwork-service-type
+@defvar patchwork-service-type
 Service type for Patchwork.
-@end defvr
+@end defvar
 
 The following example is an example of a minimal service for Patchwork, for
 the @code{patchwork.example.com} domain.
@@ -29969,9 +30035,9 @@ Web interface to the Debbugs bug tracker, by default for
 @uref{https://bugs.gnu.org, the GNU instance}.  Mumi is a Web server,
 but it also fetches and indexes mail retrieved from Debbugs.
 
-@defvr {Scheme Variable} mumi-service-type
+@defvar mumi-service-type
 This is the service type for Mumi.
-@end defvr
+@end defvar
 
 @deftp {Data Type} mumi-configuration
 Data type representing the Mumi service configuration.  This type has the
@@ -30014,9 +30080,9 @@ listens on a local TCP or UNIX socket.  There is an intermediary
 the web server.  The front-end indicates which backend program to run,
 passing that information to the @code{fcgiwrap} process.
 
-@defvr {Scheme Variable} fcgiwrap-service-type
+@defvar fcgiwrap-service-type
 A service type for the @code{fcgiwrap} FastCGI proxy.
-@end defvr
+@end defvar
 
 @deftp {Data Type} fcgiwrap-configuration
 Data type representing the configuration of the @code{fcgiwrap} service.
@@ -30071,9 +30137,9 @@ something time-consuming (video converting, stats processing, etc.)
 @end itemize
 ...@: and much more.
 
-@defvr {Scheme Variable} php-fpm-service-type
+@defvar php-fpm-service-type
 A Service type for @code{php-fpm}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} php-fpm-configuration
 Data Type for php-fpm service configuration.
@@ -30249,24 +30315,25 @@ program is a customizable web interface to browse Guix packages,
 initially designed for users of high-performance computing (HPC)
 clusters.
 
-@defvr {Scheme Variable} hpcguix-web-service-type
+@defvar hpcguix-web-service-type
 The service type for @code{hpcguix-web}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} hpcguix-web-configuration
 Data type for the hpcguix-web service configuration.
 
 @table @asis
-@item @code{specs}
-A gexp (@pxref{G-Expressions}) specifying the hpcguix-web service
-configuration.  The main items available in this spec are:
+@item @code{specs} (default: @code{#f})
+Either @code{#f} or a gexp (@pxref{G-Expressions}) specifying the
+hpcguix-web service configuration as an @code{hpcguix-web-configuration}
+record.  The main fields of that record type are:
 
 @table @asis
 @item @code{title-prefix} (default: @code{"hpcguix | "})
 The page title prefix.
 
 @item @code{guix-command} (default: @code{"guix"})
-The @command{guix} command.
+The @command{guix} command to use in examples that appear on HTML pages.
 
 @item @code{package-filter-proc} (default: @code{(const #t)})
 A procedure specifying how to filter packages that are displayed.
@@ -30306,10 +30373,9 @@ A typical hpcguix-web service declaration looks like this:
 (service hpcguix-web-service-type
          (hpcguix-web-configuration
           (specs
-           #~(define site-config
-               (hpcweb-configuration
-                (title-prefix "Guix-HPC - ")
-                (menu '(("/about" "ABOUT"))))))))
+           #~(hpcweb-configuration
+              (title-prefix "Guix-HPC - ")
+              (menu '(("/about" "ABOUT")))))))
 @end lisp
 
 @quotation Note
@@ -30329,7 +30395,7 @@ more information on X.509 certificates.
 The @uref{https://git.sr.ht/~sircmpwn/gmnisrv, gmnisrv} program is a
 simple @uref{https://gemini.circumlunar.space/, Gemini} protocol server.
 
-@deffn {Scheme Variable} gmnisrv-service-type
+@defvar gmnisrv-service-type
 This is the type of the gmnisrv service, whose value should be a
 @code{gmnisrv-configuration} object, as in this example:
 
@@ -30338,7 +30404,7 @@ This is the type of the gmnisrv service, whose value should be a
          (gmnisrv-configuration
            (config-file (local-file "./my-gmnisrv.ini"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} gmnisrv-configuration
 Data type representing the configuration of gmnisrv.
@@ -30365,7 +30431,7 @@ The @uref{gemini://qwertqwefsday.eu/agate.gmi, Agate}
 program is a simple @uref{https://gemini.circumlunar.space/, Gemini}
 protocol server written in Rust.
 
-@deffn {Scheme Variable} agate-service-type
+@defvar agate-service-type
 This is the type of the agate service, whose value should be an
 @code{agate-service-type} object, as in this example:
 
@@ -30393,7 +30459,7 @@ Of course, you'll have to replace @i{example.com} with your own domain
 name, and then point the Agate configuration towards the path of the
 generated key and certificate.
 
-@end deffn
+@end defvar
 
 @deftp {Data Type} agate-configuration
 Data type representing the configuration of Agate.
@@ -30487,7 +30553,7 @@ By using this service, you agree to the ACME Subscriber Agreement, which
 can be found there:
 @url{https://acme-v01.api.letsencrypt.org/directory}.
 
-@defvr {Scheme Variable} certbot-service-type
+@defvar certbot-service-type
 A service type for the @code{certbot} Let's Encrypt client.  Its value
 must be a @code{certbot-configuration} record as in this example:
 
@@ -30511,7 +30577,7 @@ must be a @code{certbot-configuration} record as in this example:
 @end lisp
 
 See below for details about @code{certbot-configuration}.
-@end defvr
+@end defvar
 
 @deftp {Data Type} certbot-configuration
 Data type representing the configuration of the @code{certbot} service.
@@ -30677,7 +30743,7 @@ and one slave, is:
                    %base-services)))
 @end lisp
 
-@deffn {Scheme Variable} knot-service-type
+@defvar knot-service-type
 This is the type for the Knot DNS server.
 
 Knot DNS is an authoritative DNS server, meaning that it can serve multiple
@@ -30689,7 +30755,7 @@ masters, and will serve it as an authoritative server.  From the point of view
 of a resolver, there is no difference between master and slave.
 
 The following data types are used to configure the Knot DNS server:
-@end deffn
+@end defvar
 
 @deftp {Data Type} knot-key-configuration
 Data type representing a key.
@@ -31098,7 +31164,7 @@ The list of knot-zone-configuration used by this configuration.
 
 @subsubheading Knot Resolver Service
 
-@deffn {Scheme Variable} knot-resolver-service-type
+@defvar knot-resolver-service-type
 This is the type of the knot resolver service, whose value should be
 an @code{knot-resolver-configuration} object as in this example:
 
@@ -31114,7 +31180,7 @@ cache.size = 100 * MB
 @end lisp
 
 For more information, refer its @url{https://knot-resolver.readthedocs.io/en/stable/config-overview.html, manual}.
-@end deffn
+@end defvar
 
 @deftp {Data Type} knot-resolver-configuration
 Data type representing the configuration of knot-resolver.
@@ -31136,7 +31202,7 @@ Number of milliseconds for @code{kres-cache-gc} to periodically trim the cache.
 
 @subsubheading Dnsmasq Service
 
-@deffn {Scheme Variable} dnsmasq-service-type
+@defvar dnsmasq-service-type
 This is the type of the dnsmasq service, whose value should be an
 @code{dnsmasq-configuration} object as in this example:
 
@@ -31146,7 +31212,7 @@ This is the type of the dnsmasq service, whose value should be an
            (no-resolv? #t)
            (servers '("192.168.1.1"))))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dnsmasq-configuration
 Data type representing the configuration of dnsmasq.
@@ -31400,7 +31466,7 @@ Xvnc is a VNC server that spawns its own X window server; which means it
 can run on headless servers.  The Xvnc implementations provided by the
 @code{tigervnc-server} and @code{turbovnc} aim to be fast and efficient.
 
-@defvar {Scheme Variable} xvnc-service-type
+@defvar xvnc-service-type
 
 The @code{xvnc-server-type} service can be configured via the
 @code{xvnc-configuration} record, documented below.  A second virtual
@@ -31418,13 +31484,14 @@ on the remote machine on display number 10, and it could be displayed
 locally via the @command{vncviewer} command:
 @example
 # Start xclock on the remote machine.
-ssh -L5910:localhost:5910 -- guix shell xclock -- env DISPLAY=:10 xclock
+ssh -L5910:localhost:5910 @var{your-host} -- guix shell xclock \
+    -- env DISPLAY=:10 xclock
 # Access it via VNC.
 guix shell tigervnc-client -- vncviewer localhost:5910
 @end example
 
 The following configuration combines XDMCP and Inetd to allow multiple
-users to concurrently use the remote system, login in graphically via
+users to concurrently use the remote system and login graphically via
 the GDM display manager:
 
 @lisp
@@ -31544,12 +31611,12 @@ The @code{(gnu services vpn)} module provides services related to
 
 @subsubheading Bitmask
 
-@defvr {Scheme Variable} bitmask-service-type
+@defvar bitmask-service-type
 A service type for the @uref{https://bitmask.net, Bitmask} VPN client.  It makes
 the client available in the system and loads its polkit policy.  Please note that
 the client expects an active polkit-agent, which is either run by your
 desktop-environment or should be run manually.
-@end defvr
+@end defvar
 
 @subsubheading OpenVPN
 
@@ -31758,7 +31825,7 @@ The list of configuration for some clients.
 Currently, the strongSwan service only provides legacy-style configuration with
 @file{ipsec.conf} and @file{ipsec.secrets} files.
 
-@defvr {Scheme Variable} strongswan-service-type
+@defvar strongswan-service-type
 A service type for configuring strongSwan for IPsec @acronym{VPN,
 Virtual Private Networking}.  Its value must be a
 @code{strongswan-configuration} record as in this example:
@@ -31770,7 +31837,7 @@ Virtual Private Networking}.  Its value must be a
           (ipsec-secrets "/etc/ipsec.secrets")))
 @end lisp
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} strongswan-configuration
 Data type representing the configuration of the StrongSwan service.
@@ -31792,7 +31859,7 @@ The file name of your @file{ipsec.secrets}.  If not @code{#f}, then this and
 
 @subsubheading Wireguard
 
-@defvr {Scheme Variable} wireguard-service-type
+@defvar wireguard-service-type
 A service type for a Wireguard tunnel interface.  Its value must be a
 @code{wireguard-configuration} record as in this example:
 
@@ -31808,7 +31875,7 @@ A service type for a Wireguard tunnel interface.  Its value must be a
              (allowed-ips '("10.0.0.2/32")))))))
 @end lisp
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} wireguard-configuration
 Data type representing the configuration of the Wireguard service.
@@ -31908,9 +31975,9 @@ The NFS service takes care of setting up all NFS component services,
 kernel configuration file systems, and installs configuration files in
 the locations that NFS expects.
 
-@defvr {Scheme Variable} nfs-service-type
+@defvar nfs-service-type
 A service type for a complete NFS server.
-@end defvr
+@end defvar
 
 @deftp {Data Type} nfs-configuration
 This data type represents the configuration of the NFS service and all
@@ -31983,9 +32050,9 @@ universal addresses.
 Many NFS related services use this facility.  Hence it is automatically
 started when a dependent service starts.
 
-@defvr {Scheme Variable} rpcbind-service-type
+@defvar rpcbind-service-type
 A service type  for the RPC portmapper daemon.
-@end defvr
+@end defvar
 
 
 @deftp {Data Type} rpcbind-configuration
@@ -32010,9 +32077,9 @@ instance.
 The pipefs file system is used to transfer NFS related data
 between the kernel and user space programs.
 
-@defvr {Scheme Variable} pipefs-service-type
+@defvar pipefs-service-type
 A service type for the pipefs pseudo file system.
-@end defvr
+@end defvar
 
 @deftp {Data Type} pipefs-configuration
 Data type representing the configuration of the pipefs pseudo file system service.
@@ -32035,9 +32102,9 @@ Before exchanging RPC requests an RPC client must establish a security
 context.  Typically this is done using the Kerberos command @command{kinit}
 or automatically at login time using PAM services (@pxref{Kerberos Services}).
 
-@defvr {Scheme Variable} gss-service-type
+@defvar gss-service-type
 A service type for the Global Security System (GSS) daemon.
-@end defvr
+@end defvar
 
 @deftp {Data Type} gss-configuration
 Data type representing the configuration of the GSS daemon service.
@@ -32060,9 +32127,9 @@ The directory where the pipefs file system is mounted.
 The idmap daemon service provides mapping between user IDs and user names.
 Typically it is required in order to access file systems mounted via NFSv4.
 
-@defvr {Scheme Variable} idmap-service-type
+@defvar idmap-service-type
 A service type for the Identity Mapper (IDMAP) daemon.
-@end defvr
+@end defvar
 
 @deftp {Data Type} idmap-configuration
 Data type representing the configuration of the IDMAP daemon service.
@@ -32102,7 +32169,7 @@ can also act as an Active Directory Domain Controller (AD DC) for other
 hosts in an heterougenious network with different types of Computer
 systems.
 
-@defvar {Scheme variable} samba-service-type
+@defvar samba-service-type
 
 The service type to enable the samba services @code{samba}, @code{nmbd},
 @code{smbd} and @code{winbindd}.  By default this service type does not
@@ -32178,11 +32245,11 @@ over Multicast DNS, similar to what Avahi does.  It is a drop-in
 replacement for SMB hosts that have had SMBv1 disabled for security
 reasons.
 
-@defvr {Scheme Variable} wsdd-service-type
+@defvar wsdd-service-type
 Service type for the WSD host daemon.  The value for
 this service type is a @code{wsdd-configuration} record.  The details
 for the @code{wsdd-configuration} record type are given below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} wsdd-configuration
 This data type represents the configuration for the wsdd service.
@@ -32539,7 +32606,7 @@ monitoring tool, as it will apply custom settings each time a new power
 source is detected.  More information can be found at
 @uref{https://linrunner.de/en/tlp/tlp.html, TLP home page}.
 
-@deffn {Scheme Variable} tlp-service-type
+@defvar tlp-service-type
 The service type for the TLP tool.  The default settings are optimised
 for battery life on most systems, but you can tweak them to your heart's
 content by adding a valid @code{tlp-configuration}:
@@ -32549,7 +32616,7 @@ content by adding a valid @code{tlp-configuration}:
           (cpu-scaling-governor-on-ac (list "performance"))
           (sched-powersave-on-bat? #t)))
 @end lisp
-@end deffn
+@end defvar
 
 Each parameter definition is preceded by its type; for example,
 @samp{boolean foo} indicates that the @code{foo} parameter should be
@@ -33065,12 +33132,12 @@ Defaults to @samp{#f}.
 The @code{(gnu services pm)} module provides an interface to
 thermald, a CPU frequency scaling service which helps prevent overheating.
 
-@defvr {Scheme Variable} thermald-service-type
+@defvar thermald-service-type
 This is the service type for
 @uref{https://01.org/linux-thermal-daemon/, thermald}, the Linux
 Thermal Daemon, which is responsible for controlling the thermal state
 of processors and preventing overheating.
-@end defvr
+@end defvar
 
 @deftp {Data Type} thermald-configuration
 Data type representing the configuration of @code{thermald-service-type}.
@@ -33112,87 +33179,198 @@ The following example shows how one might run @code{mpd} as user
           (port "6666")))
 @end lisp
 
-@defvr {Scheme Variable} mpd-service-type
+@defvar mpd-service-type
 The service type for @command{mpd}
-@end defvr
+@end defvar
 
 @deftp {Data Type} mpd-configuration
 Data type representing the configuration of @command{mpd}.
 
 @table @asis
-@item @code{user} (default: @code{"mpd"})
+@item @code{package} (default: @code{mpd}) (type: file-like)
+The MPD package.
+
+@item @code{user} (default: @code{"mpd"}) (type: string)
 The user to run mpd as.
 
-@item @code{music-dir} (default: @code{"~/Music"})
+@item @code{group} (default: @code{"mpd"}) (type: string)
+The group to run mpd as.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{environment-variables} (default: @code{()}) (type: list-of-string)
+A list of strings specifying environment variables.
+
+@item @code{log-file} (default: @code{"/var/log/mpd/log"}) (type: maybe-string)
+The location of the log file.  Set to @code{syslog} to use the local
+syslog daemon or @code{%unset-value} to omit this directive from the
+configuration file.
+
+@item @code{log-level} (type: maybe-string)
+Supress any messages below this threshold.  Available values:
+@code{notice}, @code{info}, @code{verbose}, @code{warning} and
+@code{error}.
+
+@item @code{music-directory} (type: maybe-string)
 The directory to scan for music files.
 
-@item @code{playlist-dir} (default: @code{"~/.mpd/playlists"})
+@item @code{playlist-directory} (type: maybe-string)
 The directory to store playlists.
 
-@item @code{db-file} (default: @code{"~/.mpd/tag_cache"})
+@item @code{db-file} (type: maybe-string)
 The location of the music database.
 
-@item @code{state-file} (default: @code{"~/.mpd/state"})
+@item @code{state-file} (type: maybe-string)
 The location of the file that stores current MPD's state.
 
-@item @code{sticker-file} (default: @code{"~/.mpd/sticker.sql"})
+@item @code{sticker-file} (type: maybe-string)
 The location of the sticker database.
 
-@item @code{port} (default: @code{"6600"})
-The port to run mpd on.
+@item @code{default-port} (default: @code{6600}) (type: maybe-integer)
+The default port to run mpd on.
 
-@item @code{address} (default: @code{"any"})
-The address that mpd will bind to.  To use a Unix domain socket,
-an absolute path can be specified here.
+@item @code{endpoints} (type: maybe-list-of-string)
+The addresses that mpd will bind to.  A port different from @var{default-port}
+may be specified, e.g. @code{localhost:6602} and IPv6 addresses must be
+enclosed in square brackets when a different port is used.
+To use a Unix domain socket, an absolute path or a path starting with @code{~}
+can be specified here.
 
-@item @code{outputs} (default: @code{"(list (mpd-output))"})
-The audio outputs that MPD can use.  By default this is a single output using pulseaudio.
+@item @code{database} (type: maybe-mpd-plugin)
+MPD database plugin configuration.
+
+@item @code{partitions} (default: @code{()}) (type: list-of-mpd-partition)
+List of MPD "partitions".
+
+@item @code{neighbors} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD neighbor plugin configurations.
+
+@item @code{inputs} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD input plugin configurations.
+
+@item @code{archive-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD archive plugin configurations.
+
+@item @code{input-cache-size} (type: maybe-string)
+MPD input cache size.
+
+@item @code{decoders} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD decoder plugin configurations.
+
+@item @code{resampler} (type: maybe-mpd-plugin)
+MPD resampler plugin configuration.
+
+@item @code{filters} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD filter plugin configurations.
+
+@item @code{outputs} (type: list-of-mpd-plugin-or-output)
+The audio outputs that MPD can use.  By default this is a single output
+using pulseaudio.
+
+@item @code{playlist-plugins} (default: @code{()}) (type: list-of-mpd-plugin)
+List of MPD playlist plugin configurations.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the configuration.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-plugin
+Data type representing a @command{mpd} plugin.
+
+@table @asis
+@item @code{plugin} (type: maybe-string)
+Plugin name.
+
+@item @code{name} (type: maybe-string)
+Name.
+
+@item @code{enabled?} (type: maybe-boolean)
+Whether the plugin is enabled/disabled.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the plugin configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/plugins.html,MPD plugin
+reference} for available options.
+
+@end table
+@end deftp
+
+@deftp {Data Type} mpd-partition
+Data type representing a @command{mpd} partition.
+
+@table @asis
+@item @code{name} (type: string)
+Partition name.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the partition configuration.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#configuring-partitions,Configuring
+Partitions} for available options.
 
 @end table
 @end deftp
 
 @deftp {Data Type} mpd-output
-Data type representing an @command{mpd} audio output.
+Data type representing a @command{mpd} audio output.
 
 @table @asis
-@item @code{name} (default: @code{"MPD"})
+@item @code{name} (default: @code{"MPD"}) (type: string)
 The name of the audio output.
 
-@item @code{type} (default: @code{"pulse"})
+@item @code{type} (default: @code{"pulse"}) (type: string)
 The type of audio output.
 
-@item @code{enabled?} (default: @code{#t})
+@item @code{enabled?} (default: @code{#t}) (type: boolean)
 Specifies whether this audio output is enabled when MPD is started.  By
 default, all audio outputs are enabled.  This is just the default
 setting when there is no state file; with a state file, the previous
 state is restored.
 
-@item @code{tags?} (default: @code{#t})
+@item @code{format} (type: maybe-string)
+Force a specific audio format on output.  See
+@uref{https://mpd.readthedocs.io/en/latest/user.html#audio-output-format,Global
+Audio Format} for a more detailed description.
+
+@item @code{tags?} (default: @code{#t}) (type: boolean)
 If set to @code{#f}, then MPD will not send tags to this output.  This
 is only useful for output plugins that can receive tags, for example the
 @code{httpd} output plugin.
 
-@item @code{always-on?} (default: @code{#f})
+@item @code{always-on?} (default: @code{#f}) (type: boolean)
 If set to @code{#t}, then MPD attempts to keep this audio output always
-open.  This may be useful for streaming servers, when you don’t want to
+open.  This may be useful for streaming servers, when you don?t want to
 disconnect all listeners even when playback is accidentally stopped.
 
-@item @code{mixer-type}
-This field accepts a symbol that specifies which mixer should be used
+@item @code{mixer-type} (default: @code{"none"}) (type: string)
+This field accepts a string that specifies which mixer should be used
 for this audio output: the @code{hardware} mixer, the @code{software}
 mixer, the @code{null} mixer (allows setting the volume, but with no
 effect; this can be used as a trick to implement an external mixer
 External Mixer) or no mixer (@code{none}).
 
-@item @code{extra-options} (default: @code{'()})
-An association list of option symbols to string values to be appended to
-the audio output configuration.
+@item @code{replay-gain-handler} (type: maybe-string)
+This field accepts a string that specifies how
+@uref{https://mpd.readthedocs.io/en/latest/user.html#replay-gain,Replay
+Gain} is to be applied.  @code{software} uses an internal software
+volume control, @code{mixer} uses the configured (hardware) mixer
+control and @code{none} disables replay gain on this audio output.
+
+@item @code{extra-options} (default: @code{()}) (type: alist)
+An association list of option symbols/strings to string values to be
+appended to the audio output configuration.
 
 @end table
 @end deftp
 
-The following example shows a configuration of @code{mpd} that provides
-an HTTP audio streaming output.
+The following example shows a configuration of @command{mpd} that
+configures some of its plugins and provides a HTTP audio streaming output.
 
 @lisp
 (service mpd-service-type
@@ -33204,9 +33382,140 @@ an HTTP audio streaming output.
                      (mixer-type 'null)
                      (extra-options
                       `((encoder . "vorbis")
-                        (port    . "8080"))))))))
+                        (port    . "8080"))))))
+           (decoders
+             (list (mpd-plugin
+                     (plugin "mikmod")
+                     (enabled? #f))
+                   (mpd-plugin
+                     (plugin "openmpt")
+                     (enabled? #t)
+                     (extra-options `((repeat-count . -1)
+                                      (interpolation-filter . 1))))))
+           (resampler (mpd-plugin
+                        (plugin "libsamplerate")
+                        (extra-options `((type . 0)))))))
 @end lisp
 
+@subsubheading myMPD
+
+@cindex MPD, web interface
+@cindex myMPD service
+
+@uref{https://jcorporation.github.io/myMPD/, myMPD} is a web server
+frontend for MPD that provides a mobile friendly web client for MPD.
+
+The following example shows a myMPD instance listening on port 80,
+with album cover caching disabled.
+
+@lisp
+(service mympd-service-type
+         (mympd-configuration
+          (port 80)
+          (covercache-ttl 0)))
+@end lisp
+
+@defvar mympd-service-type
+The service type for @command{mympd}.
+@end defvar
+
+@c %start of fragment
+@deftp {Data Type} mympd-configuration
+Available @code{mympd-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{mympd}) (type: file-like)
+The package object of the myMPD server.
+
+@item @code{shepherd-requirement} (default: @code{()}) (type: list-of-symbol)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@item @code{user} (default: @code{"mympd"}) (type: string)
+Owner of the @command{mympd} process.
+
+@item @code{group} (default: @code{"nogroup"}) (type: string)
+Owner group of the @command{mympd} process.
+
+@item @code{work-directory} (default: @code{"/var/lib/mympd"}) (type: string)
+Where myMPD will store its data.
+
+@item @code{cache-directory} (default: @code{"/var/cache/mympd"}) (type: string)
+Where myMPD will store its cache.
+
+@item @code{acl} (type: maybe-mympd-ip-acl)
+ACL to access the myMPD webserver.
+
+@item @code{covercache-ttl} (default: @code{31}) (type: maybe-integer)
+How long to keep cached covers, @code{0} disables cover caching.
+
+@item @code{http?} (default: @code{#t}) (type: boolean)
+HTTP support.
+
+@item @code{host} (default: @code{"[::]"}) (type: string)
+Host name to listen on.
+
+@item @code{port} (default: @code{80}) (type: maybe-port)
+HTTP port to listen on.
+
+@item @code{log-level} (default: @code{5}) (type: integer)
+How much detail to include in logs, possible values: @code{0} to
+@code{7}.
+
+@item @code{log-to} (default: @code{"/var/log/mympd/log"}) (type: string-or-symbol)
+Where to send logs.  By default, the service logs to
+@file{/var/log/mympd.log}.  The alternative is @code{'syslog}, which
+sends output to the running syslog service under the @samp{daemon}
+facility.
+
+@item @code{lualibs} (default: @code{"all"}) (type: maybe-string)
+See
+@uref{https://jcorporation.github.io/myMPD/scripting/#lua-standard-libraries}.
+
+@item @code{uri} (type: maybe-string)
+Override URI to myMPD.  See
+@uref{https://github.com/jcorporation/myMPD/issues/950}.
+
+@item @code{script-acl} (default: @code{(mympd-ip-acl (allow '("127.0.0.1")))}) (type: maybe-mympd-ip-acl)
+ACL to access the myMPD script backend.
+
+@item @code{ssl?} (default: @code{#f}) (type: boolean)
+SSL/TLS support.
+
+@item @code{ssl-port} (default: @code{443}) (type: maybe-port)
+Port to listen for HTTPS.
+
+@item @code{ssl-cert} (type: maybe-string)
+Path to PEM encoded X.509 SSL/TLS certificate (public key).
+
+@item @code{ssl-key} (type: maybe-string)
+Path to PEM encoded SSL/TLS private key.
+
+@item @code{pin-hash} (type: maybe-string)
+SHA-256 hashed pin used by myMPD to control settings access by prompting
+a pin from the user.
+
+@item @code{save-caches?} (type: maybe-boolean)
+Whether to preserve caches between service restarts.
+
+@end table
+@end deftp
+@c %end of fragment
+
+@c %start of fragment
+@deftp {Data Type} mympd-ip-acl
+Available @code{mympd-ip-acl} fields are:
+
+@table @asis
+@item @code{allow} (default: @code{()}) (type: list-of-string)
+Allowed IP addresses.
+
+@item @code{deny} (default: @code{()}) (type: list-of-string)
+Disallowed IP addresses.
+
+@end table
+@end deftp
+@c %end of fragment
 
 @node Virtualization Services
 @subsection Virtualization Services
@@ -33221,7 +33530,7 @@ services.
 virtualization management system.  This daemon runs on host servers
 and performs required management tasks for virtualized guests.
 
-@deffn {Scheme Variable} libvirt-service-type
+@defvar libvirt-service-type
 This is the type of the @uref{https://libvirt.org, libvirt daemon}.
 Its value must be a @code{libvirt-configuration}.
 
@@ -33231,7 +33540,7 @@ Its value must be a @code{libvirt-configuration}.
           (unix-sock-group "libvirt")
           (tls-port "16555")))
 @end lisp
-@end deffn
+@end defvar
 
 @c Auto-generated with (generate-libvirt-documentation)
 Available @code{libvirt-configuration} fields are:
@@ -33788,7 +34097,7 @@ standalone daemon, the main @code{libvirtd} daemon can be restarted without
 risk of losing logs.  The @code{virtlogd} daemon has the ability to re-exec()
 itself upon receiving @code{SIGUSR1}, to allow live upgrades without downtime.
 
-@deffn {Scheme Variable} virtlog-service-type
+@defvar virtlog-service-type
 This is the type of the virtlog daemon.
 Its value must be a @code{virtlog-configuration}.
 
@@ -33797,7 +34106,7 @@ Its value must be a @code{virtlog-configuration}.
          (virtlog-configuration
           (max-clients 1000)))
 @end lisp
-@end deffn
+@end defvar
 
 @deftypevar {@code{libvirt} parameter} package libvirt
 Libvirt package.
@@ -33935,7 +34244,7 @@ QEMU} emulator and the @code{binfmt_misc} feature of the kernel Linux.
 This feature only allows you to emulate GNU/Linux on a different
 architecture, but see below for GNU/Hurd support.
 
-@defvr {Scheme Variable} qemu-binfmt-service-type
+@defvar qemu-binfmt-service-type
 This is the type of the QEMU/binfmt service for transparent emulation.
 Its value must be a @code{qemu-binfmt-configuration} object, which
 specifies the QEMU package to use as well as the architecture we want to
@@ -33951,7 +34260,7 @@ In this example, we enable transparent emulation for the ARM and aarch64
 platforms.  Running @code{herd stop qemu-binfmt} turns it off, and
 running @code{herd start qemu-binfmt} turns it back on (@pxref{Invoking
 herd, the @command{herd} command,, shepherd, The GNU Shepherd Manual}).
-@end defvr
+@end defvar
 
 @deftp {Data Type} qemu-binfmt-configuration
 This is the configuration for the @code{qemu-binfmt} service.
@@ -34032,9 +34341,9 @@ $ guix shell socat -- socat unix-connect:/tmp/qga.sock stdio
 See @url{https://wiki.qemu.org/Features/GuestAgent,QEMU guest agent
 documentation} for more options and commands.
 
-@defvr {Scheme Variable} qemu-guest-agent-service-type
+@defvar qemu-guest-agent-service-type
 Service type for the QEMU guest agent service.
-@end defvr
+@end defvar
 
 @deftp {Data Type} qemu-guest-agent-configuration
 Configuration for the @code{qemu-guest-agent} service.
@@ -34092,7 +34401,7 @@ initialize ``secrets'' inside the VM: SSH host keys, authorized
 substitute keys, and so on---see the explanation of @code{secret-root}
 below.
 
-@defvr {Scheme Variable} hurd-vm-service-type
+@defvar hurd-vm-service-type
 This is the type of the Hurd in a Virtual Machine service.  Its value
 must be a @code{hurd-vm-configuration} object, which specifies the
 operating system (@pxref{operating-system Reference}) and the disk size
@@ -34110,7 +34419,7 @@ For example:
 
 would create a disk image big enough to build GNU@tie{}Hello, with some
 extra memory.
-@end defvr
+@end defvar
 
 @deftp {Data Type} hurd-vm-configuration
 The data type representing the configuration for
@@ -34313,7 +34622,7 @@ day-to-day operations.  There is also a
 @url{https://guix.gnu.org/blog/2020/running-a-ganeti-cluster-on-guix/,blog post}
 describing how to configure and initialize a small cluster.
 
-@defvr {Scheme Variable} ganeti-service-type
+@defvar ganeti-service-type
 This is a service type that includes all the various services that Ganeti
 nodes should run.
 
@@ -34321,7 +34630,7 @@ Its value is a @code{ganeti-configuration} object that defines the package
 to use for CLI operations, as well as configuration for the various daemons.
 Allowed file storage paths and available guest operating systems are also
 configured through this data type.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-configuration
 The @code{ganeti} service takes the following configuration options:
@@ -34441,13 +34750,13 @@ A configuration file for this variant.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %default-debootstrap-hooks
+@defvar %default-debootstrap-hooks
 This variable contains hooks to configure networking and the GRUB bootloader.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %default-debootstrap-extra-pkgs
+@defvar %default-debootstrap-extra-pkgs
 This variable contains a list of packages suitable for a fully-virtualized guest.
-@end defvr
+@end defvar
 
 @deftp {Data Type} debootstrap-configuration
 
@@ -34518,7 +34827,7 @@ This is a helper procedure that creates a @code{ganeti-os} record.  It
 takes a list of variants produced by @code{guix-variant}.
 @end deffn
 
-@defvr {Scheme Variable} %default-debootstrap-variants
+@defvar %default-debootstrap-variants
 This is a convenience variable to make the debootstrap provider work
 ``out of the box'' without users having to declare variants manually.  It
 contains a single debootstrap variant with the default configuration:
@@ -34528,9 +34837,9 @@ contains a single debootstrap variant with the default configuration:
        "default"
        (debootstrap-configuration)))
 @end lisp
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %default-guix-variants
+@defvar %default-guix-variants
 This is a convenience variable to make the Guix OS provider work without
 additional configuration.  It creates a virtual machine that has an SSH
 server, a serial console, and authorizes the Ganeti hosts SSH keys.
@@ -34541,7 +34850,7 @@ server, a serial console, and authorizes the Ganeti hosts SSH keys.
        (file-append ganeti-instance-guix
                     "/share/doc/ganeti-instance-guix/examples/dynamic.scm")))
 @end lisp
-@end defvr
+@end defvar
 
 Users can implement support for OS providers unbeknownst to Guix by extending
 the @code{ganeti-os} and @code{ganeti-os-variant} records appropriately.
@@ -34567,11 +34876,11 @@ interface limiting, please reach out to @email{guix-devel@@gnu.org}.
 The rest of this section documents the various services that are included by
 @code{ganeti-service-type}.
 
-@defvr {Scheme Variable} ganeti-noded-service-type
+@defvar ganeti-noded-service-type
 @command{ganeti-noded} is the daemon responsible for node-specific functions
 within the Ganeti system.  The value of this service must be a
 @code{ganeti-noded-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-noded-configuration
 This is the configuration for the @code{ganeti-noded} service.
@@ -34614,14 +34923,14 @@ Note that this will leak encryption details to the log files, use with caution.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-confd-service-type
+@defvar ganeti-confd-service-type
 @command{ganeti-confd} answers queries related to the configuration of a
 Ganeti cluster.  The purpose of this daemon is to have a highly available
 and fast way to query cluster configuration values.  It is automatically
 active on all @dfn{master candidates}.  The value of this service must be a
 @code{ganeti-confd-configuration} object.
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-confd-configuration
 This is the configuration for the @code{ganeti-confd} service.
@@ -34642,7 +34951,7 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-wconfd-service-type
+@defvar ganeti-wconfd-service-type
 @command{ganeti-wconfd} is the daemon that has authoritative knowledge
 about the cluster configuration and is the only entity that can accept
 changes to it.  All jobs that need to modify the configuration will do so
@@ -34651,7 +34960,7 @@ by sending appropriate requests to this daemon.  It only runs on the
 
 The value of this service must be a
 @code{ganeti-wconfd-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-wconfd-configuration
 This is the configuration for the @code{ganeti-wconfd} service.
@@ -34671,14 +34980,14 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-luxid-service-type
+@defvar ganeti-luxid-service-type
 @command{ganeti-luxid} is a daemon used to answer queries related to the
 configuration and the current live state of a Ganeti cluster.  Additionally,
 it is the authoritative daemon for the Ganeti job queue.   Jobs can be
 submitted via this daemon and it schedules and starts them.
 
 It takes a @code{ganeti-luxid-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-luxid-configuration
 This is the configuration for the @code{ganeti-luxid} service.
@@ -34698,7 +35007,7 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-rapi-service-type
+@defvar ganeti-rapi-service-type
 @command{ganeti-rapi} provides a remote API for Ganeti clusters.  It runs on
 the master node and can be used to perform cluster actions programmatically
 via a JSON-based RPC protocol.
@@ -34710,7 +35019,7 @@ the @url{https://docs.ganeti.org/docs/ganeti/3.0/html/rapi.html, Ganeti Remote
 API documentation} for more information.
 
 The value of this service must be a @code{ganeti-rapi-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-rapi-configuration
 This is the configuration for the @code{ganeti-rapi} service.
@@ -34754,7 +35063,7 @@ Note that this will leak encryption details to the log files, use with caution.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-kvmd-service-type
+@defvar ganeti-kvmd-service-type
 @command{ganeti-kvmd} is responsible for determining whether a given KVM
 instance was shut down by an administrator or a user.  Normally Ganeti will
 restart an instance that was not stopped through Ganeti itself.  If the
@@ -34764,7 +35073,7 @@ marks the instance as @dfn{USER_down} instead of @dfn{ERROR_down} when
 it shuts down gracefully by itself.
 
 It takes a @code{ganeti-kvmd-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-kvmd-configuration
 
@@ -34778,13 +35087,13 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-mond-service-type
+@defvar ganeti-mond-service-type
 @command{ganeti-mond} is an optional daemon that provides Ganeti monitoring
 functionality.  It is responsible for running data collectors and publish the
 collected information through a HTTP interface.
 
 It takes a @code{ganeti-mond-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-mond-configuration
 
@@ -34805,12 +35114,12 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-metad-service-type
+@defvar ganeti-metad-service-type
 @command{ganeti-metad} is an optional daemon that can be used to provide
 information about the cluster to instances or OS install scripts.
 
 It takes a @code{ganeti-metad-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-metad-configuration
 
@@ -34831,7 +35140,7 @@ When true, the daemon performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-watcher-service-type
+@defvar ganeti-watcher-service-type
 @command{ganeti-watcher} is a script designed to run periodically and ensure
 the health of a cluster.  It will automatically restart instances that have
 stopped without Ganeti's consent, and repairs DRBD links in case a node has
@@ -34843,7 +35152,7 @@ node it is running on is declared offline by known master candidates.
 It can be paused on all nodes with @command{gnt-cluster watcher pause}.
 
 The service takes a @code{ganeti-watcher-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-watcher-configuration
 
@@ -34873,7 +35182,7 @@ When @code{#t}, the script performs additional logging for debugging purposes.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} ganeti-cleaner-service-type
+@defvar ganeti-cleaner-service-type
 @command{ganeti-cleaner} is a script designed to run periodically and remove
 old files from the cluster.  This service type controls two @dfn{cron jobs}:
 one intended for the master node that permanently purges old cluster jobs,
@@ -34883,7 +35192,7 @@ it is safe to include even on non-master nodes as it will disable itself as
 necessary.
 
 It takes a @code{ganeti-cleaner-configuration} object.
-@end defvr
+@end defvar
 
 @deftp {Data Type} ganeti-cleaner-configuration
 
@@ -34907,27 +35216,24 @@ How often to run the node cleaning job.  The default is once per day, at
 
 The @code{(gnu services version-control)} module provides a service to
 allow remote access to local Git repositories.  There are three options:
-the @code{git-daemon-service}, which provides access to repositories via
+the @code{git-daemon-service-type}, which provides access to repositories via
 the @code{git://} unsecured TCP-based protocol, extending the
 @code{nginx} web server to proxy some requests to
 @code{git-http-backend}, or providing a web interface with
 @code{cgit-service-type}.
 
-@deffn {Scheme Procedure} git-daemon-service [#:config (git-daemon-configuration)]
-
-Return a service that runs @command{git daemon}, a simple TCP server to
+@defvar git-daemon-service-type
+Type for a service that runs @command{git daemon}, a simple TCP server to
 expose repositories over the Git protocol for anonymous access.
 
-The optional @var{config} argument should be a
-@code{<git-daemon-configuration>} object, by default it allows read-only
-access to exported@footnote{By creating the magic file
-@file{git-daemon-export-ok} in the repository directory.} repositories under
-@file{/srv/git}.
-
-@end deffn
+The value for this service type is a @code{<git-daemon-configuration>}
+record, by default it allows read-only access to exported@footnote{By
+creating the magic file @file{git-daemon-export-ok} in the repository
+directory.} repositories under @file{/srv/git}.
+@end defvar
 
 @deftp {Data Type} git-daemon-configuration
-Data type representing the configuration for @code{git-daemon-service}.
+Data type representing the configuration for @code{git-daemon-service-type}.
 
 @table @asis
 @item @code{package} (default: @code{git})
@@ -34964,8 +35270,8 @@ Whether to listen on an alternative port, which defaults to 9418.
 If not empty, only allow access to this list of directories.
 
 @item @code{extra-options} (default: @code{'()})
-Extra options will be passed to @command{git daemon}, please run
-@command{man git-daemon} for more information.
+Extra options that will be passed to @command{git daemon}.@footnote{Run
+@command{man git-daemon} for more information.}
 
 @end table
 @end deftp
@@ -36264,13 +36570,32 @@ like to serve.
 @node Game Services
 @subsection Game Services
 
+@subsubheading Joycond service
+@cindex joycond
+The joycond service allows the pairing of Nintendo joycon game
+controllers over Bluetooth. (@pxref{Desktop Services} for setting up
+Bluetooth.)
+
+@deftp {Data Type} joycond-configuration
+Data type representing the configuration of @command{joycond}.
+
+@table @asis
+@item @code{package} (default: @code{joycond})
+The joycond package to use.
+@end table
+@end deftp
+
+@defvar joycond-service-type
+Service type for the joycond service.
+@end defvar
+
 @subsubheading The Battle for Wesnoth Service
 @cindex wesnothd
 @uref{https://wesnoth.org, The Battle for Wesnoth} is a fantasy, turn
 based tactical strategy game, with several single player campaigns, and
 multiplayer games (both networked and local).
 
-@defvar {Scheme Variable} wesnothd-service-type
+@defvar wesnothd-service-type
 Service type for the wesnothd service.  Its value must be a
 @code{wesnothd-configuration} object.  To run wesnothd in the default
 configuration, instantiate it as:
@@ -36301,7 +36626,7 @@ The @code{(gnu services pam-mount)} module provides a service allowing
 users to mount volumes when they log in.  It should be able to mount any
 volume format supported by the system.
 
-@defvar {Scheme Variable} pam-mount-service-type
+@defvar pam-mount-service-type
 Service type for PAM Mount support.
 @end defvar
 
@@ -36396,7 +36721,7 @@ There is a script to run the coordinator component of the Guix Build
 Coordinator, but the Guix service uses a custom Guile script instead, to
 provide better integration with G-expressions used in the configuration.
 
-@defvar {Scheme Variable} guix-build-coordinator-service-type
+@defvar guix-build-coordinator-service-type
 Service type for the Guix Build Coordinator.  Its value must be a
 @code{guix-build-coordinator-configuration} object.
 @end defvar
@@ -36445,7 +36770,7 @@ The Guile package with which to run the Guix Build Coordinator.
 @end table
 @end deftp
 
-@defvar {Scheme Variable} guix-build-coordinator-agent-service-type
+@defvar guix-build-coordinator-agent-service-type
 Service type for a Guix Build Coordinator agent.  Its value must be a
 @code{guix-build-coordinator-agent-configuration} object.
 @end defvar
@@ -36571,7 +36896,7 @@ type below assists in running this script.  This is an additional tool
 that may be useful when building derivations contained within an
 instance of the Guix Data Service.
 
-@defvar {Scheme Variable} guix-build-coordinator-queue-builds-service-type
+@defvar guix-build-coordinator-queue-builds-service-type
 Service type for the
 guix-build-coordinator-queue-builds-from-guix-data-service script.  Its
 value must be a @code{guix-build-coordinator-queue-builds-configuration}
@@ -36624,7 +36949,7 @@ packages, derivations and lint warnings.
 The data is stored in a PostgreSQL database, and available through a web
 interface.
 
-@defvar {Scheme Variable} guix-data-service-type
+@defvar guix-data-service-type
 Service type for the Guix Data Service.  Its value must be a
 @code{guix-data-service-configuration} object.  The service optionally
 extends the getmail service, as the guix-commits mailing list is used to
@@ -36672,7 +36997,7 @@ Extra command line options for @code{guix-data-service-process-jobs}.
 The @uref{https://git.cbaines.net/guix/nar-herder/about/,Nar Herder} is
 a utility for managing a collection of nars.
 
-@defvar {Scheme Variable} nar-herder-type
+@defvar nar-herder-type
 Service type for the Guix Data Service.  Its value must be a
 @code{nar-herder-configuration} object.  The service optionally
 extends the getmail service, as the guix-commits mailing list is used to
@@ -36755,6 +37080,42 @@ advertised.
 Log level to use, specify a log level like @code{'INFO} to stop logging
 individual requests.
 
+@item @code{cached-compressions} (default: @code{'()})
+Activate generating cached nars with different compression details from
+the stored nars.  This is a list of
+nar-herder-cached-compression-configuration records.
+
+@item @code{min-uses} (default: @code{3})
+When cached-compressions are enabled, generate cached nars when at least
+this number of requests are made for a nar.
+
+@item @code{workers} (default: @code{2})
+Number of cached nars to generate at a time.
+
+@item @code{nar-source} (default: @code{#f})
+Location to fetch nars from when computing cached compressions.  By
+default, the storage location will be used.
+
+@end table
+@end deftp
+
+@deftp {Data Type} nar-herder-cached-compression-configuration
+Data type representing the cached compression configuration.
+
+@table @asis
+@item @code{type}
+Type of compression to use, e.g. @code{'zstd}.
+
+@item @code{workers} (default: @code{#f})
+Level of the compression to use.
+
+@item @code{directory} (default: @code{#f})
+Location to store the cached nars.  If unspecified, they will be stored
+in /var/cache/nar-herder/nar/TYPE.
+
+@item @code{directory-max-size} (default: @code{#f})
+Maximum size in bytes of the directory.
+
 @end table
 @end deftp
 
@@ -36773,7 +37134,7 @@ space and provides a more responsive and configurable alternative to the
 in-kernel OOM killer.  It is useful to prevent the system from becoming
 unresponsive when it runs out of memory.
 
-@deffn {Scheme Variable} earlyoom-service-type
+@defvar earlyoom-service-type
 The service type for running @command{earlyoom}, the Early OOM daemon.
 Its value must be a @code{earlyoom-configuration} object, described
 below.  The service can be instantiated in its default configuration
@@ -36782,7 +37143,7 @@ with:
 @lisp
 (service earlyoom-service-type)
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} earlyoom-configuration
 This is the configuration record for the @code{earlyoom-service-type}.
@@ -36832,7 +37193,7 @@ modules at boot.  This is especially useful for modules that don't
 autoload and need to be manually loaded, as is the case with
 @code{ddcci}.
 
-@deffn {Scheme Variable} kernel-module-loader-service-type
+@defvar kernel-module-loader-service-type
 The service type for loading loadable kernel modules at boot with
 @command{modprobe}.  Its value must be a list of strings representing
 module names.  For example loading the drivers provided by
@@ -36858,7 +37219,7 @@ parameters, can be done as follow:
                    %base-services))
   (kernel-loadable-modules (list ddcci-driver-linux)))
 @end lisp
-@end deffn
+@end defvar
 
 @cindex rasdaemon
 @cindex Platform Reliability, Availability and Serviceability daemon
@@ -36915,7 +37276,7 @@ For detailed information about the types of error events gathered and how to
 make sense of them, see the kernel administrator's guide at
 @url{https://www.kernel.org/doc/html/latest/admin-guide/ras.html}.
 
-@defvr {Scheme Variable} rasdaemon-service-type
+@defvar rasdaemon-service-type
 Service type for the @command{rasdaemon} service.  It accepts a
 @code{rasdaemon-configuration} object.  Instantiating like
 
@@ -36925,7 +37286,7 @@ Service type for the @command{rasdaemon} service.  It accepts a
 
 will load with a default configuration, which monitors all events and logs to
 syslogd.
-@end defvr
+@end defvar
 
 @deftp {Data Type} rasdaemon-configuration
 The data type representing the configuration of @command{rasdaemon}.
@@ -36950,7 +37311,7 @@ memory.  The Linux Kernel documentation has more information about
 @uref{https://www.kernel.org/doc/html/latest/admin-guide/blockdev/zram.html,zram}
 devices.
 
-@deffn {Scheme Variable} zram-device-service-type
+@defvar zram-device-service-type
 This service creates the zram block device, formats it as swap and
 enables it as a swap device.  The service's value is a
 @code{zram-device-configuration} record.
@@ -36983,16 +37344,16 @@ up not being used much for the reasons described there.
 @end table
 
 @end deftp
-@end deffn
+@end defvar
 
 @node Hurd Services
 @subsection Hurd Services
 
-@defvr {Scheme Variable} hurd-console-service-type
+@defvar hurd-console-service-type
 This service starts the fancy @code{VGA} console client on the Hurd.
 
 The service's value is a @code{hurd-console-configuration} record.
-@end defvr
+@end defvar
 
 @deftp {Data Type} hurd-console-configuration
 This is the data type representing the configuration for the
@@ -37004,11 +37365,11 @@ The Hurd package to use.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} hurd-getty-service-type
+@defvar hurd-getty-service-type
 This service starts a tty using the Hurd @code{getty} program.
 
 The service's value is a @code{hurd-getty-configuration} record.
-@end defvr
+@end defvar
 
 @deftp {Data Type} hurd-getty-configuration
 This is the data type representing the configuration for the
@@ -37036,14 +37397,14 @@ An integer specifying the baud rate of the tty.
 The @code{(gnu services authentication)} module provides a DBus service to
 read and identify fingerprints via a fingerprint sensor.
 
-@defvr {Scheme Variable} fprintd-service-type
+@defvar fprintd-service-type
 The service type for @command{fprintd}, which provides the fingerprint
 reading capability.
 
 @lisp
 (service fprintd-service-type)
 @end lisp
-@end defvr
+@end defvar
 
 @cindex sysctl
 @subsubheading System Control Service
@@ -37051,7 +37412,7 @@ reading capability.
 The @code{(gnu services sysctl)} provides a service to configure kernel
 parameters at boot.
 
-@defvr {Scheme Variable} sysctl-service-type
+@defvar sysctl-service-type
 The service type for @command{sysctl}, which modifies kernel parameters
 under @file{/proc/sys/}.  To enable IPv4 forwarding, it can be
 instantiated as:
@@ -37076,7 +37437,7 @@ kernel parameters that you want (@pxref{Service Reference,
                                            %default-sysctl-settings)))))
 @end lisp
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} sysctl-configuration
 The data type representing the configuration of @command{sysctl}.
@@ -37090,10 +37451,10 @@ An association list specifies kernel parameters and their values.
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %default-sysctl-settings
+@defvar %default-sysctl-settings
 An association list specifying the default @command{sysctl} parameters
 on Guix System.
-@end defvr
+@end defvar
 
 @cindex pcscd
 @subsubheading PC/SC Smart Card Daemon Service
@@ -37104,7 +37465,7 @@ daemon program for pcsc-lite and the MuscleCard framework.  It is a resource
 manager that coordinates communications with smart card readers, smart cards
 and cryptographic tokens that are connected to the system.
 
-@defvr {Scheme Variable} pcscd-service-type
+@defvar pcscd-service-type
 Service type for the @command{pcscd} service.  Its value must be a
 @code{pcscd-configuration} object.  To run pcscd in the default
 configuration, instantiate it as:
@@ -37112,7 +37473,7 @@ configuration, instantiate it as:
 @lisp
 (service pcscd-service-type)
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} pcscd-configuration
 The data type representing the configuration of @command{pcscd}.
@@ -37165,10 +37526,10 @@ The @uref{https://linuxwacom.github.io/, inputattach} service allows you to
 use input devices such as Wacom tablets, touchscreens, or joysticks with the
 Xorg display server.
 
-@deffn {Scheme Variable} inputattach-service-type
+@defvar inputattach-service-type
 Type of a service that runs @command{inputattach} on a device and
 dispatches events from it.
-@end deffn
+@end defvar
 
 @deftp {Data Type} inputattach-configuration
 @table @asis
@@ -37192,10 +37553,10 @@ If true, this must be the name of a file to log messages to.
 @cindex dictionary
 The @code{(gnu services dict)} module provides the following service:
 
-@defvr {Scheme Variable} dicod-service-type
+@defvar dicod-service-type
 This is the type of the service that runs the @command{dicod} daemon, an
 implementation of DICT server (@pxref{Dicod,,, dico, GNU Dico Manual}).
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} dicod-service [#:config (dicod-configuration)]
 Return a service that runs the @command{dicod} daemon, an implementation
@@ -37268,10 +37629,10 @@ List of strings or gexps representing the arguments for the database
 @end table
 @end deftp
 
-@defvr {Scheme Variable} %dicod-database:gcide
+@defvar %dicod-database:gcide
 A @code{<dicod-database>} object serving the GNU Collaborative International
 Dictionary of English using the @code{gcide} package.
-@end defvr
+@end defvar
 
 The following is an example @code{dicod-service} configuration.
 
@@ -37296,13 +37657,13 @@ The following is an example @code{dicod-service} configuration.
 
 The @code{(gnu services docker)} module provides the following services.
 
-@defvr {Scheme Variable} docker-service-type
+@defvar docker-service-type
 
 This is the type of the service that runs @url{https://www.docker.com,Docker},
 a daemon that can execute application bundles (sometimes referred to as
 ``containers'') in isolated environments.
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} docker-configuration
 This is the data type representing the configuration of Docker and Containerd.
@@ -37345,7 +37706,7 @@ This must be a list of strings where each string has the form
 @end deftp
 
 @cindex Singularity, container service
-@defvr {Scheme Variable} singularity-service-type
+@defvar singularity-service-type
 This is the type of the service that allows you to run
 @url{https://www.sylabs.io/singularity/, Singularity}, a Docker-style tool to
 create and run application bundles (aka. ``containers'').  The value for this
@@ -37354,14 +37715,14 @@ service is the Singularity package to use.
 The service does not install a daemon; instead, it installs helper programs as
 setuid-root (@pxref{Setuid Programs}) such that unprivileged users can invoke
 @command{singularity run} and similar commands.
-@end defvr
+@end defvar
 
 @cindex Audit
 @subsubheading Auditd Service
 
 The @code{(gnu services auditd)} module provides the following service.
 
-@defvr {Scheme Variable} auditd-service-type
+@defvar auditd-service-type
 
 This is the type of the service that runs
 @url{https://people.redhat.com/sgrubb/audit/,auditd},
@@ -37394,7 +37755,7 @@ to view a report of all recorded events.
 The audit daemon by default logs into the file
 @file{/var/log/audit.log}.
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} auditd-configuration
 This is the data type representing the configuration of auditd.
@@ -37417,7 +37778,7 @@ instantiate on startup.
 
 The @code{(gnu services science)} module provides the following service.
 
-@defvr {Scheme Variable} rshiny-service-type
+@defvar rshiny-service-type
 
 This is a type of service which is used to run a webapp created with
 @code{r-shiny}.  This service sets the @env{R_LIBS_USER} environment
@@ -37457,14 +37818,14 @@ runApp(launch.browser=0, port=4202)~%\n"
 
 @end table
 @end deftp
-@end defvr
+@end defvar
 
 @cindex Nix
 @subsubheading Nix service
 
 The @code{(gnu services nix)} module provides the following service.
 
-@defvr {Scheme Variable} nix-service-type
+@defvar nix-service-type
 
 This is the type of the service that runs build daemon of the
 @url{https://nixos.org/nix/, Nix} package manager.  Here is an example showing
@@ -37498,7 +37859,7 @@ $ ln -s "/nix/var/nix/profiles/per-user/$USER/profile" ~/.nix-profile
 $ source /run/current-system/profile/etc/profile.d/nix.sh
 @end example
 
-@end defvr
+@end defvar
 
 @deftp {Data Type} nix-configuration
 This data type represents the configuration of the Nix daemon.
@@ -37561,7 +37922,7 @@ Service developers can extend the @code{fail2ban-service-type} service
 type itself via the usual service extension mechanism.
 @end table
 
-@defvr {Scheme Variable} fail2ban-service-type
+@defvar fail2ban-service-type
 
 This is the type of the service that runs @code{fail2ban} daemon.  Below
 is an example of a basic, explicit configuration:
@@ -37581,7 +37942,7 @@ is an example of a basic, explicit configuration:
   (service openssh-service-type))
  %base-services)
 @end lisp
-@end defvr
+@end defvar
 
 @deffn {Scheme Procedure} fail2ban-jail-service @var{svc-type} @var{jail}
 Extend @var{svc-type}, a @code{<service-type>} object with @var{jail}, a
@@ -37858,13 +38219,13 @@ defaults to root.
 A default set of setuid programs is defined by the
 @code{%setuid-programs} variable of the @code{(gnu system)} module.
 
-@defvr {Scheme Variable} %setuid-programs
+@defvar %setuid-programs
 A list of @code{<setuid-program>} denoting common programs that are
 setuid-root.
 
 The list includes commands such as @command{passwd}, @command{ping},
 @command{su}, and @command{sudo}.
-@end defvr
+@end defvar
 
 Under the hood, the actual setuid programs are created in the
 @file{/run/setuid-programs} directory at system activation time.  The
@@ -38001,15 +38362,15 @@ to the name service cache daemon (@pxref{Base Services,
 For convenience, the following variables provide typical NSS
 configurations.
 
-@defvr {Scheme Variable} %default-nss
+@defvar %default-nss
 This is the default name service switch configuration, a
 @code{name-service-switch} object.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} %mdns-host-lookup-nss
+@defvar %mdns-host-lookup-nss
 This is the name service switch configuration with support for host name
 lookup over multicast DNS (mDNS) for host names ending in @code{.local}.
-@end defvr
+@end defvar
 
 The reference for name service switch configuration is given below.  It
 is a direct mapping of the configuration file format of the C library , so
@@ -38098,9 +38459,9 @@ file system, you would write:
   (initrd-modules (cons "megaraid_sas" %base-initrd-modules)))
 @end lisp
 
-@defvr {Scheme Variable} %base-initrd-modules
+@defvar %base-initrd-modules
 This is the list of kernel modules included in the initrd by default.
-@end defvr
+@end defvar
 
 Furthermore, if you need lower-level customization, the @code{initrd}
 field of an @code{operating-system} declaration allows
@@ -40089,17 +40450,17 @@ type @var{target-type}; return the root service adjusted accordingly.
 Lastly, the @code{(gnu services)} module also defines several essential
 service types, some of which are listed below.
 
-@defvr {Scheme Variable} system-service-type
+@defvar system-service-type
 This is the root of the service graph.  It produces the system directory
 as returned by the @command{guix system build} command.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} boot-service-type
+@defvar boot-service-type
 The type of the ``boot service'', which produces the @dfn{boot script}.
 The boot script is what the initial RAM disk runs when booting.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} etc-service-type
+@defvar etc-service-type
 The type of the @file{/etc} service.  This service is used to create
 files under @file{/etc} and can be extended by
 passing it name/file tuples such as:
@@ -40110,23 +40471,23 @@ passing it name/file tuples such as:
 
 In this example, the effect would be to add an @file{/etc/issue} file
 pointing to the given file.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} setuid-program-service-type
+@defvar setuid-program-service-type
 Type for the ``setuid-program service''.  This service collects lists of
 executable file names, passed as gexps, and adds them to the set of
 setuid and setgid programs on the system (@pxref{Setuid Programs}).
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} profile-service-type
+@defvar profile-service-type
 Type of the service that populates the @dfn{system profile}---i.e., the
 programs under @file{/run/current-system/profile}.  Other services can
 extend it by passing it lists of packages to add to the system profile.
-@end defvr
+@end defvar
 
 @cindex provenance tracking, of the operating system
 @anchor{provenance-service-type}
-@defvr {Scheme Variable} provenance-service-type
+@defvar provenance-service-type
 This is the type of the service that records @dfn{provenance meta-data}
 in the system itself.  It creates several files under
 @file{/run/current-system}:
@@ -40172,9 +40533,9 @@ comparison less trivial.
 This service is automatically added to your operating system
 configuration when you use @command{guix system reconfigure},
 @command{guix system init}, or @command{guix deploy}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} linux-loadable-module-service-type
+@defvar linux-loadable-module-service-type
 Type of the service that collects lists of packages containing
 kernel-loadable modules, and adds them to the set of kernel-loadable
 modules.
@@ -40191,7 +40552,7 @@ such as below:
 
 This does not actually load modules at bootup, only adds it to the
 kernel profile so that it @emph{can} be loaded by other means.
-@end defvr
+@end defvar
 
 @node Shepherd Services
 @subsection Shepherd Services
@@ -40399,14 +40760,14 @@ cat $(herd configuration tor)
 This can come in as a handy debugging tool!
 @end deffn
 
-@defvr {Scheme Variable} shepherd-root-service-type
+@defvar shepherd-root-service-type
 The service type for the Shepherd ``root service''---i.e., PID@tie{}1.
 
 This is the service type that extensions target when they want to create
 shepherd services (@pxref{Service Types and Services}, for an example).
 Each extension must pass a list of @code{<shepherd-service>}.  Its
 value must be a @code{shepherd-configuration}, as described below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} shepherd-configuration
 This data type represents the Shepherd's configuration.
@@ -40441,9 +40802,9 @@ system:
                                             (shepherd my-shepherd))))))
 @end lisp
 
-@defvr {Scheme Variable} %shepherd-root-service
+@defvar %shepherd-root-service
 This service represents PID@tie{}1.
-@end defvr
+@end defvar
 
 @node Complex Configurations
 @subsection Complex Configurations
@@ -41049,6 +41410,7 @@ services)}.
 * SSH: Secure Shell.                                   Setting up the secure shell client.
 * Desktop: Desktop Home Services.                      Services for graphical environments.
 * Guix: Guix Home Services.                            Services for Guix.
+* Fonts: Fonts Home Services.                          Services for managing User's fonts.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -41061,7 +41423,7 @@ user.
 
 @cindex environment variables
 
-@defvr {Scheme Variable} home-environment-variables-service-type
+@defvar home-environment-variables-service-type
 The service of this type will be instantiated by every home environment
 automatically by default, there is no need to define it, but someone may
 want to extend it with a list of pairs to set some environment
@@ -41122,9 +41484,9 @@ of the file in the store (@pxref{The Store}); for @code{#t}, it will
 export the variable without any value; and for @code{#f}, it will omit
 variable.
 
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-profile-service-type
+@defvar home-profile-service-type
 The service of this type will be instantiated by every home environment
 automatically, there is no need to define it, but you may want to extend
 it with a list of packages if you want to install additional packages
@@ -41145,19 +41507,19 @@ information about its module use @command{guix search} (@pxref{Invoking
 guix package}).  Alternatively, @code{specification->package} can be
 used to get the package record from string without importing related
 module.
-@end defvr
+@end defvar
 
 There are few more essential services, but users are not expected to
 extend them.
 
-@defvr {Scheme Variable} home-service-type
+@defvar home-service-type
 The root of home services DAG, it generates a folder, which later will be
 symlinked to @file{~/.guix-home}, it contains configurations,
 profile with binaries and libraries, and some necessary scripts to glue
 things together.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-run-on-first-login-service-type
+@defvar home-run-on-first-login-service-type
 The service of this type generates a Guile script, which is expected to
 be executed by the login shell.  It is only executed if the special flag
 file inside @env{XDG_RUNTIME_DIR} hasn't been created, this prevents
@@ -41168,9 +41530,9 @@ users @emph{should not} use this service, in most cases it's better to extend
 @code{home-shepherd-service-type} with a Shepherd service
 (@pxref{Shepherd Services}), or extend the shell's startup file with
 the required command using the appropriate service type.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-files-service-type
+@defvar home-files-service-type
 The service of this type allows to specify a list of files, which will
 go to @file{~/.guix-home/files}, usually this directory contains
 configuration files (to be more precise it contains symlinks to files in
@@ -41194,9 +41556,9 @@ backs up already existing, but clashing configs and other things, is a
 part of essential home services (enabled by default), but it's possible
 to use alternative services to implement more advanced use cases like
 read-only home.  Feel free to experiment and share your results.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-xdg-configuration-files-service-type
+@defvar home-xdg-configuration-files-service-type
 The service is very similiar to @code{home-files-service-type} (and
 actually extends it), but used for defining files, which will go to
 @file{~/.guix-home/files/.config}, which will be symlinked to
@@ -41210,15 +41572,15 @@ following format:
   ;; -> $XDG_CONFIG_DIR/sway/config (by symlink-manager)
   ("tmux/tmux.conf" ,(local-file "./tmux.conf")))
 @end lisp
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-activation-service-type
+@defvar home-activation-service-type
 The service of this type generates a guile script, which runs on every
 @command{guix home reconfigure} invocation or any other action, which
 leads to the activation of the home environment.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} home-symlink-manager-service-type
+@defvar home-symlink-manager-service-type
 The service of this type generates a guile script, which will be
 executed during activation of home environment, and do a few following
 steps:
@@ -41256,7 +41618,7 @@ If there is a clashing files on the way, they will be backed up.
 
 symlink-manager is a part of essential home services and is enabled and
 used by default.
-@end defvr
+@end defvar
 
 
 @node Shells Home Services
@@ -41479,7 +41841,7 @@ for home services is that they have to be declared in a
 @code{home-environment} record instead of an @code{operating-system}
 record.
 
-@defvr {Scheme Variable} home-mcron-service-type
+@defvar home-mcron-service-type
 This is the type of the @code{mcron} home service, whose value is an
 @code{home-mcron-configuration} object.  It allows to manage scheduled
 tasks.
@@ -41488,7 +41850,7 @@ This service type can be the target of a service extension that provides
 additional job specifications (@pxref{Service Composition}).  In other
 words, it is possible to define services that provide additional mcron
 jobs to run.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-mcron-configuration
 Available @code{home-mcron-configuration} fields are:
@@ -41525,13 +41887,13 @@ is also prefixed by a timestamp by GNU Shepherd.
 The @code{(gnu home services pm)} module provides home services
 pertaining to battery power.
 
-@defvr {Scheme Variable} home-batsignal-service-type
+@defvar home-batsignal-service-type
 Service for @code{batsignal}, a program that monitors battery levels
 and warns the user through desktop notifications when their battery
 is getting low.  You can also configure a command to be run when the
 battery level passes a point deemed ``dangerous''.  This service is
 configured with the @code{home-batsignal-configuration} record.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-batsignal-configuration
 Data type representing the configuration for batsignal.
@@ -41605,7 +41967,7 @@ new services; Guix Home then takes care of starting the @code{shepherd}
 daemon for you when you log in, which in turns starts the services you
 asked for.
 
-@defvr {Scheme Variable} home-shepherd-service-type
+@defvar home-shepherd-service-type
 The service type for the userland Shepherd, which allows one to manage
 long-running processes or one-shot tasks.  User's Shepherd is not an
 init process (PID 1), but almost all other information described in
@@ -41615,7 +41977,7 @@ This is the service type that extensions target when they want to create
 shepherd services (@pxref{Service Types and Services}, for an example).
 Each extension must pass a list of @code{<shepherd-service>}.  Its
 value must be a @code{home-shepherd-configuration}, as described below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-shepherd-configuration
 This data type represents the Shepherd's configuration.
@@ -41647,7 +42009,7 @@ predictable fashion, almost independently of state on the local machine.
 To do that, you instantiate @code{home-openssh-service-type} in your
 Home configuration, as explained below.
 
-@defvr {Scheme Variable} home-openssh-service-type
+@defvar home-openssh-service-type
 This is the type of the service to set up the OpenSSH client.  It takes
 care of several things:
 
@@ -41691,7 +42053,7 @@ running @command{ssh chbouib} will automatically connect to
 
 The value associated with a @code{home-openssh-service-type} instance
 must be a @code{home-openssh-configuration} record, as describe below.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-openssh-configuration
 This is the datatype representing the OpenSSH client and server
@@ -41816,7 +42178,7 @@ The @code{(gnu home services desktop)} module provides services that you
 may find useful on ``desktop'' systems running a graphical user
 environment such as Xorg.
 
-@defvr {Scheme Variable} home-redshift-service-type
+@defvar home-redshift-service-type
 This is the service type for @uref{https://github.com/jonls/redshift,
 Redshift}, a program that adjusts the display color temperature
 according to the time of day.  Its associated value must be a
@@ -41832,7 +42194,7 @@ longitude, might look like this:
           (latitude 35.81)    ;northern hemisphere
           (longitude -0.80))) ;west of Greenwich
 @end lisp
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-redshift-configuration
 Available @code{home-redshift-configuration} fields are:
@@ -41887,10 +42249,10 @@ format.
 
 @end deftp
 
-@defvr {Scheme Variable} home-dbus-service-type
+@defvar home-dbus-service-type
 This is the service type for running a session-specific D-Bus, for
 unprivileged applications that require D-Bus to be running.
-@end defvr
+@end defvar
 
 @deftp {Data Type} home-dbus-configuration
 The configuration record for @code{home-dbus-service-type}.
@@ -41907,7 +42269,7 @@ The package providing the @code{/bin/dbus-daemon} command.
 The @code{(gnu home services guix)} module provides services for
 user-specific Guix configuration.
 
-@defvr {Scheme Variable} home-channels-service-type
+@defvar home-channels-service-type
 This is the service type for managing
 @file{$XDG_CONFIG_HOME/guix/channels.scm}, the file that controls the
 channels received on @command{guix pull} (@pxref{Channels}).  Its
@@ -41931,7 +42293,36 @@ A typical extension for adding a channel might look like this:
                   (name 'variant-packages)
                   (url "https://example.org/variant-packages.git"))))
 @end lisp
-@end defvr
+@end defvar
+
+@node Fonts Home Services
+@subsection Fonts Home Services
+
+The @code{(gnu home services fontutils)} module provides services for
+user-specific Fontconfig setup.  The
+@uref{https://www.freedesktop.org/wiki/Software/fontconfig,Fontconfig}
+library is used by many applications to access fonts on the system.
+
+@defvar home-fontconfig-service-type
+This is the service type for generating configurations for Fontconfig.
+Its associated value is a list of strings (or gexps) pointing to fonts
+locations.
+
+Generally, it is better to extend this service than to directly
+configure it, as its default value is the default Guix Home's profile
+font installation path (@file{~/.guix-home/profile/share/fonts}).  If
+you configure this service directly, be sure to include the above
+directory.
+
+A typical extension for adding an additional font directory might look
+like this:
+
+@lisp
+(simple-service 'additional-fonts-service
+                home-fontconfig-service-type
+                (list "~/.nix-profile/share/fonts"))
+@end lisp
+@end defvar
 
 @node Invoking guix home
 @section Invoking @command{guix home}
@@ -42402,52 +42793,52 @@ corresponding system, as a string.  It can be
 The @code{(guix platforms @dots{})} modules export the following
 variables, each of which is bound to a @code{platform} record.
 
-@defvr {Scheme Variable} armv7-linux
+@defvar armv7-linux
 Platform targeting ARM v7 CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} aarch64-linux
+@defvar aarch64-linux
 Platform targeting ARM v8 CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} mips64-linux
+@defvar mips64-linux
 Platform targeting MIPS little-endian 64-bit CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} powerpc-linux
+@defvar powerpc-linux
 Platform targeting PowerPC big-endian 32-bit CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} powerpc64le-linux
+@defvar powerpc64le-linux
 Platform targeting PowerPC little-endian 64-bit CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} riscv64-linux
+@defvar riscv64-linux
 Platform targeting RISC-V 64-bit CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} i686-linux
+@defvar i686-linux
 Platform targeting x86 CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} x86_64-linux
+@defvar x86_64-linux
 Platform targeting x86 64-bit CPU running GNU/Linux.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} i686-mingw
+@defvar i686-mingw
 Platform targeting x86 CPU running Windows, with run-time support from
 MinGW.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} x86_64-mingw
+@defvar x86_64-mingw
 Platform targeting x86 64-bit CPU running Windows, with run-time support
 from MinGW.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} i586-gnu
+@defvar i586-gnu
 Platform targeting x86 CPU running GNU/Hurd (also referred to as
 ``GNU'').
-@end defvr
+@end defvar
 
 @node System Images
 @chapter Creating System Images
@@ -42727,24 +43118,24 @@ from them to simplify the @code{image} definition.  The @code{(gnu
 system image)} module provides the following @code{image} definition
 variables.
 
-@defvr {Scheme Variable} efi-disk-image
+@defvar efi-disk-image
 A MBR disk-image composed of two partitions: a 64 bits ESP partition and
 a ROOT boot partition.  This image can be used on most @code{x86_64} and
 @code{i686} machines, supporting BIOS or UEFI booting.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} efi32-disk-image
+@defvar efi32-disk-image
 Same as @code{efi-disk-image} but with a 32 bits EFI partition.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} iso9660-image
+@defvar iso9660-image
 An ISO-9660 image composed of a single bootable partition.  This image
 can also be used on most @code{x86_64} and @code{i686} machines.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} docker-image
+@defvar docker-image
 A Docker image that can be used to spawn a Docker container.
-@end defvr
+@end defvar
 
 Using the @code{efi-disk-image} we can simplify our previous
 @code{image} declaration this way:
@@ -42815,74 +43206,74 @@ record.
 There are several @code{image-type} records provided by the @code{(gnu
 system image)} and the @code{(gnu system images @dots{})} modules.
 
-@defvr {Scheme Variable} efi-raw-image-type
+@defvar efi-raw-image-type
 Build an image based on the @code{efi-disk-image} image.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} efi32-raw-image-type
+@defvar efi32-raw-image-type
 Build an image based on the @code{efi32-disk-image} image.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} qcow2-image-type
+@defvar qcow2-image-type
 Build an image based on the @code{efi-disk-image} image but with the
 @code{compressed-qcow2} image format.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} iso-image-type
+@defvar iso-image-type
 Build a compressed image based on the @code{iso9660-image} image.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} uncompressed-iso-image-type
+@defvar uncompressed-iso-image-type
 Build an image based on the @code{iso9660-image} image but with the
 @code{compression?} field set to @code{#false}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} docker-image-type
+@defvar docker-image-type
 Build an image based on the @code{docker-image} image.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} raw-with-offset-image-type
+@defvar raw-with-offset-image-type
 Build an MBR image with a single partition starting at a @code{1024KiB}
 offset.  This is useful to leave some room to install a bootloader in
 the post-MBR gap.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} pinebook-pro-image-type
+@defvar pinebook-pro-image-type
 Build an image that is targeting the Pinebook Pro machine.  The MBR
 image contains a single partition starting at a @code{9MiB} offset.  The
 @code{u-boot-pinebook-pro-rk3399-bootloader} bootloader will be
 installed in this gap.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} rock64-image-type
+@defvar rock64-image-type
 Build an image that is targeting the Rock64 machine.  The MBR image
 contains a single partition starting at a @code{16MiB} offset.  The
 @code{u-boot-rock64-rk3328-bootloader} bootloader will be installed in
 this gap.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} novena-image-type
+@defvar novena-image-type
 Build an image that is targeting the Novena machine.  It has the same
 characteristics as @code{raw-with-offset-image-type}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} pine64-image-type
+@defvar pine64-image-type
 Build an image that is targeting the Pine64 machine.  It has the same
 characteristics as @code{raw-with-offset-image-type}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} hurd-image-type
+@defvar hurd-image-type
 Build an image that is targeting a @code{i386} machine running the Hurd
 kernel.  The MBR image contains a single ext2 partitions with specific
 @code{file-system-options} flags.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} hurd-qcow2-image-type
+@defvar hurd-qcow2-image-type
 Build an image similar to the one built by the @code{hurd-image-type}
 but with the @code{format} set to @code{'compressed-qcow2}.
-@end defvr
+@end defvar
 
-@defvr {Scheme Variable} wsl2-image-type
+@defvar wsl2-image-type
 Build an image for the @acronym{WSL2, Windows Subsystem for Linux 2}.
 It can be imported by running:
 
@@ -42891,7 +43282,7 @@ wsl --import Guix ./guix ./wsl2-image.tar.gz
 wsl -d Guix
 @end example
 
-@end defvr
+@end defvar
 
 So, if we get back to the @code{guix system image} command taking an
 @code{operating-system} declaration as argument.  By default, the

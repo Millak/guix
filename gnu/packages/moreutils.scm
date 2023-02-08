@@ -49,9 +49,11 @@
            #~(modify-phases %standard-phases
                (add-after 'install 'wrap-program
                  (lambda _
-                   (wrap-program
-                       (string-append #$output "/bin/ts")
-                     `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB"))))))
+                   (for-each
+                     (lambda (script)
+                       (wrap-program script
+                         `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
+                     (find-files (string-append #$output "/bin")))))
                (delete 'configure))     ; no configure script
            #:make-flags
            #~(list (string-append "PREFIX=" #$output)
@@ -63,6 +65,7 @@
                    (string-append "CC=" #$(cc-for-target)))))
     (inputs
      (list perl
+           perl-ipc-run
            perl-timedate
            perl-time-duration))
     ;; For building the manual pages.

@@ -12,7 +12,7 @@
 ;;; Copyright © 2018 Tomáš Čech <sleep_walker@gnu.org>
 ;;; Copyright © 2018 Pierre-Antoine Rouby <pierre-antoine.rouby@inria.fr>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
-;;; Copyright © 2018, 2019, 2020 Katherine Cox-Buday <cox.katherine.e@gmail.com>
+;;; Copyright © 2018, 2019, 2020, 2023 Katherine Cox-Buday <cox.katherine.e@gmail.com>
 ;;; Copyright © 2019 Giovanni Biscuolo <g@xelera.eu>
 ;;; Copyright © 2019, 2020 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019, 2020, 2021 Arun Isaac <arunisaac@systemreboot.net>
@@ -626,9 +626,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
                  (("^#!.*") "#!/usr/bin/env perl\n"))))))))
     (native-inputs
      `(("go-fix-script-tests.patch" ,(search-patch "go-fix-script-tests.patch"))
-       ,@(if (not (member (%current-system) (package-supported-systems go-1.4)))
-             (alist-replace "go" (list gccgo-10) (package-native-inputs go-1.14))
-             (package-native-inputs go-1.14))))))
+       ,@(package-native-inputs go-1.14)))))
 
 (define-public go-1.17
   (package
@@ -850,7 +848,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
   (package
     (inherit go-1.17)
     (name "go")
-    (version "1.18.6")
+    (version "1.18.10")
     (source
      (origin
        (method git-fetch)
@@ -860,13 +858,13 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1s2xwgd3mfbjdf7ls9gyj7n1lbqc4276qkr3znyq9694isj1ak20"))))))
+         "0ph3ajfq5q8j3nd91pfb25pm21aiphc58zf7fwis0h3a6nqbdyq9"))))))
 
 (define-public go-1.19
   (package
     (inherit go-1.18)
     (name "go")
-    (version "1.19.1")
+    (version "1.19.5")
     (source
      (origin
        (method git-fetch)
@@ -876,7 +874,7 @@ in the style of communicating sequential processes (@dfn{CSP}).")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1gah4zhbkgbwrrryfmzdv2qwi1rgxk10q2r3hnlcb1dybf9c1i1w"))))
+         "0ah4l01h8qj0vj9668bdgr5m69fq16dz1fjlj332vhysxc6bkc27"))))
     (arguments
      (substitute-keyword-arguments (package-arguments go-1.18)
        ((#:phases phases)
@@ -2855,36 +2853,73 @@ expressing configuration which is easy for both humans and machines to read.")
     (home-page "https://github.com/hashicorp/hcl")
     (license license:mpl2.0)))
 
+(define-public go-golang-org-x-exp
+  (package
+    (name "go-golang-org-x-exp")
+    (version "0.0.0-20221004215720-b9f4876ce741")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/exp")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "030b929xyg8dpp6f4qbyg63msi6zgzj9sqmvnyphfcrjkqf7nr41"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "golang.org/x/exp"
+       ;; Source-only package
+       #:tests? #f
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (home-page "https://golang.org/x/exp")
+    (synopsis "Experimental and deprecated Go packages")
+    (description
+     "This subrepository holds experimental and deprecated (in the @code{old}
+directory) packages.")
+    (license license:bsd-3)))
+
 (define-public go-golang-org-x-tools
-  (let ((commit "8b927904ee0dec805c89aaf9172f4459296ed6e8")
-        (revision "0"))
-    (package
-      (name "go-golang-org-x-tools")
-      (version (git-version "0.1.3" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://go.googlesource.com/tools")
-                      (commit commit)))
-                (file-name (string-append "go.googlesource.com-tools-"
-                                          version "-checkout"))
-                (sha256
-                 (base32
-                  "0iinb70xhcjsddgi42ia1n745lx2ibnjdm6m2v666qrk3876vpck"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "golang.org/x/tools"
+  (package
+    (name "go-golang-org-x-tools")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://go.googlesource.com/tools")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "08kx2nndq3sr6xai7403mbsqvz5shxmp2icylfr2fmwagr59cb2n"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           ;; gopls versions are tagged separately, and it is a
+           ;; separate Guix package.
+           (delete-file-recursively "gopls")))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/tools"
+       ;; Source-only package
+       #:tests? #f
+       #:phases
+       (modify-phases %standard-phases
          ;; Source-only package
-         #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
-      (synopsis "Tools that support the Go programming language")
-      (description "This package provides miscellaneous tools that support the
+         (delete 'build))))
+    (propagated-inputs
+     (list
+      go-github-com-yuin-goldmark
+      go-golang-org-x-mod
+      go-golang-org-x-net
+      go-golang-org-x-sys))
+    (synopsis "Tools that support the Go programming language")
+    (description "This package provides miscellaneous tools that support the
 Go programming language.")
-      (home-page "https://go.googlesource.com/tools/")
-      (license license:bsd-3))))
+    (home-page "https://go.googlesource.com/tools/")
+    (license license:bsd-3)))
 
 (define-public go-golang-org-x-crypto
   (let ((commit "2aa609cf4a9d7d1126360de73b55b6002f9e052a")
@@ -2918,6 +2953,116 @@ Go programming language.")
 for the Go language.")
       (home-page "https://go.googlesource.com/crypto/")
       (license license:bsd-3))))
+
+(define-public govulncheck
+  (package
+    (name "govulncheck")
+    (version "0.0.0-20221229164908-ebf31f7dc3ef")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/vuln")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1w055g90k7anrrcvfrsqklxzl9pl0vqdiwpayj9f0brwys9xhj7d"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/vuln"
+       #:go ,go-1.19
+       #:install-source? #f
+       #:phases ,#~(modify-phases %standard-phases
+                     (add-after 'unpack 'remove-go-mod-tidy
+                       (lambda _
+                         (substitute* "src/golang.org/x/vuln/checks.bash"
+                           (("go mod tidy")
+                            #$(file-append coreutils-minimal "/bin/true")))))
+                     (replace 'build
+                       (lambda arguments
+                         (apply (assoc-ref %standard-phases
+                                           'build)
+                                `(,@arguments #:import-path
+                                  "golang.org/x/vuln/cmd/govulncheck")))))))
+    (native-inputs (list coreutils-minimal))
+    (inputs (list go-golang-org-x-sys
+                  go-github-com-google-renameio
+                  go-github-com-burntsushi-toml
+                  go-mvdan-cc-unparam
+                  go-honnef-co-go-tools
+                  go-golang-org-x-tools
+                  go-golang-org-x-sync
+                  go-golang-org-x-mod
+                  go-golang-org-x-exp
+                  go-github-com-google-go-cmp-cmp
+                  go-github-com-google-go-cmdtest
+                  go-github-com-client9-misspell))
+    (home-page "https://golang.org/x/vuln")
+    (synopsis "Go Vulnerability Management")
+    (description
+     "This repository contains packages for accessing and analyzing data from
+the @url{https://vuln.go.dev,Go Vulnerability Database}.")
+    (license license:bsd-3)))
+
+(define-public go-golang-org-x-vuln
+  (package
+    (inherit govulncheck)
+    (name "go-golang-org-x-vuln")
+    (arguments
+     `(#:import-path "golang.org/x/vuln"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs govulncheck))
+    (native-inputs '())
+    (inputs '())))
+
+(define-public gopls
+  (package
+    (name "gopls")
+    (version "0.11.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://go.googlesource.com/tools")
+                    (commit (string-append "gopls/v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1l9y1rp7x51s6dnjn227fhdlnz4z1h41jn3x1aq49qki241w7m73"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "golang.org/x/tools/gopls"
+       #:unpack-path "golang.org/x/tools"
+       #:install-source? #f
+       #:phases (modify-phases %standard-phases
+                  (add-before 'unpack 'override-tools
+                    (lambda _
+                      (delete-file-recursively "src/golang.org/x/tools"))))))
+    (propagated-inputs (list go-github-com-google-go-cmp-cmp
+                             go-github-com-jba-printsrc
+                             go-github-com-jba-templatecheck
+                             go-github-com-sergi-go-diff
+                             go-golang-org-x-mod
+                             go-golang-org-x-sync
+                             go-golang-org-x-sys
+                             go-golang-org-x-text
+                             go-gopkg-in-yaml-v3
+                             go-honnef-co-go-tools
+                             go-github-com-burntsushi-toml
+                             go-github-com-google-safehtml
+                             go-golang-org-x-exp
+                             go-mvdan-cc-gofumpt
+                             go-golang-org-x-vuln
+                             go-mvdan-cc-xurls))
+    (home-page "https://golang.org/x/tools/gopls")
+    (synopsis "Official language server for the Go language")
+    (description
+     "Pronounced ``Go please'', this is the official Go language server
+developed by the Go team.  It provides IDE features to any LSP-compatible
+editor.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-protonmail-go-crypto
   (package
@@ -3021,11 +3166,11 @@ processing.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-sync
-  (let ((commit "6e8e738ad208923de99951fe0b48239bfd864f28")
+  (let ((commit "8fcdb60fdcc0539c5e357b2308249e4e752147f1")
         (revision "1"))
     (package
       (name "go-golang-org-x-sync")
-      (version (git-version "0.0.0" revision commit))
+      (version (git-version "0.1.0" revision commit))
       (source (origin
                 (method git-fetch)
                 (uri (git-reference
@@ -3034,17 +3179,17 @@ processing.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1avk27pszd5l5df6ff7j78wgla46ir1hhy2jwfl9a3c0ys602yx9"))))
+                  "07qrhni6f5hh5p95k1yk6s4wsj341q663irvx6rllrxfsymj6a0z"))))
       (build-system go-build-system)
       (arguments
        `(#:import-path "golang.org/x/sync"
          #:tests? #f
          ;; Source-only package
-         #:phases
-         (modify-phases %standard-phases
-           (delete 'build))))
+         #:phases (modify-phases %standard-phases
+                    (delete 'build))))
       (synopsis "Additional Go concurrency primitives")
-      (description "This package provides Go concurrency primitives in addition
+      (description
+       "This package provides Go concurrency primitives in addition
 to the ones provided by the language and “sync” and “sync/atomic”
 packages.")
       (home-page "https://go.googlesource.com/sync/")
@@ -3190,28 +3335,27 @@ time.")
       (license license:bsd-3))))
 
 (define-public go-golang-org-x-mod
-  (let ((commit "0f08993efd8a8ec67e75bcccf86b0e1569b0ab0a")
+  (let ((commit "7c05a442b7c1d1a107879b4a090bb5a38d3774a1")
         (revision "0"))
     (package
       (name "go-golang-org-x-mod")
-      (version (git-version "0.5.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/golang/mod")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0pl0jc5jvg7hxj4z66zg6kglnq5g7li09f3k9klwvyr4jx5dw88k"))))
+      (version (git-version "0.7.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/golang/mod")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "14r24fq3kn84k2y2jvvg8hwpy52a3q429pimrdwl5zwknbr2awmh"))))
       (build-system go-build-system)
       (arguments
        '(#:import-path "golang.org/x/mod/"
          #:tests? #f
-         #:phases
-         (modify-phases %standard-phases
-           ;; Source-only package
-           (delete 'build))))
+         #:phases (modify-phases %standard-phases
+                    ;; Source-only package
+                    (delete 'build))))
       (home-page "https://golang.org/x/mod")
       (synopsis "Tools to work directly with Go module mechanics")
       (description
@@ -3227,23 +3371,23 @@ loading algorithms.")
 (define-public go-github-com-burntsushi-toml
   (package
     (name "go-github-com-burntsushi-toml")
-    (version "0.3.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/BurntSushi/toml")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32
-         "1fjdwwfzyzllgiwydknf1pwjvy49qxfsczqx5gz3y0izs7as99j6"))))
+    (version "1.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/BurntSushi/toml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1v9czq4hsyvdz7yx70y6sgq77wmrgfmn09r9cj4w85z38jqnamv7"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/BurntSushi/toml"))
     (home-page "https://github.com/BurntSushi/toml")
     (synopsis "Toml parser and encoder for Go")
-    (description "This package is toml parser and encoder for Go.  The interface
+    (description
+     "This package is toml parser and encoder for Go.  The interface
 is similar to Go's standard library @code{json} and @code{xml} package.")
     (license license:expat)))
 
@@ -4784,6 +4928,51 @@ Damerau-Levenshtein distance.  Takes a string value input from the user.
 Looks for an identical word on a list of words, if none is found, look for a
 similar word.")
       (license license:expat))))
+
+(define-public misspell
+  (package
+    (name "misspell")
+    (version "0.3.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/client9/misspell")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vwf33wsc4la25zk9nylpbp9px3svlmldkm0bha4hp56jws4q9cs"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/client9/misspell"
+       #:phases (modify-phases %standard-phases
+                  (replace 'build
+                    (lambda arguments
+                      (apply (assoc-ref %standard-phases
+                                        'build)
+                             `(,@arguments #:import-path
+                               "github.com/client9/misspell/cmd/misspell")))))))
+    (home-page "https://github.com/client9/misspell")
+    (synopsis "Correct commonly misspelled English words in source files")
+    (description
+     "misspell assists with correcting commonly misspelled English words in
+source files.  A neutral variety of English is used by default, but a US or UK
+locale can be selected.")
+    (license license:expat)))
+
+(define-public go-github-com-client9-misspell
+  (package
+    (inherit misspell)
+    (name "go-github-com-client9-misspell")
+    (arguments
+     `(#:import-path "github.com/client9/misspell"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs misspell))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public go-github-com-stevedonovan-luar
   (let ((commit "22d247e5366095f491cd83edf779ee99a78f5ead")
@@ -6998,28 +7187,27 @@ colorized or SGR defined output to the standard output.")
 (define-public go-github-com-google-go-cmp-cmp
   (package
     (name "go-github-com-google-go-cmp-cmp")
-    (version "0.5.2")
+    (version "0.5.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                     (url "https://github.com/google/go-cmp")
-                     (commit (string-append "v" version))))
+                    (url "https://github.com/google/go-cmp")
+                    (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0qchy411jm9q2l9mf7x3ry2ycaqp9xdhf2nx14qrpzcxfigv2705"))))
+                "0a13m7l1jrysa7mrlmra8y7n83zcnb23yjyg3a609p8i9lxkh1wm"))))
     (build-system go-build-system)
     (arguments
      '(#:import-path "github.com/google/go-cmp/cmp"
        #:unpack-path "github.com/google/go-cmp"))
-    (propagated-inputs
-     (list go-golang-org-x-xerrors))
     (synopsis "Determine equality of values in Go")
-    (description "This package provides a more powerful and safer
-alternative to @code{reflect.DeepEqual} for comparing whether two values
-are semantically equal in Go (for writing tests).")
-    (home-page "https://godoc.org/github.com/google/go-cmp/cmp")
-    (license license:asl2.0)))
+    (description
+     "This package is intended to be a more powerful and safer
+alternative to @@code{reflect.DeepEqual} for comparing whether two values are
+semantically equal.")
+    (home-page "https://github.com/google/go-cmp")
+    (license license:bsd-3)))
 
 (define-public go-github-com-google-uuid
   (package
@@ -7041,6 +7229,28 @@ are semantically equal in Go (for writing tests).")
     (synopsis "Generate and inspect UUIDs based on RFC 4122 and DCE 1.1")
     (description "The uuid package generates and inspects UUIDs based on RFC
 4122 and DCE 1.1: Authentication and Security Services.")
+    (license license:bsd-3)))
+
+(define-public go-github-com-google-gopacket
+  (package
+    (name "go-github-com-google-gopacket")
+    (version "1.1.19")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/gopacket")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "048qwm2n0wrpql4qqgd7jyynn3gk069yvqbxnshlayzmbhf87ls4"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/gopacket"))
+    (home-page "https://github.com/google/gopacket")
+    (synopsis "Packet processing capabilities library")
+    (description
+     "This package provides packet processing capabilities for Go.")
     (license license:bsd-3)))
 
 (define-public go-github-com-google-goterm
@@ -7334,6 +7544,29 @@ data.
 This package is a successor to @code{go-github-com-golang-protobuf} with an
 improved and cleaner API.")
     (license license:bsd-3)))
+
+(define-public go-github-com-macronut-go-tproxy
+  (package
+    (name "go-github-com-macronut-go-tproxy")
+    (version "0.0.0-20190726054950-ef7efd7f24ed")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/FutureProtocolLab/go-tproxy")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jibsg0xhsn0h1jq4g9qd4nr58w43y8majlwfri9ffk2cbfrwqdr"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/macronut/go-tproxy"))
+    (home-page "https://github.com/FutureProtocolLab/go-tproxy")
+    (synopsis "Linux Transparent Proxy library")
+    (description
+     "Golang TProxy provides an easy to use wrapper for the Linux Transparent
+Proxy functionality.")
+    (license license:expat)))
 
 (define-public go-github-com-mattn-go-zglob
   (package
@@ -8002,7 +8235,7 @@ converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
 (define-public go-github-com-andybalholm-cascadia
   (package
     (name "go-github-com-andybalholm-cascadia")
-    (version "1.0.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -8011,7 +8244,7 @@ converts it into syntax highlighted HTML, ANSI-coloured text, etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "09j8cavbhqqdxjqrkwbc40g8p0i49zf3184rpjm5p2rjbprcghcc"))))
+                "0zgc9fjkn7d66cnmgnmalr9lrq4ii1spap95pf2x1hln4pflib5s"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/andybalholm/cascadia"))
@@ -8489,6 +8722,57 @@ This makes it virtually free to implement mocks and testing over
 file system operations.")
     (license license:asl2.0)))
 
+(define-public go-github-com-jba-printsrc
+  (package
+    (name "go-github-com-jba-printsrc")
+    (version "0.2.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jba/printsrc")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1gyy3kmb5a5i710wkv3b7ah7i7sz5sdc7v3sab5m4rxch1sd2fpj"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jba/printsrc"
+       ;; TODO: Open bug; expecting time.Local, but when local=UTC, we get time.UTC
+       #:tests? #f))
+    (home-page "https://github.com/jba/printsrc")
+    (synopsis "Prints Go values as sourcecode")
+    (description
+     "Package printsrc prints Go values as Go source.  It strives to render
+legal Go source code, and returns an error when detects that it cannot.")
+    (license license:expat)))
+
+(define-public go-github-com-jba-templatecheck
+  (package
+    (name "go-github-com-jba-templatecheck")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jba/templatecheck")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12iwkidz4p6wdl65jfddqxls80mv879k2rpb42dj7y4dja5advlc"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/jba/templatecheck"))
+    (propagated-inputs (list go-github-com-google-safehtml))
+    (home-page "https://github.com/jba/templatecheck")
+    (synopsis "Checks Go templates for problems")
+    (description
+     "Package templatecheck checks Go templates for problems.  It can detect
+many errors that are normally caught only during execution.  Use templatecheck
+in tests to find template errors early, and along template execution paths
+that might only rarely be reached.")
+    (license license:expat)))
+
 (define-public go-github-com-jbenet-go-context
   (let ((commit "d14ea06fba99483203c19d92cfcd13ebe73135f4")
         (revision "1"))
@@ -8658,30 +8942,26 @@ temporal directories.")
     (license license:asl2.0)))
 
 (define-public go-github-com-pkg-diff
-  (let ((commit "531926345625d489a6b56f860a569e68245ace36")
-        (revision "1"))
-    (package
-      (name "go-github-com-pkg-diff")
-      (version (git-version "0.0.1" revision commit))
-      (source (origin
-                (method git-fetch)
-                (uri (git-reference
-                      (url "https://github.com/pkg/diff")
-                      (commit commit)))
-                (file-name (git-file-name name version))
-                (sha256
-                 (base32
-                  "1770m7qhww6lm0wj1v3mhv6hwa2v92p4w2fqxj1xyrg5dd58d944"))))
-      (build-system go-build-system)
-      (arguments
-       `(#:import-path "github.com/pkg/diff"))
-      (native-inputs
-       (list go-github-com-sergi-go-diff))
-      (home-page "https://github.com/pkg/diff/")
-      (synopsis "Create and print diffs")
-      (description
-       "This package provides a Go library to create and print diffs.")
-      (license license:bsd-3))))
+  (package
+    (name "go-github-com-pkg-diff")
+    (version "0.0.0-20210226163009-20ebb0f2a09e")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pkg/diff")
+                    (commit "20ebb0f2a09e612109b224b32f79370409108bcc")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1g3dzgwhz4fx3ddpsv7fsa4r1v5clsp2lbw2qrkdk9y1vc5gi8yi"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "github.com/pkg/diff"))
+    (home-page "https://github.com/pkg/diff/")
+    (synopsis "Create and print diffs")
+    (description
+     "This package provides a Go library to create and print diffs.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-twpayne-go-shell
   (package
@@ -9030,7 +9310,7 @@ the necessary APIs to build a wide array of higher-level primitives.")
 (define-public go-github-com-rogpeppe-go-internal
   (package
     (name "go-github-com-rogpeppe-go-internal")
-    (version "1.6.1")
+    (version "1.9.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -9039,7 +9319,7 @@ the necessary APIs to build a wide array of higher-level primitives.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00j2vpp1bsggdvw1winkz23mg0q6drjiir5q0k49pmqx1sh7106l"))))
+                "0bh08k8fy1qcc0vzyv0xkg0sx5kjx348zd1dpjmp3rbrr6xrpaaw"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rogpeppe/go-internal"
@@ -9048,6 +9328,8 @@ the necessary APIs to build a wide array of higher-level primitives.")
        #:phases
        (modify-phases %standard-phases
          (delete 'build))))
+    (propagated-inputs
+     (list go-github-com-pkg-diff))
     (home-page "https://github.com/rogpeppe/go-internal/")
     (synopsis "Internal packages from the Go standard library")
     (description "This repository factors out an opinionated selection of
@@ -9071,9 +9353,9 @@ Included are the following:
 @end itemize\n")
     (license license:bsd-3)))
 
-(define-public gopkg-in-errgo-fmt-errors
+(define-public go-gopkg-in-errgo-fmt-errors
   (package
-    (name "gopkg-in-errgo-fmt-errors")
+    (name "go-gopkg-in-errgo-fmt-errors")
     (version "2.1.0")
     (source (origin
               (method git-fetch)
@@ -9086,7 +9368,7 @@ Included are the following:
                 "065mbihiy7q67wnql0bzl9y1kkvck5ivra68254zbih52jxwrgr2"))))
     (build-system go-build-system)
     (arguments
-     `(#:import-path "gopkg.in/errgo.v2/fmt/errors"
+     `(#:import-path "gopkg.in/errgo.v2"
        #:tests? #f
        ;; Source-only package
        #:phases
@@ -9674,6 +9956,173 @@ atomic access.")
      "@code{multierr} allows combining one or more Go errors together.")
     (license license:expat)))
 
+(define-public gofumpt
+  (package
+    (name "gofumpt")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/gofumpt")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "13ahi8q1a9h4dj6a7xp95c79d5svz5p37b6z91aswbq043qd417k"))
+              (modules '((guix build utils)))
+              (snippet `(let ((fixed-version (string-append ,version
+                                                            " (GNU Guix)")))
+                          ;; Gofumpt formats Go files, and therefore modifies
+                          ;; them. To help the developers diagnose issues, it
+                          ;; replaces any occurrence of a `//gofumpt:diagnose`
+                          ;; comment with some debugging information which
+                          ;; includes the module version. In the event gofumpt
+                          ;; was built without module support, it falls back
+                          ;; to a string "(devel)". Since our build system
+                          ;; does not yet support modules, we'll inject our
+                          ;; version string instead, since this is more
+                          ;; helpful.
+                          (substitute* "internal/version/version.go"
+                            (("^const fallbackVersion.+")
+                             (format #f "const fallbackVersion = \"~a\"~%"
+                                     fixed-version)))
+                          ;; These tests rely on `//gofumpt:diagnose` comments
+                          ;; being replaced with fixed information injected
+                          ;; from the test scripts, but this requires a binary
+                          ;; compiled as a Go module. Since we can't do this
+                          ;; yet, modify the test scripts with the version
+                          ;; string we're injecting.
+                          (delete-file "testdata/script/diagnose.txtar")
+                          (substitute* (find-files "testdata/script/"
+                                                   "\\.txtar$")
+                            (("v0.0.0-20220727155840-8dda8068d9f3")
+                             fixed-version)
+                            (("(devel)")
+                             fixed-version)
+                            (("v0.3.2-0.20220627183521-8dda8068d9f3")
+                             fixed-version))))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/gofumpt"
+       #:go ,go-1.19))
+    (native-inputs (list go-gopkg-in-errgo-fmt-errors))
+    (propagated-inputs (list go-github-com-pkg-diff
+                             go-github-com-kr-text
+                             go-github-com-kr-pretty
+                             go-golang-org-x-tools
+                             go-golang-org-x-sys
+                             go-golang-org-x-sync
+                             go-golang-org-x-mod
+                             go-github-com-rogpeppe-go-internal
+                             go-github-com-google-go-cmp-cmp
+                             go-github-com-frankban-quicktest))
+    (home-page "https://mvdan.cc/gofumpt/")
+    (synopsis "Formats Go files with a stricter ruleset than gofmt")
+    (description
+     "Enforce a stricter format than @code{gofmt}, while being backwards compatible.
+That is, @code{gofumpt} is happy with a subset of the formats that
+@code{gofmt} is happy with.")
+    (license license:bsd-3)))
+
+(define-public go-mvdan-cc-gofumpt
+  (package
+    (inherit gofumpt)
+    (name "go-mvdan-cc-gofumpt")
+    (arguments
+     `(#:import-path "mvdan.cc/gofumpt"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs gofumpt))
+    (native-inputs '())
+    (inputs '())))
+
+(define-public unparam
+  (package
+    (name "unparam")
+    (version "0.0.0-20221223090309-7455f1af531d")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/unparam")
+                    (commit (go-version->git-ref version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0wynf0b32azxljncw5fh9bwkxpdflvf9q1z16wyj432566yjh12c"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/unparam"
+       #:go ,go-1.19))
+    (inputs (list go-golang-org-x-sys go-golang-org-x-mod
+                  go-github-com-pkg-diff go-golang-org-x-tools
+                  go-github-com-rogpeppe-go-internal))
+    (home-page "https://mvdan.cc/unparam/")
+    (synopsis "Find unused parameters in Go")
+    (description "Reports unused function parameters and results in Go code.")
+    (license license:bsd-3)))
+
+(define-public go-mvdan-cc-unparam
+  (package
+    (inherit unparam)
+    (name "go-mvdan-cc-unparam")
+    (arguments
+     `(#:import-path "github.com/mvdan/unparam"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs unparam))
+    (native-inputs '())
+    (inputs '())))
+
+(define-public xurls
+  (package
+    (name "xurls")
+    (version "2.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mvdan/xurls")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b040nbk1vwlk1qljavh8w8fn2r243q700n6gr8j2asmnz0xq84p"))))
+    (build-system go-build-system)
+    (arguments
+     `(#:import-path "mvdan.cc/xurls/v2"
+       #:unpack-path "mvdan.cc/xurls/v2"
+       #:phases (modify-phases %standard-phases
+                  (replace 'build
+                    (lambda arguments
+                      (apply (assoc-ref %standard-phases
+                                        'build)
+                             `(,@arguments #:import-path
+                               "mvdan.cc/xurls/v2/cmd/xurls")))))))
+    (inputs (list go-golang-org-x-sync go-github-com-rogpeppe-go-internal))
+    (home-page "https://mvdan.cc/xurls/v2/")
+    (synopsis "Extracts URLs from text")
+    (description
+     "Xurls extracts urls from plain text using regular expressions.  It can
+be used as both a binary and a library.")
+    (license license:bsd-3)))
+
+(define-public go-mvdan-cc-xurls
+  (package
+    (inherit xurls)
+    (name "go-mvdan-cc-xurls")
+    (arguments
+     `(#:import-path "mvdan.cc/xurls"
+       #:tests? #f
+       #:install-source? #t
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (package-inputs xurls))
+    (native-inputs '())
+    (inputs '())))
+
 (define-public go-golang-org-x-lint
   (let ((commit "83fdc39ff7b56453e3793356bcff3070b9b96445")
         (revision "0"))
@@ -9729,27 +10178,26 @@ tools with similar semantics.")
 (define-public go-honnef-co-go-tools
   (package
     (name "go-honnef-co-go-tools")
-    (version "0.1.3")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/dominikh/go-tools")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "17li8jbw3cpn59kpcl3j3r2an4wkx3fc81xn0j4xgbjpkxh9493n"))))
+    (version "0.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/dominikh/go-tools")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "099z04v7vvwwglnps315s9fmal68xvzlc1g8m26iqi980grbwn32"))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "honnef.co/go/tools"
        #:tests? #f
        ;; Source-only package
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'build))))
-    (propagated-inputs
-     (list go-golang-org-x-tools go-github-com-kisielk-gotool
-           go-github-com-burntsushi-toml))
+       #:phases (modify-phases %standard-phases
+                  (delete 'build))))
+    (propagated-inputs (list go-golang-org-x-exp go-golang-org-x-tools
+                             go-golang-org-x-mod go-github-com-kisielk-gotool
+                             go-github-com-burntsushi-toml))
     (home-page "https://honnef.co/go/tools")
     (synopsis "Staticcheck advanced Go linter")
     (description
@@ -10868,6 +11316,60 @@ Jsonnet} data templating language in Go.  It is a feature-complete,
 production-ready implementation, compatible with the original Jsonnet C++
 implementation.")
     (license license:asl2.0)))
+
+(define-public go-github-com-google-go-cmdtest
+  (let ((commit "55ab3332a786118933ddf71544aae14951ba9bc5")
+        (revision "0"))
+    (package
+      (name "go-github-com-google-go-cmdtest")
+      (version (git-version "0.4.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/google/go-cmdtest")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "10kswvbdwissjb5mr0ys4b3ppxkxlpklqg7cr2z7rv21g2vwczbl"))))
+      (build-system go-build-system)
+      (arguments
+       '(#:import-path "github.com/google/go-cmdtest"))
+      (propagated-inputs (list go-github-com-google-renameio
+                               go-github-com-google-go-cmp-cmp))
+      (home-page "https://github.com/google/go-cmdtest")
+      (synopsis "Testing for your CLI")
+      (description
+       "The cmdtest package simplifies testing of command-line interfaces.  It
+provides a simple, cross-platform, shell-like language to express command
+execution.  It can compare actual output with the expected output, and can
+also update a file with new \"golden\" output that is deemed correct.")
+      (license license:asl2.0))))
+
+(define-public go-github-com-google-safehtml
+  (package
+    (name "go-github-com-google-safehtml")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/google/safehtml")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0j2xjy8xrk9y9k6bqpvimj84i6hg1wwsyvwsb0axhmp49cmnrp86"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/google/safehtml"))
+    (propagated-inputs `(("go-golang-org-x-text" ,go-golang-org-x-text)))
+    (home-page "https://github.com/google/safehtml")
+    (synopsis "Safe HTML for Go")
+    (description
+     "Package safehtml provides immutable string-like types which represent values
+that are guaranteed to be safe, by construction or by escaping or sanitization,
+to use in various HTML contexts and with various DOM APIs.")
+    (license license:bsd-3)))
 
 (define-public go-github-com-google-shlex
   (package

@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
-;;; Copyright © 2015-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016, 2017, 2018 Julien Lepiller <julien@lepiller.eu>
 ;;; Copyright © 2017, 2018, 2019 Christopher Baines <mail@cbaines.net>
@@ -1155,8 +1155,7 @@ a webserver.")
 
   (package  hpcguix-web-package (default hpcguix-web)) ;file-like
 
-  ;; Specs is gexp of hpcguix-web configuration file
-  (specs    hpcguix-web-configuration-specs)
+  (specs    hpcguix-web-configuration-specs (default #f)) ;#f | gexp
   (address  hpcguix-web-configuration-address (default "127.0.0.1"))
   (port     hpcguix-web-configuration-port (default 5000)))
 
@@ -1217,8 +1216,11 @@ a webserver.")
                        "-p"
                        #$(number->string
                           (hpcguix-web-configuration-port config))
-                       (string-append "--config="
-                                      #$(scheme-file "hpcguix-web.scm" specs)))
+                       #$@(if specs
+                              #~((string-append "--config="
+                                                #$(scheme-file
+                                                   "hpcguix-web.scm" specs)))
+                              #~()))
                  #:user "hpcguix-web"
                  #:group "hpcguix-web"
                  #:environment-variables
@@ -1239,7 +1241,8 @@ a webserver.")
           (service-extension rottlog-service-type
                              (const %hpcguix-web-log-rotations))
           (service-extension shepherd-root-service-type
-                             (compose list hpcguix-web-shepherd-service))))))
+                             (compose list hpcguix-web-shepherd-service))))
+   (default-value (hpcguix-web-configuration))))
 
 
 ;;;

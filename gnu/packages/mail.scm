@@ -17,7 +17,7 @@
 ;;; Copyright © 2016, 2017 Troy Sankey <sankeytms@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Clément Lassieur <clement@lassieur.org>
-;;; Copyright © 2016–2022 Arun Isaac <arunisaac@systemreboot.net>
+;;; Copyright © 2016–2023 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2016 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2016, 2018 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
@@ -1613,7 +1613,7 @@ pairs have previously synchronized.")
 (define-public getmail6
   (package
     (name "getmail6")
-    (version "6.18.9")
+    (version "6.18.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1622,7 +1622,7 @@ pairs have previously synchronized.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1ch5hagkpybmkgg2wbb2mids3nbmjqgdqjhczzz7pvj4hx2m8fdb"))))
+                "0dr2grcxnn21prv6dj8sd9c68zs1fxy00wc676rnghcs4yfnb78h"))))
     (build-system python-build-system)
     (arguments (list #:tests? #f))      ;tests require docker
     (home-page "https://github.com/getmail6/getmail6")
@@ -1795,14 +1795,14 @@ addons which can add many functionalities to the base client.")
 (define-public msmtp
   (package
     (name "msmtp")
-    (version "1.8.22")
+    (version "1.8.23")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/msmtp/releases"
                            "/msmtp-" version ".tar.xz"))
        (sha256
-        (base32 "1rx3ksvwdfrwahsd2lwf52vnhhq72ygb0kjy6ci2df55hri2010v"))))
+        (base32 "1f2nqdj3k8q7l4m3a6n8ckaslilxxp2kzfdmni6l2gcv15mw216g"))))
     (build-system gnu-build-system)
     (inputs
      (list libsecret gnutls zlib gsasl))
@@ -1949,7 +1949,7 @@ facilities for checking incoming mail.")
   (package
     (name "dovecot")
     ;; Also update dovecot-pigeonhole when updating to a new minor version.
-    (version "2.3.19.1")
+    (version "2.3.20")
     (source
      (origin
        (method url-fetch)
@@ -1957,7 +1957,7 @@ facilities for checking incoming mail.")
                            (version-major+minor version) "/"
                            "dovecot-" version ".tar.gz"))
        (sha256
-        (base32 "0lawd8grwxass1frlw9bdd49fpwwxsv2qnxllsg6a2bkgpcbqnnv"))))
+        (base32 "0ll546dldhxqk8yr2jnfq0rag7vp9d9hz7gf6pgsnj41jvmk5a6a"))))
     (build-system gnu-build-system)
     (native-inputs
      (list pkg-config))
@@ -2017,7 +2017,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
   (let ((dovecot-version (version-major+minor (package-version dovecot))))
     (package
       (name "dovecot-pigeonhole")
-      (version "0.5.19")
+      (version "0.5.20")
       (source
        (origin
          (method url-fetch)
@@ -2025,7 +2025,7 @@ It supports mbox/Maildir and its own dbox/mdbox formats.")
                "https://pigeonhole.dovecot.org/releases/" dovecot-version "/"
                "dovecot-" dovecot-version "-pigeonhole-" version ".tar.gz"))
          (sha256
-          (base32 "033kkhby9k9yrmgvlfmyzp8fccsw5bhq1dyvxj94sg3grkpj7f8h"))
+          (base32 "163wc5spzvy9pcpsbz3adl22h8f1krp21fh9mql16b7af14bscmf"))
          (modules '((guix build utils)))
          (snippet
           '(begin
@@ -2482,13 +2482,13 @@ compatibility shims for the @command{sendmail}, @command{mailq}, and
 (define-public fdm
   (package
     (name "fdm")
-    (version "2.1")
+    (version "2.2")
     (source (origin
              (method url-fetch)
              (uri (string-append "https://github.com/nicm/fdm/releases/download/"
                                  version "/fdm-" version ".tar.gz"))
              (sha256
-               (base32 "1zxd5j5x2gp6m62j83xsjyfglw1p6gn4zk5qx10djdh8xzkg53c5"))))
+               (base32 "05kczdk44cbk3rg77rwgp47hw75al6b09wlv3cff4d4qh8bx3ajk"))))
     (build-system gnu-build-system)
     (inputs
      (list tdb openssl zlib))
@@ -2729,8 +2729,7 @@ DKIM and/or DomainKeys.")
                               "perl-mailtools"
                               "perl-mime-tools"
                               "perl-net-dns"
-                              "perl-timedate"))
-               #t))))))
+                              "perl-timedate"))))))))
     (inputs
      (list perl
            perl-crypt-openssl-rsa
@@ -2743,7 +2742,7 @@ DKIM and/or DomainKeys.")
            perl-net-server
            perl-socket6
            perl-timedate))
-    (home-page "http://dkimproxy.sourceforge.net/")
+    (home-page "https://dkimproxy.sourceforge.net")
     (synopsis "SMTP proxy to sign and verify Internet mail with DKIM headers")
     (description
      "DKIMproxy is an SMTP proxy that signs and verifies Internet mail using the
@@ -2892,20 +2891,22 @@ easily (one at a time).")
 (define-public mpop
   (package
     (name "mpop")
-    (version "1.4.17")
+    (version "1.4.18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://marlam.de/mpop/releases/"
                            "mpop-" version ".tar.xz"))
        (sha256
-        (base32 "1mcbvzdbdr86zsq8zr1zryjrmfiqikckx3648zvdjh99mm5lkbj2"))))
+        (base32 "1dw5kwflga26kfjl999lilq14vvk6fcapryihakr9l7phh0rb6b0"))))
     (build-system gnu-build-system)
     (inputs
      (list gnutls))
     (native-inputs
      (list pkg-config))
     (home-page "https://marlam.de/mpop/")
+    (properties
+     '((release-monitoring-url . "https://marlam.de/mpop/download/")))
     (synopsis "POP3 mail client")
     (description "mpop is a small and fast POP3 client suitable as a
 fetchmail replacement.
@@ -4072,7 +4073,7 @@ It is a replacement for the @command{urlview} program.")
                     `("GUILE_LOAD_COMPILED_PATH" ":" prefix
                       (,go ,(getenv "GUILE_LOAD_COMPILED_PATH"))))))))))
       (inputs
-       (list guile-email-latest
+       (list guile-email
              guile-fibers
              guile-gcrypt
              guile-json-4
@@ -4685,7 +4686,7 @@ means--it's all programmable).")
 (define-public rss2email
   (package
     (name "rss2email")
-    (version "3.13.1")
+    (version "3.14")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -4694,21 +4695,26 @@ means--it's all programmable).")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g1yr3v3ibdh2jqil64fbdbplx5m2yzxr893fqfkwcc5c7fbwl4d"))))
+                "0rmcwvf8whf49qq5rgp5hhmhfjli1vhjlc7fjhj24gyy1kkjir2k"))))
     (build-system python-build-system)
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? #:allow-other-keys)
-             (when tests?
-               (with-directory-excursion "test"
-                 ;; Skip networking tests
-                 (substitute* "test.py"
-                   (("( *)class (:?TestSend|TestFetch).*" match indent)
-                    (string-append indent "@unittest.skip(\"Networking stuff skipped\")\n"
-                                   indent match)))
-                 (invoke "python" "-m" "unittest"))))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "test"
+                  ;; Skip networking tests
+                  (substitute* "test.py"
+                    (("( *)class (:?TestSend|TestFetch).*" match indent)
+                     (string-append indent
+                                    "@unittest.skip(\"Networking stuff skipped\")\n"
+                                    indent match)))
+                  (invoke "python" "-m" "unittest")))))
+          (add-after 'install 'install-documentation
+            (lambda _
+              (install-file "r2e.1" (string-append #$output "share/man/man1")))))))
     (inputs
      (list python-feedparser python-html2text))
     (home-page "https://github.com/rss2email/rss2email")

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015 Alex Kost <alezost@gmail.com>
@@ -8,7 +8,7 @@
 ;;; Copyright © 2016, 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Lukas Gradl <lgradl@openmailbox.org>
-;;; Copyright © 2016–2022 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2016–2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018, 2020 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -40,6 +40,8 @@
 ;;; Copyright © 2022 Juliana Sims <jtsims@protonmail.com>
 ;;; Copyright © 2022 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -854,7 +856,7 @@ engineers, musicians, soundtrack editors and composers.")
 (define-public audacity
   (package
     (name "audacity")
-    (version "3.2.2")
+    (version "3.2.3")
     (source
      (origin
        (method git-fetch)
@@ -863,7 +865,7 @@ engineers, musicians, soundtrack editors and composers.")
              (commit (string-append "Audacity-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1akp9marc4y2g9mwwgfnl43q0gbb2dv7vhsnybh8wdn8ql30hfdw"))
+        (base32 "0wg75fblxlnrn5kqvg0w1fi2pwdkn1nd6vgya3sad84l3ki7wpyh"))
        (patches (search-patches "audacity-ffmpeg-fallback.patch"))
        (modules '((guix build utils)))
        (snippet
@@ -1089,45 +1091,56 @@ formant warp.")
     (license license:gpl2+)))
 
 (define-public azr3
-  (package
-    (name "azr3")
-    (version "1.2.3")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://savannah/ll-plugins/azr3-jack-"
-                                  version
-                                  ".tar.bz2"))
-              (sha256
-               (base32
-                "18mdw6nc0vgj6k9rsy0x8w64wvzld0frqshrxxbxfj9qi9843vlc"))
-              (patches (search-patches "azr3.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     `(#:tests? #f ; no check target
-       #:make-flags
-       (list "LV2PEG=ttl2c"
-             (string-append "prefix=" %output)
-             (string-append "pkgdatadir=" %output "/share/azr3-jack"))
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'install 'fix-timestamp
-           (lambda _
-             (let ((early-1980 315619200)) ; 1980-01-02 UTC
-               (utime "azr3.1" early-1980 early-1980))
-             #t)))))
-    (inputs
-     (list gtkmm-2 lvtk jack-1 lash))
-    (native-inputs
-     (list pkg-config))
-    (home-page "http://ll-plugins.nongnu.org/azr3/")
-    (synopsis "Tonewheel organ synthesizer")
-    (description
-     "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
+  (let ((commit "3391a0a509e7fa3fb46c7627fd5979b67e468038")
+        (revision "1"))
+    (package
+      (name "azr3")
+      (version (git-version "1.2.3" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.savannah.gnu.org/git/ll-plugins/azr3-jack.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "09wy0z4kiid7mwf5b5j8rzzgxafi4mg88xs550n7864p0n351chx"))
+                (patches (search-patches "azr3.patch"
+                                         "azr3-remove-lash.patch"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                       ; no check target
+        #:make-flags
+        #~(list "LV2PEG=ttl2c"
+                (string-append "prefix=" #$output)
+                (string-append "pkgdatadir=" #$output "/share/azr3-jack"))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'bootstrap
+              (lambda _
+                (call-with-output-file "Makefile.config"
+                  (lambda (port) (display "" port)))
+                (substitute* "Makefile"
+                  (("^PACKAGE_VERSION =.*")
+                   (string-append "PACKAGE_VERSION = \"" #$version "\"\n")))))
+            (add-before 'install 'fix-timestamp
+              (lambda _
+                (let ((early-1980 315619200)) ; 1980-01-02 UTC
+                  (utime "azr3.1" early-1980 early-1980)))))))
+      (inputs
+       (list gtkmm-2 jack-2 lvtk))
+      (native-inputs
+       (list pkg-config))
+      (home-page "http://ll-plugins.nongnu.org/azr3/")
+      (synopsis "Tonewheel organ synthesizer")
+      (description
+       "AZR-3 is a port of the free VST plugin AZR-3.  It is a tonewheel organ
 with drawbars, distortion and rotating speakers.  The organ has three
 sections, two polyphonic sections with nine drawbars each and one monophonic
 bass section with five drawbars.  A standalone JACK application and LV2
 plugins are provided.")
-    (license license:gpl2)))
+      (license license:gpl2))))
 
 (define-public calf
   (package
@@ -1147,7 +1160,6 @@ plugins are provided.")
            glib
            gtk+-2
            cairo
-           lash
            jack-1
            lv2
            ladspa
@@ -1211,7 +1223,7 @@ generators of mostly elementary and occasionally exotic nature.")
 (define-public iir
   (package
     (name "iir")
-    (version "1.9.3")
+    (version "1.9.4")
     (source
      (origin
        (method git-fetch)
@@ -1220,7 +1232,7 @@ generators of mostly elementary and occasionally exotic nature.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0wbh804as740kjvmyaqx4rwvwwrbwh0fnj979dvv1ljlx1p50bk0"))))
+        (base32 "1fqxn0qlvykpk9hiliivmkjjcz3g1bp83yd0zfm82r14abkjbj2g"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -2364,6 +2376,8 @@ especially for creating reverb effects.  It supports impulse responses with 1,
 2 or 4 channels, in any soundfile format supported by libsndfile.")
     (license license:gpl2+)))
 
+;; Packages depending on JACK should always prefer jack-2.
+;; JACK1 is provided for legacy applications
 (define-public jack-1
   (package
     (name "jack")
@@ -2409,9 +2423,8 @@ synchronous execution of all clients, and low latency operation.")
     ;; licensed under the LGPL in order to allow for proprietary usage.
     (license (list license:gpl2+ license:lgpl2.1+))))
 
-;; Packages depending on JACK should always prefer jack-1.  Both jack-1 and
-;; jack-2 implement the same API.  JACK2 is provided primarily as a client
-;; program for users who might benefit from the D-BUS features.
+;; Packages depending on JACK should always prefer jack-2.  Both jack-1 and
+;; jack-2 implement the same API.
 (define-public jack-2
   (package
     (inherit jack-1)
@@ -2463,6 +2476,36 @@ synchronous execution of all clients, and low latency operation.")
     ;; Most files are under GPLv2+, but some headers are under LGPLv2.1+
     (license (list license:gpl2+ license:lgpl2.1+))))
 
+(define-public jack-example-tools
+  (package
+    (name "jack-example-tools")
+    (version "3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/jackaudio/jack-example-tools")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0x684clxqib1bq3zvvrqlh7hb3arb1bf672xyx1jbwv76dcmm5mh"))))
+    (build-system meson-build-system)
+    (inputs
+     (list alsa-lib
+           jack-2
+           libsndfile
+           opus
+           readline))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/jackaudio/jack-example-tools")
+    (synopsis "Tools for JACK connections")
+    (description "This package provides tools for managing JACK connections
+and testing or configuring the JACK session.  Tools include @code{jack_lsp},
+@code{jack_connect}, and @code{jack_transport}.")
+    ;; Most files are under GPLv2+, but zalsa is GPLv3+.
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public jacktrip
   (package
     (name "jacktrip")
@@ -2509,17 +2552,26 @@ audio signal streaming.")
 (define-public jalv
   (package
     (name "jalv")
-    (version "1.6.6")
+    (version "1.6.8")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://download.drobilla.net/jalv-"
-                                  version ".tar.bz2"))
+                                  version ".tar.xz"))
               (sha256
                (base32
-                "05lycfq0f06zjp5xqvzjz9hx9kmqx72yng1lghh76hv63dw43lcj"))))
-    (build-system waf-build-system)
+                "1q8mzjv577vdi64s47gd4pg0ydzxvs32cwrb1d64v90f52qpgbpd"))))
+    (build-system meson-build-system)
     (arguments
-     `(#:tests? #f))                    ; no check target
+     `(#:tests? #f                      ; no check target
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'configure 'build-PIC
+           ;; The default -fPIE #errors when combined with our Qt packages.
+           ;; Work around the broken meson.build script clobbering c_args.
+           (lambda _
+             (substitute* "meson.build"
+               (("'-DZIX_STATIC'" match)
+                (string-append match ", '-fPIC'"))))))))
     (inputs
      (list lv2
            lilv
@@ -2722,6 +2774,38 @@ compensation, (de)interleaving, and byte-swapping
     (synopsis "Bindings for PortAudio v19")
     (description "This package provides bindings for PortAudio v19, the
 cross-platform audio input/output stream library.")
+    (license license:expat)))
+
+(define-public python-pulsectl
+  (package
+    (name "python-pulsectl")
+    (version "22.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pulsectl" version))
+              (sha256
+               (base32
+                "115ha1cwpd2r84ssnxdbr59hgs0jbx0lz3xpqli64kmxxqf4w5yc"))))
+    (build-system python-build-system)
+    (inputs (list pulseaudio))
+    (arguments
+     `(#:tests? #f                      ; tests try to communicate with PulseAudio
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "pulsectl/_pulsectl.py"
+               (("libpulse.so.0")
+                (string-append (search-input-file inputs "/lib/libpulse.so.0")))))))))
+    (home-page "https://github.com/mk-fg/python-pulse-control")
+    (synopsis
+     "Python bindings for mixer-like controls in PulseAudio")
+    (description
+     "This package provides a Python high-level interface and ctypes-based
+bindings for PulseAudio (libpulse), to use in simple synchronous code.
+This wrapper is mostly for mixer-like controls and introspection-related
+operations, as opposed to e.g. submitting sound samples to play and
+player-like clients.")
     (license license:expat)))
 
 (define-public python-pyliblo
@@ -3464,7 +3548,7 @@ tempo and pitch of an audio recording independently of one another.")
                 "1ff2yfq3k4l209fr71v3w98fpjjv1chs09vkbmxj03lcikahxns8"))))
     (build-system gnu-build-system)
     (inputs
-     (list jack-1 alsa-lib))
+     (list alsa-lib jack-2))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (home-page "https://www.music.mcgill.ca/~gary/rtmidi")
@@ -5979,7 +6063,7 @@ and DSD streams.")
 (define-public qpwgraph
   (package
     (name "qpwgraph")
-    (version "0.3.7")
+    (version "0.3.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5988,7 +6072,7 @@ and DSD streams.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05zbwikixxp5524ps7bd0i4xialgnp1m201rfvlz284sm40wk1vv"))))
+                "1zdqgn2a139bazazbccpb65zn7qdynndwm9mafq54nkpa7n7lri8"))))
     (build-system cmake-build-system)
     (arguments (list #:tests? #f)) ;; no tests
     (inputs (list alsa-lib
@@ -6031,3 +6115,39 @@ streams.  For shoutcast style streams it finds the “meta data” or track
 separation data, and uses that as a marker for where the track should
 be separated.")
     (license license:gpl2+)))
+
+(define-public cubeb
+  (let ((commit "9e29d728b0025c674904f83f5a13a88d1a6a5edc")
+        (revision "1"))
+    (package
+      (name "cubeb")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mozilla/cubeb")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1sxkr3h8a4hd3c3a3cjydrszz6npxk3vh6ra3y67lds3zgc69c7n"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags
+         ;; Sanitizers-cmake requires a git submodule.
+         '("-DUSE_SANITIZERS=0"
+           ;; Tests require a git submodule for googletest.
+           "-DBUILD_TESTS=0"
+           ;; Use our speex, not a bundled one.
+           "-DBUNDLE_SPEEX=0"
+           ;; A static library would be built by default.
+           "-DBUILD_SHARED_LIBS=1"
+           ;; Explicitly link against audio libraries so they are on the
+           ;; runpath.  Otherwise cubeb tries to dlopen them at runtime.
+           "-DCMAKE_SHARED_LINKER_FLAGS=-lasound -lpulse -lspeex")
+         #:tests? #f))
+      (inputs (list alsa-lib pulseaudio speex))
+      (synopsis "Cross-platform audio library")
+      (description "Cubeb is Mozilla's cross-platform audio library.")
+      (home-page "https://github.com/mozilla/cubeb")
+      (license license:isc))))

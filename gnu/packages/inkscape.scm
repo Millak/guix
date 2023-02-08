@@ -46,6 +46,7 @@
   #:use-module (gnu packages pdf)
   #:use-module (gnu packages popt)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages ghostscript)
@@ -273,5 +274,6 @@ as the native format.")
     (inputs (modify-inputs (package-inputs inkscape/stable)
               (replace "lib2geom" lib2geom-1.2)
               (append bash-minimal
-                      librsvg)))        ;for the pixbuf loader
+                      librsvg           ;for the pixbuf loader
+                      python-cssselect)))        ;to render qrcode
     (properties (alist-delete 'hidden? (package-properties inkscape/stable)))))

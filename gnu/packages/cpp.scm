@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2023 Sughosha <Sughosha@proton.me>
+;;; Copyright © 2023 Artyom V. Poptsov <poptsov.artyom@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -293,7 +294,7 @@ various formats, including @code{json}.")
 (define-public libzen
   (package
     (name "libzen")
-    (version "0.4.39")
+    (version "0.4.40")
     (source (origin
               (method url-fetch)
               ;; Warning: This source has proved unreliable 1 time at least.
@@ -304,7 +305,7 @@ various formats, including @code{json}.")
                                   "libzen_" version ".tar.bz2"))
               (sha256
                (base32
-                "1rwaxmid9iv65n0y6xlcyxxydsvihjni9ldxpg6pbqz43amp49xx"))))
+                "17pnp5i1ppcxhxnfs9qlkzzy35h23pkdwhsgpbqdkf8lab2f4hsm"))))
     (native-inputs
      (list autoconf automake libtool))
     (build-system gnu-build-system)
@@ -447,7 +448,7 @@ operating on batches.")
 (define-public google-highway
   (package
     (name "google-highway")
-    (version "1.0.2")
+    (version "1.0.3")
     (source
      (origin
        (method git-fetch)
@@ -456,7 +457,7 @@ operating on batches.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1dxv61ag0pl5nl6ql4k83k4i95937nhl98img8gz9fx76cpw6z08"))))
+        (base32 "1828rz9w9sr3zlyg25b6nm7j5j5m0xnic7hy36gpsbxvq358ibpf"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DHWY_SYSTEM_GTEST=on")))
@@ -1817,7 +1818,7 @@ syntax with variables, conditions, functions and more.")
 (define-public simdjson
   (package
     (name "simdjson")
-    (version "1.0.2")
+    (version "3.1.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1826,7 +1827,7 @@ syntax with variables, conditions, functions and more.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05i5jnqd7ngps79cws16ls48gnx08ykkkib3n2hbrdhr1wwrnv7a"))))
+                "0q784bm8xbz3p782dw02cdds6m71wk3acy94vva8krc9g88142ws"))))
     (build-system cmake-build-system)
     (arguments
      '(#:tests? #f                      ; tests require downloading dependencies
@@ -2377,3 +2378,52 @@ queues, resource pools, strings, etc.
 @item And more.
 @end itemize")
       (license license:zlib))))
+
+(define-public ftxui
+  (package
+    (name "ftxui")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ArthurSonzogni/FTXUI")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "10a4yw2h29kixxyhll6cvrwyscsvz9asxry857a9l8nqvbhs946s"))
+              (file-name (git-file-name name version))))
+    (build-system cmake-build-system)
+    (native-inputs (list googletest))
+    (arguments
+     (list #:configure-flags
+           #~(list "-DFTXUI_BUILD_TESTS:BOOL=ON"
+                   "-DFTXUI_BUILD_TESTS_FUZZER:BOOL=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-cmake-tests
+                 (lambda _
+                   (substitute* "cmake/ftxui_test.cmake"
+                     (("NOT googletest_POPULATED")
+                      "FALSE"))
+                   ;; Disable benchmarks for a while as they require bundled Google
+                   ;; benchmark and when the 'googlebenchmark' is unbundled, there's
+                   ;; a CMake configuration error.
+                   (substitute* "cmake/ftxui_benchmark.cmake"
+                     (("NOT WIN32")
+                      "FALSE")))) )))
+    (home-page "https://github.com/ArthurSonzogni/FTXUI")
+    (synopsis "C++ Functional Terminal User Interface")
+    (description
+     "Functional Terminal (X) User interface (FTXUI) is a simple C++ library for
+terminal based user interfaces.
+
+Main features:
+@itemize
+@item Functional style.
+@item Keyboard & mouse navigation.
+@item Support for UTF8 and fullwidth chars.
+@item Support for animations.
+@item Support for drawing.
+@item No dependencies.
+@end itemize")
+    (license license:expat)))

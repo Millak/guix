@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -6578,7 +6578,7 @@ becoming difficult enough to tax even the brightest of minds.")
            (sha256
             (base32
              "169p0yqh2gxvhdilvjc2ld8aap7lv2nhkhkg4i1hlmgc6pxpkjgh"))))))
-    (home-page "http://fillets.sourceforge.net/")
+    (home-page "https://fillets.sourceforge.net")
     (synopsis "Puzzle game")
     (description "Fish Fillets NG is strictly a puzzle game.  The goal in
 every of the seventy levels is always the same: find a safe way out.  The fish
@@ -7931,7 +7931,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.10.1")
+    (version "0.10.3")
     (source
      (origin
        (method git-fetch)
@@ -7941,7 +7941,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kvfv2ra0jq1ggf4apsx1j1xhrhjz3fn1j8p4q3a9c4m19fq4qzr"))))
+        (base32 "0hqc2j7lf5ay461l164c63jncmjdvnkm2nf90246njimhz2in056"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -8739,7 +8739,7 @@ where the player draws runes in real time to effect the desired spell.")
 (define-public edgar
   (package
     (name "edgar")
-    (version "1.35")
+    (version "1.36")
     (source
      (origin
        (method url-fetch)
@@ -8747,7 +8747,7 @@ where the player draws runes in real time to effect the desired spell.")
         (string-append "https://github.com/riksweeney/edgar/releases/download/"
                        version "/edgar-" version "-1.tar.gz"))
        (sha256
-        (base32 "0hwp73ili10kzx0aibhvgxfddqm94pimdaqhpnba6jzn119834q7"))))
+        (base32 "0fcsmwwfdwap5v6qdijw91kqnnc2i91yzgwfi7vpwvasw70qvna1"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f            ; there are no tests
                  #:make-flags
@@ -10409,14 +10409,14 @@ ChessX.")
 (define-public barrage
   (package
     (name "barrage")
-    (version "1.0.5")
+    (version "1.0.6")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/barrage/"
                            "barrage-" version ".tar.gz"))
        (sha256
-        (base32 "0139wxyrir10cbkvkjn548xgmp84wax8mfwk80yxbxlcdamrg257"))))
+        (base32 "1bhx708s7viv01m6bmpjsdgr33wk5kqw4wf7bvgw73a07v6j8ncw"))))
     (build-system gnu-build-system)
     (inputs
      (list hicolor-icon-theme sdl sdl-mixer))

@@ -25,7 +25,6 @@ gnu/packages/image.scm
 gnu/packages/image-viewers.scm
 gnu/packages/inkscape.scm
 gnu/packages/jemalloc.scm
-gnu/packages/key-mon.scm
 gnu/packages/less.scm
 gnu/packages/lesstif.scm
 gnu/packages/libreoffice.scm

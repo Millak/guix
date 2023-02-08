@@ -3050,6 +3050,7 @@ to handle."
                  (default (default-log-file-name this-record)))
   (terminal-vt greetd-terminal-vt (default "7"))
   (terminal-switch greetd-terminal-switch (default #f))
+  (source-profile? greetd-source-profile? (default #t))
   (default-session-user greetd-default-session-user (default "greeter"))
   (default-session-command greetd-default-session-command
     (default (greetd-agreety-session))))
@@ -3063,12 +3064,14 @@ to handle."
 (define (make-greetd-terminal-configuration-file config)
   (let*
       ((config-file-name (greetd-config-file-name config))
+       (source-profile? (greetd-source-profile? config))
        (terminal-vt (greetd-terminal-vt config))
        (terminal-switch (greetd-terminal-switch config))
        (default-session-user (greetd-default-session-user config))
        (default-session-command (greetd-default-session-command config)))
     (mixed-text-file
      config-file-name
+     "source_profile = " (if source-profile? "true" "false") "\n"
      "[terminal]\n"
      "vt = " terminal-vt "\n"
      "switch = " (if terminal-switch "true" "false") "\n"

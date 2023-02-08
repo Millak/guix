@@ -488,14 +488,14 @@ mapping from string keys to string values.")
 (define-public memcached
   (package
     (name "memcached")
-    (version "1.6.17")
+    (version "1.6.18")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
              "https://memcached.org/files/memcached-" version ".tar.gz"))
        (sha256
-        (base32 "090jpprdjhbr1v9ph15s077bj8ryrsnz1ydg54aw53rxc5ry6m90"))))
+        (base32 "0n21svnjw8j7bdbwrn0apnfql7ckraqgrl7wj9fsqj86h6w6mpfb"))))
     (build-system gnu-build-system)
     (inputs
      (list libevent cyrus-sasl))
@@ -1154,7 +1154,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
 (define-public galera
   (package
     (name "galera")
-    (version "26.4.12")
+    (version "26.4.13")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1163,7 +1163,7 @@ developed in C/C++ to MariaDB and MySQL databases.")
                     (recursive? #t)))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "0n4272mvr8a6h5prbhvl376asdp89ipix5yx5n6i1iiw9bs3v76l"))))
+               (base32 "06kf6w0bjkgcmddjd3k1q4cjpg8i78l0c7hcf368h09i1hqd23i6"))))
     (build-system cmake-build-system)
     (inputs
      (list check boost openssl))

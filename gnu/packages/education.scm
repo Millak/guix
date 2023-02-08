@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Robert Smith <robertsmith@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
@@ -582,7 +582,7 @@ a pen-tablet display and a beamer.")
 (define-public fet
   (package
     (name "fet")
-    (version "6.7.7")
+    (version "6.8.2")
     (source
      (origin
        (method url-fetch)
@@ -591,7 +591,7 @@ a pen-tablet display and a beamer.")
               (list (string-append directory base)
                     (string-append directory "old/" base))))
        (sha256
-        (base32 "08rm3yka3swr6wf3lcmzh2jlq5ajxi8c6nd2likqzvbg6plrjx6b"))))
+        (base32 "1wv7qwfmpmmfyr2kklp2q047rl38ps55cizjrm6v8np2cjl0ah3g"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -623,14 +623,14 @@ hours.")
 (define-public klavaro
   (package
     (name "klavaro")
-    (version "3.13")
+    (version "3.14")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "mirror://sourceforge/klavaro/klavaro-"
                             version ".tar.bz2"))
         (sha256
-         (base32 "0z6c3lqikk50mkz3ipm93l48qj7b98lxyip8y6ndg9y9k0z0n878"))))
+         (base32 "1avdwpmd7jmdkrwzsxd8s8qg0sqj2avcv620jvk11i81sd4pw647"))))
     (build-system gnu-build-system)
     (native-inputs
      (list intltool pkg-config))

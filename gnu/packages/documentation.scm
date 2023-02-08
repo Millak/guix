@@ -66,7 +66,7 @@
 (define-public latex2html
   (package
     (name "latex2html")
-    (version "2020.2")
+    (version "2022.2")
     (source
      (origin
        (method git-fetch)
@@ -76,29 +76,26 @@
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1icyl6kl60wh7cavprgbd8q6lpjwr7wn24m34kpiif7ahknhcbcm"))))
+        (base32 "1z71anjzxy5jsdlaqba4w9spncc6iycldarnr2z1dq8xmk6yhpjn"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "configure"
-               (("/usr/local")
-                (assoc-ref outputs "out"))
-               (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
-                (which "bash")))
-             #t))
-         (replace 'configure
-           (lambda _
-             (invoke "./configure")
-             #t))
-         (add-after 'configure 'patch-cfgcache
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "cfgcache.pm"
-               (("/usr/local")
-                (assoc-ref outputs "out")))
-             #t)))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'patch-configure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "configure"
+                     (("/usr/local")
+                      #$output)
+                     (("\\$\\{CONFIG_SHELL-/bin/sh\\}")
+                      (which "bash")))))
+               (replace 'configure
+                 (lambda _
+                   (invoke "./configure")))
+               (add-after 'configure 'patch-cfgcache
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (substitute* "cfgcache.pm"
+                     (("/usr/local")
+                      #$output)))))))
     (inputs
      (list perl))
     (synopsis "LaTeX documents to HTML")
@@ -254,7 +251,7 @@ and to some extent D.")
     (build-system gnu-build-system)
     (native-inputs
      (list flex gettext-minimal))
-    (home-page "http://docpp.sourceforge.net/")
+    (home-page "https://docpp.sourceforge.net")
     (synopsis "Documentation system for C, C++, IDL, and Java")
     (description
      "DOC++ is a documentation system for C, C++, IDL, and Java.  It can

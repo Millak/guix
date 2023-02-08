@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2014-2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020 Pjotr Prins <pjotr.guix@thebird.nl>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
@@ -11,7 +11,7 @@
 ;;; Copyright © 2017, 2021, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2018 Joshua Sierles, Nextjournal <joshua@nextjournal.com>
 ;;; Copyright © 2018 Gábor Boskovits <boskovits@gmail.com>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
+;;; Copyright © 2018-2023 Mădălin Ionel Patrașcu <madalinionel.patrascu@mdc-berlin.de>
 ;;; Copyright © 2019, 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2019 Brian Leung <bkleung89@gmail.com>
 ;;; Copyright © 2019 Brett Gilio <brettg@gnu.org>
@@ -21,9 +21,9 @@
 ;;; Copyright © 2020 Bonface Munyoki Kilyungi <bonfacemunyoki@gmail.com>
 ;;; Copyright © 2021 Tim Howes <timhowes@lavabit.com>
 ;;; Copyright © 2021 Hong Li <hli@mdc-berlin.de>
-;;; Copyright © 2021, 2022 Simon Tournier <zimon.toutoune@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;; Copyright © 2021 Felix Gruber <felgru@posteo.net>
-;;; Copyright © 2022 Navid Afkhami <navid.afkhami@mdc-berlin.de>
+;;; Copyright © 2022, 2023 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Antero Mejr <antero@mailbox.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -512,6 +512,106 @@ BED, GFF/GTF, VCF.")
     (inputs
      (list samtools zlib))))
 
+(define-public bitmapperbs
+  (package
+    (name "bitmapperbs")
+    (version "1.0.2.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/chhylp123/BitMapperBS/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "02ksssfnvmpskld0a2016smfz5nrzm3d90v8974f3cpzywckvp8v"))
+              (modules '((guix build utils)))
+              ;; This package bundles a modified copy of htslib, so we cannot
+              ;; unbundle it.
+              (snippet
+               '(begin
+                  (delete-file-recursively "libdivsufsort-2.0.1")
+                  (delete-file-recursively "pSAscan-0.1.0")))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false
+      #:make-flags '(list "bitmapperBS")
+      ;; The build system checks for CPU features.  For this reason, we want
+      ;; users to build it locally instead of using substitutes.
+      #:substitutable? #false
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-build-system
+            (lambda _
+              (substitute* "Makefile"
+                (("make prefix=../htslib_aim install")
+                 (string-append "make prefix=" #$output " install-so"))
+                (("htslib_aim/include") "htslib")
+                (("htslib_aim/lib")
+                 (string-append #$output "/lib")))))
+          (add-after 'unpack 'patch-references-to-psascan
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "Makefile"
+                (("\"(./)?psascan" pre all)
+                 (string-append "\"" pre (search-input-file inputs "/bin/psascan"))))))
+          (delete 'configure)
+          (replace 'install
+            (lambda _
+              (install-file "bitmapperBS"
+                            (string-append #$output "/bin/")))))))
+    (inputs
+     (list libdivsufsort psascan zlib))
+    (home-page "https://github.com/chhylp123/BitMapperBS/")
+    (synopsis "Read aligner for whole-genome bisulfite sequencing")
+    (description
+     "BitMapperBS is memory-efficient aligner that is designed for
+whole-genome bisulfite sequencing (WGBS) reads from directional protocol.")
+    (license license:asl2.0)))
+
+(define-public cellsnp-lite
+  ;; Last release is from November 2021 and does not contain fixes.
+  (let ((commit "0885d746b0b1ea65c8ef92f8943ca7669ca9734a")
+        (revision "0"))
+    (package
+      (name "cellsnp-lite")
+      (version (git-version "1.2.2" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/single-cell-genetics/cellsnp-lite")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1qrvqgbvw6mbhpyqvqbmvv8dmyc67bsk1041cn7ib6zmd47qm444"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:configure-flags
+        #~(list (string-append "--with-htslib="
+                               #$(this-package-input "htslib")))))
+      (inputs
+       (list curl
+             htslib
+             openssl
+             zlib))
+      (native-inputs
+       (list autoconf))
+      (home-page "https://cellsnp-lite.readthedocs.io")
+      (synopsis "Pileup expresses alleles in single-cell or bulk RNA-seq data")
+      (description
+       "This package is designed to pileup the expressed alleles in
+single-cell or bulk RNA-seq data, which can be directly used for donor
+deconvolution in multiplexed single-cell RNA-seq data, particularly with other
+packages, which assigns cells to donors and detects doublets as vireo, even
+without genotyping reference.
+
+This package is the C version of the deprecated cellSNP implemented in Python.
+Compared to cellSNP, this package is more efficient with higher speed and less
+memory usage.")
+      (license license:asl2.0))))
+
 (define-public pbcopper
   (package
     (name "pbcopper")
@@ -646,6 +746,41 @@ for all types of microbial diversity analyses.")
 high-throughput sequence analysis.  The package is primarily useful to
 developers of other R packages who wish to make use of HTSlib.")
       (license license:lgpl2.0+))))
+
+(define-public r-streamgraph
+  (let ((commit "76f7173ec89d456ace5943a512e20b1f6810bbcb")
+        (revision "1"))
+    (package
+      (name "r-streamgraph")
+      (version (git-version "0.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/hrbrmstr/streamgraph")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "010rhnby5a9dg08jvlkr65b3p9iipdxi2f5m1k6j53s80p25yvig"))))
+      (properties `((upstream-name . "streamgraph")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-dplyr
+             r-htmltools
+             r-htmlwidgets
+             r-magrittr
+             r-tidyr
+             r-xts))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/hrbrmstr/streamgraph")
+      (synopsis "Htmlwidget for building streamgraph visualizations")
+      (description
+       "A streamgraph is a type of stacked area chart.  It represents the
+evolution of a numeric variable for several groups.  Areas are usually
+displayed around a central axis, and edges are rounded to give a flowing
+shape.  This package provides an @code{htmlwidget} for building streamgraph
+visualizations.")
+      (license license:expat))))
 
 (define-public pbbam
   (package
@@ -933,6 +1068,13 @@ intended to behave exactly the same as the original BWK awk.")
 Format (GFF) with Biopython integration.")
     (license (license:non-copyleft "http://www.biopython.org/DIST/LICENSE"))))
 
+(define-public python-bcbio-gff/biopython-1.73
+  (package
+    (inherit python-bcbio-gff)
+    (propagated-inputs
+     (modify-inputs (package-propagated-inputs python-bcbio-gff)
+       (replace "python-biopython" python-biopython-1.73)))))
+
 (define-public python-cellbender
   (package
     (name "python-cellbender")
@@ -946,7 +1088,7 @@ Format (GFF) with Biopython integration.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "12q22va7rbc3sx9ygc6p6hh6xw9wbqjmhba5h5gb836p5xplj5fa"))))
+         "0h9d9pznffdbya631hkk7b7jwjrgx5saqssar1d42qbyvdji3hgy"))))
     (build-system pyproject-build-system)
     (arguments
      (list #:tests? #false)) ;there are none
@@ -971,6 +1113,95 @@ Format (GFF) with Biopython integration.")
 from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
     (license license:bsd-3)))
 
+(define-public python-cmseq
+  (package
+    (name "python-cmseq")
+    (version "1.0.4")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "CMSeq" version))
+              (sha256
+               (base32
+                "0p6a99c299m5wi2z57dgqz52m1z3nfr8mv7kdnk2jvl2p9nql0wk"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are no tests
+      #:phases
+      '(modify-phases %standard-phases
+         (add-after 'unpack 'patch-samtools-reference
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "cmseq/cmseq.py"
+               (("'samtools'")
+                (string-append "'" (search-input-file inputs "/bin/samtools") "'"))))))))
+    (inputs (list samtools))
+    (propagated-inputs
+     (list python-bcbio-gff/biopython-1.73
+           python-biopython-1.73
+           python-numpy
+           python-pandas
+           python-pysam
+           python-scipy))
+    (home-page "https://github.com/SegataLab/cmseq/")
+    (synopsis "Set of utilities on sequences and BAM files")
+    (description
+     "CMSeq is a set of commands to provide an interface to .bam files for coverage
+and sequence consensus.")
+    (license license:expat)))
+
+(define-public python-demuxem
+  (package
+    (name "python-demuxem")
+    (version "0.1.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "demuxEM" version))
+              (sha256
+               (base32
+                "1bhyxqjk44bmyd26m1smapf68wyf7252kk65i27k50dd3kswgnd6"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-docopt
+           python-importlib-metadata
+           python-numpy
+           python-pandas
+           python-pegasusio
+           python-scikit-learn
+           python-scipy
+           python-seaborn))
+    (native-inputs (list python-cython python-setuptools-scm))
+    (home-page "https://github.com/lilab-bcb/demuxEM")
+    (synopsis "Analyze cell-hashing/nucleus-hashing data")
+    (description
+     "This is a Python module for analyzing cell-hashing/nucleus-hashing data.
+It is the demultiplexing module of Pegasus, which is used by Cumulus in the
+demultiplexing step.")
+    (license license:bsd-3)))
+
+(define-public python-hclust2
+  (package
+    (name "python-hclust2")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "hclust2" version))
+              (sha256
+               (base32
+                "0v89n2g42d7jhgfs8glf06apgxx6aswp3mfisgnhm518cv8z2rwn"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;there are no tests
+    (propagated-inputs
+     (list python-matplotlib
+           python-numpy
+           python-pandas
+           python-scipy))
+    (home-page "https://github.com/SegataLab/hclust2/")
+    (synopsis "Plotting heat-maps for publications")
+    (description
+     "Hclust2 is a handy tool for plotting heat-maps with several useful options
+to produce high quality figures that can be used in publications.")
+    (license license:expat)))
+
 (define-public python-htsget
   (package
    (name "python-htsget")
@@ -992,6 +1223,74 @@ from high-throughput single-cell RNA sequencing (scRNA-seq) data.")
 protocol.  It provides a simple and reliable way to retrieve genomic data from
 servers supporting the protocol.")
    (license license:asl2.0)))
+
+(define-public python-pegasusio
+  (package
+    (name "python-pegasusio")
+    (version "0.7.1")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pegasusio" version))
+              (sha256
+               (base32
+                "0gqygspdy398vjymdy6756jmk99s7fhwav9rivdx59kpqjcdxaz9"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     (list python-anndata
+           python-docopt
+           python-h5py
+           python-importlib-metadata
+           python-loompy
+           python-natsort
+           python-numpy
+           python-pandas
+           python-pillow
+           python-scipy
+           python-zarr))
+    (native-inputs (list python-cython python-setuptools-scm))
+    (home-page "https://github.com/lilab-bcb/pegasusio")
+    (synopsis "Read or write single-cell genomics data")
+    (description
+     "Pegasusio is a Python package for reading or writing single-cell
+genomics data.")
+    (license license:bsd-3)))
+
+(define-public python-phylophlan
+  (package
+    (name "python-phylophlan")
+    (version "3.0.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/biobakery/phylophlan")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wz70xzxqx2sf5flmf45m15jq027dqijfaj1r51pl50w5x6dkawx"))))
+    (build-system pyproject-build-system)
+    (arguments (list #:tests? #f))      ;there are no tests
+    (propagated-inputs
+     (list python-biopython
+           python-dendropy
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-seaborn))
+    (home-page "https://github.com/biobakery/phylophlan")
+    (synopsis
+     "Phylogenetic analysis of microbial isolates and genomes from metagenomes")
+    (description
+     "This package is an integrated pipeline for large-scale phylogenetic
+profiling of genomes and metagenomes.  PhyloPhlAn is an accurate, rapid, and
+easy-to-use method for large-scale microbial genome characterization and
+phylogenetic analysis at multiple levels of resolution.  This software package
+can assign both genomes and @acronym{MAGs, metagenome-assembled genomes} to
+@acronym{SGBs, species-level genome bins}.  PhyloPhlAn can reconstruct
+strain-level phylogenies using clade- specific maximally informative
+phylogenetic markers, and can also scale to very large phylogenies comprising
+>17,000 microbial species.")
+    (license license:expat)))
 
 (define-public python-pybedtools
   (package
@@ -6865,6 +7164,38 @@ Values such as sequence name, sequence description, sequence quality and the
 sequence itself can be retrieved from these databases.")
     (license license:bsd-3)))
 
+(define-public python-slamdunk
+  (package
+    (name "python-slamdunk")
+    (version "0.4.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/t-neumann/slamdunk")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0lv3h5k2pn1pz35kz0wk5xmricxzy8qscs2y7nwh0k6x4pn0m0s5"))))
+    (build-system python-build-system)
+    (propagated-inputs
+     (list python-biopython
+           python-intervaltree
+           python-joblib
+           python-pandas
+           python-pybedtools
+           python-pysam))
+    (native-inputs
+     (list python-cython python-pytest))
+    (home-page "https://t-neumann.github.io/slamdunk/")
+    (synopsis "Streamline SLAM-seq analysis with high sensitivity")
+    (description "SlamDunk is a fully automated tool for automated, robust,
+scalable and reproducible SLAMseq data analysis.  Diagnostic plotting features
+and a MultiQC plugin will make your SLAMseq data ready for immediate QA and
+interpretation.")
+    (license license:agpl3+)))
+
 (define-public python-taggd
   (package
     (name "python-taggd")
@@ -7721,6 +8052,36 @@ sequence.")
 3D perspective axes, 3D perspective annotations, and wireframe plots.")
       (license license:gpl3+))))
 
+(define-public r-ggsankey
+  (let ((commit "be08dd0f86eaee9f9ff9e7ff95d47930660a3c36")
+        (revision "1"))
+    (package
+      (name "r-ggsankey")
+      (version (git-version "0.0.99999" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/davidsjoberg/ggsankey")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0acpmydqqc91pq5p9wpkpmgqp3nhiljabd7d3i00kwhjxgm2bvba"))))
+      (properties `((upstream-name . "ggsankey")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-dplyr
+                               r-ggplot2
+                               r-magrittr
+                               r-purrr
+                               r-stringr
+                               r-tidyr))
+      (home-page "https://github.com/davidsjoberg/ggsankey")
+      (synopsis "Sankey, Alluvial and Sankey bump plots")
+      (description
+       "This package provides a package that makes it easy to implement
+sankey, alluvial and sankey bump plots in @code{ggplot2}.")
+      (license license:expat))))
+
 (define-public r-gutils
   (let ((commit "10e36c7b580aacb2d952140a3fdd82418aaddea6")
         (revision "1"))
@@ -7943,6 +8304,93 @@ tasks.")
 Pore-C concatemers.")
       (license license:gpl3))))
 
+(define-public r-doubletcollection
+  (let ((commit "c0d62f1853942ee6a087eaf7b000d9e4261e2dfd")
+        (revision "1"))
+    (package
+      (name "r-doubletcollection")
+      (version (git-version "1.1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/xnnba1984/DoubletCollection")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "02cvibyc2nwc4037ramm5cskjwyrb9ib9hkrfhmvhbslkn5ixz1v"))))
+      (properties `((upstream-name . "DoubletCollection")))
+      (build-system r-build-system)
+      (propagated-inputs (list r-biocgenerics
+                               r-doubletfinder
+                               r-gam
+                               r-ggplot2
+                               r-ggthemes
+                               r-mast
+                               r-mclust
+                               r-prroc
+                               r-reticulate
+                               r-scales
+                               r-scdblfinder
+                               r-scds
+                               r-seurat
+                               r-singlecellexperiment
+                               r-slingshot
+                               r-summarizedexperiment))
+      (home-page "https://github.com/xnnba1984/DoubletCollection")
+      (synopsis "Tool for finding doublets in scRNA-seq data")
+      (description
+       "This is an R package that integrates the installation of
+doublet-detection methods.  In addition, this tool is used for execution and
+benchmark of those eight mentioned methods.")
+      (license license:gpl3+))))
+
+(define-public r-psupertime
+  (let ((commit "73825a28d3bd9bc881c15ee0c4c218eec1c9c207")
+        (revision "1"))
+    (package
+      (name "r-psupertime")
+      (version (git-version "0.2.6" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wmacnair/psupertime")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "00h1r3ffz6m9dwcgkvyki8405b059qn6mnjsd8d76a1rabaf2vfh"))))
+      (properties `((upstream-name . "psupertime")))
+      (build-system r-build-system)
+      (propagated-inputs
+       (list r-cowplot
+             r-data-table
+             r-fastcluster
+             r-forcats
+             r-ggplot2
+             r-glmnet
+             r-knitr
+             r-matrix
+             r-rcolorbrewer
+             r-scales
+             r-scran
+             r-singlecellexperiment
+             r-stringr
+             r-summarizedexperiment
+             r-topgo))
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wmacnair/psupertime")
+      (synopsis
+       "Psupertime is supervised pseudotime for single cell RNAseq data")
+      (description
+       "Psupertime is supervised pseudotime for single cell RNAseq data.  It
+uses single cell RNAseq data, where the cells have a known ordering.  This
+ordering helps to identify a small number of genes which place cells in that
+known order.  It can be used for discovery of relevant genes, for
+identification of subpopulations, and characterization of further unknown or
+differently labelled data.")
+      (license license:gpl3))))
+
 (define-public r-pando
   (package
     (name "r-pando")
@@ -8131,6 +8579,38 @@ scale single cell ATAC-seq data which includes quality control, normalization,
 clustering analysis, differential analysis, motif inference and exploration of
 single cell ATAC-seq sequencing data.")
     (license license:gpl3)))
+
+(define-public r-tsis
+  (let ((commit "24460298fbe1d26e4da390f6e4f3d4d9d62334dc")
+        (revision "1"))
+    (package
+      (name "r-tsis")
+      (version (git-version "0.2.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/wyguo/TSIS")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "17c8i25iwhldvs3c51m0wny40iffm8szzijalpwrxhzbv0xa94rb"))))
+      (properties `((upstream-name . "TSIS")))
+      (build-system r-build-system)
+      (native-inputs (list r-knitr))
+      (home-page "https://github.com/wyguo/TSIS")
+      (synopsis "Time-series isoform switch of alternative splicing")
+      (description
+       "TSIS is used for detecting transcript isoform switches in time-series
+data.  Transcript isoform switches occur when a pair of alternatively spliced
+isoforms reverse the order of their relative expression levels.  TSIS
+characterizes the transcript switch by defining the isoform switch time-points
+for any pair of transcript isoforms within a gene.  In addition, this tool
+describes the switch using five different features or metrics.  Also it
+filters the results with user’s specifications and visualizes the results
+using different plots for the user to examine further details of the
+switches.")
+      (license license:gpl3))))
 
 (define-public r-umi4cpackage
   (let ((commit "88b07d896a137418ba6c31c2474b9dbe1d86fc20")
@@ -16689,20 +17169,20 @@ translates between different variant encodings.")
       (license license:asl2.0))))
 
 (define-public r-signac
-  (let ((commit "458e647b503c3472b0b98c0aeca934f452e039ee")
-        (revision "2"))
+  (let ((commit "af4142724b72574d957f7fe3d422ed5828ec3ad0")
+        (revision "1"))
     (package
       (name "r-signac")
-      (version (git-version "1.6.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/timoast/signac/")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "1hgwpgighkvfkai80n4d2252s4sdpa4faag4ncdiylicl5wa7lbj"))))
+      (version (git-version "1.9.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/timoast/signac/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0ps0lp1dcy20r6lakil6ih81m04r0s6fnirvfjf01sfs0gsyddww"))))
       (properties `((upstream-name . "Signac")))
       (build-system r-build-system)
       (inputs (list zlib))
@@ -16715,27 +17195,22 @@ translates between different variant encodings.")
              r-future-apply
              r-genomeinfodb
              r-genomicranges
-             r-ggforce
              r-ggplot2
-             r-ggrepel
-             r-ggseqlogo
              r-iranges
              r-irlba
-             r-lsa
              r-matrix
              r-patchwork
              r-pbapply
-             r-qlcmatrix
              r-rcpp
              r-rcpproll
              r-rsamtools
              r-s4vectors
              r-scales
-             r-seurat
              r-seuratobject
              r-stringi
              r-tidyr
-             r-tidyselect))
+             r-tidyselect
+             r-vctrs))
       (home-page "https://github.com/timoast/signac/")
       (synopsis "Analysis of single-cell chromatin data")
       (description
@@ -17503,21 +17978,20 @@ Genomics with R\".")
       (license license:gpl3))))
 
 (define-public r-cytonorm
-  (let ((commit "e4b9d343ee65db3c422800f1db3e77c25abde987")
+  (let ((commit "166f9ff3d692278241018c2846cb4f86ab16065b")
         (revision "1"))
     (package
       (name "r-cytonorm")
-      (version (git-version "0.0.7" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/saeyslab/CytoNorm")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32
-           "0h2rdy15i4zymd4dv60n5w0frbsdbmzpv99dgm0l2dn041qv7fah"))))
+      (version (git-version "0.0.10" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/saeyslab/CytoNorm")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0vbqy3b26j1zqmwgqx59kkn9pm2m0qwlcppskvahrxcwrj6m1s5y"))))
       (properties `((upstream-name . "CytoNorm")))
       (build-system r-build-system)
       (propagated-inputs
@@ -17566,6 +18040,28 @@ interest.")
        "This tool detects batch effects in high-dimensional data based on chi^2-test.")
       ;; Any version of the GPL
       (license license:gpl3+))))
+
+(define-public python-vireosnp
+  (package
+    (name "python-vireosnp")
+    (version "0.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "vireoSNP" version))
+              (sha256
+               (base32
+                "02ybhzivsxwnb1axlgbs63wni1j27xajnkl4jw1ps5vmsz2l4b0d"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-matplotlib python-numpy python-scipy))
+    (home-page "https://github.com/huangyh09/vireoSNP")
+    (synopsis "Deconvolution based on SNP for multiplexed scRNA-seq data")
+    (description
+     "This package provides a deconvolution based on Single Nucleotide
+Position (SNP) for multiplexed scRNA-seq data.  The name vireo stand for
+Variational Inference for Reconstructing Ensemble Origin by expressed SNPs in
+multiplexed scRNA-seq data and follows the clone identification from
+single-cell data named @url{https://github.com/PMBio/cardelino, cardelino}.")
+    (license license:asl2.0)))
 
 (define-public ccwl
   (package
@@ -17804,7 +18300,7 @@ module capable of computing base-level alignments for very large sequences.")
 (define-public gdcm
   (package
     (name "gdcm")
-    (version "2.8.9")
+    (version "3.0.20")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17814,19 +18310,36 @@ module capable of computing base-level alignments for very large sequences.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1j8mjnxcwn2xvzhf25lv4dbawxbgc4im1crh8081li7i4mbwswaj"))))
+                "1rf0p7dnakjry0fa6ax1h762bn0l5n6ibfdxn077mjvwgpqan51l"))))
     (build-system cmake-build-system)
+    (outputs '("out" "doc"))
     (arguments
      (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'build 'set-HOME
+            ;; The build spams ‘Fontconfig error: No writable cache
+            ;; directories’ in a seemingly endless loop otherwise.
+            (lambda _
+              (setenv "HOME" "/tmp"))))
       #:configure-flags
       #~(list "-DGDCM_BUILD_TESTING=true"
               (string-append "-DCMAKE_CTEST_ARGUMENTS=-E;"
                              "'TestFileMetaInformation"
                              "|TestElement2"
                              "|TestSCUValidation"
+                             "|TestWriter"
+                             "|TestAnonymizer4"
+                             "|TestPrinter1"
                              "|TestEcho"
-                             "|TestFind'"))))
-    (home-page "http://gdcm.sourceforge.net/wiki/index.php/Main_Page")
+                             "|TestFind'")
+              "-DGDCM_DOCUMENTATION:BOOL=ON"
+              "-DGDCM_PDF_DOCUMENTATION:BOOL=OFF"
+              (string-append "-DGDCM_INSTALL_DOC_DIR="
+                             #$output:doc "/share/doc/" #$name)
+              "-DGDCM_BUILD_DOCBOOK_MANPAGES:BOOL=OFF"))) ; TODO: need ‘xsl-ns’
+    (native-inputs (list doxygen graphviz))
+    (home-page "https://gdcm.sourceforge.net/wiki/index.php/Main_Page")
     (synopsis "Grassroots DICOM library")
     (description
      "Grassroots DICOM (GDCM) is an implementation of the DICOM standard
@@ -17835,7 +18348,7 @@ directly.  GDCM includes a file format definition and a network communications
 protocol, both of which should be extended to provide a full set of tools for
 a researcher or small medical imaging vendor to interface with an existing
 medical database.")
-    (license license:bsd-2)))
+    (license license:bsd-3)))
 
 (define-public wiggletools
   (package

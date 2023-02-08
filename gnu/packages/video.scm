@@ -48,7 +48,7 @@
 ;;; Copyright © 2020 Antoine Côté <antoine.cote@posteo.net>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
 ;;; Copyright © 2021 Alexey Abramov <levenson@mmer.org>
-;;; Copyright © 2021 Andrew Tropin <andrew@trop.in>
+;;; Copyright © 2021, 2022, 2023 Andrew Tropin <andrew@trop.in>
 ;;; Copyright © 2021 David Wilson <david@daviwil.com>
 ;;; Copyright © 2021,2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -63,6 +63,7 @@
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
 ;;; Copyright © 2022 Chadwain Holness <chadwainholness@gmail.com>
 ;;; Copyright © 2022 Andy Tai <atai@atai.org>
+;;; Copyright © 2023 Ott Joon <oj@vern.cc>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2159,7 +2160,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
 (define-public mpv
   (package
     (name "mpv")
-    (version "0.35.0")
+    (version "0.35.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2167,7 +2168,7 @@ SVCD, DVD, 3ivx, DivX 3/4/5, WMV and H.264 movies.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1jnk1arwhf82s6q90jp70izk1wy0bkx3lr3il2jgbqsp355l6wsk"))))
+               (base32 "1lzaijqddr4ir9nb27cv9ki20b0k5jns2k47v4xvmi30v1gi71ha"))))
     (build-system waf-build-system)
     (arguments
      (list
@@ -2526,7 +2527,7 @@ YouTube.com and many more sites.")
 (define-public yt-dlp
   (package/inherit youtube-dl
     (name "yt-dlp")
-    (version "2022.11.11")
+    (version "2023.01.06")
     (source
      (origin
        (method git-fetch)
@@ -2535,7 +2536,7 @@ YouTube.com and many more sites.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00dng4x7xbxp6w76dqkfzzhf2dh3s9pgfd0axs7qar20clj717py"))))
+        (base32 "13kg6zsc0js4smqj6v4qpiycl9jlijj3pvp49wif6ilgv87sq7v3"))))
     (arguments
      (substitute-keyword-arguments (package-arguments youtube-dl)
        ((#:tests? _) (not (%current-target-system)))
@@ -3360,7 +3361,7 @@ be used for realtime video capture via Linux-specific APIs.")
 (define-public obs
   (package
     (name "obs")
-    (version "27.2.4")
+    (version "29.0.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -3370,7 +3371,7 @@ be used for realtime video capture via Linux-specific APIs.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "13bfzjqmvabli99yr1h0306w5lx72mbl5sxrnr46hjig1a6rw91s"))
+                "15nvvlpryvlbf76918jvygg1985glz38cndfgnc2c0009vdb9qbk"))
               (patches
                (search-patches "obs-modules-location.patch"))))
     (build-system cmake-build-system)
@@ -3379,6 +3380,8 @@ be used for realtime video capture via Linux-specific APIs.")
       #:configure-flags
       #~(list (string-append "-DOBS_VERSION_OVERRIDE=" #$version)
               "-DENABLE_UNIT_TESTS=ON"
+              "-DENABLE_NEW_MPEGTS_OUTPUT=OFF"
+              "-DENABLE_AJA=OFF"
               ;; Browser plugin requires cef, but it is not packaged yet.
               ;; <https://bitbucket.org/chromiumembedded/cef/src/master/>
               "-DBUILD_BROWSER=OFF")
@@ -3412,6 +3415,8 @@ be used for realtime video capture via Linux-specific APIs.")
       glib
       jack-1
       jansson
+      libglvnd
+      libva
       libx264
       libxcomposite
       libxkbcommon
@@ -3428,6 +3433,7 @@ be used for realtime video capture via Linux-specific APIs.")
       qtwayland-5
       speexdsp
       v4l-utils
+      vlc
       wayland
       wayland-protocols
       zlib))
@@ -3509,7 +3515,7 @@ programs on your current machine or on other machines.")
 (define-public obs-wlrobs
   (package
     (name "obs-wlrobs")
-    (version "1.0")
+    (version "1.1")
     (source
       (origin
         (method hg-fetch)
@@ -3519,7 +3525,7 @@ programs on your current machine or on other machines.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "1faiq2gdb7qis3m1hilm4pz8lkmkab75vzm608dbiazahhybf96p"))))
+          "1whdb2ykisz50qw19nv1djw5qp17rpnpkc8s8470ja8iz894mmwd"))))
     (build-system meson-build-system)
     (native-inputs
      (list pkg-config))
@@ -3532,6 +3538,38 @@ programs on your current machine or on other machines.")
      "This OBS plugin allows you to capture the screen on wlroots-based
 Wayland compositors.")
     (license license:gpl3+)))
+
+(define-public obs-vkcapture
+  (package
+    (name "obs-vkcapture")
+    (version "1.3.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nowrep/obs-vkcapture")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "18v15bfzm31qkpwipvbqgzak4z6f2hhq6mnz2bvhwnv57whirln6"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ;no tests
+    (native-inputs (list pkg-config))
+    (inputs (list mesa
+                  obs
+                  libx11
+                  libxcb
+                  vulkan-headers
+                  vulkan-loader
+                  wayland))
+    (home-page "https://github.com/nowrep/obs-vkcapture")
+    (synopsis "OBS plugin for Vulkan/OpenGL game capture on Linux")
+    (description
+     "This OBS plugin lets you record an OpenGL or Vulkan
+game by adding the Game Capture source to your scene and starting an
+application with @code{obs-gamecapture}.")
+    (license license:gpl2)))
 
 (define-public libvdpau
   (package
@@ -4545,7 +4583,7 @@ It counts more than 100 plugins.")
 (define-public motion
   (package
     (name "motion")
-    (version "4.5.0")
+    (version "4.5.1")
     (home-page "https://motion-project.github.io/")
     (source (origin
               (method git-fetch)
@@ -4554,7 +4592,7 @@ It counts more than 100 plugins.")
                     (commit (string-append "release-" version))))
               (sha256
                (base32
-                "1rqy98g3xjjzjxiw8j3qdka0rbhcgzgczz6qgj157ck9116j18dq"))
+                "09j919bba75d05rkqpib5rcmn1ff5nvn4ss8yy4fi6iz0lnacffx"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (native-inputs

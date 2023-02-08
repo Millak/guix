@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2020, 2022-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Alex Kost <alezost@gmail.com>
@@ -38,6 +38,7 @@
   #:use-module (ice-9 vlist)
   #:use-module (ice-9 match)
   #:use-module (ice-9 binary-ports)
+  #:autoload   (rnrs bytevectors) (bytevector?)
   #:autoload   (system base compile) (compile)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)
@@ -442,10 +443,15 @@ reducing the memory footprint."
     (lambda (port)
       ;; Store the cache as a '.go' file.  This makes loading fast and reduces
       ;; heap usage since some of the static data is directly mmapped.
-      (put-bytevector port
-                      (compile `'(,@exp)
-                               #:to 'bytecode
-                               #:opts '(#:to-file? #t)))))
+      (match (compile `'(,@exp)
+                      #:to 'bytecode
+                      #:opts '(#:to-file? #t))
+        ((? bytevector? bv)
+         (put-bytevector port bv))
+        (proc
+         ;; In Guile 3.0.9, the linker can return a procedure instead of a
+         ;; bytevector.  Adjust to that.
+         (proc port)))))
   cache-file)
 
 

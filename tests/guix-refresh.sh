@@ -94,7 +94,8 @@ cat > "$module_dir/sample.scm"<<EOF
                 "086vqwk2wl8zfs47sq2xpjc9k066ilmb8z6dn0q6ymwjzlm196cd"))))))
 EOF
 guix refresh -t test -L "$module_dir" the-test-package
-guix refresh -t test -L "$module_dir" the-test-package -u
+guix refresh -t test -L "$module_dir" the-test-package -u \
+     --keyring="$module_dir/keyring.kbx"  # so we don't create $HOME/.config
 grep 'version "5.5"' "$module_dir/sample.scm"
 grep "$(guix hash -H sha256 -f nix-base32 "$module_dir/source")" "$module_dir/sample.scm"
 

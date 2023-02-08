@@ -70,8 +70,8 @@
   #:use-module (gnu packages xml))
 
 (define-public c-intro-and-ref
-  (let ((revision "0")
-        (commit "f88559678feeb1391a0e9c7cf060c4429ef22ffc"))
+  (let ((revision "1")
+        (commit "47e5a234a7c036392e0f9e1e8e48ff3e6855840d"))
     (package
       (name "c-intro-and-ref")
       (version (git-version "0.0.0" revision commit))
@@ -83,7 +83,7 @@
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "0c08h8k7wkn5lw0jqnnaayx55d3vf1q11pgsixfw31i58rnwa5y2"))))
+                  "0aza4vvlg2w0ss6n5xp741ycvg16d041c1x87yh5hpnzcb6y0ii3"))))
       (build-system copy-build-system)
       (arguments
        (list #:phases #~(modify-phases %standard-phases
@@ -425,14 +425,14 @@ whose behaviour is inconsistent across *NIX flavours.")
 (define-public libhx
   (package
     (name "libhx")
-    (version "4.8")
+    (version "4.9")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://inai.de/files/libhx/"
                            "libHX-" version ".tar.xz"))
        (sha256
-        (base32 "1mj6n4p0fs1jzj1dvk2xkyiyc1s7s5fxv27iciwn0xkwhasjmhxa"))))
+        (base32 "16rwp8b2j8l0m27rffvb7ma350r79l611sa135hzfywkdli2bqh2"))))
     (build-system gnu-build-system)
     (home-page "https://inai.de/projects/libhx/")
     (synopsis "C library with common data structures and functions")
@@ -1128,7 +1128,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
 (define-public mimalloc
   (package
     (name "mimalloc")
-    (version "2.0.7")
+    (version "2.0.9")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1137,7 +1137,7 @@ Telemetry Transport (MQTT) publish-subscribe messaging protocol.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0g54z9c4w7zjp3m1s70cgrjhxa5hr43pkhdbj61a2rb54z09lzw7"))))
+                "19w0i28p6knjd192rrcw1ayc3x0qp6rcm48cwkls4kwn8fng81fj"))))
     (build-system cmake-build-system)
     (arguments
      `(#:build-type "Release"))

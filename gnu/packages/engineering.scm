@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015 Federico Beffa <beffa@fbengineering.ch>
-;;; Copyright © 2016, 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 David Thompson <davet@gnu.org>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016, 2017, 2018 Theodoros Foradis <theodoros@foradis.org>
@@ -19,7 +19,7 @@
 ;;; Copyright © 2020, 2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2021 Ekaitz Zarraga <ekaitz@elenq.tech>
 ;;; Copyright © 2020 B. Wilson <elaexuotee@wilsonb.com>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020, 2021 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2021 qblade <qblade@protonmail.com>
 ;;; Copyright © 2021 Gerd Heber <gerd.heber@gmail.com>
@@ -68,6 +68,7 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system meson)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
@@ -944,7 +945,7 @@ Emacs).")
 (define-public kicad
   (package
     (name "kicad")
-    (version "6.0.10")
+    (version "6.0.11")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -952,7 +953,7 @@ Emacs).")
                     (commit version)))
               (sha256
                (base32
-                "0pz8d96imc0q3nh7npr5zf0jkzi94wchvw57spcrgqfac9yrld3q"))
+                "1bhzmgs921wv1pc0mpyigmpp630086kmpifc3a91cbkv4xf0akkq"))
               (file-name (git-file-name name version))))
     (build-system cmake-build-system)
     (arguments
@@ -1051,7 +1052,7 @@ electrical diagrams), gerbview (viewing Gerber files) and others.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06aw8f1pnh63dscv2bkii0cpr2m5yc4baka3avszsxnv8mqn0hwx"))))
+                "0f191ifzgl2k196ph7ljip97s17gq8bsfkn1s3aza1qaafhg7acd"))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags (list "-DBUILD_FORMATS=html")
@@ -2351,6 +2352,74 @@ specification can be downloaded at @url{http://3mf.io/specification/}.")
     (home-page "https://3mf.io/")
     (license license:bsd-2)))
 
+(define-public python-pyvisa
+  (package
+    (name "python-pyvisa")
+    (version "1.13.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PyVISA" version))
+              (sha256
+               (base32
+                "1iprr3h6d4w6v8ksgqpkgg545sai7i8hi5a5an394p26b25h1yl9"))
+              (modules '((guix build utils)))
+              (snippet '(begin
+                          ;; Delete bundled python-prettytable.
+                          (delete-file-recursively "pyvisa/thirdparty")))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'use-system-prettytable
+                          (lambda _
+                            (substitute* "pyvisa/shell.py"
+                              (("from .thirdparty import prettytable")
+                               "import prettytable")))))))
+    (native-inputs (list python-pytest-7.1))
+    (propagated-inputs (list python-dataclasses python-prettytable
+                             python-typing-extensions))
+    (home-page "https://pyvisa.readthedocs.io/en/latest/")
+    (synopsis "Python binding for the VISA library")
+    (description "PyVISA is a Python package for support of the
+@acronym{VISA, Virtual Instrument Software Architecture}, in order to control
+measurement devices and test equipment via GPIB, RS232, Ethernet or USB.")
+    (license license:expat)))
+
+(define-public python-scikit-rf
+  (package
+    (name "python-scikit-rf")
+    (version "0.24.1")
+    (source (origin
+              (method git-fetch) ;PyPI misses some files required for tests
+              (uri (git-reference
+                    (url "https://github.com/scikit-rf/scikit-rf")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32
+                "1shp8q8324dkwf448mv9zzi7krx882p122ma4fk015qz91sg4wff"))
+              (file-name (git-file-name name version))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-matplotlib
+                             python-networkx
+                             python-numpy
+                             python-openpyxl
+                             python-pandas
+                             python-pyqt
+                             python-pyqtgraph
+                             python-qtpy
+                             python-scipy))
+    (native-inputs (list python-coverage
+                         python-flake8
+                         python-nbval
+                         python-networkx
+                         python-pytest-7.1
+                         python-pytest-cov
+                         python-pyvisa))
+    (home-page "https://scikit-rf.org/")
+    (synopsis "Radio frequency and Microwave Engineering Scikit")
+    (description "Scikit-rf, or @code{skrf}, is a Python package for RF and
+Microwave engineering.")
+    (license license:bsd-3)))
+
 (define-public openscad
   (package
     (name "openscad")
@@ -2844,13 +2913,13 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
 (define-public poke
   (package
     (name "poke")
-    (version "2.4")
+    (version "3.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/poke/poke-" version
                                   ".tar.gz"))
               (sha256
-               (base32 "0ivfzslpdy0n9wcdjyascnqczppaxcq0x4x6hblqqwy62xcjh7l4"))
+               (base32 "1pbs6587wcbgdhn4v4l896nzdv7ymgpdmyls95y3534z7krv5abr"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -2901,7 +2970,11 @@ program that can perform mesh processing tasks in batch mode, without a GUI.")
     (arguments
      ;; To build the GUI, add the `--enable-gui' configure flag.
      ;; To enable the "hyperlink server", add the `--enable-hserver' flag.
-     `(#:configure-flags '("--enable-mi")))
+     `(#:configure-flags
+       '("--enable-mi"
+         "--disable-static"
+         ;; The emacs files are provided in emacs-poke.
+         "--with-lispdir=/tmp/share/emacs")))
     (home-page "https://www.gnu.org/software/poke/#documentation")
     (synopsis "Editing of arbitrary binary data")
     (description "GNU poke is an interactive, extensible editor for binary data.
@@ -2909,6 +2982,24 @@ Not limited to editing basic entities such as bits and bytes, it provides a
 full-fledged procedural, interactive programming language designed to describe
 data structures and to operate on them.")
     (license license:gpl3+)))
+
+(define-public emacs-poke
+  (package
+    (inherit poke)
+    (name "emacs-poke")
+    (build-system emacs-build-system)
+    (arguments
+     (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-before 'expand-load-path 'change-working-directory
+             (lambda _ (chdir "etc"))))))
+    (inputs '())
+    (native-inputs '())
+    (synopsis "GNU Poke major modes for Emacs")
+    (description
+     "This package provides two Emacs major modes for working with GNU Poke:
+@code{Poke Ras mode} and @code{Poke Map mode}.")))
 
 (define-public pcb2gcode
   ;; Take some additional commits after v2.4.0 to fix build against

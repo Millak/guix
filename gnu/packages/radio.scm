@@ -2,7 +2,7 @@
 ;;; Copyright © 2017, 2018, 2019, 2020, 2022 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2019, 2020 Christopher Howard <christopher@librehacker.com>
 ;;; Copyright © 2019, 2020 Evan Straw <evan.straw99@gmail.com>
-;;; Copyright © 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2020 Danny Milosavljevic <dannym@scratchpost.org>
 ;;; Copyright © 2020 Charlie Ritter <chewzerita@posteo.net>
 ;;; Copyright © 2020–2022 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -888,6 +888,61 @@ primitives for SDR (Software Defined Radio).")
     (home-page "https://osmocom.org/projects/libosmo-dsp")
     (license license:gpl2+)))
 
+(define-public gr-dsd
+  ;; The bundled DSD has been modified to bypass the soundcard.
+  (let ((commit "f9b99360b9b15a568befec1b8cc262f7806898e9")
+        (revision "0"))
+    (package
+      (name "gr-dsd")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/argilo/gr-dsd")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1axxb8jdbjbf69csp17gpfis8id66ijjrqp2wbyvz1p66m0svldr"))))
+      (build-system cmake-build-system)
+      (native-inputs
+       (list cppunit
+             doxygen
+             pkg-config
+             pybind11
+             python-numpy))
+      (inputs
+       (list boost
+             gmp
+             gnuradio
+             itpp
+             libsndfile
+             log4cpp
+             spdlog
+             volk))
+      (arguments
+       (list ;; Tests fail with:
+             ;;   from dsd import dsd_block_ff
+             ;;   ModuleNotFoundError: No module named 'dsd'
+             #:tests? #f
+             #:phases
+             #~(modify-phases %standard-phases
+                 (add-after 'unpack 'fix-itpp-detection
+                   (lambda _
+                     (substitute* "dsd/cmake/FindITPP.cmake"
+                       (("libitpp\\.dll")
+                        "itpp_debug")))))))
+      (synopsis "GNU Radio block for Digital Speech Decoder")
+      (description
+       "This package provides a GNU Radio block interfacing with Digital
+Speech Decoder (DSD) to decode several digital voice protocols, like D-STAR,
+DMR, NXDN, P25, etc.")
+      (home-page "https://github.com/argilo/gr-dsd")
+      (license (list license:bsd-3
+                     license:gpl2
+                     license:gpl3+
+                     license:isc)))))
+
 (define-public gr-iqbal
   ;; No tag for version supporting Gnuradio 3.9; use commit.
   (let ((commit "fbee239a6fb36dd2fb564f6e6a0d393c4bc844db")
@@ -1026,6 +1081,29 @@ satellites.")
 using GNU Radio and the Qt GUI toolkit.")
     (home-page "https://gqrx.dk/")
     (license license:gpl3+)))
+
+(define-public gqrx-scanner
+  (package
+    (name "gqrx-scanner")
+    (version "1.0.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/neural75/gqrx-scanner")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ar8kqfrd768l6y4kqgq3467xckrrpaq8zlwzz5l7lp8r41w5plr"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:tests? #f)) ; No test suite
+    (synopsis "Frequency scanner for Gqrx")
+    (description
+     "This package provides a frequency scanner for the Gqrx software-defined
+radio receiver.")
+    (home-page "https://github.com/neural75/gqrx-scanner")
+    (license license:expat)))
 
 (define-public fldigi
   (package
@@ -2738,7 +2816,7 @@ Navigation Satellite System.")
 (define-public qdmr
   (package
     (name "qdmr")
-    (version "0.10.4")
+    (version "0.11.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2747,7 +2825,7 @@ Navigation Satellite System.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1svxdfb5snxs2y1dwyb0j10ill9ribj4hw1rk023866yzn2zd0l9"))))
+                "1xbp4ica6bgsiwc57wzm8744dqik2fw77kh1gb8s3sa1q9my2vlx"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f ;no tests

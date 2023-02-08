@@ -348,4 +348,4 @@ CONFIG_SPEAKUP=m
 @item
 CONFIG_SPEAKUP_SOFT=m
 @end itemize")
-    (home-page "ttps://github.com/linux-speakup/espeakup")))
+    (home-page "https://github.com/linux-speakup/espeakup")))

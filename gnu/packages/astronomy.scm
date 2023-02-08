@@ -67,6 +67,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages time)
   #:use-module (gnu packages version-control)
@@ -983,13 +984,13 @@ accurately in real time at any rate desired.")
 (define-public python-astropy
   (package
     (name "python-astropy")
-    (version "5.1.1")
+    (version "5.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "astropy" version))
        (sha256
-        (base32 "10dxjim60ch4qznqa5s63q936mkvy95p0k26kcwzv43hmybdcjxs"))
+        (base32 "08xc6brs7xwiqchhsjq8l10p6qc5p68cfxps7s889spqfyh2gbpn"))
        (modules '((guix build utils)))
        (snippet
         '(begin
@@ -1308,13 +1309,13 @@ the easy construction of interactive matplotlib widget based animations.")
 (define-public python-photutils
   (package
     (name "python-photutils")
-    (version "1.5.0")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "photutils" version))
        (sha256
-        (base32 "129n268wnziprrv09f7y6f98cj1vh1bzp7ygsna10h3ilnjplkq1"))))
+        (base32 "0w4kxl6aqjp2wv396krw30kwg6cmmska8gvgpihm2i2zxyzz39vd"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -1337,6 +1338,50 @@ the easy construction of interactive matplotlib widget based animations.")
     (synopsis "Source detection and photometry")
     (description "Photutils is an Astropy package for detection and photometry
 of astronomical sources.")
+    (license license:bsd-3)))
+
+(define-public python-poppy
+  (package
+    (name "python-poppy")
+    (version "1.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "poppy" version))
+              (sha256
+               (base32
+                "050cn6aabd1dxbi7zihbqnkl79hz6q6d5n6g25zmrpvc4sii171m"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs
+     ;; XXX: With python-synphot (marked as optional) package added to the list
+     ;; it tries to download from remote host during tests and fails. Overall
+     ;; tests take up to 5-8min to pass.
+     (list python-astropy
+           python-matplotlib
+           python-numpy
+           python-scipy))
+    (native-inputs
+     (list python-docutils
+           python-h5py
+           python-pandas
+           python-pytest
+           python-pytest-astropy
+           python-sphinx
+           python-setuptools-scm))
+    (home-page "https://poppy-optics.readthedocs.io/")
+    (synopsis "Physical Optics Propagation in Python")
+    (description
+     "@acronym{POPPY, Physical Optics Propagation in Python} is a Python package that
+simulates physical optical propagation including diffraction.  It implements a
+flexible framework for modeling Fraunhofer and Fresnel diffraction and point
+spread function formation, particularly in the context of astronomical
+telescopes.
+
+POPPY was developed as part of a simulation package for the James Webb Space
+Telescope, but is more broadly applicable to many kinds of imaging simulations.
+It is not, however, a substitute for high fidelity optical design software such
+as Zemax or Code V, but rather is intended as a lightweight alternative for
+cases for which diffractive rather than geometric optics is the topic of
+interest, and which require portability between platforms or ease of scripting.")
     (license license:bsd-3)))
 
 (define-public python-pyvo
@@ -1375,13 +1420,13 @@ Virtual observatory (VO) using Python.")
 (define-public python-regions
   (package
     (name "python-regions")
-    (version "0.6")
+    (version "0.7")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "regions" version))
        (sha256
-        (base32 "0p95bxxw4dgd16rh1yj7zvfbijk52dqvqj20nj6q8kr5ms08acl0"))))
+        (base32 "08wsg9kxnki5pz8gdp81bq06jdmsip382fl02rvnr96cvzr7wf3m"))))
     (build-system python-build-system)
     (arguments
      `(#:test-target "pytest"
@@ -1499,13 +1544,13 @@ orbits described in TLE files.")
 (define-public python-sunpy
   (package
     (name "python-sunpy")
-    (version "4.0.6")
+    (version "4.1.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "sunpy" version))
        (sha256
-        (base32 "0aiirb6l8zshdrpsvh6d5ki759ah9zfm9gbl0in985hprwwxyrq1"))))
+        (base32 "1h8dnsic96bxm5l278vk6jj5h4bh1b143fghsvv5rhigk137vysp"))))
     (build-system pyproject-build-system)
     (arguments
      (list

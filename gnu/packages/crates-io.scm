@@ -66318,7 +66318,11 @@ hardware registers.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1kz8svnqnxclllsgh0ck20rplw3qzp46b5v30yscnzrgw8vgahjg"))))
+         "1kz8svnqnxclllsgh0ck20rplw3qzp46b5v30yscnzrgw8vgahjg"))
+       (snippet
+        '(begin
+           (delete-file "vim10m_match")
+           (delete-file "vim10m_table")))))
     (arguments
      `(#:tests? #f      ; tests not included in release
        #:cargo-inputs

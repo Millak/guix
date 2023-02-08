@@ -8,7 +8,7 @@
 ;;; Copyright © 2020 Pierre Langlois <pierre.langlos@gmx.com>
 ;;; Copyright © 2021 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2021 Alexandre Hannud Abdo <abdo@member.fsf.org>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -34,6 +34,7 @@
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
   #:use-module (guix build-system r)
   #:use-module ((guix licenses) #:prefix license:)
@@ -91,35 +92,40 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
 (define-public igraph
   (package
     (name "igraph")
-    (version "0.9.8")
+    (version "0.10.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://github.com/igraph/igraph/releases/"
                            "download/" version "/igraph-" version ".tar.gz"))
-       (modules '((guix build utils)))
+       (modules '((guix build utils)
+                  (ice-9 ftw)
+                  (srfi srfi-26)))
        (snippet '(begin
-                   ;; Fully unbundle igraph (see:
-                   ;; https://github.com/igraph/igraph/issues/1897).
-                   (delete-file-recursively "vendor")
-                   (substitute* "CMakeLists.txt"
-                     (("add_subdirectory\\(vendor\\).*")
-                      ""))
-                   ;; Help CMake to find our plfit headers.
-                   (substitute* "etc/cmake/FindPLFIT.cmake"
-                     (("^  NAMES plfit.h.*" all)
-                      (string-append all
-                                     "  PATH_SUFFIXES plfit")))
+                   ;; igraph insists on building its own copy of CxSparse
+                   ;; (see: https://github.com/igraph/igraph/commit/\
+                   ;; 334318b7dfe46501236272ca336580f4748114b0) and the build
+                   ;; has no support to use a system provided 'pcg'.
+                   (define keep-libraries '("cs" "pcg"))
+                   (define keep (append '("." ".." "CMakeLists.txt")
+                                        keep-libraries))
+                   (define keep? (cut member <> keep))
+                   (with-directory-excursion "vendor"
+                     (for-each delete-file-recursively
+                               (scandir "." (negate keep?))))
+                   (call-with-output-file "vendor/CMakeLists.txt"
+                     (cut format <> "~{add_subdirectory(~a)~%~}"
+                          keep-libraries))
                    (substitute* '("src/CMakeLists.txt"
                                   "etc/cmake/benchmark_helpers.cmake")
-                     ;; Remove bundling related variables.
+                     ;; Remove extraneous bundling related variables.
                      ((".*_IS_VENDORED.*")
                       ""))))
        (sha256
-        (base32 "15v3ydq95gahnas37cip637hvc2nwrmk76xp0nv3gq53rrrk9a7r"))))
+        (base32 "1z1ay3l1h64jc2igbl2ibvi20sswy56v2yk3ykhis7jzijsh0mxa"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags (list "-DBUILD_SHARED_LIBS=ON")))
+    (arguments (list #:configure-flags #~(list "-DBUILD_SHARED_LIBS=ON")
+                     #:test-target "check"))
     (native-inputs (list pkg-config))
     (inputs
      (list arpack-ng
@@ -128,8 +134,9 @@ distributions in empirical data.  SIAM Review 51, 661-703 (2009)}).")
            libxml2
            lapack
            openblas
-           plfit
-           suitesparse))
+           plfit))
+    ;; libxml2 is in the 'Requires.private' of igraph.pc.
+    (propagated-inputs (list libxml2))
     (home-page "https://igraph.org")
     (synopsis "Network analysis and visualization")
     (description
@@ -140,48 +147,47 @@ more.")
     (license license:gpl2+)))
 
 (define-public python-igraph
-  (package
-    (inherit igraph)
-    (name "python-igraph")
-    (version "0.9.11")
-    (source (origin
-              (method git-fetch)
-              ;; The PyPI archive lacks tests.
-              (uri (git-reference
-                    (url "https://github.com/igraph/python-igraph")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1xlr0cnf3a1vs9n2psvgrmjhld4n1xr79kkjqzby4pxxyzk1bydn"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'specify-libigraph-location
-            (lambda _
-              (let ((igraph #$(this-package-input "igraph")))
-                (substitute* "setup.py"
-                  (("(LIBIGRAPH_FALLBACK_INCLUDE_DIRS = ).*" _ var)
-                   (string-append
-                    var (format #f "[~s]~%" (string-append igraph
-                                                           "/include/igraph"))))
-                  (("(LIBIGRAPH_FALLBACK_LIBRARY_DIRS = ).*" _ var)
-                   (string-append
-                    var (format #f "[~s]~%" (string-append igraph "/lib"))))))))
-          (replace 'check
-            (lambda* (#:key tests? #:allow-other-keys)
-              (when tests?
-                (invoke "pytest" "-v")))))))
-    (inputs
-     (list igraph))
-    (propagated-inputs
-     (list python-texttable))
-    (native-inputs
-     (list python-pytest))
-    (home-page "https://igraph.org/python/")
-    (synopsis "Python bindings for the igraph network analysis library")))
+  ;; Temporarily use a precise commit, as there was a mistake in the last
+  ;; release that was fixed by it (see:
+  ;; https://github.com/igraph/python-igraph/issues/632).
+  (let ((revision "0")
+        (commit "b6ebd8eb277fc1d0e33340a6624629a10c638992"))
+    (package
+      (inherit igraph)
+      (name "python-igraph")
+      (version (git-version "0.10.4" revision commit))
+      (source (origin
+                (method git-fetch)
+                ;; The PyPI archive lacks tests.
+                (uri (git-reference
+                      (url "https://github.com/igraph/python-igraph")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0dhrz5a6pi6vs94fm8q4nmkh6v1nmpw1sk482xls213zcbbh67hd"))))
+      (build-system pyproject-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'specify-libigraph-location
+              (lambda _
+                (let ((igraph #$(this-package-input "igraph")))
+                  (substitute* "setup.py"
+                    (("(LIBIGRAPH_FALLBACK_INCLUDE_DIRS = ).*" _ var)
+                     (string-append
+                      var (format #f "[~s]~%"
+                                  (string-append igraph "/include/igraph"))))
+                    (("(LIBIGRAPH_FALLBACK_LIBRARY_DIRS = ).*" _ var)
+                     (string-append
+                      var (format #f "[~s]~%"
+                                  (string-append igraph "/lib")))))))))))
+      (inputs (list igraph))
+      (propagated-inputs (list python-texttable))
+      (native-inputs (list python-pytest))
+      (home-page "https://igraph.org/python/")
+      (synopsis "Python bindings for the igraph network analysis library"))))
 
 (define-public r-rbiofabric
   (let ((commit "666c2ae8b0a537c006592d067fac6285f71890ac")
@@ -304,58 +310,6 @@ subplots, multiple-axes, polar charts, and bubble charts.")
      "This package provides a pure Python implementation of the Louvain
 algorithm for community detection in large networks.")
     (license license:bsd-3)))
-
-(define-public python-louvain-0.7
-  (package
-    (name "python-louvain")
-    (version "0.7.1")
-    ;; The tarball on Pypi does not include the tests.
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/vtraag/louvain-igraph")
-                    (commit version)))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "1g6b5c2jgwagnhnqh859g61h7x6a81d8hm3g6mkin6kzwafww3g2"))))
-    (build-system python-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-before 'build 'pretend-version
-            ;; The version string is usually derived via setuptools-scm, but
-            ;; without the git metadata available this fails.
-            (lambda _
-              (setenv "SETUPTOOLS_SCM_PRETEND_VERSION" #$version)))
-          (add-before 'build 'find-igraph
-            (lambda* (#:key inputs #:allow-other-keys)
-              (setenv "IGRAPH_EXTRA_INCLUDE_PATH"
-                      (string-append (assoc-ref inputs "igraph")
-                                     "/include/igraph:"
-                                     (getenv "C_INCLUDE_PATH")))
-              (setenv "IGRAPH_EXTRA_LIBRARY_PATH"
-                      (getenv "LIBRARY_PATH")))))))
-    (propagated-inputs
-     (list python-ddt python-igraph))
-    (inputs
-     (list igraph))
-    (native-inputs
-     (list pkg-config
-           python-pytest
-           python-setuptools-scm
-           python-wheel))
-    (home-page "https://github.com/vtraag/louvain-igraph")
-    (synopsis "Algorithm for methods of community detection in large networks")
-    (description
-     "This package provides an implementation of the Louvain algorithm for use
-with igraph.  Louvain is a general algorithm for methods of community
-detection in large networks.
-
-This package has been superseded by the @code{leidenalg} package and should
-not be used for new projects.")
-    (license license:gpl3+)))
 
 (define-public faiss
   (package
@@ -496,14 +450,14 @@ Faiss library.")))
 (define-public python-leidenalg
   (package
     (name "python-leidenalg")
-    (version "0.8.10")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "leidenalg" version))
        (sha256
         (base32
-         "1hbvagp1yyazvl7cid7mii5263qi48lpkq543n5w71qysgz1f0v7"))))
+         "1wvmi6ca9kf8pbxg6b18n64h82wr9a6wcdazyn82pww0dwxzwp3y"))))
     (build-system python-build-system)
     (arguments
      '(#:tests? #f                      ;tests are not included
@@ -566,19 +520,18 @@ isolating planarity obstructions.")
     (name "rw")
     ;; There is a version 0.8, but the tarball is broken with symlinks
     ;; to /usr/share.
-    (version "0.7")
+    (version "0.9")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://sourceforge/rankwidth/"
                                   "rw-" version ".tar.gz"))
-       (sha256
-        (base32
-         "1rv2v42x2506x7f10349m1wpmmfxrv9l032bkminni2gbip9cjg0"))))
+              (sha256
+               (base32
+                "0hdlxxmlccb6fp7g58zv0rdzpbyjn9bgqlf052sgrk95zq33bq61"))
+              (patches (search-patches "rw-igraph-0.10.patch"))))
     (build-system gnu-build-system)
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list igraph))
+    (native-inputs (list pkg-config))
+    (inputs (list igraph))
     (home-page "https://sourceforge.net/projects/rankwidth/")
     (synopsis "Rank-width and rank-decomposition of graphs")
     (description "rw computes rank-width and rank-decompositions

@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2019, 2020, 2021, 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -27,7 +27,6 @@
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
-  #:use-module (gnu packages assembly)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
@@ -56,7 +55,6 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages pciutils)
   #:use-module (gnu packages pkg-config)
-  #:use-module (gnu packages protobuf)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-web)
@@ -70,10 +68,8 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages xorg)
-  #:use-module (ice-9 match)
-  #:use-module (srfi srfi-1))
+  #:use-module (ice-9 match))
 
 (define %preserved-third-party-files
   '("base/third_party/cityhash" ;Expat
@@ -152,6 +148,8 @@
     "third_party/devtools-frontend/src/front_end/third_party/lodash-isequal" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/marked" ;Expat, BSD-3
     "third_party/devtools-frontend/src/front_end/third_party/puppeteer" ;ASL2.0
+    "third_party/devtools-frontend/src/front_end/third_party/puppeteer\
+/package/lib/esm/third_party/mitt" ;Expat
     "third_party/devtools-frontend/src/front_end/third_party/wasmparser" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/pyjson5" ;ASL2.0
     "third_party/devtools-frontend/src/third_party/typescript" ;ASL2.0
@@ -245,6 +243,7 @@
     "third_party/ruy" ;ASL2.0
     "third_party/s2cellid" ;ASL2.0
     "third_party/securemessage" ;ASL2.0
+    "third_party/selenium-atoms" ;ASL2.0
     "third_party/shell-encryption" ;ASL2.0
     "third_party/skia" ;BSD-3
     "third_party/skia/third_party/vulkanmemoryallocator" ;BSD-3, Expat
@@ -317,10 +316,10 @@
   ;; run the Blink performance tests, just remove everything to save ~70MiB.
   '("third_party/blink/perf_tests"))
 
-(define %chromium-version "108.0.5359.124")
+(define %chromium-version "109.0.5414.119")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
 (define %debian-revision "debian/102.0.5005.61-1")
-(define %arch-revision "4de5019014aeb77187a517c5ca6db8723d622a40")
+(define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
 
 (define %ungoogled-origin
   (origin
@@ -330,7 +329,7 @@
     (file-name (git-file-name "ungoogled-chromium" %ungoogled-revision))
     (sha256
      (base32
-      "18sz2ksawyb08h4kbxzkf1zhxs832z8mwvndm43nykz01wxk20bp"))))
+      "1nb0099gwkhxv3zc184jyvpl5jrrq194pv6yq95nbc27vw6zz7qv"))))
 
 (define %debian-origin
   (origin
@@ -378,7 +377,9 @@
 (define %arch-patches
   (list
    (arch-patch %arch-revision "disable-GlobalMediaControlsCastStartStop.patch"
-               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")))
+               "00m361ka38d60zpbss7qnfw80vcwnip2pjcz3wf46wd2sqi1nfvz")
+   (arch-patch %arch-revision "fix-the-way-to-handle-codecs-in-the-system-icu.patch"
+               "1qy7ldw7lnfbg0dl49m7myrflw0ps80adaisq5dqjndhn0rcbmd5")))
 
 (define %guix-patches
   (list (local-file
@@ -491,7 +492,7 @@
                                   %chromium-version ".tar.xz"))
               (sha256
                (base32
-                "0x9ac6m4xdccjdrk2bmq4y7bhfpgf2dv0q7lsbbsa50vlv1gm3fl"))
+                "0bdyb14v12izxkldq27jx532p0bid3wdwfpd1mwm7jqswxgfzkfb"))
               (modules '((guix build utils)))
               (snippet (force ungoogled-chromium-snippet))))
     (build-system gnu-build-system)
@@ -589,7 +590,7 @@
               "ffmpeg_branding=\"Chrome\""
 
               ;; WebRTC stuff.
-              "rtc_use_h264=true"
+              "rtc_use_h264=false"      ;XXX needs bundled openh264
               "rtc_use_pipewire=true"
               "rtc_link_pipewire=true"
               ;; Don't use bundled sources.
@@ -619,9 +620,6 @@
                 ;; Adjust minizip header inclusions.
                 (substitute* (find-files "third_party/tflite_support\
 /src/tensorflow_lite_support/metadata/cc")
-                  (("#include \"contrib/minizip/ioapi\\.h\"")
-                   ;; This one can be removed for M108 or so.
-                   "#include \"minizip/ioapi.h\"")
                   (("third_party/zlib/contrib/minizip/")
                    "minizip/"))
 
@@ -669,6 +667,11 @@
                 (substitute* "third_party/pdfium/core/fxcodec/icc/icc_transform.h"
                   (("include \"third_party/lcms/include/lcms2\\.h\"")
                    "include \"lcms2.h\""))
+
+                ;; The unbundling script leaves behind an empty pyyaml directory
+                ;; which prevents the code that tries to use it from falling
+                ;; back to the pyyaml provided by Guix.
+                (delete-file-recursively "third_party/pyyaml")
 
                 (substitute*
                     "third_party/breakpad/breakpad/src/common/linux/libcurl_wrapper.h"
@@ -747,9 +750,7 @@
                    (string-append mesa-lib "/libGLESv2.so.2"))))))
           (add-before 'configure 'prepare-build-environment
             (lambda* (#:key native-inputs inputs #:allow-other-keys)
-              (let ((c++ (search-input-directory (or native-inputs inputs)
-                                                 "include/c++"))
-                    (node (search-input-file (or native-inputs inputs)
+              (let ((node (search-input-file (or native-inputs inputs)
                                              "/bin/node")))
                 ;; Define the GN toolchain.
                 (setenv "AR" "llvm-ar") (setenv "NM" "llvm-nm")
@@ -888,6 +889,7 @@
            which
            python-beautifulsoup4
            python-html5lib
+           python-pyyaml
            python-wrapper
            wayland))
     (inputs

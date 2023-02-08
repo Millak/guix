@@ -11,7 +11,7 @@
 ;;; Copyright © 2018 Adriano Peluso <catonano@gmail.com>
 ;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Arun Isaac <arunisaac@systemreboot.net>
-;;; Copyright © 2019, 2020, 2021, 2022 Guillaume Le Vaillant <glv@posteo.net>
+;;; Copyright © 2019-2023 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2019 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2019, 2020 Martin Becze <mjbecze@riseup.net>
 ;;; Copyright © 2019 Sebastian Schott <sschott@mailbox.org>
@@ -32,6 +32,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
+;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -227,6 +228,14 @@ line client and a client based on Qt.")
         (base32
          "07fcfkmv4cy92njnf2qc7jh0naz96q962hxldcd7hk4k7ddv0mss"))))
     (build-system haskell-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'install-doc
+            (lambda _
+              (install-file "hledger.info" (string-append #$output "/share/info"))
+              (install-file "hledger.1" (string-append #$output "/man/man1")))))))
     (inputs
      (list ghc-ansi-terminal
            ghc-base-compat-batteries
@@ -271,14 +280,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6")
+    (version "5.6.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://homebank.free.fr/public/homebank-"
-                                  version ".tar.gz"))
+              (uri (string-append "http://homebank.free.fr/public/sources/"
+                                  "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "1ig00d3wby6lisz3vbyb5qm7h4a6npfwqyphdl8fjgibzpapq5a1"))))
+                "03wgyc777bzys32iv32yf7aj3z4hx87dskq1maw9l9jkqlqrqj1s"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
@@ -342,7 +351,8 @@ and dynamically with report tools based on filtering and graphical charts.")
              (let ((examples (string-append (assoc-ref outputs "out")
                                             "/share/doc/ledger/examples")))
                (install-file "test/input/sample.dat" examples)
-               (install-file "test/input/demo.ledger" examples))
+               (install-file "test/input/demo.ledger" examples)
+               (install-file "contrib/report" examples))
              #t))
          (add-after 'build 'build-doc
            (lambda _ (invoke "make" "doc")))
@@ -873,9 +883,38 @@ the Monero command line client and daemon.")
                                      "\";")))))
                (replace 'install
                  (lambda _
-                   (let ((bin (string-append #$output "/bin")))
-                     (mkdir-p bin)
-                     (install-file "../build/bin/monero-wallet-gui" bin))))
+                   ;; Binary
+                   (let ((dir (string-append #$output "/bin")))
+                     (mkdir-p dir)
+                     (install-file "../build/bin/monero-wallet-gui" dir))
+                   ;; Icons
+                   (for-each
+                    (lambda (size)
+                      (let ((dir (string-append #$output
+                                                "/share/icons/hicolor/"
+                                                size
+                                                "/apps")))
+                        (mkdir-p dir)
+                        (copy-file (string-append "../source/images/appicons/"
+                                                  size ".png")
+                                   (string-append dir
+                                                  "/monero-gui.png"))))
+                    '("16x16" "24x24" "32x32" "48x48"
+                      "64x64" "96x96" "128x128" "256x256"))
+                   ;; Menu entry file
+                   (let ((dir (string-append #$output "/share/applications")))
+                     (mkdir-p dir)
+                     (call-with-output-file
+                         (string-append dir "/monero-gui.desktop")
+                       (lambda (port)
+                         (format port
+                                 "[Desktop Entry]~@
+                                  Type=Application~@
+                                  Name=Monero wallet~@
+                                  Exec=~a/bin/monero-wallet-gui~@
+                                  Icon=monero-gui~@
+                                  Categories=Office;Finance;~%"
+                                 #$output))))))
                (add-after 'qt-wrap 'install-monerod-link
                  ;; The monerod program must be available so that
                  ;; monero-wallet-gui can start a Monero daemon if necessary.

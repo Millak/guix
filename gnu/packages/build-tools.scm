@@ -32,6 +32,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages build-tools)
+  #:use-module (ice-9 optargs)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
   #:use-module (guix packages)
@@ -39,20 +40,28 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system copy)
+  #:use-module (guix modules)
   #:use-module (gnu packages)
   #:use-module (gnu packages adns)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages check)
+  #:use-module (gnu packages code)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages cppi)
   #:use-module (gnu packages elf)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages lisp)
   #:use-module (gnu packages logging)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages ninja)
   #:use-module (gnu packages package-management)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pretty-print)
   #:use-module (gnu packages protobuf)
@@ -65,6 +74,7 @@
   #:use-module (gnu packages rpc)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages unicode)
   #:use-module (gnu packages version-control)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
@@ -803,3 +813,195 @@ Build has features such as:
 same settings to multiple projects.  It supports generating projects using GNU
 Makefiles, JSON Compilation Database, and experimentally Ninja.")
       (license license:bsd-3))))
+
+(define*-public (gnulib-checkout #:key
+                                 version
+                                 (revision "1")
+                                 commit
+                                 hash)
+  "Return as a package the exact gnulib checkout."
+  (package
+    (name "gnulib")
+    (version (git-version version revision commit))
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/git/gnulib.git/")
+             (commit commit)))
+       (file-name (git-file-name name version))
+       (sha256 hash)
+       (snippet
+        (with-imported-modules (source-module-closure '((guix build utils)))
+          #~(begin
+              (use-modules (guix build utils)
+                           (ice-9 ftw)
+                           (ice-9 rdelim))
+              ;; .c, .h and .gperf files whose first line is /* DO NOT EDIT!
+              ;; GENERATED AUTOMATICALLY! */ are generated automatically based
+              ;; on the unicode database. Since we replace the unicode
+              ;; database with our own, we need to regenerate them. So, they
+              ;; are removed from the source. They are sprinkled all over the
+              ;; place unfortunately, so we can’t exclude whole directories.
+              (let ((generated-automatically?
+                     (lambda (filename . unused)
+                       (and (or (string-suffix? ".c" filename)
+                                (string-suffix? ".h" filename)
+                                (string-suffix? ".gperf" filename))
+                            (call-with-input-file filename
+                              (lambda (port)
+                                (let ((first-line (read-line port)))
+                                  (equal?
+                                   first-line
+                                   "/* DO NOT EDIT! GENERATED AUTOMATICALLY! */"))))))))
+                (for-each delete-file (find-files (getcwd) generated-automatically?)))
+              ;; Other files are copied from UCD.
+              (for-each delete-file
+                        '("tests/unigbrk/GraphemeBreakTest.txt"
+                          "tests/uninorm/NormalizationTest.txt"
+                          "tests/uniname/UnicodeData.txt"
+                          "tests/uniname/NameAliases.txt"
+                          ;; FIXME: tests/uniname/HangulSyllableNames.txt
+                          ;; seems like a UCD file but it is not distributed
+                          ;; with UCD.
+                          "tests/uniwbrk/WordBreakTest.txt")))))))
+    (build-system copy-build-system)
+    (arguments
+     (list
+      #:install-plan
+      #~'(("./gnulib-tool" "bin/")
+          ("." "src/gnulib" #:exclude-regexp ("\\.git.*")))
+      #:modules '((ice-9 match)
+                  (guix build utils)
+                  (guix build copy-build-system)
+                  ((guix build gnu-build-system) #:prefix gnu:))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'install 'check
+            (assoc-ref gnu:%standard-phases 'check))
+          (add-before 'check 'fix-tests
+            (lambda _
+              (substitute* "Makefile"
+                (("-f maint.mk syntax-check")
+                 "_gl-Makefile=yes -f maint.mk syntax-check"))
+              (invoke "git" "init")
+              (invoke "git" "config" "user.name" "Guix")
+              (invoke "git" "config" "user.email" "guix@localhost")
+              (invoke "git" "add" ".")
+              ;; Syntax checks are only run against committed files.
+              (invoke "git" "commit" "-m" "Prepare for tests.")))
+          (add-before 'check 'disable-failing-tests
+            (lambda _
+              (substitute* "cfg.mk"
+                (("local-checks-to-skip =")
+                 ;; sc_copyright_check fails because the fake commit date may
+                 ;; be later than the copyright year.
+                 "local-checks-to-skip = \\
+  sc_Wundef_boolean \\
+  sc_copyright_check \\
+  sc_file_system \\
+  sc_indent \\
+  sc_keep_gnulib_texi_files_mostly_ascii \\
+  sc_prohibit_assert_without_use \\
+  sc_prohibit_close_stream_without_use \\
+  sc_prohibit_defined_have_decl_tests \\
+  sc_prohibit_doubled_word \\
+  sc_prohibit_empty_lines_at_EOF \\
+  sc_prohibit_intprops_without_use \\
+  sc_prohibit_openat_without_use \\
+  sc_prohibit_test_minus_ao \\
+  sc_unportable_grep_q"))
+              (substitute* "Makefile"
+                (("sc_check_(sym_list|copyright)" rule)
+                 (string-append "disabled_check_" rule))
+                (("sc_cpp_indent_check")
+                 "disabled_cpp_indent_check")
+                (("sc_prefer_ac_check_funcs_once")
+                 "disabled_prefer_ac_check_funcs_once")
+                (("sc_prohibit_(AC_LIBOBJ_in_m4|leading_TABs)" rule)
+                 (string-append "disabled_prohibit_" rule)))))
+          (add-before 'check 'regenerate-unicode
+            (lambda* (#:key inputs #:allow-other-keys)
+              (define (find-ucd-file name)
+                (search-input-file inputs (string-append "share/ucd/" name)))
+              (define (find-ucd-files . names)
+                (map find-ucd-file names))
+              (with-directory-excursion "lib"
+                ;; See the compile-command buffer-local variable in
+                ;; lib/gen-uni-tables.c
+                (invoke "gcc" "-O" "-Wall" "gen-uni-tables.c"
+                        "-Iunictype" "-o" "gen-uni-tables")
+                (apply invoke
+                       "./gen-uni-tables"
+                       (append
+                        (find-ucd-files "UnicodeData.txt"
+                                        "PropList.txt"
+                                        "DerivedCoreProperties.txt"
+                                        "emoji/emoji-data.txt"
+                                        "ArabicShaping.txt"
+                                        "Scripts.txt"
+                                        "Blocks.txt")
+                        (list
+                         #$(origin
+                             (method url-fetch)
+                             (uri (string-append
+                                   "https://www.unicode.org/Public/"
+                                   "3.0-Update1/PropList-3.0.1.txt"))
+                             (sha256
+                              (base32
+                               "0k6wyijyzdl5g3nibcwfm898kfydx1pqaz28v7fdvnzdvd5fz7lh"))))
+                        (find-ucd-files "EastAsianWidth.txt"
+                                        "LineBreak.txt"
+                                        "auxiliary/WordBreakProperty.txt"
+                                        "auxiliary/GraphemeBreakProperty.txt"
+                                        "CompositionExclusions.txt"
+                                        "SpecialCasing.txt"
+                                        "CaseFolding.txt")
+                         (list #$(package-version (this-package-native-input "ucd")))))
+                (invoke "clisp" "-C" "uniname/gen-uninames.lisp"
+                        (find-ucd-file "UnicodeData.txt")
+                        "uniname/uninames.h"
+                        (find-ucd-file "NameAliases.txt"))
+                (for-each
+                 (match-lambda
+                  ((ucd-file . directory)
+                   (copy-file (find-ucd-file ucd-file)
+                              (string-append "../tests/" directory "/"
+                                             (basename ucd-file)))))
+                 '(("NameAliases.txt" . "uniname")
+                   ("UnicodeData.txt" . "uniname")
+                   ("NormalizationTest.txt" . "uninorm")
+                   ("auxiliary/GraphemeBreakTest.txt" . "unigbrk")
+                   ("auxiliary/WordBreakTest.txt" . "uniwbrk")))
+                (delete-file "gen-uni-tables")))))))
+    (inputs ;; Shebangs for some auxiliary build files.
+     (list python perl clisp))
+    (native-inputs
+     (list
+      python perl clisp
+      ;; Unicode data:
+      ucd-next
+      ;; Programs for the tests:
+      cppi indent git autoconf))
+    (home-page "https://www.gnu.org/software/gnulib/")
+    (synopsis "Source files to share among distributions")
+    (description
+     "Gnulib is a central location for common infrastructure needed by GNU
+packages.  It provides a wide variety of functionality, e.g., portability
+across many systems, working with Unicode strings, cryptographic computation,
+and much more.  The code is intended to be shared at the level of source
+files, rather than being a standalone library that is distributed, built, and
+installed.  The included @command{gnulib-tool} script helps with using Gnulib
+code in other packages.  Gnulib also includes copies of licensing and
+maintenance-related files, for convenience.")
+    (native-search-paths
+     (list (search-path-specification
+            (variable "GNULIB_SRCDIR")
+            (files (list "src/gnulib")))))
+    (license (list license:lgpl2.0+ license:gpl3+))))
+
+(define-public gnulib
+  (gnulib-checkout
+   #:version "2022-12-31"
+   #:commit "875461ffdf58ac04677957b4ae4160465b83b940"
+   #:hash (base32 "0bf7a6wdns9c5wwv60qfcn9llg0j6jz5ryd2qgsqqx2i6xkmp77c")))

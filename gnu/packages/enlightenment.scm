@@ -5,6 +5,7 @@
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Timo Eisenmann <eisenmann@fn.de>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -82,63 +83,63 @@
                 "05bxc58hj0z6pkp6yy5cmy1lc575q0nrbr5lxr6z8d4kznh3my6r"))))
     (build-system meson-build-system)
     (native-inputs
-     `(("check" ,check)
-       ("gettext" ,gettext-minimal)
-       ("pkg-config" ,pkg-config)
-       ("python" ,python)))
+     (list check
+           gettext-minimal
+           pkg-config
+           python))
     (inputs
-     `(("curl" ,curl)
-       ("giflib" ,giflib)
-       ("gstreamer" ,gstreamer)
-       ("gst-plugins-base" ,gst-plugins-base)
-       ("ibus" ,ibus)
-       ("mesa" ,mesa)
-       ("libraw" ,libraw)
-       ("librsvg" ,(librsvg-for-system))
-       ("libspectre" ,libspectre)
-       ("libtiff" ,libtiff)
-       ("libxau" ,libxau)
-       ("libxcomposite" ,libxcomposite)
-       ("libxcursor" ,libxcursor)
-       ("libxdamage" ,libxdamage)
-       ("libxdmcp" ,libxdmcp)
-       ("libxext" ,libxext)
-       ("libxi" ,libxi)
-       ("libxfixes" ,libxfixes)
-       ("libxinerama" ,libxinerama)
-       ("libxrandr" ,libxrandr)
-       ("libxrender" ,libxrender)
-       ("libxss" ,libxscrnsaver)
-       ("libxtst" ,libxtst)
-       ("libwebp" ,libwebp)
-       ("openjpeg" ,openjpeg)
-       ("poppler" ,poppler)
-       ("util-linux" ,util-linux "lib")
-       ("wayland-protocols" ,wayland-protocols)))
+     (list curl
+           giflib
+           gstreamer
+           gst-plugins-base
+           ibus-minimal
+           mesa
+           libraw
+           (librsvg-for-system)
+           libspectre
+           libtiff
+           libxau
+           libxcomposite
+           libxcursor
+           libxdamage
+           libxdmcp
+           libxext
+           libxi
+           libxfixes
+           libxinerama
+           libxrandr
+           libxrender
+           libxscrnsaver
+           libxtst
+           libwebp
+           openjpeg
+           poppler
+           `(,util-linux "lib")
+           wayland-protocols))
     (propagated-inputs
      ;; All these inputs are in package config files in section
      ;; Requires.private.
-     `(("dbus" ,dbus)
-       ("elogind" ,elogind)
-       ("eudev" ,eudev)
-       ("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("fribidi" ,fribidi)
-       ("glib" ,glib)
-       ("harfbuzz" ,harfbuzz)
-       ("libinput" ,libinput-minimal)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libsndfile" ,libsndfile)
-       ("libpng" ,libpng)
-       ("libunwind" ,libunwind)
-       ("libx11" ,libx11)
-       ("libxkbcommon" ,libxkbcommon)
-       ("luajit" ,luajit)
-       ("lz4" ,lz4)
-       ("openssl" ,openssl)
-       ("pulseaudio" ,pulseaudio)
-       ("wayland" ,wayland)
-       ("zlib" ,zlib)))
+     (list dbus
+           elogind
+           eudev
+           fontconfig
+           freetype
+           fribidi
+           glib
+           harfbuzz
+           libinput-minimal
+           libjpeg-turbo
+           libsndfile
+           libpng
+           libunwind
+           libx11
+           libxkbcommon
+           luajit
+           lz4
+           openssl
+           pulseaudio
+           wayland
+           zlib))
     (arguments
      `(#:configure-flags
        `("-Dembedded-lz4=false"
@@ -158,22 +159,17 @@
          ;; have to wrap the outputs of efl's dependencies in those libraries.
          (add-after 'unpack 'hardcode-dynamic-libraries
            (lambda* (#:key inputs #:allow-other-keys)
-             (let ((curl    (assoc-ref inputs "curl"))
-                   (pulse   (assoc-ref inputs "pulseaudio"))
-                   (sndfile (assoc-ref inputs "libsndfile"))
-                   (elogind (assoc-ref inputs "elogind"))
-                   (lib     "/lib/"))
-               (substitute* "src/lib/ecore_con/ecore_con_url_curl.c"
-                 (("libcurl.so.?" libcurl) ; libcurl.so.[45]
-                  (string-append curl lib libcurl)))
-               (substitute* "src/lib/ecore_audio/ecore_audio.c"
-                 (("libpulse.so.0" libpulse)
-                  (string-append pulse lib libpulse))
-                 (("libsndfile.so.1" libsnd)
-                  (string-append sndfile lib libsnd)))
-               (substitute* "src/lib/elput/elput_logind.c"
-                 (("libelogind.so.0" libelogind)
-                  (string-append elogind "/lib/" libelogind))))))
+             (substitute* "src/lib/ecore_con/ecore_con_url_curl.c"
+               (("libcurl.so.4")
+                (search-input-file inputs "lib/libcurl.so.4")))
+             (substitute* "src/lib/ecore_audio/ecore_audio.c"
+               (("libpulse.so.0")
+                (search-input-file inputs "lib/libpulse.so.0"))
+               (("libsndfile.so.1")
+                (search-input-file inputs "lib/libsndfile.so.1")))
+             (substitute* "src/lib/elput/elput_logind.c"
+               (("libelogind.so.0")
+                (search-input-file inputs "lib/libelogind.so.0")))))
          (add-after 'unpack 'fix-install-paths
            (lambda _
              (substitute* "dbus-services/meson.build"

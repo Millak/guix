@@ -982,7 +982,7 @@ the HTML documentation of TXR.")
 (define-public txr
   (package
     (name "txr")
-    (version "282")
+    (version "284")
     (source
      (origin
        (method git-fetch)
@@ -991,7 +991,7 @@ the HTML documentation of TXR.")
              (commit (string-append "txr-" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hzni1v9qlh1vy8spz8prink7v9hp2bin15vnyfha2ax306w6dq5"))))
+        (base32 "1v6dq1q98v3jdx7g67k15njkpp49iwf30n29rrhwng3b3njqm75g"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
@@ -1230,7 +1230,7 @@ including a built-in database engine and a GUI system.")
 (define-public janet
   (package
     (name "janet")
-    (version "1.25.1")
+    (version "1.26.0")
     (source
      (origin
        (method git-fetch)
@@ -1239,7 +1239,7 @@ including a built-in database engine and a GUI system.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0d601imsndkmjyanja6pqp234fwmn9jxzpcbigwpra969x4a4qjd"))))
+        (base32 "1ghxchyxhcjs0vfzisafc27v05im4kya1jg827l4q2h92ras17x3"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags

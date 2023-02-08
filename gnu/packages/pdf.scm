@@ -758,15 +758,14 @@ and based on PDF specification 1.7.")
 (define-public mupdf
   (package
     (name "mupdf")
-    (version "1.20.3")
+    (version "1.21.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://mupdf.com/downloads/archive/"
                            "mupdf-" version "-source.tar.lz"))
        (sha256
-        (base32
-         "0s0qclxxdjis04mczgz0fhfpv0j8llk48g82zlfrk0daz0zgcwvg"))
+        (base32 "0876sn5nd8vyw9d3d3bmripm119jy6734rs0ywppqzvccy839936"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -814,14 +813,13 @@ and based on PDF specification 1.7.")
               "USE_SYSTEM_JPEGXR=no # not available"
               "USE_SYSTEM_LCMS2=no # lcms2mt is strongly preferred"
               "USE_SYSTEM_LIBJPEG=yes"
-              "USE_SYSTEM_MUJS=no # not available"
+              "USE_SYSTEM_MUJS=yes"
               "USE_SYSTEM_OPENJPEG=yes"
               "USE_SYSTEM_ZLIB=yes"
               "USE_SYSTEM_GLUT=no"
               "USE_SYSTEM_CURL=yes"
               "USE_SYSTEM_LEPTONICA=yes"
               "USE_SYSTEM_TESSERACT=yes"
-              "USE_SYSTEM_MUJS=yes"
               "shared=yes"
               (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib")
               (string-append "prefix=" #$output))
@@ -1259,6 +1257,35 @@ documents that use the standard security handler.")
     (description "@command{pdf2svg} is a simple command-line PDF to SVG
 converter using the Poppler and Cairo libraries.")
     (license license:gpl2+)))
+
+(define-public python-pypdf
+  (package
+    (name "python-pypdf")
+    (version "3.2.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/py-pdf/pypdf")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qwvjr694sabfblx22zd54b9ny40f2gbv3bv6q43myrlxwvvisk6"))
+              (patches (search-patches
+                        "python-pypdf-annotate-tests-appropriately.patch"))))
+    (build-system pyproject-build-system)
+    (native-inputs (list python-pytest python-flit))
+    (propagated-inputs (list python-typing-extensions))
+    (home-page "https://github.com/py-pdf/pypdf")
+    (arguments
+     (list
+      ;; Disable tests that use the network and non-free assets.
+      #:test-flags #~(list "-m" "not external and not samples")))
+    (synopsis "Python PDF library")
+    (description
+     "This package provides a PDF library capable of splitting, merging,
+cropping, and transforming PDF files.")
+    (license license:bsd-3)))
 
 (define-public python-pypdf2
   (package

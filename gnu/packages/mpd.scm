@@ -49,6 +49,7 @@
   #:use-module (gnu packages cdrom)
   #:use-module (gnu packages cmake) ;for MPD
   #:use-module (gnu packages cpp)
+  #:use-module (gnu packages file-systems)
   #:use-module (gnu packages freedesktop) ;elogind
   #:use-module (gnu packages gettext)
   #:use-module (gnu packages gnome)
@@ -81,7 +82,8 @@
   #:use-module (gnu packages tls)
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
-  #:use-module (gnu packages xiph))
+  #:use-module (gnu packages xiph)
+  #:use-module (gnu packages xml))
 
 (define-public libmpdclient
   (package
@@ -116,7 +118,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
 (define-public mpd
   (package
     (name "mpd")
-    (version "0.23.11")
+    (version "0.23.12")
     (source (origin
               (method url-fetch)
               (uri
@@ -125,7 +127,7 @@ interfacing MPD in the C, C++ & Objective C languages.")
                               "/mpd-" version ".tar.xz"))
               (sha256
                (base32
-                "1afwvw2670yz3kxzlqjlg9r8ra8fjihj97hgc6skiwnzz6lfgd7d"))))
+                "1rq2hyfvwwri3sivab747csza2i096y7m8563rl5mhpchhiadz5p"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -144,41 +146,50 @@ interfacing MPD in the C, C++ & Objective C languages.")
                  (string-append "_" all)))
               (substitute* "meson.build"
                 (("systemd_dep,") "systemd_dep, _systemd_dep,")))))))
-    (inputs (list ao
-                  alsa-lib
-                  avahi
-                  boost
-                  curl
-                  elogind
-                  ffmpeg
-                  flac
-                  fmt
-                  glib
-                  icu4c
-                  ;; The LAME decoder comes from FFmpeg, but is added here so that
-                  ;; configure picks up the LAME encoder.
-                  lame
-                  libid3tag
-                  libmpdclient
-                  libsamplerate
-                  libsndfile
-                  libvorbis
-                  opus
-                  pipewire
-                  pulseaudio
-                  sqlite
-                  zlib))
+    (inputs (append
+             (if (target-linux?) (list liburing) '())
+             (list ao
+                   alsa-lib
+                   avahi
+                   boost
+                   chromaprint
+                   curl
+                   elogind
+                   expat
+                   ffmpeg
+                   flac
+                   fmt
+                   glib
+                   icu4c
+                   ;; The LAME decoder comes from FFmpeg, but is added here so that
+                   ;; configure picks up the LAME encoder.
+                   lame
+                   libgme
+                   libid3tag
+                   libmpdclient
+                   libnfs
+                   libopenmpt
+                   libsamplerate
+                   libshout
+                   libsndfile
+                   libvorbis
+                   opus
+                   pcre2
+                   pipewire
+                   pulseaudio
+                   soxr
+                   sqlite
+                   yajl
+                   zlib
+                   zziplib)))
     (native-inputs (list cmake pkg-config python-sphinx))
     ;; Missing optional inputs:
-    ;;   yajl
     ;;   libcdio_paranoia
     ;;   libmms
     ;;   libadplug
     ;;   libaudiofile
     ;;   faad2
     ;;   fluidsynth
-    ;;   libgme
-    ;;   libshout
     ;;   libmpg123
     ;;   libmodplug
     ;;   libmpcdec
@@ -547,7 +558,7 @@ album-experience.")
 (define-public mpdevil
   (package
     (name "mpdevil")
-    (version "1.7.0")
+    (version "1.10.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -555,7 +566,7 @@ album-experience.")
                     (commit (string-append "v" version))))
               (file-name (git-file-name name version))
               (sha256
-               (base32 "1va8fqlz8qb68gvacnzmp4asnipi11316n1cv2wb41sml9d7v00j"))))
+               (base32 "04dzxyv176w5sm4j85j7fbh42nk9wsyz5s005kj9cjwsrzrnxlbk"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -568,7 +579,12 @@ album-experience.")
                 (wrap-program prog
                   `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")))
                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH"))))))))))
-    (inputs (list bash-minimal gtk+ python python-mpd2 python-pygobject))
+    (inputs (list bash-minimal
+                  gtk+
+                  python
+                  python-mpd2
+                  python-pycairo
+                  python-pygobject))
     (native-inputs (list `(,glib "bin")))
     (home-page "https://github.com/SoongNoonien/mpdevil")
     (synopsis "Music browser for the MPD")
@@ -581,7 +597,7 @@ mpdevil loads all tags and covers on demand.")
 (define-public mympd
   (package
     (name "mympd")
-    (version "10.1.6")
+    (version "10.2.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -590,7 +606,7 @@ mpdevil loads all tags and covers on demand.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "06i8v8dh2x4lrph9lm56h5yy698y95ic5xrgmyisafvxd239sn0x"))))
+                "1zici4sfpd2hra14dy7vp2x0w3i46a2d422inkixkp4cpm14rj9s"))))
     (build-system cmake-build-system)
     (arguments
      (list #:tests? #f)) ; no test target

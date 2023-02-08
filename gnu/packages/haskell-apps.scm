@@ -50,6 +50,7 @@
   #:use-module (gnu packages haskell-crypto)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages lsof)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
@@ -335,7 +336,11 @@ to @code{cabal repl}).")
              ;; webapp' runs without making the user also install xdg-utils.
              (substitute* '("Assistant/WebApp/DashBoard.hs"
                             "Utility/WebApp.hs")
-               (("xdg-open") (which "xdg-open")))))
+               (("xdg-open") (which "xdg-open")))
+             ;; Also replace loose references to lsof.
+             (substitute* "Assistant/Threads/Watcher.hs"
+               (("\"lsof\"")
+                (string-append "\"" (which "lsof") "\"")))))
          (add-before 'configure 'factor-setup
            (lambda _
              ;; Factor out necessary build logic from the provided
@@ -480,6 +485,7 @@ to @code{cabal repl}).")
            ghc-yesod-core
            ghc-yesod-form
            ghc-yesod-static
+           lsof
            rsync
            xdg-utils))
     (propagated-inputs
@@ -836,7 +842,7 @@ too slow and you'll get wound up in the scroll and crushed.")
 (define-public shellcheck
   (package
     (name "shellcheck")
-    (version "0.8.0")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
@@ -844,7 +850,7 @@ too slow and you'll get wound up in the scroll and crushed.")
              "https://hackage.haskell.org/package/ShellCheck/ShellCheck-"
              version ".tar.gz"))
        (sha256
-        (base32 "05jlapp4m997w36h2wszdxz9gvczdczaylypsbn14jqpb650w232"))
+        (base32 "071k2gc8rzpg9lwq9g10c9xx0zm1wcgsf8v4n1csj9fm56vy7gmb"))
        (file-name (string-append name "-" version ".tar.gz"))))
     (build-system haskell-build-system)
     (arguments
@@ -862,7 +868,7 @@ too slow and you'll get wound up in the scroll and crushed.")
     (native-inputs
      (list pandoc))
     (inputs
-     (list ghc-aeson ghc-diff ghc-quickcheck ghc-regex-tdfa))
+     (list ghc-aeson ghc-diff ghc-fgl ghc-quickcheck ghc-regex-tdfa))
     (home-page "https://www.shellcheck.net/")
     (synopsis "Static analysis for shell scripts")
     (description "@code{shellcheck} provides static analysis for

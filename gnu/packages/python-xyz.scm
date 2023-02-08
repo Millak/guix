@@ -49,7 +49,7 @@
 ;;; Copyright © 2018 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2018 Adam Massmann <massmannak@gmail.com>
 ;;; Copyright © 2016, 2018 Tomáš Čech <sleep_walker@gnu.org>
-;;; Copyright © 2018-2022 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2018-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 Oleg Pykhalov <go.wigust@gmail.com>
 ;;; Copyright © 2018, 2019, 2021 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -80,7 +80,7 @@
 ;;; Copyright © 2020 Josh Holland <josh@inv.alid.pw>
 ;;; Copyright © 2020 Yuval Kogman <nothingmuch@woobling.org>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
-;;; Copyright © 2020, 2021, 2022 Vinicius Monego <monego@posteo.net>
+;;; Copyright © 2020, 2021, 2022, 2023 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
 ;;; Copyright © 2020 Hendursaga <hendursaga@yahoo.com>
 ;;; Copyright © 2020 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
@@ -291,24 +291,17 @@ similar XML files, in the same way the @command{diff} utility does it.")
 (define-public python-janus
   (package
     (name "python-janus")
-    (version "0.6.1")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "janus" version))
        (sha256
-        (base32 "030xvl2vghi5ispfalhvch1rl6i2jsy5bf1dgjafa7vifppy04j7"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda* (#:key tests? inputs outputs #:allow-other-keys)
-             (when tests?
-               (add-installed-pythonpath inputs outputs)
-               (invoke "pytest" "--cov=janus" "--cov=tests")))))))
+        (base32 "04hnrdcf03g1s0x3sr72sh9gnszz6kyfsl9dg8a4n0zvvhn6z5yz"))))
+    (build-system pyproject-build-system)
     (native-inputs
      (list python-pytest python-pytest-cov python-pytest-asyncio))
+    (propagated-inputs (list python-typing-extensions))
     (home-page "https://github.com/aio-libs/janus/")
     (synopsis
      "Sync-async queue to interoperate between asyncio tasks and classic threads")
@@ -965,13 +958,13 @@ Markdown.  All extensions are found under the module namespace of pymdownx.")
 (define-public python-pint
   (package
     (name "python-pint")
-    (version "0.19.2")
+    (version "0.20.1")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "Pint" version))
               (sha256
                (base32
-                "1bsbiikm9i4saqc6mc3minkmrgnsgcg734agsvd7icqhyngrim71"))))
+                "0rv0cbala7ibjbaf6kkcn0mdhqdbajnvlcw0f15gwzfwg10g0z1q"))))
     (build-system python-build-system)
     (native-inputs
      (list python-pytest
@@ -2090,13 +2083,13 @@ conventions and aliases in the same expression.")
 (define-public python-wand
   (package
     (name "python-wand")
-    (version "0.6.10")
+    (version "0.6.11")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Wand" version))
        (sha256
-        (base32 "0mywzs235skwq670c80achrd34kangwy24793k1nij3651zllgrp"))))
+        (base32 "15d9kxyc7qvknx0kv27m2jamnmisckyf89i7wlqykwgqm46p0qdn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2104,7 +2097,11 @@ conventions and aliases in the same expression.")
          (add-after 'unpack 'find-magickwand
            (lambda* (#:key inputs #:allow-other-keys)
              (setenv "MAGICK_HOME" (assoc-ref inputs "imagemagick"))
-             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16"))))))
+             (setenv "WAND_MAGICK_LIBRARY_SUFFIX" ".Q16")))
+         (replace 'check
+           (lambda _
+             (when tests?
+               (invoke "pytest" "-vv")))))))
     (native-inputs
      (list python-pytest))
     (inputs
@@ -2876,15 +2873,15 @@ standard.")
              ;; getprotobyname is called.  Thankfully there is an environment
              ;; variable to disable the greendns import, so use it:
              (setenv "EVENTLET_NO_GREENDNS" "yes")))
-         (add-after 'unpack 'delete-broken-tests
-           (lambda _
-             (delete-file "tests/greendns_test.py")
-             (delete-file "tests/socket_test.py")))
-         ;; See https://github.com/eventlet/eventlet/issues/562#issuecomment-714183009
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
-               (invoke "nosetests" "-v" "tests/")))))))
+               (invoke
+                "nosetests"
+                "-v" "tests/"
+                "-I" "greendns_test.py"
+                "-I" "socket_test.py"
+                "-e" "test_018b_http_10_keepalive_framing")))))))
     (home-page "https://eventlet.net")
     (synopsis "Concurrent networking library for Python")
     (description
@@ -16144,48 +16141,31 @@ ISO 8859, etc.).")
 (define-public python-pyqtgraph
   (package
     (name "python-pyqtgraph")
-    (version "0.12.1")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyqtgraph" version))
        (sha256
-        (base32 "0kc7ncv0lr3spni29i9g8nszyr4xinswqi2zzs6v8kqqi593pvyj"))))
-    (build-system python-build-system)
+        (base32 "026wq2p7h1dmg2ldwhxiv28i5qld0llhnak06dxp4rdrkpsqg3v9"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'set-home-and-qpa
-           (lambda _
-             (setenv "HOME" "/tmp")
-             (setenv "QT_QPA_PLATFORM" "offscreen")
-             #t))
-         (replace 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (add-installed-pythonpath inputs outputs)
-             (invoke "pytest" "-vv" "-k"
-                     (string-append
-                      ;; These tests try to download online data.
-                      "not test_PolyLineROI"
-                      " and not test_getArrayRegion_axisorder"
-                      " and not test_getArrayRegion"
-                      " and not test_PlotCurveItem"
-                      " and not test_NonUniformImage_colormap"
-                      " and not test_NonUniformImage_lut"
-                      " and not test_ImageItem_axisorder"
-                      " and not test_ImageItem"
-                      ;; The test_reload test fails and suggests adding
-                      ;; "--assert=plain" to the pytest command, but it
-                      ;; doesn't solve the failure.
-                      " and not test_reload")))))))
+     ;; This test fails.  It suggests to disable assert rewriting in Pytest,
+     ;; but it still doesn't pass.
+     (list #:test-flags #~'("-k" "not test_reload")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-before 'check 'set-qpa
+                 (lambda _
+                   (setenv "QT_QPA_PLATFORM" "offscreen"))))))
     (native-inputs
-     (list python-pytest python-pytest-cov python-pytest-xdist))
+     (list python-pytest-7.1 python-pytest-cov python-pytest-xdist))
     (inputs
      (list qtbase-5))
     (propagated-inputs
      (list python-h5py python-numpy python-pyopengl python-scipy
            python-pyqt-without-qtwebkit))
-    (home-page "http://www.pyqtgraph.org")
+    (home-page "https://www.pyqtgraph.org")
     (synopsis "Scientific graphics and GUI library for Python")
     (description
      "PyQtGraph is a Pure-python graphics library for PyQt5, PyQt6, PySide2
@@ -16983,13 +16963,13 @@ library.  It can be used to act both as a TFTP client or TFTP server.")
 (define-public python-greenlet
   (package
     (name "python-greenlet")
-    (version "1.1.2")
-    (source (origin
-              (method url-fetch)
-              (uri (pypi-uri "greenlet" version))
-              (sha256
-               (base32
-                "0jkln5bf6rq7dbvpv7ypin3pp9jqd2jr91yyxlnfcii3msj5w3z3"))))
+    (version "2.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "greenlet" version))
+       (sha256
+        (base32 "0rqgxp1fai0fcyv46nd1389mxvk3ccixgdkwws70xnk08ib05rj2"))))
     (build-system python-build-system)
     (home-page "https://greenlet.readthedocs.io/")
     (synopsis "Lightweight in-process concurrent programming")
@@ -17026,13 +17006,13 @@ graphviz.")
 (define-public python-gevent
   (package
     (name "python-gevent")
-    (version "21.12.0")
+    (version "22.10.2")
     (source (origin
               (method url-fetch)
               (uri (pypi-uri "gevent" version))
               (sha256
                (base32
-                "0kh9mmq811mzfgj60n64icybjp4ryjmfmy1vg7x92yrniibn92zl"))
+                "0ijwwm2yr7jgz8xs1rbvzj6gp7xw1pagf0i7g99b6dzffshiv80w"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -18348,13 +18328,13 @@ etc.")
 (define-public python-pyserial-asyncio
   (package
     (name "python-pyserial-asyncio")
-    (version "0.5")
+    (version "0.6")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pyserial-asyncio" version))
        (sha256
-        (base32 "0cwd2cjz859v6jrm3y6hikfqjyhyfj5vhfjb8vvflvl6791yah8n"))))
+        (base32 "0bx3syngmq2j9mh81byzka1x4ilw8ac9mbx52zn7b7ayw0ijj0xn"))))
     (build-system python-build-system)
     (propagated-inputs (list python-pyserial))
     (home-page "https://github.com/pyserial/pyserial-asyncio")
@@ -18693,7 +18673,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
 (define-public binwalk
   (package
     (name "binwalk")
-    (version "2.3.3")
+    (version "2.3.4")
     (source
      (origin
        (method git-fetch)
@@ -18702,7 +18682,7 @@ without requiring an event loop, useful for creative responsive GUIs.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0phqyqv34vhh80dgipiggs4n3iq2vfjk9ywx2c5d8g61vzgbd2g8"))
+        (base32 "0cfm1khckq986l0q68kmfyfagc6zmb94hgjjm847fjcil77dnlw6"))
        (modules '((guix build utils)))
        (snippet
         #~(begin
@@ -20336,16 +20316,23 @@ point is the point of maximum curvature.")
 (define-public python-diff-match-patch
   (package
     (name "python-diff-match-patch")
-    (version "20121119")
+    (version "20200713")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "diff-match-patch" version))
         (sha256
          (base32
-          "0k1f3v8nbidcmmrk65m7h8v41jqi37653za9fcs96y7jzc8mdflx"))))
+          "063s8zcxz787xfg7d1wxpqh59fxg3iz85ww9zhyz4vaqm80mlvys"))))
     (build-system python-build-system)
-    (home-page "https://code.google.com/p/google-diff-match-patch")
+    (arguments
+     `(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "python" "-m" "unittest"
+                                "diff_match_patch.tests")))))))
+    (home-page "https://github.com/diff-match-patch-python/diff-match-patch")
     (synopsis "Synchronize plain text")
     (description "Diff Match and Patch libraries offer robust algorithms to
      perform the operations required for synchronizing plain text.")
@@ -25931,7 +25918,7 @@ also be usable with other GSSAPI mechanisms.")
              (invoke "git" "config" "--global"
                      "protocol.file.allow" "always"))))))
     (native-inputs
-     (list git-minimal/fixed python-pytest))
+     (list git-minimal/pinned python-pytest))
     (propagated-inputs
      (list python-pypa-build python-setuptools python-tomli))
     (home-page "https://github.com/mgedmin/check-manifest")
@@ -27022,7 +27009,7 @@ accessor layer.")
 (define-public pyzo
   (package
     (name "pyzo")
-    (version "4.12.4")
+    (version "4.12.5")
     (source
      (origin
        (method git-fetch)
@@ -27032,7 +27019,7 @@ accessor layer.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "10qqilbh7n4z2656qbr9gllvgi7xq11xcm2bv64h02jmkb7m4m6n"))))
+         "0938dk9z1l248756h4z08si4n1i2rj02lbwgd04x49p97iclgwrn"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -28576,7 +28563,7 @@ and frame grabber interface.")
     (native-inputs
      (list cmake-minimal
            gfortran
-           git-minimal/fixed                      ;for tests
+           git-minimal/pinned                      ;for tests
            ninja
            python-coverage
            python-cython

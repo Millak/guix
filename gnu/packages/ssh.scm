@@ -186,7 +186,7 @@ a server that supports the SSH-2 protocol.")
 (define-public openssh
   (package
    (name "openssh")
-   (version "9.1p1")
+   (version "9.2p1")
    (source (origin
              (method url-fetch)
              (uri (string-append "mirror://openbsd/OpenSSH/portable/"
@@ -195,7 +195,7 @@ a server that supports the SSH-2 protocol.")
                                       "openssh-trust-guix-store-directory.patch"))
              (sha256
               (base32
-               "126jzn5pxkf1dgzcb3lzpzab8airg0avnvr3y23kgqp3qw4m1y0r"))))
+               "0ingf6fxzg2fcf6k68bvh0lc460jn0macvf5w585zd2zcpqxnriz"))))
    (build-system gnu-build-system)
    (native-inputs (list groff pkg-config))
    (inputs `(("libedit" ,libedit)
@@ -318,7 +318,7 @@ Additionally, various channel-specific options can be negotiated.")
 (define-public guile-ssh
   (package
     (name "guile-ssh")
-    (version "0.16.2")
+    (version "0.16.3")
     (home-page "https://github.com/artyom-poptsov/guile-ssh")
     (source (origin
               (method git-fetch)
@@ -328,7 +328,7 @@ Additionally, various channel-specific options can be negotiated.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1rp5y1xjmsxplrzl0yf23g6rdjsw7ryh5pxs4pydpsryjjdwnf84"))))
+                "0b03aizjdj3g15xfkspgvy8k5jl8bgv4q7gwjwr3l2ibqkrm8vrz"))))
     (build-system gnu-build-system)
     (outputs '("out" "debug"))
     (arguments

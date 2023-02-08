@@ -27,6 +27,7 @@
 ;;; Copyright © 2021 Andy Tai <atai@atai.org>
 ;;; Copyright © 2022 Felix Gruber <felgru@posteo.net>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
+;;; Copyright © 2022 dan <i@dan.games>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1772,7 +1773,7 @@ of use.")
      (list boost doxygen pkg-config))
     (inputs
      (list bullet
-           ffmpeg
+           ffmpeg-4                     ; https://gitlab.com/OpenMW/openmw/-/issues/6631
            libxt
            lz4
            mygui-gl              ; OpenMW does not need Ogre.
@@ -2835,3 +2836,35 @@ systems where you stream new navigation data in and out as the player
 progresses the level, or you may regenerate tiles as the world changes.")
       (home-page "https://github.com/recastnavigation/recastnavigation")
       (license license:zlib))))
+
+(define-public raylib
+  (package
+    (name "raylib")
+    (version "4.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/raysan5/raylib/")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "14v5iwxh8grywiyw9agpd2sfpyriq1rwwkd9f2s4iihh0z5j7hk8"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:tests? #f)) ;no test
+    (inputs (list alsa-lib
+                  libx11
+                  libxrandr
+                  libxi
+                  libxinerama
+                  libxcursor
+                  mesa))
+    (native-inputs (list pkg-config))
+    (synopsis "C library for videogame programming")
+    (description
+     "raylib is a high-level library for video game programming.  It aims to
+  abstract away platform and graphics details, allowing you to focus on
+  writing your game.")
+    (home-page "https://www.raylib.com/")
+    (license license:zlib)))

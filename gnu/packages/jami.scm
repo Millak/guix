@@ -2,7 +2,7 @@
 ;;; Copyright © 2019 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2020 Vincent Legoll <vincent.legoll@gmail.com>
 ;;; Copyright © 2019, 2020 Jan Wielkiewicz <tona_kosmicznego_smiecia@interia.pl>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -69,31 +69,24 @@
   #:use-module (guix packages)
   #:use-module (guix utils))
 
-(define %jami-version "20221220.0956.79e1207")
+(define %jami-version "20230206.0")
 
 (define %jami-sources
   ;; Return an origin object of the tarball release sources archive of the
   ;; Jami project.
   (origin
     (method url-fetch)
-    (uri (string-append "https://dl.jami.net/release/tarballs/jami_"
-                        %jami-version
-                        ".tar.gz"))
+    (uri (string-append "https://dl.jami.net/release/tarballs/jami-"
+                        %jami-version ".tar.gz"))
     (modules '((guix build utils)))
     (snippet
-     `(begin
-        ;; Delete multiple MiBs of bundled tarballs.  The contrib directory
-        ;; contains the custom patches for pjproject and other libraries used
-        ;; by Jami.
-        (delete-file-recursively "daemon/contrib/tarballs")
-        ;; Remove the git submodule directories of unused Jami clients.
-        (for-each delete-file-recursively '("client-android"
-                                            "client-ios"
-                                            "client-macosx"
-                                            "plugins"))))
+     ;; Delete multiple MiBs of bundled tarballs.  The daemon/contrib
+     ;; directory contains the custom patches for pjproject and other
+     ;; libraries used by Jami.
+     '(delete-file-recursively "daemon/contrib/tarballs"))
     (sha256
      (base32
-      "0g5709rmb9944s0ij9g4pm1b871f5z0s5nawvm10z14wx3y1np8m"))
+      "1fx7c6q8j0x3q8cgzzd4kpsw3npqggsi1n493cv1jg7v5d01d3jz"))
     (patches (search-patches "jami-disable-integration-tests.patch"
                              "jami-libjami-headers-search.patch"))))
 
@@ -107,14 +100,12 @@
         (invoke "tar" "-xvf" #$%jami-sources
                 "-C" patches-directory
                 "--strip-components=5"
-                (string-append "jami-project/daemon/contrib/src/"
-                               dep-name))
-        (for-each
-         (lambda (file)
-           (invoke "patch" "--force" "--ignore-whitespace" "-p1" "-i"
-                   (string-append patches-directory "/"
-                                  file ".patch")))
-         patches))))
+                "--wildcards"
+                (string-append "jami-*/daemon/contrib/src/" dep-name))
+        (for-each (lambda (f)
+                    (invoke "patch" "--force" "--ignore-whitespace" "-p1" "-i"
+                            (string-append patches-directory "/" f ".patch")))
+                  patches))))
 
 (define-public pjproject-jami
   (let ((commit "513a3f14c44b2c2652f9219ec20dea64b236b713")
@@ -153,10 +144,12 @@
                    '("0009-add-config-site")))))))))))
 
 ;; The following variables are configure flags used by ffmpeg-jami.  They're
-;; from the jami-project/daemon/contrib/src/ffmpeg/rules.mak file.  We try to
-;; keep it as close to the official Jami package as possible, to provide all
-;; the codecs and extra features that are expected (see:
-;; https://review.jami.net/plugins/gitiles/ring-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak)
+;; from the jami/daemon/contrib/src/ffmpeg/rules.mak file.  We try to keep it
+;; as close to the official Jami package as possible, to provide all the
+;; codecs and extra features that are expected (see:
+;; https://review.jami.net/plugins/gitiles/jami-daemon/+/refs/heads/master/contrib/src/ffmpeg/rules.mak).
+;; An exception are the ffnvcodec-related switches, which is not packaged in
+;; Guix and would not work with Mesa.
 (define %ffmpeg-default-configure-flags
   '("--disable-everything"
     "--enable-zlib"
@@ -348,34 +341,12 @@
     "--enable-encoder=mjpeg_vaapi"
     "--enable-encoder=hevc_vaapi"))
 
-;; ffnvcodec is not supported on ARM; enable it only for the i386 and x86_64
-;; architectures.
-(define %ffmpeg-linux-x86-configure-flags
-  '("--arch=x86"
-    "--enable-cuvid"
-    "--enable-ffnvcodec"
-    "--enable-nvdec"
-    "--enable-nvenc"
-    "--enable-hwaccel=h264_nvdec"
-    "--enable-hwaccel=hevc_nvdec"
-    "--enable-hwaccel=vp8_nvdec"
-    "--enable-hwaccel=mjpeg_nvdec"
-    "--enable-encoder=h264_nvenc"
-    "--enable-encoder=hevc_nvenc"))
-
-;; This procedure composes the configure flags list for ffmpeg-jami.
 (define (ffmpeg-compose-configure-flags)
-  (define (system=? s)
-    (string-prefix? s (%current-system)))
-
-  `(,@%ffmpeg-default-configure-flags
-    ,@(if (string-contains (%current-system) "linux")
-          (if (or (system=? "i686")
-                  (system=? "x86_64"))
-              (append %ffmpeg-linux-configure-flags
-                      %ffmpeg-linux-x86-configure-flags)
-              %ffmpeg-linux-configure-flags)
-          '())))
+  "Compose the configure flag lists of ffmpeg-jami."
+  #~(append '#$%ffmpeg-default-configure-flags
+            (if (string-contains #$(%current-system) "linux")
+                '#$%ffmpeg-linux-configure-flags
+                '())))
 
 (define-public ffmpeg-jami
   (package
@@ -391,10 +362,14 @@
               (sha256
                (base32
                 "0yq0jcdc4qm5znrzylj3dsicrkk2n3n8bv28vr0a506fb7iglbpg"))))
+    (outputs '("out" "debug"))
     (arguments
      (substitute-keyword-arguments (package-arguments ffmpeg-5)
-       ((#:configure-flags '())
-        (ffmpeg-compose-configure-flags))
+       ((#:configure-flags _ '())
+        #~(cons* "--disable-static"
+                 "--enable-shared"
+                 "--disable-stripping"
+                 #$(ffmpeg-compose-configure-flags)))
        ((#:phases phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'apply-patches
@@ -424,7 +399,7 @@
     (name "libjami")
     (version %jami-version)
     (source %jami-sources)
-    (outputs '("out" "debug"))
+    (outputs '("out" "bin" "debug"))    ;"bin' contains jamid
     (build-system gnu-build-system)
     (arguments
      (list
@@ -447,7 +422,20 @@
             (lambda _
               (for-each delete-file
                         (find-files (string-append #$output "/lib")
-                                    "\\.a$")))))))
+                                    "\\.a$"))))
+          (add-after 'install 'move-jamid
+            ;; This nearly halves the size of the main output (from 1566.2 MiB
+            ;; to 833.6 MiB), due to not depending on dbus-c++ and its large
+            ;; dependencies.
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let ((libexec (string-append #$output:bin "/libexec"))
+                    (share (string-append #$output:bin "/share")))
+                (mkdir-p libexec)
+                (rename-file (search-input-file outputs "libexec/jamid")
+                             (string-append libexec "/jamid"))
+                (mkdir-p share)
+                (rename-file (search-input-directory outputs "share/dbus-1")
+                             (string-append share "/dbus-1"))))))))
     (inputs
      (list alsa-lib
            asio
@@ -483,7 +471,9 @@
 Jami core functionality.  Jami is a secure and distributed voice, video and
 chat communication platform that requires no centralized server and leaves the
 power of privacy in the hands of the user.  It supports the SIP and IAX
-protocols, as well as decentralized calling using P2P-DHT.")
+protocols, as well as decentralized calling using P2P-DHT.  The @samp{\"bin\"}
+output contains the D-Bus daemon (@command{jamid}) as well as the Jami D-Bus
+service definitions.")
     (home-page "https://jami.net/")
     (license license:gpl3+)))
 
@@ -550,9 +540,6 @@ protocols, as well as decentralized calling using P2P-DHT.")
            pkg-config
            python
            qttools
-           doxygen
-           graphviz
-           gsettings-desktop-schemas    ;for tests
            vulkan-headers))
     (inputs
      (list ffmpeg-jami
