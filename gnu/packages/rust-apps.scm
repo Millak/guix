@@ -12,7 +12,7 @@
 ;;; Copyright © 2021 Sharlatan Hellseher <sharlatanus@gmail.ccom>
 ;;; Copyright © 2021, 2022 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2021 Alexandru-Sergiu Marton <brown121407@posteo.ro>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021, 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2021 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Nicolas Graves <ngraves@ngraves.fr>
@@ -1871,10 +1871,11 @@ language.  It is a part of a larger rls-2.0 effort to create excellent IDE
 support for Rust.")
     (license (list license:expat license:asl2.0))))
 
+;;; Note: keep in sync with our current Rust/Cargo version.
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.8.1+cargo-0.53")
+    (version "0.9.8+cargo-0.60")
     (source
       (origin
         (method url-fetch)
@@ -1883,12 +1884,12 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0fwdxhdj2963xr6xfqr56i7hikhsdv562vgxq2dj3h2mi3dil1k6"))))
+          "1zdzs3drjr9p6chg32inyi05rfv1c12nkk4bi7qpha12m6rsn26d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.19)
-        ("rust-cargo" ,rust-cargo-0.53) ;
+       (("rust-cbindgen" ,rust-cbindgen-0.20)
+        ("rust-cargo" ,rust-cargo-0.60)
         ("rust-anyhow" ,rust-anyhow-1)
         ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
         ("rust-structopt" ,rust-structopt-0.3)
