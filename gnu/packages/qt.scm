@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Zhu Zihao <all_but_last@163.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Yash Tiwari <yasht@mailbox.org>
+;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1116,6 +1117,44 @@ support for MNG, TGA, TIFF and WBMP image formats.")))
     (synopsis "Qt Extras for X11")
     (description "The QtX11Extras module includes the library to access X11
 from within Qt 5.")))
+
+(define-public qxlsx
+  (package
+    (name "qxlsx")
+    (version "1.4.5")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/QtExcel/QXlsx")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1h95h96vz47cnfp62j7bx6ih725gbv005hm0cfqanfvqd5xd9qsg"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list "../source/QXlsx"
+              "-DCMAKE_BUILD_TYPE=Release"
+              (string-append "-DCMAKE_INSTALL_PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (replace 'check
+            (lambda* (#:key tests? #:allow-other-keys)
+              (when tests?
+                (with-directory-excursion "../source/TestExcel"
+                  (invoke "qmake")
+                  (invoke "make" "-j" (number->string (parallel-job-count)))
+                  (invoke "./TestExcel"))))))))
+     (inputs
+      (list qtbase-5))
+     (home-page "https://qtexcel.github.io/QXlsx/")
+     (synopsis "C++ library to read/write Excel XLSX files using Qt")
+     (description
+      "QXlsx is a successor of QtXlsx and providies a functionality to work with Excel
+XLSX document format.")
+     (license license:expat)))
 
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)
