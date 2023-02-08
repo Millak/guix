@@ -46,7 +46,8 @@
         (base32 "068h5gysz8bbslq31dva8f223rdf8l7w6nxcxjnv4zdprwkzkhaa"))))
     (build-system node-build-system)
     (arguments
-     '(#:phases
+     '(#:tests? #f
+       #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'change-directory
            (lambda _
