@@ -39,6 +39,7 @@
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages compton)
@@ -320,7 +321,8 @@ LXQt and the system it's running on.")
            libqtxdg
            polkit-qt
            qtsvg-5
-           qtx11extras))
+           qtx11extras
+           tzdata))
     (native-inputs
      (list lxqt-build-tools qttools-5))
     (arguments
@@ -328,12 +330,14 @@ LXQt and the system it's running on.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-source
-           (lambda _
+           (lambda* (#:key inputs #:allow-other-keys)
              (substitute* '("lxqt-admin-user/CMakeLists.txt"
                             "lxqt-admin-time/CMakeLists.txt")
                (("DESTINATION \"\\$\\{POLKITQT-1_POLICY_FILES_INSTALL_DIR\\}")
                 "DESTINATION \"share/polkit-1/actions"))
-             #t)))))
+             (substitute* '("lxqt-admin-time/timeadmindialog.cpp")
+               (("/usr/share/zoneinfo/zone.tab")
+                (search-input-file inputs "share/zoneinfo/zone.tab"))))))))
     (home-page "https://lxqt-project.org")
     (synopsis "LXQt system administration tool")
     (description "lxqt-admin is providing two GUI tools to adjust settings of
