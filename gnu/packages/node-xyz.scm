@@ -405,10 +405,9 @@ code.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("standard" "tape")))))))
     (home-page "https://github.com/mafintosh/protocol-buffers-schema")
     (synopsis "Protocol buffers schema parser written in Javascript")
     (description "This package provides a protocol buffers schema parser
