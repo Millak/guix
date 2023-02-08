@@ -623,10 +623,9 @@ if desired.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("airtap" "standard" "tape")))))))
     (home-page "https://github.com/feross/ieee754")
     (synopsis "Read/write IEEE754 floating point numbers in Javascript")
     (description "This package can read and write IEEE754 floating point
