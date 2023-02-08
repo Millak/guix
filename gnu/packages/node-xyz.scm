@@ -313,10 +313,9 @@ random number generator.")
     (arguments
      '(#:tests? #f
        #:phases (modify-phases %standard-phases
-                  (replace 'configure
+                  (add-after 'patch-dependencies 'delete-dependencies
                     (lambda _
-                      (invoke "npm" "--offline" "--ignore-scripts" "install"
-                              "--production"))))))
+                      (delete-dependencies '("covert" "tap" "tape")))))))
     (home-page "https://github.com/substack/minimist")
     (synopsis "Parse CLI arguments in Javascript")
     (description "This package can scan for CLI flags and arguments in
