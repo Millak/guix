@@ -905,10 +905,10 @@ source files.")
            zlib))))
 
 (define-public libnode
-  (package/inherit node
+  (package/inherit node-lts
     (name "libnode")
     (arguments
-     (substitute-keyword-arguments (package-arguments node)
+     (substitute-keyword-arguments (package-arguments node-lts)
        ((#:configure-flags flags ''())
         `(cons* "--shared" "--without-npm" ,flags))
        ((#:phases phases '%standard-phases)
