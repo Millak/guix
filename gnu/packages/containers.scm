@@ -311,7 +311,7 @@ configure network interfaces in Linux containers.")
 (define-public podman
   (package
     (name "podman")
-    (version "4.3.1")
+    (version "4.4.1")
     (source
      (origin
        (method git-fetch)
@@ -323,7 +323,7 @@ configure network interfaces in Linux containers.")
        (snippet '(substitute* "Makefile"
                    ((".*hack/btrfs.*") "")))
        (sha256
-        (base32 "05hv4xdf06n728lmsx793zygypc9i404bgcgpy0fyrg8c2s11q2h"))
+        (base32 "0qbr6rbyig3c2hvdvmd94jjkg820hpdz6j7dgyv62dl6wfwvj5jj"))
        (file-name (git-file-name name version))))
 
     (build-system gnu-build-system)
@@ -385,7 +385,7 @@ configure network interfaces in Linux containers.")
     (native-inputs
      (list bats
            git
-           go
+           go-1.19
            ; strace ; XXX debug
            pkg-config
            python))
