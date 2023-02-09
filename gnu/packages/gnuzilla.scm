@@ -1347,6 +1347,19 @@ ca495991b7852b855"))
                             Name=Write new message~@
                             Exec=~@*~a/bin/icedove -compose~%"
                             #$output))))))
+          (add-after 'install-desktop-file 'install-icons
+            (lambda _
+              (with-directory-excursion "browser/branding/official"
+                (for-each
+                 (lambda (file)
+                   (let* ((size (string-filter char-numeric? file))
+                          (icons (string-append #$output "/share/icons/hicolor/"
+                                                size "x" size "/apps")))
+                     (mkdir-p icons)
+                     (copy-file file (string-append icons "/icedove.png"))))
+                 '("default16.png" "default22.png" "default24.png"
+                   "default32.png" "default48.png" "content/icon64.png"
+                   "mozicon128.png" "default256.png")))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((lib (string-append #$output "/lib"))
