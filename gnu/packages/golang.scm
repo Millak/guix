@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2016 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2016, 2019, 2021 Ludovic Courtès <ludo@gnu.org>
@@ -4134,7 +4134,16 @@ applications as well as a program to generate applications and command files.")
         (file-name (git-file-name name version))
         (sha256
          (base32
-          "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))))
+          "0gpmacngd0gpslnbkzi263f5ishigzgh6pbdv9hp092rnjl4nd31"))
+        (snippet
+         #~(begin
+             (use-modules (guix build utils))
+             ;; Fix compatibility with go-1.19+
+             ;; https://github.com/spf13/pflag/issues/368
+             (substitute* "flag_test.go"
+               (("fmt\\.Println") "fmt.Print")
+               (("\\+ got\\)") "+ got + \"\\n\")")
+               (("\\+ defaultOutput\\)") "+ defaultOutput + \"\\n\")"))))))
     (build-system go-build-system)
     (arguments
       '(#:import-path "github.com/spf13/pflag"))
