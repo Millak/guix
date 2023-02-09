@@ -1291,6 +1291,9 @@ with JavaScript and C++.")))
                     ;; load (see:
                     ;; https://bugreports.qt.io/browse/QTBUG-111008).
                     "tst_qqmlprofilerservice"
+                    ;; This one also causes non-determinstic failures (see:
+                    ;; https://bugreports.qt.io/browse/QTBUG-101488).
+                    "tst_qquickfolderdialogimpl"
                     ;; These test fail when running qmlimportscanner; perhaps
                     ;; an extra CMAKE_PREFIX_PATH location is missing to
                     ;; correctly locate the imports.
