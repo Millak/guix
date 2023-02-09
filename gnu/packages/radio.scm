@@ -2358,7 +2358,7 @@ voice formats.")
 (define-public sdrangel
   (package
     (name "sdrangel")
-    (version "7.8.5")
+    (version "7.8.6")
     (source
      (origin
        (method git-fetch)
@@ -2367,7 +2367,7 @@ voice formats.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0kfzmxbhfpvs8csfbhnl5nij6nlbr00s43392wfq35vnnkbgk5lv"))))
+        (base32 "0znri1sssc9hw4j6s3bmp8hfza88jv2xqvdx8v6z7m2zf4w3dddl"))))
     (build-system qt-build-system)
     (native-inputs
      (list doxygen graphviz pkg-config))
@@ -2383,6 +2383,7 @@ voice formats.")
            ffmpeg
            fftwf
            hackrf
+           hidapi
            libdab
            libusb
            mbelib
