@@ -9,6 +9,7 @@
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -32,6 +33,7 @@
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix l:)
   #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system perl)
   #:use-module (guix build-system python)
   #:use-module (guix utils)
   #:use-module (gnu packages)
@@ -45,13 +47,16 @@
   #:use-module (gnu packages gstreamer)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages image)
-  #:use-module (gnu packages photo)
-  #:use-module (gnu packages video)
   #:use-module (gnu packages pcre)
+  #:use-module (gnu packages perl)
+  #:use-module (gnu packages perl-check)
+  #:use-module (gnu packages photo)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages sdl)
+  #:use-module (gnu packages video)
+  #:use-module (gnu packages web)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg))
@@ -338,3 +343,31 @@ provide a 100% native look and feel for the application.")
     ;; wxSVG is licenced under the "wxWindows library licence", which is
     ;; the LGPL2.0+, with a few extra permissions.
     (license (list l:lgpl2.0+ (l:fsf-free "file://COPYING")))))
+
+(define-public perl-alien-wxwidgets
+  (package
+    (name "perl-alien-wxwidgets")
+    (version "0.69")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (string-append
+             "mirror://cpan/authors/id/M/MD/MDOOTSON/Alien-wxWidgets-"
+             version
+             ".tar.gz"))
+       (sha256
+        (base32
+         "0jg2dmkzhj03f6b0vmv597yryfw9cclsdn9ynvvlrzzgpd5lw8jk"))))
+    (build-system perl-build-system)
+    (native-inputs
+     (list perl-lwp-protocol-https
+       perl-module-build
+       perl-test-pod
+       perl-test-pod-coverage
+       wxwidgets))
+    (propagated-inputs (list perl-module-pluggable))
+    (home-page "https://metacpan.org/release/Alien-wxWidgets")
+    (synopsis "Perl module for wxWidgets binaries")
+    (description "Alien::wxWidgets is a Perl module for detecting and
+getting configuration settings from an installed wxWidgets package.")
+    (license l:perl-license)))
