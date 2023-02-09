@@ -2689,7 +2689,7 @@ of devices than RTL-SDR.")
 (define-public urh
   (package
     (name "urh")
-    (version "2.9.3")
+    (version "2.9.4")
     (source
      (origin
        (method git-fetch)
@@ -2698,7 +2698,7 @@ of devices than RTL-SDR.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "17r9fkw0icph7fayibp6qbdh4nxi8wy3mmd3djmh0c2jr8yz5fsf"))))
+        (base32 "1sx70mp4bjbymy1lp6p96ydpqlyq7rwnrw96nb6aaya63fl1ab8y"))))
     (build-system python-build-system)
     (native-inputs
      (list python-cython
