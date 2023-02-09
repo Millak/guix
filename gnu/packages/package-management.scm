@@ -869,7 +869,8 @@ features of Stow with some extensions.")
            lua
            sqlite
            xz
-           zlib))
+           zlib
+           zstd))
     (propagated-inputs
      ;; popt is listed in the 'Requires' of rpm.pc.
      (list popt))
