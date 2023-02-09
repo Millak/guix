@@ -872,6 +872,40 @@ desktop environments.  It can be used as a standalone terminal and also has
 a server/client mode.")
     (license license:expat)))
 
+(define-public havoc
+  (package
+    (name "havoc")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/ii8/havoc")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "052nfli8x4kvly2iwbk0w3i8gk82bz2p8i0ygkwxhy03m5187lnc"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #f                       ; no check target
+      #:make-flags #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)           ; no configure script
+          (add-before 'build 'set-CC
+            (lambda _
+              (setenv "CC" #$(cc-for-target)))))))
+    (native-inputs
+     (list pkg-config wayland-protocols))
+    (inputs
+     (list libxkbcommon wayland))
+    (home-page "https://github.com/ii8/havoc")
+    (synopsis "Minimal terminal emulator for Wayland")
+    (description
+     "Havoc is a minimal terminal emulator for Wayland.")
+    (license license:expat)))
+
 (define-public sakura
   (package
     (name "sakura")
