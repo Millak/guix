@@ -55,6 +55,7 @@
 ;;; Copyright © 2022 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
 ;;; Copyright © 2022 Reza Alizadeh Majd <r.majd@pantherx.org>
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2303,6 +2304,28 @@ private (reserved).")
     "Perl Interface to the Domain Name System")
   (description "Net::DNS is the Perl Interface to the Domain Name System.")
   (license license:x11)))
+
+(define-public perl-net-bonjour
+  (package
+    (name "perl-net-bonjour")
+    (version "0.96")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "mirror://cpan/authors/id/C/CH/CHLIGE/Net-Bonjour-"
+                    version ".tar.gz"))
+              (sha256
+               (base32
+                "15qzkfk0isn6c4js3ih95k3dylq6scijp863s0485c00n8x1z2n3"))))
+    (build-system perl-build-system)
+    (propagated-inputs (list perl-net-dns))
+    (home-page "https://metacpan.org/release/Net-Bonjour")
+    (synopsis "Module for DNS service discovery (Apple's Bonjour)")
+    (description "Net::Bonjour is a set of modules that allow one to
+discover local services via multicast DNS (mDNS) or enterprise services
+via traditional DNS.  This method of service discovery has been branded
+as Bonjour by Apple Computer.")
+    (license license:perl-license)))
 
 (define-public perl-socket6
  (package
