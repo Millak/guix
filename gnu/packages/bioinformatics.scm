@@ -3459,6 +3459,35 @@ and record oriented data modeling and the Semantic Web.")
 resources for bioinformatics.")
     (license license:bsd-3)))
 
+(define-public python-scrublet
+  (package
+    (name "python-scrublet")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "scrublet" version))
+              (sha256
+               (base32
+                "0fk5pwk12yz9wpvwkl6j2l2g28f3x35b9r9n5bw6f0i9f0qgd191"))))
+    (build-system pyproject-build-system)
+    (arguments '(#:tests? #false)) ;there are none
+    (propagated-inputs
+     (list python-annoy
+           python-cython
+           python-matplotlib
+           python-numba
+           python-numpy
+           python-pandas
+           python-scikit-image
+           python-scikit-learn
+           python-scipy
+           python-umap-learn))
+    (home-page "https://github.com/swolock/scrublet")
+    (synopsis "Tool to indentify and remove doublets in single-cell data")
+    (description "This package provides a tool for identifying and removing
+doublets in single-cell RNA-seq data.")
+    (license license:expat)))
+
 (define-public cwltool
   (package
     (name "cwltool")
