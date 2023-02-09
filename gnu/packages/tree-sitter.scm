@@ -40,22 +40,19 @@
                (base32
                 "1nv2a2hr22w8ix71b6rkkxv9rfvhvwlmyql0g6lva9qzj4vy50p4"))
               (modules '((guix build utils)))
-              (snippet '(begin
-                          ;; Remove bundled ICU parts
-                          (delete-file-recursively "lib/src/unicode")
-                          #t))))
+              (snippet #~(begin
+                           ;; Remove bundled ICU parts
+                           (delete-file-recursively "lib/src/unicode")))))
     (build-system gnu-build-system)
     (inputs (list icu4c))
     (arguments
      (list #:phases
-           '(modify-phases %standard-phases
-              (delete 'configure))
+           #~(modify-phases %standard-phases
+               (delete 'configure))
            #:tests? #f ; there are no tests for the runtime library
            #:make-flags
-           #~(list (string-append "PREFIX="
-                                  #$output)
-                   (string-append "CC="
-                                  #$(cc-for-target)))))
+           #~(list (string-append "PREFIX=" #$output)
+                   (string-append "CC=" #$(cc-for-target)))))
     (home-page "https://tree-sitter.github.io/tree-sitter/")
     (synopsis "Incremental parsing system for programming tools")
     (description
@@ -73,6 +70,5 @@ Tree-sitter aims to be:
 can be embedded in any application
 @end itemize
 
-This package includes the @code{libtree-sitter} runtime library.
-")
+This package includes the @code{libtree-sitter} runtime library.")
     (license license:expat)))
