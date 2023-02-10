@@ -53,7 +53,7 @@
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2022 Andreas Rammhold <andreas@rammhold.de>
 ;;; Copyright © 2022 ( <paren@disroot.org>
-;;; Copyright © 2022 Matthew James Kraai <kraai@ftbfs.org>
+;;; Copyright © 2022, 2023 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
 ;;;
@@ -5717,7 +5717,7 @@ file or files to several hosts.")
 (define-public doctl
   (package
     (name "doctl")
-    (version "1.92.0")
+    (version "1.92.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5726,7 +5726,7 @@ file or files to several hosts.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0n8xajr9s0y7a43is24q0f9nznmr2sjhlhgg9fpyx4s4nr3s5yqw"))))
+                "1zb7vx7nqg8q9vdgb90cwmrr1cijv8gfryni8yrd99bb9vgg6pyv"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/digitalocean/doctl/cmd/doctl"
