@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2022 Robby Zambito <contact@robbyzambito.me>
+;;; Copyright © 2023 Andrew Whatson <whatson@tailcall.au>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -41,6 +42,7 @@
   #:use-module ((guix licenses)
                 #:select (gpl2+ lgpl2.0+ lgpl2.1 lgpl2.1+ lgpl3+ asl2.0 bsd-3
                           cc-by-sa4.0 non-copyleft expat public-domain))
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -407,6 +409,136 @@ interpreter and is designed to be used as a testbed for experiments in
 implementation techniques and as an expository tool.")
 
     ;; Most files are BSD-3; see COPYING for the few exceptions.
+    (license bsd-3)))
+
+(define-public scheme48-prescheme
+  (package
+    (inherit scheme48)
+    (name "scheme48-prescheme")
+    (arguments
+     (list
+      #:tests? #f ; tests only cover scheme48
+      #:modules '((guix build gnu-build-system)
+                  (guix build utils)
+                  (ice-9 popen)
+                  (srfi srfi-1))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'configure 'patch-prescheme-version
+            (lambda _
+              ;; Ensure the Pre-Scheme version matches the package version
+              (call-with-output-file "ps-compiler/minor-version-number"
+                (lambda (port)
+                  (let* ((version #$(package-version this-package))
+                         (vparts (string-split version #\.))
+                         (vminor (string-join (drop vparts 1) ".")))
+                    (write vminor port))))))
+          (add-after 'configure 'patch-prescheme-headers
+            (lambda _
+              ;; Rename "io.h" to play nicely with others
+              (copy-file "c/io.h" "c/prescheme-io.h")
+              (substitute* "c/prescheme.h"
+                (("^#include \"io\\.h\"")
+                 "#include \"prescheme-io.h\""))))
+          (add-after 'configure 'generate-pkg-config
+            (lambda _
+              ;; Generate a pkg-config file
+              (call-with-output-file "prescheme.pc"
+                (lambda (port)
+                  (let ((s48-version #$(package-version scheme48))
+                        (version #$(package-version this-package)))
+                    (format port (string-join
+                                  '("prefix=~a"
+                                    "exec_prefix=${prefix}"
+                                    "libdir=${prefix}/lib/scheme48-~a"
+                                    "includedir=${prefix}/include"
+                                    ""
+                                    "Name: Pre-Scheme (Scheme 48)"
+                                    "Description: Pre-Scheme C runtime"
+                                    "Version: ~a"
+                                    "Libs: -L${libdir} -lprescheme"
+                                    "Cflags: -I${includedir}")
+                                  "\n" 'suffix)
+                            #$output s48-version version))))))
+          (add-after 'configure 'generate-prescheme-wrapper
+            (lambda _
+              ;; Generate a wrapper to load and run ps-compiler.image
+              (call-with-output-file "prescheme"
+                (lambda (port)
+                  (let ((s48-version #$(package-version scheme48)))
+                    (format port (string-join
+                                  '("#!/bin/sh"
+                                    "scheme48=~a/lib/scheme48-~a/scheme48vm"
+                                    "prescheme=~a/lib/scheme48-~a/prescheme.image"
+                                    "exec ${scheme48} -i ${prescheme} \"$@\"")
+                                  "\n" 'suffix)
+                            #$scheme48 s48-version #$output s48-version))))
+              (chmod "prescheme" #o755)))
+          (replace 'build
+            (lambda _
+              ;; Build a minimal static library for linking Pre-Scheme code
+              (let ((lib "c/libprescheme.a")
+                    (objs '("c/unix/io.o"
+                            "c/unix/misc.o")))
+                (apply invoke "make" objs)
+                (apply invoke "ar" "rcs" lib objs))
+              ;; Dump a Scheme 48 image with both the Pre-Scheme compatibility
+              ;; library and compiler pre-loaded, courtesy of Taylor Campbell's
+              ;; Pre-Scheme Manual:
+              ;; https://groups.scheme.org/prescheme/1.3/#Invoking-the-Pre_002dScheme-compiler
+              (with-directory-excursion "ps-compiler"
+                (let ((version #$(package-version this-package))
+                      (port (open-pipe* OPEN_WRITE "scheme48")))
+                  (format port (string-join
+                                '(",batch"
+                                  ",config ,load ../scheme/prescheme/interface.scm"
+                                  ",config ,load ../scheme/prescheme/package-defs.scm"
+                                  ",exec ,load load-ps-compiler.scm"
+                                  ",in prescheme-compiler prescheme-compiler"
+                                  ",user (define prescheme-compiler ##)"
+                                  ",dump ../prescheme.image \"(Pre-Scheme ~a)\""
+                                  ",exit")
+                                "\n" 'suffix)
+                          version)
+                  (close-pipe port)))))
+          (replace 'install
+            (lambda _
+              (let* ((s48-version #$(package-version scheme48))
+                     (bin-dir     (string-append #$output "/bin"))
+                     (lib-dir     (string-append #$output "/lib/scheme48-" s48-version))
+                     (pkgconf-dir (string-append #$output "/lib/pkgconfig"))
+                     (share-dir   (string-append #$output "/share/scheme48-" s48-version))
+                     (include-dir (string-append #$output "/include")))
+                ;; Install Pre-Scheme compiler image
+                (install-file "prescheme" bin-dir)
+                (install-file "prescheme.image" lib-dir)
+                ;; Install Pre-Scheme config, headers, and lib
+                (install-file "prescheme.pc" pkgconf-dir)
+                (install-file "c/prescheme.h" include-dir)
+                (install-file "c/prescheme-io.h" include-dir)
+                (install-file "c/libprescheme.a" lib-dir)
+                ;; Install Pre-Scheme sources
+                (copy-recursively "scheme/prescheme"
+                                  (string-append share-dir "/prescheme"))
+                (copy-recursively "ps-compiler"
+                                  (string-append share-dir "/ps-compiler"))
+                ;; Remove files specific to building the Scheme 48 VM
+                (for-each (lambda (file)
+                            (delete-file (string-append share-dir "/" file)))
+                          '("ps-compiler/compile-bibop-gc-32.scm"
+                            "ps-compiler/compile-bibop-gc-64.scm"
+                            "ps-compiler/compile-gc.scm"
+                            "ps-compiler/compile-twospace-gc-32.scm"
+                            "ps-compiler/compile-twospace-gc-64.scm"
+                            "ps-compiler/compile-vm-no-gc-32.scm"
+                            "ps-compiler/compile-vm-no-gc-64.scm"))))))))
+    (propagated-inputs (list scheme48))
+    (home-page "http://s48.org/")
+    (synopsis "Pre-Scheme compiler from Scheme 48")
+    (description
+     "Pre-Scheme is a statically compilable dialect of Scheme, used to implement the
+Scheme 48 virtual machine.  Scheme 48 ships with a Pre-Scheme to C compiler written
+in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme.")
     (license bsd-3)))
 
 (define-public gambit-c
