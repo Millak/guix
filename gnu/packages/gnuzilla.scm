@@ -37,6 +37,7 @@
 
 (define-module (gnu packages gnuzilla)
   #:use-module ((srfi srfi-1) #:hide (zip))
+  #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:use-module (gnu packages)
   #:use-module ((guix licenses) #:prefix license:)
@@ -91,7 +92,8 @@
   #:use-module (gnu packages xiph)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages readline)
-  #:use-module (gnu packages sqlite))
+  #:use-module (gnu packages sqlite)
+  #:autoload (json parser) (json->scm))
 
 (define-public mozjs
   (package
@@ -348,6 +350,10 @@ in C/C++.")
     (inputs
      (list icu4c readline zlib))))
 
+
+;;;
+;;; Localization helper procedures.
+;;;
 (define mozilla-compare-locales
   (origin
     (method hg-fetch)
@@ -370,6 +376,18 @@ in C/C++.")
 (define-syntax-rule (mozilla-locales (hash-string changeset locale) ...)
   (list (mozilla-locale locale changeset hash-string)
         ...))
+
+(define (update-mozilla-locales changesets.json)
+  "Output a new list of Mozilla locales, to update the ALL-MOZILLA-LOCALES
+variable defined below.  It requires guile-json to be installed."
+  (match (call-with-input-file changesets.json json->scm)
+    (((lang ("revision" . revision) platforms pin) ...)
+     (let ((data (reverse (map (lambda (rev lang)
+                                 `(,(list->string (make-list 40 #\0))
+                                   ,(string-take rev 12) ,lang))
+                               revision lang))))
+       (format #t "~{~s~%~}" data)
+       data))))
 
 (define all-mozilla-locales
   (mozilla-locales
