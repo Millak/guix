@@ -17787,7 +17787,7 @@ populations.")
 (define-public scregseg
   (package
     (name "scregseg")
-    (version "0.1.1")
+    (version "0.1.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -17796,16 +17796,22 @@ populations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1k8hllr5if6k2mm2zj391fv40sfc008cjm04l9vgfsdppb80i112"))
+                "07g2barywa1wi8mggbxkbxqjw1fzd0a0l9cjdbkx4s40imb1dbxb"))
               (snippet
-               #~(begin
-                   (use-modules ((guix build utils)))
-                   (delete-file "src/scregseg/_utils.c")))))
-    (build-system python-build-system)
+               '(delete-file "src/scregseg/_utils.c"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(#:tests? #false                  ; tests require network access
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:phases
+      '(modify-phases %standard-phases
+         ;; Numba needs a writable dir to cache functions.
+         (add-before 'check 'set-numba-cache-dir
+           (lambda _
+             (setenv "NUMBA_CACHE_DIR" "/tmp")))
+         ;; Cython extensions have to be built before running the tests.
+         (add-before 'check 'build-extensions
+           (lambda _
+             (invoke "python" "setup.py" "build_ext" "--inplace")))
          (add-after 'unpack 'do-not-fail-to-find-sklearn
            (lambda _
              ;; XXX: I have no idea why it cannot seem to find sklearn.
