@@ -496,20 +496,19 @@ variable defined below.  It requires guile-json to be installed."
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "102.8.0-guix0-preview1")
+(define %icecat-base-version "102.8.0")
+(define %icecat-version (string-append %icecat-base-version "-guix0-preview1"))
 (define %icecat-build-id "20230214000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
 ;; script from the upstream IceCat project.
 (define icecat-source
-  (let* ((base-version (first (string-split %icecat-version #\-)))
+  (let* ((major-version (first  (string-split %icecat-base-version #\.)))
+         (minor-version (second (string-split %icecat-base-version #\.)))
+         (sub-version   (third  (string-split %icecat-base-version #\.)))
 
-         (major-version (first  (string-split base-version #\.)))
-         (minor-version (second (string-split base-version #\.)))
-         (sub-version   (third  (string-split base-version #\.)))
-
-         (upstream-firefox-version (string-append base-version "esr"))
+         (upstream-firefox-version (string-append %icecat-base-version "esr"))
          (upstream-firefox-source
           (origin
             (method url-fetch)
@@ -521,8 +520,9 @@ variable defined below.  It requires guile-json to be installed."
              (base32
               "0j6afrgfsmd0adbbmffw4p1f2hznpck9d36z3bsjx36f7cjgdy27"))))
 
-         (upstream-icecat-base-version "102.8.0") ; maybe older than base-version
-         ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
+         ;; The upstream-icecat-base-version may be older than the
+         ;; %icecat-base-version.
+         (upstream-icecat-base-version "102.8.0")
          (gnuzilla-commit "03d9e3db5affe21db077c410ec08c313d6aa280e")
          (gnuzilla-source
           (origin
@@ -553,7 +553,7 @@ variable defined below.  It requires guile-json to be installed."
           #~(begin
               (use-modules (guix build utils))
               (let ((firefox-dir
-                     (string-append "firefox-" #$base-version))
+                     (string-append "firefox-" #$%icecat-base-version))
                     (icecat-dir
                      (string-append "icecat-" #$%icecat-version)))
 
