@@ -367,7 +367,15 @@
             (files '("lib/emacs/native-site-lisp")))
            (search-path-specification
             (variable "INFOPATH")
-            (files '("share/info")))))
+            (files '("share/info")))
+           ;; tree-sitter support is not yet available in emacs 28, but this
+           ;; search path won't harm and also will be beneficial for
+           ;; emacs-next and other emacs-* packages, which have tree-sitter
+           ;; support enabled.  Please, remove this comment, when emacs
+           ;; package is updated to 29.
+           (search-path-specification
+            (variable "TREE_SITTER_GRAMMAR_PATH")
+            (files '("lib/tree-sitter")))))
 
     (home-page "https://www.gnu.org/software/emacs/")
     (synopsis "The extensible, customizable, self-documenting text editor")
