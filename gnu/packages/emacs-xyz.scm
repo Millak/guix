@@ -4879,6 +4879,32 @@ them whenever another command is invoked.")
 a command.")
     (license license:gpl3+)))
 
+(define-public emacs-ligature
+  (let ((commit "3d1460470736777fd8329e4bb4ac359bf4f1460a")
+        (revision "1"))
+    (package
+      (name "emacs-ligature")
+      (version (git-version "1.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/mickeynp/ligature.el")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1rnx2mp8y1phnvfirmf4a6lza38dg2554r9igyijl9rgqpjax94d"))))
+      (build-system emacs-build-system)
+      (home-page "https://github.com/mickeynp/ligature.el")
+      (synopsis "Typographic ligatures in Emacs")
+      (description
+       "This package maps ordinary graphemes (characters) to fancy
+ligatures, if both your version of Emacs and the font supports it.  With this
+package you can control where Emacs must display ligatures. That is useful if
+you only want a subset of the ligatures in certain major modes, for instance,
+or if you want to ensure that some modes have no ligatures at all.")
+      (license license:gpl3+))))
+
 (define-public emacs-olivetti
   (package
     (name "emacs-olivetti")
