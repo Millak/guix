@@ -137,16 +137,15 @@ For synthesis, the compiler generates netlists in the desired format.")
 (define-public yosys
   (package
     (name "yosys")
-    (version "0.9")
+    (version "0.26")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/YosysHQ/yosys")
-                    (commit (string-append "yosys-" version))
-                    (recursive? #t))) ; for the ‘iverilog’ submodule
+                    (commit (string-append "yosys-" version))))
               (sha256
-                (base32
-                   "0lb9r055h8y1vj2z8gm4ip0v06j5mk7f9zx9gi67kkqb7g4rhjli"))
+               (base32
+                "0s79ljgbcfkm7l9km7dcvlz4mnx38nbyxppscvh5il5lw07n45gx"))
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
@@ -162,7 +161,11 @@ For synthesis, the compiler generates netlists in the desired format.")
               (substitute* "./backends/smt2/smtio.py"
                 (("\\['z3")
                  (string-append "['" (search-input-file inputs "/bin/z3"))))
-              (substitute* "./passes/cmds/show.cc"
+              (substitute* "./kernel/fstdata.cc"
+                (("vcd2fst")
+                 (search-input-file inputs "/bin/vcd2fst")))
+              (substitute* '("./passes/cmds/show.cc"
+                             "./passes/cmds/viz.cc")
                 (("exec xdot")
                  (string-append "exec " (search-input-file inputs
                                                            "/bin/xdot")))
@@ -179,26 +182,6 @@ For synthesis, the compiler generates netlists in the desired format.")
                 (("ABCEXTERNAL \\?=")
                  (string-append "ABCEXTERNAL = "
                                 (search-input-file inputs "/bin/abc"))))))
-          (add-before 'check 'fix-iverilog-references
-            (lambda* (#:key inputs native-inputs #:allow-other-keys)
-              (let ((iverilog (search-input-file (or native-inputs inputs)
-                                                 "/bin/iverilog")))
-                (substitute* '("./manual/CHAPTER_StateOfTheArt/synth.sh"
-                               "./manual/CHAPTER_StateOfTheArt/validate_tb.sh"
-                               "./techlibs/ice40/tests/test_bram.sh"
-                               "./techlibs/ice40/tests/test_ffs.sh"
-                               "./techlibs/xilinx/tests/bram1.sh"
-                               "./techlibs/xilinx/tests/bram2.sh"
-                               "./tests/bram/run-single.sh"
-                               "./tests/realmath/run-test.sh"
-                               "./tests/simple/run-test.sh"
-                               "./tests/techmap/mem_simple_4x1_runtest.sh"
-                               "./tests/tools/autotest.sh"
-                               "./tests/vloghtb/common.sh")
-                  (("if ! which iverilog") "if ! true")
-                  (("iverilog ") (string-append iverilog " "))
-                  (("iverilog_bin=\".*\"") (string-append "iverilog_bin=\""
-                                                          iverilog "\""))))))
           (add-after 'install 'add-symbolic-link
             (lambda* (#:key inputs #:allow-other-keys)
               ;; Previously this package provided a copy of the "abc"
@@ -206,7 +189,11 @@ For synthesis, the compiler generates netlists in the desired format.")
               ;; symbolic link so any external uses of that name continue to
               ;; work.
               (symlink (search-input-file inputs "/bin/abc")
-                       (string-append #$output "/bin/yosys-abc")))))))
+                       (string-append #$output "/bin/yosys-abc"))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs #:allow-other-keys)
+              (wrap-program (string-append #$output "/bin/yosys-witness")
+                `("GUIX_PYTHONPATH" ":" prefix (,(getenv "GUIX_PYTHONPATH")))))))))
     (native-inputs
      (list bison
            flex
@@ -218,12 +205,16 @@ For synthesis, the compiler generates netlists in the desired format.")
     (inputs
      (list abc
            graphviz
+           gtkwave
            libffi
            psmisc
            readline
            tcl
            xdot
-           z3))
+           z3
+           zlib
+           python
+           python-click))
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
