@@ -901,9 +901,7 @@ hanja dictionary and small hangul character classification.")
                          (list (string-append out "/libexec/ibus-engine-stt")
                                (string-append out "/libexec/ibus-setup-stt")))))))))
     (inputs
-     (list desktop-file-utils
-           (list glib "bin")
-           gobject-introspection
+     (list bash-minimal
            gst-vosk
            gstreamer
            gtk
@@ -913,7 +911,11 @@ hanja dictionary and small hangul character classification.")
            python-babel
            python-pygobject))
     (native-inputs
-     (list gettext-minimal libxml2 pkg-config))
+     (list desktop-file-utils
+           gettext-minimal
+           (list glib "bin")
+           gobject-introspection
+           libxml2 pkg-config))
     (home-page "https://github.com/PhilippeRo/IBus-Speech-To-Text")
     (synopsis "Speech to text IBus engine using VOSK")
     (description "This Input Method uses VOSK for voice recognition and allows
