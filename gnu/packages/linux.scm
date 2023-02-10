@@ -5071,7 +5071,7 @@ and manage nvme devices on a Linux system.")
 (define-public nvme-cli
   (package
     (name "nvme-cli")
-    (version "1.16")
+    (version "2.3")
     (home-page "https://github.com/linux-nvme/nvme-cli")
     (source (origin
               (method git-fetch)
@@ -5079,22 +5079,16 @@ and manage nvme devices on a Linux system.")
                     (url home-page)
                     (commit (string-append "v" version))))
               (sha256
-               (base32 "130x5cf6kkcnyg5qd35igii249ysfjnbxp1pxfwkickmqg3d007z"))
+               (base32 "1f3bhxh2kr94s6glzibrmgxxgs66qyabn8plnw5y0v9cpi78b3qs"))
               (file-name (git-file-name name version))))
-    (build-system gnu-build-system)
+    (build-system meson-build-system)
     (arguments
-     (list #:make-flags
-           #~(list (string-append "CC=" #$(cc-for-target)))
-           #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)      ; no ./configure script
-               (replace 'install
-                 (lambda _
-                   (invoke "make" "install-spec" "PREFIX="
-                           (string-append "DESTDIR=" #$output)))))
-           ;; The tests require sysfs, which is not accessible from from the
-           ;; build environment.
-           #:tests? #f))
+     (list
+      #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
+                                        #$output #$name)
+                                "-Ddocs=all")))
+    (native-inputs (list pkg-config))
+    (inputs (list libnvme json-c zlib))
     (synopsis "NVM-Express user space tooling for Linux")
     (description "Nvme-cli is a utility to provide standards compliant tooling
 for NVM-Express drives.  It was made specifically for Linux as it relies on the
