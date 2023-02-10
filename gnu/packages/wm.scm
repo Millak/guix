@@ -751,6 +751,7 @@ desktop environment.")
     (native-inputs (list pkg-config))
     (inputs (list fontconfig
                   fribidi
+                  glib                  ;for icewm-menu-fdo
                   imlib2
                   libice
                   libjpeg-turbo
