@@ -47,6 +47,7 @@
   #:use-module (guix hg-download)
   #:use-module (guix gexp)
   #:use-module (guix store)
+  #:use-module (guix modules)
   #:use-module (guix monads)
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
@@ -1119,7 +1120,7 @@ standards of the IceCat project.")
 
 ;; Provides the "comm" folder which is inserted into the icecat source.
 ;; Avoids the duplication of Icecat's source tarball.
-(define thunderbird-source
+(define thunderbird-comm-source
   (origin
     (method hg-fetch)
     (uri (hg-reference
@@ -1130,11 +1131,148 @@ standards of the IceCat project.")
      (base32
       "071q0pcfvfpzx741ly1sl8anlmzx02h17w4ylfnrkwrpaclq3p6p"))))
 
+(define (comm-source->locales+changeset source)
+  "Given SOURCE, a checkout of the Thunderbird 'comm' component, return the
+list of languages supported as well as the currently used changeset."
+  (match (update-mozilla-locales
+          (string-append source "/mail/locales/l10n-changesets.json"))
+    (((_ changeset locale) ...)
+     (values locale (first changeset)))))
+
+;;; To find out which changeset to use for the comm-l10n repo, use the
+;;; 'comm-source->locales+changeset' procedure on the thunderbird-comm-source
+;;; checkout directory.  The complete localization data should be released as
+;;; a tarball in the next release (see:
+;;; https://bugzilla.mozilla.org/show_bug.cgi?id=1817086).  When this tarball
+;;; is available, it should replace the complete 'l10n' directory at the root
+;;; of the IceCat source, instead of only the 'calendar', chat and mail
+;;; directories that it provides.
+(define thunderbird-comm-l10n
+  (let* ((changeset "5b6788295358")
+         (version (git-version %icedove-version "0" changeset)))
+    (origin
+      (method hg-fetch)
+      (uri (hg-reference
+            (url "https://hg.mozilla.org/projects/comm-l10n")
+            (changeset changeset)))
+      (file-name (git-file-name "comm-l10n" version))
+      (sha256
+       (base32
+        "1jrsmkscjjllcfawi3788vwm53wn25inbhdis5nk4vfpr7wk5ill")))))
+
+(define icedove-source
+  (let ((name (string-append "icedove-" %icedove-version)))
+    (origin
+      (method computed-origin-method)
+      (file-name (string-append name ".tar.xz"))
+      (sha256 #f)
+      (uri
+       (delay
+         (with-imported-modules (source-module-closure '((guix build utils)))
+           #~(begin
+               (use-modules (guix build utils)
+                            (sxml simple))
+
+               (set-path-environment-variable
+                "PATH" '("bin")
+                (list #+(canonical-package tar)
+                      #+(canonical-package xz)))
+
+               ;; Extract the base Icecat tarball, renaming its top-level
+               ;; directory.
+               (invoke "tar" "--transform" (string-append "s,[^/]*," #$name ",")
+                       "-xf" #$icecat-source)
+               (chdir #$name)
+
+               ;; Merge the Thunderdbird localization data.
+               (copy-recursively #$thunderbird-comm-l10n "l10n")
+
+               ;; Add the Thunderbird-specific "comm" directory..
+               (mkdir "comm")
+               (copy-recursively #$thunderbird-comm-source "comm")
+               (delete-file "sourcestamp.txt")
+
+               ;; Adjust the application name.
+               (substitute* "comm/mail/confvars.sh"
+                 (("MOZ_APP_NAME=thunderbird")
+                  "MOZ_APP_NAME=icedove")
+                 (("MOZ_UPDATER=1")
+                  "MOZ_UPDATER=0"))
+
+               ;; Remove branding to comply with Mozilla's trademark policy
+               (with-directory-excursion "comm/mail/branding/nightly"
+                 (delete-file "content/about-wordmark.svg")
+                 (call-with-output-file "content/about-wordmark.svg"
+                   (lambda (port)
+                     (sxml->xml '(svg (@ (xmlns "http://www.w3.org/2000/svg")
+                                         (viewBox "0 0 789.1 90.78")
+                                         (width "333")
+                                         (height "48")
+                                         (fill "#fff"))
+                                      (text (@ (x "400") (y "70")
+                                               (text-anchor "middle")
+                                               (font-size "90"))
+                                            "Icedove Daily"))
+                                port)))
+                 (substitute* '("locales/en-US/brand.properties"
+                                "locales/en-US/brand.ftl"
+                                "locales/en-US/brand.dtd"
+                                "configure.sh")
+                   (("Thunderbird") "Icedove")
+                   (("mozilla.org") "guix.gnu.org")))
+               ;; Remove other mentions of Thunderbird in user-visible text.
+               (with-directory-excursion "comm/mail/base/content"
+                 (substitute* '("overrides/app-license-name.html")
+                   (("Thunderbird") "Icedove")))
+               (with-directory-excursion "comm/mail/components/"
+                 (substitute* '("MailGlue.jsm"
+                                "extensions/schemas/addressBook.json"
+                                "extensions/schemas/tabs.json"
+                                "extensions/schemas/cloudFile.json"
+                                "extensions/schemas/chrome_settings_overrides.json"
+                                "extensions/schemas/windows.json"
+                                "extensions/parent/ext-mail.js"
+                                "im/messages/mail/Info.plist"
+                                "enterprisepolicies/moz.build"
+                                "enterprisepolicies/helpers/moz.build"
+                                "enterprisepolicies/schemas/moz.build")
+                   (("Thunderbird") "Icedove")))
+               (substitute* '("comm/mailnews/base/prefs/content/accountUtils.js"
+                              "comm/mail/base/content/customizeToolbar.js"
+                              "comm/suite/components/customizeToolbar.js")
+                 (("AppConstants.MOZ_APP_NAME (.)= \"thunderbird" _ e)
+                  (format #f "AppConstants.MOZ_APP_NAME ~a= \"icedove" e)))
+
+               ;; Override addon URLs and settings
+               (substitute* "comm/mail/app/profile/all-thunderbird.js"
+                 (("(pref\\(\"extensions.webservice.discoverURL\").*" _ m)
+                  (string-append m ", \"https://directory.fsf.org/wiki/Icedove\");"))
+                 (("(pref\\(\"extensions.getAddons.search.url\").*" _ m)
+                  (string-append m ", \"https://guix.gnu.org/packages\");"))
+                 (("(pref\\(\"extensions.update.enabled\").*" _ m)
+                  (string-append m ", false);"))
+                 (("(pref\\(\"extensions.systemAddon.update.enabled\").*" _ m)
+                  (string-append m ", false);"))
+                 (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
+                  (string-append m ", false);")))
+
+               ;; Step out of the directory and create the tarball.
+               (chdir "..")
+               (format #t "Packing Icedove source tarball...~%")
+               (force-output)
+               (setenv "XZ_DEFAULTS" (string-join (%xz-parallel-args)))
+               (invoke "tar" "cfa" #$output
+                       "--mtime=@315619200" ;1980-01-02 UTC
+                       "--owner=root:0"
+                       "--group=root:0"
+                       "--sort=name"
+                       #$name))))))))
+
 (define-public icedove
   (package
     (name "icedove")
     (version %icedove-version)
-    (source icecat-source)
+    (source icedove-source)
     (properties
      `((cpe-name . "thunderbird_esr")))
     (build-system gnu-build-system)
@@ -1148,11 +1286,6 @@ standards of the IceCat project.")
                   ,@%gnu-build-system-modules)
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'prepare-thunderbird-sources
-            (lambda _
-              (mkdir "comm")
-              (copy-recursively #$thunderbird-source "comm")
-              (delete-file "sourcestamp.txt")))
           (add-after 'patch-source-shebangs 'patch-cargo-checksums
             (lambda _
               (use-modules (guix build cargo-utils))
@@ -1182,69 +1315,6 @@ ca495991b7852b855"))
               (substitute* "comm/mail/moz.configure"
                 (("MOZ_DEDICATED_PROFILES, True")
                  "MOZ_DEDICATED_PROFILES, False"))))
-          (add-after 'prepare-thunderbird-sources 'rename-to-icedove
-            (lambda _
-              (substitute* "comm/mail/confvars.sh"
-                (("MOZ_APP_NAME=thunderbird")
-                 "MOZ_APP_NAME=icedove")
-                (("MOZ_UPDATER=1")
-                 "MOZ_UPDATER=0"))
-              ;; Remove branding to comply with Mozilla's trademark policy
-              (with-directory-excursion "comm/mail/branding/nightly"
-                (delete-file "content/about-wordmark.svg")
-                (call-with-output-file "content/about-wordmark.svg"
-                  (lambda (port)
-                    (sxml->xml '(svg (@ (xmlns "http://www.w3.org/2000/svg")
-                                        (viewBox "0 0 789.1 90.78")
-                                        (width "333")
-                                        (height "48")
-                                        (fill "#fff"))
-                                     (text (@ (x "400") (y "70")
-                                              (text-anchor "middle")
-                                              (font-size "90"))
-                                           "Icedove Daily"))
-                               port)))
-                (substitute* '("locales/en-US/brand.properties"
-                               "locales/en-US/brand.ftl"
-                               "locales/en-US/brand.dtd"
-                               "configure.sh")
-                  (("Thunderbird") "Icedove")
-                  (("mozilla.org") "guix.gnu.org")))
-              ;; Remove other mentions of Thunderbird in user-visible text.
-              (with-directory-excursion "comm/mail/base/content"
-                (substitute* '("overrides/app-license-name.html")
-                  (("Thunderbird") "Icedove")))
-              (with-directory-excursion "comm/mail/components/"
-                (substitute* '("MailGlue.jsm"
-                               "extensions/schemas/addressBook.json"
-                               "extensions/schemas/tabs.json"
-                               "extensions/schemas/cloudFile.json"
-                               "extensions/schemas/chrome_settings_overrides.json"
-                               "extensions/schemas/windows.json"
-                               "extensions/parent/ext-mail.js"
-                               "im/messages/mail/Info.plist"
-                               "enterprisepolicies/moz.build"
-                               "enterprisepolicies/helpers/moz.build"
-                               "enterprisepolicies/schemas/moz.build")
-                  (("Thunderbird") "Icedove")))
-              (substitute* '("comm/mailnews/base/prefs/content/accountUtils.js"
-                             "comm/mail/base/content/customizeToolbar.js"
-                             "comm/suite/components/customizeToolbar.js")
-                (("AppConstants.MOZ_APP_NAME (.)= \"thunderbird" _ e)
-                 (format #f "AppConstants.MOZ_APP_NAME ~a= \"icedove" e)))
-
-              ;; Override addon URLs and settings
-              (substitute* "comm/mail/app/profile/all-thunderbird.js"
-                (("(pref\\(\"extensions.webservice.discoverURL\").*" _ m)
-                 (string-append m ", \"https://directory.fsf.org/wiki/Icedove\");"))
-                (("(pref\\(\"extensions.getAddons.search.url\").*" _ m)
-                 (string-append m ", \"https://guix.gnu.org/packages\");"))
-                (("(pref\\(\"extensions.update.enabled\").*" _ m)
-                 (string-append m ", false);"))
-                (("(pref\\(\"extensions.systemAddon.update.enabled\").*" _ m)
-                 (string-append m ", false);"))
-                (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
-                 (string-append m ", false);")))))
           (add-after 'build 'neutralize-store-references
             (lambda _
               ;; Mangle the store references to compilers & other build tools in
