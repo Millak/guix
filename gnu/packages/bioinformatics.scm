@@ -1255,6 +1255,66 @@ servers supporting the protocol.")
 genomics data.")
     (license license:bsd-3)))
 
+(define-public python-phenograph
+  (package
+    (name "python-phenograph")
+    (version "1.5.7")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "PhenoGraph" version))
+              (sha256
+               (base32
+                "0nji449mzwgp1f87iknl5fmnjdkrhkfkapxvafxdw01s0jg8zcj6"))
+              (modules '((guix build utils)))
+              ;; Remove bundled binaries
+              (snippet
+               '(delete-file-recursively "phenograph/louvain"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          ;; This test can never succeed because Q_leiden is never set to
+          ;; anything other than None.
+          (add-after 'unpack 'disable-leiden-test
+            (lambda _
+              (substitute* "tests/test_cluster.py"
+                (("def test_run_leiden") "def _test_run_leiden"))))
+          (add-after 'unpack 'patch-louvain
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "phenograph/core.py"
+                (("lpath = os.path.*")
+                 (string-append "lpath = \""
+                                (dirname (search-input-file inputs "/bin/community"))
+                                "\"\n"))
+                (("linux-(community|hierarchy|convert)" _ thing) thing)
+                ;; Do not write binaries, because the unmodified "convert"
+                ;; from louvain only knows how to process plain text files.
+                (("with open\\(filename \\+ \".bin\", \"w\\+b\"\\) as f:")
+                 "with open(filename + \".bin\", \"w+\") as f:")
+                (("f.writelines\\(\\[e for t in zip\\(ij, s\\) for e in t\\]\\)")
+                 "for [src, dest], weight in zip(ij, s): \
+f.write(src.astype(\"str\") + ' ' + \
+dest.astype(\"str\") + ' ' + \
+weight.astype(\"str\") + '\\n')")))))))
+    (inputs
+     (list louvain))
+    (propagated-inputs
+     (list python-leidenalg
+           python-numpy
+           python-psutil
+           python-scikit-learn
+           python-scipy))
+    (native-inputs
+     (list python-pytest))
+    (home-page "https://github.com/dpeerlab/PhenoGraph.git")
+    (synopsis "Graph-based clustering for high-dimensional single-cell data")
+    (description
+     "PhenoGraph is a clustering method designed for high-dimensional
+single-cell data.  It works by creating a graph representing phenotypic
+similarities between cells and then identifying communities in this graph.")
+    (license license:expat)))
+
 (define-public python-phylophlan
   (package
     (name "python-phylophlan")
