@@ -17,7 +17,7 @@
 ;;; Copyright © 2020, 2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
-;;; Copyright © 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Baptiste Strazzul <bstrazzull@hotmail.fr>
 ;;;
 ;;; This file is part of GNU Guix.
@@ -1115,6 +1115,16 @@ standards of the IceCat project.")
        (cpe-name . "firefox_esr")
        (cpe-version . ,(first (string-split version #\-)))))))
 
+(define %icecat-locales
+  '("ach" "af" "an" "ar" "ast" "az" "be" "bg" "bn" "br" "bs" "ca" "cak"
+    "ca-valencia" "cs" "cy" "da" "de" "dsb" "el" "en-CA" "en-GB" "eo" "es-AR"
+    "es-CL" "es-ES" "es-MX" "et" "eu" "fa" "ff" "fi" "fr" "fy-NL" "ga-IE" "gd"
+    "gl" "gn" "gu-IN" "he" "hi-IN" "hr" "hsb" "hu" "hy-AM" "ia" "id" "is" "it"
+    "ja" "ja-JP-mac" "ka" "kab" "kk" "km" "kn" "ko" "lij" "lt" "lv" "mk" "mr" "ms"
+    "my" "nb-NO" "ne-NP" "nl" "nn-NO" "oc" "pa-IN" "pl" "pt-BR" "pt-PT" "rm" "ro"
+    "ru" "sco" "si" "sk" "sl" "son" "sq" "sr" "sv-SE" "szl" "ta" "te" "th" "tl"
+    "tr" "trs" "uk" "ur" "uz" "vi" "xh" "zh-CN" "zh-TW"))
+
 (define %icedove-build-id "20230207000000") ;must be of the form YYYYMMDDhhmmss
 (define %icedove-version "102.7.2")
 
@@ -1138,6 +1148,15 @@ list of languages supported as well as the currently used changeset."
           (string-append source "/mail/locales/l10n-changesets.json"))
     (((_ changeset locale) ...)
      (values locale (first changeset)))))
+
+;;; Generated with comm-source->locales+changeset.
+(define %icedove-locales
+  '("af" "ar" "ast" "be" "bg" "br" "ca" "cak" "cs" "cy" "da" "de" "dsb" "el"
+    "en-CA" "en-GB" "es-AR" "es-ES" "es-MX" "et" "eu" "fi" "fr" "fy-NL" "ga-IE"
+    "gd" "gl" "he" "hr" "hsb" "hu" "hy-AM" "id" "is" "it" "ja" "ja-JP-mac" "ka"
+    "kab" "kk" "ko" "lt" "lv" "ms" "nb-NO" "nl" "nn-NO" "pa-IN" "pl" "pt-BR"
+    "pt-PT" "rm" "ro" "ru" "sk" "sl" "sq" "sr" "sv-SE" "th" "tr" "uk" "uz" "vi"
+    "zh-CN" "zh-TW"))
 
 ;;; To find out which changeset to use for the comm-l10n repo, use the
 ;;; 'comm-source->locales+changeset' procedure on the thunderbird-comm-source
@@ -1546,6 +1565,128 @@ Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
               ((#$icedove) #$output))))))
     (native-inputs '())
     (inputs '())))
+
+(define (make-l10n-package project version source locales)
+  "Return a package for PROJECT, a symbol (either icecat or icedove), with
+their corresponding VERSION, SOURCE and LOCALES variables."
+  (unless (member project '(icecat icedove))
+    (error "only icecat or icedove components are currently supported"))
+
+  (let ((name (if (eq? 'icecat project)
+                  "IceCat"
+                  "Icedove")))
+    (package
+      (name (format #f "~a-l10n" project))
+      (version version)
+      (source source)
+      (outputs (cons "out" locales))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:modules '((guix build gnu-build-system)
+                    (guix build utils)
+                    (ice-9 format)
+                    (ice-9 ftw)
+                    (srfi srfi-1)
+                    (srfi srfi-26))
+        #:tests? #f                     ;no tests, this is data
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'bootstrap)
+            (delete 'install)
+            (replace 'configure
+              (lambda _
+                ;; The following configuration is inspired by guidance at
+                ;; https://firefox-source-docs.mozilla.org/build/buildsystem/locales.html.
+                (call-with-output-file ".mozconfig"
+                  (lambda (p)
+                    (format p "~{~a~%~}"
+                            (list (if (eq? 'icecat '#$project)
+                                      "ac_add_options --enable-project=browser"
+                                      "ac_add_options --enable-project=comm/mail")
+                                  "ac_add_options --disable-compile-environment"
+                                  (string-append
+                                   "ac_add_options --with-l10n-base="
+                                   (getcwd) "/l10n")
+                                  ;; Hack, otherwise the build system throws:
+                                  ;; 'RuntimeError: File "brand.dtd" not found'.
+                                  "ac_add_options --enable-official-branding"
+                                  "mk_add_options MOZ_OBJDIR=obj"))))
+                (setenv "CONFIG_SHELL" (which "bash"))
+                (setenv "MOZBUILD_STATE_PATH"
+                        (string-append (getcwd) "/mach_state"))
+                (setenv "MOZCONFIG" (string-append (getcwd) "/.mozconfig"))
+                (setenv "MACH_BUILD_PYTHON_NATIVE_PACKAGE_SOURCE" "system")
+                (setenv "BUILD_BACKENDS" "FasterMake,RecursiveMake")))
+            (replace 'build             ;build and install data files
+              (lambda* (#:key outputs #:allow-other-keys)
+                (define (find-file dir name)
+                  (let ((files (find-files dir name)))
+                    (when (null? files)
+                      (error "could not find file in dir" name dir))
+                    (car files)))
+
+                (for-each
+                 (lambda (l)
+                   (let* ((out (assoc-ref outputs l))
+                          ;; The older lib/$project/distribution/extensions
+                          ;; directory is deprecated.  Use the newer app-global
+                          ;; directory, which is lib/$project/extensions.
+                          (ext-dir-prefix
+                           (format
+                            #f "lib/~a/~:[~;browser/~]extensions"
+                            '#$project (eq? 'icecat '#$project)))
+                          (all-ext (string-append #$output "/" ext-dir-prefix))
+                          (ext-dir (string-append out "/" ext-dir-prefix))
+                          ;; XXX: Because Icedove doesn't have a makeicedove
+                          ;; script that substitutes all the Thunderbird
+                          ;; references to Icedove, the MOZ_LANGPACK_EID
+                          ;; defined in comm/mail/locales/Makefile.in uses
+                          ;; 'thunderbird' in its ID extension rather than
+                          ;; 'icedove'.
+                          (name (format #f "langpack-~a@~a.mozilla.org.xpi"
+                                        l (if (eq? 'icedove '#$project)
+                                              'thunderbird
+                                              '#$project))))
+                     (format #t "processing locale `~a'...~%" l)
+                     (if (eq? 'icecat '#$project)
+                         ;; XXX: For some reasons, for IceCat, there are some
+                         ;; parsing errors that cause the build system to
+                         ;; return an unclean exit code; use system* to ignore
+                         ;; errors.
+                         (system* "./mach" "build" (string-append "langpack-" l))
+                         (invoke "./mach" "build" (string-append "langpack-" l)))
+                     (mkdir-p ext-dir)
+                     (let ((xpi (find-file "obj" (string-append
+                                                  "\\." l "\\.langpack\\.xpi$"))))
+                       (copy-file xpi (string-append ext-dir "/" name))
+                       ;; Symlink to the main output so that a user can
+                       ;; install all of the language packs at once.
+                       (mkdir-p all-ext)
+                       (symlink (string-append ext-dir "/" name)
+                                (string-append all-ext "/" name)))))
+                 (if (eq? 'icedove '#$project)
+                     '#$%icedove-locales
+                     '#$%icecat-locales)))))))
+      (native-inputs
+       (list m4
+             perl
+             python-wrapper
+             node
+             unzip))
+      (home-page "https://www.mozilla.org/")
+      (synopsis (string-append "Language localization data for " name))
+      (description (string-append "This package contains the various language
+localization data files (language pack extensions) for " name ".  The
+individual localization packages can be installed by using the output
+associated with their name."))
+      (license license:mpl2.0))))
+
+(define-public icecat-l10n
+  (make-l10n-package 'icecat %icecat-version icecat-source %icecat-locales))
+
+(define-public icedove-l10n
+  (make-l10n-package 'icedove %icedove-version icedove-source %icedove-locales))
 
 (define-public firefox-decrypt
   (package
