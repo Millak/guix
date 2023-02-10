@@ -5039,6 +5039,35 @@ IDE driver subsystem.  Many external USB drive enclosures with SCSI-ATA Command
 Translation (@dfn{SAT}) are also supported.")
     (license (license:non-copyleft "file://LICENSE.TXT"))))
 
+(define-public libnvme
+  (package
+    (name "libnvme")
+    (version "1.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/linux-nvme/libnvme.git")
+                    (commit (string-append "v" version))))
+              (sha256
+               (base32 "1fngj5acp2sl4162xalq5simfasnika6gy0xrbi41x09wikvhn7y"))
+              (file-name (git-file-name name version))))
+    (build-system meson-build-system)
+    (arguments
+     (list
+      #:configure-flags #~(list (format #f "-Dhtmldir=~a/share/doc/~a/html"
+                                        #$output #$name)
+                                "-Ddocs-build=true" "-Ddocs=all")))
+    (native-inputs (list pkg-config perl python python-sphinx))
+    ;; libnvme.pc, libnvme-mi.pc lists these in Requires.private.
+    (propagated-inputs (list dbus json-c openssl))
+    (home-page "https://github.com/linux-nvme/libnvme")
+    (synopsis "C Library for NVM Express on Linux")
+    (description "libnvme provides type definitions for NVMe specification
+structures, enumerations, and bit fields, helper functions to construct,
+dispatch, and decode commands and payloads, and utilities to connect, scan,
+and manage nvme devices on a Linux system.")
+    (license license:lgpl2.1+)))
+
 (define-public nvme-cli
   (package
     (name "nvme-cli")
