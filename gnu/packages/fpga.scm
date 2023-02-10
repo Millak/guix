@@ -159,6 +159,9 @@ For synthesis, the compiler generates netlists in the desired format.")
       #~(modify-phases %standard-phases
           (add-before 'configure 'fix-paths
             (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "./backends/smt2/smtio.py"
+                (("\\['z3")
+                 (string-append "['" (search-input-file inputs "/bin/z3"))))
               (substitute* "./passes/cmds/show.cc"
                 (("exec xdot")
                  (string-append "exec " (search-input-file inputs
@@ -171,9 +174,11 @@ For synthesis, the compiler generates netlists in the desired format.")
             (lambda* (#:key make-flags #:allow-other-keys)
               (apply invoke "make" "config-gcc" make-flags)))
           (add-after 'configure 'use-external-abc
-            (lambda _
+            (lambda* (#:key inputs #:allow-other-keys)
               (substitute* '("./Makefile")
-                (("ABCEXTERNAL \\?=") "ABCEXTERNAL = abc"))))
+                (("ABCEXTERNAL \\?=")
+                 (string-append "ABCEXTERNAL = "
+                                (search-input-file inputs "/bin/abc"))))))
           (add-before 'check 'fix-iverilog-references
             (lambda* (#:key inputs native-inputs #:allow-other-keys)
               (let ((iverilog (search-input-file (or native-inputs inputs)
@@ -211,15 +216,14 @@ For synthesis, the compiler generates netlists in the desired format.")
            python
            tcl)) ; tclsh for the tests
     (inputs
-     (list graphviz
+     (list abc
+           graphviz
            libffi
            psmisc
            readline
            tcl
-           xdot))
-    (propagated-inputs
-     (list abc
-           z3)) ; should be in path for yosys-smtbmc
+           xdot
+           z3))
     (home-page "https://yosyshq.net/yosys/")
     (synopsis "FPGA Verilog RTL synthesizer")
     (description "Yosys synthesizes Verilog-2005.")
