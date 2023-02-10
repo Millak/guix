@@ -1178,6 +1178,54 @@ It is the demultiplexing module of Pegasus, which is used by Cumulus in the
 demultiplexing step.")
     (license license:bsd-3)))
 
+(define-public python-doubletdetection
+  (package
+    (name "python-doubletdetection")
+    (version "4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "doubletdetection" version))
+              (sha256
+               (base32
+                "0v0a19014h4p6x8pyz1s78xn3q5w5166cysvg574z6vw79a3s9vp"))))
+    (build-system pyproject-build-system)
+    (arguments
+     (list
+      #:tests? #false ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'use-poetry-core
+            (lambda _
+              ;; Patch to use the core poetry API.
+              (substitute* "pyproject.toml"
+                (("poetry.masonry.api")
+                 "poetry.core.masonry.api")))))))
+    (propagated-inputs
+     (list python-anndata
+           python-ipywidgets
+           python-leidenalg
+           python-vtraag-louvain
+           python-matplotlib
+           python-numpy
+           python-pandas
+           python-phenograph
+           python-scanpy
+           python-scipy
+           python-tqdm))
+    (native-inputs
+     (list python-black
+           python-flake8
+           python-poetry-core
+           python-pytest
+           python-pre-commit))
+    (home-page "https://github.com/JonathanShor/DoubletDetection")
+    (synopsis
+     "This is a package to detect doublets in single-cell RNA-seq count matrices")
+    (description
+     "This package provides a method to detect and enable removal of doublets
+from single-cell RNA-sequencing.")
+    (license license:expat)))
+
 (define-public python-hclust2
   (package
     (name "python-hclust2")
