@@ -16839,6 +16839,40 @@ sequencing (e.g. mapping or base/indel alignment uncertainty), which are
 usually ignored by other methods or only used for filtering.")
     (license license:expat)))
 
+(define-public louvain
+  (package
+    (name "louvain")
+    (version "0.2")
+    (source (origin
+              (method url-fetch)
+              (uri "mirror://sourceforge/louvain/louvain_latest.tar.gz")
+              (sha256
+               (base32
+                "0hqlv5jqc889nbv7j1bchrx4zhh69hgr2mqvfdygc7kwrywn22lb"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:tests? #false                   ;there are none
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'unpack 'patch-includes
+            (lambda _
+              (substitute* "main_community.cpp"
+                (("using namespace std;" m)
+                 (string-append "#include <unistd.h> /* for getpid */\n" m)))))
+          (replace 'install
+            (lambda _
+              (for-each
+               (lambda (exe)
+                 (install-file exe (string-append #$output "/bin")))
+               '("convert" "community" "hierarchy")))))))
+    (home-page "https://sourceforge.net/projects/louvain/")
+    (synopsis "Multi-criteria community detection")
+    (description "This package offers a set of functions to use in order to
+compute communities on graphs weighted or unweighted.")
+    (license license:gpl3+)))
+
 (define-public ivar
   (package
     (name "ivar")
