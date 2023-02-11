@@ -6141,6 +6141,29 @@ useful in order to support @code{VersionNumber} comparisons applied to
 \"foreign\" version numbers from external packages.")
     (license license:expat)))
 
+(define-public julia-wcs
+  (package
+    (name "julia-wcs")
+    (version "0.6.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/WCS.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ala8j4mh51gh14k3npcxmnlj2f00l0pij74qz453iqadb2283mi"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-constructionbase julia-wcs-jll))
+    (home-page "https://github.com/JuliaAstro/WCS.jl")
+    (synopsis "Astronomical WCS library for Julia")
+    (description "Astronomical @url{World Coordinate System,
+https://www.atnf.csiro.au/people/mcalabre/WCS/} library for Julia.  This package
+wraps the WCSLIB C library.")
+    (license license:expat)))
+
 (define-public julia-weakrefstrings
   (package
     (name "julia-weakrefstrings")
