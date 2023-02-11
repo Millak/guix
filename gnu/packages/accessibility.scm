@@ -23,6 +23,7 @@
 
 (define-module (gnu packages accessibility)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module (guix packages)
   #:use-module (guix download)
@@ -260,32 +261,30 @@ available to help to click.")
                  (base32
                   "0xkk60sg3szpgbl3z8djlpagglsldv9viqibsih6wcnbhikzlc6j"))))
       (build-system gnu-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ; no tests
+        #:make-flags #~(list (string-append "CC=" #$(cc-for-target)))
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)
+            ;; Install target in the Makefile does not work for Guix.
+            (replace 'install
+              (lambda _
+                (let ((bin (string-append #$output "/bin")))
+                  (install-file "footswitch" bin)
+                  (install-file "scythe" bin)))))))
       (native-inputs
        (list pkg-config))
       (inputs
        (list hidapi))
-      (arguments
-       `(#:tests? #f ; no tests
-         #:make-flags (list (string-append "CC=" ,(cc-for-target)))
-         #:phases (modify-phases %standard-phases
-                    (delete 'configure)
-                    ;; Install target in the Makefile does not work for Guix
-                    (replace 'install
-                      (lambda* (#:key outputs #:allow-other-keys)
-                        (let ((bin (string-append (assoc-ref outputs "out")
-                                                  "/bin")))
-                          (install-file "footswitch" bin)
-                          (install-file "scythe" bin)
-                          #t))))))
       (home-page "https://github.com/rgerganov/footswitch")
       (synopsis "Command line utilities for PCsensor and Scythe foot switches")
       (description
        "This package provides command line utilities for programming PCsensor
 and Scythe foot switches.  It works for both single pedal and three pedal
-devices.  The \"footswitch\" command programs devices with vendorId:productId
-combinations matching 0c45:7403, 0c45:7404, 413d:2107, and 1a86:e026.  The
-\"scythe\" command programs switches matching 0426:3011.")
-    (license license:expat))))
+devices.")
+      (license license:expat))))
 
 (define-public xmagnify
   (package
