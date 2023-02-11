@@ -20,6 +20,7 @@
 ;;; Copyright © 2020 Simon South <simon@simonsouth.net>
 ;;; Copyright © 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1376,3 +1377,39 @@ interface.  It then calls all the helper scripts it knows about so it can
 configure the real @file{/etc/resolv.conf} and optionally any local
 nameservers other than libc.")
     (license license:bsd-2)))
+
+(define-public smartdns
+  (package
+    (name "smartdns")
+    (version "40")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/pymumu/smartdns")
+                    (commit (string-append "Release" version))))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet '(substitute* "Makefile"
+                          ((".*SYSTEMDSYSTEMUNITDIR.*") "")))
+              (sha256
+               (base32
+                "0ibbj96s40xgk6q7dsgpx65rjkknl1pn7nca5fcbbhcm2m80nzjj"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list #:tests? #f                  ;no tests
+           #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "DESTDIR=" #$output)
+                   "PREFIX=''")
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure))))
+    (inputs (list openssl))
+    (home-page "https://github.com/pymumu/smartdns")
+    (synopsis "Local DNS server")
+    (description
+     "SmartDNS is a DNS server that accepts DNS query requests from local
+clients, obtains DNS query results from multiple upstream DNS servers, and
+returns the fastest access results to clients.")
+    (license license:gpl3+)))
+
