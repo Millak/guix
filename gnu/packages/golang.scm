@@ -11676,7 +11676,7 @@ library geared towards parsing MIME encoded emails.")
 (define-public go-github-com-gatherstars-com-jwz
   (package
     (name "go-github-com-gatherstars-com-jwz")
-    (version "1.3.0")
+    (version "1.3.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11685,7 +11685,7 @@ library geared towards parsing MIME encoded emails.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1h37h5w139d3rhvp1n7kz2jm5zhk4pjzf3sip04v48nphkika60c"))))
+                "1zxg2vmka80m1vnlb1v1gdlrwnkpakcmwi1hxpl8jjjiyd4z2j2i"))))
     (build-system go-build-system)
     (arguments
      (list #:import-path "github.com/gatherstars-com/jwz"))
