@@ -201,6 +201,7 @@
   #:use-module (gnu packages lisp-xyz)
   #:use-module (gnu packages lsof)
   #:use-module (gnu packages lua)
+  #:use-module (gnu packages maths)
   #:use-module (gnu packages music)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages imagemagick)
@@ -4388,6 +4389,53 @@ Predictive abbreviation expansion works based on the previously
 written text.  Unlike dynamic abbreviation, the text is analysed
 during idle time, while Emacs is doing nothing else.")
     (license license:gpl3+)))
+
+(define-public emacs-pasp-mode
+  (let ((commit "59385eb0e8ebcfc8c11dd811fb145d4b0fa3cc92")
+        (revision "1"))
+    (package
+     (name "emacs-pasp-mode")
+     (version (git-version "0.1.0" revision commit))
+     (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/santifa/pasp-mode")
+                    (commit commit)))
+              (patches
+               (search-patches "emacs-pasp-mode-quote-file-names.patch"))
+              (sha256
+               (base32
+                "1ar4vws3izzmir7m870mccci620ns3c5j26dcmwaxavhgw45wcmf"))))
+     (build-system emacs-build-system)
+     (arguments
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'unpack 'defconst-version
+             (lambda _
+               (emacs-batch-edit-file "pasp-mode.el"
+                 '(progn
+                   (search-forward-regexp "(defcustom pasp-mode-version")
+                   (forward-sexp)
+                   (kill-sexp)
+                   (backward-sexp)
+                   (beginning-of-line)
+                   (kill-sexp)
+                   (insert (format "(defconst emacs-pasp-version \"%s\" %s)"
+                                   #$version (cadr kill-ring)))
+                   (basic-save-buffer)))))
+           (add-after 'unpack 'hardcode-clingo
+             (lambda* (#:key inputs #:allow-other-keys)
+               (emacs-substitute-variables "pasp-mode.el"
+                 ("pasp-clingo-path"
+                  (search-input-file inputs "/bin/clingo"))))))))
+     (inputs (list clingo))
+     (home-page "https://github.com/santifa/pasp-mode")
+     (synopsis "Major mode for editing answer set programs")
+     (description
+      "This package provides a major mode for editing answer set programs,
+in particular ones that can be solved by @command{clingo}.")
+     (license license:gpl3+))))
 
 (define-public emacs-pdf-tools
   (package
