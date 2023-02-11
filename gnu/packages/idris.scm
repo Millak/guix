@@ -122,17 +122,7 @@
                (setenv "TASTY_NUM_THREADS" (number->string (parallel-job-count)))
                (setenv "IDRIS_CC" ,(cc-for-target)) ;Needed for creating executables
                (setenv "PATH" (string-append out "/bin:" (getenv "PATH")))
-               (apply (assoc-ref %standard-phases 'check) args))))
-         (add-before 'check 'restore-libidris_rts
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The Haskell build system moves this library to the
-             ;; "static" output.  Idris only knows how to find it in the
-             ;; "out" output, so we restore it here.
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static"))
-                   (filename "/lib/idris/rts/libidris_rts.a"))
-               (rename-file (string-append static filename)
-                            (string-append out filename))))))))
+               (apply (assoc-ref %standard-phases 'check) args)))))))
     (native-search-paths
      (list (search-path-specification
             (variable "IDRIS_LIBRARY_PATH")
