@@ -3915,19 +3915,24 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.4")
+    (version "1.4.6")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "HyFetch" version))
-        (sha256
-          (base32 "1k3pcl16y2czkk7wd79yk0w1kqpi4fp8h8szhjs5ywwy20nqmms8"))))
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/hykilpikonna/hyfetch")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (patches
+        (search-patches
+         ;; XXX: Cherry-picked from upstream, remove when updating.
+         "hyfetch-fix-generator-script-quotation-escaping.patch"
+         "hyfetch-remove-old-catchy-os-py.patch"))
+       (sha256
+        (base32
+         "1cnjvkil40bipia8gvs32q0lbqyi5j0nrsr7k4s0c55rh5bhkc3d"))))
     (build-system python-build-system)
-    (inputs (list python-hypy-utils python-typing-extensions))
-    (arguments `(#:phases (modify-phases %standard-phases
-                            (add-before 'build 'set-HOME
-                              (lambda _  ;; Tries to set files in .config
-                                (setenv "HOME" "/tmp"))))))
+    (inputs (list python-typing-extensions))
     (home-page "https://github.com/hykilpikonna/HyFetch")
     (synopsis "@code{neofetch} with pride flags <3")
     (description "HyFetch is a command-line system information tool fork of
