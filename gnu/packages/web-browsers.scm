@@ -706,7 +706,7 @@ is fully configurable and extensible in Common Lisp.")
 (define-public lagrange
   (package
     (name "lagrange")
-    (version "1.15.1")
+    (version "1.15.2")
     (source
      (origin
        (method url-fetch)
@@ -714,7 +714,7 @@ is fully configurable and extensible in Common Lisp.")
         (string-append "https://git.skyjake.fi/skyjake/lagrange/releases/"
                        "download/v" version "/lagrange-" version ".tar.gz"))
        (sha256
-        (base32 "04596gbi6fpz555dclhd2z1q60myk3ypc37v3g9brfm1kmbpssac"))
+        (base32 "1xgdarwc8cpwb4rcbasdbc2nn5mcvwl7fz7v70x974wpf5xjmd3k"))
        (modules '((guix build utils)))
        (snippet
         '(begin
