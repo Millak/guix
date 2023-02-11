@@ -2717,7 +2717,17 @@ satisfiability checking (SAT).")
                   (("ctl\\.solve\\(on_statistics=on_statistics\\)" all)
                    (string-append
                     all
-                    "; self.skipTest(\"You shall not fail.\")")))))))))
+                    "; self.skipTest(\"You shall not fail.\")")))))
+            (add-after 'install 'install-distinfo
+              (lambda* (#:key inputs outputs #:allow-other-keys)
+                (with-directory-excursion (python:site-packages inputs outputs)
+                   (let ((dir (string-append "clingo-" #$version ".dist-info")))
+                     (mkdir-p dir)
+                     (call-with-output-file (string-append dir "/METADATA")
+                       (lambda (port)
+                         (format port "Metadata-Version: 1.1~%")
+                         (format port "Name: clingo~%")
+                         (format port "Version: ~a~%" #$version)))))))))))
     (inputs (list clingo python-wrapper))
     (propagated-inputs (list python-cffi))
     (native-inputs (modify-inputs (package-native-inputs clingo)
