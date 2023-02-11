@@ -1852,6 +1852,27 @@ It's similar to the Python @code{...} in that it means \"all of the columns
 before (or after)\".")
     (license license:expat)))
 
+(define-public julia-erfa
+  (package
+    (name "julia-erfa")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/ERFA.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1f63kyqpsx9n4dh54hzy1bvm3fpl4vf8wi1279vfiza3vhh2ggx5"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-erfa-jll julia-staticarrays))
+    (home-page "https://github.com/JuliaAstro/ERFA.jl")
+    (synopsis "Julia wrapper for liberfa")
+    (description "This package provides a Julia wrapper for astronomical library ERFA.")
+    (license license:expat)))
+
 (define-public julia-example
   (let ((commit "f968c69dea24f851d0c7e686db23fa55826b5388"))
     (package
