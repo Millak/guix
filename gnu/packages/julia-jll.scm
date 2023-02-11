@@ -1763,6 +1763,44 @@ build tree Yggdrasil.")
     (description "This package provides a wrapper for the wayland-protocols library.")
     (license license:expat)))
 
+(define-public julia-wcs-jll
+  (package
+    (name "julia-wcs-jll")
+    (version "7.7.0+0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaBinaryWrappers/WCS_jll.jl")
+             (commit (string-append "WCS-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16i9899jwcp5i9mh88rn4b83v3i5v8g1jygixrr0grjnvf5qfvpk"))))
+    (build-system julia-build-system)
+    (arguments
+     '(#:tests? #f  ; no runtests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'link-depot 'override-binary-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (map
+              (lambda (wrapper)
+                (substitute* wrapper
+                  (("generate_wrapper_header.*")
+                   (string-append
+                    "generate_wrapper_header(\"WCS\", \""
+                    (assoc-ref inputs "wcslib") "\")\n"))))
+              ;; There's a Julia file for each platform, override them all
+              (find-files "src/wrappers/" "\\.jl$")))))))
+    (inputs
+     (list wcslib))
+    (propagated-inputs
+     (list julia-jllwrappers))
+    (home-page "https://github.com/JuliaBinaryWrappers/WCS_jll.jl")
+    (synopsis "WCS library wrappers")
+    (description "This package provides a wrapper for the wcs library.")
+    (license license:expat)))
+
 (define-public julia-x264-jll
   (package
     (name "julia-x264-jll")
