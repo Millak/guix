@@ -1415,7 +1415,7 @@ based on the Osmium library.")
 (define-public osm2pgsql
   (package
     (name "osm2pgsql")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
      (origin
        (method git-fetch)
@@ -1424,7 +1424,7 @@ based on the Osmium library.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15fxr4xq7siy237763l7nswx7v0swr3qzs2h3zkjzgvajw4p6qii"))
+        (base32 "0ssz7ny4wx8dzl3027p37xc5h7m1aj6bzxzdc6g8fbp7q57ykvxz"))
        (modules '((guix build utils)))
        (snippet
         ;; Remove bundled libraries.
@@ -1435,8 +1435,7 @@ based on the Osmium library.")
        #:configure-flags
        (list "-DEXTERNAL_LIBOSMIUM=ON"
              "-DEXTERNAL_PROTOZERO=ON"
-             "-DEXTERNAL_FMT=ON"
-             "-DEXTERNAL_RAPIDJSON=ON")))
+             "-DEXTERNAL_FMT=ON")))
     (inputs
      (list boost
            bzip2
@@ -1447,7 +1446,6 @@ based on the Osmium library.")
            postgresql
            proj
            protozero
-           rapidjson
            zlib))
     (native-inputs
      (list python python-psycopg2))
