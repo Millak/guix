@@ -232,6 +232,42 @@ originating @code{build_tarballs.jl} script can be found on the community
 build tree Yggdrasil.")
     (license license:expat)))
 
+(define-public julia-erfa-jll
+  (package
+    (name "julia-erfa-jll")
+    (version "2.0.0+0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaBinaryWrappers/ERFA_jll.jl")
+             (commit (string-append "ERFA-v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0knlck3vqr19g9z8zgjr7lj0qf1lisji5s2lm00y3ymv9bkj59sl"))))
+    (build-system julia-build-system)
+    (arguments
+     '(#:tests? #f ;no runtests
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'link-depot 'override-binary-path
+           (lambda* (#:key inputs #:allow-other-keys)
+             (map (lambda (wrapper)
+                    (substitute* wrapper
+                      (("generate_wrapper_header.*")
+                       (string-append
+                        "generate_wrapper_header(\"ERFA\", \""
+                        (assoc-ref inputs "erfa") "\")\n"))))
+                  ;; There's a Julia file for each platform, override them all
+                  (find-files "src/wrappers/" "\\.jl$")))))))
+    (inputs (list erfa))
+    (propagated-inputs (list julia-jllwrappers))
+    (home-page "https://github.com/JuliaBinaryWrappers/ERFA_jll.jl")
+    (synopsis "ERFA library wrappers")
+    (description "This package provides a wrapper for the erfa library.")
+    (license license:expat)))
+
 (define-public julia-expat-jll
   (package
     (name "julia-expat-jll")
