@@ -1,5 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020, 2021 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -312,6 +313,13 @@ spell-checking library.")
 spell-checking library.")
     (license license)
     (home-page home-page)))
+
+(define-public hunspell-dict-he-il
+  (let ((synopsis identity))
+    (hunspell-dictionary "he_IL" "Hebrew"
+                         #:synopsis (synopsis "Hunspell dictionary for Hebrew")
+                         #:home-page "http://hspell.ivrix.org.il/"
+                         #:license license:agpl3+)))
 
 (define-public hunspell-dict-it-it
   (let ((synopsis identity))
