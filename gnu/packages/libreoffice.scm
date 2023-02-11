@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2016, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2017 Thomas Danckaert <post@thomasdanckaert.be>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -915,7 +915,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.4.3.2")
+    (version "7.4.5.1")
     (source
      (origin
        (method url-fetch)
@@ -924,7 +924,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "0fyvd4ydh72lmn005h190xa563d4h376pi1fx9lfr5i25qcbpg7z"))))
+        (base32 "13g1di71jdcish4rxlyi2jglpqfiq9zjf391bwplmf9prc9cy3iq"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
