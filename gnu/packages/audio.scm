@@ -5608,7 +5608,7 @@ in the package.")
 (define-public libaudec
   (package
     (name "libaudec")
-    (version "0.2.4")
+    (version "0.3.4")
     (source
       (origin
         (method git-fetch)
@@ -5618,7 +5618,7 @@ in the package.")
         (file-name (git-file-name name version))
         (sha256
           (base32
-            "1570m2dfia17dbkhd2qhx8jjihrpm7g8nnyg6n4wif4vv229s7dz"))))
+            "02hhhpcfkycicygh6g9hzps255zkbbi33vks6yv6zk5wp9p2nspj"))))
    (build-system meson-build-system)
    (arguments
     `(#:configure-flags
