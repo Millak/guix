@@ -40482,7 +40482,7 @@ from being an alias of @code{localhost}.
 
   (essential-services
    (modify-services
-     (operation-system-default-essential-services this-operating-system)
+     (operating-system-default-essential-services this-operating-system)
      (hosts-service-type config => (list
                                      (host "127.0.0.1" "localhost")
                                      (host "::1"       "localhost"))))))
