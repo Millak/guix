@@ -2070,7 +2070,14 @@ for speed on short messages.")
          (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0y0kbzma55vmyqhyrw9ssgvxn6nw7d0zg72a7nz8vp1zly4hs6va"))))
+        (base32 "0y0kbzma55vmyqhyrw9ssgvxn6nw7d0zg72a7nz8vp1zly4hs6va"))
+       (snippet
+        #~(begin
+            (use-modules (guix build utils))
+            ;; Fix compatibility with go-1.18+
+            (substitute* "statik.go"
+              (("fmt\\.Println\\(helpText\\)")
+               "fmt.Print(helpText + \"\\n\")"))))))
     (build-system go-build-system)
     (arguments
      `(#:import-path "github.com/rakyll/statik"))
