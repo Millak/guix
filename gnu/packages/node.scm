@@ -887,7 +887,6 @@ source files.")
            brotli
            `(,nghttp2 "lib")
            openssl-1.1
-           python-wrapper ;; for node-gyp (supports python3)
            zlib))))
 
 (define-public libnode
