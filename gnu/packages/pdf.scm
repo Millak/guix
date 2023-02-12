@@ -443,7 +443,7 @@ reading and editing of existing PDF files.")
 (define-public zathura-cb
   (package
     (name "zathura-cb")
-    (version "0.1.8")
+    (version "0.1.10")
     (source (origin
               (method url-fetch)
               (uri
@@ -451,7 +451,7 @@ reading and editing of existing PDF files.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1i6cf0vks501cggwvfsl6qb7mdaf3sszdymphimfvnspw810faj5"))))
+                "1j5v32f9ki35v1jc7a067anhlgqplzrp4fqvznlixfhcm0bwmc49"))))
     (native-inputs (list pkg-config))
     (inputs (list libarchive zathura))
     (build-system meson-build-system)
@@ -460,7 +460,7 @@ reading and editing of existing PDF files.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.1.8: the new Meson build system
+           ;; Something of a regression in 0.1.10: the new Meson build system
            ;; now hard-codes an incorrect plugin directory.  Fix it.
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "meson.build"
