@@ -3332,18 +3332,7 @@ rules is done with the @code{auditctl} utility.")
                               ;; Remove pre-compiled binares.
                               "mswin32"))))))
     (build-system gnu-build-system)
-    (inputs
-     `(("openssl" ,openssl-3.0)
-       ("libpcap" ,libpcap)
-       ("pcre" ,pcre)
-       ("lua" ,lua)
-       ("zlib" ,zlib)                   ;for NSE compression support
-
-       ;; For 'ndiff'.
-       ("python" ,python-2)))
-
-    ;; TODO Add zenmap output.
-    (outputs '("out" "ndiff"))
+    (outputs '("out" "ndiff"))          ; TODO Add zenmap output
     (arguments
      `(#:configure-flags '("--without-zenmap")
        #:phases
@@ -3386,6 +3375,13 @@ rules is done with the @code{auditctl} utility.")
                        "check-dns")))))
        ;; Nmap can't cope with out-of-source building.
        #:out-of-source? #f))
+    (inputs
+     (list libpcap
+           lua
+           openssl-3.0
+           pcre
+           zlib                         ; for NSE compression
+           python-2))                   ; for ndiff
     (home-page "https://nmap.org/")
     (synopsis "Network discovery and security auditing tool")
     (description
