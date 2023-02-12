@@ -71,7 +71,7 @@
                (base32
                 "0czflx9ikxymjfgnzaifjx9kc30ww2x4063075hcifjjwqwami5x"))
               (patches
-                (search-patches "php-fix-streams-copy-length.patch"))
+               (search-patches "php-fix-streams-copy-length.patch"))
               (modules '((guix build utils)))
               (snippet
                '(with-directory-excursion "ext"
@@ -178,7 +178,7 @@
              ,@(if (target-arm32?)
                    ;; Drop tests known to fail on armhf.
                    '((for-each delete-file
-                              (list
+                               (list
                                 "ext/calendar/tests/unixtojd_error1.phpt"
                                 "ext/opcache/tests/preload_006.phpt"
                                 "ext/opcache/tests/preload_011.phpt"
@@ -200,7 +200,7 @@
                    '())
 
              ,@(if (target-x86-32?)
-                   ;; Drop tests known to fail on i686. 
+                   ;; Drop tests known to fail on i686.
                    '((for-each delete-file
                                (list
                                 "ext/dba/tests/dba_gdbm.phpt")))
@@ -218,6 +218,12 @@
                                 "sapi/phpdbg/tests/watch_004.phpt"
                                 "sapi/phpdbg/tests/watch_005.phpt"
                                 "sapi/phpdbg/tests/watch_006.phpt")))
+                   '())
+
+             ,@(if (target-riscv64?)
+                   ;; Drop tests known to fail on riscv64.
+                   '((for-each delete-file
+                               (list "sapi/cli/tests/upload_2G.phpt")))
                    '())
 
              ;; Drop tests that are known to fail.
@@ -419,7 +425,7 @@
        ("procps" ,procps)))             ; for tests
     (synopsis "PHP programming language")
     (description
-      "PHP (PHP Hypertext Processor) is a server-side (CGI) scripting
+     "PHP (PHP Hypertext Processor) is a server-side (CGI) scripting
 language designed primarily for web development but is also used as
 a general-purpose programming language.  PHP code may be embedded into
 HTML code, or it can be used in combination with various web template
