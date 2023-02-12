@@ -477,7 +477,7 @@ using libarchive.")
 (define-public zathura-ps
   (package
     (name "zathura-ps")
-    (version "0.2.6")
+    (version "0.2.7")
     (source (origin
               (method url-fetch)
               (uri
@@ -485,7 +485,7 @@ using libarchive.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "0wygq89nyjrjnsq7vbpidqdsirjm6iq4w2rijzwpk2f83ys8bc3y"))))
+                "0ilf63wxn1yzis9m3qs8mxbk316yxdzwxrrv86wpiygm9hhgk5sq"))))
     (native-inputs (list pkg-config))
     (inputs (list libspectre zathura))
     (build-system meson-build-system)
@@ -494,7 +494,7 @@ using libarchive.")
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch-plugin-directory
-           ;; Something of a regression in 0.2.6: the new Meson build system
+           ;; Something of a regression in 0.2.7: the new Meson build system
            ;; now hard-codes an incorrect plugin directory.  Fix it.
            (lambda* (#:key outputs #:allow-other-keys)
              (substitute* "meson.build"
