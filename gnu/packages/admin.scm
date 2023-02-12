@@ -3312,14 +3312,14 @@ rules is done with the @code{auditctl} utility.")
 (define-public nmap
   (package
     (name "nmap")
-    (version "7.92")
+    (version "7.93")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://nmap.org/dist/nmap-" version
                                   ".tar.bz2"))
               (sha256
                (base32
-                "18bifn67kz2wxkbnfwcrin2xrhc6qf4p2bvxfqb2a2vbi8pryix5"))
+                "0lb6s4nmmicfnc221mzgx2w51dcd4b2dhx22pabcqnp2jd3zxg2m"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -3333,7 +3333,7 @@ rules is done with the @code{auditctl} utility.")
                               "mswin32"))))))
     (build-system gnu-build-system)
     (inputs
-     `(("openssl" ,openssl)
+     `(("openssl" ,openssl-3.0)
        ("libpcap" ,libpcap)
        ("pcre" ,pcre)
        ("lua" ,lua)
@@ -3394,7 +3394,7 @@ tool.  It is also useful for tasks such as network inventory, managing service
 upgrade schedules, and monitoring host or service uptime.  It also provides an
 advanced netcat implementation (ncat), a utility for comparing scan
 results (ndiff), and a packet generation and response analysis tool (nping).")
-    ;; See <https://github.com/nmap/nmap/issues/2199#issuecomment-894812634>.
+    ;; See <https://github.com/nmap/nmap/issues/2199#issuecomment-1380592744>.
     ;; This package uses nmap's bundled versions of libdnet and liblinear, which
     ;; both use a 3-clause BSD license.
     (license (list license:nmap license:bsd-3))))
