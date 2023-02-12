@@ -94,7 +94,7 @@
 ;;; Copyright © 2020, 2021 Zheng Junjie <873216071@qq.com>
 ;;; Copyright © 2020 EuAndreh <eu@euandre.org>
 ;;; Copyright © 2021, 2022 Morgan Smith <Morgan.J.Smith@outlook.com>
-;;; Copyright © 2021, 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2021-2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2021 Ellis Kenyő <me@elken.dev>
 ;;; Copyright © 2021 LibreMiami <packaging-guix@libremiami.org>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
@@ -24456,19 +24456,33 @@ class in a @acronym{DRY, Don't Repeat Yourself} way.")
 (define-public python-construct
   (package
     (name "python-construct")
-    (version "2.10.56")
+    (version "2.10.68")
     (source
      (origin
-       (method url-fetch)
-       (uri (pypi-uri "construct" version))
+       ;; There are no tests in the PyPI tarball.
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/construct/construct")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32
-         "0q86jjzsvy835h3c8pjj4619vbp7ihfg8njmyw86ym4qrpni7flp"))))
+        (base32 "1b59kq8scxhn9afqgmksk45n53gawylqm8gw3k0vmljg274xi7vf"))))
     (build-system python-build-system)
     (arguments
-     `(#:tests? #f)) ; No tests exist.
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (invoke "pytest" "-v" "tests/")))))))
+    (native-inputs
+     (list python-pytest python-pytest-benchmark))
     (propagated-inputs
-     (list python-extras python-arrow python-numpy python-ruamel.yaml))
+     (list python-arrow
+           python-cloudpickle
+           python-lz4
+           python-numpy
+           python-ruamel.yaml))
     (home-page "https://construct.readthedocs.io")
     (synopsis "Declarative and symmetrical parser and builder for binary data")
     (description
