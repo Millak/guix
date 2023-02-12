@@ -66,6 +66,7 @@
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages guile)
   #:use-module (gnu packages image)
+  #:use-module (gnu packages lesstif)   ; motif
   #:use-module (gnu packages linux)     ; alsa-lib, gpm
   #:use-module (gnu packages mail)      ; for mailutils
   #:use-module (gnu packages multiprecision)
@@ -511,6 +512,30 @@ editor (with xwidgets support)")
     (inputs
      (modify-inputs (package-inputs emacs)
        (prepend webkitgtk-with-libsoup2 libxcomposite)))))
+
+(define-public emacs-motif
+  (package/inherit emacs
+    (name "emacs-motif")
+    (synopsis
+     "The extensible, customizable, self-documenting text editor (with Motif
+toolkit)")
+    (build-system gnu-build-system)
+    (inputs (modify-inputs (package-inputs emacs)
+              (delete "gtk+")
+              (prepend inotify-tools motif)))
+    (arguments
+     (substitute-keyword-arguments
+         (package-arguments
+          emacs)
+       ((#:configure-flags flags #~'())
+        #~(cons "--with-x-toolkit=motif"
+                #$flags))
+       ((#:modules _)
+        (%emacs-modules build-system))
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (delete 'restore-emacs-pdmp)
+            (delete 'strip-double-wrap)))))))
 
 (define-public emacs-no-x
   (package/inherit emacs
