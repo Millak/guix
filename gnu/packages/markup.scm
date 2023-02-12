@@ -73,7 +73,7 @@
        #:test-target "test"))
     (native-inputs
      `(("python" ,python-2)
-       ("tidy" ,tidy)))
+       ("tidy" ,tidy-html)))
     (synopsis "Markdown processing library")
     (description "Hoedown is a standards compliant, fast, secure markdown
 processing library written in C.")

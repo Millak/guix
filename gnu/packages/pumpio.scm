@@ -47,6 +47,8 @@
        (modify-phases %standard-phases
          (replace 'configure
            (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute* "src/util.cpp"
+               (("buffio\\.h") "tidybuffio.h"))
              ;; Fix dependency tests.
              (substitute* "pumpa.pro"
                (("/usr/include/tidy\\.h")
@@ -59,7 +61,7 @@
                (invoke "qmake" prefix))
              #t)))))
     (inputs
-     (list aspell qtbase-5 tidy))
+     (list aspell qtbase-5 tidy-html))
     (synopsis "Qt-based pump.io client")
     (description "Pumpa is a simple pump.io client written in C++ and Qt.")
     (home-page "https://pumpa.branchable.com/")

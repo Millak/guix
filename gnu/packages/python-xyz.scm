@@ -27219,7 +27219,7 @@ be necessary when using @code{cmd}.")
                  (("ctypes\\.util\\.find_library\\('tidy'\\)")
                   (format #f "'~a'" libtidy)))
                #t))))))
-    (inputs (list tidy))
+    (inputs (list tidy-html))
     (home-page "https://github.com/countergram/pytidylib")
     (synopsis "Python wrapper for HTML Tidy library")
     (description

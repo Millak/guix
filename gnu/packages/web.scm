@@ -1718,40 +1718,6 @@ domains (UTF-8 and IDNA2008 Punycode), is thread-safe, and handles IDNA2008
 UTS#46.")
     (license license:x11)))
 
-(define-public tidy
-  (package
-    (name "tidy")
-    (version "20091223")
-    (source (origin
-              (method cvs-fetch)
-              (uri (cvs-reference
-                    (root-directory
-                     ":pserver:anonymous@tidy.cvs.sourceforge.net:/cvsroot/tidy")
-                    (module "tidy")
-                    (revision "2009-12-23")))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "14dsnmirjcrvwsffqp3as70qr6bbfaig2fv3zvs5g7005jrsbvpb"))
-              (patches (search-patches "tidy-CVE-2015-5522+5523.patch"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-                  (replace 'bootstrap
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      ;; configure.in and Makefile.am aren't in the root of the
-                      ;; source tree.
-                      (copy-recursively "build/gnuauto" ".")
-                      (setenv "AUTOMAKE" "automake --foreign")
-                      (invoke "autoreconf" "-vfi"))))))
-    (native-inputs
-     (list automake autoconf libtool))
-    (synopsis "HTML validator and tidier")
-    (description "HTML Tidy is a command-line tool and C library that can be
-used to validate and fix HTML data.")
-    (home-page "https://tidy.sourceforge.net/")
-    (license (license:x11-style "file:///include/tidy.h"))))
-
 (define-public esbuild
   (package
     (name "esbuild")
@@ -6203,6 +6169,9 @@ Tidy also provides @code{libtidy}, a C static and dynamic library that
 developers can integrate into their applications to make use of the
 functions of Tidy.")
     (license license:bsd-3)))
+
+(define-public tidy
+  (deprecated-package "tidy" tidy-html))
 
 (define-public hiawatha
   (package
