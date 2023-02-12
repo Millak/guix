@@ -596,7 +596,7 @@ by using the @code{mupdf} rendering library.")
 (define-public zathura-pdf-poppler
   (package
     (name "zathura-pdf-poppler")
-    (version "0.3.0")
+    (version "0.3.1")
     (source (origin
               (method url-fetch)
               (uri
@@ -604,7 +604,7 @@ by using the @code{mupdf} rendering library.")
                               version ".tar.xz"))
               (sha256
                (base32
-                "1vfl4vkyy3rf39r1sqaa7y8113bgkh2bkfq3nn2inis9mrykmk6m"))))
+                "12qhkshpp1wjfpjmjccsyi6wscqyqvaa19j85prjpyf65i9jg0gf"))))
     (native-inputs (list pkg-config))
     (inputs
      (list poppler zathura))
