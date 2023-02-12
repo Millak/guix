@@ -500,6 +500,23 @@ qBittorrent is fast, stable and provides unicode support as well as many
 features.")
     (license l:gpl2+)))
 
+(define-public qbittorrent-nox
+  (let ((base qbittorrent))
+    (package
+      (inherit base)
+      (name "qbittorrent-nox")
+      (arguments
+       (substitute-keyword-arguments (package-arguments base)
+         ((#:configure-flags configure-flags)
+          #~(append #$configure-flags
+                    (list "--disable-gui")))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (delete 'wrap-qt)))))
+      (inputs
+       (modify-inputs (package-inputs base)
+         (delete "qtsvg-5"))))))
+
 (define-public deluge
   (package
     (name "deluge")
