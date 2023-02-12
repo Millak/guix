@@ -29,6 +29,7 @@
   #:use-module (gnu packages node)
   #:use-module (guix build-system cargo)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system tree-sitter)
   #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix packages)
@@ -187,17 +188,26 @@ can be embedded in any application.
 This package includes the @command{tree-sitter} command-line tool.")
     (license license:expat)))
 
+(define tree-sitter-delete-generated-files
+  #~(begin
+      (use-modules (guix build utils))
+      (delete-file "binding.gyp")
+      (delete-file-recursively "bindings")
+      (delete-file "src/grammar.json")
+      (delete-file "src/node-types.json")
+      (delete-file "src/parser.c")
+      (delete-file-recursively "src/tree_sitter")))
+
 (define* (tree-sitter-grammar
           language language-for-synopsis version commit hash
           #:key
           (repository-url
-           (format #f "https://github.com/tree-sitter/tree-sitter-~a" language))
-          (source-directory ""))
+           (format #f "https://github.com/tree-sitter/tree-sitter-~a"
+                   language))
+          (inputs '()))
   (let ((synopsis (string-append language-for-synopsis
                                  " grammar for tree-sitter"))
-        (name (string-append "tree-sitter-grammar-" language))
-        (src-dir source-directory)
-        (lib (format #f "libtree-sitter-~a.so" language)))
+        (name (string-append "tree-sitter-" language)))
     (package
       (name name)
       (version version)
@@ -208,38 +218,15 @@ This package includes the @command{tree-sitter} command-line tool.")
                       (url repository-url)
                       (commit commit)))
                 (file-name (git-file-name name version))
-                (sha256 (base32 hash))))
-      (build-system gnu-build-system)
-      (arguments
-       (list
-        #:phases
-        #~(modify-phases %standard-phases
-            (delete 'configure)
-            (replace 'build
-              (lambda _
-                (with-directory-excursion (string-append #$src-dir "src")
-                  (let* ((scanner? (or (file-exists? "scanner.c")
-                                       (file-exists? "scanner.cc")))
-                         (CC (if (file-exists? "scanner.cc") "g++" "gcc"))
-                         (compile (lambda (f) (invoke CC "-fPIC" "-c" "-I." f)))
-                         (link-args `("-fPIC" "-shared" "parser.o"
-                                      ,@(if scanner? '("scanner.o") '())
-                                      "-o" ,#$lib)))
-                    (invoke "gcc" "-fPIC" "-c" "-I." "parser.c")
-                    (for-each
-                     (lambda (f) (when (file-exists? f) (compile f)))
-                     '("scanner.c" "scanner.cc"))
-                    (apply invoke CC link-args)))))
-            (delete 'check)
-            (replace 'install
-              (lambda _
-                (install-file (string-append #$src-dir "src/" #$lib)
-                              (string-append #$output "/lib/tree-sitter")))))))
+                (sha256 (base32 hash))
+                (snippet tree-sitter-delete-generated-files)))
+      (build-system tree-sitter-build-system)
+      (inputs inputs)
       (synopsis synopsis)
       (description (string-append synopsis "."))
       (license license:expat))))
 
-(define-public tree-sitter-grammar-html
+(define-public tree-sitter-html
   (tree-sitter-grammar
    "html" "HTML"
    "0.19.0" "v0.19.0"
