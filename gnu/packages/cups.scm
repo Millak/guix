@@ -895,7 +895,7 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
 (define-public epson-inkjet-printer-escpr
   (package
     (name "epson-inkjet-printer-escpr")
-    (version "1.7.22")
+    (version "1.7.24")
     ;; XXX: This currently works.  But it will break as soon as a newer
     ;; version is available since the URLs for older versions are not
     ;; preserved.  An alternative source will be added as soon as
@@ -903,11 +903,11 @@ HP@tie{}LaserJet, and possibly other printers.  See @file{README} for details.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/13/96/"
-                           "55/c6fced63098ae1ba104f11f572794fd558ffca29/"
-                           "epson-inkjet-printer-escpr-1.7.22-1lsb3.2.tar.gz"))
+       (uri (string-append "https://download3.ebz.epson.net/dsc/f/03/00/14/31/"
+                           "90/d2f5b28fcfaa0a1d1753eac5703aa5d88004ce06/"
+                           "epson-inkjet-printer-escpr-1.7.24-1lsb3.2.tar.gz"))
        (sha256
-        (base32 "0b359krhhjjw5hc4b0gqdqwrm6dzc263mdccfzgnyyq7znkyybqb"))))
+        (base32 "0bwff3p6d0xgghf3bicylbxkv9vxz3gjjbr0iafyxz23kalzz9qj"))))
     (build-system gnu-build-system)
     (arguments
      (list #:modules
