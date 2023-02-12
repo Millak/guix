@@ -1969,13 +1969,15 @@ exec " gcc "/bin/" program
     (arguments
      `(#:tests? #f
        #:implicit-inputs? #f
+       ;; The %bootstrap-glibc for aarch64 and armhf doesn't have
+       ;; $output/include/linux/prctl.h which causes some binaries
+       ;; to fail to build with coreutils-9.0+.
        ,@(if (target-arm?)
-           ;; Some binaries fail to build.
            `(#:configure-flags '(,(string-append
                                     "--enable-no-install-program="
-                                    ;; the defaults
+                                    ;; the defaults to not install.
                                     "arch,coreutils,hostname"
-                                    ;; fails on aarch64
+                                    ;; fails due to missing headers.
                                     ",timeout,sort")))
            '())
        #:guile ,%bootstrap-guile
