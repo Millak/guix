@@ -4,7 +4,7 @@
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
 ;;; Copyright © 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2021 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2015, 2018, 2019, 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2018-2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2016 Andy Patterson <ajpatter@uwaterloo.ca>
 ;;; Copyright © 2016, 2017, 2018, 2019 Clément Lassieur <clement@lassieur.org>
@@ -123,6 +123,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages regex)
   #:use-module (gnu packages ruby)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
@@ -2357,7 +2358,7 @@ QMatrixClient project.")
 (define-public mtxclient
   (package
     (name "mtxclient")
-    (version "0.8.2")
+    (version "0.9.1")
     (source
      (origin
        (method git-fetch)
@@ -2366,7 +2367,7 @@ QMatrixClient project.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "041ckjvfxapv1q6x9xd8q70x43cz10x7p11aql58lnc0jp0kwry7"))))
+        (base32 "0m8agc3c4n03r92nz3gxkpxmj2c3ncf125nmfdv0jf24gxib126z"))))
     (arguments
      `(#:configure-flags
        (list
@@ -2386,9 +2387,10 @@ QMatrixClient project.")
            curl
            json-modern-cxx
            libevent
-           olm
            libsodium
+           olm
            openssl
+           re2
            spdlog
            zlib))
     (native-inputs
