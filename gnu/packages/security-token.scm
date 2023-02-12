@@ -725,7 +725,7 @@ an unprivileged user.")
 (define-public libnitrokey
   (package
     (name "libnitrokey")
-    (version "3.6")
+    (version "3.8")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -734,7 +734,7 @@ an unprivileged user.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0ngrvv61d36vvfwrfg0qxmp2wg18v4aaldwvwzgxvwaysjswhn9r"))))
+                "1b95l979y353rli54a79z18iya9bza83cymcjpndr01q1pb134zm"))))
     (build-system cmake-build-system)
     (arguments
      ;; These tests do not require any device to be connected
@@ -743,7 +743,7 @@ an unprivileged user.")
     (inputs (list hidapi libusb))
     (home-page "https://github.com/Nitrokey/libnitrokey")
     (synopsis "Communication library for Nitrokey")
-    (description "This packate provides communication library for Nitrokey.")
+    (description "This package provides a communication library for Nitrokey.")
     (license license:lgpl3+)))
 
 (define-public cppcodec
