@@ -1809,7 +1809,7 @@ in FUSE for rootless containers.")
 (define-public bees
   (package
     (name "bees")
-    (version "0.8")
+    (version "0.9.2")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -1826,14 +1826,9 @@ in FUSE for rootless containers.")
                      (("city.o.*") ""))
                    (substitute* "src/bees-hash.cc"
                      (("#include .crucible/city.h.") "#include <city.h>"))))
-              (patches
-               (search-patches
-                ;; XXX: Cherry-picked from upstream, remove the patch when
-                ;; bumping version.
-                "bees-beesd-honor-destdir-on-installation.patch"))
               (sha256
                (base32
-                "1kxpz1p9k5ir385kpvmfjawki5vg22hlx768k7835w6n5z5a65y4"))))
+                "0xik1xg6ma5yglhvs60ny27242iapqwzikmqbgij1avjffs6776a"))))
     (build-system gnu-build-system)
     (arguments
      (list #:test-target "test"
@@ -1867,7 +1862,8 @@ in FUSE for rootless containers.")
                       (search-input-file inputs (string-append "/bin/" command)))
 
                      (("btrfs sub")
-                      (string-append (search-input-file inputs "/bin/btrfs") " sub"))))))))
+                      (string-append (search-input-file inputs "/bin/btrfs")
+                                     " sub"))))))))
     (inputs (list btrfs-progs cityhash util-linux))
     (home-page "https://github.com/Zygo/bees")
     (synopsis "Best-Effort Extent-Same, a btrfs dedupe agent")
@@ -1876,7 +1872,9 @@ in FUSE for rootless containers.")
 for large btrfs filesystems.  It is an offline dedupe combined with an
 incremental data scan capability to minimize time data spends on disk from
 write to dedupe.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+     ; the combined work
+                   license:zlib      ; lib/crc64.cc
+                   license:gpl2))))  ; include/crucible/btrfs.h
 
 (define-public dwarfs
   (package
