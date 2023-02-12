@@ -915,7 +915,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
 (define-public libreoffice
   (package
     (name "libreoffice")
-    (version "7.4.5.1")
+    (version "7.5.0.3")
     (source
      (origin
        (method url-fetch)
@@ -924,7 +924,7 @@ commonly called @code{ftoa} or @code{dtoa}.")
          "https://download.documentfoundation.org/libreoffice/src/"
          (version-prefix version 3) "/libreoffice-" version ".tar.xz"))
        (sha256
-        (base32 "13g1di71jdcish4rxlyi2jglpqfiq9zjf391bwplmf9prc9cy3iq"))))
+        (base32 "0fq0fxwhbhikqzfl2z5xg2swlnrkg1p8l0shh6qdx9w0msihy4pm"))))
     (build-system glib-or-gtk-build-system)
     (arguments
      (list
