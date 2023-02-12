@@ -3839,17 +3839,16 @@ buffers.")
 (define-public igt-gpu-tools
   (package
     (name "igt-gpu-tools")
-    ;; You should very likely remove the 'fix-meson.build phase when upgrading.
-    (version "1.26")
+    (version "1.27.1")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://gitlab.freedesktop.org/drm/igt-gpu-tools.git")
-             (commit (string-append "igt-gpu-tools-" version))))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0m124pqv7zna25jnvk566c4kk628jr0w8mgnp8mr5xqz9cprgczm"))))
+        (base32 "0d6jsj77qddccv0vfmqmbw3k2prvxzvmgc8zdi83gdi3wpp5i7zd"))))
     (build-system meson-build-system)
     (arguments
      `(#:tests? #f              ; many of the tests try to load kernel modules
@@ -3858,13 +3857,7 @@ buffers.")
          (add-after 'unpack 'find-rst2man.py
            (lambda _
              (substitute* "man/meson.build"
-               (("'rst2man'") "'rst2man.py'"))))
-         (add-after 'unpack 'fix-meson.build
-           ;; Fix ‘ERROR: Function does not take positional arguments.’
-           (lambda _
-             (substitute* "lib/meson.build"
-               (("f\\.underscorify\\(f\\)")
-                "f.underscorify()")))))))
+               (("'rst2man'") "'rst2man.py'")))))))
     (inputs
      (list cairo
            elfutils ; libdw
