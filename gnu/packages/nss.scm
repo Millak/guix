@@ -123,6 +123,7 @@ in the Mozilla clients.")
 (define-public nss
   (package
     (name "nss")
+    (replacement nss/fixed)
     ;; Also update and test the nss-certs package, which duplicates version and
     ;; source to avoid a top-level variable reference & module cycle.
     (version "3.81")
@@ -259,3 +260,8 @@ security standards.")
                (base32
                 "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))))
     (propagated-inputs (list nspr-next)))) ;required by nss.pc
+
+(define nss/fixed
+  (package
+    (inherit nss-next)
+    (version "3.88")))                  ; slight inaccuracy to allow grafting
