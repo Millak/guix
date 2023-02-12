@@ -4747,7 +4747,7 @@ mapping.")
            r-stringr))
     (native-inputs
      (list r-knitr))
-    (home-page "http://renozao.github.io/NMF")
+    (home-page "https://renozao.github.io/NMF")
     (synopsis "Algorithms and framework for nonnegative matrix factorization")
     (description
      "This package provides a framework to perform Non-negative Matrix
@@ -5898,7 +5898,7 @@ global-scaling and full-quantile normalization.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-limma r-locfit r-rcpp))
-    (home-page "http://bioinf.wehi.edu.au/edgeR")
+    (home-page "https://bioinf.wehi.edu.au/edgeR")
     (synopsis "EdgeR does empirical analysis of digital gene expression data")
     (description "This package can do differential expression analysis of
 RNA-seq expression profiles with biological replication.  It implements a range
@@ -6525,7 +6525,7 @@ Binomial data via estimation of latent structure in the natural parameter.")
                (base32
                 "1jy75nbkhl0kgv4gw88acx58r9f1kywrd36405x6g05xy05bprma"))))
     (build-system r-build-system)
-    (home-page "http://bioinf.wehi.edu.au/limma")
+    (home-page "https://bioinf.wehi.edu.au/limma")
     (synopsis "Package for linear models for microarray and RNA-seq data")
     (description "This package can be used for the analysis of gene expression
 studies, especially the use of linear models for analysing designed experiments
@@ -9735,7 +9735,7 @@ in omics data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-biobase r-mass))
-    (home-page "http://www.genopolis.it")
+    (home-page "https://www.genopolis.it")
     (synopsis "Detect differential expression in microarray and proteomics datasets")
     (description
      "The Power Law Global Error Model (PLGEM) has been shown to faithfully

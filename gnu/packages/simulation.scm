@@ -1031,7 +1031,7 @@ command-line utility for mesh optimisation.")
                     (invoke "py.test" "-v" "tests/migration")
                     (invoke "py.test" "-v" "tests/pyadjoint")))
              #t)))))
-    (home-page "http://www.dolfin-adjoint.org")
+    (home-page "https://www.dolfin-adjoint.org")
     (synopsis "Automatic differentiation library")
     (description "@code{python-dolfin-adjoint} is a solver of
 differential equations associated with a governing system and a

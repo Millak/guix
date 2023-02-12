@@ -316,7 +316,7 @@ prompt the user with the option to go with insecure DNS only.")
                           (string-append "PKG_CONFIG=" ,(pkg-config-for-target))
                           "COPTS=\"-DHAVE_DBUS\"")
        #:tests? #f))                    ; no ‘check’ target
-    (home-page "http://www.thekelleys.org.uk/dnsmasq/doc.html")
+    (home-page "https://www.thekelleys.org.uk/dnsmasq/doc.html")
     (synopsis "Small caching DNS proxy and DHCP/TFTP server")
     (description
      "Dnsmasq is a light-weight DNS forwarder and DHCP server.  It is designed

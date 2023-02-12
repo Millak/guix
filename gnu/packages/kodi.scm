@@ -257,7 +257,7 @@ generator library for C++.")
          (base32
           "0xilghiy3mz78bjmfldi39qyy7jvw5b6wafsx370lw401y2qw0g4"))))
     (build-system gnu-build-system)
-    (home-page "http://fstrcmp.sourceforge.net/")
+    (home-page "https://fstrcmp.sourceforge.net/")
     (arguments
      '(#:configure-flags '("SH=sh")))
     (native-inputs

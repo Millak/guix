@@ -655,7 +655,7 @@ standard libraries.")
            (lambda* (#:key outputs #:allow-other-keys)
              (mkdir-p (string-append (assoc-ref outputs "out") "/bin"))
              #t)))))
-    (home-page "http://stevedonovan.github.io/ldoc/")
+    (home-page "https://stevedonovan.github.io/ldoc/")
     (synopsis "Lua documentation generator")
     (description
      "LDoc is a LuaDoc-compatible documentation generation system for
@@ -779,7 +779,7 @@ Notable examples are GTK+, GStreamer and Webkit.")
     (description
      "LPeg is a pattern-matching library for Lua, based on Parsing Expression
 Grammars (PEGs).")
-    (home-page "http://www.inf.puc-rio.br/~roberto/lpeg")
+    (home-page "https://www.inf.puc-rio.br/~roberto/lpeg")
     (license license:expat)))
 
 (define-public lua-lpeg

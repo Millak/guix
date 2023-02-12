@@ -254,7 +254,7 @@ rates.")
     (propagated-inputs
      ;; 'libpulse*.la' contain `-ltdb' and `-lcap', so propagate them.
      (list libcap tdb))
-    (home-page "http://www.pulseaudio.org/")
+    (home-page "https://www.pulseaudio.org/")
     (synopsis "Sound server")
     (description
      "PulseAudio is a sound server.  It is basically a proxy for your sound

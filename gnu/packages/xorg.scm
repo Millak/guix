@@ -3128,7 +3128,7 @@ UniChrome Pro and Chrome9 integrated graphics processors.")
     (synopsis "Qxl video driver for X server")
     (description "xf86-video-qxl is a video driver for the Xorg X server.
 This driver is intended for the spice qxl virtio device.")
-    (home-page "http://www.spice-space.org")
+    (home-page "https://www.spice-space.org")
     (license license:x11)))
 
 (define-public xf86-video-r128

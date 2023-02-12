@@ -328,7 +328,7 @@ debian/copyright for more information.")))))
          #:phases (modify-phases %standard-phases (delete 'configure))))
       (inputs
        (list wget perl))
-      (home-page "http://apt-mirror.github.io/")
+      (home-page "https://apt-mirror.github.io/")
       (synopsis "Script for mirroring a Debian repository")
       (description
        "apt-mirror is a small tool that provides the ability to selectively

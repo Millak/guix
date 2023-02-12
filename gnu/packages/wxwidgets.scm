@@ -338,7 +338,7 @@ provide a 100% native look and feel for the application.")
     (synopsis "C++ library to create, manipulate and render SVG files")
     (description "wxSVG is a C++ library to create, manipulate and render
 @dfn{Scalable Vector Graphics} (SVG) files with the wxWidgets toolkit.")
-    (home-page "http://wxsvg.sourceforge.net")
+    (home-page "https://wxsvg.sourceforge.net")
 
     ;; wxSVG is licenced under the "wxWindows library licence", which is
     ;; the LGPL2.0+, with a few extra permissions.

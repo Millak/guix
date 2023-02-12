@@ -194,7 +194,7 @@ went to university in the 1990s, this is the library for you.")
        (list autoconf automake texinfo pkg-config))
       (inputs (list guile-3.0))
       (propagated-inputs (list guile-cairo))
-      (home-page "http://wingolog.org/projects/guile-charting/")
+      (home-page "https://wingolog.org/projects/guile-charting/")
       (synopsis "Create charts and graphs in Guile")
       (description
        "Guile-Charting is a Guile Scheme library to create bar charts and graphs
@@ -259,7 +259,7 @@ using the Cairo drawing library.")
                           `("PLOTICUS_PREFABS" ":" = (,dir)))))))))
     (inputs
      (list libpng libx11 zlib))
-    (home-page "http://ploticus.sourceforge.net/")
+    (home-page "https://ploticus.sourceforge.net/")
     (synopsis "Command-line tool for producing plots and charts")
     (description
      "Ploticus is a non-interactive software package for producing plots,

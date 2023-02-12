@@ -360,7 +360,7 @@ additional metadata about the object to which the docstring belongs.")
            docbook-xml-4.2))
     (native-inputs
      (list intltool))
-    (home-page "http://scrollkeeper.sourceforge.net/")
+    (home-page "https://scrollkeeper.sourceforge.net/")
     (synopsis "Open Documentation Cataloging Project")
     (description
      "ScrollKeeper is a cataloging system for documentation.  It manages

@@ -4888,7 +4888,7 @@ more complex visualizations.")
      (list julia-nanmath
            julia-plotutils
            julia-recipesbase))
-    (home-page "http://juliaplots.org/RecipesPipeline.jl/dev/")
+    (home-page "https://juliaplots.org/RecipesPipeline.jl/dev/")
     (synopsis "Utilities for processing recipes")
     (description "This package was factored out of @code{Plots.jl} to allow any
 other plotting package to use the recipe pipeline.  In short, the extremely

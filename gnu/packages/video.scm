@@ -307,7 +307,7 @@ audio/video everything to everything converter primarily focused on producing
 AVI video files with MP3 audio, but also including a program to read all the
 video and audio streams from a DVD.")
     (home-page
-     "http://linuxfromscratch.org/blfs/view/svn/multimedia/transcode.html")
+     "https://linuxfromscratch.org/blfs/view/svn/multimedia/transcode.html")
     (license license:gpl2+)))
 
 (define-public svt-hevc
@@ -469,7 +469,7 @@ as a joint effort between the BBC and Fluendo.")
     (synopsis "Quick Time Library")
     (description "The goal of this project is to enhance the quicktime4linux
 library.")
-    (home-page "http://libquicktime.sourceforge.net/")
+    (home-page "https://libquicktime.sourceforge.net/")
     (license license:lgpl2.1+)))
 
 (define-public mjpg-streamer
@@ -538,7 +538,7 @@ receiving MJPG streams.")
     (description "Mjpeg tools is a suite of programs which support video capture,
 editing, playback, and compression to MPEG of MJPEG video.  Edit, play and
 compression software is hardware independent.")
-    (home-page "http://mjpeg.sourceforge.net/")
+    (home-page "https://mjpeg.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public libmms
@@ -766,7 +766,7 @@ stream decoding")
                               (string-append "--build=" build)
                               (string-append "--with-ncurses="
                                              ncurses))))))))
-    (home-page "http://aa-project.sourceforge.net/aalib/")
+    (home-page "https://aa-project.sourceforge.net/aalib/")
     (synopsis "ASCII-art library")
     (description
      "AA-lib is a low level gfx library which does not require graphics device.
@@ -839,7 +839,7 @@ mpv's powerful playback capabilities.")
                    ;; system fixes above.
                    (replace 'bootstrap
                      (lambda _ (invoke "sh" "bootstrap"))))))
-    (home-page "http://liba52.sourceforge.net/")
+    (home-page "https://liba52.sourceforge.net/")
     (synopsis "ATSC A/52 audio stream decoder")
     (description "liba52 is a library for decoding ATSC A/52 audio streams.
 The A/52 standard is used in a variety of applications, including digital
@@ -907,7 +907,7 @@ shared library and encoder and decoder command-line executables.")
            libice
            sdl))
     (build-system gnu-build-system)
-    (home-page "http://libmpeg2.sourceforge.net/")
+    (home-page "https://libmpeg2.sourceforge.net/")
     (synopsis "MPEG1 and MPEG2 video decoder library")
     (description
      "libmpeg2 is a library which can decode MPEG1 and MPEG2 video streams.")
@@ -1342,7 +1342,7 @@ on the Invidious instances only as a fallback method.")
                      (rename-file file
                                   (string-append static "/lib/" file)))
                    (find-files "." "\\.a$")))))))))
-    (home-page "http://x265.org/")
+    (home-page "https://x265.org/")
     (synopsis "Library for encoding h.265/HEVC video streams")
     (description "x265 is a H.265 / HEVC video encoder application library,
 designed to encode video or images into an H.265 / HEVC encoded bitstream.")
@@ -1445,7 +1445,7 @@ streams.")
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list libxv))
-    (home-page "http://libdv.sourceforge.net/")
+    (home-page "https://libdv.sourceforge.net/")
     (synopsis "DV video (IEC 61834 and SMPTE 314M) codec")
     (description "The Quasar DV codec (libdv) is a software codec for DV
 video, the encoding format used by most digital camcorders, typically those
@@ -2856,7 +2856,7 @@ installed).")
     (synopsis "Generates a DVD-Video movie from a MPEG-2 stream")
     (description "@command{dvdauthor} will generate a DVD-Video movie from a
 MPEG-2 stream containing VOB packets.")
-    (home-page "http://dvdauthor.sourceforge.net")
+    (home-page "https://dvdauthor.sourceforge.net")
     (license license:gpl3+)))
 
 (define-public libdvdnav
@@ -4452,7 +4452,7 @@ programmers to access a standard API to open and decompress media files.")
            wxwidgets-gtk2))
     (native-inputs
      (list intltool desktop-file-utils pkg-config))
-    (home-page "http://www.aegisub.org/")
+    (home-page "https://www.aegisub.org/")
     (synopsis "Subtitle engine")
     (description
       "Aegisub is a tool for creating and modifying subtitles.  Aegisub makes
@@ -4527,7 +4527,7 @@ tools for styling them, including a built-in real-time video preview.")
                ;; precedence in case they have e.g. the full gst-plugins-bad.
                `("GST_PLUGIN_SYSTEM_PATH" suffix
                  (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
-    (home-page "http://www.pitivi.org")
+    (home-page "https://www.pitivi.org")
     (synopsis "Video editor based on GStreamer Editing Services")
     (description "Pitivi is a video editor built upon the GStreamer Editing
 Services.  It aims to be an intuitive and flexible application that can appeal
@@ -4553,7 +4553,7 @@ to newbies and professionals alike.")
      '(#:configure-flags '("LIBS=-lm")))
     (native-inputs
      (list pkg-config doxygen))
-    (home-page "http://gmerlin.sourceforge.net")
+    (home-page "https://gmerlin.sourceforge.net")
     (synopsis "Low level library for multimedia API building")
     (description
      "Gavl is short for Gmerlin Audio Video Library.  It is a low level
@@ -5173,7 +5173,7 @@ Theora videos.  Theorafile was written to be used for FNA's VideoPlayer.")
     (build-system gnu-build-system)
     (inputs
      (list libdvdcss libdvdread))
-    (home-page "http://dvdbackup.sourceforge.net")
+    (home-page "https://dvdbackup.sourceforge.net")
     (synopsis "DVD video ripper")
     (description
      "A simple command line tool to backup video from a DVD.  Decrypts the
@@ -5507,7 +5507,7 @@ wlroots-based compositors.  More specifically, those that support
            gsl
            portaudio
            alsa-lib))
-    (home-page "http://guvcview.sourceforge.net/")
+    (home-page "https://guvcview.sourceforge.net/")
     (synopsis "Control your webcam and capture videos and images")
     (description
      "GTK+ UVC Viewer (guvcview) is a graphical application to control a
@@ -5667,7 +5667,7 @@ create video contact sheets (previews) of videos.  Any video supported by
 MPlayer and FFmpeg can be used.  A note of warning: Unlike most similar tools
 VCS, by default, makes screenshots the same size as the video, see the manual
 for details on how to change this.")
-   (home-page "http://p.outlyer.net/vcs/")
+   (home-page "https://p.outlyer.net/vcs/")
    (license license:lgpl2.1+)))
 
 (define-public svtplay-dl

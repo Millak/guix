@@ -73,7 +73,7 @@ to call code written in another language.  The libffi library really only
 provides the lowest, machine dependent layer of a fully featured foreign
 function interface.  A layer must exist above libffi that handles type
 conversions for values passed between the two languages.")
-    (home-page "http://www.sourceware.org/libffi/")
+    (home-page "https://www.sourceware.org/libffi/")
     (properties `((release-monitoring-url . ,home-page)))
 
     ;; See <https://github.com/atgreen/libffi/blob/master/LICENSE>.

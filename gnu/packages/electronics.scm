@@ -429,5 +429,5 @@ individual low-level driver modules.")
     (description "Xoscope is a digital oscilloscope that can acquire signals
 from ALSA, ESD, and COMEDI sources.  This package currently does not include
 support for ESD sources.")
-    (home-page "http://xoscope.sourceforge.net/")
+    (home-page "https://xoscope.sourceforge.net/")
     (license license:gpl2+)))

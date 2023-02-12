@@ -253,7 +253,7 @@ spreadsheets and presentations.")
      (list librevenge)) ; in Requires field of .pkg
     (inputs
      (list zlib))
-    (home-page "http://libwpd.sourceforge.net/")
+    (home-page "https://libwpd.sourceforge.net/")
     (synopsis "Library for importing WordPerfect documents")
     (description "Libwpd is a C++ library designed to help process
 WordPerfect documents.  It is most commonly used to import such documents
@@ -344,7 +344,7 @@ way--presentation and vector drawing interfaces.")
      (list libwpd)) ; in Requires field of .pkg
     (inputs
      (list perl zlib))
-    (home-page "http://libwpg.sourceforge.net/")
+    (home-page "https://libwpg.sourceforge.net/")
     (synopsis "Library and tools for the WordPerfect Graphics format")
     (description "The libwpg project provides a library and tools for
 working with graphics in the WPG (WordPerfect Graphics) format.")
@@ -760,7 +760,7 @@ from the old StarOffice (.sdc, .sdw, ...).")
      (list librevenge))
     (inputs
      (list boost zlib))
-    (home-page "http://libwps.sourceforge.net/")
+    (home-page "https://libwps.sourceforge.net/")
     (synopsis "Import library for Microsoft Works text documents")
     (description "Libwps is a library for importing files in the Microsoft
 Works word processor file format.")

@@ -212,7 +212,7 @@ whose primary goals are full compliance with the ID3v2 standard, portability
 across several platforms, and providing a powerful and feature-rich API with
 a highly stable and efficient implementation.")
    (license license:lgpl2.0+)
-   (home-page "http://id3lib.sourceforge.net/")))
+   (home-page "https://id3lib.sourceforge.net/")))
 
 (define-public taglib
   (package
@@ -377,7 +377,7 @@ automatic silence split, that can be used also to adjust cddb/cue splitpoints.
 
 This package contains the library.")
    (license license:gpl2+)
-   (home-page "http://mp3splt.sourceforge.net/mp3splt_page/home.php")))
+   (home-page "https://mp3splt.sourceforge.net/mp3splt_page/home.php")))
 
 (define-public mp3splt
   (package
@@ -404,7 +404,7 @@ automatic silence split, that can be used also to adjust cddb/cue splitpoints.
 
 This package contains the binary.")
    (license license:gpl2+)
-   (home-page "http://mp3splt.sourceforge.net/mp3splt_page/home.php")))
+   (home-page "https://mp3splt.sourceforge.net/mp3splt_page/home.php")))
 
 (define-public mpg123
   (package
@@ -456,7 +456,7 @@ command-line tool as well as a C library, libmpg123.")
        ("libmad" ,libmad)
        ("libid3tag" ,libid3tag)
        ("libao" ,ao)))
-    (home-page "http://mpg321.sourceforge.net/")
+    (home-page "https://mpg321.sourceforge.net/")
     (synopsis "Command-line MP3 player")
     (description "Mpg321 is a command-line mp3 player.  mpg321 is used for
 frontends, as an mp3 player and as an mp3 to wave file decoder (primarily for
@@ -497,7 +497,7 @@ use with CD-recording software).")
                            Libs: -L${libdir} -lmp3lame~@
                            Cflags: -I${includedir}~%"
                            out ,version)))))))))
-    (home-page "http://lame.sourceforge.net/")
+    (home-page "https://lame.sourceforge.net/")
     (synopsis "MPEG Audio Layer III (MP3) encoder")
     (description "LAME is a high quality MPEG Audio Layer III (MP3) encoder.")
     (license license:lgpl2.0)))

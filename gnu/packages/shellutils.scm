@@ -553,7 +553,7 @@ easily view, navigate, and search your command history with suggestion boxes.
 HSTR can also manage your command history (for instance you can remove
 commands that are obsolete or contain a piece of sensitive information) or
 bookmark your favourite commands.")
-    (home-page "http://me.mindforger.com/projects/hh.html")
+    (home-page "https://me.mindforger.com/projects/hh.html")
     (license license:asl2.0)))
 
 (define-public shell-functools
@@ -617,7 +617,7 @@ install -m 644 rig.6 $(DESTDIR)$(MANDIR)/man6/rig.6")
                          (("install -g 0 -m 644 -o 0 data/\\*.idx \\$\\(DATADIR\\)")
                           "install -m 644 data/*.idx $(DESTDIR)$(DATADIR)")))))
                  #:tests? #f))
-    (home-page "http://rig.sourceforge.net")
+    (home-page "https://rig.sourceforge.net")
     (synopsis "Random identity generator")
     (description
       "RIG (Random Identity Generator) generates random, yet real-looking,

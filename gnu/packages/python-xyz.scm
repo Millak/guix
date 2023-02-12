@@ -2525,7 +2525,7 @@ a library.")
     (build-system python-build-system)
     (arguments
      `(#:tests? #f))                   ;test suite not included in the release
-    (home-page "http://www.grantjenks.com/docs/diskcache/")
+    (home-page "https://www.grantjenks.com/docs/diskcache/")
     (synopsis "Disk and file backed cache library")
     (description "DiskCache is a disk and file backed persistent cache.")
     (license license:asl2.0)))
@@ -3180,7 +3180,7 @@ other Python program.")
                (base32
                 "1f0jjqvamly4hn7f1palvq27z6yr694rfzyxrb6g0ysbbawxkvq9"))))
     (build-system python-build-system)
-    (home-page "http://agateau.com/projects/doxyqml")
+    (home-page "https://agateau.com/projects/doxyqml")
     (synopsis "Doxygen input filter for QML files")
     (description
      "This package provides a Doxygen input filter for QML files.")
@@ -4862,7 +4862,7 @@ leaf preserving the overall structure.")
                           (invoke "python" "test/alltests.py")
                           (format #t "test suite not run~%"))
                       #t)))))
-    (home-page "http://docutils.sourceforge.net/")
+    (home-page "https://docutils.sourceforge.net/")
     (synopsis "Python Documentation Utilities")
     (description
      "Docutils is a modular system for processing documentation into useful
@@ -8611,7 +8611,7 @@ wraps Python's standard library threading and multiprocessing objects.")
        ("bash-full" ,bash)))                 ;full Bash for 'test_replwrap.py'
     (propagated-inputs
      (list python-ptyprocess))
-    (home-page "http://pexpect.readthedocs.org/")
+    (home-page "https://pexpect.readthedocs.org/")
     (synopsis "Controlling interactive console applications")
     (description
      "Pexpect is a pure Python module for spawning child applications;
@@ -8673,7 +8673,7 @@ older Python versions.")
                 "1hq626mx5jl9zfl0wdrjkxsnh8qd98fqv322n68b9251xjk4bxqr"))))
     (build-system python-build-system)
     (native-inputs (list python-setuptools-scm python-toml))
-    (home-page "http://importlib-resources.readthedocs.io/")
+    (home-page "https://importlib-resources.readthedocs.io/")
     (synopsis "Read resources from Python packages")
     (description
      "@code{importlib_resources} is a backport of Python 3's standard library
@@ -8962,7 +8962,7 @@ releases.")
     (build-system python-build-system)
     (native-inputs
      (list unzip))
-    (home-page "http://cheeseshop.python.org/pypi/simplegeneric")
+    (home-page "https://cheeseshop.python.org/pypi/simplegeneric")
     (synopsis "Python module for simple generic functions")
     (description
      "The simplegeneric module lets you define simple single-dispatch generic
@@ -9695,7 +9695,7 @@ computing.")
               ;; https://salsa.debian.org/python-team/packages/urwid/-/blob/debian/2.1.2-2/debian/changelog#L141
               (lambda _
                 (delete-file "urwid/tests/test_vterm.py"))))))
-    (home-page "http://urwid.org")
+    (home-page "https://urwid.org")
     (synopsis "Console user interface library for Python")
     (description
      "Urwid is a curses-based UI/widget library for Python.  It includes many
@@ -12395,7 +12395,7 @@ native modules.")
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
-    (home-page "http://www.python-excel.org/")
+    (home-page "https://www.python-excel.org/")
     (synopsis "Library for extracting data from Excel files")
     (description "This package provides a library to extract data from
 spreadsheets using Microsoft Excel proprietary file formats @samp{.xls} and
@@ -12427,7 +12427,7 @@ Unicode-aware.  It is not intended as an end-user tool.")
                (invoke "nosetests" "-v")))))))
     (native-inputs
      `(("nose" ,python-nose)))
-    (home-page "http://www.python-excel.org/")
+    (home-page "https://www.python-excel.org/")
     (synopsis "Library for creating spreadsheet Excel files")
     (description "@code{xlwt} is a library for writing data and formatting
 information to older Excel files (i.e. .xls).  The package itself is pure
@@ -12892,7 +12892,7 @@ primary use case is APIs defined before keyword-only parameters existed.")
         (base32
          "1fnhbi3rmk47l9851gbik0flfr64vs5j0hbqx24cafjap6gprxxf"))))
     (build-system python-build-system)
-    (home-page "http://pyasn1.sourceforge.net/")
+    (home-page "https://pyasn1.sourceforge.net/")
     (synopsis "ASN.1 types and codecs")
     (description
      "This is an implementation of ASN.1 types and codecs in Python.  It is
@@ -14490,7 +14490,7 @@ tasks.  It includes single-command deployment for the Django Girls tutorial.")
                         #t))))
        #:tests? #f))
     (propagated-inputs (list dialog))
-    (home-page "http://pythondialog.sourceforge.net/")
+    (home-page "https://pythondialog.sourceforge.net/")
     (synopsis "Python interface to the UNIX dialog utility")
     (description
      "A Python wrapper for the dialog utility.  Its purpose is to
@@ -16980,7 +16980,7 @@ multiple processes (imagine multiprocessing, billiard, futures, celery etc).
                           (("logging\\.DEBUG")
                            "logging.INFO"))
                         (invoke "python" "-m" "unittest" "t/test.py")))))))
-    (home-page "http://tftpy.sourceforge.net/")
+    (home-page "https://tftpy.sourceforge.net/")
     (synopsis "Python trivial file transfer protocol (TFTP) library")
     (description "TFTPy is a trivial file transfer protocol (TFTP) Python
 library.  It can be used to act both as a TFTP client or TFTP server.")
@@ -19082,7 +19082,7 @@ numbers, real numbers, mixed types and more, and comes with a shell command
                (search-patches "python-random2-getrandbits-test.patch"))))
     (build-system python-build-system)
     (native-inputs (list unzip))
-    (home-page "http://pypi.python.org/pypi/random2")
+    (home-page "https://pypi.python.org/pypi/random2")
     (synopsis "Python 3 version of the Python 2 @code{random} module")
     (description
      "This package provides a Python 3 ported version of Python 2.7’s
@@ -20862,7 +20862,7 @@ while only declaring the test-specific fields.")
     (build-system python-build-system)
     (native-inputs
      (list python-pytest))
-    (home-page "http://arcp.readthedocs.io/")
+    (home-page "https://arcp.readthedocs.io/")
     (synopsis
      "Archive and Package URI parser and generator")
     (description
@@ -21303,7 +21303,7 @@ functionality like full case-folding for case-insensitive matches in Unicode.")
                 (string-append "'" (assoc-ref inputs "mesa") "/lib/libGLESv2.so'")))
                ;; Not providing libgle. It seems to be very old.
              #t)))))
-    (home-page "http://pyopengl.sourceforge.net")
+    (home-page "https://pyopengl.sourceforge.net")
     (synopsis "Standard OpenGL bindings for Python")
     (description
      "PyOpenGL is the most common cross platform Python binding to OpenGL and
@@ -23914,7 +23914,7 @@ that is accessible to other projects developed in Cython.")
     (propagated-inputs
      (list python-sortedcontainers))
     (arguments '(#:tests? #f))  ; Tests not included in release tarball.
-    (home-page "http://www.grantjenks.com/docs/sortedcollections/")
+    (home-page "https://www.grantjenks.com/docs/sortedcollections/")
     (synopsis "Python Sorted Collections")
     (description "Sorted Collections is a Python sorted collections library.")
     (license license:asl2.0)))
@@ -23940,7 +23940,7 @@ that is accessible to other projects developed in Cython.")
        ("python-distlib" ,python-distlib)
        ("python-filelock" ,python-filelock)
        ("python-six" ,python-six-bootstrap)))
-    (home-page "http://www.grantjenks.com/docs/sortedcontainers/")
+    (home-page "https://www.grantjenks.com/docs/sortedcontainers/")
     (synopsis "Sorted List, Sorted Dict, Sorted Set")
     (description
      "This package provides a sorted collections library, written in
@@ -30094,7 +30094,7 @@ PyRSS2Gen builds the feed up by using a XML generator.")
         (sha256
           (base32 "12rznbnswfw0w7qfbvmmffr9r317gl1rqg36nijwzsklkjgks4fq"))))
     (build-system python-build-system)
-    (home-page "http://yapsy.sourceforge.net")
+    (home-page "https://yapsy.sourceforge.net")
     (synopsis "Simple plugin system for Python applications")
     (description "Yapsy, or Yet Another Plugin SYstem, is a small library
 implementing the core mechanisms needed to build a plugin system into a wider
@@ -30747,7 +30747,7 @@ running and analyzing benchmarks.  It features a simple API that can:
               (when tests?
                 (invoke "pytest")))))))
     (native-inputs (list python-pytest))
-    (home-page "http://pydispatcher.sourceforge.net")
+    (home-page "https://pydispatcher.sourceforge.net")
     (synopsis "Multi-producer-multi-consumer signal dispatching mechanism")
     (description "PyDispatcher is an enhanced version of Patrick K. O’Brien’s
 original @code{dispatcher.py} module.  It provides the Python programmer with
@@ -30805,7 +30805,7 @@ fashion.")
                    (substitute* "prober.py"
                      (("cmd = .cc")
                       (string-append "cmd = \"" #$(cc-for-target)))))))))
-    (home-page "http://semanchuk.com/philip/posix_ipc/")
+    (home-page "https://semanchuk.com/philip/posix_ipc/")
     (synopsis "POSIX IPC primitives for Python")
     (description
      "This package provides POSIX IPC primitives - semaphores, shared memory and

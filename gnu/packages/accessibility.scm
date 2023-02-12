@@ -230,7 +230,7 @@ incorporated.")
            libnotify))
     (native-inputs
      (list gettext-minimal intltool pkg-config))
-    (home-page "http://florence.sourceforge.net/")
+    (home-page "https://florence.sourceforge.net/")
     (synopsis "Extensible, scalable virtual keyboard for X11")
     (description
      "Florence is an extensible scalable virtual keyboard for X11.

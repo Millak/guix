@@ -824,7 +824,7 @@ symlinks to the files in a common directory such as /usr/local.")
     (description
      "XStow is a replacement of GNU Stow written in C++.  It supports all
 features of Stow with some extensions.")
-    (home-page "http://xstow.sourceforge.net/")
+    (home-page "https://xstow.sourceforge.net/")
     (license license:gpl2)))
 
 (define-public rpm
@@ -2143,7 +2143,7 @@ from R7RS, which allows most R7RS code to run on R6RS implementations.")
       (list dejagnu autoconf which))
     (inputs
       (list tcl less procps coreutils python-3))
-    (home-page "http://modules.sourceforge.net/")
+    (home-page "https://modules.sourceforge.net/")
     (synopsis "Shell environment variables and aliases management")
     (description "Modules simplify shell initialization and let users
 modify their environment during the session with modulefiles.  Modules are

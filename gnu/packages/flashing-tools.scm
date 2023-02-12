@@ -216,7 +216,7 @@ intended to download and upload firmware to devices connected over USB.  It
 ranges from small devices like micro-controller boards up to mobile phones.
 With dfu-util you are able to download firmware to your device or upload
 firmware from it.")
-    (home-page "http://dfu-util.sourceforge.net/")
+    (home-page "https://dfu-util.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public teensy-loader-cli
@@ -507,7 +507,7 @@ Unifinished Extensible Firmware Interface (UEFI) images.")
            groff
            libtool
            which))
-    (home-page "http://srecord.sourceforge.net/")
+    (home-page "https://srecord.sourceforge.net/")
     (synopsis "Tools for EPROM files")
     (description "The SRecord package is a collection of powerful tools for
 manipulating EPROM load files.  It reads and writes numerous EPROM file

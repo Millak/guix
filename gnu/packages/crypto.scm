@@ -149,7 +149,7 @@
     (description "The libdecaf library is an implementation of elliptic curve
 cryptography using the Montgomery and Edwards curves Curve25519, Ed25519,
 Ed448-Goldilocks and Curve448, using the Decaf encoding.")
-    (home-page "http://ed448goldilocks.sourceforge.net/")
+    (home-page "https://ed448goldilocks.sourceforge.net/")
     (license (list license:expat        ;library
                    license:bsd-2))))    ;python bindings
 
@@ -1013,7 +1013,7 @@ using ctypes is included, and several other language bindings are available.")
                (base32
                 "0kx4a5mhmp73ljknl2lcccmw9z3f5y8lqw0ghaymzvln1984g75i"))))
     (build-system gnu-build-system)
-    (home-page "http://ccrypt.sourceforge.net")
+    (home-page "https://ccrypt.sourceforge.net")
     (synopsis "Command-line utility for encrypting and decrypting files and streams")
     (description "@command{ccrypt} is a utility for encrypting and decrypting
 files and streams.  It was designed as a replacement for the standard unix

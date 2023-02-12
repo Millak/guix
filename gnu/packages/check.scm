@@ -355,7 +355,7 @@ testing of Unix command lines.")
                      (lambda _ (invoke "autoreconf" "-vfi"))))))
     (native-inputs
      (list automake autoconf libtool))
-    (home-page "http://cunit.sourceforge.net/")
+    (home-page "https://cunit.sourceforge.net/")
     (synopsis "Automated testing framework for C")
     (description
      "CUnit is a lightweight system for writing, administering, and running
@@ -1119,7 +1119,7 @@ available via the @code{unittest.mock} module.")
                   (add-after 'unpack 'invoke-2to3
                     (lambda _
                       (invoke "2to3" "-w" "."))))))
-    (home-page "http://readthedocs.org/docs/nose/")
+    (home-page "https://readthedocs.org/docs/nose/")
     (synopsis "Python testing library")
     (description
      "Nose extends the unittest library to make testing easier.")
@@ -3101,7 +3101,7 @@ retried.")
                     (lambda* (#:key inputs outputs #:allow-other-keys)
                       (add-installed-pythonpath inputs outputs)
                       (invoke "pytest" "-vv"))))))
-    (home-page "http://hamcrest.org/")
+    (home-page "https://hamcrest.org/")
     (synopsis "Hamcrest matchers for Python")
     (description "PyHamcrest is a framework for writing matcher objects,
 allowing you to declaratively define \"match\" rules.")

@@ -242,7 +242,7 @@ is used in some video games and movies.")
      (list gawk procps))
     (inputs
      (list boost))
-    (home-page "http://privat.bahnhof.se/wb758135/")
+    (home-page "https://privat.bahnhof.se/wb758135/")
     (synopsis "Double dummy solver for the bridge card game")
     (description "DDS is a double-dummy solver of bridge hands.  It supports
 single-threading and multi-threading for improved performance.  DDS
@@ -466,7 +466,7 @@ possible, and it also makes the SGE easy to learn.")
     (build-system python-build-system)
     (propagated-inputs
      (list python-six))
-    (home-page "http://python-tmx.nongnu.org")
+    (home-page "https://python-tmx.nongnu.org")
     (synopsis "Python library for the @code{Tiled} TMX format")
     (description
      "Python TMX reads and writes the @code{Tiled} TMX format in a simple way.
@@ -797,7 +797,7 @@ window, graphics, audio and network.")
     (description "Sfxr is a tool for quickly generating simple sound effects.
 Originally created for use in video game prototypes, it can generate random
 sounds from presets such as \"explosion\" or \"powerup\".")
-    (home-page "http://www.drpetter.se/project_sfxr.html")
+    (home-page "https://www.drpetter.se/project_sfxr.html")
     (license license:expat)))
 
 (define-public surgescript
@@ -1184,7 +1184,7 @@ It offers the following features:
     (build-system gnu-build-system)
     (native-inputs (list pkg-config))
     (inputs (list fontconfig freeglut fribidi glew))
-    (home-page "http://quesoglc.sourceforge.net")
+    (home-page "https://quesoglc.sourceforge.net")
     (synopsis "Implementation of the OpenGL Character Renderer (GLC)")
     (description
      "The OpenGL Character Renderer (GLC) is a state machine that provides
@@ -2047,7 +2047,7 @@ scripted in a Python-like language.")
     (description "Eureka is a map editor for the classic DOOM games, and a few
 related games such as Heretic and Hexen.  It comes with a 3d preview mode and
 a 2D editor view.")
-    (home-page "http://eureka-editor.sourceforge.net/")
+    (home-page "https://eureka-editor.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public guile-chickadee
@@ -2176,7 +2176,7 @@ joystick support.")))
      (list mesa libxi libxmu))
     (native-inputs
      (list pkg-config))
-    (home-page "http://plib.sourceforge.net/")
+    (home-page "https://plib.sourceforge.net/")
     (synopsis "Suite of portable game libraries")
     (description "PLIB is a set of libraries that will permit programmers to
 write games and other realtime interactive applications that are 100% portable

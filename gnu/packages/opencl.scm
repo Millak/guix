@@ -381,7 +381,7 @@ A lexer, @code{pytools.lex}.
      (list opencl-headers pybind11 opencl-icd-loader))                     ;libOpenCL
     (propagated-inputs
      (list python-appdirs python-numpy python-pytools python-mako))
-    (home-page "http://mathema.tician.de/software/pyopencl")
+    (home-page "https://mathema.tician.de/software/pyopencl")
     (synopsis "Python wrapper for OpenCL")
     (description
      "PyOpenCL lets you access parallel computing devices such as GPUs from

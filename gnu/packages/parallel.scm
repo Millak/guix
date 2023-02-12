@@ -172,7 +172,7 @@ execution is also possible.")
     (arguments `(#:tests? #f)) ;; No tests
     (native-inputs
      (list flex which))
-    (home-page "http://www.maier-komor.de/xjobs.html")
+    (home-page "https://www.maier-komor.de/xjobs.html")
     (properties `((release-monitoring-url . ,home-page)))
     (synopsis
      "Parallel execution of jobs with several useful options")

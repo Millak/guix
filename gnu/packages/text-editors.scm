@@ -301,7 +301,7 @@ can load dynamic libraries.")
          "1pmr598xxxm9j9dl93kq4dv36zyw0q2dh6d7x07hf134y9hhlnj9"))))
     (build-system gnu-build-system)
     (inputs (list ncurses))
-    (home-page "http://joe-editor.sourceforge.net/")
+    (home-page "https://joe-editor.sourceforge.net/")
     (synopsis "Console screen editor")
     (description
      "JOE is a powerful console screen editor with a \"mode-less\" user

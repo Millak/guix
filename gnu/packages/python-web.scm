@@ -1855,7 +1855,7 @@ for clients and servers.")
      (list unzip))               ; for unpacking the source
     (arguments
      `(#:tests? #f))                    ; tests require python-pbr < 1.7.0
-    (home-page "http://cthedot.de/cssutils/")
+    (home-page "https://cthedot.de/cssutils/")
     (synopsis
       "CSS Cascading Style Sheets library for Python")
     (description
@@ -6107,7 +6107,7 @@ displaying warnings when usaged in application code.")
                (base32
                 "0bdpcnd9pv0131dl08h4zbcwmgc45lyvq3pa224xwan5b3x4rr2f"))))
     (build-system python-build-system)
-    (home-page "http://docs.pylonsproject.org/projects/translationstring")
+    (home-page "https://docs.pylonsproject.org/projects/translationstring")
     (synopsis "Internationalization tooling for the Pylons project")
     (description "This package provides a library used by various Pylons
 project packages for internationalization (i18n) duties related to

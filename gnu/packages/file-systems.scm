@@ -706,7 +706,7 @@ single file can be mounted.")
     (build-system gnu-build-system)
     (inputs
      (list `(,util-linux "lib")))
-    (home-page "http://jfs.sourceforge.net/home.html")
+    (home-page "https://jfs.sourceforge.net/home.html")
     (synopsis "Utilities for managing JFS file systems")
     (description
      "The JFSutils are a collection of utilities for managing the @acronym{JFS,
@@ -926,7 +926,7 @@ All of this is accomplished without a centralized metadata server.")
      (list curl glib fuse))
     (native-inputs
      (list pkg-config))
-    (home-page "http://curlftpfs.sourceforge.net/")
+    (home-page "https://curlftpfs.sourceforge.net/")
     (synopsis "Mount remote file systems over FTP")
     (description
      "This is a file system client based on the FTP File Transfer Protocol.")

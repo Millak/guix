@@ -49,7 +49,7 @@
      '(#:parallel-build? #f
        #:parallel-tests? #f))
     (inputs (list perl libltdl))
-    (home-page "http://apr.apache.org/")
+    (home-page "https://apr.apache.org/")
     (synopsis "The Apache Portable Runtime Library")
     (description
      "The mission of the Apache Portable Runtime (APR) project is to create and
@@ -96,7 +96,7 @@ around or take advantage of platform-specific deficiencies or features.")
        ;; to run it.  See
        ;; <http://lists.gnu.org/archive/html/guix-devel/2014-03/msg00261.html>.
        #:parallel-tests? #f))
-    (home-page "http://apr.apache.org/")
+    (home-page "https://apr.apache.org/")
     (synopsis "One of the Apache Portable Runtime Library companions")
     (description
      "APR-util provides a number of helpful abstractions on top of APR.")

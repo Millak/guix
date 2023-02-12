@@ -660,7 +660,7 @@
              nss
              pcsc-lite
              zlib))
-      (home-page "http://icedtea.classpath.org")
+      (home-page "https://icedtea.classpath.org")
       (synopsis "Java development kit")
       (description
        "This package provides the Java development kit OpenJDK built with the
@@ -2401,7 +2401,7 @@ debugging, etc.")
              (sha256
               (base32
                "0b6335gkm4x895rac6kfg9d3rpq0sy19ph4zpg2gyw6asfsisjhk"))))))
-      (home-page "http://svnsis.ethz.ch")
+      (home-page "https://svnsis.ethz.ch")
       (synopsis "Utility classes for libraries from ETH Zurich")
       (description "This library supplies some utility classes needed for
 libraries from the SIS division at ETH Zurich like jHDF5.")
@@ -2511,7 +2511,7 @@ libraries from the SIS division at ETH Zurich like jHDF5.")
              ;; Delete bundled pre-built jars.
              (snippet
               '(begin (delete-file-recursively "lib/") #t))))))
-      (home-page "http://svnsis.ethz.ch")
+      (home-page "https://svnsis.ethz.ch")
       (synopsis "Command line parser library")
       (description "This package provides a parser for command line arguments.")
       (license license:asl2.0))))
@@ -3119,7 +3119,7 @@ private Method[] allMethods = getSortedMethods();")))
        ("java-jarjar" ,java-jarjar)))
     (propagated-inputs
      (list java-hamcrest-parent-pom))
-    (home-page "http://hamcrest.org/")
+    (home-page "https://hamcrest.org/")
     (synopsis "Library of matchers for building test expressions")
     (description
      "This package provides a library of matcher objects (also known as
@@ -5852,7 +5852,7 @@ namespaces.")
            (generate-pom.xml "pom.xml" "com.google.code.findbugs" "jsr305" ,version))
          (replace 'install
            (install-from-pom "pom.xml")))))
-    (home-page "http://findbugs.sourceforge.net/")
+    (home-page "https://findbugs.sourceforge.net/")
     (synopsis "Annotations for the static analyzer called findbugs")
     (description "This package provides annotations for the findbugs package.
 It provides packages in the @code{javax.annotations} namespace.")
@@ -6391,7 +6391,7 @@ the OSGi @code{org.osgi.service.event} module.")
        #:jar-name "eclipse-equinox-osgi.jar"))
     (inputs
      (list java-osgi-annotation))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Eclipse Equinox OSGi framework")
     (description "This package provides an implementation of the OSGi Core
 specification.")
@@ -6416,7 +6416,7 @@ specification.")
        #:jar-name "eclipse-equinox-common.jar"))
     (inputs
      (list java-eclipse-osgi))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Common Eclipse runtime")
     (description "This package provides the common Eclipse runtime.")
     (license license:epl1.0)))
@@ -6440,7 +6440,7 @@ specification.")
        #:jar-name "eclipse-core-jobs.jar"))
     (inputs
      (list java-eclipse-equinox-common java-eclipse-osgi))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Eclipse jobs mechanism")
     (description "This package provides the Eclipse jobs mechanism.")
     (license license:epl1.0)))
@@ -6465,7 +6465,7 @@ specification.")
     (inputs
      (list java-eclipse-core-jobs java-eclipse-equinox-common
            java-eclipse-osgi))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Eclipse extension registry support")
     (description "This package provides support for the Eclipse extension
 registry.")
@@ -6491,7 +6491,7 @@ registry.")
     (inputs
      (list java-eclipse-equinox-common java-eclipse-equinox-registry
            java-eclipse-osgi java-osgi-service-event))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Equinox application container")
     (description "This package provides the Equinox application container for
 Eclipse.")
@@ -6517,7 +6517,7 @@ Eclipse.")
     (inputs
      (list java-eclipse-equinox-common java-eclipse-equinox-registry
            java-eclipse-osgi))
-    (home-page "http://www.eclipse.org/equinox/")
+    (home-page "https://www.eclipse.org/equinox/")
     (synopsis "Eclipse preferences mechanism")
     (description "This package provides the Eclipse preferences mechanism with
 the module @code{org.eclipse.equinox.preferences}.")
@@ -6543,7 +6543,7 @@ the module @code{org.eclipse.equinox.preferences}.")
     (inputs
      (list java-eclipse-equinox-common java-eclipse-equinox-preferences
            java-eclipse-equinox-registry java-eclipse-osgi))
-    (home-page "http://www.eclipse.org/")
+    (home-page "https://www.eclipse.org/")
     (synopsis "Eclipse content mechanism")
     (description "This package provides the Eclipse content mechanism in the
 @code{org.eclipse.core.contenttype} module.")
@@ -6858,7 +6858,7 @@ module @code{org.eclipse.compare.core}.")
     (inputs
      (list java-eclipse-equinox-common java-eclipse-core-commands
            java-icu4j))
-    (home-page "http://www.eclipse.org/platform")
+    (home-page "https://www.eclipse.org/platform")
     (synopsis "Eclipse text library")
     (description "Platform Text is part of the Platform UI project and
 provides the basic building blocks for text and text editors within Eclipse
@@ -8022,7 +8022,7 @@ import org.antlr.grammar.v2.ANTLRTreePrinter;"))
      (list java-junit))
     (native-inputs
      (list java-hamcrest-core))
-    (home-page "http://treelayout.sourceforge.net")
+    (home-page "https://treelayout.sourceforge.net")
     (synopsis "Tree Layout Algorithm in Java")
     (description "TreeLayout creates tree layouts for arbitrary trees.  It is
 not restricted to a specific output or format, but can be used for any kind of
@@ -9972,7 +9972,7 @@ this is not a static analysis tool.)")
            (generate-pom.xml "pom.xml" "aopalliance" "aopalliance" ,version))
          (replace 'install
            (install-from-pom "pom.xml")))))
-    (home-page "http://aopalliance.sourceforge.net")
+    (home-page "https://aopalliance.sourceforge.net")
     (synopsis "Aspect-Oriented Programming")
     (description "The AOP Alliance project is a joint project between several
 software engineering people who are interested in Aspect-Oriented Programming
@@ -11114,7 +11114,7 @@ protocol-independent framework to build mail and messaging applications.")
     (native-inputs
      `(("java-hamcrest-core" ,java-hamcrest-core)
        ("junit" ,java-junit)))
-    (home-page "http://zeromq.org/bindings:java")
+    (home-page "https://zeromq.org/bindings:java")
     (synopsis "Java binding for 0MQ")
     (description "Jeromq provides the java bindings for 0MQ.")
     (license license:mpl2.0)))
@@ -11763,7 +11763,7 @@ specific events.")
            java-jboss-interceptors-api-spec java-weld-parent-pom))
     (native-inputs
      (list java-testng java-hamcrest-core))
-    (home-page "http://cdi-spec.org/")
+    (home-page "https://cdi-spec.org/")
     (synopsis "Contexts and Dependency Injection APIs")
     (description "Java-cdi-api contains the required APIs for Contexts and
 Dependency Injection (CDI).")
@@ -13594,7 +13594,7 @@ can be interpreted by IDEs and static analysis tools to improve code analysis.")
      (list java-guava java-jboss-javassist java-jsonp-api))
     (native-inputs
      (list javacc))
-    (home-page "http://javaparser.org/")
+    (home-page "https://javaparser.org/")
     (synopsis "Parser for Java")
     (description
      "This project contains a set of libraries implementing a Java 1.0 - Java

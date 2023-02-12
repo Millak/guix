@@ -6564,7 +6564,7 @@ both positive and negative, in various ways.")
                (base32
                 "03bdcl9pn2bc9b50c50nhnr7m9wafylnb3v21zlch98h9c78x6j0"))))
     (build-system perl-build-system)
-    (home-page "http://search.cpan.org/dist/Math-VecStat")
+    (home-page "https://search.cpan.org/dist/Math-VecStat")
     (synopsis "Basic numeric stats on vectors")
     (description "This package provides some basic statistics on numerical
 vectors.  All the subroutines can take a reference to the vector to be
@@ -10918,7 +10918,7 @@ as exceptions to standard program flow.")
                (base32
                 "0w1k5ffcrpx0fm9jgprrwy0290k6cmy7dyk83s61063migi3r5z9"))))
     (build-system perl-build-system)
-    (home-page "http://perltidy.sourceforge.net/")
+    (home-page "https://perltidy.sourceforge.net/")
     (synopsis "Perl script tidier")
     (description "This package contains a Perl script which indents and
 reformats Perl scripts to make them easier to read.   The formatting can be

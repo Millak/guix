@@ -1864,7 +1864,7 @@ supported by the MyPy typechecker.")
            python-virtualenv))
     (propagated-inputs
      (list python-mypy-extensions python-tomli python-typing-extensions))
-    (home-page "http://www.mypy-lang.org/")
+    (home-page "https://www.mypy-lang.org/")
     (synopsis "Static type checker for Python")
     (description "Mypy is an optional static type checker for Python that aims
 to combine the benefits of dynamic typing and static typing.  Mypy combines

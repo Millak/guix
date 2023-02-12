@@ -2165,7 +2165,7 @@ patch associated with a particular revision of an RCS file.")
      '(#:tests? #f
        #:configure-flags (list "--with-external-zlib")))
     (inputs (list zlib nano))                    ; the default editor
-    (home-page "http://cvs.nongnu.org")
+    (home-page "https://cvs.nongnu.org")
     (synopsis "Historical centralized version control system")
     (description
      "CVS is a version control system, an important component of Source

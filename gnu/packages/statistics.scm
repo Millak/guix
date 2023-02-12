@@ -164,7 +164,7 @@ be output in text, PostScript, PDF or HTML.")
                (base32
                 "0aa2w4g5057vn1qjp954s2kwxfmy1h7p5yn56fyi7sz9nmaq69gr"))))
     (build-system gnu-build-system)
-    (home-page "http://mcmc-jags.sourceforge.net/")
+    (home-page "https://mcmc-jags.sourceforge.net/")
     (native-inputs
      (list gfortran lapack))
     (synopsis "Gibbs sampler")
@@ -518,7 +518,7 @@ D.V. Hinkley (1997, CUP), originally written by Angelo Canty for S.")
          "0jvqvlmb1fjqhcnix1blj7hjiyxy7m1rfjdv3sr2nhyad19rvh5m"))))
     (properties `((upstream-name . "MASS")))
     (build-system r-build-system)
-    (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Support functions and datasets for Venables and Ripley's MASS")
     (description
      "This package provides functions and datasets for the book \"Modern
@@ -540,7 +540,7 @@ Applied Statistics with S\" (4th edition, 2002) by Venables and Ripley.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass))
-    (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "R functions for classification")
     (description
      "This package provides various functions for classification, including
@@ -644,7 +644,7 @@ estimation) corresponding to the book: Wand, M.P. and Jones, M.C. (1995)
                (base32
                 "1b87fmyjzbg854vpi03my1p25n3d0bchhwsdm2frblxppn98sf12"))))
     (build-system r-build-system)
-    (home-page "http://lattice.r-forge.r-project.org/")
+    (home-page "https://lattice.r-forge.r-project.org/")
     (synopsis "High-level data visualization system")
     (description
      "The lattice package provides a powerful and elegant high-level data
@@ -668,7 +668,7 @@ also flexible enough to handle most nonstandard requirements.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
-    (home-page "http://Matrix.R-forge.R-project.org/")
+    (home-page "https://Matrix.R-forge.R-project.org/")
     (synopsis "Sparse and dense matrix classes and methods")
     (description
      "This package provides classes and methods for dense and sparse matrices
@@ -731,7 +731,7 @@ distributions beyond the exponential family.")
         (base32
          "1l73v6l9ma0vsg4za3c6i3d6yjj7bpdmakbmrzp7205hbkxyp6nj"))))
     (build-system r-build-system)
-    (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Feed-forward neural networks and multinomial log-linear models")
     (description
      "This package provides functions for feed-forward neural networks with a
@@ -769,7 +769,7 @@ classification, regression and survival trees.")
         (base32
          "01p42q72mb8b4fdm75723nj64r3l0d8px1l9fyklihay9jk6arg4"))))
     (build-system r-build-system)
-    (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
+    (home-page "https://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Functions for kriging and point pattern analysis")
     (description
      "This package provides functions for kriging and point pattern
@@ -837,7 +837,7 @@ curves, Cox models, and parametric accelerated failure time models.")
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
-    (home-page "http://ff.r-forge.r-project.org")
+    (home-page "https://ff.r-forge.r-project.org")
     (synopsis "Class for vectors of 1-bit booleans")
     (description
      "This package provides bitmapped vectors of booleans (no @code{NA}s),
@@ -860,7 +860,7 @@ binary booleans, @code{TRUE} and @code{FALSE} can be stored with 1 bit only.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bit))
-    (home-page "http://ff.r-forge.r-project.org/")
+    (home-page "https://ff.r-forge.r-project.org/")
     (synopsis "S3 class for vectors of 64 bit integers")
     (description
      "The bit64 package provides serializable S3 atomic 64 bit (signed)
@@ -958,7 +958,7 @@ effects of different types of color-blindness.")
     (arguments
      `(#:tests? #f
        #:configure-flags (list "--no-build-vignettes")))
-    (home-page "http://dirk.eddelbuettel.com/code/digest.html")
+    (home-page "https://dirk.eddelbuettel.com/code/digest.html")
     (synopsis "Create cryptographic hash digests of R objects")
     (description
      "This package contains an implementation of a function @code{digest()} for
@@ -2006,7 +2006,7 @@ and fast file reading.")
     (build-system r-build-system)
     (native-inputs
      (list r-knitr)) ; for vignettes
-    (home-page "http://xtable.r-forge.r-project.org/")
+    (home-page "https://xtable.r-forge.r-project.org/")
     (synopsis "Export R tables to LaTeX or HTML")
     (description
      "This package provides tools to export R data as LaTeX and HTML tables.")
@@ -2111,7 +2111,7 @@ building design matrices.")
            python-matplotlib))
     (native-inputs
      (list python-cython python-nose python-sphinx))
-    (home-page "http://statsmodels.sourceforge.net/")
+    (home-page "https://statsmodels.sourceforge.net/")
     (synopsis "Statistical modeling and econometrics in Python")
     (description
      "Statsmodels is a Python package that provides a complement to scipy for
@@ -2154,7 +2154,7 @@ chain.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-pixmap r-rcpp r-rcpparmadillo r-sp))
-    (home-page "http://pbil.univ-lyon1.fr/ADE-4")
+    (home-page "https://pbil.univ-lyon1.fr/ADE-4")
     (synopsis "Multivariate data analysis and graphical display")
     (description
      "The ade4 package contains data analysis functions to analyze ecological
@@ -2749,7 +2749,7 @@ scaling functions for R.")
            r-mass
            r-png
            r-rcolorbrewer))
-    (home-page "http://latticeextra.r-forge.r-project.org/")
+    (home-page "https://latticeextra.r-forge.r-project.org/")
     (synopsis "Extra graphical utilities based on lattice")
     (description
      "Building on the infrastructure provided by the lattice package, this
@@ -3025,7 +3025,7 @@ if (certs != \"\") { .opts = merge.list(.opts, list(cainfo=certs)) }
      (list curl zlib))
     (propagated-inputs
      (list r-bitops))
-    (home-page "http://www.omegahat.net/RCurl")
+    (home-page "https://www.omegahat.net/RCurl")
     (synopsis "General network client interface for R")
     (description
      "The package allows one to compose general HTTP requests and provides
@@ -3055,7 +3055,7 @@ ldap, and also supports cookies, redirects, authentication, etc.")
      (list libxml2 zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://www.omegahat.net/RSXML")
+    (home-page "https://www.omegahat.net/RSXML")
     (synopsis "Tools for parsing and generating XML within R")
     (description
      "Many approaches for both reading and creating XML (and HTML)
@@ -4143,7 +4143,7 @@ vignettes.")
     (build-system r-build-system)
     (native-inputs
      (list gfortran))
-    (home-page "http://mvtnorm.R-forge.R-project.org")
+    (home-page "https://mvtnorm.R-forge.R-project.org")
     (synopsis "Package for multivariate normal and t-distributions")
     (description "This package can compute multivariate normal and
 t-probabilities, quantiles, random deviates and densities.")
@@ -5395,7 +5395,7 @@ can be efficiently implemented directly in the R language.")
      (list gfortran))
     (propagated-inputs
      (list r-deoptimr))
-    (home-page "http://robustbase.r-forge.r-project.org/")
+    (home-page "https://robustbase.r-forge.r-project.org/")
     (synopsis "Basic robust statistics")
     (description
      "This package analyzes data with robust methods such as
@@ -5612,7 +5612,7 @@ showing the progress is useful e.g. bootstrap.")
      (list r-rcpp))
     (inputs
      (list gfortran))
-    (home-page "http://optimizer.r-forge.r-project.org")
+    (home-page "https://optimizer.r-forge.r-project.org")
     (synopsis "Derivative-free optimization algorithms by quadratic approximation")
     (description
       "This package provides a derivative-free optimization by quadratic approximation
@@ -6112,7 +6112,7 @@ easy and fun.")
         (base32
          "1pf554vb902vavgqc4c0kgghywbgcvr3lkkr414bxngavcd60lil"))))
     (build-system r-build-system)
-    (home-page "http://strimmerlab.org/software/fdrtool/")
+    (home-page "https://strimmerlab.org/software/fdrtool/")
     (synopsis "Estimation of false discovery rates and higher criticism")
     (description
      "This package provides tools to estimate tail area-based false discovery
@@ -6480,7 +6480,7 @@ functions.")
      (list java-jtransforms))
     (native-inputs
      (list java-junit))
-    (home-page "http://jdistlib.sourceforge.net/")
+    (home-page "https://jdistlib.sourceforge.net/")
     (synopsis "Java library of statistical distributions")
     (description "JDistlib is the Java Statistical Distribution Library, a
 Java package that provides routines for various statistical distributions.")
@@ -7182,7 +7182,7 @@ highlighted in all linked plots.  Interactions with the plots are controlled
 by the mouse, menus and dialog boxes.  An object-oriented programming system
 is used to allow menus, dialogs, and the response to mouse actions to be
  customized.")
-      (home-page "http://homepage.divms.uiowa.edu/~luke/xls/xlsinfo/")
+      (home-page "https://homepage.divms.uiowa.edu/~luke/xls/xlsinfo/")
       (license license:expat))))
 
 (define-public r-rlrsim

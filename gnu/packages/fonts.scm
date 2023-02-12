@@ -546,7 +546,7 @@ The unified Libertinus family consists of:
                       make-flags)))))))
     (native-inputs
      (list bdftopcf font-util mkfontdir pkg-config python))
-    (home-page "http://terminus-font.sourceforge.net/")
+    (home-page "https://terminus-font.sourceforge.net/")
     (synopsis "Simple bitmap programming font")
     (description "Terminus Font is a clean, fixed-width bitmap font, designed
 for long periods of working with computers (8 or more hours per day).")
@@ -753,7 +753,7 @@ printing old Malayalam books without compromising the writing style.")
         (base32
          "0kph9l3g7jb2bpmxdbdg5zl56wacmnvdvsdn7is1gc750sqvsn31"))))
     (build-system font-build-system)
-    (home-page "http://www.gust.org.pl/projects/e-foundry/tex-gyre/")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/tex-gyre/")
     (synopsis "Remake of Ghostscript fonts")
     (description "The TeX Gyre collection of fonts is the result of an
 extensive remake and extension of the freely available base PostScript fonts
@@ -1532,7 +1532,7 @@ later hand-tweaked with the gbdfed(1) editor:
   </alias>
 </fontconfig>\n"))))
              #t)))))
-    (home-page "http://www.comicneue.com/")
+    (home-page "https://www.comicneue.com/")
     (synopsis "Font that fixes the shortcomings of Comic Sans")
     (description
      "Comic Neue is a font that attempts to create a respectable casual

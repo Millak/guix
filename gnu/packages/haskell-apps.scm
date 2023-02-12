@@ -157,7 +157,7 @@ installation of Haskell libraries and programs.")
     (build-system haskell-build-system)
     (inputs
      (list ghc-polyparse ghc-old-locale ghc-old-time))
-    (home-page "http://projects.haskell.org/cpphs/")
+    (home-page "https://projects.haskell.org/cpphs/")
     (synopsis "Liberalised re-implementation of cpp, the C pre-processor")
     (description "Cpphs is a re-implementation of the C pre-processor that is
 both more compatible with Haskell, and itself written in Haskell so that it

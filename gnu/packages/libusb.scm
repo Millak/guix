@@ -578,7 +578,7 @@ over USB.")
      (list #:configure-flags
            #~(list "--disable-static"
                    (string-append "--with-udev=" #$output "/lib/udev"))))
-    (home-page "http://libmtp.sourceforge.net/")
+    (home-page "https://libmtp.sourceforge.net/")
     (synopsis "Library implementing the Media Transfer Protocol")
     (description "Libmtp implements an MTP (Media Transfer Protocol)
 initiator, which means that it initiates MTP sessions with devices.  The
@@ -615,7 +615,7 @@ proposed for standardization.")
      (list gtk+ flac libvorbis libid3tag libmtp))
     (native-inputs
      (list pkg-config))
-    (home-page "http://gmtp.sourceforge.net/")
+    (home-page "https://gmtp.sourceforge.net/")
     (synopsis "Simple graphical MTP client")
     (description "gMTP is a simple graphical client for the Media Transfer Protocol
   (MTP), which allows media files to be transferred to and from many portable

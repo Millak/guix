@@ -425,7 +425,7 @@ multi-seat support, a replacement for @command{mingetty}, and more.")
     (description
      "Libtermkey handles all the necessary logic to recognise special keys, UTF-8
 combining, and so on, with a simple interface.")
-    (home-page "http://www.leonerd.org.uk/code/libtermkey")
+    (home-page "https://www.leonerd.org.uk/code/libtermkey")
     (license license:expat)))
 
 (define-public mlterm
@@ -457,7 +457,7 @@ combining, and so on, with a simple interface.")
            libx11
            libxext
            libxft))
-    (home-page "http://mlterm.sourceforge.net/")
+    (home-page "https://mlterm.sourceforge.net/")
     (synopsis "Multi-Lingual TERMinal emulator")
     (description
      "mlterm is a multi-lingual terminal emulator.  It supports various complex
@@ -650,7 +650,7 @@ should be thread-safe.")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "http://www.leonerd.org.uk/code/libvterm/"
+       (uri (string-append "https://www.leonerd.org.uk/code/libvterm/"
                            "libvterm-" version ".tar.gz"))
        (sha256
         (base32 "15y3y23kfpcda7n79ym3gp1abzn8mshxrad8s3gnhls82nfava15"))))
@@ -665,7 +665,7 @@ should be thread-safe.")
          (delete 'configure))))
     (native-inputs
      (list libtool perl))
-    (home-page "http://www.leonerd.org.uk/code/libvterm/")
+    (home-page "https://www.leonerd.org.uk/code/libvterm/")
     (synopsis "VT220/xterm/ECMA-48 terminal emulator library")
     (description "Libvterm is an abstract C99 library which implements a VT220
 or xterm-like terminal emulator.  It doesn't use any particular graphics

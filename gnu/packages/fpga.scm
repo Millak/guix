@@ -259,7 +259,7 @@ For synthesis, the compiler generates netlists in the desired format.")
     (native-inputs
      `(("python-3" ,python)
        ("pkg-config" ,pkg-config)))
-    (home-page "http://www.clifford.at/icestorm/")
+    (home-page "https://www.clifford.at/icestorm/")
     (synopsis "Project IceStorm - Lattice iCE40 FPGAs bitstream tools")
     (description "Project IceStorm - Lattice iCE40 FPGAs Bitstream Tools.
 Includes the actual FTDI connector.")
@@ -353,7 +353,7 @@ FOSS FPGA place and route tool.")
        (uri (list (string-append "mirror://sourceforge/gtkwave/"
                                  "gtkwave-" version "/"
                                  "gtkwave-" version ".tar.gz")
-                  (string-append "http://gtkwave.sourceforge.net/"
+                  (string-append "https://gtkwave.sourceforge.net/"
                                  "gtkwave-" version ".tar.gz")))
        (sha256
         (base32 "1zqkfchmns5x90qxa8kg39bfhax3vxf1mrdz3lhyb9fz1gp4difn"))))
@@ -373,7 +373,7 @@ FOSS FPGA place and route tool.")
     (synopsis "Waveform viewer for FPGA simulator trace files")
     (description "This package is a waveform viewer for FPGA
 simulator trace files (@dfn{FST}).")
-    (home-page "http://gtkwave.sourceforge.net/")
+    (home-page "https://gtkwave.sourceforge.net/")
     ;; Exception against free government use in tcl_np.c and tcl_np.h.
     (license (list license:gpl2+ license:expat license:tcl/tk))))
 
@@ -416,7 +416,7 @@ constructed by a Python program.")
           (base32
             "04fi59cyn5dsci0ai7djg74ybkqfcjzhj1jfmac2xanbcrw9j3yk"))))
     (build-system python-build-system)
-    (home-page "http://www.myhdl.org/")
+    (home-page "https://www.myhdl.org/")
     (synopsis "Python as a Hardware Description Language")
     (description "This package provides a library to turn Python into
 a hardware description and verification language.")

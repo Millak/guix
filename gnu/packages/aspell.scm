@@ -310,7 +310,7 @@ dictionaries, including personal ones.")
                              "aspell6-it-" version ".tar.bz2"))
          (hash (content-hash sha256))))
        (home-page
-        "http://linguistico.sourceforge.net/pages/dizionario_italiano.html"))))
+        "https://linguistico.sourceforge.net/pages/dizionario_italiano.html"))))
 
 (define-public aspell-dict-mi
   (aspell-dictionary "mi" "Maori"

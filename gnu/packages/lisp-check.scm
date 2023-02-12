@@ -815,7 +815,7 @@ advantages of @command{prove} are:
              (delete-file-recursively "debian")
              #t))))
       (build-system asdf-build-system/sbcl)
-      (home-page "http://quickdocs.org/ptester/")
+      (home-page "https://quickdocs.org/ptester/")
       (synopsis "Portable test harness package")
       (description
        "@command{ptester} is a portable testing framework based on Franz's
@@ -1098,7 +1098,7 @@ parameterization.")
       (description
        "The XLUnit package is a toolkit for building test suites.  It is based
 on the XPTest package by Craig Brozensky and the JUnit package by Kent Beck.")
-      (home-page "http://quickdocs.org/xlunit/")
+      (home-page "https://quickdocs.org/xlunit/")
       (license license:bsd-3))))
 
 (define-public cl-xlunit

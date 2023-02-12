@@ -87,5 +87,5 @@ Python.  It is a C++ library.")
     (description "Superset of the POSIX regex API, enabling approximate
 matching.  Also ships a version of the agrep utility which behaves similar to
 grep but features inexact matching.")
-    (home-page "http://laurikari.net/tre")
+    (home-page "https://laurikari.net/tre")
     (license license:bsd-2)))

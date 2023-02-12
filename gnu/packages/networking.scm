@@ -675,7 +675,7 @@ the Stream Control Transmission Protocol} (@file{libsctp}) and C language header
 files (@file{netinet/sctp.h}) for accessing SCTP-specific @acronym{APIs,
 application programming interfaces} not provided by the standard sockets.
 It also includes some SCTP-related helper utilities.")
-    (home-page "http://lksctp.sourceforge.net/")
+    (home-page "https://lksctp.sourceforge.net/")
     (license
      (list
       ;; Library.
@@ -1239,7 +1239,7 @@ or server shell scripts with network connections.")
     (native-inputs
      (list which))
     (inputs (list openssl))
-    (home-page "http://www.maier-komor.de/mbuffer.html")
+    (home-page "https://www.maier-komor.de/mbuffer.html")
     (synopsis
      "Swiss army knife for data stream buffering (network aware)")
     (description
@@ -1564,7 +1564,7 @@ Ethernet devices.")
                                  (string-append bin "/ifstatus")))
                     #t)))))
     (inputs (list ncurses))
-    (home-page "http://ifstatus.sourceforge.net/graphic/index.html")
+    (home-page "https://ifstatus.sourceforge.net/graphic/index.html")
     (synopsis "Text based network interface status monitor")
     (description
      "IFStatus is a simple, easy-to-use program for displaying commonly
@@ -3899,7 +3899,7 @@ protocol daemons for BGP, IS-IS, LDP, OSPF, PIM, and RIP.")
              (substitute* "Makefile.in"
                ((" \\$\\(DESTDIR)/\\$\\(runstatedir)") "")))))))
     (build-system gnu-build-system)
-    (home-page "http://bird.network.cz")
+    (home-page "https://bird.network.cz")
     (synopsis "Internet Routing Daemon")
     (description "BIRD is an Internet routing daemon with full support for all
 the major routing protocols.  It allows redistribution between protocols with a
@@ -4136,7 +4136,7 @@ easy-to-understand binary values.")
                     (bin (string-append out "/bin")))
                (install-file "tunctl" bin))
              #t)))))
-    (home-page "http://tunctl.sourceforge.net")
+    (home-page "https://tunctl.sourceforge.net")
     (synopsis  "Utility to set up and maintain TUN/TAP network interfaces")
     (description "Tunctl is used to set up and maintain persistent TUN/TAP
 network interfaces, enabling user applications to simulate network traffic.
@@ -4193,7 +4193,7 @@ network.  This must be enabled on the target host, usually in the BIOS.")
                ((" \\$\\(LIBDEPS\\)") "$(filter-out -l%,$(LIBDEPS))"))))
          (delete 'bootstrap)            ;no configure.ac file
          (delete 'configure))))         ;no configure script
-    (home-page "http://traceroute.sourceforge.net/")
+    (home-page "https://traceroute.sourceforge.net/")
     (synopsis "Tracks the route taken by packets over an IP network")
     (description "This package provides a modern, but Linux-specific
 implementation of the @command{traceroute} command that can be used to follow

@@ -127,7 +127,7 @@ as ASCII text.")
     (propagated-inputs
      ;; Headers from Mesa and GLU are needed.
      (list glu mesa))
-    (home-page "http://freeglut.sourceforge.net/")
+    (home-page "https://freeglut.sourceforge.net/")
     (synopsis "Alternative to the OpenGL Utility Toolkit (GLUT)")
     (description
      "Freeglut is a completely Free/OpenSourced alternative to
@@ -945,7 +945,7 @@ and visualizations.")
      (list libpng mesa zlib))
     (arguments
      `(#:tests? #f))                    ; no tests
-    (home-page "http://www.geuz.org/gl2ps/")
+    (home-page "https://www.geuz.org/gl2ps/")
     (synopsis "OpenGL to PostScript printing library")
     (description "GL2PS is a C library providing high quality vector
 output for any OpenGL application.  GL2PS uses sorting algorithms

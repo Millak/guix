@@ -632,7 +632,7 @@ and export to various formats including the format used by Magicavoxel.")
     (build-system cmake-build-system)
     (inputs
      (list zlib))
-    (home-page "http://www.assimp.org/")
+    (home-page "https://www.assimp.org/")
     (synopsis "Asset import library")
     (description
      "The Open Asset Import Library loads more than 40 3D file formats into
@@ -1035,7 +1035,7 @@ other vector formats such as:
      `(#:configure-flags (list "-DUSE_HDF5=ON")))
     (inputs
      (list hdf5 imath zlib))
-    (home-page "http://www.alembic.io/")
+    (home-page "https://www.alembic.io/")
     (synopsis "Framework for storing and sharing scene data")
     (description "Alembic is a computer graphics interchange framework.  It
 distills complex, animated scenes into a set of baked geometric results.")
@@ -1584,7 +1584,7 @@ realistic reflections, shading, perspective and other effects.")
     ;; Headers include OpenEXR and IlmBase headers.
     (propagated-inputs (list openexr-2))
 
-    (home-page "http://ampasctl.sourceforge.net")
+    (home-page "https://ampasctl.sourceforge.net")
     (synopsis "Color Transformation Language")
     (description
      "The Color Transformation Language, or CTL, is a small programming
@@ -1700,7 +1700,7 @@ and understanding different BRDFs (and other component functions).")
      (list libx11 freetype sdl))
 
     ;; Antigrain.com was discontinued.
-    (home-page "http://agg.sourceforge.net/antigrain.com/index.html")
+    (home-page "https://agg.sourceforge.net/antigrain.com/index.html")
     (synopsis "High-quality 2D graphics rendering engine for C++")
     (description
      "Anti-Grain Geometry is a high quality rendering engine written in C++.
@@ -1939,7 +1939,7 @@ and GPU architectures.")
 OpenGL.  CSG is an approach for modeling complex 3D-shapes using simpler ones.
 For example, two shapes can be combined by uniting them, by intersecting them,
 or by subtracting one shape from the other.")
-      (home-page "http://www.opencsg.org/")
+      (home-page "https://www.opencsg.org/")
       (license license:gpl2))))
 
 (define-public coin3D

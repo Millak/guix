@@ -103,7 +103,7 @@ implement the floating point approach to complex multiplication are
 implemented.  On the other hand, these comprise asymptotically fast
 multiplication routines such as Toom–Cook and the FFT.")
    (license license:lgpl3+)
-   (home-page "http://www.multiprecision.org/mpfrcx/")))
+   (home-page "https://www.multiprecision.org/mpfrcx/")))
 
 (define-public gf2x
   (package
@@ -153,7 +153,7 @@ multiplication via floating point approximations.  It consists of libraries
 that can be called from within a C program and of executable command
 line applications.")
    (license license:gpl3+)
-   (home-page "http://www.multiprecision.org/cm/")))
+   (home-page "https://www.multiprecision.org/cm/")))
 
 (define-public fplll
   (package
@@ -464,7 +464,7 @@ GCDs, factoring, solving linear systems, and evaluating special
 functions.  In addition, FLINT provides various low-level routines for
 fast arithmetic.")
    (license license:lgpl2.1+)
-   (home-page "http://flintlib.org/")
+   (home-page "https://flintlib.org/")
    (properties
     '((release-monitoring-url . "http://flintlib.org/downloads.html")))))
 
@@ -768,7 +768,7 @@ a C program.")
          ;; different machine.
          "ax_cv_c_flags__mtune_native=no")))
     (native-inputs (list perl))
-    (home-page "http://fftw.org")
+    (home-page "https://fftw.org")
     (synopsis "Computing the discrete Fourier transform")
     (description
      "FFTW is a C subroutine library for computing the discrete Fourier
@@ -1776,7 +1776,7 @@ no more than about 20 bits long).")
             "0n8gj5iylfagdbaqirpykb01a9difsy4zl6qq55f0ghvazxqdvmn"))))
     (properties `((upstream-name . "dtt")))
     (build-system r-build-system)
-    (home-page "http://www.r-project.org")
+    (home-page "https://www.r-project.org")
     (synopsis "Discrete Trigonometric Transforms")
     (description
       "This package provides functions for 1D and 2D Discrete Cosine Transform

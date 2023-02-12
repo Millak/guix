@@ -654,7 +654,7 @@ an interpreter, a compiler, a debugger, and much more.")
            (search-path-specification
             (variable "XDG_CONFIG_DIRS")
             (files '("etc")))))
-    (home-page "http://www.sbcl.org/")
+    (home-page "https://www.sbcl.org/")
     (synopsis "Common Lisp implementation")
     (description "Steel Bank Common Lisp (SBCL) is a high performance Common
 Lisp compiler.  In addition to the compiler and runtime system for ANSI Common
@@ -877,7 +877,7 @@ libraries such as OpenGL, SDL, Video4Linux, and ALSA (video/audio
 grabbing), and others.  Lush is an ideal frontend script language for
 programming projects written in C or other languages.  Lush also has
 libraries for Machine Learning, Neural Nets and statistical estimation.")
-    (home-page "http://lush.sourceforge.net/")
+    (home-page "https://lush.sourceforge.net/")
     (license license:lgpl2.1+)))
 
 (define-public confusion-mdl
@@ -971,7 +971,7 @@ enough to play the original mainframe Zork all the way through.")
                (invoke "./configure" "+lang" "en" "+fhs"
                        (string-append "-prefix=" (assoc-ref outputs "out")))
                #t)))))
-      (home-page "http://www.kylheku.com/cgit/man/")
+      (home-page "https://www.kylheku.com/cgit/man/")
       (synopsis "Modifications to the man utilities, specifically man2html")
       (description
        "This is a fork of the man utilities intended specifically for building

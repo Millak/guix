@@ -109,7 +109,7 @@
                  (("@LIBC_SO_NAME@") "libc.so")
                  (("@LIBC_SO_DIR@")  (string-append libc "/lib"))))
              #t)))))
-    (home-page "http://smalltalk.gnu.org/")
+    (home-page "https://smalltalk.gnu.org/")
     (synopsis "Smalltalk environment")
     (description
      "GNU Smalltalk is a free implementation of the Smalltalk language.  It

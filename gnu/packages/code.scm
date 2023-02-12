@@ -580,7 +580,7 @@ stack traces.")
                  `("PERL5LIB" ":" prefix (,(getenv "PERL5LIB")))))
              #t)))))
     (inputs (list perl perl-io-compress perl-json))
-    (home-page "http://ltp.sourceforge.net/coverage/lcov.php")
+    (home-page "https://ltp.sourceforge.net/coverage/lcov.php")
     (synopsis "Code coverage tool that enhances GNU gcov")
     (description "LCOV is an extension of @command{gcov}, a tool part of the
 GNU@tie{}Binutils, which provides information about what parts of a program
@@ -809,7 +809,7 @@ independent targets.")
                            (install-file l etcdir))
                          (find-files "etc" "\\.cfg$")))
              #t)))))
-    (home-page "http://uncrustify.sourceforge.net/")
+    (home-page "https://uncrustify.sourceforge.net/")
     (synopsis "Code formatter for C and other related languages")
     (description
      "Beautify source code in many languages of the C family (C, C++, C#,
@@ -875,7 +875,7 @@ Objective@tie{}C, D, Java, Pawn, and Vala).  Features:
                   (make-so-link sofile "(\\.[0-9]){2}$")) ;; link .so.3
                 (find-files libdir "lib.*\\.so\\..*")))
              #t)))))
-    (home-page "http://astyle.sourceforge.net/")
+    (home-page "https://astyle.sourceforge.net/")
     (synopsis "Source code indenter, formatter, and beautifier")
     (description
      "Artistic Style is a source code indenter, formatter, and beautifier for
@@ -1076,7 +1076,7 @@ Readline library.")
        ;; on SysV curses.
        (list (string-append "--with-ncurses="
                             (assoc-ref %build-inputs "ncurses")))))
-    (home-page "http://cscope.sourceforge.net")
+    (home-page "https://cscope.sourceforge.net")
     (synopsis "Tool for browsing source code")
     (description
      "Cscope is a text screen based source browsing tool. Although it is

@@ -65,7 +65,7 @@
                        '("LineBreakTest.txt"
                          "WordBreakTest.txt"
                          "GraphemeBreakTest.txt")))))))
-    (home-page "http://vimgadgets.sourceforge.net/libunibreak/")
+    (home-page "https://vimgadgets.sourceforge.net/libunibreak/")
     (synopsis "Unicode line breaking and word breaking algorithms")
     (description
      "Libunibreak is an implementation of the line breaking and word

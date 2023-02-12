@@ -460,7 +460,7 @@ useful tools for testing Django applications and projects.")
            python-setuptools-scm
            python-pysolr
            python-whoosh))
-    (home-page "http://haystacksearch.org/")
+    (home-page "https://haystacksearch.org/")
     (synopsis "Pluggable search for Django")
     (description "Haystack provides modular search for Django.  It features a
 unified, familiar API that allows you to plug in different search backends

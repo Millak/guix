@@ -620,7 +620,7 @@ the position of the variable and allows you to modify its value.")
     (inputs
      (modify-inputs (package-inputs gnu-make)
        (prepend readline)))
-    (home-page "http://bashdb.sourceforge.net/remake/")
+    (home-page "https://bashdb.sourceforge.net/remake/")
     (description "Remake is an enhanced version of GNU Make that adds improved
 error reporting, better tracing, profiling, and a debugger.")
     (license license:gpl3+)))

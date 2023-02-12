@@ -3829,7 +3829,7 @@ that can be only started once per user.
              (for-each delete-file (find-files "doc/man/man3" "^_tmp.*"))
              (mkdir-p man)
              (copy-recursively "doc/man" man)))))))
-  (home-page "http://qwt.sourceforge.net")
+  (home-page "https://qwt.sourceforge.net")
   (synopsis "Qt widgets for plots, scales, dials and other technical software
 GUI components")
   (description
@@ -4284,7 +4284,7 @@ generate Python bindings for your C or C++ code.")))
      (list qtbase-5 qttools-5))
     (inputs
      (list glu))
-    (home-page "http://libqglviewer.com")
+    (home-page "https://libqglviewer.com")
     (synopsis "Qt-based C++ library for the creation of OpenGL 3D viewers")
     (description
      "@code{libQGLViewer} is a C++ library based on Qt that eases the creation
@@ -4585,7 +4585,7 @@ a secure way.")
                    (invoke "qmake"
                            (string-append "PREFIX=" #$output)
                            (string-append "LIBDIR=" #$output "/lib")))))))
-    (home-page "http://accounts-sso.gitlab.io/signond/index.html")
+    (home-page "https://accounts-sso.gitlab.io/signond/index.html")
     (synopsis "Perform user authentication over D-Bus")
     (description "This package provides a D-Bus service which performs user
 authentication on behalf of its clients.")

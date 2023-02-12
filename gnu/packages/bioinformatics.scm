@@ -1576,7 +1576,7 @@ use-case, we encourage users to compose functions to achieve their goals.")
            python-scipy))
     (native-inputs
      (list python-cython python-pytest python-pytest-cov python-nose))
-    (home-page "http://www.biom-format.org")
+    (home-page "https://www.biom-format.org")
     (synopsis "Biological Observation Matrix (BIOM) format utilities")
     (description
      "The BIOM file format is designed to be a general-use format for
@@ -2503,7 +2503,7 @@ errors at the end of reads.")
        ("python" ,python-wrapper)))
     (native-inputs
      (list perl perl-clone perl-test-deep perl-test-simple))
-    (home-page "http://bowtie-bio.sourceforge.net/bowtie2/index.shtml")
+    (home-page "https://bowtie-bio.sourceforge.net/bowtie2/index.shtml")
     (synopsis "Fast and sensitive nucleotide sequence read aligner")
     (description
      "Bowtie 2 is a fast and memory-efficient tool for aligning sequencing
@@ -2545,7 +2545,7 @@ gapped, local, and paired-end alignment modes.")
     (inputs
      (list python-wrapper tbb-2020 zlib))
     (supported-systems '("x86_64-linux"))
-    (home-page "http://bowtie-bio.sourceforge.net/index.shtml")
+    (home-page "https://bowtie-bio.sourceforge.net/index.shtml")
     (synopsis "Fast aligner for short nucleotide sequence reads")
     (description
      "Bowtie is a fast, memory-efficient short read aligner.  It aligns short
@@ -2666,7 +2666,7 @@ splice junctions between exons.")
     ;; Non-portable SSE instructions are used so building fails on platforms
     ;; other than x86_64.
     (supported-systems '("x86_64-linux"))
-    (home-page "http://bio-bwa.sourceforge.net/")
+    (home-page "https://bio-bwa.sourceforge.net/")
     (synopsis "Burrows-Wheeler sequence aligner")
     (description
      "BWA is a software package for mapping low-divergent sequences against a
@@ -3259,7 +3259,7 @@ time.")
            zlib))
     (native-inputs
      (list python-cython python-nose))
-    (home-page "http://crossmap.sourceforge.net/")
+    (home-page "https://crossmap.sourceforge.net/")
     (synopsis "Convert genome coordinates between assemblies")
     (description
      "CrossMap is a program for conversion of genome coordinates or annotation
@@ -4883,7 +4883,7 @@ high-throughput sequencing (HTS) assays")
        ("java-xz" ,java-xz)))
     (native-inputs
      (list java-testng))
-    (home-page "http://samtools.github.io/htsjdk/")
+    (home-page "https://samtools.github.io/htsjdk/")
     (synopsis "Java API for high-throughput sequencing data (HTS) formats")
     (description
      "HTSJDK is an implementation of a unified Java library for accessing
@@ -4926,7 +4926,7 @@ manipulating HTS data.")
        ("java-xz" ,java-xz)))
     (native-inputs
      (list java-junit))
-    (home-page "http://samtools.github.io/htsjdk/")
+    (home-page "https://samtools.github.io/htsjdk/")
     (synopsis "Java API for high-throughput sequencing data (HTS) formats")
     (description
      "HTSJDK is an implementation of a unified Java library for accessing
@@ -5031,7 +5031,7 @@ manipulating HTS data.")
      (list java-htsjdk java-guava))
     (native-inputs
      (list java-testng))
-    (home-page "http://broadinstitute.github.io/picard/")
+    (home-page "https://broadinstitute.github.io/picard/")
     (synopsis "Tools for manipulating high-throughput sequencing data and formats")
     (description "Picard is a set of Java command line tools for manipulating
 high-throughput sequencing (HTS) data and formats.  Picard is implemented
@@ -5120,7 +5120,7 @@ Class-Path: /~a \
      (list java-htsjdk-2.10.1))
     (native-inputs
      (list java-testng java-guava))
-    (home-page "http://broadinstitute.github.io/picard/")
+    (home-page "https://broadinstitute.github.io/picard/")
     (synopsis "Tools for manipulating high-throughput sequencing data and formats")
     (description "Picard is a set of Java command line tools for manipulating
 high-throughput sequencing (HTS) data and formats.  Picard is implemented
@@ -5719,7 +5719,7 @@ data.")
            tar
            wget
            zlib))
-    (home-page "http://kaiju.binf.ku.dk/")
+    (home-page "https://kaiju.binf.ku.dk/")
     (synopsis "Fast and sensitive taxonomic classification for metagenomics")
     (description "Kaiju is a program for sensitive taxonomic classification
 of high-throughput sequencing reads from metagenomic whole genome sequencing
@@ -6235,7 +6235,7 @@ predicts the locations of structural units in the sequences.")
        ("openblas" ,openblas)))
     (native-inputs
      (list which))
-    (home-page "http://www.bioinf.uni-leipzig.de/Software/proteinortho")
+    (home-page "https://www.bioinf.uni-leipzig.de/Software/proteinortho")
     (synopsis "Detect orthologous genes across species")
     (description
      "Proteinortho is a tool to detect orthologous genes across different
@@ -6510,7 +6510,7 @@ phylogenies.")
                            "rsem-run-prsem-testing-procedure"))))))))
     (inputs
      (list boost r-minimal perl htslib-1.3 zlib))
-    (home-page "http://deweylab.biostat.wisc.edu/rsem/")
+    (home-page "https://deweylab.biostat.wisc.edu/rsem/")
     (synopsis "Estimate gene expression levels from RNA-Seq data")
     (description
      "RSEM is a software package for estimating gene and isoform expression
@@ -6545,7 +6545,7 @@ BAM and Wiggle files in both transcript-coordinate and genomic-coordinate.")
            zlib))
     (native-inputs
      (list python-nose))
-    (home-page "http://rseqc.sourceforge.net/")
+    (home-page "https://rseqc.sourceforge.net/")
     (synopsis "RNA-seq quality control package")
     (description
      "RSeQC provides a number of modules that can comprehensively evaluate
@@ -6605,7 +6605,7 @@ distribution, coverage uniformity, strand specificity, etc.")
          ("readline" ,readline)))
       (native-inputs
        (list pkg-config))
-      (home-page "http://seek.princeton.edu")
+      (home-page "https://seek.princeton.edu")
       (synopsis "Gene co-expression search engine")
       (description
        "SEEK is a computational gene co-expression search engine.  SEEK provides
@@ -6646,7 +6646,7 @@ to the user's query of interest.")
     (native-inputs (list pkg-config))
     (inputs
      (list htslib ncurses perl python zlib))
-    (home-page "http://samtools.sourceforge.net")
+    (home-page "https://samtools.sourceforge.net")
     (synopsis "Utilities to efficiently manipulate nucleotide sequence alignments")
     (description
      "Samtools implements various utilities for post-processing nucleotide
@@ -7724,7 +7724,7 @@ optionally compressed by gzip.")
                (install-file "SNAPCommand" bin)))))))
     (native-inputs
      (list zlib))
-    (home-page "http://snap.cs.berkeley.edu/")
+    (home-page "https://snap.cs.berkeley.edu/")
     (synopsis "Short read DNA sequence aligner")
     (description
      "SNAP is a fast and accurate aligner for short DNA reads.  It is
@@ -7991,7 +7991,7 @@ sequences.")
          ;; no "configure" script
          (delete 'configure))))
     (inputs (list zlib))
-    (home-page "http://subread.sourceforge.net/")
+    (home-page "https://subread.sourceforge.net/")
     (synopsis "Tool kit for processing next-gen sequencing data")
     (description
      "The subread package contains the following tools: subread aligner, a
@@ -8038,7 +8038,7 @@ against local background noises.")
                (install-file "stringtie" bin)))))))
     (inputs
      (list bzip2 htslib-for-stringtie libdeflate zlib))
-    (home-page "http://ccb.jhu.edu/software/stringtie/")
+    (home-page "https://ccb.jhu.edu/software/stringtie/")
     (synopsis "Transcript assembly and quantification for RNA-Seq data")
     (description
      "StringTie is a fast and efficient assembler of RNA-Seq sequence
@@ -9152,7 +9152,7 @@ of contact distributions around selected landmarks.")
                (base32
                 "1hsx6qgwr0i67fhy9257zj7s0ppncph2hjgbia5nn6nfmj0ax6l9"))))
     (build-system r-build-system)
-    (home-page "http://centipede.uchicago.edu/")
+    (home-page "https://centipede.uchicago.edu/")
     (synopsis "Predict transcription factor binding sites")
     (description
      "CENTIPEDE applies a hierarchical Bayesian mixture model to infer regions
@@ -9390,7 +9390,7 @@ experience substantial biological insertions and deletions.")
            perl-getopt-long
            perl-json
            perl-statistics-pca))
-    (home-page "http://prinseq.sourceforge.net/")
+    (home-page "https://prinseq.sourceforge.net/")
     (synopsis "Preprocess sequence data in FASTA or FASTQ formats")
     (description
      "PRINSEQ is a bioinformatics tool to help you preprocess your genomic or
@@ -9875,7 +9875,7 @@ AM_CONDITIONAL(AMPNG, true)"))
            zlib))
     (native-inputs
      (list autoconf automake libtool pkg-config))
-    (home-page "http://emboss.sourceforge.net")
+    (home-page "https://emboss.sourceforge.net")
     (synopsis "Molecular biology analysis suite")
     (description "EMBOSS is the \"European Molecular Biology Open Software
 Suite\".  EMBOSS is an analysis package specially developed for the needs of
@@ -10552,7 +10552,7 @@ remove biased methylation positions for RRBS sequence files.")
                (for-each (lambda (file)
                            (install-file file target))
                          (find-files "../exe" ".*"))))))))
-    (home-page "http://evolution.genetics.washington.edu/phylip/")
+    (home-page "https://evolution.genetics.washington.edu/phylip/")
     (synopsis "Tools for inferring phylogenies")
     (description "PHYLIP (the PHYLogeny Inference Package) is a package of
 programs for inferring phylogenies (evolutionary trees).")
@@ -16831,7 +16831,7 @@ The output is in SAM format.")
      (list libxml2))
     (native-inputs
      (list check swig))
-    (home-page "http://sbml.org/Software/libSBML")
+    (home-page "https://sbml.org/Software/libSBML")
     (synopsis "Process SBML files and data streams")
     (description "LibSBML is a library to help you read, write, manipulate,
 translate, and validate SBML files and data streams.  The @dfn{Systems Biology

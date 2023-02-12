@@ -946,7 +946,7 @@ compose, and analyze GIF images.")
                     (format #f "EXECINPUT=~a~%" execinput)))
                  (invoke "sh" "testit.sh"))))))))
     (native-inputs (list drm-tools)) ;for tests
-    (home-page "http://libuemf.sourceforge.net/")
+    (home-page "https://libuemf.sourceforge.net/")
     (synopsis "Library for working with WFM, EMF and EMF+ images")
     (description "The libUEMF library is a portable C99 implementation for
 reading and writing @acronym{WFM, Windows Metafile}, @acronym{EMF, Enhanced
@@ -1419,7 +1419,7 @@ and XMP metadata of images in various formats.")
     (description "Developer's Image Library (DevIL) is a library to develop
 applications with support for many types of images.  DevIL can load, save,
 convert, manipulate, filter and display a wide variety of image formats.")
-    (home-page "http://openil.sourceforge.net")
+    (home-page "https://openil.sourceforge.net")
     (license license:lgpl2.1+)))
 
 (define-public jasper
@@ -1531,7 +1531,7 @@ differences in file encoding, image quality, and other small variations.")
      (list gettext-minimal libtool perl))
     (inputs
      (list libjpeg-turbo libmhash libmcrypt zlib))
-    (home-page "http://steghide.sourceforge.net")
+    (home-page "https://steghide.sourceforge.net")
     (synopsis "`Hide' (nonconfidential) data in image or audio files")
     (description
      "Steghide is a program to `hide' data in various kinds of image and audio
@@ -1580,7 +1580,7 @@ specifically at this tool.")
 files to a smaller size, without losing any information.  This program
 also converts external formats (BMP, GIF, PNM and TIFF) to optimized
 PNG, and performs PNG integrity checks and corrections.")
-    (home-page "http://optipng.sourceforge.net/")
+    (home-page "https://optipng.sourceforge.net/")
     (license license:zlib)))
 
 (define-public imgp
@@ -1756,7 +1756,7 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
 files in the nifti-1 data format - a binary file format for storing
 medical image data, e.g. magnetic resonance image (MRI) and functional MRI
 (fMRI) brain images.")
-    (home-page "http://niftilib.sourceforge.net")
+    (home-page "https://niftilib.sourceforge.net")
     (license license:public-domain)))
 
 (define-public gpick
@@ -2029,7 +2029,7 @@ to the standard output.  It works well together with grim.")
                             "/share/X11/rgb.txt"))))
     (inputs (list xorg-rgb libpng))
     (native-inputs (list pngsuite))
-    (home-page "http://sng.sourceforge.net")
+    (home-page "https://sng.sourceforge.net")
     (synopsis "Markup language for representing PNG contents")
     (description "SNG (Scriptable Network Graphics) is a minilanguage designed
 specifically to represent the entire contents of a PNG (Portable Network
@@ -2361,7 +2361,7 @@ Format) file format decoder and encoder.")
        (list "intl"                     ; build internationalized version
              "man")                     ; build the man page
        #:tests? #f))                    ; no test suite
-    (home-page "http://mtpaint.sourceforge.net/")
+    (home-page "https://mtpaint.sourceforge.net/")
     (synopsis "Create pixel art and manipulate digital images")
     (description
      "Mtpaint is a graphic editing program which uses the GTK+ toolkit.

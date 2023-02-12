@@ -2200,7 +2200,7 @@ by default and can be made read-only.")
      `(#:tests? #f))                    ; no tests exist
     (inputs
      (list libxrandr))
-    (home-page "http://bochs.sourceforge.net/")
+    (home-page "https://bochs.sourceforge.net/")
     (synopsis "Emulator for x86 PC")
     (description
      "Bochs is an emulator which can emulate Intel x86 CPU, common I/O

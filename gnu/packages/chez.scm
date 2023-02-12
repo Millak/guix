@@ -1238,7 +1238,7 @@ syntax, with various aliases for commonly used patterns.")
                (replace 'install
                  (lambda* (#:key (make-flags '()) #:allow-other-keys)
                    (apply invoke "make" "chez-install" make-flags))))))
-    (home-page "http://synthcode.com/scheme/fmt")
+    (home-page "https://synthcode.com/scheme/fmt")
     (synopsis "Combinator formatting library for Chez Scheme")
     (description "This package provides a library of procedures for
 formatting Scheme objects to text in various ways, and for easily

@@ -1026,7 +1026,7 @@ tiling window manager for X.")
        #:tests? #f                      ;no tests
        #:phases (modify-phases %standard-phases
                   (delete 'configure)))) ;no configure script
-    (home-page "http://www.6809.org.uk/evilwm/")
+    (home-page "https://www.6809.org.uk/evilwm/")
     (synopsis "Minimalist window manager for the X Window System")
     (description
      "evilwm is a minimalist window manager based on aewm, extended to feature
@@ -1295,7 +1295,7 @@ all of them.  Currently supported window managers include:
 @item WindowMaker
 @item XFCE
 @end enumerate\n")
-    (home-page "http://menumaker.sourceforge.net/")
+    (home-page "https://menumaker.sourceforge.net/")
     (license license:bsd-2)))
 
 (define-public keybinder

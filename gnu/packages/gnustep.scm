@@ -248,7 +248,7 @@ graph), and battery status (high - green, low - yellow, or critical - red).")
      (list libx11 libxext libxpm))
     (native-inputs
      (list pkg-config))
-    (home-page "http://www.thregr.org/~wavexx/software/wmnd/")
+    (home-page "https://www.thregr.org/~wavexx/software/wmnd/")
     (synopsis "Network interface monitor")
     (description
      "WMND is a dockapp for monitoring network interfaces under WindowMaker and
@@ -314,7 +314,7 @@ display, and can run a user-specified program on mouse click.")
     (version "1.2.4")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.improbability.net/"
+              (uri (string-append "https://www.improbability.net/"
                                   name "/" name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -326,7 +326,7 @@ display, and can run a user-specified program on mouse click.")
      (list gtk+-2 libgtop))
     (native-inputs
      (list pkg-config))
-    (home-page "http://www.improbability.net/")
+    (home-page "https://www.improbability.net/")
     (synopsis "Display flames to represent resource usage")
     (description
      "wmfire is an applet for Window Maker that can monitor the average cpu

@@ -1553,7 +1553,7 @@ information.")
                            patch
                            pkg-config))
       (build-system glib-or-gtk-build-system)
-      (home-page "http://gbonds.sourceforge.net")
+      (home-page "https://gbonds.sourceforge.net")
       (synopsis "@acronym{U.S.} Savings Bond inventory program for GNOME")
       (description
        "GBonds is a @acronym{U.S.} Savings Bond inventory program for the

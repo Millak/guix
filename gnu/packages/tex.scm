@@ -1215,7 +1215,7 @@ support (for use with a variety of encodings) is provided.")
               (base32
                "0yyk0dr4yms82mwy4dc03zf5igyhgcb65icdah042rk23rlpxygv")
               #:trivial? #t))
-    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern/")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern/")
     (synopsis "Latin Modern family of fonts")
     (description "The Latin Modern fonts are derived from the famous Computer
 Modern fonts designed by Donald E. Knuth and described in Volume E of his
@@ -1236,7 +1236,7 @@ Computers & Typesetting series.")
               (base32
                "0gqdk8x3r1iz4n8j6r3pcqbwalxvkihayvmjfq4iv6hwb0pvys8z")
               #:trivial? #t))
-    (home-page "http://www.gust.org.pl/projects/e-foundry/latin-modern")
+    (home-page "https://www.gust.org.pl/projects/e-foundry/latin-modern")
     (synopsis "OpenType maths fonts for Latin Modern")
     (description "Latin Modern Math is a maths companion for the Latin Modern
 family of fonts, in OpenType format.  For use with LuaLaTeX or XeLaTeX,
@@ -4151,7 +4151,7 @@ polyglossia package rather than Babel.")
                "fonts/vf/cs/cs-a35/")
               (base32 "1ww5lrqja051fh0ygmfdyy5a6bhwq9k5zv857vwiqf5syvw5djps")
               #:trivial? #t))
-    (home-page "http://petr.olsak.net/cstex/")
+    (home-page "https://petr.olsak.net/cstex/")
     (synopsis "Czech/Slovak-tuned Computer Modern fonts")
     (description "This package provides Czech/Slovak-tuned Computer Modern
 fonts in the Metafont format; Type 1 format versions (csfonts-t1) are also
@@ -4167,7 +4167,7 @@ available.")
               (list "tex/csplain/base/")
               (base32 "0cgrwc8lgf2x2hq6bb4kqxw597card985zdd9ipn7k98mmwrxhz3")
               #:trivial? #t))
-    (home-page "http://petr.olsak.net/csplain-e.html")
+    (home-page "https://petr.olsak.net/csplain-e.html")
     (synopsis "Plain TeX multilanguage support")
     (description "CSplain is a small extension of basic Plain TeX macros from
 which the formats @code{csplain} and @code{pdfcsplain} can be generated.  It
@@ -8194,7 +8194,7 @@ values (strings, macros, or numbers) pasted together.")
        ("perl-file-which" ,perl-file-which)
        ("perl-test-more" ,perl-test-most) ; FIXME: "more" would be sufficient
        ("perl-test-differences" ,perl-test-differences)))
-    (home-page "http://biblatex-biber.sourceforge.net/")
+    (home-page "https://biblatex-biber.sourceforge.net/")
     (synopsis "Backend for the BibLaTeX citation management tool")
     (description "Biber is a BibTeX replacement for users of biblatex.  Among
 other things it comes with full Unicode support.")
@@ -8267,7 +8267,7 @@ PDF documents.")
      (list poppler-qt5 qtbase-5 qtscript zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://www.xm1math.net/texmaker/")
+    (home-page "https://www.xm1math.net/texmaker/")
     (synopsis "LaTeX editor")
     (description "Texmaker is a program that integrates many tools needed to
 develop documents with LaTeX, in a single application.")

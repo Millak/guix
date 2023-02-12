@@ -333,7 +333,7 @@ FILE and LDAP; in particular it supports HTTPS certificates, HTTP POST, HTTP
 PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies,
 user+password authentication, file transfer resume, http proxy tunneling and
 more!")
-    (home-page "http://www.curlpp.org")
+    (home-page "https://www.curlpp.org")
     (license license:expat)))
 
 (define-public h2c

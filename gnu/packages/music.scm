@@ -364,7 +364,7 @@ more.")
      (list wxwidgets glib alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://ariamaestosa.sourceforge.net/")
+    (home-page "https://ariamaestosa.sourceforge.net/")
     (synopsis "MIDI sequencer and editor")
     (description
      "Aria Maestosa is a MIDI sequencer and editor.  It lets you compose, edit
@@ -1308,7 +1308,7 @@ biographies, reviews and more.")
            jack-2
            json-c
            pulseaudio))
-    (home-page "http://lingot.nongnu.org/")
+    (home-page "https://lingot.nongnu.org/")
     (synopsis "Accurate & configurable musical instrument tuner")
     (description
      "LINGOT is a musical instrument tuner.  It's accurate, easy to use, and
@@ -2582,7 +2582,7 @@ Paul), and specifically the PaulXStretch version from Xenakios.")
            font-bitstream-vera))
     (native-inputs
      (list help2man pkg-config))
-    (home-page "http://setbfree.org")
+    (home-page "https://setbfree.org")
     (synopsis "Tonewheel organ")
     (description
      "setBfree is a MIDI-controlled, software synthesizer designed to imitate
@@ -2633,7 +2633,7 @@ Laurens Hammond and Don Leslie.")
      (list alsa-lib jack-2 liblo libx11))
     (native-inputs
      (list pkg-config))
-    (home-page "http://bristol.sourceforge.net/")
+    (home-page "https://bristol.sourceforge.net/")
     (synopsis "Synthesizer emulator")
     (description
      "Bristol is an emulation package for a number of different @code{classic}
@@ -2906,7 +2906,7 @@ main purpose is to liberate raw audio rendering from audio and MIDI drivers.")
      (list alsa-lib))
     (native-inputs
      (list unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Library for MIDI I/O")
     (description
      "PortMidi is a library supporting real-time input and output of MIDI data
@@ -2939,7 +2939,7 @@ using a system-independent interface.")
      (list portmidi alsa-lib))
     (native-inputs
      (list python-cython unzip))
-    (home-page "http://portmedia.sourceforge.net/portmidi/")
+    (home-page "https://portmedia.sourceforge.net/portmidi/")
     (synopsis "Python bindings to PortMidi")
     (description
      "This package provides Python bindings to the PortMidi library.")
@@ -3103,7 +3103,7 @@ instrument or MIDI file player.")
     (native-inputs
      (list pkg-config
            ruby))
-    (home-page "http://zynaddsubfx.sf.net/")
+    (home-page "https://zynaddsubfx.sf.net/")
     (synopsis "Software synthesizer")
     (description
      "ZynAddSubFX is a feature heavy realtime software synthesizer.  It offers
@@ -3165,7 +3165,7 @@ capabilities, custom envelopes, effects, etc.")
            zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://yoshimi.sourceforge.net/")
+    (home-page "https://yoshimi.sourceforge.net/")
     (synopsis "Multi-paradigm software synthesizer")
     (description
      "Yoshimi is a fork of ZynAddSubFX, a feature-heavy real-time software
@@ -3366,7 +3366,7 @@ computer's keyboard.")
      (list minixml jack-1 alsa-lib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://aj-snapshot.sourceforge.net/")
+    (home-page "https://aj-snapshot.sourceforge.net/")
     (synopsis "Snapshot connections between ALSA and JACK clients")
     (description "Aj-snapshot is a small program that can be used to make
 snapshots of the connections made between JACK and/or ALSA clients.  Because
@@ -4070,7 +4070,7 @@ modes available for improved Amiga ProTracker 2/3 compatibility.")
     (inputs
      (list alsa-lib ; for asound dependency
            libx11 libxext sdl))
-    (home-page "http://schismtracker.org")
+    (home-page "https://schismtracker.org")
     (synopsis "Oldschool sample-based music composition tool")
     (description
      "Schism Tracker is a reimplementation of Impulse Tracker, a program used to
@@ -4200,7 +4200,7 @@ formats, including most audio formats recognized by FFMpeg.")
     (version "1.1")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://www.fourmilab.ch/webtools/midicsv/"
+              (uri (string-append "https://www.fourmilab.ch/webtools/midicsv/"
                                   name "-" version ".tar.gz"))
               (sha256
                (base32
@@ -4218,7 +4218,7 @@ processed by a program to transform the MIDI data (for example, to key
 transpose a composition or extract a track from a multi-track sequence).  A
 CSV file in the format created by midicsv may be converted back into a
 standard MIDI file with the csvmidi program.")
-    (home-page "http://www.fourmilab.ch/webtools/midicsv/")
+    (home-page "https://www.fourmilab.ch/webtools/midicsv/")
     (license license:public-domain)))
 
 (define-public gx-guvnor-lv2
@@ -4583,7 +4583,7 @@ plugins, a switch trigger, a toggle switch, and a peakmeter.")
      (list qtbase-5 alsa-lib jack-1 liblo lv2))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://qmidiarp.sourceforge.net/")
+    (home-page "https://qmidiarp.sourceforge.net/")
     (synopsis "MIDI arpeggiator")
     (description "QMidiArp is an advanced MIDI arpeggiator, programmable step
 sequencer and LFO.  It can hold any number of arpeggiator, sequencer, or LFO
@@ -4609,7 +4609,7 @@ modules running in parallel.")
      (list qtbase-5 alsa-lib))
     (native-inputs
      (list pkg-config qttools-5))
-    (home-page "http://alsamodular.sourceforge.net/")
+    (home-page "https://alsamodular.sourceforge.net/")
     (synopsis "MIDI event router and filter")
     (description "QMidiRoute is a MIDI event router and filter.  MIDI note,
 control change, program change and pitch bend events are logged, and can be
@@ -5105,7 +5105,7 @@ It is intended to be simple, GUI-toolkit-agnostic, and slightly biased
 towards familiarity with MIDI.  The DSSI distribution package contains
 a JACK/ALSA-sequencer reference host and some plugins as well as the
 specification and header.")
-    (home-page "http://dssi.sourceforge.net/")
+    (home-page "https://dssi.sourceforge.net/")
     ;; The DSSI interface is LGPL2.1+, some tests and examples are GPL2+.
     ;; The vast majority of examples are in the public domain.
     (license (list license:lgpl2.1+ license:gpl2+))))
@@ -6655,7 +6655,7 @@ plugin and a standalone JACK application.")
       (description "TAP (Tom's Audio Processing) plugins is a collection of
   audio effect plugins originally released as LADSPA plugins.  This package
   offers an LV2 version ported by moddevices.")
-      (home-page "http://tap-plugins.sourceforge.net/")
+      (home-page "https://tap-plugins.sourceforge.net/")
       (license license:gpl2))))
 
 (define-public wolf-shaper
@@ -6796,7 +6796,7 @@ It is provided as an LV2 plugin and as a standalone Jack application.")
       (description "Shiru plugins is a collection of audio plugins created
   by Shiru, ported to LV2 by the Linux MAO project using the DISTRHO plugin
   framework.")
-      (home-page "http://shiru.untergrund.net/software.shtml")
+      (home-page "https://shiru.untergrund.net/software.shtml")
       (license license:wtfpl2))))
 
 (define-public a2jmidid

@@ -691,7 +691,7 @@ using Template Haskell")
      ;; We cannot use ghc-call-stack there, because it depends on
      ;; ghc-nanospec, which depends on ghc-hunit.
      (list ghc-call-stack-boot))
-    (home-page "http://hunit.sourceforge.net/")
+    (home-page "https://hunit.sourceforge.net/")
     (synopsis "Unit testing framework for Haskell")
     (description
      "HUnit is a unit testing framework for Haskell, inspired by the

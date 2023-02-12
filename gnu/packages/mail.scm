@@ -1602,7 +1602,7 @@ system, written in the Mercury language.")
      (list pandoc pkg-config))
     (inputs
      (list openssl notmuch sqlite xapian))
-    (home-page "http://www.muchsync.org/")
+    (home-page "https://www.muchsync.org/")
     (synopsis "Synchronize notmuch mail across machines")
     (description
      "Muchsync brings Notmuch to all of your computers by synchronizing your
@@ -2555,7 +2555,7 @@ separation to safely deliver mail in multi-user setups.")
     ;; are performed before the actual build process.
     (build-system gnu-build-system)
     (inputs (list exim))
-    (home-page "http://www.procmail.org/")
+    (home-page "https://www.procmail.org/")
     (synopsis "Versatile mail delivery agent (MDA)")
     (description "Procmail is a mail delivery agent (MDA) featuring support
 for a variety of mailbox formats such as mbox, mh and maildir.  Incoming mail
@@ -3041,7 +3041,7 @@ define(`confINST_DEP', `')
        #:tests? #f))
     (inputs
      (list m4 perl))
-    (home-page "http://sendmail.org")
+    (home-page "https://sendmail.org")
     (synopsis
      "Highly configurable Mail Transfer Agent (MTA)")
     (description
@@ -3331,7 +3331,7 @@ writing OpenSMTPd filters.")
            ;; Our OpenSMTPd package uses libressl, but this package currently
            ;; supports HAVE_ED25519 only with openssl.
            openssl))
-    (home-page "http://imperialat.at/dev/filter-dkimsign/")
+    (home-page "https://imperialat.at/dev/filter-dkimsign/")
     (synopsis "OpenSMTPd filter for signing mail with DKIM")
     (description
      "The @command{filter-dkimsign} OpenSMTPd filter signs outgoing e-mail
@@ -4676,7 +4676,7 @@ ex-like commands on it.")
      (list tre))
     (native-inputs
      `(("emacs" ,emacs-minimal)))
-    (home-page "http://crm114.sourceforge.net/")
+    (home-page "https://crm114.sourceforge.net/")
     (synopsis "Controllable regex mutilator")
     (description "CRM114 is a system to examine incoming e-mail, system log
 streams, data files or other data streams, and to sort, filter, or alter the

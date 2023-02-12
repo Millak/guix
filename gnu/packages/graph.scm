@@ -590,7 +590,7 @@ of graphs.")
      (list pkg-config))
     (inputs
      (list gd))
-    (home-page "http://www.mcternan.me.uk/mscgen/")
+    (home-page "https://www.mcternan.me.uk/mscgen/")
     (synopsis "Message Sequence Chart Generator")
     (description "Mscgen is a small program that parses Message Sequence Chart
 descriptions and produces PNG, SVG, EPS or server side image maps (ismaps) as

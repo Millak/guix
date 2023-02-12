@@ -434,7 +434,7 @@ accessing and converting various ebook file formats.")
                (base32
                 "1f36dbq7nc77lln1by2n1yl050g9dc63viawhs3gc3169mavm36x"))))
     (build-system gnu-build-system)
-    (home-page "http://vimgadgets.sourceforge.net/liblinebreak/")
+    (home-page "https://vimgadgets.sourceforge.net/liblinebreak/")
     (synopsis "Library for detecting where linebreaks are allowed in text")
     (description "@code{liblinebreak} is an implementation of the line
 breaking algorithm as described in Unicode 6.0.0 Standard Annex 14,

@@ -424,7 +424,7 @@ stored with user-specified precision.")
            perl
            tinyxml2
            tng))
-    (home-page "http://www.gromacs.org/")
+    (home-page "https://www.gromacs.org/")
     (synopsis "Molecular dynamics software package")
     (description "GROMACS is a versatile package to perform molecular dynamics,
 i.e. simulate the Newtonian equations of motion for systems with hundreds to

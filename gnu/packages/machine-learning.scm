@@ -437,7 +437,7 @@ Performance is achieved by using the LLVM JIT compiler.")
                                "CFLAGS=-fcommon")))
     (inputs
      (list perl))
-    (home-page "http://micans.org/mcl/")
+    (home-page "https://micans.org/mcl/")
     (synopsis "Clustering algorithm for graphs")
     (description
      "The MCL algorithm is short for the @dfn{Markov Cluster Algorithm}, a
@@ -564,7 +564,7 @@ sample proximities between pairs of cases.")
                 "0hlbdmjjf1jgsvi3d2hwni5lz3l9a5bzj6ijpbawa8a7cbrpp66y"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--enable-ngram-fsts")))
-    (home-page "http://www.openfst.org")
+    (home-page "https://www.openfst.org")
     (synopsis "Library for weighted finite-state transducers")
     (description "OpenFst is a library for constructing, combining,
 optimizing, and searching weighted finite-state transducers (FSTs).")
@@ -905,7 +905,7 @@ with a single function call.")
              (invoke "ctest"))))))
     (native-inputs
      (list catch-framework))
-    (home-page "http://reactivex.io/")
+    (home-page "https://reactivex.io/")
     (synopsis "Reactive Extensions for C++")
     (description
      "The Reactive Extensions for C++ (RxCpp) is a library of algorithms for

@@ -1769,7 +1769,7 @@ it suitable for security research and analysis.")
      `(("mpi" ,openmpi)))
     (inputs
      (list coreutils-minimal))
-    (home-page "http://asco.sourceforge.net/")
+    (home-page "https://asco.sourceforge.net/")
     (synopsis "SPICE circuit optimizer")
     (description
      "ASCO brings circuit optimization capabilities to existing SPICE simulators using a
@@ -1824,7 +1824,7 @@ high-performance parallel differential evolution (DE) optimization algorithm.")
      (list bison flex))
     (inputs
      (list libxaw openmpi))
-    (home-page "http://ngspice.sourceforge.net/")
+    (home-page "https://ngspice.sourceforge.net/")
     (synopsis "Mixed-level/mixed-signal circuit simulator")
     (description
      "Ngspice is a mixed-level/mixed-signal circuit simulator.  It includes
@@ -2766,7 +2766,7 @@ operations.")
     (inputs
      (list libx11))
     (arguments `(#:tests? #f))
-    (home-page "http://spacenav.sourceforge.net/")
+    (home-page "https://spacenav.sourceforge.net/")
     (synopsis
      "Library for communicating with spacenavd or 3dxsrv")
     (description
@@ -2839,7 +2839,7 @@ for compression of 3D triangle meshes.  The geometry is compressed to a
 fraction of comparable file formats (3DS, STL, COLLADA...), and the format is
 accessible through a simple API")
       (license license:zlib)
-      (home-page "http://openctm.sourceforge.net/"))))
+      (home-page "https://openctm.sourceforge.net/"))))
 
 (define-public lib3ds
   (package

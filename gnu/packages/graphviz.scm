@@ -313,7 +313,7 @@ Graphviz and LaTeX.")
     (propagated-inputs
      ;; The gts.pc file has glib-2.0 as required.
      (list glib))
-    (home-page "http://gts.sourceforge.net/")
+    (home-page "https://gts.sourceforge.net/")
 
     ;; Note: Despite the name, this is not official GNU software.
     (synopsis "Triangulated Surface Library")

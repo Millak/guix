@@ -55,5 +55,5 @@ to plain text but will lack formatting.
 Other programs can use wv as a library to convert Word documents to other
 formats.  AbiWord uses it as its Word importer, and KWord uses concepts and
 code from wv in theirs.")
-    (home-page "http://wvware.sourceforge.net/")
+    (home-page "https://wvware.sourceforge.net/")
     (license license:gpl2+)))

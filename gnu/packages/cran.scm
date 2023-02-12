@@ -534,7 +534,7 @@ by Luis Torgo, published by CRC Press.")
          "05mv6xhm15b0mq9kzyiblkb14bdqmjrwl64ghdk66il0w8i7p6nh"))))
     (properties `((upstream-name . "emdist")))
     (build-system r-build-system)
-    (home-page "http://www.rforge.net/emd")
+    (home-page "https://www.rforge.net/emd")
     (synopsis "Earth mover's distance")
     (description
      "This package provides tools to calculate the Earth Mover's
@@ -919,7 +919,7 @@ can read and write both the metadata and the cell data in a Sheet.")
     (build-system r-build-system)
     (inputs (list proj-7 zlib))
     (native-inputs (list pkg-config))
-    (home-page "http://www.rforge.net/proj4/")
+    (home-page "https://www.rforge.net/proj4/")
     (synopsis "Simple interface to the PROJ.4 cartographic projections library")
     (description
      "This package provides a simple interface to lat/long projection and
@@ -1484,7 +1484,7 @@ proposals for count data.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-lattice))
-    (home-page "http://zoo.R-Forge.R-project.org/")
+    (home-page "https://zoo.R-Forge.R-project.org/")
     (synopsis "S3 infrastructure for regular and irregular time series")
     (description "This package contains an S3 class with methods for totally
 ordered indexed observations.  It is particularly aimed at irregular time
@@ -1584,7 +1584,7 @@ in good performances with large files.")
           r-tidyselect))
    (native-inputs
     (list r-knitr))
-   (home-page "http://corybrunson.github.io/ggalluvial/")
+   (home-page "https://corybrunson.github.io/ggalluvial/")
    (synopsis "Alluvial plots for ggplot2")
    (description "This package provides alluvial plots for @code{ggplot2}.
 Alluvial plots use variable-width ribbons and stacked bar plots to represent
@@ -1972,7 +1972,7 @@ higher.")
     (properties `((upstream-name . "OrgMassSpecR")))
     (build-system r-build-system)
     (native-inputs (list r-knitr))
-    (home-page "http://OrgMassSpec.github.io/")
+    (home-page "https://OrgMassSpec.github.io/")
     (synopsis "Organic or biological mass spectrometry data analysis")
     (description
      "This package @code{OrgMassSpecR} is an extension of the @code{R}
@@ -2194,7 +2194,7 @@ with default R plot functions.")
      (list r-colorspace r-scatterplot3d))
     (native-inputs
      (list r-knitr))
-    (home-page "http://oompa.r-forge.r-project.org/")
+    (home-page "https://oompa.r-forge.r-project.org/")
     (synopsis "Qualitative palettes with many colors")
     (description
      "This package provides tools for creating, viewing, and assessing
@@ -4768,7 +4768,7 @@ initiative to bring PASSTEC 2000 functionalities to R.")
           r-mvtnorm
           r-rpart
           r-survival))
-   (home-page "http://partykit.R-Forge.R-project.org/partykit")
+   (home-page "https://partykit.R-Forge.R-project.org/partykit")
    (synopsis "Toolkit for recursive partytioning")
    (description
     "This package provides a toolkit with infrastructure for representing,
@@ -4937,7 +4937,7 @@ value for each cluster in a dendrogram.")
        (sha256
         (base32 "0inmnmi0pqmbqnl00d5yal1bmd7awigxd7sgzjsil9c1k55f4r8y"))))
     (build-system r-build-system)
-    (home-page "http://www.rcpp.org")
+    (home-page "https://www.rcpp.org")
     (synopsis "Seamless R and C++ integration")
     (description
      "The Rcpp package provides R functions as well as C++ classes which offer
@@ -5370,7 +5370,7 @@ any subsequent lookup as it keeps the hash table in memory.")
          "0krwxq4985x3n5mzx8i9smwpkd5sifbfgy9z7ikwk84734km683j"))))
     (build-system r-build-system)
     (propagated-inputs (list r-bit))
-    (home-page "http://ff.r-forge.r-project.org/")
+    (home-page "https://ff.r-forge.r-project.org/")
     (synopsis "Memory-efficient storage of large data on disk and access functions")
     (description
      "This package provides data structures that are stored on disk but
@@ -6046,7 +6046,7 @@ classes in the @code{stats4} package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bbmle r-coda r-lattice r-mass r-plyr))
-    (home-page "http://www.math.mcmaster.ca/bolker/emdbook")
+    (home-page "https://www.math.mcmaster.ca/bolker/emdbook")
     (synopsis "Support functions and data for \"Ecological Models and Data\"")
     (description
      "This package provides auxiliary functions and data sets for \"Ecological
@@ -6125,7 +6125,7 @@ functions from LINPACK.")
      (list r-mass r-survival))
     (native-inputs
      (list r-knitr))
-    (home-page "http://riskassessment.r-forge.r-project.org")
+    (home-page "https://riskassessment.r-forge.r-project.org")
     (synopsis "Fitting a parametric distribution from data")
     (description
      "This package extends the @code{fitdistr} function of the MASS package
@@ -6591,7 +6591,7 @@ interface to @code{PostgreSQL}, a relational database.")
          "1d34m2nyk7m6j2dci69bhy5mlw479xax1517j7f14pq7vhpsm9l1"))))
     (build-system r-build-system)
     (propagated-inputs (list r-lpsolve))
-    (home-page "http://linprog.r-forge.r-project.org/")
+    (home-page "https://linprog.r-forge.r-project.org/")
     (synopsis "Linear programming and optimization")
     (description
      "This package can be used to solve Linear Programming / Linear
@@ -6612,7 +6612,7 @@ Optimization problems by using the simplex algorithm.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-magic r-linprog r-lpsolve r-rcpp r-rcppprogress))
-    (home-page "http://geometry.r-forge.r-project.org/")
+    (home-page "https://geometry.r-forge.r-project.org/")
     (synopsis "Mesh generator and surface tessellator")
     (description
      "This package makes the qhull library available in R, in a similar manner
@@ -7644,7 +7644,7 @@ phylogenies and ancestral character states.")
          "0vc2is1hf1g0sw92kzl8mddck264qwiqgm5q2wkcwwz65fss7mkf"))))
     (build-system r-build-system)
     (propagated-inputs (list r-proxy))
-    (home-page "http://dtw.r-forge.r-project.org/")
+    (home-page "https://dtw.r-forge.r-project.org/")
     (synopsis "Dynamic Time Warping Algorithms")
     (description "This package provides a comprehensive implementation of
 @dfn{dynamic time warping} (DTW) algorithms in R.  DTW computes the
@@ -10280,7 +10280,7 @@ stored data and compression with the LZ4 and ZSTD compressors.")
     (properties `((upstream-name . "fst")))
     (build-system r-build-system)
     (propagated-inputs (list r-fstcore r-rcpp))
-    (home-page "http://www.fstpackage.org")
+    (home-page "https://www.fstpackage.org")
     (synopsis "Fast serialization of data frames")
     (description
      "The fst package for R provides a fast, easy and flexible way to
@@ -11359,7 +11359,7 @@ functions.")
      (list jags))
     (native-inputs
      (list pkg-config))
-    (home-page "http://mcmc-jags.sourceforge.net")
+    (home-page "https://mcmc-jags.sourceforge.net")
     (synopsis "Bayesian graphical models using MCMC")
     (description
      "This package provides an R interface to the JAGS MCMC library.  JAGS is
@@ -12480,7 +12480,7 @@ through permutation testing.")
      (list r-igraph r-network))
     (native-inputs
      (list r-knitr))
-    (home-page "http://mbojan.github.io/intergraph")
+    (home-page "https://mbojan.github.io/intergraph")
     (synopsis "Coercion routines for network data objects")
     (description
      "Functions implemented in this package allow coercing (i.e. convert)
@@ -12830,7 +12830,7 @@ data with multiple data types.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-kernsmooth))
-    (home-page "http://qualV.R-Forge.R-Project.org/")
+    (home-page "https://qualV.R-Forge.R-Project.org/")
     (synopsis "Qualitative Validation Methods")
     (description
      "This package provides qualitative methods for the validation of dynamic
@@ -12891,7 +12891,7 @@ subsequence} (LCS) using a dynamic programming algorithm.")
            r-vctrs))
     (native-inputs
      (list r-knitr))
-    (home-page "http://larmarange.github.io/labelled/")
+    (home-page "https://larmarange.github.io/labelled/")
     (synopsis "Manipulating labelled data")
     (description
      "This package provides useful functions to deal with the
@@ -13608,7 +13608,7 @@ console, resulting in an interactive editing environment.")
            r-mitools
            r-numderiv
            r-survival))
-    (home-page "http://r-survey.r-forge.r-project.org/survey/")
+    (home-page "https://r-survey.r-forge.r-project.org/survey/")
     (synopsis "Analysis of complex survey samples")
     (description
      "This package provides tools for the analysis of complex survey samples.
@@ -14109,7 +14109,7 @@ and permutation inference in the framework of Strasser and Weber (1999).")
            r-multcomp
            r-mvtnorm
            r-survival))
-    (home-page "http://coin.r-forge.r-project.org")
+    (home-page "https://coin.r-forge.r-project.org")
     (synopsis "Conditional inference procedures in a permutation test framework")
     (description
      "This package provides conditional inference procedures for the general
@@ -15747,7 +15747,7 @@ al. (2010) <DOI:10.1016/j.neuroimage.2010.04.241>, Tabelow and Polzehl (2011)
         (base32
          "082qj08kzyzwvjacwq0sl3xxdx6iz5hgx6q24jv1mnvx7z5xn5ry"))))
     (build-system r-build-system)
-    (home-page "http://minato.sip21c.org/msb/")
+    (home-page "https://minato.sip21c.org/msb/")
     (synopsis "Functions for medical statistics book with demographic data")
     (description
      "This package provides several utility functions for the book entitled
@@ -16050,7 +16050,7 @@ Processing.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-bh r-nlp r-rcpp r-slam r-xml2))
-    (home-page "http://tm.r-forge.r-project.org/")
+    (home-page "https://tm.r-forge.r-project.org/")
     (synopsis "Text mining package")
     (description
      "This package provides a framework for text mining applications within R.")
@@ -16411,7 +16411,7 @@ structure of any data type.")
         (base32
          "028fw61n61i79fhnaqx7gmdifdpbvp3yiaq9vvfrbv4k7i84r83i"))))
     (build-system r-build-system)
-    (home-page "http://strimmerlab.org/software/corpcor/")
+    (home-page "https://strimmerlab.org/software/corpcor/")
     (synopsis "Efficient estimation of covariance and (partial) correlation")
     (description
      "This package implements a James-Stein-type shrinkage estimator for the
@@ -17177,7 +17177,7 @@ limitations\" using the GNU Multiple Precision library.")
      (list r-gmp))
     (native-inputs
      (list pkg-config))
-    (home-page "http://rmpfr.r-forge.r-project.org/")
+    (home-page "https://rmpfr.r-forge.r-project.org/")
     (synopsis "R bindings to the MPFR library")
     (description
      "This package supports arithmetic (via S4 classes and methods) for
@@ -17708,7 +17708,7 @@ covariance functions for large data sets.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-fields r-maps))
-    (home-page "http://spatialextremes.r-forge.r-project.org/")
+    (home-page "https://spatialextremes.r-forge.r-project.org/")
     (synopsis "Modelling spatial extremes")
     (description
      "This package provides tools for the statistical modelling of spatial
@@ -17902,7 +17902,7 @@ covariates of each feature, making the downstream analysis easy.")
          "046w3xbr535c5jyd68adv42a7limxp1mv57b5w6w673w707lmw2p"))))
     (build-system r-build-system)
     (propagated-inputs (list r-corpcor))
-    (home-page "http://strimmerlab.org/software/longitudinal/")
+    (home-page "https://strimmerlab.org/software/longitudinal/")
     (synopsis "Analysis of multiple time course data")
     (description
      "This package contains general data structures and functions for
@@ -17926,7 +17926,7 @@ dynamical correlation and dynamical covariance.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-corpcor r-fdrtool r-longitudinal))
-    (home-page "http://strimmerlab.org/software/genenet/")
+    (home-page "https://strimmerlab.org/software/genenet/")
     (synopsis "Modeling and inferring gene networks")
     (description
      "This package analyzes gene expression (time series) data with focus on
@@ -18720,7 +18720,7 @@ identifying outliers.")
     (propagated-inputs
      (list r-rcpp r-rcpparmadillo))
     (native-inputs (list r-knitr))
-    (home-page "http://www.perossi.org/home/bsm-1")
+    (home-page "https://www.perossi.org/home/bsm-1")
     (synopsis "Bayesian inference for marketing/micro-econometrics")
     (description
      "This package covers many important models used in marketing and
@@ -19787,7 +19787,7 @@ barplots or heatmaps.")
      (list r-ade4 r-segmented))
     (inputs
      (list zlib))
-    (home-page "http://seqinr.r-forge.r-project.org/")
+    (home-page "https://seqinr.r-forge.r-project.org/")
     (synopsis "Biological sequences retrieval and analysis")
     (description
      "This package provides tools for exploratory data analysis and data
@@ -21573,7 +21573,7 @@ repository.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-kernsmooth r-mass))
-    (home-page "http://mpm.r-forge.r-project.org")
+    (home-page "https://mpm.r-forge.r-project.org")
     (synopsis "Multivariate projection methods")
     (description
      "This is a package for exploratory graphical analysis of multivariate
@@ -22212,7 +22212,7 @@ Row} (CSR) format.")
            r-stringi))
     (native-inputs
      (list r-knitr))
-    (home-page "http://text2vec.org")
+    (home-page "https://text2vec.org")
     (synopsis "Text mining framework for R")
     (description
      "This package provides fast and memory-friendly tools for text
@@ -23594,7 +23594,7 @@ effect size.")
      (list r-sp))
     (native-inputs
      (list pkg-config r-knitr))
-    (home-page "http://rgdal.r-forge.r-project.org")
+    (home-page "https://rgdal.r-forge.r-project.org")
     (synopsis "Bindings for the Geospatial Data Abstraction Library")
     (description
      "This package provides bindings to the Geospatial Data Abstraction
@@ -25276,7 +25276,7 @@ transcription, ...")
      (list libsndfile))
     (propagated-inputs
      (list r-tuner))
-    (home-page "http://rug.mnhn.fr/seewave")
+    (home-page "https://rug.mnhn.fr/seewave")
     (synopsis "Sound analysis and synthesis")
     (description
      "This package provides functions for analysing, manipulating, displaying,
@@ -25846,7 +25846,7 @@ R.")
            r-locfit
            r-rcolorbrewer))
     (native-inputs (list gfortran))
-    (home-page "http://pkg.robjhyndman.com/hdrcde")
+    (home-page "https://pkg.robjhyndman.com/hdrcde")
     (synopsis "Highest density regions and conditional density estimation")
     (description
      "This is a package for the computation of highest density regions in one
@@ -26632,7 +26632,7 @@ different conceptual parts of the algorithm.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-mass r-minpack-lm r-rgl r-scatterplot3d))
-    (home-page "http://www.maths.nottingham.ac.uk/~ild/shapes")
+    (home-page "https://www.maths.nottingham.ac.uk/~ild/shapes")
     (synopsis "Statistical shape analysis")
     (description
      "This package provides routines for the statistical analysis of landmark
@@ -26748,7 +26748,7 @@ statistical shape analysis and archetypal analysis.")
     (propagated-inputs
      (list r-bh
            r-rcpp))
-    (home-page "http://dirk.eddelbuettel.com/code/anytime.html")
+    (home-page "https://dirk.eddelbuettel.com/code/anytime.html")
     (synopsis "Converter of input to POSIXct or Date")
     (description
      "The package converts the input in any one of character, integer, numeric,
@@ -27689,7 +27689,7 @@ Gibbs sampling by Xuan-Hieu Phan and co-authors.")
            r-rcpparmadillo
            r-slam
            r-stringr))
-    (home-page "http://www.structuraltopicmodel.com/")
+    (home-page "https://www.structuraltopicmodel.com/")
     (synopsis "Estimation of the Structural Topic Model")
     (description
      "The @dfn{Structural Topic Model} (STM) allows researchers to estimate
@@ -28196,7 +28196,7 @@ model objects and help reduce the size of model objects saved to disk.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-plyr r-rjson r-whisker))
-    (home-page "http://christophergandrud.github.io/d3Network/")
+    (home-page "https://christophergandrud.github.io/d3Network/")
     (synopsis "Create D3 JavaScript network, tree, dendrogram, and Sankey graphs")
     (description
      "This package is intended to make it easy to create D3 JavaScript
@@ -28329,7 +28329,7 @@ well as Ravand and Robitzsch (2015).")
     (build-system r-build-system)
     (propagated-inputs
      (list r-cdm r-rcpp r-rcpparmadillo))
-    (home-page "http://www.edmeasurementsurveys.com/TAM/Tutorials/")
+    (home-page "https://www.edmeasurementsurveys.com/TAM/Tutorials/")
     (synopsis "Test analysis modules")
     (description
      "This package includes tools for marginal maximum likelihood estimation
@@ -29942,7 +29942,7 @@ permuted copies (shadows).")
      (list r-quadprog))
     (native-inputs
      (list r-knitr))
-    (home-page "http://directlabels.r-forge.r-project.org/")
+    (home-page "https://directlabels.r-forge.r-project.org/")
     (synopsis "Direct labels for multicolor plots")
     (description
      "This package provides an extensible framework for automatically placing
@@ -30543,7 +30543,7 @@ Kolmogorov-Smirnov, ANOVA) are also supported.")
     (properties
      `((upstream-name . "spatstat.utils")))
     (build-system r-build-system)
-    (home-page "http://www.spatstat.org")
+    (home-page "https://www.spatstat.org")
     (synopsis "Utility functions for spatstat")
     (description
      "This package contains utility functions for the @code{spatstat} package
@@ -30566,7 +30566,7 @@ which may also be useful for other purposes.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-abind r-matrix r-spatstat-utils r-tensor))
-    (home-page "http://spatstat.org/")
+    (home-page "https://spatstat.org/")
     (synopsis "Sparse three-dimensional arrays and linear algebra utilities")
     (description
      "This package defines sparse three-dimensional arrays and supports
@@ -30589,7 +30589,7 @@ matrix calculations that are common in statistics, such as quadratic forms.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-matrix r-spatstat-utils))
-    (home-page "http://www.spatstat.org")
+    (home-page "https://www.spatstat.org")
     (synopsis "Datasets for spatstat")
     (description
      "This package contains all the datasets for the @code{spatstat}
@@ -30611,7 +30611,7 @@ package.")
     (build-system r-build-system)
     (propagated-inputs
      (list r-deldir r-polyclip r-spatstat-data r-spatstat-utils))
-    (home-page "http://spatstat.org/")
+    (home-page "https://spatstat.org/")
     (synopsis "Geometrical functionality of the spatstat package")
     (description
      "This is a subset of the original spatstat package, containing the
@@ -30645,7 +30645,7 @@ for the geometry of linear networks.")
            r-spatstat-sparse
            r-spatstat-utils
            r-tensor))
-    (home-page "http://spatstat.org/")
+    (home-page "https://spatstat.org/")
     (synopsis "Core functionality of the spatstat package")
     (description
      "This is a subset of the original spatstat package, containing all of the
@@ -30675,7 +30675,7 @@ user-level code from spatstat, except for the code for linear networks.")
            r-spatstat-random
            r-spatstat-sparse
            r-spatstat-utils))
-    (home-page "http://spatstat.org/")
+    (home-page "https://spatstat.org/")
     (synopsis "Linear networks functionality of the spatstat package")
     (description
      "This is a subset of the spatstat package, containing its functionality
@@ -30695,7 +30695,7 @@ for spatial data on a linear network.")
     (properties `((upstream-name . "spatstat.random")))
     (build-system r-build-system)
     (propagated-inputs (list r-spatstat-data r-spatstat-geom r-spatstat-utils))
-    (home-page "http://spatstat.org/")
+    (home-page "https://spatstat.org/")
     (synopsis "Random Generation Functionality for the 'spatstat' Family")
     (description
      "This package provides functionality for random generation of spatial
@@ -30727,7 +30727,7 @@ sampler).")
      (list r-spatstat-data r-spatstat-explore r-spatstat-geom
            r-spatstat-linnet r-spatstat-model r-spatstat-random
            r-spatstat-utils))
-    (home-page "http://www.spatstat.org")
+    (home-page "https://www.spatstat.org")
     (synopsis "Spatial Point Pattern analysis, model-fitting, simulation, tests")
     (description
      "This package provides a comprehensive toolbox for analysing Spatial
@@ -30803,7 +30803,7 @@ semantics and supports interaction with @code{ALTREP} vectors.")
     (properties `((upstream-name . "RcppTOML")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
-    (home-page "http://dirk.eddelbuettel.com/code/rcpp.toml.html")
+    (home-page "https://dirk.eddelbuettel.com/code/rcpp.toml.html")
     (synopsis "Rcpp bindings to TOML parser")
     (description
      "The TOML configuration format specifies an excellent format suitable for
@@ -32468,7 +32468,7 @@ this variability problem can be overcome.")
          "1kdnm5ilfn5fclry3f1d518761hykrqgjhv69kc881r2fpcfa1lv"))))
     (properties `((upstream-name . "MLEcens")))
     (build-system r-build-system)
-    (home-page "http://stat.ethz.ch/~maathuis/")
+    (home-page "https://stat.ethz.ch/~maathuis/")
     (synopsis "Computation of the MLE for bivariate (interval) censored data")
     (description
      "This package contains functions to compute the nonparametric
@@ -32786,7 +32786,7 @@ other R users.")
            r-spatstat-geom
            r-tibble
            r-uwot))
-    (home-page "http://www.satijalab.org/seurat")
+    (home-page "https://www.satijalab.org/seurat")
     (synopsis "Seurat is an R toolkit for single cell genomics")
     (description
      "This package is an R package designed for QC, analysis, and
@@ -36132,7 +36132,7 @@ large datasets.")
            r-mass
            r-nnet
            r-randomforest))
-    (home-page "http://www.sciviews.org/zooimage")
+    (home-page "https://www.sciviews.org/zooimage")
     (synopsis "Machine learning algorithms with unified interface")
     (description
      "This package provides a unified interface to various machine learning
@@ -36165,7 +36165,7 @@ algorithms.  Confusion matrices are provided too.")
            r-svdialogs
            r-svmisc
            r-tiff))
-    (home-page "http://www.sciviews.org/zooimage")
+    (home-page "https://www.sciviews.org/zooimage")
     (synopsis "Analysis of numerical plankton images")
     (description
      "This package provides a solution for analyzing digital images of

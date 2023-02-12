@@ -77,7 +77,7 @@
      `(("gettext" ,gettext-minimal)
        ("perl" ,perl)
        ("pkg-config" ,pkg-config)))
-    (home-page "http://w3m.sourceforge.net/")
+    (home-page "https://w3m.sourceforge.net/")
     (synopsis "Text-mode web browser")
     (description
      "w3m is a text-based web browser as well as a pager like @code{more} or

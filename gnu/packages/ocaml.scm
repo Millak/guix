@@ -966,7 +966,7 @@ name = Guix Builder")
      ;; OPAM is used as a tool and not as a library, we can use the OCaml 4.14
      ;; compiled opam until opam is compatible with OCaml 5.0.
      `((ocaml5.0-variant . ,(delay opam))))
-    (home-page "http://opam.ocamlpro.com/")
+    (home-page "https://opam.ocamlpro.com/")
     (synopsis "Package manager for OCaml")
     (description
      "OPAM is a tool to manage OCaml packages.  It supports multiple
@@ -1134,7 +1134,7 @@ concrete syntax of the language (Quotations, Syntax Extensions).")
                       (substitute* "_tags"
                         (("/bin/sh") (which "sh")))
                       #t)))))
-    (home-page "http://hevea.inria.fr/")
+    (home-page "https://hevea.inria.fr/")
     (synopsis "LaTeX to HTML translator")
     (description
      "HeVeA is a LaTeX to HTML translator that generates modern HTML 5.  It is
@@ -1242,7 +1242,7 @@ Emacs.")
     (arguments
      `(#:tests? #f)) ; No check target
     (properties `((ocaml4.07-variant . ,(delay (strip-ocaml4.07-variant ocaml-menhir)))))
-    (home-page "http://gallium.inria.fr/~fpottier/menhir/")
+    (home-page "https://gallium.inria.fr/~fpottier/menhir/")
     (synopsis "Parser generator")
     (description "Menhir is a parser generator.  It turns high-level grammar
 specifications, decorated with semantic actions expressed in the OCaml
@@ -5019,7 +5019,7 @@ Format module of the OCaml standard library.")
        ("ocaml-sedlex" ,ocaml-sedlex)
        ("ocaml-easy-format" ,ocaml-easy-format)
        ("ocaml-base64" ,ocaml-base64)))
-    (home-page "http://piqi.org")
+    (home-page "https://piqi.org")
     (synopsis "Data serialization and conversion library")
     (description "Piqilib is the common library used by the piqi command-line
 tool and piqi-ocaml.")
@@ -5093,7 +5093,7 @@ and 4 (random based) according to RFC 4122.")
                      (search-input-file inputs "/bin/sh")))))))
     (inputs (list lablgtk))
     (properties `((upstream-name . "ocamlgraph")))
-    (home-page "http://ocamlgraph.lri.fr/")
+    (home-page "https://ocamlgraph.lri.fr/")
     (synopsis "Graph library for OCaml")
     (description "OCamlgraph is a generic graph library for OCaml.")
     (license license:lgpl2.1)))
@@ -6226,7 +6226,7 @@ the OCaml language.")
                                "/lib/ocaml/site-lib/num"
                                " $(FUNCTORYLIB)")))
              #t)))))
-    (home-page "http://cubicle.lri.fr/")
+    (home-page "https://cubicle.lri.fr/")
     (synopsis "Model checker for array-based systems")
     (description "Cubicle is a model checker for verifying safety properties
 of array-based systems.  This is a syntactically restricted class of

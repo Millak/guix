@@ -661,7 +661,7 @@ software.")
            sqlite))
     (native-inputs
      (list pkg-config))
-    (home-page "http://gittup.org/tup/")
+    (home-page "https://gittup.org/tup/")
     (synopsis "Fast build system that's hard to get wrong")
     (description "Tup is a generic build system based on a directed acyclic
 graphs of commands to be executed.  Tup instruments your build to detect the

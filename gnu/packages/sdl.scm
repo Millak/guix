@@ -197,7 +197,7 @@ joystick, and graphics hardware.")
 digital sound files.  It can take advantage of particular features of your
 system, such as sound redirection over the network.")
     (license license:lgpl2.1)
-    (home-page "http://mikmod.sourceforge.net/")))
+    (home-page "https://mikmod.sourceforge.net/")))
 
 (define-public sdl-gfx
   (package
@@ -377,7 +377,7 @@ SDL.")
        ("harfbuzz" ,harfbuzz)
        ("pango" ,pango)
        ("sdl" ,sdl)))
-    (home-page "http://sdlpango.sourceforge.net")
+    (home-page "https://sdlpango.sourceforge.net")
     (synopsis "Pango SDL binding")
     (description "This library is a wrapper around the Pango library.
 It allows you to use TrueType fonts to render internationalized and

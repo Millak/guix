@@ -350,7 +350,7 @@ wide set of telescopes.")
            python
            python-numpy
            wcslib))
-    (home-page "http://casacore.github.io/casacore/")
+    (home-page "https://casacore.github.io/casacore/")
     (synopsis "Suite of C++ libraries for radio astronomy data processing")
     (description
      "The casacore package contains the core libraries of the old
@@ -654,7 +654,7 @@ programs for the manipulation and analysis of astronomical data.")
     (inputs
      `(("openblas" ,openblas)
        ("fftw" ,fftwf)))
-    (home-page "http://www.astromatic.net/software/sextractor")
+    (home-page "https://www.astromatic.net/software/sextractor")
     (synopsis "Extract catalogs of sources from astronomical images")
     (description
      "SExtractor is a program that builds a catalogue of objects from an
@@ -1708,7 +1708,7 @@ elevation, solar azimuth, rahukaalam, and the phases of the moon.")
     (synopsis "Celestial mechanics, astrometry and astrodynamics library")
     (description "Libnova is a general purpose, double precision, Celestial
 Mechanics, Astrometry and Astrodynamics library.")
-    (home-page "http://libnova.sourceforge.net/")
+    (home-page "https://libnova.sourceforge.net/")
     (license (list license:lgpl2.0+
                    license:gpl2+)))) ; examples/transforms.c & lntest/*.c
 
@@ -1914,7 +1914,7 @@ on FITS files:
                   (string-append "CPPFLAGS=-I" netpbm "/include/netpbm")
                   ;; no nasa jpl cspice support
                   "--without-cspice" )))))
-    (home-page "http://xplanet.sourceforge.net/")
+    (home-page "https://xplanet.sourceforge.net/")
     (synopsis "Planetary body renderer")
     (description
      "Xplanet renders an image of a planet into an X window or file.

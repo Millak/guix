@@ -632,7 +632,7 @@ the in DocBook SGML DTDs.")
                                           "/bin"))
                          '("libxslt" "texlive"
                            "imagemagick" "inkscape"))))))))))
-    (home-page "http://dblatex.sourceforge.net")
+    (home-page "https://dblatex.sourceforge.net")
     (synopsis "DocBook to LaTeX Publishing")
     (description
      "DocBook to LaTeX Publishing transforms your SGML/XML DocBook documents
@@ -818,7 +818,7 @@ Detect the differences in markup between two SGML files.
                (map (lambda (prog)
                       (symlink prog (string-append out "/bin/db2x_" prog)))
                     '("docbook2man" "docbook2texi"))))))))
-    (home-page "http://docbook2x.sourceforge.net")
+    (home-page "https://docbook2x.sourceforge.net")
     (synopsis "Convert DocBook to man page and Texinfo format")
     (description
      "docbook2X is a software package that converts DocBook documents into the

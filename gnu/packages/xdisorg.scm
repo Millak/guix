@@ -768,7 +768,7 @@ and Matrox.")
           "1q700h9dqcm3zl6c3gj0qxxjcx6ibw2c51wjijydhwdcm26v5mqm"))))
     (build-system gnu-build-system)
     (arguments '(#:configure-flags '("--disable-static")))
-    (home-page "http://bitmath.org/code/mtdev/")
+    (home-page "https://bitmath.org/code/mtdev/")
     (synopsis "Multitouch protocol translation library")
     (description "Mtdev is a stand-alone library which transforms all
 variants of kernel MT events to the slotted type B protocol.  The events
@@ -1782,7 +1782,7 @@ Saver extension) library.")
       (native-inputs (list autoconf automake libtool))
       (inputs
        (list libxt))
-      (home-page "http://www.vergenet.net/~conrad/software/xsel/")
+      (home-page "https://www.vergenet.net/~conrad/software/xsel/")
       (synopsis "Manipulate X selection")
       (description
        "XSel is a command-line program for getting and setting the contents of

@@ -830,7 +830,7 @@ pyproj, Rtree, and Shapely.")
       (list python-fiona python-pandas python-pyproj python-shapely))
     (native-inputs
       (list python-pytest))
-    (home-page "http://geopandas.org")
+    (home-page "https://geopandas.org")
     (synopsis "Geographic pandas extensions")
     (description "The goal of GeoPandas is to make working with
 geospatial data in Python easier.  It combines the capabilities of
@@ -2458,7 +2458,7 @@ visualization.")
 Information System (GIS) software.  It has been designed for an easy and
 effective implementation of spatial algorithms and it offers a comprehensive,
 growing set of geoscientific methods.")
-    (home-page "http://www.saga-gis.org")
+    (home-page "https://www.saga-gis.org")
     (license (list license:gpl2+ license:lgpl2.1+))))
 
 (define-public qgis

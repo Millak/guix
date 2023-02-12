@@ -719,7 +719,7 @@ interaction.")
                ;; Look for freetype include files in the correct place.
                (substitute* "cmake/modules/FindFREETYPE.cmake"
                  (("/usr/local") freetype))))))))
-    (home-page "http://podofo.sourceforge.net")
+    (home-page "https://podofo.sourceforge.net")
     (synopsis "Tools to work with the PDF file format")
     (description
      "PoDoFo is a C++ library and set of command-line tools to work with the
@@ -883,7 +883,7 @@ program capable of converting PDF into other formats.")
    ;; Prior to the 7.0 release, QPDF was licensed under Artistic 2.0.
    ;; Users can still choose to use the old license at their option.
    (license (list license:asl2.0 license:clarified-artistic))
-   (home-page "http://qpdf.sourceforge.net/")))
+   (home-page "https://qpdf.sourceforge.net/")))
 
 (define-public qpdfview
   (package
@@ -942,7 +942,7 @@ SyncTeX support, and rudimentary support for annotations and forms.")
      (list gtk+-2 pango poppler glib libgnomecanvas))
     (native-inputs
      (list pkg-config))
-    (home-page "http://xournal.sourceforge.net/")
+    (home-page "https://xournal.sourceforge.net/")
     (synopsis "Notetaking using a stylus")
     (description
      "Xournal is an application for notetaking, sketching, keeping a journal
@@ -1121,7 +1121,7 @@ vector formats.")
                 (install-file "impressive.1" man1)))))))
     ;; TODO: Add dependency on pdftk.
     (inputs (list python-pygame python-pillow sdl xpdf))
-    (home-page "http://impressive.sourceforge.net")
+    (home-page "https://impressive.sourceforge.net")
     (synopsis "PDF presentation tool with visual effects")
     (description
      "Impressive is a tool to display PDF files that provides visual effects

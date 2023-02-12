@@ -594,7 +594,7 @@ the API, and provides features such as:
      (list memcached python-pytest))
     (inputs
      (list libmemcached zlib cyrus-sasl))
-    (home-page "http://sendapatch.se/projects/pylibmc/")
+    (home-page "https://sendapatch.se/projects/pylibmc/")
     (synopsis "Python client for memcached")
     (description
      "@code{pylibmc} is a client in Python for memcached.  It is a wrapper
@@ -2344,7 +2344,7 @@ data sources.  Data sources include SQL Servers and any software with an ODBC
 Driver.")
    (license license:lgpl2.1+)
    ;; COPYING contains copy of lgpl2.1 - but copyright notices just say "LGPL"
-   (home-page "http://www.unixodbc.org")))
+   (home-page "https://www.unixodbc.org")))
 
 (define-public nanodbc
   (package
@@ -2668,7 +2668,7 @@ organized in hash table, B+ tree, or fixed-length array.")
              #t)))))
     (inputs
      (list lz4 zlib snappy))
-    (home-page "http://source.wiredtiger.com/")
+    (home-page "https://source.wiredtiger.com/")
     (synopsis "NoSQL data engine")
     (description
      "WiredTiger is an extensible platform for data management.  It supports
@@ -2861,7 +2861,7 @@ semantics.")
      "Libpqxx is a C++ library to enable user programs to communicate with the
 PostgreSQL database back-end.  The database back-end can be local or it may be
 on another machine, accessed via TCP/IP.")
-    (home-page "http://pqxx.org/")
+    (home-page "https://pqxx.org/")
     (license license:bsd-3)))
 
 (define-public go-go-etcd-io-bbolt
@@ -3190,7 +3190,7 @@ for ODBC.")
            pkg-config
            txt2man
            which))
-    (home-page "http://mdbtools.sourceforge.net/")
+    (home-page "https://mdbtools.sourceforge.net/")
     (synopsis "Read Microsoft Access databases")
     (description "MDB Tools is a set of tools and applications to read the
 proprietary MDB file format used in Microsoft's Access database package.  This
@@ -3354,7 +3354,7 @@ Memory-Mapped Database} (LMDB), a high-performance key-value store.")
      (list autoconf automake bison flex gperf libtool))
     (inputs
      (list openssl net-tools readline zlib))
-    (home-page "http://vos.openlinksw.com/owiki/wiki/VOS/")
+    (home-page "https://vos.openlinksw.com/owiki/wiki/VOS/")
     (synopsis "Multi-model database system")
     (description "Virtuoso is a scalable cross-platform server that combines
 relational, graph, and document data management with web application server
@@ -4683,7 +4683,7 @@ SQLAlchemy.")
 similar to the DBI/DBD layer in Perl.  Writing one generic set of code,
 programmers can leverage the power of multiple databases and multiple
 simultaneous database connections by using this framework.")
-    (home-page "http://libdbi.sourceforge.net/")
+    (home-page "https://libdbi.sourceforge.net/")
     (license license:lgpl2.1+)))
 
 (define-public libdbi-drivers
@@ -4754,7 +4754,7 @@ The drivers officially supported by @code{libdbi} are:
 @item PostgreSQL,
 @item SQLite.
 @end itemize")
-    (home-page "http://libdbi-drivers.sourceforge.net/")
+    (home-page "https://libdbi-drivers.sourceforge.net/")
     (license license:lgpl2.1+)))
 
 (define-public soci
@@ -4789,7 +4789,7 @@ The drivers officially supported by @code{libdbi} are:
     (description
      "SOCI is an abstraction layer for several database backends, including
 PostreSQL, SQLite, ODBC and MySQL.")
-    (home-page "http://soci.sourceforge.net/")
+    (home-page "https://soci.sourceforge.net/")
     (license license:boost1.0)))
 
 (define-public freetds

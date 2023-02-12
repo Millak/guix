@@ -2725,7 +2725,7 @@ See http://minikanren.org/ for more on miniKanren generally.")
        #:source-directory "src"))
     (native-inputs
      (list guile-3.0))
-    (home-page "http://synthcode.com/scheme/irregex")
+    (home-page "https://synthcode.com/scheme/irregex")
     (synopsis "S-expression based regular expressions")
     (description
      "Irregex is an s-expression based alternative to your classic

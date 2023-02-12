@@ -930,7 +930,7 @@ large scale eigenvalue problems.")
        (base32
         "1155qixp26c12yrxc76z9mlfw2h3xxymxxv5znpgzh5gaykpndgj"))))
     (build-system cmake-build-system)
-    (home-page "http://www.netlib.org/lapack/")
+    (home-page "https://www.netlib.org/lapack/")
     (inputs `(("fortran" ,gfortran)
               ("python" ,python-wrapper)))
     (arguments
@@ -1033,7 +1033,7 @@ provide LAPACK for someone who does not have access to a Fortran compiler.")
                       (substitute* "TESTING/CMakeLists.txt"
                         (("^add_test\\(x[sd]hseqr.*" all)
                          (string-append "# " all "\n"))))))))
-    (home-page "http://www.netlib.org/scalapack/")
+    (home-page "https://www.netlib.org/scalapack/")
     (synopsis "Library for scalable numerical linear algebra")
     (description
      "ScaLAPACK is a Fortran 90 library of high-performance linear algebra
@@ -1655,7 +1655,7 @@ System (Grid, Point and Swath).")
      "HDF-EOS5 is a software library built on HDF5 to support the construction
 of data structures used in NASA's Earth Observing System (Grid, Point and
 Swath).")
-    (home-page "http://www.hdfeos.org/software/library.php#HDF-EOS5")
+    (home-page "https://www.hdfeos.org/software/library.php#HDF-EOS5")
 
     ;; Source files carry a permissive license header.
     (license (license:non-copyleft home-page))))
@@ -1840,7 +1840,7 @@ the resulting text.")
      `(("texlive" ,texlive-tiny)
        ("ghostscript" ,ghostscript)
        ("doxygen" ,doxygen)))
-    (home-page "http://itpp.sourceforge.net")
+    (home-page "https://itpp.sourceforge.net")
     (synopsis "C++ library of maths, signal processing and communication classes")
     (description "IT++ is a C++ library of mathematical, signal processing and
 communication classes and functions.  Its main use is in simulation of
@@ -3177,7 +3177,7 @@ This is the certified version of the Open Cascade Technology (OCCT) library.")
                (substitute* "api/gmsh.py"
                  (("find_library\\(\"gmsh\"\\)")
                   (simple-format #f "\"~a\"" libgmsh)))))))))
-    (home-page "http://gmsh.info/")
+    (home-page "https://gmsh.info/")
     (synopsis "3D finite element grid generator")
     (description "Gmsh is a 3D finite element grid generator with a built-in
 CAD engine and post-processor.  Its design goal is to provide a fast, light
@@ -3701,7 +3701,7 @@ bindings to almost all functions of SLEPc.")
     (build-system gnu-build-system)
     (native-inputs
      (list autoconf automake))
-    (home-page "http://us.metamath.org/")
+    (home-page "https://us.metamath.org/")
     (synopsis "Proof verifier based on a minimalistic formalism")
     (description
      "Metamath is a tiny formal language and that can express theorems in
@@ -4380,7 +4380,7 @@ schemes.")
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'mpi-setup
 		    ,%openmpi-setup))))
-    (home-page "http://www.p4est.org")
+    (home-page "https://www.p4est.org")
     (synopsis "Adaptive mesh refinement on forests of octrees")
     (description
      "The p4est software library enables the dynamic management of a
@@ -4632,7 +4632,7 @@ full text searching.")
      `(("openblas" ,openblas)
        ("lapack" ,lapack)
        ("arpack" ,arpack-ng)))
-    (home-page "http://arma.sourceforge.net/")
+    (home-page "https://arma.sourceforge.net/")
     (synopsis "C++ linear algebra library")
     (description
      "Armadillo is a C++ linear algebra library, aiming towards a good balance
@@ -5050,7 +5050,7 @@ Fresnel integrals, and similar related functions as well.")
     (native-inputs
      `(("cmake" ,cmake-minimal)
        ("m4" ,m4)))
-    (home-page "http://faculty.cse.tamu.edu/davis/suitesparse.html")
+    (home-page "https://faculty.cse.tamu.edu/davis/suitesparse.html")
     (synopsis "Suite of sparse matrix software")
     (description
      "SuiteSparse is a suite of sparse matrix algorithms, including: UMFPACK,
@@ -5078,7 +5078,7 @@ packages.")
                (base32
                 "1dyjlq3fiparvm8ypwk6rsmjzmnwk81l88gkishphpvc79ryp216"))))
     (build-system gnu-build-system)
-    (home-page "http://math-atlas.sourceforge.net/")
+    (home-page "https://math-atlas.sourceforge.net/")
     (inputs `(("gfortran" ,gfortran)
               ("lapack-tar" ,(package-source lapack))))
     (outputs '("out" "doc"))
@@ -5334,7 +5334,7 @@ specifications.")
                              (install-file name include))
                            (find-files "." "\\.h$")))
                #t))))))
-    (home-page "http://lpsolve.sourceforge.net/")
+    (home-page "https://lpsolve.sourceforge.net/")
     (synopsis "Mixed integer linear programming (MILP) solver")
     (description
      "lp_solve is a mixed integer linear programming solver based on the
@@ -5681,7 +5681,7 @@ FLANN is written in C++ and contains bindings for C, Octave and Python.")
      (list mpfr readline))
     (native-inputs
      (list bison flex))
-    (home-page "http://w-calc.sourceforge.net/index.php")
+    (home-page "https://w-calc.sourceforge.net/index.php")
     (synopsis "Flexible command-line scientific calculator")
     (description "Wcalc is a very capable calculator.  It has standard functions
 (sin, asin, and sinh for example, in either radians or degrees), many
@@ -7890,7 +7890,7 @@ numeric differences and differences in numeric formats.")
             (invoke "make" "byte")
             (invoke "make" "install-lib")
             #t)))))
-    (home-page "http://why3.lri.fr")
+    (home-page "https://why3.lri.fr")
     (synopsis "Deductive program verification")
     (description "Why3 provides a language for specification and programming,
 called WhyML, and relies on external theorem provers, both automated and
@@ -7943,7 +7943,7 @@ of C, Java, or Ada programs.")
             (variable "FRAMAC_LIB")
             (files '("lib/frama-c"))
             (separator #f))))
-    (home-page "http://frama-c.com")
+    (home-page "https://frama-c.com")
     (synopsis "C source code analysis platform")
     (description "Frama-C is an extensible and collaborative platform dedicated
 to source-code analysis of C software.  The Frama-C analyzers assist you in

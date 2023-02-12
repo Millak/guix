@@ -1163,7 +1163,7 @@ ONC RPC numbers.")
        (let ((out (assoc-ref %outputs "out")))
          (list (string-append "--mandir=" out "/share/man")
                (string-append "--infodir=" out "/share/info")))))
-    (home-page "http://netcat.sourceforge.net")
+    (home-page "https://netcat.sourceforge.net")
     (synopsis "Read and write data over TCP/IP")
     (description
      "Netcat is a featured networking utility which reads and writes data
@@ -1280,7 +1280,7 @@ IPv6, proxies, and Unix sockets.")
                   "1gpvd2kjyhs18sh6sga5bk9wj8s78blfd4c0m38r0wl92jx2yv1b"))))))
     (inputs
      (list ncurses))
-    (home-page "http://nmon.sourceforge.net/")
+    (home-page "https://nmon.sourceforge.net/")
     (synopsis
      "Monitor system performance in a terminal or to a @file{.csv} log file")
     (description

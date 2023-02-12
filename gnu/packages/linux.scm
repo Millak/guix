@@ -2437,7 +2437,7 @@ module.")
                    (for-each (lambda (file)
                                (chmod file #o666))
                              archives))))))))
-    (home-page "http://e2fsprogs.sourceforge.net/")
+    (home-page "https://e2fsprogs.sourceforge.net/")
     (synopsis "Creating and checking ext2/ext3/ext4 file systems")
     (description
      "This package provides tools for manipulating ext2/ext3/ext4 file systems.")
@@ -2502,7 +2502,7 @@ from the e2fsprogs package.  It is meant to be used in initrds.")
        (patches (search-patches "extundelete-e2fsprogs-1.44.patch"))))
     (build-system gnu-build-system)
     (inputs (list e2fsprogs))
-    (home-page "http://extundelete.sourceforge.net/")
+    (home-page "https://extundelete.sourceforge.net/")
     (synopsis "Recover deleted files from ext2/3/4 partitions")
     (description
      "Extundelete is a set of tools that can recover deleted files from an
@@ -2981,7 +2981,7 @@ early boot when entropy may be low, especially in virtualised environments.")
                "0jp458m2b3wckr18qkln69i01152qlwz33zm49103lq8fgx0n6d4"))))
     (build-system gnu-build-system)
     (synopsis "Lists information about SCSI or NVMe devices in Linux")
-    (home-page "http://sg.danny.cz/scsi/lsscsi.html")
+    (home-page "https://sg.danny.cz/scsi/lsscsi.html")
     (description
      "@command{lsscsi} lists SCSI logical units or SCSI targets.  It can
 also list NVMe namespaces or controllers and show the relationship between a
@@ -3100,7 +3100,7 @@ inadequately in modern network environments, and both should be deprecated.")
                (sha256
                 (base32
                  "0hz9fda9d78spp774b6rr5xaxav7cm4h0qcpxf70rvdbrf6qx7vy"))))
-      (home-page "http://net-tools.sourceforge.net/")
+      (home-page "https://net-tools.sourceforge.net/")
       (build-system gnu-build-system)
       (arguments
        `(#:modules ((guix build gnu-build-system)
@@ -3895,7 +3895,7 @@ NUMA performance on your system.")
             ;; run (for example) ‘loadkeys en-latin9’ instead of having to find
             ;; and type ‘i386/colemak/en-latin9’ on a mislabelled keyboard.
             (files (list "share/keymaps/**")))))
-    (home-page "http://kbd-project.org/")
+    (home-page "https://kbd-project.org/")
     (synopsis "Linux keyboard utilities and keyboard maps")
     (description
      "This package contains keytable files and keyboard utilities compatible
@@ -5157,7 +5157,7 @@ specified in /etc/acpi/events and execute the rules that match the event.")
        (sha256
         (base32 "12i0ip11xbfcjzxz4r10cvz7mbzgq1hfcdn97w6zz7sm3wndwrg8"))))
     (build-system gnu-build-system)
-    (home-page "http://linux-diag.sourceforge.net/Sysfsutils.html")
+    (home-page "https://linux-diag.sourceforge.net/Sysfsutils.html")
     (synopsis "System utilities based on Linux sysfs")
     (description
      "These are a set of utilities built upon sysfs, a virtual file system in
@@ -8210,7 +8210,7 @@ available in the kernel Linux.")
                       (assoc-ref outputs "out"))))))))
     (inputs (list perl))
     (supported-systems '("i686-linux" "x86_64-linux"))
-    (home-page "http://www.etallen.com/cpuid.html")
+    (home-page "https://www.etallen.com/cpuid.html")
     (synopsis "Dump x86 CPUID processor information")
     (description "cpuid dumps detailed information about the CPU(s) gathered
 from the CPUID instruction, and also determines the exact model of CPU(s).  It
@@ -8652,7 +8652,7 @@ the OS-specific data structures needed by the kernel to setup the event.
 
 libpfm4 provides support for the @code{perf_events} interface, which was
 introduced in Linux 2.6.31.")
-    (home-page "http://perfmon2.sourceforge.net/")
+    (home-page "https://perfmon2.sourceforge.net/")
     (license license:expat)))
 
 (define-public libnfnetlink

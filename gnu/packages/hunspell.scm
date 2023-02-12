@@ -263,7 +263,7 @@ spell-checking library.")
       (synopsis "Hunspell dictionary for Hungarian (hu_HU)")
       (description "This package provides a dictionary for the Hunspell
 spell-checking library.")
-      (home-page "http://magyarispell.sourceforge.net/")
+      (home-page "https://magyarispell.sourceforge.net/")
       (license (list license:gpl2 license:gpl3)))))
 
 (define* (hunspell-dictionary dict-name full-name #:key synopsis home-page license)

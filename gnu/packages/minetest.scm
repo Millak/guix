@@ -718,7 +718,7 @@ track of important locations.")
         (base32 "1q2jj8181pjgsakl28xadv0z4sszq1lb5rpgj070wr0px6mp447p"))
        (file-name (git-file-name name version))))
     (build-system minetest-mod-build-system)
-    (home-page "http://advtrains.de/")
+    (home-page "https://advtrains.de/")
     (synopsis "Adds good-looking, realistic trains with realistic rails")
     (description
      "This mod features realistic trains and various equipment for railways,

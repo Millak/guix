@@ -2883,7 +2883,7 @@ satisfying the test.")
     (synopsis "Common Lisp library for encoding text in various web-savvy encodings")
     (description
      "A library for encoding text in various web-savvy encodings.")
-    (home-page "http://quickdocs.org/html-encode/")
+    (home-page "https://quickdocs.org/html-encode/")
     (license license:expat)))
 
 (define-public cl-html-encode
@@ -3174,7 +3174,7 @@ readtables, which is akin to package namespacing in Common Lisp.")
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-parse-number))
-    (home-page "http://common-lisp.net/project/py-configparser/")
+    (home-page "https://common-lisp.net/project/py-configparser/")
     (synopsis "ConfigParser Python module functionality for Common Lisp")
     (description "The py-configparser package implements the ConfigParser
 Python module functionality in Common Lisp.  In short, it implements reading
@@ -5616,7 +5616,7 @@ PROPER-LIST, ASSOCIATION-LIST, PROPERTY-LIST and TUPLE.")
                (substitute* "rotate-byte.lisp"
                  (("in-package :cl-utilities)" all)
                   "in-package :cl-utilities)\n\n#+sbcl\n(require :sb-rotate-byte)")))))))
-      (home-page "http://common-lisp.net/project/cl-utilities")
+      (home-page "https://common-lisp.net/project/cl-utilities")
       (synopsis "Collection of semi-standard utilities")
       (description
        "On Cliki.net <http://www.cliki.net/Common%20Lisp%20Utilities>, there
@@ -8234,7 +8234,7 @@ situations, operations on series may be composed functionally and yet execute
 iteratively, without the need to construct intermediate series values
 explicitly.  In this manner, series provide both the clarity of a functional
 programming style and the efficiency of an iterative programming style.")
-      (home-page "http://series.sourceforge.net/")
+      (home-page "https://series.sourceforge.net/")
       (license license:expat))))
 
 (define-public cl-series
@@ -12085,7 +12085,7 @@ interface for MySQL, PostgreSQL and SQLite.")
     (description
      "UFFI provides a universal foreign function interface (FFI)
  for Common Lisp.")
-    (home-page "http://quickdocs.org/uffi/")
+    (home-page "https://quickdocs.org/uffi/")
     (license license:llgpl)))
 
 (define-public cl-uffi
@@ -12220,7 +12220,7 @@ interface for MySQL, PostgreSQL and SQLite.")
      "@code{clsql} is a Common Lisp interface to SQL RDBMS based on the
 Xanalys CommonSQL interface for Lispworks.  It provides low-level database
 interfaces as well as a functional and an object oriented interface.")
-    (home-page "http://clsql.kpe.io/")
+    (home-page "https://clsql.kpe.io/")
     (license license:llgpl)))
 
 (define-public cl-clsql
@@ -12286,7 +12286,7 @@ If features:
 @item Purely functional pairing heaps.
 @item Purely functional amortized queue.
 @end itemize\n")
-      (home-page "http://ndantam.github.io/sycamore/")
+      (home-page "https://ndantam.github.io/sycamore/")
       (license license:bsd-3))))
 
 (define-public cl-sycamore
@@ -12593,7 +12593,7 @@ MOP easier to use.")
     (package
       (name "sbcl-osicat")
       (version (git-version "0.7.0" revision commit))
-      (home-page "http://www.common-lisp.net/project/osicat/")
+      (home-page "https://www.common-lisp.net/project/osicat/")
       (source
        (origin
          (method git-fetch)
@@ -14231,7 +14231,7 @@ package that includes a number of renames and shadows.")
            sbcl-hu.dwim.common-lisp
            sbcl-iterate
            sbcl-metabang-bind))
-    (home-page "http://dwim.hu/")
+    (home-page "https://dwim.hu/")
     (synopsis "Common Lisp library shared by other hu.dwim systems")
     (description "This package contains a support library for other
 hu.dwim systems.")
@@ -14629,7 +14629,7 @@ can begin writing unit tests as soon as the project is generated.")
     (package
       (name "sbcl-caveman")
       (version (git-version "2.4.0" revision commit))
-      (home-page "http://8arrow.org/caveman/")
+      (home-page "https://8arrow.org/caveman/")
       (source
        (origin
          (method git-fetch)
@@ -15731,7 +15731,7 @@ not so easy to copy (ssyntax, argument destructuring, etc.).")
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-lift))
-      (home-page "http://common-lisp.net/project/trivial-shell/")
+      (home-page "https://common-lisp.net/project/trivial-shell/")
       (synopsis "Common Lisp access to the shell")
       (description
        "A simple Common-Lisp interface to the underlying operating system.
@@ -16006,7 +16006,7 @@ the @command{flamegraph.pl} script, which is available in the Guix package
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria))
-      (home-page "http://shinmera.github.io/trivial-benchmark/")
+      (home-page "https://shinmera.github.io/trivial-benchmark/")
       (synopsis "Easy to use benchmarking system for Common Lisp")
       (description
        "Trivial-Benchmark runs a block of code many times and outputs some
@@ -24817,7 +24817,7 @@ operating on them.")
       (native-inputs
        (list sbcl-iterate
              sbcl-hu.dwim.stefil))
-      (home-page "http://nikodemus.github.io/screamer/")
+      (home-page "https://nikodemus.github.io/screamer/")
       (synopsis "Nondeterministic programming and constraint propagation")
       (description
        "Screamer is an extension of Common Lisp that adds support for
@@ -26873,7 +26873,7 @@ Closure Templates.")
 combinators.  Using a simple technique from the functional programming
 camp, @code{cl-smug} makes it simple to create quick extensible recursive
 descent parsers without funky syntax or impenetrable macrology.")
-     (home-page "http://smug.drewc.ca/")
+     (home-page "https://smug.drewc.ca/")
      (license license:expat))))
 
 (define-public cl-smug

@@ -312,7 +312,7 @@ libraries, such as http-conduit.")
            ghc-network
            ghc-network-bsd
            ghc-utf8-string))
-    (home-page "http://hackage.haskell.org/package/http-client-restricted")
+    (home-page "https://hackage.haskell.org/package/http-client-restricted")
     (synopsis "Restrict the servers used by http-client")
     (description
      "This library makes it possible to restrict the HTTP servers that can be
@@ -979,7 +979,7 @@ entity decoding bugfixes applied.")
     (native-inputs
      (list ghc-hunit ghc-quickcheck ghc-test-framework
            ghc-test-framework-hunit ghc-test-framework-quickcheck2))
-    (home-page "http://jaspervdj.be/blaze")
+    (home-page "https://jaspervdj.be/blaze")
     (synopsis "Fast HTML combinator library")
     (description "This library provides HTML combinators for Haskell.")
     (license license:bsd-3)))
@@ -1818,7 +1818,7 @@ requirements of downstream users (e.g. Debian).")
            ghc-utf8-string
            ghc-zlib))
     (native-inputs (list ghc-hunit))
-    (home-page "http://happstack.com")
+    (home-page "https://happstack.com")
     (synopsis "Web related tools and services for Haskell")
     (description
      "Happstack Server provides an HTTP server and a rich set of functions for
@@ -1933,7 +1933,7 @@ declarative and monadic interface.")
        #:cabal-revision
        ("1" "1f7q44ar6qfip8fsllg43jyn7r15ifn2r0vz32cbmx0sb0d38dax")))
     (home-page
-     "http://hackage.haskell.org/package/sourcemap")
+     "https://hackage.haskell.org/package/sourcemap")
     (synopsis
      "Implementation of source maps as proposed by Google and Mozilla")
     (description

@@ -681,7 +681,7 @@ supported at your website.")
       (source (origin
                 (method hg-fetch)
                 (uri (hg-reference
-                      (url "http://hg.nginx.org/xslscript")
+                      (url "https://hg.nginx.org/xslscript")
                       (changeset changeset)))
                 (file-name (string-append name "-" version))
                 (sha256
@@ -705,7 +705,7 @@ supported at your website.")
                              out-bin
                              "/xslscript.pl"))
                  #t))))))
-      (home-page "http://hg.nginx.org/xslscript")
+      (home-page "https://hg.nginx.org/xslscript")
       (synopsis "XSLScript with NGinx specific modifications")
       (description
        "XSLScript is a terse notation for writing complex XSLT stylesheets.
@@ -1244,7 +1244,7 @@ project)
            (lambda _ (setenv "QT_QPA_PLATFORM" "offscreen") #t)))))
     (inputs
      (list qtbase-5))
-    (home-page "http://qjson.sourceforge.net")
+    (home-page "https://qjson.sourceforge.net")
     (synopsis "Library that maps JSON data to QVariant objects")
     (description "QJson is a Qt-based library that maps JSON data to
 @code{QVariant} objects.  JSON arrays will be mapped to @code{QVariantList}
@@ -1749,7 +1749,7 @@ UTS#46.")
     (synopsis "HTML validator and tidier")
     (description "HTML Tidy is a command-line tool and C library that can be
 used to validate and fix HTML data.")
-    (home-page "http://tidy.sourceforge.net/")
+    (home-page "https://tidy.sourceforge.net/")
     (license (license:x11-style "file:///include/tidy.h"))))
 
 (define-public esbuild
@@ -1967,7 +1967,7 @@ hash/signatures.")
        (sha256
         (base32 "0d0giry6bb57pnidymvdl7i5x9bq3ljk3g4bs294hcr5mj3cq0kw"))))
     (build-system gnu-build-system)
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "This package contains support scripts called by libquvi to
 parse media stream properties.")
@@ -2001,7 +2001,7 @@ parse media stream properties.")
          (list
           (string-append "liblua_CFLAGS=-I" lua "/include")
           (string-append "liblua_LIBS=-L" lua "/libs -llua")))))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "libquvi is a library with a C API for parsing media stream
 URLs and extracting their actual media files.")
@@ -2023,7 +2023,7 @@ URLs and extracting their actual media files.")
     (native-inputs (list pkg-config))
     (inputs
      (list curl libquvi))
-    (home-page "http://quvi.sourceforge.net/")
+    (home-page "https://quvi.sourceforge.net/")
     (synopsis "Media stream URL parser")
     (description "quvi is a command-line-tool suite to extract media files
 from streaming URLs.  It is a command-line wrapper for the libquvi library.")
@@ -6192,7 +6192,7 @@ used to start services with both privileged and non-privileged port numbers.")
                #t))))))
     (native-inputs
      (list libxslt))
-    (home-page "http://www.html-tidy.org/")
+    (home-page "https://www.html-tidy.org/")
     (synopsis "HTML Tidy with HTML5 support")
     (description
      "Tidy is a console application which corrects and cleans up
@@ -8094,7 +8094,7 @@ returned.")
        (sha256
         (base32 "1j3mzjlczjrk4ahc43s6kzpvzypzjmqz4sillnca5yadrwwgjf2x"))))
     (build-system gnu-build-system)
-    (home-page "http://htmlcxx.sourceforge.net/")
+    (home-page "https://htmlcxx.sourceforge.net/")
     (synopsis "Simple non-validating CSS1 and HTML parser for C++")
     (description "htmlcxx is a simple non-validating CSS1 and HTML parser for
 C++.  Although there are several other HTML parsers available, htmlcxx has some

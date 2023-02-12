@@ -852,7 +852,7 @@ categories.")
                             (invoke "sh" "test_all.sh")))))))))
     (native-inputs (list which)) ;for tests
     (inputs (list pcre))
-    (home-page "http://drmtools.sourceforge.net/")
+    (home-page "https://drmtools.sourceforge.net/")
     (synopsis "Utilities to manipulate text and binary files")
     (description "The drm_tools package contains the following commands:
 @table @command
@@ -1082,7 +1082,7 @@ names like Euro.
 @item Handling (bullet, decimal, letter, roman) lists along with (attempt at)
 indentation.
 @end itemize\n")
-    (home-page "http://docx2txt.sourceforge.net")
+    (home-page "https://docx2txt.sourceforge.net")
     (license license:gpl3+)))
 
 (define-public html2text

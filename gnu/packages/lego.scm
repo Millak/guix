@@ -89,7 +89,7 @@
                                  (assoc-ref inputs patch)))
                        (list "add-usb-tcp-support.patch"
                              "debian-writable-swap-inst-len.patch")))))))
-    (home-page "http://bricxcc.sourceforge.net/nqc/")
+    (home-page "https://bricxcc.sourceforge.net/nqc/")
     (synopsis "C-like language for Lego's MINDSTORMS")
     (description
      "Not Quite C (NQC) is a simple language for programming several Lego

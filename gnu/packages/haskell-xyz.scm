@@ -485,7 +485,7 @@ style.")
     (inputs
      (list ghc-bifunctors ghc-tagged))
     (home-page
-     "http://hackage.haskell.org/package/assoc")
+     "https://hackage.haskell.org/package/assoc")
     (synopsis
      "Swap and assoc: Symmetric and Semigroupy Bifunctors")
     (description
@@ -1446,7 +1446,7 @@ imported with the correct Haskell types.")
      (list ghc-utf8-string cairo))
     (native-inputs
      (list ghc-gtk2hs-buildtools pkg-config))
-    (home-page "http://projects.haskell.org/gtk2hs/")
+    (home-page "https://projects.haskell.org/gtk2hs/")
     (synopsis "Haskell bindings to the Cairo vector graphics library")
     (description
      "Cairo is a library to render high quality vector graphics.  There exist
@@ -1651,7 +1651,7 @@ provides for better error messages at the expense of some speed.")
            ghc-tasty-hunit
            ghc-tasty-quickcheck
            ghc-vector))
-    (home-page "http://hackage.haskell.org/package/cborg")
+    (home-page "https://hackage.haskell.org/package/cborg")
     (synopsis "Concise Binary Object Representation")
     (description
      "This package (formerly binary-serialise-cbor) provides an
@@ -2738,7 +2738,7 @@ function performs the conversion you desire.")
              (substitute* "Setup.hs"
                (("defaultMainWithHooks defaultUserHooks")
                 "defaultMain")))))))
-    (home-page "http://hackage.haskell.org/package/csv")
+    (home-page "https://hackage.haskell.org/package/csv")
     (synopsis "CSV loader and dumper")
     (description
      "This library parses and dumps documents that are formatted according to
@@ -4789,7 +4789,7 @@ info for more informative bug reports.")
     (native-inputs
      (list ghc-hunit ghc-quickcheck ghc-test-framework
            ghc-test-framework-hunit ghc-test-framework-quickcheck2))
-    (home-page "http://iki.fi/matti.niemenmaa/glob/")
+    (home-page "https://iki.fi/matti.niemenmaa/glob/")
     (synopsis "Haskell library matching glob patterns against file paths")
     (description "This package provides a Haskell library for @dfn{globbing}:
 matching patterns against file paths.")
@@ -4957,7 +4957,7 @@ monoid with invertibility.")
      (list ghc-random ghc-hashtables))
     (native-inputs
      (list ghc-alex ghc-happy))
-    (home-page "http://projects.haskell.org/gtk2hs/")
+    (home-page "https://projects.haskell.org/gtk2hs/")
     (synopsis "Tools to build the Gtk2Hs suite of user interface libraries")
     (description
      "This package provides a set of helper programs necessary to build the
@@ -5743,7 +5743,7 @@ using GSL.")
     (inputs
      (list ghc-vector ghc-storable-complex ghc-hmatrix gsl))
     (native-inputs (list pkg-config))
-    (home-page "http://code.haskell.org/hmatrix-gsl-stats")
+    (home-page "https://code.haskell.org/hmatrix-gsl-stats")
     (synopsis "GSL Statistics interface for Haskell")
     (description "This Haskell library provides a purely functional
 interface for statistics based on hmatrix and GSL.")
@@ -6358,7 +6358,7 @@ Haskell.")
     (build-system haskell-build-system)
     (native-inputs
      (list ghc-quickcheck))
-    (home-page "http://www.chr-breitkopf.de/comp/IntervalMap")
+    (home-page "https://www.chr-breitkopf.de/comp/IntervalMap")
     (synopsis "Containers for intervals, with efficient search")
     (description
      "This package provides ordered containers of intervals, with efficient
@@ -6802,7 +6802,7 @@ indexed variants.")
          "0ni6s873hy2h3b316835ssmlyr05yinb3a8jq5b01p9ppp9zrd0r"))))
     (build-system haskell-build-system)
     (home-page
-     "http://hackage.haskell.org/package/lens-family-core")
+     "https://hackage.haskell.org/package/lens-family-core")
     (synopsis "Haskell 98 Lens Families")
     (description
      "This package provides first class functional references.  In addition to
@@ -7327,7 +7327,7 @@ than its name.")
         (base32
          "00wzfy9facwgimrilz7bxaigr79w10733h8zfgyhll644p2rnz38"))))
     (build-system haskell-build-system)
-    (home-page "http://hackage.haskell.org/package/managed")
+    (home-page "https://hackage.haskell.org/package/managed")
     (synopsis "Monad for managed values")
     (description
      "In Haskell you very often acquire values using the with... idiom using
@@ -8015,7 +8015,7 @@ semi-direct products, \"deletable\" monoids, \"split\" monoids, and
          "1hnm31pqcffphyc463wf0vbik9fzm5lb2r4wjdc1y4dqzmjdzz37"))))
     (build-system haskell-build-system)
     (home-page
-     "http://hackage.haskell.org/package/mountpoints")
+     "https://hackage.haskell.org/package/mountpoints")
     (synopsis "Haskell library for listing mount points")
     (description "This library provides Haskell bindings for checking
 currently mounted filesystems.")
@@ -8294,7 +8294,7 @@ IPv4, IPv6 and MAC addresses.")
     (inputs
      (list ghc-network ghc-network-bsd))
     (home-page
-     "http://hackage.haskell.org/package/network-multicast")
+     "https://hackage.haskell.org/package/network-multicast")
     (synopsis "Simple multicast library for Haskell")
     (description
      "This package provides the Network.Multicast Haskell module for
@@ -8641,7 +8641,7 @@ DSLs, etc.")
          "1r5hhn6xvc01grggxdyy48daibwzi0aikgidq0ahpa6bfynm8d1f"))))
     (build-system haskell-build-system)
     (home-page
-     "http://hackage.haskell.org/package/optional-args")
+     "https://hackage.haskell.org/package/optional-args")
     (synopsis "Optional function arguments")
     (description
      "This library provides a type for specifying @code{Optional} function
@@ -10509,7 +10509,7 @@ configurations to coexist without resorting to mutable global variables or
            ghc-time-locale-compat
            ghc-unordered-containers
            ghc-utf8-string))
-    (home-page "http://regex.uk")
+    (home-page "https://regex.uk")
     (synopsis "Toolkit for regex-base")
     (description
      "This package provides a regular expression toolkit for @code{regex-base}
@@ -12001,7 +12001,7 @@ internal state).")
        ("1"
         "09s5jjcsg4g4qxchq9g2l4i9d5zh3rixpkbiysqcgl69kj8mwv74")))
     (home-page
-     "http://hackage.haskell.org/package/spoon")
+     "https://hackage.haskell.org/package/spoon")
     (synopsis
      "Catch errors thrown from pure computations")
     (description
@@ -13379,7 +13379,7 @@ BitTorrent files.")
          "0v66j5k0xqk51pmca55wq192qyw2p43s2mgxlz4f95q2c1fpjs5n"))))
     (build-system haskell-build-system)
     (home-page
-     "http://hackage.haskell.org/package/transformers")
+     "https://hackage.haskell.org/package/transformers")
     (synopsis "Concrete functor and monad transformers")
     (description
      "Transformers provides functor and monad transformers, inspired by the
@@ -13592,7 +13592,7 @@ statically known size.")
     (native-inputs
      (list ghc-doctest ghc-fail))
     (home-page
-     "http://hackage.haskell.org/package/turtle")
+     "https://hackage.haskell.org/package/turtle")
     (synopsis "Shell programming, Haskell-style")
     (description
      "Turtle is a reimplementation of the Unix command line environment in
@@ -14023,7 +14023,7 @@ parser that uses ByteStrings for parsing and representing the URI data.")
          "0rwyc5z331yfnm4hpx0sph6i1zvkd1z10vvglhnp0vc9wy644k0q"))))
     (build-system haskell-build-system)
     (home-page
-     "http://hackage.haskell.org/package/utf8-light")
+     "https://hackage.haskell.org/package/utf8-light")
     (synopsis "Lightweight unicode support for Haskell")
     (description
      "This package profides a class for encoding and decoding UTF8 strings
@@ -14493,7 +14493,7 @@ Haskell value or function.")
      `(#:cabal-revision
        ("1"
         "095qd17zrdhqmcvmslbyzfa5sh9glvvsnsvnlz31gzsmi8nnsgim")))
-    (home-page "http://hackage.haskell.org/package/wizards")
+    (home-page "https://hackage.haskell.org/package/wizards")
     (synopsis "High level, generic library for interrogative user interfaces")
     (description
      "@code{wizards} is a package designed for the quick and painless
@@ -15476,7 +15476,7 @@ platform independent way.")
         (base32 "1nk1cv35szp80qkhbyh5gn6vn194zzl0wz186qrqdrdx3a9r9w4g"))))
     (build-system haskell-build-system)
     (inputs (list ghc-boot-th))
-    (home-page "http://hackage.haskell.org/package/template-haskell")
+    (home-page "https://hackage.haskell.org/package/template-haskell")
     (synopsis "Support library for Template Haskell")
     (description
      "This package provides modules containing facilities for manipulating
@@ -15528,7 +15528,7 @@ information.")
        (sha256
         (base32 "0vhhmsd32p7zn9vhpv4d0k0b55n2dyhzy42xblndrma617kz8gli"))))
     (build-system haskell-build-system)
-    (home-page "http://hackage.haskell.org/package/ghc-boot-th")
+    (home-page "https://hackage.haskell.org/package/ghc-boot-th")
     (synopsis
      "Shared functionality between GHC and Template Haskell")
     (description
@@ -15558,7 +15558,7 @@ upon by user code.")
     (arguments
      `(#:cabal-revision
        ("5" "1h2d37szfrcwn9rphnijn4q9l947b0wwqjs1aqmm62xkhbad7jf6")))
-    (home-page "http://hackage.haskell.org/package/binary-orphans")
+    (home-page "https://hackage.haskell.org/package/binary-orphans")
     (synopsis "Compatibility package for binary")
     (description
      "This package provides instances defined in later versions of
@@ -15919,7 +15919,7 @@ server and to receive the results of these queries.")
     (arguments
      `(#:cabal-revision
        ("2" "1kwjlj0bsc1yd4dgfc0ydawq9acfjlf0bymwc830dryp16wpj9zv")))
-    (home-page "http://hackage.haskell.org/package/postgresql-simple")
+    (home-page "https://hackage.haskell.org/package/postgresql-simple")
     (synopsis "Mid-Level PostgreSQL client library")
     (description
      "This package provides a mid-Level PostgreSQL client library, forked from

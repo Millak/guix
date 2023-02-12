@@ -287,7 +287,7 @@
        ("libxmu" ,libxmu)
        ("libxt" ,libxt)
        ("sdl" ,(sdl-union (list sdl sdl-mixer)))))
-    (home-page "http://abe.sourceforge.net")
+    (home-page "https://abe.sourceforge.net")
     (synopsis "Scrolling, platform-jumping, ancient pyramid exploring game")
     (description
      "Abe's Amazing Adventure is a scrolling,
@@ -401,7 +401,7 @@ mouse and joystick control, and original music.")
     (inputs
      `(("allegro" ,allegro-4)
        ("dumb" ,dumb-allegro4)))
-    (home-page "http://allegator.sourceforge.net/")
+    (home-page "https://allegator.sourceforge.net/")
     (synopsis "Retro platform game")
     (description
      "Guide Alex the Allegator through the jungle in order to save his
@@ -432,7 +432,7 @@ The game includes a built-in editor so you can design and share your own maps.")
            freeglut
            libpng
            libjpeg-turbo))
-    (home-page "http://www.armagetronad.org")
+    (home-page "https://www.armagetronad.org")
     (synopsis "Tron clone in 3D")
     (description "Armagetron Advanced is a multiplayer game in 3d that
 attempts to emulate and expand on the lightcycle sequence from the movie Tron.
@@ -544,7 +544,7 @@ regret their insolence.")
            zlib))
     (native-inputs
      (list pkg-config))
-    (home-page "http://baronygame.com")
+    (home-page "https://baronygame.com")
     (synopsis "3D first-person roguelike game")
     (description
      "Barony is a first-person roguelike role-playing game with cooperative
@@ -1287,7 +1287,7 @@ should be placed in @file{~/.local/share/falltergeist}.")
          ("glu" ,glu)
          ("libpng" ,libpng)
          ("sdl" ,(sdl-union (list sdl sdl-mixer sdl-net)))))
-      (home-page "http://foobillardplus.sourceforge.net/")
+      (home-page "https://foobillardplus.sourceforge.net/")
       (synopsis "3D billiard game")
       (description "FooBillard++ is an advanced 3D OpenGL billiard game
 based on the original foobillard 3.0a sources from Florian Berger.
@@ -1473,7 +1473,7 @@ real-time combat.")
      (list lua))
     (inputs
      (list glu mesa python sdl2 wxwidgets zlib))
-    (home-page "http://golly.sourceforge.net/")
+    (home-page "https://golly.sourceforge.net/")
     (synopsis "Software for exploring cellular automata")
     (description
      "Golly simulates Conway's Game of Life and many other types of cellular
@@ -1977,7 +1977,7 @@ Chess).  It is similar to standard chess but this variant is far more complicate
                       ":" (or (getenv "CPATH") ""))))))))
     (inputs
      (list (sdl-union (list sdl sdl-mixer))))
-    (home-page "http://lgames.sourceforge.net/LTris/")
+    (home-page "https://lgames.sourceforge.net/LTris/")
     (synopsis "Tetris clone based on the SDL library")
     (description
      "LTris is a tetris clone: differently shaped blocks are falling down the
@@ -2144,7 +2144,7 @@ role, and your gender.")
              #t)))))
     (inputs
      (list libpng mesa sdl))
-    (home-page "http://pipewalker.sourceforge.net/")
+    (home-page "https://pipewalker.sourceforge.net/")
     (synopsis "Logical tile puzzle")
     (description
      "PipeWalker is a simple puzzle game with many diffent themes: connect all
@@ -2193,7 +2193,7 @@ Every puzzle has a complete solution, although there may be more than one.")
           pcre
           portmidi
           (sdl-union (list sdl sdl-image sdl-mixer sdl-net))))
-   (home-page "http://prboom-plus.sourceforge.net/")
+   (home-page "https://prboom-plus.sourceforge.net/")
    (synopsis "Version of the classic 3D shoot'em'up game Doom")
    (description
     "PrBoom+ is a Doom source port developed from the original PrBoom project.")
@@ -2822,7 +2822,7 @@ saved automatically, and you can select between currently in progress games.")
                             Keywords=racing;tracks;~@
                             Keywords[de]=Rennstrecke;~%"
                            out)))))))))
-    (home-page "http://trigger-rally.sourceforge.net")
+    (home-page "https://trigger-rally.sourceforge.net")
     (synopsis "Fast-paced single-player racing game")
     (description "Trigger-rally is a 3D rally simulation with great physics
 for drifting on over 200 maps.  Different terrain materials like dirt,
@@ -3299,7 +3299,7 @@ is very small), and shoot at the adversaries that keep appear on the screen.")
                (invoke "./configure"
                        (string-append "--prefix=" out))))))))
     (inputs (list ncurses))
-    (home-page "http://www.asty.org/cmatrix")
+    (home-page "https://www.asty.org/cmatrix")
     (synopsis "Simulate the display from \"The Matrix\"")
     (description "CMatrix simulates the display from \"The Matrix\" and is
 based on the screensaver from the movie's website.  It works with terminal
@@ -3738,7 +3738,7 @@ match, cannon keep, and grave-itation pit.")
               (install-file "libglkterm.a" lib))
             #t))
         (delete 'configure))))          ; no configure script
-   (home-page "http://www.eblong.com/zarf/glk/")
+   (home-page "https://www.eblong.com/zarf/glk/")
    (synopsis "Curses Implementation of the Glk API")
    (description
     "Glk defines a portable API for applications with text UIs.  It was
@@ -4863,7 +4863,7 @@ logging, so games can be viewed again.")
              (symlink "README.md" "README")
              (display (which "autoreconf")) (newline)
              (invoke "autoreconf" "-vif"))))))
-    (home-page "http://pinball.sourceforge.net")
+    (home-page "https://pinball.sourceforge.net")
     (synopsis "Pinball simulator")
     (description "The Emilia Pinball Project is a pinball simulator.  There
 are only two levels to play with, but they are very addictive.")
@@ -4897,7 +4897,7 @@ are only two levels to play with, but they are very addictive.")
     (description "Pioneers is an emulation of the board game The Settlers of
 Catan.  It can be played on a local network, on the internet, and with AI
 players.")
-    (home-page "http://pio.sourceforge.net/")
+    (home-page "https://pio.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public einstein
@@ -5254,7 +5254,7 @@ fullscreen, use F5 or Alt+Enter.")
     (inputs
      `(("python" ,python-wrapper)
        ("sdl" ,(sdl-union (list sdl sdl-image sdl-mixer sdl-ttf sdl-net)))))
-    (home-page "http://icculus.org/tennix/")
+    (home-page "https://icculus.org/tennix/")
     (synopsis "Play tennis against the computer or a friend")
     (description "Tennix is a 2D tennis game.  You can play against the
 computer or against another player using the keyboard.  The game runs
@@ -5499,7 +5499,7 @@ in strikes against the evil corporation.")
     (native-inputs (list pkg-config))
     (inputs (list gettext-minimal glu quesoglc
                   (sdl-union (list sdl sdl-image sdl-mixer))))
-    (home-page "http://chromium-bsu.sourceforge.net/")
+    (home-page "https://chromium-bsu.sourceforge.net/")
     (synopsis "Fast-paced, arcade-style, top-scrolling space shooter")
     (description
      "In this game you are the captain of the cargo ship Chromium B.S.U. and
@@ -6037,7 +6037,7 @@ for Un*x systems with X11.")
     (list curl cyrus-sasl gtk+ sdl-mixer zlib))
    (native-inputs
     (list pkg-config))
-   (home-page "http://www.freeciv.org/")
+   (home-page "https://www.freeciv.org/")
    (synopsis "Turn-based empire building strategy game")
    (description "Freeciv is a turn-based empire building strategy game
 inspired by the history of human civilization.  The game commences in
@@ -6341,7 +6341,7 @@ over 100 user-created campaigns.")
        ("python" ,python-2)))
     (native-inputs
      (list swig))
-    (home-page "http://kiki.sourceforge.net/")
+    (home-page "https://kiki.sourceforge.net/")
     (synopsis "3D puzzle game")
     (description "Kiki the nano bot is a 3D puzzle game.  It is basically a
 mixture of the games Sokoban and Kula-World.  Your task is to help Kiki, a
@@ -7142,7 +7142,7 @@ Tales of Maj’Eyal offers engaging roguelike gameplay for the 21st century.")
     (description "Quakespasm is a modern engine for id software's Quake 1.
 It includes support for 64 bit CPUs, custom music playback, a new sound driver,
 some graphical niceities, and numerous bug-fixes and other improvements.")
-    (home-page "http://quakespasm.sourceforge.net/")
+    (home-page "https://quakespasm.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public vkquake
@@ -7725,7 +7725,7 @@ original.")
                                    (string-append xonotic "/data"))
                  (copy-recursively "server"
                                    (string-append xonotic "/server"))))))
-    (home-page "http://xonotic.org")
+    (home-page "https://xonotic.org")
     (synopsis "Data files for Xonotic")
     (description
      "Xonotic-data provides the data files required by the game Xonotic.")
@@ -7923,7 +7923,7 @@ games in the text adventure/interactive fiction genre.  This version of Frotz
 complies with standard 1.0 of Graham Nelson's specification.  It plays all
 Z-code games V1-V8, including V6, with sound support through libao, and uses
 ncurses for text display.")
-    (home-page "http://frotz.sourceforge.net")
+    (home-page "https://frotz.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public naev
@@ -8024,7 +8024,7 @@ scrolling.  Maybe you'd like to experience what it's like to play Adventure on
 a teletype.  A much cooler use for compiling Frotz with the dumb interface is
 that it can be wrapped in CGI scripting, PHP, and the like to allow people
 to play games on webpages.  It can also be made into a chat bot.")
-    (home-page "http://frotz.sourceforge.net")
+    (home-page "https://frotz.sourceforge.net")
     (license license:gpl2+)))
 
 (define-public frotz-sdl
@@ -8084,7 +8084,7 @@ using SDL fully supports all these versions of the Z-Machine including the
 graphical version 6.  Graphics and sound are created through the use of the SDL
 libraries.  AIFF sound effects and music in MOD and OGG formats are supported
 when packaged in Blorb container files or optionally from individual files.")
-      (home-page "http://frotz.sourceforge.net")
+      (home-page "https://frotz.sourceforge.net")
       (license license:gpl2+))))
 
 (define-public frozen-bubble
@@ -8563,7 +8563,7 @@ download and unpack them separately.")
        ("zlib" ,zlib)))
     (native-inputs
      (list pkg-config zip))
-    (home-page "http://btanks.sourceforge.net")
+    (home-page "https://btanks.sourceforge.net")
     (synopsis "Multiplayer tank battle game")
     (description "Battle Tanks (also known as \"btanks\") is a funny battle
 game, where you can choose one of three vehicles and eliminate your enemy
@@ -8905,7 +8905,7 @@ fight each other on an arena-like map.")
      (list hicolor-icon-theme
            python-wrapper
            (sdl-union (list sdl2 sdl2-image sdl2-mixer sdl2-ttf))))
-    (home-page "http://www.flarerpg.org/")
+    (home-page "https://www.flarerpg.org/")
     (synopsis "Action Roleplaying Engine")
     (description "Flare (Free Libre Action Roleplaying Engine) is a simple
 game engine built to handle a very specific kind of game: single-player 2D
@@ -10333,7 +10333,7 @@ and chess engines.")
      "ChessX is a chess database.  With ChessX you can operate on your
 collection of chess games in many ways: browse, edit, add, organize, analyze,
 etc.  You can also play games on FICS or against an engine.")
-    (home-page "http://chessx.sourceforge.net/")
+    (home-page "https://chessx.sourceforge.net/")
     (license license:gpl2+)))
 
 (define-public stockfish
@@ -10424,7 +10424,7 @@ ChessX.")
         (string-append "CFLAGS="
                        "-I" (assoc-ref %build-inputs "sdl-mixer")
                        "/include/SDL"))))
-    (home-page "http://lgames.sourceforge.net/Barrage/")
+    (home-page "https://lgames.sourceforge.net/Barrage/")
     (synopsis "Violent point-and-click shooting game with nice effects")
     (description
      "Barrage is a rather destructive action game that puts you on a shooting
@@ -10797,7 +10797,7 @@ inside the Zenith Colony.")
     (build-system gnu-build-system)
     (inputs
      (list libx11 libxt xorgproto))
-    (home-page "http://cgoban1.sourceforge.net/")
+    (home-page "https://cgoban1.sourceforge.net/")
     (synopsis "Go client for X11")
     (description "Provides a large set of Go-related services for X11:
 @itemize
@@ -10857,7 +10857,7 @@ such as GnuGo.
      `(("sdl" ,(sdl-union (list sdl sdl-mixer)))))
     (native-inputs
      (list imagemagick))
-    (home-page "http://hcsoftware.sourceforge.net/passage/")
+    (home-page "https://hcsoftware.sourceforge.net/passage/")
     (synopsis "Memento mori game")
     (description
      "Passage is meant to be a memento mori game.  It presents an entire life,

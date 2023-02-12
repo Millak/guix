@@ -392,14 +392,14 @@ mashups, office (web agendas, mail clients, ...), etc.")
     (version "1.9.2")
     (source (origin
              (method url-fetch)
-             (uri (string-append "http://s48.org/" version
+             (uri (string-append "https://s48.org/" version
                                  "/scheme48-" version ".tgz"))
              (sha256
               (base32
                "1x4xfm3lyz2piqcw1h01vbs1iq89zq7wrsfjgh3fxnlm1slj2jcw"))
              (patches (search-patches "scheme48-tests.patch"))))
     (build-system gnu-build-system)
-    (home-page "http://s48.org/")
+    (home-page "https://s48.org/")
     (synopsis "Scheme implementation using a bytecode interpreter")
     (description
      "Scheme 48 is an implementation of Scheme based on a byte-code
@@ -701,7 +701,7 @@ linked with a SCM executable.")
                (install-file "init.scm" scm)
                #t))))
        #:tests? #f))                    ; no tests
-    (home-page "http://tinyscheme.sourceforge.net/")
+    (home-page "https://tinyscheme.sourceforge.net/")
     (synopsis "Light-weight interpreter for the Scheme programming language")
     (description
      "TinyScheme is a light-weight Scheme interpreter that implements as large a

@@ -117,7 +117,7 @@ HTML and JSON.")
                      ; SimpleTest fails.
                      ; Notice that the library appears to be unmaintained
                      ; with no reaction to bug reports.
-    (home-page "http://clucene.sourceforge.net/")
+    (home-page "https://clucene.sourceforge.net/")
     (synopsis "C text indexing and searching library")
     (description "CLucene is a high-performance, scalable, cross platform,
 full-featured indexing and searching API.  It is a port of the very popular
@@ -238,7 +238,7 @@ taxonomic inference capability.")
        ; test failure reported upstream, see
        ; http://bugs.librdf.org/mantis/view.php?id=571
        #:tests? #f))
-    (home-page "http://librdf.org/rasqal/")
+    (home-page "https://librdf.org/rasqal/")
     (synopsis "RDF query library")
     (description "Rasqal is a C library that handles Resource Description
 Framework (RDF) query language syntaxes, query construction and execution
@@ -269,7 +269,7 @@ Turtle/N3 and read them in SPARQL XML, RDF/XML and Turtle/N3.")
      (list rasqal)) ; in Requires.private field of .pc
     (inputs
      (list bdb))
-    (home-page "http://librdf.org/")
+    (home-page "https://librdf.org/")
     (synopsis "RDF library")
     (description "The Redland RDF Library (librdf) provides the RDF API
 and triple stores.")

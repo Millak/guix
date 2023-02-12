@@ -191,4 +191,4 @@ the conversion of images between a variety of different formats.
 There are over 300 separate tools in the package including converters for
 about 100 graphics formats.")
    (license gpl2)
-   (home-page "http://netpbm.sourceforge.net/")))
+   (home-page "https://netpbm.sourceforge.net/")))

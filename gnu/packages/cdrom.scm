@@ -87,7 +87,7 @@
                "0fr21a7vprdyy1bq6s99m0x420c9jm5fipsd63pqv8qyfkhhxkim"))))
     (build-system gnu-build-system)
     (arguments '(#:tests? #f))      ; tests rely on access to external servers
-    (home-page "http://libcddb.sourceforge.net/")
+    (home-page "https://libcddb.sourceforge.net/")
     (synopsis "C library to access data on a CDDB server")
     (description
      "Libcddb is a C library to access data on a CDDB server (freedb.org).  It
@@ -281,7 +281,7 @@ reconstruction capability.")
      (list autoconf automake pkg-config))
     (inputs
      (list ao lame libmad libvorbis))
-    (home-page "http://cdrdao.sourceforge.net")
+    (home-page "https://cdrdao.sourceforge.net")
     (synopsis "Read and write CDs in disk-at-once mode")
     (description "cdrdao records audio or data CDs in disk-at-once (DAO) mode,
 based on a textual description of the contents.  This mode writes the complete
@@ -350,7 +350,7 @@ CD's, DVD's or Blue Ray discs.  The most important components are
 @command{cdrecord}, a burning program, @command{cdda2wav}, a CD audio ripper
 which uses libparanoia, and @command{mkisofs}, which can create various disc
 images.")
-   (home-page "http://cdrtools.sourceforge.net/private/cdrecord.html")
+   (home-page "https://cdrtools.sourceforge.net/private/cdrecord.html")
 
    ;; mkisofs is GPL, the other programs are CDDL.
    (license (list cddl1.0 gpl2))))
@@ -573,7 +573,7 @@ the data.")
   (package
     (name "cd-discid")
     (version "1.4")
-    (home-page "http://linukz.org/cd-discid.shtml")
+    (home-page "https://linukz.org/cd-discid.shtml")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://linukz.org/download/cd-discid-"

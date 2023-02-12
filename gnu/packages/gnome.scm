@@ -6416,7 +6416,7 @@ throughout GNOME for API documentation).")
                    #t)
                  (format #t "test suite not run~%"))
              #t)))))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "Object oriented GL/GLES Abstraction/Utility Layer")
     (description
      "Cogl is a small library for using 3D graphics hardware to draw pretty
@@ -6502,7 +6502,7 @@ presentations, kiosk style applications and so on.")
     (propagated-inputs
      ;; clutter-gtk.pc refers to all these.
      (list clutter gtk+))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "OpenGL-based interactive canvas library GTK+ widget")
     (description
      "Clutter is an OpenGL-based interactive canvas library, designed for
@@ -6528,7 +6528,7 @@ presentations, kiosk style applications and so on.")
            pkg-config gobject-introspection))
     (inputs
      (list clutter gstreamer gst-plugins-base))
-    (home-page "http://www.clutter-project.org")
+    (home-page "https://www.clutter-project.org")
     (synopsis "Integration library for using GStreamer with Clutter")
     (description
      "Clutter-Gst is an integration library for using GStreamer with Clutter.
@@ -11155,7 +11155,7 @@ supports both X and Wayland display servers.")
      (list desktop-file-utils intltool pkg-config))
     (inputs
      (list enchant gtk+ python-wrapper libxml2 gucharmap))
-    (home-page "http://bluefish.openoffice.nl")
+    (home-page "https://bluefish.openoffice.nl")
     (synopsis "Web development studio")
     (description
      "Bluefish is an editor aimed at programmers and web developers,
@@ -11779,7 +11779,7 @@ configurable file renaming.")
      "Workrave is a program that assists in the recovery and prevention of
 repetitive strain injury (@dfn{RSI}).  The program frequently alerts you to take
 micro-pauses and rest breaks, and restricts you to your daily limit.")
-    (home-page "http://www.workrave.org")
+    (home-page "https://www.workrave.org")
     (license license:gpl3+)))
 
 (define-public ghex

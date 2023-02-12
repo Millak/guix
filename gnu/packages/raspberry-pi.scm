@@ -81,7 +81,7 @@
     (synopsis "C library for Broadcom BCM 2835 as used in Raspberry Pi")
     (description "This package provides a C library for Broadcom BCM 2835 as
 used in the Raspberry Pi")
-    (home-page "http://www.airspayce.com/mikem/bcm2835/")
+    (home-page "https://www.airspayce.com/mikem/bcm2835/")
     (supported-systems '("armhf-linux" "aarch64-linux"))
     (license license:gpl3)))
 

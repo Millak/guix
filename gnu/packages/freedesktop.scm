@@ -1537,7 +1537,7 @@ formats.")
      (list pkg-config))
     (inputs
      (list eudev))
-    (home-page "http://0pointer.de/blog/projects/being-smart.html")
+    (home-page "https://0pointer.de/blog/projects/being-smart.html")
     (synopsis "ATA S.M.A.R.T. reading and parsing library")
     (description
      "This library supports a subset of the ATA S.M.A.R.T. (Self-Monitoring,

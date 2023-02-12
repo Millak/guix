@@ -1902,7 +1902,7 @@ methods:
              (substitute* "src/libcw/libcw_pa.c"
                (("libpulse-simple.so" all)
                 (search-input-file inputs "/lib/libpulse-simple.so"))))))))
-    (home-page "http://unixcw.sourceforge.net/")
+    (home-page "https://unixcw.sourceforge.net/")
     (synopsis "Morse code library and programs")
     (description
      "@code{unixcw} is a project providing the libcw library and a set of
@@ -1971,7 +1971,7 @@ intended for people who want to learn receiving and sending morse code.")
              (substitute* "src/cfgfile.c"
                (("/usr/share/")
                 (string-append (assoc-ref outputs "out") "/share/"))))))))
-    (home-page "http://gnuais.sourceforge.net/")
+    (home-page "https://gnuais.sourceforge.net/")
     (synopsis "AIS message demodulator and decoder")
     (description
      "This program contains algorithms to demodulate and decode AIS (Automatic

@@ -1370,7 +1370,7 @@ archives.")
     (native-inputs (list intltool pkg-config))
     (inputs (list gtk+))
     (propagated-inputs (list rsync))
-    (home-page "http://www.opbyte.it/grsync/")
+    (home-page "https://www.opbyte.it/grsync/")
     (synopsis "GTK frontend for rsync")
     (description
      "Grsync is a simple graphical interface using GTK for the @command{rsync}

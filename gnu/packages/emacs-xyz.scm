@@ -3100,7 +3100,7 @@ directories or regex patterns.")
      ;; `vm-autoloads', from the VM package, with is neither in Emacs nor
      ;; packaged in Guix.  So, don't bother for now.
      `(#:exclude '("bbdb-vm\\.el")))
-    (home-page "http://elpa.gnu.org/packages/bbdb.html")
+    (home-page "https://elpa.gnu.org/packages/bbdb.html")
     (synopsis "Contact management utility for Emacs")
     (description
      "BBDB is the Insidious Big Brother Database for GNU Emacs.  It provides
@@ -3693,7 +3693,7 @@ Some of its major features include:
        (sha256
         (base32 "1i4hwam81p4dr0bk8257fkiz4xmv6knkjxj7a00fa35kgx5blpva"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/caps-lock.html")
+    (home-page "https://elpa.gnu.org/packages/caps-lock.html")
     (synopsis "Caps Lock as a minor mode")
     (description
      "This package provides a minor mode to emulate the behavior of a Caps
@@ -4322,7 +4322,7 @@ filters, new key bindings and faces.  It can be enabled by
                 (emacs-substitute-variables file
                   ("djvu-djview-command"
                    (search-input-file inputs "/bin/djview")))))))))
-    (home-page "http://elpa.gnu.org/packages/djvu.html")
+    (home-page "https://elpa.gnu.org/packages/djvu.html")
     (synopsis "Edit and view Djvu files via djvused")
     (description
      "This package is a front end for the command-line program djvused from
@@ -4380,7 +4380,7 @@ the previous session
        (sha256
         (base32 "0iydz8yz866krxv1qv32k88w4464xpymh0wxgrxv6nvniwvhvd0s"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/pabbrev.html")
+    (home-page "https://elpa.gnu.org/packages/pabbrev.html")
     (synopsis "Predictive abbreviation expansion")
     (description
      "The code provides a abbreviation expansion for Emacs.  It is
@@ -5292,7 +5292,7 @@ Markdown files.")
        (sha256
         (base32 "02imis1gxz90lah0b5n37j2hlsaw5igss11d85vpsm5d1bgw8j28"))))
     (build-system emacs-build-system)
-    (home-page "http://twmode.sourceforge.net")
+    (home-page "https://twmode.sourceforge.net")
     (synopsis "Emacs major mode for Twitter")
     (description
      "Twittering mode is an Emacs major mode for Twitter.
@@ -5851,7 +5851,7 @@ interface to pause.")
           (base32
             "1cxyxfdjg1dsmn1jrl6b7xy03xr42fb6vyggh27s4dk417ils6yg"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/filladapt.html")
+    (home-page "https://elpa.gnu.org/packages/filladapt.html")
     (synopsis "Adaptive fill for Emacs")
     (description
      "This package provides functions which enhance the default behavior of
@@ -11239,7 +11239,7 @@ line program.")
        (sha256
         (base32 "03hcvpp6ykavidwn5x48gs986w1i5icvh7ks6p74pdaagpgw4jmk"))))
     (build-system emacs-build-system)
-    (home-page "http://rudel.sourceforge.net/")
+    (home-page "https://rudel.sourceforge.net/")
     (synopsis "Collaborative editing framework")
     (description
      "Rudel is a collaborative editing environment for GNU Emacs.  Its purpose
@@ -15380,7 +15380,7 @@ editing nginx config files.")
        (sha256
         (base32 "00c3n4gyxzv7vczqms0d62kl8zsmjfyxa92mwxn2snyx857a9jfw"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/stream.html")
+    (home-page "https://elpa.gnu.org/packages/stream.html")
     (synopsis "Implementation of streams for Emacs")
     (description "This library provides an implementation of streams for Emacs.
 Streams are implemented as delayed evaluation of cons cells.")
@@ -16436,7 +16436,7 @@ highlights quasi-quoted expressions.")
       #:tests? #f))                     ; no check target
     (inputs
      (list emacs espeak-ng perl tcl tclx))
-    (home-page "http://emacspeak.sourceforge.net")
+    (home-page "https://emacspeak.sourceforge.net")
     (synopsis "Audio desktop interface for Emacs")
     (description
      "Emacspeak is a speech interface that allows visually impaired users to
@@ -16841,7 +16841,7 @@ reached with the right hand.")
             (invoke "make" "info"))))))
    (native-inputs
     (list texinfo))
-   (home-page "http://cc-mode.sourceforge.net/")
+   (home-page "https://cc-mode.sourceforge.net/")
    (synopsis "Framework for creating major modes for C-style languages")
    (description
     "CC Mode is an Emacs and XEmacs mode for editing C and other languages with
@@ -17761,7 +17761,7 @@ more information.")
        (sha256
         (base32 "0c05dzrs7vrhibj46jpz625482ah6xywji7way6wcvwc711y74fz"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/eldoc.html")
+    (home-page "https://elpa.gnu.org/packages/eldoc.html")
     (synopsis "Show function arglist or variable docstring in echo area")
     (description
      "This program was inspired by the behavior of the ``mouse documentation
@@ -18020,7 +18020,7 @@ highlighting.")
                      (chdir "source")
                      (copy-file (string-append source "/lisp/jsonrpc.el")
                                 "jsonrpc.el"))))))
-      (home-page "http://elpa.gnu.org/packages/jsonrpc.html")
+      (home-page "https://elpa.gnu.org/packages/jsonrpc.html")
       (synopsis "JSON-RPC library")
       (description
        "This library implements the JSONRPC 2.0 specification as
@@ -26612,7 +26612,7 @@ scratch buffer.
                ("gtk-lookup-devhelp-indices"
                 '(list (expand-file-name "~/.guix-profile/share/gtk-doc/html/*/*.devhelp*"))))
              #t)))))
-    (home-page "http://user42.tuxfamily.org/gtk-look/index.html")
+    (home-page "https://user42.tuxfamily.org/gtk-look/index.html")
     (synopsis "Find and display HTML documentation for GTK, GNOME and Glib")
     (description "@command{gtk-look} finds and displays HTML documentation for
 GTK, GNOME and Glib functions and variables in Emacs, similar to what
@@ -30418,7 +30418,7 @@ deletion of the frame.")
        (sha256
         (base32 "0hgblj8ng7vfsdb7g1mm9m2qhzfprycdd77836l59prpak5kp55q"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/xclip.html")
+    (home-page "https://elpa.gnu.org/packages/xclip.html")
     (synopsis "Copy and paste GUI clipboard from Emacs in text terminal")
     (description
      "This package allows Emacs to copy to and paste from the GUI clipboard
@@ -31028,7 +31028,7 @@ JIRA issue servers.")
         (base32 "07xavg6xq5ckrfy5sk5k5ldb46m5w8nw1r1k006ck8f23ajaw5z2"))))
     (build-system emacs-build-system)
     (arguments '(#:include '("\\.el$" "\\.svg$" "\\.b64$" "slime\\.el\\.gz$")))
-    (home-page "http://elpa.gnu.org/packages/slime-volleyball.html")
+    (home-page "https://elpa.gnu.org/packages/slime-volleyball.html")
     (synopsis "SVG slime volleyball game")
     (description
      "Emacs Slime Volleyball is a volleyball game.  Win points by
@@ -31460,7 +31460,7 @@ variable and the @code{minibuffer-line} face.")
        (sha256
         (base32 "09fm0ziy8cdzzw08l7l6p63dxz2a27p3laia2v51mvbva8177ls1"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/minimap.html")
+    (home-page "https://elpa.gnu.org/packages/minimap.html")
     (synopsis "Sidebar showing a @emph{mini-map} of a buffer")
     (description
      "Minimap provides Emacs with a minimap sidebar, which is a smaller
@@ -33083,7 +33083,7 @@ uses BBDB and Message-X.")
        (sha256
         (base32 "191294k92qp8gmfypf0q8j8qrym96aqikzvyb9p03wqvbr3r1dsk"))))
     (build-system emacs-build-system)
-    (home-page "http://nschum.de/src/emacs/auto-dictionary/")
+    (home-page "https://nschum.de/src/emacs/auto-dictionary/")
     (synopsis "Automatic dictionary switcher for Emacs spell checking")
     (description "@code{auto-dictionary} is a minor mode that hooks into
 Flyspell's on-the-fly spell checking and extends these checks to also detect
@@ -33103,7 +33103,7 @@ detected language.")
        (sha256
         (base32 "090n4479zs82by7a3vb551gyjvv8lpfcylk43ywr2lfyssc9xiq0"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/persist.html")
+    (home-page "https://elpa.gnu.org/packages/persist.html")
     (synopsis "Persist variables between Emacs sessions")
     (description
      "This package provides variables which persist across sessions.
@@ -33801,7 +33801,7 @@ rather excellent completion provided by both Bash and Zsh.")
               (sha256
                (base32 "14akj7pavfhch6ljwl26mhv7qczgmqn7mld62cf6mh4ghmhy3z4y"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/shell-command+.html")
+    (home-page "https://elpa.gnu.org/packages/shell-command+.html")
     (synopsis "Extended Emacs @code{shell-command}")
     (description
      "Shell-command+ is a @code{shell-command} substitute that extends the
@@ -34397,7 +34397,7 @@ s-expression.")
         (base32
          "1gvywhdfg27nx6pyq7yfwq9x6j96jama59i5s9rp41pvg2dlmvm0"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/map.html")
+    (home-page "https://elpa.gnu.org/packages/map.html")
     (synopsis "Map manipulation functions")
     (description "This package provides Emacs map-manipulation functions that
 work on alists, hash-table and arrays.  All functions are prefixed with
@@ -34416,7 +34416,7 @@ work on alists, hash-table and arrays.  All functions are prefixed with
        (sha256
         (base32 "16vzjl2dv5nmb40xfw7mfrk8i64fac3cy4sf2d2hy832rwlg15q0"))))
     (build-system emacs-build-system)
-    (home-page "http://elpa.gnu.org/packages/xref.html")
+    (home-page "https://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
     (description
      "This library provides a generic infrastructure for cross referencing
@@ -34712,7 +34712,7 @@ shorter than usual, using mostly unprefixed keys.")
        (sha256
         (base32 "0zsjbpq0s0xdxd9r541f04bj1khhgzhdlzr0m4p17zjh1zardbpi"))))
     (build-system emacs-build-system)
-    (home-page "http://www.myrkr.in-berlin.de/dictionary/index.html")
+    (home-page "https://www.myrkr.in-berlin.de/dictionary/index.html")
     (synopsis "Emacs client for dictionary servers")
     (description "This package provides commands for interacting with a
 dictionary server (as defined by RFC 2229; by default, the public server at
