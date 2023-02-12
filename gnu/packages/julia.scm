@@ -319,6 +319,8 @@ libraries.  It is also a bit like @code{ldd} and @code{otool -L}.")
                (("4.1.0") ,(package-version (this-package-input "mpfr"))))
              (substitute* "stdlib/GMP_jll/test/runtests.jl"
                (("6.2.1") ,(package-version (this-package-input "gmp"))))
+             (substitute* "stdlib/LibGit2_jll/test/runtests.jl"
+               (("1.3.0") ,(package-version (this-package-input "libgit2"))))
              (substitute* "stdlib/nghttp2_jll/test/runtests.jl"
                (("1.48.0") ,(package-version (this-package-input "libnghttp2"))))
              (substitute* "stdlib/Zlib_jll/test/runtests.jl"
