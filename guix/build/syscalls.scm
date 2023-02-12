@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -1400,7 +1400,8 @@ exception if it's already taken."
       thunk
       (lambda ()
         (when port
-          (unlock-file port))))))
+          (unlock-file port)
+          (delete-file file))))))
 
 (define (call-with-file-lock/no-wait file thunk handler)
   (let ((port #f))
@@ -1428,7 +1429,8 @@ exception if it's already taken."
       thunk
       (lambda ()
         (when port
-          (unlock-file port))))))
+          (unlock-file port)
+          (delete-file file))))))
 
 (define-syntax-rule (with-file-lock file exp ...)
   "Wait to acquire a lock on FILE and evaluate EXP in that context."
