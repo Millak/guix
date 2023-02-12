@@ -6,7 +6,7 @@
 ;;; Copyright © 2015, 2016 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016, 2019, 2021 Eric Bavier <bavier@posteo.net>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015-2023 Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2015, 2018, 2020, 2021, 2022 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2015, 2017, 2018, 2020 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -2407,7 +2407,7 @@ any project with more than one developer, is one of Aegis's major functions.")
 (define-public tig
   (package
     (name "tig")
-    (version "2.5.7")
+    (version "2.5.8")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -2415,7 +2415,7 @@ any project with more than one developer, is one of Aegis's major functions.")
                     version "/tig-" version ".tar.gz"))
               (sha256
                (base32
-                "0xna55y1r1jssdmrzpinv96p7w00w9hn39q5l3d8l299dg4bmiyv"))
+                "14b38200bmwvi3030hqnwdsp34854ck3bzncj0wlljnpmr10l3mp"))
               (modules '((guix build utils)))
               (snippet
                '(begin
