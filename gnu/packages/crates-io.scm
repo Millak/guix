@@ -43149,6 +43149,32 @@ language.")
 language.")
     (license license:asl2.0)))
 
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-2
+  (package
+    (name "rust-protobuf")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "11bl8hf522s9mbkckivnn9n8s3ss4g41w6jmfdsswmr5adqd71lf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; missing files in the release tarball.
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.5)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Rust implementation of Google protocol buffers")
+    (description
+     "This package provides a library to read and write protocol buffer's data.")
+    (license license:expat)))
+
 (define-public rust-psl-2
   (package
     (name "rust-psl")
