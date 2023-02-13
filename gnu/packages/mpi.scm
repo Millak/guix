@@ -165,10 +165,19 @@ bind processes, and much more.")
                (substitute* "tests/hwloc/linux-libnuma.c"
                  (("numa_available\\(\\)")
                   "-1"))))
-           (add-before 'check 'skip-test-that-requires-/sys
+           (add-before 'check 'skip-tests-that-require-/sys
              (lambda _
                ;; 'test-gather-topology.sh' requires /sys as of 2.9.0; skip it.
-               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")))
+               (setenv "HWLOC_TEST_GATHER_TOPOLOGY" "0")
+
+               ;; 'hwloc_backends' also requires /sys on non-x86 systems, for
+               ;; which hwloc lacks a topology backend not reliant on the
+               ;; operating system; skip it also on these machines.
+               (substitute* "tests/hwloc/hwloc_backends.c"
+                 ,@(if (not (target-x86?))
+                       '((("putenv\\(\\(char \\*\\) \"HWLOC_L" all)
+                          (string-append "exit (77);\n" all)))
+                       '()))))
            (add-before 'check 'skip-test-that-fails-on-qemu
              (lambda _
                ;; Skip test that fails on emulated hardware due to QEMU bug:
