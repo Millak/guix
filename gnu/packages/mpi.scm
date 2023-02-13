@@ -54,8 +54,6 @@
   #:use-module (ice-9 match))
 
 (define-public hwloc-1
-  ;; Note: For now we keep 1.x as the default because many packages have yet
-  ;; to migrate to 2.0.
   (package
     (name "hwloc")
     (version "1.11.13")
@@ -141,7 +139,6 @@ bind processes, and much more.")
     (license license:bsd-3)))
 
 (define-public hwloc-2
-  ;; Note: 2.x isn't the default yet, see above.
   (package
     (inherit hwloc-1)
     (version "2.9.0")
