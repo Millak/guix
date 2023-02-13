@@ -671,9 +671,9 @@ variable defined below.  It requires guile-json to be installed."
                         "--sort=name"
                         icecat-dir)))))))))
 
-(define-public icecat
+(define-public icecat-minimal
   (package
-    (name "icecat")
+    (name "icecat-minimal")
     (version %icecat-version)
     (source icecat-source)
     (build-system gnu-build-system)
@@ -1295,9 +1295,9 @@ list of languages supported as well as the currently used changeset."
                        "--sort=name"
                        #$name))))))))
 
-(define-public icedove
+(define-public icedove-minimal
   (package
-    (name "icedove")
+    (name "icedove-minimal")
     (version %icedove-version)
     (source icedove-source)
     (properties
@@ -1547,35 +1547,6 @@ ca495991b7852b855"))
 Thunderbird.  It supports email, news feeds, chat, calendar and contacts.")
     (license license:mpl2.0)))
 
-(define-public icedove/wayland
-  (package
-    (inherit icedove)
-    (name "icedove-wayland")
-    (build-system trivial-build-system)
-    (arguments
-     (list
-      #:modules '((guix build utils))
-      #:builder
-      #~(begin
-          (use-modules (guix build utils))
-          (let* ((exe (string-append #$output "/bin/icedove")))
-            (mkdir-p (dirname exe))
-            (call-with-output-file exe
-              (lambda (port)
-                (format port "#!~a
- MOZ_ENABLE_WAYLAND=1 exec ~a $@"
-                        #$(file-append bash-minimal "/bin/bash")
-                        #$(file-append icedove "/bin/icedove"))))
-            (chmod exe #o555)
-            ;; Provide the manual and .desktop file.
-            (copy-recursively (string-append #$icedove "/share")
-                              (string-append #$output "/share"))
-            (substitute* (string-append #$output
-                                        "/share/applications/icedove.desktop")
-              ((#$icedove) #$output))))))
-    (native-inputs '())
-    (inputs '())))
-
 (define (make-l10n-package project version source locales)
   "Return a package for PROJECT, a symbol (either icecat or icedove), with
 their corresponding VERSION, SOURCE and LOCALES variables."
@@ -1697,6 +1668,102 @@ associated with their name."))
 
 (define-public icedove-l10n
   (make-l10n-package 'icedove %icedove-version icedove-source %icedove-locales))
+
+;;; This hack exists because there's no way to configure extra extension
+;;; search paths for IceCat or Icedove.  The global extensions directory is
+;;; constructed relatively to the executable file name.
+(define (make-mozilla-with-l10n project base l10n-package)
+  "Return a package definition for PROJECT (a symbol such as 'icecat or
+'icedove) that combines the BASE package with L10N-PACKAGE."
+
+  (unless (member project '(icecat icedove))
+    (error "only icecat or icedove components are currently supported"))
+
+  (let ((name (symbol->string project))
+        (icecat? (eq? 'icecat project)))
+    (package
+      (inherit base)
+      (name (symbol->string project))
+      (build-system trivial-build-system)
+      (arguments
+       (list
+        #:modules '((guix build union)
+                    (guix build utils))
+        #:builder
+        #~(begin
+            (use-modules (guix build union)
+                         (guix build utils))
+
+            (union-build #$output (list #$base #$l10n-package)
+                         #:create-all-directories? #t)
+
+            (define* (expose name #:optional (proc copy-file)
+                             #:key (source #$base))
+              (let ((dest (string-append #$output "/" name)))
+                (mkdir-p (dirname dest))
+                (proc (string-append source "/" name) dest)))
+
+            (let ((wrapper (string-append "lib/" #$name "/" #$name))
+                  (real-binary (string-append "lib/" #$name "/." #$name
+                                              "-real"))
+                  (desktop-file (string-append "share/applications/"
+                                               #$name ".desktop")))
+              ;; Copy wrapper file.
+              (delete-file (string-append #$output "/" wrapper))
+              (expose wrapper)
+
+              ;; Recreate bin symlink.
+              (delete-file (string-append #$output "/bin/" #$name))
+              (symlink (string-append #$output "/" wrapper)
+                       (string-append #$output "/bin/" #$name))
+
+              ;; Copy actual binary.
+              (delete-file (string-append #$output "/" real-binary))
+              (expose real-binary)
+
+              ;; Copy desktop file.
+              (delete-file (string-append #$output "/" desktop-file))
+              (expose desktop-file)
+
+              ;; Adjust the references in the desktop file and wrapper.
+              (substitute* (list (string-append #$output "/" desktop-file)
+                                 (string-append #$output "/" wrapper))
+                ((#$base) #$output)))))))))
+
+(define-public icecat
+  (make-mozilla-with-l10n 'icecat icecat-minimal icecat-l10n))
+
+(define-public icedove
+  (make-mozilla-with-l10n 'icedove icedove-minimal icedove-l10n))
+
+(define-public icedove/wayland
+  (package
+    (inherit icedove)
+    (name "icedove-wayland")
+    (build-system trivial-build-system)
+    (arguments
+     (list
+      #:modules '((guix build utils))
+      #:builder
+      #~(begin
+          (use-modules (guix build utils))
+          (let* ((exe (string-append #$output "/bin/icedove")))
+            (mkdir-p (dirname exe))
+            (call-with-output-file exe
+              (lambda (port)
+                (format port "#!~a
+ MOZ_ENABLE_WAYLAND=1 exec ~a $@"
+                        #$(file-append bash-minimal "/bin/bash")
+                        #$(file-append icedove "/bin/icedove"))))
+            (chmod exe #o555)
+            ;; Provide the manual and .desktop file.
+            (copy-recursively (string-append #$icedove "/share")
+                              (string-append #$output "/share"))
+            (substitute* (string-append #$output
+                                        "/share/applications/icedove.desktop")
+              ((#$icedove) #$output))))))
+    (native-inputs '())
+    (inputs '())))
 
 (define-public firefox-decrypt
   (package
