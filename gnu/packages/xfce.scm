@@ -1324,7 +1324,7 @@ memory usage graphically, and it can display processes as a tree.")
 (define-public orage
   (package
     (name "orage")
-    (version "4.16.0")
+    (version "4.18.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1332,7 +1332,7 @@ memory usage graphically, and it can display processes as a tree.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "000py6r63rlv7pjwvwd7ycrb383lny8ha7ha3qpwh1r0d8xil496"))))
+                "1v5385hps6jgcw1ky9vl7w7iryp0rzxz6s4lx72rz8yg4sdv84v3"))))
     (build-system gnu-build-system)
     (native-inputs
      (list
