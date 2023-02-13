@@ -430,14 +430,16 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit mes)
     (name "mes-boot")
-    (version "0.24")
+    (version "0.24.2")
     (source (origin
               (method url-fetch)
-              (uri (string-append "mirror://gnu/mes/"
-                                  "mes-" version ".tar.gz"))
+              (uri (list (string-append "mirror://gnu/mes/"
+                                   "mes-" version ".tar.gz")
+                         (string-append "https://lilypond.org/janneke/mes/"
+                                        "mes-" version ".tar.gz")))
               (sha256
                (base32
-                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
+                "0vp8v88zszh1imm3dvdfi3m8cywshdj7xcrsq4cgmss69s2y1nkx"))))
     (inputs '())
     (propagated-inputs '())
     (supported-systems '("i686-linux" "x86_64-linux"))
