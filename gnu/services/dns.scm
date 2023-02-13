@@ -114,7 +114,7 @@
   (serial  zone-file-serial
            (default 1))
   (refresh zone-file-refresh
-           (default (* 2 24 3600)))
+           (default (* 12 3600)))
   (retry   zone-file-retry
            (default (* 15 60)))
   (expiry  zone-file-expiry
