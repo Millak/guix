@@ -1273,7 +1273,15 @@ list of languages supported as well as the currently used changeset."
                  (("(pref\\(\"extensions.systemAddon.update.enabled\").*" _ m)
                   (string-append m ", false);"))
                  (("(pref\\(\"lightweightThemes.update.enabled\").*" _ m)
-                  (string-append m ", false);")))
+                  (string-append m ", false);"))
+
+                 ;; XXX: The autoDisableScopes is tweaked by the makeicecat
+                 ;; script, but it doesn't know about Thunderbird.  This is
+                 ;; necessary to allow picking up the extensions found in the
+                 ;; system global application directory, such as the language
+                 ;; packs.
+                 (("\"extensions.autoDisableScopes\", 15")
+                  "\"extensions.autoDisableScopes\", 3"))
 
                ;; Step out of the directory and create the tarball.
                (chdir "..")
@@ -1386,6 +1394,8 @@ ca495991b7852b855"))
                   (lambda ()
                     (display
                      (string-append
+                      "ac_add_options --allow-addon-sideload\n"
+                      "ac_add_options --with-unsigned-addon-scopes=app,system\n"
                       "ac_add_options --disable-crashreporter\n"
                       "ac_add_options --disable-debug\n"
                       "ac_add_options --disable-debug-symbols\n"
