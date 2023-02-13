@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2014, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2016, 2017, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2020, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
 ;;; Copyright © 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
@@ -97,7 +97,16 @@
    (arguments
     ;; The use of "freetype-config" is deprecated, but other packages still
     ;; depend on it.
-    `(#:configure-flags (list "--enable-freetype-config")))
+    `(#:configure-flags (list "--enable-freetype-config")
+      #:disallowed-references (,pkg-config)
+      #:phases
+      (modify-phases %standard-phases
+        (add-after 'install 'remove-reference-to-pkg-config
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (substitute* (string-append out "/bin/freetype-config")
+                 (((search-input-file inputs "/bin/pkg-config"))
+                   "pkg-config"))))))))
    (native-inputs
     (list pkg-config))
    (propagated-inputs
