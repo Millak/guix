@@ -43175,6 +43175,30 @@ language.")
      "This package provides a library to read and write protocol buffer's data.")
     (license license:expat)))
 
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-codegen-2
+  (package
+    (name "rust-protobuf-codegen")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf-codegen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "031bx325lsgcx7wc76vc2cqph6q0b34jgc8nz0g2rkwcfnx3n4fy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-protobuf" ,rust-protobuf-2))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Code generator for rust-protobuf")
+    (description
+     "This package provides a code generator for rust-protobuf.  It includes a
+library to invoke programmatically (e.g. from @code{build.rs}) and
+@code{protoc-gen-rust} binary.")
+    (license license:expat)))
+
 (define-public rust-psl-2
   (package
     (name "rust-psl")
