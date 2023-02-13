@@ -23832,6 +23832,41 @@ change since last write.
      (cons (list "iolib" cl-iolib)
            (package-inputs sbcl-nfiles)))))
 
+(define-public sbcl-nclasses
+  (package
+    (name "sbcl-nclasses")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/atlas-engineer/nclasses")
+             (commit version)))
+       (file-name (git-file-name "cl-nclasses" version))
+       (sha256
+        (base32
+         "08mad0555n883rjyg4j7r1vp35cyl4spbqfamjfalv5bl8d38849"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-moptilities))
+    (native-inputs
+     (list sbcl-lisp-unit2))
+    (home-page "https://github.com/atlas-engineer/nclasses")
+    (synopsis "Simplify class and condition definitions.")
+    (description
+     "NClasses provides helper macros to help write classes and conditions
+with less boilerplate.
+
+It's a fork of @code{hu.dwim.defclass-star}.  It inclues some bug fixes and
+extra features like type inference.")
+    (license license:public-domain)))
+
+(define-public ecl-nclasses
+  (sbcl-package->ecl-package sbcl-nclasses))
+
+(define-public cl-nclasses
+  (sbcl-package->cl-source-package sbcl-nclasses))
+
 (define-public sbcl-cl-template
   (let ((commit "46193a9a389bb950530e579eae7e6e5a18184832")
         (revision "0"))
