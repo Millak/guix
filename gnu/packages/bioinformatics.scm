@@ -5550,10 +5550,10 @@ experiments and provide highly stable thresholds based on reproducibility.")
              ;; to run tests.
              (setenv "SHELL" (which "bash")))))))
     (native-inputs
-     `(("bc" ,bc)
-       ("time" ,time)
-       ("python" ,python-wrapper)
-       ("pkg-config" ,pkg-config)))
+     (list bc
+           time
+           python-wrapper
+           pkg-config))
     (inputs
      (list htslib))
     (synopsis "Tool for fast counting of k-mers in DNA")
