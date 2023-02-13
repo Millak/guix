@@ -43199,6 +43199,30 @@ library to invoke programmatically (e.g. from @code{build.rs}) and
 @code{protoc-gen-rust} binary.")
     (license license:expat)))
 
+;; It's recommended that rust-protobuf, rust-protobuf-codegen
+;; and rust-probuf-codegen-pure be the same version
+(define-public rust-protobuf-codegen-pure-2
+  (package
+    (name "rust-protobuf-codegen-pure")
+    (version "2.14.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "protobuf-codegen-pure" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0h34gfqlb7bqmgqv1mfgy5wk35z5r2h5ki3p3pdcmw1vqzmly6id"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-protobuf" ,rust-protobuf-2)
+        ("rust-protobuf-codegen" ,rust-protobuf-codegen-2))))
+    (home-page "https://github.com/stepancheg/rust-protobuf/")
+    (synopsis "Pure-rust codegen for protobuf using protobuf-parser")
+    (description "This package provides a pure-rust codegen for protobuf
+using protobuf-parser.")
+    (license license:expat)))
+
 (define-public rust-psl-2
   (package
     (name "rust-psl")
