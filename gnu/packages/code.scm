@@ -2,7 +2,7 @@
 ;;; Copyright © 2013, 2015, 2018, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2015, 2018 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2017, 2018, 2019, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017, 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2017 Andy Wingo <wingo@igalia.com>
@@ -475,7 +475,7 @@ features that are not supported by the standard @code{stdio} implementation.")
                       (substitute* "Tmain/utils.sh"
                         (("/bin/echo") (which "echo"))))))))
     (native-inputs
-     (list autoconf automake packcc perl pkg-config))
+     (list autoconf automake packcc perl pkg-config python-docutils))
     (inputs
      (list jansson libseccomp libxml2 libyaml pcre2))
     (home-page "https://ctags.io/")
