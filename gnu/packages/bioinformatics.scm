@@ -5262,44 +5262,41 @@ VCF.")
          "18rrlkhcrxvvvlapch4dpj6xc6mpayzys8qfppybi8jrpgx5cc5f"))))
     (build-system ant-build-system)
     (arguments
-     `(#:tests? #f                      ; there are no tests
-       #:build-target "build"
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-dependencies
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "build.xml"
-               (("jbzip2-0.9.jar")
-                (search-input-file inputs "/share/java/jbzip2.jar"))
-               (("sam-1.103.jar")
-                (search-input-file inputs
-                                   "/share/java/sam-1.112.jar"))
-               (("cisd-jhdf5.jar")
-                (search-input-file inputs
-                                   "/share/java/sis-jhdf5.jar")))))
-         ;; There is no installation target
-         (replace 'install
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let* ((out   (assoc-ref outputs "out"))
-                    (bin   (string-append out "/bin"))
-                    (share (string-append out "/share/fastqc/"))
-                    (exe   (string-append share "/fastqc")))
-               (for-each mkdir-p (list bin share))
-               (copy-recursively "bin" share)
-               (substitute* exe
-                 (("my \\$java_bin = 'java';")
-                  (string-append "my $java_bin = '"
-                                 (assoc-ref inputs "java")
-                                 "/bin/java';")))
-               (chmod exe #o555)
-               (symlink exe (string-append bin "/fastqc"))
-               #t))))))
+     (list
+      #:tests? #f                       ;there are no tests
+      #:build-target "build"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-dependencies
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "build.xml"
+                (("jbzip2-0.9.jar")
+                 (search-input-file inputs "/share/java/jbzip2.jar"))
+                (("sam-1.103.jar")
+                 (search-input-file inputs "/share/java/sam-1.112.jar"))
+                (("cisd-jhdf5.jar")
+                 (search-input-file inputs "/share/java/sis-jhdf5.jar")))))
+          ;; There is no installation target
+          (replace 'install
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((bin   (string-append #$output "/bin"))
+                     (share (string-append #$output "/share/fastqc/"))
+                     (exe   (string-append share "/fastqc")))
+                (for-each mkdir-p (list bin share))
+                (copy-recursively "bin" share)
+                (substitute* exe
+                  (("my \\$java_bin = 'java';")
+                   (string-append "my $java_bin = '"
+                                  (search-input-file inputs "/bin/java")
+                                  "';")))
+                (chmod exe #o555)
+                (symlink exe (string-append bin "/fastqc"))))))))
     (inputs
-     `(("java" ,icedtea)
-       ("perl" ,perl)                   ; needed for the wrapper script
-       ("java-cisd-jhdf5" ,java-cisd-jhdf5)
-       ("java-picard-1.113" ,java-picard-1.113)
-       ("java-jbzip2" ,java-jbzip2)))
+     (list icedtea
+           java-cisd-jhdf5
+           java-picard-1.113
+           java-jbzip2
+           perl))                       ;needed for the wrapper script
     (native-inputs
      (list unzip))
     (home-page "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/")
