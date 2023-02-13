@@ -1,0 +1,58 @@
+From 96fda11a53a89c6647031f2c05ef12f1a9df6a08 Mon Sep 17 00:00:00 2001
+From: Skylar Hill <stellarskylark@posteo.net>
+Date: Tue, 31 Jan 2023 21:02:18 -0600
+Subject: [PATCH] Change default directory in file browser
+
+---
+ src/Gui_gtk/ots_gui2.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/Gui_gtk/ots_gui2.c b/src/Gui_gtk/ots_gui2.c
+index ff3366b..1247933 100644
+--- a/src/Gui_gtk/ots_gui2.c
++++ b/src/Gui_gtk/ots_gui2.c
+@@ -82,6 +82,7 @@ char ots_release_package[]="20.00";
+ #include <string.h>
+ #include <stdlib.h>
+ #include <ctype.h>
++#include <unistd.h>
+ #include <sys/stat.h>
+ // #include "backcompat.c"
+ #include "gtk_utils.c"		/* Include the graphics library. */
+@@ -109,6 +110,7 @@ char toolpath[MaxFname]="", *start_cmd;
+ int pending_compute=0, supported_pdf_form=1;
+ int filingstatus_mfj=1;
+ int round_to_whole_nums=0;
++char *working_dir[MaxFname+512];
+ 
+ void pick_file( GtkWidget *wdg, void *data );	/* Prototype */
+ void consume_leading_trailing_whitespace( char *line );
+@@ -2364,7 +2366,7 @@ void save_taxfile( GtkWidget *wdg, void *data )
+  if (cpt != 0)
+   strcpy( cpt, "_xxxx.txt" );
+  // printf("OTS_save_taxfile: dir='%s', wc='%s', fname='%s'\n", directory_dat, wildcards_fb, filename_fb );
+- Browse_Files( "File to Save As:", 2048, directory_dat, wildcards_fb, filename_fb, Save_Tax_File );
++ Browse_Files( "File to Save As:", 2048, working_dir, wildcards_fb, filename_fb, Save_Tax_File );
+ }
+ 
+ 
+@@ -3878,7 +3880,7 @@ void pick_file( GtkWidget *wdg, void *data )
+   strcpy( wildcards_fb, ".txt" );
+   strcpy( filename_fb, "" );
+   // printf("OTS_pick_file: dir='%s', wc='%s', fname='%s'\n", directory_dat, wildcards_fb, filename_fb );
+-  Browse_Files( "Select File", 2048, directory_dat, wildcards_fb, filename_fb, receive_filename );
++  Browse_Files( "Select File", 2048, working_dir, wildcards_fb, filename_fb, receive_filename );
+ }
+ 
+ 
+@@ -4019,6 +4021,7 @@ int main(int argc, char *argv[] )
+  invocation_path[k] = '\0';
+  // printf("Invocation path = '%s'\n", invocation_path);
+  set_ots_path();
++ getcwd(working_dir, MaxFname+512);
+ 
+  /* Decode any command-line arguments. */
+  argn = 1;  k=1;
+-- 
+2.38.1
+

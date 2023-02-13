@@ -33,6 +33,7 @@
 ;;; Copyright © 2022 Collin J. Doering <collin@rekahsoft.ca>
 ;;; Copyright © 2022 Justin Veilleux <terramorpha@cock.li>
 ;;; Copyright © 2023 Frank Pursel <frank.pursel@gmail.com>
+;;; Copyright © 2023 Skylar Hill <stellarskylark@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -2271,3 +2272,67 @@ combines the advantages of pool and solo mining; you still fully control your
 Monero node and what it mines, but you get frequent payouts like on a regular
 pool.")
     (license license:gpl3)))
+
+(define-public opentaxsolver
+  ;; The OTS version is formatted like tax-year_version. So, at time of
+  ;; writing, the version is 2022_20.00. Each part of this is used in
+  ;; different places in the source uri, so it's convenient to have them
+  ;; separately like this.
+  (let ((tax-year "2022")
+        (ots-version "20.00"))
+    (package
+      (name "opentaxsolver")
+      (version (string-append tax-year "_" ots-version))
+      (source
+       (origin
+         (method url-fetch)
+         (uri (string-append "mirror://sourceforge/opentaxsolver/OTS_"
+                             tax-year "/v" ots-version
+                             "_linux/OpenTaxSolver" version "_linux64.tgz"))
+         (sha256
+          (base32
+           "06k0a72bmwdmr71dvrp8b4vl8vilnggsh92hrp7wjdgcjj9m074w"))
+         (patches (search-patches "opentaxsolver-file-browser-fix.patch"))))
+      (build-system glib-or-gtk-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;no tests
+        #:phases
+        #~(modify-phases %standard-phases
+            (delete 'configure)         ;no configure script
+            ;; OTS does provide a shellscript that does exactly this, but we
+            ;; need to do it ourselves to specify the correct compiler and to
+            ;; delete the GUI binaries.
+            (replace 'build
+              (lambda _
+                (delete-file "Run_taxsolve_GUI")
+                (delete-file-recursively "bin")
+                (mkdir "bin")
+                (chdir "src/Gui_gtk")
+                (invoke "make"
+                        (string-append "CC=" #$(cc-for-target)))
+                (chdir "..")
+                (invoke "make"
+                        (string-append "CC=" #$(cc-for-target)))))
+            ;; OTS doesn't provide a `make install` target, because it assumes
+            ;; it'll be run from the tarball. So, we do it ourselves, making
+            ;; sure to replicate the directory structure of the tarball.
+            (replace 'install
+              (lambda _
+                (copy-recursively "../bin"
+                                  (string-append #$output "/bin"))
+                (symlink (string-append #$output "/bin/ots_gui2")
+                         (string-append #$output "/bin/Run_taxsolve_GUI"))
+                (copy-recursively "../tax_form_files"
+                                  (string-append #$output "/tax_form_files"))
+                (copy-recursively "formdata"
+                                  (string-append #$output "/src/formdata")))))))
+      (native-inputs (list pkg-config))
+      (inputs (list gtk+-2))
+      (synopsis "Yearly tax preparation tool")
+      (description
+       "OpenTaxSolver is a program for calculating tax form entries for
+federal and state personal income taxes.  It automatically fills out and
+prints your forms for mailing.")
+      (home-page "https://opentaxsolver.sourceforge.net/")
+      (license license:gpl2+))))
