@@ -1114,20 +1114,23 @@ a built-in cache to decrease server I/O pressure.")
 (define-public python-git-multimail
   (package
     (name "python-git-multimail")
-    (version "1.5.0.post1")
+    (version "1.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "git-multimail" version))
        (sha256
         (base32
-         "1zkrbsa70anwpw86ysfwalrb7nsr064kygfiyikyq1pl9pcl969y"))))
+         "0hwgf2p2dd4z397wj0y558s8xxbkzbsa6yb9n1iax624y7swjng1"))))
     (build-system python-build-system)
     (arguments
      '(#:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'patch
            (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* "setup.py"
+               (("'git-multimail', 'README.rst'")
+                "'README.rst'"))
              (substitute* "git-multimail/git_multimail.py"
                (("GIT_EXECUTABLE = 'git'")
                 (string-append "GIT_EXECUTABLE = '"
