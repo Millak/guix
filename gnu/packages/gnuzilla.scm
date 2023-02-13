@@ -1281,7 +1281,12 @@ list of languages supported as well as the currently used changeset."
                  ;; system global application directory, such as the language
                  ;; packs.
                  (("\"extensions.autoDisableScopes\", 15")
-                  "\"extensions.autoDisableScopes\", 3"))
+                  "\"extensions.autoDisableScopes\", 3")
+
+                 ;; Set the default locale to that of the operating system.
+                 ((".*extensions.autoDisableScopes.*" anchor)
+                  (string-append anchor
+                                 "pref(\"intl.locale.requested\", \"\");\n")))
 
                ;; Step out of the directory and create the tarball.
                (chdir "..")
