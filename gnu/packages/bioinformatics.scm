@@ -5337,15 +5337,16 @@ The main functions of FastQC are:
          "0ly8mxdvrcy23jwxyppysx3dhb1lwsqhfbgpyvargxhfk6k700x4"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:tests? #f ; there are none
-       #:make-flags
-       ,#~(list (string-append "PREFIX=" #$output))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-before 'install 'create-target-dir
-           (lambda* (#:key outputs #:allow-other-keys)
-             (mkdir-p (string-append (assoc-ref outputs "out") "/bin")))))))
+     (list
+      #:tests? #false                   ;there are none
+      #:make-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-before 'install 'create-target-dir
+            (lambda _
+              (mkdir-p (string-append #$output "/bin")))))))
     (inputs
      (list zlib))
     (home-page "https://github.com/OpenGene/fastp/")
