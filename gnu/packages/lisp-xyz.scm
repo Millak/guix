@@ -17213,8 +17213,8 @@ protocol for Mastodon.")
   (sbcl-package->cl-source-package sbcl-tooter))
 
 (define-public sbcl-croatoan
-  (let ((commit "35c92fcc6c4458339c7e27bdf16f7fa908d95eb8")
-        (revision "6"))
+  (let ((commit "42e474f4dffe2f4e429905a612be5736c2c3e374")
+        (revision "7"))
     (package
       (name "sbcl-croatoan")
       (version (git-version "0.0.1" revision commit))
@@ -17226,7 +17226,7 @@ protocol for Mastodon.")
                (commit commit)))
          (file-name (git-file-name "cl-croatoan" version))
          (sha256
-          (base32 "0v1lrdjd29krjb6pr0mql9hjj5c2lv760xwpr17dbsw263vx29xz"))))
+          (base32 "12hnj8gwk2600j3kn778xvvpx3y6z0428v5dq2qbf4vbzj66vcxj"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -17234,10 +17234,8 @@ protocol for Mastodon.")
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "ncurses/ncurses.lisp"
-                 (("libncursesw" all)
-                  (string-append (assoc-ref inputs "ncurses")
-                                 "/lib/"
-                                 all))))))))
+                 (("libncursesw.so")
+                  (search-input-file inputs "/lib/libncursesw.so"))))))))
       (inputs
        (list ncurses
              sbcl-cffi
