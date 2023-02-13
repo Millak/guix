@@ -93,13 +93,11 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1))
 
-;; According to https://golang.org/doc/install/gccgo, gccgo-4.8.2 includes a
-;; complete go-1.1.2 implementation, gccgo-4.9 includes a complete go-1.2
-;; implementation, and gccgo-5 a complete implementation of go-1.4.  Ultimately
-;; we hope to build go-1.5+ with a bootstrap process using gccgo-5.  As of
-;; go-1.5, go cannot be bootstrapped without go-1.4, so we need to use go-1.4 or
-;; gccgo-5.  Mips is not officially supported, but it should work if it is
-;; bootstrapped.
+;; According to https://go.dev/doc/install/gccgo, gccgo-11 includes a complete
+;; implementation of go-1.16 and gccgo-12 includes a complete implementation of
+;; go-1.18.  Starting with go-1.5 go cannot be built without an existing
+;; installation of go, so we need to use go-1.4 or gccgo.  For architectures which
+;; are not supported with go-1.4 we use a version of gccgo to bootstrap them.
 
 (define-public go-1.4
   (package
