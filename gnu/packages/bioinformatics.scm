@@ -5539,11 +5539,12 @@ experiments and provide highly stable thresholds based on reproducibility.")
     (outputs '("out"      ;for library
                "python")) ;for Python bindings
     (arguments
-     `(#:configure-flags
-       ,#~(list "--without-sse" ; configure script probes for CPU features when SSE is enabled.
-                (string-append "--enable-python-binding=" #$output:python))
-       #:phases
-       (modify-phases %standard-phases
+     (list
+      #:configure-flags
+      #~(list "--without-sse" ; configure script probes for CPU features when SSE is enabled.
+              (string-append "--enable-python-binding=" #$output:python))
+      #:phases
+      '(modify-phases %standard-phases
          (add-before 'check 'set-SHELL-variable
            (lambda _
              ;; generator_manager.hpp either uses /bin/sh or $SHELL
