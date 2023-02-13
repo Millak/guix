@@ -3,7 +3,7 @@
 !#
 
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2022 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2022, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2022 Mathieu Othacehe <othacehe@gnu.org>
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
@@ -141,6 +141,19 @@ and the r-build-system."
                       "guix/import/cran.scm"
                       "guix/scripts/import/cran.scm"
                       "tests/cran.scm")))
+
+(define-team tex
+  (team 'tex
+        #:name "TeX team"
+        #:description
+        "TeX, LaTeX, XeLaTeX, LuaTeX, TeXLive, the texlive-build-system, and
+the \"texlive\" importer."
+        #:scope (list "gnu/packages/tex.scm"
+                      "guix/build/texlive-build-system.scm"
+                      "guix/build-system/texlive.scm"
+                      "guix/import/texlive.scm"
+                      "guix/scripts/import/texlive.scm"
+                      "tests/texlive.scm")))
 
 (define-team julia
   (team 'julia
@@ -490,7 +503,7 @@ importer."
 
 (define-member (person "Ricardo Wurmus"
                        "rekado@elephly.net")
-  r core mentors)
+  r core mentors tex)
 
 (define-member (person "Christopher Baines"
                        "mail@cbaines.net")
