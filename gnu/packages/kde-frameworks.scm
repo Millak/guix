@@ -2435,38 +2435,6 @@ ini-style description files.")
 with su and ssh respectively.")
     (license license:lgpl2.1+)))
 
-(define-public kdewebkit
-  (package
-    (name "kdewebkit")
-    (version "5.98.0")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "mirror://kde/stable/frameworks/"
-                    (version-major+minor version) "/portingAids/"
-                    name "-" version ".tar.xz"))
-              (sha256
-               (base32
-                "03bwwgzh1xfj4w7q2cvr7712yrjgf9qhqkqgzypcdb49gpvaq164"))))
-    (build-system cmake-build-system)
-    (native-inputs
-     (list extra-cmake-modules qttools-5))
-    (inputs
-     (list kconfig
-           kcoreaddons
-           kio
-           kjobwidgets
-           kparts
-           kservice
-           kwallet
-           qtbase-5
-           qtwebkit))
-    (home-page "https://community.kde.org/Frameworks")
-    (synopsis "KDE Integration for QtWebKit")
-    (description "This library provides KDE integration of the HTML rendering
-engine WebKit via QtWebKit.")
-    (license license:lgpl2.1+)))
-
 (define-public kemoticons
   (package
     (name "kemoticons")
