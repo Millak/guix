@@ -418,3 +418,16 @@ will be used in description and synopsis."
    "0bgd9g1j4ww45g0l0aa1jac49421z95cc2rhcgqmgx7nzn94rszp"
    "0.0.11"
    #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"))
+
+(define-public tree-sitter-markdown
+  ;; No tags
+  (let ((commit "ef3caf83663ea97ad9e88d891424fff6a20d878d")
+        (revision "0"))
+    (tree-sitter-grammar
+     "markdown" "Markdown (CommonMark Spec v0.30)"
+     "0p9mxpvkhzsxbndda36zx5ycd6g2r2qs60gpx4y56p10lhgzlyqj"
+     "0.1.1"
+     #:repository-url "https://github.com/MDeiml/tree-sitter-markdown"
+     #:grammar-directories '("tree-sitter-markdown"
+                             "tree-sitter-markdown-inline")
+     #:commit commit)))
