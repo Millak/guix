@@ -431,3 +431,12 @@ will be used in description and synopsis."
      #:grammar-directories '("tree-sitter-markdown"
                              "tree-sitter-markdown-inline")
      #:commit commit)))
+
+(define-public tree-sitter-markdown-gfm
+  ;; Not updated for more than 1 year, can be deprecated when gfm will be
+  ;; implemented in tree-sitter-markdown
+  (tree-sitter-grammar
+   "markdown-gfm" "Markdown (CommonMark Spec v0.29-gfm)"
+   "1a2899x7i6dgbsrf13qzmh133hgfrlvmjsr3bbpffi1ixw1h7azk"
+   "0.7.1"
+   #:repository-url "https://github.com/ikatyang/tree-sitter-markdown"))
