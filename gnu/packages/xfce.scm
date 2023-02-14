@@ -66,6 +66,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages sqlite)
   #:use-module (gnu packages textutils)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages web)
@@ -1354,7 +1355,7 @@ several different time zones.")
 (define-public xfce4-notifyd
   (package
     (name "xfce4-notifyd")
-    (version "0.7.3")
+    (version "0.8.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "https://archive.xfce.org/src/apps/"
@@ -1362,12 +1363,12 @@ several different time zones.")
                                   name "-" version ".tar.bz2"))
               (sha256
                (base32
-                "0hz9x42cfwd52i02a50mqvw3qwpgb3hpnlxqnnlkc8bwadfn1nah"))))
+                "1jcmcjq2kay9kmzd5j5l8kasrzqb7aidp26q4nbmxghxxa3ncyf7"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list intltool pkg-config))
     (inputs
-     (list libxfce4ui libnotify xfce4-panel))
+     (list libxfce4ui libnotify sqlite xfce4-panel))
     (home-page "https://goodies.xfce.org/projects/applications/xfce4-notifyd")
     (synopsis "Show notification bubbles on Xfce")
     (description
