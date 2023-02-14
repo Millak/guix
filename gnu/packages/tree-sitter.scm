@@ -340,3 +340,9 @@ will be used in description and synopsis."
      "1hg19af1n510bndf5k5iri7dzb48xb527vispv1aapki4mvr98gx"
      (git-version "0.14.0" revision commit)
      #:commit commit)))
+
+(define-public tree-sitter-java
+  (tree-sitter-grammar
+   "java" "Java"
+   "1i9zfgqibinz3rkx6yws1wk49iys32x901dki65qihbxcmcfh341"
+   "0.20.0"))
