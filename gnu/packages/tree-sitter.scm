@@ -188,26 +188,42 @@ can be embedded in any application.
 This package includes the @command{tree-sitter} command-line tool.")
     (license license:expat)))
 
-(define tree-sitter-delete-generated-files
+(define (tree-sitter-delete-generated-files grammar-directories)
   #~(begin
       (use-modules (guix build utils))
       (delete-file "binding.gyp")
       (delete-file-recursively "bindings")
-      (delete-file "src/grammar.json")
-      (delete-file "src/node-types.json")
-      (delete-file "src/parser.c")
-      (delete-file-recursively "src/tree_sitter")))
+      (for-each
+       (lambda (lang)
+         (with-directory-excursion lang
+           (delete-file "src/grammar.json")
+           (delete-file "src/node-types.json")
+           (delete-file "src/parser.c")
+           (delete-file-recursively "src/tree_sitter")))
+       '#$grammar-directories)))
 
 (define* (tree-sitter-grammar
-          language language-for-synopsis version commit hash
+          name text hash version
           #:key
+          (commit (string-append "v" version))
           (repository-url
-           (format #f "https://github.com/tree-sitter/tree-sitter-~a"
-                   language))
-          (inputs '()))
-  (let ((synopsis (string-append language-for-synopsis
-                                 " grammar for tree-sitter"))
-        (name (string-append "tree-sitter-" language)))
+           (format #f "https://github.com/tree-sitter/tree-sitter-~a" name))
+          (grammar-directories '("."))
+          (article "a")
+          (inputs '())
+          (license license:expat))
+  "Returns a package for Tree-sitter grammar.  NAME will be used with
+tree-sitter- prefix to generate package name and also for generating
+REPOSITORY-URL value if it's not specified explicitly, TEXT is a string which
+will be used in description and synopsis."
+  (let* ((multiple? (> (length grammar-directories) 1))
+         (grammar-names (string-append text " grammar" (if multiple? "s" "")))
+         (synopsis (string-append "Tree-sitter " grammar-names))
+         (description
+          (string-append "This package provides "
+                         (if multiple? "" article) (if multiple? "" " ")
+                         grammar-names " for the Tree-sitter library."))
+         (name (string-append "tree-sitter-" name)))
     (package
       (name name)
       (version version)
@@ -219,15 +235,17 @@ This package includes the @command{tree-sitter} command-line tool.")
                       (commit commit)))
                 (file-name (git-file-name name version))
                 (sha256 (base32 hash))
-                (snippet tree-sitter-delete-generated-files)))
+                (snippet
+                 (tree-sitter-delete-generated-files grammar-directories))))
       (build-system tree-sitter-build-system)
+      (arguments (list #:grammar-directories grammar-directories))
       (inputs inputs)
       (synopsis synopsis)
-      (description (string-append synopsis "."))
-      (license license:expat))))
+      (description description)
+      (license license))))
 
 (define-public tree-sitter-html
   (tree-sitter-grammar
    "html" "HTML"
-   "0.19.0" "v0.19.0"
-   "1hg7vbcy7bir6b8x11v0a4x0glvqnsqc3i2ixiarbxmycbgl3axy"))
+   "1hg7vbcy7bir6b8x11v0a4x0glvqnsqc3i2ixiarbxmycbgl3axy"
+   "0.19.0"))
