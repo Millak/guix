@@ -306,3 +306,9 @@ will be used in description and synopsis."
    "bash" "Bash"
    "18c030bb65r50i6z37iy7jb9z9i8i36y7b08dbc9bchdifqsijs5"
    "0.19.0"))
+
+(define-public tree-sitter-c-sharp
+  (tree-sitter-grammar
+   "c-sharp" "C#"
+   "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
+   "0.19.1"))
