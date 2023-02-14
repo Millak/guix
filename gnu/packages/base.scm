@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2014, 2015 Manolis Fragkiskos Ragkousis <manolis837@gmail.com>
-;;; Copyright © 2016, 2017, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2016, 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2016, 2018 Alex Vong <alexvong1995@gmail.com>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
@@ -216,9 +216,10 @@ implementation offers several extensions over the standard utility.")
    (build-system gnu-build-system)
    ;; Note: test suite requires ~1GiB of disk space.
    (arguments
-    `(,@(if (hurd-target?)
-            '(#:make-flags
-              (list (string-append
+    `(,@(cond
+          ((hurd-target?)
+           '(#:make-flags
+             (list (string-append
                      "TESTSUITEFLAGS= -k '"
                      "!sparse"
                      ",!renamed dirs in incrementals"
@@ -231,8 +232,13 @@ implementation offers several extensions over the standard utility.")
                      ",!renamed subdirectories"
                      ",!chained renames"
                      ",!Directory"
-                     "'")))
-            '())
+                     "'"))))
+          ;; https://lists.gnu.org/archive/html/bug-tar/2021-10/msg00007.html
+          ;; tar-1.34 isn't aware of 64-bit time_t and upstream suggests
+          ;; skipping the test for this release on 32-bit systems.
+          ((not (target-64bit?))
+           '(#:make-flags (list "TESTSUITEFLAGS= -k 'tricky time stamps'")))
+          (else '()))
       #:phases (modify-phases %standard-phases
                  (add-before 'build 'set-shell-file-name
                    (lambda* (#:key inputs #:allow-other-keys)
