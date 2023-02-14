@@ -358,3 +358,10 @@ will be used in description and synopsis."
    "julia" "Julia"
    "1pbnmvhy2gq4vg1b0sjzmjm4s2gsgdjh7h01yj8qrrqbcl29c463"
    "0.19.0"))
+
+(define-public tree-sitter-ocaml
+  (tree-sitter-grammar
+   "ocaml" "OCaml (.ml and .mli)"
+   "021vnbpzzb4cca3ncd4qhzy583vynhndn3qhwayxrpgdl61m44i6"
+   "0.20.1"
+   #:grammar-directories '("ocaml" "interface")))
