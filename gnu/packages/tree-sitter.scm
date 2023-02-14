@@ -411,3 +411,10 @@ will be used in description and synopsis."
    "rust" "Rust"
    "149jhy01mqvavwa8jlxb8bnn7sxpfq2x1w35si6zn60b7kqjlx8f"
    "0.20.3"))
+
+(define-public tree-sitter-clojure
+  (tree-sitter-grammar
+   "clojure" "Clojure"
+   "0bgd9g1j4ww45g0l0aa1jac49421z95cc2rhcgqmgx7nzn94rszp"
+   "0.0.11"
+   #:repository-url "https://github.com/sogaiu/tree-sitter-clojure"))
