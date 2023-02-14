@@ -385,3 +385,13 @@ will be used in description and synopsis."
      "1lv3pgb7h2a0f121897r0lwc228rjwb77y3a6g3ghifx1rgbwvqg"
      (git-version "0.20.0" revision commit)
      #:commit commit)))
+
+(define-public tree-sitter-r
+  ;; No tags
+  (let ((commit "80efda55672d1293aa738f956c7ae384ecdc31b4")
+        (revision "0"))
+    (tree-sitter-grammar
+     "r" "R"
+     "1n7yxi2wf9xj8snw0b85a5w40vhf7x1pwirnwfk78ilr6hhz4ix9"
+     (git-version "0.0.1" revision commit)
+     #:commit commit)))
