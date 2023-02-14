@@ -300,3 +300,9 @@ will be used in description and synopsis."
        #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
        #:commit commit
        #:license (list license:asl2.0 license:expat))))
+
+(define-public tree-sitter-bash
+  (tree-sitter-grammar
+   "bash" "Bash"
+   "18c030bb65r50i6z37iy7jb9z9i8i36y7b08dbc9bchdifqsijs5"
+   "0.19.0"))
