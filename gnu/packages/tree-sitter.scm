@@ -287,3 +287,16 @@ will be used in description and synopsis."
        (git-version "0.20.0" revision commit)
        #:commit commit
        #:inputs (list tree-sitter-c))))
+
+(define-public tree-sitter-elixir
+  ;; No tags at all, version in the source code is 0.19.0
+  (let ((commit "b20eaa75565243c50be5e35e253d8beb58f45d56")
+        (revision "0"))
+      (tree-sitter-grammar
+       "elixir" "Elixir"
+       "1i0c0xki3sv24649p0ws7xs2jagbwg7z7baz1960239bj94nl487"
+       (git-version "0.19.0" revision commit)
+       #:article "an"
+       #:repository-url "https://github.com/elixir-lang/tree-sitter-elixir"
+       #:commit commit
+       #:license (list license:asl2.0 license:expat))))
