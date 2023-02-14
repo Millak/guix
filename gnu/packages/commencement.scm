@@ -3292,11 +3292,19 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                      (inputs (alist-delete "pcre" (package-inputs grep)))
                      (native-inputs `(("perl" ,perl-boot0))))))
 
+(define xz-final
+  ;; The final xz.  We need to replace the bootstrap xz with a newer one
+  ;; before we get to the %final-inputs so file doesn't try to link to it.
+  (let ((xz (with-boot5 (package-with-bootstrap-guile xz))))
+    (package/inherit xz)))
+
 (define (%boot6-inputs)
   ;; Now use the final Coreutils.
   `(("coreutils" ,coreutils-final)
     ("grep" ,grep-final)
-    ,@(%boot5-inputs)))
+    ("xz" ,xz-final)
+    ,@(fold alist-delete (%boot5-inputs)
+            '("coreutils" "xz"))))
 
 (define with-boot6
   (package-with-explicit-inputs %boot6-inputs))
@@ -3319,7 +3327,6 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
              `(("tar" ,tar)
                ("gzip" ,gzip)
                ("bzip2" ,bzip2)
-               ("xz" ,xz)
                ("file" ,file)
                ("diffutils" ,diffutils)
                ("patch" ,patch)
@@ -3327,6 +3334,7 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
                ("gawk" ,gawk)))
       ("sed" ,sed-final)
       ("grep" ,grep-final)
+      ("xz" ,xz-final)
       ("coreutils" ,coreutils-final)
       ("make" ,gnu-make-final)
       ("bash" ,bash-final)
