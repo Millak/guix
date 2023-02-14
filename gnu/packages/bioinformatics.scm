@@ -5250,16 +5250,22 @@ VCF.")
 (define-public fastqc
   (package
     (name "fastqc")
-    (version "0.11.5")
+    (version "0.11.9")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "http://www.bioinformatics.babraham.ac.uk/"
-                           "projects/fastqc/fastqc_v"
-                           version "_source.zip"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/s-andrews/FastQC")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "18rrlkhcrxvvvlapch4dpj6xc6mpayzys8qfppybi8jrpgx5cc5f"))))
+         "00y9drm0bkpxw8xfl8ysss18jmnhj8blgqgr6fpa58rkpfcbg8qk"))
+       (snippet
+        '(for-each delete-file
+                   '("cisd-jhdf5.jar"
+                     "sam-1.103.jar"
+                     "jbzip2-0.9.jar")))))
     (build-system ant-build-system)
     (arguments
      (list
@@ -5269,7 +5275,7 @@ VCF.")
       #~(modify-phases %standard-phases
           (add-after 'unpack 'fix-dependencies
             (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "build.xml"
+              (substitute* '("build.xml" ".classpath")
                 (("jbzip2-0.9.jar")
                  (search-input-file inputs "/share/java/jbzip2.jar"))
                 (("sam-1.103.jar")
@@ -5278,17 +5284,28 @@ VCF.")
                  (search-input-file inputs "/share/java/sis-jhdf5.jar")))))
           ;; There is no installation target
           (replace 'install
-            (lambda* (#:key inputs outputs #:allow-other-keys)
+            (lambda* (#:key inputs #:allow-other-keys)
               (let* ((bin   (string-append #$output "/bin"))
                      (share (string-append #$output "/share/fastqc/"))
                      (exe   (string-append share "/fastqc")))
                 (for-each mkdir-p (list bin share))
                 (copy-recursively "bin" share)
                 (substitute* exe
-                  (("my \\$java_bin = 'java';")
-                   (string-append "my $java_bin = '"
-                                  (search-input-file inputs "/bin/java")
-                                  "';")))
+                  (("my \\$java_bin = \"java\";")
+                   (string-append "my $java_bin = \""
+                                  ;; Use java from the JRE, not the JDK
+                                  #$(this-package-input "icedtea") "/bin/java"
+                                  "\";"))
+                  (("\\$RealBin\\$delimiter\\$RealBin.*")
+                   (string-append
+                    (string-join
+                     (list
+                      share
+                      (search-input-file inputs "/share/java/sam-1.112.jar")
+                      (search-input-file inputs "/share/java/jbzip2.jar")
+                      (search-input-file inputs "/share/java/sis-jhdf5.jar"))
+                     "$delimiter")
+                    "\";\n")))
                 (chmod exe #o555)
                 (symlink exe (string-append bin "/fastqc"))))))))
     (inputs
