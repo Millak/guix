@@ -365,3 +365,13 @@ will be used in description and synopsis."
    "021vnbpzzb4cca3ncd4qhzy583vynhndn3qhwayxrpgdl61m44i6"
    "0.20.1"
    #:grammar-directories '("ocaml" "interface")))
+
+(define-public tree-sitter-php
+  ;; There are a lot of additions, the last tag was placed more than 1 year ago
+  (let ((commit "f860e598194f4a71747f91789bf536b393ad4a56")
+        (revision "0"))
+    (tree-sitter-grammar
+     "php" "PHP"
+     "02yc5b3qps8ghsmy4b5m5kldyr5pnqz9yw663v13pnz92r84k14g"
+     (git-version "0.19.0" revision commit)
+     #:commit commit)))
