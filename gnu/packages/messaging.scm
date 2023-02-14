@@ -193,62 +193,6 @@ by @acronym{OMEMO, OMEMO Multi-End Message and Object Encryption}, during
 XMPP-based sessions.")
     (license license:lgpl3+)))
 
-(define-public psi
-  (package
-    (name "psi")
-    (version "1.5")
-    (source
-     (origin
-       (method url-fetch)
-       (uri
-        (string-append "mirror://sourceforge/psi/Psi/"
-                       version "/psi-" version ".tar.xz"))
-       (modules '((guix build utils)))
-       (snippet
-        `(begin
-           (delete-file-recursively "3rdparty")))
-       (sha256
-        (base32 "1dxmm1d1zr0pfs51lba732ipm6hm2357jlfb934lvarzsh7karri"))))
-    (build-system qt-build-system)
-    (arguments
-     `(#:tests? #f                      ; No target
-       #:configure-flags
-       (list
-        "-DUSE_ENCHANT=ON"
-        "-DUSE_CCACHE=OFF")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-cmake
-           (lambda _
-             (substitute* "cmake/modules/FindHunspell.cmake"
-               (("hunspell-1.6")
-                "hunspell-1.7"))
-             #t)))))
-    (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("python" ,python-wrapper)
-       ("ruby" ,ruby)))
-    (inputs
-     `(("aspell" ,aspell)
-       ("enchant" ,enchant-1.6)
-       ("hunspell" ,hunspell)
-       ("libidn" ,libidn)
-       ("qca" ,qca)
-       ("qtbase" ,qtbase-5)
-       ("qtmultimedia-5" ,qtmultimedia-5)
-       ("qtsvg-5" ,qtsvg-5)
-       ("qtwebkit" ,qtwebkit)
-       ("qtx11extras" ,qtx11extras)
-       ("x11" ,libx11)
-       ("xext" ,libxext)
-       ("xcb" ,libxcb)
-       ("zlib" ,zlib)))
-    (synopsis "Qt-based XMPP Client")
-    (description "Psi is a capable XMPP client aimed at experienced users.
-Its design goals are simplicity and stability.")
-    (home-page "https://psi-im.org")
-    (license license:gpl2+)))
-
 (define-public libgnt
   (package
     (name "libgnt")
@@ -3141,6 +3085,9 @@ social and chat platform.")
      "Psi+ is a spin-off of Psi XMPP client.  It is a powerful XMPP client
 designed for experienced users.")
     (license license:gpl2+)))
+
+(define-public psi
+  (deprecated-package "psi" psi-plus))
 
 (define-public python-zulip
   (package
