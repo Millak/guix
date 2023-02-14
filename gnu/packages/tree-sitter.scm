@@ -405,3 +405,9 @@ will be used in description and synopsis."
      "1pqr24bj68lgi1w2cblr8asfby681l3032jrppq4n9x5zm23fi6n"
      (git-version "0.19.0" revision commit)
      #:commit commit)))
+
+(define-public tree-sitter-rust
+  (tree-sitter-grammar
+   "rust" "Rust"
+   "149jhy01mqvavwa8jlxb8bnn7sxpfq2x1w35si6zn60b7kqjlx8f"
+   "0.20.3"))
