@@ -80,6 +80,11 @@
               (substitute* "bin/sugar.in"
                 (("exec python3")
                  (string-append "exec " (which "python3"))))
+              (substitute* "src/jarabe/main.py"
+                (("'metacity'")
+                 (string-append "'" (search-input-file inputs "/bin/metacity") "'"))
+                (("'metacity-message")
+                 (string-append "'" (search-input-file inputs "/bin/metacity-message"))))
               (substitute* "extensions/cpsection/datetime/model.py"
                 (("/usr/share/zoneinfo/zone.tab")
                  (search-input-file inputs "/share/zoneinfo/zone.tab")))
@@ -111,6 +116,7 @@
                (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
      (list gtk+
+           metacity
            mobile-broadband-provider-info
            python
            sugar-artwork
