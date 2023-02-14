@@ -6,7 +6,7 @@ diff --git a/makeicecat b/makeicecat
 index bf2b7a6..bc3b19b 100755
 --- a/makeicecat
 +++ b/makeicecat
-@@ -58,7 +58,7 @@ readonly SOURCEDIR=icecat-${FFVERSION}
+@@ -56,7 +56,7 @@ readonly SOURCEDIR=icecat-${FFVERSION}
  # debug/shell options
  readonly DEVEL=0
  set -euo pipefail
@@ -15,8 +15,8 @@ index bf2b7a6..bc3b19b 100755
  
  
  ###############################################################################
-@@ -459,7 +459,7 @@ configure_search()
-     sed 's|ddg@|ddg-html@|' -i browser/components/search/extensions/ddg-html/manifest.json
+@@ -455,7 +455,7 @@ configure_search()
+ 
  
      # Process various JSON pre-configuration dumps.
 -    python3 ../../tools/process-json-files.py . browser/components/extensions/schemas/
@@ -24,7 +24,7 @@ index bf2b7a6..bc3b19b 100755
  }
  
  configure_mobile()
-@@ -855,12 +855,12 @@ finalize_sourceball()
+@@ -837,12 +837,12 @@ finalize_sourceball()
  # entry point
  ###############################################################################
  
@@ -43,7 +43,7 @@ index bf2b7a6..bc3b19b 100755
  apply_patches
  configure
  configure_search
-@@ -872,4 +872,4 @@ prepare_macos_packaging
+@@ -854,4 +854,4 @@ prepare_macos_packaging
  configure_extensions
  configure_onboarding
  apply_bugfixes

@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Mark H Weaver <mhw@netris.org>
+;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Sou Bunnbu <iyzsong@gmail.com>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2021 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
@@ -477,8 +477,8 @@ in C/C++.")
 ;; XXXX: Workaround 'snippet' limitations.
 (define computed-origin-method (@@ (guix packages) computed-origin-method))
 
-(define %icecat-version "102.7.0-guix0-preview1")
-(define %icecat-build-id "20230117000000") ;must be of the form YYYYMMDDhhmmss
+(define %icecat-version "102.8.0-guix0-preview1")
+(define %icecat-build-id "20230214000000") ;must be of the form YYYYMMDDhhmmss
 
 ;; 'icecat-source' is a "computed" origin that generates an IceCat tarball
 ;; from the corresponding upstream Firefox ESR tarball, using the 'makeicecat'
@@ -500,11 +500,11 @@ in C/C++.")
                   "firefox-" upstream-firefox-version ".source.tar.xz"))
             (sha256
              (base32
-              "1ahl66x8chnsz80capqa5ivyrqhc50s91zrcgz1jxd7w2ws61957"))))
+              "0j6afrgfsmd0adbbmffw4p1f2hznpck9d36z3bsjx36f7cjgdy27"))))
 
-         (upstream-icecat-base-version "102.7.0") ; maybe older than base-version
+         (upstream-icecat-base-version "102.8.0") ; maybe older than base-version
          ;;(gnuzilla-commit (string-append "v" upstream-icecat-base-version))
-         (gnuzilla-commit "7f76da3cfd5d04fa38d894f6ea6ac5f2fd0ea837")
+         (gnuzilla-commit "03d9e3db5affe21db077c410ec08c313d6aa280e")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -516,7 +516,7 @@ in C/C++.")
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "19i66qvwzgllgnlw270bxphymybjj1qb5hdznqi4i2dcgpcrq77l"))))
+              "12id87nsdwm6kra0gm3d3ww8kr0xxb4yllw9wcqmnrlnmspdc1n8"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
@@ -540,8 +540,7 @@ in C/C++.")
 
                 (set-path-environment-variable
                  "PATH" '("bin")
-                 (list #+rename
-                       #+python
+                 (list #+python
                        #+(canonical-package bash)
                        #+(canonical-package coreutils)
                        #+(canonical-package findutils)
