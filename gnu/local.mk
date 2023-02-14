@@ -1597,6 +1597,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/ocaml-4.09-multiple-definitions.patch	\
   %D%/packages/patches/omake-fix-non-determinism.patch	\
   %D%/packages/patches/oneko-remove-nonfree-characters.patch	\
+  %D%/packages/patches/onionshare-cli-async-mode.patch		\
   %D%/packages/patches/onnx-optimizer-system-library.patch	\
   %D%/packages/patches/onnx-use-system-googletest.patch	\
   %D%/packages/patches/onnx-shared-libraries.patch	\
