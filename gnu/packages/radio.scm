@@ -2042,7 +2042,6 @@ Compatible hardware/software:
            pulseaudio
            qtbase-5
            qtsvg-5
-           qtwebkit
            qwt
            speexdsp
            zlib))
