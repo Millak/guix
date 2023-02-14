@@ -249,3 +249,10 @@ will be used in description and synopsis."
    "html" "HTML"
    "1hg7vbcy7bir6b8x11v0a4x0glvqnsqc3i2ixiarbxmycbgl3axy"
    "0.19.0"))
+
+(define-public tree-sitter-javascript
+  (tree-sitter-grammar
+   "javascript" "JavaScript(JSX)"
+   "175yrk382n2di0c2xn4gpv8y4n83x1lg4hqn04vabf0yqynlkq67"
+   "0.20.0"
+   #:commit "rust-0.20.0"))
