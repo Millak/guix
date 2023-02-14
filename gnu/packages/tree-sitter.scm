@@ -352,3 +352,9 @@ will be used in description and synopsis."
    "json" "JSON"
    "06pjh31bv9ja9hlnykk257a6zh8bsxg2fqa54al7qk1r4n9ksnff"
    "0.19.0"))
+
+(define-public tree-sitter-julia
+  (tree-sitter-grammar
+   "julia" "Julia"
+   "1pbnmvhy2gq4vg1b0sjzmjm4s2gsgdjh7h01yj8qrrqbcl29c463"
+   "0.19.0"))
