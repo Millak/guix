@@ -270,3 +270,14 @@ will be used in description and synopsis."
    "c" "C"
    "1w03r4l773ki4iq2xxsc2pqxf3pjsbybq3xq4glmnsihgylibn8v"
    "0.20.2"))
+
+(define-public tree-sitter-cpp
+  ;; There are a lot of additions, the last tag was placed more than 1 year ago
+  (let ((commit "56cec4c2eb5d6af3d2942e69e35db15ae2433740")
+        (revision "0"))
+      (tree-sitter-grammar
+       "cpp" "C++"
+       "0c5iwg9j6naivvr18glfp095x32nfl9hbw0q02rhh1b59fkpjs09"
+       (git-version "0.20.0" revision commit)
+       #:commit commit
+       #:inputs (list tree-sitter-c))))
