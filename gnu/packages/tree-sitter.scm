@@ -330,3 +330,13 @@ will be used in description and synopsis."
      "16d32m78y8jricba9xav35c9y0k2r29irj5xyqgq24323yln9jnz"
      (git-version "0.19.1" revision commit)
      #:commit commit)))
+
+(define-public tree-sitter-haskell
+  ;; There are a lot of additions, the last tag was placed more than 4 years ago
+  (let ((commit "3bdba07c7a8eec23f87fa59ce9eb2ea4823348b3")
+        (revision "0"))
+    (tree-sitter-grammar
+     "haskell" "Haskell"
+     "1hg19af1n510bndf5k5iri7dzb48xb527vispv1aapki4mvr98gx"
+     (git-version "0.14.0" revision commit)
+     #:commit commit)))
