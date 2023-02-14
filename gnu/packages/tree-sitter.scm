@@ -264,3 +264,9 @@ will be used in description and synopsis."
    "0.20.1"
    #:inputs (list tree-sitter-javascript)
    #:grammar-directories '("typescript" "tsx")))
+
+(define-public tree-sitter-c
+  (tree-sitter-grammar
+   "c" "C"
+   "1w03r4l773ki4iq2xxsc2pqxf3pjsbybq3xq4glmnsihgylibn8v"
+   "0.20.2"))
