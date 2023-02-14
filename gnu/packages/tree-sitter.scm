@@ -395,3 +395,13 @@ will be used in description and synopsis."
      "1n7yxi2wf9xj8snw0b85a5w40vhf7x1pwirnwfk78ilr6hhz4ix9"
      (git-version "0.0.1" revision commit)
      #:commit commit)))
+
+(define-public tree-sitter-ruby
+  ;; There are a lot of additions, the last tag was placed more than 1 year ago
+  (let ((commit "206c7077164372c596ffa8eaadb9435c28941364")
+        (revision "0"))
+    (tree-sitter-grammar
+     "ruby" "Ruby"
+     "1pqr24bj68lgi1w2cblr8asfby681l3032jrppq4n9x5zm23fi6n"
+     (git-version "0.19.0" revision commit)
+     #:commit commit)))
