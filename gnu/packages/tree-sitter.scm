@@ -346,3 +346,9 @@ will be used in description and synopsis."
    "java" "Java"
    "1i9zfgqibinz3rkx6yws1wk49iys32x901dki65qihbxcmcfh341"
    "0.20.0"))
+
+(define-public tree-sitter-json
+  (tree-sitter-grammar
+   "json" "JSON"
+   "06pjh31bv9ja9hlnykk257a6zh8bsxg2fqa54al7qk1r4n9ksnff"
+   "0.19.0"))
