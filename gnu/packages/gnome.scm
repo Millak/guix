@@ -8,7 +8,7 @@
 ;;; Copyright © 2015 Mathieu Lirzin <mthl@openmailbox.org>
 ;;; Copyright © 2015, 2017 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 David Hashe <david.hashe@dhashe.com>
-;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2015, 2016, 2017, 2018, 2019, 2020, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 David Thompson <davet@gnu.org>
 ;;; Copyright © 2015-2023 Efraim Flashner <efraim@flashner.co.il>
@@ -1143,6 +1143,55 @@ tickets, and pops up a dialog when they are about to expire.")
     (description "Notification-Daemon is the server implementation of the
 freedesktop.org desktop notification specification.")
     (home-page "https://wiki.gnome.org/Projects/NotificationDaemon")
+    (license license:gpl2+)))
+
+(define-public metacity
+  (package
+    (name "metacity")
+    (version "3.46.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "mirror://gnome/sources/metacity/"
+                                  (version-major+minor version) "/"
+                                  "metacity-" version ".tar.xz"))
+              (sha256
+               (base32
+                "1ifnbpiflaw72m0flysa5qy44c1axd2rr9zcparz5210c7vlkfh0"))))
+    (build-system glib-or-gtk-build-system)
+    (native-inputs
+     (list gettext-minimal
+           libtool
+           autoconf
+           automake
+           pkg-config
+           (list glib "bin")
+           grep))
+    (inputs
+     (list libcanberra
+           zenity
+           libsm
+           libice
+           gtk+
+           pango
+           gsettings-desktop-schemas
+           gobject-introspection
+           libgtop
+           libxcomposite
+           libxcursor
+           libxfixes
+           libxdamage
+           libxext
+           libxpresent
+           libxres
+           libxrender
+           libxinerama
+           libx11
+           libxrandr))
+    (home-page "https://gitlab.gnome.org/GNOME/metacity")
+    (synopsis "Simple compositing window manager")
+    (description "Metacity is a window manager with a focus on simplicity and
+usability rather than novelties or gimmicks.  Its author has characterized it
+as a \"boring window manager for the adult in you.\"")
     (license license:gpl2+)))
 
 (define-public mm-common
