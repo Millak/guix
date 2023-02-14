@@ -265,6 +265,12 @@ will be used in description and synopsis."
    #:inputs (list tree-sitter-javascript)
    #:grammar-directories '("typescript" "tsx")))
 
+(define-public tree-sitter-css
+  (tree-sitter-grammar
+   "css" "CSS"
+   "014jrlgi7zfza9g38hsr4vlbi8964i5p7iglaih6qmzaiml7bja2"
+   "0.19.0"))
+
 (define-public tree-sitter-c
   (tree-sitter-grammar
    "c" "C"
