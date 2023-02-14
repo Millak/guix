@@ -440,3 +440,14 @@ will be used in description and synopsis."
    "1a2899x7i6dgbsrf13qzmh133hgfrlvmjsr3bbpffi1ixw1h7azk"
    "0.7.1"
    #:repository-url "https://github.com/ikatyang/tree-sitter-markdown"))
+
+(define-public tree-sitter-org
+  ;; There are a lot of additions, the last tag was placed a while ago
+  (let ((commit "081179c52b3e8175af62b9b91dc099d010c38770")
+        (revision "0"))
+    (tree-sitter-grammar
+     "org" "Org"
+     "0h9krbaq9j6ijf86sg0w221s0zbpbx5f7m1l0whzjahbrqpnqgxl"
+     (git-version "1.3.1" revision commit)
+     #:repository-url "https://github.com/milisims/tree-sitter-org"
+     #:commit commit)))
