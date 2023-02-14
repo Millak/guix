@@ -312,3 +312,11 @@ will be used in description and synopsis."
    "c-sharp" "C#"
    "054fmpf47cwh59gbg00sc0nl237ba4rnxi73miz39yqzcs87055r"
    "0.19.1"))
+
+(define-public tree-sitter-elm
+  (tree-sitter-grammar
+   "elm" "Elm"
+   "0b5jpj8bnil1ylisyc4w48j8a30dyf3zylhidj73mlrb8rf7xm2s"
+   "5.6.3"
+   #:article "an"
+   #:repository-url "https://github.com/elm-tooling/tree-sitter-elm"))
