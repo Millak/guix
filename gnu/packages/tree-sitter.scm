@@ -256,3 +256,11 @@ will be used in description and synopsis."
    "175yrk382n2di0c2xn4gpv8y4n83x1lg4hqn04vabf0yqynlkq67"
    "0.20.0"
    #:commit "rust-0.20.0"))
+
+(define-public tree-sitter-typescript
+  (tree-sitter-grammar
+   "typescript" "TypeScript and TSX"
+   "07fl9d968lal0aqj4f0n16p3n94cjkgfp54wynfr8gbdkjss5v5x"
+   "0.20.1"
+   #:inputs (list tree-sitter-javascript)
+   #:grammar-directories '("typescript" "tsx")))
