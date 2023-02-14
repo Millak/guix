@@ -237,7 +237,7 @@ implementation offers several extensions over the standard utility.")
           ;; tar-1.34 isn't aware of 64-bit time_t and upstream suggests
           ;; skipping the test for this release on 32-bit systems.
           ((not (target-64bit?))
-           '(#:make-flags (list "TESTSUITEFLAGS= -k 'tricky time stamps'")))
+           '(#:make-flags (list "TESTSUITEFLAGS= -k '!tricky time stamps'")))
           (else '()))
       #:phases (modify-phases %standard-phases
                  (add-before 'build 'set-shell-file-name
