@@ -451,3 +451,14 @@ will be used in description and synopsis."
      (git-version "1.3.1" revision commit)
      #:repository-url "https://github.com/milisims/tree-sitter-org"
      #:commit commit)))
+
+(define-public tree-sitter-scheme
+  ;; There are a lot of additions, the last tag was placed a while ago
+  (let ((commit "67b90a365bebf4406af4e5a546d6336de787e135")
+        (revision "0"))
+    (tree-sitter-grammar
+     "scheme" "Scheme (R5RS, R6RS)"
+     "1pvxckza1kdfwqs78ka3lbwldrwkgymb31f5x1fq5vyawg60wxk8"
+     (git-version "0.2.0" revision commit)
+     #:repository-url "https://github.com/6cdh/tree-sitter-scheme"
+     #:commit commit)))
