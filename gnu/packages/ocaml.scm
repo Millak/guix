@@ -3884,6 +3884,20 @@ will optimise these calls away, meaning there should be no overhead in the
 non-profiling case.")
     (license license:bsd-2)))
 
+(define-public ocaml-mirage-profile
+  (package
+    (inherit ocaml-mirage-profile-unix)
+    (name "ocaml-mirage-profile")
+    (arguments
+     '(#:package "mirage-profile"
+       ;; TODO cyclic dependency with mirage-profile
+       ;; It could be broken using package variants, if not for
+       ;; propagated inputs leading to version conflicts.
+       #:tests? #f))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       ocaml-mirage-profile-unix)
+                         (append ocaml-mirage-profile-unix)))))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
