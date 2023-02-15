@@ -3045,6 +3045,16 @@ follow the Xen ABI and may be used to create or implement Xen virtual
 devices.")
     (license license:isc)))
 
+(define-public ocaml-shared-memory-ring-lwt
+  (package
+    (inherit ocaml-shared-memory-ring)
+    (name "ocaml-shared-memory-ring-lwt")
+    (arguments
+     '(#:package "shared-memory-ring-lwt"))
+    (propagated-inputs (modify-inputs (package-propagated-inputs
+                                       ocaml-shared-memory-ring)
+                         (append ocaml-shared-memory-ring)))))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
