@@ -27,6 +27,7 @@
 ;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2022 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 Garek Dyszel <garekdyszel@disroot.org>
+;;; Copyright © 2023 Csepp <raingloom@riseup.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3528,6 +3529,28 @@ and command-line tool.")
     ;; All other files under GNU gpl3
     (license (list license:gpl3+
                    license:lgpl2.1+))))
+
+(define-public ocaml-domain-name
+  (package
+    (name "ocaml-domain-name")
+    (version "0.4.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/hannesm/domain-name/")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1a669zz1pc7sqbi1c13jsnp8algcph2b8gr5fjrjhyh3p232770k"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/hannesm/domain-name")
+    (synopsis "RFC 1035 Internet domain name data structure and parser")
+    (description
+     "Parses and constructs RFC compliant domain names.  The invariants on the
+length of domain names are preserved throughout the module.")
+    (license license:isc)))
 
 (define-public ocaml-ocurl
   (package
