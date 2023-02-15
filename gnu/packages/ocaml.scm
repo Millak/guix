@@ -3849,6 +3849,36 @@ since an arbitrary point, and @code{PCLOCK} which counts time since the Unix
 epoch.")
     (license license:isc)))
 
+(define-public ocaml-ptime
+  (package
+    (name "ocaml-ptime")
+    ;; TODO 1.1.0 has some issues, so for now we are stuck with 0.8.5
+    (version "0.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://erratique.ch/software/ptime/releases/ptime-0.8.5.tbz")
+              (sha256
+               (base32
+                "1fxq57xy1ajzfdnvv5zfm7ap2nf49znw5f9gbi4kb9vds942ij27"))))
+    (build-system ocaml-build-system)
+    (arguments
+     `(#:build-flags (list "build" "--with-js_of_ocaml" "true" "--tests"
+                           "true")
+       #:phases (modify-phases %standard-phases
+                  (delete 'configure))))
+    (propagated-inputs (list ocaml-result js-of-ocaml))
+    (native-inputs (list ocaml-findlib ocamlbuild ocaml-topkg opam))
+    (home-page "https://erratique.ch/software/ptime")
+    (synopsis "POSIX time for OCaml")
+    (description
+     "Ptime offers platform independent POSIX time support in pure OCaml.  It
+provides a type to represent a well-defined range of POSIX timestamps with
+picosecond precision, conversion with date-time values, conversion with RFC
+3339 timestamps and pretty printing to a human-readable, locale-independent
+representation.")
+    (license license:isc)))
+
 (define-public ocaml-mirage-unix
   (package
     (name "ocaml-mirage-unix")
