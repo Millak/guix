@@ -176,7 +176,7 @@ runtime (like runc or crun) for a single container.")
            #~(modify-phases %standard-phases
                (add-before 'install 'refer-to-inputs
                  (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* (find-files "." "^distrobox.*")
+                   (substitute* (find-files "." "^distrobox.*[^1]$")
                      (("podman") (search-input-file inputs "/bin/podman"))
                      (("wget") (search-input-file inputs "/bin/wget"))
                      (("command -v") "test -x"))))
