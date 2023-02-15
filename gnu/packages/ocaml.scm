@@ -2636,6 +2636,34 @@ simple (yet expressive) query language to select the tests to run.")
        `(#:package "alcotest"))
       (properties '()))))
 
+(define-public ocaml-expect-test-helpers-core
+  (package
+    (name "ocaml-expect-test-helpers-core")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/janestreet/expect_test_helpers_core")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0bxs3g0zzym8agfcbpg5lmrh6hcb86z861bq40xhhfwqf4pzdbfa"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base
+                             ocaml-base-quickcheck
+                             ocaml-core
+                             ocaml-ppx-jane
+                             ocaml-sexp-pretty
+                             ocaml-stdio
+                             ocaml-re))
+    (properties `((upstream-name . "expect_test_helpers_core")))
+    (home-page "https://github.com/janestreet/expect_test_helpers_core")
+    (synopsis "Helpers for writing expectation tests")
+    (description "Helper functions for writing expect tests.")
+    (license license:expat)))
+
 (define-public ocaml-ppx-tools
   (package
     (name "ocaml-ppx-tools")
