@@ -1732,6 +1732,59 @@ rendering @acronym{SVG, Scalable Vector Graphics}.")
 your terminal.")
     (license license:expat)))
 
+(define-public facedetect
+  (let ((commit "5f9b9121001bce20f7d87537ff506fcc90df48ca")
+        (revision "0"))
+    (package
+      (name "facedetect")
+      (version (git-version "0.1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://gitlab.com/wavexx/facedetect")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32 "1jiz72y3ykkxkiij1qqjf45gxg223sghkjir7sr663x91kviwkjd"))))
+      (build-system copy-build-system)
+      (arguments
+       (list
+        #:install-plan
+        #~`(("facedetect" "bin/facedetect")
+            ("README.rst" ,(string-append "share/doc/" #$name
+                                          "-" #$version "/README.rst")))
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "facedetect"
+                  (("^DATA_DIR = .*")
+                   (string-append "DATA_DIR = '"
+                                  #$opencv "/share/opencv"
+                                  #$(version-major (package-version opencv))
+                                  "'\n")))))
+            (add-after 'install 'wrap
+              (lambda _
+                (let ((program (string-append #$output "/bin/facedetect")))
+                  (patch-shebang program)
+                  (wrap-program program
+                    `("GUIX_PYTHONPATH" prefix
+                      ,(search-path-as-string->list
+                        (getenv "GUIX_PYTHONPATH"))))))))))
+      (inputs
+       (list bash-minimal
+             opencv
+             python
+             python-numpy))
+      (home-page "https://www.thregr.org/~wavexx/software/facedetect/")
+      (synopsis "Face detector")
+      (description "@code{facedetect} is a face detector for batch processing.
+It answers the question: \"Is there a face in this image?\" and gives back
+either an exit code or the coordinates of each detect face in the standard
+output.  @code{facedetect} is used in software such as @code{fgallery} to
+improve the thumbnail cutting region, so that faces are always centered.")
+      (license license:gpl2+))))
+
 (define-public fgallery
   (package
     (name "fgallery")
@@ -1774,6 +1827,7 @@ your terminal.")
                  `("PATH" ":" prefix
                    ,(map bin-directory '("imagemagick"
                                          "lcms"
+                                         "facedetect"
                                          "fbida"
                                          "libjpeg-turbo"
                                          "zip"
@@ -1783,11 +1837,11 @@ your terminal.")
                  `("PERL5LIB" ":" prefix (,perl5lib)))))))))
     (native-inputs
      (list unzip))
-    ;; TODO: Add missing optional dependency: facedetect.
     (inputs
      (list bash-minimal
            imagemagick
            lcms
+           facedetect
            fbida
            libjpeg-turbo
            zip
