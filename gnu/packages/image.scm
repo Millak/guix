@@ -619,33 +619,31 @@ collection of tools for doing simple manipulations of TIFF images.")
            libtool
            pkg-config))
     (inputs
-     `(("giflib" ,giflib)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libpng" ,libpng)
-       ("libtiff" ,libtiff)
-       ("libwebp" ,libwebp)
-       ("openjpeg" ,openjpeg)
-       ("zlib" ,zlib)))
+     (list giflib
+           libjpeg-turbo
+           libpng
+           libtiff
+           libwebp
+           openjpeg
+           zlib))
     (arguments
-     '(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-reg-wrapper
-           (lambda _
-             (substitute* "prog/reg_wrapper.sh"
-               ((" /bin/sh ")
-                (string-append " " (which "sh") " "))
-               (("which gnuplot")
-                "true"))
-             #t))
-         (add-after 'install 'provide-absolute-giflib-reference
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (giflib (assoc-ref inputs "giflib")))
-               ;; Add an absolute reference to giflib to avoid propagation.
-               (with-directory-excursion (string-append out "/lib")
-                 (substitute* '("liblept.la" "pkgconfig/lept.pc")
-                   (("-lgif") (string-append "-L" giflib "/lib -lgif"))))
-               #t))))))
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-reg-wrapper
+            (lambda _
+              (substitute* "prog/reg_wrapper.sh"
+                ((" /bin/sh ")
+                 (string-append " " (which "sh") " "))
+                (("which gnuplot")
+                 "true"))))
+          (add-after 'install 'provide-absolute-giflib-reference
+            (lambda _
+              (let ((giflib #$(this-package-input "giflib")))
+                ;; Add an absolute reference to giflib to avoid propagation.
+                (with-directory-excursion (string-append #$output "/lib")
+                  (substitute* '("liblept.la" "pkgconfig/lept.pc")
+                    (("-lgif") (string-append "-L" giflib "/lib -lgif"))))))))))
     (home-page "http://www.leptonica.com/")
     (synopsis "Library and tools for image processing and analysis")
     (description
