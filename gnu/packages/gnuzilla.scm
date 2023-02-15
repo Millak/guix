@@ -715,10 +715,8 @@ variable defined below.  It requires guile-json to be installed."
            mit-krb5
            hunspell
            libnotify
-           ;; See <https://bugs.gnu.org/32833>
-           ;;   and related comments in the 'remove-bundled-libraries' phase.
-           ;; UNBUNDLE-ME! nspr
-           ;; UNBUNDLE-ME! nss
+           nspr-next
+           nss-next
            shared-mime-info
            sqlite
            eudev
@@ -813,12 +811,8 @@ variable defined below.  It requires guile-json to be installed."
          ;; UNBUNDLE-ME! "--with-system-theora" ; wants theora-1.2, not yet released
          ;; UNBUNDLE-ME! "--with-system-libvpx"
          "--with-system-icu"
-
-         ;; See <https://bugs.gnu.org/32833>
-         ;;   and related comments in the
-         ;;   'remove-bundled-libraries' phase below.
-         ;; UNBUNDLE-ME! "--with-system-nspr"
-         ;; UNBUNDLE-ME! "--with-system-nss"
+         "--with-system-nspr"
+         "--with-system-nss"
 
          ;; UNBUNDLE-ME! "--with-system-harfbuzz"
          ;; UNBUNDLE-ME! "--with-system-graphite2"
@@ -867,12 +861,9 @@ variable defined below.  It requires guile-json to be installed."
                           ;; FIXME: A script from the bundled nspr is used.
                           ;;"nsprpub"
                           ;;
-                          ;; FIXME: With the update to IceCat 60, using system NSS
-                          ;;        broke certificate validation.  See
-                          ;;        <https://bugs.gnu.org/32833>.  For now, we use
-                          ;;        the bundled NSPR and NSS.  TODO: Investigate,
-                          ;;        and try to unbundle these libraries again.
-                          ;; UNBUNDLE-ME! "security/nss"
+                          ;; FIXME: Some of the bundled NSS sources are used
+                          ;; to build third_party/prio.
+                          ;;"security/nss"
                           ;;
                           ;; TODO: Use more system media libraries.  See:
                           ;; <https://bugzilla.mozilla.org/show_bug.cgi?id=517422>
