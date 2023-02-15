@@ -8357,6 +8357,38 @@ the full Core is not available, such as in Javascript.")
                  ;; MLton and sjs
                  license:expat)))))
 
+(define-public ocaml-core-unix
+  (package
+    (name "ocaml-core-unix")
+    (version "0.15.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/core_unix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0h6lqaxpp4r06a63k8yr0g9y7wc8r35v2xzqgvkiiq1ypa48zzgm"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core
+                             ocaml-core-kernel
+                             ocaml-expect-test-helpers-core
+                             ocaml-jane-street-headers
+                             ocaml-jst-config
+                             ocaml-intrinsics
+                             ocaml-ppx-jane
+                             ocaml-sexplib
+                             ocaml-timezone
+                             ocaml-spawn))
+    (properties `((upstream-name . "core_unix")))
+    (home-page "https://github.com/janestreet/core_unix")
+    (synopsis "Unix-specific portions of Core")
+    (description
+     "Unix-specific extensions to some of the modules defined in core and
+core_kernel.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
