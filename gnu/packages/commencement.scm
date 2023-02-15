@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -430,16 +430,14 @@ MesCC-Tools), and finally M2-Planet.")
   (package
     (inherit mes)
     (name "mes-boot")
-    (version "0.24.2")
+    (version "0.24")
     (source (origin
               (method url-fetch)
-              (uri (list (string-append "mirror://gnu/mes/"
-                                   "mes-" version ".tar.gz")
-                         (string-append "https://lilypond.org/janneke/mes/"
-                                        "mes-" version ".tar.gz")))
+              (uri (string-append "mirror://gnu/mes/"
+                                  "mes-" version ".tar.gz"))
               (sha256
                (base32
-                "0vp8v88zszh1imm3dvdfi3m8cywshdj7xcrsq4cgmss69s2y1nkx"))))
+                "00lrpm4x5qg0l840zhbf9mr67mqhp8gljcl24j5dy0y109gf32w2"))))
     (inputs '())
     (propagated-inputs '())
     (supported-systems '("i686-linux" "x86_64-linux"))
