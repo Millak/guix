@@ -9219,6 +9219,35 @@ between Bigstrings and other string-like types.  @code{bigstringaf} provides
 these missing pieces.")
     (license license:bsd-3)))
 
+(define-public ocaml-intrinsics
+  (package
+    (name "ocaml-intrinsics")
+    (version "0.15.2")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/ocaml_intrinsics")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1mazr1ka2zlm2s8bw5i555cnhi1bmr9yxvpn29d3v4m8lsnfm73z"))))
+    (build-system dune-build-system)
+    ;; TODO figure out how to get around this error:
+    ;; No rule found for alias test/runtime-deps-of-tests
+    (arguments
+     '(#:tests? #f))
+    (propagated-inputs (list dune-configurator))
+    (native-inputs (list ocaml-expect-test-helpers-core ocaml-core))
+    (properties `((upstream-name . "ocaml_intrinsics")))
+    (home-page "https://github.com/janestreet/ocaml_intrinsics")
+    (synopsis "AMD64 intrinsics with emulated fallbacks")
+    (description
+     "Provides an OCaml interface to operations that have dedicated hardware
+instructions on some micro-architectures, with default implementations using C
+stubs for all targets.")
+    (license license:expat)))
+
 (define-public ocaml-trie
   (package
     (name "ocaml-trie")
