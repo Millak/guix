@@ -3055,6 +3055,35 @@ devices.")
                                        ocaml-shared-memory-ring)
                          (append ocaml-shared-memory-ring)))))
 
+(define-public ocaml-xenstore
+  (package
+    (name "ocaml-xenstore")
+    (version "2.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/ocaml-xenstore")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1acld5gxmvnhl5iyyy5ancpm7fv9d6ns1x32krcmb62p2czd00ky"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct ocaml-ppx-cstruct ocaml-lwt))
+    (native-inputs (list ocaml-ounit2))
+    (home-page "https://github.com/mirage/ocaml-xenstore")
+    (synopsis "Xenstore protocol in pure OCaml")
+    (description "Repository contents:
+@itemize
+@item client library, a merge of the Mirage and XCP ones
+@item server library
+@item server instance which runs under Unix with libxc
+@item server instance which runs on mirage.
+@end itemize
+The client and the server libraries have sets of unit-tests.")
+    ;; Has a linking exception, see LICENSE.md.
+    (license license:lgpl2.1)))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
