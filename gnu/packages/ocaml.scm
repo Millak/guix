@@ -3107,6 +3107,28 @@ The client and the server libraries have sets of unit-tests.")
 avoid copying the data contained within the page.")
     (license license:isc)))
 
+(define-public ocaml-bheap
+  (package
+    (name "ocaml-bheap")
+    (version "2.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/backtracking/bheap")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0b8md5zl4yz7j62jz0bf7lwyl0pyqkxqx36ghkgkbkxb4zzggfj1"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-stdlib-shims))
+    (home-page "https://github.com/backtracking/bheap")
+    (synopsis "Priority queues")
+    (description
+     "Traditional implementation of priority queues using a binary heap
+encoded in a resizable array.")
+    (license license:lgpl2.1)))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
