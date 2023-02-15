@@ -4462,6 +4462,22 @@ writing to these structures, and they are accessed via the Bigarray module.")
 (define ocaml-cstruct-unix ocaml-cstruct)
 (define ocaml-cstruct-sexp ocaml-cstruct)
 
+(define-public ocaml-ppx-cstruct
+  (package
+    (inherit ocaml-cstruct)
+    (name "ocaml-ppx-cstruct")
+    (properties `((upstream-name . "ppx_cstruct")))
+    (arguments
+     '(#:package "ppx_cstruct"
+       ;; TODO doesn't find test deps for some reason?
+       ;; I have no clue why.
+       #:tests? #f))
+    (propagated-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
+                         (append ocaml-cstruct ocaml-ppxlib ocaml-sexplib)))
+    (native-inputs (modify-inputs (package-propagated-inputs ocaml-cstruct)
+                     (append ocaml-cstruct-sexp ocaml-findlib
+                             ocaml-ppx-sexp-conv)))))
+
 (define-public ocaml-hex
   (package
     (name "ocaml-hex")
