@@ -3084,6 +3084,40 @@ The client and the server libraries have sets of unit-tests.")
     ;; Has a linking exception, see LICENSE.md.
     (license license:lgpl2.1)))
 
+(define-public ocaml-mirage-xen
+  (package
+    (name "ocaml-mirage-xen")
+    (version "8.0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-xen")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1qydg92dbw8hj4b809apj0f51cjgmamq3zdf34a4wyn5jv85yzyx"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct
+                             ocaml-lwt
+                             ocaml-shared-memory-ring-lwt
+                             ocaml-xenstore
+                             ocaml-lwt-dllist
+                             ;; ocaml-mirage-profile  dependency cycle
+                             ocaml-io-page
+                             ocaml-mirage-runtime
+                             ocaml-logs
+                             ocaml-fmt
+                             ocaml-bheap
+                             ocaml-duration))
+    (home-page "https://github.com/mirage/mirage-xen")
+    (synopsis "Xen core platform libraries for MirageOS")
+    (description
+     "MirageOS OS library for Xen targets, which handles the main
+loop and timers.  It also provides the low level C startup code and C stubs
+required by the OCaml code.")
+    (license license:isc)))
+
 (define-public ocaml-io-page
   (package
     (name "ocaml-io-page")
