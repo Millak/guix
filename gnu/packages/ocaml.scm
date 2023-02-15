@@ -8462,6 +8462,32 @@ system calls run in.")
 javascript.")
     (license license:expat)))
 
+(define-public ocaml-textutils
+  (package
+    (name "ocaml-textutils")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/textutils")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wass49h645wql9b7nck2iqlkf4648dkxvlvxixr7z80zcnb5rxr"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core
+                             ocaml-core-kernel
+                             ocaml-core-unix
+                             ocaml-ppx-jane
+                             ocaml-textutils-kernel
+                             ocaml-uutf))
+    (home-page "https://github.com/janestreet/textutils")
+    (synopsis "Text output utilities")
+    (description
+     "Utilities for working with terminal output, such as color printing.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
