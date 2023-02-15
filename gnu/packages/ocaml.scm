@@ -2963,6 +2963,11 @@ process.  Also, in many cases, Lwt threads can interact without the need for
 locks or other synchronization primitives.")
     (license license:lgpl2.1)))
 
+;; TODO this alias is not ideal but ocaml-lwt already explicitly specifies a
+;; package argument and at least this way the importer doesn't try to
+;; re-import it.
+(define ocaml-lwt-ppx ocaml-lwt)
+
 (define-public ocaml-lwt-dllist
   (package
     (name "ocaml-lwt-dllist")
@@ -4450,6 +4455,12 @@ writing to these structures, and they are accessed via the Bigarray module.")
                  (base32
                   "0jj3whs8r3jc524i9bb67rffh7y7r157hjgvws0bkxijxpjzwkbk"))))
       (properties '()))))
+
+;; TODO again, the "parent" package already has an explicit package argument,
+;; so a variant package doesn't make sense, at least these aliases help the
+;; importer out so it doesn't re-import things.  At least hopefully.
+(define ocaml-cstruct-unix ocaml-cstruct)
+(define ocaml-cstruct-sexp ocaml-cstruct)
 
 (define-public ocaml-hex
   (package
