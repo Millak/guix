@@ -41,6 +41,7 @@
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
 ;;; Copyright © 2022 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Luis Felipe López Acevedo <luis.felipe.la@protonmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -70,6 +71,8 @@
   #:use-module (gnu packages gnome)
   #:use-module (gnu packages golang)
   #:use-module (gnu packages gtk)
+  #:use-module (gnu packages guile)
+  #:use-module (gnu packages guile-xyz)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
@@ -78,6 +81,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages texinfo)
   #:use-module (gnu packages time)
   #:use-module (gnu packages xml)
   #:use-module (guix utils)
@@ -90,6 +94,7 @@
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
+  #:use-module (guix build-system guile)
   #:use-module (guix build-system meson)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
@@ -3473,3 +3478,79 @@ directories and files.")
 tables by saving expected data in a data directory (courtesy of pytest-datadir)
 that can be used to verify that future runs produce the same data.")
     (license license:expat)))
+
+(define-public guile-proba
+  (package
+    (name "guile-proba")
+    (version "0.3.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://codeberg.org/luis-felipe/guile-proba")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1mjnrbb6gv5f95i1ihn75yh7ya445pcnj13cy34x2v58h9n2r80s"))))
+    (build-system guile-build-system)
+    (inputs (list bash-minimal guile-3.0))
+    (native-inputs (list texinfo))
+    (propagated-inputs (list guile-config guile-lib))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'set-paths 'add-output-to-guile-load-paths
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (guile-version (target-guile-effective-version))
+                     (scm-path (string-append out
+                                              "/share/guile/site/"
+                                              guile-version))
+                     (go-path (string-append out
+                                             "/lib/guile/"
+                                             guile-version
+                                             "/site-ccache")))
+                (setenv "GUILE_LOAD_PATH"
+                        (string-append scm-path ":"
+                                       (getenv "GUILE_LOAD_PATH")))
+                (setenv "GUILE_LOAD_COMPILED_PATH"
+                        (string-append
+                         go-path ":"
+                         (getenv "GUILE_LOAD_COMPILED_PATH"))))))
+          (add-after 'build 'build-manual
+            (lambda _
+              (invoke "makeinfo" "manual/main.texi")))
+          (add-after 'build 'check
+            (lambda _
+              (invoke "guile" "proba.scm" "run" "tests")))
+          (add-after 'install 'install-wrapped-script
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (bin-dir (string-append out "/bin"))
+                     (script (string-append bin-dir "/proba")))
+                (mkdir-p bin-dir)
+                (copy-file "proba.scm" script)
+                (chmod script #o555)
+                (wrap-program script
+                  `("GUILE_LOAD_PATH" = (,(getenv "GUILE_LOAD_PATH")))
+                  `("GUILE_LOAD_COMPILED_PATH" =
+                    (,(getenv "GUILE_LOAD_COMPILED_PATH")))))))
+          (add-after 'install 'install-manual
+            (lambda* (#:key outputs #:allow-other-keys)
+              (let* ((out (assoc-ref outputs "out"))
+                     (info-dir (string-append out "/share/info")))
+                (mkdir-p info-dir)
+                (install-file "guile-proba" info-dir)))))
+      #:scheme-file-regexp
+      #~(begin
+          (use-modules (ice-9 regex))
+          (lambda (file stat) (string-match "/proba/.*\\.scm$" file)))))
+    (home-page "https://luis-felipe.gitlab.io/guile-proba/")
+    (synopsis "Testing tools for GNU Guile projects with SRFI 64 test suites")
+    (description
+     "This software is a set of testing tools for GNU Guile projects
+with SRFI 64-based test suites.  It comes with a command-line interface
+to run test collections, and a library that includes a test runner and
+helpers for writing tests.")
+    (license license:public-domain)))
