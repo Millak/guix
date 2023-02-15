@@ -14,6 +14,7 @@
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
+;;; Copyright © 2023 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -75,7 +76,7 @@
                   (string-append "\"filter-path" middle
                                  "\"" libdir "\"")))
                #t))))))
-    (inputs (list perl))
+    (native-inputs (list perl))
 
     (native-search-paths
      ;; This is a Guix-specific environment variable that takes a single
