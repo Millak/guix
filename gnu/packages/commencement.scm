@@ -5,7 +5,7 @@
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017, 2018, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2019, 2020, 2021, 2022 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
+;;; Copyright © 2018, 2019, 2020, 2021, 2022, 2023 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
 ;;; Copyright © 2019-2022 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2020, 2022 Timothy Sample <samplet@ngyro.com>
 ;;; Copyright © 2020 Guy Fleury Iteriteka <gfleury@disroot.org>
@@ -733,7 +733,8 @@ MesCC-Tools), and finally M2-Planet.")
     (build-system gnu-build-system)
     (inputs '())
     (propagated-inputs '())
-    (native-inputs (%boot-tcc0-inputs))
+    (native-inputs `(("mes" ,mes-boot)
+                     ,@(%boot-tcc0-inputs)))
     (arguments
      `(#:implicit-inputs? #f
        #:guile ,%bootstrap-guile
@@ -792,8 +793,26 @@ MesCC-Tools), and finally M2-Planet.")
              (= 1 (status:exit-val (system* "./tcc" "--help")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref %outputs "out"))
-                   (tcc (assoc-ref %build-inputs "tcc")))
+             (let* ((out (assoc-ref %outputs "out"))
+                    (mes (assoc-ref %build-inputs "mes"))
+                    (tcc (assoc-ref %build-inputs "tcc"))
+                    (interpreter "/mes/loader")
+                    (cppflags
+                     (list
+                      "-D" "BOOTSTRAP=1"
+                      "-D" "ONE_SOURCE=1"
+                      "-D" "TCC_TARGET_I386=1"
+                      "-D" "CONFIG_TCCBOOT=1"
+                      "-D" "CONFIG_TCC_STATIC=1"
+                      "-D" "CONFIG_USE_LIBGCC=1"
+                      "-D" (string-append "CONFIG_TCCDIR=\"" out "/lib/tcc\"")
+                      "-D" (string-append "CONFIG_TCC_CRTPREFIX=\"" out "/lib:{B}/lib:.\"")
+                      "-D" (string-append "CONFIG_TCC_ELFINTERP=\"" interpreter "\"")
+                      "-D" (string-append "CONFIG_TCC_LIBPATHS=\"" tcc "/lib:{B}/lib:{B}/lib/tcc:.\"")
+                      "-D" (string-append "CONFIG_TCC_SYSINCLUDEPATHS=\""
+                                          tcc "/include" ":/include:{B}/include\"")
+                      "-D" (string-append "TCC_LIBGCC=\"" tcc "/lib/libc.a\"")
+                      "-D" (string-append "TCC_LIBTCC1_MES=\"libtcc1-mes.a\""))))
                (and
                 (mkdir-p (string-append out "/bin"))
                 (copy-file "tcc" (string-append out "/bin/tcc"))
@@ -807,7 +826,16 @@ MesCC-Tools), and finally M2-Planet.")
                 (copy-file "libtcc1.a" (string-append out "/lib/libtcc1.a"))
                 (delete-file (string-append out "/lib/tcc/libtcc1.a"))
                 (copy-file "libtcc1.a"
-                           (string-append out "/lib/tcc/libtcc1.a")))))))))))
+                           (string-append out "/lib/tcc/libtcc1.a"))
+
+                (delete-file (string-append out "/lib/libc.a"))
+                (apply invoke "./tcc" "-c" "-o" "libc.o"
+                       "-I" (string-append tcc "/include")
+                       "-I" (string-append tcc "/include/linux/x86")
+                       (string-append mes "/lib/libc+gnu.c")
+                       cppflags)
+                (invoke "./tcc" "-ar" "rc" "libc.a" "libc.o")
+                (copy-file "libc.a" (string-append out "/lib/libc.a")))))))))))
 
 (define patch-mesboot
   ;; The initial patch.
