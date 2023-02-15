@@ -685,7 +685,6 @@ variable defined below.  It requires guile-json to be installed."
            gdk-pixbuf
            glib
            gtk+
-           gtk+-2
            ;; UNBUNDLE-ME! graphite2
            cairo
            pango
