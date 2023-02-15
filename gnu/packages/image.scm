@@ -601,7 +601,7 @@ collection of tools for doing simple manipulations of TIFF images.")
 (define-public leptonica
   (package
     (name "leptonica")
-    (version "1.80.0")
+    (version "1.83.1")
     (source
      (origin
        (method git-fetch)
@@ -610,7 +610,7 @@ collection of tools for doing simple manipulations of TIFF images.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "12ddln72z5l3icz0i9rpsfkg5xik8fcwcn8lb0cp3jigjxi8gvkg"))))
+        (base32 "1j7qf9flb48q0aymf0yx9rypy3bs6hfjcln08zmy8qn2qcjzrmvi"))))
     (build-system gnu-build-system)
     (native-inputs
      (list gnuplot ;needed for test suite
@@ -642,7 +642,7 @@ collection of tools for doing simple manipulations of TIFF images.")
               (let ((giflib #$(this-package-input "giflib")))
                 ;; Add an absolute reference to giflib to avoid propagation.
                 (with-directory-excursion (string-append #$output "/lib")
-                  (substitute* '("liblept.la" "pkgconfig/lept.pc")
+                  (substitute* '("libleptonica.la" "pkgconfig/lept.pc")
                     (("-lgif") (string-append "-L" giflib "/lib -lgif"))))))))))
     (home-page "http://www.leptonica.com/")
     (synopsis "Library and tools for image processing and analysis")
