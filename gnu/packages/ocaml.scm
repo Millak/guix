@@ -3800,6 +3800,26 @@ unsigned 64 bit integer.  This has a range of up to 584 years.  Functions
 provided check the input and raise on negative or out of bound input.")
     (license license:isc)))
 
+(define-public ocaml-mirage-time
+  (package
+    (name "ocaml-mirage-time")
+    (version "3.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "https://github.com/mirage/mirage-time/releases/download/v"
+                    version "/mirage-time-v3.0.0.tbz"))
+              (sha256
+               (base32
+                "0z5xkhlgyhm22wyhwpf9r0rn4125cc3cxj6ccavyiiz2b2dr8h0d"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-lwt ocaml-duration))
+    (home-page "https://github.com/mirage/mirage-time")
+    (synopsis "Time operations for MirageOS")
+    (description
+     "Defines the signature for time-related operations for MirageOS.")
+    (license license:isc)))
+
 (define-public ocaml-mirage-unix
   (package
     (name "ocaml-mirage-unix")
