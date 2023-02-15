@@ -1492,18 +1492,18 @@ in Julia).")
         (substitute-keyword-arguments (package-arguments openscenegraph)
           ((#:configure-flags flags)
            ;; As per the above wiki link, the following plugins are enough:
-           `(append
-             '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
-               "-DBUILD_OSG_PLUGIN_OSG=1"
-               "-DBUILD_OSG_PLUGIN_DDS=1"
-               "-DBUILD_OSG_PLUGIN_TGA=1"
-               "-DBUILD_OSG_PLUGIN_BMP=1"
-               "-DBUILD_OSG_PLUGIN_JPEG=1"
-               "-DBUILD_OSG_PLUGIN_PNG=1"
-               "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
-               ;; The jpeg plugin requires conversion between integers and booleans
-               "-DCMAKE_CXX_FLAGS=-fpermissive")
-             ,flags))))))))
+           #~(append
+              '("-DBUILD_OSG_PLUGINS_BY_DEFAULT=0"
+                "-DBUILD_OSG_PLUGIN_OSG=1"
+                "-DBUILD_OSG_PLUGIN_DDS=1"
+                "-DBUILD_OSG_PLUGIN_TGA=1"
+                "-DBUILD_OSG_PLUGIN_BMP=1"
+                "-DBUILD_OSG_PLUGIN_JPEG=1"
+                "-DBUILD_OSG_PLUGIN_PNG=1"
+                "-DBUILD_OSG_DEPRECATED_SERIALIZERS=0"
+                ;; The jpeg plugin requires conversion between integers and booleans
+                "-DCMAKE_CXX_FLAGS=-fpermissive")
+              #$flags))))))))
 
 (define-public povray
   (package
