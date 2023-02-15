@@ -3729,6 +3729,29 @@ according RFC2047.")
 applications built with MirageOS")
     (license license:isc)))
 
+(define-public ocaml-functoria
+  (package
+    (inherit ocaml-functoria-runtime)
+    (name "ocaml-functoria")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "functoria"
+       ;; TODO again, wants opam, other tests seem to pass
+       ;; look for a way to disable tests that want network access
+       #:tests? #f))
+    (propagated-inputs (list ocaml-cmdliner ocaml-rresult ocaml-result
+                             ocaml-astring ocaml-fmt ocaml-logs ocaml-bos
+                             ocaml-fpath ocaml-emile ocaml-uri))
+    (native-inputs (list ocaml-alcotest ocaml-functoria-runtime))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis
+     "DSL to organize functor applications")
+    (description
+     "DSL to describe a set of modules and functors, their types and
+how to apply them in order to produce a complete application.  The main use
+case is mirage.")
+    (license license:isc)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
