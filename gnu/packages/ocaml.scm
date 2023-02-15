@@ -3752,6 +3752,30 @@ how to apply them in order to produce a complete application.  The main use
 case is mirage.")
     (license license:isc)))
 
+(define-public ocaml-mirage
+  (package
+    (inherit ocaml-functoria-runtime)
+    (name "ocaml-mirage")
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "mirage"
+       ;; TODO again, wants opam, other tests seem to pass
+       ;; look for a way to disable tests that want network access
+       #:tests? #f))
+    (propagated-inputs
+     (list ocaml-astring ocaml-bos ocaml-functoria ocaml-ipaddr ocaml-logs
+           ocaml-mirage-runtime ocaml-opam-monorepo))
+    (native-inputs (list ocaml-alcotest ocaml-fmt))
+    (home-page "https://github.com/mirage/mirage")
+    (synopsis
+     "The MirageOS library operating system")
+    (description
+     "Library operating system that constructs unikernels for secure,
+high-performance network applications across a variety of cloud computing and
+mobile platforms.  Code can be developed on a normal OS and then compiled into
+a fully-standalone, specialised unikernel.")
+    (license license:isc)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
