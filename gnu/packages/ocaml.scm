@@ -8439,6 +8439,29 @@ or select, depending on availability, and manages a thread pool that blocking
 system calls run in.")
     (license license:expat)))
 
+(define-public ocaml-textutils-kernel
+  (package
+    (name "ocaml-textutils-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/textutils_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "068g11d98wsb5a6ds0p5xybdmx5nx9bxa0k11dmh3l57kn4c169x"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-ppx-jane ocaml-uutf))
+    (properties `((upstream-name . "textutils_kernel")))
+    (home-page "https://github.com/janestreet/textutils_kernel")
+    (synopsis "Text output utilities")
+    (description
+     "The subset of textutils using only core_kernel and working in
+javascript.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
