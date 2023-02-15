@@ -8413,6 +8413,32 @@ core_kernel.")
 JavaScript using @code{Async_js}.")
     (license license:expat)))
 
+(define-public ocaml-async-unix
+  (package
+    (name "ocaml-async-unix")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_unix")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0z4fgpn93iw0abd7l9kac28qgzgc5qr2x0s1n2zh49lsdn02n6ys"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-async-kernel ocaml-core ocaml-core-kernel
+                             ocaml-core-unix ocaml-ppx-jane))
+    (properties `((upstream-name . "async_unix")))
+    (home-page "https://github.com/janestreet/async_unix")
+    (synopsis "Monadic concurrency library")
+    (description
+     "Unix-related dependencies for things like system calls and
+threads.  Using these, it hooks the Async_kernel scheduler up to either epoll
+or select, depending on availability, and manages a thread pool that blocking
+system calls run in.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
