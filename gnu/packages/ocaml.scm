@@ -3084,6 +3084,29 @@ The client and the server libraries have sets of unit-tests.")
     ;; Has a linking exception, see LICENSE.md.
     (license license:lgpl2.1)))
 
+(define-public ocaml-io-page
+  (package
+    (name "ocaml-io-page")
+    (version "3.0.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/io-page")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0lmvm1whdw5s7rvi7jnjzicrp2j919dkjl856jwyjlq38f7qn0zm"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-cstruct))
+    (native-inputs (list pkg-config ocaml-ounit))
+    (home-page "https://github.com/mirage/io-page")
+    (synopsis "Support for efficient handling of I/O memory pages")
+    (description
+     "IO pages are page-aligned, and wrapped in the @code{Cstruct} library to
+avoid copying the data contained within the page.")
+    (license license:isc)))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
