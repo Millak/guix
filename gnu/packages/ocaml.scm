@@ -3952,6 +3952,34 @@ non-profiling case.")
                                        ocaml-mirage-profile-unix)
                          (append ocaml-mirage-profile-unix)))))
 
+(define-public ocaml-mirage-logs
+  (package
+    (name "ocaml-mirage-logs")
+    (version "1.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-logs/")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1wv2hz1dj38jzc8nabin9p8im43ghy8f3crv7rf9szyyzyrdanp2"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-logs ocaml-ptime ocaml-mirage-clock
+                             ocaml-mirage-profile ocaml-lwt))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/mirage-logs")
+    (synopsis
+     "Reporter for the Logs library that writes to stderr with timestamps")
+    (description
+     "Uses a Mirage @code{CLOCK} to write timestamped log messages.  It can
+also log only important messages to the console, while writing all received
+messages to a ring buffer which is displayed if an exception occurs.  If
+tracing is enabled (via mirage-profile), it also writes each log message to
+the trace buffer.")
+    (license license:isc)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
