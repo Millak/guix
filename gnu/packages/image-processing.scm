@@ -699,6 +699,83 @@ things like:
     (home-page "https://opencv.org/")
     (license license:bsd-3)))
 
+;; TODO: Make this the default opencv after aiscm is able to use it.
+(define-public opencv-next
+  (package
+    (inherit opencv)
+    (name "opencv")
+    (version "4.7.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/opencv/opencv")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  ;; Remove external libraries.  Almost all of them are
+                  ;; available in Guix.
+                  (with-directory-excursion "3rdparty"
+                    (for-each delete-file-recursively
+                              '("carotene"
+                                "cpufeatures"
+                                "ffmpeg"
+                                "include"
+                                "ippicv"
+                                "ittnotify"
+                                "libjasper"
+                                "libjpeg"
+                                "libjpeg-turbo"
+                                "libpng"
+                                "libtengine"
+                                "libtiff"
+                                "libwebp"
+                                "openexr"
+                                "openjpeg"
+                                "openvx"
+                                "protobuf"
+                                ;;"quirc"
+                                "tbb"
+                                "zlib")))
+
+                  ;; Delete any bundled .jar files.
+                  (for-each delete-file (find-files "." "\\.jar$"))))
+              (sha256
+               (base32
+                "0l45v41nns2jmn9nr9fb0yvhqzfjpxjxn75i1c02rsfy3r3lv22v"))))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("xorg-server" ,xorg-server-for-tests) ;For running the tests
+       ("opencv-extra"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference
+                 (url "https://github.com/opencv/opencv_extra")
+                 (commit version)))
+           (file-name (git-file-name "opencv_extra" version))
+           (sha256
+            (base32
+             "0bdg5kwwdimnl2zp4ry5cmfxr9xb7zk2ml59853d90llsqjis47a"))))
+       ("opencv-contrib"
+        ,(origin
+           (method git-fetch)
+           (uri (git-reference (url "https://github.com/opencv/opencv_contrib")
+                               (commit version)))
+           (file-name (git-file-name "opencv_contrib" version))
+           (sha256
+            (base32
+             "0hbfn835kxh3hwmwvzgdglm2np1ri3z7nfnf60gf4x6ikp89mv4r"))))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments opencv)
+       ((#:phases phases '%standard-phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'disable-broken-tests-opencv-4.7-specific
+              (lambda _
+                (substitute* "modules/dnn/test/test_layers.cpp"
+                  (("(TEST_P\\(Test_Caffe_layers, )(Interp\\).*)" _ pre post)
+                   (string-append pre "DISABLED_" post)))))))))))
+
 (define-public vips
   (package
     (name "vips")
