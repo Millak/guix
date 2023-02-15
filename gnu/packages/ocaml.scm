@@ -3017,6 +3017,34 @@ locks or other synchronization primitives.")
 doubly-linked list with Lwt iterators.")
     (license license:expat)))
 
+
+(define-public ocaml-shared-memory-ring
+  (package
+    (name "ocaml-shared-memory-ring")
+    (version "3.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/shared-memory-ring")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "12cpbia39aifnd8rxpsra0lhssqj5qw0zygb5fd8kg58zy2clmrr"))))
+    (build-system dune-build-system)
+    (arguments
+     '(#:package "shared-memory-ring"))
+    (propagated-inputs (list ocaml-cstruct ocaml-ppx-cstruct ocaml-lwt-dllist
+                             ocaml-mirage-profile))
+    (native-inputs (list ocaml-ounit))
+    (home-page "https://github.com/mirage/shared-memory-ring")
+    (synopsis "Xen-style shared memory rings")
+    (description
+     "Libraries for creating shared memory producer/consumer rings.  The rings
+follow the Xen ABI and may be used to create or implement Xen virtual
+devices.")
+    (license license:isc)))
+
 (define-public ocaml-luv
   (package
     (name "ocaml-luv")
