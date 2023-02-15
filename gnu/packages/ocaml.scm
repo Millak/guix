@@ -976,6 +976,39 @@ Git-friendly development workflow.")
     ;; The 'LICENSE' file waives some requirements compared to LGPLv3.
     (license license:lgpl3)))
 
+(define-public ocaml-opam-monorepo
+  (package
+    (name "ocaml-opam-monorepo")
+    (version "0.3.5")
+    (source (origin
+              (method git-fetch)
+              (uri
+               (git-reference
+                (url "https://github.com/tarides/opam-monorepo/")
+                (commit version)))
+              (file-name name)
+              (sha256
+               (base32
+                "09lq788b1sai4v1nxd16b00pw0m55plcwrx3f9v5a90gpxg0a6sc"))))
+    (build-system dune-build-system)
+    (arguments
+     ;; TODO
+     ;; Too many tests require a fully initialized opam, disabling them would
+     ;; be a huge pain.  "Mocking" opam init is difficult because it requires
+     ;; networking access.
+     '(#:tests? #f))
+    ;; TODO: not entirely clear if these should be native, test cross-building
+    (native-inputs (list ocaml-odoc
+                         pkg-config))
+    ;; (propagated-inputs lablgtk3) optional and is currently failing to build
+    (home-page "https://github.com/tarides/opam-monorepo")
+    (synopsis "Assemble and manage fully vendored Dune repositories")
+    (description
+     "The opam monorepo plugin provides a convenient interface to bridge the
+opam package manager with having a local copy of all the source code required
+to build a project using the dune build tool.")
+    (license license:isc)))
+
 (define-public ocaml-camlp-streams
   (package
     (name "ocaml-camlp-streams")
