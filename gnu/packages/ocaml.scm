@@ -3627,6 +3627,27 @@ length of domain names are preserved throughout the module.")
      "IP address types with serialization, supporting a wide range of RFCs.")
     (license license:isc)))
 
+(define-public ocaml-pecu
+  (package
+    (name "ocaml-pecu")
+    (version "0.6")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://github.com/mirage/pecu/releases/download/v0.6/pecu-v0.6.tbz")
+              (sha256
+               (base32
+                "1iz5jj9lyl1pah8dfni4wv0qml0ir5zknv4zhw7v50sc8kdbglm9"))))
+    (build-system dune-build-system)
+    (native-inputs (list ocaml-fmt ocaml-alcotest ocaml-crowbar ocaml-astring))
+    (home-page "https://github.com/mirage/pecu")
+    (synopsis "Encoder/Decoder of Quoted-Printable (RFC2045 & RFC2047)")
+    (description
+     "This package provides a non-blocking encoder/decoder of Quoted-Printable
+according to RFC2045 and RFC2047 (about encoded-word).  Useful to translate
+contents of emails.")
+    (license license:expat)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
