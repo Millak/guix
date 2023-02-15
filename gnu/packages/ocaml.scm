@@ -3854,6 +3854,27 @@ RFC5321 and RFC6532.  It handles UTF-8 email addresses and encoded-word
 according RFC2047.")
     (license license:expat)))
 
+(define-public ocaml-parse-argv
+  (package
+    (name "ocaml-parse-argv")
+    (version "0.2.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/parse-argv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "16n18zik6vkfnhv8jaigr90fwp1ykg23p61aqchym0jil4i4yq01"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-astring))
+    (native-inputs (list ocaml-ounit))
+    (home-page "https://github.com/mirage/parse-argv")
+    (synopsis "Process strings into sets of command-line arguments")
+    (description "Small implementation of a simple argv parser.")
+    (license license:isc)))
+
 (define-public ocaml-functoria-runtime
   (package
     (name "ocaml-functoria-runtime")
