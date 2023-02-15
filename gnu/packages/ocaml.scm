@@ -6865,6 +6865,32 @@ storage of large amounts of data.")
                  license:asl2.0
                  license:bsd-3)))))
 
+(define-public ocaml-protocol-version-header
+  (package
+    (name "ocaml-protocol-version-header")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url
+                     "https://github.com/janestreet/protocol_version_header")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s638cwf1357gg754rc4306654hhrhzqaqm2lp3yv5vj3ml8p4qy"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-ppx-jane))
+    (properties `((upstream-name . "protocol_version_header")))
+    (home-page "https://github.com/janestreet/protocol_version_header")
+    (synopsis "Protocol versioning")
+    (description
+     "This library offers a lightweight way for applications protocols to
+version themselves.  The more protocols that add themselves to
+@code{Known_protocol}, the nicer error messages we will get when connecting to
+a service while using the wrong protocol.")
+    (license license:expat)))
+
 (define-public ocaml-octavius
   (package
     (name "ocaml-octavius")
