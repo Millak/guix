@@ -3581,6 +3581,19 @@ length of domain names are preserved throughout the module.")
 @end itemize")
     (license license:isc)))
 
+(define-public ocaml-ipaddr
+  ;; same repo and versions as ocaml-macaddr
+  (package
+    (inherit ocaml-macaddr)
+    (name "ocaml-ipaddr")
+    (arguments '(#:package "ipaddr"))
+    (propagated-inputs (list ocaml-macaddr ocaml-domain-name))
+    (synopsis
+     "Library for manipulation of IP (and MAC) address representations")
+    (description
+     "IP address types with serialization, supporting a wide range of RFCs.")
+    (license license:isc)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
