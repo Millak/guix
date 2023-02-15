@@ -3648,6 +3648,33 @@ according to RFC2045 and RFC2047 (about encoded-word).  Useful to translate
 contents of emails.")
     (license license:expat)))
 
+(define-public ocaml-emile
+  (package
+    (name "ocaml-emile")
+    (version "1.1")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://github.com/mirage/emile/releases/download/v1.1/emile-v1.1.tbz")
+              (sha256
+               (base32
+                "0r1141makr0b900aby1gn0fccjv1qcqgyxib3bzq8fxmjqwjan8p"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-angstrom
+                             ocaml-ipaddr
+                             ocaml-base64
+                             ocaml-pecu
+                             ocaml-bigstringaf
+                             ocaml-uutf))
+    (native-inputs (list ocaml-alcotest))
+    (home-page "https://github.com/mirage/emile")
+    (synopsis "Parser of email address according RFC822")
+    (description
+     "This package provides a parser of email address according RFC822, RFC2822,
+RFC5321 and RFC6532.  It handles UTF-8 email addresses and encoded-word
+according RFC2047.")
+    (license license:expat)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
