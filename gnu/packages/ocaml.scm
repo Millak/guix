@@ -6148,6 +6148,29 @@ functionality for parsing and pretty-printing s-expressions.")
                          "0ksx62zsxhz8xmdrsn41n2hbc2qbyh3bxxc6946xisvgwh42h3q3"))
      (properties '()))))
 
+(define-public ocaml-sexp-pretty
+  (package
+    (name "ocaml-sexp-pretty")
+    (version "0.15.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/sexp_pretty")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "08z9jpvgag5f029ns0a06lcdymg00vwi232xsy1rdv82zvc0x4ah"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-base ocaml-ppx-base ocaml-sexplib ocaml-re))
+    (properties `((upstream-name . "sexp_pretty")))
+    (home-page "https://github.com/janestreet/sexp_pretty")
+    (synopsis "S-expression pretty-printer")
+    (description
+     "Library for pretty-printing s-expressions, using better indentation
+rules than the default pretty printer in Sexplib.")
+    (license license:expat)))
+
 (define-public ocaml-base
   (package
     (name "ocaml-base")
