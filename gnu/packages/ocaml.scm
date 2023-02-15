@@ -8465,6 +8465,31 @@ or select, depending on availability, and manages a thread pool that blocking
 system calls run in.")
     (license license:expat)))
 
+(define-public ocaml-async-rpc-kernel
+  (package
+    (name "ocaml-async-rpc-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_rpc_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1b5rp5yam03ir4f1sixpzjg1zdqmkb7lvnaa82kac4fzk80gfrfr"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-async-kernel ocaml-core ocaml-ppx-jane
+                             ocaml-protocol-version-header))
+    (properties `((upstream-name . "async_rpc_kernel")))
+    (home-page "https://github.com/janestreet/async_rpc_kernel")
+    (synopsis "Platform-independent core of Async RPC library")
+    (description
+     "Library for building RPC-style protocols.  This library is the portable
+part of the Unix-oriented Async_rpc library, and is actively used in
+JavaScript.")
+    (license license:expat)))
+
 (define-public ocaml-textutils-kernel
   (package
     (name "ocaml-textutils-kernel")
