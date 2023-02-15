@@ -35,6 +35,7 @@
 ;;; Copyright © 2022 dan <i@dan.games>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
 ;;; Copyright © 2023 David Thompson <dthompson2@worcester.edu>
+;;; Copyright © 2023 Eric Bavier <bavier@posteo.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1734,16 +1735,16 @@ your terminal.")
 (define-public fgallery
   (package
     (name "fgallery")
-    (version "1.8.2")
+    (version "1.9.1")
     (source (origin
               (method url-fetch)
               (uri
                (string-append
-                "http://www.thregr.org/~wavexx/software/fgallery/releases/"
+                "https://www.thregr.org/~wavexx/software/fgallery/releases/"
                 "fgallery-" version ".zip"))
               (sha256
                (base32
-                "18wlvqbxcng8pawimbc8f2422s8fnk840hfr6946lzsxr0ijakvf"))))
+                "0zf6r88m2swgj1ylgh3qa1knzb4if501hzvga37h9psy8k179w8n"))))
     (build-system gnu-build-system)
     (arguments
      `(#:tests? #f ; no tests
@@ -1754,19 +1755,12 @@ your terminal.")
          (replace 'install
            (lambda* (#:key inputs outputs #:allow-other-keys)
              (let* ((out    (assoc-ref outputs "out"))
-                    (bin    (string-append out "/bin/"))
-                    (share  (string-append out "/share/fgallery"))
-                    (man    (string-append out "/share/man/man1"))
-                    (perl5lib (getenv "PERL5LIB"))
-                    (script (string-append share "/fgallery")))
+                    (script (string-append out "/bin/fgallery"))
+                    (perl5lib (getenv "PERL5LIB")))
                (define (bin-directory input-name)
                  (string-append (assoc-ref inputs input-name) "/bin"))
 
-               (mkdir-p man)
-               (copy-file "fgallery.1" (string-append man "/fgallery.1"))
-
-               (mkdir-p share)
-               (copy-recursively "." share)
+               (invoke "make" "install" (string-append "PREFIX=" out))
 
                ;; fgallery copies files from store when it is run. The
                ;; read-only permissions from the store directories will cause
@@ -1776,37 +1770,34 @@ your terminal.")
                  (("'cp'")
                   "'cp', '--no-preserve=all'"))
 
-               (mkdir-p bin)
-               (symlink script (string-append out "/bin/fgallery"))
-
                (wrap-program script
                  `("PATH" ":" prefix
                    ,(map bin-directory '("imagemagick"
                                          "lcms"
                                          "fbida"
-                                         "libjpeg"
+                                         "libjpeg-turbo"
                                          "zip"
                                          "jpegoptim"
                                          "pngcrush"
                                          "p7zip")))
-                 `("PERL5LIB" ":" prefix (,perl5lib)))
-               #t))))))
+                 `("PERL5LIB" ":" prefix (,perl5lib)))))))))
     (native-inputs
      (list unzip))
     ;; TODO: Add missing optional dependency: facedetect.
     (inputs
-     `(("imagemagick" ,imagemagick)
-       ("lcms" ,lcms)
-       ("fbida" ,fbida)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zip" ,zip)
-       ("perl" ,perl)
-       ("perl-cpanel-json-xs" ,perl-cpanel-json-xs)
-       ("perl-image-exiftool" ,perl-image-exiftool)
-       ("jpegoptim" ,jpegoptim)
-       ("pngcrush" ,pngcrush)
-       ("p7zip" ,p7zip)))
-    (home-page "http://www.thregr.org/~wavexx/software/fgallery/")
+     (list bash-minimal
+           imagemagick
+           lcms
+           fbida
+           libjpeg-turbo
+           zip
+           perl
+           perl-cpanel-json-xs
+           perl-image-exiftool
+           jpegoptim
+           pngcrush
+           p7zip))
+    (home-page "https://www.thregr.org/~wavexx/software/fgallery/")
     (synopsis "Static photo gallery generator")
     (description
      "FGallery is a static, JavaScript photo gallery generator with minimalist
