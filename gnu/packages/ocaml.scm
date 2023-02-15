@@ -8389,6 +8389,30 @@ the full Core is not available, such as in Javascript.")
 core_kernel.")
     (license license:expat)))
 
+(define-public ocaml-async-kernel
+  (package
+    (name "ocaml-async-kernel")
+    (version "0.15.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/janestreet/async_kernel")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01if6c8l2h64v7sk56xr8acnmj6g9whxcjrzzzvczspq88hq2bfh"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-core ocaml-core-kernel ocaml-ppx-jane))
+    (properties `((upstream-name . "async_kernel")))
+    (home-page "https://github.com/janestreet/async_kernel")
+    (synopsis "Monadic concurrency library")
+    (description
+     "Contains @code{Async}'s core data structures, like
+@code{Deferred}.  @code{Async_kernel} is portable, and so can be used in
+JavaScript using @code{Async_js}.")
+    (license license:expat)))
+
 (define-public ocaml-timezone
   (package
     (name "ocaml-timezone")
