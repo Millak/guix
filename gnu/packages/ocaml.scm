@@ -3976,6 +3976,26 @@ mobile platforms.  Code can be developed on a normal OS and then compiled into
 a fully-standalone, specialised unikernel.")
     (license license:isc)))
 
+(define-public ocaml-mirage-bootvar-unix
+  (package
+    (name "ocaml-mirage-bootvar-unix")
+    (version "0.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/mirage-bootvar-unix")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1vi13q0z5ffv5hf4q5lfvkia6j2s5520px0s2x4dbjgd52icizrz"))))
+    (build-system dune-build-system)
+    (propagated-inputs (list ocaml-lwt ocaml-parse-argv))
+    (home-page "https://github.com/mirage/mirage-bootvar-unix")
+    (synopsis "Unix implementation of MirageOS Bootvar interface")
+    (description "Library for passing boot parameters from Solo5 to MirageOS.")
+    (license license:isc)))
+
 (define-public ocaml-duration
   (package
     (name "ocaml-duration")
