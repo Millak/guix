@@ -3552,6 +3552,35 @@ and command-line tool.")
 length of domain names are preserved throughout the module.")
     (license license:isc)))
 
+(define-public ocaml-macaddr
+  (package
+    (name "ocaml-macaddr")
+    (version "5.3.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/mirage/ocaml-ipaddr/")
+                    (commit (string-append "v" version))))
+              (file-name name)
+              (sha256
+               (base32
+                "1zgwx0ms3l4k4dzwnkrwq4zzqjrddjsvqn66mbd0rm6aq1ib019d"))))
+    (build-system dune-build-system)
+    (arguments '(#:package "macaddr"))
+    (propagated-inputs (list ocaml-cstruct ocaml-domain-name))
+    (native-inputs (list ocaml-ounit2 ocaml-ppx-sexp-conv))
+    (home-page "https://github.com/mirage/ocaml-ipaddr")
+    (synopsis "OCaml library for manipulation of MAC address representations")
+    (description
+     "Features:
+@itemize
+@item MAC-48 (Ethernet) address support
+@item @code{Macaddr} is a @code{Map.OrderedType}
+@item All types have sexplib serializers/deserializers optionally via the
+@code{Macaddr_sexp} library
+@end itemize")
+    (license license:isc)))
+
 (define-public ocaml-ocurl
   (package
     (name "ocaml-ocurl")
