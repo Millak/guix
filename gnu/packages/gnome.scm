@@ -12545,7 +12545,7 @@ integrate seamlessly with the GNOME desktop.")
            libvirt
            libvirt-glib
            libxml2
-           qemu-minimal                           ;for qemu-img
+           qemu-minimal                 ;for qemu-img
            sparql-query
            spice-gtk
            tracker
@@ -12557,7 +12557,12 @@ integrate seamlessly with the GNOME desktop.")
 manage remote and virtual systems.  Note that this application requires the
 @code{libvirt} and @code{virtlog} daemons to run.  Use the command
 @command{info '(guix) Virtualization Services'} to learn how to configure
-these services on the Guix System.")
+these services on the Guix System.  If you do not use the
+@code{gnome-desktop-service-type}, you will also want to extend the
+@code{polkit-service-type} with the @code{spice-gtk} package, as well as
+configure the @file{libexec/spice-client-glib-usb-acl-helper} executable of
+@code{spice-gtk} as setuid, to make it possible to redirect USB devices as a
+non-privileged user.")
     (license (list
               ;; For data/icons/empty-boxes.png.
               license:cc-by2.0
