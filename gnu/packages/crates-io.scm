@@ -33733,6 +33733,30 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-mockall-double-0.3
+  (package
+    (name "rust-mockall-double")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mockall-double" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1xk6hjr7m73zly4hg3zmma437vqvrwnjxy2wfxy1hxbk52xwfwdf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cfg-if" ,rust-cfg-if-1)
+                       ("rust-proc-macro2" ,rust-proc-macro2-1)
+                       ("rust-quote" ,rust-quote-1)
+                       ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Double test adapter that works well with Mockall")
+    (description
+     "This crate makes it even easier to use mocking by providing a way to
+select the mock struct at compile time.  Used with the Mockall crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-model-0.1
   (package
     (name "rust-model")
