@@ -109,26 +109,24 @@ system to use the host GPU to accelerate 3D rendering.")
 (define-public spice-protocol
   (package
     (name "spice-protocol")
-    (version "0.14.3")
+    (version "0.14.4")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                "https://www.spice-space.org/download/releases/"
-                "spice-protocol-" version ".tar.xz"))
+                    "https://www.spice-space.org/download/releases/"
+                    "spice-protocol-" version ".tar.xz"))
               (sha256
                (base32
-                "0yj8k7gcirrsf21w0q6146n5g4nzn2pqky4p90n5760m5ayfb1pr"))))
+                "04nr2w6ymy5jinfi3lj6205yd5h0swss3ykxqk7l3m4z1mhvmzq4"))))
     (build-system meson-build-system)
     (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'install-documentation
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out"))
-                    (doc (string-append out "/share/doc/"
-                                        ,name "-" ,version)))
-               (install-file "COPYING" doc)
-               #t))))))
+     (list #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'unpack 'install-documentation
+                 (lambda _
+                   (install-file "COPYING"
+                                 (string-append #$output "/share/doc/"
+                                                #$name "-" #$version)))))))
     (synopsis "Protocol headers for the SPICE protocol")
     (description "SPICE (the Simple Protocol for Independent Computing
 Environments) is a remote-display system built for virtual environments
