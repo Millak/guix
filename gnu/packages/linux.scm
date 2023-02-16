@@ -2297,14 +2297,14 @@ slabtop, tload, top, vmstat, w, watch and sysctl.")
 (define-public usbutils
   (package
     (name "usbutils")
-    (version "014")
+    (version "015")
     (source
      (origin
       (method url-fetch)
       (uri (string-append "mirror://kernel.org/linux/utils/usb/usbutils/"
                           "usbutils-" version ".tar.xz"))
       (sha256
-       (base32 "0sgwfvr1b5w3ai1c0rmvzhk67y9vh7bq490rcxxj4q05svx9q1rs"))))
+       (base32 "0vnsdzx997v8ksi5dbsi2vc8b3mcm5b6jnmcdhszdyag3yxm3d63"))))
     (build-system gnu-build-system)
     (outputs (list "out" "python"))
     (arguments
