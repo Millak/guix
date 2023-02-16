@@ -22,6 +22,8 @@
 
 (define-module (gnu packages spice)
   #:use-module (gnu packages)
+  #:use-module (gnu packages acl)
+  #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
@@ -39,6 +41,7 @@
   #:use-module (gnu packages nss)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages polkit)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
@@ -156,6 +159,13 @@ which allows users to view a desktop computing environment.")
                 ((".*'session.c',.*") "")
                 (("tests_sources \\+= 'cd-emu.c'" all)
                  (string-append "# " all)))))
+          (add-before 'configure 'correct-polkit-dir
+            (lambda _
+              (substitute* "meson.build"
+                (("d.get_variable\\(pkgconfig: 'policydir')")
+                 (string-append "'" #$output "/share/polkit-1/actions'")))))
+          (add-before 'install 'fake-pkexec
+            (lambda _ (setenv "PKEXEC_UID" "-1")))
           (add-after 'install 'wrap-spicy
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/spicy")
@@ -170,13 +180,18 @@ which allows users to view a desktop computing environment.")
            python-six
            vala))
     (inputs
-     (list glib-networking
+     (list cyrus-sasl
+           glib-networking
            gobject-introspection
            json-glib
+           acl
+           libcap-ng
            libepoxy
            libxcb
            mesa
-           pulseaudio))
+           polkit
+           pulseaudio
+           usbutils))
     (propagated-inputs
      (list gstreamer
            gst-plugins-base
@@ -187,8 +202,10 @@ which allows users to view a desktop computing environment.")
            gtk+
            openssl-1.1
            opus
+           libcacard
            libjpeg-turbo
            lz4
+           phodav
            pixman
            usbredir))
     (synopsis "Gtk client and libraries for SPICE remote desktop servers")
