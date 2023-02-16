@@ -23760,7 +23760,7 @@ access lexicographic data from WordNet.")
 (define-public sbcl-nfiles
   (package
    (name "sbcl-nfiles")
-   (version "1.1.0")
+   (version "1.1.2")
    (source
     (origin
      (method git-fetch)
@@ -23770,19 +23770,25 @@ access lexicographic data from WordNet.")
      (file-name (git-file-name "cl-nfiles" version))
      (sha256
       (base32
-       "03rc990kzh7d33642r28ms4d3i1qf8nng6ph2bv9b9ykm1h4pjg6"))))
+       "1z6xxkr5q325zhpiyy3z03mv663jz85k844cczym4869b845rib2"))
+     (modules '((guix build utils)))
+     (snippet
+      `(begin
+         (delete-file-recursively "nasdf")
+         #t))))
    (build-system asdf-build-system/sbcl)
    (inputs
     (list gnupg
           sbcl-alexandria
-          sbcl-hu.dwim.defclass-star
+          sbcl-nclasses
           sbcl-quri
           sbcl-serapeum
           sbcl-trivial-garbage
           sbcl-trivial-package-local-nicknames
           sbcl-trivial-types))
    (native-inputs
-    (list sbcl-lisp-unit2))
+    (list sbcl-lisp-unit2
+          sbcl-nasdf))
    (arguments
     `(#:phases
       (modify-phases %standard-phases
