@@ -1268,8 +1268,12 @@ Library reference documentation.")
            pkg-config))
     (inputs
      (list avahi
-           libgudev
-           libsoup))
+           libgudev))
+    (propagated-inputs
+     ;; These inputs are required by the pkg-config file.
+     (list glib
+           libsoup
+           libxml2))
     (synopsis "WebDav server implementation using libsoup")
     (description "PhoDav was initially developed as a file-sharing mechanism for Spice,
 but it is generic enough to be reused in other projects,
