@@ -391,8 +391,8 @@ languages.")
     (license license:gpl3+)))
 
 (define-public emacs-next
-  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
-        (revision "0"))
+  (let ((commit "f1f571e72ae10285762d3a941e56f7c4048272af")
+        (revision "1"))
     (package
       (inherit emacs)
       (name "emacs-next")
@@ -411,7 +411,7 @@ languages.")
                                   "emacs-native-comp-driver-options.patch"))
          (sha256
           (base32
-           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
+           "1rildbxq53yvc2rllg2qccgxzbbnr6qbija0lyqacsy8dlzaysch"))))
       (inputs
        (modify-inputs (package-inputs emacs)
          (prepend sqlite)))
