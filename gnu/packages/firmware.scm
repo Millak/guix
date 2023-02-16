@@ -395,20 +395,22 @@ utilites used to process FCODE, OpenFirmware's byte code, consisting of:
                   "x86_64-linux-gnu")
                  ((string-suffix? "x86" arch)
                   "i686-linux-gnu")
-                 (else (string-append arch "-linux-gnu")))))
+                 (else (string-append arch "-linux-gnu"))))
+        ;; 1.1 was released in May 2013.
+        (commit "af97fd7af5e7c18f591a7b987291d3db4ffb28b5")
+        (revision "1"))
   (package
     (name name)
-    (version "1.1")
+    (version (git-version "1.1" revision commit))
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url "https://github.com/openbios/openbios")
-                    (commit (string-append "v" version))))
+                    (commit commit)))
               (file-name (git-file-name "openbios" version))
-              (patches (search-patches "openbios-gcc-warnings.patch"))
               (sha256
                (base32
-                "11cr0097aiw4hc07v5hfl95753ikyra5ig4nv899ci7l42ilrrbr"))))
+                "1xp1b6xgx40i0j3a5y3id0d1p8vdvapai8szganxg3zrvj53fh0n"))))
     (build-system gnu-build-system)
     (arguments
      (list #:tests? #f                  ;no tests
@@ -436,9 +438,9 @@ utilites used to process FCODE, OpenFirmware's byte code, consisting of:
                                            "\\.elf$"))))))))
     (native-inputs
      (append (if (string-prefix? (%current-system) target)
-                 '()
-                 (list (cross-gcc target) (cross-binutils target)))
-             (list libxslt which)))
+                 (list gcc-10)
+                 (list (cross-gcc target #:xgcc gcc-10) (cross-binutils target)))
+             (list fcode-utils libxslt which)))
     (home-page "https://openfirmware.info/Welcome_to_OpenBIOS")
     (synopsis "Open Firmware implementation")
     (description
