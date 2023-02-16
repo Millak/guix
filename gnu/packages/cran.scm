@@ -283,6 +283,29 @@ simulating diversification models, dating trees, comparing trees, and
 reading/writing trees in Newick format.")
     (license license:gpl2+)))
 
+(define-public r-changepoint
+  (package
+    (name "r-changepoint")
+    (version "2.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "changepoint" version))
+              (sha256
+               (base32
+                "16v4p2c9zi2w3anwf5y9snl5dy1g5aidiqz1vn2p64qhfvg6yqxc"))))
+    (properties `((upstream-name . "changepoint")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-zoo))
+    (home-page "https://github.com/rkillick/changepoint/")
+    (synopsis "Methods for changepoint detection")
+    (description
+     "Changepoint implements various mainstream and specialised changepoint
+methods.  These methods are suitable for finding single and multiple
+changepoints within data.  Many popular non-parametric and frequentist methods
+are included as well.")
+    ;; Any version of the GPL.
+    (license license:gpl3+)))
+
 (define-public r-collections
   (package
     (name "r-collections")
