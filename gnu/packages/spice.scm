@@ -178,23 +178,23 @@ which allows users to view a desktop computing environment.")
                  `("GST_PLUGIN_SYSTEM_PATH" ":"
                    prefix (,gst-plugin-path)))))))))
     (native-inputs
-     `(("glib:bin" ,glib "bin")
-       ("intltool" ,intltool)
-       ("pkg-config" ,pkg-config)
-       ("vala" ,vala)))
+     (list `(,glib "bin")
+           intltool
+           pkg-config
+           vala))
     (inputs
-     `(("glib-networking" ,glib-networking)
-       ("gobject-introspection" ,gobject-introspection)
-       ("json-glib" ,json-glib)
-       ("libepoxy" ,libepoxy)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libxcb" ,libxcb)
-       ("lz4" ,lz4)
-       ("mesa" ,mesa)
-       ("pulseaudio" ,pulseaudio)
-       ("python" ,python)
-       ("opus" ,opus)
-       ("usbredir" ,usbredir)))
+     (list glib-networking
+           gobject-introspection
+           json-glib
+           libepoxy
+           libjpeg-turbo
+           libxcb
+           lz4
+           mesa
+           pulseaudio
+           python
+           opus
+           usbredir))
     (propagated-inputs
      (list gstreamer
            gst-plugins-base
