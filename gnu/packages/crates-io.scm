@@ -17761,6 +17761,26 @@ from macros.")
 @code{Cargo.toml}.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-downcast-0.11
+  (package
+    (name "rust-downcast")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "downcast" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wa78ahlc57wmqyq2ncr80l7plrkgz57xsg7kfzgpcnqac8gld8l"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/fkoep/downcast-rs")
+    (synopsis
+     "Trait for downcasting trait objects back to their original types")
+    (description
+     "This package provides a trait, and utilities, for downcasting trait
+objects back to their original types.  The same as the rust-downcast-rs crate.")
+    (license license:expat)))
+
 (define-public rust-downcast-rs-1
   (package
     (name "rust-downcast-rs")
