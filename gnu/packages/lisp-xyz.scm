@@ -23832,6 +23832,52 @@ change since last write.
      (cons (list "iolib" cl-iolib)
            (package-inputs sbcl-nfiles)))))
 
+(define-public sbcl-nasdf
+  (let ((commit "c63a6ff12239f132844cc0703e79ea3b33dae630"))
+    (package
+      (name "sbcl-nasdf")
+      (version "0.1.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/atlas-engineer/ntemplate")
+               (commit commit)))
+         (file-name (git-file-name "cl-ntemplate" version))
+         (sha256
+          (base32
+           "1b57jkyrvr3n0c66lih4m34fqzw3s5yqlk91v7hg2gchcn3v9glg"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'cd-sdl
+             (lambda _
+               (chdir "nasdf")
+               #t)))))
+      (home-page "https://github.com/atlas-engineer/ntemplate")
+      (synopsis "ASDF helpers for system setup, testing and installation")
+      (description
+       "NASDF is an ASDF extension providing utilities to ease system setup, testing and installation.
+
+@itemize
+@item Simple way to fetch Git submodules and “do the right thing” for
+setup. This may effectively supersede Quicklisp. A benefit of using Git
+submodules over the default Quicklisp distribution is improved
+reproducibility.
+@item Test helpers, like distinction between offline and online tests, or
+continuous integration options, and warning reports.
+@item Installation helpers, for instance to install libraries, icons and
+desktop files to the right directories.
+@end itemize\n")
+      (license license:bsd-3))))
+
+(define-public ecl-nasdf
+  (sbcl-package->ecl-package sbcl-nasdf))
+
+(define-public cl-nasdf
+  (sbcl-package->cl-source-package sbcl-nasdf))
+
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
