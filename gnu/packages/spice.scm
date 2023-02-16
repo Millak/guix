@@ -329,17 +329,11 @@ resolution scaling on graphical console window resize.")
                (base32
                 "1rrjlclm6ad63gah1fa4yfwrz4z6vgq2yrybbvzvvdbxrgl4vgzv"))))
     (build-system meson-build-system)
-    (arguments
-     (list #:configure-flags
-           ;; XXX: For some reason NSS is not automatically added on RUNPATH
-           ;; with newer versions of Meson (after 0.60).
-           #~(list (string-append "-Dc_link_args=-Wl,-rpath="
-                                  (search-input-directory
-                                   %build-inputs "lib/nss")))))
     (propagated-inputs
-     (list glib ; Requires: in the pkg-config file
-           nss ; Requires.private: in the pkg-config
-           pcsc-lite))       ; file
+     ;; The following inputs are required in the pkg-config file.
+     (list glib
+           nss
+           pcsc-lite))
     (native-inputs
      (list openssl
            `(,nss "bin")
