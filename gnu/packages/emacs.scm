@@ -414,6 +414,35 @@ languages.")
            "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
       (inputs
        (modify-inputs (package-inputs emacs)
+         (prepend sqlite)))
+      (native-inputs
+       (modify-inputs (package-native-inputs emacs)
+         (prepend autoconf))))))
+
+(define-public emacs-next-tree-sitter
+  (let ((commit "ac7ec87a7a0db887e4ae7fe9005aea517958b778")
+        (revision "0"))
+    (package
+      (inherit emacs)
+      (name "emacs-next-tree-sitter")
+      (version (git-version "30.0.50" revision commit))
+      (source
+       (origin
+         (inherit (package-source emacs))
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.savannah.gnu.org/git/emacs.git/")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         ;; emacs-source-date-epoch.patch is no longer necessary
+         (patches (search-patches "emacs-exec-path.patch"
+                                  "emacs-fix-scheme-indent-function.patch"
+                                  "emacs-native-comp-driver-options.patch"))
+         (sha256
+          (base32
+           "1akq6dbllwwqwx21wnwnv6aax1nsi2ypbd7j3i79sw62s3gf399z"))))
+      (inputs
+       (modify-inputs (package-inputs emacs)
          (prepend sqlite tree-sitter)))
       (native-inputs
        (modify-inputs (package-native-inputs emacs)
