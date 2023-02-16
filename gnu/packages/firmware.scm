@@ -2,7 +2,7 @@
 ;;; Copyright © 2014, 2015, 2016 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2017 David Craven <david@craven.ch>
-;;; Copyright © 2017, 2018, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2018, 2022, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Vagrant Cascadian <vagrant@debian.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -69,6 +69,7 @@
   #:use-module (gnu packages protobuf)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages version-control)
@@ -346,6 +347,45 @@ by the b43-open driver of Linux-libre.")
 broadband modem as found, for example, on PinePhone.")
     (home-page "https://gitlab.com/mobian1/devices/eg25-manager")
     (license license:gpl3+)))
+
+(define-public fcode-utils
+  (package
+    (name "fcode-utils")
+    (version "1.0.3")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/openbios/fcode-utils")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0yyqmiqvlf644jrv8x39aqdqywdnm80k62d2assgcammwbc7krya"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:test-target "tests"
+      #:make-flags
+      #~(list (string-append "CC=" #$(cc-for-target))
+              (string-append "DESTDIR=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure))))        ; No configure script.
+    (native-inputs
+     (list tcsh))
+    (home-page "https://www.openfirmware.info/FCODE_suite")
+    (synopsis "Utilities to process FCODE, OpenFirmware's byte code")
+    (description "This is the OpenBIOS FCODE suite.  It contains a set of
+utilites used to process FCODE, OpenFirmware's byte code, consisting of:
+@enumerate
+@item toke - A tokenizer
+@item detok - A detokenizer
+@item romheaders - A PCI rom header utility
+@item localvalues - A portable implementation of Forth local values
+@end enumerate")
+    (license (list license:gpl2
+                   ;; localvalues implementation and some documentation.
+                   license:cpl1.0))))
 
 (define* (make-openbios-package name arch)
   (let ((target (cond
