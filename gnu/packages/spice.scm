@@ -62,19 +62,18 @@
   (package
     (name "usbredir")
     (home-page "https://spice-space.org")
-    (version "0.9.0")
+    (version "0.13.0")
     (source (origin
               (method url-fetch)
               (uri (string-append home-page "/download/" name "/" name "-"
                                   version ".tar.xz"))
               (sha256
                (base32
-                "19jnpzlanq0a1m5lmlcsp50wxf7icxvpvclx7hnf0zxw8azngqd3"))))
-    (build-system gnu-build-system)
-    (propagated-inputs
-     (list libusb))
-    (native-inputs
-     (list autoconf automake libtool pkg-config))
+                "0vn4gnd8nmnrvvj2rm7akf4sbcslmdk3v22k9kmxxrha5jhgm9jb"))))
+    (build-system meson-build-system)
+    (propagated-inputs (list libusb))
+    (inputs (list glib))
+    (native-inputs (list pkg-config))
     (synopsis "Tools for sending USB device traffic over a network")
     (description
      "Usbredir is a network protocol for sending USB device traffic over a
