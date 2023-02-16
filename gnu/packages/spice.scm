@@ -253,7 +253,7 @@ Internet and from a wide variety of machine architectures.")
 (define-public spice-vdagent
   (package
     (name "spice-vdagent")
-    (version "0.21.0")
+    (version "0.22.1")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -261,9 +261,7 @@ Internet and from a wide variety of machine architectures.")
                 "spice-vdagent-" version ".tar.bz2"))
               (sha256
                (base32
-                "0n8jlc1pv6mkry161y656b1nk9hhhminjq6nymzmmyjl7k95ymzx"))
-              (patches
-               (search-patches "spice-vdagent-glib-2.68.patch"))))
+                "18472sqr0gibzgzi48dpcbnvm78l05qrl5wv6xywqqj7r9dd3c4k"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags
