@@ -84,21 +84,18 @@ different (virtual) machine than the one to which the USB device is attached.")
 (define-public virglrenderer
   (package
     (name "virglrenderer")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
                 "https://www.freedesktop.org/software/virgl/"
                 "virglrenderer-" version ".tar.bz2"))
-              (patches (search-patches "virglrenderer-CVE-2017-6386.patch"))
               (sha256
                (base32
-                "06kf0q4l52gzx5p63l8850hff8pmhp7xv1hk8zgx2apbw18y6jd5"))))
+                "041agg1d6i8hg250y30f08n3via0hs9rbijxdrfifb8ara805v0m"))))
     (build-system gnu-build-system)
-    (inputs
-      (list libepoxy mesa eudev))
-    (native-inputs
-      (list pkg-config))
+    (inputs (list eudev libepoxy mesa))
+    (native-inputs (list pkg-config))
     (synopsis "Virtual 3D GPU library")
     (description "A virtual 3D GPU library that enables a virtualized operating
 system to use the host GPU to accelerate 3D rendering.")
