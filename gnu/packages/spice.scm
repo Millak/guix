@@ -180,22 +180,23 @@ which allows users to view a desktop computing environment.")
            gobject-introspection
            json-glib
            libepoxy
-           libjpeg-turbo
            libxcb
-           lz4
            mesa
-           pulseaudio
-           opus
-           usbredir))
+           pulseaudio))
     (propagated-inputs
      (list gstreamer
            gst-plugins-base
            gst-plugins-good
            spice-protocol
-           ;; These are required by the pkg-config files.
+           ;; These are required by the pkg-config files (needed for example
+           ;; when building GNOME Boxes).
            gtk+
+           openssl-1.1
+           opus
+           libjpeg-turbo
+           lz4
            pixman
-           openssl-1.1))
+           usbredir))
     (synopsis "Gtk client and libraries for SPICE remote desktop servers")
     (description "Gtk client and libraries for SPICE remote desktop servers.")
     (home-page "https://www.spice-space.org")
