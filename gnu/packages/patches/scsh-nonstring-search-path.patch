@@ -1,0 +1,15 @@
+This patch was submitted upstream:
+https://github.com/scheme/scsh/pull/46
+
+diff --git a/scheme/lib-dirs.scm b/scheme/lib-dirs.scm
+index a1fc009..c630fb4 100644
+--- a/scheme/lib-dirs.scm
++++ b/scheme/lib-dirs.scm
+@@ -75,6 +75,7 @@
+               (let ((val (read)))
+                 (cond ((eof-object? val) '())
+                       ((string? val) (cons val (recur)))
++                      ((symbol? val) (cons (symbol->string val) (recur)))
+                       ((not val) (append default-lib-dirs (recur)))
+                       (else 
+                        (error 
