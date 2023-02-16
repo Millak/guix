@@ -23881,7 +23881,7 @@ desktop files to the right directories.
 (define-public sbcl-nclasses
   (package
     (name "sbcl-nclasses")
-    (version "0.2.0")
+    (version "0.2.1")
     (source
      (origin
        (method git-fetch)
@@ -23891,12 +23891,18 @@ desktop files to the right directories.
        (file-name (git-file-name "cl-nclasses" version))
        (sha256
         (base32
-         "08mad0555n883rjyg4j7r1vp35cyl4spbqfamjfalv5bl8d38849"))))
+         "1y1za2vm7m1bhkj6ssc29jvs9p82swjvclnhm9xyp2b275ykzz7l"))
+       (modules '((guix build utils)))
+       (snippet
+        `(begin
+           (delete-file-recursively "nasdf")
+           #t))))
     (build-system asdf-build-system/sbcl)
     (inputs
      (list sbcl-moptilities))
     (native-inputs
-     (list sbcl-lisp-unit2))
+     (list sbcl-lisp-unit2
+           sbcl-nasdf))
     (home-page "https://github.com/atlas-engineer/nclasses")
     (synopsis "Simplify class and condition definitions.")
     (description
