@@ -3,7 +3,7 @@
 ;;; Copyright © 2015 Andy Wingo <wingo@igalia.com>
 ;;; Copyright © 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016 Sou Bunnbu <iyzsong@gmail.com>
-;;; Copyright © 2017, 2020, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2017, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
@@ -183,11 +183,19 @@
 (define (bool value)
   (if value "true\n" "false\n"))
 
-(define (package-direct-input-selector input)
+(define (package-direct-input-selector tree)
+  "Return a procedure that selects TREE from the inputs of PACKAGE.  If TREE
+is a list, it recursively searches it until it locates the last item of TREE."
   (lambda (package)
-    (match (assoc-ref (package-direct-inputs package) input)
-      ((package . _) package))))
-
+    (let loop ((tree (if (pair? tree)
+                         tree
+                         (list tree)))
+               (package package))
+      (if (null? tree)
+          package
+          (loop (cdr tree)
+                (car (assoc-ref (package-direct-inputs package)
+                                (car tree))))))))
 
 
 ;;;
@@ -1360,7 +1368,10 @@ rules."
                   '("gnome-settings-daemon"
                     "gnome-control-center"
                     "gnome-system-monitor"
-                    "gvfs")))
+                    "gvfs"
+                    ;; spice-gtk provides polkit actions for USB redirection
+                    ;; in GNOME Boxes.
+                    ("gnome-boxes" "spice-gtk"))))
 
 (define gnome-desktop-service-type
   (service-type
