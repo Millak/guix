@@ -12496,7 +12496,7 @@ integrate seamlessly with the GNOME desktop.")
 (define-public gnome-boxes
   (package
     (name "gnome-boxes")
-    (version "42.3")
+    (version "43.3")
     (source
      (origin
        (method url-fetch)
@@ -12504,18 +12504,16 @@ integrate seamlessly with the GNOME desktop.")
                            (version-major version) "/"
                            "gnome-boxes-" version ".tar.xz"))
        (sha256
-        (base32 "1lv0bdh935qj6wkv3ixg2pcv8yrapj79z02gw4fal3rhz3xggvsn"))))
+        (base32 "14zd5ii3igy0am4zqw2jg1xshf2zxsy96yv5pss2vf6rh3svmnzf"))))
     (build-system meson-build-system)
     (arguments
      (list #:glib-or-gtk? #t
-           #:configure-flags #~(list "-Drdp=false"
-                                     (string-append "-Dc_link_args=-Wl,-rpath="
-                                                    #$output
-                                                    "/lib/gnome-boxes"))
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'disable-gtk-update-icon-cache
                           (lambda _
-                            (setenv "DESTDIR" "/")))
+                            (substitute* "meson.build"
+                              (("gtk_update_icon_cache: true")
+                               "gtk_update_icon_cache: false"))))
                         (add-before 'configure 'set-qemu-file-name
                           (lambda* (#:key inputs #:allow-other-keys)
                             (substitute* "src/installed-media.vala"
@@ -12529,11 +12527,11 @@ integrate seamlessly with the GNOME desktop.")
            itstool
            pkg-config
            python
-           vala))
+           vala-next))
     (inputs
      (list glib-networking              ;for TLS support
            gsettings-desktop-schemas
-           gtk+
+           gtk
            gtk-vnc
            gtksourceview
            json-glib
@@ -12542,7 +12540,7 @@ integrate seamlessly with the GNOME desktop.")
            libhandy
            libosinfo
            libsecret
-           libsoup-minimal-2
+           libsoup
            libusb
            libvirt
            libvirt-glib
@@ -12552,7 +12550,7 @@ integrate seamlessly with the GNOME desktop.")
            spice-gtk
            tracker
            vte
-           webkitgtk-with-libsoup2))    ;for webkit2gtk-4.0
+           webkitgtk))
     (home-page "https://wiki.gnome.org/Apps/Boxes")
     (synopsis "View, access, and manage remote and virtual systems")
     (description "GNOME Boxes is a simple application to view, access, and
