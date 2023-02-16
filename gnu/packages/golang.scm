@@ -66,7 +66,6 @@
   #:use-module (guix packages)
   #:use-module (guix gexp)
   #:use-module (guix build-system gnu)
-  #:use-module (guix build-system trivial)
   #:use-module (guix build-system go)
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)

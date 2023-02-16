@@ -216,7 +216,6 @@
   #:use-module (gnu packages xml)
   #:use-module (guix build-system copy)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system go)
   #:use-module (guix build-system meson)

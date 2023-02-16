@@ -45,7 +45,6 @@
   #:use-module (guix build-system ocaml)
   #:use-module (guix build-system pyproject)
   #:use-module (guix build-system python)
-  #:use-module (guix build-system r)
   #:use-module (guix build-system trivial)
   #:use-module (guix git-download)
   #:use-module (gnu packages)

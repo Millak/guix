@@ -20,7 +20,6 @@
 (define-module (gnu packages opencl)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system python)
   #:use-module (guix download)
   #:use-module (guix utils)

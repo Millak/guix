@@ -67,7 +67,6 @@
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system python))
 

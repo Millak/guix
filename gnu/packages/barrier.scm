@@ -18,7 +18,6 @@
 
 (define-module (gnu packages barrier)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system gnu)
   #:use-module (guix utils)
   #:use-module (guix git-download)
   #:use-module (guix download)

@@ -46,7 +46,6 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system copy)
-  #:use-module (guix build-system trivial)
   #:use-module (guix build-system minetest)
   #:use-module ((guix licenses) #:prefix license:))
 

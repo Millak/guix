@@ -178,8 +178,6 @@
   #:use-module (guix build-system qt)
   #:use-module (guix build-system ruby)
   #:use-module (guix build-system cmake)
-  #:use-module (guix build-system scons)
-  #:use-module (guix build-system trivial)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-26)

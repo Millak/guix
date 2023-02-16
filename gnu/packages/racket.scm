@@ -26,7 +26,6 @@
   #:use-module (guix git-download)
   #:use-module (guix utils)
   #:use-module (guix gexp)
-  #:use-module (guix build-system copy)
   #:use-module (guix build-system gnu)
   #:use-module (guix diagnostics)
   #:use-module (guix i18n)

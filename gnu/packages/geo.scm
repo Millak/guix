@@ -46,8 +46,6 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
-  #:use-module (guix build-system scons)
-  #:use-module (guix build-system r)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)

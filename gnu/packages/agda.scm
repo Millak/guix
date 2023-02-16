@@ -28,7 +28,6 @@
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
-  #:use-module (guix build-system trivial)
   #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
