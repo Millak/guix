@@ -3,7 +3,7 @@
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2019, 2020, 2022 Marius Bakke <marius@gnu.org>
-;;; Copyright © 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -148,35 +148,34 @@ which allows users to view a desktop computing environment.")
                 "1drvj8y35gnxbnrxsipwi15yh0vs9ixzv4wslz6r3lra8w3bfa0z"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags '("--enable-gstaudio"
-                           "--enable-gstvideo"
-                           "--enable-pulse"
-                           "--enable-vala"
-                           "--enable-introspection")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-session-test
-           (lambda _
-             ;; XXX: Disable session tests, because they require USB support,
-             ;; which is not available in the build container.
-             (substitute* "tests/Makefile"
-               (("test-session\\$\\(EXEEXT\\) ") ""))))
-         (add-after 'install 'patch-la-files
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (libjpeg (assoc-ref inputs "libjpeg")))
-               ;; Add an absolute reference for libjpeg in the .la files
-               ;; so it does not have to be propagated.
-               (substitute* (find-files (string-append out "/lib") "\\.la$")
-                 (("-ljpeg")
-                  (string-append "-L" libjpeg "/lib -ljpeg"))))))
-         (add-after 'install 'wrap-spicy
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out             (assoc-ref outputs "out"))
-                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-               (wrap-program (string-append out "/bin/spicy")
-                 `("GST_PLUGIN_SYSTEM_PATH" ":"
-                   prefix (,gst-plugin-path)))))))))
+     (list
+      #:configure-flags #~(list "--enable-gstaudio"
+                                "--enable-gstvideo"
+                                "--enable-pulse"
+                                "--enable-vala"
+                                "--enable-introspection")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-session-test
+            (lambda _
+              ;; XXX: Disable session tests, because they require USB support,
+              ;; which is not available in the build container.
+              (substitute* "tests/Makefile"
+                (("test-session\\$\\(EXEEXT\\) ") ""))))
+          (add-after 'install 'patch-la-files
+            (lambda _
+              ;; Add an absolute reference for libjpeg in the .la files
+              ;; so it does not have to be propagated.
+              (substitute* (find-files (string-append #$output "/lib")
+                                       "\\.la$")
+                (("-ljpeg")
+                 (string-append "-L" #$(this-package-input "libjpeg-turbo")
+                                "/lib -ljpeg")))))
+          (add-after 'install 'wrap-spicy
+            (lambda* (#:key outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/spicy")
+                `("GST_PLUGIN_SYSTEM_PATH" ":"
+                  prefix (,(getenv "GST_PLUGIN_SYSTEM_PATH")))))))))
     (native-inputs
      (list `(,glib "bin")
            intltool
