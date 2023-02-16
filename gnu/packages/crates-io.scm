@@ -33733,6 +33733,42 @@ IOCP and Async I/O abstractions.")
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.3))))))
 
+(define-public rust-mockall-0.11
+  (package
+    (name "rust-mockall")
+    (version "0.11.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "mockall" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0k3g3xxf195vsnzmwza047dv89zlg6h5yj5774wjlndgpdvf8han"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Not all files included.
+       #:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-downcast" ,rust-downcast-0.11)
+        ("rust-fragile" ,rust-fragile-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-mockall-derive" ,rust-mockall-derive-0.11)
+        ("rust-predicates" ,rust-predicates-2)
+        ("rust-predicates-tree" ,rust-predicates-tree-1))
+       #:cargo-development-inputs
+       (("rust-async-trait" ,rust-async-trait-0.1)
+        ("rust-futures" ,rust-futures-0.3)
+        ("rust-mockall-double" ,rust-mockall-double-0.3)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/asomers/mockall")
+    (synopsis "Mock object library for Rust")
+    (description
+     "Mockall is a rich mocking library with a terse and ergonomic interface.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-mockall-derive-0.11
   (package
     (name "rust-mockall-derive")
