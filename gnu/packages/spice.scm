@@ -41,6 +41,8 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
+  #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages security-token)
   #:use-module (gnu packages tls)
   #:use-module (gnu packages virtualization)
@@ -137,40 +139,29 @@ which allows users to view a desktop computing environment.")
 (define-public spice-gtk
   (package
     (name "spice-gtk")
-    (version "0.37")
+    (version "0.42")
     (source (origin
               (method url-fetch)
               (uri (string-append
                     "https://spice-space.org/download/gtk/"
-                    "spice-gtk-" version ".tar.bz2"))
+                    "spice-gtk-" version ".tar.xz"))
               (sha256
                (base32
-                "1drvj8y35gnxbnrxsipwi15yh0vs9ixzv4wslz6r3lra8w3bfa0z"))))
-    (build-system gnu-build-system)
+                "0n3s1rn7yzs28hnl9k6ql3a90qlv8w16djqj32m1zb8i31zi304k"))))
+    (build-system meson-build-system)
     (arguments
      (list
-      #:configure-flags #~(list "--enable-gstaudio"
-                                "--enable-gstvideo"
-                                "--enable-pulse"
-                                "--enable-vala"
-                                "--enable-introspection")
       #:phases
       #~(modify-phases %standard-phases
-          (add-before 'check 'disable-session-test
+          (add-after 'unpack 'disable-problematic-tests
             (lambda _
-              ;; XXX: Disable session tests, because they require USB support,
-              ;; which is not available in the build container.
-              (substitute* "tests/Makefile"
-                (("test-session\\$\\(EXEEXT\\) ") ""))))
-          (add-after 'install 'patch-la-files
-            (lambda _
-              ;; Add an absolute reference for libjpeg in the .la files
-              ;; so it does not have to be propagated.
-              (substitute* (find-files (string-append #$output "/lib")
-                                       "\\.la$")
-                (("-ljpeg")
-                 (string-append "-L" #$(this-package-input "libjpeg-turbo")
-                                "/lib -ljpeg")))))
+              ;; XXX: Disable the session and cd-emu tests, because they
+              ;; require USB support, which is not available in the build
+              ;; container.
+              (substitute* "tests/meson.build"
+                ((".*'session.c',.*") "")
+                (("tests_sources \\+= 'cd-emu.c'" all)
+                 (string-append "# " all)))))
           (add-after 'install 'wrap-spicy
             (lambda* (#:key outputs #:allow-other-keys)
               (wrap-program (search-input-file outputs "bin/spicy")
@@ -180,6 +171,9 @@ which allows users to view a desktop computing environment.")
      (list `(,glib "bin")
            intltool
            pkg-config
+           python
+           python-pyparsing
+           python-six
            vala))
     (inputs
      (list glib-networking
@@ -191,7 +185,6 @@ which allows users to view a desktop computing environment.")
            lz4
            mesa
            pulseaudio
-           python
            opus
            usbredir))
     (propagated-inputs
