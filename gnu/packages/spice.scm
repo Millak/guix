@@ -141,73 +141,69 @@ which allows users to view a desktop computing environment.")
     (source (origin
               (method url-fetch)
               (uri (string-append
-                "https://spice-space.org/download/gtk/"
-                "spice-gtk-" version ".tar.bz2"))
+                    "https://spice-space.org/download/gtk/"
+                    "spice-gtk-" version ".tar.bz2"))
               (sha256
                (base32
                 "1drvj8y35gnxbnrxsipwi15yh0vs9ixzv4wslz6r3lra8w3bfa0z"))))
     (build-system gnu-build-system)
-    (propagated-inputs
-      (list gstreamer
-            gst-plugins-base
-            gst-plugins-good
-            spice-protocol
-            ;; These are required by the pkg-config files.
-            gtk+
-            pixman
-            openssl-1.1))
-    (inputs
-      `(("glib-networking" ,glib-networking)
-        ("gobject-introspection" ,gobject-introspection)
-        ("json-glib" ,json-glib)
-        ("libepoxy" ,libepoxy)
-        ("libjpeg" ,libjpeg-turbo)
-        ("libxcb" ,libxcb)
-        ("lz4" ,lz4)
-        ("mesa" ,mesa)
-        ("pulseaudio" ,pulseaudio)
-        ("python" ,python)
-        ("opus" ,opus)
-        ("usbredir" ,usbredir)))
-    (native-inputs
-      `(("glib:bin" ,glib "bin")
-        ("intltool" ,intltool)
-        ("pkg-config" ,pkg-config)
-        ("vala" ,vala)))
     (arguments
-      `(#:configure-flags
-        '("--enable-gstaudio"
-          "--enable-gstvideo"
-          "--enable-pulse"
-          "--enable-vala"
-          "--enable-introspection")
-        #:phases
-         (modify-phases %standard-phases
-           (add-before 'check 'disable-session-test
-             (lambda _
-               ;; XXX: Disable session tests, because they require USB support,
-               ;; which is not available in the build container.
-               (substitute* "tests/Makefile"
-                 (("test-session\\$\\(EXEEXT\\) ") ""))
-               #t))
-           (add-after 'install 'patch-la-files
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let ((out (assoc-ref outputs "out"))
-                     (libjpeg (assoc-ref inputs "libjpeg")))
-                 ;; Add an absolute reference for libjpeg in the .la files
-                 ;; so it does not have to be propagated.
-                 (substitute* (find-files (string-append out "/lib") "\\.la$")
-                   (("-ljpeg")
-                    (string-append "-L" libjpeg "/lib -ljpeg")))
-                 #t)))
-           (add-after
-            'install 'wrap-spicy
-            (lambda* (#:key inputs outputs #:allow-other-keys)
-              (let ((out             (assoc-ref outputs "out"))
-                    (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
-                (wrap-program (string-append out "/bin/spicy")
-                  `("GST_PLUGIN_SYSTEM_PATH" ":" prefix (,gst-plugin-path))))
-              #t)))))
+     `(#:configure-flags '("--enable-gstaudio"
+                           "--enable-gstvideo"
+                           "--enable-pulse"
+                           "--enable-vala"
+                           "--enable-introspection")
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'check 'disable-session-test
+           (lambda _
+             ;; XXX: Disable session tests, because they require USB support,
+             ;; which is not available in the build container.
+             (substitute* "tests/Makefile"
+               (("test-session\\$\\(EXEEXT\\) ") ""))))
+         (add-after 'install 'patch-la-files
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out"))
+                   (libjpeg (assoc-ref inputs "libjpeg")))
+               ;; Add an absolute reference for libjpeg in the .la files
+               ;; so it does not have to be propagated.
+               (substitute* (find-files (string-append out "/lib") "\\.la$")
+                 (("-ljpeg")
+                  (string-append "-L" libjpeg "/lib -ljpeg"))))))
+         (add-after 'install 'wrap-spicy
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (let ((out             (assoc-ref outputs "out"))
+                   (gst-plugin-path (getenv "GST_PLUGIN_SYSTEM_PATH")))
+               (wrap-program (string-append out "/bin/spicy")
+                 `("GST_PLUGIN_SYSTEM_PATH" ":"
+                   prefix (,gst-plugin-path)))))))))
+    (native-inputs
+     `(("glib:bin" ,glib "bin")
+       ("intltool" ,intltool)
+       ("pkg-config" ,pkg-config)
+       ("vala" ,vala)))
+    (inputs
+     `(("glib-networking" ,glib-networking)
+       ("gobject-introspection" ,gobject-introspection)
+       ("json-glib" ,json-glib)
+       ("libepoxy" ,libepoxy)
+       ("libjpeg" ,libjpeg-turbo)
+       ("libxcb" ,libxcb)
+       ("lz4" ,lz4)
+       ("mesa" ,mesa)
+       ("pulseaudio" ,pulseaudio)
+       ("python" ,python)
+       ("opus" ,opus)
+       ("usbredir" ,usbredir)))
+    (propagated-inputs
+     (list gstreamer
+           gst-plugins-base
+           gst-plugins-good
+           spice-protocol
+           ;; These are required by the pkg-config files.
+           gtk+
+           pixman
+           openssl-1.1))
     (synopsis "Gtk client and libraries for SPICE remote desktop servers")
     (description "Gtk client and libraries for SPICE remote desktop servers.")
     (home-page "https://www.spice-space.org")
