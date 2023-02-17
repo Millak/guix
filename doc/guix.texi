@@ -81,7 +81,7 @@ Copyright @copyright{} 2020, 2021 Brice Waegeneire@*
 Copyright @copyright{} 2020 R Veera Kumar@*
 Copyright @copyright{} 2020, 2021, 2022 Pierre Langlois@*
 Copyright @copyright{} 2020 pinoaffe@*
-Copyright @copyright{} 2020 André Batista@*
+Copyright @copyright{} 2020, 2023 André Batista@*
 Copyright @copyright{} 2020, 2021 Alexandru-Sergiu Marton@*
 Copyright @copyright{} 2020 raingloom@*
 Copyright @copyright{} 2020 Daniel Brooks@*
@@ -5411,6 +5411,25 @@ write in @code{~/.config/guix/channels.scm} this specification:
 From there on, @command{guix pull} will fetch code from the @code{super-hacks}
 branch of the repository at @code{example.org}.  The authentication concern is
 addressed below (@pxref{Channel Authentication}).
+
+Note that you can specify a local directory on the @code{url} field above if
+the channel that you intend to use resides on a local file system.  However,
+in this case @command{guix} checks said directory for ownership before any
+further processing.  This means that if the user is not the directory owner,
+but wants to use it as their default, they will then need to set it as a safe
+directory in their global git configuration file.  Otherwise, @command{guix}
+will refuse to even read it.  Supposing your system-wide local directory is at
+@code{/src/guix.git}, you would then create a git configuration file at
+@code{~/.gitconfig} with the following contents:
+
+@example
+[safe]
+        directory = /src/guix.git
+@end example
+
+@noindent
+This also applies to the root user unless when called with @command{sudo} by
+the directory owner.
 
 @node Replicating Guix
 @section Replicating Guix
