@@ -422,6 +422,7 @@ empty list when the FIELD cannot be found."
     ("libarchive_dev" "libarchive")
     ("libbz2" "bzip2")
     ("libexpat" "expat")
+    ("libjpeg" "libjpeg-turbo")
     ("liblz4" "lz4")
     ("liblzma" "xz")
     ("libzstd" "zstd")
