@@ -159,6 +159,16 @@ which allows users to view a desktop computing environment.")
                 ((".*'session.c',.*") "")
                 (("tests_sources \\+= 'cd-emu.c'" all)
                  (string-append "# " all)))))
+          (add-after 'unpack 'adjust-default-acl-helper-path
+            (lambda _
+              ;; The USB ACL helper used to allow USB redirection as a
+              ;; non-privileged user needs to be setuid, as configured by the
+              ;; gnome-desktop-service-type.  A user can still change the
+              ;; location by specifying the SPICE_USB_ACL_BINARY environment
+              ;; variable.
+              (substitute* "src/usb-acl-helper.c"
+                (("ACL_HELPER_PATH\"/spice-client-glib-usb-acl-helper\"")
+                 "\"/run/setuid-programs/spice-client-glib-usb-acl-helper\""))))
           (add-before 'configure 'correct-polkit-dir
             (lambda _
               (substitute* "meson.build"
