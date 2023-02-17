@@ -15801,7 +15801,7 @@ been adapted to also work with mu4e.")
 (define-public emacs-tempel
   (package
     (name "emacs-tempel")
-    (version "0.6")
+    (version "0.7")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -15810,8 +15810,10 @@ been adapted to also work with mu4e.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1jgsjhrfdd72a0na4s1qp8yc24mbgrpxkv8yqac0vgqipg98cdg6"))))
+                "1qhy9rp0k74hbqns67iwyzk86x7rriqyd4l48j5qqmfvr3v5sg1m"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/minad/tempel")
     (synopsis "Simple templates for Emacs")
     (description
