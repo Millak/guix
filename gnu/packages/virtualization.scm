@@ -1192,7 +1192,7 @@ of one or more RISC-V harts.")
                  (format #f "path = ~s;"
                          (search-input-directory (or native-inputs inputs)
                                                  "share/osinfo")))))))))
-    (inputs (list libsoup-minimal-2 libxml2 libxslt osinfo-db))
+    (inputs (list libsoup libxml2 libxslt osinfo-db))
     (native-inputs
      (list `(,glib "bin")                ;glib-mkenums, etc.
            gobject-introspection
