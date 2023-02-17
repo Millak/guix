@@ -28,7 +28,7 @@
 ;;; Copyright © 2021 Cameron Chaparro <cameron@cameronchaparro.com>
 ;;; Copyright © 2021 Charles Jackson <charles.b.jackson@protonmail.com>
 ;;; Copyright © 2021, 2022 Foo Chuan Wei <chuanwei.foo@hotmail.com>
-;;; Copyright © 2021, 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2021, 2022, 2023 jgart <jgart@dismail.de>
 ;;; Copyright © 2021 Aleksandr Vityazev <avityazev@posteo.org>
 ;;; Copyright © 2021 Jacob MacDonald <jaccarmac@gmail.com>
 ;;; Copyright © 2022 Jai Vetrivelan <jaivetrivelan@gmail.com>
@@ -26883,6 +26883,39 @@ descent parsers without funky syntax or impenetrable macrology.")
 
 (define-public ecl-smug
   (sbcl-package->ecl-package sbcl-smug))
+
+(define-public sbcl-cl-variates
+  (let ((commit "4e7548754d8a8731a42487fae31174db4bf36d47")
+        (revision "0"))
+    (package
+      (name "sbcl-cl-variates")
+      (version "0.9.0")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://gitlab.common-lisp.net/cl-variates/cl-variates")
+               (commit commit)))
+         (file-name (git-file-name "cl-variates" version))
+         (sha256
+          (base32 "03wnvfi3yfflpvi0mr732r834msij4vrwdbgf6csh0b8kqxl47zn"))))
+      (build-system asdf-build-system/sbcl)
+      ;; USE-PACKAGE #<PACKAGE "CL-VARIATES"> causes name-conflicts in
+      ;; #<PACKAGE "CL-VARIATES-TEST"> between the following symbols:
+      ;; CL-VARIATES:RANDOM-ELEMENT, LIFT:RANDOM-ELEMENT
+      (arguments (list #:tests? #f))
+      (native-inputs (list sbcl-lift))
+      (home-page "https://gitlab.common-lisp.net/cl-variates/cl-variates")
+      (synopsis "Portable Common Lisp Random Number Generation")
+      (description "The variates package provides portable random number
+generation as well as numerous distributions.")
+      (license license:expat))))
+
+(define-public cl-variates
+  (sbcl-package->cl-source-package sbcl-cl-variates))
+
+(define-public ecl-cl-variates
+  (sbcl-package->ecl-package sbcl-cl-variates))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
