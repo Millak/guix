@@ -8657,7 +8657,10 @@ Pore-C concatemers.")
                                r-seurat
                                r-singlecellexperiment
                                r-slingshot
-                               r-summarizedexperiment))
+                               r-summarizedexperiment
+                               python
+                               python-scrublet
+                               python-doubletdetection))
       (home-page "https://github.com/xnnba1984/DoubletCollection")
       (synopsis "Tool for finding doublets in scRNA-seq data")
       (description
