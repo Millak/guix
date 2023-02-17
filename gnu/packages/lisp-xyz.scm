@@ -27161,6 +27161,50 @@ in files using data frames.")
 ;; (define-public ecl-dfio
 ;;   (sbcl-package->ecl-package sbcl-dfio))
 
+(define-public sbcl-lisp-stat
+  (let ((commit "357a0d2b5f68a5ff925776235c2b7455e12b78ba")
+        (revision "0"))
+    (package
+      (name "sbcl-lisp-stat")
+      (version (git-version "1.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/lisp-stat")
+               (commit commit)))
+         (file-name (git-file-name "cl-lisp-stat" version))
+         (sha256
+          (base32 "0qwlxrbwj884mr67sf6aj0zwrndv33aiiid4bqrkji41kjhqfcz5"))))
+      (build-system asdf-build-system/sbcl)
+      ;; https://github.com/Lisp-Stat/lisp-stat/issues/22
+      (arguments (list #:tests? #f))
+      (native-inputs (list sbcl-parachute))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-alexandria-plus
+              sbcl-array-operations
+              sbcl-conduit-packages
+              sbcl-data-frame
+              sbcl-dexador
+              sbcl-dfio
+              sbcl-distributions
+              sbcl-numerical-utilities
+              sbcl-select
+              sbcl-statistics))
+      (home-page "https://lisp-stat.github.io/lisp-stat/")
+      (synopsis "Statistical Computing in Common Lisp")
+      (description "This package provides a statistical computing
+environment for Common Lisp.")
+      (license license:ms-pl))))
+
+(define-public cl-lisp-stat
+  (sbcl-package->cl-source-package sbcl-lisp-stat))
+
+;; This depends on ecl-data-frame and ecl-dfio, which don't work yet.
+;; (define-public ecl-lisp-stat
+;;   (sbcl-package->ecl-package sbcl-lisp-stat))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
