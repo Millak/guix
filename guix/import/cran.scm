@@ -471,11 +471,6 @@ the given REGEXP."
                     (else (loop))))))))
          (apply find-files directory file-patterns))))
 
-(define (directory-needs-zlib? dir)
-  "Return #T if any of the Makevars files in the src directory DIR contain a
-zlib linker flag."
-  (files-match-pattern? dir "-lz" "(Makevars.*|configure.*)"))
-
 (define packages-for-matches
   '(("-lcrypto"    . "openssl")
     ("-lcurl"      . "curl")
@@ -530,7 +525,7 @@ the pkg-config tool."
   "Guess dependencies of R package source in DIR and return two values: a list
 of package names for INPUTS and another list of names of NATIVE-INPUTS."
   (values
-   (if (directory-needs-zlib? dir) '("zlib") '())
+   (needed-libraries-in-directory dir)
    (append
        (if (directory-needs-esbuild? dir) '("esbuild") '())
        (if (directory-needs-pkg-config? dir) '("pkg-config") '())
