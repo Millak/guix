@@ -26179,13 +26179,13 @@ Visualizations are also available for most of these settings.")
 (define-public r-torch
   (package
     (name "r-torch")
-    (version "0.9.0")
+    (version "0.9.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "torch" version))
        (sha256
-        (base32 "1iylnz0hsi00q7hngi2h24kg3nvjjg10z6iarqhp3wylsasgjs1f"))))
+        (base32 "03qbdws6j5v2vmdgdnwfd0248s2qirnxpm9v4302vqlq3c0i83c2"))))
     (properties `((upstream-name . "torch")))
     (build-system r-build-system)
     (arguments
@@ -26217,6 +26217,7 @@ Visualizations are also available for most of these settings.")
            r-cli
            r-coro
            r-ellipsis
+           r-glue
            r-magrittr
            r-r6
            r-rcpp
