@@ -35166,7 +35166,7 @@ hacker.")
 (define-public emacs-osm
   (package
     (name "emacs-osm")
-    (version "0.9")
+    (version "0.10")
     (home-page "https://github.com/minad/osm")
     (source (origin
               (method git-fetch)
@@ -35176,7 +35176,7 @@ hacker.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0iacf3mqjq8vfhd0nyzry0spishyvn92zgd55ivqxb9xfdr3lx9x"))))
+                "07caffh30sgmcbhxqk3wfpml3310ldvwkqbh19czq7nx4llynixc"))))
     (build-system emacs-build-system)
     (arguments
      (list #:phases #~(modify-phases %standard-phases
@@ -35201,6 +35201,7 @@ hacker.")
                                                          "/share/info")))))))
     (inputs (list curl))
     (native-inputs (list texinfo))
+    (propagated-inputs (list emacs-compat))
     (synopsis "OpenStreetMap viewer for Emacs")
     (description
      "This package provides an OpenStreetMap viewer for Emacs, featuring
