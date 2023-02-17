@@ -246,7 +246,7 @@ security standards.")
 (define-public nss-next
   (package
     (inherit nss)
-    (version "3.83")
+    (version "3.88.1")
     (source (origin
               (inherit (package-source nss))
               (uri (let ((version-with-underscores
@@ -257,5 +257,5 @@ security standards.")
                       "nss-" version ".tar.gz")))
               (sha256
                (base32
-                "0a01xwfrr334mibj1agbykjkc72ph906f2n8ff5hn2b4z5kyl8xb"))))
+                "15il9fsmixa1r4446zq1wl627sg0hz9h67w6kjxz273xz3nl7li7"))))
     (propagated-inputs (list nspr-next)))) ;required by nss.pc
