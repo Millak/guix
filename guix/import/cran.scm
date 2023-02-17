@@ -55,6 +55,7 @@
   #:use-module (guix ui)
   #:use-module (guix upstream)
   #:use-module (guix packages)
+  #:use-module (guix sets)
   #:use-module (gnu packages)
   #:export (%input-style
 
@@ -474,6 +475,50 @@ the given REGEXP."
   "Return #T if any of the Makevars files in the src directory DIR contain a
 zlib linker flag."
   (files-match-pattern? dir "-lz" "(Makevars.*|configure.*)"))
+
+(define packages-for-matches
+  '(("-lcrypto"    . "openssl")
+    ("-lcurl"      . "curl")
+    ("-lgit2"      . "libgit2")
+    ("-lpcre"      . "pcre2")
+    ("-lssh"       . "openssh")
+    ("-lssl"       . "openssl")
+    ("-ltbb"       . "tbb")
+    ("-lz"         . "zlib")
+    ("gsl-config"  . "gsl")
+    ("xml2-config" . "libxml2")
+    ("CURL_LIBS"   . "curl")))
+
+(define libraries-pattern
+  (make-regexp
+   (string-append "("
+                  (string-join
+                   (map (compose regexp-quote first) packages-for-matches) "|")
+                  ")")))
+
+(define (needed-libraries-in-directory dir)
+  "Return a list of package names that correspond to libraries that are
+referenced in build system files."
+  (set->list
+   (fold
+    (lambda (file packages)
+      (call-with-input-file file
+        (lambda (port)
+          (let loop ((packages packages))
+            (let ((line (read-line port)))
+              (cond
+               ((eof-object? line) packages)
+               (else
+                (loop
+                 (fold (lambda (match acc)
+                         (or (and=> (assoc-ref packages-for-matches
+                                               (match:substring match))
+                                    (cut set-insert <> acc))
+                             acc))
+                       packages
+                       (list-matches libraries-pattern line))))))))))
+    (set)
+    (find-files dir "(Makevars.in*|configure.*)"))))
 
 (define (directory-needs-pkg-config? dir)
   "Return #T if any of the Makevars files in the src directory DIR reference
