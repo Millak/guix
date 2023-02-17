@@ -27122,6 +27122,45 @@ of one variable and each row contains one set of values from each column.")
 ;; (define-public ecl-data-frame
 ;;   (sbcl-package->ecl-package sbcl-data-frame))
 
+(define-public sbcl-dfio
+  (let ((commit "5caf473acb9bc464839e87395724cbd941167915")
+        (revision "0"))
+    (package
+      (name "sbcl-dfio")
+      (version (git-version "1.0.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/dfio")
+               (commit commit)))
+         (file-name (git-file-name "cl-dfio" version))
+         (sha256
+          (base32 "1p53r7773939jnap518xp4b4wfvc1kbrz9jp6yd40xq0jpf9pbqg"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-alexandria
+             sbcl-anaphora
+             sbcl-data-frame
+             sbcl-dexador
+             sbcl-fare-csv
+             sbcl-let-plus
+             sbcl-yason))
+      (native-inputs
+       (list sbcl-clunit2))
+      (home-page "https://lisp-stat.dev/docs/manuals/data-frame/")
+      (synopsis "Read data to and from data frames")
+      (description "This package provides tools for manipulating data
+in files using data frames.")
+      (license license:ms-pl))))
+
+(define-public cl-dfio
+  (sbcl-package->cl-source-package sbcl-dfio))
+
+;; This depends on ecl-data-frame, which doesn't work yet.
+;; (define-public ecl-dfio
+;;   (sbcl-package->ecl-package sbcl-dfio))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
