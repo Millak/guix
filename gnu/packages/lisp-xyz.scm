@@ -26917,6 +26917,50 @@ generation as well as numerous distributions.")
 (define-public ecl-cl-variates
   (sbcl-package->ecl-package sbcl-cl-variates))
 
+(define-public sbcl-cephes
+  (let ((commit "d87146fa38c8425ffb5fe425eee5eb3e818bacd4")
+        (revision "0"))
+    (package
+      (name "sbcl-cephes")
+      (version (git-version "1.2" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/cephes.cl")
+               (commit commit)))
+         (file-name (git-file-name "cl-cephes" version))
+         (sha256
+          (base32 "09adls1lwwzwm1jmvhf11arwlsy5w0bi2rmniahas824mysv77lr"))))
+      (build-system asdf-build-system/sbcl)
+      (inputs
+       (list sbcl-cffi))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 ;; ECL has issues making the shared library automatically,
+                 ;; so we make it explicitly.
+                 (add-before 'build 'build-shared-library
+                   (lambda _
+                     (with-directory-excursion
+                         (string-append #$output "/share/common-lisp/"
+                                        (%lisp-type) "/cephes/scipy-cephes")
+                       (invoke "make")
+                       ;; Remove temporary object files.
+                       (for-each delete-file (find-files "." "\\.o$"))))))))
+      (home-page "https://lisp-stat.github.io/cephes.cl/")
+      (synopsis "Common Lisp wrapper for the Cephes Mathematical Library")
+      (description
+       "This package provides a common lisp CFFI wrapper for the SciPy version
+of Cephes special functions.")
+      (license license:ms-pl))))
+
+(define-public cl-cephes
+  (sbcl-package->cl-source-package sbcl-cephes))
+
+(define-public ecl-cephes
+  (sbcl-package->ecl-package sbcl-cephes))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
