@@ -4,7 +4,7 @@
 ;;; Copyright © 2016 Nikita <nikita@n0.is>
 ;;; Copyright © 2017 Ben Woodcroft <donttrustben@gmail.com>
 ;;; Copyright © 2017, 2018 Nikolai Merinov <nikolai.merinov@member.fsf.org>
-;;; Copyright © 2017, 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2017, 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Danny Milosavljevic <dannym+a@scratchpost.org>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
@@ -162,7 +162,11 @@
        (snippet
         '(begin
            (for-each delete-file-recursively
-                     '("src/llvm-project"))))
+                     '("src/llvm-project"))
+           ;; Remove vendored dynamically linked libraries.
+           ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+           (delete-file "vendor/vte/vim10m_match")
+           (delete-file "vendor/vte/vim10m_table")))
        (patches (search-patches "rustc-1.54.0-src.patch"))
        (patch-flags '("-p0"))))         ;default is -p1
     (outputs '("out" "cargo"))
@@ -368,6 +372,10 @@ safety and thread safety guarantees.")
            (for-each delete-file-recursively
                      '("src/llvm-project"
                        "vendor/tikv-jemalloc-sys/jemalloc"))
+           ;; Remove vendored dynamically linked libraries.
+           ;; find . -not -type d -executable -exec file {} \+ | grep ELF
+           (delete-file "vendor/vte/vim10m_match")
+           (delete-file "vendor/vte/vim10m_table")
            ;; Add support for riscv64-linux.
            (substitute* "vendor/tikv-jemallocator/src/lib.rs"
              (("    target_arch = \"s390x\"," all)
