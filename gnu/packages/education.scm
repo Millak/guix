@@ -449,7 +449,7 @@ specialized device.")
     (license license:gpl3)))
 
 (define-public openboard
-  ;; The last release builds from qtwebkit, which is planned for removal in
+  ;; The last release builds from qtwebkit, which has been removed from
   ;; Guix, so use the latest commit of the 1.7-dev branch, which builds with
   ;; qtwebengine-5.
   (let ((commit "39e914f600d26565706f0e5b6ea2482b8b4038c7") ;1.6.2-rc0311

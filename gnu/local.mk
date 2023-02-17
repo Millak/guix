@@ -1779,11 +1779,6 @@ dist_patch_DATA =						\
   %D%/packages/patches/qtwayland-gcc-11.patch			\
   %D%/packages/patches/qtwayland-dont-recreate-callbacks.patch	\
   %D%/packages/patches/qtwayland-cleanup-callbacks.patch	\
-  %D%/packages/patches/qtwebkit-pbutils-include.patch		\
-  %D%/packages/patches/qtwebkit-fix-building-with-bison-3.7.patch \
-  %D%/packages/patches/qtwebkit-fix-building-with-python-3.9.patch	\
-  %D%/packages/patches/qtwebkit-fix-building-with-icu-68.patch	\
-  %D%/packages/patches/qtwebkit-fix-building-with-glib-2.68.patch	\
   %D%/packages/patches/ragel-char-signedness.patch		\
   %D%/packages/patches/randomjungle-disable-static-build.patch	\
   %D%/packages/patches/range-v3-build-with-gcc10.patch	\
