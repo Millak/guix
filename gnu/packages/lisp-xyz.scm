@@ -26961,6 +26961,48 @@ of Cephes special functions.")
 (define-public ecl-cephes
   (sbcl-package->ecl-package sbcl-cephes))
 
+(define-public sbcl-special-functions
+  (let ((commit "f3ca2792ff3f8351839c366413da6b1bb2965a58")
+        (revision "0"))
+    (package
+      (name "sbcl-special-functions")
+      (version (git-version "1.2.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/special-functions")
+               (commit commit)))
+         (file-name (git-file-name "cl-special-functions" version))
+         (sha256
+          (base32 "092szffy7zfxgrvfck11wnj8l0mgcym13yiafj01ad02lbj1fnnv"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiveam
+             sbcl-select
+             sbcl-cl-variates))
+      (inputs
+        (list sbcl-alexandria-plus
+              sbcl-float-features
+              sbcl-let-plus
+              sbcl-numerical-utilities))
+      (home-page "https://lisp-stat.dev/docs/resources/special-functions/")
+      (synopsis "Special functions in Common Lisp")
+      (description "This library implements
+@url{http://specialfunctionswiki.org/index.php/Main_Page, special
+functions} and has a focus on high accuracy double-float calculations
+using the latest algorithms.")
+      (license license:ms-pl))))
+
+(define-public cl-special-functions
+  (sbcl-package->cl-source-package sbcl-special-functions))
+
+(define-public ecl-special-functions
+  (package
+    (inherit (sbcl-package->ecl-package sbcl-special-functions))
+    ;; https://github.com/Lisp-Stat/special-functions/issues/4
+    (arguments (list #:tests? #f))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
