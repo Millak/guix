@@ -33905,25 +33905,25 @@ user streams, and to parse the output into data frames.")
 (define-public r-readods
   (package
     (name "r-readods")
-    (version "1.7.0")
+    (version "1.8.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (cran-uri "readODS" version))
-        (sha256
-          (base32
-            "1hi217ab7hp15jsbzi5ak57cqf8jn2rv78bnn74q72gn9mrfra7n"))))
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "readODS" version))
+       (sha256
+        (base32
+         "1jdgp9vnm3sg4n34fl9ll7pkpac2lw7dg85mjkjwm1c63dfgrm0i"))))
     (properties `((upstream-name . "readODS")))
     (build-system r-build-system)
     (propagated-inputs
-      (list r-cellranger r-readr r-stringi r-xml2))
+     (list r-cellranger r-purrr r-readr r-stringi r-xml2))
     (native-inputs (list r-knitr))
     (home-page
-      "https://cran.r-project.org/package=readODS")
+     "https://cran.r-project.org/package=readODS")
     (synopsis "Read and Write ODS Files")
     (description
-      "Import @dfn{OpenDocument Spreadsheet} (ODS) into R as a data frame.
-Also support writing data frame into ODS file.")
+     "This package lets you import @dfn{OpenDocument Spreadsheet} (ODS) into R
+as a data frame.  It also supports writing data frames to an ODS file.")
     (license license:gpl3)))
 
 (define-public r-qpdf
