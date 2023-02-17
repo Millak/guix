@@ -491,7 +491,7 @@ interface.")
            ;; FIXME: python-pyqtwebengine needs to come before python-pyqt so
            ;; that it's __init__.py is used first.
            python-pyqtwebengine
-           python-pyqt-without-qtwebkit
+           python-pyqt
            ;; While qtwebengine-5 is provided by python-pyqtwebengine, it's
            ;; included here so we can wrap QTWEBENGINEPROCESS_PATH.
            qtwebengine-5))

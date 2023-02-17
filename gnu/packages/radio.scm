@@ -687,7 +687,7 @@ used by RDS Spy, and audio files containing @dfn{multiplex} signals (MPX).")
            python-numpy
            python-pycairo
            python-pygobject
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtgraph
            python-pyyaml
            qtbase-5

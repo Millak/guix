@@ -160,7 +160,7 @@ GUI based workflow.  It is primarily used in the Orange framework.")
            python-orange-widget-base
            python-pandas
            python-pygments
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtgraph
            python-pyqtwebengine
            python-pyyaml

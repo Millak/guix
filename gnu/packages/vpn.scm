@@ -750,7 +750,7 @@ and probably others.")
            python-lxml
            python-prompt-toolkit
            python-requests
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtwebengine
            python-pysocks
            python-pyxdg

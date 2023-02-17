@@ -4872,7 +4872,7 @@ API.  It includes bindings for Python, Ruby, and other languages.")
            font-dejavu
            libopenshot
            python
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtwebengine
            python-pyzmq
            python-requests

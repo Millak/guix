@@ -185,7 +185,7 @@ information.")
     (inputs
      (list python-poppler-qt5
            python-pypdf2
-           python-pyqt-without-qtwebkit
+           python-pyqt
            qtbase-5))
     (home-page "http://crazy-compilers.com/flyer-composer")
     (synopsis "Rearrange PDF pages to print as flyers on one sheet")

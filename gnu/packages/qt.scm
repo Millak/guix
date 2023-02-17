@@ -3270,7 +3270,6 @@ module provides support functions to the automatically generated code.")
        ("qtsvg-5" ,qtsvg-5)
        ("qttools-5" ,qttools-5)
        ("qtwebchannel-5" ,qtwebchannel-5)
-       ("qtwebkit" ,qtwebkit)
        ("qtwebsockets-5" ,qtwebsockets-5)
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)))
@@ -3367,7 +3366,7 @@ contain over 620 classes.")
     (inputs
      `(("python" ,python-wrapper)
        ("python-sip" ,python-sip)
-       ("python-pyqt" ,python-pyqt-without-qtwebkit)
+       ("python-pyqt" ,python-pyqt)
        ("qtbase" ,qtbase-5)
        ("qtsvg-5" ,qtsvg-5)
        ("qtdeclarative-5" ,qtdeclarative-5)
@@ -3424,17 +3423,6 @@ WebEngine libraries.  The bindings sit on top of PyQt5 and are implemented as a
 set of three modules.  Prior to v5.12 these bindings were part of PyQt
 itself.")
     (license license:gpl3)))
-
-;; XXX: This is useful for removing qtwebkit from other packages' dependency
-;; graphs, as well as for preventing python-pyqtwebengine from transitively
-;; depending on qtwebkit.
-;; Ultimately, it would be nicer to have a more modular set of python-pyqt-*
-;; packages that could be used together.
-(define-public python-pyqt-without-qtwebkit
-  (package/inherit python-pyqt
-    (name "python-pyqt-without-qtwebkit")
-    (inputs
-     (alist-delete "qtwebkit" (package-inputs python-pyqt)))))
 
 (define-public python-pyqt-builder
   (package

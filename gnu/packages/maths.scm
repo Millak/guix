@@ -3184,7 +3184,7 @@ ASCII text files using Gmsh's own scripting language.")
      (list ghostscript ;optional, for EPS/PS output
            python-dbus
            python-h5py ;optional, for HDF5 data
-           python-pyqt-without-qtwebkit
+           python-pyqt
            qtbase-5
            qtsvg-5))
     (propagated-inputs

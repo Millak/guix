@@ -200,7 +200,7 @@ with Microsoft Compiled HTML (CHM) files")
            python-pychm
            python-pycryptodome
            python-pygments
-           python-pyqt-without-qtwebkit
+           python-pyqt
            python-pyqtwebengine
            python-regex
            speech-dispatcher
@@ -246,7 +246,7 @@ tags = [\"WS_X11\"]")
                  (string-append "[tool.sip.project]
 sip-include-dirs = [\""
                                 #$(this-package-input
-                                   "python-pyqt-without-qtwebkit")
+                                   "python-pyqt")
                                 "/share/sip\"]")))
               (substitute* "src/calibre/ebooks/pdf/pdftohtml.py"
                 (("PDFTOHTML = 'pdftohtml'")
