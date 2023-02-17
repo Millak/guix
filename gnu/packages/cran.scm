@@ -23023,9 +23023,9 @@ complex composition of plots by providing mathematical operators for combining
 multiple plots.")
     (license license:expat)))
 
-(define-public r-liger
+(define-public r-rliger
   (package
-    (name "r-liger")
+    (name "r-rliger")
     (version "0.4.2")
     (source
      (origin
@@ -23096,6 +23096,9 @@ datasets, developed and maintained by the Macosko lab.  It relies on
 integrative non-negative matrix factorization to identify shared and
 dataset-specific factors.")
     (license license:gpl3)))
+
+(define-public r-liger
+  (deprecated-package "r-liger" r-rliger))
 
 (define-public r-harmony
   (package
