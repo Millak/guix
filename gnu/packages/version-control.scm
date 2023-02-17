@@ -804,7 +804,7 @@ to GitHub contributions calendar.")
 (define-public libgit2
   (package
     (name "libgit2")
-    (version "1.4.3")
+    (version "1.5.1")
     (source (origin
               ;; Since v1.1.1, release artifacts are no longer offered (see:
               ;; https://github.com/libgit2/libgit2/discussions/5932#discussioncomment-1682729).
@@ -815,18 +815,11 @@ to GitHub contributions calendar.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "02x1a4zrzpzjd0yxnsi8njh5hgihc1iy1v4r0fnl8m4ckcgp6x2s"))
+                "04ypzpicpgq1wh6anwcmjjyh2b854lvjhxq0hq2hbsx7kb14qc1b"))
               (modules '((guix build utils)))
               (snippet
                '(begin
-                  (delete-file-recursively "deps")
-
-                  ;; The "refs:revparse::date" test is time-dependent: it
-                  ;; assumes "HEAD@{10 years ago}" matches a specific commit.
-                  ;; See <https://github.com/libgit2/libgit2/pull/6299>.
-                  (substitute* "tests/refs/revparse.c"
-                    (("test_object.*10 years ago.*" all)
-                     (string-append "// " all "\n")))))))
+                  (delete-file-recursively "deps")))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
@@ -868,10 +861,10 @@ write native speed custom Git applications in any language with bindings.")
     ;; GPLv2 with linking exception
     (license license:gpl2)))
 
-(define-public libgit2-1.3
+(define-public libgit2-1.4
   (package
     (inherit libgit2)
-    (version "1.3.0")
+    (version "1.4.5")
     (source (origin
               (inherit (package-source libgit2))
               (method git-fetch)
@@ -881,7 +874,22 @@ write native speed custom Git applications in any language with bindings.")
               (file-name (git-file-name "libgit2" version))
               (sha256
                (base32
-                "0vgpb2175a5dhqiy1iwywwppahgqhi340i8bsvafjpvkw284vazd"))))
+                "0q754ipc6skagszi93lcy6qr09ibavivm2q5i5fhpdblvlnv2p7x"))))))
+
+(define-public libgit2-1.3
+  (package
+    (inherit libgit2-1.4)
+    (version "1.3.2")
+    (source (origin
+              (inherit (package-source libgit2-1.4))
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/libgit2/libgit2")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name "libgit2" version))
+              (sha256
+               (base32
+                "1dngga8jq419z6ps65wpmh2jihcf70k6r98pb1m1yiwj7qqh9792"))))
     (arguments
      (substitute-keyword-arguments (package-arguments libgit2)
        ((#:phases _ '%standard-phases)
