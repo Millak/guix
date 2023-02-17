@@ -27003,6 +27003,46 @@ using the latest algorithms.")
     ;; https://github.com/Lisp-Stat/special-functions/issues/4
     (arguments (list #:tests? #f))))
 
+(define-public sbcl-distributions
+  (let ((commit "ea72622073ee7e005dfdc621ce1e5a83b22bb39e")
+        (revision "0"))
+    (package
+      (name "sbcl-distributions")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/distributions")
+               (commit commit)))
+         (file-name (git-file-name "cl-distributions" version))
+         (sha256
+          (base32 "1fkzigd0s0s0mvszgmv04yc8jp9gm4812445hfh6kpz6cjy5zpsk"))))
+      (build-system asdf-build-system/sbcl)
+      ;; https://github.com/Lisp-Stat/distributions/issues/1
+      (arguments (list #:tests? #f))
+      (native-inputs (list sbcl-fiveam))
+      (inputs
+        (list sbcl-alexandria
+              sbcl-anaphora
+              sbcl-array-operations
+              sbcl-cephes
+              sbcl-float-features
+              sbcl-let-plus
+              sbcl-numerical-utilities
+              sbcl-special-functions))
+      (home-page "https://lisp-stat.dev/docs/manuals/distributions/")
+      (synopsis "Statistical distributions for Common Lisp")
+      (description "The Distributions package provides a collection of
+probabilistic distributions and related functions")
+      (license license:ms-pl))))
+
+(define-public cl-distributions
+  (sbcl-package->cl-source-package sbcl-distributions))
+
+(define-public ecl-distributions
+  (sbcl-package->ecl-package sbcl-distributions))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
