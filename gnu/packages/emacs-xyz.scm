@@ -10930,14 +10930,14 @@ test tags.  It supports both interactive and non-interactive use.")
 (define-public emacs-load-relative
   (package
     (name "emacs-load-relative")
-    (version "1.3.1")
+    (version "1.3.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/load-relative-"
-                           version ".el"))
+                           version ".tar"))
        (sha256
-        (base32 "1m37scr82lqqy954fchjxrmdh4lngrl4d1yzxhp3yfjhsydizhrj"))))
+        (base32 "1fwa51jp0sq5l69y98l2zyj0iq9s6rj1rnqrmvncif61smma8fd7"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/rocky/emacs-load-relative")
     (synopsis "Emacs Lisp relative file loading related functions")
