@@ -502,8 +502,8 @@ by TARBALL?"
        (source-dir->dependencies dir)))
     (source-dir->dependencies source)))
 
-(define (needs-knitr? meta)
-  (member "knitr" (listify meta "VignetteBuilder")))
+(define (vignette-builders meta)
+  (map cran-guix-name (listify meta "VignetteBuilder")))
 
 (define* (description->package repository meta #:key (license-prefix identity)
                                (download-source download))
@@ -617,8 +617,7 @@ from the alist META, which was derived from the R package's DESCRIPTION file."
               ,@(maybe-inputs (map cran-guix-name propagate) 'propagated-inputs)
               ,@(maybe-inputs
                  `(,@source-native-inputs
-                   ,@(if (needs-knitr? meta)
-                         '("r-knitr") '()))
+                   ,@(vignette-builders meta))
                  'native-inputs)
               (home-page ,(if (string-null? home-page)
                               (string-append base-url name)
