@@ -16976,14 +16976,14 @@ the center of the screen and not at the bottom.")
 (define-public emacs-posframe
   (package
     (name "emacs-posframe")
-    (version "1.3.2")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/"
                            "posframe-" version ".tar"))
        (sha256
-        (base32 "05qkwb3ys05chn0maz7q19kp539m7p5acb8di4rni4vjjlkpx2bj"))))
+        (base32 "07hgbhvhwj6zfhlg6znavwrj3gp7cv4c758chrhkvk33a3slhw6b"))))
     (build-system emacs-build-system)
     ;; emacs-minimal does not include the function font-info.
     (arguments
