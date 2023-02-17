@@ -21556,30 +21556,29 @@ interface for editing @code{ggplot2} theme elements.")
 (define-public r-flexdashboard
   (package
     (name "r-flexdashboard")
-    (version "0.6.0")
+    (version "0.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexdashboard" version))
        (sha256
         (base32
-         "0bvw2ca6xxscia4hvq505qvjf6zkgpsqv86f1s78aknzwr9jsikm"))
+         "1lxlai4s3qdg2w36xx61idn67zidz9n5mmbz72i0zvcpxr25v5xl"))
        (modules '((guix build utils)))
+       ;; Delete bundled minified JavaScript files
        (snippet
-        '(begin
-           ;; Delete bundled minified JavaScript files
-           (delete-file "inst/htmlwidgets/lib/raphael/raphael-2.1.4.min.js")
-           (delete-file "inst/www/sly/sly.min.js")
-           (delete-file "inst/www/stickytableheaders/jquery.stickytableheaders.min.js")
-           (delete-file "inst/www/prism/prism.js")
-           (delete-file "inst/www/featherlight/featherlight.min.js")))))
+        '(for-each delete-file
+                   '("inst/htmlwidgets/lib/raphael/raphael-2.1.4.min.js"
+                     "inst/www/featherlight/featherlight.min.js"
+                     "inst/www/prism/prism.js"
+                     "inst/www/sly/sly.min.js"
+                     "inst/www/stickytableheaders/jquery.stickytableheaders.min.js")))))
     (build-system r-build-system)
     (arguments
      `(#:modules ((guix build utils)
                   (guix build r-build-system)
                   (srfi srfi-1)
                   (srfi srfi-26)
-                  (ice-9 popen)
                   (ice-9 textual-ports))
        #:phases
        (modify-phases %standard-phases
@@ -21613,12 +21612,10 @@ interface for editing @code{ggplot2} theme elements.")
                          "www/featherlight/featherlight.min.js"))))
                  (lambda (sources targets)
                    (for-each (lambda (source target)
-                               (format #t "Processing ~a --> ~a~%"
+                               (format #true "Processing ~a --> ~a~%"
                                        source target)
-                               (let ((minified (open-pipe* OPEN_READ "uglifyjs" source)))
-                                 (call-with-output-file target
-                                   (lambda (port)
-                                     (dump-port minified port)))))
+                               (invoke "esbuild" source "--minify"
+                                       (string-append "--outfile=" target)))
                              sources targets)))))))))
     (propagated-inputs
      (list r-bslib
@@ -21631,7 +21628,7 @@ interface for editing @code{ggplot2} theme elements.")
            r-scales
            r-shiny))
     (native-inputs
-     `(("uglifyjs" ,node-uglify-js)
+     `(("uglifyjs" ,esbuild)
        ("js-raphael"
         ,(origin
            (method url-fetch)
