@@ -27043,6 +27043,42 @@ probabilistic distributions and related functions")
 (define-public ecl-distributions
   (sbcl-package->ecl-package sbcl-distributions))
 
+(define-public sbcl-statistics
+  (let ((commit "94fc87a2bf81355a40ce3730b4ed77710ecfabaf")
+        (revision "0"))
+    (package
+      (name "sbcl-statistics")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/statistics")
+               (commit commit)))
+         (file-name (git-file-name "cl-statistics" version))
+         (sha256
+          (base32 "0is69w6iwh4hyzc5ndgb3i2331f677sa7kw5wy8pmx6hawbkgyir"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-clunit2))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-anaphora
+             sbcl-conduit-packages
+             sbcl-distributions
+             sbcl-let-plus
+             sbcl-numerical-utilities))
+      (home-page "https://lisp-stat.dev/docs/")
+      (synopsis "Statistical functions in Common Lisp")
+      (description "This package provides a consolidation of Common Lisp
+statistics libraries.")
+      (license (list license:expat license:ms-pl)))))
+
+(define-public cl-statistics
+  (sbcl-package->cl-source-package sbcl-statistics))
+
+(define-public ecl-statistics
+  (sbcl-package->ecl-package sbcl-statistics))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
