@@ -447,6 +447,13 @@ empty list when the FIELD cannot be found."
     (() #f)
     (_ #t)))
 
+(define (directory-needs-esbuild? dir)
+  "Check if the directory DIR contains minified JavaScript files and thus
+needs a JavaScript compiler."
+  (match (find-files dir "\\.min.js$")
+    (() #f)
+    (_ #t)))
+
 (define (files-match-pattern? directory regexp . file-patterns)
   "Return #T if any of the files matching FILE-PATTERNS in the DIRECTORY match
 the given REGEXP."
@@ -479,6 +486,7 @@ of package names for INPUTS and another list of names of NATIVE-INPUTS."
   (values
    (if (directory-needs-zlib? dir) '("zlib") '())
    (append
+       (if (directory-needs-esbuild? dir) '("esbuild") '())
        (if (directory-needs-pkg-config? dir) '("pkg-config") '())
        (if (directory-needs-fortran? dir) '("gfortran") '()))))
 
