@@ -211,6 +211,7 @@ call THUNK."
               ((guile)
                (save-module-excursion
                 (lambda ()
+                  (current-profile) ;populate (%package-module-path); see above
                   (set-user-module)
                   ;; Do not exit repl on SIGINT.
                   ((@@ (ice-9 top-repl) call-with-sigint)
