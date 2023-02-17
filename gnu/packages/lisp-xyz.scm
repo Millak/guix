@@ -27079,6 +27079,49 @@ statistics libraries.")
 (define-public ecl-statistics
   (sbcl-package->ecl-package sbcl-statistics))
 
+(define-public sbcl-data-frame
+  (let ((commit "6f02e58312654ddf19d686f234dcf699fc4cd0f5")
+        (revision "0"))
+    (package
+      (name "sbcl-data-frame")
+      (version (git-version "1.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/Lisp-Stat/data-frame")
+               (commit commit)))
+         (file-name (git-file-name "cl-data-frame" version))
+         (sha256
+          (base32 "0bs1jh66bml25bj1lxdzz8cjhj3g060yyd5ggqsnsr4l2j0zyszv"))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs (list sbcl-clunit2))
+      (inputs
+       (list sbcl-alexandria
+             sbcl-alexandria-plus
+             sbcl-anaphora
+             sbcl-array-operations
+             sbcl-duologue
+             sbcl-let-plus
+             sbcl-numerical-utilities
+             sbcl-select
+             sbcl-serapeum
+             sbcl-statistics))
+      (home-page "https://lisp-stat.dev/docs/manuals/data-frame/")
+      (synopsis "Data frames for Common Lisp")
+      (description "This package provides data frames for Common Lisp, a
+two-dimensional array-like structure in which each column contains values
+of one variable and each row contains one set of values from each column.")
+      (license license:ms-pl))))
+
+(define-public cl-data-frame
+  (sbcl-package->cl-source-package sbcl-data-frame))
+
+;; The data-frame system depends on the sb-cltl2 system, which is only
+;; available with SBCL.
+;; (define-public ecl-data-frame
+;;   (sbcl-package->ecl-package sbcl-data-frame))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
