@@ -37,6 +37,7 @@
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
 ;;; Copyright © 2022-2024 Navid Afkhami <navid.afkhami@mdc-berlin.de>
 ;;; Copyright © 2022 Greg Hogan <code@greghogan.com>
+;;; Copyright © 2023 Kyle Andrews <kyle@posteo.net>
 ;;; Copyright © 2024 Marco Baggio <guix@mawumag.com>
 ;;; Copyright © 2024, 2025 Spencer King <spencer.king@geneoscopy.com>
 ;;; Copyright © 2024-2025 Tor-björn Claesson <tclaesson@gmail.com>
@@ -85,6 +86,7 @@
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages gnome)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages haskell-xyz)
   #:use-module (gnu packages icu4c)
@@ -5005,6 +5007,33 @@ that contains the data and references to JavaScript functions hosted by
 Google.  @code{googleVis} makes use of the internal R HTTP server to display
 the output locally.")
     (license license:gpl2+)))
+
+(define-public r-gpg
+  (package
+    (name "r-gpg")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gpg" version))
+              (sha256
+               (base32
+                "04hnmxvnxligd93vzvp38wpxpyxvqz5qd5084awklim846v3dg03"))))
+    (properties
+     '((upstream-name . "gpg")
+       (updater-extra-inputs . ("gpgme"))))
+    (build-system r-build-system)
+    (inputs (list gpgme))
+    (propagated-inputs (list r-askpass r-curl))
+    (native-inputs (list pkg-config r-knitr))
+    (home-page "https://github.com/jeroen/gpg")
+    (synopsis "GNU Privacy Guard for R")
+    (description
+     "This package provides bindings to GnuPG for working with
+OpenGPG (RFC4880) cryptographic methods.  It includes utilities for public key
+encryption, creating and verifying digital signatures, and managing your local
+keyring.  Some functionality depends on the version of GnuPG that is installed
+on the system.")
+    (license license:expat)))
 
 (define-public r-gplots
   (package
