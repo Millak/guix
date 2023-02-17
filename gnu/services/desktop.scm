@@ -73,6 +73,7 @@
   #:use-module (guix utils)
   #:use-module (guix gexp)
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-26)
   #:use-module (ice-9 format)
   #:use-module (ice-9 match)
   #:export (<upower-configuration>
@@ -1347,31 +1348,36 @@ rules.")
 (define-record-type* <gnome-desktop-configuration> gnome-desktop-configuration
   make-gnome-desktop-configuration
   gnome-desktop-configuration?
-  (gnome gnome-package (default gnome)))
+  (gnome gnome-desktop-configuration-gnome
+         (default gnome)))
 
-(define (gnome-packages config packages)
-  "Return the list of GNOME dependencies from CONFIG which names are part of
-the given PACKAGES list."
-  (let ((gnome (gnome-package config)))
-    (map (lambda (name)
-           ((package-direct-input-selector name) gnome))
-         packages)))
+(define (gnome-package gnome name)
+  "Return the package NAME among the GNOME package inputs.  NAME can be a
+single name or a tree-like, e.g. @code{'(\"gnome-boxes\" \"spice-gtk\")} to
+denote the spice-gtk input of the gnome-boxes input of the GNOME meta-package."
+  ((package-direct-input-selector name) gnome))
+
+(define (gnome-packages gnome names)
+  "Return the package NAMES among the GNOME package inputs."
+  (map (cut gnome-package gnome <>) names))
 
 (define (gnome-udev-rules config)
   "Return the list of GNOME dependencies that provide udev rules."
-  (gnome-packages config '("gnome-settings-daemon")))
+  (let ((gnome (gnome-desktop-configuration-gnome config)))
+    (gnome-packages gnome '("gnome-settings-daemon"))))
 
 (define (gnome-polkit-settings config)
   "Return the list of GNOME dependencies that provide polkit actions and
 rules."
-  (gnome-packages config
-                  '("gnome-settings-daemon"
-                    "gnome-control-center"
-                    "gnome-system-monitor"
-                    "gvfs"
-                    ;; spice-gtk provides polkit actions for USB redirection
-                    ;; in GNOME Boxes.
-                    ("gnome-boxes" "spice-gtk"))))
+  (let ((gnome (gnome-desktop-configuration-gnome config)))
+    (gnome-packages gnome
+                    '("gnome-settings-daemon"
+                      "gnome-control-center"
+                      "gnome-system-monitor"
+                      "gvfs"
+                      ;; spice-gtk provides polkit actions for USB redirection
+                      ;; in GNOME Boxes.
+                      ("gnome-boxes" "spice-gtk")))))
 
 (define gnome-desktop-service-type
   (service-type
@@ -1382,8 +1388,7 @@ rules."
           (service-extension polkit-service-type
                              gnome-polkit-settings)
           (service-extension profile-service-type
-                             (compose list
-                                      gnome-package))))
+                             (compose list gnome-desktop-configuration-gnome))))
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 
