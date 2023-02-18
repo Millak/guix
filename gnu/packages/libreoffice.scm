@@ -934,6 +934,18 @@ commonly called @code{ftoa} or @code{dtoa}.")
             (lambda _
               (mkdir-p "external/tarballs")
               (copy-file #$dtoa "external/tarballs/dtoa-20180411.tgz")))
+          (add-after 'unpack 'augment-LD_LIBRARY_PATH
+            ;; Without this, the nsscrypto_initialize procedure in
+            ;; nssinitializer.cxx silently fails to load libnssckbi.so, which
+            ;; causes password encryption to also silently fail (see:
+            ;; https://bugs.documentfoundation.org/show_bug.cgi?id=153714).
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "desktop/scripts/soffice.sh"
+                (("^exec .*oosplash.*" anchor)
+                 (string-append "export LD_LIBRARY_PATH="
+                                (search-input-directory inputs "lib/nss")
+                                "${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}\n"
+                                anchor)))))
           (add-before 'configure 'prepare-src
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute*
