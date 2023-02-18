@@ -1848,14 +1848,14 @@ database.")
 (define-public r-dbplyr
   (package
     (name "r-dbplyr")
-    (version "2.2.1")
+    (version "2.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "dbplyr" version))
        (sha256
         (base32
-         "1xqdrfpl5l94cw717d90xx1hs5aswl6s38wr7qximzk8q12gdwx6"))))
+         "1zqz2ml4pgi93miz5flxmm7cjlh4w33hi45phyvv89i9gxp4a387"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-assertthat
