@@ -539,21 +539,15 @@ should only be used as part of the Guix cups-pk-helper service.")
                      "dat2drvdir = $(pkglibexecdir)\n")
                     (("^locatedriverdir =.*")
                      "locatedriverdir = $(pkglibexecdir)\n"))))))
-    (build-system gnu-build-system)
     (outputs (list "out" "ppd"))
-    (home-page "https://developers.hp.com/hp-linux-imaging-and-printing")
-    (synopsis "HP printer drivers")
-    (description
-     "Hewlett-Packard printer drivers and PostScript Printer Descriptions
-(@dfn{PPD}s).")
-
-    ;; The 'COPYING' file lists directories where each of these 3 licenses
-    ;; applies.
-    (license (list license:gpl2+ license:bsd-3 license:expat))
-
-    ;; TODO install apparmor profile files eventually.
+    (build-system gnu-build-system)
     (arguments
-     `(#:configure-flags
+     `(#:imported-modules ((guix build python-build-system)
+                           ,@%gnu-build-system-modules)
+       #:modules ((guix build gnu-build-system)
+                  (guix build utils)
+                  ((guix build python-build-system) #:prefix python:))
+       #:configure-flags
        `("--disable-imageProcessor-build"
          "--disable-network-build"
          ,(string-append "--prefix=" (assoc-ref %outputs "out"))
@@ -576,13 +570,6 @@ should only be used as part of the Guix cups-pk-helper service.")
          ,(string-append "--with-systraydir="
                          (assoc-ref %outputs "out") "/etc/xdg")
          "--enable-qt5" "--disable-qt4")
-
-       #:imported-modules ((guix build python-build-system)
-                           ,@%gnu-build-system-modules)
-       #:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  ((guix build python-build-system) #:prefix python:))
-
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'fix-hard-coded-file-names
@@ -676,12 +663,12 @@ should only be used as part of the Guix cups-pk-helper service.")
                                (chmod file #o755)))
                            (find-files "." (lambda (file stat)
                                              (eq? 'symlink (stat:type stat))))))))))))
-
     ;; Note that the error messages printed by the tools in the case of
     ;; missing dependencies are often downright misleading.
     ;; TODO: hp-toolbox still fails to start with:
     ;;   from dbus.mainloop.pyqt5 import DBusQtMainLoop
     ;;   ModuleNotFoundError: No module named 'dbus.mainloop.pyqt5'
+    (native-inputs (list perl pkg-config))
     (inputs
      `(("cups-minimal" ,cups-minimal)
        ("dbus" ,dbus)
@@ -694,8 +681,14 @@ should only be used as part of the Guix cups-pk-helper service.")
        ("python-wrapper" ,python-wrapper)
        ("sane-backends" ,sane-backends-minimal)
        ("zlib" ,zlib)))
-    (native-inputs
-     (list perl pkg-config))))
+    (home-page "https://developers.hp.com/hp-linux-imaging-and-printing")
+    (synopsis "HP printer drivers")
+    (description
+     "Hewlett-Packard printer drivers and PostScript Printer Descriptions
+(@dfn{PPD}s).")
+    ;; The 'COPYING' file lists directories where each of these 3 licenses
+    ;; applies.
+    (license (list license:gpl2+ license:bsd-3 license:expat))))
 
 (define-public hplip-minimal
   (package/inherit hplip
