@@ -8214,14 +8214,14 @@ features:
 (define-public r-network
   (package
     (name "r-network")
-    (version "1.18.0")
+    (version "1.18.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "network" version))
        (sha256
         (base32
-         "0nyf8i94lnqm4gfjz1szbwvl4c438xg3rjdkqr18fz68fh0v3x2r"))))
+         "0hyj7h0z6mvf0jq0fb5z9nny4c71pwqjl7w0z864in3754sp03f8"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magrittr r-statnet-common r-tibble))
