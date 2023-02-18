@@ -28223,14 +28223,14 @@ interesting features. iheatmapr uses the plotly library for interactivity.")
 (define-public r-packrat
   (package
     (name "r-packrat")
-    (version "0.8.1")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "packrat" version))
        (sha256
         (base32
-         "1ni3xn51xifdb2bya5z54jn4nxgss6f23b3hn126j2kaz80h7ns5"))))
+         "0l3rz9p62k7ymlin88hn6ydhdaawg6jb1jii7mdyss0agxzgbz7m"))))
     (properties `((upstream-name . "packrat")))
     (build-system r-build-system)
     (home-page "https://github.com/rstudio/packrat/")
