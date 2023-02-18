@@ -33389,14 +33389,14 @@ test cases.")
 (define-public r-highlight
   (package
     (name "r-highlight")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "highlight" version))
        (sha256
         (base32
-         "1shar4y07wyixg0ichdrn2xhgwkl3mv2pxkalqzisc69w605b3hf"))))
+         "06sirfmkdl355rfr5bb475829v7zx1spkz82vi31vl55jzijq54m"))))
     (properties `((upstream-name . "highlight")))
     (build-system r-build-system)
     (home-page "https://github.com/hadley/highlight")
