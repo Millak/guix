@@ -9428,14 +9428,14 @@ local smoothers and many more.")
 (define-public r-radiant-data
   (package
     (name "r-radiant-data")
-    (version "1.4.5")
+    (version "1.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "radiant.data" version))
        (sha256
         (base32
-         "1vas0bkpngwxybmpdcaimha2r008prnli4b3lgjbjfkzpgm966d1"))
+         "1q6v7pkqk8rbxrmbnyj9drqb0p2rk8v4d3fxw1gqmqhzd6qp4yab"))
        (modules '((guix build utils)))
        (snippet
         '(begin
