@@ -41,6 +41,12 @@
             alsa-service-type
 
             pulseaudio-configuration
+            pulseaudio-configuration?
+            pulseaudio-configuration-client-conf
+            pulseaudio-configuration-daemon-conf
+            pulseaudio-configuration-script-file
+            pulseaudio-configuration-extra-script-files
+            pulseaudio-configuration-system-script-file
             pulseaudio-service-type
 
             ladspa-configuration
