@@ -30961,14 +30961,14 @@ censored data.")
 (define-public r-flexsurv
   (package
     (name "r-flexsurv")
-    (version "2.2.1")
+    (version "2.2.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "flexsurv" version))
        (sha256
         (base32
-         "1xqsihvrb8b5mzkr3mhg0ydm8kkcw1k0kgp6ndyavw8yahl059as"))))
+         "1qshsii5fqpx4l113vr4lx9ijxhcr8494lx3ixjdbzy58077adb6"))))
     (properties `((upstream-name . "flexsurv")))
     (build-system r-build-system)
     (propagated-inputs
