@@ -5576,6 +5576,42 @@ selection, as well as methods for retrieving coordinates, for subsetting,
 print, summary, etc.")
     (license license:gpl2+)))
 
+(define-public r-lambertw
+  (package
+    (name "r-lambertw")
+    (version "0.6.7-1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "LambertW" version))
+              (sha256
+               (base32
+                "0cdrq2nrvji8l5blswkffymm7cbjk5jzzx16js2a516cm3gjwxk4"))))
+    (properties `((upstream-name . "LambertW")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-ggplot2
+                             r-lamw
+                             r-mass
+                             r-rcolorbrewer
+                             r-rcpp
+                             r-reshape2))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=LambertW")
+    (synopsis
+     "Probabilistic models to analyze and Gaussianize heavy-tailed, skewed data")
+    (description
+     "Lambert W x F distributions are a generalized framework to analyze skewed,
+heavy-tailed data.  It is based on an input/output system, where the output
+random variable (RV) Y is a non-linearly transformed version of an input RV X
+~ F with similar properties as X, but slightly skewed (heavy-tailed).  The
+transformed RV Y has a Lambert W x F distribution.  This package contains
+functions to model and analyze skewed, heavy-tailed data the Lambert Way:
+simulate random samples, estimate parameters, compute quantiles, and plot/
+print results nicely.  The most useful function is @code{Gaussianize}, which
+works similarly to @code{scale}, but actually makes the data Gaussian.  A
+do-it-yourself toolkit allows users to define their own Lambert W x
+@code{MyFavoriteDistribution} and use it in their analysis right away.")
+    (license license:gpl2+)))
+
 (define-public r-lamw
   (package
     (name "r-lamw")
