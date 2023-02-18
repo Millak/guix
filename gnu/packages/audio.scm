@@ -4145,7 +4145,7 @@ interface.")
 (define-public qsynth
   (package
     (name "qsynth")
-    (version "0.5.7")
+    (version "0.9.9")
     (source
      (origin
        (method url-fetch)
@@ -4155,14 +4155,14 @@ interface.")
               (string-append "mirror://sourceforge/qsynth/qsynth (attic)"
                              "/qsynth-" version ".tar.gz")))
        (sha256
-        (base32 "18im4w8agj60nkppwbkxqnhpp13z5li3w30kklv4lgs20rvgbvl6"))))
-    (build-system gnu-build-system)
+        (base32 "1cjg25nva5ivahr0qqlvf6ybnpcx9jgrxbp4vgwkk64b4k9wnd4n"))))
+    (build-system cmake-build-system)
     (arguments
      `(#:tests? #f))                    ; no "check" phase
     (native-inputs
-     (list qttools-5 pkg-config))
+     (list qttools pkg-config))
     (inputs
-     (list fluidsynth qtbase-5 qtx11extras))
+     (list fluidsynth qtbase qtsvg qtwayland))
     (home-page "https://qsynth.sourceforge.io")
     (synopsis "Graphical user interface for FluidSynth")
     (description
