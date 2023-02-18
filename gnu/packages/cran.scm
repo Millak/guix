@@ -11050,14 +11050,14 @@ steps and provides ggplot2-based elegant data visualization.")
 (define-public r-fansi
   (package
     (name "r-fansi")
-    (version "1.0.3")
+    (version "1.0.4")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fansi" version))
        (sha256
         (base32
-         "0sn0kflgcn2qrrv646pzqylm02cx8l5ws473ppmvla4xihyvi9w6"))))
+         "17y4m4yy8d6j6rlql2bpigcyn6yfv2g2aaaj96xjp4j0di722qri"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr)) ; for vignettes
