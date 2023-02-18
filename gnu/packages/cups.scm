@@ -662,17 +662,17 @@ should only be used as part of the Guix cups-pk-helper service.")
     ;;   ModuleNotFoundError: No module named 'dbus.mainloop.pyqt5'
     (native-inputs (list perl pkg-config))
     (inputs
-     `(("cups-minimal" ,cups-minimal)
-       ("dbus" ,dbus)
-       ("libjpeg" ,libjpeg-turbo)
-       ("libusb" ,libusb)
-       ("python" ,python)
-       ("python-dbus" ,python-dbus)
-       ("python-pygobject" ,python-pygobject)
-       ("python-pyqt" ,python-pyqt)
-       ("python-wrapper" ,python-wrapper)
-       ("sane-backends" ,sane-backends-minimal)
-       ("zlib" ,zlib)))
+     (list cups-minimal
+           dbus
+           libjpeg-turbo
+           libusb
+           python
+           python-dbus
+           python-pygobject
+           python-pyqt
+           python-wrapper
+           sane-backends-minimal
+           zlib))
     (home-page "https://developers.hp.com/hp-linux-imaging-and-printing")
     (synopsis "HP printer drivers")
     (description
