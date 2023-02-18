@@ -54,6 +54,8 @@
             pulseaudio-service-type
 
             ladspa-configuration
+            ladspa-configuration?
+            ladspa-configuration-plugins
             ladspa-service-type))
 
 ;;; Commentary:
@@ -241,7 +243,7 @@ computed-file object~%") file))))
 (define-record-type* <ladspa-configuration>
   ladspa-configuration make-ladspa-configuration
   ladspa-configuration?
-  (plugins ladspa-plugins (default '())))
+  (plugins ladspa-configuration-plugins (default '())))
 
 (define (ladspa-environment config)
   ;; Define this variable in the global environment such that
@@ -249,7 +251,7 @@ computed-file object~%") file))))
   `(("LADSPA_PATH" .
      (string-join
       ',(map (lambda (package) (file-append package "/lib/ladspa"))
-             (ladspa-plugins config))
+             (ladspa-configuration-plugins config))
       ":"))))
 
 (define ladspa-service-type
