@@ -70084,7 +70084,10 @@ configuration file and/or environment variables.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "17m1p753qk02r25afg31dxym4rpy7kpr0z8nwl5f1jzhyrqsmlj1"))))
+                "17m1p753qk02r25afg31dxym4rpy7kpr0z8nwl5f1jzhyrqsmlj1"))
+              (snippet
+               '(begin
+                  (delete-file "lib/libwindows.a")))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t))
