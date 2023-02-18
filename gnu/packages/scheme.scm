@@ -544,24 +544,24 @@ in Scheme, and a runtime library which allows Pre-Scheme code to run as Scheme."
 (define-public gambit-c
   (package
     (name "gambit-c")
-    (version "4.9.3")
+    (version "4.9.4")
     (source
      (origin
        (method url-fetch)
        (uri (string-append
-             "http://www.iro.umontreal.ca/~gambit/download/gambit/v"
-             (version-major+minor version) "/source/gambit-v"
+             "http://www.gambitscheme.org/"
+             version "/gambit-v"
              (string-map (lambda (c) (if (char=? c #\.) #\_ c)) version)
              ".tgz"))
        (sha256
-        (base32 "1p6172vhcrlpjgia6hsks1w4fl8rdyjf9xjh14wxfkv7dnx8a5hk"))))
+        (base32 "025x8zi9176qwww4d3pk8aj9ab1fpqyxqz26q3v394k6bfk49yqr"))))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags
        ;; According to the ./configure script, this makes the build slower and
        ;; use >= 1 GB memory, but makes Gambit much faster.
        '("--enable-single-host")))
-    (home-page "http://dynamo.iro.umontreal.ca/wiki/index.php/Main_Page")
+    (home-page "http://www.gambitscheme.org/")
     (synopsis "Efficient Scheme interpreter and compiler")
     (description
      "Gambit consists of two main programs: gsi, the Gambit Scheme
