@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2017–2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <mbakke@fastmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -695,6 +695,33 @@ should only be used as part of the Guix cups-pk-helper service.")
        ("zlib" ,zlib)))
     (native-inputs
      (list perl pkg-config))))
+
+;;; TODO: Integrate in base hplip package on core-updates.
+(define-public hplip-next
+  (package
+    (inherit hplip)
+    (name "hplip")
+    (version "3.21.10")
+    (source (origin
+              (inherit (package-source hplip))
+              (uri (string-append "mirror://sourceforge/hplip/hplip/" version
+                                  "/hplip-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0q3adcp8iygravp4bq4gw14jk20c5rhnawj1333qyw8yvlghw8yy"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments hplip)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'unpack 'fix-more-hard-coded-file-names
+              (lambda* (#:key outputs #:allow-other-keys)
+                ;; Set the encoding to ISO-8859-1, as not all the files are
+                ;; readable as UTF-8.
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* (find-files ".")
+                    (("/etc/hp/hplip.conf")
+                     (string-append (assoc-ref outputs "out")
+                                    "/etc/hp/hplip.conf"))))))))))))
 
 (define-public hplip-minimal
   (package/inherit hplip
