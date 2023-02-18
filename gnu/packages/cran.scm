@@ -29661,14 +29661,14 @@ pies on a map.")
 (define-public r-scrypt
   (package
     (name "r-scrypt")
-    (version "0.1.4")
+    (version "0.1.6")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "scrypt" version))
        (sha256
         (base32
-         "12q9d4m7flbvlgssvjh1ga4jswkmqjfshf6pna6qk6v087gmzdsj"))))
+         "11ncpv01a5lgbxl46g07a43ncjp7jdhrrciasxvxc1d56cz26jh1"))))
     (properties `((upstream-name . "scrypt")))
     (build-system r-build-system)
     (propagated-inputs
