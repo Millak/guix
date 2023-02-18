@@ -38,6 +38,10 @@
   #:use-module (ice-9 match)
   #:use-module (srfi srfi-1)
   #:export (alsa-configuration
+            alsa-configuration?
+            alsa-configuration-alsa-plugins
+            alsa-configuration-pulseaudio?
+            alsa-configuration-extra-options
             alsa-service-type
 
             pulseaudio-configuration
