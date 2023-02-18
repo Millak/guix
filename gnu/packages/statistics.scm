@@ -760,14 +760,14 @@ classification, regression and survival trees.")
 (define-public r-spatial
   (package
     (name "r-spatial")
-    (version "7.3-15")
+    (version "7.3-16")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "spatial" version))
        (sha256
         (base32
-         "1vwc7ingskdj1k4nq418x9yl3cw699pckb9xh5a1yp3g9plknqg5"))))
+         "01p42q72mb8b4fdm75723nj64r3l0d8px1l9fyklihay9jk6arg4"))))
     (build-system r-build-system)
     (home-page "http://www.stats.ox.ac.uk/pub/MASS4/")
     (synopsis "Functions for kriging and point pattern analysis")
