@@ -1524,13 +1524,13 @@ in good performances with large files.")
 (define-public r-ggalluvial
   (package
    (name "r-ggalluvial")
-   (version "0.12.3")
+   (version "0.12.4")
    (source (origin
             (method url-fetch)
             (uri (cran-uri "ggalluvial" version))
             (sha256
              (base32
-              "0mkan9gxg3yxjism22yxbhvlh2lh7wpbrqpb355za790prcmjbh3"))))
+              "0x2njwgsjrcl4g9md32a2l5b7cvisj5g93jjzm7kr3g7l9gwbzz3"))))
    (properties `((upstream-name . "ggalluvial")))
    (build-system r-build-system)
    (propagated-inputs
