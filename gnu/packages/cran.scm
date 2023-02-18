@@ -28598,14 +28598,14 @@ Additional storage back-ends can be added easily.")
 (define-public r-zyp
   (package
     (name "r-zyp")
-    (version "0.10-1.1")
+    (version "0.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "zyp" version))
        (sha256
         (base32
-         "03cxpkfbhrx1fy8l0dl9a13ghz93cqq6877wa8rig09ksdiivaw9"))))
+         "0jmddxg88qb9f38ywdy4min7w5qadnkhqxd46b0j0gjsq95vw85q"))))
     (properties `((upstream-name . "zyp")))
     (build-system r-build-system)
     (propagated-inputs
