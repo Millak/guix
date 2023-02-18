@@ -30812,21 +30812,24 @@ not digit characters.")
 (define-public r-visdat
   (package
     (name "r-visdat")
-    (version "0.5.3")
+    (version "0.6.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "visdat" version))
               (sha256
                (base32
-                "1ikqp29nncbw1xlwyb9dqqgcdk9q0bs3wxhnhnjpb11vcjv7cz2j"))))
+                "1675az0lfvmwzh9c3fknnk0n2kz1w7hy0kdj3a37n5j1knxwsjhh"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
+           r-forcats
            r-ggplot2
            r-glue
            r-magrittr
            r-purrr
            r-readr
+           r-scales
            r-tibble
            r-tidyr))
     (native-inputs
