@@ -34431,7 +34431,7 @@ and preferred services can easily be configured.")
 (define-public emacs-vertico
   (package
     (name "emacs-vertico")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -34440,13 +34440,13 @@ and preferred services can easily be configured.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0g2zy70gks24g7i4qj1ijx57g016svbymb8l493j81c4bhc88mjl"))))
+        (base32 "0djc1im6caa67aq0bi8d607ycb1lq4lsirfqsx8kqbfl46852f60"))))
     (build-system emacs-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         ;; Move the extensions source files to the top level, which is included in
-         ;; the EMACSLOADPATH.
+         ;; Move the extensions source files to the top level, which is
+         ;; included in the EMACSLOADPATH.
          (add-after 'unpack 'move-source-files
            (lambda _
              (let ((el-files (find-files "./extensions" ".*\\.el$")))
@@ -34455,6 +34455,8 @@ and preferred services can easily be configured.")
                          el-files)))))))
     (native-inputs
      (list texinfo))
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/minad/vertico")
     (synopsis "Vertical interactive completion")
     (description
