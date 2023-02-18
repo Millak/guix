@@ -6502,14 +6502,14 @@ Optimization problems by using the simplex algorithm.")
 (define-public r-geometry
   (package
     (name "r-geometry")
-    (version "0.4.6.1")
+    (version "0.4.7")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "geometry" version))
        (sha256
         (base32
-         "0wplszaxi6phxffp3zww5alwnfbh9521qi43h65w057lrm1pmj2j"))))
+         "0fq1sbjlc02idfsnvily7hgi6zgjvrjh7c57wz166k8vyl2l484n"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-magic r-linprog r-lpsolve r-rcpp r-rcppprogress))
