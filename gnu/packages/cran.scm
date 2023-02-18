@@ -15773,13 +15773,13 @@ This package is part of the Rigorous Analytics bundle.")
 (define-public r-mritc
   (package
     (name "r-mritc")
-    (version "0.5-2")
+    (version "0.5-3")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "mritc" version))
               (sha256
                (base32
-                "07b1b2k1ka43ikj2mhwnazw3ig7w10bf759fimxpksvk5k6wanx2"))))
+                "1bpnm2qzq67dgjxsa4wxn51f4a4cxal5r6abgs3m7p5a9a16jmjp"))))
     (properties `((upstream-name . "mritc")))
     (build-system r-build-system)
     (propagated-inputs (list r-lattice r-misc3d r-oro-nifti))
