@@ -56,6 +56,7 @@
 ;;; Copyright © 2022, 2023 Matthew James Kraai <kraai@ftbfs.org>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
 ;;; Copyright © 2023 Juliana Sims <jtsims@protonmail.com>
+;;; Copyright © 2023 Lu Hui <luhux76@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -3740,7 +3741,7 @@ in order to be able to find it.
 (define-public xfel
   (package
     (name "xfel")
-    (version "1.2.4")
+    (version "1.2.9")
     (source
      (origin
        (method git-fetch)
@@ -3748,7 +3749,7 @@ in order to be able to find it.
               (url "https://github.com/xboot/xfel.git")
               (commit (string-append "v" version))))
        (sha256
-         (base32 "0r4j63vh6279fj1yh71h08d1av3nc0majlad5yh6admsxiig101m"))
+         (base32 "0gs37w5zjfmyadm49hdalq6vr6gidc683agz3shncgj93x2hxx02"))
        (file-name (git-file-name name version))))
     (native-inputs
      (list pkg-config))
@@ -3766,12 +3767,14 @@ in order to be able to find it.
                 (("/usr/local") out)
                 (("/usr") out)
                 (("/etc/udev/rules.d")
-                 (string-append out "/lib/udev/rules.d"))))))
+                 (string-append out "/lib/udev/rules.d"))
+                (("udevadm control --reload") ; next version will remove this
+                  "")))))
          (delete 'configure))))
     (home-page "https://github.com/xboot/xfel")
-    (synopsis "Remote debugging tool for Allwinner D1 computers")
-    (description "This package contains a debugging tool for Allwinner D1
-devices (connects via USB OTG).")
+    (synopsis "Remote debugging tool for Allwinner devices")
+    (description "This package contains a debugging tool for Allwinner devices
+(connects via USB OTG).")
     (license license:expat)))
 
 (define-public sedsed
