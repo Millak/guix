@@ -10854,14 +10854,14 @@ and adds the annotation to the plot.")
 (define-public r-rstatix
   (package
     (name "r-rstatix")
-    (version "0.7.1")
+    (version "0.7.2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rstatix" version))
        (sha256
         (base32
-         "0c001w1mj8jw7gzmix90wzzb9kj45q173mzl7pmvykm77zpn61ak"))))
+         "1891a976k2qjrh1vkzfg8icxblxa978wbazg7mqq8pcw3nmzbip0"))))
     (properties `((upstream-name . "rstatix")))
     (build-system r-build-system)
     (propagated-inputs
