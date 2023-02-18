@@ -701,14 +701,14 @@ should only be used as part of the Guix cups-pk-helper service.")
   (package
     (inherit hplip)
     (name "hplip")
-    (version "3.21.10")
+    (version "3.22.10")
     (source (origin
               (inherit (package-source hplip))
               (uri (string-append "mirror://sourceforge/hplip/hplip/" version
                                   "/hplip-" version ".tar.gz"))
               (sha256
                (base32
-                "0q3adcp8iygravp4bq4gw14jk20c5rhnawj1333qyw8yvlghw8yy"))))
+                "09366v0x10l35bkda6s5ysh64qdf24givn2gxlyidr2kdcpkyg2k"))))
     (arguments
      (substitute-keyword-arguments (package-arguments hplip)
        ((#:phases phases)
