@@ -1449,7 +1449,10 @@ blacklisted.certs.pem"
 
 (define-public openjdk13
   (make-openjdk openjdk12 "13.0.13"
-                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"))
+                "0pxf4dlig61k0pg7amg4mi919hzam7nzwckry01avgq1wj8ambji"
+  (source (origin
+            (inherit (package-source base))
+            (patches '())))))
 
 (define-public openjdk14
   (make-openjdk
@@ -1457,6 +1460,8 @@ blacklisted.certs.pem"
    "07k9bsbxwyf2z2n50z96nvhsdai916mxdxcr5lm44jz7f6xrwfq6"
    (source (origin
              (inherit (package-source base))
+             (patches
+              (search-patches "openjdk-10-hotspot-stack-size.patch"))
              (snippet                   ;override snippet
               '(begin
                  ;; The m4 macro uses 'help' to search for builtins, which is
@@ -1474,8 +1479,7 @@ blacklisted.certs.pem"
              (modules '())
              (snippet #f)
              (patches
-              (append (search-patches "openjdk-15-xcursor-no-dynamic.patch")
-                      (origin-patches (package-source base))))))
+              (search-patches "openjdk-15-xcursor-no-dynamic.patch"))))
    (inputs
     (modify-inputs (package-inputs base)
       (append libxcursor)))             ;for our patch to work
@@ -1487,12 +1491,19 @@ blacklisted.certs.pem"
 
 (define-public openjdk16
   (make-openjdk openjdk15 "16.0.2"
-                "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"))
+                "0587px2qbz07g3xi4a3ya6m630p72dvkxcn0bj1813pxnwvcgigz"
+   (source (origin
+             (inherit (package-source base))
+             (patches
+              (search-patches "openjdk-10-hotspot-stack-size.patch"))))))
 
 (define-public openjdk17
   (make-openjdk
    openjdk16 "17.0.5"
    "1asnysg6kxdkrmb88y6qihdr12ljsyxv0mg6hlcs7cwxgsdlqkfs"
+   (source (origin
+             (inherit (package-source base))
+             (patches '())))
    (arguments
     (substitute-keyword-arguments (package-arguments openjdk16)
       ((#:phases phases)
