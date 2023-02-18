@@ -13299,13 +13299,13 @@ singular or ill-conditioned Jacobian.")
 (define-public r-phyclust
   (package
     (name "r-phyclust")
-    (version "0.1-32")
+    (version "0.1-33")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "phyclust" version))
               (sha256
                (base32
-                "1ga2pzksp97psqbl484fikfnr4bl3bgyys86wb3ya904xxwghy6c"))))
+                "04x4ymqnmc20pns89i4zs2yp75vchdgjszsinnpddjiv3446cy1q"))))
     (properties `((upstream-name . "phyclust")))
     (build-system r-build-system)
     (propagated-inputs (list r-ape))
