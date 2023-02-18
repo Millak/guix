@@ -1023,6 +1023,10 @@ commonly called @code{ftoa} or @code{dtoa}.")
       #~(list
          "--enable-release-build"
          "--with-vendor=GNU Guix"
+         ;; Without the SAL logging system enabled, LibreOffice is utterly
+         ;; silent.  Setting the environment variable 'SAL_INFO=+INFO' can be
+         ;; useful to debug problems.
+         "--enable-sal-log"
          ;; Avoid using all cpu cores by default
          (format #f "--with-parallelism=~d" (parallel-job-count))
          "--disable-fetch-external"     ; disable downloads
