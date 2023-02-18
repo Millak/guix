@@ -1400,14 +1400,14 @@ It is inspired by Xmonad and dwm.  Its major features include:
 (define-public cwm
   (package
     (name "cwm")
-    (version "6.7")
+    (version "7.1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://leahneukirchen.org/releases/cwm-"
                            version ".tar.gz"))
        (sha256
-        (base32 "022zld29qawd8gl700g4m24qa89il3aks397zkhh66wvzssdblzx"))))
+        (base32 "145xjwam11194w2irsvs4z0xgn0jdijxfmx67gqd1n0j8g5wan2a"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
@@ -1433,8 +1433,7 @@ It is inspired by Xmonad and dwm.  Its major features include:
                      TryExec=~@*~a/bin/cwm~@
                      Icon=~@
                      Type=Application~%"
-                           output)))
-               #t))))))
+                           output)))))))))
     (inputs
      (list libxft libxrandr libxinerama))
     (native-inputs
