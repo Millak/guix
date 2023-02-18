@@ -1553,14 +1553,14 @@ variables.")
 (define-public r-ggpp
   (package
     (name "r-ggpp")
-    (version "0.5.0")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggpp" version))
        (sha256
         (base32
-         "0zmxnzsdmwv9v77fifgiknalwif59261kslq8848x1xch8f82l77"))))
+         "0cbv09gvwrxj5k8ffh4v537cf4hx3z2zgs8yy0ssglslibfgd3ka"))))
     (properties `((upstream-name . "ggpp")))
     (build-system r-build-system)
     (propagated-inputs
