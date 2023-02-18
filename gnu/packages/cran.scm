@@ -24531,14 +24531,14 @@ facilitates insertion into pipelines, and content inspection.")
 (define-public r-rngwell
   (package
     (name "r-rngwell")
-    (version "0.10-8")
+    (version "0.10-9")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rngWELL" version))
        (sha256
         (base32
-         "0ad1mz11l27h6apil2hd7gwz5zhi9jkjrk2jnhbkd8d0wz9g0sis"))))
+         "1jyanz789ylbz9a2agqv5c674zrfqn0k7s9d5dfia63dpq8cqscr"))))
     (properties `((upstream-name . "rngWELL")))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rngWELL/")
