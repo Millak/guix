@@ -24858,6 +24858,38 @@ been tested on multi-terabyte matrices.  It allows for more than 2^32 rows or
 columns, ad allows for quick addition of extra columns to a filematrix.")
     (license license:lgpl3)))
 
+(define-public r-filesstrings
+  (package
+    (name "r-filesstrings")
+    (version "3.2.4")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "filesstrings" version))
+              (sha256
+               (base32
+                "1jl3jhkdjx5x00kllnkpvrlpsmzsvlgd6vhzdavd39zx4jzwjxw3"))))
+    (properties `((upstream-name . "filesstrings")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-checkmate
+                             r-magrittr
+                             r-purrr
+                             r-rlang
+                             r-strex
+                             r-stringi
+                             r-stringr
+                             r-withr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/rorynolan/filesstrings")
+    (synopsis "Handy file and string manipulation")
+    (description
+     "This started out as a package for file and string manipulation.  Since
+then, the @code{fs} and @code{strex} packages emerged, offering functionality
+previously given by this package.  Those packages have hence almost pushed
+filesstrings into extinction.  However, it still has a small number of unique,
+handy file manipulation functions which can be seen in the vignette.  One
+example is a function to remove spaces from all file names in a directory.")
+    (license license:gpl3)))
+
 (define-public r-acmeeqtl
   (package
     (name "r-acmeeqtl")
