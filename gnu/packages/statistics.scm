@@ -6907,16 +6907,17 @@ normal model.")
 (define-public r-naniar
   (package
     (name "r-naniar")
-    (version "0.6.1")
+    (version "1.0.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "naniar" version))
               (sha256
                (base32
-                "0l3l2x85v3srilww483kpgp4zlwixyml257b0cqly8kcpwawlinm"))))
+                "1x4ljc6yji7312g6cg1shc85jqv5kaf2zlf5q7sdmqh3wryskvf2"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-dplyr
+     (list r-cli
+           r-dplyr
            r-norm
            r-forcats
            r-ggplot2
@@ -6927,6 +6928,7 @@ normal model.")
            r-tibble
            r-tidyr
            r-upsetr
+           r-vctrs
            r-viridis
            r-visdat))
     (native-inputs
