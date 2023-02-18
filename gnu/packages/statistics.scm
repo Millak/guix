@@ -1450,13 +1450,13 @@ adapted for other output formats, such as HTML or LaTeX.")
 (define-public r-formatr
   (package
     (name "r-formatr")
-    (version "1.13")
+    (version "1.14")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "formatR" version))
               (sha256
                (base32
-                "09z5wvbhrr2s2d196cxwzvjn0qr6pf4czrfqwdzqgqrdpwrxq1xj"))))
+                "0k271w4bhlj7r9igkiyfw7d7bg30s2mn4sr4alb8f9w57wnapfjf"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
