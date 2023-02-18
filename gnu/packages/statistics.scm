@@ -6131,24 +6131,22 @@ and the corresponding decision threshold.")
 (define-public r-forcats
   (package
     (name "r-forcats")
-    (version "0.5.2")
+    (version "1.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "forcats" version))
        (sha256
         (base32
-         "0hb1m16il1n8nmhp7hx8k2xxq8bd8kp3qqs2pw7xm0iz311hm9hl"))))
+         "0ki5c84n7xm4iw4aj629l51hm84f6p5wa3bw88d1wbnr15wibfy5"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli
-           r-ellipsis
            r-glue
            r-lifecycle
            r-magrittr
            r-tibble
-           r-rlang
-           r-withr))
+           r-rlang))
     (native-inputs
      (list r-knitr))
     (home-page "https://forcats.tidyverse.org")
