@@ -35586,14 +35586,14 @@ Elasticsearch search engine, and more.")
 (define-public r-paws-machine-learning
   (package
     (name "r-paws-machine-learning")
-    (version "0.1.12")
+    (version "0.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "paws.machine.learning" version))
        (sha256
         (base32
-         "01w2y5952pk50xjbzby2pc51xrkrzjpfxbmii1b10cl2xgzfkxsa"))))
+         "0nmxb53x0vsd2g69qnxxs4hapcbg53r9b26cdkhpmj6ijj7v1hh3"))))
     (properties
      `((upstream-name . "paws.machine.learning")))
     (build-system r-build-system)
