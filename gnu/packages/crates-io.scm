@@ -70172,7 +70172,10 @@ crate.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1rsxdjp50nk38zfd1dxj12i2qmhpvxsm6scdq8v1d10ncygy3spv"))))
+                "1rsxdjp50nk38zfd1dxj12i2qmhpvxsm6scdq8v1d10ncygy3spv"))
+              (snippet
+               '(begin
+                  (delete-file "lib/libwindows.a")))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t))
@@ -70188,6 +70191,7 @@ crate.")
     (name "rust-windows-i686-gnu")
     (version "0.36.1")
     (source (origin
+              (inherit (package-source rust-windows-i686-gnu-0.42))
               (method url-fetch)
               (uri (crate-uri "windows_i686_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -70201,6 +70205,7 @@ crate.")
     (name "rust-windows-i686-gnu")
     (version "0.32.0")
     (source (origin
+              (inherit (package-source rust-windows-i686-gnu-0.36))
               (method url-fetch)
               (uri (crate-uri "windows_i686_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -70214,6 +70219,7 @@ crate.")
     (name "rust-windows-i686-gnu")
     (version "0.28.0")
     (source (origin
+              (inherit (package-source rust-windows-i686-gnu-0.32))
               (method url-fetch)
               (uri (crate-uri "windows_i686_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
