@@ -6800,17 +6800,17 @@ for certain use cases.")
 (define-public r-ggrepel
   (package
     (name "r-ggrepel")
-    (version "0.9.2")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "ggrepel" version))
        (sha256
         (base32
-         "123lh86qs7w1i3v8i1a08jxlwx4sy32bpznyclm8wlkph728hc0a"))))
+         "0p00kb1x3q0krk5g8mmwqknnjlsznqs4i7mlfq1dp17fxpia1sxr"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-ggplot2 r-rcpp r-rlang r-scales))
+     (list r-ggplot2 r-rcpp r-rlang r-scales r-withr))
     (native-inputs
      (list r-knitr)) ; for vignettes
     (home-page "https://github.com/slowkow/ggrepel")
