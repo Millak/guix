@@ -70543,7 +70543,10 @@ windows crate.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1xdnvhg8yj4fgjy0vkrahq5cbgfpcd7ak2bdv8s5lwjrazc0j07l"))))
+                "1xdnvhg8yj4fgjy0vkrahq5cbgfpcd7ak2bdv8s5lwjrazc0j07l"))
+              (snippet
+               '(begin
+                  (delete-file "lib/windows.lib")))))
     (build-system cargo-build-system)
     (arguments (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
@@ -70558,6 +70561,7 @@ windows crate.")
     (name "rust-windows-x86-64-msvc")
     (version "0.36.1")
     (source (origin
+              (inherit (package-source rust-windows-x86-64-msvc-0.42))
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -70571,6 +70575,7 @@ windows crate.")
     (name "rust-windows-x86-64-msvc")
     (version "0.32.0")
     (source (origin
+              (inherit (package-source rust-windows-x86-64-msvc-0.36))
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -70584,6 +70589,7 @@ windows crate.")
     (name "rust-windows-x86-64-msvc")
     (version "0.28.0")
     (source (origin
+              (inherit (package-source rust-windows-x86-64-msvc-0.32))
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
