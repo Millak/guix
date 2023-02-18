@@ -4303,14 +4303,14 @@ Projection code and larger maps are in separate packages (@code{mapproj} and
 (define-public r-mapproj
   (package
     (name "r-mapproj")
-    (version "1.2.9")
+    (version "1.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "mapproj" version))
        (sha256
         (base32
-         "10nzfbyfkc545qxf51i33g0f8iiidcnhj971ylphnbh7j2sgla6s"))))
+         "0z9lhv006pw4mwqlghvgvv66ga958bs6n1k6fmqjdpirr4f20bfv"))))
     (build-system r-build-system)
     (propagated-inputs (list r-maps))
     (home-page "https://cran.r-project.org/web/packages/mapproj")
