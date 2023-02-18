@@ -2032,9 +2032,6 @@ productive, customizable lisp based systems.")
     (license license:gpl2+)
     (properties `((cl-source-variant . ,(delay cl-stumpwm))))))
 
-(define-public sbcl-stumpwm
-  (deprecated-package "sbcl-stumpwm" stumpwm))
-
 (define-public cl-stumpwm
   (package
     (inherit (sbcl-package->cl-source-package stumpwm))
@@ -2150,9 +2147,6 @@ productive, customizable lisp based systems.")
        "This package provides a minimalistic Pulseaudio volume and microphone
 control module for StumpWM.")
       (license license:gpl3))))
-
-(define-public sbcl-stumpwm+slynk
-  (deprecated-package "sbcl-stumpwm-with-slynk" stumpwm+slynk))
 
 (define-public sbcl-stumpwm-ttf-fonts
   (package
