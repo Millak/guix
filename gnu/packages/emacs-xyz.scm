@@ -10664,7 +10664,7 @@ expansion and overwriting the marked region with a new snippet completion.")
 (define-public emacs-marginalia
   (package
     (name "emacs-marginalia")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -10673,8 +10673,10 @@ expansion and overwriting the marked region with a new snippet completion.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rf4xgb82j1g6ybrzz7ak9hlk86d4r0hcprbqz05hvjnb8nyfa4c"))))
+        (base32 "0zi3q7dd9dgrhbz6ww270i43kkqs0ddk0vzs89mfvwa5pzw32d2q"))))
     (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-compat))
     (home-page "https://github.com/minad/marginalia")
     (synopsis "Marginalia in the minibuffer completions")
     (description
