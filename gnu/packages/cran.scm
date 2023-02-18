@@ -5576,6 +5576,27 @@ selection, as well as methods for retrieving coordinates, for subsetting,
 print, summary, etc.")
     (license license:gpl2+)))
 
+(define-public r-lamw
+  (package
+    (name "r-lamw")
+    (version "2.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "lamW" version))
+              (sha256
+               (base32
+                "05b37kx4jpszx2hkm47d7cjkf8544f7r8x26q68yp9c6zqm9gbc3"))))
+    (properties `((upstream-name . "lamW")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp r-rcppparallel))
+    (home-page "https://github.com/aadler/lamW")
+    (synopsis "Lambert-W function")
+    (description
+     "This package implements both real-valued branches of the Lambert-W
+function (Corless et al, 1996) <doi:10.1007/BF02124750> without the need for
+installing the entire GSL.")
+    (license license:bsd-2)))
+
 (define-public r-laplacesdemon
   (package
     (name "r-laplacesdemon")
