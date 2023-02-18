@@ -31875,17 +31875,18 @@ and \"Persuasion\".")
 (define-public r-janitor
   (package
     (name "r-janitor")
-    (version "2.1.0")
+    (version "2.2.0")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "janitor" version))
               (sha256
                (base32
-                "09nqm957m2f54y2l30619b58x4i7gxwvr2lwg5kly5xy1ya1a1nn"))))
+                "1bmsyrmy833kzj3s9s6207f54bx1ca0ianwhiyrlp0jfbqcd1m99"))))
     (properties `((upstream-name . "janitor")))
     (build-system r-build-system)
     (propagated-inputs
      (list r-dplyr
+           r-hms
            r-lifecycle
            r-lubridate
            r-magrittr
