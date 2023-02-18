@@ -10147,13 +10147,13 @@ using the @code{snow} package.")
 (define-public r-fstcore
   (package
     (name "r-fstcore")
-    (version "0.9.12")
+    (version "0.9.14")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fstcore" version))
        (sha256
-        (base32 "1a5m68n2dqhi3r8wf5jwg4vjvl550c7wypcf5j0xmkvl836yg1lg"))))
+        (base32 "0mhk4l86iypg86l0jjs7szxllcy10h4rh5qy2gsmpmiv003gm3nh"))))
     (properties `((upstream-name . "fstcore")))
     (build-system r-build-system)
     (propagated-inputs (list r-rcpp))
