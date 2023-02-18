@@ -27319,6 +27319,8 @@ integration.")
                     (guix build utils))
          #:imported-modules (,@%emacs-build-system-modules
                              (guix build cmake-build-system))
+         ;; Include the `etc' folder for shell-side configuration files
+         #:include (cons* "^etc/.*" %default-include)
          #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'substitute-vterm-module-path
