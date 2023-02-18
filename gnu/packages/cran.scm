@@ -33940,6 +33940,30 @@ structures from them.")
 user streams, and to parse the output into data frames.")
     (license license:gpl2)))
 
+(define-public r-strex
+  (package
+    (name "r-strex")
+    (version "1.6.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "strex" version))
+              (sha256
+               (base32
+                "1fxg07n8cjvvgpbzqhyx5ma5bv6vax1yw0rbfdqfzr79v6k5x3n7"))))
+    (properties `((upstream-name . "strex")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-checkmate r-magrittr r-rlang r-stringi r-stringr))
+    (native-inputs (list r-knitr))
+    (home-page "https://rorynolan.github.io/strex/")
+    (synopsis "Extra string manipulation functions")
+    (description
+     "Strex is a collection of string manipulation functions not provided by
+the @code{stringi} or @code{stringr} packages.  The foremost of these is the
+extraction of numbers from strings.  There are many other handy
+functionalities in strex.")
+    (license license:gpl3)))
+
 (define-public r-readods
   (package
     (name "r-readods")
