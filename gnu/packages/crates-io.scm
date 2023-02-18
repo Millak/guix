@@ -70107,7 +70107,10 @@ configuration file and/or environment variables.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1d6d9ny0yl5l9vvagydigvkfcphzk2aygchiccywijimb8pja3yx"))))
+                "1d6d9ny0yl5l9vvagydigvkfcphzk2aygchiccywijimb8pja3yx"))
+              (snippet
+               '(begin
+                  (delete-file "lib/windows.lib")))))
     (build-system cargo-build-system)
     (arguments
      (list #:skip-build? #t))
@@ -70124,6 +70127,7 @@ crate.")
     (version "0.36.1")
     (source
      (origin
+       (inherit (package-source rust-windows-aarch64-msvc-0.42))
        (method url-fetch)
        (uri (crate-uri "windows_aarch64_msvc" version))
        (file-name (string-append name "-" version ".tar.gz"))
@@ -70136,6 +70140,7 @@ crate.")
     (name "rust-windows-aarch64-msvc")
     (version "0.32.0")
     (source (origin
+              (inherit (package-source rust-windows-aarch64-msvc-0.36))
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
@@ -70149,6 +70154,7 @@ crate.")
     (name "rust-windows-aarch64-msvc")
     (version "0.28.0")
     (source (origin
+              (inherit (package-source rust-windows-aarch64-msvc-0.32))
               (method url-fetch)
               (uri (crate-uri "windows_aarch64_msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
