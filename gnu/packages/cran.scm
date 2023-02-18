@@ -21240,14 +21240,14 @@ microarrays.")
 (define-public r-rda
   (package
     (name "r-rda")
-    (version "1.0.2-2.1")
+    (version "1.2-1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "rda" version))
        (sha256
         (base32
-         "17ll0idnms4bcpbl65xnl8zfnwsk9ww0rg5z8qqh4ahk5qdab8zf"))))
+         "16mf76hlhii30f2m5xlwa4gv4a5ydnla2kz6ylcka4y9668ql0rp"))))
     (build-system r-build-system)
     (home-page "https://cran.r-project.org/web/packages/rda/")
     (synopsis "Shrunken centroids regularized discriminant analysis")
