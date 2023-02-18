@@ -14335,13 +14335,13 @@ back to file after modifications.")
 (define-public r-gillespiessa2
   (package
     (name "r-gillespiessa2")
-    (version "0.2.10")
+    (version "0.3.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "GillespieSSA2" version))
        (sha256
-        (base32 "0mvsjkjkm27j1y6mfipmxjmki4hpxw0cnmcmls7i5pacnrxc1gcb"))))
+        (base32 "0wjz0fh9cwvaw6n7hs2lkh818jzbjl11ps5gxnjqizz8gfp9fr10"))))
     (properties `((upstream-name . "GillespieSSA2")))
     (build-system r-build-system)
     (propagated-inputs
