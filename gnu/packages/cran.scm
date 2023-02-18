@@ -14265,6 +14265,27 @@ standardized parameters for a wide variety of models, allowing computation and
 conversion of indices such as Cohen's d, r, odds, etc.")
     (license license:gpl3)))
 
+(define-public r-effsize
+  (package
+    (name "r-effsize")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "effsize" version))
+              (sha256
+               (base32
+                "1m5ch2g77f4ldbxhzp2ls1pga8hq7ggkz1xs8a90h0s09rj0gd7w"))))
+    (properties `((upstream-name . "effsize")))
+    (build-system r-build-system)
+    (home-page "https://github.com/mtorchiano/effsize/")
+    (synopsis "Efficient effect size computation")
+    (description
+     "This package provides a collection of functions to compute the
+standardized effect sizes for experiments (Cohen d, Hedges g, Cliff delta,
+Vargha-Delaney A).  The computation algorithms have been optimized to allow
+efficient computation even with very large data sets.")
+    (license license:gpl2)))
+
 (define-public r-sjplot
   (package
     (name "r-sjplot")
