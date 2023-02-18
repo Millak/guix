@@ -32141,18 +32141,18 @@ distributions.")
 (define-public r-conflicted
   (package
     (name "r-conflicted")
-    (version "1.1.0")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "conflicted" version))
        (sha256
         (base32
-         "1qg9ar114r98wm0pnf65mss4v2ksq3924rlpm13mqp4s3p6j9yi4"))))
+         "121h4b4rms23szcfs1nrbgdk812d61vhrmwn9lgpsgnsaaxqd6y9"))))
     (properties `((upstream-name . "conflicted")))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-memoise r-rlang))
+     (list r-cli r-memoise r-rlang))
     (home-page "https://github.com/r-lib/conflicted")
     (synopsis "Alternative conflict resolution strategy")
     (description
