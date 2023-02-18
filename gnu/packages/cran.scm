@@ -33357,14 +33357,14 @@ unit tests of graphics).")
 (define-public r-vdiffr
   (package
     (name "r-vdiffr")
-    (version "1.0.4")
+    (version "1.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "vdiffr" version))
        (sha256
         (base32
-         "1z8nn8yh6jfzb9r7ylmigwh1p30lrclqm6khmp323qqphzmzfdwy"))))
+         "1w6hqjb57q6ys9d6d4sh8v2s9hkgg1mkpil8lj1nld5pzir7pgqc"))))
     (properties `((upstream-name . "vdiffr")))
     (build-system r-build-system)
     (inputs
