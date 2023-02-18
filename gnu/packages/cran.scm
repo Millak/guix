@@ -17847,6 +17847,48 @@ hierarchic loggers, multiple handlers per logger, level based filtering, space
 handling in messages and custom formatting.")
     (license license:gpl3)))
 
+(define-public r-longdat
+  (package
+    (name "r-longdat")
+    (version "1.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "LongDat" version))
+              (sha256
+               (base32
+                "1sqfmdv5agyvlw1y3yiv8kxi1040gq75qj4ln1jgb9lsmhdlfpyd"))))
+    (properties `((upstream-name . "LongDat")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-bestnormalize
+                             r-car
+                             r-dplyr
+                             r-effsize
+                             r-emmeans
+                             r-ggplot2
+                             r-glmmtmb
+                             r-lme4
+                             r-magrittr
+                             r-mass
+                             r-patchwork
+                             r-reshape2
+                             r-rlang
+                             r-rstatix
+                             r-stringr
+                             r-tibble
+                             r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/CCY-dev/LongDat")
+    (synopsis
+     "Tool for covariate-sensitive longitudinal analysis on omics data")
+    (description
+     "This tool takes longitudinal dataset as input and analyzes if there is
+significant change of the features over time (a proxy for treatments), while
+detects and controls for covariates simultaneously.  LongDat is able to take
+in several data types as input, including count, proportion, binary, ordinal
+and continuous data.  The output table contains p values, effect sizes and
+covariates of each feature, making the downstream analysis easy.")
+    (license license:gpl2)))
+
 (define-public r-longitudinal
   (package
     (name "r-longitudinal")
