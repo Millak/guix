@@ -541,6 +541,34 @@ by Luis Torgo, published by CRC Press.")
 Distance (EMD).")
     (license license:expat)))
 
+(define-public r-gfonts
+  (package
+    (name "r-gfonts")
+    (version "0.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "gfonts" version))
+              (sha256
+               (base32
+                "19ja087k767bq71v2w4jcpynd62ysrqmjf6rpfnmmd40aanyxqkj"))))
+    (properties `((upstream-name . "gfonts")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-crayon
+           r-crul
+           r-glue
+           r-htmltools
+           r-jsonlite
+           r-shiny))
+    (native-inputs (list r-knitr))
+    (home-page "https://dreamrs.github.io/gfonts/")
+    (synopsis "Offline Google fonts for Markdown and Shiny")
+    (description
+     "This package lets you download Google fonts and generate CSS to use in
+rmarkdown documents and Shiny applications.  Some popular fonts are included
+and ready to use.")
+    (license license:gpl3)))
+
 (define-public r-ggalt
   (package
     (name "r-ggalt")
