@@ -70521,7 +70521,10 @@ windows crate.")
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "0a10rns9b07m9snlr97iqxq42zi9ai547gb5fqlv7vihpb92bm89"))))
+                "0a10rns9b07m9snlr97iqxq42zi9ai547gb5fqlv7vihpb92bm89"))
+              (snippet
+               '(begin
+                  (delete-file "lib/libwindows.a")))))
     (build-system cargo-build-system)
     (arguments (list #:skip-build? #t))
     (home-page "https://github.com/microsoft/windows-rs")
