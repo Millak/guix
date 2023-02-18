@@ -319,7 +319,7 @@ design}.")
 (define-public python-jupytext
   (package
     (name "python-jupytext")
-    (version "1.14.1")
+    (version "1.14.4")
     (source
      (origin
        (method git-fetch)
@@ -328,7 +328,7 @@ design}.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0gqpvphrp2ja9ggadx0rrk0sqbpz6kqqg62qqmw4k17469lphc8c"))))
+        (base32 "19d443vx597zzxna09qpync9iic3mris80bwm3kd8xaxaq0zq9w4"))))
     (build-system python-build-system)
     (arguments
      (list
