@@ -1084,6 +1084,48 @@ and compare against other CPUs.  Also provides functions for obtaining system
 specifications, such as RAM, CPU type, and R version.")
     (license license:gpl2+)))
 
+(define-public r-bestnormalize
+  (package
+    (name "r-bestnormalize")
+    (version "1.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "bestNormalize" version))
+              (sha256
+               (base32
+                "107z16vx6k31ln5ppxixjgagrzrjwlrk13689lq2s90x4k2pgmkh"))))
+    (properties `((upstream-name . "bestNormalize")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-butcher
+                             r-doparallel
+                             r-dorng
+                             r-dplyr
+                             r-foreach
+                             r-lambertw
+                             r-nortest
+                             r-purrr
+                             r-recipes
+                             r-tibble))
+    (native-inputs (list r-knitr))
+    (home-page "https://petersonr.github.io/bestNormalize/")
+    (synopsis "Normalizing transformation functions")
+    (description
+     "Estimate a suite of normalizing transformations, including a new
+adaptation of a technique based on ranks which can guarantee normally
+distributed transformed data if there are no ties: @dfn{ordered quantile
+normalization} (ORQ).  ORQ normalization combines a rank-mapping approach with
+a shifted logit approximation that allows the transformation to work on data
+outside the original domain.  It is also able to handle new data within the
+original domain via linear interpolation.  The package is built to estimate
+the best normalizing transformation for a vector consistently and accurately.
+It implements the Box-Cox transformation, the Yeo-Johnson transformation,
+three types of Lambert WxF transformations, and the ordered quantile
+normalization transformation.  It estimates the normalization efficacy of
+other commonly used transformations, and it allows users to specify custom
+transformations or normalization statistics.  Finally, functionality can be
+integrated into a machine learning workflow via recipes.")
+    (license license:gpl3)))
+
 (define-public r-bezier
   (package
     (name "r-bezier")
