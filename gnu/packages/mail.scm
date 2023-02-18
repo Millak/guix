@@ -1112,55 +1112,60 @@ repository and Maildir/IMAP as LOCAL repository.")
   (deprecated-package "offlineimap" offlineimap3))
 
 (define-public emacs-mew
-  (package
-    (name "emacs-mew")
-    (version "6.8")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "https://mew.org/Release/mew-"
-                                  version ".tar.gz"))
-              (sha256
-               (base32
-                "0ixzyq33l6j34410kqav3lwn2wx171zvqd3irvns2jvhrbww8i6g"))))
-    (native-inputs
-     (list emacs))
-    (propagated-inputs
-     (list ruby-sqlite3 ; optional for the database of messages
-           ruby)) ; to set GEM_PATH so ruby-sqlite3 is found at runtime
-    (build-system gnu-build-system)
-    (arguments
-     (let ((elisp-dir "/share/emacs/site-lisp")
-           (icon-dir  "/share/mew"))
-       `(#:modules ((guix build gnu-build-system)
-                    (guix build utils)
-                    (guix build emacs-utils))
-         #:imported-modules (,@%gnu-build-system-modules
-                             (guix build emacs-utils))
-         #:configure-flags
-         (list (string-append "--with-elispdir=" %output ,elisp-dir)
-               (string-append "--with-etcdir=" %output ,icon-dir))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'configure 'patch-mew-icon-directory
-             (lambda* (#:key outputs #:allow-other-keys)
-               (emacs-substitute-sexps "mew-key.el"
-                 ("(def.* mew-icon-directory"
-                  `(progn
-                    (add-to-list 'image-load-path 'mew-icon-directory)
-                    ,(string-append (assoc-ref outputs "out") ,icon-dir))))
-               #t))
-           (add-after 'install 'generate-autoloads
-             (lambda* (#:key outputs #:allow-other-keys)
-               (emacs-generate-autoloads
-                "mew" (string-append (assoc-ref outputs "out") ,elisp-dir))
-               #t)))
-         #:tests? #f)))
-    (home-page "https://mew.org")
-    (synopsis "Emacs e-mail client")
-    (description "Mew (Messaging in the Emacs World) is a user interface
+  (let ((commit "35772ee0b44dd7e56b0f3899b27fa545b2bc6f03")
+        (revision "1"))
+    (package
+      (name "emacs-mew")
+      (version (git-version "6.9" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kazu-yamamoto/Mew")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32
+           "0xazygwdc328m5l31rxjazq9giv2xrygp2p2q455lf3jhdxwq1km"))))
+      (native-inputs
+       (list emacs))
+      (propagated-inputs
+       (list ruby-sqlite3              ; optional for the database of messages
+             ruby))      ; to set GEM_PATH so ruby-sqlite3 is found at runtime
+      (build-system gnu-build-system)
+      (arguments
+       (let ((elisp-dir "/share/emacs/site-lisp")
+             (icon-dir  "/share/mew"))
+         `(#:modules ((guix build gnu-build-system)
+                      (guix build utils)
+                      (guix build emacs-utils))
+           #:imported-modules (,@%gnu-build-system-modules
+                               (guix build emacs-utils))
+           #:configure-flags
+           (list (string-append "--with-elispdir=" %output ,elisp-dir)
+                 (string-append "--with-etcdir=" %output ,icon-dir))
+           #:phases
+           (modify-phases %standard-phases
+             (add-after 'configure 'patch-mew-icon-directory
+               (lambda* (#:key outputs #:allow-other-keys)
+                 (emacs-substitute-sexps "elisp/mew-key.el"
+                   ("(def.* mew-icon-directory"
+                    `(progn
+                      (add-to-list 'image-load-path 'mew-icon-directory)
+                      ,(string-append (assoc-ref outputs "out") ,icon-dir))))
+                 #t))
+             (add-after 'install 'generate-autoloads
+               (lambda* (#:key outputs #:allow-other-keys)
+                  (emacs-generate-autoloads
+                  "mew" (string-append (assoc-ref outputs "out") ,elisp-dir))
+                 #t)))
+           #:tests? #f)))
+      (home-page "https://mew.org")
+      (synopsis "Emacs e-mail client")
+      (description "Mew (Messaging in the Emacs World) is a user interface
 for text messages, multimedia messages (MIME), news articles and
 security functionality including PGP, S/MIME, SSH, and SSL.")
-    (license license:bsd-3)))
+      (license license:bsd-3))))
 
 (define-public mu
   (package
