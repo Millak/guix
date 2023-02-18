@@ -1560,16 +1560,16 @@ emitter (http://pyyaml.org/wiki/LibYAML) for R.")
 (define-public r-knitr
   (package
     (name "r-knitr")
-    (version "1.41")
+    (version "1.42")
     (source (origin
               (method url-fetch)
               (uri (cran-uri "knitr" version))
               (sha256
                (base32
-                "1izv1m56ngc20wx4da9mmr5ll6ah14ka8dqn9i3pd7ah70lmya81"))))
+                "1wrha732mhlc3la61ibm5l1b5qygswwfwjpmvq0s2kcy12hg2i4k"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-evaluate r-highr r-stringr r-xfun r-yaml))
+     (list r-evaluate r-highr r-xfun r-yaml))
     (home-page "https://yihui.org/knitr/")
     (synopsis "General-purpose package for dynamic report generation in R")
     (description
