@@ -28071,6 +28071,32 @@ on a continuous-time birth-death process.")
 league, the Bundesliga.  It contains data from 1964 to 2016.")
     (license license:gpl3)))
 
+(define-public r-butcher
+  (package
+    (name "r-butcher")
+    (version "0.3.1")
+    (source (origin
+              (method url-fetch)
+              (uri (cran-uri "butcher" version))
+              (sha256
+               (base32
+                "1ymz4p887f8z54bxwih0zycbs2wmy5rlmw9z0gl0y89q4l8vyygw"))))
+    (properties `((upstream-name . "butcher")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-cli
+                             r-lobstr
+                             r-purrr
+                             r-rlang
+                             r-tibble
+                             r-vctrs))
+    (native-inputs (list r-knitr))
+    (home-page "https://butcher.tidymodels.org/")
+    (synopsis "Model butcher")
+    (description
+     "This package provides a set of S3 generics to axe components of fitted
+model objects and help reduce the size of model objects saved to disk.")
+    (license license:expat)))
+
 (define-public r-d3network
   (package
     (name "r-d3network")
