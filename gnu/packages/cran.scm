@@ -14417,14 +14417,14 @@ repositories.")
 (define-public r-fs
   (package
     (name "r-fs")
-    (version "1.5.2")
+    (version "1.6.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "fs" version))
        (sha256
         (base32
-         "11qr3v0xn65vfhgcxl4l6yv48s4w0w3ldp3anpzc25vd3mwd3jim"))))
+         "0ck7swilvmkp5l81cdqn76rlbbgs90d4xirh186ccw62l8hy9wgs"))))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
