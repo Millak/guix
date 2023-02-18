@@ -3817,14 +3817,21 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
 (define-public r-d3r
   (package
     (name "r-d3r")
-    (version "1.0.0")
+    (version "1.0.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "d3r" version))
        (sha256
         (base32
-         "1qijkllfaaw0lb29j8mappm8jz9kg8gkihxq5wqhb4gabsazdwva"))))
+         "07n92x047l6savy8s5r3rj15nmjgswl1shl1dyzrzhgpa5jrpxf3"))
+       (snippet
+        '(for-each delete-file
+                   '("inst/www/d3/v3/dist/d3.min.js"
+                     "inst/www/d3/v4/dist/d3.min.js"
+                     "inst/www/d3/v5/dist/d3.min.js"
+                     "inst/www/d3/v6/dist/d3.min.js"
+                     "inst/www/d3/v7/dist/d3.min.js")))))
     (build-system r-build-system)
     (arguments
      `(#:modules ((guix build utils)
@@ -3852,7 +3859,6 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
                    (for-each (lambda (source target)
                                (format #t "Processing ~a --> ~a~%"
                                        source target)
-                               (delete-file target)
                                (invoke "esbuild" source "--minify"
                                        (string-append "--outfile=" target)))
                              sources targets)))))))))
@@ -3894,7 +3900,7 @@ Bootstrap themes, which are packaged for use with Shiny applications.")
            (uri "https://d3js.org/d3.v7.js")
            (sha256
             (base32
-             "1hif1phswlkkpvcf1hbqmfsxdb5s5gr5g2frcwbh0rh8g6nbkyqi"))))))
+             "1m4i3kqzkz7w06sp9zqcy9f88xpdhi7cqih3phdrf4yjmfk1pfjg"))))))
     (home-page "https://github.com/timelyportfolio/d3r")
     (synopsis "d3.js utilities for R")
     (description
