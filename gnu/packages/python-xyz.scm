@@ -6500,24 +6500,16 @@ readable format.")
 (define-public python-pygit2
   (package
     (name "python-pygit2")
-    (version "1.9.2")
+    (version "1.11.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "pygit2" version))
        (sha256
-        (base32 "068bwhirigbh2435abyv4shdxgxvyfqf4dxfmhd4hihivwrl9290"))))
-    (build-system python-build-system)
-    (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (replace 'check
-                    (lambda* (#:key tests? #:allow-other-keys)
-                      (when tests?
-                        (invoke "pytest" "-v")))))))
-    (propagated-inputs
-     (list python-cached-property python-cffi libgit2))
-    (native-inputs
-     (list python-pytest))
+        (base32 "1v34xdvh6i5cn5srwicvp0i2kvv8fzsv0v9p72ng081nsczmhgvr"))))
+    (build-system pyproject-build-system)
+    (propagated-inputs (list python-cffi libgit2))
+    (native-inputs (list python-pytest))
     (home-page "https://github.com/libgit2/pygit2")
     (synopsis "Python bindings for libgit2")
     (description "Pygit2 is a set of Python bindings to the libgit2 shared library.")
