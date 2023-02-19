@@ -655,6 +655,10 @@ safety and thread safety guarantees.")
          (patches '())
          (patch-flags '("-p1")))))))
 
+(define rust-1.66
+  (rust-bootstrapped-package
+   rust-1.65 "1.66.1" "1fjr94gsicsxd2ypz4zm8aad1zdbiccr7qjfbmq8f8f7jhx96g2v"))
+
 ;;; Note: Only the latest versions of Rust are supported and tested.  The
 ;;; intermediate rusts are built for bootstrapping purposes and should not
 ;;; be relied upon.  This is to ease maintenance and reduce the time
