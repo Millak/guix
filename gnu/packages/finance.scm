@@ -281,14 +281,14 @@ Accounting.")
 (define-public homebank
   (package
     (name "homebank")
-    (version "5.6.1")
+    (version "5.6.2")
     (source (origin
               (method url-fetch)
               (uri (string-append "http://homebank.free.fr/public/sources/"
                                   "homebank-" version ".tar.gz"))
               (sha256
                (base32
-                "03wgyc777bzys32iv32yf7aj3z4hx87dskq1maw9l9jkqlqrqj1s"))))
+                "1w8nafqr54i3gksd2s0n246ip178qikn0jcmdx4ihg2dw1cdxsqj"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list pkg-config intltool))
