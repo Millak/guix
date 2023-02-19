@@ -1152,8 +1152,8 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
       (license license:gpl2+))))
 
 (define-public emacs-magit
-  (let ((commit "c883fabe28a74d59d996cbef3f742874f3459bc0")
-        (revision "2"))
+  (let ((commit "2c91c080a8e2f35e3b036a2f6b8011fa897d23a1")
+        (revision "3"))
     (package
       (name "emacs-magit")
       (version (git-version "3.3.0" revision commit))
@@ -1165,7 +1165,7 @@ libgit2 bindings for Emacs, intended to boost the performance of Magit.")
                (commit commit)))
          (file-name (git-file-name name version))
          (sha256
-          (base32 "0cq2bgny5jac1n9h7hp0pkipil41sf079h2qh5rh7bj0085dc7wv"))))
+          (base32 "00ibnr76nfyf4fff3ga324d7dbqnsb4crlxgr94npiy8rsclaszp"))))
       (build-system emacs-build-system)
       (arguments
        (list
