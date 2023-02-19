@@ -118,6 +118,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages security-token)
   #:use-module (gnu packages sphinx)
   #:use-module (gnu packages tex)
   #:use-module (gnu packages texinfo)
@@ -1064,14 +1065,14 @@ of Bitcoin BIP-0039.")
 (define-public python-ledgerblue
   (package
     (name "python-ledgerblue")
-    (version "0.1.16")
+    (version "0.1.44")
     (source
       (origin
         (method url-fetch)
         (uri (pypi-uri "ledgerblue" version))
         (sha256
           (base32
-            "010mghaqh1cmz3a0ifc3f40mmyplilwlw7kpha2mzyrrff46p9gb"))))
+            "0nbfa5i9ww7jsfc8cgy0r229pq2a1vj4xvn8mz0nxl7mx1wykqm4"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-ecpy
@@ -1079,7 +1080,10 @@ of Bitcoin BIP-0039.")
            python-hidapi
            python-pillow
            python-protobuf
-           python-pycrypto))
+           python-pycryptodomex
+           python-pyscard
+           python-u2flib-host
+           python-websocket-client))
     (home-page "https://github.com/LedgerHQ/blue-loader-python")
     (synopsis "Python library to communicate with Ledger Blue/Nano S")
     (description "@code{ledgerblue} is a Python library to communicate with
