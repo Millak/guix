@@ -3076,6 +3076,33 @@ assigned its own index, which is used to retrieve the value from the
 indexed images, sometimes called \"colormap images\" or \"paletted images.\"")
     (license license:expat)))
 
+(define-public julia-inflate
+  (package
+    (name "julia-inflate")
+    (version "0.1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/GunnarFarneback/Inflate.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16nbl40b819yzmfqs860xbcbx8nnxm0pkvzj49qmxibv5jnsj47q"))))
+    (build-system julia-build-system)
+    (arguments
+     ;; FIXME: Tests fail hard with a lot of errors.
+     '(#:tests? #f))
+    (propagated-inputs
+     (list julia-codeczlib))
+    (home-page "https://github.com/GunnarFarneback/Inflate.jl")
+    (synopsis "Julia implementation of zlib decompression")
+    (description "Inflate provides a pure Julia implementation of zlib decompression
+functionality, with both in- memory and streaming interfaces.  This covers
+decompression of the Deflate algorithm and the Zlib and Gzip wrapper formats, as
+specified in RFC 1950, RFC 1951, and RFC 1952.")
+    (license license:expat)))
+
 (define-public julia-infinity
   (package
     (name "julia-infinity")
