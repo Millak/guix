@@ -1829,6 +1829,31 @@ them.  Conversions and promotions are defined to allow performing operations on
 combinations of dual numbers with predefined Julia numeric types.")
     (license license:expat)))
 
+(define-public julia-earthorientation
+  (package
+    (name "julia-earthorientation")
+    (version "0.7.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/EarthOrientation.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1fschx4qmfd83q0ymgbzqi1dl0drbh45cd7hlcbqnm9lfmw2d847"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-leapseconds
+           julia-optionaldata
+           julia-remotefiles))
+    (home-page "https://github.com/JuliaAstro/EarthOrientation.jl")
+    (synopsis "Calculate Earth orientation parameters from IERS tables in Julia")
+    (description
+     "This package provides a functionality to calculate Earth orientation parameters
+with data retrieved from @acronym{IERS, International Earth Rotation Service}.")
+    (license license:expat)))
+
 (define-public julia-ellipsisnotation
   (package
     (name "julia-ellipsisnotation")
