@@ -4,7 +4,7 @@
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2019 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2016, 2021 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2016, 2021, 2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2016 Christine Lemmer-Webber <cwebber@dustycloud.org>
 ;;; Copyright © 2017–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2017 Stefan Reichör <stefan@xsteve.at>
@@ -695,14 +695,14 @@ manipulating key files.")
 (define-public sshpass
   (package
     (name "sshpass")
-    (version "1.09")
+    (version "1.10")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/sshpass/sshpass/"
                            version "/sshpass-" version ".tar.gz"))
        (sha256
-        (base32 "1dwzqknpswa8vjlbwsx9rcq1j2a7px9h9i2anh09pzkz0mg6wx3i"))))
+        (base32 "1npfvxxqs77qg6l4s6cn8q3b98zwr9n8rb9vra2n3dfb0g10c4dd"))))
     (build-system gnu-build-system)
     (home-page "https://sourceforge.net/projects/sshpass/")
     (synopsis "Non-interactive password authentication with SSH")
