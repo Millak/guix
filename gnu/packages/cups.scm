@@ -715,13 +715,10 @@ should only be used as part of the Guix cups-pk-helper service.")
         #~(modify-phases #$phases
             (add-after 'unpack 'fix-more-hard-coded-file-names
               (lambda* (#:key outputs #:allow-other-keys)
-                ;; Set the encoding to ISO-8859-1, as not all the files are
-                ;; readable as UTF-8.
-                (with-fluids ((%default-port-encoding "ISO-8859-1"))
-                  (substitute* (find-files ".")
-                    (("/etc/hp/hplip.conf")
-                     (string-append (assoc-ref outputs "out")
-                                    "/etc/hp/hplip.conf"))))))))))))
+                (substitute* (find-files "." "\\.py$")
+                  (("/etc/hp/hplip.conf")
+                   (string-append (assoc-ref outputs "out")
+                                  "/etc/hp/hplip.conf")))))))))))
 
 (define-public hplip-minimal
   (package/inherit hplip
