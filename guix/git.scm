@@ -4,6 +4,7 @@
 ;;; Copyright © 2021 Kyle Meyer <kyle@kyleam.com>
 ;;; Copyright © 2021 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -141,11 +142,6 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
   (define total
     (indexer-progress-total-objects progress))
 
-  (define hundredth
-    (match (quotient total 100)
-      (0 1)
-      (x x)))
-
   (define-values (done label)
     (if (< (indexer-progress-received-objects progress) total)
         (values (indexer-progress-received-objects progress)
@@ -156,14 +152,22 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
   (define %
     (* 100. (/ done total)))
 
-  (when (and (< % 100) (zero? (modulo done hundredth)))
+  ;; TODO: Both should be handled & exposed by the PROGRESS-BAR API instead.
+  (define width
+    (max (- (current-terminal-columns)
+            (string-length label) 7)
+         3))
+
+  (define grain
+    (match (quotient total (max 100 (* 8 width))) ; assume 1/8 glyph resolution
+      (0 1)
+      (x x)))
+
+  (when (and (< % 100) (zero? (modulo done grain)))
     (erase-current-line (current-error-port))
-    (let ((width (max (- (current-terminal-columns)
-                         (string-length label) 7)
-                      3)))
-      (format (current-error-port) "~a ~3,d% ~a"
+    (format (current-error-port) "~a ~3,d% ~a"
               label (inexact->exact (round %))
-              (progress-bar % width)))
+              (progress-bar % width))
     (force-output (current-error-port)))
 
   (when (= % 100.)
