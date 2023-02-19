@@ -5289,12 +5289,7 @@ result in several formats:
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))
-       (modules '((guix build utils)))
-       (snippet
-        '(substitute* "Cargo.toml"
-           (("\\[package\\]" m)
-            (string-append "cargo-features = [\"rust-version\"]\n" m))))))
+         "006bfcmjwg0phg8gc25b1sl2ngjrb2bh1b3fd0s5gbf9nlkr8qsn"))))
     (build-system cargo-build-system)
     (arguments
      `(;; Strip the '--release' flag to work around the doctest failures with
@@ -5357,14 +5352,8 @@ result in several formats:
          (add-after 'unpack 'relax-versions
            (lambda _
              (substitute* "Cargo.toml"
-               ;; Allow using more recent versions of
+               ;; Allow using more recent versions of system-deps.
                (("~3.1.2") "~3"))))
-         (add-after 'configure 'force-rust-edition-2018
-           (lambda* (#:key vendor-dir #:allow-other-keys)
-             ;; Force all the dependencies to not be higher than edition 2018.
-             (with-fluids ((%default-port-encoding #f))
-               (substitute* (find-files vendor-dir "Cargo.toml")
-                 (("edition = \\\"2021\\\"") "edition = \"2018\"")))))
          (replace 'build
            (lambda* (#:key outputs #:allow-other-keys)
              (let ((out (assoc-ref outputs "out")))
