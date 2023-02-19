@@ -3466,6 +3466,31 @@ external IRs.  It can be used with Julia metaprogramming tools such as
 Cassette.")
     (license license:expat)))
 
+(define-public julia-itemgraphs
+  (package
+    (name "julia-itemgraphs")
+    (version "0.4.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/helgee/ItemGraphs.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "16w30y7s922dzp7i64wxdrafv4gy13v3rl4k1z5jkvnmnw68kygg"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-lightgraphs))
+    (home-page "https://github.com/helgee/ItemGraphs.jl")
+    (synopsis "Shortest paths between items")
+    (description
+     "ItemGraphs is a simple wrapper around LightGraphs that enables most
+common use case for graph-like data structures: with collection of items that
+are in relations between each other providing the shortest path between two
+items.")
+    (license license:expat)))
+
 (define-public julia-iteratorinterfaceextensions
   (package
     (name "julia-iteratorinterfaceextensions")
