@@ -109,6 +109,7 @@
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages fribidi)
   #:use-module (gnu packages gawk)
+  #:use-module (gnu packages gettext)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
@@ -1007,12 +1008,17 @@ drags, snap-to-border support, and virtual desktops.")
                                   version "/fluxbox-" version ".tar.xz"))
               (sha256
                (base32
-                "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))))
+                "1h1f70y40qd225dqx937vzb4k2cz219agm1zvnjxakn5jkz7b37w"))
+              (patches
+               (search-patches "fluxbox-1.3.7-no-dynamic-cursor.patch"))))
     (build-system gnu-build-system)
     (arguments
      `(#:make-flags '("CPPFLAGS=-U__TIME__") ;ugly, but for reproducibility
        #:phases
        (modify-phases %standard-phases
+         (add-before 'bootstrap 'force-bootstrap
+           (lambda _
+             (delete-file "configure")))
          (add-after 'install 'install-vim-files
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -1035,12 +1041,13 @@ drags, snap-to-border support, and virtual desktops.")
                      Type=Application~%" ,name ,synopsis out)))
                #t))))))
     (native-inputs
-     (list pkg-config))
+     (list autoconf automake gnu-gettext pkg-config))
     (inputs
      (list freetype
            fribidi
            imlib2
            libx11
+           libxcursor
            libxext
            libxft
            libxinerama
