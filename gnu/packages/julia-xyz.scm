@@ -147,6 +147,42 @@ ANSI escape codes to another format.")
 provides functions to run a few automatable checks for Julia packages.")
     (license license:expat)))
 
+(define-public julia-arnoldimethod
+  (package
+    (name "julia-arnoldimethod")
+    (version "0.2.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaLinearAlgebra/ArnoldiMethod.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1gs7pikgdg436srxxfywpnp12ay1mf45f7z80wym92rfrjzakwh2"))))
+    (build-system julia-build-system)
+    (propagated-inputs
+     (list julia-genericschur julia-staticarrays))
+    (home-page "https://github.com/JuliaLinearAlgebra/ArnoldiMethod.jl")
+    (synopsis "Implicitly Restarted Arnoldi Method, natively in Julia")
+    (description
+     "@code{ArnoldiMethod.jl} provides an iterative method to find a few
+approximate solutions to the eigenvalue problem in standard form with main
+goals:
+
+@itemize
+@item Having a native Julia implementation of the @code{eigs} function that
+performs as well as ARPACK.  With native we mean that its implementation should
+be generic and support any number type.  Currently the partialschur function
+does not depend on LAPACK, and removing the last remnants of direct calls to
+BLAS is in the pipeline.
+
+@item Removing the dependency of the Julia language on ARPACK.  This goal was
+already achieved before the package was stable enough, since ARPACK moved to a
+separate repository @code{Arpack.jl}.
+@end itemize")
+    (license license:expat)))
+
 (define-public julia-arrayinterface
   (package
     (name "julia-arrayinterface")
