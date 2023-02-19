@@ -6698,14 +6698,14 @@ box, and a calendar.  It uses GTK+, and will match your desktop theme.")
 (define-public xvfb-run
   (package
     (name "xvfb-run")
-    (version "1.20.11-1")
+    (version "21.1.7-1")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://debian/pool/main/x/xorg-server/"
                            "xorg-server_" version ".diff.gz"))
        (sha256
-        (base32 "0hq8a2rw2ginxsifrpj3rsf2shxl69ylkc1650ij5vwjhxdr82hh"))))
+        (base32 "1073m4gzn8yv9kn70fbyq8a2xckgz0wljjr2w7i2bsrg767h29gd"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -6771,7 +6771,7 @@ an existing user-specified one, writes a cookie to it, and then starts the
 @command{Xvfb} X server as a background process.  It also takes care of killing
 the server and cleaning up before returning the exit status of the command.")
     (license (list license:x11          ; the script
-                   license:gpl2+))))              ; the man page
+                   license:gpl2+))))    ; the man page
 
 (define-public setroot
   (package
