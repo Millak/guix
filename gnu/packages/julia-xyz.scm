@@ -5001,6 +5001,31 @@ recursive arrays like arrays of arrays.")
     (description "This package provides tools to re-export modules and symbols.")
     (license license:expat)))
 
+(define-public julia-remotefiles
+  (package
+    (name "julia-remotefiles")
+    (version "0.5.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/helgee/RemoteFiles.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zpklzpd4ckp7s4wbf93qmq3dyyrx4pzl41x5i9zbiskadhniqnh"))))
+    (build-system julia-build-system)
+    (arguments
+     '(#:tests? #f)) ; Tests try to download from Internet.
+    (propagated-inputs
+     (list julia-fileio julia-http))
+    (home-page "https://github.com/helgee/RemoteFiles.jl")
+    (synopsis "Download files from the Internet and keep them up-to-date")
+    (description
+     "This package provides a functionality of files download with cURL, wget or
+@code{HTTP.jl} backends.")
+    (license license:expat)))
+
 (define-public julia-referencetests
   (package
     (name "julia-referencetests")
