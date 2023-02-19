@@ -133,6 +133,8 @@
                 (sha256
                  (base32
                   "1f5gl3hzvixbgk0v3kmxiyn432znyy3jh5fa65cfzcaxzgfv1i1c"))
+                (patches (search-patches
+                           "camlboot-dynamically-allocate-stack-signal.patch"))
                 (modules '((guix build utils)))
                 (snippet
                  `(begin
