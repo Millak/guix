@@ -3918,7 +3918,7 @@ you are running, what theme or icon set you are using, etc.")
 (define-public hyfetch
   (package
     (name "hyfetch")
-    (version "1.4.6")
+    (version "1.4.7")
     (source
      (origin
        (method git-fetch)
@@ -3926,14 +3926,9 @@ you are running, what theme or icon set you are using, etc.")
              (url "https://github.com/hykilpikonna/hyfetch")
              (commit version)))
        (file-name (git-file-name name version))
-       (patches
-        (search-patches
-         ;; XXX: Cherry-picked from upstream, remove when updating.
-         "hyfetch-fix-generator-script-quotation-escaping.patch"
-         "hyfetch-remove-old-catchy-os-py.patch"))
        (sha256
         (base32
-         "1cnjvkil40bipia8gvs32q0lbqyi5j0nrsr7k4s0c55rh5bhkc3d"))))
+         "1w0wzai73rr7iliii77f15ck5ki03xcvrhgzbp72nn7xcpix9wqd"))))
     (build-system python-build-system)
     (inputs (list python-typing-extensions))
     (home-page "https://github.com/hykilpikonna/HyFetch")
