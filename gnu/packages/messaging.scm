@@ -1394,7 +1394,7 @@ Encryption to Gajim.")
            libsignal-protocol-c
            libsoup
            libsrtp                      ;for calls support
-           pango-next                   ;gtk4 wants pango 1.5+
+           pango-next                   ;gtk4 wants pango 1.50+
            qrencode
            sqlite
            webrtc-audio-processing))    ;for A/V support
