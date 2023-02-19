@@ -14327,7 +14327,7 @@ being deleted, changed, yanked, or pasted when using evil commands")
 (define-public emacs-goggles
   (package
     (name "emacs-goggles")
-    (version "0.2")
+    (version "0.3")
     (source
      (origin
        (method git-fetch)
@@ -14336,11 +14336,11 @@ being deleted, changed, yanked, or pasted when using evil commands")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "15bqjmwfdqp2np6fln6xjyw59c5iddvzsyga0lvb8raa753cdh2k"))))
+        (base32 "0crll7r1qzpipimrahbfgk31f6rys58gzsbiwi65l0gqw49699sx"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/minad/goggles")
     (synopsis "Pulse modified region")
-    (description "Goggles highlights the modified region using pulse.
+    (description "Goggles highlights the modified region using Pulse.
 Currently the commands undo, yank, kill and delete are supported.")
     (license license:gpl3+)))
 
