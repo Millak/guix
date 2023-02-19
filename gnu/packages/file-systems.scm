@@ -1866,12 +1866,12 @@ in FUSE for rootless containers.")
                                      " sub"))))))))
     (inputs (list btrfs-progs cityhash util-linux))
     (home-page "https://github.com/Zygo/bees")
-    (synopsis "Best-Effort Extent-Same, a btrfs dedupe agent")
+    (synopsis "Deduplication agent for btrfs file systems")
     (description
-     "@code{bees} is a block-oriented userspace deduplication agent designed
-for large btrfs filesystems.  It is an offline dedupe combined with an
-incremental data scan capability to minimize time data spends on disk from
-write to dedupe.")
+     "@acronym{BEES, Best-Effort Extent-Same} is a block-oriented, user-space
+deduplication agent designed for large btrfs file systems.  It combines off-line
+data deduplication with incremental scanning to minimize the time your data
+spend on disk between being written and being deduplicated.")
     (license (list license:gpl3+     ; the combined work
                    license:zlib      ; lib/crc64.cc
                    license:gpl2))))  ; include/crucible/btrfs.h
