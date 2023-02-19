@@ -4223,6 +4223,33 @@ aims to provide easy-to-use tools for such tasks.")
 Julia, with type-driven, overloadable packing/unpacking functionality.")
     (license license:expat)))
 
+(define-public julia-muladdmacro
+  (package
+    (name "julia-muladdmacro")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/SciML/MuladdMacro.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0pvmfw7f3igpwx0w8c8i40pls0wfm248b1i662wnlrkqiw56j0yq"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/SciML/MuladdMacro.jl")
+    (synopsis "Julia macro to convert expressions to use muladd calls and FMA operations")
+    (description
+     "This package provides the @code{@@muladd} macro.  It automatically converts
+expressions with multiplications and additions or subtractions to calls with
+muladd which then fuse via FMA when it would increase the performance of the
+code.  The @code{@@muladd} macro can be placed on code blocks and it will automatically
+find the appropriate expressions and nest muladd expressions when necessary.  In
+mixed expressions summands without multiplication will be grouped together and
+evaluated first but otherwise the order of evaluation of multiplications and
+additions is not changed.")
+    (license license:expat)))
+
 (define-public julia-mutablearithmetics
   (package
     (name "julia-mutablearithmetics")
