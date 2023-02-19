@@ -129,6 +129,7 @@
 
                             (phases '%standard-phases)
                             (source-directory ".")
+                            (scheme-file-regexp %scheme-file-regexp)
                             not-compiled-file-regexp
                             (compile-flags %compile-flags)
                             (imported-modules %guile-build-system-modules)
@@ -154,6 +155,7 @@
                        #:target #$target
                        #:outputs %outputs
                        #:source-directory #$source-directory
+                       #:scheme-file-regexp #$scheme-file-regexp
                        #:not-compiled-file-regexp #$not-compiled-file-regexp
                        #:compile-flags #$compile-flags
                        #:inputs %build-target-inputs
