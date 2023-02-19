@@ -3576,6 +3576,31 @@ equations in string literals in the Julia language.")
 implementation of matrix-free methods for iterative solvers.")
     (license license:expat)))
 
+(define-public julia-leapseconds
+  (package
+    (name "julia-leapseconds")
+    (version "1.1.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaTime/LeapSeconds.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "13xa49dx11n7ii77rw6300h1rfl4qlq05ypsprvfmvyww81angkp"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-erfa))
+    (home-page "https://github.com/JuliaTime/LeapSeconds.jl")
+    (synopsis "Leap seconds in Julia")
+    (description
+     "@code{LeapSeconds} provides a functionality to return the difference
+between @acronym{TAI, International Atomic Time} and @acronym{UTC, Coordinated
+Universal Time} or vice versa for a given date.  For dates after 1972-01-01, this
+is the number of leap seconds.")
+    (license license:expat)))
+
 (define-public julia-linesearches
   (package
     (name "julia-linesearches")
