@@ -262,6 +262,36 @@ appropriate BLAS or optimised Julia linear algebra routines.  This supports a
 much wider class of matrix types than Julia's in-built @code{StridedArray}.")
     (license license:expat)))
 
+(define-public julia-astrotime
+  (package
+    (name "julia-astrotime")
+    (version "0.7.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaAstro/AstroTime.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "032hlanan49ypqh4lwlf91pg7052c8h5sgbxqc1771b8j9srbyd2"))))
+    (build-system julia-build-system)
+    (native-inputs
+     (list julia-measurements))
+    (propagated-inputs
+     (list julia-erfa
+           julia-earthorientation
+           julia-itemgraphs
+           julia-macrotools
+           julia-muladdmacro
+           julia-reexport))
+    (home-page "https://github.com/JuliaAstro/AstroTime.jl")
+    (synopsis "Astronomical time keeping in Julia")
+    (description "@code{AstroTime.jl} provides a high-precision, time-scale
+aware, @code{DateTime}-like data type which supports all commonly used
+astronomical time scales.")
+    (license license:expat)))
+
 (define-public julia-automa
   (package
     (name "julia-automa")
