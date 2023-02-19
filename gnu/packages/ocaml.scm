@@ -316,7 +316,9 @@ functional, imperative and object-oriented styles of programming.")
                     "http://caml.inria.fr/pub/distrib/ocaml-"
                     (version-major+minor version)
                     "/ocaml-" version ".tar.xz"))
-              (patches (search-patches "ocaml-4.09-multiple-definitions.patch"))
+              (patches (search-patches
+                         "ocaml-4.09-multiple-definitions.patch"
+                         "ocaml-4.09-dynamically-allocate-signal-stack.patch"))
               (sha256
                (base32
                 "1v3z5ar326f3hzvpfljg4xj8b9lmbrl53fn57yih1bkbx3gr3yzj"))))
