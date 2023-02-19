@@ -523,7 +523,7 @@ variable defined below.  It requires guile-json to be installed."
          ;; The upstream-icecat-base-version may be older than the
          ;; %icecat-base-version.
          (upstream-icecat-base-version "102.8.0")
-         (gnuzilla-commit "03d9e3db5affe21db077c410ec08c313d6aa280e")
+         (gnuzilla-commit "f23f8b609ef4afcc7d8ac5fa795093f1c403f8da")
          (gnuzilla-source
           (origin
             (method git-fetch)
@@ -535,7 +535,7 @@ variable defined below.  It requires guile-json to be installed."
                                       (string-take gnuzilla-commit 8)))
             (sha256
              (base32
-              "12id87nsdwm6kra0gm3d3ww8kr0xxb4yllw9wcqmnrlnmspdc1n8"))))
+              "1zvvgjvsj7k8753f7xmpmkq35dqzyik95943hzl84v2j5mnahhj4"))))
 
          ;; 'search-patch' returns either a valid file name or #f, so wrap it
          ;; in 'assume-valid-file-name' to avoid 'local-file' warnings.
