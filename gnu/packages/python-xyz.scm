@@ -1065,7 +1065,7 @@ generator MkDocs.")
 (define-public python-slixmpp
   (package
     (name "python-slixmpp")
-    (version "1.5.2")
+    (version "1.8.3")
     (source
      (origin
        (method git-fetch)
@@ -1077,7 +1077,7 @@ generator MkDocs.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "15mqxcws14bjvh5jcfwl86zsvrymkdw3ya07vb44md7vfnsnclwx"))))
+        (base32 "0cvr037qhf0fpby5dci6ckqngaly1mnjs2zpndwgmvr3dyvrd8l8"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1093,7 +1093,12 @@ generator MkDocs.")
        ("gnupg" ,gnupg)
        ("pkg-config" ,pkg-config)))
     (propagated-inputs
-     (list python-aiodns python-aiohttp python-pyasn1
+     (list python-aiodns
+           python-aiohttp
+           python-cryptography
+           python-defusedxml
+           python-emoji
+           python-pyasn1
            python-pyasn1-modules))
     (inputs
      (list libidn python)) ; We are building a Python extension.
