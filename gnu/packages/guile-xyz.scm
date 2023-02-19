@@ -4518,6 +4518,32 @@ WebSocket protocol as defined by RFC 6455.")
     (home-page "https://dthompson.us/projects/guile-websocket.html")
     (license license:lgpl3+)))
 
+(define-public guile-gemini
+  (package
+    (name "guile-gemini")
+    (version "0.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/flatwhatson/guile-gemini")
+                    (commit "6d70c5dc6b35c26103f560f7e63c770a424dbca2")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0rvqqirwsqn3nspr6z1smfp3rj7gc7hfq7cmadx7zxbr3yg5y04x"))))
+    (build-system guile-build-system)
+    (arguments
+     '(#:source-directory "src"))
+    (inputs (list guile-3.0-latest))
+    (propagated-inputs (list guile-fibers-1.1 guile-gnutls))
+    (home-page "https://github.com/flatwhatson/guile-gemini")
+    (synopsis "Guile implementation of the Gemini protocol")
+    (description
+     "Guile Gemini is an implementation of the Gemini protocol in Guile Scheme,
+providing both client and server functionality.  It uses GnuTLS to meet
+Gemini's TLS requirements, and Guile Fibers for concurrency.")
+    (license license:lgpl3+)))
+
 (define-public guile-rdf
   (package
     (name "guile-rdf")
