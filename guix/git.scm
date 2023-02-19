@@ -142,7 +142,7 @@ the 'SSL_CERT_FILE' and 'SSL_CERT_DIR' environment variables."
     (indexer-progress-total-objects progress))
 
   (define hundredth
-    (match (quotient (indexer-progress-total-objects progress) 100)
+    (match (quotient total 100)
       (0 1)
       (x x)))
 
