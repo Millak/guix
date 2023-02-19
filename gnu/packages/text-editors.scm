@@ -993,14 +993,14 @@ The basic features of Text Pieces are:
 (define-public scintilla
   (package
     (name "scintilla")
-    (version "5.3.2")
+    (version "5.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (let ((v (apply string-append (string-split version #\.))))
               (string-append "https://www.scintilla.org/scintilla" v ".tgz")))
        (sha256
-        (base32 "16jskdc0762iwpy4s75vmp27qds32pnpaj09h48c6qg3rmvrgslh"))))
+        (base32 "138yr6al4dn5mhw88shf1b19knwyj288mh5zrhwn8f7c6k6ldfy4"))))
     (build-system gnu-build-system)
     (arguments
      (list
