@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2016 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2015, 2016, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2016, 2017, 2018 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2016, 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
@@ -1039,6 +1039,27 @@ settings.")
     (description "@code{mnemonic} is a library that provides an implementation
 of Bitcoin BIP-0039.")
     (license license:expat)))
+
+(define-public python-u2flib-host
+  ;; The package is obsolete and superseded by python-fido2, but
+  ;; needed for python-ledgerblue@0.1.44.
+  (package
+    (name "python-u2flib-host")
+    (version "3.0.3")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "python-u2flib-host" version))
+              (sha256
+               (base32
+                "02pwafd5kyjpc310ys0pgnd0adff1laz18naxxwsfrllqafqnrxb"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-hidapi python-requests))
+    (native-inputs (list python-cryptography))
+    (home-page "https://github.com/Yubico/python-u2flib-host")
+    (synopsis "Python based U2F host library")
+    (description
+     "The package provides library functionality for communicating with a U2F device over USB.")
+    (license license:bsd-2)))
 
 (define-public python-ledgerblue
   (package
