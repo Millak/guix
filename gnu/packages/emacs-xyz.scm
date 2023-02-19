@@ -17421,7 +17421,7 @@ gnugo-image-display-mode}.")
 (define-public emacs-gnuplot
   (package
     (name "emacs-gnuplot")
-    (version "0.8.0")
+    (version "0.8.1")
     (source
      (origin
        (method git-fetch)
@@ -17430,7 +17430,7 @@ gnugo-image-display-mode}.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "09y177sq24gs7wwjihw59g0m4n1rv2ws9890ynxjxawv823r0fxm"))))
+        (base32 "0s0k18ibi4b2vn6l7rwdk79g6ck6xafxzzbja8a8y0r8ljfssfgb"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/emacsorphanage/gnuplot-mode")
     (synopsis "Emacs major mode for interacting with Gnuplot")
