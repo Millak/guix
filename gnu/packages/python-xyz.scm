@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013-2022 Ludovic Courtès <ludo@gnu.org>
-;;; Copyright © 2013, 2014, 2015, 2016, 2019 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2013, 2014, 2015, 2016, 2019, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2017, 2021, 2022 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -19908,21 +19908,21 @@ from the header, as well as section details and data available.")
      and bit flag values.")
     (license license:expat)))
 
-(define-public python-attrdict
+(define-public python-attrdict3
   (package
-    (name "python-attrdict")
-    (version "2.0.1")
+    (name "python-attrdict3")
+    (version "2.0.2")
     (source (origin
               (method url-fetch)
-              (uri (pypi-uri "attrdict" version))
+              (uri (pypi-uri "attrdict3" version))
               (sha256
                (base32
-                "0w3vsz64j9npxfgh83hghsh161wwkrx1fxqi1533js2wnnc0dj9m"))))
+                "1s2z6c9jam5azm746l49wsqsyi29zbbrknq1axsw230jl4f1fk00"))))
     (build-system python-build-system)
     ;; The package is no longer maintained and tests need some work.
     (arguments '(#:tests? #f))
     (propagated-inputs (list python-six))
-    (home-page "https://github.com/bcj/AttrDict")
+    (home-page "https://github.com/pirofti/AttrDict3")
     (synopsis "Attribute-style access dictionaries")
     (description
      "This package provides mapping objects whose elements can be accessed

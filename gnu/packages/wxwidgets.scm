@@ -9,6 +9,7 @@
 ;;; Copyright © 2018, 2020, 2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Arun Isaac <arunisaac@systemreboot.net>
 ;;; Copyright © 2022 Marius Bakke <marius@gnu.org>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -309,7 +310,7 @@ and many other languages.")
     (native-inputs
      (list pkg-config python-waf))
     (propagated-inputs
-     (list python-attrdict python-numpy python-pillow python-six))
+     (list python-attrdict3 python-numpy python-pillow python-six))
     (home-page "https://wxpython.org/")
     (synopsis "Cross platform GUI toolkit for Python")
     (description "wxPython is a cross-platform GUI toolkit for the Python
