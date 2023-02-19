@@ -4284,6 +4284,29 @@ optimisation rules, and tools for applying them to deeply nested models.")
 JuliaNLSolvers packages.")
     (license license:expat)))
 
+(define-public julia-optionaldata
+  (package
+    (name "julia-optionaldata")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/helgee/OptionalData.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "11js258j7cz6362ijsi24nih3lx90aalf8k1n3fv6v7iqas8bz5s"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/helgee/OptionalData.jl")
+    (synopsis "Work with global data that might not be available")
+    (description
+     "This package provides the @code{@@OptionalData} macro and the corresponding
+OptData type which is a thin wrapper around a nullable value (of type @code{Union{T,
+Nothing} where T)}.  It allows you to load and access globally available data at
+runtime in a type-stable way.")
+    (license license:expat)))
+
 (define-public julia-orderedcollections
   (package
     (name "julia-orderedcollections")
