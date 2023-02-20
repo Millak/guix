@@ -1594,7 +1594,7 @@ Apprentice and Sourcerer.")
 (define-public emacs-suneater-theme
   (package
     (name "emacs-suneater-theme")
-    (version "2.0.0")
+    (version "2.2.0")
     (source
      (origin
        (method git-fetch)
@@ -1603,7 +1603,7 @@ Apprentice and Sourcerer.")
              (commit version)))
        (sha256
         (base32
-         "0nlam8f8ly86y7p2dn10y9ixnm7bhmigsx7si4cjynh6aiyczyds"))
+         "1g0mf3m1ja70zdhyw1li4m765wvsb0b6hqd1ma42cn5mccz8yxh3"))
        (file-name (git-file-name name version))))
     (build-system emacs-build-system)
     (home-page "https://git.sr.ht/~plattfot/suneater-theme")
