@@ -1335,8 +1335,8 @@ ca495991b7852b855"))
           (add-after 'patch-source-shebangs 'fix-profile-setting
             (lambda _
               (substitute* "comm/mail/moz.configure"
-                (("MOZ_DEDICATED_PROFILES, True")
-                 "MOZ_DEDICATED_PROFILES, False"))))
+                (("\"MOZ_DEDICATED_PROFILES\", True")
+                 "\"MOZ_DEDICATED_PROFILES\", False"))))
           (add-after 'build 'neutralize-store-references
             (lambda _
               ;; Mangle the store references to compilers & other build tools in
