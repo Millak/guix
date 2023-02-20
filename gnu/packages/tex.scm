@@ -11518,6 +11518,8 @@ Polish of standard ``LaTeX names''.")
        "tex/latex/mdframed/")
       (base32 "1i5rm946wg43rjckxlfhx79zfx5cgd3bxk71206hd1dqkrgpdpa8")
       #:trivial? #t))
+    (propagated-inputs (list texlive-latex-needspace
+                             texlive-zref))
     (home-page "https://ctan.org/pkg/mdframed")
     (synopsis "Framed environments that can split at page boundaries")
     (description
