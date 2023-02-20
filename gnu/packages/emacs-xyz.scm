@@ -28151,6 +28151,8 @@ and Projectile.")
                           "--hard-dereference"
                           dir))))))))
     (build-system emacs-build-system)
+    (arguments
+     (list #:include #~(cons "^icons\\/" %default-include)))
     (propagated-inputs
      (list emacs-lsp-mode emacs-treemacs))
     (home-page "https://github.com/emacs-lsp/lsp-treemacs")
@@ -28158,7 +28160,9 @@ and Projectile.")
     (description
      "This package provides integration between LSP mode and treemacs,
 and implementation of treeview controls using treemacs as a tree renderer.")
-    (license license:gpl3+)))
+    (license (list license:gpl3+
+                   license:cc-by4.0  ; microsoft/vscode-icons
+                   license:expat)))) ; vscode-icons/vscode-icons
 
 (define-public emacs-dap-mode
   (package
