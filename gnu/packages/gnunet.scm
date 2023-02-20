@@ -12,6 +12,7 @@
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
+;;; Copyright © 2023 Adam Faiz <adam.faiz@disroot.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -60,6 +61,7 @@
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pulseaudio)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages sqlite)
   #:use-module (gnu packages text-editors)
   #:use-module (gnu packages tls)
@@ -258,7 +260,7 @@ supports HTTP, HTTPS and GnuTLS.")
 (define-public gnunet
   (package
    (name "gnunet")
-   (version "0.16.3")
+   (version "0.19.3")
    (source
     (origin
       (method url-fetch)
@@ -266,12 +268,19 @@ supports HTTP, HTTPS and GnuTLS.")
                           ".tar.gz"))
       (sha256
        (base32
-        "12n33r9nnkl5xwx8pwf571l2zvnvfllc8vm6mamrlyjk2cphaf9j"))))
+        "09bspbjl6cll8wcrl1vnb56jwp30pcrg1yyj6xy3i0fl2bzdbdw2"))
+      (modules '((guix build utils)))
+      (snippet
+       #~(begin
+           ;; This is fixed in the upstream repository but the fix
+           ;; has not been released.
+           (substitute* "src/gns/test_proxy.sh"
+             (("test_gnunet_proxy.conf") "test_gns_proxy.conf"))))))
    (build-system gnu-build-system)
    (inputs
     (list bluez
           glpk
-          gnurl
+          curl
           gnutls/dane
           gstreamer
           jansson
@@ -291,7 +300,13 @@ supports HTTP, HTTPS and GnuTLS.")
           zbar
           zlib))
    (native-inputs
-    (list curl openssl pkg-config python xxd
+    (list curl
+          openssl
+          pkg-config
+          python
+          python-sphinx
+          python-sphinx-rtd-theme
+          xxd
           (@ (gnu packages base) which)))
    (arguments
     '(#:parallel-tests? #f ; Parallel tests aren't supported.
