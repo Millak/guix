@@ -63254,14 +63254,14 @@ serializing Rust structures.")
   (package
     (inherit rust-toml-datetime-0.6)
     (name "rust-toml-datetime")
-    (version "0.5.0")
+    (version "0.5.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "toml_datetime" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1zcjvygkix0hm7nv7i6ag4fd0l1pglga1wyq2l8zgy0fgpjm32w0"))))
+                "1xcw3kyklh3s2gxp65ma26rgkl7505la4xx1r55kfgcfmikz8ls5"))))
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))))
 
