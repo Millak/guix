@@ -1980,6 +1980,36 @@ border, and background.  It also supports multihead setups, customized mouse
 actions, a built-in clock, a battery monitor and a system tray.")
     (license license:gpl2)))
 
+(define-public tofi
+  (package
+    (name "tofi")
+    (version "0.8.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/philj56/tofi")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11bfi9his0cc5mzikamr5icv5mh2fyj9jy5l3sbbayj6jk51f68y"))))
+    (build-system meson-build-system)
+    (arguments
+     (list #:meson meson-0.63))         ;requires meson 0.61 or later
+    (native-inputs (list pkg-config))
+    (inputs (list cairo
+                  harfbuzz
+                  libxkbcommon
+                  pango
+                  wayland
+                  wayland-protocols))
+    (home-page "https://github.com/philj56/tofi")
+    (synopsis "Application launcher for Wayland")
+    (description
+     "Tofi is a Dmenu and Rofi replacement for wlroots-based Wayland
+compositors such as Sway.")
+    (license license:expat)))
+
 (define-public dzen
   (let ((commit "488ab66019f475e35e067646621827c18a879ba1")
         (revision "1"))
