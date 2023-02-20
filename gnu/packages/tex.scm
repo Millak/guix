@@ -4957,6 +4957,7 @@ corresponding italics: light, regular, medium, bold, ...")
                (base32
                 "157pplavvm2z97b3jl4x41w11k6q9wgy074mfg0dwmsx5lm328jy"))))
     (build-system texlive-build-system)
+    (propagated-inputs (list texlive-catchfile))
     (arguments '(#:tex-directory "latex/ifplatform"))
     (home-page "https://www.ctan.org/pkg/ifplatform")
     (synopsis "Conditionals to test which platform is being used")
