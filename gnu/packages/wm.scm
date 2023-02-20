@@ -1410,36 +1410,30 @@ It is inspired by Xmonad and dwm.  Its major features include:
         (base32 "145xjwam11194w2irsvs4z0xgn0jdijxfmx67gqd1n0j8g5wan2a"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags (list (string-append "CC=" ,(cc-for-target))
-                          (string-append "PREFIX=" %output))
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)
-         (add-after 'build 'install-xsession
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; Add a .desktop file to xsessions.
-             (let* ((output (assoc-ref outputs "out"))
-                    (xsessions (string-append output "/share/xsessions")))
-               (mkdir-p xsessions)
-               (with-output-to-file
-                   (string-append xsessions "/cwm.desktop")
-                 (lambda _
-                   (format #t
-                           "[Desktop Entry]~@
-                     Name=cwm~@
-                     Comment=OpenBSD Calm Window Manager fork~@
-                     Exec=~a/bin/cwm~@
-                     TryExec=~@*~a/bin/cwm~@
-                     Icon=~@
-                     Type=Application~%"
-                           output)))))))))
-    (inputs
-     (list libxft libxrandr libxinerama))
+     (list
+      #:tests? #f
+      #:make-flags #~(list (string-append "CC=" #$(cc-for-target))
+                           (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (delete 'configure)
+          (add-after 'build 'install-xsession
+            (lambda _
+              ;; Add a .desktop file to xsessions.
+              (let ((xsessions (string-append #$output "/share/xsessions")))
+                (mkdir-p xsessions)
+                (make-desktop-entry-file
+                 (string-append xsessions "/cwm.desktop")
+                 #:name: cwm
+                 #:exec (string-append #$output "/bin/cwm")
+                 #:try-exec (string-append #$output "/bin/cwm")
+                 #:comment '((#f "OpenBSD Calm Window Manager fork")))))))))
     (native-inputs
-     (list pkg-config bison))
+     (list bison pkg-config))
+    (inputs
+     (list libxrandr libxft libxinerama))
     (home-page "https://github.com/leahneukirchen/cwm")
-    (synopsis "OpenBSD fork of the calmwm window manager")
+    (synopsis "OpenBSD fork of the Calm Window Manager")
     (description "Cwm is a stacking window manager for X11.  It is an OpenBSD
 project derived from the original Calm Window Manager.")
     (license license:isc)))
