@@ -1459,8 +1459,10 @@ ca495991b7852b855"))
                             Exec=~@*~a/bin/icedove -compose~%"
                             #$output))))))
           (add-after 'install-desktop-file 'install-icons
+            ;; TODO: Use actual Icedove branding icons (currently the stock
+            ;; Thunderbird icon is used).
             (lambda _
-              (with-directory-excursion "browser/branding/official"
+              (with-directory-excursion "comm/mail/branding/thunderbird"
                 (for-each
                  (lambda (file)
                    (let* ((size (string-filter char-numeric? file))
@@ -1469,8 +1471,7 @@ ca495991b7852b855"))
                      (mkdir-p icons)
                      (copy-file file (string-append icons "/icedove.png"))))
                  '("default16.png" "default22.png" "default24.png"
-                   "default32.png" "default48.png" "content/icon64.png"
-                   "mozicon128.png" "default256.png")))))
+                   "default32.png" "default48.png" "default256.png")))))
           (add-after 'install 'wrap-program
             (lambda* (#:key inputs #:allow-other-keys)
               (let* ((lib (string-append #$output "/lib"))
