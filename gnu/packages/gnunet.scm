@@ -446,21 +446,21 @@ The following services are supported:
                (base32
                 "0z2731l69vnfsa0cdsw8wh8g1d08wz15y5n0a58qjpf7baric01k"))))
     (arguments
-     `(#:configure-flags
-       (list "--with-libunique"
-             "--with-qrencode"
-             (string-append "--with-gnunet="
-                            (assoc-ref %build-inputs "gnunet")))))
+     (list #:configure-flags
+           #~(list "--with-libunique"
+                   "--with-qrencode"
+                   (string-append "--with-gnunet="
+                                  #$(this-package-input "gnunet")))))
     (inputs
-     `(("glade3" ,glade3)
-       ("gnunet" ,gnunet)
-       ("gnutls" ,gnutls/dane)
-       ("gtk+" ,gtk+)
-       ("libextractor" ,libextractor)
-       ("libgcrypt" ,libgcrypt)
-       ("libsodium" ,libsodium)
-       ("libunique" ,libunique)
-       ("qrencode" ,qrencode)))
+     (list glade3
+           gnunet
+           gnutls/dane
+           gtk+
+           libextractor
+           libgcrypt
+           libsodium
+           libunique
+           qrencode))
     (native-inputs
      (list pkg-config libglade))
     (synopsis "Graphical front-end tools for GNUnet")
