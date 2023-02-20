@@ -437,14 +437,14 @@ The following services are supported:
 (define-public gnunet-gtk
   (package (inherit gnunet)
     (name "gnunet-gtk")
-    (version "0.13.1")
+    (version "0.19.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnu/gnunet/gnunet-gtk-"
                                   version ".tar.gz"))
               (sha256
                (base32
-                "1zdzgq16h77w6ybwg3lqjsjr965np6iqvncqvkbj07glqd4wss0j"))))
+                "0z2731l69vnfsa0cdsw8wh8g1d08wz15y5n0a58qjpf7baric01k"))))
     (arguments
      `(#:configure-flags
        (list "--with-libunique"
@@ -458,6 +458,7 @@ The following services are supported:
        ("gtk+" ,gtk+)
        ("libextractor" ,libextractor)
        ("libgcrypt" ,libgcrypt)
+       ("libsodium" ,libsodium)
        ("libunique" ,libunique)
        ("qrencode" ,qrencode)))
     (native-inputs
