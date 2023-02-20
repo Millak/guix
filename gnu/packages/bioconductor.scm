@@ -13952,23 +13952,20 @@ of the analyses while minimizing technical noise.")
 (define-public r-cytolib
   (package
     (name "r-cytolib")
-    (version "2.10.0")
+    (version "2.10.1")
     (source
      (origin
        (method url-fetch)
        (uri (bioconductor-uri "cytolib" version))
        (sha256
         (base32
-         "1y06x7z3p938kfvjx6zqab9hh1xzlrlhdxczyprx7lsd34ylz46n"))))
+         "0rgqlqasil75b03c8c4nyg71ybysrsbqb0bwk6hbnaw8rljxdmi5"))))
     (properties `((upstream-name . "cytolib")))
     (build-system r-build-system)
     (native-inputs
      (list r-knitr))
     (propagated-inputs
      (list r-bh
-           r-rcpp
-           r-rcpparmadillo
-           r-rcppparallel
            r-rhdf5lib
            r-rprotobuflib))
     (home-page "https://bioconductor.org/packages/cytolib/")
