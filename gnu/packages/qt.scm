@@ -2708,7 +2708,8 @@ using the Enchant spell-checking library.")
                   "src/buildtools/config/linux.pri"
                   (lambda (in out)
                     (display (get-string-all in) out)
-                    (display "\ngn_args += use_system_openh264=true\n" out)))
+                    (display "\ngn_args += use_system_openh264=true\n" out)
+                    (display "\ngn_args += link_pulseaudio = true\n" out)))
                  ;; Qtwebengine is not installed into the same prefix as
                  ;; qtbase.  Some qtbase QTLibraryInfo constants will not
                  ;; work.  Replace with the full path to the qtwebengine-5
