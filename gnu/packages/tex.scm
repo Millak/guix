@@ -10035,6 +10035,37 @@ various fonts are provided.  An alternative package
 the bundle.")
       (license license:lppl1.3c))))
 
+(define-public texlive-minted
+  (let ((template (simple-texlive-package
+                   "texlive-minted"
+                   (list "/doc/latex/minted/"
+                         "/source/latex/minted/"
+                         "/tex/latex/minted/")
+                   (base32
+                    "08pbhp4a9k8v49kji26206zzabp0nn0fz403l4w7gxajw9rj8icr"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/minted")))
+      (propagated-inputs (list python-pygments
+                               texlive-etoolbox
+                               texlive-fvextra
+                               texlive-generic-xstring
+                               texlive-latex-fancyvrb
+                               texlive-latex-float
+                               texlive-latex-framed
+                               texlive-latex-ifplatform
+                               texlive-latex-newfloat
+                               texlive-lineno))
+      (home-page "https://ctan.org/pkg/minted")
+      (synopsis "Highlight source code in LaTeX documents")
+      (description "This package facilitates expressive syntax highlighting in
+LaTeX using the Pygments library.  This package also provides options to
+customize the highlighted source code output using fancyvrb and fvextra.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-caption
   (let ((template (simple-texlive-package
                    "texlive-caption"
