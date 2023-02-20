@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019-2023 Marius Bakke <marius@gnu.org>
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
+;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -318,7 +319,9 @@
 
 (define %chromium-version "109.0.5414.119")
 (define %ungoogled-revision (string-append %chromium-version "-1"))
-(define %debian-revision "debian/102.0.5005.61-1")
+(define %debian-revision "debian/103.0.5060.53-1")
+  ;; This is the first release supporting openjpeg@2.5 in openjpeg.patch;
+  ;; it still includes jsoncpp.patch, which also appears to be needed.
 (define %arch-revision "a0b214b3bdfbc7ee3d9004a70494a2b9e3da2c80")
 
 (define %ungoogled-origin
@@ -342,7 +345,7 @@
                                 ((_ version) version))))
     (sha256
      (base32
-      "1ln6r1qzlr7dsgvcbssvvc34my4mpkwv9hmvlb2dhjncs7isp65j"))))
+      "0bmbp1y0cykcbjhvsk330d11f7qnwmapcwxv76vdbl8cjfb6h60w"))))
 
 (define (origin-file origin file)
   (computed-file
@@ -355,7 +358,8 @@
 
 (define %debian-patches
   (map debian-patch
-       '("system/jsoncpp.patch"
+       '("fixes/clang-and-gcc11.patch"
+         "system/jsoncpp.patch"
          "system/zlib.patch"
          "system/openjpeg.patch")))
 
