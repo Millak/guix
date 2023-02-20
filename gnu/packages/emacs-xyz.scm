@@ -35833,7 +35833,7 @@ across sessions.")
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
-    (version "0.6.0")
+    (version "0.7.0")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -35841,7 +35841,7 @@ across sessions.")
                     ".tar"))
               (sha256
                (base32
-                "1cwi26jz9dn8la6zxxai2pfkcpz8lwf4cd8hr44lak6x0ca9bwr3"))))
+                "19ic4yjm9ccnvrhccfzhn4p3brk760hf8aw6qv53gf6qlj3mcyag"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-posframe emacs-vertico))
     (home-page "https://github.com/tumashu/vertico-posframe")
