@@ -2,7 +2,7 @@
 ;;; Copyright © 2016 David Craven <david@craven.ch>
 ;;; Copyright © 2017 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2019 Ivan Petkov <ivanppetkov@gmail.com>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -231,7 +231,11 @@ directory = '" port)
                                             (string-length ".tar.gz"))
                                           ".crate")))
             (find-files "." "\\.tar\\.gz$"))))
-      (apply invoke `("cargo" "package" ,@cargo-package-flags)))
+      (begin
+        ;;error: invalid inclusion of reserved file name Cargo.toml.orig in package source
+        (when (file-exists? "Cargo.toml.orig")
+          (delete-file "Cargo.toml.orig"))
+        (apply invoke `("cargo" "package" ,@cargo-package-flags))))
     (format #t "Not installing cargo sources, skipping `cargo package`.~%"))
   #t)
 

@@ -636,9 +636,10 @@ safety and thread safety guarantees.")
          ((#:phases phases)
           `(modify-phases ,phases
              (replace 'patch-cargo-checksums
-               (lambda* _
+               (lambda _
                  (substitute* '("Cargo.lock"
-                                "src/bootstrap/Cargo.lock")
+                                "src/bootstrap/Cargo.lock"
+                                "src/tools/rust-analyzer/Cargo.lock")
                    (("(checksum = )\".*\"" all name)
                     (string-append name "\"" ,%cargo-reference-hash "\"")))
                  (generate-all-checksums "vendor"))))))))))
@@ -671,7 +672,7 @@ safety and thread safety guarantees.")
 ;;; Here we take the latest included Rust, make it public, and re-enable tests
 ;;; and extra components such as rustfmt.
 (define-public rust
-  (let ((base-rust rust-1.60))
+  (let ((base-rust rust-1.67))
     (package
       (inherit base-rust)
       (outputs (cons "rustfmt" (package-outputs base-rust)))
@@ -713,6 +714,16 @@ safety and thread safety guarantees.")
                     "#[ignore]\nfn finds_author_git")
                    (("fn finds_local_author_git")
                     "#[ignore]\nfn finds_local_author_git"))))
+             (add-after 'unpack 'disable-tests-requiring-mercurial
+               (lambda _
+                 (substitute*
+                   "src/tools/cargo/tests/testsuite/init/simple_hg_ignore_exists/mod.rs"
+                   (("fn simple_hg_ignore_exists")
+                    "#[ignore]\nfn simple_hg_ignore_exists"))
+                 (substitute*
+                   "src/tools/cargo/tests/testsuite/init/mercurial_autodetect/mod.rs"
+                   (("fn mercurial_autodetect")
+                    "#[ignore]\nfn mercurial_autodetect"))))
              (add-after 'unpack 'patch-command-exec-tests
                ;; This test suite includes some tests that the stdlib's
                ;; `Command` execution properly handles in situations where
@@ -746,9 +757,11 @@ safety and thread safety guarantees.")
                       (string-append "\"" bash "/bin/sh\"")))
                    (substitute* "library/std/src/sys/unix/process/process_common/tests.rs"
                      (("fn test_process_mask")
-                      "#[allow(unused_attributes)]
-    #[ignore]
-    fn test_process_mask")))))
+                      "#[ignore]\nfn test_process_mask")
+                     (("fn test_process_group_posix_spawn")
+                      "#[ignore]\nfn test_process_group_posix_spawn")
+                     (("fn test_process_group_no_posix_spawn")
+                      "#[ignore]\nfn test_process_group_no_posix_spawn")))))
              (add-after 'unpack 'disable-interrupt-tests
                (lambda _
                  ;; This test hangs in the build container; disable it.
