@@ -11173,6 +11173,28 @@ span the full width of a page; it improves upon floatfig, and allows
 tables and figures to be set left/right or alternating on even/odd pages.")
     (license license:lppl1.3+)))
 
+(define-public texlive-fvextra
+  (let ((template (simple-texlive-package
+                   "texlive-fvextra"
+                   (list "/doc/latex/fvextra/"
+                         "/source/latex/fvextra/"
+                         "/tex/latex/fvextra/")
+                   (base32
+                    "0nawx1fh55yhqspy5jgss2qmwpqmikfrg7628smk931rph9nq0aa"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/fvextra")))
+      (home-page "https://ctan.org/macros/latex/contrib/fvextra")
+      (synopsis "Extensions and patches for fancyvrb")
+      (description
+       "This package provides several extensions to fancyvrb, including
+automatic line breaking and improved math mode.  It also patches some fancyvrb
+internals.")
+      (license license:lppl1.3+))))
+
 (define-public bibtool
   (package
     (name "bibtool")
