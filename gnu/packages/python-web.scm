@@ -4599,23 +4599,23 @@ available in Django, but is a standalone package.")
 (define-public python-paste
   (package
     (name "python-paste")
-    (version "3.0.6")
+    (version "3.5.2")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "Paste" version))
        (sha256
         (base32
-         "14lbi9asn5agsdf7r97prkjpz7amgmp529lbvfhf0nv881xczah6"))
+         "1xjakxrdvy4kgfy170gb9bl8zp9hqjjwh1h1vlik1pxw606399ym"))
        (patches (search-patches "python-paste-remove-timing-test.patch"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            ;; This test calls out to the internet.
            (delete-file "tests/test_proxy.py") #t))))
-    (build-system python-build-system)
+    (build-system pyproject-build-system)
     (native-inputs
-     (list python-pytest python-pytest-runner python-nose))
+     (list python-pytest python-nose))
     (propagated-inputs
      (list python-six))
     (home-page "https://pythonpaste.readthedocs.io/")
