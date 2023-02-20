@@ -5304,6 +5304,26 @@ capabilities of longtable and tabularx; an environment for including plain TeX
 in LaTeX documents; a jiffy to create slashed characters for physicists.")
     (license license:lppl)))
 
+(define-public texlive-catchfile
+  (let ((template (simple-texlive-package
+                   "texlive-catchfile"
+                   (list "/doc/latex/catchfile/"
+                         "/source/latex/catchfile/"
+                         "/tex/generic/catchfile/")
+                   (base32
+                    "1dpxy64hs0bjp8d2dmikflc995vazf7fi6z92w51fnj2fidgl8gx"))))
+    (package
+      (inherit template)
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t)
+          "latex/catchfile")))
+      (home-page "https://ctan.org/macros/latex/contrib/catchfile")
+      (synopsis "Catch an external file into a macro")
+      (description
+       "Catchfile catches the contents of a file and puts it in a macro.")
+      (license license:lppl1.3+))))
+
 (define-public texlive-doi
   (package
     (inherit (simple-texlive-package
