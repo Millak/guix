@@ -26,7 +26,7 @@
 (channel-news
  (version 0)
 
- (entry (commit "63622d2a234b707be5df07d8290a81b3247947e7")
+ (entry (commit "598f4c509bbfec2b983a8ee246cce0a0fe45ec7f")
         (title
          (de "Neues Format @samp{rpm} für den Befehl @command{guix pack}")
          (en "New @samp{rpm} format for the @command{guix pack} command")
