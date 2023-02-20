@@ -3174,6 +3174,7 @@ users, via its Plain TeX version.)")
               (base32
                "0pdilgpw4zc0ipp4z9kdi61nymifyjy2mfpk74xk2cw9vhynkk3w")
               #:trivial? #t))
+    (propagated-inputs (list texlive-latex-upquote))
     (home-page "https://www.ctan.org/pkg/fancyvrb")
     (synopsis "Sophisticated verbatim text")
     (description
