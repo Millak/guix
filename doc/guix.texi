@@ -23124,9 +23124,7 @@ support (@pxref{Networking Services, @code{modem-manager-service-type}}),
 energy and color management services, the @code{elogind} login and seat
 manager, the Polkit privilege service, the GeoClue location service, the
 AccountsService daemon that allows authorized users change system passwords,
-an NTP client (@pxref{Networking Services}), the Avahi daemon, and has the
-name service switch service configured to be able to use @code{nss-mdns}
-(@pxref{Name Service Switch, mDNS}).
+a NTP client (@pxref{Networking Services}) and the Avahi daemon.
 @end defvar
 
 The @code{%desktop-services} variable can be used as the @code{services}
