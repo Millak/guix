@@ -2703,12 +2703,20 @@ satisfiability checking (SAT).")
   (package
     (inherit clingo)
     (name "python-clingo")
+    (version (package-version clingo)) ; for #$version in arguments
     (arguments
      (substitute-keyword-arguments (package-arguments clingo)
        ((#:configure-flags flags #~'())
         #~(cons* "-DCLINGO_BUILD_WITH_PYTHON=pip"
                  "-DCLINGO_USE_LIB=yes"
                  #$flags))
+       ((#:imported-modules _ '())
+        `(,@%cmake-build-system-modules
+          (guix build python-build-system)))
+       ((#:modules _ '())
+        '((guix build cmake-build-system)
+          ((guix build python-build-system) #:prefix python:)
+          (guix build utils)))
        ((#:phases phases #~%standard-phases)
         #~(modify-phases #$phases
             (add-after 'unpack 'fix-failing-tests
