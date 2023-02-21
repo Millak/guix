@@ -13,6 +13,7 @@
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Noah Landis <noahlandis@posteo.net>
 ;;; Copyright © 2021 Sergiu Ivanov <sivanov@colimite.fr>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -170,6 +171,14 @@ dictionaries, including personal ones.")
                      #:sha256
                      (base32
                       "1svls9p7rsfi3hs0afh0cssj006qb4v1ik2yzqgj8hm10c6as2sm")))
+
+(define-public aspell-dict-bg
+  (aspell-dictionary "bg" "Bulgarian"
+                     #:version "4.1-0"
+                     #:prefix "aspell6-"
+                     #:sha256
+                     (base32
+                      "1alacmgpfk0yrgq83y23d16fhav1bxmb98kg8d2a5r9bvh2h0mvl")))
 
 (define-public aspell-dict-bn
   (aspell-dictionary "bn" "Bengali"
