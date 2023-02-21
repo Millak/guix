@@ -122,6 +122,7 @@
 ;;; Copyright © 2023 Simon Streit <simon@netpanic.org>
 ;;; Copyright © 2023 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2023 Ivan Vilata-i-Balaguer <ivan@selidor.net>
+;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -190,6 +191,7 @@
   #:use-module (gnu packages texinfo)
   #:use-module (gnu packages tcl)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages tree-sitter)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages xorg)
   #:use-module (gnu packages lesstif)
@@ -28683,6 +28685,32 @@ buffers.")
       (synopsis "JavaScript refactoring in Emacs")
       (description "This package provides various refactoring functions for
 JavaScript.")
+      (license license:gpl3+))))
+
+(define-public emacs-jsdoc
+  (let ((commit "10ccff7a5cec6fd2f4484c1d55347634e5b46432")) ;version bump
+    (package
+      (name "emacs-jsdoc")
+      (version "0.3")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/isamert/jsdoc.el")
+               (commit commit)))
+         (sha256
+          (base32 "0cbchri4117wjcnlk3npi4x1sfx248vck1q61cis8drrrz4c8jyp"))
+         (file-name (git-file-name name version))))
+      (build-system emacs-build-system)
+      (arguments (list #:emacs emacs-next))
+      (propagated-inputs
+       (list emacs-dash
+             emacs-s
+             tree-sitter-javascript))
+      (home-page "https://github.com/isamert/jsdoc.el")
+      (synopsis "Inserts JSDoc function comments/typedefs easily.")
+      (description "This package provides an easy way to insert JSDoc function
+comments and typedefs using Emacs' builtin tree-sitter.")
       (license license:gpl3+))))
 
 (define-public emacs-prettier
