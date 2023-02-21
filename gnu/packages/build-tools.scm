@@ -997,7 +997,8 @@ maintenance-related files, for convenience.")
     (native-search-paths
      (list (search-path-specification
             (variable "GNULIB_SRCDIR")
-            (files (list "src/gnulib")))))
+            (files (list "src/gnulib"))
+            (separator #f))))
     (license (list license:lgpl2.0+ license:gpl3+))))
 
 (define-public gnulib
