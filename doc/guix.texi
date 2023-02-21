@@ -18022,7 +18022,7 @@ package or any valid argument to @command{setfont}, as in this example:
 
 @defvar hosts-service-type
 Type of the service that populates the entries for (@file{/etc/hosts}).
-This service type can be extended by passing it a list of
+This service type can be @emph{extended} by passing it a list of
 @code{host} records.
 
 @c TRANSLATORS: The domain names below SHOULD NOT be translated.
@@ -18047,10 +18047,11 @@ By default @file{/etc/host} comes with the following entries:
 
 For most setups this is what you want though if you find yourself in
 the situation where you want to change the default entries, you can
-do so in @code{operating-system}.@pxref{operating-system Reference,@code{essential-services}}
+do so in @code{operating-system} via @code{modify-services}
+(@pxref{Service Reference,@code{modify-services}}).
 
-The following example shows how one would unset @var{host-name}
-from being an alias of @code{localhost}.
+The following example shows how to unset @var{host-name} from being an
+alias of @code{localhost}.
 @lisp
 (operating-system
   ;; @dots{}
@@ -18085,9 +18086,9 @@ Procedure for creating @code{host} records.
 @end defun
 
 @quotation Note
-The @code{host} data type constructor is @code{%host} though it is
-tiresome to create multiple records with it so in practice the procedure
-@code{host} (which wraps around @code{%host}) is used instead.
+The constructor for the @code{host} record-type is @code{%host} though
+the procedure @code{host} results in more concise definitions when there are
+multiple @code{host} records.
 @end quotation
 @end defvar
 
