@@ -194,6 +194,7 @@ interfaces for other technical domains.")
      (list unzip
            ;; For tests.
            graphviz
+           python-mock
            python-pytest
            python-pytest-cov
            python-pytest-mock))
