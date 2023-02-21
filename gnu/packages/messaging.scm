@@ -470,7 +470,7 @@ TCP sessions from existing clients.")
 (define-public poezio
   (package
     (name "poezio")
-    (version "0.13.2")
+    (version "0.14")
     (source
      (origin
        (method git-fetch)
@@ -482,7 +482,7 @@ TCP sessions from existing clients.")
        (file-name
         (git-file-name name version))
        (sha256
-        (base32 "0p92k8ssjsgavyfv1fd5cgzyw87dmdd84vaz7zvfsf5crvpr1mkf"))))
+        (base32 "15vlmymqlcf94h1g6dvgzjvj15c47dqsm78qs40wl2dlwspvqkxj"))))
     (build-system python-build-system)
     (arguments
       (list #:phases
@@ -514,7 +514,7 @@ made in a configuration file or directly from the client.
 You'll find the light, fast, geeky and anonymous spirit of IRC while using a
 powerful, standard and open protocol.")
     (home-page "https://poez.io/en/")
-    (license license:zlib)))
+    (license license:gpl3+)))
 
 (define-public libotr
   (package
