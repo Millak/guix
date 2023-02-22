@@ -61790,6 +61790,24 @@ in Rust.")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-time-core-0.1
+  (package
+    (name "rust-time-core")
+    (version "0.1.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "time-core" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1z803zwzyh16nk3c4nmkw8v69nyj0r4v8s3yag68mvya38gkw59f"))))
+    (build-system cargo-build-system)
+    (arguments '(#:tests? #f))      ; Doc tests fail.
+    (home-page "https://github.com/time-rs/time")
+    (synopsis "Implementation for the time crate")
+    (description "This crate is an implementation detail for the time crate and
+should not be relied upon directly.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-time-macros-0.2
   (package
     (name "rust-time-macros")
