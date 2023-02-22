@@ -26600,7 +26600,7 @@ compile time.")
   (package
     (inherit rust-hex-literal-0.3)
     (name "rust-hex-literal")
-    (version "0.2.1")
+    (version "0.2.2")
     (source
      (origin
        (method url-fetch)
@@ -26609,7 +26609,7 @@ compile time.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1q36f0qq31ggh4ipcwb7a5g6jmci2010vn2v3qpaz4csxhhf47cn"))))
+         "04ba6fmk6q2mmzpl1wmfsaz3wyljcd0va8577wpmbx1wkccr61np"))))
     (arguments
      `(#:cargo-inputs
        (("rust-hex-literal-impl" ,rust-hex-literal-impl-0.2)
