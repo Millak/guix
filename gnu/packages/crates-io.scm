@@ -24210,23 +24210,24 @@ platforms.")
 (define-public rust-getrandom-0.2
   (package
     (name "rust-getrandom")
-    (version "0.2.0")
+    (version "0.2.8")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "getrandom" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1x3clmvj5k2h9qv3ihbyif1rns3pf5y5n66f5jjyc5zr6v7jb07f"))))
+        (base32 "0cbb766pcyi7sws0fnp1pxkz0nhiya0ckallq502bxmq49mfnnn0"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-0.1)
+       (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-libc" ,rust-libc-0.2)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
         ("rust-stdweb" ,rust-stdweb-0.4)
-        ("rust-wasi" ,rust-wasi-0.9)
+        ("rust-wasi" ,rust-wasi-0.11)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
        #:cargo-development-inputs
        (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
