@@ -35688,14 +35688,14 @@ linear algebra library.")
 (define-public rust-native-tls-0.2
   (package
     (name "rust-native-tls")
-    (version "0.2.7")
+    (version "0.2.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "native-tls" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1m6v16xl8h4pm32pw6yhrvgwznf60bqhj2qhb1yrb8wd3hp6pndq"))))
+        (base32 "0bmrlg0fmzxaycjpkgkchi93av07v2yf9k33gc12ca9gqdrn28h7"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f                      ; tests require network access
@@ -35711,8 +35711,8 @@ linear algebra library.")
         ("rust-security-framework-sys" ,rust-security-framework-sys-2)
         ("rust-tempfile" ,rust-tempfile-3))
        #:cargo-development-inputs
-       (("rust-hex" ,rust-hex-0.4)
-        ("rust-test-cert-gen" ,rust-test-cert-gen-0.1))))
+       (("rust-tempfile" ,rust-tempfile-3)
+        ("rust-test-cert-gen" ,rust-test-cert-gen-0.7))))
     (native-inputs
      (list pkg-config))
     (inputs
