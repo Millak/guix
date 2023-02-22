@@ -64126,6 +64126,29 @@ parser.")
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
          ("rust-snapbox" ,rust-snapbox-0.2))))))
 
+(define-public rust-toml-test-0.3
+  (package
+    (name "rust-toml-test")
+    (version "0.3.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "toml-test" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "042dgaqjk1v715my4rziqdadylsad31ny4y6askx878xvbw0r3s8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-chrono" ,rust-chrono-0.4)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-json" ,rust-serde-json-1))
+       #:cargo-development-inputs
+       (("rust-toml-test-data" ,rust-toml-test-data-1))))
+    (home-page "https://github.com/epage/toml-test-rs")
+    (synopsis "Verify Rust TOML parsers")
+    (description "This package can be used to verify Rust TOML parsers.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-test-data-1
   (package
     (name "rust-toml-test-data")
