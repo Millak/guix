@@ -28233,6 +28233,29 @@ for @code{uint} and @code{fixed_hash}.")
 a trait for tuples.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-include-dir-0.7
+  (package
+    (name "rust-include-dir")
+    (version "0.7.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "include-dir" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "17pinxhivh3chkbjmbg9sl0x3h7wwry2zc2p12gfh8kizyp2yxhq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included
+       #:cargo-inputs
+       (("rust-glob" ,rust-glob-0.3)
+        ("rust-include-dir-macros" ,rust-include-dir-macros-0.7))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (home-page "https://github.com/Michael-F-Bryan/include_dir")
+    (synopsis "Embed the contents of a directory in your binary")
+    (description "Embed the contents of a directory in your binary.")
+    (license license:expat)))
+
 (define-public rust-include-dir-macros-0.7
   (package
     (name "rust-include-dir-macros")
