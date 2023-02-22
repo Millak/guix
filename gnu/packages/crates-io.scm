@@ -71380,7 +71380,7 @@ crate.")
 (define-public rust-zeroize-1
   (package
     (name "rust-zeroize")
-    (version "1.5.0")
+    (version "1.5.7")
     (source
      (origin
        (method url-fetch)
@@ -71388,11 +71388,12 @@ crate.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nq8zq5h7ad6kahdk0fxw4fdm0ibycj061jngxqkqchw67n2l8nc"))))
+        (base32 "17ql9c1qhh5kw5aas72swwicnr701alhmhnrfmr9wrkg1jyvb563"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-zeroize-derive" ,rust-zeroize-derive-1))))
+       (("rust-serde" ,rust-serde-1)
+        ("rust-zeroize-derive" ,rust-zeroize-derive-1))))
     (home-page "https://github.com/iqlusioninc/crates/")
     (synopsis "Securely clear secrets from memory")
     (description
