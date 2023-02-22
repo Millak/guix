@@ -1000,16 +1000,16 @@ Emacs).")
             (variable "KICAD") ;to find kicad-doc
             (files '("")))
            (search-path-specification
-            (variable "KICAD6_TEMPLATE_DIR")
+            (variable "KICAD7_TEMPLATE_DIR")
             (files '("share/kicad/template")))
            (search-path-specification
-            (variable "KICAD6_SYMBOL_DIR")
+            (variable "KICAD7_SYMBOL_DIR")
             (files '("share/kicad/symbols")))
            (search-path-specification
-            (variable "KICAD6_FOOTPRINT_DIR")
+            (variable "KICAD7_FOOTPRINT_DIR")
             (files '("share/kicad/footprints")))
            (search-path-specification
-            (variable "KICAD6_3DMODEL_DIR")
+            (variable "KICAD7_3DMODEL_DIR")
             (files '("share/kicad/3dmodels")))))
     (native-inputs (list boost
                          desktop-file-utils
