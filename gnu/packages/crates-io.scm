@@ -24873,28 +24873,6 @@ reading and writing git repositories.")
 libcurl, which is intended to be used with the @code{git2} crate.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-git2-curl-0.14
-  (package
-    (inherit rust-git2-curl-0.17)
-    (name "rust-git2-curl")
-    (version "0.14.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "git2-curl" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "0l1sckmpvhd498c9ji04gkpfkfrpx7c8rabihczsnjx91v5kjdc8"))))
-    (arguments
-     `(#:skip-build? #t                 ;need rust-civet and others
-       #:cargo-inputs
-       (("rust-curl" ,rust-curl-0.4)
-        ("rust-git2" ,rust-git2-0.13)
-        ("rust-log" ,rust-log-0.4)
-        ("rust-url" ,rust-url-2))))))
-
 (define-public rust-gjson-0.8
   (package
     (name "rust-gjson")
