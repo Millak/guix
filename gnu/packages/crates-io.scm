@@ -67217,30 +67217,6 @@ panic-free alternative to @code{core::fmt}.")
 arithmetic.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-uint-0.4
-  (package
-    (inherit rust-uint-0.9)
-    (name "rust-uint")
-    (version "0.4.1")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "uint" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0il6x59h605mmm10qxig066khxaygqcyb60pqja1n5mr68bs2jvm"))))
-    (arguments
-      `(#:tests? #f ; The tests fail. Due to rustc version?
-        #:cargo-inputs
-        (("rust-byteorder" ,rust-byteorder-1)
-         ("rust-crunchy" ,rust-crunchy-0.1)
-         ("rust-heapsize" ,rust-heapsize-0.4)
-         ("rust-quickcheck" ,rust-quickcheck-0.6)
-         ("rust-rustc-hex" ,rust-rustc-hex-2))
-        #:cargo-development-inputs
-        (("rust-quickcheck" ,rust-quickcheck-0.6)
-         ("rust-rustc-hex" ,rust-rustc-hex-2))))))
-
 (define-public rust-umask-1
   (package
     (name "rust-umask")
