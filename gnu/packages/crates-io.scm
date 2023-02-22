@@ -22078,23 +22078,6 @@ traits.")
         (base32
          "0036jb8ry4h83n319jb20b5yvyfyq8mx8dkxnyjm22nq8fl8yjhk"))))))
 
-(define-public rust-float-cmp-0.3
-  (package
-    (inherit rust-float-cmp-0.5)
-    (name "rust-float-cmp")
-    (version "0.3.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "float-cmp" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1c0hmj46xma5aysz0qb49padhc26aw875whx6q6rglsj5dqpds1b"))))
-    (arguments
-     `(#:cargo-inputs (("rust-num" ,rust-num-0.1))))))
-
 (define-public rust-float-ord-0.3
   (package
     (name "rust-float-ord")
