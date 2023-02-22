@@ -9153,7 +9153,7 @@ little-endian.")
 (define-public rust-bzip2-0.4
   (package
     (name "rust-bzip2")
-    (version "0.4.1")
+    (version "0.4.4")
     (source
      (origin
        (method url-fetch)
@@ -9161,7 +9161,7 @@ little-endian.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1gpwm7qj8adi0zffm8r17vkv6f98d1q9glvpjk28v0wb6kz88p97"))))
+        (base32 "1y27wgqkx3k2jmh4k26vra2kqjq1qc1asww8hac3cv1zxyk1dcdx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -9172,8 +9172,8 @@ little-endian.")
         ("rust-tokio-io" ,rust-tokio-io-0.1))
        #:cargo-development-inputs
        (("rust-partial-io" ,rust-partial-io-0.3)
-        ("rust-quickcheck" ,rust-quickcheck-0.9)
-        ("rust-rand" ,rust-rand-0.3)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (home-page "https://github.com/alexcrichton/bzip2-rs")
     (synopsis
