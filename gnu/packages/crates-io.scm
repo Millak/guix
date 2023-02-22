@@ -72363,8 +72363,35 @@ library.")
         ("rust-zstd-sys" ,rust-zstd-sys-1))))))
 
 ;; TODO: Unbundle zstd.
+(define-public rust-zstd-sys-2
+  (package
+    (name "rust-zstd-sys")
+    (version "2.0.7+zstd.1.5.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zstd-sys" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1xf7ng97h6h89bvisllj05vapkqcacn88y9bfm6jjmgyl8xrql4l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bindgen" ,rust-bindgen-0.63)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (home-page "https://github.com/gyscos/zstd-rs")
+    (synopsis "Low-level bindings to the zstd compression library")
+    (description "This package provides low-level Rust bindings to the zstd
+compression library.")
+    (license (list license:expat license:asl2.0))))
+
+;; TODO: Unbundle zstd.
 (define-public rust-zstd-sys-1
   (package
+    (inherit rust-zstd-sys-2)
     (name "rust-zstd-sys")
     (version "1.6.1+zstd.1.5.0")
     (source
@@ -72375,18 +72402,12 @@ library.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0cra76lginz5k659rch7axg5nyms67yffygr3k7ic7a3lb3j0lb1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-bindgen" ,rust-bindgen-0.58)
         ("rust-cc" ,rust-cc-1)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-pkg-config" ,rust-pkg-config-0.3))))
-    (home-page "https://github.com/gyscos/zstd-rs")
-    (synopsis "Low-level bindings to the zstd compression library")
-    (description "This package provides low-level Rust bindings to the zstd
-compression library.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
