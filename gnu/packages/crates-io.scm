@@ -64505,6 +64505,30 @@ stream-based WebSocket implementation.")
         ("rust-slab" ,rust-slab-0.4)
         ("rust-tokio" ,rust-tokio-1))))))
 
+(define-public rust-tokio-util-0.5
+  (package
+    (inherit rust-tokio-util-0.6)
+    (name "rust-tokio-util")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "tokio-util" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18qh9w84zfgz2r0k9wryzr9sgj92gzl25ibcd55jg5cf0wmxwdri"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bytes" ,rust-bytes-0.6)
+        ("rust-futures-core" ,rust-futures-core-0.3)
+        ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-sink" ,rust-futures-sink-0.3)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-pin-project-lite" ,rust-pin-project-lite-0.2)
+        ("rust-slab" ,rust-slab-0.4)
+        ("rust-tokio" ,rust-tokio-0.3))))))
+
 (define-public rust-tokio-util-0.4
   (package
     (inherit rust-tokio-util-0.6)
