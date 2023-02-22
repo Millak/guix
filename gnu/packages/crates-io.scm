@@ -19784,8 +19784,33 @@ unescapes strings.")
 from HTML entities.")
     (license license:expat)))
 
+(define-public rust-enum-as-inner-0.5
+  (package
+    (name "rust-enum-as-inner")
+    (version "0.5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "enum-as-inner" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05m1frlkgrikja714zxb97i00rhj36zlifiwiby7ymkx0jx0nwn9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-heck" ,rust-heck-0.4)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-syn" ,rust-syn-1))))
+    (home-page "https://github.com/bluejekyll/enum-as-inner")
+    (synopsis "Proc-macro for deriving inner field accessor functions on enums")
+    (description "This package provides a proc-macro for deriving inner field
+accessor functions on enums.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-enum-as-inner-0.3
   (package
+    (inherit rust-enum-as-inner-0.5)
     (name "rust-enum-as-inner")
     (version "0.3.3")
     (source
@@ -19796,18 +19821,12 @@ from HTML entities.")
        (sha256
         (base32
          "15gmpgywijda93lkq7hf2y53h66sqkhzabzbxich288xm6b00pvw"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-heck" ,rust-heck-0.3)
         ("rust-proc-macro2" ,rust-proc-macro2-1)
         ("rust-quote" ,rust-quote-1)
-        ("rust-syn" ,rust-syn-1))))
-    (home-page "https://github.com/bluejekyll/enum-as-inner")
-    (synopsis "Proc-macro for deriving inner field accessor functions on enums")
-    (description "This package provides a proc-macro for deriving inner field
-accessor functions on enums.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-syn" ,rust-syn-1))))))
 
 (define-public rust-enum-as-inner-0.2
   (package
