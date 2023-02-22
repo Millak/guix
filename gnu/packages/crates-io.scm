@@ -60971,8 +60971,33 @@ attribute.  Under the hood, all test cases that share same body are grouped
 into mod, giving clear and readable test results.")
     (license license:expat)))
 
+(define-public rust-test-cert-gen-0.7
+  (package
+    (name "rust-test-cert-gen")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "test-cert-gen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "06gl7zqvrsl4fqm6d3i21q459gcv9nf258kb5ynd8dip5spd021j"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-pem" ,rust-pem-0.8)
+        ("rust-tempdir" ,rust-tempdir-0.3))))
+    (home-page "https://crates.io/crates/test-cert-gen")
+    (synopsis "Generate certificates for tests")
+    (description
+     "This package is an utility to generate certificates for tests (e.g.,
+for TLS).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-test-cert-gen-0.1
   (package
+    (inherit rust-test-cert-gen-0.7)
     (name "rust-test-cert-gen")
     (version "0.1.0")
     (source
@@ -60982,14 +61007,7 @@ into mod, giving clear and readable test results.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1lrpirh863h9rq2iqp0kivshzwd909fgiy13a5684d685ap7c565"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://crates.io/crates/test-cert-gen")
-    (synopsis "Generate certificates for tests")
-    (description
-     "This package is an utility to generate certificates for tests (e.g.,
-for TLS).")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-test-generator-0.3
   (package
