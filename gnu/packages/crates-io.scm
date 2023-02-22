@@ -24368,27 +24368,6 @@ getters and setters on fields.")
     (description "This package provides raw FFI bindings for GNU Gettext.")
     (license license:expat)))
 
-(define-public rust-gettext-sys-0.19
-  (package
-    (inherit rust-gettext-sys-0.21)
-    (name "rust-gettext-sys")
-    (version "0.19.9")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gettext-sys" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0lzi6ja81vc16mhcdmn3lw35120n9ijhvsy5dh5775mpbfxc8d70"))
-        (modules '((guix build utils)))
-        (snippet
-         '(begin (delete-file "gettext-0.19.8.1.tar.xz") #t))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-cc" ,rust-cc-1))))))
-
 (define-public rust-gfa-0.10
   (package
     (name "rust-gfa")
