@@ -15558,7 +15558,7 @@ requests")
 (define-public rust-curl-sys-0.4
   (package
     (name "rust-curl-sys")
-    (version "0.4.53+curl-7.82.0")
+    (version "0.4.59+curl-7.86.0")
     (source
       (origin
         (method url-fetch)
@@ -15566,24 +15566,22 @@ requests")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0lh398vd34c55afyw5csbxqmnp7caxgpgci3y89c60lmb9d914l0"))
+          "01x4njcmggv9c8v2p32flf32wgp21406vnxpan7v0j7l554f7z3c"))
         (modules '((guix build utils)))
         (snippet
-         '(begin (delete-file-recursively "curl") #t))))
+         '(begin (delete-file-recursively "curl")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-libc" ,rust-libc-0.2)
+       (("rust-cc" ,rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2)
         ("rust-libnghttp2-sys" ,rust-libnghttp2-sys-0.1)
         ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-mesalink" ,rust-mesalink-1)
         ("rust-openssl-sys" ,rust-openssl-sys-0.9)
-        ("rust-winapi" ,rust-winapi-0.3)
-        ("rust-cc" ,rust-cc-1)
         ("rust-pkg-config" ,rust-pkg-config-0.3)
-        ("rust-vcpkg" ,rust-vcpkg-0.2))
-       #:cargo-development-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1))))
+        ("rust-rustls-ffi" ,rust-rustls-ffi-0.8)
+        ("rust-vcpkg" ,rust-vcpkg-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))))
     (native-inputs
      (list pkg-config))
     (inputs
