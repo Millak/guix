@@ -61735,20 +61735,6 @@ into mod, giving clear and readable test results.")
 for TLS).")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-test-cert-gen-0.1
-  (package
-    (inherit rust-test-cert-gen-0.7)
-    (name "rust-test-cert-gen")
-    (version "0.1.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "test-cert-gen" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1lrpirh863h9rq2iqp0kivshzwd909fgiy13a5684d685ap7c565"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-test-generator-0.3
   (package
     (name "rust-test-generator")
