@@ -46068,6 +46068,49 @@ numbers.")
 and Petrick's method, an algorithm to automatically minimize boolean expressions.")
     (license license:expat)))
 
+(define-public rust-quinn-0.8
+  (package
+    (name "rust-quinn")
+    (version "0.8.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "quinn" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "13zgwm0pm73w26mzrgv3z9c9rf0zqmq1j8r7k64di85zv5qmwhsv"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytes" ,rust-bytes-1)
+        ("rust-futures-channel" ,rust-futures-channel-0.3)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.8)
+        ("rust-quinn-udp" ,rust-quinn-udp-0.1)
+        ("rust-rustls" ,rust-rustls-0.20)
+        ("rust-thiserror" ,rust-thiserror-1)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1)
+        ("rust-webpki" ,rust-webpki-0.22))
+       #:cargo-development-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-bencher" ,rust-bencher-0.1)
+        ("rust-crc" ,rust-crc-2)
+        ("rust-directories-next" ,rust-directories-next-2)
+        ("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rcgen" ,rust-rcgen-0.8)
+        ("rust-rustls-pemfile" ,rust-rustls-pemfile-0.2)
+        ("rust-structopt" ,rust-structopt-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing-futures" ,rust-tracing-futures-0.2)
+        ("rust-tracing-subscriber" ,rust-tracing-subscriber-0.3)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "Versatile QUIC transport protocol implementation")
+    (description "Versatile QUIC transport protocol implementation")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quinn-proto-0.8
   (package
     (name "rust-quinn-proto")
