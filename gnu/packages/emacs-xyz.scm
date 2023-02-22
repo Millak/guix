@@ -4034,6 +4034,27 @@ integration with Edebug allows stepping into Lisp expressions that are part of
 the Font Lock keywords.")
       (license license:gpl3+))))
 
+ (define-public emacs-fontaine
+   (package
+     (name "emacs-fontaine")
+     (version "1.0.0")
+     (source (origin
+               (method git-fetch)
+               (uri (git-reference
+                     (url "https://git.sr.ht/~protesilaos/fontaine")
+                     (commit version)))
+               (file-name (git-file-name name version))
+               (sha256
+                (base32
+                 "0y2ys1hfz6gdhxh2sdp2v1qd3dpzyj7j451sbd4rb2q15h5hc2na"))))
+     (build-system emacs-build-system)
+     (home-page "https://sr.ht/~protesilaos/fontaine")
+     (synopsis "Set Emacs font configurations using presets")
+     (description
+      "Fontaine lets the user specify presets of font configurations
+and set them on demand on graphical Emacs frames.")
+     (license license:gpl3+)))
+
 (define-public emacs-form-feed
   (package
     (name "emacs-form-feed")
