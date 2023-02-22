@@ -64014,6 +64014,33 @@ serializing Rust structures.")
 parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-toml-edit-0.15
+  (package
+    (inherit rust-toml-edit-0.19)
+    (name "rust-toml-edit")
+    (version "0.15.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "toml_edit" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0iinkhiyk4xqj2anfn6dryp1lyyamsrimlv95xk7x5l512kinm5i"))))
+    (arguments
+     `(#:tests? #f              ; decoder_compliance tests fail
+       #:cargo-inputs
+       (("rust-combine" ,rust-combine-4)
+        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-kstring" ,rust-kstring-2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-toml-datetime" ,rust-toml-datetime-0.5))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-toml" ,rust-toml-0.5)
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))))
+
 (define-public rust-toml-edit-0.14
   (package
     (inherit rust-toml-edit-0.19)
