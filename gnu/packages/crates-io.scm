@@ -22944,18 +22944,17 @@ futures-rs library.")
 (define-public rust-futures-task-0.3
   (package
     (name "rust-futures-task")
-    (version "0.3.12")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "futures-task" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "11ldlpl7mis5crys731dj7s7npgigdgrzdm7mi2y86m8ivmhgphk"))))
+        (base32 "0rk3jg6lri1rrn03ns89cmw8lircbaf2i2d4mr10zc8hyqdrmxyw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs (("rust-once-cell" ,rust-once-cell-1))))
+     `(#:skip-build? #t))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis "Tools for working with tasks")
     (description "This package provides tools for working with tasks.")
