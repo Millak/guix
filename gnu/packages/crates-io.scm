@@ -41447,21 +41447,20 @@ function data structures.")
 (define-public rust-pin-project-1
   (package
     (name "rust-pin-project")
-    (version "1.0.2")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "19qw2nm2kk38v9j16nsm8j3fkh0g8pjq0k4cplx7i2f4q8vj5k4w"))))
+        (base32 "1k3f9jkia3idxl2pqxamszwnl89dk52fa4jqj3p7zmmwnq4scadd"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-pin-project-internal" ,rust-pin-project-internal-1))
        #:cargo-development-inputs
-       (("rust-pin-project-auxiliary-macro"
-         ,rust-pin-project-auxiliary-macro-0.0)
+       (("rust-macrotest" ,rust-macrotest-1)
         ("rust-rustversion" ,rust-rustversion-1)
         ("rust-static-assertions" ,rust-static-assertions-1)
         ("rust-trybuild" ,rust-trybuild-1))))
