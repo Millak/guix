@@ -48634,7 +48634,13 @@ uses finite automata and guarantees linear time matching on all inputs.")
         (base32 "1s8yv7r76af4aqf55ckn7ndfr8ba427wybkp7gam42apr07dkvi1"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:cargo-test-flags
+       '("--release" "--"
+         ;; These tests go to the network
+         "--skip=test_badssl_modern"
+         "--skip=test_badssl_self_signed"
+         "--skip=connect_timeout"
+         "--skip=test_allowed_methods")
        #:cargo-inputs
        (("rust-async-compression" ,rust-async-compression-0.3)
         ("rust-base64" ,rust-base64-0.21)
@@ -48648,7 +48654,7 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-http" ,rust-http-0.2)
         ("rust-http-body" ,rust-http-body-0.4)
         ("rust-hyper" ,rust-hyper-0.14)
-        ("rust-hyper-rustls" ,rust-hyper-rustls-0.22)
+        ("rust-hyper-rustls" ,rust-hyper-rustls-0.23)
         ("rust-hyper-tls" ,rust-hyper-tls-0.5)
         ("rust-ipnet" ,rust-ipnet-2)
         ("rust-js-sys" ,rust-js-sys-0.3)
@@ -48689,6 +48695,10 @@ uses finite automata and guarantees linear time matching on all inputs.")
         ("rust-tokio" ,rust-tokio-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
         ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (inputs
+     (list openssl))
+    (native-inputs
+     (list pkg-config))
     (home-page "https://github.com/seanmonstar/reqwest")
     (synopsis "High level HTTP client library")
     (description "This package provides a high level HTTP client library.")
