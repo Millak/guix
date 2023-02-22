@@ -34794,21 +34794,21 @@ possible over the OS abstractions.")
      "Unix domain socket bindings for mio.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-miow-0.4
+(define-public rust-miow-0.5
   (package
     (name "rust-miow")
-    (version "0.4.0")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "miow" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "03p0dgbahlysgxk0sihhf09k5h13r9aam3d6rfivdbxkj9vpydx7"))))
+        (base32 "08qi8xm2zf8dqacdbnrp19aqk2xiwmw75n1mpq43rqsmysibrzsj"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-windows-sys" ,rust-windows-sys-0.28))
+       (("rust-windows-sys" ,rust-windows-sys-0.42))
        #:cargo-development-inputs
        (("rust-rand" ,rust-rand-0.8)
         ("rust-socket2" ,rust-socket2-0.4))))
@@ -34819,6 +34819,25 @@ possible over the OS abstractions.")
 IOCP and Async I/O abstractions.")
     (license (list license:asl2.0
                    license:expat))))
+
+(define-public rust-miow-0.4
+  (package
+    (inherit rust-miow-0.5)
+    (name "rust-miow")
+    (version "0.4.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "miow" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "03p0dgbahlysgxk0sihhf09k5h13r9aam3d6rfivdbxkj9vpydx7"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-windows-sys" ,rust-windows-sys-0.28))
+       #:cargo-development-inputs
+       (("rust-rand" ,rust-rand-0.8)
+        ("rust-socket2" ,rust-socket2-0.4))))))
 
 (define-public rust-miow-0.3
   (package
