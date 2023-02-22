@@ -24475,13 +24475,13 @@ make your work easier.")
 (define-public python-outcome
   (package
     (name "python-outcome")
-    (version "1.0.1")
+    (version "1.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "outcome" version))
        (sha256
-        (base32 "0vxn04vspmlkkyijjkjnsc46f93ki8g62hr7ag10zpd7ic324y7w"))))
+        (base32 "0wi6bmsfn73aw1hbpa1nhhshlx9k2vxcl7kp3z7h78sxwhyvv0kg"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
