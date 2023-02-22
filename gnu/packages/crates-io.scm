@@ -62809,24 +62809,6 @@ C library.")
     (license
      (list license:zlib license:asl2.0 license:expat))))
 
-(define-public rust-tinyvec-0.3
-  (package
-    (inherit rust-tinyvec-1)
-    (name "rust-tinyvec")
-    (version "0.3.4")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "tinyvec" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "05vijqpckjsnbv07rwadwcny4pkcq7z1wi9ikl7p3ib7s9qy1313"))))
-    (arguments
-     `(#:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3))))))
-
 (define-public rust-tinyvec-macros-0.1
   (package
     (name "rust-tinyvec-macros")
