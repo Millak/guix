@@ -32218,6 +32218,27 @@ harness used by @code{rustc --test}.")
         ("rust-structopt" ,rust-structopt-0.3)
         ("rust-termcolor" ,rust-termcolor-1))))))
 
+(define-public rust-litrs-0.2
+  (package
+    (name "rust-litrs")
+    (version "0.2.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "litrs" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1akrxglqv6dz41jrjr409pjjysd00z5w0949007v52yg6c4mw9zr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1))))
+    (home-page "https://github.com/LukasKalbertodt/litrs/")
+    (synopsis "Parse and inspect Rust literals")
+    (description
+     "Parse and inspect Rust literals (i.e. tokens in the Rust programming
+language representing fixed values).  Particularly useful for proc macros, but
+can also be used outside of a proc-macro context.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-locale-0.2
   (package
     (name "rust-locale")
