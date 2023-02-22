@@ -26794,7 +26794,7 @@ Derivation Function (HKDF).")
 (define-public rust-hmac-0.12
   (package
     (name "rust-hmac")
-    (version "0.12.0")
+    (version "0.12.1")
     (source
      (origin
        (method url-fetch)
@@ -26803,7 +26803,7 @@ Derivation Function (HKDF).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "18nnjkvvpkjw6ppcyijysgxmr4a7knd98msb6vgy4b3z7qgi7jnx"))))
+         "0pmbr069sfg76z7wsssfk5ddcqd9ncp79fyz6zcm6yn115yc6jbc"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
