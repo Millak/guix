@@ -6642,6 +6642,35 @@ your cursor steps onto them, and re-enabled when the cursor leaves.")
 blocks with @code{org-babel} in @code{org-mode}.")
       (license license:gpl3+))))
 
+(define-public emacs-ob-go
+  (let ((commit "2067ed55f4c1d33a43cb3f6948609d240a8915f5")
+        (revision "0"))
+    (package
+      (name "emacs-ob-go")
+      (version (git-version "0.02" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/pope/ob-go")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "069w9dymiv97cvlpzabf193nyw174r38lz5j11x23x956ladvpbw"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch" "-L" "."
+                               "--eval=(require 'ob-go)"
+                               "-l" "test-ob-go.el"
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (home-page "https://github.com/pope/ob-go")
+      (synopsis "Org Babel support for evaluating Go code")
+      (description "@code{ob-go} enables Org Babel support for evaluating Go
+code.  It was created based on the usage of @code{ob-C}.")
+      (license license:gpl3+))))
+
 (define-public emacs-ob-restclient
   (let ((commit "1b021ce1c67c97fa1aa4d2c0816edb7add129e48"))
     (package
