@@ -3804,27 +3804,6 @@ Askama.")
 library for Rust.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-0.10
-  (package
-    (inherit rust-askama-0.11)
-    (name "rust-askama")
-    (version "0.10.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "askama" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "0d1iwywdgw3nba2iphayw8sfm3s8m9izwnhfar707qa7ds5p766j"))))
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-askama-derive" ,rust-askama-derive-0.10)
-             ("rust-askama-escape" ,rust-askama-escape-0.10)
-             ("rust-askama-shared" ,rust-askama-shared-0.11)
-             ("rust-mime" ,rust-mime-0.3)
-             ("rust-mime-guess" ,rust-mime-guess-2))))))
-
 (define-public rust-asn1-derive-0.13
   (package
     (name "rust-asn1-derive")
