@@ -63842,8 +63842,43 @@ stream-based WebSocket implementation.")
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio-test" ,rust-tokio-test-0.2))))))
 
+(define-public rust-toml-0.6
+  (package
+    (name "rust-toml")
+    (version "0.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "toml" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "05zjz69wjymp9yrgccg5vhvxpf855rgn23vl1yvri4nwwj8difag"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-indexmap" ,rust-indexmap-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-spanned" ,rust-serde-spanned-0.6)
+        ("rust-toml-datetime" ,rust-toml-datetime-0.5)
+        ("rust-toml-edit" ,rust-toml-edit-0.18))
+        #:cargo-development-inputs
+        (("rust-serde" ,rust-serde-1)
+         ("rust-serde-json" ,rust-serde-json-1)
+         ("rust-snapbox" ,rust-snapbox-0.4)
+         ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
+    (home-page "https://github.com/alexcrichton/toml-rs")
+    (synopsis "Rust encoder and decoder of TOML-formatted files and streams")
+    (description
+     "This package provides a native Rust encoder and decoder of TOML-formatted
+files and streams.  Provides implementations of the standard
+Serialize/Deserialize traits for TOML data to facilitate deserializing and
+serializing Rust structures.")
+    (license (list license:asl2.0
+                   license:expat))))
+
 (define-public rust-toml-0.5
   (package
+    (inherit rust-toml-0.6)
     (name "rust-toml")
     (version "0.5.8")
     (source
@@ -63854,23 +63889,13 @@ stream-based WebSocket implementation.")
         (sha256
          (base32
           "1apcmjrrjw429pjw7mqlmdwwd67g8305vwqy4kw3swr612bl44d3"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
         (("rust-indexmap" ,rust-indexmap-1)
          ("rust-serde" ,rust-serde-1))
         #:cargo-development-inputs
         (("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/alexcrichton/toml-rs")
-    (synopsis "Rust encoder and decoder of TOML-formatted files and streams")
-    (description
-     "This package provides a native Rust encoder and decoder of TOML-formatted
-files and streams.  Provides implementations of the standard
-Serialize/Deserialize traits for TOML data to facilitate deserializing and
-serializing Rust structures.")
-    (license (list license:asl2.0
-                   license:expat))))
+         ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-toml-0.4
   (package
