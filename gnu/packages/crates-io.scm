@@ -22963,7 +22963,7 @@ futures-rs library.")
 (define-public rust-futures-test-0.3
   (package
     (name "rust-futures-test")
-    (version "0.3.5")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -22971,16 +22971,19 @@ futures-rs library.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0v9r2mmgdbm0x4gppd5jzf4rss7439ivkqwi604m0r2il3zap6ci"))))
+         "0pbdzvbmzrnc67bpp7hbh7l5mavqifpgk2vhaprr0vlr6qrpcyi4"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:tests? #f          ; Doc tests fail.
+       #:cargo-inputs
        (("rust-futures-core" ,rust-futures-core-0.3)
         ("rust-futures-executor" ,rust-futures-executor-0.3)
         ("rust-futures-io" ,rust-futures-io-0.3)
+        ("rust-futures-macro" ,rust-futures-macro-0.3)
+        ("rust-futures-sink" ,rust-futures-sink-0.3)
         ("rust-futures-task" ,rust-futures-task-0.3)
         ("rust-futures-util" ,rust-futures-util-0.3)
-        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-pin-project" ,rust-pin-project-1)
         ("rust-pin-utils" ,rust-pin-utils-0.1))))
     (home-page "https://rust-lang.github.io/futures-rs")
     (synopsis "Test components built off futures-rs")
