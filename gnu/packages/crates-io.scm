@@ -68491,14 +68491,14 @@ has at least 1 element.")
 (define-public rust-version-check-0.9
   (package
     (name "rust-version-check")
-    (version "0.9.2")
+    (version "0.9.4")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "version_check" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "1vbaqdf802qinsq8q20w8w0qn2pv0rkq5p73ijcblrwxcvjp5adm"))))
+         (base32 "0gs8grwdlgh0xq660d7wr80x14vxbizmd8dbp29p2pdncx8lp1s9"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/SergioBenitez/version_check")
     (synopsis "Check that the installed rustc meets some version requirements")
