@@ -27284,6 +27284,27 @@ with hyper.")
      "This package provides a Knuth-Liang hyphenation for a variety of languages.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-iana-time-zone-haiku-0.1
+  (package
+    (name "rust-iana-time-zone-haiku")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "iana-time-zone-haiku" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1jix9qrqxclj9r4wkg7d3fr987d77vdg3qy2c5hl4ry19wlaw0q7"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cxx" ,rust-cxx-1)
+        ("rust-cxx-build" ,rust-cxx-build-1))))
+    (home-page "https://github.com/strawlab/iana-time-zone")
+    (synopsis "IANA-time-zone support crate for Haiku OS")
+    (description
+     "This package provides iana-time-zone support crate for Haiku OS.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ident-case-1
   (package
     (name "rust-ident-case")
