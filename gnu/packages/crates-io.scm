@@ -70443,14 +70443,14 @@ color in a Windows console.")
 (define-public rust-windows-aarch64-msvc-0.42
   (package
     (name "rust-windows-aarch64-msvc")
-    (version "0.42.0")
+    (version "0.42.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows-aarch64-msvc" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1d6d9ny0yl5l9vvagydigvkfcphzk2aygchiccywijimb8pja3yx"))
+                "1iy6adiaz2956f0kcl2wfdjx49ayv2lp11glkxxc85pw7xkip2sc"))
               (snippet
                '(begin
                   (delete-file "lib/windows.lib")))))
