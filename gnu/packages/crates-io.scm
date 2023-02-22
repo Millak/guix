@@ -20024,23 +20024,22 @@ compact sets of enums.")
 @code{rust-enumset}.  It is not public API.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-env-logger-0.9
+(define-public rust-env-logger-0.10
   (package
     (name "rust-env-logger")
-    (version "0.9.0")
+    (version "0.10.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "env_logger" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1hzr53r0wga51j0w5zid69ylbfizg4qdbq0vqdj6rvki94sg0b0b"))))
+        (base32 "1w797qgkrmqdacsbc0j6yvpnmvfc9lx6k8fm79rndkxci5mapkc5"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-humantime" ,rust-humantime-2)
+     `(#:cargo-inputs
+       (("rust-humantime" ,rust-humantime-2)
+        ("rust-is-terminal" ,rust-is-terminal-0.4)
         ("rust-log" ,rust-log-0.4)
         ("rust-regex" ,rust-regex-1)
         ("rust-termcolor" ,rust-termcolor-1))))
@@ -20050,6 +20049,27 @@ compact sets of enums.")
      "This package provides a logging implementation for @code{log} which
 is configured via an environment variable.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-env-logger-0.9
+  (package
+    (inherit rust-env-logger-0.10)
+    (name "rust-env-logger")
+    (version "0.9.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "env_logger" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1hzr53r0wga51j0w5zid69ylbfizg4qdbq0vqdj6rvki94sg0b0b"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-humantime" ,rust-humantime-2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-termcolor" ,rust-termcolor-1))))))
 
 (define-public rust-env-logger-0.8
   (package
