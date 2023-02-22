@@ -16283,6 +16283,35 @@ value decompositions} (SVDs) on large sparse centered matrices (i.e. principal
 components).")
     (license license:gpl2)))
 
+(define-public r-som
+  (package
+    (name "r-som")
+    (version "0.3-5.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "som" version))
+       (sha256
+        (base32 "1fbza1jxvwrkf5x3inkj36vshhkn7mz0ajqlxalbfmk6ngjw1x56"))))
+    (properties `((upstream-name . "som")))
+    (build-system r-build-system)
+    (home-page "https://cran.r-project.org/package=som")
+    (synopsis "Self-organizing map")
+    (description
+     "This package implements a self-organizing map which has application in
+gene clustering.  It provides functions like:
+
+@itemize
+@item filtering data by certain floor, ceiling, max/min ratio, and max - min
+  difference;
+@item normalization of the data;
+@item get the average distortion measure;
+@item train a self-organizing map;
+@item summarize a som object;
+@item yeast cell cycle.
+@end itemize")
+    (license license:gpl3+)))
+
 (define-public r-fftwtools
   (package
     (name "r-fftwtools")
