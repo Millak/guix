@@ -37987,6 +37987,23 @@ framework.")
         ("rust-syn" ,rust-syn-1)
         ("rust-timebomb" ,rust-timebomb-0.1))))))
 
+(define-public rust-ntest-proc-macro-helper-0.8
+  (package
+    (name "rust-ntest-proc-macro-helper")
+    (version "0.8.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ntest-proc-macro-helper" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "154r3r9nnnp6qjzlayc54213bdrgdk8b68jjnn1xcyd6cz92iqx0"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/becheran/ntest")
+    (synopsis "Helper functions for the procedural macros used in ntest")
+    (description "This package provides helper functions for the procedural
+macros used in ntest.")
+    (license license:expat)))
+
 (define-public rust-num-0.4
   (package
     (name "rust-num")
