@@ -26637,7 +26637,7 @@ compile time.")
 (define-public rust-hex-literal-impl-0.2
   (package
     (name "rust-hex-literal-impl")
-    (version "0.2.1")
+    (version "0.2.3")
     (source
      (origin
        (method url-fetch)
@@ -26646,7 +26646,7 @@ compile time.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0bgldhp5gdwwnikfdxigmz9b64qpgwbjqk6mfgv0pvig9s25qk4x"))))
+         "1a25nz3v1323qhy328qr0mdzz0iyhjfxdhvqgy8bcpraz318yi2r"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
