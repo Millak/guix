@@ -72208,8 +72208,48 @@ implementation that works everywhere, even WASM!")
     (description "This crate provides custom derive support for Zeroize.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-zip-0.6
+  (package
+    (name "rust-zip")
+    (version "0.6.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "zip" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1vydb0v9xl6skr63r6prjs9a67hjzcdc25j3kd9r7fr4r7xx0i84"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-aes" ,rust-aes-0.7)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-bzip2" ,rust-bzip2-0.4)
+        ("rust-constant-time-eq" ,rust-constant-time-eq-0.1)
+        ("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-pbkdf2" ,rust-pbkdf2-0.11)
+        ("rust-sha1" ,rust-sha1-0.10)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-zstd" ,rust-zstd-0.11))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-time" ,rust-time-0.3)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/mvdnes/zip-rs.git")
+    (synopsis
+     "Library to support the reading and writing of zip files")
+    (description
+     "Library to support the reading and writing of zip files.")
+    (license license:expat)))
+
 (define-public rust-zip-0.5
   (package
+    (inherit rust-zip-0.6)
     (name "rust-zip")
     (version "0.5.13")
     (source
@@ -72221,7 +72261,6 @@ implementation that works everywhere, even WASM!")
        (sha256
         (base32
          "0588z88sj37nj1clis1rf4fh794av0hwaiaihfrin9b19n24iawk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -72230,13 +72269,7 @@ implementation that works everywhere, even WASM!")
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-flate2" ,rust-flate2-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-time" ,rust-time-0.1))))
-    (home-page "https://github.com/mvdnes/zip-rs.git")
-    (synopsis
-     "Library to support the reading and writing of zip files")
-    (description
-     "Library to support the reading and writing of zip files.")
-    (license license:expat)))
+        ("rust-time" ,rust-time-0.1))))))
 
 (define-public rust-zoneinfo-compiled-0.5
   (package
