@@ -56020,6 +56020,22 @@ service.")
      "This package provides a single-producer single-consumer lock-free buffer.")
     (license license:expat)))
 
+(define-public rust-sptr-0.3
+  (package
+    (name "rust-sptr")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "sptr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0shddkys046nnrng929mrnjjrh31mlxl95ky7dgxd6i4kclkk6rv"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/Gankra/sptr")
+    (synopsis "The Strict Provenance Polyfill")
+    (description "This package provides sptr, The Strict Provenance Polyfill.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-sqlite-0.26
   (package
     (name "rust-sqlite")
