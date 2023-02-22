@@ -27305,6 +27305,35 @@ with hyper.")
      "This package provides iana-time-zone support crate for Haiku OS.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-iana-time-zone-0.1
+  (package
+    (name "rust-iana-time-zone")
+    (version "0.1.53")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "iana-time-zone" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "0ra7nvai8n3alvljswacjbnhfcpivpi7xqbc5n048w18gdk25hb4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                      ; Not all files included.
+       #:cargo-inputs
+       (("rust-android-system-properties" ,rust-android-system-properties-0.1)
+        ("rust-core-foundation-sys" ,rust-core-foundation-sys-0.8)
+        ("rust-iana-time-zone-haiku" ,rust-iana-time-zone-haiku-0.1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))
+       #:cargo-development-inputs
+       (("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/strawlab/iana-time-zone")
+    (synopsis "IANA time zone")
+    (description
+     "This package provides the IANA time zone for the current system.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ident-case-1
   (package
     (name "rust-ident-case")
