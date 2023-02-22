@@ -39129,29 +39129,6 @@ file formats.")
        #:cargo-development-inputs
        (("rust-memmap" ,rust-memmap-0.7))))))
 
-(define-public rust-object-0.23
-  (package
-    (inherit rust-object-0.24)
-    (name "rust-object")
-    (version "0.23.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "object" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1m658q2ci9hk8csbl17zwcg1hpvcxm2sspjb9bzg0kc1cifsp9x9"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
-        ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-indexmap" ,rust-indexmap-1)
-        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
-        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-wasmparser" ,rust-wasmparser-0.57))))))
-
 (define-public rust-odds-0.3
   (package
     (name "rust-odds")
