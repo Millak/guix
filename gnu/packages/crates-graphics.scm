@@ -794,25 +794,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
     (description "This package provides OpenGL bindings for rust.")
     (license license:asl2.0)))
 
-(define-public rust-gl-0.11
-  (package
-    (inherit rust-gl-0.14)
-    (name "rust-gl")
-    (version "0.11.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gl" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "1wcqpyhck0xriffkmgmldy33lwk2044hb4l02d44vm4fbvicin6p"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-gl-generator" ,rust-gl-generator-0.10))))))
-
 (define-public rust-gl-generator-0.14
   (package
     (name "rust-gl-generator")
