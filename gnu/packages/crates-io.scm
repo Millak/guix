@@ -21785,30 +21785,6 @@ cross platform API.")
 custom fixed-size hash types.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-fixed-hash-0.2
-  (package
-    (inherit rust-fixed-hash-0.7)
-    (name "rust-fixed-hash")
-    (version "0.2.5")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "fixed-hash" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "0wvj52bf37nhg6mv5h235zgdg7nsdarag58mf4i49cdgc3l6rzks"))))
-    (build-system cargo-build-system)
-    (arguments
-      `(#:cargo-inputs
-        (("rust-heapsize" ,rust-heapsize-0.4)
-         ("rust-libc" ,rust-libc-0.2)
-         ("rust-quickcheck" ,rust-quickcheck-0.6)
-         ("rust-rand" ,rust-rand-0.4)
-         ("rust-rustc-hex" ,rust-rustc-hex-2)
-         ("rust-serde" ,rust-serde-1)
-         ("rust-serde-derive" ,rust-serde-derive-1)
-         ("rust-uint" ,rust-uint-0.4))))))
-
 (define-public rust-fixedbitset-0.4
   (package
     (name "rust-fixedbitset")
