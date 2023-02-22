@@ -2997,14 +2997,14 @@ lossless but can be tweaked for more aggressive cleaning.")
 (define-public python-mechanize
   (package
     (name "python-mechanize")
-    (version "0.4.5")
+    (version "0.4.7")
     (source
      (origin
       (method url-fetch)
       (uri (pypi-uri "mechanize" version))
       (sha256
        (base32
-        "1z9kqcwb8gfq2l6i42z624kxpd8692a0c8gw2x5bbm7n848w2mb3"))))
+        "02b845y85ka5sl2cj93lll3v326d8bww07bq1q0y1643h7sshwqp"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-html5lib))
