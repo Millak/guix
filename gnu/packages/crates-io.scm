@@ -4318,7 +4318,7 @@ Rust.")
 (define-public rust-async-compression-0.3
   (package
     (name "rust-async-compression")
-    (version "0.3.7")
+    (version "0.3.15")
     (source
      (origin
        (method url-fetch)
@@ -4326,13 +4326,10 @@ Rust.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0dwm5zgi560m1xy30k3a4sg96mlfkjdk8jl6a1dk4d72ah8iyb5p"))))
+         "0fnnpbsljngmrj8amhw6yg164bl6x4r43mr093g1ps9rmvbpqb4l"))))
     (build-system cargo-build-system)
     (arguments
-     ;; FIXME: Tests fail with "error[E0432]: unresolved import `syn::export`"
-     ;; when compiling ntest_test_cases v0.3.4.
-     `(#:tests? #false
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-brotli" ,rust-brotli-3)
         ("rust-bytes" ,rust-bytes-0.5)
         ("rust-bzip2" ,rust-bzip2-0.4)
@@ -4345,23 +4342,25 @@ Rust.")
         ("rust-tokio" ,rust-tokio-0.3)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-xz2" ,rust-xz2-0.1)
-        ("rust-zstd" ,rust-zstd-0.6)
-        ("rust-zstd-safe" ,rust-zstd-safe-3))
+        ("rust-zstd" ,rust-zstd-0.11)
+        ("rust-zstd-safe" ,rust-zstd-safe-5))
        #:cargo-development-inputs
        (("rust-bytes" ,rust-bytes-1)
+        ("rust-bytes" ,rust-bytes-0.6)
         ("rust-bytes" ,rust-bytes-0.5)
         ("rust-futures" ,rust-futures-0.3)
         ("rust-futures-test" ,rust-futures-test-0.3)
-        ("rust-ntest" ,rust-ntest-0.3)
-        ("rust-proptest" ,rust-proptest-0.9)
-        ("rust-proptest-derive" ,rust-proptest-derive-0.1)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-timebomb" ,rust-timebomb-0.1)
+        ("rust-ntest" ,rust-ntest-0.8)
+        ("rust-proptest" ,rust-proptest-1)
+        ("rust-proptest-derive" ,rust-proptest-derive-0.3)
+        ("rust-rand" ,rust-rand-0.8)
         ("rust-tokio" ,rust-tokio-1)
         ("rust-tokio" ,rust-tokio-0.2)
         ("rust-tokio" ,rust-tokio-0.3)
+        ("rust-tokio-util" ,rust-tokio-util-0.6)
+        ("rust-tokio-util" ,rust-tokio-util-0.5)
         ("rust-tokio-util" ,rust-tokio-util-0.4)
-        ("rust-tokio-util" ,rust-tokio-util-0.6))))
+        ("rust-tokio-util" ,rust-tokio-util-0.3))))
     (home-page "https://github.com/Nemo157/async-compression")
     (synopsis "Adaptors between compression crates and Rust's modern asynchronous IO types")
     (description "This package provides adaptors between compression crates
