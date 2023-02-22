@@ -50631,19 +50631,6 @@ It is automatically published using the compiler repository at
 hex conversion traits.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-rustc-hex-1
-  (package
-    (inherit rust-rustc-hex-2)
-    (name "rust-rustc-hex")
-    (version "1.0.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "rustc-hex" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-          (base32 "07pff94vqc1mhrqp9i06xzayiad4xfx7588zkqsdw875lpkqrsqc"))))))
-
 (define-public rust-rustc-rayon-0.4
   (package
     (name "rust-rustc-rayon")
