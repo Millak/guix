@@ -31355,7 +31355,7 @@ algorithm and related formats (ZLIB, GZIP).")
 (define-public rust-libgit2-sys-0.14
   (package
     (name "rust-libgit2-sys")
-    (version "0.14.0+1.5.0")
+    (version "0.14.2+1.5.1")
     (source
      (origin
        (method url-fetch)
@@ -31364,7 +31364,7 @@ algorithm and related formats (ZLIB, GZIP).")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "16wm7m65xvfqn11bhiclg7v5ajswhwrcrlg631r4z2hcqxchi827"))
+         "1926x5f84ykr8j2lsdmb0n0bj4jz173j5bm722cgwx8hnpv9agbz"))
        (modules '((guix build utils)))
        (snippet
         '(begin (delete-file-recursively "libgit2")))))
