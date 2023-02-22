@@ -22433,7 +22433,7 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
 (define-public rust-futures-0.3
   (package
     (name "rust-futures")
-    (version "0.3.12")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -22442,7 +22442,7 @@ stabilized, and eventually removed.  This library reïnstates these traits.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0l7i1hcag46k5v34cbn5dk45gwxn5yy5rxcvmbaxhi02lnhm546s"))))
+         "115z5bqihd2jq75s8n7jxy4k83kpv67vhic4snch6d7h1wmpkqhk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
