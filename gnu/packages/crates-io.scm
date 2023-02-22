@@ -28387,6 +28387,34 @@ removals, and it allows lookup of its elements by either hash table key
 or numerical index.  A corresponding hash set type is also provided.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-indexmap-1.8
+  (package
+    (inherit rust-indexmap-1)
+    (name "rust-indexmap")
+    (version "1.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "indexmap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0nnaw0whv3xysrpjrz69bsibbscd81rwx63s6f4kbajv1ia2s0g6"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-autocfg" ,rust-autocfg-1)
+        ("rust-hashbrown" ,rust-hashbrown-0.11)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rustc-rayon" ,rust-rustc-rayon-0.4)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-fnv" ,rust-fnv-1)
+        ("rust-fxhash" ,rust-fxhash-0.2)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-serde-derive" ,rust-serde-derive-1))))))
+
 (define-public rust-indexmap-1.7
   (package
     (inherit rust-indexmap-1)
