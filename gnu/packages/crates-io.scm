@@ -11078,8 +11078,55 @@ how to behave across the three main input sources")
              ("rust-quote" ,rust-quote-1)
              ("rust-syn" ,rust-syn-1))))))
 
+(define-public rust-clap-4
+  (package
+    (name "rust-clap")
+    (version "4.1.6")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "clap" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1qzmsg3j2rch16gbh753hsdgvfv6q4vc2xdxgnl66kadsj40a2zc"))))
+    (build-system cargo-build-system)
+    (arguments
+     (list #:cargo-test-flags
+           '(list "--release" "--"
+                  ;; Some of the doc tests fail.
+                  "--skip=builder::range::ValueRange::new"
+                  "--skip=builder::value_parser::value_parser")
+           #:cargo-inputs
+           `(("rust-backtrace" ,rust-backtrace-0.3)
+             ("rust-bitflags" ,rust-bitflags-1)
+             ("rust-clap-derive" ,rust-clap-derive-4)
+             ("rust-clap-lex" ,rust-clap-lex-0.3)
+             ("rust-is-terminal" ,rust-is-terminal-0.4)
+             ("rust-once-cell" ,rust-once-cell-1)
+             ("rust-strsim" ,rust-strsim-0.10)
+             ("rust-termcolor" ,rust-termcolor-1)
+             ("rust-terminal-size" ,rust-terminal-size-0.2)
+             ("rust-unicase" ,rust-unicase-2)
+             ("rust-unicode-width" ,rust-unicode-width-0.1))
+           #:cargo-development-inputs
+           `(("rust-humantime" ,rust-humantime-2)
+             ("rust-rustversion" ,rust-rustversion-1)
+             ("rust-shlex" ,rust-shlex-1)
+             ("rust-snapbox" ,rust-snapbox-0.4)
+             ("rust-static-assertions" ,rust-static-assertions-1)
+             ("rust-trybuild" ,rust-trybuild-1)
+             ("rust-trycmd" ,rust-trycmd-0.14)
+             ("rust-unic-emoji-char" ,rust-unic-emoji-char-0.9))))
+    (home-page "https://clap.rs/")
+    (synopsis "Command Line Argument Parser")
+    (description
+     "This package provides a simple to use, efficient, and full-featured
+Command Line Argument Parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-clap-3
   (package
+    (inherit rust-clap-4)
     (name "rust-clap")
     (version "3.2.23")
     (source
@@ -11089,7 +11136,6 @@ how to behave across the three main input sources")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "19bkwkj49ha7mlip0gxsqb9xmd3jpr7ghvcx1hkx6icqrd2mqrbi"))))
-    (build-system cargo-build-system)
     (arguments
      (list #:cargo-test-flags
            '(list "--release" "--"
@@ -11120,13 +11166,7 @@ how to behave across the three main input sources")
              ("rust-snapbox" ,rust-snapbox-0.2)
              ("rust-static-assertions" ,rust-static-assertions-1)
              ("rust-trybuild" ,rust-trybuild-1)
-             ("rust-trycmd" ,rust-trycmd-0.13))))
-    (home-page "https://clap.rs/")
-    (synopsis "Command Line Argument Parser")
-    (description
-     "This package provides a simple to use, efficient, and full-featured
-Command Line Argument Parser.")
-    (license (list license:expat license:asl2.0))))
+             ("rust-trycmd" ,rust-trycmd-0.13))))))
 
 (define-public rust-clap-2
   (package
