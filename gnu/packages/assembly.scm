@@ -133,14 +133,14 @@ debugging information in STABS, DWARF 2, and CodeView 8 formats.")
 (define-public lightning
   (package
     (name "lightning")
-    (version "2.2.0")
+    (version "2.2.1")
     (source (origin
              (method url-fetch)
              (uri (string-append "mirror://gnu/lightning/lightning-"
                                  version ".tar.gz"))
              (sha256
               (base32
-               "03kwvn00qggys203vpzb2kq2asy0ql7x84ajk05a62yg3kzq8faf"))))
+               "1aiwx9cl9c7swqcgrsjnvd5laah3iwxzl1van3670iv8sn0icrwq"))))
     (build-system gnu-build-system)
     (native-inputs (list zlib))
     (arguments
