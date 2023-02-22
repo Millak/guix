@@ -5816,17 +5816,9 @@ c6e7d37.  However, this package works only up to 128 bytes.")
      `(#:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.4)
         ("rust-rand" ,rust-rand-0.8)
-        ("rust-rstest" ,rust-rstest-0.15)
-        ("rust-rstest-reuse" ,rust-rstest-reuse-0.4)
-        ("rust-structopt" ,rust-structopt-0.3))
-       #:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'relax-requirements
-                    (lambda _
-                      (substitute* "Cargo.toml"
-                        (("0.12.0")
-                         ,(package-version rust-rstest-0.15))
-                        (("0.3.0")
-                         ,(package-version rust-rstest-reuse-0.4))))))))
+        ("rust-rstest" ,rust-rstest-0.12)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.3)
+        ("rust-structopt" ,rust-structopt-0.3))))
     (home-page "https://github.com/marshallpierce/rust-base64")
     (synopsis "Encodes and decodes base64 as bytes or utf8")
     (description
@@ -5837,7 +5829,7 @@ c6e7d37.  However, this package works only up to 128 bytes.")
   (package
     (inherit rust-base64-0.21)
     (name "rust-base64")
-    (version "0.13.0")
+    (version "0.13.1")
     (source
      (origin
        (method url-fetch)
@@ -5845,20 +5837,16 @@ c6e7d37.  However, this package works only up to 128 bytes.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1z82g23mbzjgijkpcrilc7nljpxpvpf7zxf6iyiapkgka2ngwkch"))))
+        (base32 "1s494mqmzjb766fy1kqlccgfg2sdcjb6hzbvzqv2jw65fdi5h6wy"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("=0\\.3\\.2") "^0.3.2"))))))
     (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
+     `(#:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-rand" ,rust-rand-0.6)
-        ("rust-structopt" ,rust-structopt-0.3))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'fix-criterion-minor-version
-           (lambda* _
-             (substitute* "Cargo.toml"
-               (("0\\.3\\.2")
-                ,(package-version rust-criterion-0.3))))))))))
+        ("rust-structopt" ,rust-structopt-0.3))))))
 
 (define-public rust-base64-0.12
   (package
