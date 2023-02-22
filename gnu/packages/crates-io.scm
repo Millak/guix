@@ -28173,6 +28173,26 @@ for @code{uint} and @code{fixed_hash}.")
 a trait for tuples.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-include-dir-macros-0.7
+  (package
+    (name "rust-include-dir-macros")
+    (version "0.7.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "include-dir-macros" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0gsa6z58wxgw9j58w60wyjpk2nv3pd86kimw2akwyzpmbi5jhfdi"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1))))
+    (home-page "https://github.com/Michael-F-Bryan/include_dir")
+    (synopsis "Procedural macro used by include_dir")
+    (description "The procedural macro used by include_dir.")
+    (license license:expat)))
+
 (define-public rust-include-flate-0.1
   (package
     (name "rust-include-flate")
