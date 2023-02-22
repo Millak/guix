@@ -27124,6 +27124,28 @@ characters in HTML, decoding and unescaping HTML entities as well.")
 and traversing, manipulating, and querying the document tree.")
     (license license:expat)))
 
+(define-public rust-kuznyechik-0.8
+  (package
+    (name "rust-kuznyechik")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "kuznyechik" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0av39qh65xchvpfjkcwh861h9bzmmrgcrzl5h0sa5b692xabd0w4"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (description "Kuznyechik (GOST R 34.12-2015) block cipher")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-0.2
   (package
     (name "rust-http")
