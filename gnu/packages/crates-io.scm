@@ -27312,8 +27312,7 @@ requests and responses.")
                (base32 "1g6gpn2py0c4l45wp61k3zc45vg5l20zq39mxgxh56hzgb6wlc2l"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; error: failed to parse bitcode for LTO module
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-base64" ,rust-base64-0.21)
         ("rust-digest" ,rust-digest-0.10)
         ("rust-hex" ,rust-hex-0.4)
