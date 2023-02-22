@@ -72111,7 +72111,7 @@ implementation that works everywhere, even WASM!")
 (define-public rust-zeroize-derive-1
   (package
     (name "rust-zeroize-derive")
-    (version "1.3.1")
+    (version "1.3.3")
     (source
      (origin
        (method url-fetch)
@@ -72119,7 +72119,7 @@ implementation that works everywhere, even WASM!")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1nzdqyryjnqcrqz0vhddpkd8sybhn0bd8rbd6l33rdhhxwzz3s41"))))
+        (base32 "0v6kkgkw8sxddx2608in3xx8ijbbyj5xb5b6741j1sjh7v5hggs4"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
