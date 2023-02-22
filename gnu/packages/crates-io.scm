@@ -43120,8 +43120,36 @@ library.")
 a cipher, can be used as a Message Authentication Code (MAC).")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-polyval-0.6
+  (package
+    (name "rust-polyval")
+    (version "0.6.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "polyval" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1iihmpn1h1ag5zl368yfq0jz1drfdw7xg7zpaqpcppqiikh39wky"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-universal-hash" ,rust-universal-hash-0.5)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/universal-hashes")
+    (synopsis "GHASH-like universal hash")
+    (description "POLYVAL is a GHASH-like universal hash over GF(2^128) useful
+for constructing a Message Authentication Code (MAC).")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-polyval-0.4
   (package
+    (inherit rust-polyval-0.6)
     (name "rust-polyval")
     (version "0.4.0")
     (source
@@ -43132,7 +43160,6 @@ a cipher, can be used as a Message Authentication Code (MAC).")
        (sha256
         (base32
          "1p0765j30qxr50zh74aflafx540xkxqb7pv8kw7fvcssnm1039fr"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-0.1)
@@ -43142,12 +43169,7 @@ a cipher, can be used as a Message Authentication Code (MAC).")
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-criterion-cycles-per-byte"
          ,rust-criterion-cycles-per-byte-0.1)
-        ("rust-hex-literal" ,rust-hex-literal-0.1))))
-    (home-page "https://github.com/RustCrypto/universal-hashes")
-    (synopsis "GHASH-like universal hash")
-    (description "POLYVAL is a GHASH-like universal hash over GF(2^128) useful
-for constructing a Message Authentication Code (MAC).")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-hex-literal" ,rust-hex-literal-0.1))))))
 
 (define-public rust-polyval-0.3
   (package
