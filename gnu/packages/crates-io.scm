@@ -15413,8 +15413,38 @@ use with sct crate.")
      "This package provides an @code{__attribute__((constructor))} for Rust.")
     (license (list license:asl2.0 license:expat))))
 
+(define-public rust-ctr-0.9
+  (package
+    (name "rust-ctr")
+    (version "0.9.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ctr" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d88b73waamgpfjdml78icxz45d95q7vi2aqa604b0visqdfws83"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cipher" ,rust-cipher-0.4))
+       #:cargo-development-inputs
+       (("rust-aes" ,rust-aes-0.8)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-kuznyechik" ,rust-kuznyechik-0.8)
+        ("rust-magma" ,rust-magma-0.8))))
+    (home-page "https://docs.rs/ctr/")
+    (synopsis "CTR block mode of operation")
+    (description "This package provides a generic implementations of CTR mode
+for block ciphers. Mode functionality is accessed using traits from
+re-exported cipher crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ctr-0.8
   (package
+    (inherit rust-ctr-0.9)
     (name "rust-ctr")
     (version "0.8.0")
     (source
@@ -15425,16 +15455,9 @@ use with sct crate.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1sk1aykwhkny92cnvl6s75dx3fyvfzw5xkd6xz3y7w5anhgvk6q4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
-       #:cargo-inputs (("rust-cipher" ,rust-cipher-0.3))))
-    (home-page "https://docs.rs/ctr/")
-    (synopsis "CTR block mode of operation")
-    (description "This package provides a generic implementations of CTR mode
-for block ciphers. Mode functionality is accessed using traits from
-re-exported cipher crate.")
-    (license (list license:expat license:asl2.0))))
+       #:cargo-inputs (("rust-cipher" ,rust-cipher-0.3))))))
 
 (define-public rust-ctr-0.6
   (package
