@@ -12300,24 +12300,23 @@ flavoured Markdown parser and formatter written in Rust.")
 everywhere.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-concolor-0.0.8
+(define-public rust-concolor-0.0.11
   (package
     (name "rust-concolor")
-    (version "0.0.8")
+    (version "0.0.11")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "concolor" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1bs03868bywgz2f8x4h41akvxpxiax9b036hrpf0mwhx7db6flh1"))))
+        (base32 "05ja8yy5ar34k2cplk0qp1d8qabxzj16mb8jn8790fivwwb6r39i"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-atty" ,rust-atty-0.2)
-        ("rust-bitflags" ,rust-bitflags-1)
-        ("rust-concolor-query" ,rust-concolor-query-0.0.5))))
+     `(#:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-concolor-query" ,rust-concolor-query-0.1)
+        ("rust-is-terminal" ,rust-is-terminal-0.4))))
     (home-page "https://github.com/rust-cli/concolor")
     (synopsis "Control console coloring across all dependencies")
     (description "Concolor is a terminal styling library that can be used to:
@@ -12328,6 +12327,25 @@ everywhere.")
 @url{https://no-color.org/, NO_COLOR}.
 @end itemize")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-concolor-0.0.8
+  (package
+    (inherit rust-concolor-0.0.11)
+    (name "rust-concolor")
+    (version "0.0.8")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1bs03868bywgz2f8x4h41akvxpxiax9b036hrpf0mwhx7db6flh1"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-atty" ,rust-atty-0.2)
+        ("rust-bitflags" ,rust-bitflags-1)
+        ("rust-concolor-query" ,rust-concolor-query-0.0.5))))))
 
 (define-public rust-concolor-control-0.0.7
   (package
