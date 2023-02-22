@@ -66047,7 +66047,7 @@ DNS protocol library for all Trust-DNS projects.")
         (base32 "1zkw5fx7dwiy4ymn7ywmsb3qhf69mnqdw9mcpyps3c7gvjj1mwmg"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t     ; error: failed to parse bitcode for LTO module
+     `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
         ("rust-futures-util" ,rust-futures-util-0.3)
