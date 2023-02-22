@@ -9236,7 +9236,7 @@ representation, with support for both SI and binary units.")
 (define-public rust-bzip2-sys-0.1
   (package
     (name "rust-bzip2-sys")
-    (version "0.1.9+1.0.8")
+    (version "0.1.11+1.0.8")
     (source
      (origin
        (method url-fetch)
@@ -9245,7 +9245,7 @@ representation, with support for both SI and binary units.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0pi8lxzb1104q9cpvv1jgnk909cggqh2zcdhywqwlbq6c2i3jfxd"))
+         "1p2crnv8d8gpz5c2vlvzl0j55i3yqg5bi0kwsl1531x77xgraskk"))
         (modules '((guix build utils)))
         (snippet
          '(begin
@@ -9256,8 +9256,7 @@ representation, with support for both SI and binary units.")
               (lambda _
                 (format #t "fn main() {~@
                         println!(\"cargo:rustc-link-lib=bz2\");~@
-                        }~%")))
-            #t))))
+                        }~%")))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
