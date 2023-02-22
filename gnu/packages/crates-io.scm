@@ -1768,24 +1768,25 @@ the Rust programming language.")
     (license (list license:bsd-3
                    license:zlib))))
 
-(define-public rust-aead-0.4
+(define-public rust-aead-0.5
   (package
-    (name "rust-aead-4")
-    (version "0.4.3")
+    (name "rust-aead")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "aead" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0xw8kp9j1whfdxhgmr2qf9xgslkg52zh6gzmhsh13y9w3s73nq8b"))))
+        (base32 "1j6pmc8pk4ha64bj9l6xzbhd85s2y1dblna2zsq83h0zy6w2w6aw"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-bytes" ,rust-bytes-1)
+        ("rust-crypto-common" ,rust-crypto-common-0.1)
         ("rust-generic-array" ,rust-generic-array-0.14)
-        ("rust-heapless" ,rust-heapless-0.7)
-        ("rust-rand-core" ,rust-rand-core-0.6))))
+        ("rust-heapless" ,rust-heapless-0.7))))
     (home-page "https://github.com/RustCrypto/traits")
     (synopsis
      "Traits for Authenticated Encryption with Associated Data (AEAD) algorithms")
@@ -1794,6 +1795,25 @@ the Rust programming language.")
 Data (AEAD) algorithms, such as AES-GCM as ChaCha20Poly1305, which provide a
 high-level API.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-aead-0.4
+  (package
+    (inherit rust-aead-0.5)
+    (name "rust-aead")
+    (version "0.4.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aead" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0xw8kp9j1whfdxhgmr2qf9xgslkg52zh6gzmhsh13y9w3s73nq8b"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-generic-array" ,rust-generic-array-0.14)
+        ("rust-heapless" ,rust-heapless-0.7)
+        ("rust-rand-core" ,rust-rand-core-0.6))))))
 
 (define-public rust-aead-0.3
   (package
