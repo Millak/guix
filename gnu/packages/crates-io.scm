@@ -13102,14 +13102,14 @@ intrinsics.")
 (define-public rust-core-foundation-sys-0.8
   (package
     (name "rust-core-foundation-sys")
-    (version "0.8.2")
+    (version "0.8.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-foundation-sys" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "06wq7yb7mlkc4h2kbc0yjfi0xv44z4snzdpr7c1l0zm4hi91n8pa"))))
+        (base32 "1p5r2wckarkpkyc4z83q08dwpvcafrb1h6fxfa3qnikh8szww9sq"))))
     (build-system cargo-build-system)
     (home-page "https://github.com/servo/core-foundation-rs")
     (synopsis "Bindings to Core Foundation for macOS")
