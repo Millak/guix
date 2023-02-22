@@ -51246,8 +51246,7 @@ sub-processes using a fork-like interface.")
                 "1i1lmir3lm8zj8k1an7j2rchv1admqhysh6r6bfkcgmmi3fdmbkf"))))
     (build-system cargo-build-system)
     (arguments
-     `(;#:skip-build? #t
-       #:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
+     `(#:cargo-inputs (("rust-proc-macro2" ,rust-proc-macro2-1)
                        ("rust-quote" ,rust-quote-1)
                        ("rust-syn" ,rust-syn-1))))
     (home-page "https://github.com/rkyv/rkyv")
