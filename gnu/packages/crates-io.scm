@@ -64427,7 +64427,7 @@ serializing Rust structures.")
   (package
     (inherit rust-toml-0.6)
     (name "rust-toml")
-    (version "0.5.8")
+    (version "0.5.11")
     (source
       (origin
         (method url-fetch)
@@ -64435,7 +64435,7 @@ serializing Rust structures.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1apcmjrrjw429pjw7mqlmdwwd67g8305vwqy4kw3swr612bl44d3"))))
+          "0d2266nx8b3n22c7k24x4428z6di8n83a9n466jm7a2hipfz1xzl"))))
     (arguments
      `(#:cargo-inputs
         (("rust-indexmap" ,rust-indexmap-1)
