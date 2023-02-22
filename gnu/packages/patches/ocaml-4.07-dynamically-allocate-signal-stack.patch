@@ -1,0 +1,52 @@
+From 5a224b981ee32d7cf59aaa9e2c101af65a275edc Mon Sep 17 00:00:00 2001
+From: Julien Lepiller <julien@lepiller.eu>
+Date: Mon, 20 Feb 2023 19:14:12 +0100
+Subject: [PATCH] Dynamically allocate the alternate signal stack.
+
+This patch is a backport of https://github.com/ocaml/ocaml/pull/10266.
+---
+ asmrun/signals_asm.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/asmrun/signals_asm.c b/asmrun/signals_asm.c
+index 3895d75..7e2abe8 100644
+--- a/asmrun/signals_asm.c
++++ b/asmrun/signals_asm.c
+@@ -182,7 +182,6 @@ DECLARE_SIGNAL_HANDLER(trap_handler)
+ #ifdef HAS_STACK_OVERFLOW_DETECTION
+ 
+ static char * system_stack_top;
+-static char sig_alt_stack[SIGSTKSZ];
+ 
+ #if defined(SYS_linux)
+ /* PR#4746: recent Linux kernels with support for stack randomization
+@@ -274,15 +273,19 @@ void caml_init_signals(void)
+ #ifdef HAS_STACK_OVERFLOW_DETECTION
+   {
+     stack_t stk;
+-    struct sigaction act;
+-    stk.ss_sp = sig_alt_stack;
++    stk.ss_sp = malloc(SIGSTKSZ);
+     stk.ss_size = SIGSTKSZ;
+     stk.ss_flags = 0;
+-    SET_SIGACT(act, segv_handler);
+-    act.sa_flags |= SA_ONSTACK | SA_NODEFER;
+-    sigemptyset(&act.sa_mask);
+-    system_stack_top = (char *) &act;
+-    if (sigaltstack(&stk, NULL) == 0) { sigaction(SIGSEGV, &act, NULL); }
++    if (stk.ss_sp != NULL) {
++      if (sigaltstack(&stk, NULL) != -1) {                                     
++        struct sigaction act;                                                  
++        SET_SIGACT(act, segv_handler);                                         
++        act.sa_flags |= SA_ONSTACK | SA_NODEFER;                               
++        sigemptyset(&act.sa_mask);                                             
++        system_stack_top = (char *) &act;                                      
++        sigaction(SIGSEGV, &act, NULL);                                        
++      }
++    }
+   }
+ #endif
+ }
+-- 
+2.38.1
+

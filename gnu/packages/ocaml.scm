@@ -369,7 +369,9 @@ patch-/bin/sh-references: ~a: changing `\"/bin/sh\"' to `~a'~%"
               (sha256
                (base32
                 "1f07hgj5k45cylj1q3k5mk8yi02cwzx849b1fwnwia8xlcfqpr6z"))
-              (patches (search-patches "ocaml-multiple-definitions.patch"))
+              (patches (search-patches
+                         "ocaml-multiple-definitions.patch"
+                         "ocaml-4.07-dynamically-allocate-signal-stack.patch"))
               (modules '((guix build utils)))
               (snippet
                `(begin
