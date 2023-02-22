@@ -27576,14 +27576,14 @@ SystemTime}}.")
 (define-public rust-hyper-0.14
   (package
     (name "rust-hyper")
-    (version "0.14.15")
+    (version "0.14.24")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "hyper" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0g4mnsacfvj4127587ihm802kzkh6zgs0c3a2mayc82g3q4w0vj3"))))
+        (base32 "0k0nbykigwb9gmbqb13dyjdq7izc624j8ymaa21xns0bz9r160ay"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
