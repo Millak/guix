@@ -70834,14 +70834,14 @@ windows crate.")
 (define-public rust-windows-x86-64-gnu-0.42
   (package
     (name "rust-windows-x86-64-gnu")
-    (version "0.42.0")
+    (version "0.42.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows_x86_64_gnu" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "1vdh8k5a4m6pfkc5gladqznyqxgapkjm0qb8iwqvqb1nnlhinyxz"))
+                "0icwd66wd6p9hhzds93333wy2knlqbyiynf2rfy7xqc528i0y161"))
               (snippet
                '(begin
                   (delete-file "lib/libwindows.a")))))
