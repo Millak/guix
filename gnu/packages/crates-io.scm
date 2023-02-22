@@ -17866,6 +17866,7 @@ diff.")
        #:cargo-inputs
        (("rust-blobby" ,rust-blobby-0.3)
         ("rust-block-buffer" ,rust-block-buffer-0.10)
+        ("rust-const-oid" ,rust-const-oid-0.9)
         ("rust-crypto-common" ,rust-crypto-common-0.1)
         ("rust-generic-array" ,rust-generic-array-0.14)
         ("rust-subtle" ,rust-subtle-2))))
