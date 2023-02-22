@@ -5825,6 +5825,27 @@ c6e7d37.  However, this package works only up to 128 bytes.")
      "This package encodes and decodes base64 as bytes or utf8.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-base64-0.20
+  (package
+    (inherit rust-base64-0.21)
+    (name "rust-base64")
+    (version "0.20.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "base64" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1r855djiv8rirg37w5arazk42ya5gm5gd2bww75v14w0sy02i8hf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rstest" ,rust-rstest-0.12)
+        ("rust-rstest-reuse" ,rust-rstest-reuse-0.3)
+        ("rust-structopt" ,rust-structopt-0.3))))))
+
 (define-public rust-base64-0.13
   (package
     (inherit rust-base64-0.21)
