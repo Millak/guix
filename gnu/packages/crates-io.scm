@@ -54176,8 +54176,37 @@ functionality and without weak references.")
        (("rust-digest" ,rust-digest-0.8)
         ("rust-hex-literal" ,rust-hex-literal-0.1))))))
 
+(define-public rust-sha1-0.10
+  (package
+    (name "rust-sha1")
+    (version "0.10.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "sha1" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "18zb80sxn31kxdpl1ly6w17hkrvyf08zbxnpy8ckb6f3h3f96hph"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-sha1-asm" ,rust-sha1-asm-0.5))
+       #:cargo-development-inputs
+       (("rust-digest" ,rust-digest-0.10)
+        ("rust-hex-literal" ,rust-hex-literal-0.2))))
+    (home-page "https://github.com/mitsuhiko/rust-sha1")
+    (synopsis "Minimal implementation of SHA1 for Rust")
+    (description
+     "This package provides a minimal implementation of SHA1 for Rust.")
+    (license license:bsd-3)))
+
 (define-public rust-sha1-0.6
   (package
+    (inherit rust-sha1-0.10)
     (name "rust-sha1")
     (version "0.6.0")
     (source
@@ -54189,7 +54218,6 @@ functionality and without weak references.")
        (sha256
         (base32
          "03gs2q4m67rn2p8xcdfxhip6mpgahdwm12bnb3vh90ahv9grhy95"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -54197,12 +54225,7 @@ functionality and without weak references.")
        #:cargo-development-inputs
        (("rust-openssl" ,rust-openssl-0.10)
         ("rust-rand" ,rust-rand-0.4)
-        ("rust-serde-json" ,rust-serde-json-1))))
-    (home-page "https://github.com/mitsuhiko/rust-sha1")
-    (synopsis "Minimal implementation of SHA1 for Rust")
-    (description
-     "Minimal implementation of SHA1 for Rust.")
-    (license license:bsd-3)))
+        ("rust-serde-json" ,rust-serde-json-1))))))
 
 (define-public rust-sha1-0.2
   (package
