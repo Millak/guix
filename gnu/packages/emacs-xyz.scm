@@ -20884,6 +20884,32 @@ a heuristic based on frequency and recency.")
 as well as functions for navigating between these headings.")
       (license license:gpl3+))))
 
+(define-public emacs-org-recur
+  (package
+    (name "emacs-org-recur")
+    (version "1.3.3")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/m-cat/org-recur")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s2n62y3qc72ldzpaq2jz9335h532s566499n346nx21l4qsqdz6"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list
+      #:tests? #t
+      #:test-command #~(list "emacs" "--batch" "-l" "org-recur-test.el"
+                             "-f" "ert-run-tests-batch-and-exit")))
+    (propagated-inputs (list emacs-dash))
+    (home-page "https://github.com/m-cat/org-recur")
+    (synopsis "Simple recurring Org mode tasks")
+    (description "This package extends Org mode and Org Agenda with support
+for defining recurring tasks and easily scheduling them.")
+    (license license:gpl3+)))
+
 (define-public emacs-org-super-agenda
   (package
     (name "emacs-org-super-agenda")
