@@ -51731,7 +51731,7 @@ single-cell matrices.")
 (define-public rust-schannel-0.1
   (package
     (name "rust-schannel")
-    (version "0.1.16")
+    (version "0.1.21")
     (source
       (origin
         (method url-fetch)
@@ -51739,13 +51739,12 @@ single-cell matrices.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "08d0p5iy574vdrax4l3laazic0crj7rp7vp3if5rrfkcdfq51xc7"))))
+          "1cxivcbczzfv4295pqi5s80kr7nhs7xc0i40zf43b7q5qw3gng3i"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-winapi" ,rust-winapi-0.3))))
+       (("rust-windows-sys" ,rust-windows-sys-0.42))))
     (home-page "https://github.com/steffengy/schannel-rs")
     (synopsis "Rust bindings to the Windows SChannel APIs")
     (description
