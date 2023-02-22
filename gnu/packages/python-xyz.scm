@@ -20041,7 +20041,7 @@ both as keys and as attributes.")
 (define-public python-astroid
   (package
     (name "python-astroid")
-    (version "2.9.0")
+    (version "2.11.7")
     (source
      (origin
        (method git-fetch)
@@ -20050,7 +20050,7 @@ both as keys and as attributes.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "19iiys4233cicpm48fd7lrkm31kk47qiv44wvk952rqbcn4rd2dh"))))
+        (base32 "0lmm5bhszg1nj0xsjnh5nm39if2jzpa3ycgvhy6ddycz28dy568y"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-lazy-object-proxy python-typing-extensions python-wrapt))
