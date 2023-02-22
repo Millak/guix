@@ -39365,20 +39365,19 @@ under its new name.")
 (define-public rust-os-info-3
   (package
     (name "rust-os-info")
-    (version "3.0.7")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "os_info" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "09x2sm4pgcpk14hakj4iq0zkglx1bwxlq3a5mbwc737dpwh11jba"))))
+        (base32 "1h5q42l0azly64b80gb36f0lsm296idkn0dc7247gq0mip34nhjw"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-development-inputs
+     `(#:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-pretty-assertions" ,rust-pretty-assertions-0.7))
+        ("rust-pretty-assertions" ,rust-pretty-assertions-1))
        #:cargo-inputs
        (("rust-log" ,rust-log-0.4)
         ("rust-serde" ,rust-serde-1)
