@@ -22899,7 +22899,7 @@ different @code{Future}s at once and handling the first one to complete.")
 (define-public rust-futures-sink-0.3
   (package
     (name "rust-futures-sink")
-    (version "0.3.12")
+    (version "0.3.26")
     (source
      (origin
        (method url-fetch)
@@ -22908,7 +22908,7 @@ different @code{Future}s at once and handling the first one to complete.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1mj22d4w6digh7wfp6jkr5fdcl9r138q41fxzm1yg8mx568cdxfa"))))
+         "0r43djzf0caz89c724ishpzxy59y6nw7ykfvh1nd9kz8nc5q447k"))))
     (build-system cargo-build-system)
     (arguments `(#:skip-build? #t))
     (home-page "https://rust-lang.github.io/futures-rs")
