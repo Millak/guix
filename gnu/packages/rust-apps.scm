@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2019, 2020 John Soo <jsoo1@asu.edu>
-;;; Copyright © 2019-2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2019-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
 ;;; Copyright © 2020 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020 Leo Famulari <leo@famulari.name>
@@ -1840,7 +1840,7 @@ support for Rust.")
 (define-public rust-cargo-c
   (package
     (name "rust-cargo-c")
-    (version "0.9.8+cargo-0.60")
+    (version "0.9.16+cargo-0.68")
     (source
       (origin
         (method url-fetch)
@@ -1849,27 +1849,29 @@ support for Rust.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1zdzs3drjr9p6chg32inyi05rfv1c12nkk4bi7qpha12m6rsn26d"))))
+          "0k2sw67dx06b45qpvckbhz00kn2ingd89y53pwlzky72hnzv075v"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-cbindgen" ,rust-cbindgen-0.20)
-        ("rust-cargo" ,rust-cargo-0.60)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-pretty-env-logger" ,rust-pretty-env-logger-0.4)
-        ("rust-structopt" ,rust-structopt-0.3)
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-cargo" ,rust-cargo-0.68)
+        ("rust-cargo-util" ,rust-cargo-util-0.2)
+        ("rust-cbindgen" ,rust-cbindgen-0.24)
+        ("rust-cc" ,rust-cc-1)
+        ("rust-clap" ,rust-clap-4)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-itertools" ,rust-itertools-0.10)
         ("rust-log" ,rust-log-0.4)
-        ("rust-toml" ,rust-toml-0.5)
-        ("rust-cargo-metadata" ,rust-cargo-metadata-0.9)
-        ("rust-semver" ,rust-semver-0.10)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-semver" ,rust-semver-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
         ("rust-serde-json" ,rust-serde-json-1)
-        ("rust-regex" ,rust-regex-1))))
+        ("rust-toml" ,rust-toml-0.6))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list curl libgit2-1.3 libssh2 openssl-1.1 zlib))
+     (list curl libgit2 libssh2 openssl zlib))
     (home-page "https://github.com/lu-zero/cargo-c")
     (synopsis "Build and install C-compatible libraries")
     (description
