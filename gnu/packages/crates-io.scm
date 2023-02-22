@@ -70420,14 +70420,14 @@ color in a Windows console.")
 (define-public rust-windows-aarch64-gnullvm-0.42
   (package
     (name "rust-windows-aarch64-gnullvm")
-    (version "0.42.0")
+    (version "0.42.1")
     (source (origin
               (method url-fetch)
               (uri (crate-uri "windows-aarch64-gnullvm" version))
               (file-name (string-append name "-" version ".tar.gz"))
               (sha256
                (base32
-                "17m1p753qk02r25afg31dxym4rpy7kpr0z8nwl5f1jzhyrqsmlj1"))
+                "0256d14kqpiniwcm6y2yfj7jbzdvvj4l6i65r5zyrza36bl6964c"))
               (snippet
                '(begin
                   (delete-file "lib/libwindows.a")))))
