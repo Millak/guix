@@ -13468,14 +13468,14 @@ intrinsics.")
 (define-public rust-core-foundation-0.9
   (package
     (name "rust-core-foundation")
-    (version "0.9.1")
+    (version "0.9.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "core-foundation" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0qhackx0i914nbhcwi6bbxnyyqqldgxc046gviak3a3f8apf528a"))))
+        (base32 "0ii1ihpjb30fk38gdikm5wqlkmyr8k46fh4k2r8sagz5dng7ljhr"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f             ;tests fail with a lot of "undefined reference"
