@@ -27184,6 +27184,43 @@ requests and responses.")
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-json" ,rust-serde-json-1))))))
 
+(define-public rust-http-auth-0.1
+  (package
+    (name "rust-http-auth")
+    (version "0.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "http-auth" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1g6gpn2py0c4l45wp61k3zc45vg5l20zq39mxgxh56hzgb6wlc2l"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t     ; error: failed to parse bitcode for LTO module
+       #:cargo-inputs
+       (("rust-base64" ,rust-base64-0.21)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-http" ,rust-http-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-md-5" ,rust-md-5-0.10)
+        ("rust-memchr" ,rust-memchr-2)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-pretty-assertions" ,rust-pretty-assertions-1)
+        ("rust-reqwest" ,rust-reqwest-0.11))))
+    (inputs
+     (list openssl))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/scottlamb/http-auth")
+    (synopsis "HTTP authentication for rust")
+    (description "This package provices HTTP authentication; it can parse
+challenge lists, respond to Basic and Digest challenges.  It is likely to be
+extended with server support and additional auth schemes.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-http-body-0.4
   (package
     (name "rust-http-body")
