@@ -41391,24 +41391,23 @@ relative path from a provided base directory path to the provided
 path.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-pbkdf2-0.10
+(define-public rust-pbkdf2-0.11
   (package
     (name "rust-pbkdf2")
-    (version "0.10.0")
+    (version "0.11.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pbkdf2" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0d3l06x5mg96njxfsksjwl6440alf72qh4rwrpnq4fwmrz1qqqm4"))))
+        (base32 "05q9wqjvfrs4dvw03yn3bvcs4zghz0a7ycfa53pz2k2fqhp6k843"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-base64ct" ,rust-base64ct-1.0.1)
-        ("rust-digest" ,rust-digest-0.10)
+       (("rust-digest" ,rust-digest-0.10)
         ("rust-hmac" ,rust-hmac-0.12)
-        ("rust-password-hash" ,rust-password-hash-0.3)
+        ("rust-password-hash" ,rust-password-hash-0.4)
         ("rust-rayon" ,rust-rayon-1)
         ("rust-sha-1" ,rust-sha-1-0.10)
         ("rust-sha2" ,rust-sha2-0.10))
@@ -41424,6 +41423,34 @@ path.")
 algorithms, otherwise known as password-based key derivation functions, written
 in pure Rust.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-pbkdf2-0.10
+  (package
+    (inherit rust-pbkdf2-0.11)
+    (name "rust-pbkdf2")
+    (version "0.10.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pbkdf2" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0d3l06x5mg96njxfsksjwl6440alf72qh4rwrpnq4fwmrz1qqqm4"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64ct" ,rust-base64ct-1.0.1)
+        ("rust-digest" ,rust-digest-0.10)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-password-hash" ,rust-password-hash-0.3)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-sha-1" ,rust-sha-1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3)
+        ("rust-hmac" ,rust-hmac-0.12)
+        ("rust-sha-1" ,rust-sha-1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10)
+        ("rust-streebog" ,rust-streebog-0.10))))))
 
 (define-public rust-pbkdf2-0.9
   (package
