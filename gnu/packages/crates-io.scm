@@ -61639,23 +61639,30 @@ introspection APIs.")
 (define-public rust-time-0.3
   (package
     (name "rust-time")
-    (version "0.3.5")
+    (version "0.3.19")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1b943jf54q1667i328x3z73fsjdhcqdqccxckx1nzwwaz9ygxvs1"))))
+        (base32 "1hnnp3138zxk42r077jxhk1kma16bn9di1w5k3yzi3zd7wxhl9ak"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin (substitute* "Cargo.toml"
+                  (("=0\\.2\\.7") "^0.2.7"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-itoa" ,rust-itoa-0.4)
+       (("rust-itoa" ,rust-itoa-1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-libc" ,rust-libc-0.2)
+        ("rust-num-threads" ,rust-num-threads-0.1)
         ("rust-quickcheck" ,rust-quickcheck-1)
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
+        ("rust-time-core" ,rust-time-core-0.1)
         ("rust-time-macros" ,rust-time-macros-0.2))))
     (home-page "https://github.com/time-rs/time")
     (synopsis "Date and time library")
