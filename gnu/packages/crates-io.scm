@@ -15642,14 +15642,14 @@ use with bindgen.")
 (define-public rust-curl-0.4
   (package
     (name "rust-curl")
-    (version "0.4.43")
+    (version "0.4.44")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "curl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "07v5s3qafyl9gnnlzbddgg5fzy41gncy00ahbbv46nr0xyp5bn1p"))))
+        (base32 "08hsq6ssy228df56adv2wbgam05f5rw1f2wzs7mhkb678qbx36sh"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;require internet access
@@ -15672,8 +15672,8 @@ use with bindgen.")
     (home-page "https://github.com/alexcrichton/curl-rust")
     (synopsis "Rust bindings to libcurl for making HTTP requests")
     (description
-     "This package provides Rust bindings to libcurl for making HTTP
-requests")
+     "This package provides Rust bindings to @code{libcurl} for making HTTP
+requests.")
     (license license:expat)))
 
 (define-public rust-curl-sys-0.4
