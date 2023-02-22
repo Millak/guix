@@ -24270,8 +24270,35 @@ getters and setters on fields.")
 @acronym{GFA, Graphical Fragment Assembly} format.")
     (license license:expat)))
 
+(define-public rust-ghash-0.5
+  (package
+    (name "rust-ghash")
+    (version "0.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "ghash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0h1y3v3kj8xxkf2snv1yly0lr20fdh3jrm60p382szbiwl6pac6r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-opaque-debug" ,rust-opaque-debug-0.3)
+        ("rust-polyval" ,rust-polyval-0.6)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/universal-hashes")
+    (synopsis "Universal hash over GF(2^128)")
+    (description "This package provides a universal hash over GF(2^128) useful
+for constructing a Message Authentication Code (MAC), as in the AES-GCM
+authenticated encryption cipher.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-ghash-0.3
   (package
+    (inherit rust-ghash-0.5)
     (name "rust-ghash")
     (version "0.3.0")
     (source
@@ -24282,19 +24309,12 @@ getters and setters on fields.")
        (sha256
         (base32
          "0c957q9sk1q93pqqfvhcmflfm1zvbr14aznfpm25kqd6i437zqnn"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-polyval" ,rust-polyval-0.4)
         ("rust-zeroize" ,rust-zeroize-1))
        #:cargo-development-inputs
-       (("rust-hex-literal" ,rust-hex-literal-0.1))))
-    (home-page "https://github.com/RustCrypto/universal-hashes")
-    (synopsis "Universal hash over GF(2^128)")
-    (description "This package provides a universal hash over GF(2^128) useful
-for constructing a Message Authentication Code (MAC), as in the AES-GCM
-authenticated encryption cipher.")
-    (license (list license:expat license:asl2.0))))
+       (("rust-hex-literal" ,rust-hex-literal-0.1))))))
 
 (define-public rust-ghash-0.2
   (package
