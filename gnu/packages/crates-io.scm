@@ -18499,15 +18499,18 @@ from macros.")
 (define-public rust-document-features-0.2
   (package
     (name "rust-document-features")
-    (version "0.2.1")
+    (version "0.2.7")
     (source
       (origin
         (method url-fetch)
         (uri (crate-uri "document-features" version))
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
-         (base32 "121wr2bd8a4s5i5yrxjz8c5amw2l69xmqqma86x6y4xmcgyhj75h"))))
+         (base32 "0mv1xg386as8zndw6kdgs4bwxwwlg42srdhkmgf00zz1zirwb4z4"))))
     (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Needs nightly features.
+       #:cargo-inputs (("rust-litrs" ,rust-litrs-0.2))))
     (home-page "https://slint-ui.com")
     (synopsis "Extract documentation for feature flags from Cargo.toml")
     (description "Extract documentation for the feature flags from comments in
