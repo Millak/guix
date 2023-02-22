@@ -59623,7 +59623,7 @@ without a mutable reference.")
 (define-public rust-tar-0.4
   (package
     (name "rust-tar")
-    (version "0.4.36")
+    (version "0.4.38")
     (source
       (origin
         (method url-fetch)
@@ -59631,17 +59631,16 @@ without a mutable reference.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0iz40bd47xr69dsbckd6rv5ry2nqb2dp3z850q41pvpnmk6xk441"))))
+          "1ikiz14wbfmaaw5mrv93msa8v6n3i595z5kw9p0fdqa40dy80mab"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Test tarballs not included in crate.
        #:cargo-inputs
        (("rust-filetime" ,rust-filetime-0.2)
         ("rust-libc" ,rust-libc-0.2)
-        ("rust-redox-syscall" ,rust-redox-syscall-0.1)
         ("rust-xattr" ,rust-xattr-0.2))
        #:cargo-development-inputs
-       (("rust-tempdir" ,rust-tempdir-0.3))))
+       (("rust-tempfile" ,rust-tempfile-3))))
     (home-page "https://github.com/alexcrichton/tar-rs")
     (synopsis "Tar file reading/writing for Rust")
     (description
