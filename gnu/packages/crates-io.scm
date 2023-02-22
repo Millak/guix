@@ -48860,7 +48860,7 @@ can handle huge texts and memory-incoherent edits with ease.")
         ("rust-rand" ,rust-rand-0.8)
         ("rust-serde" ,rust-serde-1)
         ("rust-subtle" ,rust-subtle-2)
-        ("rust-zeroize" ,rust-zeroize-1))
+        ("rust-zeroize" ,rust-zeroize-1.4))
        #:cargo-development-inputs
         (("rust-base64" ,rust-base64-0.13)
          ("rust-hex" ,rust-hex-0.4)
@@ -71402,6 +71402,21 @@ stable Rust primitives, which guarantee memory is zeroed using an operation
 will not be ``optimized away'' by the compiler.  It uses a portable pure Rust
 implementation that works everywhere, even WASM!")
     (license (list license:asl2.0 license:expat))))
+
+(define-public rust-zeroize-1.4
+  (package
+    (inherit rust-zeroize-1)
+    (name "rust-zeroize")
+    (version "1.4.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zeroize" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "068nvl3n5hk6lfn5y24grf2c7anzzqfzjjccscq3md7rqp79v3fn"))))
+    (arguments
+     `(#:cargo-inputs (("rust-zeroize-derive" ,rust-zeroize-derive-1))))))
 
 (define-public rust-zeroize-derive-1
   (package
