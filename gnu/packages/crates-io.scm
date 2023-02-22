@@ -7847,8 +7847,29 @@ and block modes.")
        (("rust-aes" ,rust-aes-0.6)
         ("rust-hex-literal" ,rust-hex-literal-0.2))))))
 
+(define-public rust-block-padding-0.3
+  (package
+    (name "rust-block-padding")
+    (version "0.3.2")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "block-padding" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0y5v92alqzn9ikmyqfl3a4j6va87j967ii2n3jh2h330z4nyr40a"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-generic-array" ,rust-generic-array-0.14))))
+    (home-page "https://github.com/RustCrypto/utils")
+    (synopsis "Padding and unpadding of messages divided into blocks")
+    (description
+     "Padding and unpadding of messages divided into blocks.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-block-padding-0.2
   (package
+    (inherit rust-block-padding-0.3)
     (name "rust-block-padding")
     (version "0.2.0")
     (source
@@ -7859,13 +7880,7 @@ and block modes.")
          (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "0x6b2dgink7rc3755r8jl4kmndydy5563h3wz7z9jqrb25ygv2y9"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/RustCrypto/utils")
-    (synopsis "Padding and unpadding of messages divided into blocks")
-    (description
-     "Padding and unpadding of messages divided into blocks.")
-    (license (list license:expat license:asl2.0))))
+          "0x6b2dgink7rc3755r8jl4kmndydy5563h3wz7z9jqrb25ygv2y9"))))))
 
 (define-public rust-block-padding-0.1
   (package
