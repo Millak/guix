@@ -12366,8 +12366,27 @@ everywhere.")
         ("rust-bitflags" ,rust-bitflags-1)
         ("rust-concolor-query" ,rust-concolor-query-0.0.4))))))
 
+(define-public rust-concolor-query-0.1
+  (package
+    (name "rust-concolor-query")
+    (version "0.1.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "concolor-query" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "05ykng7pqhm7840yh07r27p90flwrrmwlk32wxbgdp6mncs0gac2"))))
+    (build-system cargo-build-system)
+    (home-page "https://github.com/rust-cli/concolor")
+    (synopsis "Look up colored console capabilities")
+    (description "@code{concolor-query} can be used to query a terminal
+capabilities, for example to find out about its colored console abilities.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-concolor-query-0.0.5
   (package
+    (inherit rust-concolor-query-0.1)
     (name "rust-concolor-query")
     (version "0.0.5")
     (source
@@ -12377,13 +12396,7 @@ everywhere.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0jcll1lnnkbdr6xcgppf6dr0ra9rxcp78xr1zlrvba03zkk7yhfn"))))
-    (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
-    (home-page "https://github.com/rust-cli/concolor")
-    (synopsis "Look up colored console capabilities")
-    (description "@code{concolor-query} can be used to query a terminal
-capabilities, for example to find out about its colored console abilities.")
-    (license (list license:expat license:asl2.0))))
+    (arguments `(#:skip-build? #t))))
 
 (define-public rust-concolor-query-0.0.4
   (package
