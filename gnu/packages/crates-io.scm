@@ -10245,7 +10245,7 @@ Encoding Standard.")
 (define-public rust-chrono-0.4
   (package
     (name "rust-chrono")
-    (version "0.4.19")
+    (version "0.4.24")
     (source
      (origin
        (method url-fetch)
@@ -10254,22 +10254,25 @@ Encoding Standard.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0wyfl6c00vhfl562spnfcna3zkw8jqvcp652m9iskhl8j26dc2k7"))))
+         "0fv7idr8c7vdb0xi32w45a7pafnyzk7m0bknfggj5pva0qcmjg2f"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-js-sys" ,rust-js-sys-0.3)
-        ("rust-libc" ,rust-libc-0.2)
+       (("rust-arbitrary" ,rust-arbitrary-1)
+        ("rust-criterion" ,rust-criterion-0.4)
+        ("rust-iana-time-zone" ,rust-iana-time-zone-0.1)
+        ("rust-js-sys" ,rust-js-sys-0.3)
         ("rust-num-integer" ,rust-num-integer-0.1)
         ("rust-num-traits" ,rust-num-traits-0.2)
         ("rust-pure-rust-locales" ,rust-pure-rust-locales-0.5)
+        ("rust-rkyv" ,rust-rkyv-0.7)
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1)
         ("rust-time" ,rust-time-0.1)
-        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-winapi" ,rust-winapi-0.3))
        #:cargo-development-inputs
-       (("rust-bincode" ,rust-bincode-0.8)
-        ("rust-criterion" ,rust-criterion-0.3)
+       (("rust-bincode" ,rust-bincode-1)
         ("rust-doc-comment" ,rust-doc-comment-0.3)
         ("rust-num-iter" ,rust-num-iter-0.1)
         ("rust-serde-derive" ,rust-serde-derive-1)
