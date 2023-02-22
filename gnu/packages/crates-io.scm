@@ -2680,6 +2680,25 @@ it outputs messages to Android's logcat.")
         ("rust-lazy-static" ,rust-lazy-static-1)
         ("rust-log" ,rust-log-0.4))))))
 
+(define-public rust-android-system-properties-0.1
+  (package
+    (name "rust-android-system-properties")
+    (version "0.1.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "android-system-properties" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "04b3wrz12837j7mdczqd95b732gw5q7q66cv4yn4646lvccp57l1"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/nical/android_system_properties")
+    (synopsis "Minimal Android system properties wrapper")
+    (description
+     "This package provides a minimal Android system properties wrapper.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-anes-0.1
   (package
     (name "rust-anes")
