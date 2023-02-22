@@ -945,6 +945,9 @@ PREUN-FILE and POSTUN-FILE can be provided via EXTRA-OPTIONS."
                          (rnrs bytevectors)
                          (srfi srfi-1))
 
+            ;; Make sure non-ASCII file names are properly handled.
+            #+(set-utf8-locale profile)
+
             (define machine-type
               (and=> (or #$target %host-type)
                      (lambda (triplet)
