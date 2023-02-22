@@ -60438,22 +60438,6 @@ memory all at once.")
 tools.")
     (license license:asl2.0)))
 
-(define-public rust-target-lexicon-0.10
-  (package
-    (inherit rust-target-lexicon-0.12)
-    (name "rust-target-lexicon")
-    (version "0.10.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "target-lexicon" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "17diw9c3d1vb5rmwwk2ghsyhfs0gj5jm78hrwxxhmd67vhw743mb"))))
-    (arguments `(#:skip-build? #t))))
-
 (define-public rust-tectonic-bridge-core-0.3
   (package
     (name "rust-tectonic-bridge-core")
