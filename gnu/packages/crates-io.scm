@@ -49150,6 +49150,24 @@ attributes by creating a set of tests and applying it to every
 scenario you want to test.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-rstest-reuse-0.3
+  (package
+    (inherit rust-rstest-reuse-0.4)
+    (name "rust-rstest-reuse")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "rstest-reuse" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0k9xdqp0gw655g9l46ii0kyv64dschnf2z7vs43s6zp2phbk37dj"))))
+    (arguments
+     (list #:skip-build? #t
+           #:cargo-inputs
+           `(("rust-quote" ,rust-quote-1)
+             ("rust-rustc-version" ,rust-rustc-version-0.4)
+             ("rust-syn" ,rust-syn-1))))))
+
 (define-public rust-rug-1
   (package
     (name "rust-rug")
