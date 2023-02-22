@@ -24096,48 +24096,46 @@ implementation for Common Lisp.")
   (sbcl-package->ecl-package sbcl-websocket-driver))
 
 (define-public sbcl-jzon
-  (let ((commit "5364590f5d2e6d6f1932d1ea3acba1ee2a82f31e")
-        (revision "0"))
-    (package
-      (name "sbcl-jzon")
-      (version (git-version "0.0.0" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://github.com/Zulu-Inuoe/jzon")
-               (commit commit)))
-         (file-name (git-file-name "cl-jzon" version))
-         (sha256
-          (base32 "1048f6prz2lp859nxwcgghn6n38pc2pb580azzxpdhfcdi0034mj"))))
-      (build-system asdf-build-system/sbcl)
-      (arguments
-       '(#:asd-systems '("com.inuoe.jzon")
-         #:asd-test-systems '("com.inuoe.jzon-tests")
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'fix-test-asd
-             (lambda _
-               (substitute* "test/com.inuoe.jzon-tests.asd"
-                 ((":depends-on")
-                  (string-append
-                   ":perform (test-op (op c) (symbol-call :fiveam :run!"
-                   " (find-symbol \"JZON\" :com.inuoe.jzon-tests)))"
-                   "\n"
-                   "  :depends-on"))))))))
-      (native-inputs
-        (list sbcl-alexandria
-              sbcl-fiveam
-              sbcl-flexi-streams))
-      (inputs
-        (list sbcl-closer-mop
-              sbcl-flexi-streams))
-      (home-page "https://github.com/Zulu-Inuoe/jzon/")
-      (synopsis "Correct and safe JSON parser")
-      (description
-       "@code{jzon} is a correct and safe JSON RFC 8259 parser for Common
-Lisp.")
-      (license license:expat))))
+  (package
+    (name "sbcl-jzon")
+    (version "1.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Zulu-Inuoe/jzon")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name "cl-jzon" version))
+       (sha256
+        (base32 "03k0czc58wlnxavkmr7gbrza6zq40ih4da8yjbxg9ba8m0bzzdw4"))))
+    (build-system asdf-build-system/sbcl)
+    (arguments
+     '(#:asd-systems '("com.inuoe.jzon")
+       #:asd-test-systems '("com.inuoe.jzon-tests")
+       #:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'fix-test-asd
+           (lambda _
+             (substitute* "test/com.inuoe.jzon-tests.asd"
+               ((":depends-on")
+                (string-append
+                 ":perform (test-op (op c) (symbol-call :fiveam :run!"
+                 " (find-symbol \"JZON\" :com.inuoe.jzon-tests)))"
+                 "\n"
+                 "  :depends-on"))))))))
+    (native-inputs
+     (list sbcl-alexandria
+           sbcl-fiveam))
+    (inputs
+     (list sbcl-closer-mop
+           sbcl-flexi-streams
+           sbcl-float-features
+           sbcl-trivial-gray-streams))
+    (home-page "https://github.com/Zulu-Inuoe/jzon/")
+    (synopsis "Correct and safe JSON parser")
+    (description
+     "@code{jzon} is a correct and safe JSON RFC 8259 parser for Common Lisp.")
+    (license license:expat)))
 
 (define-public cl-jzon
   (sbcl-package->cl-source-package sbcl-jzon))
