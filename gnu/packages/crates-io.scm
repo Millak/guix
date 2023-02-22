@@ -9857,8 +9857,48 @@ optional dependency graph analysis.")
 supported by Cargo.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-cargo-util-0.2
+  (package
+    (name "rust-cargo-util")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "cargo-util" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32
+         "13wl16p29256rvrsnsr89bifkz1n3m96irwxv6w0w49fb00cvq74"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-anyhow" ,rust-anyhow-1)
+        ("rust-core-foundation" ,rust-core-foundation-0.9)
+        ("rust-crypto-hash" ,rust-crypto-hash-0.3)
+        ("rust-filetime" ,rust-filetime-0.2)
+        ("rust-hex" ,rust-hex-0.4)
+        ("rust-jobserver" ,rust-jobserver-0.1)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-miow" ,rust-miow-0.5)
+        ("rust-same-file" ,rust-same-file-1)
+        ("rust-shell-escape" ,rust-shell-escape-0.1)
+        ("rust-tempfile" ,rust-tempfile-3)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-winapi" ,rust-winapi-0.3))))
+    (inputs
+     (list openssl))
+    (native-inputs
+     (list pkg-config))
+    (home-page "https://github.com/rust-lang/cargo")
+    (synopsis "Utilities for Cargo")
+    (description "Miscellaneous support code used by Cargo.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-cargo-util-0.1
   (package
+    (inherit rust-cargo-util-0.2)
     (name "rust-cargo-util")
     (version "0.1.2")
     (source
@@ -9870,11 +9910,9 @@ supported by Cargo.")
        (sha256
         (base32
          "1sz0gzcyp9ycb4zwj69qs9gd8kn9hv9nh2dq42c59x5xccqph755"))))
-    (build-system cargo-build-system)
-    (home-page "https://github.com/rust-lang/cargo")
-    (synopsis "Utilities for Cargo")
-    (description "Miscellaneous support code used by Cargo.")
-    (license (list license:expat license:asl2.0))))
+    (arguments '())
+    (inputs '())
+    (native-inputs '())))
 
 (define-public rust-cargon-0.0
   (package
