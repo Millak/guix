@@ -40229,8 +40229,32 @@ formatters with per-field documentation generated for each structure.
 memory page size.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-pager-0.16
+  (package
+    (name "rust-pager")
+    (version "0.16.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "pager" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "10188qgnsz988g30fvl4whkljh2zl4gpbp6kc48bpywpbhd23695"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-errno" ,rust-errno-0.2)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://gitlab.com/imp/pager-rs.git")
+    (synopsis "Helps pipe your output through an external pager")
+    (description
+     "This package pipes your Rust output through an external pager.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-pager-0.15
   (package
+    (inherit rust-pager-0.16)
     (name "rust-pager")
     (version "0.15.0")
     (source
@@ -40242,16 +40266,10 @@ memory page size.")
        (sha256
         (base32
          "0a35mg68s0p63ya2k5hsg620c4llkjw2fx1sfi0laz4pz8myv75n"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-errno" ,rust-errno-0.2)
-        ("rust-libc" ,rust-libc-0.2))))
-    (home-page "https://gitlab.com/imp/pager-rs.git")
-    (synopsis "Helps pipe your output through an external pager")
-    (description
-     "This package pipes your Rust output through an external pager.")
-    (license (list license:asl2.0 license:expat))))
+        ("rust-libc" ,rust-libc-0.2))))))
 
 (define-public rust-pam-sys-0.5
   (package
