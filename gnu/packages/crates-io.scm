@@ -7969,6 +7969,28 @@ programs.")
         ("rust-parking" ,rust-parking-1)
         ("rust-waker-fn" ,rust-waker-fn-1))))))
 
+(define-public rust-botan-0.8
+  (package
+    (name "rust-botan")
+    (version "0.8.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "botan" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "08bmiyn7c3b0dgx20w6hr28d9jcq7cj78cchr84pc686sb2s41ik"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-botan-sys" ,rust-botan-sys-0.8)
+        ("rust-cstr-core" ,rust-cstr-core-0.2)
+        ("rust-cty" ,rust-cty-0.2))))
+    (inputs (list botan))
+    (home-page "https://botan.randombit.net/")
+    (synopsis "Rust wrapper for Botan cryptography library")
+    (description "Rust wrapper for Botan cryptography library")
+    (license license:expat)))
+
 (define-public rust-botan-sys-0.8
   (package
     (name "rust-botan-sys")
