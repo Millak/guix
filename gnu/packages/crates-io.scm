@@ -54545,7 +54545,7 @@ designed for @code{immutable.rs}.")
 (define-public rust-slab-0.4
   (package
     (name "rust-slab")
-    (version "0.4.7")
+    (version "0.4.8")
     (source
       (origin
         (method url-fetch)
@@ -54553,13 +54553,15 @@ designed for @code{immutable.rs}.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1vyw3rkdfdfkzfa1mh83s237sll8v5kazfwxma60bq4b59msf526"))))
+          "0bgwxig8gkqp6gz8rvrpdj6qwa10karnsxwx7wsj5ay8kcf3aa35"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-development-inputs
        (("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
         ("rust-serde-test" ,rust-serde-test-1))
-       #:cargo-inputs (("rust-serde" ,rust-serde-1))))
+       #:cargo-inputs (("rust-autocfg" ,rust-autocfg-1)
+                       ("rust-serde" ,rust-serde-1))))
     (native-inputs
      (list rust-autocfg-1))
     (home-page "https://github.com/carllerche/slab")
