@@ -63982,8 +63982,41 @@ serializing Rust structures.")
     (arguments
      `(#:cargo-inputs (("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-toml-edit-0.19
+  (package
+    (name "rust-toml-edit")
+    (version "0.19.3")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "toml_edit" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+          (base32 "1r9pgw72wkvhf7g4sh4byhvr4aavcgk8v6bvkbxpa5wynh97fsjy"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-indexmap" ,rust-indexmap-1)
+        ("rust-kstring" ,rust-kstring-2)
+        ("rust-nom8" ,rust-nom8-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-spanned" ,rust-serde-spanned-0.6)
+        ("rust-toml-datetime" ,rust-toml-datetime-0.6))
+       #:cargo-development-inputs
+       (("rust-libtest-mimic" ,rust-libtest-mimic-0.6)
+        ("rust-serde-json" ,rust-serde-json-1)
+        ("rust-snapbox" ,rust-snapbox-0.4)
+        ("rust-toml-test-data" ,rust-toml-test-data-1)
+        ("rust-toml-test-harness" ,rust-toml-test-harness-0.4))))
+    (home-page "https://github.com/ordian/toml_edit")
+    (synopsis "Yet another format-preserving TOML parser")
+    (description "This package provides yet another format-preserving TOML
+parser.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-edit-0.14
   (package
+    (inherit rust-toml-edit-0.19)
     (name "rust-toml-edit")
     (version "0.14.4")
     (source
@@ -63993,7 +64026,6 @@ serializing Rust structures.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
           (base32 "07xmklks4ldf8r9ban47zvq2s0csq43ja0dcjs43yi7j8ip2axjk"))))
-    (build-system cargo-build-system)
     (arguments
       `(#:skip-build? #t
         #:cargo-inputs
@@ -64005,12 +64037,7 @@ serializing Rust structures.")
         #:cargo-development-inputs
         (("rust-criterion" ,rust-criterion-0.3)
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
-         ("rust-snapbox" ,rust-snapbox-0.2))))
-    (home-page "https://github.com/ordian/toml_edit")
-    (synopsis "Yet another format-preserving TOML parser")
-    (description "This package provides yet another format-preserving TOML
-parser.")
-    (license (list license:expat license:asl2.0))))
+         ("rust-snapbox" ,rust-snapbox-0.2))))))
 
 (define-public rust-tonic-0.6
   (package
