@@ -6255,13 +6255,13 @@ that uses Serde for transforming structs into bytes and vice versa!")
   (package
     (name "rust-bindgen")
     (version "0.64.0")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "bindgen" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1d0zmfc5swjgaydbamxb4xm687ahgv18dbcpvrzbf39665h3w964"))))
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1d0zmfc5swjgaydbamxb4xm687ahgv18dbcpvrzbf39665h3w964"))))
     (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
@@ -6286,6 +6286,19 @@ that uses Serde for transforming structs into bytes and vice versa!")
 bindings to C and C++ libraries.")
     (license license:bsd-3)))
 
+(define-public rust-bindgen-0.63
+  (package
+    (inherit rust-bindgen-0.64)
+    (name "rust-bindgen")
+    (version "0.63.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "bindgen" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "119qkny3swlx8zm0jxp19hizpkym6arh8mlv9ylskch030961n1n"))))))
+
 (define-public rust-bindgen-0.59
   (package
     (inherit rust-bindgen-0.64)
@@ -6297,7 +6310,28 @@ bindings to C and C++ libraries.")
        (uri (crate-uri "bindgen" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1f4fpycxmbrqk8r2x9brhfgjh86mzc6bngn4a9631x78b2jaklib"))))))
+        (base32 "1f4fpycxmbrqk8r2x9brhfgjh86mzc6bngn4a9631x78b2jaklib"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-bitflags" ,rust-bitflags-1)
+        ("rust-cexpr" ,rust-cexpr-0.6)
+        ("rust-clang-sys" ,rust-clang-sys-1)
+        ("rust-lazy-static" ,rust-lazy-static-1)
+        ("rust-lazycell" ,rust-lazycell-1)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-peeking-take-while" ,rust-peeking-take-while-0.1)
+        ("rust-proc-macro2" ,rust-proc-macro2-1)
+        ("rust-quote" ,rust-quote-1)
+        ("rust-regex" ,rust-regex-1)
+        ("rust-rustc-hash" ,rust-rustc-hash-1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-which" ,rust-which-4))
+       #:cargo-development-inputs
+       (("rust-clap" ,rust-clap-2)
+        ("rust-diff" ,rust-diff-0.1)
+        ("rust-shlex" ,rust-shlex-1)
+        ("rust-tempfile" ,rust-tempfile-3))))))
 
 (define-public rust-bindgen-0.58
   (package
