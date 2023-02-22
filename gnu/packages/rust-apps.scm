@@ -2125,16 +2125,18 @@ daemon which executes them.")
 (define-public tealdeer
   (package
     (name "tealdeer")
-    (version "1.4.1")
+    (version "1.6.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (crate-uri "tealdeer" version))
-       (file-name
-        (string-append name "-" version ".tar.gz"))
+       ;; Completions aren't in the release tarball.
+       (method git-fetch)
+       (uri (git-reference
+              (url "https://github.com/dbrgn/tealdeer")
+              (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0cwf46k2rszcpydrqajnm4dvhggr3ms7sjma0jx02ch4fjicxch7"))))
+         "0ipd23b30pqvyh20mxfd13ps0rnvg7zfpysv7wambfbb92xdh36d"))))
     (build-system cargo-build-system)
     (arguments
      `(#:phases
@@ -2143,13 +2145,17 @@ daemon which executes them.")
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out  (assoc-ref outputs "out"))
                     (bash (string-append out "/etc/bash_completion.d/"))
-                    (fish (string-append out "/share/fish/vendor_completions.d/")))
+                    (fish (string-append out "/share/fish/vendor_completions.d/"))
+                    (zsh  (string-append out "/share/zsh/site-functions/")))
                (mkdir-p bash)
                (mkdir-p fish)
-               (copy-file "bash_tealdeer"
+               (mkdir-p zsh)
+               (copy-file "completion/bash_tealdeer"
                           (string-append bash "tealdeer"))
-               (copy-file "fish_tealdeer"
-                          (string-append fish "tealdeer.fish"))))))
+               (copy-file "completion/fish_tealdeer"
+                          (string-append fish "tealdeer.fish"))
+               (copy-file "completion/zsh_tealdeer"
+                          (string-append zsh "_tealdeer"))))))
        #:install-source? #f
        #:cargo-test-flags
        '("--release" "--"
@@ -2161,31 +2167,28 @@ daemon which executes them.")
          "--skip=test_markdown_rendering"
          "--skip=test_spaces_find_command"
          "--skip=test_autoupdate_cache"
-         "--skip=test_update_cache")
+         "--skip=test_update_cache"
+         "--skip=test_create_cache_directory_path")
        #:cargo-inputs
-       (("rust-ansi-term" ,rust-ansi-term-0.12)
+       (("rust-anyhow" ,rust-anyhow-1)
         ("rust-app-dirs2" ,rust-app-dirs2-2)
         ("rust-atty" ,rust-atty-0.2)
-        ("rust-docopt" ,rust-docopt-1)
-        ("rust-env-logger" ,rust-env-logger-0.7)
-        ("rust-flate2" ,rust-flate2-1)
+        ("rust-clap" ,rust-clap-3)
+        ("rust-env-logger" ,rust-env-logger-0.9)
         ("rust-log" ,rust-log-0.4)
-        ("rust-pager" ,rust-pager-0.15)
-        ("rust-reqwest" ,rust-reqwest-0.10)
+        ("rust-pager" ,rust-pager-0.16)
+        ("rust-reqwest" ,rust-reqwest-0.11)
         ("rust-serde" ,rust-serde-1)
         ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-tar" ,rust-tar-0.4)
         ("rust-toml" ,rust-toml-0.5)
         ("rust-walkdir" ,rust-walkdir-2)
-        ("rust-xdg" ,rust-xdg-2))
+        ("rust-yansi" ,rust-yansi-0.5)
+        ("rust-zip" ,rust-zip-0.6))
        #:cargo-development-inputs
-       (("rust-assert-cmd" ,rust-assert-cmd-1)
+       (("rust-assert-cmd" ,rust-assert-cmd-2)
         ("rust-escargot" ,rust-escargot-0.5)
         ("rust-filetime" ,rust-filetime-0.2)
-        ("rust-predicates" ,rust-predicates-1)
-        ;; This earlier version is required to fix a bug.
-        ;; Remove rust-remove-dir-all-0.5.2 when tealdeer gets upgraded
-        ("rust-remove-dir-all" ,rust-remove-dir-all-0.5.2)
+        ("rust-predicates" ,rust-predicates-2)
         ("rust-tempfile" ,rust-tempfile-3))))
     (native-inputs
      (list pkg-config))
