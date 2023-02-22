@@ -41390,6 +41390,26 @@ runtime support for rust-peg grammars.  To use rust-peg, see the peg crate.")
 PEM-encoded data.")
     (license license:expat)))
 
+(define-public rust-pem-0.8
+  (package
+    (inherit rust-pem-1)
+    (name "rust-pem")
+    (version "0.8.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "pem" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1sqkzp87j6s79sjxk4n913gcmalzb2fdc75l832d0j7a3z9cnmpx"))))
+    (arguments
+     `(#:cargo-inputs
+       (("rust-base64" ,rust-base64-0.13)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-regex" ,rust-regex-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3))))))
+
 (define-public rust-pem-rfc7468-0.2
   (package
     (name "rust-pem-rfc7468")
