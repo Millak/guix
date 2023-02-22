@@ -38300,6 +38300,26 @@ directly.")
         ("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-0.8))))))
 
+(define-public rust-num-threads-0.1
+  (package
+    (name "rust-num-threads")
+    (version "0.1.6")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "num-threads" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0i5vmffsv6g79z869flp1sja69g1gapddjagdw1k3q9f3l2cw698"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Unclear why these tests fail.
+       #:cargo-inputs (("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/jhpratt/num_threads")
+    (synopsis "Determine the number of running threads for the current process")
+    (description "This package provides a minimal library that determines the
+number of running threads for the current process.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-num-traits-0.2
   (package
     (name "rust-num-traits")
