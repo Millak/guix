@@ -61733,16 +61733,17 @@ in Rust.")
 (define-public rust-time-macros-0.2
   (package
     (name "rust-time-macros")
-    (version "0.2.3")
+    (version "0.2.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "time-macros" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1mj7pv8y9j2csrh1l8aabras36pgysbnfy18330srh4g8sihrsr5"))))
+        (base32 "0z4bsdw11cghv3rpy65qdrgmmkvgslf5zq0y3qw0zjvdvswawq54"))))
     (build-system cargo-build-system)
-    (arguments `(#:skip-build? #t))
+    (arguments
+     `(#:cargo-inputs (("rust-time-core" ,rust-time-core-0.1))))
     (home-page "https://github.com/time-rs/time")
     (synopsis "Procedural macros for the time crate")
     (description "This package provides procedural macros for the time
