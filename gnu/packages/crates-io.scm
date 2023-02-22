@@ -43539,40 +43539,6 @@ applications.")
         ("rust-regex" ,rust-regex-1)
         ("rust-simdutf8" ,rust-simdutf8-0.1))))))
 
-(define-public rust-polars-io-0.15
-  (package
-    (inherit rust-polars-io-0.16)
-    (name "rust-polars-io")
-    (version "0.15.1")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "polars-io" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "19r2l3rxjdk25ir93l85ap4q0w5p7apjw3g57pszxph9nh2j8ba2"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-ahash" ,rust-ahash-0.7)
-        ("rust-anyhow" ,rust-anyhow-1)
-        ("rust-arrow" ,rust-arrow-5)
-        ("rust-csv-core" ,rust-csv-core-0.1)
-        ("rust-dirs" ,rust-dirs-3)
-        ("rust-fast-float" ,rust-fast-float-0.2)
-        ("rust-flate2" ,rust-flate2-1)
-        ("rust-lazy-static" ,rust-lazy-static-1)
-        ("rust-lexical" ,rust-lexical-5)
-        ("rust-memmap2" ,rust-memmap2-0.2)
-        ("rust-num" ,rust-num-0.4)
-        ("rust-num-cpus" ,rust-num-cpus-1)
-        ("rust-parquet" ,rust-parquet-5)
-        ("rust-polars-arrow" ,rust-polars-arrow-0.15)
-        ("rust-polars-core" ,rust-polars-core-0.15)
-        ("rust-rayon" ,rust-rayon-1)
-        ("rust-regex" ,rust-regex-1)
-        ("rust-simdutf8" ,rust-simdutf8-0.1))))))
-
 (define-public rust-polars-lazy-0.17
   (package
     (name "rust-polars-lazy")
