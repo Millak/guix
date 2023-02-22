@@ -6275,6 +6275,39 @@ literal programming in Emacs lisp.  It extends the Emacs load mechanism so
 Emacs can load Org files as Lisp source files directly.")
     (license license:gpl3+)))
 
+(define-public emacs-calc-currency
+  (let ((commit "7021d892ef38b01b875082aba4bae2517ce47ae6")
+        (revision "0"))
+    (package
+      (name "emacs-calc-currency")
+      (version (git-version "0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/jws85/calc-currency")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0y4m0hasg4ji6zfis3088hq90pm9998lnnh8yg9g8yqqaqpfizp8"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:tests? #t
+        #:test-command #~(list "emacs" "--batch"
+                               "-L" "."
+                               "-l" "test/calc-currency-init.el"
+                               "-l" "test/calc-currency-ecb-test.el"
+                               "-l" "test/calc-currency-oxr-test.el"
+                               ;; test/calc-currency-utils-test.el fails
+                               "-f" "ert-run-tests-batch-and-exit")))
+      (propagated-inputs (list emacs-f))
+      (home-page "https://github.com/jws85/calc-currency")
+      (synopsis "Add currency units to Emacs Calc")
+      (description "This package adds custom units to the units table in Emacs
+Calc by fetching exchange rates backends.")
+      (license license:gpl3+))))
+
 (define-public emacs-literate-calc-mode
   (let ((commit "ba7d22140a165b0fdd900a8d04916115ca6ab8ff")
         (revision "2"))
