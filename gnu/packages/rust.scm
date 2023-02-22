@@ -175,7 +175,7 @@
     (build-system gnu-build-system)
     (inputs
      `(("libcurl" ,curl)
-       ("llvm" ,llvm)
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl-1.1)
        ("zlib" ,zlib)))
     (native-inputs
