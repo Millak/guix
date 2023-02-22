@@ -1858,8 +1858,36 @@ with Associated Data (AEAD) algorithms.")
        (("rust-generic-array" ,rust-generic-array-0.12)
         ("rust-heapless" ,rust-heapless-0.5))))))
 
+(define-public rust-aes-0.8
+  (package
+    (name "rust-aes")
+    (version "0.8.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "aes" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0haj74iqjjhxz4s6yh3v21s68snn74y93ji5d9bnr66921kzsg23"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-cipher" ,rust-cipher-0.4)
+        ("rust-cpufeatures" ,rust-cpufeatures-0.2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-cipher" ,rust-cipher-0.4)
+        ("rust-hex-literal" ,rust-hex-literal-0.3))))
+    (home-page "https://github.com/RustCrypto/block-ciphers")
+    (synopsis "Facade for AES (Rijndael) block ciphers implementations")
+    (description "This package provides a facade for AES (Rijndael) block
+ciphers implementations.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-aes-0.7
   (package
+    (inherit rust-aes-0.8)
     (name "rust-aes")
     (version "0.7.5")
     (source
@@ -1869,7 +1897,6 @@ with Associated Data (AEAD) algorithms.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1f0sdx2fsa8w3l7xzsyi9ry3shvnnsgc0znh50if9fm95vslg2wy"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -1877,12 +1904,7 @@ with Associated Data (AEAD) algorithms.")
         ("rust-cipher" ,rust-cipher-0.3)
         ("rust-cpufeatures" ,rust-cpufeatures-0.2)
         ("rust-ctr" ,rust-ctr-0.8)
-        ("rust-opaque-debug" ,rust-opaque-debug-0.3))))
-    (home-page "https://github.com/RustCrypto/block-ciphers")
-    (synopsis "Facade for AES (Rijndael) block ciphers implementations")
-    (description "This package provides a facade for AES (Rijndael) block
-ciphers implementations.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-opaque-debug" ,rust-opaque-debug-0.3))))))
 
 (define-public rust-aes-0.6
   (package
