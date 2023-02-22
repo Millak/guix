@@ -40592,31 +40592,6 @@ derive macro for Parity SCALE Codec.")
       "WebAssembly low-level format library")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-parity-wasm-0.40
-  (package
-    (name "rust-parity-wasm")
-    (version "0.40.3")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "parity-wasm" version))
-        (file-name (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "03qycy21avz4970zc7aj8rj5h4wvi4qsrc90a6hpws1a56mglf8y"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:tests? #f
-       #:cargo-development-inputs
-       (("rust-time" ,rust-time-0.1))))
-    (home-page "https://github.com/paritytech/parity-wasm")
-    (synopsis "Low-level WebAssembly format library")
-    (description
-     "This package provides a WebAssembly binary format serialization,
-deserialization, and interpreter in Rust.")
-    (license (list license:asl2.0
-                   license:expat))))
-
 (define-public rust-parking-2
   (package
     (name "rust-parking")
