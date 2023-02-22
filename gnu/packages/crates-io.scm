@@ -64039,6 +64039,24 @@ parser.")
          ("rust-pretty-assertions" ,rust-pretty-assertions-1)
          ("rust-snapbox" ,rust-snapbox-0.2))))))
 
+(define-public rust-toml-test-data-1
+  (package
+    (name "rust-toml-test-data")
+    (version "1.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "toml-test-data" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0ii6llfpz9fbcag2jkfz87s3cmphrnhkr9fln01fhph0ssv53wwk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-include-dir" ,rust-include-dir-0.7))))
+    (home-page "https://github.com/epage/toml-test-rs")
+    (synopsis "TOML test cases")
+    (description "This package provides TOML test cases for the toml-test crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-toml-test-harness-0.4
   (package
     (name "rust-toml-test-harness")
