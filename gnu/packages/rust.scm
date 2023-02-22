@@ -513,7 +513,7 @@ ar = \"" binutils "/bin/ar" "\"
        ("which" ,which)))
     (inputs
      `(("jemalloc" ,jemalloc)
-       ("llvm" ,llvm)
+       ("llvm" ,llvm-13)
        ("openssl" ,openssl)
        ("libssh2" ,libssh2)             ; For "cargo"
        ("libcurl" ,curl)))              ; For "cargo"
