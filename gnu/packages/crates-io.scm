@@ -45092,8 +45092,38 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-regex" ,rust-regex-0.2))))))
 
+(define-public rust-proptest-derive-0.3
+  (package
+    (name "rust-proptest-derive")
+    (version "0.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "proptest-derive" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1p4x6k1zxq9lrpk46npdnzj6894mjx5bpwkwrdk63ird72an5d4h"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f          ; Needs nightly features.
+       #:cargo-inputs
+       (("rust-proc-macro2" ,rust-proc-macro2-0.4)
+        ("rust-quote" ,rust-quote-0.6)
+        ("rust-syn" ,rust-syn-0.15))
+       #:cargo-development-inputs
+       (("rust-compiletest-rs" ,rust-compiletest-rs-0.3)
+        ("rust-criterion" ,rust-criterion-0.2)
+        ("rust-proptest" ,rust-proptest-1))))
+    (home-page
+     "https://altsysrq.github.io/proptest-book/proptest-derive/index.html")
+    (synopsis "Custom-derive for the Arbitrary trait of proptest")
+    (description "This package provides a Custom-derive for the Arbitrary
+trait of proptest.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-proptest-derive-0.1
   (package
+    (inherit rust-proptest-derive-0.3)
     (name "rust-proptest-derive")
     (version "0.1.2")
     (source
@@ -45104,7 +45134,6 @@ including most strategies and the testing framework itself.")
        (sha256
         (base32
          "0nziczbm7w0jisjrd216hh2j45fs5m363ga7r6nawwxcxlbxn7nk"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-proc-macro2" ,rust-proc-macro2-0.4)
@@ -45113,13 +45142,7 @@ including most strategies and the testing framework itself.")
        #:cargo-development-inputs
        (("rust-compiletest-rs" ,rust-compiletest-rs-0.3)
         ("rust-criterion" ,rust-criterion-0.2)
-        ("rust-proptest" ,rust-proptest-0.9))))
-    (home-page
-     "https://altsysrq.github.io/proptest-book/proptest-derive/index.html")
-    (synopsis "Custom-derive for the Arbitrary trait of proptest")
-    (description "This package provides a Custom-derive for the Arbitrary
-trait of proptest.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-proptest" ,rust-proptest-0.9))))))
 
 (define-public rust-prost-derive-0.9
   (package
