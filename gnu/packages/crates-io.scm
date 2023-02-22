@@ -26554,8 +26554,35 @@ compile time.")
      `(#:cargo-inputs
        (("rust-proc-macro-hack" ,rust-proc-macro-hack-0.4))))))
 
+(define-public rust-hkdf-0.12
+  (package
+    (name "rust-hkdf")
+    (version "0.12.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "hkdf" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0dyl16cf15hka32hv3l7dwgr3xj3brpfr27iyrbpdhlzdfgh46kr"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-hmac" ,rust-hmac-0.12))
+       #:cargo-development-inputs
+       (("rust-blobby" ,rust-blobby-0.3)
+        ("rust-hex-literal" ,rust-hex-literal-0.2)
+        ("rust-sha-1" ,rust-sha-1-0.10)
+        ("rust-sha2" ,rust-sha2-0.10))))
+    (home-page "https://github.com/RustCrypto/KDFs/")
+    (synopsis "HMAC-based Extract-and-Expand Key Derivation Function (HKDF)")
+    (description "This package provides a HMAC-based Extract-and-Expand Key
+Derivation Function (HKDF).")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-hkdf-0.11
   (package
+    (inherit rust-hkdf-0.12)
     (name "rust-hkdf")
     (version "0.11.0")
     (source
@@ -26565,7 +26592,6 @@ compile time.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "0sw8bz79xqq3bc5dh6nzv084g7va13j3lrqf91c10a2wimbnsw01"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-digest" ,rust-digest-0.9)
@@ -26576,12 +26602,7 @@ compile time.")
         ("rust-crypto-tests" ,rust-crypto-tests-0.5)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-sha-1" ,rust-sha-1-0.9)
-        ("rust-sha2" ,rust-sha2-0.9))))
-    (home-page "https://github.com/RustCrypto/KDFs/")
-    (synopsis "HMAC-based Extract-and-Expand Key Derivation Function (HKDF)")
-    (description "This package provides a HMAC-based Extract-and-Expand Key
-Derivation Function (HKDF).")
-    (license (list license:expat license:asl2.0))))
+        ("rust-sha2" ,rust-sha2-0.9))))))
 
 (define-public rust-hkdf-0.10
   (package
