@@ -37878,29 +37878,6 @@ with all line endings.")
 enhances the built-in library with some useful features.")
     (license license:expat)))
 
-(define-public rust-ntest-0.3
-  (package
-    (inherit rust-ntest-0.8)
-    (name "rust-ntest")
-    (version "0.3.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "ntest" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32
-         "04cljndihkcqqwj061bgpnxyv7wqbd3f91ag1b3ryrayn7rrclxv"))))
-    (arguments
-     `(#:cargo-inputs
-       (("rust-ntest-test-cases" ,rust-ntest-test-cases-0.3)
-        ("rust-ntest-timeout" ,rust-ntest-timeout-0.3)
-        ("rust-timebomb" ,rust-timebomb-0.1))
-       #:cargo-development-inputs
-       (("rust-ntest-test-cases" ,rust-ntest-test-cases-0.3)
-        ("rust-ntest-timeout" ,rust-ntest-timeout-0.3)
-        ("rust-timebomb" ,rust-timebomb-0.1))))))
-
 (define-public rust-ntest-test-cases-0.8
   (package
     (name "rust-ntest-test-cases")
