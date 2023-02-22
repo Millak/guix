@@ -27067,23 +27067,23 @@ and traversing, manipulating, and querying the document tree.")
 (define-public rust-http-0.2
   (package
     (name "rust-http")
-    (version "0.2.1")
+    (version "0.2.9")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "http" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y827q7j0gvs8z2x12biaik9db6nb902lpqv889cbcj84sbnkm98"))))
+        (base32 "10j4jjpngaymxjvi92hllr2y6acr09pq61cvzxd44qzvkb4zyvmx"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-bytes" ,rust-bytes-0.5)
+       (("rust-bytes" ,rust-bytes-1)
         ("rust-fnv" ,rust-fnv-1)
-        ("rust-itoa" ,rust-itoa-0.4))
+        ("rust-itoa" ,rust-itoa-1))
        #:cargo-development-inputs
        (("rust-doc-comment" ,rust-doc-comment-0.3)
-        ("rust-indexmap" ,rust-indexmap-1)
+        ("rust-indexmap" ,rust-indexmap-1.8)
         ("rust-quickcheck" ,rust-quickcheck-0.9)
         ("rust-rand" ,rust-rand-0.7)
         ("rust-seahash" ,rust-seahash-3)
