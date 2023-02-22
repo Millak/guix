@@ -24693,8 +24693,35 @@ reading and writing git repositories.")
      (modify-inputs (package-inputs rust-git2-0.11)
        (prepend curl)))))
 
+(define-public rust-git2-curl-0.17
+  (package
+    (name "rust-git2-curl")
+    (version "0.17.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "git2-curl" version))
+       (file-name
+        (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "0cydakv91acxkxfj0kazp9sc4mmr8l51649mi06wk9qv6kkg8xvm"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t                 ;need rust-civet and others
+       #:cargo-inputs
+       (("rust-curl" ,rust-curl-0.4)
+        ("rust-git2" ,rust-git2-0.16)
+        ("rust-log" ,rust-log-0.4)
+        ("rust-url" ,rust-url-2))))
+    (home-page "https://github.com/rust-lang/git2-rs")
+    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
+    (description "Backend for an HTTP transport in @code{libgit2}, powered by
+libcurl, which is intended to be used with the @code{git2} crate.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-git2-curl-0.14
   (package
+    (inherit rust-git2-curl-0.17)
     (name "rust-git2-curl")
     (version "0.14.1")
     (source
@@ -24706,19 +24733,13 @@ reading and writing git repositories.")
        (sha256
         (base32
          "0l1sckmpvhd498c9ji04gkpfkfrpx7c8rabihczsnjx91v5kjdc8"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t                 ;need rust-civet and others
        #:cargo-inputs
        (("rust-curl" ,rust-curl-0.4)
         ("rust-git2" ,rust-git2-0.13)
         ("rust-log" ,rust-log-0.4)
-        ("rust-url" ,rust-url-2))))
-    (home-page "https://github.com/rust-lang/git2-rs")
-    (synopsis "Libgit2 HTTP transport backend powered by @code{libcurl}")
-    (description "Backend for an HTTP transport in @code{libgit2}, powered by
-libcurl, which is intended to be used with the @code{git2} crate.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-url" ,rust-url-2))))))
 
 (define-public rust-gjson-0.8
   (package
