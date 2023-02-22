@@ -41518,14 +41518,14 @@ function data structures.")
 (define-public rust-pin-project-internal-1
   (package
     (name "rust-pin-project-internal")
-    (version "1.0.2")
+    (version "1.0.12")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "pin-project-internal" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0pwy3m32scf3ypjb9ai151lmaa27vyj06lc64i28l0r31fzx5s7q"))))
+        (base32 "0maa6icn7rdfy4xvgfaq7m7bwpw9f19wg76f1ncsiixd0lgdp6q6"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false
