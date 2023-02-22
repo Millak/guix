@@ -28759,6 +28759,27 @@ written in Rust.")
 data efficiently.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-inout-0.1
+  (package
+    (name "rust-inout")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "inout" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1xf9gf09nc7y1a261xlfqsf66yn6mb81ahlzzyyd1934sr9hbhd0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-block-padding" ,rust-block-padding-0.3)
+        ("rust-generic-array" ,rust-generic-array-0.14))))
+    (home-page "https://github.com/RustCrypto/utils")
+    (synopsis "Custom reference types for code")
+    (description "This package provides custom reference types for code generic
+over in-place and buffer-to-buffer modes of operation.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-insta-1
   (package
     (name "rust-insta")
