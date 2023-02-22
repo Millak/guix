@@ -41148,21 +41148,20 @@ and would-block I/O operations.")
         ("rust-tokio-core" ,rust-tokio-core-0.1))))
     (license license:bsd-3)))
 
-(define-public rust-password-hash-0.3
+(define-public rust-password-hash-0.4
   (package
     (name "rust-password-hash")
-    (version "0.3.2")
+    (version "0.4.2")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "password-hash" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1n7ig9j5x2q0fk12nny40faggrs0ra5bbxp6gz5yghfwlqw1ay8x"))))
+        (base32 "003p2hssyrcaxyq9fs8x2wx5di8ny9byaakskrf352pfm963fxkn"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-base64ct" ,rust-base64ct-1)
         ("rust-rand-core" ,rust-rand-core-0.6)
         ("rust-subtle" ,rust-subtle-2))))
@@ -41175,6 +41174,25 @@ password hashing algorithms, as well as a `no_std`-friendly implementation of
 the PHC string format (a well-defined subset of the Modular Crypt
 Format (MCF).")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-password-hash-0.3
+  (package
+    (inherit rust-password-hash-0.4)
+    (name "rust-password-hash")
+    (version "0.3.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (crate-uri "password-hash" version))
+       (file-name (string-append name "-" version ".tar.gz"))
+       (sha256
+        (base32 "1n7ig9j5x2q0fk12nny40faggrs0ra5bbxp6gz5yghfwlqw1ay8x"))))
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-base64ct" ,rust-base64ct-1)
+        ("rust-rand-core" ,rust-rand-core-0.6)
+        ("rust-subtle" ,rust-subtle-2))))))
 
 (define-public rust-paste-1
   (package
