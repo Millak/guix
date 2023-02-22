@@ -42550,6 +42550,40 @@ for constructing a Message Authentication Code (MAC).")
 overloading without macros in Rust.")
     (license license:expat)))
 
+(define-public rust-portable-atomic-1
+  (package
+    (name "rust-portable-atomic")
+    (version "1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "portable-atomic" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "06p5dglnqj43m4fj70dwcqhv9rmy9amn9pdpgpzd8fx0hf30rh1r"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all test dependencies declared.
+       #:cargo-inputs
+       (("rust-critical-section" ,rust-critical-section-1)
+        ("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-critical-section" ,rust-critical-section-1)
+        ("rust-crossbeam-utils" ,rust-crossbeam-utils-0.8)
+        ("rust-fastrand" ,rust-fastrand-1)
+        ("rust-once-cell" ,rust-once-cell-1)
+        ("rust-paste" ,rust-paste-1)
+        ("rust-rustversion" ,rust-rustversion-1)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-serde-test" ,rust-serde-test-1)
+        ("rust-sptr" ,rust-sptr-0.3)
+        ("rust-static-assertions" ,rust-static-assertions-1))))
+    (home-page "https://github.com/taiki-e/portable-atomic")
+    (synopsis "Portable atomic types")
+    (description
+     "This package provides portable atomic types, including support for
+128-bit atomics, atomic float, etc.")
+    (license (list license:asl2.0 license:expat))))
+
 (define-public rust-postgres-0.19
   (package
     (name "rust-postgres")
