@@ -9478,13 +9478,13 @@ abstract syntax tree (AST) nodes without side effects.")
 (define-public python-asttokens
   (package
     (name "python-asttokens")
-    (version "2.0.5")
+    (version "2.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "asttokens" version))
        (sha256
-        (base32 "1mglbkikxvnhrk3inbx0v1qzxwd38qjr6l35sn098yicy0ac2m4s"))))
+        (base32 "1wwlpvnrh67z4228841zgpqc46vigslzmbvk2izbfc3g585i28j6"))))
     (build-system python-build-system)
     (propagated-inputs (list python-six))
     (native-inputs (list python-astroid python-pytest python-setuptools-scm))
