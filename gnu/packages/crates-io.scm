@@ -46008,6 +46008,32 @@ numbers.")
 and Petrick's method, an algorithm to automatically minimize boolean expressions.")
     (license license:expat)))
 
+(define-public rust-quinn-udp-0.1
+  (package
+    (name "rust-quinn-udp")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "quinn-udp" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0m4fafg9d87d8hr0988bg1dcichnxm4xkvwv4vm1lls1f4klcydh"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-futures-util" ,rust-futures-util-0.3)
+        ("rust-libc" ,rust-libc-0.2)
+        ("rust-quinn-proto" ,rust-quinn-proto-0.8)
+        ("rust-socket2" ,rust-socket2-0.4)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tracing" ,rust-tracing-0.1))))
+    (home-page "https://github.com/quinn-rs/quinn")
+    (synopsis "UDP sockets with ECN information for the QUIC transport protocol")
+    (description
+     "This package provodes UDP sockets with ECN information for the QUIC
+transport protocol in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-quote-1
   (package
     (name "rust-quote")
