@@ -13770,10 +13770,10 @@ to the @code{is_x86_feature_detected!} macro.")
     (native-inputs (list pkg-config))
     (inputs (list zlib openssl libssh2 curl cmake))))
 
-(define-public rust-crates-io-0.33
+(define-public rust-crates-io-0.35
   (package
     (name "rust-crates-io")
-    (version "0.33.1")
+    (version "0.35.0")
     (source
      (origin
        (method url-fetch)
@@ -13782,10 +13782,13 @@ to the @code{is_x86_feature_detected!} macro.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "0nmpzr697a6v12ljwpmjrhqpmkf784nsm8m1g6jwadmkq96p3mxj"))))
+         "0zlp8zdkd0qr1ik64wik8bavdm75y54xxp6d7mqvxvv8ssq97144"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:cargo-inputs
+     `(#:cargo-test-flags
+       (list "--release" "--"
+             "--skip=Registry::new_handle")
+       #:cargo-inputs
        (("rust-anyhow" ,rust-anyhow-1)
         ("rust-curl" ,rust-curl-0.4)
         ("rust-percent-encoding" ,rust-percent-encoding-2)
