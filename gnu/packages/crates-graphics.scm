@@ -1849,14 +1849,14 @@ interactive applications.")
 (define-public rust-png-0.17
   (package
     (name "rust-png")
-    (version "0.17.5")
+    (version "0.17.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "png" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1fp3vnaxmjdv71dcakc21k07ir5s31dlx1mrazfqddzgaynw0f6w"))))
+        (base32 "0f66slx641p7an277xskz8vq7syy9cmhsx1qwnfb268ahspqww2x"))))
     (build-system cargo-build-system)
     (arguments
      `(#:tests? #false                  ;XXX missing files in tarball
@@ -1864,7 +1864,7 @@ interactive applications.")
        (("rust-bitflags" ,rust-bitflags-1)
         ("rust-crc32fast" ,rust-crc32fast-1)
         ("rust-deflate" ,rust-deflate-1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5))
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6))
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-getopts" ,rust-getopts-0.2)
