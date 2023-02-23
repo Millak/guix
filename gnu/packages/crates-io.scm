@@ -20963,7 +20963,7 @@ handling type for easy idiomatic error handling and reporting in Rust.")
 (define-public rust-fallible-collections-0.4
   (package
     (name "rust-fallible-collections")
-    (version "0.4.2")
+    (version "0.4.6")
     (source
      (origin
        (method url-fetch)
@@ -20972,11 +20972,11 @@ handling type for easy idiomatic error handling and reporting in Rust.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1sk6ckixvf0pax47qgs8lfd2zi2gmyg1xgk1k7z2qgalhaaidnaa"))))
+         "0ma7lga3zqbpzrhl76raljc6y69f38mb6j5yhkk6ldkh531wqmrz"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-hashbrown" ,rust-hashbrown-0.9))))
+       (("rust-hashbrown" ,rust-hashbrown-0.12))))
     (home-page "https://github.com/vcombey/fallible_collections")
     (synopsis "Fallible collections implementation in Rust")
     (description "This library extends the Rust standard collections to return
