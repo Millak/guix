@@ -8581,6 +8581,35 @@ users can send along with a bug report.")
 constants from build.rs or a script.")
     (license license:expat)))
 
+(define-public rust-built-0.5
+  (package
+    (name "rust-built")
+    (version "0.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "built" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0fwpyasbp4pb6ff070xn17w1kwhvzgcx83l15gh8kff6y9m92mff"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cargo-lock" ,rust-cargo-lock-8)
+        ("rust-chrono" ,rust-chrono-0.4)
+        ("rust-git2" ,rust-git2-0.16)
+        ("rust-semver" ,rust-semver-1))
+       #:cargo-development-inputs
+       (("rust-tempfile" ,rust-tempfile-3))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list libgit2 zlib))
+    (home-page "https://github.com/lukaslueg/built")
+    (synopsis "Provides a crate with information from the time it was built")
+    (description
+     "This package provides a crate with information from the time it was built.")
+    (license license:expat)))
+
 (define-public rust-bumpalo-3
   (package
     (name "rust-bumpalo")
