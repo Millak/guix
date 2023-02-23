@@ -31053,28 +31053,6 @@ a no_std environment.  This does not depend on any standard library features,
 nor a system allocator.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-lexical-5
-  (package
-    (inherit rust-lexical-6)
-    (name "rust-lexical")
-    (version "5.2.2")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (crate-uri "lexical" version))
-       (file-name (string-append name "-" version ".tar.gz"))
-       (sha256
-        (base32 "1r8lsi523h53kbb99xgv31jabwhcp4rzqd4hfazfhcjffh5aj17l"))))
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-lexical-core" ,rust-lexical-core-0.7)
-        ("rust-rand" ,rust-rand-0.4)
-        ("rust-serde" ,rust-serde-1)
-        ("rust-serde-derive" ,rust-serde-derive-1)
-        ("rust-toml" ,rust-toml-0.5))))))
-
 (define-public rust-lexopt-0.2
   (package
     (name "rust-lexopt")
