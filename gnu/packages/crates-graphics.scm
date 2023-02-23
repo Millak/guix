@@ -303,8 +303,33 @@ untrusted data.")
        (("rust-env-logger" ,rust-env-logger-0.8)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-avif-serialize-0.7
+  (package
+    (name "rust-avif-serialize")
+    (version "0.7.7")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "avif-serialize" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0d2makdw756978i8s3qhlhh1h91y5maxriay6r4kmsmk8pky2qfc"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Undeclared dependencies
+       #:cargo-inputs (("rust-arrayvec" ,rust-arrayvec-0.7))
+       #:cargo-development-inputs (("rust-avif-parse" ,rust-avif-parse-1))))
+    (home-page "https://lib.rs/avif-serialize")
+    (synopsis "Writer for AVIF header structure (MPEG/HEIF/MIAF/ISO-BMFF)")
+    (description
+     "This package provides a minimal writer for AVIF header structure.  This
+is a tiny alternative to @code{libavif}.  It creates the jungle of
+MPEG/HEIF/MIAF/ISO-BMFF ``boxes'' as appropriate for AVIF files.  It supports
+alpha channel embedding.")
+    (license license:bsd-3)))
+
 (define-public rust-avif-serialize-0.6
   (package
+    (inherit rust-avif-serialize-0.7)
     (name "rust-avif-serialize")
     (version "0.6.5")
     (source
@@ -314,19 +339,10 @@ untrusted data.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "130wq838lslkcqcp2kjci7q3aq9qpir07pvxndc81xqbn63wvdjg"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-arrayvec" ,rust-arrayvec-0.5))))
-    (home-page "https://lib.rs/avif-serialize")
-    (synopsis "Writer for AVIF header structure (MPEG/HEIF/MIAF/ISO-BMFF)")
-    (description
-     "This package provides a minimal writer for AVIF header structure.  This
-is a tiny alternative to @code{libavif}.  It creates the jungle of
-MPEG/HEIF/MIAF/ISO-BMFF ``boxes'' as appropriate for AVIF files.  It supports
-alpha channel embedding.")
-    (license license:bsd-3)))
+       (("rust-arrayvec" ,rust-arrayvec-0.5))))))
 
 (define-public rust-cgl-0.3
   (package
