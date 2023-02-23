@@ -17268,6 +17268,45 @@ order (univariate) isotonic regression and bivariate isotonic regression with
 linear order on both variables.")
     (license license:gpl2+)))
 
+(define-public r-chemometrics
+  (package
+    (name "r-chemometrics")
+    (version "1.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "chemometrics" version))
+       (sha256
+        (base32 "0shqns0n964pfwnd0q5sadglrlpgs4g5fbv45fsj9p37l4pq61dp"))))
+    (properties `((upstream-name . "chemometrics")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-class
+           r-e1071
+           r-lars
+           r-mass
+           r-mclust
+           r-nnet
+           r-pcapp
+           r-pls
+           r-robustbase
+           r-rpart
+           r-som))
+    (home-page "http://www.statistik.tuwien.ac.at/public/filz/")
+    (synopsis "Multivariate statistical analysis in Chemometrics")
+    (description
+     "Multivariate data analysis is the simultaneous observation of more than
+one characteristic.  In contrast to the analysis of univariate data, in this
+approach not only a single variable or the relation between two variables can
+be investigated, but the relations between many attributes can be considered.
+For the statistical analysis of chemical data one has to take into account the
+special structure of this type of data.  This package contains about 30
+functions, mostly for regression, classification and model evaluation and
+includes some data sets used in the R help examples.  It was designed as a R
+companion to the book \"Introduction to Multivariate Statistical Analysis in
+Chemometrics\" written by K. Varmuza and P. Filzmoser (2009).")
+    (license license:gpl3+)))
+
 (define-public r-chemometricswithr
   (package
     (name "r-chemometricswithr")
