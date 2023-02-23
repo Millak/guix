@@ -25,6 +25,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages mpi)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix download)
@@ -191,13 +192,13 @@ bind processes, and much more.")
     (version "4.1.4")
     (source
      (origin
-      (method url-fetch)
-      (uri (string-append "https://www.open-mpi.org/software/ompi/v"
-                          (version-major+minor version)
-                          "/downloads/openmpi-" version ".tar.bz2"))
-      (sha256
-       (base32 "03ckngrff1cl0l81vfvrfhp99rbgk7s0633kr1l468yibwbjx4cj"))
-      (patches (search-patches "openmpi-mtl-priorities.patch"))))
+       (method url-fetch)
+       (uri (string-append "https://www.open-mpi.org/software/ompi/v"
+                           (version-major+minor version)
+                           "/downloads/openmpi-" version ".tar.bz2"))
+       (sha256
+        (base32 "03ckngrff1cl0l81vfvrfhp99rbgk7s0633kr1l468yibwbjx4cj"))
+       (patches (search-patches "openmpi-mtl-priorities.patch"))))
 
     (properties
      ;; Tell the 'generic-html' updater to monitor this URL for updates.
@@ -228,68 +229,69 @@ bind processes, and much more.")
      (list pkg-config perl))
     (outputs '("out" "debug"))
     (arguments
-     `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
-                           "--with-sge"
+     (list
+      #:configure-flags #~`("--enable-mpi-ext=affinity" ;cr doesn't work
+                            "--with-sge"
 
-                           ,@(if ,(package? (this-package-input "valgrind"))
-                               `("--enable-memchecker"
-                                 "--with-valgrind")
-                               `("--without-valgrind"))
+                            #$@(if (package? (this-package-input "valgrind"))
+                                   #~("--enable-memchecker"
+                                      "--with-valgrind")
+                                   #~("--without-valgrind"))
 
-                           "--with-hwloc=external"
-                           "--with-libevent"
+                            "--with-hwloc=external"
+                            "--with-libevent"
 
-                           ;; Help 'orterun' and 'mpirun' find their tools
-                           ;; under $prefix by default.
-                           "--enable-mpirun-prefix-by-default"
+                            ;; Help 'orterun' and 'mpirun' find their tools
+                            ;; under $prefix by default.
+                            "--enable-mpirun-prefix-by-default"
 
-                           ;; InfiniBand support
-                           "--enable-openib-control-hdr-padding"
-                           "--enable-openib-dynamic-sl"
-                           "--enable-openib-udcm"
-                           "--enable-openib-rdmacm"
-                           "--enable-openib-rdmacm-ibaddr"
+                            ;; InfiniBand support
+                            "--enable-openib-control-hdr-padding"
+                            "--enable-openib-dynamic-sl"
+                            "--enable-openib-udcm"
+                            "--enable-openib-rdmacm"
+                            "--enable-openib-rdmacm-ibaddr"
 
-                           ;; Enable support for SLURM's Process Manager
-                           ;; Interface (PMI).
-                           ,(string-append "--with-pmi="
-                                           (assoc-ref %build-inputs "slurm")))
-       #:phases (modify-phases %standard-phases
-                  ;; opensm is needed for InfiniBand support.
-                  (add-after 'unpack 'find-opensm-headers
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (setenv "C_INCLUDE_PATH"
-                              (search-input-directory inputs
-                                                      "/include/infiniband"))
-                      (setenv "CPLUS_INCLUDE_PATH"
-                              (search-input-directory inputs
-                                                      "/include/infiniband"))))
-                  (add-before 'build 'remove-absolute
-                    (lambda _
-                      ;; Remove compiler absolute file names (OPAL_FC_ABSOLUTE
-                      ;; etc.) to reduce the closure size.  See
-                      ;; <https://lists.gnu.org/archive/html/guix-devel/2017-07/msg00388.html>
-                      ;; and
-                      ;; <https://www.mail-archive.com/users@lists.open-mpi.org//msg31397.html>.
-                      (substitute* '("orte/tools/orte-info/param.c"
-                                     "oshmem/tools/oshmem_info/param.c"
-                                     "ompi/tools/ompi_info/param.c")
-                        (("_ABSOLUTE") ""))
-                      ;; Avoid valgrind (which pulls in gdb etc.).
-                      (substitute*
-                          '("./ompi/mca/io/romio321/src/io_romio321_component.c")
-                        (("MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS")
-                         "\"[elided to reduce closure]\""))))
-                  (add-before 'build 'scrub-timestamps ;reproducibility
-                    (lambda _
-                      (substitute* '("ompi/tools/ompi_info/param.c"
-                                     "orte/tools/orte-info/param.c"
-                                     "oshmem/tools/oshmem_info/param.c")
-                        ((".*(Built|Configured) on.*") ""))))
-                  (add-after 'install 'remove-logs ;reproducibility
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (for-each delete-file (find-files out "config.log"))))))))
+                            ;; Enable support for SLURM's Process Manager
+                            ;; Interface (PMI).
+                            ,(string-append "--with-pmi="
+                                            #$(this-package-input "slurm")))
+      #:phases #~(modify-phases %standard-phases
+                   ;; opensm is needed for InfiniBand support.
+                   (add-after 'unpack 'find-opensm-headers
+                     (lambda* (#:key inputs #:allow-other-keys)
+                       (setenv "C_INCLUDE_PATH"
+                               (search-input-directory inputs
+                                                       "/include/infiniband"))
+                       (setenv "CPLUS_INCLUDE_PATH"
+                               (search-input-directory inputs
+                                                       "/include/infiniband"))))
+                   (add-before 'build 'remove-absolute
+                     (lambda _
+                       ;; Remove compiler absolute file names (OPAL_FC_ABSOLUTE
+                       ;; etc.) to reduce the closure size.  See
+                       ;; <https://lists.gnu.org/archive/html/guix-devel/2017-07/msg00388.html>
+                       ;; and
+                       ;; <https://www.mail-archive.com/users@lists.open-mpi.org//msg31397.html>.
+                       (substitute* '("orte/tools/orte-info/param.c"
+                                      "oshmem/tools/oshmem_info/param.c"
+                                      "ompi/tools/ompi_info/param.c")
+                         (("_ABSOLUTE") ""))
+                       ;; Avoid valgrind (which pulls in gdb etc.).
+                       (substitute*
+                           '("./ompi/mca/io/romio321/src/io_romio321_component.c")
+                         (("MCA_io_romio321_COMPLETE_CONFIGURE_FLAGS")
+                          "\"[elided to reduce closure]\""))))
+                   (add-before 'build 'scrub-timestamps ;reproducibility
+                     (lambda _
+                       (substitute* '("ompi/tools/ompi_info/param.c"
+                                      "orte/tools/orte-info/param.c"
+                                      "oshmem/tools/oshmem_info/param.c")
+                         ((".*(Built|Configured) on.*") ""))))
+                   (add-after 'install 'remove-logs ;reproducibility
+                     (lambda* (#:key outputs #:allow-other-keys)
+                       (let ((out (assoc-ref outputs "out")))
+                         (for-each delete-file (find-files out "config.log"))))))))
     (home-page "https://www.open-mpi.org")
     (synopsis "MPI-3 implementation")
     (description
