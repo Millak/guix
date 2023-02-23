@@ -38276,18 +38276,18 @@ Rust.")
 (define-public rust-num-cpus-1
   (package
     (name "rust-num-cpus")
-    (version "1.13.1")
+    (version "1.15.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-cpus" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "18apx62z4j4lajj2fi6r1i8slr9rs2d0xrbj2ls85qfyxck4brhr"))))
+        (base32 "0fsrjy3arnbcl41vz0gppya8d7d24cpkjgfflr3v8pivl4nrxb0g"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
-       (("rust-hermit-abi" ,rust-hermit-abi-0.1)
+       (("rust-hermit-abi" ,rust-hermit-abi-0.2)
         ("rust-libc" ,rust-libc-0.2))))
     (home-page "https://github.com/seanmonstar/num_cpus")
     (synopsis "Get the number of CPUs on a machine")
