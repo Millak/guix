@@ -69741,19 +69741,23 @@ GUIs as desktop applications.")
 (define-public rust-weezl-0.1
   (package
     (name "rust-weezl")
-    (version "0.1.4")
+    (version "0.1.7")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "weezl" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0v16mvdmsicinbhgsm1l7gq1jmcaqrvm22rgn9lrhkhg71wb6cja"))))
+        (base32 "1frdbq6y5jn2j93i20hc80swpkj30p1wffwxj1nr4fp09m6id4wi"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
+     `(#:tests? #f              ; Not all files included.
        #:cargo-inputs
-       (("rust-futures" ,rust-futures-0.3))))
+       (("rust-futures" ,rust-futures-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-tokio" ,rust-tokio-1)
+        ("rust-tokio-util" ,rust-tokio-util-0.6))))
     (home-page "https://github.com/image-rs/lzw.git")
     (synopsis "Fast LZW compression and decompression")
     (description
