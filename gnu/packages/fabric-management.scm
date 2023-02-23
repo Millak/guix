@@ -109,28 +109,30 @@ running the opensm daemon.")
      ;; FIXME: needs rst2man for man pages
      (list perl pkg-config))
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I" (assoc-ref %build-inputs "opensm")
-                            "/include/infiniband")
-             (string-append "--with-perl-installdir=" (assoc-ref %outputs "lib")
-                            "/lib/perl5/vendor_perl")
-             "--disable-static")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'install 'licence
-           (lambda _
-             (let ((doc (string-append (assoc-ref %outputs "lib") "/share/doc")))
-               (mkdir-p doc)
-               (install-file "COPYING" doc))))
-         (add-after 'install-file 'move-perl
-           ;; Avoid perl in lib closure
-           (lambda _
-             (let ((perlout (string-append (assoc-ref %outputs "out") "/lib"))
-                   (perlin (string-append (assoc-ref %outputs "lib")
-                                          "/lib/perl5")))
-               (mkdir-p perlout)
-               (rename-file perlin perlout)
-               #t))))))
+     (list #:configure-flags
+           #~(list (string-append "CPPFLAGS=-I"
+                                  #$(this-package-input "opensm")
+                                  "/include/infiniband")
+                   (string-append "--with-perl-installdir=" #$output:lib
+                                  "/lib/perl5/vendor_perl")
+                   "--disable-static")
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'install 'licence
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((doc (string-append (assoc-ref outputs "lib")
+                                             "/share/doc")))
+                     (mkdir-p doc)
+                     (install-file "COPYING" doc))))
+               (add-after 'install-file 'move-perl
+                 ;; Avoid perl in lib closure
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((perlout (string-append (assoc-ref outputs "out")
+                                                 "/lib"))
+                         (perlin (string-append (assoc-ref outputs "lib")
+                                                "/lib/perl5")))
+                     (mkdir-p perlout)
+                     (rename-file perlin perlout)))))))
     (home-page "https://github.com/linux-rdma/infiniband-diags")
     (synopsis "Infiniband diagnostic tools")
     (description "This is a set of command-line utilities to help configure,
