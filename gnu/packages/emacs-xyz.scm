@@ -31165,7 +31165,7 @@ Emacs that integrate with major modes like Org-mode.")
 (define-public emacs-modus-themes
   (package
     (name "emacs-modus-themes")
-    (version "4.0.2")
+    (version "4.1.0")
     (source
      (origin
        (method git-fetch)
@@ -31174,7 +31174,7 @@ Emacs that integrate with major modes like Org-mode.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "05wl0310va5irc2f72d2mxq19xafxswmgc0a048mah0aam8lsv2f"))))
+        (base32 "1rfnn7c6qv3qmzpksdzy7623qijbldnmr7hl9ka2kwnhdarsigkk"))))
     (native-inputs (list texinfo))
     (build-system emacs-build-system)
     (arguments
