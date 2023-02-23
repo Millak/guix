@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2020 Valentin Ignatev <valentignatev@gmail.com>
 ;;; Copyright © 2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020, 2021 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2020, 2021, 2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2020 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2020 Gabriel Arazas <foo.dogsquared@gmail.com>
 ;;; Copyright © 2020 Raghav Gururajan <raghavgururajan@disroot.org>
@@ -199,7 +199,7 @@ text or blue underlined text, on ANSI terminals.")
 (define-public rust-aom-sys-0.3
   (package
     (name "rust-aom-sys")
-    (version "0.3.0")
+    (version "0.3.2")
     (source
       (origin
         (method url-fetch)
@@ -207,17 +207,16 @@ text or blue underlined text, on ANSI terminals.")
         (file-name
           (string-append name "-" version ".tar.gz"))
         (sha256
-          (base32
-            "0dhikfl7l5nacspajbllbhhysad3vl845cpfplqgm5mf67nmx9w8"))))
+         (base32 "0swg90iwypakh7vq77zwh34238c1r7vd5smj0vza7dv7xa22wh0g"))))
     (build-system cargo-build-system)
     (arguments
       `(#:cargo-inputs
-        (("rust-bindgen" ,rust-bindgen-0.54)
-         ("rust-metadeps" ,rust-metadeps-1))))
+        (("rust-bindgen" ,rust-bindgen-0.61)
+         ("rust-system-deps" ,rust-system-deps-6))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list libaom clang llvm))
+     (list clang libaom llvm))
     (home-page "https://github.com/rust-av/aom-rs")
     (synopsis "FFI bindings to aom")
     (description "This package provides FFI bindings to aom.")
