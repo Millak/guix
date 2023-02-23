@@ -2891,7 +2891,7 @@ OCaml with fibers.")
 (define-public ocaml-uring
   (package
     (name "ocaml-uring")
-    (version "0.4")
+    (version "0.5")
     (home-page "https://github.com/ocaml-multicore/ocaml-uring")
     (source
       (origin
@@ -2901,7 +2901,7 @@ OCaml with fibers.")
                (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256 (base32
-                 "0k70y7nb2wrk2yql0pwnrhsp1x7k9ld4gd8iihbv6r34kcm3a5m1"))))
+                 "0ygx8v01bb5808wy6nppg40h1ns8b1f2l585lwc4389z4wrppk95"))))
     (build-system dune-build-system)
     (propagated-inputs
      (list ocaml-cstruct
