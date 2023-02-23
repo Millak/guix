@@ -1259,8 +1259,54 @@ EUI-64, also known as MAC-48 media access control addresses.")
 similar formats like VCard.")
     (license license:asl2.0)))
 
+(define-public rust-image-0.24
+  (package
+    (name "rust-image")
+    (version "0.24.5")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "image" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0iarjrn9rimnri1g0hagdzljq3v9fy6gy7qlmz80yyskkfafmdv9"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f              ; Not all files included.
+       #:cargo-inputs
+       (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-byteorder" ,rust-byteorder-1)
+        ("rust-color-quant" ,rust-color-quant-1)
+        ("rust-dav1d" ,rust-dav1d-0.6)
+        ("rust-dcv-color-primitives" ,rust-dcv-color-primitives-0.4)
+        ("rust-exr" ,rust-exr-1)
+        ("rust-gif" ,rust-gif-0.11)
+        ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.3)
+        ("rust-mp4parse" ,rust-mp4parse-0.12)
+        ("rust-num-rational" ,rust-num-rational-0.4)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-png" ,rust-png-0.17)
+        ("rust-ravif" ,rust-ravif-0.8)
+        ("rust-rgb" ,rust-rgb-0.8)
+        ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
+        ("rust-tiff" ,rust-tiff-0.8)
+        ("rust-webp" ,rust-webp-0.2))
+       #:cargo-development-inputs
+       (("rust-crc32fast" ,rust-crc32fast-1)
+        ("rust-criterion" ,rust-criterion-0.3)
+        ("rust-glob" ,rust-glob-0.3)
+        ("rust-jpeg-decoder" ,rust-jpeg-decoder-0.3)
+        ("rust-num-complex" ,rust-num-complex-0.4)
+        ("rust-quickcheck" ,rust-quickcheck-1))))
+    (home-page "https://github.com/image-rs/image")
+    (synopsis "Imaging library written in Rust")
+    (description
+     "This package is an imaging library written in Rust.  It provides basic
+filters and decoders for the most common image formats.")
+    (license license:expat)))
+
 (define-public rust-image-0.23
   (package
+    (inherit rust-image-0.24)
     (name "rust-image")
     (version "0.23.14")
     (source
@@ -1270,7 +1316,6 @@ similar formats like VCard.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "18gn2f7xp30pf9aqka877knlq308khxqiwjvsccvzaa4f9zcpzr4"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
@@ -1286,13 +1331,7 @@ similar formats like VCard.")
         ("rust-ravif" ,rust-ravif-0.6)
         ("rust-rgb" ,rust-rgb-0.8)
         ("rust-scoped-threadpool" ,rust-scoped-threadpool-0.1)
-        ("rust-tiff" ,rust-tiff-0.6))))
-    (home-page "https://github.com/image-rs/image")
-    (synopsis "Imaging library written in Rust")
-    (description
-     "This package is an imaging library written in Rust.  It provides basic
-filters and decoders for the most common image formats.")
-    (license license:expat)))
+        ("rust-tiff" ,rust-tiff-0.6))))))
 
 (define-public rust-image-0.22
   (package
