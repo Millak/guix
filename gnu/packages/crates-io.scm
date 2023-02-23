@@ -34780,8 +34780,35 @@ efficient round-trip float parsing. Minimal-lexical implements a correct, fast
 float parser.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-miniz-oxide-0.6
+  (package
+    (name "rust-miniz-oxide")
+    (version "0.6.4")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "miniz-oxide" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "08j82769wkgbzfpg0k2qa744w3sg79vx1vsmjw88p1yy5rc15qpj"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-adler" ,rust-adler-1)
+        ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
+        ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
+        ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
+        ("rust-simd-adler32" ,rust-simd-adler32-0.3))))
+    (home-page "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide")
+    (synopsis "Pure rust replacement for the miniz DEFLATE/zlib encoder/decoder")
+    (description
+     "A pure rust replacement for the miniz DEFLATE/zlib encoder/decoder.  Using
+@code{flate2} with the @code{rust_backend} feature provides an easy to use
+streaming API for miniz_oxide.")
+    (license (list license:expat license:zlib license:asl2.0))))
+
 (define-public rust-miniz-oxide-0.5
   (package
+    (inherit rust-miniz-oxide-0.6)
     (name "rust-miniz-oxide")
     (version "0.5.3")
     (source
@@ -34791,21 +34818,13 @@ float parser.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1k1wfxb35v129mhqy14yqhrj3wvknafrwygiq7zvi0m5iml7ap3g"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-adler" ,rust-adler-1)
         ("rust-compiler-builtins" ,rust-compiler-builtins-0.1)
         ("rust-rustc-std-workspace-alloc" ,rust-rustc-std-workspace-alloc-1)
         ("rust-rustc-std-workspace-core" ,rust-rustc-std-workspace-core-1)
-        ("rust-simd-adler32" ,rust-simd-adler32-0.3))))
-    (home-page  "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide")
-    (synopsis "Pure rust replacement for the miniz DEFLATE/zlib encoder/decoder")
-    (description
-     "A pure rust replacement for the miniz DEFLATE/zlib encoder/decoder.  Using
-@code{flate2} with the @code{rust_backend} feature provides an easy to use
-streaming API for miniz_oxide.")
-    (license (list license:expat license:zlib license:asl2.0))))
+        ("rust-simd-adler32" ,rust-simd-adler32-0.3))))))
 
 (define-public rust-miniz-oxide-0.4
   (package
