@@ -30828,6 +30828,27 @@ requires non-const function calls to be computed.")
      `(#:cargo-inputs
        (("rust-clippy" ,rust-clippy-0.0))))))
 
+(define-public rust-lebe-0.5
+  (package
+    (name "rust-lebe")
+    (version "0.5.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "lebe" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1j2l6chx19qpa5gqcw434j83gyskq3g2cnffrbl3842ymlmpq203"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-byteorder" ,rust-byteorder-1))))
+    (home-page "https://github.com/johannesvollmer/lebe")
+    (synopsis "Endianness conversions with a generic API")
+    (description
+     "This package provides endianness conversions with a generic API in rust.")
+    (license license:bsd-3)))
+
 (define-public rust-lettre-0.9
   (package
     (name "rust-lettre")
