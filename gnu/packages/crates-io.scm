@@ -6254,6 +6254,18 @@ bindings to C and C++ libraries.")
        (sha256
         (base32 "119qkny3swlx8zm0jxp19hizpkym6arh8mlv9ylskch030961n1n"))))))
 
+(define-public rust-bindgen-0.61
+  (package
+    (inherit rust-bindgen-0.64)
+    (name "rust-bindgen")
+    (version "0.61.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "bindgen" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "16phlka8ykx28jlk7l637vlr9h01j8mh2s0d6km6z922l5c2w0la"))))))
+
 (define-public rust-bindgen-0.59
   (package
     (inherit rust-bindgen-0.64)
