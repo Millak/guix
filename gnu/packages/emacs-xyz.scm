@@ -34291,14 +34291,14 @@ work on alists, hash-table and arrays.  All functions are prefixed with
 (define-public emacs-xref
   (package
     (name "emacs-xref")
-    (version "1.6.1")
+    (version "1.6.2")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://elpa.gnu.org/packages/xref-"
                            version ".tar"))
        (sha256
-        (base32 "0z9kpbnrdh9y9qlj2fa64v660biakvw6x3z9klqa47qcx8gbyqp6"))))
+        (base32 "16vzjl2dv5nmb40xfw7mfrk8i64fac3cy4sf2d2hy832rwlg15q0"))))
     (build-system emacs-build-system)
     (home-page "http://elpa.gnu.org/packages/xref.html")
     (synopsis "Cross-referencing commands")
@@ -35830,7 +35830,7 @@ across sessions.")
 (define-public emacs-vertico-posframe
   (package
     (name "emacs-vertico-posframe")
-    (version "0.7.0")
+    (version "0.7.2")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -35838,7 +35838,7 @@ across sessions.")
                     ".tar"))
               (sha256
                (base32
-                "19ic4yjm9ccnvrhccfzhn4p3brk760hf8aw6qv53gf6qlj3mcyag"))))
+                "1sbgg0syyk24phwzji40lyw5dmwxssgvwv2fs8mbmkhv0q44f9ny"))))
     (build-system emacs-build-system)
     (propagated-inputs (list emacs-posframe emacs-vertico))
     (home-page "https://github.com/tumashu/vertico-posframe")
