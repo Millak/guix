@@ -25626,8 +25626,40 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-webpki" ,rust-webpki-0.21)
         ("rust-webpki-roots" ,rust-webpki-roots-0.17))))))
 
+(define-public rust-half-2
+  (package
+    (name "rust-half")
+    (version "2.2.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "half" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1l1gdlzxgm7wc8xl5fxas20kfi1j35iyb7vfjkghbdzijcvazd02"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-bytemuck" ,rust-bytemuck-1)
+        ("rust-crunchy" ,rust-crunchy-0.2)
+        ("rust-num-traits" ,rust-num-traits-0.2)
+        ("rust-serde" ,rust-serde-1)
+        ("rust-zerocopy" ,rust-zerocopy-0.6))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-crunchy" ,rust-crunchy-0.2)
+        ("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-quickcheck-macros" ,rust-quickcheck-macros-1)
+        ("rust-rand" ,rust-rand-0.8))))
+    (home-page "https://github.com/starkat99/half-rs")
+    (synopsis "Half-precision floating point f16 type")
+    (description
+     "Half-precision floating point f16 type for Rust implementing the
+IEEE 754-2008 binary16 type.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-half-1
   (package
+    (inherit rust-half-2)
     (name "rust-half")
     (version "1.7.1")
     (source
@@ -25637,7 +25669,6 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wzavaaaa2jwkm4i1dbglmwjfsdhn4n73wrkbdzllaynlams5b32"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-serde" ,rust-serde-1))
@@ -25646,13 +25677,7 @@ of gzip files based on the gzip header implementation in the @code{flate2} crate
         ("rust-quickcheck" ,rust-quickcheck-0.9)
         ("rust-quickcheck-macros" ,rust-quickcheck-macros-0.9)
         ("rust-rand" ,rust-rand-0.7)
-        ("rust-version-sync" ,rust-version-sync-0.8))))
-    (home-page "https://github.com/starkat99/half-rs")
-    (synopsis "Half-precision floating point f16 type")
-    (description
-     "Half-precision floating point f16 type for Rust implementing the
-IEEE 754-2008 binary16 type.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-version-sync" ,rust-version-sync-0.8))))))
 
 (define-public rust-home-0.5
   (package
