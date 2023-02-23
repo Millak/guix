@@ -72263,6 +72263,32 @@ compression library.")
         ("rust-libc" ,rust-libc-0.2)
         ("rust-pkg-config" ,rust-pkg-config-0.3))))))
 
+(define-public rust-zune-inflate-0.2
+  (package
+    (name "rust-zune-inflate")
+    (version "0.2.50")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "zune-inflate" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0h3d46jfyraxzl7kcgr2zpqjmisw72lc1p44b4q9r0rhcbglb4jq"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-simd-adler32" ,rust-simd-adler32-0.3))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.4)
+        ("rust-flate2" ,rust-flate2-1)
+        ("rust-libdeflater" ,rust-libdeflater-0.11))))
+    (native-inputs
+     (list cmake-minimal))
+    (home-page "https://github.com/etemesi254/zune-image/tree/main/zune-inflate")
+    (synopsis "Deflate decompressor in Pure Rust")
+    (description "This package provides a heavily optimized deflate decompressor
+in Pure Rust.")
+    (license (list license:expat license:asl2.0))))
+
 ;;;
 ;;; Avoid adding new packages to the end of this file. To reduce the chances
 ;;; of a merge conflict, place them above by existing packages with similar
