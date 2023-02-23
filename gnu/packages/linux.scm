@@ -68,7 +68,7 @@
 ;;; Copyright © 2022 Hunter Jozwiak <hunter.t.joz@gmail.com>
 ;;; Copyright © 2022 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2022 Stefan <stefan-guix@vodafonemail.de>
-;;; Copyright © 2022 Demis Balbach <db@minikn.xyz>
+;;; Copyright © 2022, 2023 Demis Balbach <db@minikn.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1491,6 +1491,34 @@ kernel modules to control the keyboard on most Tuxedo computers. Only white
 backlight only models are currently not supported. The @code{tuxedo_io} module
 is also needed for the @code{tuxedo-control-center} (short tcc) package.")
     (license license:gpl3+)))
+
+(define-public evdi
+  (package
+    (name "evdi")
+    (version "1.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/DisplayLink/evdi")
+                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+    (build-system linux-module-build-system)
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "module"))))))
+    (home-page "https://github.com/DisplayLink/evdi")
+    (synopsis "EVDI Linux kernel module")
+    (description
+     "The @acronym{EVDI, Extensible Virtual Display Interface} is a Linux kernel module
+that enables management of multiple screens, allowing user-space programs to
+take control over what happens with the image.")
+    (license license:gpl2)))
 
 (define-public ec
   (package
