@@ -33705,6 +33705,26 @@ parallelize and optimize.")
      `(#:cargo-inputs (("rust-rawpointer" ,rust-rawpointer-0.1))
        #:cargo-development-inputs (("rust-bencher" ,rust-bencher-0.1))))))
 
+(define-public rust-maybe-rayon-0.1
+  (package
+    (name "rust-maybe-rayon")
+    (version "0.1.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "maybe-rayon" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "06cmvhj4n36459g327ng5dnj8d58qs472pv5ahlhm7ynxl6g78cf"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cfg-if" ,rust-cfg-if-1)
+        ("rust-rayon" ,rust-rayon-1))))
+    (home-page "https://github.com/shssoichiro/maybe-rayon")
+    (synopsis "Either acts as rayon or creates a single-threaded facade")
+    (description "Either acts as rayon or creates a single-threaded facade")
+    (license license:expat)))
+
 (define-public rust-maybe-uninit-2
   (package
     (name "rust-maybe-uninit")
