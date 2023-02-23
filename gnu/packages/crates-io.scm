@@ -5398,17 +5398,17 @@ iteratively in Rust.")
 in Rust.")
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-av-metrics-0.7
+(define-public rust-av-metrics-0.9
   (package
     (name "rust-av-metrics")
-    (version "0.7.2")
+    (version "0.9.0")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "av-metrics" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1y1q61lhahljxh1l2brp8v795qf6g7gr4h4vdmq43g5z5pq2dw50"))))
+        (base32 "0f9b7hhxnn2cn6zra20iqa90n89rih63sjfjq0i5cach84wqnqqk"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
@@ -5419,9 +5419,9 @@ in Rust.")
         ("rust-rayon" ,rust-rayon-1)
         ("rust-serde" ,rust-serde-1)
         ("rust-thiserror" ,rust-thiserror-1)
-        ("rust-v-frame" ,rust-v-frame-0.2))
+        ("rust-v-frame" ,rust-v-frame-0.3))
        #:cargo-development-inputs
-       (("rust-criterion" ,rust-criterion-0.3)
+       (("rust-criterion" ,rust-criterion-0.4)
         ("rust-y4m" ,rust-y4m-0.7))))
     (home-page "https://github.com/rust-av/av-metrics")
     (synopsis "Collection of algorithms for measuring audio/video metrics")
