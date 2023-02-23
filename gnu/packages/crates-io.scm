@@ -69107,7 +69107,7 @@ attribute that is not in the shared backend crate.")
 (define-public rust-wasm-bindgen-test-0.3
   (package
     (name "rust-wasm-bindgen-test")
-    (version "0.3.28")
+    (version "0.3.34")
     (source
      (origin
        (method url-fetch)
@@ -69115,7 +69115,12 @@ attribute that is not in the shared backend crate.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0zkb3swn81blwg0kdl2y49paaxgavc122q2kygq1xxpxf5wsmwcn"))))
+        (base32 "02x3agz7jn517fbbvnhncajvanr0w055jhinzf49w87vz706zcvd"))
+       (modules '((guix build utils)))
+       (snippet
+        '(begin
+           (substitute* "Cargo.toml"
+             (("=0\\.3\\.34") "^0.3.34"))))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
