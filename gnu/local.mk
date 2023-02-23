@@ -1,6 +1,6 @@
 # GNU Guix --- Functional package management for GNU
 # Copyright © 2012-2021, 2021-2022 Ludovic Courtès <ludo@gnu.org>
-# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022 Andreas Enge <andreas@enge.fr>
+# Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022, 2023 Andreas Enge <andreas@enge.fr>
 # Copyright © 2016 Mathieu Lirzin <mthl@gnu.org>
 # Copyright © 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Mark H Weaver <mhw@netris.org>
 # Copyright © 2016 Chris Marusich <cmmarusich@gmail.com>
@@ -1733,7 +1733,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-magic-python-bytecode.patch	\
   %D%/packages/patches/python-memcached-syntax-warnings.patch	\
   %D%/packages/patches/python-mox3-python3.6-compat.patch	\
-  %D%/packages/patches/python-typing-inspect-fix.patch		\
+  %D%/packages/patches/python-parso-unit-tests-in-3.10.patch    \
   %D%/packages/patches/python-packaging-test-arch.patch		\
   %D%/packages/patches/python-paste-remove-timing-test.patch	\
   %D%/packages/patches/python-pycrypto-CVE-2013-7459.patch	\
@@ -1747,6 +1747,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/python-robotframework-atest.patch	\
   %D%/packages/patches/python-robotframework-source-date-epoch.patch \
   %D%/packages/patches/python-robotframework-sshlibrary-rf5-compat.patch \
+  %D%/packages/patches/python-typing-inspect-fix.patch		\
   %D%/packages/patches/python-unittest2-python3-compat.patch	\
   %D%/packages/patches/python-unittest2-remove-argparse.patch	\
   %D%/packages/patches/python-versioneer-guix-support.patch	\

@@ -22692,7 +22692,9 @@ time-based (TOTP) passwords.")
        (method url-fetch)
        (uri (pypi-uri "parso" version))
        (sha256
-        (base32 "185gkxq92kqiw2h5zp1cmyn04055x0lix4hmi5c077xm1clvw1wc"))))
+        (base32 "185gkxq92kqiw2h5zp1cmyn04055x0lix4hmi5c077xm1clvw1wc"))
+       (patches
+        (search-patches "python-parso-unit-tests-in-3.10.patch"))))
     (native-inputs
      (list python-pytest))
     (build-system python-build-system)
