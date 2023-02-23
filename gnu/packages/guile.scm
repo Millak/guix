@@ -157,32 +157,35 @@ without requiring the source code to be rewritten.")
    (build-system gnu-build-system)
 
    ;; When cross-compiling, a native version of Guile itself is needed.
-   (native-inputs `(,@(if (%current-target-system)
-                          `(("self" ,this-package))
-                          '())
-                    ("pkgconfig" ,pkg-config)))
-   (inputs `(("libffi" ,libffi)
-             ,@(libiconv-if-needed)
+   (native-inputs
+    (append (list pkg-config)
+            (if (%current-target-system)
+                (list this-package)
+                '())))
+   (inputs
+    (append (list libffi)
+            (libiconv-if-needed)
 
-             ;; We need Bash when cross-compiling because some of the scripts
-             ;; in bin/ refer to it.  Use 'bash-minimal' because we don't need
-             ;; an interactive Bash with Readline and all.
-             ,@(if (target-mingw?) '() `(("bash" ,bash-minimal)))))
+            ;; We need Bash when cross-compiling because some of the scripts
+            ;; in bin/ refer to it.  Use 'bash-minimal' because we don't need
+            ;; an interactive Bash with Readline and all.
+            (if (target-mingw?) '() (list bash-minimal))))
    (propagated-inputs
-    `( ;; These ones aren't normally needed here, but since `libguile-2.0.la'
-       ;; reads `-lltdl -lunistring', adding them here will add the needed
-       ;; `-L' flags.  As for why the `.la' file lacks the `-L' flags, see
-       ;; <http://thread.gmane.org/gmane.comp.lib.gnulib.bugs/18903>.
-      ("libunistring" ,libunistring)
+    (list
+     ;; These ones aren't normally needed here, but since `libguile-2.0.la'
+     ;; reads `-lltdl -lunistring', adding them here will add the needed
+     ;; `-L' flags.  As for why the `.la' file lacks the `-L' flags, see
+     ;; <http://thread.gmane.org/gmane.comp.lib.gnulib.bugs/18903>.
+     libunistring
 
-      ;; Depend on LIBLTDL, not LIBTOOL.  That way, we avoid some the extra
-      ;; dependencies that LIBTOOL has, which is helpful during bootstrap.
-      ("libltdl" ,libltdl)
+     ;; Depend on LIBLTDL, not LIBTOOL.  That way, we avoid some the extra
+     ;; dependencies that LIBTOOL has, which is helpful during bootstrap.
+     libltdl
 
-      ;; The headers and/or `guile-2.0.pc' refer to these packages, so they
-      ;; must be propagated.
-      ("bdw-gc" ,libgc)
-      ("gmp" ,gmp)))
+     ;; The headers and/or `guile-2.0.pc' refer to these packages, so they
+     ;; must be propagated.
+     libgc
+     gmp))
 
    (outputs '("out" "debug"))
 
@@ -247,7 +250,8 @@ without requiring the source code to be rewritten.")
    (license license:lgpl3+)))
 
 (define-public guile-2.2
-  (package (inherit guile-2.0)
+  (package
+    (inherit guile-2.0)
     (name "guile")
     (version "2.2.7")
     (source (origin
@@ -453,7 +457,7 @@ without requiring the source code to be rewritten.")
                   gnu-gettext
                   texinfo
                   gperf)
-         (replace "self" this-package)))
+         (replace "guile" this-package)))
       (synopsis "Development version of GNU Guile"))))
 
 (define* (make-guile-readline guile #:optional (name "guile-readline"))
@@ -501,11 +505,9 @@ without requiring the source code to be rewritten.")
                       #t)))))
     (home-page (package-home-page guile))
     (native-inputs (package-native-inputs guile))
-    (inputs
-     `(,@(package-inputs guile)                   ;to placate 'configure'
-       ,@(package-propagated-inputs guile)
-       ("guile" ,guile)
-       ("readline" ,readline)))
+    (propagated-inputs (package-propagated-inputs guile))
+    (inputs (modify-inputs (package-inputs guile)
+              (prepend guile readline)))
     (synopsis "Line editing support for GNU Guile")
     (description
      "This module provides line editing support via the Readline library for

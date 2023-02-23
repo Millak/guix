@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2019 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2018 Mark H Weaver <mhw@netris.org>
@@ -1546,7 +1546,7 @@ package needs iconv ,@(libiconv-if-needed) should be added."
   ;; POSIX C libraries provide iconv.  Platforms with an incomplete libc
   ;; without iconv, such as MinGW, must return the then clause.
   (if (target-mingw? target)
-      `(("libiconv" ,libiconv))
+      (list libiconv)
       '()))
 
 (define-public (canonical-package package)
