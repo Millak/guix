@@ -1446,8 +1446,40 @@ filters and decoders for the most common image formats.")
 pixel buffers with width, height and stride.")
     (license license:cc0)))
 
+(define-public rust-jpeg-decoder-0.3
+  (package
+    (name "rust-jpeg-decoder")
+    (version "0.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "jpeg-decoder" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0gkv0zx95i4fr40fj1a10d70lqi6lfyia8r5q8qjxj8j4pj0005w"))
+              (modules '((guix build utils)))
+              (snippet
+               '(begin
+                  (substitute* "Cargo.toml"
+                    (("=0\\.2\\.83") "^0.2.83"))))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                  ; Not all files included
+       #:cargo-inputs
+       (("rust-rayon" ,rust-rayon-1))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-png" ,rust-png-0.16)
+        ("rust-walkdir" ,rust-walkdir-2)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/image-rs/jpeg-decoder")
+    (synopsis "JPEG decoder")
+    (description "JPEG decoder written in Rust.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-jpeg-decoder-0.1
   (package
+    (inherit rust-jpeg-decoder-0.3)
     (name "rust-jpeg-decoder")
     (version "0.1.22")
     (source
@@ -1458,7 +1490,6 @@ pixel buffers with width, height and stride.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1wnh0bmmswpgwhgmlizz545x8334nlbmkq8imy9k224ri3am7792"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:tests? #f      ; Some test files missing.
        #:cargo-inputs
@@ -1467,11 +1498,7 @@ pixel buffers with width, height and stride.")
        #:cargo-development-inputs
        (("rust-criterion" ,rust-criterion-0.3)
         ("rust-png" ,rust-png-0.14)
-        ("rust-walkdir" ,rust-walkdir-2))))
-    (home-page "https://github.com/image-rs/jpeg-decoder")
-    (synopsis "JPEG decoder")
-    (description "JPEG decoder written in Rust.")
-    (license (list license:expat license:asl2.0))))
+        ("rust-walkdir" ,rust-walkdir-2))))))
 
 (define-public rust-line-drawing-0.7
   (package
