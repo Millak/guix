@@ -759,6 +759,39 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (("rust-rustc-serialize" ,rust-rustc-serialize-0.3)
         ("rust-serde" ,rust-serde-1))))))
 
+(define-public rust-exr-1
+  (package
+    (name "rust-exr")
+    (version "1.5.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "exr" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1ssgq9zkf53mhwvhj9khvrlh0f9h3dl1pg7cs0irvn1fgvs5xbz8"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:tests? #f                  ; Not all files included
+       #:cargo-inputs
+       (("rust-bit-field" ,rust-bit-field-0.10)
+        ("rust-flume" ,rust-flume-0.10)
+        ("rust-half" ,rust-half-2)
+        ("rust-lebe" ,rust-lebe-0.5)
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6)
+        ("rust-smallvec" ,rust-smallvec-1)
+        ("rust-threadpool" ,rust-threadpool-1)
+        ("rust-zune-inflate" ,rust-zune-inflate-0.2))
+       #:cargo-development-inputs
+       (("rust-bencher" ,rust-bencher-0.1)
+        ("rust-image" ,rust-image-0.24)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-walkdir" ,rust-walkdir-2))))
+    (home-page "https://github.com/johannesvollmer/exrs")
+    (synopsis "Read and write OpenEXR files without any unsafe code")
+    (description "Read and write OpenEXR files without any unsafe code")
+    (license license:bsd-3)))
+
 (define-public rust-gfx-0.18
   (package
     (name "rust-gfx")
