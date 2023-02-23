@@ -2577,7 +2577,7 @@ statements in the module it tests.")
 (define-public python-pylint
   (package
     (name "python-pylint")
-    (version "2.12.2")
+    (version "2.14.5")
     (source
      (origin
        (method git-fetch)
@@ -2586,7 +2586,7 @@ statements in the module it tests.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0spmy7j1vvh55shzgma80q61y0d1cj45dcgslb4g5w3y602miq5i"))))
+        (base32 "0ljfvyzr2i07pi7m19kbshlc3cfnwr53mjhcpydaa0w8bak4cc95"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -2605,10 +2605,11 @@ statements in the module it tests.")
      (list python-pytest python-pytest-xdist))
     (propagated-inputs
      (list python-astroid
+           python-dill
            python-isort
            python-mccabe
            python-platformdirs
-           python-toml
+           python-tomlkit
            python-typing-extensions))
     (home-page "https://github.com/PyCQA/pylint")
     (synopsis "Advanced Python code static checker")
