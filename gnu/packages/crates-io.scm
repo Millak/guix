@@ -68111,26 +68111,26 @@ first byte.")
     ;; The user can choose either license.
     (license (list license:asl2.0 license:expat))))
 
-(define-public rust-v-frame-0.2
+(define-public rust-v-frame-0.3
   (package
     (name "rust-v-frame")
-    (version "0.2.5")
+    (version "0.3.3")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "v_frame" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "1ay6p0arqg8cnyzv6iiad77plvjkxnmlmyvgz2qcpadv7y5942n7"))))
+        (base32 "0n03akfyk7a0an2d1mg06ghk2pma9qk1rfhwj5i5bbld7k72730l"))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-hawktracer" ,rust-rust-hawktracer-0.7)
+        ("rust-new-debug-unreachable" ,rust-new-debug-unreachable-1)
         ("rust-noop-proc-macro" ,rust-noop-proc-macro-0.3)
         ("rust-num-derive" ,rust-num-derive-0.3)
         ("rust-num-traits" ,rust-num-traits-0.2)
-        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rust-hawktracer" ,rust-rust-hawktracer-0.7)
         ("rust-serde" ,rust-serde-1)
         ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))))
     (home-page "https://github.com/xiph/rav1e")
