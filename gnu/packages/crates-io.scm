@@ -21883,7 +21883,7 @@ custom fixed-size hash types.")
 (define-public rust-flate2-1
   (package
     (name "rust-flate2")
-    (version "1.0.23")
+    (version "1.0.25")
     (source
      (origin
        (method url-fetch)
@@ -21892,27 +21892,18 @@ custom fixed-size hash types.")
         (string-append name "-" version ".tar.gz"))
        (sha256
         (base32
-         "1bq9vavadgqqr72z5bzbp952c4q67a71kfc4r55qzlw6cvlj55dk"))))
+         "0hg8ih51lx5xkz2zlzpsy1j1xka8gs8vhk2964ppgj5ighwxp8m8"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-cfg-if" ,rust-cfg-if-1)
-        ("rust-cloudflare-zlib-sys" ,rust-cloudflare-zlib-sys-0.3)
+     `(#:cargo-inputs
+       (("rust-cloudflare-zlib-sys" ,rust-cloudflare-zlib-sys-0.3)
         ("rust-crc32fast" ,rust-crc32fast-1)
-        ("rust-futures" ,rust-futures-0.1)
-        ("rust-libc" ,rust-libc-0.2)
+        ("rust-libz-ng-sys" ,rust-libz-ng-sys-1)
         ("rust-libz-sys" ,rust-libz-sys-1)
-        ("rust-miniz-sys" ,rust-miniz-sys-0.1)
-        ("rust-miniz-oxide" ,rust-miniz-oxide-0.5)
-        ("rust-tokio-io" ,rust-tokio-io-0.1))
+        ("rust-miniz-oxide" ,rust-miniz-oxide-0.6))
        #:cargo-development-inputs
-       (("rust-futures" ,rust-futures-0.1)
-        ("rust-quickcheck" ,rust-quickcheck-1)
-        ("rust-rand" ,rust-rand-0.7)
-        ("rust-tokio-io" ,rust-tokio-io-0.1)
-        ("rust-tokio-tcp" ,rust-tokio-tcp-0.1)
-        ("rust-tokio-threadpool" ,rust-tokio-threadpool-0.1))))
+       (("rust-quickcheck" ,rust-quickcheck-1)
+        ("rust-rand" ,rust-rand-0.8))))
     (home-page "https://github.com/alexcrichton/flate2-rs")
     (synopsis
      "Bindings to miniz.c for DEFLATE compression and decompression")
