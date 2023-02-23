@@ -18155,7 +18155,7 @@ scans through a file and detects issues.")
 (define-public python-jedi
   (package
     (name "python-jedi")
-    (version "0.18.1")
+    (version "0.18.2")
     (source
      (origin
        (method git-fetch)
@@ -18166,26 +18166,12 @@ scans through a file and detects issues.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "07drmi3ai49jw5n23ibkambcgijqcw073ihypjgxfnks5lv4yqy1"))
-       (modules '((guix build utils)))
-       (snippet
-        ;; Adjust comprehension syntax for Python > 3.8.
-        ;; From <https://github.com/davidhalter/jedi/issues/1824>.
-        '(substitute* "test/completion/lambdas.py"
-           (("if lambda: 3")
-            "if (lambda: 3)")))))
+         "1nhsajmkn3qj32k5z3ymrd3r6dz2aliv2pqb824m5kaib986dm44"))
+       (modules '((guix build utils)))))
     (build-system python-build-system)
     (arguments
      `(#:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'fix-completion-test
-           (lambda _
-             ;; This resolves a failure in the 'test_completion' test (see:
-             ;; https://github.com/davidhalter/jedi/issues/1824).
-             ;; TODO: Remove after a new release is made (currently: 0.18.1).
-             (substitute* "test/completion/lambdas.py"
-               (("\\[a for a in \\[1,2\\] if lambda: 3\\]\\[0\\]")
-                "[a for a in [1,2] if (lambda: 3)][0]"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
