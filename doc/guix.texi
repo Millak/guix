@@ -120,6 +120,8 @@ Copyright @copyright{} 2023 Zheng Junjie@*
 Copyright @copyright{} 2023 Brian Cully@*
 Copyright @copyright{} 2023 Felix Lechner@*
 Copyright @copyright{} 2023 Foundation Devices, Inc.@*
+Copyright @copyright{} 2023 Thomas Ieong@*
+Copyright @copyright{} 2023 Saku Laesvuori@*
 
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
@@ -27638,6 +27640,66 @@ on TCP port 5232 of @code{localhost} and use the @code{htpasswd} file at
 
 @end table
 @end deftp
+
+@subsubheading Rspamd Service
+@cindex email
+@cindex spam
+
+@defvar rspamd-service-type
+This is the type of the @uref{https://rspamd.com/, Rspamd} filtering
+system whose value should be a @code{rspamd-configuration}.
+@end defvar
+
+@c %start of fragment
+
+@deftp {Data Type} rspamd-configuration
+Available @code{rspamd-configuration} fields are:
+
+@table @asis
+@item @code{package} (default: @code{rspamd}) (type: file-like)
+The package that provides rspamd.
+
+@item @code{config-file} (default: @code{%default-rspamd-config-file}) (type: file-like)
+File-like object of the configuration file to use.  By default all
+workers are enabled except fuzzy and they are binded to their usual
+ports, e.g localhost:11334, localhost:11333 and so on
+
+@item @code{local.d-files} (default: @code{()}) (type: directory-tree)
+Configuration files in local.d, provided as a list of two element lists
+where the first element is the filename and the second one is a
+file-like object.  Settings in these files will be merged with the
+defaults.
+
+@item @code{override.d-files} (default: @code{()}) (type: directory-tree)
+Configuration files in override.d, provided as a list of two element
+lists where the first element is the filename and the second one is a
+file-like object.  Settings in these files will override the defaults.
+
+@item @code{user} (default: @code{%default-rspamd-account}) (type: user-account)
+The user to run rspamd as.
+
+@item @code{group} (default: @code{%default-rspamd-group}) (type: user-group)
+The group to run rspamd as.
+
+@item @code{debug?} (default: @code{#f}) (type: boolean)
+Force debug output.
+
+@item @code{insecure?} (default: @code{#f}) (type: boolean)
+Ignore running workers as privileged users.
+
+@item @code{skip-template?} (default: @code{#f}) (type: boolean)
+Do not apply Jinja templates.
+
+@item @code{shepherd-requirements} (default: @code{(loopback)}) (type: list-of-symbols)
+This is a list of symbols naming Shepherd services that this service
+will depend on.
+
+@end table
+
+@end deftp
+
+
+@c %end of fragment
 
 @node Messaging Services
 @subsection Messaging Services
