@@ -169,7 +169,11 @@ interface to this library is not guaranteed to be stable.")
                                   #$(this-package-input "opensm"))
                    (string-append "--with-tk-lib="
                                   #$(this-package-input "tk") "/lib")
-                   "--disable-static")))
+                   "--disable-static"
+
+                   ;; Address this link error:
+                   ;; ld: .libs/ibis.o:/ibis/src/ibis.c:55: multiple definition of `IbisObj'; .libs/ibis_wrap.o:/ibis/src/ibis_wrap.c:3007: first defined here
+                   "CFLAGS=-O2 -g -fcommon")))
     (synopsis "InfiniBand network utilities")
     (description "These command-line utilities allow for diagnosing and
 testing InfiniBand networks.")
