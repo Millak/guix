@@ -31167,8 +31167,31 @@ macros on libc without stdlib.")
     (description "This package provides FFI bindings to libdbus.")
     (license (list license:asl2.0 license:expat))))
 
+;; TODO: Unbundle libdeflate
+(define-public rust-libdeflate-sys-0.11
+  (package
+    (name "rust-libdeflate-sys")
+    (version "0.11.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libdeflate-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "0xs2wdly73ar7r9qyrbwnkwjjz4wd92kv5h78cdxfrsbp2v88ryb"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/adamkewley/libdeflater")
+    (synopsis "Bindings to libdeflate")
+    (description
+     "This package provides bindings to libdeflate for DEFLATE (de)compression
+exposed as non-streaming buffer operations.  It contains bindings for raw
+deflate, zlib, and gzip data.")
+    (license license:asl2.0)))
+
 (define-public rust-libdeflate-sys-0.5
   (package
+    (inherit rust-libdeflate-sys-0.11)
     (name "rust-libdeflate-sys")
     (version "0.5.0")
     (source (origin
@@ -31178,17 +31201,10 @@ macros on libc without stdlib.")
               (sha256
                (base32
                 "07ychzvz9xrqs92frs3zpny0l8jp3sndzqpl7zhv6kdqhzx9xqr1"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-cc" ,rust-cc-1))))
-    (home-page "https://github.com/adamkewley/libdeflater")
-    (synopsis "Bindings to libdeflate")
-    (description
-     "This package provides bindings to libdeflate for DEFLATE (de)compression
-exposed as non-streaming buffer operations.  It contains bindings for raw
-deflate, zlib, and gzip data.")
-    (license license:asl2.0)))
+    (home-page "https://github.com/adamkewley/libdeflater")))
 
 (define-public rust-libdeflater-0.11
   (package
