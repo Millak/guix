@@ -5,6 +5,7 @@
 ;;; Copyright © 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -29,6 +30,8 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix build-system glib-or-gtk)
+  #:use-module (guix build-system meson)
   #:use-module (guix build-system python)
   #:use-module (gnu packages)
   #:use-module (gnu packages ed)
@@ -37,6 +40,7 @@
   #:use-module (gnu packages check)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages django)
+  #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages file)
   #:use-module (gnu packages gawk)
   #:use-module (gnu packages gettext)
@@ -47,8 +51,11 @@
   #:use-module (gnu packages less)
   #:use-module (gnu packages mail)
   #:use-module (gnu packages ncurses)
+  #:use-module (gnu packages package-management)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages version-control)
   #:use-module (gnu packages xml))
@@ -214,7 +221,7 @@ GiB).")
 (define-public meld
   (package
     (name "meld")
-    (version "3.20.4")
+    (version "3.22.0")
     (source
      (origin
        (method url-fetch)
@@ -222,66 +229,53 @@ GiB).")
                            (version-major+minor version)
                            "/meld-" version ".tar.xz"))
        (sha256
-        (base32 "04vx2mdbcdin0g3w8x910czfch5vyrl8drv1f2l8gxh6qvp113pl"))))
-    (build-system python-build-system)
+        (base32 "03f4j27amyi28flkks8i9bhqzd6xhm6d3c6jzxc57rzniv4hgh9z"))))
+    (build-system meson-build-system)
     (native-inputs
-     `(("intltool" ,intltool)
+     `(("desktop-file-utils" ,desktop-file-utils)
+       ("intltool" ,intltool)
+       ("itstool" ,itstool)
        ("xmllint" ,libxml2)
        ("glib-compile-schemas" ,glib "bin")
-       ("python-pytest" ,python-pytest)))
+       ("gobject-introspection" ,gobject-introspection)
+       ("pkg-config" ,pkg-config)
+       ("python" ,python)))
     (inputs
-     `(("python-cairo" ,python-pycairo)
+     `(("bash-minimal"  ,bash-minimal)
+       ("python" ,python)
+       ("python-cairo" ,python-pycairo)
        ("python-gobject" ,python-pygobject)
        ("gsettings-desktop-schemas" ,gsettings-desktop-schemas)
-       ("gtksourceview" ,gtksourceview-3)))
+       ("gtksourceview" ,gtksourceview-4)))
     (propagated-inputs
      (list dconf))
     (arguments
-     `(#:imported-modules ((guix build glib-or-gtk-build-system)
-                           ,@%python-build-system-modules)
-       #:modules ((guix build python-build-system)
-                  ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
+     `(#:glib-or-gtk? #t
+       #:imported-modules (,@%meson-build-system-modules
+                           (guix build python-build-system))
+       #:modules ((guix build meson-build-system)
+                  ((guix build python-build-system) #:prefix python:)
                   (guix build utils))
        #:phases
        (modify-phases %standard-phases
-         ;; This setup.py script does not support one of the Python build
-         ;; system's default flags, "--single-version-externally-managed".
-         (replace 'install
-           (lambda* (#:key outputs #:allow-other-keys)
-             (invoke "python" "setup.py"
-                     ;; This setup.py runs gtk-update-icon-cache  which we don't want.
-                     "--no-update-icon-cache"
-                     ;; "--no-compile-schemas"
-                     "install"
-                     (string-append "--prefix=" (assoc-ref outputs "out"))
-                     "--root=/")))
-         ;; The tests need to be run after installation.
-         (delete 'check)
-         (add-after 'install 'check
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             ;; Tests look for installed package
-             (add-installed-pythonpath inputs outputs)
-             ;; The tests fail when HOME=/homeless-shelter.
-             (setenv "HOME" "/tmp")
-             (invoke "py.test" "-v" "-k"
-                     ;; TODO: Those tests fail, why?
-                     "not test_classify_change_actions")))
+         (add-after 'unpack 'skip-gtk-update-icon-cache
+           ;; Don't create 'icon-theme.cache'.
+           (lambda _
+             (substitute* "meson_post_install.py"
+               (("gtk-update-icon-cache") (which "true")))))
          (add-after 'install 'copy-styles
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((styles "/share/gtksourceview-3.0/styles"))
+             (let ((styles "/share/gtksourceview-4/styles"))
                (copy-recursively
                 (string-append (assoc-ref inputs "gtksourceview") styles)
                 (string-append (assoc-ref outputs "out") styles))
                #t)))
-         (add-after 'wrap 'glib-or-gtk-wrap
-           (assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-         (add-after 'wrap 'wrap-typelib
+         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
            (lambda* (#:key inputs outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out")))
-               (wrap-program (string-append out "/bin/meld")
-                 `("GI_TYPELIB_PATH" prefix
-                   ,(search-path-as-string->list (getenv "GI_TYPELIB_PATH"))))
-               #t))))))
+             (wrap-program (search-input-file outputs "bin/meld")
+               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                      ,(python:site-packages inputs outputs)))
+               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
     (home-page "https://meldmerge.org/")
     (synopsis "Compare files, directories and working copies")
     (description "Meld is a visual diff and merge tool targeted at
