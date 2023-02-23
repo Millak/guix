@@ -31994,7 +31994,7 @@ C parser and toolkit developed for the GNOME project.")
 (define-public rust-libz-sys-1
   (package
     (name "rust-libz-sys")
-    (version "1.1.1")
+    (version "1.1.8")
     (source
       (origin
         (method url-fetch)
@@ -32002,12 +32002,11 @@ C parser and toolkit developed for the GNOME project.")
         (file-name (string-append name "-" version ".tar.gz"))
         (sha256
          (base32
-          "1q25cb8vs113si7q2p0innhi8jk0wpq37hqi2wcc219hcmw43cr3"))
+          "1gqb8nk7j4ngvlcll8plm2fvjwic40p2g4qp20pwry1m74f7c0lp"))
         (modules '((guix build utils)))
         (snippet
          '(begin (delete-file-recursively "src/zlib")
-                 (delete-file-recursively "src/zlib-ng")
-                 #t))))
+                 (delete-file-recursively "src/zlib-ng")))))
     (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
