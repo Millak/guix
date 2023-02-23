@@ -164,10 +164,12 @@ interface to this library is not guaranteed to be stable.")
                   perl))
     (native-inputs (list swig))
     (arguments
-     `(#:configure-flags
-       (list (string-append "--with-osm="  (assoc-ref %build-inputs "opensm"))
-             (string-append "--with-tk-lib=" (assoc-ref %build-inputs "tk") "/lib")
-             "--disable-static")))
+     (list #:configure-flags
+           #~(list (string-append "--with-osm="
+                                  #$(this-package-input "opensm"))
+                   (string-append "--with-tk-lib="
+                                  #$(this-package-input "tk") "/lib")
+                   "--disable-static")))
     (synopsis "InfiniBand network utilities")
     (description "These command-line utilities allow for diagnosing and
 testing InfiniBand networks.")
