@@ -58,6 +58,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages avahi)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages cmake)
   #:use-module (gnu packages compression)
@@ -18603,6 +18604,29 @@ a vector.")
     (description "This package provide a DNS protocol parser library.  It does
 not support network, only raw protocol parser.")
     (license (list license:expat license:asl2.0))))
+
+(define-public rust-dns-sd-0.1
+  (package
+    (name "rust-dns-sd")
+    (version "0.1.3")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dns-sd" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "11r0jymjshfnn3sh2nqjhrikk4r5rr1g36sip9iqy8i0xafm0j6p"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2))
+       #:cargo-development-inputs
+       (("rust-pkg-config" ,rust-pkg-config-0.3))))
+    (inputs (list avahi))
+    (native-inputs (list pkg-config))
+    (home-page "https://github.com/plietar/rust-dns-sd")
+    (synopsis "Rust binding for DNS-SD")
+    (description "Rust bindings for DNS Service Discovery (DNS-SD).")
+    (license license:expat)))
 
 (define-public rust-doc-comment-0.3
   (package
