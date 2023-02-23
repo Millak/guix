@@ -935,33 +935,6 @@ EUI-64, also known as MAC-48 media access control addresses.")
        (base32
         "1gdchvay0k0g931b2ki33mkfixcw4radk5b8sqsm29rahxg3v8ir"))))))
 
-(define-public rust-gl-generator-0.10
-  (package
-    (name "rust-gl-generator")
-    (version "0.10.0")
-    (source
-      (origin
-        (method url-fetch)
-        (uri (crate-uri "gl_generator" version))
-        (file-name
-         (string-append name "-" version ".tar.gz"))
-        (sha256
-         (base32
-          "0146yd4i9wbgfrhnkc04w7n7civbanznc0q87skp6v7p7hbszzx0"))))
-    (build-system cargo-build-system)
-    (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
-       (("rust-log" ,rust-log-0.4)
-        ("rust-xml-rs" ,rust-xml-rs-0.8)
-        ("rust-khronos-api" ,rust-khronos-api-3))))
-    (home-page "https://github.com/brendanzab/gl-rs/")
-    (synopsis
-     "Code generators for creating bindings to the Khronos OpenGL APIs")
-    (description
-     "Code generators for creating bindings to the Khronos OpenGL APIs.")
-    (license license:asl2.0)))
-
 (define-public rust-gleam-0.6
   (package
     (name "rust-gleam")
