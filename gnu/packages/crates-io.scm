@@ -31945,6 +31945,30 @@ known as zlib).")
     (license (list license:asl2.0
                    license:expat))))
 
+(define-public rust-libz-ng-sys-1
+  (package
+    (name "rust-libz-ng-sys")
+    (version "1.1.8")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libz-ng-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32
+                "1wp0aya5hh76h1acspvrrsvq2fl0kyb8dpi6wy0zaswnm6bax6a3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:skip-build? #t
+       #:cargo-inputs
+       (("rust-cmake" ,rust-cmake-0.1)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/rust-lang/libz-sys")
+    (synopsis "Low-level bindings to zlib-ng (libz-ng)")
+    (description
+     "This package provides low-level bindings to zlib-ng (libz-ng), a
+high-performance zlib library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-lifeguard-0.6
   (package
     (name "rust-lifeguard")
