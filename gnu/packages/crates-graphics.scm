@@ -659,6 +659,33 @@ and iOS.")
     (inputs
      (list dav1d clang llvm))))
 
+(define-public rust-dcv-color-primitives-0.4
+  (package
+    (name "rust-dcv-color-primitives")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dcv-color-primitives" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "01c0ag8dwzz00hyq9qam9d5j6yzdh8xpidcn37vgkzlmhgfz8mql"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-paste" ,rust-paste-1)
+        ("rust-wasm-bindgen" ,rust-wasm-bindgen-0.2))
+       #:cargo-development-inputs
+       (("rust-criterion" ,rust-criterion-0.3)
+        ("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-itertools" ,rust-itertools-0.10)
+        ("rust-rand" ,rust-rand-0.8)
+        ("rust-wasm-bindgen-test" ,rust-wasm-bindgen-test-0.3))))
+    (home-page "https://github.com/aws/dcv-color-primitives")
+    (synopsis "Library to perform image color model conversion")
+    (description
+     "This package provides a library to perform image color model conversion.")
+    (license license:expat-0)))
+
 (define-public rust-euclid-0.22
   (package
     (name "rust-euclid")
