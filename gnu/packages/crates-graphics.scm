@@ -3088,6 +3088,28 @@ crate @code{rust-wayland-client} for usable bindings.")
         (base32
          "0a0ndgkg98pvmkv44yya4f7mxzjaxylknqh64bpa05w0azyv02jj"))))))
 
+(define-public rust-webp-0.2
+  (package
+    (name "rust-webp")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "webp" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1bhw6xp7vg4rx7flxgzvdzk21q2dx1bsn06h0yj7jq0n3y12y0ng"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-image" ,rust-image-0.24)
+        ("rust-libwebp-sys" ,rust-libwebp-sys-0.4))
+       #:cargo-development-inputs
+       (("rust-image" ,rust-image-0.24))))
+    (home-page "https://github.com/jaredforth/webp")
+    (synopsis "WebP conversion library")
+    (description "This package procides a WebP conversion library.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-winit-0.26
   (package
     (name "rust-winit")
