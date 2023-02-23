@@ -9711,6 +9711,42 @@ older system-wide @file{/sys} interface.")
 libraries are found or why they cannot be located.")
     (license license:expat)))
 
+(define-public libevdi
+  (package
+    (name "libevdi")
+    (version "1.12.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/DisplayLink/evdi")
+                    (commit "bdc258b25df4d00f222fde0e3c5003bf88ef17b5")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1yi7mbyvxm9lsx6i1xbwp2bihwgzhwxkydk1kbngw5a5kw9azpws"))))
+    (build-system gnu-build-system)
+    (inputs (list libdrm))
+    (arguments
+     (list #:tests? #f ;no test suite
+           #:make-flags #~'("CC=gcc")
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'chdir
+                          (lambda _
+                            (chdir "library")))
+                        (replace 'install
+                          (lambda* _
+                            (let* ((lib (string-append #$output "/lib")))
+                              (mkdir-p lib)
+                              (install-file "libevdi.so" lib)))))))
+    (home-page "https://github.com/DisplayLink/evdi")
+    (synopsis "User-space EVDI library")
+    (description
+     "Libevdi is a library that gives applications easy access to
+@acronym{EVDI, Extensible Virtual Display Interface} devices on
+various operating systems.")
+    (license license:lgpl2.1)))
+
 (define-public touchegg
   (package
     (name "touchegg")
