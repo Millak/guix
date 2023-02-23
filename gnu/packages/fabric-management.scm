@@ -228,4 +228,4 @@ memory mechanisms for efficient intra-node communication.")
 
     ;; <ucm/bistro/bistro.h> lists only PowerPC64, AArch64, and x86_64 as
     ;; supported.
-    (supported-systems '("x86_64-linux" "aarch64-linux"))))
+    (supported-systems '("x86_64-linux" "aarch64-linux" "powerpc64le-linux"))))
