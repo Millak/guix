@@ -61366,7 +61366,7 @@ return values to @code{std::io::Result} to indicate success or failure.")
     (arguments
      `(#:skip-build? #t
        #:cargo-inputs
-       (("rust-byteorder" ,rust-byteorder-1))))
+       (("rust-byteorder" ,rust-byteorder-0.5))))
     (home-page "https://github.com/luser/rust-test-assembler")
     (synopsis "Build complex binary streams")
     (description
