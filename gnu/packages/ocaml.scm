@@ -2366,14 +2366,14 @@ manipulate such data.")
 (define-public ocaml-mtime
   (package
     (name "ocaml-mtime")
-    (version "1.4.0")
+    (version "2.0.0")
     (source (origin
               (method url-fetch)
-              (uri (string-append "http://erratique.ch/software/mtime/releases/"
+              (uri (string-append "https://erratique.ch/software/mtime/releases/"
                                   "mtime-" version ".tbz"))
               (sha256
                (base32
-                "1xy6lg52n2zynp4p164ym9j0f1b95j5n4bi5y4mbdrry9w99h32m"))))
+                "1ss4w3qxsfp51d88r0j7dzqs05dbb1xdx11hn1jl9cvd03ma0g9z"))))
     (build-system ocaml-build-system)
     (native-inputs
      (list ocamlbuild opam))
@@ -2841,7 +2841,7 @@ to which allows adding and looking up bindings in a type safe manner.")
 (define ocaml-eio
   (package
     (name "ocaml-eio")
-    (version "0.7")
+    (version "0.8.1")
     (home-page "https://github.com/ocaml-multicore/eio")
     (source
      (origin
@@ -2851,7 +2851,7 @@ to which allows adding and looking up bindings in a type safe manner.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256 (base32
-                "118raxdwv6pn5b152ffdhmwdi0l4wlwflcj2nmckfmm7v1z2fq4s"))))
+                "02q9i5wbb2497vd4ypc9d9p4zi3lmx0rsv8faiy7h8dnnzbjjf4z"))))
     (build-system dune-build-system)
     (arguments `(#:package "eio"))
     (propagated-inputs (list ocaml-bigstringaf
@@ -2865,7 +2865,10 @@ to which allows adding and looking up bindings in a type safe manner.")
                              ocaml-hmap
                              ocaml-mtime
                              ocaml-odoc))
-    (native-inputs (list ocaml-astring ocaml-crowbar ocaml-alcotest))
+    (native-inputs (list ocaml-astring
+                         ocaml-crowbar
+                         ocaml-alcotest
+                         ocaml-mdx))
     (synopsis "Effect-based direct-style IO API for OCaml")
     (description "This package provides an effect-based IO API for multicore
 OCaml with fibers.")
