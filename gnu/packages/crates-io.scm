@@ -35541,8 +35541,33 @@ library.")
 libmysqlclient.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-nanorand-0.7
+  (package
+    (name "rust-nanorand")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "nanorand" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1hr60b8zlfy7mxjcwx2wfmhpkx7vfr3v9x12shmv1c10b0y32lba"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-getrandom" ,rust-getrandom-0.2)
+        ("rust-zeroize" ,rust-zeroize-1))
+       #:cargo-development-inputs
+       (("rust-hex" ,rust-hex-0.4))))
+    (home-page "https://github.com/Absolucy/nanorand-rs")
+    (synopsis "Tiny, fast, zero-dep library for random number generation")
+    (description
+     "This library is meant for fast, random number generation with
+quick compile time, and minimal dependencies.")
+    (license license:zlib)))
+
 (define-public rust-nanorand-0.5
   (package
+    (inherit rust-nanorand-0.7)
     (name "rust-nanorand")
     (version "0.5.1")
     (source
@@ -35552,7 +35577,6 @@ libmysqlclient.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1ryi6jdfsfij4di33f269099g7m32rlr7sv7j4pklnjcj2xxfwri"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:skip-build? #true              ;error with pre-release randomize
        #:cargo-inputs
@@ -35563,13 +35587,7 @@ libmysqlclient.")
         ("rust-fastrand" ,rust-fastrand-1)
         ("rust-hex" ,rust-hex-0.4)
         ("rust-random-fast-rng" ,rust-random-fast-rng-0.1)
-        ("rust-randomize" ,rust-randomize-4))))
-    (home-page "https://github.com/aspenluxxxy/nanorand-rs")
-    (synopsis "Tiny, fast, zero-dep library for random number generation")
-    (description
-     "This library is meant for fast, random number generation with
-quick compile time, and minimal dependencies.")
-    (license license:zlib)))
+        ("rust-randomize" ,rust-randomize-4))))))
 
 (define-public rust-nanorand-0.4
   (package
