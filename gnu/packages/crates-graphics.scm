@@ -36,12 +36,14 @@
   #:use-module (guix packages)
   #:use-module (gnu packages)
   #:use-module (gnu packages assembly)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages crates-io)
   #:use-module (gnu packages freedesktop)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages llvm)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages video))
 
 ;;;
@@ -1853,8 +1855,43 @@ interactive applications.")
         ("rust-glob" ,rust-glob-0.2)
         ("rust-term" ,rust-term-0.4))))))
 
+(define-public rust-ravif-0.8
+  (package
+    (name "rust-ravif")
+    (version "0.8.10+rust-1.67.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "ravif" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1r3s78781kb9lwysdvpdc80gavly33dcs4inhhp2dawml9g3rjss"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-avif-serialize" ,rust-avif-serialize-0.7)
+        ("rust-imgref" ,rust-imgref-1)
+        ("rust-loop9" ,rust-loop9-0.1)
+        ("rust-num-cpus" ,rust-num-cpus-1)
+        ("rust-quick-error" ,rust-quick-error-2)
+        ("rust-rav1e" ,rav1e)
+        ("rust-rayon" ,rust-rayon-1)
+        ("rust-rgb" ,rust-rgb-0.8))
+       #:cargo-development-inputs
+       (("rust-avif-parse" ,rust-avif-parse-1))))
+    (native-inputs
+     (list nasm pkg-config))
+    (inputs
+     (list libgit2 zlib))
+    (home-page "https://lib.rs/ravif")
+    (synopsis "Rust library for encoding images in AVIF format")
+    (description
+     "This package provides a rav1e-based pure Rust library for encoding images in
+AVIF format (powers the `cavif` tool).")
+    (license license:bsd-3)))
+
 (define-public rust-ravif-0.6
   (package
+    (inherit rust-ravif-0.8)
     (name "rust-ravif")
     (version "0.6.4")
     (source
@@ -1864,7 +1901,6 @@ interactive applications.")
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
         (base32 "1gyc7w1fz3qdk95cdpkj185dm6lskxfp329xm69waxc565fcz9rx"))))
-    (build-system cargo-build-system)
     (arguments
      `(#:cargo-inputs
        (("rust-avif-serialize" ,rust-avif-serialize-0.6)
@@ -1878,11 +1914,7 @@ interactive applications.")
        (("rust-avif-parse" ,rust-avif-parse-0.13))))
     (native-inputs
      (list nasm))                 ;for building rav1e
-    (home-page "https://lib.rs/ravif")
-    (synopsis "Library for encoding images in AVIF format")
-    (description "This package is a rav1e-based pure Rust library for encoding
-images in AVIF format.")
-    (license license:bsd-3)))
+    (inputs '())))
 
 (define-public rust-raw-window-handle-0.4
   (package
