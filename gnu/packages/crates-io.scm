@@ -1973,6 +1973,32 @@ ciphers implementations.")
         ("rust-aesni" ,rust-aesni-0.6)
         ("rust-block-cipher-trait" ,rust-block-cipher-trait-0.6))))))
 
+(define-public rust-aes-ctr-0.6
+  (package
+    (name "rust-aes-ctr")
+    (version "0.6.0")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (crate-uri "aes-ctr" version))
+        (file-name (string-append name "-" version ".tar.gz"))
+        (sha256
+         (base32 "0qspjxzrclnb83501595y01dhc0km1ssrbjnwlxhcrsdwp6w6abp"))))
+  (build-system cargo-build-system)
+  (arguments
+   `(#:cargo-inputs
+     (("rust-aes-soft" ,rust-aes-soft-0.6)
+      ("rust-aesni" ,rust-aesni-0.10)
+      ("rust-cipher" ,rust-cipher-0.2)
+      ("rust-ctr", rust-ctr-0.6))
+     #:cargo-development-inputs
+     (("rust-cipher" ,rust-cipher-0.2))))
+  (home-page "https://github.com/RustCrypto/block-ciphers/tree/master/aes")
+  (synopsis "Pure Rust implementation of AES")
+  (description "A pure Rust implementation of the Advanced Encryption Standard
+(AES).  Use the aes crate if possible, as the aes-ctr has been deprecated.")
+  (license (list license:expat license:asl2.0))))
+
 (define-public rust-aes-gcm-0.10
   (package
     (name "rust-aes-gcm")
