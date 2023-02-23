@@ -18293,6 +18293,32 @@ available key bindings that follow C-x (or as many as space allows given your
 settings).")
     (license license:gpl3+)))
 
+(define-public emacs-display-wttr
+  (package
+    (name "emacs-display-wttr")
+    (version "2.1.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://git.sr.ht/~josegpt/display-wttr")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1hmawlnd2l89p48pviwn4khvjs0iry8x67cyqw70r10dd0ybn851"))))
+    (build-system emacs-build-system)
+    (arguments
+     (list #:tests? #t
+           #:test-command #~(list "emacs" "--batch"
+                                  "-l" "display-wttr-test.el"
+                                  "-f" "ert-run-tests-batch-and-exit")))
+    (home-page "https://git.sr.ht/~josegpt/display-wttr")
+    (synopsis "Display wttr (weather) in the mode line")
+    (description "This package contains a minor mode that can be toggled.  It
+fetches weather information based on your location or on a given location from
+@uref{https://wttr.in} and then displays it on the mode line.")
+    (license license:gpl3+)))
+
 (define-public emacs-free-keys
   (package
     (name "emacs-free-keys")
