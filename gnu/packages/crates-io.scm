@@ -53521,6 +53521,28 @@ fragment of code.")
        (("rust-clippy" ,rust-clippy-0.0))
        #:tests? #f))))
 
+(define-public rust-serde-big-array-0.4
+  (package
+    (name "rust-serde-big-array")
+    (version "0.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "serde-big-array" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1rwhbrffdxy87bxbyx8p68cg30gf0dlflx14vk1qiwlafjdg08rk"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-serde" ,rust-serde-1))
+       #:cargo-development-inputs
+       (("rust-serde-derive" ,rust-serde-derive-1)
+        ("rust-serde-json" ,rust-serde-json-1))))
+    (home-page "https://github.com/est31/serde-big-array")
+    (synopsis "Big array helper for serde")
+    (description "Big array helper for serde.")
+    (license (list license:expat license:asl2.0))))
+
 (define-public rust-serde-big-array-0.3
   (package
     (name "rust-serde-big-array")
