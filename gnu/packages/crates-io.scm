@@ -28242,6 +28242,27 @@ with hyper.")
 floating-point numbers.")
     (license (list license:expat license:asl2.0))))
 
+(define-public rust-if-addrs-sys-0.3
+  (package
+    (name "rust-if-addrs-sys")
+    (version "0.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "if-addrs-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1skrzs79rafv185064p44r0k1va9ig4bfnpbwlvyhxh4g3fvjx6y"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-cc", rust-cc-1)
+        ("rust-libc" ,rust-libc-0.2))))
+    (home-page "https://github.com/messense/if-addrs")
+    (synopsis "Retrieve the IP addresses for all network interfaces")
+    (description "Retrieve the IP addresses for all network interfaces.
+Works on POSIX and Windows hosts.")
+    (license (list license:expat license:bsd-3))))
+
 (define-public rust-if-chain-1
   (package
     (name "rust-if-chain")
