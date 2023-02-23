@@ -1500,6 +1500,28 @@ pixel buffers with width, height and stride.")
         ("rust-png" ,rust-png-0.14)
         ("rust-walkdir" ,rust-walkdir-2))))))
 
+(define-public rust-libwebp-sys-0.4
+  (package
+    (name "rust-libwebp-sys")
+    (version "0.4.2")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "libwebp-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "1gvjaqhjpzdskx8x4q1lfgw24jnbjgkx4s6dxpkkg2d2ba4d37s3"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-test-flags
+       '("--release" "--"
+         "--skip=tests::poke")
+       #:cargo-inputs
+       (("rust-cc" ,rust-cc-1))))
+    (home-page "https://github.com/NoXF/libwebp-sys")
+    (synopsis "Bindings to libwebp (bindgen, static linking)")
+    (description "Bindings to libwebp (bindgen, static linking)")
+    (license license:expat)))
+
 (define-public rust-line-drawing-0.7
   (package
     (name "rust-line-drawing")
