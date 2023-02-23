@@ -613,10 +613,35 @@ types.")
 and iOS.")
     (license license:expat)))
 
-(define-public rust-dav1d-sys-0.3
+(define-public rust-dav1d-sys-0.7
   (package
     (name "rust-dav1d-sys")
-    (version "0.3.4")
+    (version "0.7.0")
+    (source (origin
+              (method url-fetch)
+              (uri (crate-uri "dav1d-sys" version))
+              (file-name (string-append name "-" version ".tar.gz"))
+              (sha256
+               (base32 "16gzjsfnvfd5zr8mrx5n9mdd4vjvwfwpk9hfscgz7sjyzjdjzcm0"))))
+    (build-system cargo-build-system)
+    (arguments
+     `(#:cargo-inputs
+       (("rust-libc" ,rust-libc-0.2)
+        ("rust-system-deps" ,rust-system-deps-6))))
+    (native-inputs
+     (list pkg-config))
+    (inputs
+     (list dav1d))
+    (home-page "https://github.com/rust-av/dav1d-rs")
+    (synopsis "FFI bindings to dav1d")
+    (description "This package provides FFI bindings to dav1d.")
+    (license license:expat)))
+
+(define-public rust-dav1d-sys-0.3
+  (package
+    (inherit rust-dav1d-sys-0.7)
+    (name "rust-dav1d-sys")
+    (version "0.3.5")
     (source
      (origin
        (method url-fetch)
@@ -624,20 +649,15 @@ and iOS.")
        (file-name
         (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "020lla2l703iy69gbksq18snj2b1sp7vmjf39qqykd4242d4msr5"))))
-    (build-system cargo-build-system)
+        (base32 "10y8637snqc3kb9mhs8p9zi8171ba2hlbvhk06vs6hfifx60rr48"))))
     (arguments
      `(#:cargo-inputs
-       (("rust-bindgen" ,rust-bindgen-0.58)
-        ("rust-system-deps" ,rust-system-deps-3))))
+       (("rust-bindgen" ,rust-bindgen-0.59)
+        ("rust-system-deps" ,rust-system-deps-6))))
     (native-inputs
      (list pkg-config))
     (inputs
-     (list dav1d clang llvm))
-    (home-page "https://github.com/rust-av/dav1d-rs")
-    (synopsis "FFI bindings to dav1d")
-    (description "This package provides FFI bindings to dav1d.")
-    (license license:expat)))
+     (list dav1d clang llvm))))
 
 (define-public rust-euclid-0.22
   (package
