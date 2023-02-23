@@ -18025,6 +18025,8 @@ Type of the service that populates the entries for (@file{/etc/hosts}).
 This service type can be @emph{extended} by passing it a list of
 @code{host} records.
 
+The example below shows how to add two entries to @file{/etc/hosts}:
+
 @c TRANSLATORS: The domain names below SHOULD NOT be translated.
 @c They're domains reserved for use in documentation. (RFC6761 Section 6.5)
 @c The addresses used are explained in RFC3849 and RFC5737.
@@ -18038,8 +18040,8 @@ This service type can be @emph{extended} by passing it a list of
 @end lisp
 
 @quotation Note
-@cindex @file{/etc/host} default entries
-By default @file{/etc/host} comes with the following entries:
+@cindex @file{/etc/hosts} default entries
+By default @file{/etc/hosts} comes with the following entries:
 @example
 127.0.0.1 localhost @var{host-name}
 ::1       localhost @var{host-name}
@@ -18064,27 +18066,17 @@ alias of @code{localhost}.
                                      (host "::1"       "localhost"))))))
 @end lisp
 @end quotation
-
-@deftp {Data Type} host
-Available @code{host} fields are:
-
-@table @asis
-@item @code{address} (type: string)
-IP address.
-
-@item @code{canonical-name} (type: string)
-Hostname.
-
-@item @code{aliases} (default: @code{'()}) (type: list-of-string)
-Additional aliases that map to the same @code{canonical-name}.
-
-@end table
-@end deftp
-
-@defun host address canonical-name [aliases]
-Procedure for creating @code{host} records.
-@end defun
 @end defvar
+
+
+@defun host @var{address} @var{canonical-name} [@var{aliases}]
+Return a new record for the host at @var{address} with the given
+@var{canonical-name} and possibly @var{aliases}.
+
+@var{address} must be a string denoting a valid IPv4 or IPv6 address, and
+@var{canonical-name} and the strings listed in @var{aliases} must be valid
+host names.
+@end defun
 
 @deffn {Scheme Procedure} login-service @var{config}
 Return a service to run login according to @var{config}, a
