@@ -2,7 +2,7 @@
 ;;; Copyright © 2017 Dave Love <fx@gnu.org>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
-;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2019, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -20,6 +20,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages fabric-management)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix licenses)
   #:use-module (guix download)
@@ -187,30 +188,29 @@ testing InfiniBand networks.")
                 "0i0ji5ivzxjqh3ys1m517ghw3am7cw1hvf40ma7hsq3wznsyx5s1"))))
     (build-system gnu-build-system)
     (arguments
-     '( ;; These are some of the flags found in 'contrib/configure-release'.
-       #:configure-flags (list
-                          "--disable-static"
+     (list
+      ;; These are some of the flags found in ;; 'contrib/configure-release'.
+      #:configure-flags #~(list
+                           "--disable-static"
 
-                          ;; XXX: Disable optimizations specific to the build
-                          ;; machine (AVX, etc.)  There's apparently no way to
-                          ;; have them picked up at load time.
-                          "--disable-optimizations"
+                           ;; XXX: Disable optimizations specific to the build
+                           ;; machine (AVX, etc.)  There's apparently no way to
+                           ;; have them picked up at load time.
+                           "--disable-optimizations"
 
-                          "--disable-logging"
-                          "--disable-debug"
-                          "--disable-assertions"
-                          "--disable-params-check"
+                           "--disable-logging"
+                           "--disable-debug"
+                           "--disable-assertions"
+                           "--disable-params-check"
 
-                          (string-append "--with-verbs="
-                                         (assoc-ref %build-inputs
-                                                    "rdma-core"))
+                           (string-append "--with-verbs="
+                                          #$(this-package-input "rdma-core"))
 
-                          (string-append "--with-rdmacm="
-                                         (assoc-ref %build-inputs
-                                                    "rdma-core")))
+                           (string-append "--with-rdmacm="
+                                          #$(this-package-input "rdma-core")))
 
-       ;; Be verbose so that compiler flags are displayed.
-       #:make-flags '("V=1")))
+      ;; Be verbose so that compiler flags are displayed.
+      #:make-flags #~'("V=1")))
     (native-inputs
      (list autoconf automake libtool pkg-config))
     (inputs
