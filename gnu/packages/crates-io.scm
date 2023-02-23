@@ -3760,25 +3760,6 @@ extracted from Askama.")
 Askama.")
     (license (list license:expat license:asl2.0))))
 
-(define-public rust-askama-derive-0.10
-  (package
-    (inherit rust-askama-derive-0.11)
-    (name "rust-askama-derive")
-    (version "0.10.5")
-    (source (origin
-              (method url-fetch)
-              (uri (crate-uri "askama_derive" version))
-              (file-name (string-append name "-" version ".tar.gz"))
-              (sha256
-               (base32
-                "08jmqb4lq5cvfjjcq7kjk5q4589zlsvc3ld35yfjyf4hqb22aafa"))))
-    (arguments
-     (list #:skip-build? #t
-           #:cargo-inputs
-           `(("rust-askama-shared" ,rust-askama-shared-0.11)
-             ("rust-proc-macro2" ,rust-proc-macro2-1)
-             ("rust-syn" ,rust-syn-1))))))
-
 (define-public rust-askama-0.11
   (package
     (name "rust-askama")
