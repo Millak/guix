@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2021, 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2021, 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014, 2015, 2016 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020 Mark H Weaver <mhw@netris.org>
@@ -8577,25 +8577,23 @@ privileges.")
                 "062hg4r6gz7pla9df70nqs5i2a3mp1wszmp4l0g771fykhhrxsjg"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:make-flags
-       `(,(string-append "LDFLAGS=-Wl,-rpath=" %output "/lib"))
-       #:tests? #f
-       #:phases (modify-phases %standard-phases
-                  (delete 'configure)
-                  (add-after 'unpack 'patch-Makefiles
-                    (lambda _
-                      (substitute* "Makefile"
-                        (("/lib64") "/lib")
-                        (("/usr") ""))
-                      (substitute* "compat/Makefile"
-                        (("/lib64") "/lib")
-                        (("/usr") ""))
-                      #t))
-                  (replace 'install
-                    (lambda _
-                      (setenv "DESTDIR" %output)
-                      (invoke "make" "install")
-                      #t)))))
+     (list #:make-flags
+           #~(list (string-append "LDFLAGS=-Wl,-rpath=" #$output "/lib"))
+           #:tests? #f
+           #:phases #~(modify-phases %standard-phases
+                        (delete 'configure)
+                        (add-after 'unpack 'patch-Makefiles
+                          (lambda _
+                            (substitute* "Makefile"
+                              (("/lib64") "/lib")
+                              (("/usr") ""))
+                            (substitute* "compat/Makefile"
+                              (("/lib64") "/lib")
+                              (("/usr") ""))))
+                        (replace 'install
+                          (lambda _
+                            (setenv "DESTDIR" #$output)
+                            (invoke "make" "install"))))))
     (inputs
      (list rdma-core numactl))
     (synopsis "Intel Performance Scaled Messaging 2 (PSM2) library")
