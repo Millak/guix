@@ -38555,18 +38555,17 @@ directly.")
 (define-public rust-num-rational-0.4
   (package
     (name "rust-num-rational")
-    (version "0.4.0")
+    (version "0.4.1")
     (source
      (origin
        (method url-fetch)
        (uri (crate-uri "num-rational" version))
        (file-name (string-append name "-" version ".tar.gz"))
        (sha256
-        (base32 "0ska19zb05f84b1cki7vyzy5wjqs26y82hiq1d9gabbw2syh45yl"))))
+        (base32 "1c0rb8x4avxy3jvvzv764yk7afipzxncfnqlb10r3h53s34s2f06"))))
     (build-system cargo-build-system)
     (arguments
-     `(#:skip-build? #t
-       #:cargo-inputs
+     `(#:cargo-inputs
        (("rust-autocfg" ,rust-autocfg-1)
         ("rust-num-bigint" ,rust-num-bigint-0.4)
         ("rust-num-integer" ,rust-num-integer-0.1)
