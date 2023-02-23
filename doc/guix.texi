@@ -18084,12 +18084,6 @@ Additional aliases that map to the same @code{canonical-name}.
 @defun host address canonical-name [aliases]
 Procedure for creating @code{host} records.
 @end defun
-
-@quotation Note
-The constructor for the @code{host} record-type is @code{%host} though
-the procedure @code{host} results in more concise definitions when there are
-multiple @code{host} records.
-@end quotation
 @end defvar
 
 @deffn {Scheme Procedure} login-service @var{config}

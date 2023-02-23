@@ -106,7 +106,6 @@
             virtual-terminal-service-type
 
             host
-            %host
             host?
             host-address
             host-canonical-name
