@@ -7500,8 +7500,8 @@ and it exports symbols from implementation-specific packages.")
   (sbcl-package->ecl-package sbcl-trivial-cltl2))
 
 (define-public sbcl-introspect-environment
-  (let ((commit "fff42f8f8fd0d99db5ad6c5812e53de7d660020b")
-        (revision "1"))
+  (let ((commit "8fb20a1a33d29637a22943243d1482a20c32d6ae")
+        (revision "2"))
     (package
       (name "sbcl-introspect-environment")
       (build-system asdf-build-system/sbcl)
@@ -7513,10 +7513,9 @@ and it exports symbols from implementation-specific packages.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-introspect-environment" version))
          (sha256
-          (base32
-           "1i305n0wfmpac63ni4i3vixnnkl8daw5ncxy0k3dv92krgx6qzhp"))))
+          (base32 "1p48jnr1im47529w0ciyar4hfwbivqi57zgllkmfrav09ffigk9s"))))
       (native-inputs
        (list sbcl-fiveam))
       (synopsis "Common Lisp environment introspection portability layer")
