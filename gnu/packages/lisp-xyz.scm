@@ -13988,12 +13988,7 @@ functions.")
                   (search-input-file inputs "/lib/libfontconfig.so")))
                (substitute* "Extensions/harfbuzz/src/functions.lisp"
                  (("libharfbuzz\\.so")
-                  (search-input-file inputs "/lib/libharfbuzz.so")))))
-           (add-after 'unpack 'enable-freetype-renderer
-             (lambda _
-               (substitute* "mcclim.asd"
-                 (("\\(:feature :mcclim-ffi-freetype \"mcclim-clx/freetype\"\\)")
-                  "\"mcclim-clx/freetype\"")))))))
+                  (search-input-file inputs "/lib/libharfbuzz.so"))))))))
       (home-page "https://common-lisp.net/project/mcclim/")
       (synopsis "Common Lisp GUI toolkit")
       (description
