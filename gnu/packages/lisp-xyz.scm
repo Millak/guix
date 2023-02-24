@@ -3567,6 +3567,57 @@ not counting tests)
 (define-public ecl-let-plus
   (sbcl-package->ecl-package sbcl-let-plus))
 
+(define-public sbcl-cl-cairo2
+  (let ((commit "41ae45aac86553c46f4bb460f80e1fb620930f5b")
+        (revision "1"))
+    (package
+      (name "sbcl-cl-cairo2")
+      (version (git-version "0.6" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/rpav/cl-cairo2")
+               (commit commit)))
+         (file-name (git-file-name "cl-cairo2" version))
+         (sha256
+          (base32 "0cpfgyxw6pz7y033dlya8c4vjmkpw127zdq3a9xclp9q8jbdlb7q"))))
+      (build-system asdf-build-system/sbcl)
+      (arguments
+       `(#:asd-systems '(;; "cl-cairo2-gtk2" ; cl-gtk2 is not packed and quite old.
+                         ;; "cl-cairo2-quartz" ; Failing when enabled.
+                         ;; "cl-cairo2-xlib" ; cl-xcb-xlib is not packed yet and quite old.
+                         ;; "cl-cairo2-xcb"
+                         "cl-cairo2")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'fix-paths
+             (lambda* (#:key inputs #:allow-other-keys)
+               (substitute* "src/load-libraries.lisp"
+                 (("libcairo.so.2")
+                  (search-input-file inputs "/lib/libcairo.so.2"))))))))
+      (inputs
+       (list cairo
+             sbcl-cffi
+             sbcl-cl-colors
+             sbcl-cl-freetype2
+             sbcl-cl-utilities
+             sbcl-metabang-bind
+             sbcl-trivial-features
+             sbcl-trivial-garbage))
+      (home-page "https://github.com/rpav/cl-cairo2")
+      (synopsis "Cairo bindings for Common Lisp")
+      (description
+       "This package provides CFFI bindings for Common Lisp to the Cairo
+C library.")
+      (license license:boost1.0))))
+
+(define-public ecl-cl-cairo2
+  (sbcl-package->ecl-package sbcl-cl-cairo2))
+
+(define-public cl-cairo2
+  (sbcl-package->cl-source-package sbcl-cl-cairo2))
+
 (define-public sbcl-cl-colors
   (let ((commit "827410584553f5c717eec6182343b7605f707f75"))
     (package
