@@ -222,6 +222,32 @@ in Zsh intelligently.")
 as you type.")
     (license license:expat)))
 
+(define-public zsh-completions
+  (package
+    (name "zsh-completions")
+    (version "0.34.0")
+    (home-page "https://github.com/zsh-users/zsh-completions")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0jjgvzj3v31yibjmq50s80s3sqi4d91yin45pvn3fpnihcrinam9"))))
+    (build-system copy-build-system)
+    (arguments
+     '(#:install-plan '(("src/" "share/zsh/site-functions/")
+                        ("README.md" "share/doc/zsh-completions/"))))
+    (synopsis "Additional completion definitions for Zsh")
+    (description
+     "This projects aims at gathering/developing new completion scripts that
+are not available in Zsh yet.  The scripts may be contributed to the Zsh
+project when stable enough.")
+    (license (license:non-copyleft "file://LICENSE"
+              "Custom BSD-like, permissive, non-copyleft license."))))
+
 (define-public zsh-history-substring-search
   (package
     (name "zsh-history-substring-search")
