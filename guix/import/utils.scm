@@ -198,6 +198,7 @@ thrown."
     ("CPL-1.0"                    . license:cpl1.0)
     ("EPL-1.0"                    . license:epl1.0)
     ("EPL-2.0"                    . license:epl2.0)
+    ("EUPL-1.1"                   . license:eupl1.1)
     ("EUPL-1.2"                   . license:eupl1.2)
     ("MIT"                        . license:expat)
     ("MIT-0"                      . license:expat-0)
