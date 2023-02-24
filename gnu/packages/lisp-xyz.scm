@@ -2438,8 +2438,8 @@ and running graph algorithms.")
 
 (define-public sbcl-babel
   ;; No release since 2014.
-  (let ((commit "f892d0587c7f3a1e6c0899425921b48008c29ee3")
-        (revision "2"))
+  (let ((commit "627d6a60d0ffc82a3687b39ba8a99128031504d9")
+        (revision "3"))
     (package
       (name "sbcl-babel")
       (version (git-version "0.5.0" revision commit))
@@ -2451,7 +2451,7 @@ and running graph algorithms.")
                (commit commit)))
          (file-name (git-file-name "cl-babel" version))
          (sha256
-          (base32 "04frn19mngvsh8bh7fb1rfjm8mqk8bgzx5c43dg7z02nfsxkqqak"))))
+          (base32 "1sndap9ykyyvrzlqm9smgqy49r3n67l926yg0hb7pm00plj0y380"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-hu.dwim.stefil))
