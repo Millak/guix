@@ -3128,8 +3128,8 @@ streams, support is included for convenient stream wrappers.")
   (sbcl-package->ecl-package sbcl-ironclad))
 
 (define-public sbcl-named-readtables
-  (let ((commit "585a28eee8b1b1999279b48cb7e9731187e14b66")
-        (revision "3"))
+  (let ((commit "d5ff162ce02035ec7de1acc9721385f325e928c0")
+        (revision "4"))
     (package
       (name "sbcl-named-readtables")
       (version (git-version "0.9" revision commit))
@@ -3140,9 +3140,14 @@ streams, support is included for convenient stream wrappers.")
                (url "https://github.com/melisgl/named-readtables")
                (commit commit)))
          (sha256
-          (base32 "072p5djqq9pliw9r20rmpz5r5q5yn6rhbp98vkkp7gfcnp5ppj51"))
-         (file-name (git-file-name "named-readtables" version))))
+          (base32 "0gfgxywzbmavy0kpnxav11vz10qfzxwwrpgqaak9sgzg17g8x5yv"))
+         (file-name (git-file-name "cl-named-readtables" version))))
       (build-system asdf-build-system/sbcl)
+      ;; (native-inputs (list sbcl-try))
+      ;; Tests disabled because of a circular dependency issue:
+      ;;   try -> named-readtables -> mgl-pax -> try
+      (arguments
+       (list #:tests? #f))
       (home-page "https://github.com/melisgl/named-readtables/")
       (synopsis "Library that creates a namespace for named readtables")
       (description
