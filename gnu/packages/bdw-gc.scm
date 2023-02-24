@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2016, 2017, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2014, 2016, 2017, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2017 Rene Saavedra <rennes@openmailbox.org>
@@ -36,8 +36,11 @@
    (version "8.0.4")
    (source (origin
             (method url-fetch)
-            (uri (string-append "https://github.com/ivmai/bdwgc/releases"
-                                "/download/v" version "/gc-" version ".tar.gz"))
+            (uri (list (string-append "https://github.com/ivmai/bdwgc/releases"
+                                      "/download/v" version
+                                      "/gc-" version ".tar.gz")
+                       (string-append "https://www.hboehm.info/gc/gc_source"
+                                      "/gc-" version ".tar.gz")))
             (sha256
              (base32
               "1798rp3mcfkgs38ynkbg2p47bq59pisrc6mn0l20pb5iczf0ssj3"))))
@@ -69,6 +72,9 @@
         `(("libatomic-ops" ,libatomic-ops))
         '()))
    (outputs '("out" "debug"))
+   (properties
+    '((release-monitoring-url . "https://www.hboehm.info/gc/gc_source/")
+      (upstream-name . "gc")))
    (synopsis "The Boehm-Demers-Weiser conservative garbage collector
 for C and C++")
    (description
