@@ -20138,21 +20138,22 @@ except system libraries.")
           (base32 "0sjy4k04k0hdhwpr57ns16ag3za0kz4laclbk17i91ql7qdjw9z2"))))
       (build-system asdf-build-system/sbcl)
       (arguments
-       `(#:phases
+       `(#:asd-systems '("sdl2" "sdl2/examples")
+         #:phases
          (modify-phases %standard-phases
            (add-after 'unpack 'fix-paths
              (lambda* (#:key inputs #:allow-other-keys)
                (substitute* "src/library.lisp"
-                 (("libSDL2-2.0.so.0" all)
-                  (string-append (assoc-ref inputs "libsdl2") "/lib/" all)))
-               #t)))))
+                 (("libSDL2-2.0.so.0")
+                  (search-input-file inputs "/lib/libSDL2-2.0.so.0"))))))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cl-autowrap" ,sbcl-cl-autowrap)
-         ("cl-ppcre" ,sbcl-cl-ppcre)
-         ("libsdl2" ,sdl2)
-         ("trivial-channels" ,sbcl-trivial-channels)
-         ("trivial-features" ,sbcl-trivial-features)))
+       (list sbcl-alexandria
+             sbcl-cl-autowrap
+             sbcl-cl-opengl
+             sbcl-cl-ppcre
+             sbcl-trivial-channels
+             sbcl-trivial-features
+             sdl2))
       (home-page "https://github.com/lispgames/cl-sdl2")
       (synopsis "Common Lisp bindings for SDL2 using C2FFI")
       (description
