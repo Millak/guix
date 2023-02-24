@@ -13930,8 +13930,8 @@ functions.")
   (sbcl-package->ecl-package sbcl-cl-dejavu))
 
 (define-public sbcl-mcclim
-  (let ((commit "292343f9e30c7ef54a3d9b4b045495387c51585e")
-        (revision "2"))
+  (let ((commit "ece91cf035e2ccb1c6eb0bb867ae2bc45f627982")
+        (revision "3"))
     (package
       (name "sbcl-mcclim")
       (version (git-version "0.9.7" revision commit))
@@ -13943,7 +13943,7 @@ functions.")
                (commit commit)))
          (file-name (git-file-name "cl-mcclim" version))
          (sha256
-          (base32 "10sq34rk11p2lrpqg5hr4721y2yqpmz9yk88mgdmwn7iyga5f2fp"))))
+          (base32 "0prn4f0nz604ykcg8004f1vndgjm7181wrlblq6mhasphca28c2k"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam pkg-config))
@@ -13954,20 +13954,22 @@ functions.")
              sbcl-alexandria
              sbcl-babel
              sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-cl-base64
              sbcl-cl-dejavu
              sbcl-cl-freetype2
              sbcl-cl-pdf
-             sbcl-cffi
              sbcl-cl-unicode
              sbcl-cl-vectors
+             sbcl-cl-who
              sbcl-closer-mop
              sbcl-clx
              sbcl-flexi-streams
              sbcl-flexichain
              sbcl-log4cl
              sbcl-opticl
-             sbcl-spatial-trees
              sbcl-slime-swank
+             sbcl-spatial-trees
              sbcl-trivial-features
              sbcl-trivial-garbage
              sbcl-trivial-gray-streams
@@ -13986,17 +13988,7 @@ functions.")
                   (search-input-file inputs "/lib/libfontconfig.so")))
                (substitute* "Extensions/harfbuzz/src/functions.lisp"
                  (("libharfbuzz\\.so")
-                  (search-input-file inputs "/lib/libharfbuzz.so")))))
-           (add-after 'unpack 'fix-build
-             (lambda _
-               ;; The cffi-grovel system does not get loaded automatically,
-               ;; so we load it explicitly.
-               (substitute* "Extensions/fontconfig/mcclim-fontconfig.asd"
-                 (("\\(asdf:defsystem #:mcclim-fontconfig" all)
-                  (string-append "(asdf:load-system :cffi-grovel)\n" all)))
-               (substitute* "Extensions/harfbuzz/mcclim-harfbuzz.asd"
-                 (("\\(asdf:defsystem #:mcclim-harfbuzz" all)
-                  (string-append "(asdf:load-system :cffi-grovel)\n" all))))))))
+                  (search-input-file inputs "/lib/libharfbuzz.so"))))))))
       (home-page "https://common-lisp.net/project/mcclim/")
       (synopsis "Common Lisp GUI toolkit")
       (description
