@@ -244,6 +244,7 @@ thrown."
     ("LGPL-3.0-only"              . license:lgpl3)
     ("LGPL-3.0+"                  . license:lgpl3+)
     ("LGPL-3.0-or-later"          . license:lgpl3+)
+    ("LPL-1.02"                   . license:lpl1.02)
     ("LPPL-1.0"                   . license:lppl)
     ("LPPL-1.1"                   . license:lppl)
     ("LPPL-1.2"                   . license:lppl1.2)
