@@ -264,6 +264,29 @@
 ;;; Emacs hacking.
 ;;;
 
+(define-public emacs-cfrs
+  (package
+    (name "emacs-cfrs")
+    (version "1.6.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/Alexander-Miller/cfrs")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vf5zm82sx3m1yvq73km8ajapv6rnz41b1jrsif7kh0ijh9vk3qi"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     (list emacs-dash emacs-posframe emacs-s))
+    (home-page "https://github.com/Alexander-Miller/cfrs")
+    (synopsis "Child Frame Read String")
+    (description
+     "CFRS is a simple alternative to @code{read-string} that allows reading
+input via a small child-frame spawned at the position of the cursor.")
+    (license license:gpl3+)))
+
 (define-public emacs-geiser
   (package
     (name "emacs-geiser")
