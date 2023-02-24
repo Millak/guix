@@ -28,7 +28,7 @@
 ;;; Copyright © 2020 Paul Garlick <pgarlick@tourbillion-technology.com>
 ;;; Copyright © 2020 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020 Malte Frank Gerdes <malte.f.gerdes@gmail.com>
-;;; Copyright © 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Xinglu Chen <public@yoctocell.xyz>
 ;;; Copyright © 2021 Raghav Gururajan <rg@raghavgururajan.name>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -63,6 +63,8 @@
   #:use-module (guix utils)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
+  #:use-module (guix memoization)
+  #:use-module (guix search-paths)
   #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages compression)
@@ -90,7 +92,8 @@
   #:use-module (gnu packages video)
   #:use-module (gnu packages web)
   #:use-module (gnu packages xml)
-  #:use-module (gnu packages xorg))
+  #:use-module (gnu packages xorg)
+  #:export (perl-extutils-pkgconfig))
 
 ;;;
 ;;; Please: Try to add new module packages in alphabetic order.
@@ -4616,7 +4619,10 @@ convert Perl XS code into C code, the ExtUtils::Typemaps module to
 handle Perl/XS typemap files, and their submodules.")
     (license (package-license perl))))
 
-(define-public perl-extutils-pkgconfig
+;; This is the "primitive" perl-extutils-pkgconfig package.  People should use
+;; `perl-extutils-pkgconfig' instead (see below)', but we export
+;; %perl-extutils-pkgconfig so that `fold-packages' finds it.
+(define-public %perl-extutils-pkgconfig
   (package
     (name "perl-extutils-pkgconfig")
     (version "1.16")
@@ -4628,8 +4634,32 @@ handle Perl/XS typemap files, and their submodules.")
                (base32
                 "0vhwh0731rhh1sswmvagq0myn754dnkab8sizh6d3n6pjpcwxsmv"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list pkg-config))
+    ;; XXX: Patch the pkg-config references to avoid propagating it, as that
+    ;; would cause the search path to be wrong when cross-building, due to
+    ;; propagated inputs being treated as host inputs, not native inputs.
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-pkg-config-path
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              (let* ((target #$(%current-target-system))
+                     (pkg-config-name (if target
+                                          (string-append target "-pkg-config")
+                                          "pkg-config"))
+                     (pkg-config (search-input-file
+                                  (or native-inputs inputs)
+                                  (string-append "bin/" pkg-config-name))))
+                (substitute* '("Makefile.PL"
+                               "lib/ExtUtils/PkgConfig.pm")
+                  (("qx/pkg-config([^/]*)/" _ args)
+                   (string-append "`" pkg-config args "`"))
+                  (("(`|\")pkg-config" _ quote)
+                   (string-append quote pkg-config)))))))))
+    (native-inputs (list pkg-config))
+    ;; Note: do not use the pkg-config syntax here, as the search paths fields
+    ;; are not thunked and its value could be wrong.
+    (native-search-paths (list $PKG_CONFIG_PATH))
     (home-page "https://metacpan.org/release/ExtUtils-PkgConfig")
     (synopsis "Simplistic interface to pkg-config")
     (description
@@ -4638,6 +4668,29 @@ handle Perl/XS typemap files, and their submodules.")
 of perl extensions which bind libraries that @command{pkg-config} knows.
 It is really just boilerplate code that you would have written yourself.")
     (license license:lgpl2.1+)))
+
+(define-public cross-perl-extutils-pkgconfig
+  (mlambda (target)
+    "Return a perl-extutils-pkgconfig for TARGET, adjusting the search paths."
+    (package
+      (inherit %perl-extutils-pkgconfig)
+      ;; Ignore native inputs, and set `PKG_CONFIG_PATH' for target inputs.
+      (native-search-paths '())
+      (search-paths (list $PKG_CONFIG_PATH)))))
+
+(define (perl-extutils-pkgconfig-for-target target)
+  "Return a perl-extutils-pkgconfig package for TARGET, which may be either #f
+for a native build, or a GNU triplet."
+  (if target
+      (cross-perl-extutils-pkgconfig target)
+      %perl-extutils-pkgconfig))
+
+;; This hack mimics the one for pkg-config, to allow automatically choosing
+;; the native or the cross `pkg-config' depending on whether it's being used
+;; in a cross-build environment or not.
+(define-syntax perl-extutils-pkgconfig
+  (identifier-syntax (perl-extutils-pkgconfig-for-target
+                      (%current-target-system))))
 
 (define-public perl-extutils-typemaps-default
   (package
