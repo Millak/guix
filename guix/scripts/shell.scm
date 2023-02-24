@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2021-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2021-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -305,16 +305,16 @@ Return the modified OPTS."
                (report-error
                 (G_ "not loading '~a' because not authorized to do so~%")
                 file)
-               (display-hint (format #f (G_ "To allow automatic loading of
+               (display-hint (G_ "To allow automatic loading of
 @file{~a} when running @command{guix shell}, you must explicitly authorize its
 directory, like so:
 
 @example
 echo ~a >> ~a
 @end example\n")
-                                     file
-                                     (dirname file)
-                                     (authorized-directory-file)))
+                             file
+                             (dirname file)
+                             (authorized-directory-file))
                (exit 1)))))))
 
 

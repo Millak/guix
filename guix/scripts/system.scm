@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2016 Alex Kost <alezost@gmail.com>
 ;;; Copyright © 2016, 2017, 2018 Chris Marusich <cmmarusich@gmail.com>
 ;;; Copyright © 2017, 2019 Mathieu Othacehe <m.othacehe@gmail.com>
@@ -633,9 +633,9 @@ any, are available.  Raise an error if they're not."
                              (G_ "device '~a' not found: ~a~%")
                              device (strerror errno))
                       (unless (string-prefix? "/" device)
-                        (display-hint (format #f (G_ "If '~a' is a file system
+                        (display-hint (G_ "If '~a' is a file system
 label, write @code{(file-system-label ~s)} in your @code{device} field.")
-                                              device device)))))))
+                                      device device))))))
               literal)
     (for-each (lambda (fs)
                 (let ((label (file-system-label->string
@@ -1417,8 +1417,7 @@ argument list and OPTS is the option alist."
            (let ((hint (string-closest arg actions #:threshold 3)))
              (report-error (G_ "~a: unknown action~%") arg)
              (when hint
-               (display-hint
-                (format #f (G_ "Did you mean @code{~a}?~%") hint)))
+               (display-hint (G_ "Did you mean @code{~a}?~%") hint))
              (exit 1)))))
 
   (define (match-pair car)

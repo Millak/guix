@@ -572,10 +572,10 @@ argument list and OPTS is the option alist."
          (cut import-manifest manifest destination <>))
        (info (G_ "'~a' populated with all the Home configuration files~%")
              destination)
-       (display-hint (format #f (G_ "\
+       (display-hint (G_ "\
 Run @command{guix home reconfigure ~a/home-configuration.scm} to effectively
 deploy the home environment described by these files.\n")
-                             destination))))
+                     destination)))
     ((describe)
      (let ((list-installed-regex (assoc-ref opts 'list-installed)))
        (match (generation-number %guix-home)

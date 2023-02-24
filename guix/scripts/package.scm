@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2013, 2015 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014, 2016 Alex Kost <alezost@gmail.com>
@@ -322,7 +322,7 @@ of manifest entries, in the context of PROFILE."
          (settings (search-path-environment-variables entries (list profile)
                                                       #:kind 'prefix)))
     (unless (null? settings)
-      (display-hint (format #f (G_ "Consider setting the necessary environment
+      (display-hint (G_ "Consider setting the necessary environment
 variables by running:
 
 @example
@@ -331,7 +331,7 @@ GUIX_PROFILE=\"~a\"
 @end example
 
 Alternately, see @command{guix package --search-paths -p ~s}.")
-                            profile profile)))))
+                    profile profile))))
 
 
 ;;;

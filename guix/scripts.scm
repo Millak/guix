@@ -321,11 +321,11 @@ THRESHOLDS is a pair (ABSOLUTE-THRESHOLD . RELATIVE-THRESHOLD)."
                             absolute-threshold-in-bytes))
       (warning (G_ "only ~,1f GiB of free space available on ~a~%")
                (/ available 1. GiB) (%store-prefix))
-      (display-hint (format #f (G_ "Consider deleting old profile
+      (display-hint (G_ "Consider deleting old profile
 generations and collecting garbage, along these lines:
 
 @example
 guix gc --delete-generations=1m
-@end example\n"))))))
+@end example\n")))))
 
 ;;; scripts.scm ends here

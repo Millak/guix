@@ -296,9 +296,22 @@ VARIABLE and return it, or #f if none was found."
 
 (define %hint-color (color BOLD CYAN))
 
-(define* (display-hint message #:optional (port (current-error-port)))
-  "Display MESSAGE, a l10n message possibly containing Texinfo markup, to
-PORT."
+(define (texinfo-quote str)
+  "Quote at signs and braces in STR to obtain its Texinfo represention."
+  (list->string
+   (string-fold-right (lambda (chr result)
+                        (if (memq chr '(#\@ #\{ #\}))
+                            (cons* #\@ chr result)
+                            (cons chr result)))
+                      '()
+                      str)))
+
+(define* (display-hint message
+                       #:key (port (current-error-port))
+                       #:rest arguments)
+  "Display MESSAGE, a l10n message possibly containing Texinfo markup and
+'format' escape, to PORT.  ARGUMENTS is a (possibly empty) list of strings or
+other objects that must match the 'format' escapes in MESSAGE."
   (define colorize
     (if (color-output? port)
         (lambda (str)
@@ -309,7 +322,16 @@ PORT."
   (display
    ;; XXX: We should arrange so that the initial indent is wider.
    (parameterize ((%text-width (max 15 (- (terminal-columns) 5))))
-     (texi->plain-text message))
+     (texi->plain-text (match arguments
+                         (() message)
+                         (_  (apply format #f message
+                                    (map (match-lambda
+                                           ((? string? str)
+                                            (texinfo-quote str))
+                                           (obj
+                                            (texinfo-quote
+                                             (object->string obj))))
+                                         arguments))))))
    port))
 
 (define* (report-unbound-variable-error args #:key frame)
@@ -324,8 +346,8 @@ arguments."
        (#f
         (display-hint (G_ "Did you forget a @code{use-modules} form?")))
        ((? module? module)
-        (display-hint (format #f (G_ "Did you forget @code{(use-modules ~a)}?")
-                              (module-name module))))))))
+        (display-hint (G_ "Did you forget @code{(use-modules ~a)}?")
+                      (module-name module)))))))
 
 (define (check-module-matches-file module file)
   "Check whether FILE starts with 'define-module MODULE' and print a hint if
@@ -334,10 +356,10 @@ it doesn't."
   ;; definitions and try loading them with 'guix build -L …', so help them
   ;; diagnose the problem.
   (define (hint)
-    (display-hint (format #f (G_ "File @file{~a} should probably start with:
+    (display-hint (G_ "File @file{~a} should probably start with:
 
 @example\n(define-module ~a)\n@end example")
-                          file module)))
+                  file module))
 
   (catch 'system-error
     (lambda ()
@@ -663,12 +685,12 @@ interpreted."
          (name1  (manifest-entry-name (top-most-entry first)))
          (name2  (manifest-entry-name (top-most-entry second))))
     (if (string=? name1 name2)
-        (display-hint (format #f (G_ "You cannot have two different versions
+        (display-hint (G_ "You cannot have two different versions
 or variants of @code{~a} in the same profile.")
-                              name1))
-        (display-hint (format #f (G_ "Try upgrading both @code{~a} and @code{~a},
+                      name1)
+        (display-hint (G_ "Try upgrading both @code{~a} and @code{~a},
 or remove one of them from the profile.")
-                              name1 name2)))))
+                      name1 name2))))
 
 ;; On Guile 3.0, in 'call-with-error-handling' we need to re-raise.  To
 ;; preserve useful backtraces in case of unhandled errors, we want that to
@@ -2226,8 +2248,7 @@ found."
              (format (current-error-port)
                      (G_ "guix: ~a: command not found~%") command)
              (when hint
-               (display-hint (format #f (G_ "Did you mean @code{~a}?")
-                                     hint)))
+               (display-hint (G_ "Did you mean @code{~a}?") hint))
              (show-guix-usage)))))
       (file
        (load file)

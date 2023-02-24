@@ -664,8 +664,8 @@ command name."
         (let ((closest (string-closest executable available
                                        #:threshold 12)))
           (unless (or (not closest) (string=? closest executable))
-            (display-hint (format #f (G_ "Did you mean '~a'?~%")
-                                  closest)))))))))
+            (display-hint (G_ "Did you mean '~a'?~%")
+                          closest))))))))
 
 (define* (launch-environment/fork command profile manifest
                                   #:key pure? (white-list '()))
