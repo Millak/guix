@@ -12600,7 +12600,9 @@ mode with the package emacs-julia-mode.")
                 "04nh37izz04lxkvkxhsig8khbrrgdl4p6pkjsv5bxymnp84zwlw7"))))
     (build-system emacs-build-system)
     (arguments
-     (list #:include #~(cons "^JuliaSnail\\.jl" %default-include)))
+     (list
+      #:include
+      #~(cons* "^JuliaSnail\\.jl" "extensions" %default-include)))
     (inputs
      (list emacs-dash emacs-s emacs-spinner emacs-xref))
     (propagated-inputs
