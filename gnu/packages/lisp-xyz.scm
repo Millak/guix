@@ -1872,8 +1872,8 @@ a sequence (or chain) of such elements.")
   (sbcl-package->cl-source-package sbcl-flexichain))
 
 (define-public sbcl-cl-pdf
-  (let ((commit "f57905e0b5adb365d611a912613cee70d78d20d8")
-        (revision "2"))
+  (let ((commit "ee904a118a0f060279ad9d253a3e8e3997609213")
+        (revision "3"))
     (package
       (name "sbcl-cl-pdf")
       (version (git-version "2.0.0" revision commit))
@@ -1885,7 +1885,7 @@ a sequence (or chain) of such elements.")
                (commit commit)))
          (file-name (git-file-name "cl-pdf" version))
          (sha256
-          (base32 "0ir9xyj10lyp8mwb3n2pbhnwv0jx0ph1xlhh32sfgalk3bz0ms58"))))
+          (base32 "0j7hbqv6yzrgx0inqinpw8h22728l53ccciw6iymzz4g92j9fzlq"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-iterate sbcl-zpb-ttf))
