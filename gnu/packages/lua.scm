@@ -20,6 +20,7 @@
 ;;; Copyright © 2022 Leo Nikkilä <hello@lnikki.la>
 ;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;; Copyright © 2023 Valter Nazianzeno <manipuladordedados@gmail.com>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -48,12 +49,17 @@
   #:use-module (guix build-system meson)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages boost)
+  #:use-module (gnu packages curl)
   #:use-module (gnu packages build-tools)
+  #:use-module (gnu packages gcc)
+  #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gperf)
+  #:use-module (gnu packages gnupg)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages libevent)
   #:use-module (gnu packages libffi)
@@ -65,11 +71,15 @@
   #:use-module (gnu packages rdf)
   #:use-module (gnu packages re2c)
   #:use-module (gnu packages readline)
+  #:use-module (gnu packages rsync)
+  #:use-module (gnu packages ssh)
   #:use-module (gnu packages tls)
+  #:use-module (gnu packages version-control)
   #:use-module (gnu packages vim)
+  #:use-module (gnu packages wget)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages xorg)
-  #:use-module (srfi srfi-1))
+  #:use-module ((srfi srfi-1) #:hide (zip)))
 
 (define-public lua
   (package
@@ -1138,6 +1148,117 @@ signals to Linux processes.")
     (description "This package provides Lua module for nonblocking system
 shell command executions.")
     (license license:bsd-3)))
+
+(define-public (make-luarocks name lua)
+  (package
+    (name name)
+    (version "3.9.2")
+    (home-page "https://luarocks.org/")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append "https://luarocks.org/releases/luarocks-"
+                                  version ".tar.gz"))
+              (sha256
+               (base32
+                "1nsfp7cwqcxa8vmkcqkgi5wc0iax0j3gbdfd183kw81cq3nf99mw"))))
+    (build-system gnu-build-system)
+    (arguments
+     `(#:tests? #f ;upstream has no tests
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'patch-bin-sh
+           (lambda* (#:key inputs #:allow-other-keys)
+             (substitute* '("GNUmakefile" "src/luarocks/fs/unix.lua"
+                            "src/luarocks/core/sysdetect.lua")
+               (("/bin/sh")
+                (search-input-file inputs "/bin/sh")))))
+         (replace 'configure
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let ((out (assoc-ref outputs "out")))
+               (invoke "./configure"
+                       (string-append "--prefix=" out)))))
+         (add-after 'install 'patch-unzip
+           (lambda* (#:key inputs outputs #:allow-other-keys)
+             (substitute*
+                 (string-append
+                  (assoc-ref outputs "out") "/etc/luarocks/config-"
+                  ,(substring (package-version lua) 0 3) ".lua") ;e.g. "5.2"
+               (("variables = \\{")
+                (string-append
+                 "variables = {\n"
+                 "   AR = \"" (search-input-file inputs "/bin/ar") "\";\n"
+                 "   BUNZIP2 = \"" (search-input-file inputs "/bin/bunzip2") "\";\n"
+                 "   CC = \"" (search-input-file inputs "/bin/gcc") "\";\n"
+                 "   CHMOD = \"" (search-input-file inputs "/bin/chmod") "\";\n"
+                 "   CP = \"" (search-input-file inputs "/bin/cp") "\";\n"
+                 "   CURL = \"" (search-input-file inputs "/bin/curl") "\";\n"
+                 "   FIND = \"" (search-input-file inputs "/bin/find") "\";\n"
+                 "   GIT = \"" (search-input-file inputs "/bin/git") "\";\n"
+                 "   GPG = \"" (search-input-file inputs "/bin/gpg") "\";\n"
+                 "   GUNZIP = \"" (search-input-file inputs "/bin/gunzip") "\";\n"
+                 "   HG = \"" (search-input-file inputs "/bin/hg") "\";\n"
+                 "   LD = \"" (search-input-file inputs "/bin/ld") "\";\n"
+                 "   LS = \"" (search-input-file inputs "/bin/ls") "\";\n"
+                 "   MAKE = \"" (search-input-file inputs "/bin/make") "\";\n"
+                 "   MD5SUM = \"" (search-input-file inputs "/bin/md5sum") "\";\n"
+                 "   MKDIR = \"" (search-input-file inputs "/bin/mkdir") "\";\n"
+                 "   MKTEMP = \"" (search-input-file inputs "/bin/mktemp") "\";\n"
+                 "   OPENSSL = \"" (search-input-file inputs "/bin/openssl") "\";\n"
+                 "   PWD = \"" (search-input-file inputs "/bin/pwd") "\";\n"
+                 "   RANLIB = \"" (search-input-file inputs "/bin/ranlib") "\";\n"
+                 "   RM = \"" (search-input-file inputs "/bin/rm") "\";\n"
+                 "   RMDIR = \"" (search-input-file inputs "/bin/rmdir") "\";\n"
+                 "   RSYNC = \"" (search-input-file inputs "/bin/rsync") "\";\n"
+                 "   SCP = \"" (search-input-file inputs "/bin/scp") "\";\n"
+                 "   TAR = \"" (search-input-file inputs "/bin/tar") "\";\n"
+                 "   TEST = \"" (search-input-file inputs "/bin/test") "\";\n"
+                 "   TOUCH = \"" (search-input-file inputs "/bin/touch") "\";\n"
+                 "   UNZIP = \"" (search-input-file inputs "/bin/unzip") " -n\";\n"
+                 "   WGET = \"" (search-input-file inputs "/bin/wget") "\";\n"
+                 "   ZIP = \"" (search-input-file inputs "/bin/zip") "\";"))))))))
+    (inputs (list lua
+                  bash-minimal
+                  ;; Executables required by luarocks.
+                  binutils
+                  bzip2
+                  coreutils
+                  curl
+                  findutils
+                  gcc
+                  git
+                  gnupg
+                  gzip
+                  gnu-make
+                  mercurial
+                  openssh
+                  openssl
+                  rsync
+                  tar
+                  unzip
+                  wget
+                  zip))
+    (native-inputs (list unzip))
+    (synopsis "Package manager for Lua modules")
+    (description
+     "LuaRocks is the package manager for the Lua programming
+language.
+
+It allows you to install Lua modules as self-contained packages called
+@url{https://luarocks.org/en/Types_of_rocks, @emph{rocks}}, which also contain
+version @url{https://luarocks.org/en/Dependencies, dependency} information.
+This information can be used both during installation, so that when one rock
+is requested all rocks it depends on are installed as well, and also
+optionally at run time, so that when a module is required, the correct version
+is loaded.  LuaRocks supports both local and
+@url{http://luarocks.org/en/Rocks_repositories, remote} repositories, and
+multiple local rocks trees.")
+    (license license:expat)))
+
+(define-public lua5.2-luarocks
+  (make-luarocks "lua5.2-luarocks" lua-5.2))
+
+(define-public luarocks
+  (make-luarocks "luarocks" lua))
 
 (define-public emilua
   (package
