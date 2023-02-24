@@ -3519,10 +3519,11 @@ new fiends in addition to old friends like @command{aif} and
   (sbcl-package->ecl-package sbcl-anaphora))
 
 (define-public sbcl-let-plus
-  (let ((commit "5f14af61d501ecead02ec6b5a5c810efc0c9fdbb"))
+  (let ((commit "455e657e077235829b197f7ccafd596fcda69e30")
+        (revision "2"))
     (package
       (name "sbcl-let-plus")
-      (version (git-version "0.0.0" "1" commit))
+      (version (git-version "0.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -3530,9 +3531,8 @@ new fiends in addition to old friends like @command{aif} and
                (url "https://github.com/sharplispers/let-plus")
                (commit commit)))
          (sha256
-          (base32
-           "0i050ca2iys9f5mb7dgqgqdxfnc3b0rnjdwv95sqd490vkiwrsaj"))
-         (file-name (git-file-name "let-plus" version))))
+          (base32 "00c0nq6l4zb692rzsc9aliqzj3avrssfyz4bhxzl7f1jsz3m29jb"))
+         (file-name (git-file-name "cl-let-plus" version))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-anaphora))
