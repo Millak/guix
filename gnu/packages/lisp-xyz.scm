@@ -4018,19 +4018,19 @@ is statically typed so there are differences.")
        (uri (git-reference
              (url "https://github.com/cffi/cffi")
              (commit (string-append "v" version))))
-       (file-name (git-file-name "cffi-bootstrap" version))
+       (file-name (git-file-name "cl-cffi" version))
        (sha256
         (base32 "17ryim4xilb1rzxydfr7595dnhqkk02lmrbkqrkvi9091shi4cj3"))))
     (build-system asdf-build-system/sbcl)
     (inputs
-     `(("alexandria" ,sbcl-alexandria)
-       ("babel" ,sbcl-babel)
-       ("libffi" ,libffi)
-       ("trivial-features" ,sbcl-trivial-features)))
+     (list libffi
+           sbcl-alexandria
+           sbcl-babel
+           sbcl-trivial-features))
     (native-inputs
-     `(("bordeaux-threads" ,sbcl-bordeaux-threads)
-       ("pkg-config" ,pkg-config)
-       ("rt" ,sbcl-rt)))
+     (list pkg-config
+           sbcl-bordeaux-threads
+           sbcl-rt))
     (arguments
      '(#:phases
        (modify-phases %standard-phases
