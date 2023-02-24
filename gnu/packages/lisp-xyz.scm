@@ -7007,8 +7007,8 @@ common of which is probably Active Directory.")
   (sbcl-package->cl-source-package sbcl-cl-gss))
 
 (define-public sbcl-trivial-utf-8
-  (let ((commit "4d427cfbb1c452436a0efb71c3205c9da67f718f")
-        (revision "1"))
+  (let ((commit "6ca9943588cbc61ad22a3c1ff81beb371e122394")
+        (revision "2"))
     (package
       (name "sbcl-trivial-utf-8")
       (version (git-version "0.0.0" revision commit))
@@ -7020,10 +7020,9 @@ common of which is probably Active Directory.")
            (url (string-append "https://gitlab.common-lisp.net/"
                                "trivial-utf-8/trivial-utf-8.git"))
            (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-trivial-utf-8" version))
          (sha256
-          (base32
-           "1jz27gz8gvqdmvp3k9bxschs6d5b3qgk94qp2bj6nv1d0jc3m1l1"))))
+          (base32 "0gzgbyzbbhny5y1lq2x82vfy4b4p1snq1sy9lj82hdq7lkyj03ss"))))
       (arguments
        ;; Guix incorrectly assumes the "8" is part of the version
        ;; number and lobs it off.
