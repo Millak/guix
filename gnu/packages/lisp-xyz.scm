@@ -14948,19 +14948,20 @@ table.")
   (sbcl-package->ecl-package sbcl-concurrent-hash-tables))
 
 (define-public sbcl-collectors
-  (let ((commit "13acef25d8422d1d82e067b1861e513587c166ee"))
+  (let ((commit "748f0a1613ce161edccad4cc815eccd7fc55aaf3")
+        (revision "1"))
     (package
       (name "sbcl-collectors")
-      (version (git-version "0.1" "1" commit))
+      (version (git-version "1.0" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/AccelerationNet/collectors")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-collectors" version))
          (sha256
-          (base32 "1si68n1j6rpns8jw6ksqjpb937pdl30v7xza8rld7j5vh0jhy2yi"))))
+          (base32 "1mxcq7wq2jwbjd39afihpd46qkaidq76prgjbzpkv5749wf2spib"))))
       (build-system asdf-build-system/sbcl)
       (inputs
        (list sbcl-alexandria sbcl-closer-mop sbcl-symbol-munger))
