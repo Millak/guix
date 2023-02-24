@@ -5164,8 +5164,8 @@ RFC 1321 by R. Rivest, published April 1992.")
      (list ecl-flexi-streams))))
 
 (define-public sbcl-cl+ssl
-  (let ((commit "8c13317509136e6722a25be51b74b813bbb32f9e")
-        (revision "4"))
+  (let ((commit "1e2ffc9511df4b1c25c23e0313a642a610dae352")
+        (revision "5"))
     (package
       (name "sbcl-cl+ssl")
       (version (git-version "0.0.0" revision commit))
@@ -5177,7 +5177,7 @@ RFC 1321 by R. Rivest, published April 1992.")
                (commit commit)))
          (file-name (git-file-name "cl+ssl" version))
          (sha256
-          (base32 "1cdq9dzk804y8bm874q8755yk4iz2z735ksm8waxl52kpfw8ai99"))))
+          (base32 "0iwdh416ggzs2ig6i0ivrwfy21w7m39w464pc7j3p9pvq09837fy"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        '(#:phases
@@ -5205,13 +5205,13 @@ RFC 1321 by R. Rivest, published April 1992.")
              sbcl-trivial-sockets))
       (inputs
        (list openssl
-             sbcl-cffi
-             sbcl-trivial-gray-streams
-             sbcl-flexi-streams
-             sbcl-bordeaux-threads
-             sbcl-trivial-garbage
              sbcl-alexandria
+             sbcl-bordeaux-threads
+             sbcl-cffi
+             sbcl-flexi-streams
              sbcl-trivial-features
+             sbcl-trivial-garbage
+             sbcl-trivial-gray-streams
              sbcl-usocket))
       (home-page "https://common-lisp.net/project/cl-plus-ssl/")
       (synopsis "Common Lisp bindings to OpenSSL")
