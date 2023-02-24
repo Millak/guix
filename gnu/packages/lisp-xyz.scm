@@ -13548,8 +13548,8 @@ wrappers of deflate streams.  It currently does not handle compression.")
   (sbcl-package->ecl-package sbcl-skippy))
 
 (define-public sbcl-cl-freetype2
-  (let ((commit "96058da730b4812df916c1f4ee18c99b3b15a3de")
-        (revision "0"))
+  (let ((commit "8bcb232b319a66fb700eaea88d0b308a837bce04")
+        (revision "1"))
     (package
       (name "sbcl-cl-freetype2")
       (version (git-version "1.1" revision commit))
@@ -13559,17 +13559,17 @@ wrappers of deflate streams.  It currently does not handle compression.")
          (uri (git-reference
                (url "https://github.com/rpav/cl-freetype2")
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-freetype2" version))
          (sha256
-          (base32 "0f8darhairgxnb5bzqcny7nh7ss3471bdzix5rzcyiwdbr5kymjl"))))
+          (base32 "1nhq3qslja0bcgpbmzfycqhd4vw1l58zh4ia15m1h6535qxliy0q"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)
-         ("cffi" ,sbcl-cffi)
-         ("freetype" ,freetype)
-         ("trivial-garbage" ,sbcl-trivial-garbage)))
+       (list freetype
+             sbcl-alexandria
+             sbcl-cffi
+             sbcl-trivial-garbage))
       (arguments
        `(#:phases
          (modify-phases %standard-phases
