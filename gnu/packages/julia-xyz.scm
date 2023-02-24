@@ -6240,6 +6240,26 @@ standard named test images and example images for the internal usage in
 package.")
     (license license:expat)))
 
+(define-public julia-tokenize
+  (package
+    (name "julia-tokenize")
+    (version "0.5.24")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/JuliaLang/Tokenize.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1l3dy6nad0viavzy26lfnhzpd3gcxgaq7yvm7h1ja280xsh60p3i"))))
+    (build-system julia-build-system)
+    (home-page "https://github.com/JuliaGPU/Tokenize.jl")
+    (synopsis "Tokenize a string or buffer containing Julia code")
+    (description "This package takes a string or buffer containing Julia code,
+performs lexical analysis and returns a stream of tokens.")
+    (license license:expat)))
+
 (define-public julia-tracker
   (package
     (name "julia-tracker")
