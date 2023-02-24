@@ -108,12 +108,12 @@ most common applications of GD involve website development.")
         (base32 "0arjpa8id6k5yjxfq0j2hsinhhjzjch5lwk6gscf48l54drrw729"))))
     (build-system perl-build-system)
     (inputs
-     `(("fontconfig" ,fontconfig)
-       ("freetype" ,freetype)
-       ("gd" ,gd)
-       ("libpng" ,libpng)
-       ("libjpeg" ,libjpeg-turbo)
-       ("zlib" ,zlib)))
+     (list fontconfig
+           freetype
+           gd
+           libpng
+           libjpeg-turbo
+           zlib))
     (native-inputs
      (list perl-extutils-pkgconfig))
     (arguments
