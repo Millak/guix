@@ -888,16 +888,15 @@ program capable of converting PDF into other formats.")
 (define-public qpdfview
   (package
     (name "qpdfview")
-    (version "0.4.18")
+    (version "0.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "https://launchpad.net/qpdfview/"
                            "trunk/" version "/+download/"
-                           "qpdfview-" version ".tar.gz"))
+                           "qpdfview-" (version-major+minor version) ".tar.gz"))
        (sha256
-        (base32 "0v1rl126hvblajnph2hkansgi0s8vjdc5yxrm4y3faa0lxzjwr6c"))
-       (patches (search-patches "qpdfview-qt515-compat.patch"))))
+        (base32 "16dy341927r2s1dza7g8ci1jyypfc4a6yfcvg9sxvjv1li0c9vs4"))))
     (build-system qt-build-system)
     (native-inputs
      (list pkg-config))
