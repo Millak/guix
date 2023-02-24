@@ -5899,8 +5899,8 @@ Only minimal changes required to make your CLOS objects serializable.")
   (sbcl-package->ecl-package sbcl-marshal))
 
 (define-public sbcl-fast-io
-  (let ((commit "603f4903dd74fb221859da7058ae6ca3853fe64b")
-        (revision "2"))
+  (let ((commit "a4c5ad600425842e8b6233b1fa22610ffcd874c3")
+        (revision "3"))
     (package
      (name "sbcl-fast-io")
      (version (git-version "1.0.0" revision commit))
@@ -5910,15 +5910,10 @@ Only minimal changes required to make your CLOS objects serializable.")
        (uri (git-reference
              (url "https://github.com/rpav/fast-io")
              (commit commit)))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-fast-io" version))
        (sha256
-        (base32 "00agvc0xx4w715i6ach05p995zpcpghn04xc06zyci06q677vw3n"))))
+        (base32 "0wh02yagbqahy9z6787jz5ggpagvr18qd0z13wvwq1vjf8xd2530"))))
      (build-system asdf-build-system/sbcl)
-     (arguments
-      ;; Error while trying to load definition for system fast-io-test from
-      ;; pathname [...]/fast-io-test.asd: The function CHECKL:DEFINE-TEST-OP
-      ;; is undefined.
-      '(#:tests? #f))
      (native-inputs
       (list sbcl-fiveam sbcl-checkl))
      (inputs
