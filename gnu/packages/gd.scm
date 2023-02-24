@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2013, 2016 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2013, 2016, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2016, 2017 Leo Famulari <leo@famulari.name>
@@ -23,6 +23,7 @@
 ;;; along with GNU Guix.  If not, see <http://www.gnu.org/licenses/>.
 
 (define-module (gnu packages gd)
+  #:use-module (guix gexp)
   #:use-module (guix packages)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system perl)
@@ -117,9 +118,9 @@ most common applications of GD involve website development.")
     (native-inputs
      (list perl-extutils-pkgconfig))
     (arguments
-     `(#:make-maker-flags
-       (list (string-append "--lib_jpeg_path="
-                            (assoc-ref %build-inputs "libjpeg")))))
+     (list #:make-maker-flags
+           #~(list (string-append "--lib_jpeg_path="
+                                  #$(this-package-input "libjpeg-turbo")))))
     (home-page "https://metacpan.org/release/GD")
     (synopsis "Perl interface to the GD graphics library")
     (description "GD.pm is an autoloadable interface module for libgd, a
