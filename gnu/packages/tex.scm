@@ -3165,6 +3165,30 @@ users, via its Plain TeX version.)")
 
 (define-deprecated-package texlive-generic-epsf texlive-epsf)
 
+(define-public texlive-fancyvrb
+  (package
+    (inherit (simple-texlive-package
+              "texlive-fancyvrb"
+              (list "/doc/latex/fancyvrb"
+                    "/tex/latex/fancyvrb/")
+              (base32
+               "1qlrmc70ck2v3wqh8gjd5jl0f6011zzcsg9a93qf1z9b9virvjy2")
+              #:trivial? #t))
+    (propagated-inputs (list texlive-latex-upquote))
+    (home-page "https://ctan.org/macros/latex/contrib/fancyvrb")
+    (synopsis "Sophisticated verbatim text")
+    (description
+     "This package provides tools for the flexible handling of verbatim text
+including: verbatim commands in footnotes; a variety of verbatim environments
+with many parameters; ability to define new customized verbatim environments;
+save and restore verbatim text and environments; write and read files in
+verbatim mode; build @code{example} environments (showing both result and
+verbatim source).")
+    (license license:lppl1.3+)))
+
+;; FIXME: This package needs to be deprecated in favour of `texlive-fancyvrb',
+;; but this triggers 17k rebuilds.  So leave it there and wait for
+;; core-updates or a topic branch to catch-up.
 (define-public texlive-latex-fancyvrb
   (package
     (inherit (simple-texlive-package
@@ -10041,7 +10065,7 @@ the bundle.")
                          "/source/latex/minted/"
                          "/tex/latex/minted/")
                    (base32
-                    "08pbhp4a9k8v49kji26206zzabp0nn0fz403l4w7gxajw9rj8icr"))))
+                    "13cjsjb3b04n9arwp46ayk8fcicylxq5g1864cpxl1lxjxh1yi0l"))))
     (package
       (inherit template)
       (arguments
@@ -10050,9 +10074,9 @@ the bundle.")
           "latex/minted")))
       (propagated-inputs (list python-pygments
                                texlive-etoolbox
+                               texlive-fancyvrb
                                texlive-fvextra
                                texlive-generic-xstring
-                               texlive-latex-fancyvrb
                                texlive-latex-float
                                texlive-latex-framed
                                texlive-latex-ifplatform
