@@ -1252,3 +1252,75 @@ a nice format.")
     (description "svkbd is a simple virtual keyboard, intended to be used in
 environments, where no keyboard is available.")
     (license license:expat)))
+
+(define-public lib9
+  ;; no release since 2010
+  (let ((commit "63916da7bd6d73d9a405ce83fc4ca34845667cce")
+        (revision "0"))
+    (package
+      (name "lib9")
+      (version (git-version "7" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://git.suckless.org/9base/")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "04j8js4s3jmlzi3m46q81bq76rn41an58ffhkbj9p5wwr5hvplh8"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list #:tests? #f ;no tests
+             #:phases #~(modify-phases %standard-phases
+                          (add-after 'unpack 'patch
+                            (lambda _
+                              (substitute* "config.mk"
+                                (("^PREFIX.*=.*$")
+                                 (string-append "PREFIX=\"" #$output "\"\n"))
+                                (("^OBJTYPE.*=.*$")
+                                 #$@(cond
+                                     ((target-x86-64?)
+                                      #~(string-append "OBJTYPE=x86_64\n"))
+                                     ((target-x86?)
+                                      #~(string-append "OBJTYPE=386\n"))
+                                     ((target-powerpc?)
+                                      #~(string-append "OBJTYPE=power\n"))
+                                     ((target-arm32?)
+                                      #~(string-append "OBJTYPE=arm\n"))))
+                                (("^CFLAGS.*+=.*$")
+                                 (string-append
+                                  "CFLAGS+=-O2 -g -I. -fPIC -c -DPLAN9PORT "
+                                  "-DPREFIX=\\\"" #$output "\\\"\n"))
+                                (("^LDFLAGS.*+=.*$")
+                                 "LDFLAGS+=\n")
+                                (("^CC.*=.*$")
+                                 (string-append "CC=" #$(cc-for-target) "\n")))
+                              (substitute* "lib9/libc.h"
+                                (("#define main.*p9main")
+                                 ""))
+                              (substitute* "lib9/main.c"
+                                (("p9main\\(argc, argv\\);")
+                                 "")
+                                (("extern void p9main\\(int, char\\*\\*\\);")
+                                 ""))
+                              (substitute* "lib9/Makefile"
+                                (("lib9.a")
+                                 "lib9.so")
+                                (("LIB9OFILES=\\\\")
+                                 "LIB9OFILES=convM2D.o \\")
+                                (("@\\$\\{AR\\} \\$\\{LIB\\} \\$\\{OFILES\\}")
+                                 "gcc -shared  ${OFILES} -o lib9.so"))))
+                          (add-after 'patch 'chdir
+                            (lambda _
+                              (chdir "lib9")))
+                          (delete 'configure)))) ;no configure script
+      (home-page "https://tools.suckless.org/9base/")
+      (supported-systems '("x86_64-linux" "i686-linux" "armhf-linux"
+                           "powerpc-linux"))
+      (synopsis "Unix port of Plan 9's formatted I/O C library")
+      (description
+       "This package provides a ported version of the Plan 9 lib9 C library.
+It also contains the Plan 9 libbio, libregexp, libfmt and libutf libraries.")
+      (license (list license:expat ;modifications
+                     license:lpl1.02))))) ;original plan9 code
