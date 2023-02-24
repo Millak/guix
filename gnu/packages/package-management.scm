@@ -627,6 +627,11 @@ overridden by setting the 'current-guix-package' parameter."
     (arguments
      `(#:modules ((guix build utils)
                   (gnu build svg))
+
+       ;; There's no point in cross-compiling: a native build gives the same
+       ;; result, independently of the system type.
+       #:target #f
+
        #:builder
        ,(with-extensions (list guile-rsvg guile-cairo)
           #~(begin
