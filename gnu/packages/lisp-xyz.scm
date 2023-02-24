@@ -19250,8 +19250,8 @@ CL-I18N and CL-L10N.")
   (sbcl-package->cl-source-package sbcl-cl-slice))
 
 (define-public sbcl-djula
-  (let ((commit "5df7af35a21503d468a878fc6029caa527a7d204")
-        (revision "1"))
+  (let ((commit "6f142594e0372437e64f610b796350ad89ba0be1")
+        (revision "2"))
     (package
       (name "sbcl-djula")
       (version (git-version "0.2.0" revision commit))
@@ -19261,9 +19261,9 @@ CL-I18N and CL-L10N.")
          (uri (git-reference
                (url "https://github.com/mmontone/djula")
                (commit commit)))
-         (file-name (git-file-name "djula" version))
+         (file-name (git-file-name "cl-djula" version))
          (sha256
-          (base32 "1lk2ypm3sacf60h96a7hv9jwjlxkl4k40yzdalmqdg548vrd1jjm"))))
+          (base32 "0yyg61hrql1vrwllyd23vidiff28ridh0avxyvnqb89v060d1j83"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-fiveam))
