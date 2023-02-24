@@ -6141,8 +6141,8 @@ performance and simplicity in mind.")
   (sbcl-package->ecl-package sbcl-lack))
 
 (define-public sbcl-local-time
-  (let ((commit "a177eb911c0e8116e2bfceb79049265a884b701b")
-        (revision "2"))
+  (let ((commit "40169fe26d9639f3d9560ec0255789bf00b30036")
+        (revision "3"))
     (package
      (name "sbcl-local-time")
      (version (git-version "1.0.6" revision commit))
@@ -6152,9 +6152,9 @@ performance and simplicity in mind.")
        (uri (git-reference
              (url "https://github.com/dlowe-net/local-time")
              (commit commit)))
-       (file-name (git-file-name name version))
+       (file-name (git-file-name "cl-local-time" version))
        (sha256
-        (base32 "0wld28xx20k0ysgg6akic5lg4vkjd0iyhv86m388xfrv8xh87wii"))))
+        (base32 "1dbp33zmkqzzshmf5k76pxqgli285wvy0p0dhcz816fdikpwn2jg"))))
      (build-system asdf-build-system/sbcl)
      (native-inputs
       (list sbcl-hu.dwim.stefil))
