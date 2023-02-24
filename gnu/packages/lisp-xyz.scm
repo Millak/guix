@@ -2801,6 +2801,40 @@ libraries such as Bordeaux-Threads and Eager Future.")
 (define-public ecl-calispel
   (sbcl-package->ecl-package sbcl-calispel))
 
+(define-public sbcl-calm
+  (package
+    (name "sbcl-calm")
+    (version "0.0.35")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/VitoVan/calm")
+             (commit version)))
+       (file-name (git-file-name "cl-calm" version))
+       (sha256
+        (base32 "1k1kwpiq7ikk1mgfi26sd968d623jl6xffngd9vwswnaiwihk4dp"))))
+    (build-system asdf-build-system/sbcl)
+    (inputs
+     (list sbcl-cl-cairo2
+           sbcl-cl-str
+           sbcl-sdl2
+           sbcl-sdl2-image
+           sbcl-sdl2-mixer
+           sbcl-slime-swank))
+    (home-page "https://github.com/VitoVan/calm")
+    (synopsis "Vector graphic library for Common Lisp")
+    (description
+     "This package provides a SDL2 based vector graphic library for Common
+Lisp.")
+    (license license:gpl2)))
+
+(define-public cl-calm
+  (sbcl-package->cl-source-package sbcl-calm))
+
+(define-public ecl-calm
+  (sbcl-package->ecl-package sbcl-calm))
+
 (define-public sbcl-esrap
   (let ((commit "4c82a863871e117f0041b9ef37e61c0b62318aa7")
         (revision "3"))
