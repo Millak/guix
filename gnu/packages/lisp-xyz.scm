@@ -1706,7 +1706,7 @@ ANSI-compliant Common Lisp implementations.")
 (define-public sbcl-zpb-ttf
   (package
     (name "sbcl-zpb-ttf")
-    (version "1.0.4")
+    (version "1.0.6")
     (source
      (origin
        (method git-fetch)
@@ -1715,7 +1715,7 @@ ANSI-compliant Common Lisp implementations.")
              (commit (string-append "release-" version))))
        (file-name (git-file-name "cl-zpb-ttf" version))
        (sha256
-        (base32 "1ziwlfys15m95hh5c54g3xv78vjxadd6qi9zf9kvd2bv70qsixqk"))))
+        (base32 "043xga76jms7dipcwnyh8lkj3gx66cvrkwhc728hjaf7axarvcmv"))))
     (build-system asdf-build-system/sbcl)
     (home-page "https://github.com/xach/zpb-ttf")
     (synopsis "TrueType font file access for Common Lisp")
