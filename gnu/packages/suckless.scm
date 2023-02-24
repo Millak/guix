@@ -48,6 +48,7 @@
   #:use-module (gnu packages mpd)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages shells)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
   #:use-module (guix build-system cargo)
@@ -1355,3 +1356,39 @@ It also contains the Plan 9 libbio, libregexp, libfmt and libutf libraries.")
     (description
      "This package provides a ported version of the Plan 9 yacc parser
 generator.")))
+
+(define-public 9base
+  (package
+    (inherit 9yacc)
+    (name "9base")
+    (arguments
+     (substitute-keyword-arguments (package-arguments 9yacc)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'patch-for-9yacc 'patch-for-9base
+              (lambda _
+                (substitute* "Makefile"
+                  (("SUBDIRS  = lib9\\\\")
+                   "SUBDIRS = \\")
+                  (("@chmod 755 yacc/9yacc")
+                   ""))
+                (for-each (lambda (x)
+                            (substitute* "Makefile"
+                              (((string-append x "\\\\")) "\\")))
+                          '("yacc" "diff" "hoc" "rc"))
+                (substitute* "sam/Makefile"
+                  (("\\$\\{CFLAGS\\}")
+                   "${CFLAGS} -I."))
+                (substitute* "config.mk"
+                  (("^YACC.*=.*$")
+                   (string-append "YACC=" #$(this-package-native-input "9yacc")
+                                  "/bin/yacc\n")))))
+            (delete 'chdir)
+            (delete 'install-yaccpar)))))
+    (native-inputs (list 9yacc))
+    (inputs (list lib9))
+    (propagated-inputs (list rc))
+    (synopsis "Port of various Plan 9 tools for Unix")
+    (description
+     "This package provides ported versions of various Plan 9 userland tools
+for Unix.")))
