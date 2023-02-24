@@ -14095,6 +14095,29 @@ are pretty much the same (and SLIME served as the principle inspiration for
 CIDER).")
     (license license:gpl3+)))
 
+(define-public emacs-cider-eval-sexp-fu
+  (let ((commit "7fd229f1441356866aedba611fd0cf4e89b50921")) ;version bump
+    (package
+      (name "emacs-cider-eval-sexp-fu")
+      (version "1.2")
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/clojure-emacs/cider-eval-sexp-fu")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "01gky548v3758fyr317lkwsc9aacab6m9d9vk1mrr3qyvmciwd51"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-eval-sexp-fu-el))
+      (home-page "https://github.com/clojure-emacs/cider-eval-sexp-fu")
+      (synopsis "Eval Sexp-fu extensions for CIDER")
+      (description
+       "This package provides tiny improvements to expression evaluation,
+e.g., the expression you've just evaluated would briefly flash and so on.")
+      (license license:gpl3+))))
+
 (define-public emacs-sly
   ;; Update together with sbcl-slynk.
   (let ((commit "4513c382f07a2a2cedb3c046231b69eae2f5e6f0")
