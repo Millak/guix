@@ -1324,3 +1324,34 @@ environments, where no keyboard is available.")
 It also contains the Plan 9 libbio, libregexp, libfmt and libutf libraries.")
       (license (list license:expat ;modifications
                      license:lpl1.02))))) ;original plan9 code
+
+(define-public 9yacc
+  (package
+    (inherit lib9)
+    (name "9yacc")
+    (arguments
+     (substitute-keyword-arguments (package-arguments lib9)
+       ((#:phases phases)
+        #~(modify-phases #$phases
+            (add-after 'patch 'patch-for-9yacc
+              (lambda _
+                (substitute* "yacc/yacc.c"
+                  (("#9/yacc")
+                   (string-append #$output "/lib")))
+                (substitute* "config.mk"
+                  (("^CFLAGS.*+=.*$")
+                   (string-append "CFLAGS+=-O2 -g -c -DPLAN9PORT "
+                                  "-DPREFIX=\\\"" #$output "\\\"\n")))))
+            (replace 'chdir
+              (lambda _
+                (chdir "yacc")))
+            (delete 'install-include)
+            (add-after 'install 'install-yaccpar
+              (lambda _
+                (install-file "yaccpar" (string-append #$output "/lib"))
+                (install-file "yaccpars" (string-append #$output "/lib"))))))))
+    (inputs (list lib9))
+    (synopsis "Port of Plan 9's yacc parser generator for Unix")
+    (description
+     "This package provides a ported version of the Plan 9 yacc parser
+generator.")))
