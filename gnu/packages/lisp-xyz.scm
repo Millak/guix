@@ -6396,20 +6396,20 @@ theory accurate to internal-time-units-per-second.")
   (sbcl-package->ecl-package sbcl-cl-log))
 
 (define-public sbcl-log4cl
-  (let ((commit "8c48d6f41d3a1475d0a91eed0638b9eecc398e35")
+  (let ((commit "75c4184fe3dbd7dec2ca590e5f0176de8ead7911")
         (revision "1"))
     (package
       (name "sbcl-log4cl")
-      (version (git-version "1.1.3" revision commit))
+      (version (git-version "1.1.4" revision commit))
       (source
        (origin
          (method git-fetch)
          (uri (git-reference
                (url "https://github.com/sharplispers/log4cl")
                (commit commit)))
-         (file-name (git-file-name "log4cl" version))
+         (file-name (git-file-name "cl-log4cl" version))
          (sha256
-          (base32 "0166d9aip366pbpdk5gsi2f6xad6q61lssxgbrypa8zslwjn8736"))))
+          (base32 "0mjkw4w3ksxvn87jqdnailqy2h6sziwmp4gf73jym45x9l5zahi5"))))
       (build-system asdf-build-system/sbcl)
       (native-inputs
        (list sbcl-stefil))
