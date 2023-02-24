@@ -9246,8 +9246,8 @@ path, maximum flow, minimum spanning tree, etc.).")
   (sbcl-package->ecl-package sbcl-graph))
 
 (define-public sbcl-trivial-indent
-  (let ((commit "2d016941751647c6cc5bd471751c2cf68861c94a")
-        (revision "0"))
+  (let ((commit "f25275094b80df8aa158af46db980bbc3ce2f88b")
+        (revision "1"))
     (package
       (name "sbcl-trivial-indent")
       (version (git-version "1.0.0" revision commit))
@@ -9258,12 +9258,12 @@ path, maximum flow, minimum spanning tree, etc.).")
           (git-reference
            (url "https://github.com/Shinmera/trivial-indent")
            (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-trivial-indent" version))
          (sha256
-          (base32
-           "1sj90nqz17w4jq0ixz00gb9g5g6d2s7l8r17zdby27gxxh51w266"))))
+          (base32 "1zg8cyy1xqpcjrxxqz5zb5xixhwcszkv4p2vq305lb2rka6f3dyx"))))
       (build-system asdf-build-system/sbcl)
-      (synopsis "Simple Common Lisp library to allow indentation hints for SWANK")
+      (synopsis
+       "Simple Common Lisp library to allow indentation hints for SWANK")
       (description
        "This library allows you to define custom indentation hints for your
 macros if the one recognised by SLIME automatically produces unwanted
