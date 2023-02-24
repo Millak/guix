@@ -1318,6 +1318,40 @@ both the 256 color and 24 bit true color extensions, and the different text
 styles available to terminals.")
     (license license:expat)))
 
+(define-public julia-cstparser
+  (package
+    (name "julia-cstparser")
+    (version "3.3.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/julia-vscode/CSTParser.jl")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "162jpcdph26ybg7rajbvfcbpnngygybpzk5bry4c4ppda3m1dl1i"))))
+    (build-system julia-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-or-ignore-tests
+            (lambda _
+              (substitute* "test/iterate.jl"
+                (("parser.jl")
+                 (string-append #$output "/share/julia/loadpath/CSTParser/test/parser.jl"))
+                (("../src")
+                 (string-append #$output "/share/julia/loadpath/CSTParser/src")))
+              (substitute* "test/check_base.jl"
+                (("testset.*" all)
+                 (string-append all "return\n"))))))))
+    (inputs (list julia-tokenize))
+    (home-page "https://github.com/julia-vscode/CSTParser.jl")
+    (synopsis "Parser for Julia")
+    (description "This package provides a parser for Julia code.")
+    (license license:expat)))
+
 (define-public julia-csv
   (package
     (name "julia-csv")
