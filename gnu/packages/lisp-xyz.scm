@@ -4425,10 +4425,11 @@ avoid consing) is too computationally expensive.")
   (sbcl-package->ecl-package sbcl-ucons))
 
 (define-public sbcl-closer-mop
-  (let ((commit "19c9d33f576e10715fd79cc1d4f688dab0f241d6"))
+  (let ((commit "7b86f2add029208ebc74ec6a41c2ccfd3c382dbc")
+        (revision "3"))
     (package
       (name "sbcl-closer-mop")
-      (version (git-version  "1.0.0" "2" commit))
+      (version (git-version  "1.0.0" revision commit))
       (source
        (origin
          (method git-fetch)
@@ -4436,8 +4437,8 @@ avoid consing) is too computationally expensive.")
                (url "https://github.com/pcostanza/closer-mop")
                (commit commit)))
          (sha256
-          (base32 "1w3x087wvlwkd6swfdgbvjfs6kazf0la8ax4pjfzikwjch4snn2c"))
-         (file-name (git-file-name "closer-mop" version ))))
+          (base32 "1fzxdpq873rpagmj3h9bgv7n95h4p03pnxrklbxp06sxb26xyi16"))
+         (file-name (git-file-name "cl-closer-mop" version ))))
       (build-system asdf-build-system/sbcl)
       (home-page "https://github.com/pcostanza/closer-mop")
       (synopsis "Rectifies absent or incorrect CLOS MOP features")
