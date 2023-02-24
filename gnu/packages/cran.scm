@@ -4551,9 +4551,7 @@ Projection code and larger maps are in separate packages (@code{mapproj} and
     (description "This package converts latitude/longitude into projected
 coordinates.")
     (license (list license:gpl2          ; The R interface
-                   (license:non-copyleft ; The C code
-                    "https://www.gnu.org/licenses/license-list.en.html#lucent102"
-                    "Lucent Public License Version 1.02")))))
+                   license:lpl1.02))))   ; The C code
 
 (define-public r-rgooglemaps
   (package
