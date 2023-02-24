@@ -908,14 +908,14 @@ program capable of converting PDF into other formats.")
            qtbase-5
            qtsvg-5))
     (arguments
-     `(#:tests? #f ; no tests
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'configure
-           (lambda* (#:key outputs #:allow-other-keys)
-             (substitute* "qpdfview.pri"
-               (("/usr") (assoc-ref outputs "out")))
-             (invoke "qmake" "qpdfview.pro"))))))
+     (list #:tests? #f ; no tests
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'configure
+                 (lambda _
+                   (substitute* "qpdfview.pri"
+                     (("/usr") #$output))
+                   (invoke "qmake" "qpdfview.pro"))))))
     (home-page "https://launchpad.net/qpdfview")
     (synopsis "Tabbed document viewer")
     (description "@command{qpdfview} is a document viewer for PDF, PS and DJVU
