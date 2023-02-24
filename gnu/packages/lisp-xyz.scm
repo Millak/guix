@@ -7441,8 +7441,8 @@ neat APIs and connection-pooling.  It is meant to supersede Drakma.")
   (sbcl-package->ecl-package sbcl-dexador))
 
 (define-public sbcl-lisp-namespace
-  (let ((commit "28107cafe34e4c1c67490fde60c7f92dc610b2e0")
-        (revision "1"))
+  (let ((commit "699fccb6727027343bb5fca69162a3113996edfc")
+        (revision "2"))
     (package
       (name "sbcl-lisp-namespace")
       (build-system asdf-build-system/sbcl)
@@ -7454,12 +7454,11 @@ neat APIs and connection-pooling.  It is meant to supersede Drakma.")
          (uri (git-reference
                (url home-page)
                (commit commit)))
-         (file-name (git-file-name name version))
+         (file-name (git-file-name "cl-lisp-namespace" version))
          (sha256
-          (base32
-           "1jw2wykp06z2afb9nm1lgfzll5cjlj36pnknjx614057zkkxq4iy"))))
+          (base32 "1p5db9mab4whapy1pl38ajw5fkrrdw266n05mnhf4xx2fb9sbx6p"))))
       (inputs
-       `(("alexandria" ,sbcl-alexandria)))
+       (list sbcl-alexandria))
       (native-inputs
        (list sbcl-fiveam))
       (synopsis "LISP-N, or extensible namespaces in Common Lisp")
