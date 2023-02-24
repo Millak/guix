@@ -1905,30 +1905,38 @@ files.")
   (sbcl-package->cl-source-package sbcl-cl-pdf))
 
 (define-public sbcl-clx
-  (package
-    (name "sbcl-clx")
-    (version "0.7.5")
-    (source
-     (origin
-       (method git-fetch)
-       (uri
-        (git-reference
-         (url "https://github.com/sharplispers/clx")
-         (commit version)))
-       (sha256
-        (base32
-         "1vi67z9hpj5rr4xcmfbfwzmlcc0ah7hzhrmfid6lqdkva238v2wf"))
-       (file-name (string-append "clx-" version))))
-    (build-system asdf-build-system/sbcl)
-    (native-inputs
-     (list sbcl-fiasco))
-    (home-page "https://www.cliki.net/portable-clx")
-    (synopsis "X11 client library for Common Lisp")
-    (description "CLX is an X11 client library for Common Lisp.  The code was
+  (let ((commit "38400456d66823e417d1d27d339b09885e25eb59")
+        (revision "1"))
+    (package
+      (name "sbcl-clx")
+      (version (git-version "0.7.5" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri
+          (git-reference
+           (url "https://github.com/sharplispers/clx")
+           (commit commit)))
+         (sha256
+          (base32 "1c05gjqh5lil2sgma0yap4mxd9y1cjkp933hyx1iaj14950nhfnl"))
+         (file-name (git-file-name "cl-clx" version))))
+      (build-system asdf-build-system/sbcl)
+      (native-inputs
+       (list sbcl-fiasco xorg-server-for-tests))
+      (arguments
+       (list #:phases
+             #~(modify-phases %standard-phases
+                 (add-before 'check 'prepare-test-environment
+                   (lambda _
+                     (system "Xvfb :1 &")
+                     (setenv "DISPLAY" ":1"))))))
+      (home-page "https://www.cliki.net/portable-clx")
+      (synopsis "X11 client library for Common Lisp")
+      (description "CLX is an X11 client library for Common Lisp.  The code was
 originally taken from a CMUCL distribution, was modified somewhat in order to
 make it compile and run under SBCL, then a selection of patches were added
 from other CLXes around the net.")
-    (license license:x11)))
+      (license license:x11))))
 
 (define-public cl-clx
   (sbcl-package->cl-source-package sbcl-clx))
