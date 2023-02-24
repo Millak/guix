@@ -264,6 +264,29 @@
 ;;; Emacs hacking.
 ;;;
 
+(define-public emacs-ac-ispell
+  (let ((commit "22bace7387e9012002a6a444922f75f9913077b0")
+        (revision "1"))
+    (package
+      (name "emacs-ac-ispell")
+      (version (git-version "0.07" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/emacsorphanage/ac-ispell")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1cq73bdv3lkn8v3nx6aznygqaac9s5i7pvirl8wz9ib31hsgwpbk"))))
+      (build-system emacs-build-system)
+      (propagated-inputs (list emacs-auto-complete))
+      (home-page "https://github.com/emacsorphanage/ac-ispell")
+      (synopsis "Ispell and Aspell completion source for Auto Complete")
+      (description
+       "AC Ispell is an Ispell and Aspell completion source for Auto Complete.")
+      (license license:gpl3+))))
+
 (define-public emacs-cfrs
   (package
     (name "emacs-cfrs")
