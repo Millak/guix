@@ -3491,7 +3491,7 @@ project.")
 (define-public sbcl-anaphora
   (package
     (name "sbcl-anaphora")
-    (version "0.9.6")
+    (version "0.9.8")
     (source
      (origin
        (method git-fetch)
@@ -3499,9 +3499,8 @@ project.")
              (url "https://github.com/tokenrove/anaphora")
              (commit version)))
        (sha256
-        (base32
-         "19wfrk3asimznkli0x2rfy637hwpdgqyvwj3vhq9x7vjvyf5vv6x"))
-       (file-name (git-file-name "anaphora" version))))
+        (base32 "1ds5ab0rzkrhfl29xpvmvyxmkdyj9mi19p330pz603lx95njjc0b"))
+       (file-name (git-file-name "cl-anaphora" version))))
     (build-system asdf-build-system/sbcl)
     (native-inputs
      (list sbcl-rt))
