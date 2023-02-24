@@ -20122,8 +20122,8 @@ except system libraries.")
   (sbcl-package->cl-source-package sbcl-glop))
 
 (define-public sbcl-sdl2
-  (let ((commit "bb2aa2a41cf799e3bb1ddf50de41fe389c6db668")
-        (revision "1"))
+  (let ((commit "80410b514570ca06894675d4a2a5fc93287ea7b6")
+        (revision "2"))
     (package
       (name "sbcl-sdl2")
       (version (git-version "0.0.0" revision commit))
@@ -20135,7 +20135,7 @@ except system libraries.")
                (commit commit)))
          (file-name (git-file-name "cl-sdl2" version))
          (sha256
-          (base32 "1a4904310z2wwq80grnlixmyz30452vgd4lh74y105j2yrr43z97"))))
+          (base32 "0sjy4k04k0hdhwpr57ns16ag3za0kz4laclbk17i91ql7qdjw9z2"))))
       (build-system asdf-build-system/sbcl)
       (arguments
        `(#:phases
