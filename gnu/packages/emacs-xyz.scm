@@ -182,6 +182,7 @@
   #:use-module (gnu packages haskell-apps)
   #:use-module (gnu packages ibus)
   #:use-module (gnu packages java)
+  #:use-module (gnu packages julia-xyz)
   #:use-module (gnu packages ncurses)
   #:use-module (gnu packages networking)
   #:use-module (gnu packages python)
@@ -12609,7 +12610,9 @@ mode with the package emacs-julia-mode.")
      (list libvterm
            emacs-julia-mode             ;required by parser
            emacs-parsec                 ;required by parser
-           emacs-vterm))
+           emacs-vterm
+           julia-tokenize
+           julia-cstparser))
     (home-page "https://github.com/gcv/julia-snail")
     (synopsis "Development environment and REPL interaction package for Julia")
     (description "This package provides a development environment and REPL
