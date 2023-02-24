@@ -89,15 +89,14 @@
         (base32 "0vj3wix17vl7a85hg673qqyrhw9sbq0xiadbbij7v0nm1gdl3a18"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:make-flags
-       (list (string-append "CC=" ,(cc-for-target))
-             (string-append "prefix=" (assoc-ref %outputs "out")))
-       #:phases
-       (modify-phases %standard-phases
-         (delete 'configure)))) ; no configure script
+     (list #:make-flags
+           #~(list (string-append "CC=" #$(cc-for-target))
+                   (string-append "prefix=" #$output))
+           #:phases
+           #~(modify-phases %standard-phases
+               (delete 'configure)))) ; no configure script
     (native-inputs
-     `(("gettext" ,gettext-minimal)
-       ("perl" ,perl)))
+     (list gettext-minimal perl))
     (home-page "https://waterlan.home.xs4all.nl/dos2unix.html")
     (synopsis "DOS/Mac to Unix and vice versa text file format converter")
     (description
