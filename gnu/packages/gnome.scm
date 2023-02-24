@@ -1,6 +1,6 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
-;;; Copyright © 2014-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2014, 2016, 2020 Eric Bavier <bavier@posteo.net>
 ;;; Copyright © 2014, 2015 Federico Beffa <beffa@fbengineering.ch>
@@ -4343,7 +4343,8 @@ Hints specification (EWMH).")
      (list license:gpl2 license:gpl3))))
 
 (define-public goffice-0.8
-  (package (inherit goffice)
+  (package
+    (inherit goffice)
     (version "0.8.17")
     (source (origin
               (method url-fetch)
@@ -4366,9 +4367,8 @@ Hints specification (EWMH).")
     (propagated-inputs
      ;; libgoffice-0.8.pc mentions libgsf-1
      (list libgsf))
-    (inputs
-     `(("gtk" ,gtk+-2)
-       ,@(alist-delete "gtk" (package-inputs goffice))))))
+    (inputs (modify-inputs (package-inputs goffice)
+              (replace "gtk+" gtk+-2)))))
 
 (define-public gnumeric
   (package
