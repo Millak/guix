@@ -824,7 +824,10 @@ host names."
 of console keymaps with @command{loadkeys}.")))
 
 (define %default-console-font
-  #~(string-append #$font-gnu-unifont:psf
+  ;; Note: the 'font-gnu-unifont' package cannot be cross-compiled (yet), but
+  ;; its "psf" output is the same whether it's built natively or not, hence
+  ;; 'ungexp-native'.
+  #~(string-append #+font-gnu-unifont:psf
                    "/share/consolefonts/Unifont-APL8x16.psf.gz"))
 
 (define (console-font-shepherd-services tty+font)
@@ -2575,7 +2578,7 @@ notably to select, copy, and paste text.  The default options use the
                   ;; TODO: Make this configurable.
                   #:environment-variables
                   (list (string-append "XDG_DATA_DIRS="
-                                       #$font-gnu-unifont "/share"))))
+                                       #+font-gnu-unifont "/share"))))
         (stop #~(make-kill-destructor)))))
    (description "Start the @command{kmscon} virtual terminal emulator for the
 Linux @dfn{kernel mode setting} (KMS).")))
