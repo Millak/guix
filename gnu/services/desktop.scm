@@ -978,11 +978,7 @@ include the @command{udisksctl} command, part of UDisks, and GNOME Disks."
   (handle-suspend-key               elogind-handle-suspend-key
                                     (default 'suspend))
   (handle-hibernate-key             elogind-handle-hibernate-key
-                                    ;; (default 'hibernate)
-                                    ;; XXX Ignore it for now, since we don't
-                                    ;; yet handle resume-from-hibernation in
-                                    ;; our initrd.
-                                    (default 'ignore))
+                                    (default 'hibernate))
   (handle-lid-switch                elogind-handle-lid-switch
                                     (default 'suspend))
   (handle-lid-switch-docked         elogind-handle-lid-switch-docked
