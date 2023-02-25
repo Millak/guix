@@ -173,7 +173,7 @@
             mingetty-configuration-clear-on-logout?
             mingetty-configuration-mingetty
             mingetty-configuration?
-            mingetty-service
+            mingetty-service  ; deprecated
             mingetty-service-type
 
             %nscd-default-caches
@@ -1275,7 +1275,8 @@ the tty to run, among other things."
                  "Provide console login using the @command{mingetty}
 program.")))
 
-(define* (mingetty-service config)
+(define-deprecated (mingetty-service config)
+  mingetty-service-type
   "Return a service to run mingetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service mingetty-service-type config))

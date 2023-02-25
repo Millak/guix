@@ -18123,18 +18123,17 @@ the 'root' account has just been created.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} mingetty-service @var{config}
-Return a service to run mingetty according to @var{config}, a
-@code{<mingetty-configuration>} object, which specifies the tty to run, among
-other things.
-@end deffn
+@defvar mingetty-service-type
+Type of the service that runs Mingetty, an implementation of the
+virtual console log-in.  The value for this service is a
+@code{<mingetty-configuration>} object.
+@end defvar
 
 @deftp {Data Type} mingetty-configuration
-This is the data type representing the configuration of Mingetty, which
-provides the default implementation of virtual console log-in.
+Data type representing the configuration of Mingetty, which specifies
+the tty to run, among other things.
 
 @table @asis
-
 @item @code{tty}
 The name of the console this Mingetty runs on---e.g., @code{"tty1"}.
 

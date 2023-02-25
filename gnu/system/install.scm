@@ -331,9 +331,10 @@ Using this shell, you can carry out the installation process \"manually.\"
 Access documentation at any time by pressing Alt-F2.\x1b[0m
 ")))
     (define (normal-tty tty)
-      (mingetty-service (mingetty-configuration (tty tty)
-                                                (auto-login "root")
-                                                (login-pause? #t))))
+      (service mingetty-service-type
+               (mingetty-configuration (tty tty)
+                                       (auto-login "root")
+                                       (login-pause? #t))))
 
     (define bare-bones-os
       (load "examples/bare-bones.tmpl"))
