@@ -7,7 +7,7 @@
 ;;; Copyright © 2017, 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2019, 2020 Andreas Enge <andreas@enge.fr>
+;;; Copyright © 2019, 2020, 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2019 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2020 Sergey Trofimov <sarg@sarg.org.ru>
 ;;; Copyright © 2021 Guillaume Le Vaillant <glv@posteo.net>
@@ -1081,14 +1081,14 @@ backups.  It supports encrypted archives.")
 (define-public python-miio
   (package
     (name "python-miio")
-    (version "0.5.11")
+    (version "0.5.12")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "python-miio" version))
        (sha256
         (base32
-         "1dyzzywfa5h6q8clmzxsqmszlby8757ajmvkhdyvq6719z4bn46n"))))
+         "05kc0icap3a4iw4910zfqi61zphcf6x958v2b5x68fy51ld3b704"))))
     (build-system python-build-system)
     (arguments
      `(#:phases
@@ -1098,12 +1098,6 @@ backups.  It supports encrypted archives.")
              (substitute* "setup.py"
                (("cryptography>=35")
                 "cryptography"))))
-         (add-after 'unpack 'adjust-for-click-8
-           (lambda _
-             (substitute* '("miio/integrations/vacuum/roborock/vacuum.py"
-                            "miio/integrations/vacuum/roborock/vacuum_cli.py")
-               (("resultcallback")
-                "result_callback"))))
          (replace 'check
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
@@ -1116,8 +1110,7 @@ backups.  It supports encrypted archives.")
            python-sphinx-rtd-theme
            python-sphinxcontrib-apidoc))
     (propagated-inputs
-     (list python-android-backup
-           python-appdirs
+     (list python-appdirs
            python-attrs
            python-click
            python-construct
