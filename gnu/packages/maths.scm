@@ -123,6 +123,7 @@
   #:use-module (gnu packages gd)
   #:use-module (gnu packages ghostscript)
   #:use-module (gnu packages glib)
+  #:use-module (gnu packages gperf)
   #:use-module (gnu packages graphviz)
   #:use-module (gnu packages gtk)
   #:use-module (gnu packages icu4c)
@@ -6079,6 +6080,58 @@ Scheme.  It manipulate and simplify a range of mathematical expressions such
 as equations, scalars, vectors, and matrices.")
     (home-page "https://www.gnu.org/software/jacal/")
     (license license:gpl3+)))
+
+(define-public yices
+  (package
+   (name "yices")
+   (version "2.6.4")
+   (source (origin
+            (method url-fetch)
+            (uri (string-append "https://yices.csl.sri.com/releases/"
+                                version "/yices-" version "-src.tar.gz"))
+            (sha256
+             (base32
+              "1jvqvf35gv2dj936yzl8w98kc68d8fcdard90d6dddzc43h28fjk"))))
+   (build-system gnu-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list #$@(if (%current-target-system)
+                         '()
+                         (list (string-append "--build="
+                                              (%current-system))))
+                  "--enable-mcsat"
+                  ;; XXX: Ewww, static linkage
+                  (string-append
+                   "--with-static-libpoly="
+                   (search-input-file %build-inputs "lib/libpoly.a"))
+                  (string-append
+                   "--with-static-gmp="
+                   (search-input-file %build-inputs "lib/libgmp.a"))
+                  (string-append
+                   "--with-pic-libpoly="
+                   (search-input-file %build-inputs "lib/libpicpoly.a")))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-build-files
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (substitute* "Makefile.build"
+                    (("SHELL=.*") "")
+                    (("/sbin/ldconfig") (which "ldconfig")))
+                  (substitute* (find-files "etc" "install-yices.*")
+                    (("/usr/bin/install") (which "install"))
+                    (("/bin/ln") (which "ln"))
+                    (("/sbin/ldconfig") (which "ldconfig"))
+                    (("install_dir=.*")
+                     (string-append "install_dir="
+                                    (assoc-ref outputs "out")))))))))
+   (inputs (list cudd gmp gperf libpoly))
+   (native-inputs (list autoconf automake bash-minimal))
+   (home-page "https://yices.csl.sri.com/")
+   (synopsis "Satisfiability modulo theories solver")
+   (description "Yices is a solver for @acronym{SMT, satisfiability modulo
+theories} problems.  It can process input in SMT-LIB format or its own
+s-expression-based format.")
+   (license license:gpl3+)))
 
 (define-public z3
   (package
