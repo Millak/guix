@@ -9676,52 +9676,53 @@ easy, safe, and automatic.")
                 "0r144kdqxdzs51qn495vablzf1zxkhkk6imrlrzj9wiqwc2gg520"))))
     (build-system meson-build-system)
     (arguments
-     `(#:glib-or-gtk? #t
-       #:test-options (list ,@(if (target-riscv64?)
-                                `("--timeout-multiplier" "5")
-                                '()))
-       #:configure-flags
-       ;; Otherwise, the RUNPATH will lack the final path component.
-       (list (string-append "-Dc_link_args=-Wl,-rpath="
-                            (assoc-ref %outputs "out") "/lib:"
-                            (assoc-ref %outputs "out") "/lib/tracker-3.0")
-             "-Ddocs=false"
-             "-Dsystemd_user_services=false")
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'unpack 'patch-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "utils/trackertestutils/__main__.py"
-               (("/bin/bash")
-                (search-input-file inputs "bin/bash")))))
-         (add-before 'configure 'set-shell
-           (lambda _
-             (setenv "SHELL" (which "bash"))))
-         (add-before 'configure 'fix-paths
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
-                    (file (search-input-file inputs manpage)))
-               (substitute* "docs/manpages/meson.build"
-                 (("/etc/asciidoc[^']+")
-                  file)))))
-         (replace 'check
-           (lambda* (#:key tests? test-options #:allow-other-keys)
-             (when tests?
-               ;; Some tests expect to write to $HOME.
-               (setenv "HOME" "/tmp")
-               (apply invoke "dbus-run-session" "--" "meson" "test"
-                      "--print-errorlogs" test-options))))
-         (add-after 'glib-or-gtk-wrap 'unwrap-libexec
-           (lambda* (#:key outputs #:allow-other-keys)
-             (with-directory-excursion (string-append (assoc-ref outputs "out")
-                                                      "/libexec/tracker3")
-               (for-each
-                (lambda (f)
-                  (let ((real (string-append "." (basename f) "-real")))
-                    (when (file-exists? real)
-                      (delete-file f)
-                      (rename-file real f))))
-                (find-files "."))))))))
+     (list
+      #:glib-or-gtk? #t
+      #:test-options `(list ,@(if (target-riscv64?)
+                                  `("--timeout-multiplier" "5")
+                                  '()))
+      #:configure-flags
+      ;; Otherwise, the RUNPATH will lack the final path component.
+      #~(list (string-append "-Dc_link_args=-Wl,-rpath="
+                             #$output "/lib:"
+                             #$output "/lib/tracker-3.0")
+              "-Ddocs=false"
+              "-Dsystemd_user_services=false")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "utils/trackertestutils/__main__.py"
+                (("/bin/bash")
+                 (search-input-file inputs "bin/bash")))))
+          (add-before 'configure 'set-shell
+            (lambda _
+              (setenv "SHELL" (which "bash"))))
+          (add-before 'configure 'fix-paths
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let* ((manpage "/etc/asciidoc/docbook-xsl/manpage.xsl")
+                     (file (search-input-file inputs manpage)))
+                (substitute* "docs/manpages/meson.build"
+                  (("/etc/asciidoc[^']+")
+                   file)))))
+          (replace 'check
+            (lambda* (#:key tests? test-options #:allow-other-keys)
+              (when tests?
+                ;; Some tests expect to write to $HOME.
+                (setenv "HOME" "/tmp")
+                (apply invoke "dbus-run-session" "--" "meson" "test"
+                       "--print-errorlogs" test-options))))
+          (add-after 'glib-or-gtk-wrap 'unwrap-libexec
+            (lambda* (#:key outputs #:allow-other-keys)
+              (with-directory-excursion (string-append (assoc-ref outputs "out")
+                                                       "/libexec/tracker3")
+                (for-each
+                 (lambda (f)
+                   (let ((real (string-append "." (basename f) "-real")))
+                     (when (file-exists? real)
+                       (delete-file f)
+                       (rename-file real f))))
+                 (find-files "."))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
