@@ -9710,7 +9710,18 @@ easy, safe, and automatic.")
                ;; Some tests expect to write to $HOME.
                (setenv "HOME" "/tmp")
                (apply invoke "dbus-run-session" "--" "meson" "test"
-                      "--print-errorlogs" test-options)))))))
+                      "--print-errorlogs" test-options))))
+         (add-after 'glib-or-gtk-wrap 'unwrap-libexec
+           (lambda* (#:key outputs #:allow-other-keys)
+             (with-directory-excursion (string-append (assoc-ref outputs "out")
+                                                      "/libexec/tracker3")
+               (for-each
+                (lambda (f)
+                  (let ((real (string-append "." (basename f) "-real")))
+                    (when (file-exists? real)
+                      (delete-file f)
+                      (rename-file real f))))
+                (find-files "."))))))))
     (native-inputs
      (list gettext-minimal
            `(,glib "bin")
