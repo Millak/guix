@@ -11395,6 +11395,48 @@ everything as database, including class objects, text format data, data
 streams, etc.")
     (license license:asl2.0)))
 
+(define-public java-byte-buddy-dep
+  (package
+    (name "java-byte-buddy-dep")
+    (version "1.14.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/raphw/byte-buddy")
+                     (commit (string-append "byte-buddy-" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "03jmsnkjb9d3z9brqs8fc512hhs5b5iab3a5wbax9zi03dskgvh2"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:jar-name "byte-buddy-dep.jar"
+       #:source-dir "byte-buddy-dep/src/main/java"
+       #:test-dir "byte-buddy-dep/src/test"
+       #:tests? #f; would build java files that are incompatible with current jdk
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'build 'remove-annotations
+           (lambda _
+             (with-directory-excursion "byte-buddy-dep/src/main/java/net/bytebuddy"
+               (substitute* (find-files "." ".*.java")
+                 (("@EqualsAndHashCode.*") "")
+                 (("import lombok.EqualsAndHashCode;") "")
+                 (("@SuppressFBWarnings.*") "")
+                 (("import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;") ""))
+               (substitute* '("description/type/TypeDescription.java"
+                              "dynamic/loading/ClassInjector.java")
+                 (("^  *value = .*") "")
+                 (("^  *justification = .*") ""))))))))
+    (inputs
+      (list java-asm-9 java-asm-commons-9 java-jsr305 java-native-access))
+    (home-page "http://bytebuddy.net/")
+    (synopsis "Runtime code generation for the Java virtual machine")
+    (description "Byte Buddy is a code generation and manipulation library for
+creating and modifying Java classes during the runtime of a Java application
+and without the help of a compiler.")
+    (license license:asl2.0)))
+
 (define-public java-powermock-reflect
   (package
     (name "java-powermock-reflect")
