@@ -11440,30 +11440,27 @@ and without the help of a compiler.")
 (define-public java-powermock-reflect
   (package
     (name "java-powermock-reflect")
-    (version "1.7.3")
+    (version "2.0.9")
     (source (origin
-              (method url-fetch)
-              (uri (string-append "https://github.com/powermock/powermock/"
-                                  "archive/powermock-" version ".tar.gz"))
-              (file-name (string-append name "-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/powermock/powermock")
+                     (commit (string-append "powermock-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0sbgi5vqq7k72wzcdjb20s370vyd4hsbnx71pzb8ishml3gy7fwy"))
+                "03y8szi9iwxnv431z2mn2ivc1ak30vcvfvkyrwmfq7wq93bj2c5v"))
               (patches
                 (search-patches "java-powermock-fix-java-files.patch"))))
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-powermock-reflect.jar"
-       #:jdk ,icedtea-8
        #:source-dir "powermock-reflect/src/main/java"
        #:test-dir "powermock-reflect/src/test"))
     (inputs
-     (list java-objenesis))
+     (list java-asm-9 java-objenesis))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("cglib" ,java-cglib)
-       ("hamcrest" ,java-hamcrest-core)
-       ("assertj" ,java-assertj)))
+     (list java-assertj java-cglib java-hamcrest-core java-junit))
     (home-page "https://github.com/powermock/powermock")
     (synopsis "Mock library extension framework")
     (description "PowerMock is a framework that extends other mock libraries
@@ -11492,12 +11489,12 @@ done to the IDE or continuous integration servers which simplifies adoption.")
                                "build/classes")
              #t)))))
     (inputs
-     `(("reflect" ,java-powermock-reflect)
-       ("javassist" ,java-jboss-javassist)))
+     (list java-asm-9
+           java-byte-buddy-dep
+           java-jboss-javassist
+           java-powermock-reflect))
     (native-inputs
-     `(("junit" ,java-junit)
-       ("assertj" ,java-assertj)
-       ("mockito" ,java-mockito-1)))))
+     (list java-assertj java-mockito-1 java-junit))))
 
 (define-public java-powermock-api-support
   (package
@@ -11510,8 +11507,7 @@ done to the IDE or continuous integration servers which simplifies adoption.")
        #:source-dir "powermock-api/powermock-api-support/src/main/java"
        #:tests? #f)); no tests
     (inputs
-     `(("core" ,java-powermock-core)
-       ("reflect" ,java-powermock-reflect)))))
+     (list java-powermock-core java-powermock-reflect))))
 
 (define-public java-powermock-modules-junit4-common
   (package
@@ -11524,11 +11520,11 @@ done to the IDE or continuous integration servers which simplifies adoption.")
        #:source-dir "powermock-modules/powermock-module-junit4-common/src/main/java"
        #:test-dir "powermock-modules/powermock-module-junit4-common/src/test"))
     (inputs
-     `(("core" ,java-powermock-core)
-       ("easymock" ,java-easymock)
-       ("reflect" ,java-powermock-reflect)
-       ("hamcrest" ,java-hamcrest-core)
-       ("cglib" ,java-cglib)))))
+     (list java-cglib
+           java-easymock
+           java-hamcrest-core
+           java-powermock-core
+           java-powermock-reflect))))
 
 (define-public java-powermock-modules-junit4
   (package
@@ -11537,7 +11533,7 @@ done to the IDE or continuous integration servers which simplifies adoption.")
     (build-system ant-build-system)
     (arguments
      `(#:jar-name "java-powermock-modules-junit4.jar"
-       #:jdk ,icedtea-8
+       #:tests? #f; require easymock 4, which introduces a loop with testng
        #:source-dir "powermock-modules/powermock-module-junit4/src/main/java"
        #:test-dir "powermock-modules/powermock-module-junit4/src/test"
        #:phases
@@ -11550,15 +11546,15 @@ done to the IDE or continuous integration servers which simplifies adoption.")
                (("4.12") "4.12-SNAPSHOT"))
              #t)))))
     (inputs
-     `(("core" ,java-powermock-core)
-       ("reflect" ,java-powermock-reflect)
-       ("common" ,java-powermock-modules-junit4-common)
-       ("cglib" ,java-cglib)))
+     (list java-cglib
+           java-powermock-core
+           java-powermock-reflect
+           java-powermock-modules-junit4-common))
     (native-inputs
-     `(("easymock" ,java-easymock)
-       ("hamcrest" ,java-hamcrest-core)
-       ("objenesis" ,java-objenesis)
-       ("junit" ,java-junit)))))
+     (list java-easymock
+           java-hamcrest-core
+           java-junit
+           java-objenesis))))
 
 (define-public java-powermock-api-easymock
   (package
@@ -11581,11 +11577,11 @@ done to the IDE or continuous integration servers which simplifies adoption.")
                  (("\\(\\(MockClassLoader\\) classLoader\\).*;") ";")))
              #t)))))
     (inputs
-     `(("core" ,java-powermock-core)
-       ("easymock" ,java-easymock)
-       ("reflect" ,java-powermock-reflect)
-       ("support" ,java-powermock-api-support)
-       ("cglib" ,java-cglib)))))
+     (list java-cglib
+           java-easymock
+           java-powermock-api-support
+           java-powermock-core
+           java-powermock-reflect))))
 
 (define-public java-jboss-jms-api-spec
   (package
