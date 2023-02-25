@@ -2170,7 +2170,8 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "java-javax-inject" "java-plexus-component-annotations"
                      "java-plexus-utils" "java-plexus-interpolation"
                      "java-plexus-sec-dispatcher" "java-plexus-cipher" "java-guava"
-                     "java-jansi" "java-jsr250" "java-cdi-api" "java-commons-cli"
+                     "java-guava-futures-failureaccess" "java-jansi"
+                     "java-jsr250" "java-cdi-api" "java-commons-cli"
                      "java-commons-io" "java-commons-lang3" "java-slf4j-api"))))
              (substitute* "apache-maven/src/bin/mvn"
                (("cygwin=false;")
@@ -2239,6 +2240,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            java-plexus-sec-dispatcher
            java-plexus-cipher
            java-guava
+           java-guava-futures-failureaccess
            java-jansi
            java-jsr250
            java-cdi-api

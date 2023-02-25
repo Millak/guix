@@ -6249,8 +6249,7 @@ used by programmers to guide the static analysis.")
 (define-public java-guava
   (package
     (name "java-guava")
-    ;; This is the last release of Guava that can be built with Java 7.
-    (version "20.0")
+    (version "31.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -6259,7 +6258,9 @@ used by programmers to guide the static analysis.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "00h5cawdjic1vind3yivzh1f58flvm1yfmhsyqwyvmbvj1vakysp"))))
+                "0sv1w5cnids9ad3l7qhrh3dh1wdqwc946iinsxryafr25wg5z1lp"))
+              (patches
+               (search-patches "java-guava-remove-annotation-deps.patch"))))
     (build-system ant-build-system)
     (arguments
      `(#:tests? #f                      ; no tests included
@@ -6273,27 +6274,26 @@ used by programmers to guide the static analysis.")
                ;; Remove annotations to avoid extra dependencies:
                ;; * "j2objc" annotations are used when converting Java to
                ;;   Objective C;
-               ;; * "errorprone" annotations catch common Java mistakes at
-               ;;   compile time;
                ;; * "IgnoreJRERequirement" is used for Android.
+               ;; * "Nullable" is used to catch NPE at build time.
                (substitute* (find-files "." "\\.java$")
                  (("import com.google.j2objc.*") "")
-                 (("import com.google.errorprone.annotation.*") "")
-                 (("import org.codehaus.mojo.animal_sniffer.*") "")
-                 (("@CanIgnoreReturnValue") "")
-                 (("@LazyInit") "")
+                 (("import org.checkerframework.checker.*") "")
+                 (("@ReflectionSupport.*") "")
                  (("@WeakOuter") "")
                  (("@RetainedWith") "")
                  (("@Weak") "")
-                 (("@ForOverride") "")
                  (("@J2ObjCIncompatible") "")
-                 (("@IgnoreJRERequirement") "")))
-             #t))
+                 (("@IgnoreJRERequirement") "")
+                 (("@Nullable") "")))))
+         ;; This is required by guava, but this is just an empty stub
+         (add-before 'install 'install-listenablefuture-stub
+           (install-pom-file "futures/listenablefuture9999/pom.xml"))
          (replace 'install (install-from-pom "guava/pom.xml")))))
     (inputs
-     (list java-jsr305))
+     (list java-error-prone-annotations java-jsr305))
     (propagated-inputs
-     (list java-guava-parent-pom))
+     (list java-guava-futures-failureaccess java-guava-parent-pom))
     (home-page "https://github.com/google/guava")
     (synopsis "Google core libraries for Java")
     (description "Guava is a set of core libraries that includes new
@@ -6302,6 +6302,21 @@ graph library, functional types, an in-memory cache, and APIs/utilities for
 concurrency, I/O, hashing, primitives, reflection, string processing, and much
 more!")
     (license license:asl2.0)))
+
+(define-public java-guava-futures-failureaccess
+  (package
+    (inherit java-guava)
+    (name "java-guava-futures-failureaccess")
+    (arguments
+     `(#:tests? #f; no tests
+       #:jar-name "guava-futures-failureaccess.jar"
+       #:source-dir "futures/failureaccess/src"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install
+           (install-from-pom "futures/failureaccess/pom.xml")))))
+    (propagated-inputs
+     `(("java-sonatype-oss-parent-pom" ,java-sonatype-oss-parent-pom-7)))))
 
 (define java-guava-parent-pom
   (package

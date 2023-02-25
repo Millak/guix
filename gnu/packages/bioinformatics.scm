@@ -7303,6 +7303,10 @@ geographic distributions.")
        (modify-phases %standard-phases
          ;; FIXME: this phase fails with "duplicate entry: htsjdk/samtools/AbstractBAMFileIndex$1.class"
          (delete 'generate-jar-indices)
+         (add-after 'unpack 'fix-guava
+           (lambda _
+             (substitute* "src/java/picard/cmdline/CommandLineParser.java"
+               (("CharMatcher.ASCII") "CharMatcher.ascii()"))))
          (add-after 'unpack 'use-our-htsjdk
            (lambda* (#:key inputs #:allow-other-keys)
              (substitute* "build.xml"
@@ -7362,6 +7366,10 @@ VCF.")
          (delete 'generate-jar-indices)
          (add-after 'unpack 'remove-useless-build.xml
            (lambda _ (delete-file "build.xml") #t))
+         (add-after 'unpack 'fix-guava
+           (lambda _
+             (substitute* "src/main/java/picard/cmdline/CommandLineParser.java"
+               (("CharMatcher.ASCII") "CharMatcher.ascii()"))))
          ;; This is necessary to ensure that htsjdk is found when using
          ;; picard.jar as an executable.
          (add-before 'build 'edit-classpath-in-manifest
