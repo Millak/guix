@@ -16640,12 +16640,14 @@ details.
 @item @code{services} (default: @code{%base-services})
 A list of service objects denoting system services.  @xref{Services}.
 
+@anchor{operating-system-essential-services}
 @cindex essential services
 @item @code{essential-services} (default: ...)
 The list of ``essential services''---i.e., things like instances of
-@code{system-service-type} and @code{host-name-service-type} (@pxref{Service
-Reference}), which are derived from the operating system definition itself.
-As a user you should @emph{never} need to touch this field.
+@code{system-service-type} (@pxref{Service Reference}) and
+@code{host-name-service-type}, which are derived from the operating
+system definition itself.  As a user you should @emph{never} need to
+touch this field.
 
 @item @code{pam-services} (default: @code{(base-pam-services)})
 @cindex PAM
@@ -18018,9 +18020,11 @@ symlink:
 @end lisp
 @end deffn
 
-@deffn {Scheme Procedure} host-name-service @var{name}
-Return a service that sets the host name to @var{name}.
-@end deffn
+@defvar host-name-service-type
+Type of the service that sets the system host name, whose value
+is a string. This service is included in @code{operating-system} by
+default (@pxref{operating-system-essential-services,@code{essential-services}}).
+@end defvar
 
 @defvar console-font-service-type
 Install the given fonts on the specified ttys (fonts are per

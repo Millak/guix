@@ -782,7 +782,7 @@ bookkeeping."
                             (operating-system-file-systems os)))
            (session-environment-service
             (operating-system-environment-variables os))
-           (host-name-service host-name)
+           (service host-name-service-type host-name)
            procs root-fs
            (service setuid-program-service-type
                     (operating-system-setuid-programs os))

@@ -99,7 +99,8 @@
             file-system-service-type
             file-system-utilities
             swap-service
-            host-name-service
+            host-name-service  ; deprecated
+            host-name-service-type
             %default-console-font
             console-font-service-type
             console-font-service
@@ -778,7 +779,8 @@ host names."
       (one-shot? #t)))
    (description "Initialize the machine's host name.")))
 
-(define (host-name-service name)
+(define-deprecated (host-name-service name)
+  host-name-service-type
   "Return a service that sets the host name to @var{name}."
   (service host-name-service-type name))
 
