@@ -13688,8 +13688,7 @@ significantly better performance.")
             python-pylint
             python-pytest
             python-pytest-benchmark
-            python-pytest-cache
-            python-validictory))
+            python-pytest-cache))
     (home-page
       "https://github.com/horejsek/python-fastjsonschema")
     (synopsis
