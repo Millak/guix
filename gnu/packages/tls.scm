@@ -40,6 +40,7 @@
 
 (define-module (gnu packages tls)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix deprecation)
   #:use-module (guix packages)
   #:use-module (guix download)
   #:use-module (guix git-download)
@@ -293,20 +294,7 @@ required structures.")
     (properties '((ftp-server . "ftp.gnutls.org")
                   (ftp-directory . "/gcrypt/gnutls")))))
 
-(define-public gnutls-latest
-  (package
-    (inherit gnutls)
-    (version "3.7.7")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append "mirror://gnupg/gnutls/v"
-                                  (version-major+minor version)
-                                  "/gnutls-" version ".tar.xz"))
-              (patches (search-patches "gnutls-skip-trust-store-test.patch"
-                                       "gnutls-cross.patch"))
-              (sha256
-               (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
+(define-deprecated/public-alias gnutls-latest gnutls)
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
@@ -363,14 +351,14 @@ required structures.")
            libtool
            pkg-config
            texinfo
-           gnutls-latest          ;XXX: 'guile-snarf' invokes the native 'cpp'
-           guile-3.0
+           gnutls
+           guile-3.0              ;XXX: 'guile-snarf' invokes the native 'cpp'
            (gnulib-checkout
             #:version "2022-12-06"
             #:commit "440b528b1d81dd31b2a2e4dde20d5c837c147811"
             #:hash (base32 "15mq43abbnkbamchc9lynrvrd5ql8qacgyx2ph4kkngxf1bz3pqy"))))
     (inputs
-     (list gnutls-latest
+     (list gnutls
            guile-3.0))
     (properties '((release-tag-prefix . "v")
                   (release-tag-version-delimiter . ".")))
