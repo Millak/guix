@@ -1,0 +1,204 @@
+From 91533caf29a2c5b10b4912fd352e7af82c787598 Mon Sep 17 00:00:00 2001
+From: Aina Niemetz <aina.niemetz@gmail.com>
+Date: Wed, 16 Jun 2021 16:17:27 -0700
+Subject: [PATCH] Configure google test as external project.
+
+---
+ CMakeLists.txt                  |  7 ----
+ cmake/FindGoogleTest.cmake      | 60 +++++++++++++++++++++++++++++++++
+ cmake/googletest-download.cmake | 28 ---------------
+ cmake/googletest.cmake          | 41 ----------------------
+ test/CMakeLists.txt             |  5 ++-
+ 5 files changed, 64 insertions(+), 77 deletions(-)
+ create mode 100644 cmake/FindGoogleTest.cmake
+ delete mode 100644 cmake/googletest-download.cmake
+ delete mode 100644 cmake/googletest.cmake
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 38056ede6..d30475bcd 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -440,13 +440,6 @@ configure_file(
+ #-----------------------------------------------------------------------------#
+ # Regression tests
+ 
+-# Get and configure google test
+-include(cmake/googletest.cmake)
+-fetch_googletest(
+-    ${PROJECT_SOURCE_DIR}/cmake
+-    ${PROJECT_BINARY_DIR}/googletest
+-    )
+-
+ enable_testing()
+ 
+ #-----------------------------------------------------------------------------#
+diff --git a/cmake/FindGoogleTest.cmake b/cmake/FindGoogleTest.cmake
+new file mode 100644
+index 000000000..c6eecd179
+--- /dev/null
++++ b/cmake/FindGoogleTest.cmake
+@@ -0,0 +1,60 @@
++# Boolector: Satisfiablity Modulo Theories (SMT) solver.
++#
++# Copyright (C) 2007-2021 by the authors listed in the AUTHORS file.
++#
++# This file is part of Boolector.
++# See COPYING for more information on using this software.
++#
++
++# Find GTest
++#
++# GTest_FOUND - Found GTest
++# GTest::GTest - GTest library
++
++find_package(GTest 1.10.0)
++
++if(NOT GTest_FOUND)
++  include(ExternalProject)
++
++  set(GTest_VERSION "1.10.0")
++
++  ExternalProject_Add(
++    GTest-EP
++    PREFIX "${CMAKE_BINARY_DIR}/deps"
++    URL https://github.com/google/googletest/archive/refs/tags/release-${GTest_VERSION}.tar.gz
++    URL_HASH SHA1=9c89be7df9c5e8cb0bc20b3c4b39bf7e82686770
++    DOWNLOAD_NAME gtest.tar.gz
++    CMAKE_ARGS
++      -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
++    BUILD_COMMAND ${CMAKE_COMMAND} --build .
++    BUILD_BYPRODUCTS
++        <INSTALL_DIR>/lib/libgtest.a
++        <INSTALL_DIR>/lib/libgtest_main.a
++    LOG_DOWNLOAD ON
++    LOG_UPDATE ON
++    LOG_CONFIGURE ON
++    LOG_BUILD ON
++    LOG_INSTALL ON
++    LOG_OUTPUT_ON_FAILURE TRUE
++  )
++
++  set(GTest_INCLUDE_DIR "${CMAKE_BINARY_DIR}/deps/include/")
++  set(GTest_MAIN_LIBRARY "${CMAKE_BINARY_DIR}/deps/lib/libgtest_main.a")
++  set(GTest_LIBRARY "${CMAKE_BINARY_DIR}/deps/lib/libgtest.a")
++  file(MAKE_DIRECTORY "${GTest_INCLUDE_DIR}")
++
++  add_library(GTest::gtest_main STATIC IMPORTED GLOBAL)
++  set_target_properties(GTest::gtest_main
++    PROPERTIES
++      IMPORTED_LOCATION "${GTest_MAIN_LIBRARY}"
++      INTERFACE_INCLUDE_DIRECTORIES "${GTest_INCLUDE_DIR}"
++      INTERFACE_LINK_LIBRARIES "${GTest_LIBRARY}"
++  )
++  set(GTest_FOUND TRUE)
++  add_dependencies(GTest::gtest_main GTest-EP)
++  message(STATUS "Building GTest ${GTest_VERSION}: ${GTest_MAIN_LIBRARY}")
++
++  mark_as_advanced(GTest_FOUND)
++  mark_as_advanced(GTest_INCLUDE_DIR)
++  mark_as_advanced(GTest_LIBRARIES)
++endif()
+diff --git a/cmake/googletest-download.cmake b/cmake/googletest-download.cmake
+deleted file mode 100644
+index 8dca59539..000000000
+--- a/cmake/googletest-download.cmake
++++ /dev/null
+@@ -1,28 +0,0 @@
+-# Boolector: Satisfiablity Modulo Theories (SMT) solver.
+-#
+-# Copyright (C) 2007-2021 by the authors listed in the AUTHORS file.
+-#
+-# This file is part of Boolector.
+-# See COPYING for more information on using this software.
+-#
+-
+-# code copied from https://crascit.com/2015/07/25/cmake-gtest/
+-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+-
+-project(googletest-download NONE)
+-
+-include(ExternalProject)
+-
+-ExternalProject_Add(
+-  googletest
+-  SOURCE_DIR "@GOOGLETEST_DOWNLOAD_ROOT@/googletest-src"
+-  BINARY_DIR "@GOOGLETEST_DOWNLOAD_ROOT@/googletest-build"
+-  GIT_REPOSITORY
+-    https://github.com/google/googletest.git
+-  GIT_TAG
+-    release-1.10.0
+-  CONFIGURE_COMMAND ""
+-  BUILD_COMMAND ""
+-  INSTALL_COMMAND ""
+-  TEST_COMMAND ""
+-  )
+diff --git a/cmake/googletest.cmake b/cmake/googletest.cmake
+deleted file mode 100644
+index af5a5bc36..000000000
+--- a/cmake/googletest.cmake
++++ /dev/null
+@@ -1,41 +0,0 @@
+-# Boolector: Satisfiablity Modulo Theories (SMT) solver.
+-#
+-# Copyright (C) 2007-2021 by the authors listed in the AUTHORS file.
+-#
+-# This file is part of Boolector.
+-# See COPYING for more information on using this software.
+-#
+-
+-# the following code to fetch googletest
+-# is inspired by and adapted after https://crascit.com/2015/07/25/cmake-gtest/
+-# download and unpack googletest at configure time
+-
+-macro(fetch_googletest _download_module_path _download_root)
+-    set(GOOGLETEST_DOWNLOAD_ROOT ${_download_root})
+-    configure_file(
+-        ${_download_module_path}/googletest-download.cmake
+-        ${_download_root}/CMakeLists.txt
+-        @ONLY
+-        )
+-    unset(GOOGLETEST_DOWNLOAD_ROOT)
+-
+-    execute_process(
+-        COMMAND
+-            "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+-        WORKING_DIRECTORY
+-            ${_download_root}
+-        )
+-    execute_process(
+-        COMMAND
+-            "${CMAKE_COMMAND}" --build .
+-        WORKING_DIRECTORY
+-            ${_download_root}
+-        )
+-
+-    # adds the targers: gtest, gtest_main, gmock, gmock_main
+-    add_subdirectory(
+-        ${_download_root}/googletest-src
+-        ${_download_root}/googletest-build
+-        EXCLUDE_FROM_ALL
+-        )
+-endmacro()
+diff --git a/test/CMakeLists.txt b/test/CMakeLists.txt
+index 13f87d5e0..f2e14fd81 100644
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -5,6 +5,9 @@
+ # This file is part of Boolector.
+ # See COPYING for more information on using this software.
+ #
++
++find_package(GoogleTest REQUIRED)
++
+ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/tests)
+ 
+ set(test_names
+@@ -47,7 +50,7 @@ foreach(test ${test_names})
+   add_executable (test${test} test_${test}.cpp)
+   target_include_directories(test${test} PRIVATE ${PROJECT_SOURCE_DIR}/test/new_test)
+   target_link_libraries(test${test} boolector m)
+-  target_link_libraries(test${test} gtest_main)
++  target_link_libraries(test${test} GTest::gtest_main)
+   set_target_properties(test${test} PROPERTIES OUTPUT_NAME test${test})
+   add_test(${test} ${CMAKE_BINARY_DIR}/bin/tests/test${test})
+ endforeach()

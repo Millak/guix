@@ -6081,6 +6081,60 @@ as equations, scalars, vectors, and matrices.")
     (home-page "https://www.gnu.org/software/jacal/")
     (license license:gpl3+)))
 
+(define-public boolector
+  (package
+   (name "boolector")
+   (version "3.2.2")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/Boolector/boolector")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (patches (search-patches "boolector-find-googletest.patch"))
+            (sha256
+             (base32
+              "07rvp3iry7a7ixwl0q7nc47fwky1s1cyia7gqrjsg46syqlxbz2c"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:configure-flags
+          #~(list "-DBUILD_SHARED_LIBS=on"
+                  (string-append
+                   "-DBtor2Tools_INCLUDE_DIR="
+                   (dirname (search-input-file %build-inputs
+                                               "include/btor2parser.h")))
+                  (string-append
+                   "-DBtor2Tools_LIBRARIES="
+                   (search-input-file %build-inputs
+                                      "lib/libbtor2parser.so")))
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-cmake
+                (lambda _
+                  (delete-file "cmake/FindCryptoMiniSat.cmake")
+                  (substitute* (list "CMakeLists.txt" "src/CMakeLists.txt")
+                    (("find_package\\(CryptoMiniSat\\)")
+                     "find_package(cryptominisat5 CONFIG)
+find_package(louvain_communities)")
+                    (("CryptoMiniSat_FOUND") "cryptominisat5_FOUND")
+                    (("CryptoMiniSat_INCLUDE_DIR")
+                     "CRYPTOMINISAT5_INCLUDE_DIRS")
+                    (("CryptoMiniSat_LIBRARIES")
+                     "CRYPTOMINISAT5_LIBRARIES"))))
+              (add-after 'unpack 'fix-sources
+                (lambda _
+                  (substitute* (find-files "." "\\.c$")
+                    (("\"btor2parser/btor2parser\\.h\"") "<btor2parser.h>")))))))
+   (inputs (list btor2tools
+                 boost cryptominisat louvain-community sqlite))
+   (native-inputs (list googletest pkg-config python-wrapper))
+   (home-page "http://boolector.github.io/")
+   (synopsis "Bitvector-based theory solver")
+   (description "Boolector is a @abbrev{SMT, satisfiability modulo theories}
+solver for the theories of fixed-size bit-vectors, arrays and uninterpreted
+functions.")
+   (license license:lgpl3+)))
+
 (define-public yices
   (package
    (name "yices")
