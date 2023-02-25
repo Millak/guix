@@ -5144,7 +5144,7 @@ to generate and transform Java byte code.")
 (define-public java-objenesis
   (package
     (name "java-objenesis")
-    (version "2.5.1")
+    (version "3.3")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -5153,11 +5153,12 @@ to generate and transform Java byte code.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "054yi200wj00x6dp1sxfrwgndwywadsbn8d8ij1j0v45j9g2vdya"))))
+                "1brlcn536p4s1v1f3vzxhr38lvyhc33wjrbj2x06kdrd8agy90cr"))))
     (build-system ant-build-system)
     (arguments
-     `(#:jar-name "objenesis.jar"
-       #:source-dir "main/src/"
+     `(#:tests? #f; require junit-5
+       #:jar-name "objenesis.jar"
+       #:source-dir "main/src/main/java"
        #:test-dir "main/src/test/"))
     (native-inputs
      (list java-junit java-hamcrest-core))
