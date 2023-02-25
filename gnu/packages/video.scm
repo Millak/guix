@@ -1634,6 +1634,7 @@ operate properly.")
             libvdpau
             libvorbis
             libvpx
+            libwebp
             libx11
             libx264
             mesa
@@ -1731,6 +1732,7 @@ operate properly.")
          "--enable-libvidstab"
          "--enable-libvorbis"
          "--enable-libvpx"
+         "--enable-libwebp"
          "--enable-libxvid"
          "--enable-libx264"
          "--enable-libx265"
@@ -1877,7 +1879,11 @@ audio/video codec library.")
              (let* ((dso  (find-files "." "\\.so$"))
                     (path (string-join (map dirname dso) ":")))
                (format #t "setting LD_LIBRARY_PATH to ~s~%" path)
-               (setenv "LD_LIBRARY_PATH" path)))))))))
+               (setenv "LD_LIBRARY_PATH" path)))))))
+    ;; FFmpeg 2.8 does support libwebp, but we don't enable it while configuring
+    ;; the build, and we'd rather not add features to this old package anymore.
+    (inputs (modify-inputs (package-inputs ffmpeg-3.4)
+              (delete "libwebp")))))
 
 (define-public ffmpeg ffmpeg-5)
 
