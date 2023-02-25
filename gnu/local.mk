@@ -345,7 +345,6 @@ GNU_SYSTEM_MODULES =				\
   %D%/packages/java-xml.scm			\
   %D%/packages/javascript.scm			\
   %D%/packages/jemalloc.scm			\
-  %D%/packages/jrnl.scm				\
   %D%/packages/jose.scm				\
   %D%/packages/julia.scm			\
   %D%/packages/julia-jll.scm			\
