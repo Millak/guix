@@ -1059,25 +1059,6 @@ safest way, on a file image.")
 useful for reverse engineering, analysis of Android applications and more.")
     (license license:asl2.0)))
 
-(define-public python-android-backup
-  (package
-    (name "python-android-backup")
-    (version "0.2.0")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (pypi-uri "android_backup" version))
-       (sha256
-        (base32
-         "15wb2lyjj2fpf7bhvmgpqn0mglsjj11zfvbjycx7mnidisgnljw6"))))
-    (build-system python-build-system)
-    (propagated-inputs (list python-pycrypto))
-    (home-page "https://github.com/bluec0re/android-backup-tools")
-    (synopsis "Unpack and repack android backups")
-    (description "This package allows you to unpack and repack Android
-backups.  It supports encrypted archives.")
-    (license license:asl2.0)))
-
 (define-public python-miio
   (package
     (name "python-miio")
