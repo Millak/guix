@@ -240,41 +240,6 @@ messages, and verify the signatures.  The keys and signatures are very short,
 making them easy to handle and incorporate into other protocols.")
     (license license:expat)))
 
-;;; Pycrypto is abandoned upstream:
-;;;
-;;; https://github.com/dlitz/pycrypto/issues/173
-;;;
-;;; TODO Remove this package from GNU Guix.
-(define-public python-pycrypto
-  (package
-    (name "python-pycrypto")
-    (version "2.6.1")
-    (source
-     (origin
-      (method url-fetch)
-      (uri (pypi-uri "pycrypto" version))
-      (patches (search-patches "python-pycrypto-CVE-2013-7459.patch"
-                               "python-pycrypto-time-clock.patch"))
-      (sha256
-       (base32
-        "0g0ayql5b9mkjam8hym6zyg6bv77lbh66rv1fyvgqb17kfc1xkpj"))))
-    (build-system python-build-system)
-    (inputs
-     (list python gmp))
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (add-before 'build 'set-build-env
-           ;; pycrypto runs an autoconf configure script behind the scenes
-           (lambda _ (setenv "CONFIG_SHELL" (which "bash")) #t)))))
-    (home-page "https://www.dlitz.net/software/pycrypto/")
-    (synopsis "Cryptographic modules for Python")
-    (description
-     "Pycrypto is a collection of both secure hash functions (such as SHA256
-and RIPEMD160), and various encryption algorithms (AES, DES, RSA, ElGamal,
-etc.).  The package is structured to make adding new modules easy.")
-    (license license:public-domain)))
-
 (define-public python-kerberos
   (package
     (name "python-kerberos")
