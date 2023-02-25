@@ -6204,6 +6204,50 @@ namespaces.")
 It provides packages in the @code{javax.annotations} namespace.")
     (license license:asl2.0)))
 
+(define-public java-error-prone-annotations
+  (package
+    (name "java-error-prone-annotations")
+    (version "2.18.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://github.com/google/error-prone")
+                     (commit (string-append "v" version))))
+              (file-name (git-file-name "java-error-prone" version))
+              (sha256
+               (base32
+                "19sqsz0b308rhadr3ff10azdbqjq37nvrn9c06224dwpxap0931f"))))
+    (build-system ant-build-system)
+    (arguments
+     `(#:tests? #f; no tests
+       #:jar-name (string-append ,name "-" ,version ".jar")
+       #:source-dir "annotations/src/main/java"
+       #:test-dir "annotations/src/altest"
+       #:phases
+       (modify-phases %standard-phases
+         (replace 'install (install-from-pom "annotations/pom.xml")))))
+    (propagated-inputs (list java-error-prone-parent-pom java-jsr305))
+    (home-page "https://errorprone.info")
+    (synopsis "Java static analyzer at compile-time")
+    (description "Error Prone is a static analysis tool for Java that catches
+common programming mistakes at compile-time.  This package contains annotations
+used by programmers to guide the static analysis.")
+    (license license:asl2.0)))
+
+(define java-error-prone-parent-pom
+  (package
+    (inherit java-error-prone-annotations)
+    (name "java-error-prone-parent-pom")
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (delete 'configure)
+         (delete 'build)
+         (replace 'install
+           (install-pom-file "pom.xml")))))
+    (propagated-inputs '())))
+
 (define-public java-guava
   (package
     (name "java-guava")
