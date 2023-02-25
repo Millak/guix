@@ -3587,15 +3587,15 @@ Python.")
              (when tests?
                (invoke "pytest" "-v")))))))
     (native-inputs
-     (list python-mock
-           python-pytest
+     (list python-pytest
            python-pytest-asyncio
            python-pytest-httpserver))
     (propagated-inputs
      (list python-requests
-           python-cookies
-           python-six
-           python-types-toml))
+           python-toml
+           python-types-toml
+           python-typing-extensions
+           python-urllib3))
     (home-page "https://github.com/getsentry/responses")
     (synopsis "Utility for mocking out the `requests` Python library")
     (description "A utility library for mocking out the `requests` Python
