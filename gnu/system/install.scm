@@ -347,8 +347,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                      (virtual-terminal "tty1")
                      (login-program (installer-program))))
 
-           (login-service (login-configuration
-                           (motd motd)))
+           (service login-service-type
+                    (login-configuration
+                     (motd motd)))
 
            ;; Documentation.  The manual is in UTF-8, but
            ;; 'console-font-service' sets up Unicode support and loads a font

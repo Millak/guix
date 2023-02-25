@@ -158,7 +158,7 @@
             login-configuration
             login-configuration?
             login-service-type
-            login-service
+            login-service  ; deprecated
 
             agetty-configuration
             agetty-configuration?
@@ -937,7 +937,8 @@ Return a service that sets up Unicode support in @var{tty} and loads
                  "Provide a console log-in service as specified by its
 configuration value, a @code{login-configuration} object.")))
 
-(define* (login-service #:optional (config (login-configuration)))
+(define-deprecated (login-service #:optional (config (login-configuration)))
+  login-service-type
   "Return a service configure login according to @var{config}, which specifies
 the message of the day, among other things."
   (service login-service-type config))

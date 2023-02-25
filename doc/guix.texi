@@ -18101,14 +18101,14 @@ Return a new record for the host at @var{address} with the given
 host names.
 @end defun
 
-@deffn {Scheme Procedure} login-service @var{config}
-Return a service to run login according to @var{config}, a
-@code{<login-configuration>} object, which specifies the message of the day,
-among other things.
-@end deffn
+@defvar login-service-type
+Type of the service that provides a console login service, whose value
+is a @code{<login-configuration>} object.
+@end defvar
 
 @deftp {Data Type} login-configuration
-This is the data type representing the configuration of login.
+Data type representing the configuration of login, which specifies the
+@acronym{MOTD, message of the day}, among other things.
 
 @table @asis
 
