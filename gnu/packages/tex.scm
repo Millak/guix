@@ -10076,12 +10076,12 @@ the bundle.")
                                texlive-etoolbox
                                texlive-fancyvrb
                                texlive-fvextra
-                               texlive-generic-xstring
                                texlive-latex-float
                                texlive-latex-framed
                                texlive-latex-ifplatform
                                texlive-latex-newfloat
-                               texlive-lineno))
+                               texlive-lineno
+                               texlive-xstring))
       (home-page "https://ctan.org/pkg/minted")
       (synopsis "Highlight source code in LaTeX documents")
       (description "This package facilitates expressive syntax highlighting in
@@ -12132,9 +12132,9 @@ syllable.  The package itself does not support UTF-8 input in ordinary
 
 (define-deprecated-package texlive-generic-soul texlive-soul)
 
-(define-public texlive-generic-xstring
+(define-public texlive-xstring
   (let ((template (simple-texlive-package
-                   "texlive-generic-xstring"
+                   "texlive-xstring"
                    (list "/doc/generic/xstring/"
                          "/tex/generic/xstring/")
                    (base32
@@ -12152,6 +12152,8 @@ recurrences of, a substring.  The package works equally in Plain TeX and LaTeX
 (though e-TeX is always required).  The strings to be processed may contain
 (expandable) macros.")
       (license license:lppl1.3c))))
+
+(define-deprecated texlive-generic-xstring texlive-xstring)
 
 (define-public texlive-substr
   (package
