@@ -169,9 +169,8 @@ translated messages from the catalogs.  Nearly all GNU packages use Gettext.")
                 (with-directory-excursion
                     (string-append (assoc-ref outputs "out")
                                    "/share/emacs/site-lisp")
-                  (symlink "start-po.el" "gettext-autoloads.el")
-                  #t)))))))
-    (native-inputs `(("emacs" ,emacs-minimal)))   ; for Emacs tools
+                  (symlink "start-po.el" "gettext-autoloads.el"))))))))
+    (native-inputs (list emacs-minimal))          ;for Emacs tools
     (synopsis "Tools and documentation for translation")))
 
 (define-public libtextstyle
