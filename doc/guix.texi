@@ -1976,8 +1976,7 @@ versions may be incompatible.
 
 @cindex name service switch, glibc
 @cindex NSS (name service switch), glibc
-@cindex nscd (name service caching daemon)
-@cindex name service caching daemon (nscd)
+@cindex @abbr{nscd, name service cache daemon}
 When using Guix on a foreign distro, we @emph{strongly recommend} that
 the system run the GNU C library's @dfn{name service cache daemon},
 @command{nscd}, which should be listening on the
@@ -18390,20 +18389,17 @@ The Kmscon package to use.
 @end table
 @end deftp
 
-@cindex name service cache daemon
-@cindex nscd
-@deffn {Scheme Procedure} nscd-service [@var{config}] [#:glibc glibc] @
-                [#:name-services '()]
-Return a service that runs the libc name service cache daemon (nscd) with the
-given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
-Service Switch}, for an example.
+@cindex @abbr{nscd, name service cache daemon}
+@defvar nscd-service-type
+Type of the service that runs the libc @abbr{nscd, name service cache
+daemon}, whose value is a @code{<nscd-configuration>} object.
 
 For convenience, the Shepherd service for nscd provides the following actions:
 
 @table @code
 @item invalidate
-@cindex cache invalidation, nscd
 @cindex nscd, cache invalidation
+@cindex cache invalidation, nscd
 This invalidate the given cache.  For instance, running:
 
 @example
@@ -18417,17 +18413,10 @@ invalidates the host name lookup cache of nscd.
 Running @command{herd statistics nscd} displays information about nscd usage
 and caches.
 @end table
-
-@end deffn
-
-@defvar %nscd-default-configuration
-This is the default @code{<nscd-configuration>} value (see below) used
-by @code{nscd-service}.  It uses the caches defined by
-@code{%nscd-default-caches}; see below.
 @end defvar
 
 @deftp {Data Type} nscd-configuration
-This is the data type representing the name service cache daemon (nscd)
+Data type representing the @abbr{nscd, name service cache daemon}
 configuration.
 
 @table @asis

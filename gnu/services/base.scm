@@ -177,7 +177,7 @@
             mingetty-service-type
 
             %nscd-default-caches
-            %nscd-default-configuration
+            %nscd-default-configuration  ; deprecated
 
             nscd-configuration
             nscd-configuration?
@@ -186,7 +186,7 @@
             nscd-cache?
 
             nscd-service-type
-            nscd-service
+            nscd-service  ; deprecated
 
             syslog-configuration
             syslog-configuration?
@@ -1343,7 +1343,8 @@ the tty to run, among other things."
                     (check-files? #t)             ;check /etc/services changes
                     (persistent? #t))))
 
-(define %nscd-default-configuration
+(define-deprecated %nscd-default-configuration
+  #f
   ;; Default nscd configuration.
   (nscd-configuration))
 
@@ -1497,13 +1498,14 @@ the tty to run, among other things."
                            (name-services (append
                                            (nscd-configuration-name-services config)
                                            name-services)))))
-                (default-value %nscd-default-configuration)
+                (default-value (nscd-configuration))
                 (description
                  "Runs libc's @dfn{name service cache daemon} (nscd) with the
 given configuration---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example.")))
 
-(define* (nscd-service #:optional (config %nscd-default-configuration))
+(define-deprecated (nscd-service #:optional (config (nscd-configuration)))
+  nscd-service-type
   "Return a service that runs libc's name service cache daemon (nscd) with the
 given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."

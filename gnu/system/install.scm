@@ -426,8 +426,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
 
            ;; Since this is running on a USB stick with a overlayfs as the root
            ;; file system, use an appropriate cache configuration.
-           (nscd-service (nscd-configuration
-                          (caches %nscd-minimal-caches)))
+           (service nscd-service-type
+                    (nscd-configuration
+                     (caches %nscd-minimal-caches)))
 
            ;; Having /bin/sh is a good idea.  In particular it allows Tramp
            ;; connections to this system to work.
