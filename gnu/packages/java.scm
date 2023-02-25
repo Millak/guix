@@ -5130,6 +5130,19 @@ including java-asm.")
     (propagated-inputs '())
     (native-inputs '())))
 
+(define-public java-asm-tree-9
+  (package
+    (inherit java-asm-9)
+    (name "java-asm-tree")
+    (arguments
+     `(#:jar-name "asm-tree.jar"
+       #:source-dir "asm-tree/src/main/java"
+       #:test-dir "asm-tree/src/test"
+       ;; tests depend on junit5
+       #:tests? #f))
+    (inputs
+     (list java-asm-9))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
