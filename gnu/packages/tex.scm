@@ -12091,16 +12091,34 @@ which the command @code{\\tab} advances typesetting position to the next
 defined ``tab stop''.")
     (license license:lppl1.3+)))
 
-(define-public texlive-generic-soul
+(define-public texlive-soul
   (let ((template (simple-texlive-package
-                   "texlive-generic-soul"
-                   (list "/doc/generic/soul/"
-                         "/tex/generic/soul/")
+                   "texlive-soul"
+                   (list "doc/generic/soul/"
+                         "source/generic/soul/"
+                         "tex/generic/soul/")
                    (base32
-                    "11jdgvfpcv10y5j898495lf29k2m03x39v9jzb4v79w4cgxcmfps")
-                   #:trivial? #t)))
+                    "0ikipdswzsafi4rr6q9xh3hkxk2n2683ym1879qcax41xs6cizdl"))))
     (package
       (inherit template)
+      (outputs '("out" "doc"))
+      (arguments
+       (substitute-keyword-arguments (package-arguments template)
+         ((#:tex-directory _ #t) "generic/soul")
+         ((#:build-targets _ '()) '(list "soul.ins"))
+         ((#:phases phases)
+          #~(modify-phases #$phases
+              (add-after 'unpack 'chdir
+                (lambda _ (chdir "source/generic/soul/")))
+              (replace 'copy-files
+                (lambda* (#:key inputs #:allow-other-keys)
+                  (let ((origin (assoc-ref inputs "source"))
+                        (source (string-append #$output
+                                               "/share/texmf-dist/source"))
+                        (doc (string-append #$output:doc
+                                            "/share/texmf-dist/doc")))
+                    (copy-recursively (string-append origin "/source") source)
+                    (copy-recursively (string-append origin "/doc") doc))))))))
       (home-page "http://www.ctan.org/pkg/soul")
       (synopsis "Hyphenation for letterspacing, underlining, and more")
       (description
@@ -12111,6 +12129,8 @@ can be used to implement similar tasks, that have to treat text syllable by
 syllable.  The package itself does not support UTF-8 input in ordinary
 (PDF)LaTeX; some UTF-8 support is offered by package @code{soulutf8}.")
       (license license:lppl))))
+
+(define-deprecated-package texlive-generic-soul texlive-soul)
 
 (define-public texlive-generic-xstring
   (let ((template (simple-texlive-package
