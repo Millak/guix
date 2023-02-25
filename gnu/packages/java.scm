@@ -5106,6 +5106,30 @@ including java-asm.")
            #:tests? #f))
     (inputs (list java-asm-8 java-asm-analysis-8 java-asm-tree-8))))
 
+(define-public java-asm-9
+  (package
+    (inherit java-asm)
+    (version "9.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                     (url "https://gitlab.ow2.org/asm/asm")
+                     (commit (string-append
+                               "ASM_" (string-join (string-split version #\.)
+                                                   "_")))))
+              (file-name (git-file-name "java-asm" version))
+              (sha256
+               (base32
+                "0c00m638skr5md1p6y1c2xn11kj5w6sjapyvwp9mh70rw095bwzk"))))
+    (arguments
+     `(#:jar-name "asm9.jar"
+       #:source-dir "asm/src/main/java"
+       #:test-dir "asm/src/test"
+       ;; tests depend on junit5
+       #:tests? #f))
+    (propagated-inputs '())
+    (native-inputs '())))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
