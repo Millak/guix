@@ -10645,7 +10645,7 @@ annotations.")
 (define-public java-bsh
   (package
     (name "java-bsh")
-    (version "2.0b6")
+    (version "2.1.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -10654,7 +10654,7 @@ annotations.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0kz3f0xjack6c9syssi4qjw1rbd3q5963sk5pmr143hiibxa9csw"))
+                "1a6y46yz2ba4mnlfv4bpd5pmzhgxrzk3s10xp05jz377nbp2izwg"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -10670,6 +10670,10 @@ annotations.")
        #:make-flags (list "-DDATE" "(no date for reproducibility)")
        #:phases
        (modify-phases %standard-phases
+         (add-before 'check 'fix-test
+           (lambda _
+             (substitute* "tests/junitTests/src/bsh/Issue_55_Test.java"
+               ((" BshScriptEngineFactory") " bsh.engine.BshScriptEngineFactory"))))
          (replace 'install
            (install-from-pom "pom.xml")))))
     (inputs
