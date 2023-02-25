@@ -8691,14 +8691,14 @@ older Python versions.")
 (define-public python-importlib-metadata
   (package
     (name "python-importlib-metadata")
-    (version "4.11.3")
+    (version "5.2.0")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "importlib_metadata" version))
        (sha256
         (base32
-         "0f951zynlh39yicqnhrs3p1qa5p3g6ajjfcggf12y51ppxz5jk7a"))))
+         "1kf7qclcz820xl5wwjpzcwpfy6shj7ymwh4xzxvpl2xs5gb4hka0"))))
     (build-system python-build-system)
     (arguments
      (list
