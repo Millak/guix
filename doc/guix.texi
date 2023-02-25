@@ -18342,18 +18342,17 @@ The option can be used to provides extra shepherd requirements (for example
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} kmscon-service-type @var{config}
-Return a service to run @uref{https://www.freedesktop.org/wiki/Software/kmscon,kmscon}
-according to @var{config}, a @code{<kmscon-configuration>} object, which
-specifies the tty to run, among other things.
-@end deffn
+@defvar kmscon-service-type
+Type of the service that runs @uref{https://www.freedesktop.org/wiki/Software/kmscon,kmscon},
+which implements virtual console log-in.  The value for this service is a
+@code{<kmscon-configuration>} object.
+@end defvar
 
 @deftp {Data Type} kmscon-configuration
-This is the data type representing the configuration of Kmscon, which
-implements virtual console log-in.
+Data type representing the configuration of Kmscon, which specifies the
+tty to run, among other things.
 
 @table @asis
-
 @item @code{virtual-terminal}
 The name of the console this Kmscon runs on---e.g., @code{"tty1"}.
 
