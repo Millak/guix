@@ -5143,6 +5143,19 @@ including java-asm.")
     (inputs
      (list java-asm-9))))
 
+(define-public java-asm-analysis-9
+  (package
+    (inherit java-asm-9)
+    (name "java-asm-analysis")
+    (arguments
+     `(#:jar-name "asm-analysis.jar"
+       #:source-dir "asm-analysis/src/main/java"
+       #:test-dir "asm-analysis/src/test"
+       ;; tests depend on junit5
+       #:tests? #f))
+    (inputs
+     (list java-asm-9 java-asm-tree-9))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
