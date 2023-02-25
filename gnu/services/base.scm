@@ -162,7 +162,7 @@
 
             agetty-configuration
             agetty-configuration?
-            agetty-service
+            agetty-service  ; deprecated
             agetty-service-type
 
             mingetty-configuration
@@ -1210,7 +1210,8 @@ to use as the tty.  This is primarily useful for headless systems."
                  "Provide console login using the @command{agetty}
 program.")))
 
-(define* (agetty-service config)
+(define-deprecated (agetty-service config)
+  agetty-service-type
   "Return a service to run agetty according to @var{config}, which specifies
 the tty to run, among other things."
   (service agetty-service-type config))

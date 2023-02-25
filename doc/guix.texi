@@ -18160,19 +18160,18 @@ The Mingetty package to use.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} agetty-service @var{config}
-Return a service to run agetty according to @var{config}, an
-@code{<agetty-configuration>} object, which specifies the tty to run,
-among other things.
-@end deffn
+@defvar agetty-service-type
+Type of the service that runs agetty, which implements virtual and
+serial console log-in.  The value for this service is a
+@code{<agetty-configuration>} object.
+@end defvar
 
 @deftp {Data Type} agetty-configuration
-This is the data type representing the configuration of agetty, which
-implements virtual and serial console log-in.  See the @code{agetty(8)}
-man page for more information.
+Data type representing the configuration of agetty, which specifies the
+tty to run, among other things@footnote{See the @code{agetty(8)}
+man page for more information.}.
 
 @table @asis
-
 @item @code{tty}
 The name of the console this agetty runs on, as a string---e.g.,
 @code{"ttyS0"}.  This argument is optional, it will default to
