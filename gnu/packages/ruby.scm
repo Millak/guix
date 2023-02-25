@@ -31,6 +31,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Remco van 't Veer <remco@remworks.net>
 ;;; Copyright © 2022 Taiju HIGASHI <higashi@taiju.info>
+;;; Copyright © 2023 Yovan Naumovski <yovan@gorski.stream>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -259,7 +260,7 @@ a focus on simplicity and productivity.")
 (define-public mruby
   (package
     (name "mruby")
-    (version "2.1.2")
+    (version "3.2.0")
     (source
      (origin
        (method git-fetch)
@@ -269,7 +270,7 @@ a focus on simplicity and productivity.")
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fhfv8pi7i8jn2vgk2n2rjnbnfa12nhj514v8i4k353n7q4pmkh3"))))
+         "0c0scaqbnywrd9z1z4rnnj345rjc3vbklszm0rc6y6rzx1cxnsij"))))
     (build-system gnu-build-system)
     (arguments
      `(#:test-target "test"
@@ -287,13 +288,9 @@ a focus on simplicity and productivity.")
              (substitute* "mrbgems/mruby-io/test/io.rb"
                (("assert\\('IO.popen.+$" m)
                 (string-append m "skip \"Hangs in the Guix build environment\"\n"))
-               (("assert\\('IO#isatty.+$" m)
-                (string-append m "skip \"Disable for Guix; there is no /dev/tty\"\n"))
                ;; This one is really weird.  The *expected* output is all wrong.
                (("assert\\('`cmd`.*" m)
-                (string-append m "skip \"Disable for Guix\"\n"))
-               (("echo foo")
-                (string-append (which "echo") " foo")))
+                (string-append m "skip \"Disable for Guix\"\n")))
              #t))
          ;; There is no install target
          (replace 'install
@@ -311,8 +308,8 @@ a focus on simplicity and productivity.")
     (home-page "https://github.com/mruby/mruby")
     (synopsis "Lightweight Ruby")
     (description "mruby is the lightweight implementation of the Ruby
-language.  Its syntax is Ruby 1.9 compatible.  mruby can be linked and
-embedded within your application.")
+language.  Its syntax is Ruby 3.x compatible except for pattern
+matching.  mruby can be linked and embedded within your application.")
     (license license:expat)))
 
 (define-public ruby-commander
