@@ -344,8 +344,7 @@ Maven Wagon, for use in Maven.")))
            maven-resolver-util
            maven-wagon-provider-api))
     (native-inputs
-     (list java-asm
-           java-aopalliance
+     (list java-aopalliance
            java-cglib
            java-guava
            java-guice
@@ -393,7 +392,6 @@ files, for use in Maven.")))
            java-httpcomponents-httpcore))
     (native-inputs
      (list java-aopalliance
-           java-asm
            java-cglib
            java-eclipse-aether-api
            java-eclipse-jetty-http
@@ -1262,7 +1260,6 @@ and compares versions:")))
            java-plexus-component-annotations
            java-guice
            java-cglib
-           java-asm
            java-eclipse-sisu-inject
            java-javax-inject
            java-plexus-classworlds
@@ -1473,7 +1470,6 @@ inheritance, interpolation, @dots{}")))
        ("java-plexus-component-annotations" ,java-plexus-component-annotations)
        ("java-guice" ,java-guice)
        ("java-cglib" ,java-cglib)
-       ("java-asm" ,java-asm)
        ("java-eclipse-sisu-inject" ,java-eclipse-sisu-inject)
        ("java-javax-inject" ,java-javax-inject)
        ("java-plexus-utils" ,java-plexus-utils)
@@ -2103,7 +2099,6 @@ logging support.")))
        ("java-guice" ,java-guice)
        ("java-guava" ,java-guava)
        ("java-cglib" ,java-cglib)
-       ("java-asm" ,java-asm)
        ("java-modello-plugins-java" ,java-modello-plugins-java)
        ("java-modello-plugins-xml" ,java-modello-plugins-xml)
        ("java-modello-plugins-xpp3" ,java-modello-plugins-xpp3)
