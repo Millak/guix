@@ -24709,9 +24709,10 @@ in the subsections below.
 
 @subsubheading Dovecot Service
 
-@deffn {Scheme Procedure} dovecot-service [#:config (dovecot-configuration)]
-Return a service that runs the Dovecot IMAP/POP3/LMTP mail server.
-@end deffn
+@defvar dovecot-service-type
+Type for the service that runs the Dovecot IMAP/POP3/LMTP mail server,
+whose value is a @code{<dovecot-configuration>} object.
+@end defvar
 
 By default, Dovecot does not need much configuration; the default
 configuration object created by @code{(dovecot-configuration)} will
@@ -24726,9 +24727,9 @@ For example, to specify that mail is located at @code{maildir~/.mail},
 one would instantiate the Dovecot service like this:
 
 @lisp
-(dovecot-service #:config
-                 (dovecot-configuration
-                  (mail-location "maildir:~/.mail")))
+(service dovecot-service-type
+         (dovecot-configuration
+           (mail-location "maildir:~/.mail")))
 @end lisp
 
 The available configuration parameters follow.  Each parameter
