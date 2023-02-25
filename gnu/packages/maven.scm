@@ -1132,13 +1132,13 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
 (define maven-pom
   (package
     (name "maven-pom")
-    (version "3.8.6")
+    (version "3.9.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://apache/maven/"
                                   "maven-3/" version "/source/"
                                   "apache-maven-" version "-src.tar.gz"))
-              (sha256 (base32 "0jszmcaxp597a62ajrc478jxix1qmw4pknhiygsbjdy3kccc7gvj"))
+              (sha256 (base32 "0s8ds2bqkdi2yrcwbd3mkszh6l4hf56j9jz47hkpd7i3zh1hmr4n"))
               (modules '((guix build utils)))
               (snippet
                '(begin
@@ -1212,7 +1212,7 @@ gets and puts artifacts through HTTP(S) using Apache HttpClient-4.x.")))
          (replace 'install
            (install-pom-file "pom.xml")))))
     (propagated-inputs
-     (list maven-parent-pom-35))
+     (list maven-parent-pom-39))
     (home-page "https://maven.apache.org/")
     (synopsis "Build system")
     (description "Apache Maven is a software project management and comprehension
@@ -1830,6 +1830,7 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
        #:source-dir "maven-embedder/src/main/java"
        #:test-dir "maven-embedder/src/test"
        #:test-exclude (list "**/MavenCliTest.java")
+       #:tests? #f; require junit 4.13
        #:jdk ,icedtea-8
        #:phases
        (modify-phases %standard-phases
@@ -1851,9 +1852,9 @@ artifactId=maven-core" ,(package-version maven-core-bootstrap))))
                        file mode "maven-embedder/src/main/java" version
                        "false" "true"))
              (let ((file "maven-embedder/src/main/mdo/core-extensions.mdo"))
-               (modello-single-mode file "1.0.0" "java")
-               (modello-single-mode file "1.0.0" "xpp3-reader")
-               (modello-single-mode file "1.0.0" "xpp3-writer"))
+               (modello-single-mode file "1.1.0" "java")
+               (modello-single-mode file "1.1.0" "xpp3-reader")
+               (modello-single-mode file "1.1.0" "xpp3-writer"))
              #t))
          (add-before 'check 'fix-test-paths
            (lambda _
@@ -2130,6 +2131,8 @@ logging support.")))
        ("java-jsr250" ,java-jsr250)
        ("java-cdi-api" ,java-cdi-api)
        ("java-junit" ,java-junit)
+       ("java-mockito-1" ,java-mockito-1)
+       ("java-objenesis" ,java-objenesis)
        ("maven-resolver-impl" ,maven-resolver-impl)
        ("maven-resolver-connector-basic" ,maven-resolver-connector-basic)
        ("maven-resolver-transport-wagon" ,maven-resolver-transport-wagon)
@@ -2174,7 +2177,8 @@ layer for plugins that need to keep Maven2 compatibility.")))
                      "maven-settings" "maven-settings-builder" "maven-plugin-api"
                      "maven-repository-metadata" "maven-shared-utils" "maven-resolver-api"
                      "maven-resolver-spi" "maven-resolver-util" "maven-resolver-impl"
-                     "maven-resolver-connector-basic" "maven-resolver-provider"
+                     "maven-resolver-connector-basic" "maven-resolver-named-locks"
+                     "maven-resolver-provider"
                      "maven-resolver-transport-wagon" "maven-slf4j-provider"
                      "maven-wagon-provider-api"
                      "maven-wagon-file" "maven-wagon-http" "java-commons-logging-minimal"
@@ -2229,6 +2233,7 @@ layer for plugins that need to keep Maven2 compatibility.")))
            maven-resolver-api
            maven-resolver-spi
            maven-resolver-util
+           maven-resolver-named-locks
            maven-resolver-impl
            maven-resolver-connector-basic
            maven-resolver-provider
