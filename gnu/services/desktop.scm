@@ -97,7 +97,7 @@
 
             udisks-configuration
             udisks-configuration?
-            udisks-service
+            udisks-service  ; deprecated
             udisks-service-type
 
             colord-service-type
@@ -945,9 +945,11 @@ screens and scanners.")))
                   (description "Run UDisks, a @dfn{disk management} daemon
 that provides user interfaces with notifications and ways to mount/unmount
 disks.  Programs that talk to UDisks include the @command{udisksctl} command,
-part of UDisks, and GNOME Disks."))))
+part of UDisks, and GNOME Disks.")
+                  (default-value (udisks-configuration)))))
 
-(define* (udisks-service #:key (udisks udisks))
+(define-deprecated (udisks-service #:key (udisks udisks))
+  udisks-service-type
   "Return a service for @uref{http://udisks.freedesktop.org/docs/latest/,
 UDisks}, a @dfn{disk management} daemon that provides user interfaces with
 notifications and ways to mount/unmount disks.  Programs that talk to UDisks
@@ -1858,7 +1860,7 @@ applications needing access to be root.")
 
          ;; The D-Bus clique.
          (service avahi-service-type)
-         (udisks-service)
+         (service udisks-service-type)
          (service upower-service-type)
          (service accountsservice-service-type)
          (service cups-pk-helper-service-type)
