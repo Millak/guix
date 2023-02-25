@@ -18919,13 +18919,24 @@ seconds for the negative lookups.  @xref{Invoking guix publish,
 @end table
 @end deftp
 
-@anchor{rngd-service}
-@deffn {Scheme Procedure} rngd-service [#:rng-tools @var{rng-tools}] @
-            [#:device "/dev/hwrng"]
-Return a service that runs the @command{rngd} program from @var{rng-tools}
-to add @var{device} to the kernel's entropy pool.  The service will fail if
-@var{device} does not exist.
-@end deffn
+@defvar rngd-service-type
+Type of the service that runs rng-tools rngd, whose value is a
+@code{<rngd-configuration>} object.
+@end defvar
+
+@deftp {Data Type} rngd-configuration
+Data type representing the configuration of rngd.
+
+@table @asis
+@item @code{rng-tools} (default: @code{rng-tools}) (type: file-like)
+Package object of the rng-tools rngd.
+
+@item @code{device} (default: @var{"/dev/hwrng"}) (type: string)
+Path of the device to add to the kernel's entropy pool.  The service
+will fail if @var{device} does not exist.
+
+@end table
+@end deftp
 
 @anchor{pam-limits-service}
 @cindex session limits

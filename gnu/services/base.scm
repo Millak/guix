@@ -239,7 +239,7 @@
             rngd-configuration
             rngd-configuration?
             rngd-service-type
-            rngd-service
+            rngd-service  ; deprecated
 
             kmscon-configuration
             kmscon-configuration?
@@ -662,8 +662,10 @@ down.")))
 (define-record-type* <rngd-configuration>
   rngd-configuration make-rngd-configuration
   rngd-configuration?
-  (rng-tools rngd-configuration-rng-tools)        ;file-like
-  (device    rngd-configuration-device))          ;string
+  (rng-tools rngd-configuration-rng-tools         ;file-like
+             (default rng-tools))
+  (device    rngd-configuration-device            ;string
+             (default "/dev/hwrng")))
 
 (define rngd-service-type
   (shepherd-service-type
@@ -682,12 +684,13 @@ down.")))
         (provision '(trng))
         (start #~(make-forkexec-constructor '#$rngd-command))
         (stop #~(make-kill-destructor))))
+    (rngd-configuration)
     (description "Run the @command{rngd} random number generation daemon to
 supply entropy to the kernel's pool.")))
 
-(define* (rngd-service #:key
-                       (rng-tools rng-tools)
-                       (device "/dev/hwrng"))
+(define-deprecated (rngd-service #:key (rng-tools rng-tools)
+                                 (device "/dev/hwrng"))
+  rngd-service-type
   "Return a service that runs the @command{rngd} program from @var{rng-tools}
 to add @var{device} to the kernel's entropy pool.  The service will fail if
 @var{device} does not exist."
