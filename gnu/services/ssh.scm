@@ -42,7 +42,7 @@
   #:use-module (ice-9 vlist)
   #:export (lsh-configuration
             lsh-configuration?
-            lsh-service
+            lsh-service  ; deprecated
             lsh-service-type
 
             openssh-configuration
@@ -74,20 +74,34 @@
   lsh-configuration?
   (lsh lsh-configuration-lsh
        (default lsh))
-  (daemonic? lsh-configuration-daemonic?)
-  (host-key lsh-configuration-host-key)
-  (interfaces lsh-configuration-interfaces)
-  (port-number lsh-configuration-port-number)
-  (allow-empty-passwords? lsh-configuration-allow-empty-passwords?)
-  (root-login? lsh-configuration-root-login?)
-  (syslog-output? lsh-configuration-syslog-output?)
-  (pid-file? lsh-configuration-pid-file?)
-  (pid-file lsh-configuration-pid-file)
-  (x11-forwarding? lsh-configuration-x11-forwarding?)
-  (tcp/ip-forwarding? lsh-configuration-tcp/ip-forwarding?)
-  (password-authentication? lsh-configuration-password-authentication?)
-  (public-key-authentication? lsh-configuration-public-key-authentication?)
-  (initialize? lsh-configuration-initialize?))
+  (daemonic? lsh-configuration-daemonic?
+             (default #t))
+  (host-key lsh-configuration-host-key
+            (default "/etc/lsh/host-key"))
+  (interfaces lsh-configuration-interfaces
+              (default '()))
+  (port-number lsh-configuration-port-number
+               (default 22))
+  (allow-empty-passwords? lsh-configuration-allow-empty-passwords?
+                          (default #f))
+  (root-login? lsh-configuration-root-login?
+               (default #f))
+  (syslog-output? lsh-configuration-syslog-output?
+                  (default #t))
+  (pid-file? lsh-configuration-pid-file?
+             (default #f))
+  (pid-file lsh-configuration-pid-file
+            (default "/var/run/lshd.pid"))
+  (x11-forwarding? lsh-configuration-x11-forwarding?
+                   (default #t))
+  (tcp/ip-forwarding? lsh-configuration-tcp/ip-forwarding?
+                      (default #t))
+  (password-authentication? lsh-configuration-password-authentication?
+                            (default #t))
+  (public-key-authentication? lsh-configuration-public-key-authentication?
+                              (default #t))
+  (initialize? lsh-configuration-initialize?
+               (default #t)))
 
 (define %yarrow-seed
   "/var/spool/lsh/yarrow-seed-file")
@@ -203,19 +217,20 @@
          (lsh-configuration-allow-empty-passwords? config))))
 
 (define lsh-service-type
-  (service-type (name 'lsh)
-                (description
-                 "Run the GNU@tie{}lsh secure shell (SSH) daemon,
+  (service-type
+   (name 'lsh)
+   (extensions
+    (list (service-extension shepherd-root-service-type
+                             lsh-shepherd-service)
+          (service-extension pam-root-service-type
+                             lsh-pam-services)
+          (service-extension activation-service-type
+                             lsh-activation)))
+   (description "Run the GNU@tie{}lsh secure shell (SSH) daemon,
 @command{lshd}.")
-                (extensions
-                 (list (service-extension shepherd-root-service-type
-                                          lsh-shepherd-service)
-                       (service-extension pam-root-service-type
-                                          lsh-pam-services)
-                       (service-extension activation-service-type
-                                          lsh-activation)))))
+   (default-value (lsh-configuration))))
 
-(define* (lsh-service #:key
+(define-deprecated (lsh-service #:key
                       (lsh lsh)
                       (daemonic? #t)
                       (host-key "/etc/lsh/host-key")
@@ -231,6 +246,7 @@
                       (password-authentication? #t)
                       (public-key-authentication? #t)
                       (initialize? #t))
+  lsh-service-type
   "Run the @command{lshd} program from @var{lsh} to listen on port @var{port-number}.
 @var{host-key} must designate a file containing the host key, and readable
 only by root.
