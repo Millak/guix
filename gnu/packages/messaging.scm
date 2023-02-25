@@ -485,7 +485,8 @@ TCP sessions from existing clients.")
         (base32 "15vlmymqlcf94h1g6dvgzjvj15c47dqsm78qs40wl2dlwspvqkxj"))))
     (build-system python-build-system)
     (arguments
-      (list #:phases
+      (list #:tests? #f ; tests fails without the OTR plugin
+            #:phases
             #~(modify-phases %standard-phases
                 (add-after 'unpack 'patch
                   (lambda _
@@ -496,7 +497,6 @@ TCP sessions from existing clients.")
      (list pkg-config python-setuptools python-sphinx))
     (inputs
      (list python-mpd2
-           python-potr
            python-pyasn1
            python-pyasn1-modules
            python-pygments
