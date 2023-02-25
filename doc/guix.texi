@@ -31859,20 +31859,22 @@ desktop-environment or should be run manually.
 
 It provides a @emph{client} service for your machine to connect to a
 VPN, and a @emph{server} service for your machine to host a VPN@.
+Both @code{openvpn-client-service-type} and
+@code{openvpn-server-service-type} can be run simultaneously.
 
-@deffn {Scheme Procedure} openvpn-client-service @
-       [#:config (openvpn-client-configuration)]
+@defvar openvpn-client-service-type
+Type of the service that runs @command{openvpn}, a VPN daemon, as a client.
 
-Return a service that runs @command{openvpn}, a VPN daemon, as a client.
-@end deffn
+The value for this service is a @code{<openvpn-client-configuration>}
+object.
+@end defvar
 
-@deffn {Scheme Procedure} openvpn-server-service @
-       [#:config (openvpn-server-configuration)]
+@defvar openvpn-server-service-type
+Type of the service that runs @command{openvpn}, a VPN daemon, as a server.
 
-Return a service that runs @command{openvpn}, a VPN daemon, as a server.
-
-Both can be run simultaneously.
-@end deffn
+The value for this service is a @code{<openvpn-server-configuration>}
+object.
+@end defvar
 
 @c %automatically generated documentation
 
