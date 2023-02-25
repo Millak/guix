@@ -87,6 +87,7 @@
   #:use-module (guix gexp)
   #:use-module (guix utils)
   #:use-module ((guix build utils) #:select (alist-replace))
+  #:use-module (guix build-system ant)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system glib-or-gtk)
   #:use-module (guix build-system gnu)
@@ -6130,9 +6131,74 @@ find_package(louvain_communities)")
    (native-inputs (list googletest pkg-config python-wrapper))
    (home-page "http://boolector.github.io/")
    (synopsis "Bitvector-based theory solver")
-   (description "Boolector is a @abbrev{SMT, satisfiability modulo theories}
+   (description "Boolector is a @acronym{SMT, satisfiability modulo theories}
 solver for the theories of fixed-size bit-vectors, arrays and uninterpreted
 functions.")
+   (license license:lgpl3+)))
+
+(define-public java-smtinterpol
+  (package
+   (name "java-smtinterpol")
+   (version "2.5")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/ultimate-pa/smtinterpol")
+                  (commit version)))
+            (file-name (git-file-name name version))
+            (modules '((guix build utils)))
+            (snippet #~(begin
+                         (delete-file-recursively "jacoco")
+                         (delete-file-recursively "libs")
+                         (delete-file-recursively "sonar")))
+            (sha256
+             (base32
+              "0bq5l7g830a8hxw1xyyfp2ph6jqk8ak0ichlymdglpnpngf6322f"))))
+   (build-system ant-build-system)
+   (arguments
+    (list #:build-target "dist"
+          #:test-target "runtests"
+          #:phases
+          #~(modify-phases %standard-phases
+              (add-after 'unpack 'fix-build.xml
+                (lambda _
+                  (substitute* "build.xml"
+                    (("<tstamp>") "<!--")
+                    (("</tstamp>") "-->")
+                    (("executable=\"git\"")
+                     (string-append "executable=\""
+                                    (which "sh")
+                                    "\""))
+                    (("<property file=.*/>" all)
+                     (string-append all
+                                    "<property environment=\"env\" />"))
+                    (("<classpath>" all)
+                     (string-append
+                      all
+                      "<pathelement path=\"${env.CLASSPATH}\" />"))
+                    (("<fileset file=\".*/libs/.*/>") "")
+                    (("<junit")
+                     "<junit haltonfailure=\"yes\""))
+                  (call-with-output-file "describe"
+                    (lambda (port)
+                      (format port "echo ~a" #$version)))))
+              (add-before 'check 'delete-failing-tests
+                (lambda _
+                  (delete-file
+                   (string-append "SMTInterpolTest/src/de/uni_freiburg"
+                                  "/informatik/ultimate/smtinterpol/convert/"
+                                  "EqualityDestructorTest.java"))))
+              (replace 'install
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (java (string-append out "/share/java")))
+                    (for-each (lambda (f) (install-file f java))
+                              (find-files "dist" "\\.jar$"))))))))
+   (native-inputs (list java-junit))
+   (home-page "http://ultimate.informatik.uni-freiburg.de/smtinterpol/")
+   (synopsis "Interpolating SMT solver")
+   (description "SMTInterpol is an @acronym{SMT, Satisfiability Modulo Theories}
+solver, that can compute Craig interpolants for various theories.")
    (license license:lgpl3+)))
 
 (define-public yices
