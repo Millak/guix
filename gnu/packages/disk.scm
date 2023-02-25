@@ -575,14 +575,14 @@ and can dramatically shorten the lifespan of the drive if left unchecked.")
 (define-public gparted
   (package
     (name "gparted")
-    (version "1.4.0")
+    (version "1.5.0")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/gparted/gparted/gparted-"
                            version "/gparted-" version ".tar.gz"))
        (sha256
-        (base32 "1gl7g1lg72s63a9xlc4kcc6ksq6r7h8k9a6456xbxzak5rwklag5"))))
+        (base32 "1pm8jah6lakv83zm3isx4bgmi5xdwaqkjxmiv7qky224m4kfm59w"))))
     (build-system glib-or-gtk-build-system)
     (arguments
       ;; Tests require access to files outside the build container, such
