@@ -13608,20 +13608,21 @@ Debian-related files, such as:
 (define-public python-json-spec
   (package
     (name "python-json-spec")
-    (version "0.10.1")
+    (version "0.11.0")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "json-spec" version))
+        (uri (pypi-uri "json_spec" version))
         (sha256
           (base32
-            "06dpbsq61ja9r89wpa2pzdii47qh3xri9ajdrgn1awfl102znchb"))))
+            "0fwxirzxx5s9l0lwnjl6ki39xw1fsjm0vr6cm67ws27fkmcxcry7"))))
     (build-system python-build-system)
     (propagated-inputs
-      (list python-pathlib python-six))
+      (list python-importlib-metadata
+            python-termcolor))
     (native-inputs
       (list python-pytest))
-    (home-page "http://py.errorist.io/json-spec")
+    (home-page "https://json-spec.readthedocs.io/")
     (synopsis
       "JSON Schema, JSON Pointer and JSON Reference for Python")
     (description
