@@ -7580,6 +7580,29 @@ diagrams, algebraic decision diagrams, and zero-suppressed binary decision
 diagrams.")
    (license license:bsd-3)))
 
+(define-public libpoly
+  (package
+   (name "libpoly")
+   (version "0.1.11")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/SRI-CSL/libpoly")
+                  (commit (string-append "v" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0qylmg30rklvg00a0h1b3pb52cj9ki98yd27cylihjhq2klh3dmy"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:configure-flags #~(list "-DLIBPOLY_BUILD_PYTHON_API=off")))
+   (inputs (list gmp))
+   (home-page "https://github.com/SRI-CSL/libpoly")
+   (synopsis "Manipulate polynomials")
+   (description "LibPoly is a C library for manipulating polynomials to support
+symbolic reasoning engines that need to reason about polynomial constraints.")
+   (license license:lgpl3+)))
+
 (define-public lingeling
   (let ((commit "72d2b13eea5fbd95557a3d0d199cd98dfbdc76ee")
         (revision "1"))
