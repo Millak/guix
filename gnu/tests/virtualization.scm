@@ -50,7 +50,7 @@
   (simple-operating-system
    (service dhcp-client-service-type)
    (dbus-service)
-   (polkit-service)
+   (service polkit-service-type)
    (service libvirt-service-type)))
 
 (define (run-libvirt-test)

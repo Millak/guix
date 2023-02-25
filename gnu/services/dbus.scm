@@ -28,6 +28,7 @@
   #:use-module ((gnu packages glib) #:select (dbus))
   #:use-module (gnu packages polkit)
   #:use-module (gnu packages admin)
+  #:use-module (guix deprecation)
   #:use-module (guix gexp)
   #:use-module ((guix packages) #:select (package-name))
   #:use-module (guix records)
@@ -43,7 +44,7 @@
             polkit-configuration
             polkit-configuration?
             polkit-service-type
-            polkit-service))
+            polkit-service))  ; deprecated
 
 ;;;
 ;;; D-Bus.
@@ -404,7 +405,8 @@ management service}, which allows system administrators to grant access to
 privileged operations in a structured way.  Polkit is a requirement for most
 desktop environments, such as GNOME.")))
 
-(define* (polkit-service #:key (polkit polkit))
+(define-deprecated (polkit-service #:key (polkit polkit))
+  polkit-service-type
   "Return a service that runs the
 @uref{http://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
 management service}, which allows system administrators to grant access to

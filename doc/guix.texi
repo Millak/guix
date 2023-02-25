@@ -23440,16 +23440,20 @@ The value for this service is a file-like object, by default it is
 set to @code{accountsservice} (the package object for AccountsService).
 @end defvar
 
-@deffn {Scheme Procedure} polkit-service @
-                         [#:polkit @var{polkit}]
-Return a service that runs the
-@uref{https://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
+@defvar polkit-service-type
+Type for the service that runs the
+@url{https://www.freedesktop.org/wiki/Software/polkit/, Polkit privilege
 management service}, which allows system administrators to grant access to
 privileged operations in a structured way.  By querying the Polkit service, a
 privileged system component can know when it should grant additional
 capabilities to ordinary users.  For example, an ordinary user can be granted
 the capability to suspend the system if the user is logged in locally.
-@end deffn
+
+The value for this service is a @code{<polkit-configuration>} object.
+@end defvar
+
+@c TODO: Document <polkit-configuration>, preferably by refactoring this to use
+@c       define-configuration and generating documentation from it.
 
 @defvar polkit-wheel-service
 Service that adds the @code{wheel} group as admins to the Polkit
