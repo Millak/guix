@@ -23633,20 +23633,18 @@ IceCat and Epiphany both query the user before allowing a web page to
 know the user's location.
 @end defvar
 
-@deffn {Scheme Procedure} geoclue-service [#:colord @var{colord}] @
-                         [#:whitelist '()] @
-                         [#:wifi-geolocation-url "https://location.services.mozilla.com/v1/geolocate?key=geoclue"] @
-                         [#:submit-data? #f]
-                         [#:wifi-submission-url "https://location.services.mozilla.com/v1/submit?key=geoclue"] @
-                         [#:submission-nick "geoclue"] @
-                         [#:applications %standard-geoclue-applications]
-Return a service that runs the GeoClue location service.  This service
-provides a D-Bus interface to allow applications to request access to a
-user's physical location, and optionally to add information to online
-location databases.  See
-@uref{https://wiki.freedesktop.org/www/Software/GeoClue/, the GeoClue
-web site} for more information.
-@end deffn
+@defvar geoclue-service-type
+Type for the service that runs the
+@url{https://wiki.freedesktop.org/www/Software/GeoClue/, GeoClue}
+location service.  This service provides a D-Bus interface to allow
+applications to request access to a user's physical location, and
+optionally to add information to online location databases.
+
+The value for this service is a @code{<geoclue-configuration>} object.
+@end defvar
+
+@c TODO: Document <geoclue-configuration>, preferably by refactoring this to use
+@c       define-configuration and generating documentation from it.
 
 @deffn {Scheme Procedure} bluetooth-service [#:bluez @var{bluez}] @
        [@w{#:auto-enable? #f}]

@@ -106,7 +106,7 @@
             geoclue-configuration
             geoclue-configuration?
             %standard-geoclue-applications
-            geoclue-service
+            geoclue-service  ; deprecated
             geoclue-service-type
 
             bluetooth-service-type
@@ -318,19 +318,6 @@ used by GNOME.")
 ;;; GeoClue D-Bus service.
 ;;;
 
-;; TODO: Export.
-(define-record-type* <geoclue-configuration>
-  geoclue-configuration make-geoclue-configuration
-  geoclue-configuration?
-  (geoclue geoclue-configuration-geoclue
-           (default geoclue))
-  (whitelist geoclue-configuration-whitelist)
-  (wifi-geolocation-url geoclue-configuration-wifi-geolocation-url)
-  (submit-data? geoclue-configuration-submit-data?)
-  (wifi-submission-url geoclue-configuration-wifi-submission-url)
-  (submission-nick geoclue-configuration-submission-nick)
-  (applications geoclue-configuration-applications))
-
 (define* (geoclue-application name #:key (allowed? #t) system? (users '()))
   "Configure default GeoClue access permissions for an application.  NAME is
 the Desktop ID of the application, without the .desktop part.  If ALLOWED? is
@@ -349,6 +336,28 @@ users are allowed."
   (list (geoclue-application "gnome-datetime-panel" #:system? #t)
         (geoclue-application "epiphany" #:system? #f)
         (geoclue-application "firefox" #:system? #f)))
+
+;; TODO: Use define-configuration and export accessors.
+(define-record-type* <geoclue-configuration>
+  geoclue-configuration make-geoclue-configuration
+  geoclue-configuration?
+  (geoclue geoclue-configuration-geoclue
+           (default geoclue))
+  (whitelist geoclue-configuration-whitelist
+             (default '()))
+  (wifi-geolocation-url
+   geoclue-configuration-wifi-geolocation-url
+   ;; Mozilla geolocation service:
+   (default "https://location.services.mozilla.com/v1/geolocate?key=geoclue"))
+  (submit-data? geoclue-configuration-submit-data?
+                (default #f))
+  (wifi-submission-url
+   geoclue-configuration-wifi-submission-url
+   (default "https://location.services.mozilla.com/v1/submit?key=geoclue"))
+  (submission-nick geoclue-configuration-submission-nick
+                   (default "geoclue"))
+  (applications geoclue-configuration-applications
+                (default %standard-geoclue-applications)))
 
 (define* (geoclue-configuration-file config)
   "Return a geoclue configuration file."
@@ -397,16 +406,18 @@ This service provides a D-Bus interface to allow applications to request
 access to a user's physical location, and optionally to add information to
 online location databases.")))
 
-(define* (geoclue-service #:key (geoclue geoclue)
-                          (whitelist '())
-                          (wifi-geolocation-url
-                           ;; Mozilla geolocation service:
-                           "https://location.services.mozilla.com/v1/geolocate?key=geoclue")
-                          (submit-data? #f)
-                          (wifi-submission-url
-                           "https://location.services.mozilla.com/v1/submit?key=geoclue")
-                          (submission-nick "geoclue")
-                          (applications %standard-geoclue-applications))
+(define-deprecated
+  (geoclue-service #:key (geoclue geoclue)
+                   (whitelist '())
+                   (wifi-geolocation-url
+                    ;; Mozilla geolocation service:
+                    "https://location.services.mozilla.com/v1/geolocate?key=geoclue")
+                   (submit-data? #f)
+                   (wifi-submission-url
+                    "https://location.services.mozilla.com/v1/submit?key=geoclue")
+                   (submission-nick "geoclue")
+                   (applications %standard-geoclue-applications))
+  geoclue-service-type
   "Return a service that runs the @command{geoclue} location service.  This
 service provides a D-Bus interface to allow applications to request access to
 a user's physical location, and optionally to add information to online
@@ -1865,7 +1876,7 @@ applications needing access to be root.")
          (service accountsservice-service-type)
          (service cups-pk-helper-service-type)
          (service colord-service-type)
-         (geoclue-service)
+         (service geoclue-service-type)
          (service polkit-service-type)
          (service elogind-service-type)
          (dbus-service)
