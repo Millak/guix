@@ -57,6 +57,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2023 Sharlatan Hellseher <sharlatanus@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4618,3 +4619,31 @@ interface statistics provided by the kernel as information source.  This means
 that vnStat won't actually be sniffing any traffic and also ensures light use
 of system resources regardless of network traffic rate.")
    (license license:gpl2+)))
+
+(define-public dropwatch
+  (package
+    (name "dropwatch")
+    (version "1.5.4")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/nhorman/dropwatch.git")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r653y7bx763fpxl1vrflx8bzcrbds98zk4z7yhfikjngrqn1f2d"))))
+    (build-system gnu-build-system)
+    ;; XXX: bfd support isn't finished.
+    ;; https://github.com/nhorman/dropwatch/issues/76#issuecomment-1328345444
+    (arguments
+     (list #:configure-flags #~(list "--without-bfd")))
+    (native-inputs (list autoconf automake pkg-config))
+    (inputs (list libnl libpcap readline))
+    (home-page "https://github.com/nhorman/dropwatch")
+    (synopsis "Monitor for network packets dropped by the kernel")
+    (description
+     "Dropwatch is an interactive utility for monitoring and
+recording packets that are dropped by the kernel.  It provides the commands
+@command{dropwatch} and @command{dwdump}.")
+    (license license:gpl2+)))
