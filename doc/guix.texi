@@ -18675,15 +18675,30 @@ A list of file-like objects or strings pointing to additional directories the bu
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} udev-service [#:udev @var{eudev} #:rules @code{'()}]
-Run @var{udev}, which populates the @file{/dev} directory dynamically.
-udev rules can be provided as a list of files through the @var{rules}
-variable.  The procedures @code{udev-rule}, @code{udev-rules-service}
-and @code{file->udev-rule} from @code{(gnu services base)} simplify the
-creation of such rule files.
-@end deffn
+@defvar udev-service-type
+Type of the service that runs udev, a service which populates the
+@file{/dev} directory dynamically, whose value is a
+@code{<udev-configuration>} object.
 
-@deffn {Scheme Procedure} udev-rule [@var{file-name} @var{contents}]
+This service type can be @emph{extended} using procedures
+@code{udev-rules-service} along with @code{file->udev-rule} or
+@code{udev-rule} which simplify the process of writing udev rules.
+@end defvar
+
+@deftp {Data Type} udev-configuration
+Data type representing the configuration of udev.
+
+@table @asis
+@item @code{udev} (default: @code{eudev}) (type: file-like)
+Package object of the udev service.
+
+@item @code{rules} (default: @var{'()}) (type: list-of-file-like)
+List of file-like objects denoting udev-rule files.
+
+@end table
+@end deftp
+
+@defun udev-rule @var{file-name} @var{contents}
 Return a udev-rule file named @var{file-name} containing the rules
 defined by the @var{contents} literal.
 
@@ -18699,18 +18714,17 @@ upon detecting a USB device with a given product identifier.
                    "ATTR@{product@}==\"Example\", "
                    "RUN+=\"/path/to/script\"")))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} udev-rules-service [@var{name} @var{rules}] @
-               [#:groups @var{groups}]
-Return a service that extends @code{udev-service-type } with @var{rules}
+@defun udev-rules-service @var{name} @var{rules} [#:groups '()]
+Return a service that extends @code{udev-service-type} with @var{rules}
 and @code{account-service-type} with @var{groups} as system groups.
 This works by creating a singleton service type
 @code{@var{name}-udev-rules}, of which the returned service is an
 instance.
 
-Here we show how it can be used to extend @code{udev-service-type} with the
-previously defined rule @code{%example-udev-rule}.
+Here we show how it can be used to extend @code{udev-service-type}
+with the previously defined rule @code{%example-udev-rule}.
 
 @lisp
 (operating-system
@@ -18719,11 +18733,11 @@ previously defined rule @code{%example-udev-rule}.
    (cons (udev-rules-service 'usb-thing %example-udev-rule)
          %desktop-services)))
 @end lisp
-@end deffn
+@end defun
 
-@deffn {Scheme Procedure} file->udev-rule [@var{file-name} @var{file}]
-Return a udev file named @var{file-name} containing the rules defined
-within @var{file}, a file-like object.
+@defun file->udev-rule @var{file-name} @var{file}
+Return a udev-rule file named @var{file-name} containing the rules
+defined within @var{file}, a file-like object.
 
 The following example showcases how we can use an existing rule file.
 
@@ -18743,7 +18757,7 @@ The following example showcases how we can use an existing rule file.
        (sha256
         (base32 "0lmmagpyb6xsq6zcr2w1cyx9qmjqmajkvrdbhjx32gqf1d9is003"))))))
 @end lisp
-@end deffn
+@end defun
 
 Additionally, Guix package definitions can be included in @var{rules} in
 order to extend the udev rules with the definitions found under their

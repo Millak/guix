@@ -388,7 +388,9 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            ;; Start udev so that useful device nodes are available.
            ;; Use device-mapper rules for cryptsetup & co; enable the CRDA for
            ;; regulations-compliant WiFi access.
-           (udev-service #:rules (list lvm2 crda))
+           (service udev-service-type
+                    (udev-configuration
+                     (rules (list lvm2 crda))))
 
            ;; Add the 'cow-store' service, which users have to start manually
            ;; since it takes the installation directory as an argument.

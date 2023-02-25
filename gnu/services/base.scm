@@ -150,7 +150,7 @@
             udev-configuration?
             udev-configuration-rules
             udev-service-type
-            udev-service
+            udev-service  ; deprecated
             udev-rule
             file->udev-rule
             udev-rules-service
@@ -2351,7 +2351,8 @@ item of @var{packages}."
 directory dynamically.  Get extra rules from the packages listed in the
 @code{rules} field of its value, @code{udev-configuration} object.")))
 
-(define* (udev-service #:key (udev eudev) (rules '()))
+(define-deprecated (udev-service #:key (udev eudev) (rules '()))
+  udev-service-type
   "Run @var{udev}, which populates the @file{/dev} directory dynamically.  Get
 extra rules from the packages listed in @var{rules}."
   (service udev-service-type
