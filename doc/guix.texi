@@ -23646,15 +23646,6 @@ The value for this service is a @code{<geoclue-configuration>} object.
 @c TODO: Document <geoclue-configuration>, preferably by refactoring this to use
 @c       define-configuration and generating documentation from it.
 
-@deffn {Scheme Procedure} bluetooth-service [#:bluez @var{bluez}] @
-       [@w{#:auto-enable? #f}]
-Return a service that runs the @command{bluetoothd} daemon, which
-manages all the Bluetooth devices and provides a number of D-Bus
-interfaces.  When AUTO-ENABLE? is true, the bluetooth controller is
-powered automatically at boot, which can be useful when using a
-bluetooth keyboard or mouse.
-@end deffn
-
 @defvar bluetooth-service-type
 This is the type for the @uref{https://bluez.org/, Linux Bluetooth Protocol
 Stack} (BlueZ) system, which generates the @file{/etc/bluetooth/main.conf}

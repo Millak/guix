@@ -112,7 +112,7 @@
             bluetooth-service-type
             bluetooth-configuration
             bluetooth-configuration?
-            bluetooth-service
+            bluetooth-service  ; deprecated
 
             elogind-configuration
             elogind-configuration?
@@ -859,7 +859,8 @@ site} for more information."
    (description "Run the @command{bluetoothd} daemon, which manages all the
 Bluetooth devices and provides a number of D-Bus interfaces.")))
 
-(define* (bluetooth-service #:key (bluez bluez) (auto-enable? #f))
+(define-deprecated (bluetooth-service #:key (bluez bluez) (auto-enable? #f))
+  bluetooth-service-type
   "Return a service that runs the @command{bluetoothd} daemon, which manages
 all the Bluetooth devices and provides a number of D-Bus interfaces.  When
 AUTO-ENABLE? is true, the bluetooth controller is powered automatically at
