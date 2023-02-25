@@ -5169,6 +5169,18 @@ including java-asm.")
     (inputs
      (list java-asm-9 java-asm-analysis-9 java-asm-tree-9))))
 
+(define-public java-asm-commons-9
+  (package
+    (inherit java-asm-9)
+    (name "java-asm-commons")
+    (arguments
+     (list #:jar-name "asm-commons8.jar"
+           #:source-dir "asm-commons/src/main/java"
+           #:test-dir "asm-commons/src/test"
+           ;; tests depend on junit5
+           #:tests? #f))
+    (inputs (list java-asm-9 java-asm-analysis-9 java-asm-tree-9))))
+
 (define-public java-cglib
   (package
     (name "java-cglib")
