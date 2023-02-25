@@ -38,7 +38,7 @@
   #:export (dbus-configuration
             dbus-configuration?
             dbus-root-service-type
-            dbus-service
+            dbus-service  ; deprecated
             wrapped-dbus-service
 
             polkit-configuration
@@ -245,7 +245,8 @@ includes the @code{etc/dbus-1/system.d} directories of each package listed in
 bus.  It allows programs and daemons to communicate and is also responsible
 for spawning (@dfn{activating}) D-Bus services on demand.")))
 
-(define* (dbus-service #:key (dbus dbus) (services '()) verbose?)
+(define-deprecated (dbus-service #:key (dbus dbus) (services '()) verbose?)
+  dbus-root-service-type
   "Return a service that runs the \"system bus\", using @var{dbus}, with
 support for @var{services}.  When @var{verbose?} is true, it causes the
 @samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a

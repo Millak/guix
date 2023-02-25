@@ -49,7 +49,7 @@
         (service accountsservice-service-type)
         (service polkit-service-type)
         (service elogind-service-type)
-        (dbus-service)
+        (service dbus-root-service-type)
         x11-socket-directory-service))
 
 (define %lightdm-os

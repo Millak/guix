@@ -442,7 +442,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
                     (list %loopback-static-networking))
 
            (service wpa-supplicant-service-type)
-           (dbus-service)
+           (service dbus-root-service-type)
            (service connman-service-type
                     (connman-configuration
                      (disable-vpn? #t)))

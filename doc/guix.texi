@@ -23301,24 +23301,37 @@ The actual service definitions included in @code{%desktop-services} and
 provided by @code{(gnu services dbus)} and @code{(gnu services desktop)}
 are described below.
 
-@deffn {Scheme Procedure} dbus-service [#:dbus @var{dbus}] [#:services '()] @
-                                       [#:verbose?]
-Return a service that runs the ``system bus'', using @var{dbus}, with
-support for @var{services}.  When @var{verbose?} is true, it causes the
-@samp{DBUS_VERBOSE} environment variable to be set to @samp{1}; a
-verbose-enabled D-Bus package such as @code{dbus-verbose} should be
-provided as @var{dbus} in this scenario.  The verbose output is logged
-to @file{/var/log/dbus-daemon.log}.
+@defvar dbus-root-service-type
+Type for a service that runs the D-Bus ``system bus''.
+@footnote{@uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process
+communication facility.  Its system bus is used to allow system services
+to communicate and to be notified of system-wide events.}
 
-@uref{https://dbus.freedesktop.org/, D-Bus} is an inter-process communication
-facility.  Its system bus is used to allow system services to communicate
-and to be notified of system-wide events.
+The value for this service type is a @code{<dbus-configuration>} record.
+@end defvar
 
-@var{services} must be a list of packages that provide an
-@file{etc/dbus-1/system.d} directory containing additional D-Bus configuration
-and policy files.  For example, to allow avahi-daemon to use the system bus,
-@var{services} must be equal to @code{(list avahi)}.
-@end deffn
+@deftp {Data Type} dbus-configuration
+Data type representing the configuration for @code{dbus-root-service-type}.
+
+@table @asis
+@item @code{dbus} (default: @code{dbus}) (type: file-like)
+Package object for dbus.
+
+@item @code{services} (default: @code{()}) (type: list)
+List of packages that provide an @file{etc/dbus-1/system.d} directory
+containing additional D-Bus configuration and policy files.
+For example, to allow avahi-daemon to use the system bus, @var{services}
+must be equal to @code{(list avahi)}.
+
+@item @code{verbose?} (default: @code{#f}) (type: boolean)
+When @code{#t}, D-Bus is launched with environment variable
+@samp{DBUS_VERBOSE} set to @samp{1}.  A verbose-enabled D-Bus package
+such as @code{dbus-verbose} should be provided to @var{dbus} in this
+scenario. The verbose output is logged to
+@file{/var/log/dbus-daemon.log}.
+
+@end table
+@end deftp
 
 @subsubheading Elogind
 

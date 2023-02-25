@@ -48,7 +48,7 @@
 (define %docker-os
   (simple-operating-system
    (service dhcp-client-service-type)
-   (dbus-service)
+   (service dbus-root-service-type)
    (service polkit-service-type)
    (service elogind-service-type)
    (service docker-service-type)))

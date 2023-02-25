@@ -1880,7 +1880,7 @@ applications needing access to be root.")
          (service geoclue-service-type)
          (service polkit-service-type)
          (service elogind-service-type)
-         (dbus-service)
+         (service dbus-root-service-type)
 
          (service ntp-service-type)
 
