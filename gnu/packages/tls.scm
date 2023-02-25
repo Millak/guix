@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2017, 2019-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2021 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2014 Ian Denhardt <ian@zenhack.net>
 ;;; Copyright © 2013, 2015 Andreas Enge <andreas@enge.fr>
@@ -232,15 +232,6 @@ living in the same process.")
               ;; independently.  This seems suboptimal.
               "--with-default-trust-store-dir=/etc/ssl/certs"
 
-              ;; Tell the build system that we want Guile bindings installed to
-              ;; the output instead of Guiles own module directory.
-              (string-append "--with-guile-site-dir="
-                             "$(datarootdir)/guile/site/$(GUILE_EFFECTIVE_VERSION)")
-              (string-append "--with-guile-site-ccache-dir="
-                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache")
-              (string-append "--with-guile-extension-dir="
-                             "$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/extensions")
-
               (let ((system #$(or (%current-target-system)
                                   (%current-system))))
                 (if (string-prefix? "mips64el" system)
@@ -276,17 +267,13 @@ living in the same process.")
     (native-inputs
      (append (list pkg-config texinfo which
                    util-linux)                    ;one test needs 'setsid'
-             (if (%current-target-system)         ;for cross-build
-                 (list guile-3.0)                 ;to create .go files
-                 '())
              (if (hurd-target?)
                  '()
                  (list net-tools
                        iproute                    ;for 'ss'
                        socat                      ;several tests rely on it
                        datefudge))))              ;tests rely on 'datefudge'
-    (inputs
-     (list guile-3.0))
+    (inputs (list libunistring))
     (propagated-inputs
      ;; These are all in the 'Requires.private' field of gnutls.pc.
      (append (list libtasn1 libidn2 nettle zlib)
@@ -319,14 +306,7 @@ required structures.")
                                        "gnutls-cross.patch"))
               (sha256
                (base32
-                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))
-
-    ;; Disable Guile bindings: they are now provided by Guile-GnuTLS.
-    (inputs (modify-inputs (package-inputs gnutls)
-              (delete "guile")
-              (append libunistring)))             ;GnuTLS depends on it
-    (native-inputs (modify-inputs (package-native-inputs gnutls)
-                     (delete "guile")))))
+                "01i1gl15k6qwvxmxx0by1mn9nlmcmym18wdpm7dn9awfsp8474dy"))))))
 
 (define-public gnutls/dane
   ;; GnuTLS with build libgnutls-dane, implementing DNS-based
@@ -337,12 +317,6 @@ required structures.")
     (name "gnutls-dane")
     (inputs (modify-inputs (package-inputs gnutls)
               (prepend unbound)))))
-
-(define-public guile2.2-gnutls
-  (package/inherit gnutls
-    (name "guile2.2-gnutls")
-    (inputs (modify-inputs (package-inputs gnutls)
-              (replace "guile" guile-2.2)))))
 
 (define-public guile-gnutls
   (package
@@ -406,6 +380,16 @@ required structures.")
 the @acronym{TLS, Transport-Layer Security} protocol.  It supersedes the Guile
 bindings that were formerly provided as part of GnuTLS.")
     (license license:lgpl2.1+)))
+
+(define-public guile2.2-gnutls
+  (package/inherit guile-gnutls
+    (name "guile2.2-gnutls")
+    (native-inputs
+     (modify-inputs (package-native-inputs guile-gnutls)
+       (replace "guile" guile-2.2)))
+    (inputs
+     (modify-inputs (package-inputs guile-gnutls)
+       (replace "guile" guile-2.2)))))
 
 (define (target->openssl-target target)
   "Return the value to set CONFIGURE_TARGET_ARCH to when cross-compiling
