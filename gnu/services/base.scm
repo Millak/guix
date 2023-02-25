@@ -190,7 +190,7 @@
 
             syslog-configuration
             syslog-configuration?
-            syslog-service
+            syslog-service  ; deprecated
             syslog-service-type
             %default-syslog.conf
 
@@ -1511,6 +1511,32 @@ given @var{config}---an @code{<nscd-configuration>} object.  @xref{Name
 Service Switch}, for an example."
   (service nscd-service-type config))
 
+;; Snippet adapted from the GNU inetutils manual.
+(define %default-syslog.conf
+  (plain-file "syslog.conf" "
+     # Log all error messages, authentication messages of
+     # level notice or higher and anything of level err or
+     # higher to the console.
+     # Don't log private authentication messages!
+     *.alert;auth.notice;authpriv.none      -/dev/console
+
+     # Log anything (except mail) of level info or higher.
+     # Don't log private authentication messages!
+     *.info;mail.none;authpriv.none         -/var/log/messages
+
+     # Log \"debug\"-level entries and nothing else.
+     *.=debug                               -/var/log/debug
+
+     # Same, in a different place.
+     *.info;mail.none;authpriv.none         -/dev/tty12
+
+     # The authpriv file has restricted access.
+     # 'fsync' the file after each line (hence the lack of a leading dash).
+     authpriv.*                              /var/log/secure
+
+     # Log all the mail messages in one place.
+     mail.*                                 -/var/log/maillog
+"))
 
 (define-record-type* <syslog-configuration>
   syslog-configuration  make-syslog-configuration
@@ -1540,37 +1566,12 @@ Service Switch}, for an example."
                      (umask mask)
                      pid))))
       (stop #~(make-kill-destructor))))
+   (syslog-configuration)
    (description "Run the syslog daemon, @command{syslogd}, which is
 responsible for logging system messages.")))
 
-;; Snippet adapted from the GNU inetutils manual.
-(define %default-syslog.conf
-  (plain-file "syslog.conf" "
-     # Log all error messages, authentication messages of
-     # level notice or higher and anything of level err or
-     # higher to the console.
-     # Don't log private authentication messages!
-     *.alert;auth.notice;authpriv.none      -/dev/console
-
-     # Log anything (except mail) of level info or higher.
-     # Don't log private authentication messages!
-     *.info;mail.none;authpriv.none         -/var/log/messages
-
-     # Log \"debug\"-level entries and nothing else.
-     *.=debug                               -/var/log/debug
-
-     # Same, in a different place.
-     *.info;mail.none;authpriv.none         -/dev/tty12
-
-     # The authpriv file has restricted access.
-     # 'fsync' the file after each line (hence the lack of a leading dash).
-     authpriv.*                              /var/log/secure
-
-     # Log all the mail messages in one place.
-     mail.*                                 -/var/log/maillog
-"))
-
-(define* (syslog-service #:optional (config (syslog-configuration)))
+(define-deprecated (syslog-service #:optional (config (syslog-configuration)))
+  syslog-service-type
   "Return a service that runs @command{syslogd} and takes
 @var{<syslog-configuration>} as a parameter.
 
@@ -3294,7 +3295,7 @@ login manager daemon.")
                         (cons tty %default-console-font))
                       '("tty1" "tty2" "tty3" "tty4" "tty5" "tty6")))
 
-        (syslog-service)
+        (service syslog-service-type)
         (service agetty-service-type (agetty-configuration
                                        (extra-options '("-L")) ; no carrier detect
                                        (term "vt100")

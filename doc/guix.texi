@@ -18494,11 +18494,15 @@ privacy---often the result of host name lookups is in local cache, so
 external name servers do not even need to be queried.
 @end defvar
 
-@anchor{syslog-configuration-type}
 @cindex syslog
 @cindex logging
+@defvar syslog-service-type
+Type of the service that runs the syslog daemon, whose value is a
+@code{<syslog-configuration>} object.
+@end defvar
+
 @deftp {Data Type} syslog-configuration
-This data type represents the configuration of the syslog daemon.
+Data type representing the configuration of the syslog daemon.
 
 @table @asis
 @item @code{syslogd} (default: @code{#~(string-append #$inetutils "/libexec/syslogd")})
@@ -18506,18 +18510,11 @@ The syslog daemon to use.
 
 @item @code{config-file} (default: @code{%default-syslog.conf})
 The syslog configuration file to use.
+@xref{syslogd invocation,,, inetutils, GNU Inetutils}, for more
+information on the configuration file syntax.
 
 @end table
 @end deftp
-
-@anchor{syslog-service}
-@cindex syslog
-@deffn {Scheme Procedure} syslog-service @var{config}
-Return a service that runs a syslog daemon according to @var{config}.
-
-@xref{syslogd invocation,,, inetutils, GNU Inetutils}, for more
-information on the configuration file syntax.
-@end deffn
 
 @defvar guix-service-type
 This is the type of the service that runs the build daemon,

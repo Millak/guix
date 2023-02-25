@@ -367,7 +367,7 @@ Access documentation at any time by pressing Alt-F2.\x1b[0m
            (normal-tty "tty6")
 
            ;; The usual services.
-           (syslog-service)
+           (service syslog-service-type)
 
            ;; Use the Avahi daemon to discover substitute servers on the local
            ;; network.  It can be faster than fetching from remote servers.
