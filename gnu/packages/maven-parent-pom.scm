@@ -92,6 +92,10 @@
   (make-apache-parent-pom
     "25" "1vwx2fpgk7cn2pnlnx26df26vndiwwn5l7ngakj0vwal5pmp6115"))
 
+(define-public apache-parent-pom-27
+  (make-apache-parent-pom
+    "27" "07087qdcwadsg3va5rc9xb7k89im3fm2g297lpmfh1aggn7cpc00"))
+
 (define-public apache-parent-pom-29
   (make-apache-parent-pom
     "29" "0fj078bgzs0r24x66ph5bbwkkc5s9d1qh57hmlpisg4mdi0l48s9"))
