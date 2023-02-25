@@ -92,6 +92,10 @@
   (make-apache-parent-pom
     "25" "1vwx2fpgk7cn2pnlnx26df26vndiwwn5l7ngakj0vwal5pmp6115"))
 
+(define-public apache-parent-pom-29
+  (make-apache-parent-pom
+    "29" "0fj078bgzs0r24x66ph5bbwkkc5s9d1qh57hmlpisg4mdi0l48s9"))
+
 (define* (make-apache-commons-parent-pom version hash parent
                                          #:key (tag-prefix "commons-parent-"))
   (hidden-package
