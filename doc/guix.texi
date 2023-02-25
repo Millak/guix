@@ -23320,77 +23320,113 @@ and policy files.  For example, to allow avahi-daemon to use the system bus,
 @var{services} must be equal to @code{(list avahi)}.
 @end deffn
 
-@deffn {Scheme Procedure} elogind-service [#:config @var{config}]
-Return a service that runs the @code{elogind} login and
-seat management daemon.  @uref{https://github.com/elogind/elogind,
-Elogind} exposes a D-Bus interface that can be used to know which users
+@subsubheading Elogind
+
+@uref{https://github.com/elogind/elogind, Elogind} is a login and seat
+management daemon that also handles most system-level power events for a
+computer, for example suspending the system when a lid is closed, or
+shutting it down when the power button is pressed.
+
+It also provides a D-Bus interface that can be used to know which users
 are logged in, know what kind of sessions they have open, suspend the
 system, inhibit system suspend, reboot the system, and other tasks.
 
-Elogind handles most system-level power events for a computer, for
-example suspending the system when a lid is closed, or shutting it down
-when the power button is pressed.
+@defvar elogind-service-type
+Type of the service that runs @command{elogind}, a login and
+seat management daemon.  The value for this service is a
+@code{<elogind-configuration>} object.
+@end defvar
 
-The @var{config} keyword argument specifies the configuration for
-elogind, and should be the result of an @code{(elogind-configuration
-(@var{parameter} @var{value})...)} invocation.  Available parameters and
-their default values are:
+@c TODO: field descriptions. This is best done by refactoring
+@c elogind-configuration to use define-configuration which embeds the
+@c descriptions in the code and then use configuration->documentation.
+@deftp {Data Type} elogind-configuration
+Data type representing the configuration of @command{elogind}.
 
-@table @code
-@item kill-user-processes?
-@code{#f}
-@item kill-only-users
-@code{()}
-@item kill-exclude-users
-@code{("root")}
-@item inhibit-delay-max-seconds
-@code{5}
-@item handle-power-key
-@code{poweroff}
-@item handle-suspend-key
-@code{suspend}
-@item handle-hibernate-key
-@code{hibernate}
-@item handle-lid-switch
-@code{suspend}
-@item handle-lid-switch-docked
-@code{ignore}
-@item handle-lid-switch-external-power
-@code{*unspecified*}
-@item power-key-ignore-inhibited?
-@code{#f}
-@item suspend-key-ignore-inhibited?
-@code{#f}
-@item hibernate-key-ignore-inhibited?
-@code{#f}
-@item lid-switch-ignore-inhibited?
-@code{#t}
-@item holdoff-timeout-seconds
-@code{30}
-@item idle-action
-@code{ignore}
-@item idle-action-seconds
-@code{(* 30 60)}
-@item runtime-directory-size-percent
-@code{10}
-@item runtime-directory-size
-@code{#f}
-@item remove-ipc?
-@code{#t}
-@item suspend-state
-@code{("mem" "standby" "freeze")}
-@item suspend-mode
-@code{()}
-@item hibernate-state
-@code{("disk")}
-@item hibernate-mode
-@code{("platform" "shutdown")}
-@item hybrid-sleep-state
-@code{("disk")}
-@item hybrid-sleep-mode
-@code{("suspend" "platform" "shutdown")}
+@table @asis
+@item @code{elogind} (default: @code{elogind}) (type: file-like)
+...
+
+@item @code{kill-user-processes?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{kill-only-users} (default: @code{'()}) (type: list)
+...
+
+@item @code{kill-exclude-users} (default: @code{'("root")}) (type: list-of-string)
+...
+
+@item @code{inhibit-delay-max-seconds} (default: @code{5}) (type: integer)
+...
+
+@item @code{handle-power-key} (default: @code{'poweroff}) (type: symbol)
+...
+
+@item @code{handle-suspend-key} (default: @code{'suspend}) (type: symbol)
+...
+
+@item @code{handle-hibernate-key} (default: @code{'hibernate}) (type: symbol)
+...
+
+@item @code{handle-lid-switch} (default: @code{'suspend}) (type: symbol)
+...
+
+@item @code{handle-lid-switch-docked} (default: @code{'ignore}) (type: symbol)
+...
+
+@item @code{handle-lid-switch-external-power} (default: @code{*unspecified*}) (type: symbol)
+...
+
+@item @code{power-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{suspend-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{hibernate-key-ignore-inhibited?} (default: @code{#f}) (type: boolean)
+...
+
+@item @code{lid-switch-ignore-inhibited?} (default: @code{#t}) (type: boolean)
+...
+
+@item @code{holdoff-timeout-seconds} (default: @code{30}) (type: integer)
+...
+
+@item @code{idle-action} (default: @code{'ignore}) (type: symbol)
+...
+
+@item @code{idle-action-seconds} (default: @code{(* 30 60)}) (type: integer)
+...
+
+@item @code{runtime-directory-size-percent} (default: @code{10}) (type: integer)
+...
+
+@item @code{runtime-directory-size} (default: @code{#f}) (type: integer)
+...
+
+@item @code{remove-ipc?} (default: @code{#t}) (type: boolean)
+...
+
+@item @code{suspend-state} (default: @code{'("mem" "standby" "freeze")}) (type: list)
+...
+
+@item @code{suspend-mode} (default: @code{'()}) (type: list)
+...
+
+@item @code{hibernate-state} (default: @code{'("disk")}) (type: list)
+...
+
+@item @code{hibernate-mode} (default: @code{'("platform" "shutdown")}) (type: list)
+...
+
+@item @code{hybrid-sleep-state} (default: @code{'("disk")}) (type: list)
+...
+
+@item @code{hybrid-sleep-mode} (default: @code{'("suspend" "platform" "shutdown")}) (type: list)
+...
+
 @end table
-@end deffn
+@end deftp
 
 @deffn {Scheme Procedure} accountsservice-service @
        [#:accountsservice @var{accountsservice}]

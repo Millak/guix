@@ -48,7 +48,7 @@
         (service upower-service-type)
         (accountsservice-service)
         (service polkit-service-type)
-        (elogind-service)
+        (service elogind-service-type)
         (dbus-service)
         x11-socket-directory-service))
 

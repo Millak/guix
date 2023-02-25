@@ -116,7 +116,7 @@
 
             elogind-configuration
             elogind-configuration?
-            elogind-service
+            elogind-service  ; deprecated
             elogind-service-type
 
             %gdm-file-system
@@ -1230,7 +1230,8 @@ allow other system components to know the set of logged-in users as well as
 their session types (graphical, console, remote, etc.).  It can also clean up
 after users when they log out.")))
 
-(define* (elogind-service #:key (config (elogind-configuration)))
+(define-deprecated (elogind-service #:key (config (elogind-configuration)))
+  elogind-service-type
   "Return a service that runs the @command{elogind} login and seat management
 service.  The @command{elogind} service integrates with PAM to allow other
 system components to know the set of logged-in users as well as their session
@@ -1866,7 +1867,7 @@ applications needing access to be root.")
          (service colord-service-type)
          (geoclue-service)
          (service polkit-service-type)
-         (elogind-service)
+         (service elogind-service-type)
          (dbus-service)
 
          (service ntp-service-type)
