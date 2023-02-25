@@ -1517,7 +1517,7 @@ To flash this bootloader, write it to an SD card, then using the U-Boot serial
 console:
 @example
 mmc dev 0
-load mmc 0:1 ${loadaddr} /u-boot.imx
+load mmc 0:1 ${loadaddr} /boot/u-boot.imx
 sf probe
 sf erase 0 0x80000
 sf write ${loadaddr} 0x400 $filesize
