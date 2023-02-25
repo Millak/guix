@@ -19394,14 +19394,14 @@ from the header, as well as section details and data available.")
 (define-public python-cheetah
   (package
     (name "python-cheetah")
-    (version "3.2.4")
+    (version "3.3.1")
     (source
       (origin
         (method url-fetch)
-        (uri (pypi-uri "Cheetah3" version))
+        (uri (pypi-uri "CT3" version))
         (sha256
           (base32
-           "0ar5dqjnqaw0c17mymd6xgd81jn9br9fblawr0x438v1571bkaya"))))
+           "1j36vampqip18jx0jzngb9rnkhhhl8hqnscg117y0d6cgrgm57qw"))))
     (build-system python-build-system)
     (arguments
      `(#:phases (modify-phases %standard-phases
