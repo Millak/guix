@@ -46,7 +46,7 @@
 (define minimal-desktop-services
   (list polkit-wheel-service
         (service upower-service-type)
-        (accountsservice-service)
+        (service accountsservice-service-type)
         (service polkit-service-type)
         (service elogind-service-type)
         (dbus-service)

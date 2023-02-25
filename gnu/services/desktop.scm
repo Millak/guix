@@ -126,7 +126,7 @@
             fontconfig-file-system-service
 
             accountsservice-service-type
-            accountsservice-service
+            accountsservice-service  ; deprecated
 
             cups-pk-helper-service-type
             sane-service-type
@@ -1295,7 +1295,9 @@ over D-Bus that can list available accounts, change their passwords, and so
 on.  AccountsService integrates with PolicyKit to enable unprivileged users to
 acquire the capability to modify their system configuration.")))
 
-(define* (accountsservice-service #:key (accountsservice accountsservice))
+(define-deprecated
+  (accountsservice-service #:key (accountsservice accountsservice))
+  accountsservice-service-type
   "Return a service that runs AccountsService, a system service that
 can list available accounts, change their passwords, and so on.
 AccountsService integrates with PolicyKit to enable unprivileged users to
@@ -1858,7 +1860,7 @@ applications needing access to be root.")
          (service avahi-service-type)
          (udisks-service)
          (service upower-service-type)
-         (accountsservice-service)
+         (service accountsservice-service-type)
          (service cups-pk-helper-service-type)
          (service colord-service-type)
          (geoclue-service)

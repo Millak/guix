@@ -23428,18 +23428,17 @@ Data type representing the configuration of @command{elogind}.
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} accountsservice-service @
-       [#:accountsservice @var{accountsservice}]
-Return a service that runs AccountsService, a system service that can
+@defvar accountsservice-service-type
+Type for the service that runs AccountsService, a system service that can
 list available accounts, change their passwords, and so on.
 AccountsService integrates with PolicyKit to enable unprivileged users
 to acquire the capability to modify their system configuration.
-@uref{https://www.freedesktop.org/wiki/Software/AccountsService/, the
-accountsservice web site} for more information.
+See @url{https://www.freedesktop.org/wiki/Software/AccountsService/,
+AccountsService} for more information.
 
-The @var{accountsservice} keyword argument is the @code{accountsservice}
-package to expose as a service.
-@end deffn
+The value for this service is a file-like object, by default it is
+set to @code{accountsservice} (the package object for AccountsService).
+@end defvar
 
 @deffn {Scheme Procedure} polkit-service @
                          [#:polkit @var{polkit}]
