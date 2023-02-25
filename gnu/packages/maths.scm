@@ -55,7 +55,7 @@
 ;;; Copyright © 2022 Philip McGrath <philip@philipmcgrath.com>
 ;;; Copyright © 2022 Marek Felšöci <marek@felsoci.sk>
 ;;; Copyright © 2022 vicvbcun <guix@ikherbers.com>
-;;; Copyright © 2022 Liliana Marie Prikler <liliana.prikler@gmail.com>
+;;; Copyright © 2022, 2023 Liliana Marie Prikler <liliana.prikler@gmail.com>
 ;;; Copyright © 2022 Maximilian Heisinger <mail@maxheisinger.at>
 ;;; Copyright © 2022 Akira Kyle <akira@akirakyle.com>
 ;;; Copyright © 2022 Roman Scherer <roman.scherer@burningswell.com>
@@ -7553,6 +7553,32 @@ optimized algorithms and implementation.")
 generic reader and writer API.")
     (license (list license:expat
                    license:bsd-3))))    ; blif2aig
+
+(define-public cudd
+  (package
+   (name "cudd")
+   (version "3.0.0")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/ivmai/cudd")
+                  (commit (string-append "cudd-" version))))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0hyw9q42ir92vcaa7bwv6f631n85rfsxp463rnmklniq1wf6dyn9"))))
+   (build-system gnu-build-system)
+   (arguments (list #:configure-flags #~(list "--enable-shared")))
+   ;; The original home-page was lost to time, so we reference the "unofficial"
+   ;; Github mirror.  For what it's worth, the author of the library appears to
+   ;; have been involved with this mirror at some point in time.
+   (home-page "https://github.com/ivmai/cudd")
+   (synopsis "Manipulate decision diagrams")
+   (description "@acronym{CUDD, Colorado University Decision Diagrams} is a
+library for manipulating decision diagrams.  It supports binary decision
+diagrams, algebraic decision diagrams, and zero-suppressed binary decision
+diagrams.")
+   (license license:bsd-3)))
 
 (define-public lingeling
   (let ((commit "72d2b13eea5fbd95557a3d0d199cd98dfbdc76ee")
