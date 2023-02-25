@@ -7648,47 +7648,49 @@ features include:
     (license license:expat)))
 
 (define-public cat-avatar-generator
-  (package
-    (name "cat-avatar-generator")
-    (version "1")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                     (url "https://framagit.org/Deevad/cat-avatar-generator.git")
-                     (commit "71c0c662742cafe8afd2d2d50ec84243113e35ad")))
-              (file-name (string-append name "-" version))
-              (sha256
-               (base32
-                "0s7b5whqsmfa57prbgl66ym551kg6ly0z14h5dgrlx4lqm70y2yw"))))
-    (build-system trivial-build-system)
-    (arguments
-     `(#:modules ((guix build utils))
-       #:builder
-       (begin
-         (use-modules (guix build utils)
-                      (srfi srfi-1)
-                      (srfi srfi-26))
-
-         (let ((source (assoc-ref %build-inputs "source"))
-               (php-dir (string-append %output "/share/web/" ,name "/")))
-           ;; The cache directory must not be in the store, but in a writable
-           ;; location.  The webserver will give us this location.
-           (copy-recursively source php-dir)
-           (substitute* (string-append php-dir "/cat-avatar-generator.php")
-             (("\\$cachepath = .*")
-              "if(isset($_SERVER['CACHE_DIR']))
+  (let ((commit "9360ea33f79d1dad3e43494b09878b5e3f6b41fa")
+        (revision "1"))
+    (package
+      (name "cat-avatar-generator")
+      (version (git-version "1" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://framagit.org/Deevad/cat-avatar-generator.git")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0js4grqzsm4gvmcbmxv7zw4samfzi6nk4mn977ddcvla9g222rkm"))))
+      (build-system trivial-build-system)
+      (arguments
+       `(#:modules ((guix build utils))
+         #:builder
+         (begin
+           (use-modules (guix build utils)
+                        (srfi srfi-1)
+                        (srfi srfi-26))
+           (let ((source (assoc-ref %build-inputs "source"))
+                 (php-dir (string-append %output "/share/web/" ,name)))
+             (install-file (string-append source "/cat-avatar-generator.php") php-dir)
+             (copy-recursively (string-append source "/avatars") (string-append php-dir "/avatars"))
+             ;; The cache directory must not be in the store, but in a writable
+             ;; location.  The webserver will give us this location.
+             (substitute* (string-append php-dir "/cat-avatar-generator.php")
+               (("\\$cachepath = .*")
+                "if(isset($_SERVER['CACHE_DIR']))
 $cachepath = $_SERVER['CACHE_DIR'];
 else
 die('You need to set the CACHE_DIR variable first.');"))
-           #t))))
-    (home-page "https://framagit.org/Deevad/cat-avatar-generator")
-    (synopsis "Random avatar generator")
-    (description "Cat avatar generator is a generator of cat pictures optimised
+             #t))))
+      (home-page "https://framagit.org/Deevad/cat-avatar-generator")
+      (synopsis "Random avatar generator")
+      (description "Cat avatar generator is a generator of cat pictures optimised
 to generate random avatars, or defined avatar from a \"seed\".  This is a
 derivation by David Revoy from the original MonsterID by Andreas Gohr.")
-    ;; expat for the code, CC-BY 4.0 for the artwork
-    (license (list license:expat
-                   license:cc-by4.0))))
+      ;; expat for the code, CC-BY 4.0 for the artwork
+      (license (list license:expat
+                     license:cc-by4.0)))))
 
 (define-public nghttp2
   (package
