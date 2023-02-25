@@ -52,7 +52,7 @@
             dropbear-configuration
             dropbear-configuration?
             dropbear-service-type
-            dropbear-service
+            dropbear-service  ; deprecated
 
             autossh-configuration
             autossh-configuration?
@@ -717,7 +717,9 @@ of user-name/file-like tuples."
                                           dropbear-activation)))
                 (default-value (dropbear-configuration))))
 
-(define* (dropbear-service #:optional (config (dropbear-configuration)))
+(define-deprecated (dropbear-service #:optional
+                                     (config (dropbear-configuration)))
+  dropbear-service-type
   "Run the @uref{https://matt.ucc.asn.au/dropbear/dropbear.html,Dropbear SSH
 daemon} with the given @var{config}, a @code{<dropbear-configuration>}
 object."

@@ -20983,19 +20983,18 @@ Match Address 192.168.0.1
 @end table
 @end deftp
 
-@deffn {Scheme Procedure} dropbear-service [@var{config}]
-Run the @uref{https://matt.ucc.asn.au/dropbear/dropbear.html,Dropbear SSH
-daemon} with the given @var{config}, a @code{<dropbear-configuration>}
-object.
+@defvar dropbear-service-type
+Type of the service that runs the
+@url{https://matt.ucc.asn.au/dropbear/dropbear.html, Dropbear SSH daemon},
+whose value is a @code{<dropbear-configuration>} object.
 
-For example, to specify a Dropbear service listening on port 1234, add
-this call to the operating system's @code{services} field:
+For example, to specify a Dropbear service listening on port 1234:
 
 @lisp
-(dropbear-service (dropbear-configuration
-                    (port-number 1234)))
+(service dropbear-service-type (dropbear-configuration
+                                 (port-number 1234)))
 @end lisp
-@end deffn
+@end defvar
 
 @deftp {Data Type} dropbear-configuration
 This data type represents the configuration of a Dropbear SSH daemon.
