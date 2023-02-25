@@ -461,6 +461,16 @@ tool.  This package contains the Maven parent POM.")
          ("plexus-component-annotations" .
           ,(package-version java-plexus-component-annotations)))))))
 
+(define-public maven-parent-pom-37
+  (make-maven-parent-pom
+    "37" "0c8yham28si4zadpv9v2i61gl3in518jls4nsawfhx42b6x3371j"
+    apache-parent-pom-27
+    #:replacements
+    (delay
+      `(("org.codehaus.plexus"
+         ("plexus-component-annotations" .
+          ,(package-version java-plexus-component-annotations)))))))
+
 (define-public maven-parent-pom-35
   (make-maven-parent-pom
     "35" "0pg9k7l5pcbghmc89i11g900pbzznvf5sfdfzlqfwpihqb2g8iab"
