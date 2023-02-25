@@ -7607,6 +7607,36 @@ generic reader and writer API.")
     (license (list license:expat
                    license:bsd-3))))    ; blif2aig
 
+(define-public btor2tools
+  (let ((commit "b8456dda4780789e882f5791eb486f295ade4da4")
+        (revision "1"))
+   (package
+   (name "btor2tools")
+   (version (git-version "1.0.0-pre" revision commit))
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url "https://github.com/Boolector/btor2tools")
+                  (commit commit)))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "0r3cm69q5xhnbxa74yvdfrsf349s4cxmiqlb4aq8appi7yg3qhww"))))
+   (build-system cmake-build-system)
+   (arguments
+    (list #:out-of-source? #f
+          #:phases
+          #~(modify-phases %standard-phases
+              (replace 'check
+                (lambda* (#:key tests? #:allow-other-keys)
+                  (when tests?
+                    (invoke "sh" "test/runtests.sh")))))))
+   (home-page "http://boolector.github.io/")
+   (synopsis "Parser for BTOR2 format")
+   (description "This package provides a parser for the BTOR2 format used by
+Boolector.")
+   (license license:lgpl3+))))
+
 (define-public cudd
   (package
    (name "cudd")
