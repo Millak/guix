@@ -1047,6 +1047,58 @@ but it works for any C/C++ project.")
                (base32
                 "0nv31m3940d9kf38lw2zs4hpj435bdi9mmim098rb3n4l07qrvva"))))))
 
+(define-public actionlint
+  (package
+    (name "actionlint")
+    (version "1.6.23")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/rhysd/actionlint")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "07is4920a40zrl7mfldg0az2pisi7f6dv4vh3ijn3nzb4i7fqbni"))))
+    (build-system go-build-system)
+    (arguments
+     '(#:import-path "github.com/rhysd/actionlint/cmd/actionlint"
+       #:unpack-path "github.com/rhysd/actionlint"
+       #:install-source? #f))
+    (inputs (list go-github-com-fatih-color
+                  go-github-com-mattn-go-colorable
+                  go-github-com-mattn-go-runewidth
+                  go-github-com-robfig-cron-1.2
+                  go-golang.org-x-sync-errgroup
+                  go-golang.org-x-sync-semaphore
+                  go-gopkg-in-yaml-v3))
+    (native-inputs (list go-github-com-google-go-cmp-cmp))
+    (home-page "https://rhysd.github.io/actionlint/")
+    (synopsis "Static checker for GitHub Actions workflow files")
+    (description
+     "actionlint is a static checker for GitHub Actions
+workflow files.  Features include:
+
+@itemize
+@item Syntax check for workflow files to check unexpected or missing
+keys following workflow syntax
+@item Strong type check for @code{$@{@{ @}@}} expressions to catch
+several semantic errors like access to not existing property, type
+mismatches, ...
+@item Actions usage check to check that inputs at @code{with:} and
+outputs in @code{steps.@{id@}.outputs} are correct
+@item Reusable workflow check to check inputs/outputs/secrets of
+reusable workflows and workflow calls
+@item shellcheck and pyflakes integrations for scripts at @code{run:}
+@item Security checks; script injection by untrusted inputs,
+hard-coded credentials
+@item Other several useful checks; glob syntax validation,
+dependencies check for @code{needs:}, runner label validation, cron
+syntax validation, ...
+@end itemize
+")
+    (license license:expat)))
+
 (define-public python-parameterized
   (package
     (name "python-parameterized")
