@@ -1565,3 +1565,31 @@ Expressions, and being faster to type than grep.")
 write.  It is a pythonic alternative to John MacFarlane's pandocfilters, from
 which it is heavily inspired.")
     (license license:bsd-3)))
+
+(define-public pandoc-include
+  (package
+    (name "pandoc-include")
+    (version "1.2.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "pandoc-include" version))
+              (sha256
+               (base32
+                "01nrbzs85mrd7jcflicsz0bmfnzi6wsy0ii262xl01zsabqd7n91"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-natsort python-panflute))
+    (home-page "https://github.com/DCsunset/pandoc-include")
+    (synopsis "Pandoc filter to allow file and header includes")
+    (description "@code{pandoc-include} extends Pandoc to support:
+
+@enumerate
+@item include as raw blocks
+@item indent and dedent included contents
+@item partial include
+@item code include
+@item Unix style pathname
+@item recursive include
+@item Yaml header merging
+@item header include
+@end enumerate")
+    (license license:expat)))
