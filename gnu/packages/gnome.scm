@@ -2922,7 +2922,7 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
 (define-public adwaita-icon-theme
   (package
     (name "adwaita-icon-theme")
-    (version "42.0")
+    (version "43")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/" name "/"
@@ -2930,7 +2930,7 @@ GNOME and KDE desktops to the icon names proposed in the specification.")
                                   name "-" version ".tar.xz"))
               (sha256
                (base32
-                "1q5i31zd5jzr12p6vn831afwnzbzf6x73wna1y86drnyr2nvb1ay"))))
+                "1iiflc6rfpshipl23mszlv2lzm8d1a7pxwsx2ma5bam669ywffif"))))
     (build-system gnu-build-system)
     (arguments
      (list #:make-flags
