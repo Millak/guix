@@ -1852,11 +1852,14 @@ GnuPG-based password manager like @code{pass}.")
       #:phases #~(modify-phases %standard-phases
                    (delete 'configure)
                    (replace 'build
-                     (lambda _
+                     (lambda* (#:key parallel-build? #:allow-other-keys)
                        (substitute* "Documentation/Makefile"
                          ;; Remove problematic environment check script.
                          ((".*scripts/sphinx-pre-install.*") ""))
-                       (invoke "make" "infodocs")))
+                       (invoke "make" "infodocs"
+                               "-j" (if parallel-build?
+                                        (number->string (parallel-job-count))
+                                        "1"))))
                    (replace 'install
                      (lambda _
                        (let* ((info-dir (string-append #$output "/share/info"))
