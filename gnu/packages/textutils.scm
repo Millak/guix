@@ -57,6 +57,7 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages golang)
@@ -69,6 +70,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-build)
   #:use-module (gnu packages python-check)
+  #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages readline)
   #:use-module (gnu packages ruby)
@@ -1536,3 +1538,30 @@ hackers and programmers by being fast, ignoring VCS directories, letting a user
 easily specify file types, match highlighting, Perl-Compatible Regular
 Expressions, and being faster to type than grep.")
     (license license:artistic2.0)))
+
+(define-public python-panflute
+  (package
+    (name "python-panflute")
+    (version "2.3.0")
+    (source (origin
+              (method url-fetch)
+              (uri (pypi-uri "panflute" version))
+              (sha256
+               (base32
+                "1jk5b2sp1h4drkjrg2ks77d0ca6j043n2myvacm77nfc93y9vzff"))))
+    (build-system python-build-system)
+    (propagated-inputs (list python-click python-pyyaml))
+    (native-inputs (list python-configparser
+                         python-coverage
+                         python-flake8
+                         python-pandocfilters
+                         python-pytest
+                         python-pytest-cov
+                         python-requests))
+    (home-page "http://scorreia.com/software/panflute/")
+    (synopsis "Pythonic Pandoc filters")
+    (description
+     "Panflute is a Python package that makes Pandoc filters fun to
+write.  It is a pythonic alternative to John MacFarlane's pandocfilters, from
+which it is heavily inspired.")
+    (license license:bsd-3)))
