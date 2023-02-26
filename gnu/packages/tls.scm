@@ -15,7 +15,7 @@
 ;;; Copyright © 2018 Clément Lassieur <clement@lassieur.org>
 ;;; Copyright © 2019 Mathieu Othacehe <m.othacehe@gmail.com>
 ;;; Copyright © 2020 Jan (janneke) Nieuwenhuizen <janneke@gnu.org>
-;;; Copyright © 2020, 2021 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Solene Rapenne <solene@perso.pw>
 ;;; Copyright © 2021 Brice Waegeneire <brice@waegenei.re>
 ;;; Copyright © 2021 Maxime Devos <maximedevos@telenet.be>
@@ -447,112 +447,104 @@ OpenSSL for TARGET."
                "static"))   ;6.4 MiB of .a files
     (native-inputs (list perl))
     (arguments
-     `(#:parallel-tests? #f
-       #:test-target "test"
+     (list
+      #:parallel-tests? #f
+      #:test-target "test"
+      ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
+      ;; so we explicitly disallow it here.
+      #:disallowed-references (list (canonical-package perl))
+      #:phases
+      #~(modify-phases %standard-phases
+          #$@(if (%current-target-system)
+                 #~((add-before 'configure 'set-cross-compile
+                      (lambda* (#:key target #:allow-other-keys)
+                        (setenv "CROSS_COMPILE" (string-append target "-"))
+                        (setenv "CONFIGURE_TARGET_ARCH"
+                                #$(target->openssl-target
+                                   (%current-target-system))))))
+                 #~())
+          (replace 'check
+            (lambda* (#:key tests? test-target #:allow-other-keys)
+              (when tests?
+                ;; 'test_ssl_new.t' in 1.1.1n and 3.0.3 fails due to an expired
+                ;; certificate:
+                ;; <https://github.com/openssl/openssl/issues/18441>.
+                ;; Skip it.
+                ;;
+                ;; 'test_afalg' seems to be dependent on kernel features:
+                ;; <https://github.com/openssl/openssl/issues/12242>.
+                (invoke "make" test-target
+                        #$(if (or (target-arm?) (target-riscv64?))
+                              "TESTS=-test_afalg -tls_ssl_new"
+                              "TESTS=-test_ssl_new")))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              ;; It's not a shebang so patch-source-shebangs misses it.
+              (substitute* "config"
+                (("/usr/bin/env")
+                 (which "env")))
+              (apply
+               invoke #$@(if (%current-target-system)
+                             #~("./Configure")
+                             #~("./config"))
+               "shared"                 ;build shared libraries
+               "--libdir=lib"
 
-       ;; Changes to OpenSSL sometimes cause Perl to "sneak in" to the closure,
-       ;; so we explicitly disallow it here.
-       #:disallowed-references ,(list (canonical-package perl))
-       #:phases
-       ,#~
-       (modify-phases %standard-phases
-         #$@(if (%current-target-system)
-                #~((add-before
-                       'configure 'set-cross-compile
-                     (lambda* (#:key target #:allow-other-keys)
-                       (setenv "CROSS_COMPILE" (string-append target "-"))
-                       (setenv "CONFIGURE_TARGET_ARCH"
-                               #$(target->openssl-target
-                                  (%current-target-system))))))
-                #~())
-         (replace 'check
-           (lambda* (#:key tests? test-target #:allow-other-keys)
-             (when tests?
-               ;; 'test_ssl_new.t' in 1.1.1n and 3.0.3 fails due to an expired
-               ;; certificate:
-               ;; <https://github.com/openssl/openssl/issues/18441>.
-               ;; Skip it.
-               ;;
-               ;; 'test_afalg' seems to be dependent on kernel features:
-               ;; <https://github.com/openssl/openssl/issues/12242>.
-               (invoke "make" test-target
-                       #$(if (or (target-arm?) (target-riscv64?))
-                             "TESTS=-test_afalg -tls_ssl_new"
-                             "TESTS=-test_ssl_new")))))
-         (replace 'configure
-           (lambda* (#:key configure-flags #:allow-other-keys)
-             (let* ((out #$output)
-                    (lib (string-append out "/lib")))
-               ;; It's not a shebang so patch-source-shebangs misses it.
-               (substitute* "config"
-                 (("/usr/bin/env")
-                  (string-append (assoc-ref %build-inputs "coreutils")
-                                 "/bin/env")))
-               (apply
-                invoke #$@(if (%current-target-system)
-                              #~("./Configure")
-                              #~("./config"))
-                "shared"                ;build shared libraries
-                "--libdir=lib"
+               ;; The default for this catch-all directory is
+               ;; PREFIX/ssl.  Change that to something more
+               ;; conventional.
+               (string-append "--openssldir=" #$output
+                              "/share/openssl-"
+                              #$(package-version this-package))
 
-                ;; The default for this catch-all directory is
-                ;; PREFIX/ssl.  Change that to something more
-                ;; conventional.
-                (string-append "--openssldir=" out
-                               "/share/openssl-"
-                               #$(package-version this-package))
-
-                (string-append "--prefix=" out)
-                (string-append "-Wl,-rpath," lib)
-                #$@(if (%current-target-system)
-                       #~((getenv "CONFIGURE_TARGET_ARCH"))
-                       #~())
-                configure-flags)
-               ;; Output the configure variables.
-               (invoke "perl" "configdata.pm" "--dump"))))
-         (add-after 'install 'move-static-libraries
-           (lambda _
-             ;; Move static libraries to the "static" output.
-             (let* ((out    #$output)
-                    (lib    (string-append out "/lib"))
-                    (static #$output:static)
-                    (slib   (string-append static "/lib")))
-               (for-each (lambda (file)
-                           (install-file file slib)
-                           (delete-file file))
-                         (find-files
-                          lib
-                          #$(if (target-mingw?)
-                                '(lambda (filename _)
-                                   (and (string-suffix? ".a" filename)
-                                        (not (string-suffix? ".dll.a" filename))))
-                                "\\.a$"))))))
-         (add-after 'install 'move-extra-documentation
-           (lambda _
-             ;; Move man pages and full HTML documentation to "doc".
-             (let* ((out    #$output)
-                    (man    (string-append out "/share/man"))
-                    (html   (string-append out "/share/doc/openssl"))
-                    (doc    #$output:doc)
-                    (man-target (string-append doc "/share/man"))
-                    (html-target (string-append doc "/share/doc/openssl")))
-               (mkdir-p (dirname man-target))
-               (mkdir-p (dirname html-target))
-               (rename-file man man-target)
-               (rename-file html html-target))))
-         (add-after
-             'install 'remove-miscellany
-           (lambda _
-             ;; The 'misc' directory contains random undocumented shell and Perl
-             ;; scripts.  Remove them to avoid retaining a reference on Perl.
-             (delete-file-recursively (string-append #$output "/share/openssl-"
-                                                     #$(package-version this-package)
-                                                     "/misc")))))))
+               (string-append "--prefix=" #$output)
+               (string-append "-Wl,-rpath," (string-append #$output "/lib"))
+               #$@(if (%current-target-system)
+                      #~((getenv "CONFIGURE_TARGET_ARCH"))
+                      #~())
+               configure-flags)
+              ;; Output the configure variables.
+              (invoke "perl" "configdata.pm" "--dump")))
+          (add-after 'install 'move-static-libraries
+            (lambda _
+              ;; Move static libraries to the "static" output.
+              (let* ((lib    (string-append #$output "/lib"))
+                     (slib   (string-append #$output:static "/lib")))
+                (for-each (lambda (file)
+                            (install-file file slib)
+                            (delete-file file))
+                          (find-files
+                           lib
+                           #$(if (target-mingw?)
+                                 '(lambda (filename _)
+                                    (and (string-suffix? ".a" filename)
+                                         (not (string-suffix? ".dll.a"
+                                                              filename))))
+                                 "\\.a$"))))))
+          (add-after 'install 'move-extra-documentation
+            (lambda _
+              ;; Move man pages and full HTML documentation to "doc".
+              (let* ((man    (string-append #$output "/share/man"))
+                     (html   (string-append #$output "/share/doc/openssl"))
+                     (man-target (string-append #$output:doc "/share/man"))
+                     (html-target (string-append
+                                   #$output:doc "/share/doc/openssl")))
+                (mkdir-p (dirname man-target))
+                (mkdir-p (dirname html-target))
+                (rename-file man man-target)
+                (rename-file html html-target))))
+          (add-after 'install 'remove-miscellany
+            (lambda _
+              ;; The 'misc' directory contains random undocumented shell and
+              ;; Perl scripts.  Remove them to avoid retaining a reference on
+              ;; Perl.
+              (delete-file-recursively
+               (string-append #$output "/share/openssl-"
+                              #$(package-version this-package) "/misc")))))))
     (native-search-paths
      (list $SSL_CERT_DIR $SSL_CERT_FILE))
     (synopsis "SSL/TLS implementation")
-    (description
-     "OpenSSL is an implementation of SSL/TLS.")
+    (description "OpenSSL is an implementation of SSL/TLS.")
     (license license:openssl)
     (home-page "https://www.openssl.org/")))
 
