@@ -571,7 +571,7 @@ msgid ""
 "Run @command{dhcp}, a Dynamic Host Configuration\n"
 "Protocol (DHCP) client, on all the non-loopback network interfaces."
 msgstr ""
-"Eseguire @comando{dhcp}, un client del Dynamic Host Configuration\n"
+"Eseguire @command{dhcp}, un client del Dynamic Host Configuration\n"
 "Protocollo DHCP (Dynamic Host Configuration Protocol), su tutte le interfacce di rete non loopback."
 
 #: gnu/services/networking.scm:409
@@ -588,7 +588,7 @@ msgid ""
 "daemon of the @uref{http://www.ntp.org, Network Time Foundation}.  The daemon\n"
 "will keep the system clock synchronized with that of the given servers."
 msgstr ""
-"Eseguire il @comando{ntpd}, il demone NTP (Network Time Protocol)\n"
+"Eseguire il @command{ntpd}, il demone NTP (Network Time Protocol)\n"
 "di @uref{http://www.ntp.org, Network Time Foundation}.  Il demone\n"
 "manterrà l'orologio del sistema sincronizzato con quello dei server indicati."
 
@@ -598,7 +598,7 @@ msgid ""
 "daemon, as implemented by @uref{http://www.openntpd.org, OpenNTPD}.  The\n"
 "daemon will keep the system clock synchronized with that of the given servers."
 msgstr ""
-"Eseguire il @comando{ntpd}, il demone Network Time Protocol (NTP)\n"
+"Eseguire il @command{ntpd}, il demone Network Time Protocol (NTP)\n"
 "come implementato da @uref{http://www.openntpd.org, OpenNTPD}.  Il demone\n"
 "mantiene l'orologio del sistema sincronizzato con quello dei server indicati."
 
@@ -608,7 +608,7 @@ msgid ""
 "for listening on Internet sockets and spawning the corresponding services on\n"
 "demand."
 msgstr ""
-"Avvia @comando{inetd}, il @dfn{super server Internet}.  È responsabile\n"
+"Avvia @command{inetd}, il @dfn{super server Internet}.  È responsabile\n"
 "di ascoltare i socket di Internet e di generare i servizi corrispondenti su \n"
 "richiesta."
 
@@ -718,11 +718,11 @@ msgstr ""
 
 #: gnu/services/networking.scm:1717
 msgid "Run @command{iptables-restore}, setting up the specified rules."
-msgstr "Eseguire @comando{iptables-restore}, impostando le regole specificate."
+msgstr "Eseguire @command{iptables-restore}, impostando le regole specificate."
 
 #: gnu/services/networking.scm:1786
 msgid "Run @command{nft}, setting up the specified ruleset."
-msgstr "Esegue @comando{nft}, impostando il set di regole specificato."
+msgstr "Esegue @command{nft}, impostando il set di regole specificato."
 
 #: gnu/services/networking.scm:1893
 msgid ""
@@ -738,7 +738,7 @@ msgid ""
 "See @command{yggdrasil -genconf} for config options."
 msgstr ""
 "Connettersi alla rete mesh Yggdrasil.\n"
-"Vedere @comando{yggdrasil -genconf} per le opzioni di configurazione."
+"Vedere @command{yggdrasil -genconf} per le opzioni di configurazione."
 
 #: gnu/services/networking.scm:2137
 msgid ""
@@ -3088,12 +3088,12 @@ msgid ""
 "Try @option{--list-systems} to view available system types.~%"
 msgstr ""
 "Volevi dire @code{~a}?\n"
-"Provare @opzione{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
+"Provare @option{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
 
 #: guix/scripts/build.scm:411
 #, scheme-format
 msgid "Try @option{--list-systems} to view available system types.~%"
-msgstr "Provare @opzione{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
+msgstr "Provare @option{--elenco-sistemi} per visualizzare i tipi di sistema disponibili.~%"
 
 #: guix/scripts/build.scm:433
 msgid ""
