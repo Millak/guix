@@ -2994,17 +2994,17 @@ development server with Starman.")
 (define-public perl-cgi
   (package
     (name "perl-cgi")
-    (version "4.52")
+    (version "4.55")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/L/LE/LEEJO/"
                            "CGI-" version ".tar.gz"))
        (sha256
-        (base32 "1bxrpxv95js8yinicminxdg41xvd85haj2gvlywg3zqdb66smqy8"))))
+        (base32 "1ck4ik5i0v394qgg9qah4p6x9hyls311g6iwi6ildprzn6a5x2b7"))))
     (build-system perl-build-system)
     (native-inputs
-     (list perl-test-deep perl-test-nowarnings perl-test-warn))
+     (list perl-test-nowarnings perl-test-warn))
     (propagated-inputs
      (list perl-html-parser))
     (home-page "https://metacpan.org/release/CGI")
