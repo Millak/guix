@@ -39,6 +39,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2022 ( <paren@disroot.org>
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
+;;; Copyright © 2023 Timo Wilken <guix@twilken.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -7408,6 +7409,17 @@ and Context cancellation for groups of goroutines working on subtasks of a
 common task.")
       (home-page "https://godoc.org/golang.org/x/sync/errgroup")
       (license license:bsd-3))))
+
+(define-public go-golang.org-x-sync-semaphore
+  (package
+    (inherit go-golang.org-x-sync-errgroup)
+    (name "go-golang.org-x-sync-semaphore")
+    (arguments
+     '(#:import-path "golang.org/x/sync/semaphore"
+       #:unpack-path "golang.org/x/sync"))
+    (synopsis "Weighted semaphore implementation in Go")
+    (description "Weighted semaphore implementation in Go.")
+    (home-page "https://godoc.org/golang.org/x/sync/semaphore")))
 
 (define (go-gotest-tools-source version sha256-base32-hash)
   (origin
