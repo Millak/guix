@@ -4144,17 +4144,15 @@ the programmer to be mindfulof the space of platform variations.")
 (define-public perl-encode
   (package
     (name "perl-encode")
-    (version "3.10")
+    (version "3.19")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://cpan/authors/id/D/DA/DANKOGAI/"
                            "Encode-" version ".tar.gz"))
        (sha256
-        (base32 "1a8rwcrxxhq81jcdvdwns05c65jwr5r6bxvby6vdcr3ny5m91my2"))))
+        (base32 "1x9f0naqskv9v7dif480vrzfmn8zhvq9g0w3r164v7pnxr4ghqwi"))))
     (build-system perl-build-system)
-    (propagated-inputs
-     (list perl-exporter perl-storable perl-parent))
     (home-page "https://metacpan.org/dist/Encode")
     (synopsis "Character encodings in Perl")
     (description "Encode module provides the interface between Perl strings and
