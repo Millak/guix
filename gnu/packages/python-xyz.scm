@@ -134,6 +134,7 @@
 ;;; Copyright © 2022 Nicolas Graves <ngraves@ngraves.fr>
 ;;; Copyright © 2023 Gabriel Wicki <gabriel@erlikon.ch>
 ;;; Copyright © 2023 Amade Nemes <nemesamade@gmail.com>
+;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -4736,7 +4737,7 @@ structure for Python.")
 (define-public autokey
   (package
     (name "autokey")
-    (version "0.95.10")
+    (version "0.96.0")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -4745,41 +4746,45 @@ structure for Python.")
              (file-name (git-file-name name version))
              (sha256
               (base32
-               "0f0cqfnb49wwdy7zl2f2ypcnd5pc8r8n7z7ssxkq20d4xfxlgamr"))))
-    (build-system python-build-system)
+               "1v19196swihc12bcg0d9s07gfc3a44b9y7g6rqhb82qxm4p8jmbp"))
+             (modules '((guix build utils)))
+             (snippet
+              #~(begin
+                  ;; XXX: skip test depending on .git/
+                  (delete-file "tests/test_common.py")))))
+    (build-system pyproject-build-system)
     (arguments
      (list
-      ;; Tests are deprecated and broken until next version, see
-      ;; https://github.com/autokey/autokey/issues/327
-      #:tests? #f
       #:phases
       #~(modify-phases %standard-phases
-          (add-after 'unpack 'fix-paths
-            (lambda* (#:key inputs #:allow-other-keys)
-              (substitute* "lib/autokey/scripting.py"
-                (("\"wmctrl\"")
-                 (string-append "\"" (search-input-file inputs "bin/wmctrl") "\""))
-                (("\"zenity\"")
-                 (string-append "\"" (search-input-file inputs "bin/zenity") "\"")))
-              (substitute* "autokey-shell"
-                (("'ipython3'")
-                 (string-append "'" (search-input-file inputs "bin/ipython3") "'"))
-                (("'python3'")
-                 (string-append "'" (search-input-file inputs "bin/python3") "'")))))
           ;; Use 'prefix' instead of '=' to allow the user to use additional
           ;; GI paths from their autokey scripts.  GUIX_PYTHONPATH is already
           ;; wrapped with prefix in python-build-system's wrap.
-          (add-before 'wrap 'wrap-autokey-gi
-            (lambda _
-              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH")))
+          (add-before 'wrap 'wrap-autokey
+            (lambda* (#:key inputs #:allow-other-keys)
+              (let ((gi-typelib-path (getenv "GI_TYPELIB_PATH"))
+                    (path (map dirname
+                               ;; see lib/autokey/UI_common_functions.py
+                               (list (search-input-file inputs "/bin/wmctrl")
+                                     (search-input-file inputs "/bin/zenity")
+                                     (search-input-file inputs "/bin/ipython3")
+                                     (search-input-file inputs "/bin/python3")))))
                 (for-each
                  (lambda (program)
                    (wrap-program program
+                     `("PATH" ":" prefix ,path)
                      `("GI_TYPELIB_PATH" ":" prefix (,gi-typelib-path))))
                  (map (lambda (name)
                         (string-append #$output "/bin/" name))
                       '("autokey-gtk"
-                        "autokey-shell")))))))))
+                        "autokey-shell"))))))
+          (add-before 'check 'setup-env-vars
+            (lambda _
+              ;; tests/test_macro.py wants LANG set
+              (setenv "LANG" "")
+              ;; required for tests/test_configmanager.py
+              (setenv "HOME" "/tmp"))))))
+    (native-inputs (list python-pytest python-pytest-cov python-pyhamcrest))
     (inputs
      (list bash-minimal ; for wrap-program
            gtksourceview-3
