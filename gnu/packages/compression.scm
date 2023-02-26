@@ -2577,7 +2577,7 @@ file compression algorithm.")
 (define-public xarchiver
   (package
     (name "xarchiver")
-    (version "0.5.4.17")
+    (version "0.5.4.20")
     (source
      (origin
        (method git-fetch)
@@ -2586,7 +2586,7 @@ file compression algorithm.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "00adrjpxqlaccrwjf65w3vhxfswdj0as8aj263c6f9b85llypc5v"))))
+        (base32 "1bgc8r2ii96ghslfscpjhswjgscvw65h2rjr0zvfqn8saqh1ydrv"))))
     (build-system glib-or-gtk-build-system)
     (native-inputs
      (list gettext-minimal intltool libxslt pkg-config))
