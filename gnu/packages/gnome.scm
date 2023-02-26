@@ -8901,7 +8901,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
 (define-public network-manager-applet
   (package
     (name "network-manager-applet")
-    (version "1.28.0")
+    (version "1.30.0")
     (source (origin
               (method url-fetch)
               (uri (string-append "mirror://gnome/sources/network-manager-applet/"
@@ -8909,7 +8909,7 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
                                   "network-manager-applet-" version ".tar.xz"))
               (sha256
                (base32
-                "17742kgmbj9w545zwnirgr0i40zl0xzp8jx7b8c1krp93mc4h0sw"))))
+                "1lswxfxjfbiknspwli8d65i0bnyfazzcnrqckaw0s44zkm7bh5lm"))))
     (build-system meson-build-system)
     (arguments
      `(#:glib-or-gtk? #t
@@ -8930,7 +8930,6 @@ to virtual private networks (VPNs) via Fortinet SSLVPN.")
      (list gcr
            libappindicator
            libgudev
-           libnotify
            libsecret
            libselinux
            jansson ; for team support
