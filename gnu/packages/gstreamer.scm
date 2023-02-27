@@ -5,7 +5,7 @@
 ;;; Copyright © 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2016, 2017, 2022 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016, 2018 Leo Famulari <leo@famulari.name>
-;;; Copyright © 2017 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2017, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2020 Liliana Marie Prikler <liliana.prikler@gmail.com>
@@ -1158,3 +1158,29 @@ framework.  It plays all file formats gstreamer supports, so if you have a
 music collection which contains different file formats, like flac, ogg and
 mp3, you can use gst123 to play all your music files.")
     (license license:lgpl2.0+)))
+
+(define-public gst-plugins-espeak
+  (let ((commit "7f6e41274fb833a487a7ee8ac0c236f0821330cc")
+        (revision "1"))
+    (package
+      (name "gst-plugins-espeak")
+      (version (git-version "0.5.0" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/gst-plugins-espeak")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0va4ghcdda8cbqzv376hgmv1ay79va4kyazibfj8m5n52bhxxqgz"))))
+      (build-system gnu-build-system)
+      (inputs
+       (list espeak-ng gstreamer gst-plugins-base))
+      (native-inputs
+       (list autoconf automake libtool pkg-config))
+      (home-page "http://wiki.sugarlabs.org/go/Activity_Team/gst-plugins-espeak")
+      (synopsis "Use espeak ")
+      (description "This is a Gstreamer @code{src} plugin to use the espeak
+speech synthesizer as a sound source.")
+      (license license:lgpl2.0+))))
