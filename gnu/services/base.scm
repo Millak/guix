@@ -814,21 +814,6 @@ host names."
    #t                                             ;default to UTF-8
    (description "Ensure the Linux virtual terminals run in UTF-8 mode.")))
 
-(define console-keymap-service-type
-  (shepherd-service-type
-   'console-keymap
-   (lambda (files)
-     (shepherd-service
-      (documentation (string-append "Load console keymap (loadkeys)."))
-      (provision '(console-keymap))
-      (start #~(lambda _
-                 (zero? (system* #$(file-append kbd "/bin/loadkeys")
-                                 #$@files))))
-      (respawn? #f)))
-   (description "@emph{This service is deprecated in favor of the
-@code{keyboard-layout} field of @code{operating-system}.}  Load the given list
-of console keymaps with @command{loadkeys}.")))
-
 (define %default-console-font
   ;; Note: the 'font-gnu-unifont' package cannot be cross-compiled (yet), but
   ;; its "psf" output is the same whether it's built natively or not, hence
