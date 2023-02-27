@@ -6380,6 +6380,30 @@ these progress updates.")
 variable models.")
     (license license:gpl3)))
 
+(define-public r-drat
+  (package
+    (name "r-drat")
+    (version "0.2.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "drat" version))
+       (sha256
+        (base32 "191yxlj9jccakmz27g7n9izfcy19kj3fgnw4w6zl9iq66787qpm6"))))
+    (properties `((upstream-name . "drat")))
+    (build-system r-build-system)
+    (native-inputs (list r-simplermarkdown))
+    (home-page "https://github.com/eddelbuettel/drat")
+    (synopsis "Drat R archive template")
+    (description
+     "This package helps you with creation and use of R repositories via
+helper functions to insert packages into a repository, and to add repository
+information to the current R session.  Two primary types of repositories are
+supported: gh-pages at GitHub, as well as local repositories on either the
+same machine or a local network.  Drat is a recursive acronym: Drat R Archive
+Template.")
+    (license license:gpl2+)))
+
 (define-public r-drr
   (package
     (name "r-drr")
