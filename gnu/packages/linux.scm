@@ -863,10 +863,12 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
 ;;; Kernel package utilities.
 ;;;
 
-(define (doc-supported? version)
+(define (apply-infodoc-patch? version)
   ;; Versions older than 5.10 have different enough build scripts that the
   ;; infodocs patch doesn't apply.
-  (version>=? version "5.10"))
+  (and (version>=? version "5.10")
+       (not (version>=? version "6.2")))) ;patch applied upstream
+
 
 (define* (make-linux-libre version gnu-revision hash-string supported-systems
                            #:key
@@ -879,7 +881,7 @@ ARCH and optionally VARIANT, or #f if there is no such configuration."
                            (extra-options %default-extra-linux-options)
                            (patches
                             `(,%boot-logo-patch
-                              ,@(if (doc-supported? version)
+                              ,@(if (apply-infodoc-patch? version)
                                     (list (search-patch
                                            "linux-libre-infodocs-target.patch"))
                                     '()))))
