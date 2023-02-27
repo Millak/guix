@@ -1,6 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2018 Fis Trivial <ybbs.daans@hotmail.com>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
+;;; Copyright © 2023 Andy Tai <atai@atai.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -54,7 +55,7 @@
 (define-public opencl-headers
   (package
     (name "opencl-headers")
-    (version "2021.06.30")
+    (version "2023.02.06")
     (source
       (origin
         (method git-fetch)
@@ -63,7 +64,7 @@
               (commit (string-append "v" version))))
         (file-name (git-file-name name version))
         (sha256
-         (base32 "1nrvx0x9r1nz1qpmzbgffnn9h9pn2fwcxsksf101bkpmqziq5lii"))))
+         (base32 "1jxpx15gwxc6i7vp64xlzcxf57nl0qnaiip6jyr0j7iji47dm404"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Not enabled during build.
     (synopsis "The Khronos OpenCL headers")
@@ -95,7 +96,7 @@
 (define-public opencl-clhpp
   (package
     (name "opencl-clhpp")
-    (version "2.0.15")
+    (version "2023.02.06")
     (source
      (origin
        (method git-fetch)
@@ -103,14 +104,15 @@
              (url "https://github.com/KhronosGroup/OpenCL-CLHPP")
              (commit (string-append "v" version))))
        (sha256
-        (base32 "1wycdbvwbdn7lqdd3sby8471qg2zdisr70218ava6cfvxdsqcp83"))
+        (base32 "1m3v5apjv3qagym32xqg38pq6i8j5d8svz11clsx408nrlyngrj0"))
        (file-name (git-file-name name version))))
     (native-inputs
      `(("python" ,python-wrapper)))
     (propagated-inputs
      (list opencl-headers))
     (arguments
-     `(#:configure-flags (list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF")
+     `(#:configure-flags (list "-DBUILD_EXAMPLES=OFF" "-DBUILD_TESTS=OFF"
+                               "-DBUILD_TESTING=OFF") ;; CTest needs this to be turned off
        ;; The regression tests require a lot more dependencies.
        #:tests? #f))
     (build-system cmake-build-system)
@@ -123,7 +125,7 @@
 (define-public opencl-icd-loader
   (package
     (name "opencl-icd-loader")
-    (version "2021.06.30")
+    (version "2023.02.06")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -132,7 +134,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "007ws357n1ijrxal1bf9lwy68p0dz1sm9cfcfnnz5f88iwc9xd6m"))))
+                "1cmbcm6bz6kfvr0dy9hzf2vgfwcz8gbm8rxspqqpva6z74dz0qxr"))))
     (build-system cmake-build-system)
     (arguments `(#:tests? #f)) ; Tests need stub loader setup.
     (native-search-paths
