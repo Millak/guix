@@ -5867,6 +5867,33 @@ matrices.")
 provides an interactive R manager and worker environment.")
     (license license:gpl2+)))
 
+(define-public r-rmumps
+  (package
+    (name "r-rmumps")
+    (version "5.2.1-22")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "rmumps" version))
+       (sha256
+        (base32 "18wqy82hwnbiwqcyldg8ci0jmxfiaj65ila0fjzzv40d3kl8hx76"))))
+    (properties `((upstream-name . "rmumps")))
+    (build-system r-build-system)
+    (inputs (list zlib))
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list gfortran))
+    (home-page "https://www.mumps-solver.org/")
+    (synopsis "Wrapper for MUMPS library")
+    (description
+     "Some basic features of @acronym{MUMPS, Multifrontal Massively Parallel
+sparse direct Solver} are wrapped in a class whose methods can be used for
+sequentially solving a sparse linear system (symmetric or not) with one or
+many right hand sides (dense or sparse).  There is a possibility to do
+separately symbolic analysis, LU (or LDL^t) factorization and system solving.
+Third part ordering libraries are included and can be used: PORD, METIS,
+SCOTCH.")
+    (license license:gpl2+)))
+
 (define-public r-lmoments
   (package
     (name "r-lmoments")
