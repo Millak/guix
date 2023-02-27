@@ -1266,6 +1266,30 @@ work well in user interface (UI) environments.")
 Sans Pro family.")
     (license license:silofl1.1)))
 
+(define-public font-microsoft-cascadia
+  (package
+    (name "font-microsoft-cascadia")
+    (version "2111.01")
+    (source (origin
+              (method url-fetch/zipbomb)
+              (uri (string-append
+                    "https://github.com/microsoft/cascadia-code/"
+                    "releases/download/v"
+                    version
+                    "/CascadiaCode-"
+                    version
+                    ".zip"))
+              (sha256
+               (base32
+                "04p72jmbafblrliy5phqi6sqi52wgzpilf3rphppxf7zdlbnizai"))))
+    (build-system font-build-system)
+    (home-page "https://github.com/microsoft/cascadia-code")
+    (synopsis "Monospaced font with programming ligatures")
+    (description
+     "Cascadia is a fun new coding font that comes bundled with Windows
+Terminal, and is now the default font in Visual Studio as well.")
+    (license license:silofl1.1)))
+
 (define-public font-fira-sans
   ;; Fira Sans v4.203 (which corresponds to Fira Mono v3.206) is the final
   ;; version to include UFO sources. It is the same version packaged by other
