@@ -886,14 +886,6 @@ package or any valid argument to @command{setfont}, as in this example:
                  \"/share/consolefonts/ter-132n\"))) ; for HDPI
 @end example\n")))
 
-(define* (console-font-service tty #:optional (font "LatGrkCyr-8x16"))
-  "This procedure is deprecated in favor of @code{console-font-service-type}.
-
-Return a service that sets up Unicode support in @var{tty} and loads
-@var{font} for that tty (fonts are per virtual console in Linux.)"
-  (simple-service (symbol-append 'console-font- (string->symbol tty))
-                  console-font-service-type `((,tty . ,font))))
-
 (define %default-motd
   (plain-file "motd" "This is the GNU operating system, welcome!\n\n"))
 
