@@ -223,7 +223,6 @@
             guix-publish-configuration-port
             guix-publish-configuration-host
             guix-publish-configuration-compression
-            guix-publish-configuration-compression-level ;deprecated
             guix-publish-configuration-nar-path
             guix-publish-configuration-cache
             guix-publish-configuration-ttl
@@ -1986,10 +1985,7 @@ proxy of 'guix-daemon'...~%")
               (default #f))
   (compression       guix-publish-configuration-compression
                      (thunked)
-                     (default (default-compression this-record
-                                (current-source-location))))
-  (compression-level %guix-publish-configuration-compression-level ;deprecated
-                     (default #f))
+                     (default (default-compression this-record)))
   (nar-path    guix-publish-configuration-nar-path ;string
                (default "nar"))
   (cache       guix-publish-configuration-cache   ;#f | string
@@ -2003,25 +1999,14 @@ proxy of 'guix-daemon'...~%")
   (negative-ttl guix-publish-configuration-negative-ttl ;#f | integer
                 (default #f)))
 
-(define-deprecated (guix-publish-configuration-compression-level config)
-  "Return a compression level, the old way."
-  (match (guix-publish-configuration-compression config)
-    (((_ level) _ ...) level)))
-
-(define (default-compression config properties)
+(define (default-compression config)
   "Return the default 'guix publish' compression according to CONFIG, and
 raise a deprecation warning if the 'compression-level' field was used."
-  (match (%guix-publish-configuration-compression-level config)
-    (#f
-     ;; Default to low compression levels when there's no cache so that users
-     ;; get good bandwidth by default.
-     (if (guix-publish-configuration-cache config)
-         '(("gzip" 5) ("zstd" 19))
-         '(("gzip" 3) ("zstd" 3))))               ;zstd compresses faster
-    (level
-     (warn-about-deprecation 'compression-level properties
-                             #:replacement 'compression)
-     `(("gzip" ,level)))))
+  ;; Default to low compression levels when there's no cache so that users
+  ;; get good bandwidth by default.
+  (if (guix-publish-configuration-cache config)
+      '(("gzip" 5) ("zstd" 19))
+      '(("gzip" 3) ("zstd" 3))))               ;zstd compresses faster
 
 (define (guix-publish-shepherd-service config)
   (define (config->compression-options config)
