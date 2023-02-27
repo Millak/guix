@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013, 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2016 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2016, 2018, 2019, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -140,7 +140,16 @@ file names.
                                   "/libssh-" version ".tar.xz"))
               (sha256
                (base32
-                "0zfr9fy4vg1bmz1k836hg9wi20mmaz2sgw61s6464iv1mda2qf87"))))
+                "0zfr9fy4vg1bmz1k836hg9wi20mmaz2sgw61s6464iv1mda2qf87"))
+              (modules '((guix build utils)))
+              (snippet
+               ;; 'PATH_MAX' is undefined on GNU/Hurd; work around it.
+               #~(substitute* (find-files "examples" "\\.c$")
+                   (("#include \"examples_common\\.h\"" all)
+                    (string-append all "\n"
+                                   "#ifndef PATH_MAX\n"
+                                   "# define PATH_MAX 4096\n"
+                                   "#endif\n"))))))
     (build-system cmake-build-system)
     (outputs '("out" "debug"))
     (arguments
