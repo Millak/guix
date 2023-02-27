@@ -100,9 +100,6 @@ core base of a complete business solution providing modularity, scalability
 and security.")
     (license license:gpl3+)))
 
-(define-public python-trytond
-  (deprecated-package "python-trytond" trytond))
-
 (define-public tryton
   (package
     (name "tryton")

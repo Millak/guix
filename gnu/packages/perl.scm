@@ -843,9 +843,6 @@ error when it would have happened.")
     (description "This module disables bareword filehandles.")
     (license (package-license perl))))
 
-(define-public perl-base
-  (deprecated-package "perl-base" perl))
-
 (define-public perl-browser-open
   (package
     (name "perl-browser-open")
@@ -8693,9 +8690,6 @@ distributions.")
      "Perl module for using special zip files (called Perl ARchives) as
 libraries from which Perl modules can be loaded.")
     (license license:perl-license)))
-
-(define-public perl-parent
-  (deprecated-package "perl-parent" perl))
 
 (define-public perl-path-class
   (package

@@ -1744,9 +1744,6 @@ and decompress to 32-bit and big-endian pixel buffers (RGBX, XBGR, etc.).")
                    license:ijg          ;the libjpeg library and associated tools
                    license:zlib))))     ;the libjpeg-turbo SIMD extensions
 
-(define-deprecated libjpeg libjpeg-turbo)
-(export libjpeg)
-
 (define-public niftilib
   (package
     (name "niftilib")

@@ -291,8 +291,6 @@ without requiring the source code to be rewritten.")
             (variable "GUILE_LOAD_COMPILED_PATH")
             (files '("lib/guile/2.2/site-ccache")))))))
 
-(define-deprecated guile-2.2/bug-fix guile-2.2)
-
 (define-public guile-2.2.4
   (package
     (inherit guile-2.2)
@@ -651,12 +649,6 @@ specification.  These are the main features:
 
     ;; Version 1.2.0 switched to GPLv3+ (from LGPLv3+).
     (license license:gpl3+)))
-
-;; Deprecate the 'guile-json' alias to force the use 'guile-json-1' or
-;; 'guile-json-3'.  In the future, we may reuse 'guile-json' as an alias for
-;; 'guile-json-3'.
-(define-deprecated guile-json guile-json-1)
-(export guile-json)
 
 (define-public guile2.0-json
   (package-for-guile-2.0 guile-json-1))

@@ -477,7 +477,7 @@ edges."
   '("libffi" "guile" "guile-json")
   (run-with-store %store
     (mlet %store-monad ((path (shortest-path (specification->package "libffi")
-                                             guile-json
+                                             guile-json-1
                                              %reverse-package-node-type)))
       (return (map package-name path)))))
 

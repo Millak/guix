@@ -412,9 +412,6 @@ software (Git, Subversion, Mercurial, CVS and Bazaar).")
 for some KDevelop language plugins (Ruby, PHP, CSS...).")
     (license license:lgpl2.0+)))
 
-;; kdevplatform was merged into kdevelop as of 5.2.x
-(define-deprecated kdevplatform kdevelop)
-
 (define-public kdiagram
   (package
     (name "kdiagram")

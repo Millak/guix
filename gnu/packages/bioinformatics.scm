@@ -3521,8 +3521,6 @@ annotations of the genome.")
     ;; remainder of the code is licensed under the MIT license.
     (license (list license:bsd-3 license:expat))))
 
-(define-deprecated deeptools python-deeptools)
-
 (define-public cutadapt
   (package
     (name "cutadapt")
