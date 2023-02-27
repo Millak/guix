@@ -43,17 +43,6 @@
   "server some.ntp.server.org iburst version 3 maxpoll 16 prefer"
   (ntp-server->string %ntp-server-sample))
 
-(test-equal "ntp configuration servers deprecated form"
-  (ntp-configuration-servers
-   (ntp-configuration
-    (servers (list "example.pool.ntp.org"))))
-  (ntp-configuration-servers
-   (ntp-configuration
-    (servers (list (ntp-server
-                    (type 'server)
-                    (address "example.pool.ntp.org")
-                    (options '())))))))
-
 
 ;;;
 ;;; OpenNTPD

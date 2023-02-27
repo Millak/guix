@@ -486,36 +486,19 @@ daemon is responsible for allocating IP addresses to its client.")))
   ntp-configuration?
   (ntp      ntp-configuration-ntp
             (default ntp))
-  (servers  %ntp-configuration-servers   ;list of <ntp-server> objects
+  (servers  ntp-configuration-servers     ;list of <ntp-server> objects
             (default %ntp-servers))
   (allow-large-adjustment? ntp-allow-large-adjustment?
                            (default #t))) ;as recommended in the ntpd manual
 
-(define (ntp-configuration-servers ntp-configuration)
-  ;; A wrapper to support the deprecated form of this field.
-  (let ((ntp-servers (%ntp-configuration-servers ntp-configuration)))
-    (match ntp-servers
-      (((? string?) (? string?) ...)
-       (format (current-error-port) "warning: Defining NTP servers as strings is \
-deprecated.  Please use <ntp-server> records instead.\n")
-       (map (lambda (addr)
-              (ntp-server
-               (type 'server)
-               (address addr)
-               (options '()))) ntp-servers))
-      ((($ <ntp-server>) ($ <ntp-server>) ...)
-       ntp-servers))))
-
 (define (ntp-shepherd-service config)
   (match-record config <ntp-configuration>
     (ntp servers allow-large-adjustment?)
-    (let ((servers (ntp-configuration-servers config)))
-      ;; TODO: Add authentication support.
-      (define config
-        (string-append "driftfile /var/run/ntpd/ntp.drift\n"
-                       (string-join (map ntp-server->string servers)
-                                    "\n")
-                       "
+    ;; TODO: Add authentication support.
+    (define config
+      (string-append "driftfile /var/run/ntpd/ntp.drift\n"
+                     (string-join (map ntp-server->string servers) "\n")
+                     "
 # Disable status queries as a workaround for CVE-2013-5211:
 # <http://support.ntp.org/bin/view/Main/SecurityNotice#DRDoS_Amplification_Attack_using>.
 restrict default kod nomodify notrap nopeer noquery limited
@@ -529,22 +512,22 @@ restrict -6 ::1
 # option by default, as documented in the 'ntp.conf' manual.
 restrict source notrap nomodify noquery\n"))
 
-      (define ntpd.conf
-        (plain-file "ntpd.conf" config))
+    (define ntpd.conf
+      (plain-file "ntpd.conf" config))
 
-      (list (shepherd-service
-             (provision '(ntpd))
-             (documentation "Run the Network Time Protocol (NTP) daemon.")
-             (requirement '(user-processes networking))
-             (actions (list (shepherd-configuration-action ntpd.conf)))
-             (start #~(make-forkexec-constructor
-                       (list (string-append #$ntp "/bin/ntpd") "-n"
-                             "-c" #$ntpd.conf "-u" "ntpd"
-                             #$@(if allow-large-adjustment?
-                                    '("-g")
-                                    '()))
-                       #:log-file "/var/log/ntpd.log"))
-             (stop #~(make-kill-destructor)))))))
+    (list (shepherd-service
+           (provision '(ntpd))
+           (documentation "Run the Network Time Protocol (NTP) daemon.")
+           (requirement '(user-processes networking))
+           (actions (list (shepherd-configuration-action ntpd.conf)))
+           (start #~(make-forkexec-constructor
+                     (list (string-append #$ntp "/bin/ntpd") "-n"
+                           "-c" #$ntpd.conf "-u" "ntpd"
+                           #$@(if allow-large-adjustment?
+                                  '("-g")
+                                  '()))
+                     #:log-file "/var/log/ntpd.log"))
+           (stop #~(make-kill-destructor))))))
 
 (define %ntp-accounts
   (list (user-account
