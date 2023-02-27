@@ -127,8 +127,6 @@
            metacity
            mobile-broadband-provider-info
            python
-           sugar-artwork
-           sugar-datastore
            sugar-toolkit-gtk3
            tzdata))
     (propagated-inputs
@@ -139,6 +137,8 @@
            libwnck
            libxklavier
            network-manager
+           sugar-artwork                ;for cursor theme
+           sugar-datastore              ;for org.laptop.sugar.DataStore
            telepathy-glib
            webkitgtk-with-libsoup2
            python-gwebsockets))
