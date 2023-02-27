@@ -408,7 +408,7 @@ silently and reliably flow across to every other.")
      (list pkg-config))
     (inputs
      (list bash-minimal
-           curl-minimal
+           curl
            ldc
            libnotify
            sqlite))
