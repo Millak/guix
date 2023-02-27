@@ -300,6 +300,8 @@ and metadata, and the journal with querying and full text search.")
      ;; The gi typelib files are needed by users of this library.
      (list gdk-pixbuf
            gobject-introspection
+           gstreamer ;for speech
+           gst-plugins-espeak
            gtk+
            (librsvg-for-system)
 
