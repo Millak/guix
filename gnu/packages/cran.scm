@@ -5333,6 +5333,33 @@ compare different dendrograms to one another.")
     ;; Any of these versions
     (license (list license:gpl2 license:gpl3))))
 
+(define-public r-dendsort
+  (package
+    (name "r-dendsort")
+    (version "0.3.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "dendsort" version))
+       (sha256
+        (base32 "0rs7y471wrhkgibxdmfh5xhp3pa004rrlm2w08b6qli5gq4im5d2"))))
+    (properties `((upstream-name . "dendsort")))
+    (build-system r-build-system)
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/evanbiederstedt/dendsort")
+    (synopsis "Modular leaf ordering methods for dendrogram nodes")
+    (description
+     "This package represents an implementation of functions to optimize
+ordering of nodes in a dendrogram, without affecting the meaning of the
+dendrogram.  A dendrogram can be sorted based on the average distance of
+subtrees, or based on the smallest distance value.  These sorting methods
+improve readability and interpretability of tree structure, especially for
+tasks such as comparison of different distance measures or linkage types and
+identification of tight clusters and outliers.  As a result, it also
+introduces more meaningful reordering for a coupled heatmap visualization.")
+    ;; Any of these versions
+    (license (list license:gpl2 license:gpl3))))
+
 (define-public r-getoptlong
   (package
     (name "r-getoptlong")
