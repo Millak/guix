@@ -35,7 +35,7 @@
 ;;; Copyright © 2020 Josh Marshall <joshua.r.marshall.1991@gmail.com>
 ;;; Copyright © 2020 Vinicius Monego <monego@posteo.net>
 ;;; Copyright © 2020 Tanguy Le Carrour <tanguy@bioneland.org>
-;;; Copyright © 2020, 2021, 2022 Maxim Cournoyer <maxim.cournoyer@gmail.com>
+;;; Copyright © 2020, 2021, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2021 Hugo Lecomte <hugo.lecomte@inria.fr>
 ;;; Copyright © 2022 Maxime Devos <maximedevos@telenet.be>
 ;;; Copyright © 2022 David Elsing <david.elsing@posteo.net>
@@ -3076,38 +3076,36 @@ portable to just about any platform.")
               (file-name (git-file-name name version))))
     (build-system gnu-build-system)
     (arguments
-     `(#:phases (modify-phases %standard-phases
-                  (add-after 'unpack 'embed-date-reference
-                    (lambda* (#:key inputs #:allow-other-keys)
-                      (let ((coreutils (assoc-ref inputs "coreutils")))
-                        (substitute* "src/faketime.c"
-                          (("\"date\"")
-                           (string-append "\"" coreutils "/bin/date\""))))))
-                  (replace 'configure
-                    (lambda* (#:key outputs #:allow-other-keys)
-                      (let ((out (assoc-ref outputs "out")))
-                        (setenv "CC" ,(cc-for-target))
-                        (setenv "PREFIX" out)
+     (list
+      #:test-target "test"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'embed-date-reference
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "src/faketime.c"
+                (("\"date\"")
+                 (format #f "~s" (search-input-file inputs "bin/date"))))))
+          (replace 'configure
+            (lambda* (#:key outputs #:allow-other-keys)
+              (setenv "CC" #$(cc-for-target))
+              (setenv "PREFIX" #$output)
 
-                        ;; XXX: Without this flag, the CLOCK_REALTIME test hangs
-                        ;; indefinitely.  See README.packagers for more information.
-                        ;; There are specific instructions to not enable more flags
-                        ;; than absolutely needed.
-                        ,(if (or (target-ppc64le?)
-                                 (target-riscv64?))
-                           `(setenv "FAKETIME_COMPILE_CFLAGS"
-                                    "-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER")
-                           `(setenv "FAKETIME_COMPILE_CFLAGS"
-                                    "-DFORCE_MONOTONIC_FIX")))))
-                  (add-before 'check 'pre-check
-                    (lambda _
-                      (substitute* "test/functests/test_exclude_mono.sh"
-                        (("/bin/bash") (which "bash"))))))
-       #:test-target "test"))
-    (native-inputs
-     (list perl))                           ;for tests
-    (inputs
-     (list coreutils))
+              ;; XXX: Without this flag, the CLOCK_REALTIME test hangs
+              ;; indefinitely.  See README.packagers for more information.
+              ;; There are specific instructions to not enable more flags
+              ;; than absolutely needed.
+              #$@(if (or (target-ppc64le?)
+                         (target-riscv64?))
+                     #~((setenv "FAKETIME_COMPILE_CFLAGS"
+                                "-DFORCE_MONOTONIC_FIX -DFORCE_PTHREAD_NONVER"))
+                     #~((setenv "FAKETIME_COMPILE_CFLAGS"
+                                "-DFORCE_MONOTONIC_FIX")))))
+          (add-before 'check 'pre-check
+            (lambda _
+              (substitute* "test/functests/test_exclude_mono.sh"
+                (("/bin/bash") (which "bash"))))))))
+    (native-inputs (list perl))         ;for tests
+    (inputs (list coreutils))
     (synopsis "Fake the system time for single applications")
     (description
      "The libfaketime library allows users to modify the system time that an
