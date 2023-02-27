@@ -7871,8 +7871,7 @@ Tracker as well as bug identifiers prepared for @code{bug-reference-mode}.")
      (list b4))
     (propagated-inputs
      (list emacs-elfeed
-           emacs-notmuch
-           emacs-transient))
+           emacs-notmuch))
     (home-page "https://docs.kyleam.com/piem")
     (synopsis "Glue for working with public-inbox archives")
     (description "This package provides a collection of Emacs libraries for
@@ -11892,7 +11891,6 @@ It is recommended to use @code{clojure-mode} with Paredit or Smartparens.")
                  (base32
                   "03db3l5klc20wgdaj44scgjfi2mha85bip07ls6pwbi039ls7rvx"))))
       (build-system emacs-build-system)
-      (propagated-inputs (list emacs-transient))
       (home-page "https://github.com/jpe90/emacs-clj-deps-new")
       (synopsis "Create Clojure projects from templates")
       (description
@@ -18241,7 +18239,6 @@ or @code{treemacs}, but leveraging @code{Dired} to do the job of display.")
                 "1nmp5ci4dvcpih6phfhk66s98lf8b49qd35ymy29kqkf5v4cnwga"))
               (file-name (git-file-name name version))))
     (build-system emacs-build-system)
-    (propagated-inputs (list emacs-transient))
     (arguments
      (list
       #:phases
