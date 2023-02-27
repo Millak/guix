@@ -101,10 +101,9 @@
               (substitute* "extensions/cpsection/background/model.py"
                 (("\\('/usr', 'share', 'backgrounds'\\)")
                  "('TODO')"))
-              #;
               (substitute* "src/jarabe/view/viewhelp.py"
-                (("/usr/share/sugar/activities/Help.activity")
-                 "TODO"))))
+                (("/usr/share/sugar/activities/")
+                 "/run/current-system/profile/share/sugar/activities/"))))
           (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
             (lambda* (#:key inputs outputs #:allow-other-keys)
               (for-each
