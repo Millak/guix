@@ -170,9 +170,6 @@ tunneling, and so on.")
                                "NUM_THREADS 100\n"))))))
                    (else phases)))))))
 
-(define-public curl-minimal
-  (deprecated-package "curl-minimal" curl))
-
 (define-public curl-ssh
   (package/inherit curl
     (arguments

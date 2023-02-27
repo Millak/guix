@@ -496,7 +496,7 @@ in FITS files.")
                  (("self.use_system_fitsio") "True")
                  (("self.system_fitsio_includedir") includedir)
                  (("self.system_fitsio_libdir") libdir))))))))
-    (inputs (list curl-minimal))
+    (inputs (list curl))
     (propagated-inputs
      (list python-numpy cfitsio))
     (home-page "https://github.com/esheldon/fitsio")
@@ -663,7 +663,7 @@ astronomical image-processing packages like Drizzle, Swarp or SExtractor.")
      '(#:configure-flags '("--disable-static")))
     (inputs
      (list cfitsio
-           curl-minimal
+           curl
            gsl
            libgit2
            libjpeg-turbo
