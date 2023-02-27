@@ -584,8 +584,7 @@ This is the declarative counterpart of 'text-file'."
   (options    computed-file-options))             ;list of arguments
 
 (define* (computed-file name gexp
-                        #:key guile
-                        (local-build? #t) (options '()))
+                        #:key guile (local-build? #t) (options '()))
   "Return an object representing the store item NAME, a file or directory
 computed by GEXP.  When LOCAL-BUILD? is #t (the default), it ensures the
 corresponding derivation is built locally.  OPTIONS may be used to pass
@@ -601,8 +600,7 @@ This is the declarative counterpart of 'gexp->derivation'."
   ;; gexp.
   (match file
     (($ <computed-file> name gexp guile options)
-     (mlet %store-monad ((guile (lower-object (or guile (%guile-for-build)
-                                                  (default-guile))
+     (mlet %store-monad ((guile (lower-object (or guile (default-guile))
                                               system #:target #f)))
        (apply gexp->derivation name gexp #:guile-for-build guile
               #:system system #:target target options)))))
