@@ -141,7 +141,7 @@ Differences are hard to spot, e.g. in CLOS vs. GOOPS."))
          (license:license? (package-license pkg))
          (build-system? (package-build-system pkg))
          (origin? (package-source pkg))
-         (equal? (origin-sha256 (package-source pkg))
+         (equal? (content-hash-value (origin-hash (package-source pkg)))
                  (base32 "0ssi1wpaf7plaswqqjwigppsg5fyh99vdlb9kzl7c9lng89ndq1i")))))
 
 (test-equal "alist->package with false license"  ;<https://bugs.gnu.org/30470>
