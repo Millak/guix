@@ -1423,15 +1423,10 @@ rules."
    (default-value (gnome-desktop-configuration))
    (description "Run the GNOME desktop environment.")))
 
-(define-deprecated (gnome-desktop-service #:key (config
-                                                 (gnome-desktop-configuration)))
-  gnome-desktop-service-type
-  "Return a service that adds the @code{gnome} package to the system profile,
-and extends polkit with the actions from @code{gnome-settings-daemon}."
-  (service gnome-desktop-service-type config))
-
-;; MATE Desktop service.
-;; TODO: Add mate-screensaver.
+
+;;;
+;;; MATE Desktop service.
+;;; TODO: Add mate-screensaver.
 
 (define-record-type* <mate-desktop-configuration> mate-desktop-configuration
   make-mate-desktop-configuration
