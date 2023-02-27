@@ -200,7 +200,7 @@ default.  To add support for more languages, the
 (define-public gimagereader
   (package
     (name "gimagereader")
-    (version "3.4.0")
+    (version "3.4.1")
     (source
      (origin
        (method url-fetch)
@@ -209,7 +209,7 @@ default.  To add support for more languages, the
              "/download/v" version "/"
              "gimagereader-" version ".tar.xz"))
        (sha256
-        (base32 "09glxh7b4ivrd4samm67b8k2p0aljiagr83wb8nvy5ps2a9gwp5m"))))
+        (base32 "1972bvnk2bkgbh70vy2prcmdzf4wlna862p2vja9yjxi2c0scmwc"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -226,7 +226,7 @@ default.  To add support for more languages, the
            sane-backends
            qtbase-5
            qtspell
-           quazip-0
+           quazip
            tesseract-ocr))
     (home-page "https://github.com/manisandro/gImageReader")
     (synopsis "Qt front-end to tesseract-ocr")
