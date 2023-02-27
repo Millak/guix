@@ -3105,7 +3105,7 @@ portable to just about any platform.")
               (substitute* "test/functests/test_exclude_mono.sh"
                 (("/bin/bash") (which "bash"))))))))
     (native-inputs (list perl))         ;for tests
-    (inputs (list coreutils))
+    (inputs (list coreutils-minimal))
     (synopsis "Fake the system time for single applications")
     (description
      "The libfaketime library allows users to modify the system time that an
