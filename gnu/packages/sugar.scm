@@ -329,7 +329,10 @@ and metadata, and the journal with querying and full text search.")
            python-dbus
            python-decorator
            python-pygobject
-           python-six))
+           python-six
+
+           telepathy-glib
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list autoconf automake
            gettext-minimal
