@@ -95,6 +95,15 @@
                  (dirname
                   (search-input-file inputs
                                      "/share/mobile-broadband-provider-info/serviceproviders.xml"))))
+              ;; XXX: spawn_command_line_sync is not used correctly here, so
+              ;; we need to patch invocations.
+              (substitute* '("extensions/cpsection/aboutcomputer/model.py"
+                             "src/jarabe/model/brightness.py")
+                (("spawn_command_line_sync\\(cmd\\)")
+                 "spawn_command_line_sync(cmd, 0)"))
+              ;; XXX: The brightness component crashes, so we disable it here.
+              (substitute* "src/jarabe/main.py"
+                (("brightness.get_instance\\(\\)") ""))
               ;; TODO: these locations should be set to places that exist on
               ;; Guix System.
               #;
