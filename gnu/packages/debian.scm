@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2018, 2020, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2020-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018, 2020 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2020 Marius Bakke <marius@gnu.org>
 ;;;
@@ -89,7 +89,7 @@ contains the archive keys used for that.")
 (define-public debian-ports-archive-keyring
   (package
     (name "debian-ports-archive-keyring")
-    (version "2022.02.15")
+    (version "2023.02.01")
     (source
       (origin
         (method url-fetch)
@@ -98,7 +98,7 @@ contains the archive keys used for that.")
                             "/debian-ports-archive-keyring_" version ".tar.xz"))
         (sha256
          (base32
-          "096m45l7g8vbk67gwc6bmkzpx8mhn6xfglgrzlg9xkgcs5gxqyc0"))))
+          "1xq7i6plgfbf4drqdmmk1yija48x11jmhnk2av3cajn2cdhkw73s"))))
     (build-system gnu-build-system)
     (arguments
      '(#:tests? #f              ; No test suite.
@@ -127,8 +127,7 @@ contains the archive keys used for that.")
                      (string-append "trusted.gpg/" (basename key ".key") ".gpg")
                      (lambda _
                        (apply invoke "gpg" (append gpg-options (list key))))))
-                 (find-files "active-keys"))
-               #t)))
+                 (find-files "active-keys")))))
          (replace 'install
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
@@ -138,8 +137,7 @@ contains the archive keys used for that.")
                (install-file "debian-ports-archive-keyring-removed.gpg" key)
                (for-each (lambda (file)
                            (install-file file apt))
-                         (find-files "trusted.gpg" "\\.gpg$")))
-             #t)))))
+                         (find-files "trusted.gpg" "\\.gpg$"))))))))
     (native-inputs
      (list gnupg))
     (home-page "https://tracker.debian.org/pkg/debian-ports-archive-keyring")
