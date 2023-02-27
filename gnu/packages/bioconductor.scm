@@ -5581,6 +5581,57 @@ provides a highly flexible way to arrange multiple heatmaps and supports
 self-defined annotation graphics.")
     (license license:gpl2+)))
 
+;; This is a CRAN package, but it depends on r-complexheatmap from
+;; Bioconductor.
+(define-public r-conos
+  (package
+    (name "r-conos")
+    (version "1.5.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "conos" version))
+       (sha256
+        (base32 "1wdhb3jxh4id6xaghawzip8s264g9jxp4i5xy7jfhi67yfxszx6w"))))
+    (properties `((upstream-name . "conos")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-abind
+           r-complexheatmap
+           r-cowplot
+           r-dendextend
+           r-dplyr
+           r-ggplot2
+           r-ggrepel
+           r-gridextra
+           r-igraph
+           r-irlba
+           r-leidenalg
+           r-magrittr
+           r-matrix
+           r-n2r
+           r-r6
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppeigen
+           r-rcppprogress
+           r-reshape2
+           r-rlang
+           r-rtsne
+           r-sccore))
+    (home-page "https://github.com/kharchenkolab/conos")
+    (synopsis "Clustering on network of samples")
+    (description
+     "This package wires together large collections of single-cell RNA-seq
+datasets, which allows for both the identification of recurrent cell clusters
+and the propagation of information between datasets in multi-sample or
+atlas-scale collections.  Conos focuses on the uniform mapping of homologous
+cell types across heterogeneous sample collections.  For instance, users could
+investigate a collection of dozens of peripheral blood samples from cancer
+patients combined with dozens of controls, which perhaps includes samples of a
+related tissue such as lymph nodes.")
+    (license license:gpl3)))
+
 (define-public r-copywriter
   (package
     (name "r-copywriter")
