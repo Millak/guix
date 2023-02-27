@@ -905,6 +905,26 @@ pronounceable identifiers.")
 can read and write both the metadata and the cell data in a Sheet.")
     (license license:expat)))
 
+(define-public r-pma
+  (package
+    (name "r-pma")
+    (version "1.2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "PMA" version))
+       (sha256
+        (base32 "1rhiylm3jfarnqdkv7nwg536sgsa30ic80dk9byks9w0wf4mn59s"))))
+    (properties `((upstream-name . "PMA")))
+    (build-system r-build-system)
+    (home-page "https://github.com/bnaras/PMA")
+    (synopsis "Penalized multivariate analysis")
+    (description
+     "This package performs penalized multivariate analysis: a penalized
+matrix decomposition, sparse principal components analysis, and sparse
+canonical correlation analysis.")
+    (license license:gpl2+)))
+
 (define-public r-proj4
   (package
     (name "r-proj4")
