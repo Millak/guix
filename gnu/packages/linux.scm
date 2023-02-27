@@ -6683,7 +6683,10 @@ The collection contains a set of bandwidth and latency benchmark such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i00if7xknpm0dhkrm60rxzyyvq0vdibq7dvsd2ncm9pg098qvwj"))))
+                "0i00if7xknpm0dhkrm60rxzyyvq0vdibq7dvsd2ncm9pg098qvwj"))
+              (patches
+               (search-patches "rng-tools-revert-build-randstat.patch"))
+              (patch-flags '("-p0"))))
     (build-system gnu-build-system)
     (arguments
      (list
