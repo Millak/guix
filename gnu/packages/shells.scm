@@ -118,7 +118,7 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
 (define-public fish
   (package
     (name "fish")
-    (version "3.5.1")
+    (version "3.6.0")
     (source
      (origin
        (method url-fetch)
@@ -126,15 +126,10 @@ direct descendant of NetBSD's Almquist Shell (@command{ash}).")
                            "releases/download/" version "/"
                            "fish-" version ".tar.xz"))
        (sha256
-        (base32 "0a39vf0wqq6asw5xcrwgdsc67h5bxkgxzy77f8bx6pd4qlympm56"))
-       (modules '((guix build utils)))
-       (snippet
-        '(begin
-           ;; Remove bundled software.
-           (delete-file-recursively "pcre2")))))
+        (base32 "10b1xa1hpmi62rzh3qgxlw7xrhyigs8kssagccawmrryfxbls14p"))))
     (build-system cmake-build-system)
     (inputs
-     (list fish-foreign-env ncurses pcre2 ; don't use the bundled PCRE2
+     (list fish-foreign-env ncurses pcre2
            python))  ; for fish_config and manpage completions
     (native-inputs
      (list doxygen groff ; for 'fish --help'
