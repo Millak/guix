@@ -4992,6 +4992,30 @@ performs global optimization by differential evolution.")
 factorization and divisive clustering for large sparse and dense matrices.")
     (license license:gpl2+)))
 
+(define-public r-rcppspdlog
+  (package
+    (name "r-rcppspdlog")
+    (version "0.0.12")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "RcppSpdlog" version))
+       (sha256
+        (base32 "1nan0hm49xdl2l1lskm1jf01clfh7aw2v6h57j35qysvg8219fcx"))))
+    (properties `((upstream-name . "RcppSpdlog")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-rcpp))
+    (native-inputs (list r-simplermarkdown))
+    (home-page "https://github.com/eddelbuettel/rcppspdlog")
+    (synopsis "R and C++ interfaces to spdlog C++ header library for logging")
+    (description
+     "The spdlog library is a widely-used and very capable header-only C++
+library for logging.  This package includes its headers as an R package to
+permit other R packages to deploy it via a simple @code{LinkingTo:
+RcppSpdlog}.  As of version 0.0.9, it also provides both simple R logging
+functions and compiled functions callable by other packages.")
+    (license license:gpl2+)))
+
 (define-public r-rcppthread
   (package
     (name "r-rcppthread")
