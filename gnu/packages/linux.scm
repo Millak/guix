@@ -6675,7 +6675,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
   (package
     (name "rng-tools")
     (home-page "https://github.com/nhorman/rng-tools")
-    (version "6.15")
+    (version "6.16")
     (source (origin
               (method git-fetch)
               (uri (git-reference (url home-page)
@@ -6683,7 +6683,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0i00if7xknpm0dhkrm60rxzyyvq0vdibq7dvsd2ncm9pg098qvwj"))
+                "1rsk8nxs0j32b9hr88qk8hv029fb1q0hcrw0mfdywvm7dn2d15gn"))
               (patches
                (search-patches "rng-tools-revert-build-randstat.patch"))
               (patch-flags '("-p0"))))
@@ -6695,7 +6695,8 @@ The collection contains a set of bandwidth and latency benchmark such as:
       ;; increase closure size.
       #:configure-flags #~(list "--without-nistbeacon"
                                 "--without-pkcs11"
-                                "--without-rtlsdr")
+                                "--without-rtlsdr"
+                                "--without-qrypt")
       #:phases
       #~(modify-phases %standard-phases
           (add-before 'check 'disable-failing-test
@@ -6707,7 +6708,7 @@ The collection contains a set of bandwidth and latency benchmark such as:
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
-     (list sysfsutils openssl))
+     (list libcap sysfsutils openssl))
     (synopsis "Random number generator daemon")
     (description
      "Monitor a hardware random number generator, and supply entropy
