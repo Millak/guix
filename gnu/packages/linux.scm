@@ -6686,20 +6686,21 @@ The collection contains a set of bandwidth and latency benchmark such as:
                 "0i00if7xknpm0dhkrm60rxzyyvq0vdibq7dvsd2ncm9pg098qvwj"))))
     (build-system gnu-build-system)
     (arguments
-     `(;; Disable support for various hardware entropy sources as they need
-       ;; dependencies that are not yet in Guix, and would significantly
-       ;; increase closure size.
-       #:configure-flags '("--without-nistbeacon"
-                           "--without-pkcs11"
-                           "--without-rtlsdr")
-       #:phases
-       (modify-phases %standard-phases
-         (add-before 'check 'disable-failing-test
-           (lambda _
-             (substitute* "tests/Makefile"
-               ;; This test requires a hwrng, rdrand, or tpm device.
-               ;; Worse, it appears to fail if that isn't sufficiently random.
-               (("\\brngtestjitter\\.sh\\b") " ")))))))
+     (list
+      ;; Disable support for various hardware entropy sources as they need
+      ;; dependencies that are not yet in Guix, and would significantly
+      ;; increase closure size.
+      #:configure-flags #~(list "--without-nistbeacon"
+                                "--without-pkcs11"
+                                "--without-rtlsdr")
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-before 'check 'disable-failing-test
+            (lambda _
+              (substitute* "tests/Makefile"
+                ;; This test requires a hwrng, rdrand, or tpm device.
+                ;; Worse, it appears to fail if that isn't sufficiently random.
+                (("\\brngtestjitter\\.sh\\b") " ")))))))
     (native-inputs
      (list autoconf automake pkg-config))
     (inputs
