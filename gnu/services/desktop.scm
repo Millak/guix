@@ -1486,16 +1486,7 @@ rules."
    (default-value (xfce-desktop-configuration))
    (description "Run the Xfce desktop environment.")))
 
-(define-deprecated (xfce-desktop-service #:key (config
-                                                (xfce-desktop-configuration)))
-  xfce-desktop-service-type
-  "Return a service that adds the @code{xfce} package to the system profile,
-and extends polkit with the ability for @code{thunar} to manipulate the file
-system as root from within a user session, after the user has authenticated
-with the administrator's password."
-  (service xfce-desktop-service-type config))
-
-+
+
 ;;;
 ;;; Lxqt desktop service.
 ;;;
