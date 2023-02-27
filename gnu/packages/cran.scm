@@ -8334,6 +8334,32 @@ features:
 ")
     (license license:gpl3)))
 
+(define-public r-n2r
+  (package
+    (name "r-n2r")
+    (version "1.0.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "N2R" version))
+       (sha256
+        (base32 "12bv7xx6j6222qgpv6g61i68017fz0x6fjg9a9k5yhgw3zk05hpk"))))
+    (properties `((upstream-name . "N2R")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-matrix
+           r-rcpp
+           r-rcppeigen
+           r-rcppspdlog))
+    (home-page "https://github.com/kharchenkolab/N2R")
+    (synopsis "Fast and scalable approximate k-Nearest Neighbor search methods")
+    (description
+     "This package implements methods to perform fast approximate K-nearest
+neighbor search on the input matrix.  The algorithm is based on the N2
+implementation of an approximate nearest neighbor search using hierarchical
+@acronym{NSW, Navigable Small World} graphs.")
+    (license license:asl2.0)))
+
 (define-public r-network
   (package
     (name "r-network")
