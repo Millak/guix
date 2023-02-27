@@ -129,19 +129,27 @@
            python
            sugar-toolkit-gtk3
            tzdata))
+    ;; Some packages are propagated so that they can be used with gobject
+    ;; introspection at runtime; others are propagated for their dbus
+    ;; services.
     (propagated-inputs
-     (list gstreamer
+     (list gsettings-desktop-schemas
+           gstreamer
            gtk+
            gtksourceview-3
            libsoup-minimal-2
            libwnck
            libxklavier
            network-manager
+           python-gwebsockets
            sugar-artwork                ;for cursor theme
            sugar-datastore              ;for org.laptop.sugar.DataStore
            telepathy-glib
-           webkitgtk-with-libsoup2
-           python-gwebsockets))
+           ;; This is for org.freedesktop.Telepathy.AccountManager at runtime
+           telepathy-mission-control
+           ;; This is for the UPowerGlib namespace
+           upower
+           webkitgtk-with-libsoup2))
     (native-inputs
      (list autoconf automake
            gettext-minimal
