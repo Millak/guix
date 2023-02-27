@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2015, 2017-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2015, 2017-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017, 2018 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2018 Konrad Hinsen <konrad.hinsen@fastmail.net>
 ;;; Copyright © 2018 Chris Marusich <cmmarusich@gmail.com>
@@ -220,6 +220,11 @@ items, which relies on hard links."
          (file-append (store-database (list profile))
                       "/db/db.sqlite")))
 
+  (define bootstrap?
+    ;; Whether a '--bootstrap' environment is needed, for testing purposes.
+    ;; XXX: Infer that from available info.
+    (and (not database) (not (profile-locales? profile))))
+
   (define (import-module? module)
     ;; Since we don't use deduplication support in 'populate-store', don't
     ;; import (guix store deduplication) and its dependencies, which includes
@@ -287,6 +292,7 @@ items, which relies on hard links."
           (for-each (cut evaluate-populate-directive <> #$output)
                     directives)))
     #:local-build? #f
+    #:guile (if bootstrap? %bootstrap-guile (default-guile))
     #:options (list #:references-graphs `(("profile" ,profile))
                     #:target target)))
 

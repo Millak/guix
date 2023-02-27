@@ -138,10 +138,10 @@
   (test-assertm "self-contained-tarball + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (self-contained-tarball "tar-pack" profile
                                           #:localstatedir? #t))
          (check   (gexp->derivation "check-tarball"
@@ -210,10 +210,10 @@
   (test-assertm "docker-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (tarball (docker-image "docker-pack" profile
                                 #:symlinks '(("/bin/Guile" -> "bin/guile"))
                                 #:localstatedir? #t))
@@ -250,10 +250,10 @@
   (test-assertm "squashfs-image + localstatedir" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (image   (squashfs-image "squashfs-pack" profile
                                   #:symlinks '(("/bin" -> "bin"))
                                   #:localstatedir? #t))
@@ -288,10 +288,10 @@
   (test-assertm "deb archive with symlinks and control files" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (deb (debian-archive
                "deb-pack" profile
                #:compressor %gzip-compressor
@@ -376,10 +376,10 @@
   (test-assertm "rpm archive can be installed/uninstalled" store
     (mlet* %store-monad
         ((guile   (set-guile-for-build (default-guile)))
-         (profile (profile-derivation (packages->manifest
-                                       (list %bootstrap-guile))
-                                      #:hooks '()
-                                      #:locales? #f))
+         (profile -> (profile
+                      (content (packages->manifest (list %bootstrap-guile)))
+                      (hooks '())
+                      (locales? #f)))
          (rpm-pack (rpm-archive "rpm-pack" profile
                                 #:compressor %gzip-compressor
                                 #:symlinks '(("/bin/guile" -> "bin/guile"))
