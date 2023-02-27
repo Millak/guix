@@ -22440,6 +22440,49 @@ errors and possible semantic issues.  It supports on the fly checking of R
 code edited with @code{RStudio IDE}, @code{Emacs} and @code{Vim}.")
     (license license:expat)))
 
+(define-public r-sccore
+  (package
+    (name "r-sccore")
+    (version "1.0.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sccore" version))
+       (sha256
+        (base32 "12gm7pb6xbvf9kdsgl7ldw1c54ga9fgk99ps2kx2cq91q9m0ld4r"))))
+    (properties `((upstream-name . "sccore")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-ggplot2
+           r-ggrepel
+           r-igraph
+           r-irlba
+           r-magrittr
+           r-matrix
+           r-pbmcapply
+           r-proc
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppeigen
+           r-rcppprogress
+           r-rlang
+           r-scales
+           r-tibble
+           r-uwot
+           r-withr))
+    (home-page "https://github.com/kharchenkolab/sccore")
+    (synopsis "Core utilities for single-cell RNA-Seq")
+    (description
+     "This package implements core utilities for single-cell RNA-seq data analysis.
+Contained within are utility functions for working with @acronym{DE,
+differential expression} matrices and count matrices, a collection of
+functions for manipulating and plotting data via ggplot2, and functions to
+work with cell graphs and cell embeddings.  Graph-based methods include
+embedding kNN cell graphs into a UMAP, collapsing vertices of each cluster in
+the graph, and propagating graph labels.")
+    (license license:gpl3)))
+
 (define-public r-scs
   (package
     (name "r-scs")
