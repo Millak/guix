@@ -23348,6 +23348,41 @@ graph into communities.  See also Traag et al (2018) \"From Louvain to Leiden:
 guaranteeing well-connected communities.\" <arXiv:1810.08473>.")
     (license license:gpl3)))
 
+(define-public r-leidenalg
+  (package
+    (name "r-leidenalg")
+    (version "1.0.5")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "leidenAlg" version))
+       (sha256
+        (base32 "1z96zrsms93gspylmficaggb0xj94kq9rg3p2svdbb451jbga9an"))))
+    (properties `((upstream-name . "leidenAlg")))
+    (build-system r-build-system)
+    (inputs
+     (list glpk gmp libxml2))
+    (propagated-inputs
+     (list r-igraph
+           r-matrix
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppeigen
+           r-sccore))
+    (native-inputs (list gfortran))
+    (home-page "https://github.com/kharchenkolab/leidenAlg")
+    (synopsis "Leiden algorithm via an R interface")
+    (description
+     "This package implements an R interface to the Leiden algorithm, an
+iterative community detection algorithm on networks.  The algorithm is
+designed to converge to a partition in which all subsets of all communities
+are locally optimally assigned, yielding communities guaranteed to be
+connected.  The implementation proves to be fast, scales well, and can be run
+on graphs of millions of nodes (as long as they can fit in memory).")
+    ;; The DESCRIPTION file says GPL-3, but the code was copied from
+    ;; https://github.com/vtraag/leidenalg, which is under GPLv3+.
+    (license license:gpl3+)))
+
 (define-public r-patchwork
   (package
     (name "r-patchwork")
