@@ -719,6 +719,30 @@ suite native in R.")
 for all types of microbial diversity analyses.")
       (license license:expat))))
 
+(define-public r-conospanel
+  (let ((commit "39e76b201a783b4e92fd615010a735a61746fbb9")
+        (revision "1"))
+    (package
+      (name "r-conospanel")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kharchenkolab/conosPanel")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1zf0aj5d4iaxc3ghvjnaja5qby1avlmljzh94bpyvxbd359z9snn"))))
+      (properties `((upstream-name . "conosPanel")))
+      (build-system r-build-system)
+      (home-page "https://github.com/kharchenkolab/conosPanel")
+      (synopsis "Data for the conos package")
+      (description "The data within this package is a panel of four samples,
+each with 3000 cells.  There are two samples which are bone marrow (BM), and
+two samples which are cord blood (CB).")
+      (license license:gpl3))))
+
 (define-public r-rhtslib12
   (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
         (revision "1"))
