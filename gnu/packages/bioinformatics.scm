@@ -743,6 +743,29 @@ each with 3000 cells.  There are two samples which are bone marrow (BM), and
 two samples which are cord blood (CB).")
       (license license:gpl3))))
 
+(define-public r-p2data
+  (let ((commit "7d4c0e17d7899f9d9b08ab2bf455abe150912f4c")
+        (revision "1"))
+    (package
+      (name "r-p2data")
+      (version (git-version "1.0.0" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/kharchenkolab/p2data")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "1hadrldldxvhqs43aqs3c88bqfgql3wcfkbll3jz7fh6z7p3x324"))))
+      (properties `((upstream-name . "p2data")))
+      (build-system r-build-system)
+      (home-page "https://github.com/kharchenkolab/p2data")
+      (synopsis "Data for pagoda2")
+      (description "This package contains data used by pagoda2.  The data
+within this package are the 3000 bone marrow cells used for vignettes.")
+      (license license:gpl3))))
+
 (define-public r-rhtslib12
   (let ((commit "ee186daf04876969c7f31c16a0e0fda8e7c16a30")
         (revision "1"))
