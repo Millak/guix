@@ -311,7 +311,7 @@ software vendors, application developers and computer science researchers.")
     (arguments
      (substitute-keyword-arguments (package-arguments openmpi)
        ((#:configure-flags flags)
-        `(cons "--enable-mpi-cxx" ,flags))))
+        #~(cons "--enable-mpi-cxx" #$flags))))
     (synopsis "C++ bindings for MPI")))
 
 ;; TODO: javadoc files contain timestamps.
@@ -327,34 +327,35 @@ software vendors, application developers and computer science researchers.")
        ,@(package-native-inputs openmpi)))
     (outputs '("out"))
     (arguments
-     `(#:modules ((guix build gnu-build-system)
+     (cons*
+      #:modules '((guix build gnu-build-system)
                   ((guix build ant-build-system) #:prefix ant:)
                   (guix build utils))
-       #:imported-modules ((guix build ant-build-system)
+      #:imported-modules `((guix build ant-build-system)
                            ,@%gnu-build-system-modules)
-       ,@(substitute-keyword-arguments (package-arguments openmpi)
-           ((#:configure-flags flags)
-            `(cons "--enable-mpi-java" ,flags))
-           ((#:make-flags flags ''())
-            `(append '("-C" "ompi/mpi/java")
-                     ,flags))
-           ((#:phases phases)
-            `(modify-phases ,phases
-               ;; We could provide the location of the JDK in the configure
-               ;; flags, but since the configure flags are embedded in the
-               ;; info binaries that would leave a reference to the JDK in
-               ;; the "out" output.  To avoid this we set JAVA_HOME.
-               (add-after 'unpack 'set-JAVA_HOME
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
-                   #t))
-               (add-after 'unpack 'link-with-existing-mpi-libraries
-                 (lambda* (#:key inputs #:allow-other-keys)
-                   (substitute* "ompi/mpi/java/c/Makefile.in"
-                     (("\\$\\(top_builddir\\)/ompi/lib@OMPI_LIBMPI_NAME@.la")
-                      (search-input-file inputs "/lib/libmpi.la")))))
-               (add-after 'install 'strip-jar-timestamps
-                 (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))))
+      (substitute-keyword-arguments (package-arguments openmpi)
+        ((#:configure-flags flags)
+         #~(cons "--enable-mpi-java" #$flags))
+        ((#:make-flags flags ''())
+         #~(append '("-C" "ompi/mpi/java")
+                   #$flags))
+        ((#:phases phases)
+         #~(modify-phases #$phases
+             ;; We could provide the location of the JDK in the configure
+             ;; flags, but since the configure flags are embedded in the
+             ;; info binaries that would leave a reference to the JDK in
+             ;; the "out" output.  To avoid this we set JAVA_HOME.
+             (add-after 'unpack 'set-JAVA_HOME
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (setenv "JAVA_HOME" (assoc-ref inputs "jdk"))
+                 #t))
+             (add-after 'unpack 'link-with-existing-mpi-libraries
+               (lambda* (#:key inputs #:allow-other-keys)
+                 (substitute* "ompi/mpi/java/c/Makefile.in"
+                   (("\\$\\(top_builddir\\)/ompi/lib@OMPI_LIBMPI_NAME@.la")
+                    (search-input-file inputs "/lib/libmpi.la")))))
+             (add-after 'install 'strip-jar-timestamps
+               (assoc-ref ant:%standard-phases 'strip-jar-timestamps)))))))
     (synopsis "Java bindings for MPI")))
 
 (define-public openmpi-thread-multiple
@@ -363,7 +364,7 @@ software vendors, application developers and computer science researchers.")
     (arguments
      (substitute-keyword-arguments (package-arguments openmpi)
        ((#:configure-flags flags)
-        `(cons "--enable-mpi-thread-multiple" ,flags))))
+        #~(cons "--enable-mpi-thread-multiple" #$flags))))
     (description "This version of Open@tie{}MPI has an implementation of
 @code{MPI_Init_thread} that provides @code{MPI_THREAD_MULTIPLE}.  This won't
 work correctly with all transports (such as @code{openib}), and the
