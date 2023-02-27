@@ -11294,7 +11294,7 @@ and selecting references used in a publication.")
                              texlive-booktabs
                              texlive-endnotes
                              texlive-etoolbox
-                             texlive-generic-xstring
+                             texlive-xstring
                              texlive-latex-draftwatermark
                              texlive-latex-fancyhdr
                              texlive-latex-float
