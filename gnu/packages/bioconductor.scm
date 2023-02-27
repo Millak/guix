@@ -6850,6 +6850,37 @@ characterization and visualization of a wide range of mutational patterns
 in SNV base substitution data.")
     (license license:expat)))
 
+(define-public r-msa
+  (package
+    (name "r-msa")
+    (version "1.30.1")
+    (source (origin
+              (method url-fetch)
+              (uri (bioconductor-uri "msa" version))
+              (sha256
+               (base32
+                "064hmry0zhmpchxgjsw0krsybr9v9gbsz26zmj2a39pg1nggwbq4"))))
+    (properties `((upstream-name . "msa")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biocgenerics
+           r-biostrings
+           r-iranges
+           r-rcpp
+           r-s4vectors))
+    (native-inputs (list r-knitr))
+    (home-page "http://www.bioinf.jku.at/software/msa/")
+    (synopsis "Multiple sequence alignment")
+    (description
+     "The msa package provides a unified R/Bioconductor interface to the
+multiple sequence alignment algorithms ClustalW, ClustalOmega, and Muscle.
+All three algorithms are integrated in the package, therefore, they do not
+depend on any external software tools and are available for all major
+platforms.  The multiple sequence alignment algorithms are complemented by a
+function for pretty-printing multiple sequence alignments using the LaTeX
+package TeXshade.")
+    (license license:gpl2+)))
+
 (define-public r-msnbase
   (package
     (name "r-msnbase")
