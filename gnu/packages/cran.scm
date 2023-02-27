@@ -9652,6 +9652,33 @@ filtering functions, resampling routines, and visualization of filter models.
 It also includes interpolation functions.")
     (license license:gpl2)))
 
+(define-public r-simplermarkdown
+  (package
+    (name "r-simplermarkdown")
+    (version "0.0.4")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "simplermarkdown" version))
+       (sha256
+        (base32 "069pgx5m22rdqa21lyn5zqm9ym3g7w6z1d2wjwms8b1f2cp6266g"))))
+    (properties `((upstream-name . "simplermarkdown")))
+    (build-system r-build-system)
+    (propagated-inputs
+     ;; We cannot patch references to pandoc because the patched files are
+     ;; compiled to an opaque rdb/rdx pair.  "guix gc" would not be able to
+     ;; find the patched references in those files.
+     (list pandoc
+           r-rjson))
+    (home-page "https://github.com/djvanderlaan/simplermarkdown")
+    (synopsis "Simple engine for generating reports using R")
+    (description
+     "This package runs R-code present in a pandoc markdown file and includes
+the resulting output in the resulting markdown file.  This file can then be
+converted into any of the output formats supported by pandoc.  The package can
+also be used as an engine for writing package vignettes.")
+    (license license:gpl3+)))
+
 (define-public r-sitar
   (package
     (name "r-sitar")
