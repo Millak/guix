@@ -2031,6 +2031,59 @@ consistent fashion.  It seeks to combine functionality from lower level
 functions which can speed up workflow.")
     (license license:gpl2)))
 
+(define-public r-pagoda2
+  (package
+    (name "r-pagoda2")
+    (version "1.0.10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "pagoda2" version))
+       (sha256
+        (base32 "18ip8j5l5c3hqw1xsf5wnyas55i2mhk09phy68kjkjdgcymmpg7c"))))
+    (properties `((upstream-name . "pagoda2")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dendsort
+           r-drat
+           r-fastcluster
+           r-igraph
+           r-irlba
+           r-magrittr
+           r-mass
+           r-matrix
+           r-mgcv
+           r-n2r
+           r-plyr
+           r-r-utils
+           r-r6
+           r-rcpp
+           r-rcpparmadillo
+           r-rcppeigen
+           r-rcppprogress
+           r-rjson
+           r-rlang
+           r-rmtstat
+           r-rook
+           r-rtsne
+           r-sccore
+           r-urltools))
+    (home-page "https://github.com/kharchenkolab/pagoda2")
+    (synopsis "Single cell analysis and differential expression")
+    (description
+     "The package offers functions for analyzing and interactively exploring
+large-scale single-cell RNA-seq datasets.  Pagoda2 primarily performs
+normalization and differential gene expression analysis, with an interactive
+application for exploring single-cell RNA-seq datasets.  It performs basic
+tasks such as cell size normalization, gene variance normalization, and can be
+used to identify subpopulations and run differential expression within
+individual samples.  pagoda2 was written to rapidly process modern large-scale
+scRNAseq datasets of approximately 1e6 cells.  The companion web application
+allows users to explore which gene expression patterns form the different
+subpopulations within your data.  The package also serves as the primary
+method for preprocessing data for conos.")
+    (license license:gpl3)))
+
 (define-public r-pals
   (package
     (name "r-pals")
