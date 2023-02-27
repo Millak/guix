@@ -344,3 +344,43 @@ and metadata, and the journal with querying and full text search.")
 build activities and other Sugar components.  This is the GTK+ 3 binding of
 the Sugar Toolkit.")
     (license license:lgpl2.1+)))
+
+
+(define-public sugar-help-activity
+  (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
+        (revision "1"))
+    (package
+      (name "sugar-help-activity")
+      (version (git-version "20" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/help-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0awjbqyc9f74dx0d7fgjk42vfsygxr8jhwqiv4hpggqcawc02xv8"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      (native-inputs
+       (list sugar-toolkit-gtk3))
+      (home-page "https://github.com/sugarlabs/help-activity")
+      (synopsis "Sugar activity for accessing documentation and manuals")
+      (description "This is an activity for the Sugar environment which aims
+to provide users with easy access to documentation and manuals.")
+      (license license:gpl3+))))
