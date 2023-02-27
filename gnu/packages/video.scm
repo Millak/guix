@@ -2344,9 +2344,6 @@ can use youtube-dl or yt-dlp packages to download videos, the focus is more on
 images and image hosting sites.")
     (license license:gpl2)))
 
-(define-public gnome-mpv
-  (deprecated-package "gnome-mpv" celluloid))
-
 (define-public mpv-mpris
   (package
     (name "mpv-mpris")

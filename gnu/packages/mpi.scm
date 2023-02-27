@@ -177,8 +177,6 @@ bind processes, and much more.")
                  (("hwloc_topology_init" all)
                   (string-append "exit (77);\n" all)))))))))))
 
-(define-deprecated hwloc-2.0 hwloc-2)
-
 (define-public hwloc
   ;; The latest stable series of hwloc.
   hwloc-2)

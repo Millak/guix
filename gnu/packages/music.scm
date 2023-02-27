@@ -1609,9 +1609,6 @@ Because Abjad wraps the LilyPond music notation package, you can use Abjad to co
 typographic detail of symbols on the page.")
      (license license:expat)))
 
-(define-public python-abjad
-  (deprecated-package "python-abjad" abjad))
-
 (define-public abjad-ext-rmakers
   (package
     (name "abjad-ext-rmakers")
@@ -6576,10 +6573,6 @@ as JACK standalone applications.")
 to be bundled with the Zrythm @dfn{digital audio workstation} (DAW).")
     (home-page "https://www.zrythm.org/en/plugins.html")
     (license license:agpl3+)))
-
-(define-public zlfo
-  ;; The "zlfo" package is now included in zplugins
-  (deprecated-package "zlfo" zplugins))
 
 (define-public remid-lv2
   (package
