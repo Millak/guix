@@ -3867,6 +3867,20 @@ be regarded as @code{emacs-company-quickhelp} for @code{emacs-corfu}.")
        (sha256
         (base32 "0nvmqfp9rv2mrisyvwfr285yww22c6wb5by3s25c83ay2ivpi8ya"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "cape.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs (list texinfo))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/minad/cape")
