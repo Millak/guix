@@ -23185,10 +23185,9 @@ This is the type of the service that runs the
 @uref{https://www.sugarlabs.org, Sugar desktop environment}.  Its value
 is a @code{sugar-desktop-configuration} object (see below).
 
-This service adds the @code{sugar} package to the system profile.  It
-does not install any Sugar Activity.  Add packages providing activities
-to the list of packages to be installed globally to make them available
-to users of the Sugar desktop environment.
+This service adds the @code{sugar} package to the system profile, as
+well as any selected Sugar activities.  By default it only includes a
+minimal set of activities.
 @end defvar
 
 @deftp {Data Type} sugar-desktop-configuration
@@ -23197,8 +23196,32 @@ Configuration record for the Sugar desktop environment.
 @table @asis
 @item @code{sugar} (default: @code{sugar})
 The Sugar package to use.
+@item @code{gobject-introspection} (default: @code{gobject-introspection})
+The @code{gobject-introspection} package to use.  This package is used
+to access libraries installed as dependencies of Sugar activities.
+@item @code{activities} (default: @code{(list sugar-help-activity)})
+A list of Sugar activities to install.
 @end table
 @end deftp
+
+The following example configures the Sugar desktop environment with a
+number of useful activities:
+
+@lisp
+(use-modules (gnu))
+(use-package-modules sugar)
+(use-service-modules desktop)
+(operating-system
+  ...
+  (services (cons* (service sugar-desktop-service-type
+                            (sugar-desktop-configuration
+                              (activities (list sugar-browse-activity
+                                                sugar-help-activity
+                                                sugar-jukebox-activity
+                                                sugar-typing-turtle-activity))))
+                   %desktop-services))
+  ...)
+@end lisp
 
 @defvar enlightenment-desktop-service-type
 Return a service that adds the @code{enlightenment} package to the system

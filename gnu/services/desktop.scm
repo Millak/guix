@@ -1530,7 +1530,11 @@ rules."
 (define-record-type* <sugar-desktop-configuration> sugar-desktop-configuration
   make-sugar-desktop-configuration
   sugar-desktop-configuration?
-  (sugar sugar-package (default sugar)))
+  (sugar sugar-package (default sugar))
+  (gobject-introspection
+   sugar-gobject-introspection (default gobject-introspection))
+  (activities
+   sugar-activities (default (list sugar-help-activity))))
 
 (define (sugar-polkit-settings config)
   "Return the list of packages that provide polkit actions and rules."
@@ -1543,7 +1547,10 @@ rules."
     (list (service-extension polkit-service-type
                              sugar-polkit-settings)
           (service-extension profile-service-type
-                             (compose list sugar-package))))
+                             (lambda (config)
+                               (cons* (sugar-package config)
+                                      (sugar-gobject-introspection config)
+                                      (sugar-activities config))))))
    (default-value (sugar-desktop-configuration))
    (description "Run the Sugar desktop environment.")))
 
