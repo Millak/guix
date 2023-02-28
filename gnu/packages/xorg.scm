@@ -5638,11 +5638,29 @@ The XCB util-renderutil module provides the following library:
                "0gra7hfyxajic4mjd63cpqvd20si53j1q3rbdlkqkahfciwq3gr8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags '("--disable-static")))
+     `(#:configure-flags '("--disable-static")
+       ,@(if (and (target-riscv64?)
+                  (%current-target-system))
+           `(#:phases
+             (modify-phases %standard-phases
+               (add-after 'unpack 'update-config-scripts
+                 (lambda* (#:key inputs native-inputs #:allow-other-keys)
+                   ;; Replace outdated config.guess and config.sub.
+                   (for-each (lambda (file)
+                               (install-file
+                                (search-input-file
+                                 (or native-inputs inputs)
+                                 (string-append "/bin/" file)) "."))
+                             '("config.guess" "config.sub"))))))
+           '())))
     (propagated-inputs
      (list libxcb))
     (native-inputs
-     (list m4 pkg-config))
+     (append (if (and (target-riscv64?)
+                      (%current-target-system))
+               (list config)
+               '())
+             (list m4 pkg-config)))
     (home-page "https://cgit.freedesktop.org/xcb/util-wm/")
     (synopsis "Client and window-manager helpers for ICCCM and EWMH")
     (description
