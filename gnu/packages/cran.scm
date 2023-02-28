@@ -9652,6 +9652,40 @@ filtering functions, resampling routines, and visualization of filter models.
 It also includes interpolation functions.")
     (license license:gpl2)))
 
+(define-public r-sitar
+  (package
+    (name "r-sitar")
+    (version "1.3.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "sitar" version))
+       (sha256
+        (base32 "0lhwbbpq6anqrk3818xw3nrl63bj3vwgsmxad0dpl8y50rkcc4cs"))))
+    (properties `((upstream-name . "sitar")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-dplyr
+           r-forcats
+           r-ggplot2
+           r-glue
+           r-magrittr
+           r-nlme
+           r-purrr
+           r-rlang
+           r-rsample
+           r-tibble
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://github.com/statist7/sitar")
+    (synopsis "Super imposition by translation and rotation growth curve analysis")
+    (description
+     "This package provides functions for fitting and plotting @acronym{SITAR, Super
+Imposition by Translation And Rotation} growth curve models.  SITAR is a shape-
+invariant model with a regression B-spline mean curve and subject-specific random
+effects on both the measurement and age scales.")
+    (license license:gpl2+)))
+
 (define-public r-gsubfn
   (package
     (name "r-gsubfn")
