@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012, 2013, 2014, 2015, 2017, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012, 2013, 2014, 2015, 2017, 2019, 2020, 2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2013 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015 Taylan Ulrich Bayırlı/Kammer <taylanbayirli@gmail.com>
@@ -297,93 +297,91 @@ file; as a result, it is often used in conjunction with \"tar\", resulting in
                 "0s92986cv0p692icqlw1j42y9nld8zd83qwhzbqd61p1dqbh6nmb"))))
     (build-system gnu-build-system)
     (arguments
-     `(#:modules ((guix build gnu-build-system)
-                  (guix build utils)
-                  (ice-9 ftw)
-                  (srfi srfi-1))
-       #:phases
-       (modify-phases %standard-phases
-         (add-after 'set-paths 'hide-input-bzip2
-           (lambda* (#:key inputs #:allow-other-keys)
-             (let ((bzip2 (assoc-ref inputs "bzip2")))
-               (if bzip2
-                   ;; Prevent the build system from retaining a reference to
-                   ;; BZIP2 from INPUTS.
-                   (begin
-                     (setenv "LIBRARY_PATH"
-                             (string-join (delete (string-append bzip2 "/lib")
-                                                  (string-split (getenv "LIBRARY_PATH")
-                                                                #\:))
-                                          ":"))
-                     (format #t "environment variable `LIBRARY_PATH' set to `~a'~%"
-                             (getenv "LIBRARY_PATH")))
-                   (format #t "no bzip2 found, nothing done~%"))
-               #t)))
-         (replace 'configure
-           (lambda* (#:key target #:allow-other-keys)
-             (when ,(%current-target-system)
-               ;; Cross-compilation: use the cross tools.
-               (substitute* (find-files "." "Makefile")
-                 (("CC=.*$")
-                  (string-append "CC = " target "-gcc\n"))
-                 (("AR=.*$")
-                  (string-append "AR = " target "-ar\n"))
-                 (("RANLIB=.*$")
-                  (string-append "RANLIB = " target "-ranlib\n"))
-                 (("^all:(.*)test" _ prerequisites)
-                  ;; Remove 'all' -> 'test' dependency.
-                  (string-append "all:" prerequisites "\n"))))
-             #t))
-         (add-before 'build 'build-shared-lib
-           (lambda* (#:key inputs #:allow-other-keys)
-             (patch-makefile-SHELL "Makefile-libbz2_so")
-             (invoke "make" "-f" "Makefile-libbz2_so")))
-         (add-after 'install 'install-shared-lib
-           (lambda* (#:key outputs #:allow-other-keys)
-             ;; The Makefile above does not have an 'install' target, nor does
-             ;; it create all the (un)versioned symlinks, so we handle it here.
-             (let* ((out    (assoc-ref outputs "out"))
-                    (libdir (string-append out "/lib"))
-                    (soname "libbz2.so")
-                    ;; Locate the built library (e.g. "libbz2.so.1.0.6").
-                    (lib (car (scandir "."
-                                       (lambda (file)
-                                         (and (string-prefix? soname file)
-                                              (eq? 'regular
-                                                   (stat:type (lstat file))))))))
-                    (soversion (string-drop lib (+ 1 (string-length soname)))))
-               (install-file lib libdir)
-               (with-directory-excursion libdir
-                 ;; Create symlinks libbz2.so.1 -> libbz2.so.1.0, etc.
-                 (let loop ((base soname)
-                            (numbers (string-split soversion #\.)))
-                   (unless (null? numbers)
-                     (let ((so-file (string-append base "." (car numbers))))
-                       (symlink so-file base)
-                       (loop so-file (cdr numbers))))))
-               #t)))
-         (add-after 'install-shared-lib 'move-static-lib
-           (lambda* (#:key outputs #:allow-other-keys)
-             (let ((out (assoc-ref outputs "out"))
-                   (static (assoc-ref outputs "static")))
-               (with-directory-excursion (string-append out "/lib")
-                 (install-file "libbz2.a" (string-append static "/lib"))
-                 (delete-file "libbz2.a")
-                 #t))))
-         (add-after 'install-shared-lib 'patch-scripts
-           (lambda* (#:key outputs inputs #:allow-other-keys)
-             (let* ((out (assoc-ref outputs "out")))
-               (substitute* (string-append out "/bin/bzdiff")
-                 (("/bin/rm") "rm")))
-             #t)))
+     (list #:modules '((guix build gnu-build-system)
+                       (guix build utils)
+                       (ice-9 ftw)
+                       (srfi srfi-1))
+           #:phases
+           #~(modify-phases %standard-phases
+               (add-after 'set-paths 'hide-input-bzip2
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (let ((bzip2 (assoc-ref inputs "bzip2")))
+                     (if bzip2
+                         ;; Prevent the build system from retaining a reference to
+                         ;; BZIP2 from INPUTS.
+                         (begin
+                           (setenv "LIBRARY_PATH"
+                                   (string-join (delete (string-append bzip2 "/lib")
+                                                        (string-split (getenv "LIBRARY_PATH")
+                                                                      #\:))
+                                                ":"))
+                           (format #t "environment variable `LIBRARY_PATH' set to `~a'~%"
+                                   (getenv "LIBRARY_PATH")))
+                         (format #t "no bzip2 found, nothing done~%"))
+                     #t)))
+               (replace 'configure
+                 (lambda* (#:key target #:allow-other-keys)
+                   (when #$(%current-target-system)
+                     ;; Cross-compilation: use the cross tools.
+                     (substitute* (find-files "." "Makefile")
+                       (("CC=.*$")
+                        (string-append "CC = " target "-gcc\n"))
+                       (("AR=.*$")
+                        (string-append "AR = " target "-ar\n"))
+                       (("RANLIB=.*$")
+                        (string-append "RANLIB = " target "-ranlib\n"))
+                       (("^all:(.*)test" _ prerequisites)
+                        ;; Remove 'all' -> 'test' dependency.
+                        (string-append "all:" prerequisites "\n"))))
+                   #t))
+               (add-before 'build 'build-shared-lib
+                 (lambda* (#:key inputs #:allow-other-keys)
+                   (patch-makefile-SHELL "Makefile-libbz2_so")
+                   (invoke "make" "-f" "Makefile-libbz2_so")))
+               (add-after 'install 'install-shared-lib
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   ;; The Makefile above does not have an 'install' target, nor does
+                   ;; it create all the (un)versioned symlinks, so we handle it here.
+                   (let* ((out    (assoc-ref outputs "out"))
+                          (libdir (string-append out "/lib"))
+                          (soname "libbz2.so")
+                          ;; Locate the built library (e.g. "libbz2.so.1.0.6").
+                          (lib (car (scandir "."
+                                             (lambda (file)
+                                               (and (string-prefix? soname file)
+                                                    (eq? 'regular
+                                                         (stat:type (lstat file))))))))
+                          (soversion (string-drop lib (+ 1 (string-length soname)))))
+                     (install-file lib libdir)
+                     (with-directory-excursion libdir
+                       ;; Create symlinks libbz2.so.1 -> libbz2.so.1.0, etc.
+                       (let loop ((base soname)
+                                  (numbers (string-split soversion #\.)))
+                         (unless (null? numbers)
+                           (let ((so-file (string-append base "." (car numbers))))
+                             (symlink so-file base)
+                             (loop so-file (cdr numbers))))))
+                     #t)))
+               (add-after 'install-shared-lib 'move-static-lib
+                 (lambda* (#:key outputs #:allow-other-keys)
+                   (let ((out (assoc-ref outputs "out"))
+                         (static (assoc-ref outputs "static")))
+                     (with-directory-excursion (string-append out "/lib")
+                       (install-file "libbz2.a" (string-append static "/lib"))
+                       (delete-file "libbz2.a")
+                       #t))))
+               (add-after 'install-shared-lib 'patch-scripts
+                 (lambda* (#:key outputs inputs #:allow-other-keys)
+                   (let* ((out (assoc-ref outputs "out")))
+                     (substitute* (string-append out "/bin/bzdiff")
+                       (("/bin/rm") "rm")))
+                   #t)))
 
-       #:make-flags (list (string-append "PREFIX="
-                                         (assoc-ref %outputs "out")))
+           #:make-flags #~(list (string-append "PREFIX="
+                                               (assoc-ref %outputs "out")))
 
-       ;; Don't attempt to run the tests when cross-compiling.
-       ,@(if (%current-target-system)
-             '(#:tests? #f)
-             '())))
+           ;; Don't attempt to run the tests when cross-compiling.
+           #:tests? (not (%current-target-system))))
     (inputs
      `(,@(if (%current-target-system)
              `(("bash" ,bash-minimal))
