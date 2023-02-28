@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014 Andreas Enge <andreas@enge.fr>
 ;;; Copyright © 2012 Nikita Karetnikov <nikita@karetnikov.org>
 ;;; Copyright © 2014, 2015, 2017 Mark H Weaver <mhw@netris.org>
@@ -2945,14 +2945,14 @@ exec ~a/bin/~a-~a -B~a/lib -Wl,-dynamic-linker -Wl,~a/~a \"$@\"~%"
        #:guile ,%bootstrap-guile
 
        ,@(substitute-keyword-arguments (package-arguments static-bash)
-           ((#:configure-flags flags '())
+           ((#:configure-flags flags #~'())
             ;; Add a '-L' flag so that the pseudo-cross-ld of
             ;; BINUTILS-BOOT0 can find libc.a.
-            `(append ,flags
-                     (list (string-append "LDFLAGS=-static -L"
-                                          (assoc-ref %build-inputs
-                                                     "libc:static")
-                                          "/lib")))))))))
+            #~(append #$flags
+                      (list (string-append "LDFLAGS=-static -L"
+                                           (assoc-ref %build-inputs
+                                                      "libc:static")
+                                           "/lib")))))))))
 
 (define gettext-boot0
   ;; A minimal gettext used during bootstrap.
