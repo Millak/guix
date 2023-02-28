@@ -255,7 +255,8 @@ activities and other Sugar components.")
                     (search-input-file outputs "bin/copy-to-journal")
                     (search-input-file outputs "bin/datastore-service"))))))))
     (inputs
-     (list python
+     (list bash-minimal
+           python
            sugar-toolkit-gtk3))
     (propagated-inputs
      (list python-dbus
