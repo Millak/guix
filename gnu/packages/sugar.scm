@@ -293,18 +293,19 @@ and metadata, and the journal with querying and full text search.")
         ((guix build python-build-system) #:prefix python:)
         (guix build utils))
       #:phases
-      '(modify-phases %standard-phases
-         (add-after 'unpack 'patch-build-system
-           (lambda _
-             (substitute* "autogen.sh"
-               (("^\"\\$srcdir/configure" m)
-                (string-append "#" m)))))
-         (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
-           (lambda* (#:key inputs outputs #:allow-other-keys)
-             (wrap-program (search-input-file outputs "bin/sugar-activity3")
-               `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
-                                      ,(python:site-packages inputs outputs)))
-               `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))))))
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-build-system
+            (lambda _
+              (substitute* "autogen.sh"
+                (("^\"\\$srcdir/configure" m)
+                 (string-append "#" m)))))
+          (add-after 'glib-or-gtk-wrap 'python-and-gi-wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (wrap-program (search-input-file outputs "bin/sugar-activity3")
+                `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
+                                       ,(python:site-packages inputs outputs)))
+                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")
+                                       ,(string-append #$output "/lib/girepository-1.0")))))))))
     (inputs
      (list alsa-lib
            libice
