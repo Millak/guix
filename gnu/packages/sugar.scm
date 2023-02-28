@@ -122,7 +122,8 @@
                  (wrap-program executable
                    `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
                                           ,(python:site-packages inputs outputs)))
-                   `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
+                   `("GI_TYPELIB_PATH" prefix
+                     (,(getenv "GI_TYPELIB_PATH")))))
                (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
      (list bash-minimal
