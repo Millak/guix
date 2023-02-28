@@ -124,7 +124,8 @@
                    `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")))))
                (find-files (string-append #$output "/bin") "^sugar.*")))))))
     (inputs
-     (list gtk+
+     (list bash-minimal
+           gtk+
            metacity
            mobile-broadband-provider-info
            python
