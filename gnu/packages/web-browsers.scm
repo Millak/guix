@@ -1,7 +1,7 @@
 ;;; GNU Guix --- Functional package management for GNU
 ;;; Copyright © 2014 John Darrington <jmd@gnu.org>
 ;;; Copyright © 2014, 2019 Mark H Weaver <mhw@netris.org>
-;;; Copyright © 2015, 2016, 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2015, 2016, 2019, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2016 Kei Kebreau <kkebreau@posteo.net>
 ;;; Copyright © 2017 Eric Bavier <bavier@member.fsf.org>
 ;;; Copyright © 2018–2021 Tobias Geerinckx-Rice <me@tobias.gr>
@@ -468,7 +468,7 @@ interface.")
 (define-public qutebrowser
   (package
     (name "qutebrowser")
-    (version "2.5.2")
+    (version "2.5.3")
     (source
      (origin
        (method url-fetch)
@@ -476,7 +476,7 @@ interface.")
                            "qutebrowser/releases/download/v" version "/"
                            "qutebrowser-" version ".tar.gz"))
        (sha256
-        (base32 "0279fi4lx8sfxz3mx6ar0wz01kiiqa1zkv9fxc6xw0y4vlacxgx9"))))
+        (base32 "10fpr414nadqba33xgvbpaacc5sn0xnpnnljf5a3n8yh6hjg4pl4"))))
     (build-system python-build-system)
     (native-inputs
      (list python-attrs))               ; for tests
