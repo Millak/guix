@@ -34,7 +34,7 @@
 (define-public libgc
   (package
    (name "libgc")
-   (version "8.0.6")
+   (version "8.2.2")
    (source (origin
             (method url-fetch)
             (uri (list (string-append "https://github.com/ivmai/bdwgc/releases"
@@ -44,7 +44,7 @@
                                       "/gc-" version ".tar.gz")))
             (sha256
              (base32
-              "04ga3c95w5az5sznzm73j19lvvfpf6k4sgkpjqsmjxpsr6mi8j9v"))))
+              "181ni2rn9qjbl4ilqdjrd1a4h8siv5bgmzqgg4595q32n2y0f0gk"))))
    (build-system gnu-build-system)
    (arguments
     (list
@@ -52,9 +52,6 @@
      #~(list
         ;; Install gc_cpp.h et al.
         "--enable-cplusplus"
-
-        ;; Work around <https://github.com/ivmai/bdwgc/issues/353>.
-        "--disable-munmap"
 
         ;; In GNU/Hurd systems during the 'check' phase,
         ;; there is a deadlock caused by the 'gctest' test.

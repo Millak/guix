@@ -325,11 +325,8 @@ without requiring the source code to be rewritten.")
               (patches '())
               ;; Replace the snippet because the oom-test still
               ;; fails on some 32-bit architectures.
-              (snippet '(begin
-                          (substitute* "test-suite/standalone/Makefile.in"
-                            (("test-out-of-memory") ""))
-                          (for-each delete-file
-                                    (find-files "prebuilt" "\\.go$"))))))
+              (snippet '(for-each delete-file
+                                  (find-files "prebuilt" "\\.go$")))))
 
     ;; Build with the bundled mini-GMP to avoid interference with GnuTLS' own
     ;; use of GMP via Nettle: <https://issues.guix.gnu.org/46330>.
@@ -448,10 +445,7 @@ without requiring the source code to be rewritten.")
                      (display ,version port)))))
              (add-before 'check 'skip-failing-tests
                (lambda _
-                 (substitute* "test-suite/standalone/test-out-of-memory"
-                   (("!#") "!#\n\n(exit 77)\n"))
-                 (delete-file "test-suite/tests/version.test")
-                 #t))))))
+                 (delete-file "test-suite/tests/version.test")))))))
       (native-inputs
        (modify-inputs (package-native-inputs guile-3.0)
          (prepend autoconf
@@ -575,10 +569,6 @@ GNU@tie{}Guile.  Use the @code{(ice-9 readline)} module and call its
                  (substitute* "test-suite/tests/version.test"
                    (("\\(pass-if \"version reporting works\"" m)
                     (string-append "#;" m)))
-                 ;; Warning: Unwind-only `out-of-memory' exception; skipping pre-unwind handler.
-                 ;; FAIL: test-out-of-memory
-                 (substitute* "test-suite/standalone/Makefile.am"
-                   (("(check_SCRIPTS|TESTS) \\+= test-out-of-memory") ""))
 
                  (patch-shebang "build-aux/git-version-gen")
                  (invoke "sh" "autogen.sh")
