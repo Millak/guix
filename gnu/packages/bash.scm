@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2017, 2019-2020, 2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2017, 2019-2020, 2022, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2014, 2015, 2018 Mark H Weaver <mhw@netris.org>
 ;;; Copyright © 2015, 2017 Leo Famulari <leo@famulari.name>
 ;;; Copyright © 2016, 2017, 2018, 2019, 2022 Efraim Flashner <efraim@flashner.co.il>
@@ -270,15 +270,15 @@ without modification.")
        (substitute-keyword-arguments
            `(#:allowed-references ("out") ,@(package-arguments bash))
          ((#:phases phases)
-          `(modify-phases ,phases
-             (add-after 'strip 'remove-everything-but-the-binary
-               (lambda* (#:key outputs #:allow-other-keys)
-                 (let* ((out (assoc-ref outputs "out"))
-                        (bin (string-append out "/bin")))
-                   (remove-store-references (string-append bin "/bash"))
-                   (delete-file (string-append bin "/bashbug"))
-                   (delete-file-recursively (string-append out "/share"))
-                   #t))))))))))
+          #~(modify-phases #$phases
+              (add-after 'strip 'remove-everything-but-the-binary
+                (lambda* (#:key outputs #:allow-other-keys)
+                  (let* ((out (assoc-ref outputs "out"))
+                         (bin (string-append out "/bin")))
+                    (remove-store-references (string-append bin "/bash"))
+                    (delete-file (string-append bin "/bashbug"))
+                    (delete-file-recursively (string-append out "/share"))
+                    #t))))))))))
 
 (define-public bash-with-syslog
   (package
