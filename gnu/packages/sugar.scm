@@ -457,6 +457,53 @@ the Sugar Toolkit.")
 to provide users with easy access to documentation and manuals.")
       (license license:gpl3+))))
 
+(define-public sugar-jukebox-activity
+  (let ((commit "e11f40c94c1c6302d3e36ddf4dc8101732ffb9d9")
+        (revision "1"))
+    (package
+      (name "sugar-jukebox-activity")
+      (version (git-version "36" revision commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/sugarlabs/jukebox-activity")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "0gm1cj4vrwwdriyshd27w6vc0palwpg9pnnab5axinrnkzczyk1v"))))
+      (build-system python-build-system)
+      (arguments
+       (list
+        #:test-target "check"
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'patch-launcher
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "activity/activity.info"
+                  (("exec = sugar-activity3")
+                   (string-append "exec = "
+                                  (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'install
+              (lambda _
+                (setenv "HOME" "/tmp")
+                (invoke "python" "setup.py" "install"
+                        (string-append "--prefix=" #$output)))))))
+      ;; All these libraries are accessed via gobject introspection.
+      (propagated-inputs
+       (list gtk+
+             gstreamer
+             gst-plugins-base
+             sugar-toolkit-gtk3))
+      (inputs
+       (list gettext-minimal))
+      (home-page "https://help.sugarlabs.org/jukebox.html")
+      (synopsis "Media player for the Sugar learning environment")
+      (description "Jukebox is the media player to play different kinds of
+audio and video files including online streams.  It also supports playlists
+like @file{.m3u} and @file{.pls}.")
+      (license license:gpl2+))))
+
 (define-public sugar-typing-turtle-activity
   (package
     (name "sugar-typing-turtle-activity")
