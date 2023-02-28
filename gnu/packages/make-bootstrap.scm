@@ -159,57 +159,55 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
 
 (define %static-inputs
   ;; Packages that are to be used as %BOOTSTRAP-INPUTS.
-  (let ((coreutils (package (inherit coreutils)
-                      (arguments
-                       `(#:configure-flags
-                         '("--disable-nls"
-                           "--disable-silent-rules"
-                           "--enable-no-install-program=stdbuf,libstdbuf.so"
-                           "CFLAGS=-Os -g0"        ; smaller, please
-                           "LDFLAGS=-static -pthread"
+  (let ((coreutils (package
+                     (inherit coreutils)
+                     (arguments
+                      (substitute-keyword-arguments
+                          (package-arguments coreutils)
+                        ((#:configure-flags _ #~'())
+                         #~'("--disable-nls"
+                             "--disable-silent-rules"
+                             "--enable-no-install-program=stdbuf,libstdbuf.so"
+                             "CFLAGS=-Os -g0"   ; smaller, please
+                             "LDFLAGS=-static -pthread"
 
-                           ;; Work around a cross-compilation bug whereby libcoreutils.a
-                           ;; would provide '__mktime_internal', which conflicts with the
-                           ;; one in libc.a.
-                           ,@(if (%current-target-system)
-                                 `("gl_cv_func_working_mktime=yes")
-                                 '()))
+                             ;; Work around a cross-compilation bug whereby libcoreutils.a
+                             ;; would provide '__mktime_internal', which conflicts with the
+                             ;; one in libc.a.
+                             #$@(if (%current-target-system)
+                                    #~("gl_cv_func_working_mktime=yes")
+                                    #~())))
+                        ((#:tests? _ #t)
+                         #f)))               ;signal-related Gnulib tests fail
 
-                         #:tests? #f   ; signal-related Gnulib tests fail
-                         ,@(package-arguments coreutils)))
-
-                      ;; Remove optional dependencies such as GMP.  Keep Perl
-                      ;; except if it's missing (which is the case when
-                      ;; cross-compiling).
-                      (inputs (match (assoc "perl" (package-inputs coreutils))
-                                (#f '())
-                                (x  (list x))))
+                      ;; Remove optional dependencies such as GMP.
+                      (inputs '())
 
                       ;; Remove the 'debug' output (see above for the reason.)
                       (outputs '("out"))))
-        (bzip2 (package (inherit bzip2)
+        (bzip2 (package
+                 (inherit bzip2)
                  (arguments
                   (substitute-keyword-arguments (package-arguments bzip2)
                     ((#:phases phases)
-                     `(modify-phases ,phases
-                        (add-before 'build 'dash-static
-                          (lambda _
-                            (substitute* "Makefile"
-                              (("^LDFLAGS[[:blank:]]*=.*$")
-                               "LDFLAGS = -static"))
-                            #t))))))))
-        (xz (package (inherit xz)
+                     #~(modify-phases #$phases
+                         (add-before 'build 'dash-static
+                           (lambda _
+                             (substitute* "Makefile"
+                               (("^LDFLAGS[[:blank:]]*=.*$")
+                                "LDFLAGS = -static"))))))))))
+        (xz (package
+              (inherit xz)
               (outputs '("out"))
               (arguments
-               `(#:strip-flags '("--strip-all")
-                 #:phases (modify-phases %standard-phases
-                            (add-before 'configure 'static-executable
-                              (lambda _
-                                ;; Ask Libtool for a static executable.
-                                (substitute* "src/xz/Makefile.in"
-                                  (("^xz_LDADD =")
-                                   "xz_LDADD = -all-static"))
-                                #t)))))))
+               (list #:strip-flags #~'("--strip-all")
+                     #:phases #~(modify-phases %standard-phases
+                                  (add-before 'configure 'static-executable
+                                    (lambda _
+                                      ;; Ask Libtool for a static executable.
+                                      (substitute* "src/xz/Makefile.in"
+                                        (("^xz_LDADD =")
+                                         "xz_LDADD = -all-static")))))))))
         (gawk (package
                 (inherit gawk)
                 (source (origin
@@ -225,45 +223,44 @@ for `sh' in $PATH, and without nscd, and with static NSS modules."
                                          (origin-patches
                                           (package-source gawk))))))
                 (arguments
-                 `(;; Starting from gawk 4.1.0, some of the tests for the
-                   ;; plug-in mechanism just fail on static builds:
-                   ;;
-                   ;; ./fts.awk:1: error: can't open shared library `filefuncs' for reading (No such file or directory)
-                   ;;
-                   ;; Therefore disable extensions support.
-                   #:configure-flags (list "--disable-extensions")
-
-                   ,@(substitute-keyword-arguments (package-arguments gawk)
-                       ((#:phases phases)
-                        `(modify-phases ,phases
-                           (add-before 'configure 'no-export-dynamic
-                             (lambda _
-                               ;; Since we use `-static', remove
-                               ;; `-export-dynamic'.
-                               (substitute* "configure"
-                                 (("-Wl,-export-dynamic") ""))
-                               #t)))))))
+                 (substitute-keyword-arguments (package-arguments gawk)
+                   ((#:configure-flags _ #~'())
+                    ;; Starting from gawk 4.1.0, some of the tests for the
+                    ;; plug-in mechanism just fail on static builds:
+                    ;;
+                    ;; ./fts.awk:1: error: can't open shared library `filefuncs' for reading (No such file or directory)
+                    ;;
+                    ;; Therefore disable extensions support.
+                    #~(list "--disable-extensions"))
+                   ((#:phases phases)
+                    #~(modify-phases #$phases
+                        (add-before 'configure 'no-export-dynamic
+                          (lambda _
+                            ;; Since we use `-static', remove
+                            ;; `-export-dynamic'.
+                            (substitute* "configure"
+                              (("-Wl,-export-dynamic") ""))))))))
                 (inputs (if (%current-target-system)
-                            `(("bash" ,static-bash))
+                            (list static-bash)
                             '()))))
-	(tar (package (inherit tar)
+	(tar (package
+               (inherit tar)
 	       (arguments
                 `(;; Work around a cross-compilation bug whereby libgnu.a would provide
                   ;; '__mktime_internal', which conflicts with the one in libc.a.
-                  ,@(if (%current-target-system)
-                        `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
-                        '())
+                  ;; ,@(if (%current-target-system)
+                  ;;       `(#:configure-flags '("gl_cv_func_working_mktime=yes"))
+                  ;;       '())
                   ,@(substitute-keyword-arguments (package-arguments tar)
                       ((#:phases phases)
-                       `(modify-phases ,phases
-                          (replace 'set-shell-file-name
-                            (lambda _
-                              ;; Do not use "/bin/sh" to run programs; see
-                              ;; <http://lists.gnu.org/archive/html/guix-devel/2016-09/msg02272.html>.
-                              (substitute* "src/system.c"
-                                (("/bin/sh") "sh")
-                                (("execv ") "execvp "))
-                              #t)))))))))
+                       #~(modify-phases #$phases
+                           (replace 'set-shell-file-name
+                             (lambda _
+                               ;; Do not use "/bin/sh" to run programs; see
+                               ;; <http://lists.gnu.org/archive/html/guix-devel/2016-09/msg02272.html>.
+                               (substitute* "src/system.c"
+                                 (("/bin/sh") "sh")
+                                 (("execv ") "execvp ")))))))))))
         ;; We don't want to retain a reference to /gnu/store in the bootstrap
         ;; versions of egrep/fgrep, so we remove the custom phase added since
         ;; grep@2.25. The effect is 'egrep' and 'fgrep' look for 'grep' in
