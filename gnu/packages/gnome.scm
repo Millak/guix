@@ -2702,7 +2702,7 @@ on the GNOME Desktop with a single simple application.")
                                                  "/share/backgrounds/gnome"))
                         ;; Do not reference fonts, that may not exist.
                         (("'Source Code Pro 10'") "'Monospace 11'")))))))
-    (inputs (list glib gnome-backgrounds))
+    (inputs (list glib gnome-backgrounds gobject-introspection))
     (native-inputs (list gettext-minimal
                          `(,glib "bin") ;glib-compile-schemas, etc.
                          gobject-introspection
