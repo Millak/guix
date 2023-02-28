@@ -10466,6 +10466,20 @@ them easier to distinguish from other, less important buffers.")
           (base32 "14qp46wa1xgmb09jyk9cadj0b3m7bwspqnprk3zbfc6gw1r53235"))
          (file-name (git-file-name name version))))
       (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'install 'makeinfo
+              (lambda* (#:key outputs #:allow-other-keys)
+                (invoke "emacs"
+                        "--batch"
+                        "--eval=(require 'ox-texinfo)"
+                        "--eval=(find-file \"README.org\")"
+                        "--eval=(org-texinfo-export-to-info)")
+                (install-file "embark.info"
+                              (string-append #$output "/share/info")))))))
+      (native-inputs (list texinfo))
       (propagated-inputs
        (list emacs-avy emacs-consult))
       (home-page "https://github.com/oantolin/embark")
