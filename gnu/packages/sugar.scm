@@ -308,8 +308,9 @@ and metadata, and the journal with querying and full text search.")
               (wrap-program (search-input-file outputs "bin/sugar-activity3")
                 `("GUIX_PYTHONPATH" = (,(getenv "GUIX_PYTHONPATH")
                                        ,(python:site-packages inputs outputs)))
-                `("GI_TYPELIB_PATH" = (,(getenv "GI_TYPELIB_PATH")
-                                       ,(string-append #$output "/lib/girepository-1.0")))))))))
+                `("GI_TYPELIB_PATH" prefix
+                  (,(getenv "GI_TYPELIB_PATH")
+                   ,(string-append #$output "/lib/girepository-1.0")))))))))
     (inputs
      (list alsa-lib
            bash-minimal
