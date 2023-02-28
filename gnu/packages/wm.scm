@@ -2975,7 +2975,7 @@ used for multimedia keys.")
     (build-system copy-build-system)
     (arguments
      (list #:install-plan #~`(("grimshot" "bin/")
-                              ("grimshot.1" "usr/share/man/man1/"))
+                              ("grimshot.1" "share/man/man1/"))
            #:phases #~(modify-phases %standard-phases
                         (add-after 'unpack 'chdir
                           (lambda _
