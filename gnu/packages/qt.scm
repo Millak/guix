@@ -1148,7 +1148,7 @@ from within Qt 5.")))
                   (invoke "make" "-j" (number->string (parallel-job-count)))
                   (invoke "./TestExcel"))))))))
      (inputs
-      (list qtbase-5))
+      (list libxkbcommon qtbase vulkan-headers))
      (home-page "https://qtexcel.github.io/QXlsx/")
      (synopsis "C++ library to read/write Excel XLSX files using Qt")
      (description
