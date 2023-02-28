@@ -407,6 +407,11 @@ to provide users with easy access to documentation and manuals.")
       #:test-target "check"
       #:phases
       #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-reference-to-executables
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "keyboard.py"
+                (("setxkbmap")
+                 (search-input-file inputs "/bin/setxkbmap")))))
           (add-after 'unpack 'patch-launcher
             (lambda* (#:key inputs #:allow-other-keys)
               (substitute* "activity/activity.info"
@@ -419,6 +424,8 @@ to provide users with easy access to documentation and manuals.")
                       (string-append "--prefix=" #$output)))))))
     (native-inputs
      (list gettext-minimal sugar-toolkit-gtk3))
+    (inputs
+     (list setxkbmap))
     (home-page "https://help.sugarlabs.org/en/typing_turtle.html")
     (synopsis "Learn typing")
     (description "Need some help typing?  In this activity for the Sugar
