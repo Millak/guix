@@ -210,6 +210,63 @@ moment, supported SPICE files are:
 @end itemize\n")
     (license license:cecill)))
 
+(define-public calcmysky
+  (package
+    (name "calcmysky")
+    (version "0.2.1")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/10110111/CalcMySky")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0bib5shy8wzc7j5ph218dl9hqrqip491mn25gakyghbvaqxgm27d"))))
+    (build-system cmake-build-system)
+    (arguments
+     (list #:configure-flags
+           #~(list "-DQT_VERSION=6"
+                   "-DCMAKE_CXX_FLAGS=-fPIC")))
+    (inputs
+     (list eigen glm qtbase))
+    (home-page "https://10110111.github.io/CalcMySky/")
+    (synopsis "Simulator of light scattering by planetary atmospheres")
+    (description
+     "CalcMySky is a software package that simulates scattering of light by the
+atmosphere to render daytime and twilight skies (without stars).  Its primary
+purpose is to enable realistic view of the sky in applications such as
+planetaria.  Secondary objective is to make it possible to explore atmospheric
+effects such as glories, fogbows etc., as well as simulate unusual environments
+such as on Mars or an exoplanet orbiting a star with a non-solar spectrum of
+radiation.
+
+This package consists of three parts:
+
+@itemize
+@item @code{calcmysky} utility that does the precomputation of the atmosphere
+model to enable rendering.
+
+@item @code{libShowMySky} library that lets the applications render the
+atmosphere model.
+
+@item @code{ShowMySky} preview GUI that makes it possible to preview the
+rendering of the atmosphere model and examine its properties.
+@end itemize")
+    (license license:gpl3+)))
+
+(define-public calcmysky-qt5
+  (package/inherit calcmysky
+    (name "calcmysky-qt5")
+    (arguments
+     (list #:configure-flags
+           #~(list "-DQT_VERSION=5"
+                   "-DCMAKE_CXX_FLAGS=-fPIC")))
+    (inputs
+     (modify-inputs (package-inputs calcmysky)
+       (replace "qtbase" qtbase-5)))
+    (synopsis "Qt5 build for the CalcMySky library.")))
+
 (define-public aoflagger
   (package
     (name "aoflagger")
