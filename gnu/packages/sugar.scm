@@ -351,6 +351,64 @@ the Sugar Toolkit.")
     (license license:lgpl2.1+)))
 
 
+(define-public sugar-browse-activity
+  (package
+    (name "sugar-browse-activity")
+    (version "207")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/sugarlabs/browse-activity")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "01p1gfdw9fhn92didc9sq23n6a3krs6findbbmicijz91kx8kfb2"))))
+    (build-system python-build-system)
+    (arguments
+     (list
+      #:test-target "check"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-reference-to-gschema-compiler
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "browser.py"
+                (("glib-compile-schemas")
+                 (search-input-file inputs "/bin/glib-compile-schemas")))))
+          (add-after 'unpack 'patch-launcher
+            (lambda* (#:key inputs #:allow-other-keys)
+              (substitute* "activity/activity.info"
+                (("exec = sugar-activity3")
+                 (string-append "exec = "
+                                (search-input-file inputs "/bin/sugar-activity3"))))))
+          (replace 'install
+            (lambda _
+              (setenv "HOME" "/tmp")
+              (invoke "python" "setup.py" "install"
+                      (string-append "--prefix=" #$output)))))))
+    ;; All these libraries are accessed via gobject introspection.
+    (propagated-inputs
+     (list evince
+           gobject-introspection
+           gtk+
+           (librsvg-for-system)
+           libsoup-minimal-2
+           python-pygobject
+           sugar-toolkit-gtk3
+           telepathy-glib
+           webkitgtk-with-libsoup2))
+    (inputs
+     (list (list glib "bin")))
+    (native-inputs
+     (list gettext-minimal))
+    (home-page "https://help.sugarlabs.org/browse.html")
+    (synopsis "Sugar activity to browse the internet")
+    (description "Browse is a web browser activity for the Sugar desktop.")
+    (license (list license:cc0       ;metadata
+                   license:lgpl2.0+
+                   license:gpl2+
+                   license:gpl3+))))
+
 (define-public sugar-help-activity
   (let ((commit "492531e95a4c60af9b85c79c59c24c06c2cd4bb3")
         (revision "1"))
