@@ -32,6 +32,7 @@
   #:use-module (gnu packages python-web)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages search)
+  #:use-module (gnu packages sphinx)
   #:use-module (gnu packages time)
   #:use-module (gnu packages webkit)
   #:use-module (gnu packages xorg)
@@ -377,12 +378,15 @@ the Sugar Toolkit.")
                   (("exec = sugar-activity3")
                    (string-append "exec = "
                                   (search-input-file inputs "/bin/sugar-activity3"))))))
+            (replace 'build
+              (lambda _ (invoke "make" "html")))
             (replace 'install
               (lambda _
                 (invoke "python" "setup.py" "install"
                         (string-append "--prefix=" #$output)))))))
       (native-inputs
-       (list sugar-toolkit-gtk3))
+       (list sugar-toolkit-gtk3
+             python-sphinx))
       (home-page "https://github.com/sugarlabs/help-activity")
       (synopsis "Sugar activity for accessing documentation and manuals")
       (description "This is an activity for the Sugar environment which aims
