@@ -817,8 +817,24 @@ manager and a system tray.")
     (inputs (list ghc-x11 ghc-data-default-class ghc-setlocale))
     (native-inputs (list ghc-quickcheck ghc-quickcheck-classes))
     (arguments
-     `(#:cabal-revision ("2"
-                         "1rgwrnyb7kijzl2mqm8ks2nydh37q5vkbg4400rg9n6x13w2r9b3")))
+      (list
+       #:phases
+       #~(modify-phases %standard-phases
+           (add-after 'install 'install-xsession
+             (lambda _
+               (let ((xsessions (string-append #$output "/share/xsessions")))
+                 (mkdir-p xsessions)
+                 (call-with-output-file (string-append xsessions
+                                                       "/xmonad.desktop")
+                  (lambda (port)
+                    (format port "~
+                     [Desktop Entry]~@
+                     Name=~a~@
+                     Comment=xmonad window manager~@
+                     Exec=~a/bin/xmonad~@
+                     Type=Application~%" #$name #$output)))))))
+       #:cabal-revision '("2"
+                          "1rgwrnyb7kijzl2mqm8ks2nydh37q5vkbg4400rg9n6x13w2r9b3")))
     (home-page "http://xmonad.org")
     (synopsis "Tiling window manager")
     (description
