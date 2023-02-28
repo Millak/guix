@@ -311,6 +311,7 @@ and metadata, and the journal with querying and full text search.")
                                        ,(string-append #$output "/lib/girepository-1.0")))))))))
     (inputs
      (list alsa-lib
+           bash-minimal
            libice
            libsm
            libx11
