@@ -306,6 +306,42 @@ are included as well.")
     ;; Any version of the GPL.
     (license license:gpl3+)))
 
+;; The package sources include multiple non-minified JavaScript files and the
+;; v5.1.0 variant of d3.js.  The d3.js file is not minified.
+(define-public r-chromomap
+  (package
+    (name "r-chromomap")
+    (version "4.1.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "chromoMap" version))
+       (sha256
+        (base32 "1067h5d6jdbm811n7ayikhqfbcqmxbz5jgp05vf1sbln7qgn9l43"))))
+    (properties `((upstream-name . "chromoMap")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-htmltools r-htmlwidgets))
+    (native-inputs (list r-knitr))
+    (home-page "https://cran.r-project.org/package=chromoMap")
+    (synopsis "Interactive genomic visualization of biological data")
+    (description
+     "This package provides interactive, configurable and graphics
+visualization of the chromosome regions of any living organism allowing users
+to map chromosome elements (like genes, SNPs etc.) on the chromosome plot.  It
+introduces a special plot viz. the \"chromosome heatmap\" that, in addition to
+mapping elements, can visualize the data associated with chromosome
+elements (like gene expression) in the form of heat colors.  Users can
+investigate the detailed information about the mappings (like gene names or
+total genes mapped on a location) or can view the magnified single or double
+stranded view of the chromosome at a location showing each mapped element in
+sequential order.  The package provide multiple features like visualizing
+multiple sets, chromosome heat-maps, group annotations, adding hyperlinks, and
+labelling.  The plots can be saved as HTML documents that can be customized
+and shared easily.  In addition, you can include them in R Markdown or in R
+Shiny applications.")
+    (license (list license:gpl3
+                   license:isc)))) ;for bundled d3js
+
 (define-public r-collections
   (package
     (name "r-collections")
