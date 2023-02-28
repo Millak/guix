@@ -918,8 +918,6 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
       #~(list "-DENABLE_GPS=1"
               ;; TODO: Enable when all of the dependencies are availalbe for Qt6.
               "-DENABLE_QT6=0"
-              ;; TODO: Pack missing in Guix https://10110111.github.io/CalcMySky/
-              "-DENABLE_SHOWMYSKY=0"
               "-DENABLE_TESTING=0"
               (string-append "-DCMAKE_CXX_FLAGS=-isystem "
                              #$(this-package-input "qtserialport") "/include/qt5"))
@@ -930,7 +928,8 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
               (setenv "QT_QPA_PLATFORM" "offscreen")
               (setenv "HOME" "/tmp"))))))
     (inputs
-     (list gpsd
+     (list calcmysky-qt5
+           gpsd
            indi
            libnova
            openssl
@@ -943,7 +942,7 @@ deconvolution).  Such post-processing is not performed by Stackistry.")
            qtserialport
            qttranslations
            qtwebengine-5
-           qxlsx
+           qxlsx-qt5
            zlib))
     (native-inputs
      (list doxygen
