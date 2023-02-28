@@ -10839,6 +10839,20 @@ expansion and overwriting the marked region with a new snippet completion.")
        (sha256
         (base32 "0zi3q7dd9dgrhbz6ww270i43kkqs0ddk0vzs89mfvwa5pzw32d2q"))))
     (build-system emacs-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'install 'makeinfo
+            (lambda* (#:key outputs #:allow-other-keys)
+              (invoke "emacs"
+                      "--batch"
+                      "--eval=(require 'ox-texinfo)"
+                      "--eval=(find-file \"README.org\")"
+                      "--eval=(org-texinfo-export-to-info)")
+              (install-file "marginalia.info"
+                            (string-append #$output "/share/info")))))))
+    (native-inputs (list texinfo))
     (propagated-inputs
      (list emacs-compat))
     (home-page "https://github.com/minad/marginalia")
