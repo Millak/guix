@@ -1,5 +1,5 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2012-2022 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2012-2023 Ludovic Courtès <ludo@gnu.org>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -215,18 +215,16 @@ flags for VARIABLE, the associated value is augmented."
 (define* (static-package p #:key (strip-all? #t))
   "Return a statically-linked version of package P.  If STRIP-ALL? is true,
 use `--strip-all' as the arguments to `strip'."
-  (package (inherit p)
+  (package
+    (inherit p)
     (arguments
-     (let ((a (default-keyword-arguments (package-arguments p)
-                '(#:configure-flags '()
-                  #:strip-flags '("--strip-unneeded")))))
-       (substitute-keyword-arguments a
-         ((#:configure-flags flags)
-          `(cons* "--disable-shared" "LDFLAGS=-static" ,flags))
-         ((#:strip-flags flags)
-          (if strip-all?
-              ''("--strip-all")
-              flags)))))
+     (substitute-keyword-arguments (package-arguments p)
+       ((#:configure-flags flags #~'())
+        #~(cons* "--disable-shared" "LDFLAGS=-static" #$flags))
+       ((#:strip-flags flags #~'("--strip-unneeded"))
+        (if strip-all?
+            #~'("--strip-all")
+            flags))))
     (replacement (and=> (package-replacement p) static-package))))
 
 (define* (dist-package p source #:key (phases '%dist-phases))
