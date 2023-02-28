@@ -311,7 +311,7 @@ and dynamically with report tools based on filtering and graphical charts.")
 (define-public ledger
   (package
     (name "ledger")
-    (version "3.2.1")
+    (version "3.3.1")
     (source
      (origin
        (method git-fetch)
@@ -320,14 +320,7 @@ and dynamically with report tools based on filtering and graphical charts.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0x6jxwss3wwzbzlwmnwb8yzjk8f9wfawif4f1b74z2qg6hc4r7f6"))
-       (snippet '(begin
-                   ;; Remove test that fails due to difference in
-                   ;; reported error message (missing leading "./" in the
-                   ;; file name); started some time after Guix commit
-                   ;; 727f05e1e285aa52f5a19ec923fdc2259859b4b1
-                   (delete-file "test/regress/BF3C1F82-2.test")
-                   #true))))
+        (base32 "13bbnfb08ymm54wg12dapqhalh7iialfs66qdbk2adl1aaq36wqa"))))
     (build-system cmake-build-system)
     (arguments
      `(#:modules (,@%cmake-build-system-modules
@@ -369,10 +362,6 @@ and dynamically with report tools based on filtering and graphical charts.")
              (setenv "TZDIR"
                      (search-input-directory inputs
                                              "share/zoneinfo"))
-             ;; Skip failing test BaselineTest_cmd-org.
-             ;; This is a known upstream issue. See
-             ;; https://github.com/ledger/ledger/issues/550
-             (setenv "ARGS" "-E BaselineTest_cmd-org")
              #t)))))
     (inputs
      (list boost
