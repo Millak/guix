@@ -208,6 +208,7 @@ the leaves of a full binary tree.")
            xterm
            xsetroot
            libx11
+           libxcursor
            libxext
            libxfixes
            libxinerama
@@ -224,6 +225,10 @@ the leaves of a full binary tree.")
                (string-append "-DBASHCOMPLETIONDIR=" out "/etc/bash_completion.d")))
        #:phases
        (modify-phases %standard-phases
+         (add-before 'configure 'link-libxcursor
+           (lambda _
+             ;; libX11 will dlopen libXcursor to load cursors.
+             (setenv "LDFLAGS" "-lXcursor")))
          (add-after 'install 'install-xsession
            (lambda* (#:key outputs #:allow-other-keys)
              (let* ((out (assoc-ref outputs "out"))
