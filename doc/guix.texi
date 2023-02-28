@@ -30,7 +30,7 @@ Copyright @copyright{} 2015, 2016 Mathieu Lirzin@*
 Copyright @copyright{} 2014 Pierre-Antoine Rault@*
 Copyright @copyright{} 2015 Taylan Ulrich Bayırlı/Kammer@*
 Copyright @copyright{} 2015, 2016, 2017, 2019, 2020, 2021, 2023 Leo Famulari@*
-Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022 Ricardo Wurmus@*
+Copyright @copyright{} 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Ricardo Wurmus@*
 Copyright @copyright{} 2016 Ben Woodcroft@*
 Copyright @copyright{} 2016, 2017, 2018, 2021 Chris Marusich@*
 Copyright @copyright{} 2016, 2017, 2018, 2019, 2020, 2021, 2022 Efraim Flashner@*
@@ -23177,6 +23177,26 @@ Configuration record for the LXQt desktop environment.
 @table @asis
 @item @code{lxqt} (default: @code{lxqt})
 The LXQT package to use.
+@end table
+@end deftp
+
+@defvar sugar-desktop-service-type
+This is the type of the service that runs the
+@uref{https://www.sugarlabs.org, Sugar desktop environment}.  Its value
+is a @code{sugar-desktop-configuration} object (see below).
+
+This service adds the @code{sugar} package to the system profile.  It
+does not install any Sugar Activity.  Add packages providing activities
+to the list of packages to be installed globally to make them available
+to users of the Sugar desktop environment.
+@end defvar
+
+@deftp {Data Type} sugar-desktop-configuration
+Configuration record for the Sugar desktop environment.
+
+@table @asis
+@item @code{sugar} (default: @code{sugar})
+The Sugar package to use.
 @end table
 @end deftp
 

@@ -6,7 +6,7 @@
 ;;; Copyright © 2017, 2020, 2022, 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;; Copyright © 2017 Nikita <nikita@n0.is>
 ;;; Copyright © 2018, 2020, 2022 Efraim Flashner <efraim@flashner.co.il>
-;;; Copyright © 2018 Ricardo Wurmus <rekado@elephly.net>
+;;; Copyright © 2018, 2023 Ricardo Wurmus <rekado@elephly.net>
 ;;; Copyright © 2017, 2019 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2019 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2019 David Wilson <david@daviwil.com>
@@ -59,6 +59,7 @@
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu packages scanner)
   #:use-module (gnu packages suckless)
+  #:use-module (gnu packages sugar)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages libusb)
   #:use-module (gnu packages lxqt)
@@ -143,6 +144,10 @@
             lxqt-desktop-configuration
             lxqt-desktop-configuration?
             lxqt-desktop-service-type
+
+            sugar-desktop-configuration
+            sugar-desktop-configuration?
+            sugar-desktop-service-type
 
             xfce-desktop-configuration
             xfce-desktop-configuration?
@@ -1516,6 +1521,31 @@ rules."
                              (compose list lxqt-package))))
    (default-value (lxqt-desktop-configuration))
    (description "Run LXQt desktop environment.")))
+
+
+;;;
+;;; Sugar desktop service.
+;;;
+
+(define-record-type* <sugar-desktop-configuration> sugar-desktop-configuration
+  make-sugar-desktop-configuration
+  sugar-desktop-configuration?
+  (sugar sugar-package (default sugar)))
+
+(define (sugar-polkit-settings config)
+  "Return the list of packages that provide polkit actions and rules."
+  (list (sugar-package config)))
+
+(define sugar-desktop-service-type
+  (service-type
+   (name 'sugar-desktop)
+   (extensions
+    (list (service-extension polkit-service-type
+                             sugar-polkit-settings)
+          (service-extension profile-service-type
+                             (compose list sugar-package))))
+   (default-value (sugar-desktop-configuration))
+   (description "Run the Sugar desktop environment.")))
 
 
 ;;;
