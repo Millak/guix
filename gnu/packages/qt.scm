@@ -1156,6 +1156,13 @@ from within Qt 5.")))
 XLSX document format.")
      (license license:expat)))
 
+(define-public qxlsx-qt5
+  (package/inherit qxlsx
+    (name "qxlsx-qt5")
+    (inputs
+     (list qtbase-5))
+    (synopsis "Qt5 build for the qxlsx library.")))
+
 (define-public qtxmlpatterns
   (package (inherit qtsvg-5)
     (name "qtxmlpatterns")
