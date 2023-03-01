@@ -5598,14 +5598,14 @@ development tools to catch coverage problems early.")
 (define-public ruby-oedipus-lex
   (package
     (name "ruby-oedipus-lex")
-    (version "2.5.2")
+    (version "2.6.0")
     (source
       (origin
         (method url-fetch)
         (uri (rubygems-uri "oedipus_lex" version))
         (sha256
          (base32
-          "1v1rk78khwq87ar300lwll570zxpkq9rjnpgc9mgsyd6mm9qjz4w"))))
+          "094nd7jd3klv45mvprfn2ivcgw8cckq3jhlly77j903vlamfi0df"))))
     (build-system ruby-build-system)
     (native-inputs
      (list ruby-hoe))
