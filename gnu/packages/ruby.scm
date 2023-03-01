@@ -1730,7 +1730,7 @@ Batch and flush behavior.
 (define-public ruby-standard
   (package
     (name "ruby-standard")
-    (version "0.4.7")
+    (version "1.25.3")
     (source
      (origin
        (method git-fetch)               ;no test suite in distributed gem
@@ -1740,22 +1740,20 @@ Batch and flush behavior.
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0ylx0lm2pbbgr5h7fban592w96bl3wxmvfcpcdfrhkxnpg5kiwgv"))))
+         "0q42gv7wgrc818a5hm599sy07vjq69hbijzpkpgh6jws6x7wzyh3"))))
     (build-system ruby-build-system)
     (arguments
-     ;; TODO: the tests are currently broken due to using a newer Rubocop.
+     ;; TODO: the tests are currently broken due to using a different Rubocop
+     ;; version.
      `(#:tests? #f
        #:phases
        (modify-phases %standard-phases
          (add-after 'unpack 'relax-version-requiremens
            (lambda _
              (delete-file "Gemfile")
-             (delete-file "Gemfile.lock")
-             #t)))))
-    (native-inputs
-     (list ruby-gimme ruby-pry ruby-simplecov))
-    (propagated-inputs
-     (list ruby-rubocop ruby-rubocop-performance))
+             (delete-file "Gemfile.lock"))))))
+    (native-inputs (list ruby-gimme ruby-pry ruby-simplecov))
+    (propagated-inputs (list ruby-rubocop ruby-rubocop-performance))
     (synopsis "Ruby Style Guide, with linter & automatic code fixer")
     (description "Standard is a port of StandardJS.  Like StandardJS, it aims
 to save time in the following ways:
