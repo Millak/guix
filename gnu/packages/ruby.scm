@@ -2088,6 +2088,34 @@ code in Merb and Rails.")
     (home-page "https://github.com/jnunemaker/crack")
     (license license:expat)))
 
+(define-public ruby-clamp
+  (package
+    (name "ruby-clamp")
+    (version "1.3.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "clamp" version))
+              (sha256
+               (base32
+                "08m0syh06bhx8dqn560ivjg96l5cs5s3l9jh2szsnlcdcyl9jsjg"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'do-not-require-rubocop
+                          (lambda _
+                            (substitute* "Rakefile"
+                              (("require \"rubocop/rake_task\"")
+                               "")
+                              (("RuboCop::RakeTask.new")
+                               "")))))))
+    (native-inputs (list ruby-rspec))
+    (synopsis "Command-line parsing library for Ruby")
+    (description "Clamp provides an object-model for command-line utilities.
+It handles parsing of command-line options, and generation of usage help.")
+    (home-page "https://github.com/mdub/clamp")
+    (license license:expat)))
+
 (define-public ruby-cliver
   (package
     (name "ruby-cliver")
