@@ -1690,6 +1690,43 @@ only what they care about.")
       (home-page "https://github.com/searls/gimme")
       (license license:expat))))
 
+(define-public ruby-stud
+  (package
+    (name "ruby-stud")
+    (version "0.0.23")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "stud" version))
+              (sha256
+               (base32
+                "0qpb57cbpm9rwgsygqxifca0zma87drnlacv49cqs2n5iyi6z8kb"))))
+    (build-system ruby-build-system)
+    (native-inputs (list ruby-rspec))
+    (arguments
+     (list #:phases #~(modify-phases %standard-phases
+                        ;; No Rakefile is included, so run rspec directly.
+                        (replace 'check
+                          (lambda* (#:key tests? #:allow-other-keys)
+                            (when tests?
+                              (invoke "rspec")))))))
+    (synopsis "Retries, worker supervision, resource pools and more for Ruby")
+    (description "The Stud Ruby library adds a few things missing from the
+standard Ruby library such as:
+@table @code
+@item {Stud::Try}
+Retry on failure, with back-off, where failure is any exception.
+@item {Stud::Pool}
+Generic resource pools.
+@item {Stud::Task}
+Tasks (threads that can return values, exceptions, etc.)
+@item {Stud.interval}
+Interval execution (do X every N seconds).
+@item {Stud::Buffer}
+Batch and flush behavior.
+@end itemize")
+    (home-page "https://github.com/jordansissel/ruby-stud")
+    (license license:asl2.0)))
+
 (define-public ruby-standard
   (package
     (name "ruby-standard")
