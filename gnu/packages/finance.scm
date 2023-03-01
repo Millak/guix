@@ -2250,7 +2250,7 @@ mining.")
 (define-public p2pool
   (package
     (name "p2pool")
-    (version "2.6")
+    (version "3.1")
     (source
      (origin
        (method git-fetch)
@@ -2259,7 +2259,7 @@ mining.")
              (commit (string-append "v" version))
              (recursive? #t)))
        (file-name (git-file-name name version))
-       (sha256 (base32 "0832mv3f4c61w8s25higjbmmajjkvjdriw1xfygjiw5qxdcs202z"))
+       (sha256 (base32 "0fvm864p4pxjsb03g88jkaj3wj94dkxrbwjwa1jk6s11skzn0z68"))
        (modules '((guix build utils)))
        (snippet
         #~(for-each delete-file-recursively
@@ -2273,13 +2273,22 @@ mining.")
     (inputs
      (list cppzmq curl gss libuv rapidjson zeromq))
     (arguments
-     (list
-      #:tests? #f
-      #:phases
-      #~(modify-phases %standard-phases
-          (replace 'install
-            (lambda _
-              (install-file "p2pool" (string-append #$output "/bin")))))))
+     (list ; FIXME: Linking fails when LTO is activated.
+           #:configure-flags #~(list "-DWITH_LTO=OFF")
+           #:phases
+           #~(modify-phases %standard-phases
+               (replace 'check
+                 (lambda* (#:key tests? #:allow-other-keys)
+                   (when tests?
+                     (mkdir-p "tests")
+                     (chdir "tests")
+                     (invoke "cmake" "../../source/tests")
+                     (invoke "make" "-j" (number->string (parallel-job-count)))
+                     (invoke "./p2pool_tests")
+                     (chdir ".."))))
+               (replace 'install
+                 (lambda _
+                   (install-file "p2pool" (string-append #$output "/bin")))))))
     (home-page "https://p2pool.io/")
     (synopsis "Decentralized Monero mining pool")
     (description "Monero P2Pool is a peer-to-peer Monero mining pool.  P2Pool
