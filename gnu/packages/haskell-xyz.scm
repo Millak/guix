@@ -31,6 +31,7 @@
 ;;; Copyright © 2021–2023 Alice BRENON <alice.brenon@ens-lyon.fr>
 ;;; Copyright © 2021 John Kehayias <john.kehayias@protonmail.com>
 ;;; Copyright © 2022 jgart <jgart@dismail.de>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -8600,6 +8601,26 @@ rules.")
 library for Perl 5 compatible regular expressions.  The PCRE library is a set
 of functions that implement regular expression pattern matching using the same
 syntax and semantics as Perl 5.")
+    (license license:bsd-3)))
+
+(define-public ghc-peano
+  (package
+    (name "ghc-peano")
+    (version "0.1.0.1")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "peano" version))
+              (sha256
+               (base32
+                "0yzcxrl41dacvx2wkyxjj7hgvz56l4qb59r4h9rmaqd7jcwx5z9i"))))
+    (build-system haskell-build-system)
+    (arguments
+     `(#:cabal-revision ("3"
+                         "0wl22dnz6ld300cg6id3lw991bp8kdfi8h0nbv37vn79i1zdcj5n")))
+    (home-page "http://hackage.haskell.org/package/peano")
+    (synopsis "Peano numbers")
+    (description "Provides an efficient Haskell implementation of Peano
+numbers")
     (license license:bsd-3)))
 
 (define-public ghc-persistent
