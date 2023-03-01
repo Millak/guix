@@ -4102,6 +4102,29 @@ encoded form.")
     (home-page "https://github.com/deepfryed/idn-ruby")
     (license license:asl2.0)))
 
+(define-public ruby-insist
+  (package
+    (name "ruby-insist")
+    (version "1.0.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "insist" version))
+              (sha256
+               (base32
+                "0bw3bdwns14mapbgb8cbjmr0amvwz8y72gyclq04xp43wpp5jrvg"))))
+    (build-system ruby-build-system)
+    (arguments (list #:phases #~(modify-phases %standard-phases
+                                  (replace 'check
+                                    (lambda* (#:key tests? #:allow-other-keys)
+                                      (when tests?
+                                        (invoke "ruby" "test/testing.rb")))))))
+    (synopsis "Testing tool for Ruby")
+    (description "This package provides a simple block-driven assertion
+library for both testing and for production code that attempts to make test
+definitions more readable.")
+    (home-page "https://github.com/jordansissel/ruby-insist/")
+    (license license:asl2.0)))
+
 (define-public ruby-instantiator
   (package
     (name "ruby-instantiator")
