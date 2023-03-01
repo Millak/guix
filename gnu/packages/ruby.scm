@@ -8239,14 +8239,14 @@ for Rack.")
 (define-public ruby-rack-protection
   (package
     (name "ruby-rack-protection")
-    (version "2.0.8.1")
+    (version "3.0.5")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "rack-protection" version))
        (sha256
         (base32
-         "1zyj97bfr1shfgwk4ddmdbw0mdkm4qdyh9s1hl0k7accf3kxx1yi"))))
+         "1a12m1mv8dc0g90fs1myvis8vsgr427k1arg1q4a9qlfw6fqyhis"))))
     (build-system ruby-build-system)
     (arguments
      '(;; Tests missing from the gem.
