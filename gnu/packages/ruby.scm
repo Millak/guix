@@ -7059,17 +7059,17 @@ inspired by the Sinatra microframework style of specifying actions:
 (define-public ruby-rubocop-ast
   (package
     (name "ruby-rubocop-ast")
-    (version "1.4.1")
+    (version "1.28.0")
     (source
      (origin
        (method git-fetch)               ;no test suite in distributed gem
        (uri (git-reference
-             (url "https://github.com/rubocop-hq/rubocop-ast")
+             (url "https://github.com/rubocop/rubocop-ast")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1x2m7k4bn4zvvwmj7imzmv0dav6xnrbcvssad1m5lkprx7h5lzkq"))))
+         "1dp09gcmahmdfi3s6xsksr3ka9dddjpy9ymhr9wjwv67y1falffr"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "spec"
@@ -7082,8 +7082,7 @@ inspired by the Sinatra microframework style of specifying actions:
                     (lambda _
                       (substitute* "rubocop-ast.gemspec"
                         (("`git ls-files(.*)`" _ files)
-                         (format #f "`find ~a -type f| sort`" files)))
-                      #t)))))
+                         (format #f "`find ~a -type f| sort`" files))))))))
     (native-inputs
      (list ruby-bump
            ruby-oedipus-lex
