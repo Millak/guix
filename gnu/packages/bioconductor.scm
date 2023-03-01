@@ -33,6 +33,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
   #:use-module (guix download)
+  #:use-module (guix gexp)
   #:use-module (guix git-download)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
@@ -6583,6 +6584,73 @@ studies, especially the use of linear models for analysing designed experiments
 and the assessment of differential expression.  The analysis methods apply to
 different technologies, including microarrays, RNA-seq, and quantitative PCR.")
     (license license:gpl2+)))
+
+(define-public r-maaslin2
+  (package
+    (name "r-maaslin2")
+    (version "1.12.0")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "Maaslin2" version))
+       (sha256
+        (base32 "0ncvsywn9f8766gjb8nxzg82p3w30g8pjs85sy8s0bz9ilanpy89"))))
+    (properties `((upstream-name . "Maaslin2")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'check 'remove-timestamps
+            (lambda _
+              (with-directory-excursion
+                  (string-append #$output "/site-library/Maaslin2/doc/demo_output/")
+                ;; Delete this log file with timestamps.
+                (delete-file "maaslin2.log")
+                ;; Replace PDF timestamps with an arbitrary fixed timestamp.
+                (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                  (substitute* (find-files "." "\\.pdf$")
+                    (("/CreationDate \\(D:.*\\)")
+                     "/CreationDate (D:20230301143558)")
+                    (("/ModDate \\(D:.*\\)")
+                     "/ModDate (D:20230301143558)")))))))))
+    (propagated-inputs
+     (list r-biglm
+           r-car
+           r-chemometrics
+           r-cplm
+           r-data-table
+           r-dplyr
+           r-edger
+           r-ggplot2
+           r-glmmtmb
+           r-hash
+           r-lme4
+           r-lmertest
+           r-logging
+           r-lpsymphony
+           r-mass
+           r-mumin
+           r-metagenomeseq
+           r-optparse
+           r-pbapply
+           r-pcapp
+           r-pheatmap
+           r-pscl
+           r-rmarkdown
+           r-robustbase
+           r-vegan))
+    (native-inputs (list r-knitr))
+    (home-page "http://huttenhower.sph.harvard.edu/maaslin2")
+    (synopsis
+     "Multivariable association discovery in population-scale meta-omics studies")
+    (description
+     "MaAsLin2 is comprehensive R package for efficiently determining multivariable
+association between clinical metadata and microbial meta'omic features.  This
+package relies on general linear models to accommodate most modern epidemiological
+study designs, including cross-sectional and longitudinal, and offers a variety
+of data exploration, normalization, and transformation methods.")
+    (license license:expat)))
 
 (define-public r-made4
   (package
