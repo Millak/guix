@@ -325,6 +325,41 @@ are included as well.")
 queues, stacks, deques, dicts and ordered dicts.")
     (license license:expat)))
 
+(define-public r-cplm
+  (package
+    (name "r-cplm")
+    (version "0.7-10")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "cplm" version))
+       (sha256
+        (base32 "0mqjk10265hq9bc5ihmgbx1l8fzay1gpdlvx3pirqmvr3w1kwlxk"))))
+    (properties `((upstream-name . "cplm")))
+    (build-system r-build-system)
+    (propagated-inputs
+     (list r-biglm
+           r-coda
+           r-ggplot2
+           r-matrix
+           r-minqa
+           r-nlme
+           r-reshape2
+           r-statmod
+           r-tweedie))
+    (home-page "https://github.com/actuaryzhang/cplm")
+    (synopsis "Compound Poisson linear models")
+    (description "The Tweedie compound Poisson distribution is a mixture of a
+degenerate distribution at the origin and a continuous distribution on the
+positive real line.  It has been applied in a wide range of fields in which
+continuous data with exact zeros regularly arise.  The cplm package provides
+likelihood based and Bayesian procedures for fitting common Tweedie compound
+Poisson linear models.  In particular, models with hierarchical structures or
+extra zero inflation can be handled.  Further, the package implements the Gini
+index based on an ordered version of the Lorenz curve as a robust model
+comparison tool involving zero-inflated and highly skewed distributions.")
+    (license license:gpl2+)))
+
 (define-public r-curry
   (package
     (name "r-curry")
