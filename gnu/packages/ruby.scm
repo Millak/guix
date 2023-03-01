@@ -14165,14 +14165,14 @@ template.")
 (define-public ruby-mustermann
   (package
     (name "ruby-mustermann")
-    (version "1.0.3")
+    (version "3.0.0")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "mustermann" version))
        (sha256
         (base32
-         "0lycgkmnyy0bf29nnd2zql5a6pcf8sp69g9v4xw0gcfcxgpwp7i1"))))
+         "0rwbq20s2gdh8dljjsgj5s6wqqfmnbclhvv2c2608brv7jm6jdbd"))))
     (build-system ruby-build-system)
     (arguments
      ;; No tests.
