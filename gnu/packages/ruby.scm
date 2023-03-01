@@ -10685,6 +10685,25 @@ interface.  It allows Jekyll to rebuild your site when a file changes.")
 suited for map-reduce or e.g. parallel downloads/uploads.")
     (license license:expat)))
 
+(define-public ruby-cabin
+  (package
+    (name "ruby-cabin")
+    (version "0.9.0")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "cabin" version))
+              (sha256
+               (base32
+                "0b3b8j3iqnagjfn1261b9ncaac9g44zrx1kcg81yg4z9i513kici"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))      ;no Rakefile in released gem
+    (synopsis "Structured and contextual logging experiments in Ruby")
+    (description "This Ruby library provides an experimental logging system
+that tries to make logging more flexible and more consumable than plain-text
+logging.")
+    (home-page "https://github.com/jordansissel/ruby-cabin")
+    (license license:asl2.0)))
+
 (define-public ruby-cane
   (package
     (name "ruby-cane")
