@@ -26,6 +26,10 @@
   #:use-module (gnu packages haskell-check)
   #:use-module (gnu packages haskell-web)
   #:use-module (gnu packages haskell-xyz)
+  #:use-module (gnu packages imagemagick)
+  #:use-module (gnu packages python)
+  #:use-module (gnu packages sphinx)
+  #:use-module (gnu packages texinfo)
   #:use-module (guix build-system emacs)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system haskell)
@@ -73,6 +77,12 @@
            ghc-uri-encode
            ghc-vector-hashtables
            ghc-zlib))
+    (native-inputs
+     (list python
+           python-sphinx
+           python-sphinx-rtd-theme
+           texinfo
+           imagemagick))
     (arguments
      (list #:modules `((guix build haskell-build-system)
                        (guix build utils)
@@ -89,7 +99,16 @@
                    (let ((agda-compiler (string-append #$output "/bin/agda")))
                      (for-each (cut invoke agda-compiler <>)
                                (find-files (string-append #$output "/share")
-                                           "\\.agda$"))))))))
+                                           "\\.agda$")))))
+               (add-after 'agda-compile 'install-info
+                 (lambda _
+                   (with-directory-excursion "doc/user-manual"
+                     (invoke "sphinx-build" "-b" "texinfo"
+                             "." "_build_texinfo")
+                     (with-directory-excursion "_build_texinfo"
+                       (setenv "infodir" (string-append #$output
+                                                        "/share/info"))
+                       (invoke "make" "install-info"))))))))
     (home-page "https://wiki.portal.chalmers.se/agda/")
     (synopsis
      "Dependently typed functional programming language and proof assistant")
