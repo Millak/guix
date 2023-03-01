@@ -1029,24 +1029,6 @@ C++ but is used in C and C++ projects and frequently used in embedded systems
 but it works for any C/C++ project.")
     (license license:bsd-3)))
 
-;; Required by actionlint. The version of `go-github-com-robfig-cron'
-;; packaged in Guix is newer and changed some error messages, causing
-;; unit tests in actionlint to fail.
-(define-public go-github-com-robfig-cron-1.2
-  (package
-    (inherit go-github-com-robfig-cron)
-    (name "go-github-com-robfig-cron")
-    (version "1.2.0")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/robfig/cron")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0nv31m3940d9kf38lw2zs4hpj435bdi9mmim098rb3n4l07qrvva"))))))
-
 (define-public actionlint
   (package
     (name "actionlint")
