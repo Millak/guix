@@ -5,6 +5,7 @@
 ;;; Copyright © 2018, 2022 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2018 John Soo <jsoo1@asu.edu>
 ;;; Copyright © 2019 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2023 Josselin Poiret <dev@jpoiret.xyz>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -37,15 +38,17 @@
 (define-public agda
   (package
     (name "agda")
-    (version "2.6.2.2")
+    (version "2.6.3")
     (source
      (origin
-       (method url-fetch)
-       (uri (hackage-uri "Agda" version))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/agda/agda.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
-        (base32 "0yjjbhc593ylrm4mq4j01nkdvh7xqsg5in30wxj4y53vf5hkggp5"))))
+        (base32 "1s7zd01i8pmvi90ywx497kc07z50nah7h0fc2dn6jzb132k5sh1q"))))
     (build-system haskell-build-system)
-    (properties '((upstream-name . "Agda")))
     (inputs
      (list ghc-aeson
            ghc-alex
@@ -68,6 +71,7 @@
            ghc-strict
            ghc-unordered-containers
            ghc-uri-encode
+           ghc-vector-hashtables
            ghc-zlib))
     (arguments
      (list #:modules `((guix build haskell-build-system)
