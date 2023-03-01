@@ -1165,6 +1165,29 @@ The package provides functions for point generation, arc length estimation,
 degree elevation and curve fitting.")
     (license license:gpl2+)))
 
+(define-public r-biglm
+  (package
+    (name "r-biglm")
+    (version "0.9-2.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (cran-uri "biglm" version))
+       (sha256
+        (base32 "0iy9xr2bq42wlizgwlz7w5kh9206yqkw9h2cr6mcsmizgjg3rkvd"))))
+    (properties `((upstream-name . "biglm")))
+    (build-system r-build-system)
+    (propagated-inputs (list r-dbi))
+    (native-inputs (list gfortran))
+    (home-page "https://cran.r-project.org/package=biglm")
+    (synopsis "Bounded memory linear and generalized linear models")
+    (description "The biglm package lets you create a linear model object that
+uses only code{p^2} memory for @code{p} variables.  It can be updated with
+more data using @code{update}. This allows linear regression on data sets
+larger than memory.")
+    ;; Expanded from GPL
+    (license (list license:gpl2+ license:gpl3+))))
+
 (define-public r-bwstest
   (package
     (name "r-bwstest")
