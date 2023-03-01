@@ -41679,15 +41679,16 @@ service with the @code{simple-service} procedure from @code{(gnu
 services)}.
 
 @menu
-* Essential Home Services::  Environment variables, packages, on-* scripts.
-* Shells: Shells Home Services.                        POSIX shells, Bash, Zsh.
-* Mcron: Mcron Home Service.                           Scheduled User's Job Execution.
-* Power Management: Power Management Home Services.    Services for battery power.
-* Shepherd: Shepherd Home Service.                     Managing User's Daemons.
-* SSH: Secure Shell.                                   Setting up the secure shell client.
-* Desktop: Desktop Home Services.                      Services for graphical environments.
-* Guix: Guix Home Services.                            Services for Guix.
-* Fonts: Fonts Home Services.                          Services for managing User's fonts.
+* Essential Home Services::     Environment variables, packages, on-* scripts.
+* Shells: Shells Home Services.  POSIX shells, Bash, Zsh.
+* Mcron: Mcron Home Service.    Scheduled User's Job Execution.
+* Power Management: Power Management Home Services.  Services for battery power.
+* Shepherd: Shepherd Home Service.  Managing User's Daemons.
+* SSH: Secure Shell.            Setting up the secure shell client.
+* Desktop: Desktop Home Services.  Services for graphical environments.
+* Guix: Guix Home Services.     Services for Guix.
+* Fonts: Fonts Home Services.   Services for managing User's fonts.
+* Sound: Sound Home Services.   Dealing with audio.
 @end menu
 @c In addition to that Home Services can provide
 
@@ -42599,6 +42600,101 @@ like this:
                 home-fontconfig-service-type
                 (list "~/.nix-profile/share/fonts"))
 @end lisp
+@end defvar
+
+@node Sound Home Services
+@subsection Sound Home Services
+
+The @code{(gnu home services sound)} module provides services related to
+sound support.
+
+@cindex PulseAudio, home service
+@cindex RTP, for PulseAudio
+
+The following services dynamically reconfigure the
+@uref{https://pulseaudio.org,PulseAudio sound server}: they let you
+toggle broadcast of audio output over the network using the
+@acronym{RTP, real-time transport protocol} and, correspondingly,
+playback of sound received over RTP.  Once
+@code{home-pulseaudio-rtp-sink-service-type} is among your home
+services, you can start broadcasting audio output by running this
+command:
+
+@example
+herd start pulseaudio-rtp-sink
+@end example
+
+You can then run a PulseAudio-capable mixer, such as @code{pavucontrol}
+or @code{pulsemixer} (both from the same-named package) to control which
+audio stream(s) should be sent to the RTP ``sink''.
+
+By default, audio is broadcasted to a multicast address: any device on
+the @acronym{LAN, local area network} receives it and may play it.
+Using multicast in this way puts a lot of pressure on the network and
+degrades its performance, so you may instead prefer sending to
+specifically one device.  The first way to do that is by specifying the
+IP address of the target device when starting the service:
+
+@example
+herd start pulseaudio-rtp-sink 192.168.1.42
+@end example
+
+The other option is to specify this IP address as the one to use by
+default in your home environment configuration:
+
+@lisp
+(service home-pulseaudio-rtp-sink-service-type
+         "192.168.1.42")
+@end lisp
+
+On the device where you intend to receive and play the RTP stream, you
+can use @code{home-pulseaudio-rtp-source-service-type}, like so:
+
+@lisp
+(service home-pulseaudio-rtp-source-service-type)
+@end lisp
+
+This will then let you start the receiving module for PulseAudio:
+
+@example
+herd start pulseaudio-rtp-source
+@end example
+
+Again, by default it will listen on the multicast address.  If, instead,
+you'd like it to listen for direct incoming connections, you can do that
+by running:
+
+@lisp
+(service home-pulseaudio-rtp-source-service-type
+         "0.0.0.0")
+@end lisp
+
+The reference of these services is given below.
+
+@defvar home-pulseaudio-rtp-sink-service-type
+@defvarx home-pulseaudio-rtp-source-service-type
+This is the type of the service to send, respectively receive, audio
+streams over @acronym{RTP, real-time transport protocol}.
+
+The value associated with this service is the IP address (a string)
+where to send, respectively receive, the audio stream.  By default,
+audio is sent/received on multicast address
+@code{%pulseaudio-rtp-multicast-address}.
+
+This service defines one Shepherd service: @code{pulseaudio-rtp-sink},
+respectively @code{pulseaudio-rtp-source}.  The service is not started
+by default, so you have to explicitly start it when you want to turn it
+on, as in this example:
+
+@example
+herd start pulseaudio-rtp-sink
+@end example
+
+Stopping the Shepherd service turns off broadcasting.
+@end defvar
+
+@defvar %pulseaudio-rtp-multicast-address
+This is the multicast address used by default by the two services above.
 @end defvar
 
 @node Invoking guix home
