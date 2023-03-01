@@ -6880,6 +6880,75 @@ resolution 5hmC data from experimental protocols such as oxBS-Seq and
 TAB-Seq.")
     (license license:artistic2.0)))
 
+(define-public r-mmuphin
+  (package
+    (name "r-mmuphin")
+    (version "1.12.1")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (bioconductor-uri "MMUPHin" version))
+       (sha256
+        (base32 "0vpap3avmrjy187s3dva6f008al6d935kpdf816xzl5gxl7zvf62"))
+       ;; Delete generated files.
+       (snippet
+        '(for-each delete-file
+                   '("inst/doc/MMUPHin.R"
+                     "inst/doc/MMUPHin.html")))))
+    (properties `((upstream-name . "MMUPHin")))
+    (build-system r-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'fix-includes
+            (lambda _
+              (substitute* "inst/doc/MMUPHin.Rmd"
+                (("\\.\\./man/figures")
+                 (string-append (getcwd) "/man/figures"))
+                (("bibliography: references.bib")
+                 (string-append "bibliography: "
+                                (getcwd) "/vignettes/references.bib")))))
+          ;; Maaslin2 generates log files with timestamps.  We don't need to
+          ;; keep them.  The generated PDF files also contain timestamps, so
+          ;; we replace them with arbitrary fixed timestamps.
+          (add-after 'check 'make-reproducible
+            (lambda _
+              (for-each delete-file
+                        (find-files #$output "maaslin2.log"))
+              (with-fluids ((%default-port-encoding "ISO-8859-1"))
+                (substitute* (find-files #$output "\\.pdf$")
+                  (("/CreationDate \\(D:.*\\)")
+                   "/CreationDate (D:20230301143558)")
+                  (("/ModDate \\(D:.*\\)")
+                   "/ModDate (D:20230301143558)"))))))))
+    ;; The DESCRIPTION file says that glpk is needed, but this package does
+    ;; not seem to reference the library directly.
+    (propagated-inputs
+     (list r-cowplot
+           r-biocstyle
+           r-dplyr
+           r-fpc
+           r-ggplot2
+           r-igraph
+           r-maaslin2
+           r-metafor
+           r-stringr
+           r-tidyr))
+    (native-inputs (list r-knitr))
+    (home-page "https://bioconductor.org/packages/MMUPHin")
+    (synopsis "Meta-analysis with uniform pipeline for heterogeneity in microbiome")
+    (description
+     "MMUPHin is an R package for meta-analysis tasks of microbiome cohorts.
+It has function interfaces for:
+@itemize
+@item covariate-controlled batch- and cohort effect adjustment;
+@item meta-analysis differential abundance testing;
+@item meta-analysis unsupervised discrete structure (clustering) discovery;
+@item meta-analysis unsupervised continuous structure discovery.
+@end itemize")
+    (license license:expat)))
+
 (define-public r-motifrg
   (package
     (name "r-motifrg")
