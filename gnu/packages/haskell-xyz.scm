@@ -13329,6 +13329,27 @@ the vector; then you can execute the builder to actually produce the
 vector.")
     (license license:expat)))
 
+(define-public ghc-vector-hashtables
+  (package
+    (name "ghc-vector-hashtables")
+    (version "0.1.1.2")
+    (source (origin
+              (method url-fetch)
+              (uri (hackage-uri "vector-hashtables" version))
+              (sha256
+               (base32
+                "0hrjvy9qg1m5g3w91zxy4syqmp8jk7ajjbxbzkhy282dwfigkyd2"))))
+    (build-system haskell-build-system)
+    (inputs (list ghc-primitive ghc-vector ghc-hashable))
+    (native-inputs (list ghc-hspec ghc-quickcheck ghc-quickcheck-instances
+                         hspec-discover))
+    (home-page "https://github.com/klapaucius/vector-hashtables#readme")
+    (synopsis "Efficient vector-based mutable hashtables implementation")
+    (description
+     "This package provides efficient vector-based hashtable implementation
+similar to .NET Generic Dictionary implementation (at the time of 2015).")
+    (license license:bsd-3)))
+
 (define-public ghc-vector-th-unbox
   (package
     (name "ghc-vector-th-unbox")
