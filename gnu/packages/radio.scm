@@ -2126,7 +2126,7 @@ defined radio with support for rtl-sdr.")
 (define-public csdr
   (package
     (name "csdr")
-    (version "0.18.0")
+    (version "0.18.1")
     (source
      (origin
        (method git-fetch)
@@ -2135,7 +2135,7 @@ defined radio with support for rtl-sdr.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0sdni0p9qcf4yw1wf5jz1pyb9wv6wmdblirh2q6s7jblh50vfwz1"))))
+        (base32 "1vgl7d03khdql45jq5xxayqfhb5sasxhjmrl621gyk1k8kxaqs8a"))))
     (build-system cmake-build-system)
     (native-inputs
      (list pkg-config))
