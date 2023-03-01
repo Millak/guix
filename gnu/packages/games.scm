@@ -5355,7 +5355,7 @@ tactics.")
 (define-public widelands
   (package
     (name "widelands")
-    (version "1.0")
+    (version "1.1")
     (source
      (origin
        (method git-fetch)
@@ -5364,17 +5364,12 @@ tactics.")
               (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1hw51binnbia15mj1gzx1cbk3cw9r91sisqci2qzcy4ahxiadnw0"))
+        (base32 "07wbalwdmml9vdh9nh50svnsw4sdj9nnp32azbss8vzq5mxmzvbx"))
        (modules '((guix build utils)))
        (snippet
         '(begin
            (delete-file-recursively "src/third_party/minizip")
-           #t))
-       (patches
-        ;; Use system Minizip.  Patch is provided by Debian, and discussed
-        ;; upstream at <https://github.com/widelands/widelands/issues/399>.
-        (search-patches "widelands-system-wide_minizip.patch"
-                        "widelands-add-missing-map-include.patch"))))
+           #t))))
     (build-system cmake-build-system)
     (arguments
      `(#:configure-flags
@@ -5403,9 +5398,11 @@ tactics.")
              #t)))))
     (native-inputs
      `(("gettext" ,gettext-minimal)
+       ("pkg-config" ,pkg-config)
        ("python" ,python-wrapper)))
     (inputs
-     `(("curl" ,curl)
+     `(("asio" ,asio)
+       ("curl" ,curl)
        ("boost" ,boost)
        ("glew" ,glew)
        ("icu4c" ,icu4c)
