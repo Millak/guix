@@ -19458,38 +19458,40 @@ Slack client.")
       (license license:gpl3+))))
 
 (define-public emacs-bash-completion
-  (package
-    (name "emacs-bash-completion")
-    (version "3.1.1")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/szermatt/emacs-bash-completion")
-             (commit (string-append "v" version))))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "0cly0m6msn8xv9857nv4syw8fldqzvsa4kciq7av40y26a61hvrh"))))
-    (build-system emacs-build-system)
-    (arguments
-     (list
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'unpack 'make-git-checkout-writable
-            (λ _
-              (for-each make-file-writable (find-files "."))))
-          (add-before 'install 'configure
-            (lambda* (#:key inputs #:allow-other-keys)
-              (emacs-substitute-variables "bash-completion.el"
-                ("bash-completion-prog"
-                 (search-input-file inputs "/bin/bash"))))))))
-    (inputs (list bash))
-    (home-page "https://github.com/szermatt/emacs-bash-completion")
-    (synopsis "Bash completion for the shell buffer")
-    (description
-     "Bash Completion defines dynamic completion hooks for Shell mode and
+  ;; This commit includes unreleased fixes that make using completion inside
+  ;; 'guix shell' possible (see:
+  ;; https://github.com/szermatt/emacs-bash-completion/issues/62).
+  (let ((commit "796a806c5531fc20afea590ba3c1d8a42fb793fc")
+        (revision "0"))
+    (package
+      (name "emacs-bash-completion")
+      (version (git-version "3.1.1" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://github.com/szermatt/emacs-bash-completion")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "13mdb5arifkwghdclvp23q336n49x2hgqnll7m1lg3nh6jgq8jvk"))))
+      (build-system emacs-build-system)
+      (arguments
+       (list
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-before 'install 'configure
+              (lambda* (#:key inputs #:allow-other-keys)
+                (emacs-substitute-variables "bash-completion.el"
+                  ("bash-completion-prog"
+                   (search-input-file inputs "/bin/bash"))))))))
+      (inputs (list bash))
+      (home-page "https://github.com/szermatt/emacs-bash-completion")
+      (synopsis "Bash completion for the shell buffer")
+      (description
+       "Bash Completion defines dynamic completion hooks for Shell mode and
 @code{shell-command} prompts that are based on Bash completion.")
-    (license license:gpl2+)))
+      (license license:gpl2+))))
 
 (define-public emacs-easy-kill
   (package
