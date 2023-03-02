@@ -1,8 +1,9 @@
 ;;; GNU Guix --- Functional package management for GNU
-;;; Copyright © 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021 Ludovic Courtès <ludo@gnu.org>
+;;; Copyright © 2014-2021, 2023 Ludovic Courtès <ludo@gnu.org>
 ;;; Copyright © 2017 Mathieu Lirzin <mthl@gnu.org>
 ;;; Copyright © 2017 Christopher Baines <mail@cbaines.net>
 ;;; Copyright © 2020 Jakub Kądziołka <kuba@kadziolka.net>
+;;; Copyright © 2023 Simon Tournier <zimon.toutoune@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -84,16 +85,18 @@
 object.  The output is expected to have recursive hash HASH of type
 HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
   (define inputs
-    ;; When doing 'git clone --recursive', we need sed, grep, etc. to be
-    ;; available so that 'git submodule' works.
-    (if (git-reference-recursive? ref)
-        (standard-packages)
+    `(("git" ,git)
 
-        ;; The 'swh-download' procedure requires tar and gzip.
-        `(("gzip" ,(module-ref (resolve-interface '(gnu packages compression))
-                               'gzip))
-          ("tar" ,(module-ref (resolve-interface '(gnu packages base))
-                              'tar)))))
+      ;; When doing 'git clone --recursive', we need sed, grep, etc. to be
+      ;; available so that 'git submodule' works.
+      ,@(if (git-reference-recursive? ref)
+            (standard-packages)
+
+            ;; The 'swh-download' procedure requires tar and gzip.
+            `(("gzip" ,(module-ref (resolve-interface '(gnu packages compression))
+                                   'gzip))
+              ("tar" ,(module-ref (resolve-interface '(gnu packages base))
+                                  'tar))))))
 
   (define guile-json
     (module-ref (resolve-interface '(gnu packages guile)) 'guile-json-4))
@@ -151,7 +154,7 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
             (or (git-fetch (getenv "git url") (getenv "git commit")
                            #$output
                            #:recursive? recursive?
-                           #:git-command (string-append #+git "/bin/git"))
+                           #:git-command "git")
                 (download-nar #$output)
 
                 ;; As a last resort, attempt to download from Software Heritage.
@@ -162,8 +165,24 @@ HASH-ALGO (a symbol).  Use NAME as the file name, or a generic name if #f."
                      (parameterize ((%verify-swh-certificate? #f))
                        (format (current-error-port)
                                "Trying to download from Software Heritage...~%")
+
                        (swh-download (getenv "git url") (getenv "git commit")
-                                     #$output))))))))
+                                     #$output)
+                       (when (file-exists?
+                              (string-append #$output "/.gitattributes"))
+                         ;; Perform CR/LF conversion and other changes
+                         ;; specificied by '.gitattributes'.
+                         (invoke "git" "-C" #$output "init")
+                         (invoke "git" "-C" #$output "config" "--local"
+                                 "user.email" "you@example.org")
+                         (invoke "git" "-C" #$output "config" "--local"
+                                 "user.name" "Your Name")
+                         (invoke "git" "-C" #$output "add" ".")
+                         (invoke "git" "-C" #$output "commit" "-am" "init")
+                         (invoke "git" "-C" #$output "read-tree" "--empty")
+                         (invoke "git" "-C" #$output "reset" "--hard")
+                         (delete-file-recursively
+                          (string-append #$output "/.git"))))))))))
 
   (mlet %store-monad ((guile (package->derivation guile system)))
     (gexp->derivation (or name "git-checkout") build
