@@ -1557,6 +1557,31 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
     (home-page "https://github.com/rubocop/rubocop-capybara")
     (license license:expat)))
 
+(define-public ruby-rubocop-capybara
+  (package
+    (inherit ruby-rubocop-capybara-minimal)
+    (arguments
+     (list #:tests? #t
+           #:test-target "spec"
+           #:phases #~(modify-phases %standard-phases
+                        (add-after 'unpack 'relax-requirements
+                          (lambda _
+                            (substitute* "Gemfile"
+                              (("gem 'rubocop-rspec', '~> 2.16.0'")
+                               "gem 'rubocop-rspec', '>= 2.16.0'")))))))
+    (native-inputs
+     (list ruby-bump
+           ruby-rack
+           ruby-rake
+           ruby-rspec
+           ruby-rubocop
+           ruby-rubocop-performance-minimal
+           ruby-rubocop-rake-minimal
+           ruby-rubocop-rspec-minimal
+           ruby-simplecov
+           ruby-yard))))
+
+;;; A minimal variant used to build ruby-rubocop itself.
 (define ruby-rubocop-rake-minimal
   (package
     (name "ruby-rubocop-rake")
