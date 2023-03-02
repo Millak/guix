@@ -9352,6 +9352,51 @@ Suffix List.")
     (home-page "https://github.com/knu/ruby-domain_name")
     (license license:bsd-2)))
 
+(define-public ruby-dotenv
+  (package
+    (name "ruby-dotenv")
+    (version "2.8.1")
+    (source (origin
+              (method git-fetch)        ;for the tests
+              (uri (git-reference
+                    (url "https://github.com/bkeepers/dotenv")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0s1a71jxppa20fsm2rd1vym099ib48m039rmhggmz99hc3z1fvvr"))))
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:test-target "spec"
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'do-not-build-dotenv-rails
+            (lambda _
+              ;; The repository includes the definitions of two packages,
+              ;; 'dotenv' and 'dotenv-rails'.  Since we want to package them
+              ;; separately, remove the dotenv-rails and associated Rake
+              ;; tasks.
+              (delete-file "dotenv-rails.gemspec")
+              (delete-file "spec/dotenv/rails_spec.rb")
+              (substitute* "Rakefile"
+                (("DotenvRailsGemHelper.install_tasks name: \"dotenv-rails\"")
+                 "")
+                ((", \"dotenv-rails:.*\"")
+                 ""))))
+          (replace 'replace-git-ls-files
+            (lambda _
+              (substitute* "dotenv.gemspec"
+                (("`git ls-files README.md LICENSE lib bin \\| grep -v rails`")
+                 "`find README.md LICENSE lib bin -type f | sort | \
+grep -v rails`")))))))
+    (native-inputs (list ruby-standard ruby-rspec))
+    (synopsis "Ruby library for setting environment variables")
+    (description "Dotenv is a Ruby library for setting environment variables
+defined in a @file{.env} file.")
+    (home-page "https://github.com/bkeepers/dotenv")
+    (license license:expat)))
+
 (define-public ruby-http-cookie
   (package
     (name "ruby-http-cookie")
