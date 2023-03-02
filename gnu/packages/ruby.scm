@@ -675,14 +675,14 @@ re-sourced, but they will be rendered in a single-line format.")
 (define-public ruby-given-core
   (package
     (name "ruby-given-core")
-    (version "3.8.0")
+    (version "3.8.2")
     (source
      (origin
        (method url-fetch)
        (uri (rubygems-uri "given_core" version))
        (sha256
         (base32
-         "1lzyqllbbv6as3qgwz2007mvy7wy247bgkch9adnmh1zfa73bkrg"))))
+         "0w1pyhgb2am7c267s8v06dpd9qhmsk2x4hfr2aq8l8lh49ma227s"))))
     (build-system ruby-build-system)
     (arguments '(#:tests? #f))          ;no test suite for the core package
     (propagated-inputs
