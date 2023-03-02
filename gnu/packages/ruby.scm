@@ -4578,6 +4578,24 @@ written using either the unit test or spec style.")
     (home-page "https://github.com/splattael/minitest-around")
     (license license:expat)))
 
+(define-public ruby-minitest-retry
+  (package
+    (name "ruby-minitest-retry")
+    (version "0.2.2")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "minitest-retry" version))
+              (sha256
+               (base32
+                "1c1zq0b1a9y0hbqphq4ybijnjldlis1g6kyhx92q2ynnqfmzhfga"))))
+    (build-system ruby-build-system)
+    (propagated-inputs (list ruby-minitest))
+    (synopsis "Minitest extension to re-run failing tests")
+    (description "This package provides the @code{Minitest::Retry} class,
+which extends Minitest to allow retrying tests when they fail.")
+    (home-page "https://github.com/y-yagi/minitest-retry")
+    (license license:expat)))
+
 (define-public ruby-minitest-sprint
   (package
     (name "ruby-minitest-sprint")
