@@ -1537,6 +1537,26 @@ logic.")
     (home-page "https://github.com/typhoeus/typhoeus")
     (license license:expat)))
 
+(define ruby-rubocop-rake-minimal
+  (package
+    (name "ruby-rubocop-rake")
+    (version "0.6.0")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/rubocop/rubocop-rake")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1r53szwglikbir1fvpz4i51p915khrrkl6rp61zcx3dcrclkr3ld"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))      ;avoid extra dependencies
+    (synopsis "RuboCop plugin for Rake")
+    (description "This package provides a RuboCop plugin for Rake.")
+    (home-page "https://github.com/rubocop/rubocop-rake")
+    (license license:expat)))
+
 (define-public ruby-rubocop-rspec
   (package
     (name "ruby-rubocop-rspec")
