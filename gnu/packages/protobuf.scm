@@ -49,6 +49,7 @@
   #:use-module (gnu packages python-check)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages rpc)
+  #:use-module (gnu packages rails)
   #:use-module (gnu packages ruby)
   #:use-module (srfi srfi-1))
 

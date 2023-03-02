@@ -6547,39 +6547,6 @@ you about the changes.")
 documents and fragments.  It's built on top of Nokogiri and libxml2.")
     (license license:expat)))
 
-(define-public ruby-activesupport
-  (package
-    (name "ruby-activesupport")
-    (version "6.1.3")
-    (source
-     (origin
-       (method url-fetch)
-       (uri (rubygems-uri "activesupport" version))
-       (sha256
-        (base32
-         "00a4db64g8w5yyk6hzak2nqrmdfvyh5zc9cvnm9gglwbi87ss28h"))))
-    (build-system ruby-build-system)
-    (arguments
-     `(#:phases
-       (modify-phases %standard-phases
-         (replace 'check
-           (lambda _
-             ;; There are no tests, instead attempt to load the library.
-             (invoke "ruby" "-Ilib" "-r" "active_support"))))))
-    (propagated-inputs
-     (list ruby-concurrent
-           ruby-i18n
-           ruby-minitest
-           ruby-tzinfo
-           ruby-tzinfo-data
-           ruby-zeitwerk))
-    (synopsis "Ruby on Rails utility library")
-    (description "ActiveSupport is a toolkit of support libraries and Ruby
-core extensions extracted from the Rails framework.  It includes support for
-multibyte strings, internationalization, time zones, and testing.")
-    (home-page "https://www.rubyonrails.org")
-    (license license:expat)))
-
 (define-public ruby-crass
   (package
     (name "ruby-crass")

@@ -2,6 +2,7 @@
 ;;; Copyright © 2016 Matthew Jordan <matthewjordandevops@yandex.com>
 ;;; Copyright © 2018 Tobias Geerinckx-Rice <me@tobias.gr>
 ;;; Copyright © 2019, 2021, 2022 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2023 Maxim Cournoyer <maxim.cournoyer@gmail.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -24,9 +25,92 @@
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix packages)
+  #:use-module (gnu packages base)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages node)
   #:use-module (gnu packages ruby)
   #:use-module (guix build-system ruby))
+
+(define %ruby-rails-version "7.0.4.3")
+
+(define ruby-rails-monorepo
+  (origin
+    (method git-fetch)
+    (uri (git-reference
+          (url "https://github.com/rails/rails")
+          (commit (string-append "v" %ruby-rails-version))))
+    (file-name (git-file-name "ruby-rails" %ruby-rails-version))
+    (sha256
+     (base32
+      "0f5f8r8wdmdmbyl07b0z555arai4ys2j8dj3fy0mq63y9bfhcqqk"))))
+
+(define-public ruby-activesupport
+  (package
+    (name "ruby-activesupport")
+    (version %ruby-rails-version)
+    (source ruby-rails-monorepo)
+    (build-system ruby-build-system)
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'delete-gemfiles
+            (lambda _
+              (delete-file "Gemfile")
+              (delete-file "Gemfile.lock")))
+          (add-after 'delete-gemfiles 'chdir
+            (lambda _
+              (chdir "activesupport")))
+          (add-before 'check 'check-setup
+            (lambda* (#:key native-inputs inputs #:allow-other-keys)
+              ;; Multiple tests require to set the timezone.
+              (setenv "TZDIR" (search-input-directory (or native-inputs inputs)
+                                                      "share/zoneinfo"))
+              ;; The test suite requires a memcached and a redis server.
+              (invoke "memcached" "-d")
+              (invoke "redis-server" "--daemonize" "yes")))
+          (add-before 'check 'delete-problematic-tests
+            (lambda _
+              ;; These tests fail non-deterministically.
+              (substitute* "test/cache/behaviors.rb"
+                ((".*behaviors/cache_store_behavior.*")
+                 "")
+                ((".*behaviors/encoded_key_cache_behavior.*")
+                 ""))
+              (delete-file "test/evented_file_update_checker_test.rb")
+              ;; These tests require cache_store_behavior, disabled above.
+              (delete-file "test/cache/stores/file_store_test.rb")
+              (delete-file "test/cache/stores/mem_cache_store_test.rb")
+              (delete-file "test/cache/stores/memory_store_test.rb")
+              (delete-file "test/cache/stores/redis_cache_store_test.rb"))))))
+    (native-inputs
+     (list memcached
+           redis
+           ruby-builder
+           ruby-connection-pool
+           ruby-dalli
+           ruby-hiredis
+           ruby-libxml
+           ruby-listen
+           ruby-rack
+           ruby-redis
+           ruby-rexml
+           tzdata-for-tests))
+    (propagated-inputs
+     (list ruby-concurrent
+           ruby-i18n
+           ;; This is sub-optimal, but apparently necessary (see:
+           ;; https://github.com/rails/rails/commit/
+           ;; 9766eb4a833c26c64012230b96dd1157ebb8e8a2).
+           ruby-minitest-5.15
+           ruby-tzinfo
+           ruby-tzinfo-data))
+    (synopsis "Ruby on Rails utility library")
+    (description "ActiveSupport is a toolkit of support libraries and Ruby
+core extensions extracted from the Rails framework.  It includes support for
+multibyte strings, internationalization, time zones, and testing.")
+    (home-page "https://rubyonrails.org/")
+    (license license:expat)))
 
 (define-public ruby-spring
   (package
