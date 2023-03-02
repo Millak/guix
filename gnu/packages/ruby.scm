@@ -1822,6 +1822,13 @@ Batch and flush behavior.
            (lambda _
              ;; Some tests fail otherwise.
              (setenv "HOME" "/tmp")))
+         (add-after 'unpack 'relax-requirements
+           (lambda _
+             (substitute* "standard.gemspec"
+               (("\"rubocop\", \"1.44.1\"")
+                "\"rubocop\", \">= 1.44.1\"")
+               (("\"rubocop-performance\", \"1.15.2\"")
+                "\"rubocop-performance\", \">= 1.15.2\""))))
          (add-after 'unpack 'delete-problematic-tests
            ;; These tests fail for unknown reasons (see:
            ;; https://github.com/testdouble/standard/issues/532).
