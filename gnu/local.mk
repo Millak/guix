@@ -1821,6 +1821,7 @@ dist_patch_DATA =						\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noclinfo.patch 	\
   %D%/packages/patches/rocm-opencl-runtime-4.3-noopencl.patch 	\
   %D%/packages/patches/rottlog-direntry.patch 			\
+  %D%/packages/patches/ruby-hiredis-use-system-hiredis.patch	\
   %D%/packages/patches/ruby-hydra-minimal-no-byebug.patch	\
   %D%/packages/patches/ruby-anystyle-data-immutable-install.patch	\
   %D%/packages/patches/ruby-anystyle-fix-dictionary-populate.patch	\
