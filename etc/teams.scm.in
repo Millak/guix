@@ -547,7 +547,7 @@ importer."
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
-  games localization)
+  games localization lxqt xfce)
 
 (define-member (person "Vagrant Cascadian"
                        "vagrant@reproducible-builds.org")
