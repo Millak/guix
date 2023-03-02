@@ -139,117 +139,124 @@ Definition Facility.")
     (license license:expat)))
 
 (define-public gcl
-  (let ((commit "ff7ef981765cc0efdb4b1db27c292f5c11a72753")
-        (revision "3")) ;Guix package revision
-    (package
-      (name "gcl")
-      (version (git-version "2.6.12" revision commit))
-      (source
-       (origin
-         (method git-fetch)
-         (uri (git-reference
-               (url "https://git.savannah.gnu.org/r/gcl.git")
-               (commit commit)))
-         (file-name (git-file-name name version))
-         (sha256
-          (base32 "0z64fxxcaial2i1s1hms8r095dm1ff3wd8ivwdx894a3yln9c0an"))))
-      (build-system gnu-build-system)
-      (arguments
-       `(#:parallel-build? #f  ; The build system seems not to be thread safe.
-         #:test-target "ansi-tests/test_results"
-         #:configure-flags ,#~(list
-                               "--enable-ansi" ; required by the maxima package
-                               (string-append "CFLAGS=-I"
-                                              #$(this-package-input "libtirpc")
-                                              "/include/tirpc")
-                               (string-append "LDFLAGS=-L"
-                                              #$(this-package-input "libtirpc")
-                                              "/lib")
-                               "LIBS=-ltirpc")
-         #:make-flags ,#~(let ((gcc (search-input-file %build-inputs "/bin/gcc")))
-                           (list (string-append "GCL_CC=" gcc)
-                                 (string-append "CC=" gcc)))
-         #:phases
-         (modify-phases %standard-phases
-           (add-after 'unpack 'realpath-workaround
-             ;; Calls to the realpath function can set errno even if the return
-             ;; value of the function indicates that there is no error, which
-             ;; make massert consider that there was an error.
-             (lambda _
-               (substitute* "gcl/o/main.c"
-                 (("massert\\(realpath\\(s,o\\)\\);" all)
-                  "massert((realpath(s, o) != NULL) && ((errno = 0) == 0));"))))
-           (add-after 'unpack 'fix-makefile
-             ;; The "final" target doesn't exist.
-             (lambda _
-               (substitute* "gcl/makefile"
-                 (("\\$\\(MAKE\\) -C \\$\\(PORTDIR\\) final")
-                  "$(MAKE) -C $(PORTDIR)"))))
-           (add-before 'configure 'pre-conf
-             (lambda* (#:key inputs #:allow-other-keys)
-               (chdir "gcl")
-               (substitute*
-                   (append
-                    '("pcl/impl/kcl/makefile.akcl"
-                      "add-defs"
-                      "unixport/makefile.dos"
-                      "add-defs.bat"
-                      "gcl-tk/makefile.prev"
-                      "add-defs1")
-                    (find-files "h" "\\.defs"))
-                 (("SHELL=/bin/bash")
-                  (string-append "SHELL=" (which "bash")))
-                 (("SHELL=/bin/sh")
-                  (string-append "SHELL=" (which "sh"))))
-               (substitute* "h/linux.defs"
-                 (("#CC") "CC")
-                 (("-fwritable-strings") "")
-                 (("-Werror") ""))
-               (substitute* "lsp/gcl_top.lsp"
-                 (("\"cc\"")
-                  (string-append "\"" (assoc-ref %build-inputs "gcc")
-                                 "/bin/gcc\""))
-                 (("\\(or \\(get-path \\*cc\\*\\) \\*cc\\*\\)") "*cc*")
-                 (("\"ld\"")
-                  (string-append "\"" (assoc-ref %build-inputs "binutils")
-                                 "/bin/ld\""))
-                 (("\\(or \\(get-path \\*ld\\*\\) \\*ld\\*\\)") "*ld*")
-                 (("\\(get-path \"objdump --source \"\\)")
-                  (string-append "\"" (assoc-ref %build-inputs "binutils")
-                                 "/bin/objdump --source \"")))
-               #t))
-           (add-after 'install 'wrap
-             (lambda* (#:key inputs outputs #:allow-other-keys)
-               (let* ((gcl (assoc-ref outputs "out"))
-                      (input-path (lambda (lib path)
-                                    (string-append
-                                     (assoc-ref inputs lib) path)))
-                      (binaries '("binutils")))
-                 ;; GCC and the GNU binutils are necessary for GCL to be
-                 ;; able to compile Lisp functions and programs (this is
-                 ;; a standard feature in Common Lisp). While the
-                 ;; the location of GCC is specified in the make-flags,
-                 ;; the GNU binutils must be available in GCL's $PATH.
-                 (wrap-program (string-append gcl "/bin/gcl")
-                   `("PATH" prefix ,(map (lambda (binary)
-                                           (input-path binary "/bin"))
-                                         binaries))))
-               #t))
-           ;; drop strip phase to make maxima build, see
-           ;; https://www.ma.utexas.edu/pipermail/maxima/2008/009769.html
-           (delete 'strip))))
-      (inputs
-       (list bash-minimal gmp libtirpc readline))
-      (native-inputs
-       (list m4 texinfo))
-      (home-page "https://www.gnu.org/software/gcl/")
-      (synopsis "Common Lisp implementation")
-      (description "GCL is an implementation of the Common Lisp language.  It
+  (package
+    (name "gcl")
+    (version "2.6.14")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://git.savannah.gnu.org/r/gcl.git")
+             (commit (string-append "Version_"
+                                    (string-map (lambda (c)
+                                                  (if (char=? c #\.) #\_ c))
+                                                version)))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1b9m02rfnyflsr8n57v7llxz5m3mi7ip3ypwdww4pdhbgh0lzyg7"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:parallel-build? #f  ; The build system seems not to be thread safe.
+      #:test-target "ansi-tests/test_results"
+      #:configure-flags #~(list
+                           "--enable-ansi" ; required by the maxima package
+                           (string-append "CFLAGS=-I"
+                                          #$(this-package-input "libtirpc")
+                                          "/include/tirpc")
+                           (string-append "LDFLAGS=-L"
+                                          #$(this-package-input "libtirpc")
+                                          "/lib")
+                           "LIBS=-ltirpc")
+      #:make-flags #~(let ((gcc (search-input-file %build-inputs "/bin/gcc")))
+                       (list (string-append "GCL_CC=" gcc)
+                             (string-append "CC=" gcc)))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'realpath-workaround
+            ;; Calls to the realpath function can set errno even if the return
+            ;; value of the function indicates that there is no error, which
+            ;; make massert consider that there was an error.
+            (lambda _
+              (substitute* "gcl/o/main.c"
+                (("massert\\(realpath\\(s,o\\)\\);" all)
+                 "massert((realpath(s, o) != NULL) && ((errno = 0) == 0));"))))
+          (add-after 'unpack 'fix-missing-enum
+            (lambda _
+              ;; The 'disassembler_style' enum is not defined anywhere,
+              ;; and the parameter is not used...
+              (substitute* "gcl/o/main.c"
+                (("my_fprintf_styled\\(void \\*v,enum disassembler_style,")
+                 "my_fprintf_styled(void *v,int disassembler_style,"))))
+          (add-after 'unpack 'fix-makefile
+            ;; The "final" target doesn't exist.
+            (lambda _
+              (substitute* "gcl/makefile"
+                (("\\$\\(MAKE\\) -C \\$\\(PORTDIR\\) final")
+                 "$(MAKE) -C $(PORTDIR)"))))
+          (add-before 'configure 'pre-conf
+            (lambda* (#:key inputs #:allow-other-keys)
+              (chdir "gcl")
+              (substitute*
+                  (append
+                   '("pcl/impl/kcl/makefile.akcl"
+                     "add-defs"
+                     "unixport/makefile.dos"
+                     "add-defs.bat"
+                     "gcl-tk/makefile.prev"
+                     "add-defs1")
+                   (find-files "h" "\\.defs"))
+                (("SHELL=/bin/bash")
+                 (string-append "SHELL=" (which "bash")))
+                (("SHELL=/bin/sh")
+                 (string-append "SHELL=" (which "sh"))))
+              (substitute* "h/linux.defs"
+                (("#CC") "CC")
+                (("-fwritable-strings") "")
+                (("-Werror") ""))
+              (substitute* "lsp/gcl_top.lsp"
+                (("\"cc\"")
+                 (string-append "\"" (assoc-ref %build-inputs "gcc")
+                                "/bin/gcc\""))
+                (("\\(or \\(get-path \\*cc\\*\\) \\*cc\\*\\)") "*cc*")
+                (("\"ld\"")
+                 (string-append "\"" (assoc-ref %build-inputs "binutils")
+                                "/bin/ld\""))
+                (("\\(or \\(get-path \\*ld\\*\\) \\*ld\\*\\)") "*ld*")
+                (("\\(get-path \"objdump --source \"\\)")
+                 (string-append "\"" (assoc-ref %build-inputs "binutils")
+                                "/bin/objdump --source \"")))))
+          (add-after 'install 'wrap
+            (lambda* (#:key inputs outputs #:allow-other-keys)
+              (let* ((gcl #$output)
+                     (input-path (lambda (lib path)
+                                   (string-append
+                                    (assoc-ref inputs lib) path)))
+                     (binaries '("binutils")))
+                ;; GCC and the GNU binutils are necessary for GCL to be
+                ;; able to compile Lisp functions and programs (this is
+                ;; a standard feature in Common Lisp). While the
+                ;; the location of GCC is specified in the make-flags,
+                ;; the GNU binutils must be available in GCL's $PATH.
+                (wrap-program (string-append gcl "/bin/gcl")
+                  `("PATH" prefix ,(map (lambda (binary)
+                                          (input-path binary "/bin"))
+                                        binaries))))))
+          ;; drop strip phase to make maxima build, see
+          ;; https://www.ma.utexas.edu/pipermail/maxima/2008/009769.html
+          (delete 'strip))))
+    (inputs
+     (list bash-minimal gmp libtirpc readline))
+    (native-inputs
+     (list m4 texinfo))
+    (home-page "https://www.gnu.org/software/gcl/")
+    (synopsis "Common Lisp implementation")
+    (description "GCL is an implementation of the Common Lisp language.  It
 features the ability to compile to native object code and to load native
 object code modules directly into its lisp core.  It also features a
 stratified garbage collection strategy, a source-level debugger and a built-in
 interface to the Tk widget system.")
-      (license license:lgpl2.0+))))
+    (license license:lgpl2.0+)))
 
 (define-public ecl
   (package
