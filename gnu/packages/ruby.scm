@@ -3406,26 +3406,27 @@ Ruby code coverage tool.")
 (define-public ruby-simplecov
   (package
     (name "ruby-simplecov")
-    (version "0.17.1")
+    (version "0.22.0")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "simplecov" version))
               (sha256
                (base32
-                "1135k46nik05sdab30yxb8264lqiz01c8v000g16cl9pjc4mxrdw"))))
+                "198kcbrjxhhzca19yrdcd6jjj9sb51aaic3b0sc3pwjghg3j49py"))))
     (build-system ruby-build-system)
     ;; Simplecov depends on rubocop for code style checking at build time.
     ;; Rubocop needs simplecov at build time.
     (arguments `(#:tests? #f))
     (propagated-inputs
-     (list ruby-json ruby-docile ruby-simplecov-html))
-    (native-inputs
-     (list bundler))
+     (list ruby-json
+           ruby-docile
+           ruby-simplecov-html
+           ruby-simplecov-json-formatter))
     (synopsis "Code coverage framework for Ruby")
     (description "SimpleCov is a code coverage framework for Ruby with a
 powerful configuration library and automatic merging of coverage across test
 suites.")
-    (home-page "https://github.com/colszowka/simplecov")
+    (home-page "https://github.com/simplecov-ruby/simplecov")
     (license license:expat)))
 
 (define-public ruby-useragent
@@ -7134,6 +7135,11 @@ inspired by the Sinatra microframework style of specifying actions:
     (arguments
      `(#:test-target "spec"
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'relax-dependencies
+                    (lambda _
+                      (substitute* "Gemfile"
+                        (("gem 'simplecov', '~> 0.10', '< 0.18'")
+                         "gem 'simplecov', '~> 0.10'"))))
                   (add-before 'build 'generate-lexer
                     (lambda _
                       (setenv "RUBOCOP_VERSION" "none")
