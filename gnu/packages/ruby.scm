@@ -1602,6 +1602,19 @@ code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
     (home-page "https://github.com/rubocop/rubocop-rake")
     (license license:expat)))
 
+(define-public ruby-rubocop-rake
+  (package
+    (inherit ruby-rubocop-rake-minimal)
+    (arguments
+     (list #:test-target "spec"))
+    (native-inputs
+     (list ruby-rake
+           ruby-rspec
+           ruby-rubocop
+           ruby-rubocop-rspec))
+    (propagated-inputs
+     (list ruby-rubocop))))
+
 ;;; A minimal variant used to build ruby-rubocop itself.
 (define ruby-rubocop-rspec-minimal
   (package
