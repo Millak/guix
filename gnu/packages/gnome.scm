@@ -12355,7 +12355,7 @@ integrate seamlessly with the GNOME desktop.")
            itstool
            pkg-config
            python
-           vala-next))
+           vala))
     (inputs
      (list glib-networking              ;for TLS support
            gsettings-desktop-schemas
