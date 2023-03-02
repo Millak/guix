@@ -807,13 +807,13 @@ eq(1)\\}}.")
 (define-public ruby-rspec-mocks
   (package
     (name "ruby-rspec-mocks")
-    (version "3.8.0")
+    (version "3.12.4")
     (source (origin
               (method url-fetch)
               (uri (rubygems-uri "rspec-mocks" version))
               (sha256
                (base32
-                "06y508cjqycb4yfhxmb3nxn0v9xqf17qbd46l1dh4xhncinr4fyp"))))
+                "1dcfh85m3ksir6n8gydsal4d85chpww1b2nahb05nl8xhgh0r2ij"))))
     (build-system ruby-build-system)
     (arguments
      '(#:tests? #f)) ; avoid dependency cycles
