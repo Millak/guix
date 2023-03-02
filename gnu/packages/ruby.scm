@@ -7391,17 +7391,17 @@ run.")
 (define-public ruby-rubocop
   (package
     (name "ruby-rubocop")
-    (version "1.10.0")
+    (version "1.48.1")
     (source
      (origin
        (method git-fetch)               ;no tests in distributed gem
        (uri (git-reference
-             (url "https://github.com/rubocop-hq/rubocop")
+             (url "https://github.com/rubocop/rubocop")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "0wjw9vpzr4f3nf1zf010bag71w4hdi0haybdn7r5rlmw45pmim29"))))
+         "1l4j99mbrdjy2bzcnky30pjgjv8sxjr187jzliyqmldvpf7dizbp"))))
     (build-system ruby-build-system)
     (arguments
      `(#:test-target "default"
@@ -7412,8 +7412,7 @@ run.")
        (modify-phases %standard-phases
          (add-before 'check 'set-home
            (lambda _
-             (setenv "HOME" (getcwd))
-             #t))
+             (setenv "HOME" (getcwd))))
          ;; Rubocop depends on itself for tests, directly and indirectly. By
          ;; regenerating the TODO list we test rubocop against itself and
          ;; forgo adjusting the test suite to our environment each release.
@@ -7421,40 +7420,37 @@ run.")
            (lambda* (#:key tests? #:allow-other-keys)
              (when tests?
                (make-file-writable ".rubocop_todo.yml")
-               (invoke "./exe/rubocop" "--auto-gen-config"))
-             #t))
-         (add-before 'check 'make-adoc-files-writable
-           (lambda _
-             (let ((adoc-files (find-files "docs/modules/ROOT/pages"
-                                           "\\.adoc$")))
-               (for-each make-file-writable adoc-files))
-             #t)))))
+               (invoke "./exe/rubocop" "--auto-gen-config")))))))
     (native-inputs
-     `(("ruby-bump" ,ruby-bump)
-       ("ruby-pry" ,ruby-pry)
-       ("ruby-rake" ,ruby-rake)
-       ("ruby-rspec" ,ruby-rspec)
-       ("ruby-rubocop-minimal" ,ruby-rubocop-minimal)
-       ("ruby-rubocop-performance-minimal" ,ruby-rubocop-performance-minimal)
-       ("ruby-rubocop-rspec-minimal" ,ruby-rubocop-rspec-minimal)
-       ("ruby-simplecov" ,ruby-simplecov)
-       ("ruby-stackprof" ,ruby-stackprof)
-       ("ruby-test-queue" ,ruby-test-queue)
-       ("ruby-webmock" ,ruby-webmock)
-       ("ruby-yard" ,ruby-yard)))
+     (list ruby-pry
+           ruby-rake
+           ruby-rspec
+           ruby-rubocop-ast
+           ruby-rubocop-capybara-minimal
+           ruby-rubocop-minimal
+           ruby-rubocop-performance-minimal
+           ruby-rubocop-rake-minimal
+           ruby-rubocop-rspec-minimal
+           ruby-simplecov
+           ruby-stackprof
+           ruby-test-queue
+           ruby-webmock
+           ruby-yard))
     (propagated-inputs
-     (list ruby-parallel
+     (list ruby-json
+           ruby-parallel
            ruby-parser
+           ruby-progressbar
            ruby-rainbow
            ruby-regexp-parser
+           ruby-rexml
            ruby-rubocop-ast
-           ruby-progressbar
            ruby-unicode-display-width))
     (synopsis "Ruby code style checking tool")
     (description
      "@code{rubocop} is a Ruby code style checking tool.  It aims to enforce
 the community-driven Ruby Style Guide.")
-    (home-page "https://github.com/rubocop-hq/rubocop")
+    (home-page "https://github.com/rubocop/rubocop")
     (license license:expat)))
 
 (define-public ruby-rubocop-minimal
