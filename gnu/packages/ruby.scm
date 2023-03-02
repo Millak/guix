@@ -3382,6 +3382,27 @@ the SimpleCov code coverage tool for Ruby version 1.9 and above.")
     (home-page "https://github.com/colszowka/simplecov-html")
     (license license:expat)))
 
+(define-public ruby-simplecov-json-formatter
+  (package
+    (name "ruby-simplecov-json-formatter")
+    (version "0.1.4")
+    (source (origin
+              (method url-fetch)
+              (uri (rubygems-uri "simplecov_json_formatter" version))
+              (sha256
+               (base32
+                "0a5l0733hj7sk51j81ykfmlk2vd5vaijlq9d5fn165yyx3xii52j"))))
+    (build-system ruby-build-system)
+    ;; The test suite is disabled because it requires simplecov, which
+    ;; requires this, introducing a dependency cycle.
+    (arguments (list #:tests? #f))
+    (synopsis "JSON formatter for SimpleCov")
+    (description "This package provides a JSON formatter for SimpleCov, the
+Ruby code coverage tool.")
+    (home-page
+     "https://github.com/codeclimate-community/simplecov_json_formatter")
+    (license license:expat)))
+
 (define-public ruby-simplecov
   (package
     (name "ruby-simplecov")
