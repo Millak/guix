@@ -50,8 +50,9 @@
   #:use-module (guix modules)
   #:use-module (guix monads)
   #:use-module (guix utils)
-  #:use-module (guix build-system gnu)
   #:use-module (guix build-system cargo)
+  #:use-module (guix build-system copy)
+  #:use-module (guix build-system gnu)
   #:use-module (guix build-system trivial)
   #:use-module (gnu packages admin)
   #:use-module (gnu packages audio)
@@ -1681,51 +1682,55 @@ associated with their name."))
     (package
       (inherit base)
       (name (symbol->string project))
-      (build-system trivial-build-system)
+      ;; Use the copy-build-system, as it provides the necessary UTF-8 locales
+      ;; support.
+      (build-system copy-build-system)
       (arguments
        (list
-        #:modules '((guix build union)
+        #:imported-modules `(,@%copy-build-system-modules
+                             (guix build union))
+        #:modules '((guix build copy-build-system)
+                    (guix build union)
                     (guix build utils))
-        #:builder
-        #~(begin
-            (use-modules (guix build union)
-                         (guix build utils))
+        #:phases
+        #~(modify-phases %standard-phases
+            (replace 'install
+              (lambda _
+                (union-build #$output (list #$base #$l10n-package)
+                             #:create-all-directories? #t)
 
-            (union-build #$output (list #$base #$l10n-package)
-                         #:create-all-directories? #t)
+                (define* (expose name #:optional (proc copy-file)
+                                 #:key (source #$base))
+                  (let ((dest (string-append #$output "/" name)))
+                    (mkdir-p (dirname dest))
+                    (proc (string-append source "/" name) dest)))
 
-            (define* (expose name #:optional (proc copy-file)
-                             #:key (source #$base))
-              (let ((dest (string-append #$output "/" name)))
-                (mkdir-p (dirname dest))
-                (proc (string-append source "/" name) dest)))
+                (let ((wrapper (string-append "lib/" #$name "/" #$name))
+                      (real-binary (string-append "lib/" #$name "/." #$name
+                                                  "-real"))
+                      (desktop-file (string-append "share/applications/"
+                                                   #$name ".desktop")))
+                  ;; Copy wrapper file.
+                  (delete-file (string-append #$output "/" wrapper))
+                  (expose wrapper)
 
-            (let ((wrapper (string-append "lib/" #$name "/" #$name))
-                  (real-binary (string-append "lib/" #$name "/." #$name
-                                              "-real"))
-                  (desktop-file (string-append "share/applications/"
-                                               #$name ".desktop")))
-              ;; Copy wrapper file.
-              (delete-file (string-append #$output "/" wrapper))
-              (expose wrapper)
+                  ;; Recreate bin symlink.
+                  (delete-file (string-append #$output "/bin/" #$name))
+                  (symlink (string-append #$output "/" wrapper)
+                           (string-append #$output "/bin/" #$name))
 
-              ;; Recreate bin symlink.
-              (delete-file (string-append #$output "/bin/" #$name))
-              (symlink (string-append #$output "/" wrapper)
-                       (string-append #$output "/bin/" #$name))
+                  ;; Copy actual binary.
+                  (delete-file (string-append #$output "/" real-binary))
+                  (expose real-binary)
 
-              ;; Copy actual binary.
-              (delete-file (string-append #$output "/" real-binary))
-              (expose real-binary)
+                  ;; Copy desktop file.
+                  (delete-file (string-append #$output "/" desktop-file))
+                  (expose desktop-file)
 
-              ;; Copy desktop file.
-              (delete-file (string-append #$output "/" desktop-file))
-              (expose desktop-file)
-
-              ;; Adjust the references in the desktop file and wrapper.
-              (substitute* (list (string-append #$output "/" desktop-file)
-                                 (string-append #$output "/" wrapper))
-                ((#$base) #$output)))))))))
+                  ;; Adjust the references in the desktop file and wrapper.
+                  (substitute* (list (string-append #$output "/" desktop-file)
+                                     (string-append #$output "/" wrapper))
+                    ((#$base) #$output)))))))))))
 
 (define-public icecat
   (make-mozilla-with-l10n 'icecat icecat-minimal icecat-l10n))
