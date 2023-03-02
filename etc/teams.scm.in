@@ -436,6 +436,18 @@ importer."
         "Reproducible Builds tooling and issues that affect any guix packages."
         #:scope (list "gnu/packages/diffoscope.scm")))
 
+(define-team xfce
+  (team 'xfce
+        #:name "Xfce team"
+        #:description "Xfce desktop environment."
+        #:scope (list "gnu/packages/xfce.scm")))
+
+(define-team lxqt
+  (team 'lxqt
+        #:name "LXQt team"
+        #:description "LXQt desktop environment."
+        #:scope (list "gnu/packages/lxqt.scm")))
+
 
 (define-member (person "Eric Bavier"
                        "bavier@posteo.net")
