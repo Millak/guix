@@ -1537,6 +1537,28 @@ logic.")
     (home-page "https://github.com/typhoeus/typhoeus")
     (license license:expat)))
 
+;;; A minimal variant used to build ruby-rubocop itself.
+(define ruby-rubocop-capybara-minimal
+  (package
+    (name "ruby-rubocop-capybara")
+    (version "2.17.1")
+    (source (origin
+              (method git-fetch)        ;for tests
+              (uri (git-reference
+                    (url "https://github.com/rubocop/rubocop-capybara")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "137y21b6g0kj1001zp95gwchx2cvgz8pglw2ik1cw647lh77qdsp"))))
+    (build-system ruby-build-system)
+    (arguments (list #:tests? #f))
+    (synopsis "Capybara plugin for RuboCop")
+    (description "This package provides a RuboCop plugin that can be used for
+code style checking of Capybara test files (RSpec, Cucumber, Minitest).")
+    (home-page "https://github.com/rubocop/rubocop-capybara")
+    (license license:expat)))
+
 (define ruby-rubocop-rake-minimal
   (package
     (name "ruby-rubocop-rake")
